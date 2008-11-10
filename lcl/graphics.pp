@@ -248,13 +248,13 @@ const
   clLtGray  = TColor($C0C0C0);
   clDkGray  = TColor($808080);
   clWhite   = TColor($FFFFFF);
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue = TColor($F0CAA6);
   clCream   = TColor($F0FBFF);
+  clMedGray = TColor($A4A0A0);
+
   clNone    = TColor($1FFFFFFF);
   clDefault = TColor($20000000);
-
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue    = TColor($F0CAA6);
-  clMedGray    = TColor($A4A0A0);
 
   //System colors
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
@@ -1712,7 +1712,7 @@ function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
 
 type
   // Color / Identifier mapping
-  TGetColorStringProc = procedure(const s:ansistring) of object;
+  TGetColorStringProc = procedure(const s: AnsiString) of object;
 
 function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
@@ -2098,7 +2098,10 @@ const
     (Value: clLtGray; Name: 'clLtGray'),
     (Value: clDkGray; Name: 'clDkGray'),
     (Value: clWhite; Name: 'clWhite'),
+    (Value: clMoneyGreen; Name: 'clMoneyGreen'),
+    (Value: clSkyBlue; Name: 'clSkyBlue'),
     (Value: clCream; Name: 'clCream'),
+    (Value: clMedGray; Name: 'clMedGray'),
     (Value: clNone; Name: 'clNone'),
     (Value: clDefault; Name: 'clDefault'),
 
@@ -2203,10 +2206,7 @@ const
     (Value: clActiveBackground; Name: 'clActiveBackground'),
     (Value: clActiveShadow; Name: 'clActiveShadow'),
     (Value: clActiveHighlight; Name: 'clActiveHighlight'),
-    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText'),
-    (Value: clMoneyGreen; Name: 'clMoneyGreen'),
-    (Value: clSkyBlue; Name: 'clSkyBlue'),
-    (Value: clMedGray; Name: 'clMedGray')
+    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
     );
 
 function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
