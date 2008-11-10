@@ -1354,7 +1354,7 @@ begin
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
     if LCLObject.TabStop then
-      setFocusPolicy(QtClickFocus)
+      setFocusPolicy(QtStrongFocus)
     else
       setFocusPolicy(QtNoFocus);
   end;
@@ -1397,7 +1397,7 @@ begin
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
     if LCLObject.TabStop then
-      setFocusPolicy(QtClickFocus)
+      setFocusPolicy(QtStrongFocus)
     else
       setFocusPolicy(QtNoFocus);
   end;
@@ -3791,6 +3791,13 @@ begin
     AMetrics := QFontMetrics_create(QWidget_font(Widget));
     PreferredWidth := QFontMetrics_width(AMetrics, @W, -1);
     PreferredHeight := QFontMetrics_height(AMetrics);
+    {$note there's a bug with QFontMetrics_width() & QFontMetrics_height()
+     on MacOSX (qt-4.3,qt-4.4)
+     so we must increase PrefW & PrefH for some reasonable value.}
+    {$IFDEF DARWIN}
+    PreferredWidth := PreferredWidth + (PreferredWidth div 4);
+    PreferredHeight := PreferredHeight + (PreferredHeight div 2);
+    {$ENDIF}
     QFontMetrics_destroy(AMetrics);
   end;
 

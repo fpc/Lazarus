@@ -292,26 +292,6 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
-    {$IFNDEF DARWIN}
-    QEventFocusIn:
-      begin
-        if QObject_isWidgetType(Sender) then
-        begin
-          if QWidget_focusPolicy(QWidgetH(Sender)) = QtTabFocus then
-          begin
-            // remove tab from focus policy
-            {$ifdef VerboseTabbedControls}
-              WriteLn('found Taabed widget ', PtrUInt(Sender));
-            {$endif}
-            QWidget_setFocusPolicy(QWidgetH(Sender), QtClickFocus);
-            if FOldFocusWidget <> nil then
-              QWidget_setFocus(FOldFocusWidget);
-          end
-          else
-            FOldFocusWidget := QWidgetH(Sender);
-        end;
-      end;
-      {$ENDIF}
     LCLQt_Destroy:
       begin
         AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));

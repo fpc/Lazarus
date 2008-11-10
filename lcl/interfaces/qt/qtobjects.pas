@@ -476,7 +476,7 @@ type
 
   { TQtPrinter }
   
-  TQtPrinter = class(TQtObject)
+  TQtPrinter = class(TObject)
   protected
     FHandle: QPrinterH;
     FPrinterContext: TQtDeviceContext;
@@ -522,7 +522,7 @@ type
     procedure setNumCopies(const AValue: Integer);
     function getPrinterState: QPrinterPrinterState;
   public
-    constructor Create; override;
+    constructor Create; virtual;
     destructor Destroy; override;
     
     procedure beginDoc;
@@ -2981,7 +2981,6 @@ end;
 
 constructor TQtPrinter.Create;
 begin
-  inherited Create;
   FPrinterActive := False;
   FHandle := QPrinter_create();
 end;
