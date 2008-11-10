@@ -318,7 +318,10 @@ begin
     GTKAPIWidget_SetShadowType(PGTKAPIWidget(Widget), BorderStyleShadowMap[ABorderStyle])
   else
   if GTK_IS_FRAME(Widget) then
-    gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[ABorderStyle]);
+    gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[ABorderStyle])
+  else
+  if GTK_IS_VIEWPORT(Widget) then
+    gtk_viewport_set_shadow_type(PGtkViewport(Widget), BorderStyleShadowMap[ABorderStyle]);
 end;
 
 {$IFDEF GTK1}

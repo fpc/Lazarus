@@ -203,11 +203,7 @@ type
   TGtkWSCustomPanel = class(TWSCustomPanel)
   private
   protected
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSPanel }
@@ -621,66 +617,6 @@ begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
-class procedure TGtkWSCustomPanel.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
-begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-end;
-
-class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Widget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  TempWidget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
-begin
-  // create a fixed widget in a horizontal box
-  // a fixed on a fixed has no z-order
-  Widget := gtk_hbox_new(False, 0);
-  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
-  TempWidget := CreateFixedClientWidget;
-  gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
-  gtk_widget_show(TempWidget);
-  SetFixedWidget(Widget, TempWidget);
-  SetMainWidget(Widget, TempWidget);
-  gtk_widget_show(Widget);
-
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
-  {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
-  Set_RC_Name(AWinControl, Widget);
-  SetCallBacks(Widget, WidgetInfo);
-end;
-
-class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
-var
-  MainWidget: PGtkWidget;
-begin
-  if not AWinControl.HandleAllocated then exit;
-{  if  ((csOpaque in AWinControl.ControlStyle)
-  and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
-    exit;
-}
-  //DebugLn('TGtkWSWinControl.SetColor ',DbgSName(AWinControl));
-{  GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
-                              AWinControl.font.color, AWinControl.color,
-                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-}
-//    GtkWidgetSet.setWidgetFont(pGtkWidget(AWinControl.handle),aWinControl.font);
-
-
-  MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));
-  if MainWidget<>nil then
-  GtkWidgetSet.SetWidgetColor(MainWidget,
-                              AWinControl.font.color, AWinControl.color,
-                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-
-  UpdateWidgetStyleOfControl(AWinControl);
-end;
-
 {$IFDEF GTK1}
   {$include gtk1trayicon.inc}
 {$ENDIF}
@@ -712,7 +648,7 @@ initialization
 //  RegisterWSComponent(TCheckGroup, TGtkWSCheckGroup);
 //  RegisterWSComponent(TCustomLabeledEdit, TGtkWSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TGtkWSLabeledEdit);
-  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
+//  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
 //  RegisterWSComponent(TPanel, TGtkWSPanel);
 {$IFDEF GTK1}
   RegisterWSComponent(TCustomTrayIcon, TGtkWSCustomTrayIcon);
