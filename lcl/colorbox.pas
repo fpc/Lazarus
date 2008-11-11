@@ -835,10 +835,13 @@ end;
 
 procedure TCustomColorListBox.DoSelectionChange(User: Boolean);
 begin
-  if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
-    PickCustomColor;
-  if ItemIndex <> -1 then
-    FSelected := Colors[ItemIndex];
+  if User then
+  begin
+    if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
+      PickCustomColor;
+    if ItemIndex <> -1 then
+      FSelected := Colors[ItemIndex];
+  end;
   inherited DoSelectionChange(User);
 end;
 
