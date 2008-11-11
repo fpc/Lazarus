@@ -56,7 +56,7 @@ uses
   Classes, SysUtils, Messages, Graphics, Controls, Forms, LCLProc, Dialogs,
   StdCtrls, Buttons, FileUtil,
   Laz_XMLCfg,
-  LazarusIDEStrConsts, IDEContextHelpEdit, IDEProcs, ButtonPanel;
+  LazarusIDEStrConsts, IDEContextHelpEdit, IDEProcs;
 
 type
 
@@ -65,11 +65,13 @@ type
   TCondForm = class(TForm)
     AddBtn: TBitBtn;
     AddInverse: TButton;
-    ButtonPanel: TButtonPanel;
+    CancelButton: TBitBtn;
     FirstLabel: TLabel;
     FirstTest: TComboBox;
+    HelpButton: TBitBtn;
     ListBox: TListBox;
     NewTestGroupBox: TGroupBox;
+    OkBtn: TBitBtn;
     RemoveBtn: TBitBtn;
     SecondLabel: TLabel;
     SecondTest: TComboBox;
@@ -171,7 +173,12 @@ begin
   AddBtn.Caption := liswlAdd;
   AddInverse.Caption := rsAddInverse;
   RemoveBtn.Caption := rsRemove;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  OkBtn.Caption := lisEdtExtToolInsert;
+  CancelButton.Caption := dlgCancel;
+  HelpButton.Caption:= lisPckEditHelp;
+  OkBtn.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
   try
     XMLConfig:=CreateXMLConfig;
     try

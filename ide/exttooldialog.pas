@@ -44,7 +44,7 @@ uses
   LazConfigStorage, FileUtil,
   IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
-  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, ButtonPanel;
+  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -101,8 +101,10 @@ type
     the dialog to edit all external tools }
 
   TExternalToolDialog = class(TForm)
-    ButtonPanel: TButtonPanel;
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
     ListBox: TListBox;
+    BtnPanel: TPanel;
     ToolBar: TToolBar;
     AddButton: TToolButton;
     RemoveButton: TToolButton;
@@ -111,7 +113,6 @@ type
     MoveUpButton: TToolButton;
     MoveDownButton: TToolButton;
     procedure AddButtonClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
@@ -138,9 +139,6 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
 
 implementation
-
-uses
-  IDEContextHelpEdit;
 
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
@@ -517,8 +515,10 @@ begin
   EditButton.Caption:=lisCodeToolsDefsEdit;
   MoveUpButton.Caption:=lisExtToolMoveUp;
   MoveDownButton.Caption:=lisExtToolMoveDown;
-
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 
   AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
   RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'delete');
@@ -587,11 +587,6 @@ begin
     NewTool.Free;
   end;
   EnableButtons;
-end;
-
-procedure TExternalToolDialog.HelpButtonClick(Sender: TObject);
-begin
-  ShowContextHelpForIDE(Self);
 end;
 
 procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);

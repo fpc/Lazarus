@@ -57,6 +57,7 @@ type
     ButtonPanel: TButtonPanel;
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
+    procedure btnOkClick(Sender: TObject);
   private
   public
     function GetEncloseType: TEncloseSelectionType;
@@ -402,6 +403,9 @@ var
   t: TEncloseSelectionType;
 begin
   Caption:=lisEncloseSelection;
+  ButtonPanel.OKButton.Caption:=lisEnclose;
+  ButtonPanel.OKButton.OnClick := @btnOKClick;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 
   TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin
@@ -411,6 +415,12 @@ begin
     EndUpdate;
   end;
   TypeRadiogroup.ItemIndex:=0;
+end;
+
+procedure TEncloseSelectionDialog.btnOkClick(Sender: TObject);
+begin
+  if TypeRadiogroup.ItemIndex>=0 then
+    ModalResult:=mrOk;
 end;
 
 function TEncloseSelectionDialog.GetEncloseType: TEncloseSelectionType;

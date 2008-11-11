@@ -43,26 +43,31 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
   ComponentPalette, ComponentReg, PackageDefs, ExtDlgs, FormEditor, PropEdits,
-  LCLType, Menus, ButtonPanel;
+  LCLType, Menus;
 
 type
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
-    ButtonPanel: TButtonPanel;
+    CloseButton: TBitBtn;
     LabelSearch: TLabel;
     ListboxComponents: TListBox;
     PageControl: TPageControl;
+    Panel1: TPanel;
+    Panel2: TPanel;
     Panel3: TPanel;
+    Panel4: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
     PatternEdit: TEdit;
-    TabSheetInheritance: TTabSheet;
+    TreePallette: TTreeView;
+    TreeInheritance: TTreeView;
     TabSheetListBox: TTabSheet;
     TabSheetPaletteTree: TTabSheet;
-    TreeInheritance: TTreeView;
-    TreePallette: TTreeView;
+    TabSheetInheritance: TTabSheet;
+    procedure CloseButtonClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure ListboxComponentsDblClick(Sender: TObject);
     procedure TreeInheritanceDblClick ( Sender: TObject ) ;
@@ -91,11 +96,11 @@ begin
   inherited Create(AOwner);
   FComponentList := TFPList.Create;
 
-  ButtonPanel.CloseButton.Cancel:=True;
-
   //Translations..
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
+  CloseButton.Caption := lisClose;
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
   TabSheetListBox.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
@@ -311,6 +316,18 @@ begin
   then exit;
   
   AddSelectedComponent(AComponent);
+end;
+
+procedure TComponentListForm.CloseButtonClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+//Close form on Esc (Not really needed but nice behaviour)
+begin
+  if Key=VK_ESCAPE
+  then Close;
 end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);

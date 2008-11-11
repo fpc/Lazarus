@@ -2260,7 +2260,7 @@ begin
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Filter:=lisLazarusDesktopSettings+' (*.lds)|*.lds'
            +'|'+lisXMLFiles+' (*.xml)|*.xml'
-           +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+           +'|'+dlgAllFiles+' (*.*)|' + GetAllFilesMask;
       if SaveDialog.Execute then begin
         AnEnvironmentOptions:=TEnvironmentOptions.Create;
         try
@@ -2296,7 +2296,7 @@ begin
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Filter:=lisLazarusDesktopSettings+' (*.lds)|*.lds'
            +'|'+lisXMLFiles+' (*.xml)|*.xml'
-           +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+           +'|'+dlgAllFiles+' (*.*)|' + GetAllFilesMask;
       if OpenDialog.Execute then begin
         AnEnvironmentOptions:=TEnvironmentOptions.Create;
         try

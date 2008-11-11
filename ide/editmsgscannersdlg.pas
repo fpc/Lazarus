@@ -36,7 +36,7 @@ type
   { TEditMsgScannersDialog }
 
   TEditMsgScannersDialog = class(TForm)
-    ButtonPanel: TButtonPanel;
+    ButtonPanel1: TButtonPanel;
     AvailableGroupBox: TGroupBox;
     AvailableListBox: TListBox;
     ScannersListBox: TListBox;
