@@ -40,6 +40,7 @@ function AddProcessEventHandler(AHandle: THandle;
 function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
+procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
