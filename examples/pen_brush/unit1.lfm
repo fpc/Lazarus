@@ -213,34 +213,10 @@ object Form1: TForm1
     Height = 22
     Top = 192
     Width = 96
+    Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
     BorderSpacing.Top = 7
     ItemHeight = 16
-    ItemIndex = 0
-    Items.Strings = (
-      'clBlack'
-      'clMaroon'
-      'clGreen'
-      'clOlive'
-      'clNavy'
-      'clPurple'
-      'clTeal'
-      'clGray'
-      'clSilver'
-      'clRed'
-      'clLime'
-      'clYellow'
-      'clBlue'
-      'clFuchsia'
-      'clAqua'
-      'clSilver'
-      'clGray'
-      'clWhite'
-      'clCream'
-      'clNone'
-      'clDefault'
-    )
-    TabOrder = 5
-    Text = 'clBlack'
     OnChange = WidthComboChange
+    TabOrder = 5
   end
 end

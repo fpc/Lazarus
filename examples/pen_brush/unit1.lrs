@@ -64,11 +64,7 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'on'#6#9'Geometric'#8'OnChange'#7#16'WidthComboChange'#14'ParentBidiMode'#8#8
   +'TabOrder'#2#4#0#0#9'TColorBox'#11'PenColorBox'#21'AnchorSideTop.Control'#7#6
   +'PenBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3'P'#1#6'Height'#2#22
-  +#3'Top'#3#192#0#5'Width'#2'`'#17'BorderSpacing.Top'#2#7#10'ItemHeight'#2#16#9
-  ,'ItemIndex'#2#0#13'Items.Strings'#1#6#7'clBlack'#6#8'clMaroon'#6#7'clGreen'#6
-  +#7'clOlive'#6#6'clNavy'#6#8'clPurple'#6#6'clTeal'#6#6'clGray'#6#8'clSilver'#6
-  +#5'clRed'#6#6'clLime'#6#8'clYellow'#6#6'clBlue'#6#9'clFuchsia'#6#6'clAqua'#6
-  +#8'clSilver'#6#6'clGray'#6#7'clWhite'#6#7'clCream'#6#6'clNone'#6#9'clDefault'
-  +#0#8'TabOrder'#2#5#4'Text'#6#7'clBlack'#8'OnChange'#7#16'WidthComboChange'#0
-  +#0#0
+  +#3'Top'#3#192#0#5'Width'#2'`'#5'Style'#11#16'cbStandardColors'#16'cbExtended'
+  ,'Colors'#14'cbSystemColors'#13'cbPrettyNames'#0#17'BorderSpacing.Top'#2#7#10
+  +'ItemHeight'#2#16#8'OnChange'#7#16'WidthComboChange'#8'TabOrder'#2#5#0#0#0
 ]);
