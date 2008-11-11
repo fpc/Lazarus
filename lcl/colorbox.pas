@@ -381,7 +381,7 @@ begin
     end;
     if cbCustomColor in Style then
     begin
-      Items.Objects[0] := TObject(Value);
+      Items.Objects[0] := TObject(PtrInt(Value));
       ItemIndex := 0;
       invalidate;
     end
@@ -435,7 +435,7 @@ begin
     else
       ColorCaption := s;
 
-    Items.AddObject(ColorCaption, TObject(AColor));
+    Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
   end;
 end;
 
@@ -514,7 +514,7 @@ begin
   begin
     Clear;
     if cbCustomColor in Style then
-      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+      Items.AddObject(rsCustomColorCaption, TObject(PtrInt(clBlack)));
     GetColorValues(@ColorProc);
     if (cbCustomColors in Style) then
       DoGetColors;
@@ -563,7 +563,7 @@ begin
     Result := Execute;
     if Result then
     begin
-      Items.Objects[0] := TObject(Color);
+      Items.Objects[0] := TObject(PtrInt(Color));
       invalidate;
     end;
     Free;
@@ -675,7 +675,7 @@ begin
     end;
     if cbCustomColor in Style then
     begin
-      Items.Objects[0] := TObject(Value);
+      Items.Objects[0] := TObject(PtrInt(Value));
       ItemIndex := 0;
       invalidate;
     end
@@ -727,7 +727,7 @@ begin
     else
       ColorCaption := s;
 
-    Items.AddObject(ColorCaption, TObject(AColor));
+    Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
   end;
 end;
 
@@ -805,7 +805,7 @@ begin
   begin
     Clear;
     if cbCustomColor in Style then
-      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+      Items.AddObject(rsCustomColorCaption, TObject(PtrInt(clBlack)));
     GetColorValues(@ColorProc);
     if (cbCustomColors in Style) then
       DoGetColors;
@@ -857,7 +857,7 @@ begin
     Result := Execute;
     if Result then
     begin
-      Items.Objects[0] := TObject(Color);
+      Items.Objects[0] := TObject(PtrInt(Color));
       invalidate;
     end;
     Free;
