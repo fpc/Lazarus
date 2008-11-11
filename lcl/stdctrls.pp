@@ -651,6 +651,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
+    property ParentColor;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
