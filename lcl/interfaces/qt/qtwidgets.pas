@@ -863,6 +863,7 @@ type
     FItemDoubleClickedHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
+    FDontPassSelChange: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -6533,6 +6534,7 @@ end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
+  FDontPassSelChange := False;
   Result := QListWidget_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -6645,6 +6647,12 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalSelectionChange');
   {$endif}
+
+  if FDontPassSelChange then
+  begin
+    FDontPassSelChange := False;
+    Exit;
+  end;
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
@@ -6777,7 +6785,12 @@ procedure TQtListWidget.setCurrentRow(row: Integer);
 begin
   if (getSelectionMode <> QAbstractItemViewSingleSelection) and (row < 0) then
     row := 0;
-  QListWidget_setCurrentRow(QListWidgetH(Widget), row);
+
+  if QListWidget_currentRow(QListWidgetH(Widget)) <> row then
+  begin
+    FDontPassSelChange := True;
+    QListWidget_setCurrentRow(QListWidgetH(Widget), row);
+  end;
 end;
 
 procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
