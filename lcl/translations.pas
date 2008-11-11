@@ -148,7 +148,6 @@ function UTF8ToSystemCharSet(const s: string): string; inline;
 
 function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
 
-
 implementation
 
 function UTF8ToSystemCharSet(const s: string): string; inline;
@@ -229,11 +228,57 @@ var
   BasePoFile, POFile: TPoFile;
   i: Integer;
   E: EPOFileError;
+
+  procedure UpdatePoFilesTranslation;
+  var
+    j: Integer;
+    Lines: TStringList;
+  begin
+    // Update translated PO files
+    Lines := FindAllTranslatedPoFiles(POFilename);
+    try
+      for j:=0 to Lines.Count-1 do begin
+        POFile := TPOFile.Create(Lines[j], true);
+        try
+          POFile.Tag:=1;
+          POFile.UpdateTranslation(BasePOFile);
+          try
+            POFile.SaveToFile(Lines[j]);
+          except
+            on Ex: Exception do begin
+              E := EPOFileError.Create(Ex.Message);
+              E.ResFileName:=Lines[j];
+              E.POFileName:=POFileName;
+              raise E;
+            end;
+          end;
+        finally
+          POFile.Free;
+        end;
+      end;
+    finally
+      Lines.Free;
+    end;
+  end;
+
 begin
   Result := false;
-  
-  if (Files=nil) or (Files.Count=0) then
+
+  if (Files=nil) or (Files.Count=0) then begin
+
+    if FileExistsUTF8(POFilename) then begin
+      // just update translated po files
+      BasePOFile := TPOFile.Create(POFilename, true);
+      try
+        UpdatePoFilesTranslation;
+      finally
+        BasePOFile.Free;
+      end;
+    end;
+
     exit;
+
+  end;
 
   InputLines := TStringList.Create;
   try
@@ -272,29 +317,8 @@ begin
     BasePOFile.SaveToFile(POFilename);
     Result := BasePOFile.Modified;
 
-    // Update translated PO files
-    InputLines.Free;
-    InputLines := FindAllTranslatedPoFiles(POFilename);
-    for i:=0 to InputLines.Count-1 do begin
-      POFile := TPOFile.Create(InputLines[i], true);
-      try
-        POFile.Tag:=1;
-        POFile.UpdateTranslation(BasePOFile);
-        try
-          POFile.SaveToFile(InputLines[i]);
-        except
-          on Ex: Exception do begin
-            E := EPOFileError.Create(Ex.Message);
-            E.ResFileName:=InputLines[i];
-            E.POFileName:=POFileName;
-            raise E;
-          end;
-        end;
-      finally
-        POFile.Free;
-      end;
-    end;
-    
+    UpdatePOFilesTranslation;
+
   finally
     InputLines.Free;
     BasePOFile.Free;
