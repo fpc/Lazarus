@@ -336,6 +336,9 @@ resourceString
   SParLocInfo                   = ' (at %d,%d, stream offset %.8x)';
   SParUnterminatedBinValue      = 'Unterminated byte value';
 
+  // colorbox
+  rsCustomColorCaption = 'Custom ...';
+
 implementation
 
 end.

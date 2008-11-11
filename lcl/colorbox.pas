@@ -27,164 +27,207 @@ interface
 
 uses
   LResources, SysUtils, LCLProc, LCLType, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+  Dialogs, StdCtrls, LCLStrConsts;
 
 type
-  TColorPalette = (cpDefault, cpFull);
-
   { TCustomColorBox }
+
+  TCustomColorBox = class;
+  TColorBoxStyles = (cbStandardColors, // 16 standard colors (look at graphics.pp)
+                     cbExtendedColors, // 4 extended colors (look at graphics.pp)
+                     cbSystemColors,   // system colors (look at graphics.pp)
+                     cbIncludeNone,    // include clNone
+                     cbIncludeDefault, // include clDefault
+                     cbCustomColor,    // first color is customizable
+                     cbPrettyNames,    // use good looking color names - like Red for clRed
+                     cbCustomColors);  // call OnGetColors after all other colors processing
+  TColorBoxStyle = set of TColorBoxStyles;
+  TGetColorsEvent = procedure(Sender: TCustomColorBox; Items: TStrings) of object;
 
   TCustomColorBox = class(TCustomComboBox)
   private
-    FPalette: TColorPalette;
+    FDefaultColorColor: TColor;
+    FNoneColorColor: TColor;
+    FOnGetColors: TGetColorsEvent;
+    FStyle: TColorBoxStyle;
+    FSelected: TColor;
     function GetColor(Index : Integer): TColor;
+    function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
+    procedure SetDefaultColorColor(const AValue: TColor);
+    procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
-    procedure SetPalette(Value: TColorPalette);
+    procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
+    procedure ColorProc(const s: AnsiString);
   protected
-    procedure SetStyle(Value: TComboBoxStyle); override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure SetColorList;
+    procedure Loaded; override;
+    procedure InitializeWnd; override;
+    procedure DoGetColors; dynamic;
+    procedure Select; override;
+    function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure SetColorList;
 
-    property Colors[Index : Integer] : TColor Read GetColor;
-    property Palette: TColorPalette read FPalette write SetPalette;
-    property Selected: TColor read GetSelected write SetSelected;
+    property Style: TColorBoxStyle read FStyle write SetStyle
+      default [cbStandardColors, cbExtendedColors, cbSystemColors];
+    property Colors[Index: Integer]: TColor read GetColor;
+    property ColorNames[Index: Integer]: string read GetColorName;
+    property Selected: TColor read GetSelected write SetSelected default clBlack;
+    property DefaultColorColor: TColor read FDefaultColorColor write SetDefaultColorColor default clBlack;
+    property NoneColorColor: TColor read FNoneColorColor write SetNoneColorColor default clBlack;
+    property OnGetColors: TGetColorsEvent read FOnGetColors write FOnGetColors;
   end;
 
   { TColorBox }
 
   TColorBox = class(TCustomColorBox)
   published
+    property DefaultColorColor;
+    property NoneColorColor;
+    property Selected;
+    property Style;
+    property OnGetColors;
+
     property Align;
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoComplete;
     property AutoCompleteText;
     property AutoDropDown;
+    property AutoSelect;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Color;
     property Ctl3D;
-    property DragMode;
+    property Constraints;
     property DragCursor;
+    property DragMode;
     property DropDownCount;
     property Enabled;
     property Font;
     property ItemHeight;
-    property ItemIndex;
-    property Items;
     property ItemWidth;
-    property MaxLength;
-    property Palette;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property Selected;
-    property ShowHint;
-    property Sorted;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
     property OnCloseUp;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnDrawItem;
+    property OnEndDrag;
     property OnDropDown;
     property OnEditingDone;
-    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnMeasureItem;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
     property OnSelect;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
   end;
 
   { TCustomColorListBox }
 
+  TCustomColorListBox = class;
+  TLBGetColorsEvent = procedure(Sender: TCustomColorListBox; Items: TStrings) of object;
+
   TCustomColorListBox = class(TCustomListBox)
   private
-    FPalette: TColorPalette;
+    FDefaultColorColor: TColor;
+    FNoneColorColor: TColor;
+    FOnGetColors: TLBGetColorsEvent;
+    FSelected: TColor;
+    FStyle: TColorBoxStyle;
     function GetColor(Index : Integer): TColor;
+    function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
+    procedure SetDefaultColorColor(const AValue: TColor);
+    procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
-    procedure SetPalette(Value: TColorPalette);
+    procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
+    procedure ColorProc(const s: AnsiString);
   protected
-    procedure SetStyle(Value: TListBoxStyle); override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure SetColorList;
+    procedure Loaded; override;
+    procedure InitializeWnd; override;
+    procedure DoGetColors; dynamic;
+    procedure DoSelectionChange(User: Boolean); override;
+    function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure SetColorList;
 
-    property Colors[Index : Integer] : TColor Read GetColor;
-    property Selected: TColor read GetSelected write SetSelected;
-    property Palette: TColorPalette read FPalette write SetPalette;
+    property Style: TColorBoxStyle read FStyle write SetStyle
+      default [cbStandardColors, cbExtendedColors, cbSystemColors];
+    property Colors[Index: Integer]: TColor read GetColor;
+    property ColorNames[Index: Integer]: string read GetColorName;
+    property Selected: TColor read GetSelected write SetSelected default clBlack;
+    property DefaultColorColor: TColor read FDefaultColorColor write SetDefaultColorColor default clBlack;
+    property NoneColorColor: TColor read FNoneColorColor write SetNoneColorColor default clBlack;
+    property OnGetColors: TLBGetColorsEvent read FOnGetColors write FOnGetColors;
   end;
 
   { TColorListBox }
 
   TColorListBox = class(TCustomColorListBox)
   published
+    property DefaultColorColor;
+    property NoneColorColor;
+    property Selected;
+    property Style;
+    property OnGetColors;
+
     property Align;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property ClickOnSelChange;
     property Color;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
-    property Enabled;
     property ExtendedSelect;
+    property Enabled;
     property Font;
     property IntegralHeight;
     property ItemHeight;
-    property Items;
-    property MultiSelect;
-    property Palette;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property Sorted;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnDrawItem;
-    property OnEndDrag;
     property OnEnter;
+    property OnEndDrag;
     property OnExit;
-    property OnKeyDown;
     property OnKeyPress;
+    property OnKeyDown;
     property OnKeyUp;
+    property OnMouseMove;
     property OnMouseDown;
+    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -193,24 +236,43 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentShowHint;
+    property ParentFont;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
   end;
 
 procedure Register;
 
 implementation
 
-// The following colors match the predefined Delphi Colors
-// as defined in Graphics.pp
-const
-  ColorDefault: array[0..20] of Integer =
-  ( clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal, clGray,
-    clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua, clLtGray,
-    clDkGray, clWhite, clCream, clNone, clDefault);
-
 {------------------------------------------------------------------------------}
 procedure Register;
 begin
   RegisterComponents('Additional', [TColorBox, TColorListBox]);
+end;
+
+function GetPrettyColorName(ColorName: String): String;
+
+  function FindInMap(ColorName: String; out NewColorName: String): Boolean;
+  begin
+    Result := False;
+  end;
+
+begin
+  // check in color map
+  if not FindInMap(ColorName, Result) then
+  begin
+    Result := ColorName;
+    if Copy(Result, 1, 2) = 'cl' then
+      Delete(Result, 1, 2);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -225,12 +287,15 @@ end;
 constructor TCustomColorBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  inherited Style := csOwnerDrawFixed;
+  inherited ReadOnly := True;
 
-  FPalette := cpDefault;
+  FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
+  FNoneColorColor := clBlack;
+  FDefaultColorColor := clBlack;
+  FSelected := clBlack;
 
   SetColorList;
-
-  Style := csOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
   Method:   TCustomColorBox.GetSelected
@@ -242,9 +307,33 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomColorBox.GetSelected: TColor;
 begin
-  Result := 0;
-  if ItemIndex >= 0 then
-    Result := StringToColor(Items[ItemIndex]);
+  if HandleAllocated then
+  begin
+    if ItemIndex <> -1 then
+      Result := Colors[ItemIndex]
+    else
+      Result := FSelected;
+  end
+  else
+    Result := FSelected;
+end;
+
+procedure TCustomColorBox.SetDefaultColorColor(const AValue: TColor);
+begin
+  if FDefaultColorColor <> AValue then
+  begin
+    FDefaultColorColor := AValue;
+    invalidate;
+  end;
+end;
+
+procedure TCustomColorBox.SetNoneColorColor(const AValue: TColor);
+begin
+  if FNoneColorColor <> AValue then
+  begin
+    FNoneColorColor := AValue;
+    invalidate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -258,8 +347,12 @@ end;
 
 function TCustomColorBox.GetColor(Index : Integer): TColor;
 begin
-  if not IdentToColor(Items[Index], Result) then
-    Result := clNone;
+  Result := PtrInt(Items.Objects[Index])
+end;
+
+function TCustomColorBox.GetColorName(Index: Integer): string;
+begin
+  Result := Items[Index];
 end;
 
 {------------------------------------------------------------------------------
@@ -274,47 +367,78 @@ end;
 procedure TCustomColorBox.SetSelected(Value: TColor);
 var
   c: integer;
-  selColor: TColor;
 begin
-  ItemIndex := -1;
-  for c := 0 to Pred(Items.Count) do
+  if HandleAllocated then
   begin
-    selColor := StringToColor(Items[c]);
-    if selColor = Value then
-      ItemIndex := c;
-  end;
+    FSelected := Value;
+    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
+    begin
+      if Colors[c] = Value then
+      begin
+        ItemIndex := c;
+        Exit;
+      end;
+    end;
+    if cbCustomColor in Style then
+    begin
+      Items.Objects[0] := TObject(Value);
+      ItemIndex := 0;
+      invalidate;
+    end
+    else
+      ItemIndex := -1;
+  end
+  else
+    FSelected := Value;
 end;
 
-{------------------------------------------------------------------------------
-  Method:   TCustomColorBox.SetPalette
-  Params:   Value
-  Returns:  Nothing
-
-  Use SetPalette to determine wether to reset the colorlist in the ColorBox
-  based on the type of palette.
-
- ------------------------------------------------------------------------------}
-procedure TCustomColorBox.SetPalette(Value: TColorPalette);
+procedure TCustomColorBox.SetStyle(const AValue: TColorBoxStyle);
 begin
-  if Value <> FPalette then
+  if FStyle <> AValue then
   begin
-    FPalette := Value;
+    FStyle := AValue;
     SetColorList;
   end;
 end;
-{------------------------------------------------------------------------------
-  Method:   TCustomColorBox.SetStyle
-  Params:   Value
-  Returns:  Nothing
 
-  Use SetStyle to prevent the style to be changed to anything else than
-  csOwnerDrawFixed.
-
- ------------------------------------------------------------------------------}
-procedure TCustomColorBox.SetStyle(Value: TComboBoxStyle);
+procedure TCustomColorBox.ColorProc(const s: AnsiString);
+var
+  AColor: TColor;
+  Index: Integer;
+  ColorCaption: String;
 begin
-  inherited SetStyle(csOwnerDrawFixed);
+  if IdentToColor(s, AColor) then
+  begin
+    if AColor = clWhite then
+      AColor := AColor;
+    // check clDefault
+    if not (cbIncludeDefault in Style) and (AColor = clDefault) then
+      Exit;
+    // check clNone
+    if not (cbIncludeNone in Style) and (AColor = clNone) then
+      Exit;
+    // check System colors
+    if not (cbSystemColors in Style) and ((AColor and SYS_COLOR_BASE) <> 0) then
+      Exit;
+    // check Standard, Extended colors
+    if ([cbStandardColors, cbExtendedColors] * Style <> [cbStandardColors, cbExtendedColors]) and
+        ColorIndex(AColor, Index) then
+    begin
+      if not (cbStandardColors in Style) and (Index < StandardColorsCount) then
+        Exit;
+      if not (cbExtendedColors in Style) and (Index < StandardColorsCount + ExtendedColorCount) then
+        Exit;
+    end;
+
+    if cbPrettyNames in Style then
+      ColorCaption := GetPrettyColorName(s)
+    else
+      ColorCaption := s;
+
+    Items.AddObject(ColorCaption, TObject(AColor));
+  end;
 end;
+
 {------------------------------------------------------------------------------
   Method:   TCustomColorBox.DrawItem
   Params:   Index, Rect, State
@@ -329,24 +453,33 @@ end;
 procedure TCustomColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
-  BrushColor: TColor;
-  PenColor: TColor;
+  BrushColor, PenColor, NewColor: TColor;
 begin
-  if Index<0 then
-    exit;
+  if Index = -1 then
+    Exit;
+
   r.top := Rect.top + 3;
   r.bottom := Rect.bottom - 3;
   r.left := Rect.left + 3;
   r.right := r.left + 14;
-  Exclude(State,odPainted);
-  with Canvas do begin
+  Exclude(State, odPainted);
+
+  with Canvas do
+  begin
     FillRect(Rect);
 
     BrushColor := Brush.Color;
     PenColor := Pen.Color;
 
-    Brush.Color := StringToColor(Items[Index]);
-      
+    NewColor := Self.Colors[Index];
+
+    if NewColor = clNone then
+      NewColor := NoneColorColor
+    else
+    if NewColor = clDefault then
+      NewColor := DefaultColorColor;
+
+    Brush.Color := NewColor;
     Pen.Color := clBlack;
 
     Rectangle(r);
@@ -357,7 +490,6 @@ begin
   r := Rect;
   r.left := r.left + 20;
   
-  //DebugLn('TCustomColorBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
@@ -371,33 +503,72 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomColorBox.SetColorList;
 var
-  c: Longint;
-  s: AnsiString;
-  m: TIdentMapEntry;
+  OldSelected: Integer;
 begin
+  // we need to wait while we finish loading since we depend on style and OnGetColors event
+  if (csLoading in ComponentState) then
+    Exit;
+
+  OldSelected := FSelected;
   with Items do
   begin
     Clear;
+    if cbCustomColor in Style then
+      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+    GetColorValues(@ColorProc);
+    if (cbCustomColors in Style) then
+      DoGetColors;
+  end;
+  Selected := OldSelected;
+end;
 
-    //add palettes as desired
-    case Palette of
-      cpFull :
-        begin
-          c := 0;
-          while IdentEntry(c, m) do
-          begin
-            Add(m.Name);
-            Inc(c);
-          end;
-        end;
-      else
-      begin
-        for c := 0 to High(ColorDefault) do
-          if ColorToIdent(ColorDefault[c], s) then Add(s);
-      end;
+procedure TCustomColorBox.Loaded;
+begin
+  inherited Loaded;
+  SetColorList;
+end;
+
+procedure TCustomColorBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  Selected := FSelected;
+end;
+
+procedure TCustomColorBox.DoGetColors;
+begin
+  if Assigned(OnGetColors) then
+    OnGetColors(Self, Items)
+end;
+
+procedure TCustomColorBox.Select;
+begin
+  if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
+    PickCustomColor;
+  FSelected := Colors[ItemIndex];
+  inherited Select;
+end;
+
+function TCustomColorBox.PickCustomColor: Boolean;
+begin
+  if csDesigning in ComponentState then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  with TColorDialog.Create(Self) do
+  begin
+    Color := Colors[0];
+    Result := Execute;
+    if Result then
+    begin
+      Items.Objects[0] := TObject(Color);
+      invalidate;
     end;
+    Free;
   end;
 end;
+
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.Create
@@ -411,12 +582,14 @@ end;
 constructor TCustomColorListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  inherited Style := lbOwnerDrawFixed;
 
-  FPalette := cpDefault;
+  FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
+  FNoneColorColor := clBlack;
+  FDefaultColorColor := clBlack;
+  FSelected := clBlack;
 
   SetColorList;
-
-  Style := lbOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.GetSelected
@@ -428,10 +601,33 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomColorListBox.GetSelected: TColor;
 begin
-  Result := 0;
-  if ItemIndex >= 0 then
-    if not IdentToColor(Items[ItemIndex], LongInt(Result)) then
-      Result := 0;
+  if HandleAllocated then
+  begin
+    if ItemIndex <> -1 then
+      Result := Colors[ItemIndex]
+    else
+      Result := FSelected
+  end
+  else
+    Result := FSelected;
+end;
+
+procedure TCustomColorListBox.SetDefaultColorColor(const AValue: TColor);
+begin
+  if FDefaultColorColor <> AValue then
+  begin
+    FDefaultColorColor := AValue;
+    invalidate;
+  end;
+end;
+
+procedure TCustomColorListBox.SetNoneColorColor(const AValue: TColor);
+begin
+  if FNoneColorColor <> AValue then
+  begin
+    FNoneColorColor := AValue;
+    invalidate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -444,8 +640,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomColorListBox.GetColor(Index : Integer): TColor;
 begin
-  if not IdentToColor(Items[Index],Result) then
-    Result:=clNone;
+  Result := PtrInt(Items.Objects[Index]);
+end;
+
+function TCustomColorListBox.GetColorName(Index: Integer): string;
+begin
+  Result := Items[Index];
 end;
 
 {------------------------------------------------------------------------------
@@ -460,45 +660,78 @@ end;
 procedure TCustomColorListBox.SetSelected(Value: TColor);
 var
   c: integer;
-  i: Longint;
 begin
-  ItemIndex := -1;
-
-  for c := 0 to Pred(Items.Count) do
-    if IdentToColor(Items[c], i) then
-      if i = Value then
-        ItemIndex := c;
-end;
-{------------------------------------------------------------------------------
-  Method:   TCustomColorListBox.SetPalette
-  Params:   Value
-  Returns:  Nothing
-
-  Use SetPalette to determine wether to reset the colorlist in the ColorListBox
-  based on the type of palette.
-
- ------------------------------------------------------------------------------}
-procedure TCustomColorListBox.SetPalette(Value: TColorPalette);
-begin
-  if Value <> FPalette then
+  if HandleAllocated then
   begin
-    FPalette := Value;
+    FSelected := Value;
+    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
+    begin
+      if Colors[c] = Value then
+      begin
+        ItemIndex := c;
+        Exit;
+      end;
+    end;
+    if cbCustomColor in Style then
+    begin
+      Items.Objects[0] := TObject(Value);
+      ItemIndex := 0;
+      invalidate;
+    end
+    else
+      ItemIndex := -1;
+  end
+  else
+    FSelected := Value;
+end;
+
+procedure TCustomColorListBox.SetStyle(const AValue: TColorBoxStyle);
+begin
+  if FStyle <> AValue then
+  begin
+    FStyle := AValue;
     SetColorList;
   end;
 end;
-{------------------------------------------------------------------------------
-  Method:   TCustomColorListBox.SetStyle
-  Params:   Value
-  Returns:  Nothing
 
-  Use SetStyle to prevent the style to be changed to anything else than
-  lbOwnerDrawFixed.
-
- ------------------------------------------------------------------------------}
-procedure TCustomColorListBox.SetStyle(Value: TListBoxStyle);
+procedure TCustomColorListBox.ColorProc(const s: AnsiString);
+var
+  AColor: TColor;
+  Index: Integer;
+  ColorCaption: String;
 begin
-  inherited SetStyle(lbOwnerDrawFixed);
+  if IdentToColor(s, AColor) then
+  begin
+    if AColor = clWhite then
+      AColor := AColor;
+    // check clDefault
+    if not (cbIncludeDefault in Style) and (AColor = clDefault) then
+      Exit;
+    // check clNone
+    if not (cbIncludeNone in Style) and (AColor = clNone) then
+      Exit;
+    // check System colors
+    if not (cbSystemColors in Style) and ((AColor and SYS_COLOR_BASE) <> 0) then
+      Exit;
+    // check Standard, Extended colors
+    if ([cbStandardColors, cbExtendedColors] * Style <> [cbStandardColors, cbExtendedColors]) and
+        ColorIndex(AColor, Index) then
+    begin
+      if not (cbStandardColors in Style) and (Index < StandardColorsCount) then
+        Exit;
+      if not (cbExtendedColors in Style) and (Index < StandardColorsCount + ExtendedColorCount) then
+        Exit;
+    end;
+
+    if cbPrettyNames in Style then
+      ColorCaption := GetPrettyColorName(s)
+    else
+      ColorCaption := s;
+
+    Items.AddObject(ColorCaption, TObject(AColor));
+  end;
 end;
+
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.DrawItem
   Params:   Index, Rect, State
@@ -513,26 +746,32 @@ end;
 procedure TCustomColorListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
-  ItemColor: TColor;
-  BrushColor: TColor;
-  PenColor: TColor;
+  BrushColor, PenColor, NewColor: TColor;
 begin
-  if Index<0 then
-    exit;
+  if Index < 0 then
+    Exit;
+
   r.top := Rect.top + 3;
   r.bottom := Rect.bottom - 3;
   r.left := Rect.left + 3;
   r.right := r.left + 14;
   Exclude(State,odPainted);
-  with Canvas do begin
+  with Canvas do
+  begin
     FillRect(Rect);
 
     BrushColor := Brush.Color;
     PenColor := Pen.Color;
 
-    if IdentToColor(Items[Index], LongInt(ItemColor)) then
-      Brush.Color := ItemColor;
-      
+    NewColor := Self.Colors[Index];
+
+    if NewColor = clNone then
+      NewColor := NoneColorColor
+    else
+    if NewColor = clDefault then
+      NewColor := DefaultColorColor;
+
+    Brush.Color := NewColor;
     Pen.Color := clBlack;
 
     Rectangle(r);
@@ -543,7 +782,6 @@ begin
   r := Rect;
   r.left := r.left + 20;
   
-  //DebugLn('TCustomColorListBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
@@ -557,32 +795,71 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomColorListBox.SetColorList;
 var
-  c: Longint;
-  s: AnsiString;
-  m: TIdentMapEntry;
+  OldSelected: Integer;
 begin
+  // we need to wait while we finish loading since we depend on style and OnGetColors event
+  if (csLoading in ComponentState) then
+    Exit;
+
+  OldSelected := FSelected;
   with Items do
   begin
     Clear;
+    if cbCustomColor in Style then
+      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+    GetColorValues(@ColorProc);
+    if (cbCustomColors in Style) then
+      DoGetColors;
+  end;
+  Selected := OldSelected;
+end;
 
-    //add palettes as desired
-    case Palette of
-      cpFull :
-        begin
-          c := 0;
-          while IdentEntry(c, m) do
-          begin
-            Add(m.Name);
-            Inc(c);
-          end;
-        end;
-      else
-      begin
-        for c := 0 to High(ColorDefault) do
-          if ColorToIdent(ColorDefault[c], s) then Add(s);
-      end;
+procedure TCustomColorListBox.Loaded;
+begin
+  inherited Loaded;
+  SetColorList;
+end;
+
+procedure TCustomColorListBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  Selected := FSelected;
+end;
+
+procedure TCustomColorListBox.DoGetColors;
+begin
+  if Assigned(OnGetColors) then
+    OnGetColors(Self, Items)
+end;
+
+procedure TCustomColorListBox.DoSelectionChange(User: Boolean);
+begin
+  if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
+    PickCustomColor;
+  FSelected := Colors[ItemIndex];
+  inherited DoSelectionChange(User);
+end;
+
+function TCustomColorListBox.PickCustomColor: Boolean;
+begin
+  if csDesigning in ComponentState then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  with TColorDialog.Create(Self) do
+  begin
+    Color := Colors[0];
+    Result := Execute;
+    if Result then
+    begin
+      Items.Objects[0] := TObject(Color);
+      invalidate;
     end;
+    Free;
   end;
 end;
+
 {------------------------------------------------------------------------------}
 end.
