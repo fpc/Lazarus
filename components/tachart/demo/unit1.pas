@@ -6,56 +6,55 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  TAGraph, TASeries, Buttons, StdCtrls, TAEngine;
+  TAGraph, TASeries, Buttons, StdCtrls;
 
 type
-
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
-    Button10: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button5: TButton;
-    Button7: TButton;
-    Button8: TButton;
-    Button9: TButton;
+    btnClearArea: TButton;
+    btnClearBar: TButton;
+    btnClearLine: TButton;
+    btnClearPie: TButton;
+    btnAddBar: TButton;
+    btnAddPie: TButton;
+    btnAddLine: TButton;
+    btnAddArea: TButton;
     Chart1: TChart;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
-    CheckBox3: TCheckBox;
-    CheckBox4: TCheckBox;
-    CheckBox5: TCheckBox;
-    Legend: TCheckBox;
+    cbBottomAxis: TCheckBox;
+    cbLeftAxis: TCheckBox;
+    cbTitle: TCheckBox;
+    cbFooter: TCheckBox;
+    cbInverted: TCheckBox;
+    cbLegend: TCheckBox;
+    lblAdd: TLabel;
+    lblAdd1: TLabel;
     Panel1: TPanel;
-    procedure CheckBox5Change(Sender: TObject);
-    procedure Panel1Click(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
-    procedure Button10Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure CheckBox1Change(Sender: TObject);
-    procedure CheckBox2Change(Sender: TObject);
-    procedure CheckBox3Change(Sender: TObject);
-    procedure CheckBox4Change(Sender: TObject);
-    procedure LegendChange(Sender: TObject);
-
+    procedure btnClearAreaClick(Sender: TObject);
+    procedure btnClearBarClick(Sender: TObject);
+    procedure btnClearLineClick(Sender: TObject);
+    procedure btnClearPieClick(Sender: TObject);
+    procedure cbInvertedChange(Sender: TObject);
+    procedure btnAddAreaClick(Sender: TObject);
+    procedure btnAddBarClick(Sender: TObject);
+    procedure btnAddLineClick(Sender: TObject);
+    procedure btnAddPieClick(Sender: TObject);
+    procedure cbBottomAxisChange(Sender: TObject);
+    procedure cbLeftAxisChange(Sender: TObject);
+    procedure cbTitleChange(Sender: TObject);
+    procedure cbFooterChange(Sender: TObject);
+    procedure cbLegendChange(Sender: TObject);
   private
-    s: TBarSeries;
-    d: TSerie;
-    p: TPieSeries;
-    a: TAreaSeries;
-    x,y,x1,y1, x3,y3: double;
-
-    { private declarations }
-  public
-    { public declarations }
-  end; 
+    FArea: TAreaSeries;
+    FBar: TBarSeries;
+    FLine: TSerie;
+    FPie: TPieSeries;
+    x, y, x1, y1, x3, y3: Double;
+    procedure InitBar;
+    procedure InitLine;
+    procedure InitPie;
+    procedure InitArea;
+  end;
 
 var
   Form1: TForm1; 
@@ -64,123 +63,135 @@ implementation
 
 { TForm1 }
 
-
-procedure TForm1.Panel1Click(Sender: TObject);
+procedure TForm1.btnAddAreaClick(Sender: TObject);
 begin
+  if FArea = nil then InitArea;
 
+  X3 := X3 + 1;
+  if random(2) >= 0.7 then Y3 := Y3 + random(5)
+  else if random(2) >= 0.7 then Y3 := 0
+  else Y3 := Y3 - random(5);
+  FArea.AddXY(x3, y3, '', clTAColor);
 end;
 
-procedure TForm1.CheckBox5Change(Sender: TObject);
+procedure TForm1.btnAddBarClick(Sender: TObject);
 begin
-  Chart1.BottomAxis.Inverted := CheckBox5.Checked;
-  Chart1.LeftAxis.Inverted := CheckBox5.Checked;
+  if FBar = nil then InitBar;
+
+  FBar.AddXY(x, y, '', clRed);
+  X := X + 1;
+  if random(2) >= 0.7 then Y := Y + random(5)
+  else if random(2) >= 0.7 then Y := 0
+  else Y := Y - random(5);
 end;
 
-procedure TForm1.Button9Click(Sender: TObject);
+procedure TForm1.btnAddLineClick(Sender: TObject);
 begin
-      s := TBarSeries.Create(Chart1);
-      Chart1.AddSerie(s);
-      s.title := 'barras';
-      s.SeriesColor := clRed;
+  if FLine = nil then InitLine;
 
-end;
-
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-      p := TPieSeries.Create(Chart1);
-      Chart1.AddSerie(p);
-      p.title := 'pie';
-      p.SeriesColor := clRed;
-      p.MarksStyle := taengine.smsLabelPercent;
-
-end;
-
-procedure TForm1.Button3Click(Sender: TObject);
-begin
-     d:= TSerie.Create(Chart1);
-     d.ShowLines := true;
-     d.ShowPoints := true;
-     d.Pointer.Style := psRectangle;
-     d.title := 'line';
-     d.SeriesColor := clRed;
-     Chart1.AddSerie(d);
-
-end;
-
-procedure TForm1.Button2Click(Sender: TObject);
-begin
-     a := TAreaSeries.Create(Chart1);
-     Chart1.AddSerie(a);
-     a.SeriesColor := clred;
-     a.Stairs := true;
-     a.InvertedStairs := false;
-end;
-
-procedure TForm1.Button8Click(Sender: TObject);
-begin
-    X3 := X3 +1;
-    if (random(2) >= 0.7) then Y3 := Y3 + random(5)
-    else if (random(2) >= 0.7) then
-         Y3 := 0
-    else Y3 := Y3 - random(5);
-
-    a.AddXY(x3, y3, '', clTAColor);
-end;
-
-procedure TForm1.Button10Click(Sender: TObject);
-begin
-     s.AddXY(x,y, '', clred);
-
-     X := X +1;
-     if (random(2) >= 0.7) then Y := Y + random(5)
-     else if (random(2) >= 0.7) then
-          Y := 0
-     else Y := Y - random(5);
-
-end;
-
-procedure TForm1.Button7Click(Sender: TObject);
-begin
-  d.AddXY(x1,y1, '', clgreen);
-
-  X1 := X1 +1.5;
-  if (random(2) >= 0.5) then Y1 := Y1 + random(10)
+  FLine.AddXY(x1, y1, '', clGreen);
+  X1 := X1 + 1.5;
+  if random(2) >= 0.5 then Y1 := Y1 + random(10)
   else Y1 := Y1 - random(5);
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.btnAddPieClick(Sender: TObject);
 begin
-p.AddPie(3.4234235235, 'sde21312', clTAColor);
-p.AddPie(0.2323, 'adassssssdddddd', clTAColor);
-p.AddPie(30, 'filipe romao', clTAColor);
-p.AddPie(40, '234eds sa', clTAColor);
+  if FPie = nil then InitPie;
+
+  FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
+  FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);
+  FPie.AddPie(30, 'filipe romao', clTAColor);
+  FPie.AddPie(40, '234eds sa', clTAColor);
 end;
 
-procedure TForm1.CheckBox1Change(Sender: TObject);
+procedure TForm1.btnClearAreaClick(Sender: TObject);
 begin
-          Chart1.BottomAxis.Visible := CheckBox1.Checked;
+  FreeAndNil(FArea);
 end;
 
-procedure TForm1.CheckBox2Change(Sender: TObject);
+procedure TForm1.btnClearBarClick(Sender: TObject);
 begin
-       Chart1.LeftAxis.Visible := CheckBox2.Checked;
+  FreeAndNil(FBar);
 end;
 
-procedure TForm1.CheckBox3Change(Sender: TObject);
+procedure TForm1.btnClearLineClick(Sender: TObject);
 begin
-         Chart1.Title.Visible := CheckBox3.Checked;
+  FreeAndNil(FLine);
 end;
 
-procedure TForm1.CheckBox4Change(Sender: TObject);
+procedure TForm1.btnClearPieClick(Sender: TObject);
 begin
-     Chart1.Foot.Visible := CheckBox4.Checked;
+  FreeAndNil(FPie);
 end;
 
-procedure TForm1.LegendChange(Sender: TObject);
+procedure TForm1.cbBottomAxisChange(Sender: TObject);
 begin
-chart1.Legend.Visible := Legend.Checked;
+  Chart1.BottomAxis.Visible := cbBottomAxis.Checked;
 end;
 
+procedure TForm1.cbFooterChange(Sender: TObject);
+begin
+  Chart1.Foot.Visible := cbFooter.Checked;
+end;
+
+procedure TForm1.cbInvertedChange(Sender: TObject);
+begin
+  Chart1.BottomAxis.Inverted := cbInverted.Checked;
+  Chart1.LeftAxis.Inverted := cbInverted.Checked;
+end;
+
+procedure TForm1.cbLegendChange(Sender: TObject);
+begin
+  Chart1.Legend.Visible := cbLegend.Checked;
+end;
+
+procedure TForm1.cbLeftAxisChange(Sender: TObject);
+begin
+  Chart1.LeftAxis.Visible := cbLeftAxis.Checked;
+end;
+
+procedure TForm1.cbTitleChange(Sender: TObject);
+begin
+  Chart1.Title.Visible := cbTitle.Checked;
+end;
+
+procedure TForm1.InitArea;
+begin
+  FArea := TAreaSeries.Create(Chart1);
+  Chart1.AddSerie(FArea);
+  FArea.SeriesColor := clred;
+  FArea.Stairs := true;
+  FArea.InvertedStairs := false;
+end;
+
+procedure TForm1.InitBar;
+begin
+  FBar := TBarSeries.Create(Chart1);
+  Chart1.AddSerie(FBar);
+  FBar.Title := 'bars';
+  FBar.SeriesColor := clRed;
+end;
+
+procedure TForm1.InitLine;
+begin
+  FLine := TSerie.Create(Chart1);
+  FLine.ShowLines := true;
+  FLine.ShowPoints := true;
+  FLine.Pointer.Style := psRectangle;
+  FLine.Title := 'line';
+  FLine.SeriesColor := clRed;
+  Chart1.AddSerie(FLine);
+end;
+
+procedure TForm1.InitPie;
+begin
+  FPie := TPieSeries.Create(Chart1);
+  Chart1.AddSerie(FPie);
+  FPie.Title := 'pie';
+  FPie.SeriesColor := clRed;
+  FPie.MarksStyle := smsLabelPercent;
+end;
 
 initialization
   {$I unit1.lrs}

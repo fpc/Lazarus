@@ -35,7 +35,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, TAEngine, Clipbrd;
+  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, Clipbrd;
 
 const
   MinDouble=-1.7e308;
@@ -193,7 +193,7 @@ type
     TmpBrush: TBrush;
     TmpPen: TPen;
     TmpFont: TFont;
-    FSeries:TSeriesList;                           // List of series
+    FSeries: TFPList;                           // List of series
     FMirrorX:Boolean;                           // From right to left ?
     YMarkWidth:Integer;                         // Depend on Y marks
     FXGraphMin,FYGraphMin:Double;               // Graph coordinates of limits
@@ -306,9 +306,9 @@ type
     procedure SetAutoYMin(Auto:Boolean);
     procedure SetAutoYMax(Auto:Boolean);
 
-    procedure XGraphToImage(Xin:Double;var XOut:Integer);
-    procedure YGraphToImage(Yin:Double;var YOut:Integer);
-    procedure GraphToImage(Xin,Yin:Double;var XOut,YOut:Integer);
+    procedure XGraphToImage(Xin: Double; out XOut: Integer);
+    procedure YGraphToImage(Yin: Double; out YOut: Integer);
+    procedure GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
     procedure XImageToGraph(XIn:Integer;var XOut:Double);
     procedure YImageToGraph(YIn:Integer;var YOut:Double);
     procedure ImageToGraph(XIn,YIn:Integer;var XOut,YOut:Double);
@@ -332,7 +332,7 @@ type
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
 
-    property Series: TSeriesList read FSeries write FSeries;
+    property Series: TFPList read FSeries write FSeries;
   published
     { Déclarations publiées }
     procedure StyleChanged(Sender: TObject);
@@ -899,7 +899,7 @@ begin
     XMarkOld:=-1;
     YMarkOld:=-1;
 
-    Series:=TSeriesList.Create;
+    Series := TFPList.Create;
 
     YMarkWidth:=10;
 
@@ -952,32 +952,29 @@ end;
 
 destructor TChart.Destroy;
 var
-   MySerie:TChartSeries;
-   i,c: integer;
+  i: Integer;
 begin
-     if FSeries.Count > 0 then begin
-       c := FSeries.Count - 1;
-       for i := 0 to c do  begin
-           TChartSeries(FSeries.Items[0]).Free;
-           FSeries.Delete( 0 );
-       end;
-     end;
+  for i := 0 to FSeries.Count - 1 do
+    with TChartSeries(FSeries.Items[i]) do begin
+      ParentChart := nil; // Prevent auto-update of the chart by series.
+      Free;
+    end;
 
-     FSeries.Free;
-     FGraphBrush.Free;
+  FSeries.Free;
+  FGraphBrush.Free;
 
-     TmpBrush.Destroy;
-     TmpPen.Destroy;
-     TmpFont.Destroy;
+  TmpBrush.Destroy;
+  TmpPen.Destroy;
+  TmpFont.Destroy;
 
-     FLegend.Destroy;
-     FTitle.Destroy;
-     FFoot.Destroy;
-     LeftAxis.Destroy;
-     BottomAxis.Destroy;
-     FFrame.Destroy;
+  FLegend.Destroy;
+  FTitle.Destroy;
+  FFoot.Destroy;
+  LeftAxis.Destroy;
+  BottomAxis.Destroy;
+  FFrame.Destroy;
 
-     inherited Destroy;
+  inherited Destroy;
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);
@@ -1782,20 +1779,20 @@ begin
    if FShowReticule then DrawReticule(ACanvas,XMarkOld,YMarkOld);
 end;
 
-procedure TChart.XGraphToImage(Xin:Double;var XOut:Integer);
+procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
 begin
-     XOut:=Round(ax*XIn+bx);
+  XOut := Round(ax * XIn + bx);
 end;
 
-procedure TChart.YGraphToImage(Yin:Double;var YOut:Integer);
+procedure TChart.YGraphToImage(Yin: Double; out YOut: Integer);
 begin
-     YOut:=Round(ay*YIn+by);
+  YOut := Round(ay * YIn + by);
 end;
 
-procedure TChart.GraphToImage(Xin,Yin:Double;var XOut,YOut:Integer);
+procedure TChart.GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
 begin
-     XGraphToImage(Xin,XOut);
-     YGraphToImage(Yin,YOut);
+  XGraphToImage(Xin, XOut);
+  YGraphToImage(Yin, YOut);
 end;
 
 procedure TChart.XImageToGraph(XIn:Integer;var XOut:Double);
