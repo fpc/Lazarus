@@ -217,6 +217,7 @@ type
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
+    function GetScrollbarVisible(SBStyle: Integer): Boolean; override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
 
     property TextFractional: Boolean read FTextFractional write FTextFractional;
@@ -994,6 +995,18 @@ begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetScrollInfo Result: ' + DbgS(ScrollInfo));
   {$ENDIF}
+end;
+
+function TCarbonCustomControl.GetScrollbarVisible(SBStyle: Integer): Boolean;
+begin
+  case SBStyle of
+    SB_VERT:
+      Result := FScrollPageSize.Y < (FScrollSize.Y - FScrollMin.Y);
+    SB_HORZ:
+      Result := FScrollPageSize.X < (FScrollSize.X - FScrollMin.X);
+  else
+    Result := False;
+  end;
 end;
 
 { TCarbonScrollingWinControl }

@@ -1682,7 +1682,18 @@ end;
 function TCarbonWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer
   ): boolean;
 begin
-  Result:=inherited GetScrollbarVisible(Handle, SBStyle);
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetScrollbarVisible Handle: ' + DbgS(Handle) +
+      ' SBStyle: ' + DbgS(SBStyle));
+  {$ENDIF}
+
+  if not CheckWidget(Handle, 'GetScrollbarVisible') then Exit;
+
+  TCarbonWidget(Handle).GetScrollbarVisible(SBStyle);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

@@ -104,6 +104,7 @@ type
     
     function GetNextFocus(Start: TCarbonWidget; Next: Boolean): ControlRef;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); virtual;
+    function GetScrollbarVisible(SBStyle: Integer): Boolean; virtual;
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
@@ -440,9 +441,13 @@ end;
   Updates client rect of LCL object
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.UpdateLCLClientRect;
+var
+  R: TRect;
 begin
+  //GetBounds(R);
+
   //LCLObject.InvalidateClientRectCache(False);
-  //LCLSendSizeMsg(LCLObject, LCLObject.Width, LCLObject.Height, Size_SourceIsInterface);
+  //LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
 end;
 
 {------------------------------------------------------------------------------
@@ -779,6 +784,12 @@ procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 begin
   DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
+end;
+
+function TCarbonWidget.GetScrollbarVisible(SBStyle: Integer): Boolean;
+begin
+  Result := False;
+  DebugLn(ClassName + '.GetScrollbarVisible unsupported or not implemented!');
 end;
 
 {------------------------------------------------------------------------------
