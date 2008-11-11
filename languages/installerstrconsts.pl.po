@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-Language: Polish\n"
 
-#: installerstrconsts:wiseditform
+#: installerstrconsts.wiseditform
 msgid "&Edit form"
 msgstr "&Edytuj formularz"
 
-#: installerstrconsts:wiseditsource
+#: installerstrconsts.wiseditsource
 msgid "&Edit source"
 msgstr "&Edytuj źródło"
 
-#: installerstrconsts:wisopenpackage
+#: installerstrconsts.wisopenpackage
 msgid "&Open package"
 msgstr "&Otwórz pakiet"
 
-#: installerstrconsts:wisopenproject
+#: installerstrconsts.wisopenproject
 msgid "&Open project"
 msgstr "&Otwórz projekt"
 

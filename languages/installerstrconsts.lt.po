@@ -10,19 +10,19 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: installerstrconsts:wiseditform
+#: installerstrconsts.wiseditform
 msgid "&Edit form"
 msgstr "&Keisti formą"
 
-#: installerstrconsts:wiseditsource
+#: installerstrconsts.wiseditsource
 msgid "&Edit source"
 msgstr "&Keisti išeities kodą"
 
-#: installerstrconsts:wisopenpackage
+#: installerstrconsts.wisopenpackage
 msgid "&Open package"
 msgstr "&Atverti paketą"
 
-#: installerstrconsts:wisopenproject
+#: installerstrconsts.wisopenproject
 msgid "&Open project"
 msgstr "&Atverti projektą"
 

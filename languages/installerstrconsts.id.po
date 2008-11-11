@@ -9,19 +9,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installerstrconsts:wiseditform
+#: installerstrconsts.wiseditform
 msgid "&Edit form"
 msgstr "&Edit form"
 
-#: installerstrconsts:wiseditsource
+#: installerstrconsts.wiseditsource
 msgid "&Edit source"
 msgstr "&Edit sumber"
 
-#: installerstrconsts:wisopenpackage
+#: installerstrconsts.wisopenpackage
 msgid "&Open package"
 msgstr "&Buka paket"
 
-#: installerstrconsts:wisopenproject
+#: installerstrconsts.wisopenproject
 msgid "&Open project"
 msgstr "&Buka proyek"
 
