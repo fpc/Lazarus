@@ -247,16 +247,16 @@ const
   clBlue    = TColor($FF0000);
   clFuchsia = TColor($FF00FF);
   clAqua    = TColor($FFFF00);
-  clLtGray  = TColor($C0C0C0);
-  clDkGray  = TColor($808080);
+  clLtGray  = TColor($C0C0C0); // clSilver alias
+  clDkGray  = TColor($808080); // clGray alias
   clWhite   = TColor($FFFFFF);
   StandardColorsCount = 16;
 
   // extended colors
   clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream   = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
+  clSkyBlue    = TColor($F0CAA6);
+  clCream      = TColor($F0FBFF);
+  clMedGray    = TColor($A4A0A0);
   ExtendedColorCount = 4;
 
   // special colors
@@ -2086,7 +2086,7 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..112] of TIdentMapEntry = (
+  Colors: array[0..110] of TIdentMapEntry = (
     // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -2103,8 +2103,6 @@ const
     (Value: clBlue; Name: 'clBlue'),
     (Value: clFuchsia; Name: 'clFuchsia'),
     (Value: clAqua; Name: 'clAqua'),
-    (Value: clLtGray; Name: 'clLtGray'),
-    (Value: clDkGray; Name: 'clDkGray'),
     (Value: clWhite; Name: 'clWhite'),
 
     // extended colors
