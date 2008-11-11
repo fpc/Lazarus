@@ -224,19 +224,24 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-
   { TColorDialog }
   
   TColorDialog = class(TCommonDialog)
   private
     FColor: TColor;
+    FCustomColors: TStrings;
+    procedure SetCustomColors(const AValue: TStrings);
+    procedure AddDefaultColor(const s: AnsiString);
   protected
     function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property Title;
     property Color: TColor read FColor write FColor;
+    // entry looks like ColorA = FFFF00 ... ColorX = C0C0C0
+    property CustomColors: TStrings read FCustomColors write SetCustomColors;
   end;
 
 
@@ -506,6 +511,9 @@ function SelectDirectory(const Caption, InitialDirectory: string;
   out Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
 function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
+
+function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Integer;
+  out ColorIndex: Integer; out ColorValue: TColor): Boolean;
 
 
 procedure Register;

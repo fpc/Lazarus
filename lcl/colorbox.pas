@@ -703,8 +703,6 @@ var
 begin
   if IdentToColor(s, AColor) then
   begin
-    if AColor = clWhite then
-      AColor := AColor;
     // check clDefault
     if not (cbIncludeDefault in Style) and (AColor = clDefault) then
       Exit;
