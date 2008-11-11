@@ -41,8 +41,8 @@ type
 
   TGtk2WSCommonDialog = class(TWSCommonDialog)
   private
-    class procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
-      Color: TColor);
+    class procedure SetColorDialogColor(ColorSelection: PGtkColorSelectionDialog; Color: TColor);
+    class procedure SetColorDialogPalette(ColorSelection: PGtkColorSelectionDialog; Palette: TStrings);
   protected
   public
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
@@ -1084,25 +1084,62 @@ end;
 
   Set the color of the color selection dialog
  ------------------------------------------------------------------------------}
-class procedure TGtk2WSCommonDialog.SetColorDialogColor(ColorSelection: PGtkColorSelection;
+class procedure TGtk2WSCommonDialog.SetColorDialogColor(ColorSelection: PGtkColorSelectionDialog;
   Color: TColor);
 var
   SelectionColor: TGDKColor;
-  colorSel : PGTKCOLORSELECTION;
+  colorSel: PGtkColorSelection;
 begin
-  {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Start Color=',DbgS(Color));
-  {$ENDIF}
-  Color:=ColorToRGB(Color);
-  {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted Color=',DbgS(Color));
-  {$ENDIF}
-  SelectionColor.Pixel := 0;
-  SelectionColor.Red :=  Red(Color) shl 8;
-  SelectionColor.Green:= Green(Color) shl 8;
-  SelectionColor.Blue:= Blue(Color) shl 8;
-  colorSel := PGTKCOLORSELECTION((PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
-  gtk_color_selection_set_current_color(colorSel,@SelectionColor);
+  Color := ColorToRGB(Color);
+  SelectionColor := TColortoTGDKColor(Color);
+  colorSel := PGtkColorSelection(ColorSelection^.colorsel);
+  gtk_color_selection_set_current_color(colorSel, @SelectionColor);
+  gtk_color_selection_set_previous_color(colorSel, @SelectionColor);
+end;
+
+class procedure TGtk2WSCommonDialog.SetColorDialogPalette(
+  ColorSelection: PGtkColorSelectionDialog; Palette: TStrings);
+const
+  PaletteSetting = 'gtk-color-palette';
+var
+  colorSel: PGtkColorSelection;
+  settings: PGtkSettings;
+  new_palette: Pgchar;
+  colors: PGdkColor;
+  colors_len: gint;
+
+  procedure FillCustomColors;
+  var
+    i, AIndex: integer;
+    AColor: TColor;
+  begin
+    for i := 0 to Palette.Count - 1 do
+      if ExtractColorIndexAndColor(Palette, i, AIndex, AColor) then
+        if AIndex < colors_len then
+          colors[AIndex] := TColortoTGDKColor(AColor);
+  end;
+
+begin
+  colorSel := PGtkColorSelection(ColorSelection^.colorsel);
+  // show palette
+  gtk_color_selection_set_has_palette(colorSel, True);
+
+  // replace palette. it is stored in 'gtk-color-palette' settings
+  // 1. get original palette => we will know colors and replace only part of it
+  settings := gtk_widget_get_settings(PGtkWidget(colorSel));
+  new_palette := nil;
+  g_object_get(settings, PaletteSetting, [@new_palette, nil]);
+  gtk_color_selection_palette_from_string(new_palette, colors, @colors_len);
+  g_free(new_palette);
+
+  // 2. fill original palette with our custom colors
+  FillCustomColors;
+
+  // 3. set new palette back to settings
+  new_palette := gtk_color_selection_palette_to_string(colors, colors_len);
+  g_free(colors);
+  gtk_settings_set_string_property(settings, PaletteSetting, new_palette, 'gtk_color_selection_palette_to_string');
+  g_free(new_palette);
 end;
 
 class procedure TGtk2WSCommonDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
@@ -1151,8 +1188,12 @@ begin
   GtkWindow:=PGtkWindow(ACommonDialog.Handle);
   gtk_window_set_title(GtkWindow,PChar(ACommonDialog.Title));
   if ACommonDialog is TColorDialog then
-    SetColorDialogColor(PGtkColorSelection(GtkWindow),
+  begin
+    SetColorDialogColor(PGtkColorSelectionDialog(GtkWindow),
                         TColorDialog(ACommonDialog).Color);
+    SetColorDialogPalette(PGtkColorSelectionDialog(GtkWindow),
+      TColorDialog(ACommonDialog).CustomColors);
+  end;
 
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
   GtkWindowShowModal(GtkWindow);
@@ -1184,6 +1225,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_color_selection_dialog_new(PChar(ACommonDialog.Title));
+
   Result := THandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
