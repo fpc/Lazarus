@@ -7,7 +7,7 @@ unit TAChartLazarusPkg;
 interface
 
 uses
-  TASeries, TAGraph, LazarusPackageIntf; 
+  TASeries, TAEngine, TAGraph, LazarusPackageIntf; 
 
 implementation
 

@@ -35,7 +35,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, Clipbrd;
+  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, TAEngine, Clipbrd;
 
 const
   MinDouble=-1.7e308;
@@ -193,7 +193,7 @@ type
     TmpBrush: TBrush;
     TmpPen: TPen;
     TmpFont: TFont;
-    FSeries: TFPList;                           // List of series
+    FSeries:TSeriesList;                           // List of series
     FMirrorX:Boolean;                           // From right to left ?
     YMarkWidth:Integer;                         // Depend on Y marks
     FXGraphMin,FYGraphMin:Double;               // Graph coordinates of limits
@@ -332,7 +332,7 @@ type
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
 
-    property Series: TFPList read FSeries write FSeries;
+    property Series: TSeriesList read FSeries write FSeries;
   published
     { Déclarations publiées }
     procedure StyleChanged(Sender: TObject);
@@ -899,7 +899,7 @@ begin
     XMarkOld:=-1;
     YMarkOld:=-1;
 
-    Series := TFPList.Create;
+    Series:=TSeriesList.Create;
 
     YMarkWidth:=10;
 
@@ -952,29 +952,32 @@ end;
 
 destructor TChart.Destroy;
 var
-  i: Integer;
+   MySerie:TChartSeries;
+   i,c: integer;
 begin
-  for i := 0 to FSeries.Count - 1 do
-    with TChartSeries(FSeries.Items[i]) do begin
-      ParentChart := nil; // Prevent auto-update of the chart by series.
-      Free;
-    end;
+     if FSeries.Count > 0 then begin
+       c := FSeries.Count - 1;
+       for i := 0 to c do  begin
+           TChartSeries(FSeries.Items[0]).Free;
+           FSeries.Delete( 0 );
+       end;
+     end;
 
-  FSeries.Free;
-  FGraphBrush.Free;
+     FSeries.Free;
+     FGraphBrush.Free;
 
-  TmpBrush.Destroy;
-  TmpPen.Destroy;
-  TmpFont.Destroy;
+     TmpBrush.Destroy;
+     TmpPen.Destroy;
+     TmpFont.Destroy;
 
-  FLegend.Destroy;
-  FTitle.Destroy;
-  FFoot.Destroy;
-  LeftAxis.Destroy;
-  BottomAxis.Destroy;
-  FFrame.Destroy;
+     FLegend.Destroy;
+     FTitle.Destroy;
+     FFoot.Destroy;
+     LeftAxis.Destroy;
+     BottomAxis.Destroy;
+     FFrame.Destroy;
 
-  inherited Destroy;
+     inherited Destroy;
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);

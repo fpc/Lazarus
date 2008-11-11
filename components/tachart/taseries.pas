@@ -35,29 +35,17 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, Dialogs, Graphics, sysutils, TAGraph;
+  classes, graphics, tagraph, taengine, sysutils, dialogs;
 
 const
   clTAColor = clScrollBar;
 
 type
 
-  //not completetly implemented (only TPieSeries - not all)
-  TSeriesMarksStyle = (
-    smsValue,          { 1234 }
-    smsPercent,        { 12 % }
-    smsLabel,          { Cars }
-    smsLabelPercent,   { Cars 12 % }
-    smsLabelValue,     { Cars 1234 }
-    smsLegend,         { ? }
-    smsPercentTotal,   { 12 % of 1234 }
-    smsLabelPercentTotal, { Cars 12 % of 1234 }
-    smsXValue);        { 21/6/1996 }
-
   ChartCoord = record
-    x, y: Double;
-    Color: TColor;
-    Text: String;
+    x, y: double;
+    Color: tcolor;
+    Text: string;
   end;
   PChartCoord = ^ChartCoord;
 
@@ -224,8 +212,6 @@ type
      property Active;
   end;
 
-  { TSerie }
-
   TSerie = class(TChartSeries)
   private
     FPointer: TSeriesPointer;
@@ -324,11 +310,6 @@ destructor TChartSeries.Destroy;
 var
   i: Integer;
 begin
-  if ParentChart <> nil then
-    ParentChart.Series.Remove(Self);
-  UpdateParentChart;
-  ParentChart := nil;
-
   for i := 0 to FCoordList.Count - 1 do
     Dispose(PChartCoord(FCoordList.Items[i]));
   FCoordList.Free;
@@ -567,7 +548,6 @@ end;
 
 destructor TSerie.Destroy;
 begin
-  FPointer.Free;
   inherited Destroy;
 end;
 
@@ -782,7 +762,7 @@ begin
     (yi1 >= YMin) and (yi1 <= YMax) and
     (xi1 >= XMin) and (xi1 <= XMax)
   then
-    FPointer.Draw(ACanvas, xi1, yi1, SeriesColor);
+    FPointer.draw(ACanvas, xi1, yi1, SeriesColor);
 end;
 
 

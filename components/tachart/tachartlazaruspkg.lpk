@@ -28,10 +28,14 @@
         <UnitName Value="TASeries"/>
       </Item1>
       <Item2>
+        <Filename Value="taengine.pas"/>
+        <UnitName Value="TAEngine"/>
+      </Item2>
+      <Item3>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TAGraph"/>
-      </Item2>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
