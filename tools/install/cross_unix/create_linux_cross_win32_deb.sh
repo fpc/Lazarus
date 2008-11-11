@@ -160,15 +160,14 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
     cd ${BinUtilsDir}
     for binutility in $(ls -B ${BinUtilsPrefix}*); do
       NewName=$(echo $binutility | sed -e "s#^$BinUtilsPrefix##")
+      NewFileName="fpc-${TargetCPU}-${TargetOS}-$NewName"
       if [ $NewName = "windres" ]; then
         # windres needs two names:
         # - the Makefiles expects without prefix fpc-
-        # - the compiler expects 'windres' without any prefix
-        cp ${BinUtilsDir}${binutility} ${BinDir}${TargetCPU}-${TargetOS}-$NewName
-      else
-        NewName="fpc-${TargetCPU}-${TargetOS}-$NewName"
+        # - the compiler expects 'windres' with prefix fpc-
+        ln -s /usr/bin/${NewFileName} ${BinDir}windres
       fi
-      cp ${BinUtilsDir}${binutility} ${BinDir}${NewName}
+      cp ${BinUtilsDir}${binutility} ${BinDir}${NewFileName}
     done
     cd -
   done
