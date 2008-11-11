@@ -544,7 +544,8 @@ procedure TCustomColorBox.Select;
 begin
   if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
     PickCustomColor;
-  FSelected := Colors[ItemIndex];
+  if ItemIndex <> -1 then
+    FSelected := Colors[ItemIndex];
   inherited Select;
 end;
 
@@ -836,7 +837,8 @@ procedure TCustomColorListBox.DoSelectionChange(User: Boolean);
 begin
   if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
     PickCustomColor;
-  FSelected := Colors[ItemIndex];
+  if ItemIndex <> -1 then
+    FSelected := Colors[ItemIndex];
   inherited DoSelectionChange(User);
 end;
 
