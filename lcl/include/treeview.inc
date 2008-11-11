@@ -4298,7 +4298,7 @@ var
 
 var
   x, ImgIndex: integer;
-  CurBackgroundColor, OldFontColor: TColor;
+  CurBackgroundColor: TColor;
   CurTextRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
@@ -4377,14 +4377,15 @@ begin
         CurTextRect:=NodeRect;
         CurTextRect.Left:=x;
         CurTextRect.Right:=x+TextWidth(Node.Text);
-        OldFontColor:=Font.Color;
         Font.Color:=InvertColor(Brush.Color);
         FillRect(CurTextRect);
         TextOut(x,TextY,Node.Text);
-        Font.Color:=OldFontColor;
       end
       else
+      begin
+        Font.Color := Self.Font.Color;
         TextOut(x,TextY,Node.Text);
+      end;
     end;
 
     // draw separator
