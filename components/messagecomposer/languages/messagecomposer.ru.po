@@ -9,43 +9,43 @@ msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
-#: messagecomposer:rscancel
+#: messagecomposer.rscancel
 msgid "Cancel"
 msgstr "Отмена"
 
-#: messagecomposer:skindofmessage
-msgid "KIND OF MESSAGE"
-msgstr "Тип сообщения"
-
-#: messagecomposer:smaskinput
-msgid "Mask Input"
-msgstr "Маскировать ввод"
-
-#: messagecomposer:smessagecomposercaption
-msgid "Message Composer ..."
-msgstr "Составитель сообщений ..."
-
-#: messagecomposer:snotimplementedyet
-msgid "Not Implemented Yet"
-msgstr "Еще не реализовано"
-
-#: messagecomposer:rsok
+#: messagecomposer.rsok
 msgid "Ok"
 msgstr "ОК"
 
-#: messagecomposer:ssourcewrapper
-msgid "SOURCE WRAPPER"
-msgstr "Вызывающий исходный код"
-
-#: messagecomposer:rstest
+#: messagecomposer.rstest
 msgid "Test"
 msgstr "Тест"
 
-#: messagecomposer:spromptcaption
+#: messagecomposer.skindofmessage
+msgid "KIND OF MESSAGE"
+msgstr "Тип сообщения"
+
+#: messagecomposer.smaskinput
+msgid "Mask Input"
+msgstr "Маскировать ввод"
+
+#: messagecomposer.smessagecomposercaption
+msgid "Message Composer ..."
+msgstr "Составитель сообщений ..."
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Отображаемое сообщение"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not Implemented Yet"
+msgstr "Еще не реализовано"
+
+#: messagecomposer.spromptcaption
 msgid "Text asking the user for input"
 msgstr "Текст запроса на ввод пользователем"
 
-#: messagecomposer:smsgcaption
-msgid "The message to be shown"
-msgstr "Отображаемое сообщение"
+#: messagecomposer.ssourcewrapper
+msgid "SOURCE WRAPPER"
+msgstr "Вызывающий исходный код"
 

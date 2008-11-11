@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: frmtemplatevariables:sdescription
+#: frmtemplatevariables.sdescription
 msgid "Description"
 msgstr "Opis"
 
-#: frmtemplatevariables:snoadditionalvars
+#: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
 msgstr ""
 
-#: frmtemplatevariables:svalue
+#: frmtemplatevariables.svalue
 msgid "Value"
 msgstr "Wartość"
 
-#: frmtemplatevariables:svariable
+#: frmtemplatevariables.svariable
 msgid "Variable"
 msgstr "Zmienna"
 

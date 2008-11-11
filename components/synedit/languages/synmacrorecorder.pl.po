@@ -13,19 +13,19 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: synmacrorecorder:scannotpause
+#: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
 msgstr ""
 
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr ""
-
-#: synmacrorecorder:scannotplay
+#: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
 msgstr ""
 
-#: synmacrorecorder:scannotrecord
+#: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
+msgstr ""
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
 msgstr ""
 

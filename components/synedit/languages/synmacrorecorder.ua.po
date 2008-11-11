@@ -4,19 +4,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: synmacrorecorder:scannotpause
+#: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
 msgstr "Можу лише призупинитись, коли записую"
 
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr "Можу лише продовжити, якщо зупинено"
-
-#: synmacrorecorder:scannotplay
+#: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
 msgstr "Не можу скасувати макрос, під час запису"
 
-#: synmacrorecorder:scannotrecord
+#: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
 msgstr "Не можу писати макрос, під час запису"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Можу лише продовжити, якщо зупинено"
 

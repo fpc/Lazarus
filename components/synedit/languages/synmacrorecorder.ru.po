@@ -9,19 +9,19 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
-#: synmacrorecorder:scannotpause
+#: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
 msgstr "Можно только временно приостановиться при записи"
 
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr "Можно только продолжить, если временно приостановлен"
-
-#: synmacrorecorder:scannotplay
+#: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
 msgstr "Невозможно воспроизвести макрос во время записи"
 
-#: synmacrorecorder:scannotrecord
+#: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
 msgstr "Невозможно записать макрос во время записи"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Можно только продолжить, если временно приостановлен"
 
