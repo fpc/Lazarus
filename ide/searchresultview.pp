@@ -814,7 +814,6 @@ procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
 var
   CurPart: string;
-  TheText: string;
   TheTop: integer;
   MatchObj: TObject;
   MatchPos,FirstMatchPos: TLazSearchMatchPos;
@@ -825,8 +824,6 @@ begin
   if Stage <> cdPostPaint then Exit;
   With Sender as TLazSearchResultTV do
   begin
-    ARect:=Node.DisplayRect(true);
-    Canvas.FillRect(ARect);
     MatchObj := TLazSearchMatchPos(Node.Data);
     if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
       MatchPos:= TLazSearchMatchPos(Node.Data)
@@ -835,6 +832,9 @@ begin
 
     if Assigned(MatchPos) then
     begin
+      ARect:=Node.DisplayRect(true);
+      Canvas.FillRect(ARect);
+
       FirstMatchPos:=MatchPos;
       TheTop:= ARect.Top;
       TextEnd:=ARect.Left;
