@@ -12,8 +12,9 @@ object ImageListEditorDlg: TImageListEditorDlg
   Constraints.MinWidth = 520
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object GroupBoxR: TGroupBox
     Left = 375
     Height = 313
@@ -27,9 +28,9 @@ object ImageListEditorDlg: TImageListEditorDlg
     TabOrder = 5
     object LabelTransparent: TLabel
       Left = 110
-      Height = 20
-      Top = 183
-      Width = 117
+      Height = 14
+      Top = 189
+      Width = 92
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
@@ -37,9 +38,9 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object LabelSize: TLabel
       Left = 6
-      Height = 30
+      Height = 14
       Top = 6
-      Width = 78
+      Width = 1
       ParentColor = False
     end
     object Preview: TScrollBox
@@ -85,134 +86,18 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 1
     end
     object ColorBoxTransparent: TColorBox
+      AnchorSideTop.Control = LabelTransparent
+      AnchorSideTop.Side = asrBottom
       Left = 110
       Height = 22
-      Top = 212
+      Top = 209
       Width = 96
-      Anchors = [akLeft, akBottom]
+      Selected = clFuchsia
+      Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
       Enabled = False
       ItemHeight = 16
-      ItemIndex = 13
-      Items.Strings = (
-        'clBlack'
-        'clMaroon'
-        'clGreen'
-        'clOlive'
-        'clNavy'
-        'clPurple'
-        'clTeal'
-        'clGray'
-        'clSilver'
-        'clRed'
-        'clLime'
-        'clYellow'
-        'clBlue'
-        'clFuchsia'
-        'clAqua'
-        'clLtGray'
-        'clDkGray'
-        'clWhite'
-        'clCream'
-        'clNone'
-        'clDefault'
-        'clScrollBar'
-        'clBackground'
-        'clActiveCaption'
-        'clInactiveCaption'
-        'clMenu'
-        'clWindow'
-        'clWindowFrame'
-        'clMenuText'
-        'clWindowText'
-        'clCaptionText'
-        'clActiveBorder'
-        'clInactiveBorder'
-        'clAppWorkspace'
-        'clHighlight'
-        'clHighlightText'
-        'clBtnFace'
-        'clBtnShadow'
-        'clGrayText'
-        'clBtnText'
-        'clInactiveCaptionText'
-        'clBtnHighlight'
-        'cl3DDkShadow'
-        'cl3DLight'
-        'clInfoText'
-        'clInfoBk'
-        'clHotLight'
-        'clGradientActiveCaption'
-        'clGradientInactiveCaption'
-        'clForm'
-        'clEndColors'
-        'clColorDesktop'
-        'cl3DFace'
-        'cl3DShadow'
-        'cl3DHiLight'
-        'clBtnHiLight'
-        'clForeground'
-        'clButton'
-        'clLight'
-        'clMidlight'
-        'clDark'
-        'clMid'
-        'clText'
-        'clBrightText'
-        'clButtonText'
-        'clBase'
-        'clShadow'
-        'clHighlightedText'
-        'clNormalForeground'
-        'clNormalButton'
-        'clNormalLight'
-        'clNormalMidlight'
-        'clNormalDark'
-        'clNormalMid'
-        'clNormalText'
-        'clNormalBrightText'
-        'clNormalButtonText'
-        'clNormalBase'
-        'clNormalBackground'
-        'clNormalShadow'
-        'clNormalHighlight'
-        'clNormalHighlightedText'
-        'clDisabledForeground'
-        'clDisabledButton'
-        'clDisabledLight'
-        'clDisabledMidlight'
-        'clDisabledDark'
-        'clDisabledMid'
-        'clDisabledText'
-        'clDisabledBrightText'
-        'clDisabledButtonText'
-        'clDisabledBase'
-        'clDisabledBackground'
-        'clDisabledShadow'
-        'clDisabledHighlight'
-        'clDisabledHighlightedText'
-        'clActiveForeground'
-        'clActiveButton'
-        'clActiveLight'
-        'clActiveMidlight'
-        'clActiveDark'
-        'clActiveMid'
-        'clActiveText'
-        'clActiveBrightText'
-        'clActiveButtonText'
-        'clActiveBase'
-        'clActiveBackground'
-        'clActiveShadow'
-        'clActiveHighlight'
-        'clActiveHighlightedText'
-        'clMoneyGreen'
-        'clSkyBlue'
-        'clMedGray'
-      )
-      Palette = cpFull
-      Selected = clFuchsia
-      TabOrder = 2
-      Text = 'clFuchsia'
       OnChange = ColorBoxTransparentClick
+      TabOrder = 2
     end
   end
   object BtnOK: TBitBtn

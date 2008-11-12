@@ -90,8 +90,6 @@ type
     FModified: Boolean;
     FPreviewBmp: TBitmap;
     ColorStrings: TSTrings;
-    procedure FillColorBoxTransparent;
-    procedure AddItemToColorBox(const s: string);
     procedure SavePicture(Picture: TPicture);
   public
     procedure LoadFromImageList(AImageList: TImageList);
@@ -205,8 +203,6 @@ begin
   
   OpenDialog.Title := sccsILEdtOpenDialog;
   SaveDialog.Title := sccsILEdtSaveDialog;
-  
-  FillColorBoxTransparent;
 end;
 
 procedure TImageListEditorDlg.FormDestroy(Sender: TObject);
@@ -465,20 +461,6 @@ begin
     Preview.VertScrollBar.Range := ImageList.Height;
     Preview.Invalidate;
   end;
-end;
-
-procedure TImageListEditorDlg.FillColorBoxTransparent;
-begin
-  ColorStrings:=TStringList.Create;
-  GetColorValues(@AddItemToColorBox);
-  ColorBoxTransparent.Items.Assign(ColorStrings);
-  ColorStrings.Free;
-  ColorStrings:=nil;
-end;
-
-procedure TImageListEditorDlg.AddItemToColorBox(const s: string);
-begin
-  ColorStrings.Add(s);;
 end;
 
 procedure TImageListEditorDlg.LoadFromImageList(AImageList: TImageList);
