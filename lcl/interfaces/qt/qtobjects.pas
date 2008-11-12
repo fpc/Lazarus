@@ -248,6 +248,8 @@ type
     constructor Create(CreateHandle: Boolean; Poly: QPolygonH;
       Const Fill: QtFillRule = QtWindingFill); virtual; overload;
     destructor Destroy; override;
+    function containsPoint(X,Y: Integer): Boolean;
+    function containsRect(R: TRect): Boolean;
     function GetRegionType: integer;
     function getBoundingRect: TRect;
   end;
@@ -1607,6 +1609,20 @@ begin
   QRegion_destroy(Widget);
 
   inherited Destroy;
+end;
+
+function TQtRegion.containsPoint(X, Y: Integer): Boolean;
+var
+  P: TQtPoint;
+begin
+  P.X := X;
+  P.Y := Y;
+  Result := QRegion_contains(Widget, PQtPoint(@P));
+end;
+
+function TQtRegion.containsRect(R: TRect): Boolean;
+begin
+  Result := QRegion_contains(Widget, PRect(@R));
 end;
 
 function TQtRegion.GetRegionType: integer;

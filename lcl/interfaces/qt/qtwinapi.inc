@@ -3807,6 +3807,17 @@ begin
     Result := True;
   end;
 end;
+
+function TQtWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := False;
+
+  if not IsValidGDIObject(RGN) then
+    exit;
+
+  Result := TQtRegion(RGN).containsPoint(X, Y);
+end;
+
 {------------------------------------------------------------------------------
   Function: Rectangle
   Params:  DC: HDC; X1, Y1, X2, Y2: Integer
