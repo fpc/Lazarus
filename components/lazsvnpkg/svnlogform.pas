@@ -263,15 +263,18 @@ procedure TSVNLogFrm.mnuShowDiffClick(Sender: TObject);
 var
   path: string;
   i: integer;
+  revision: integer;
 begin
   {$note implement opening file in source editor}
-  if Assigned(SVNActionsListView.Selected) then
+  if Assigned(SVNActionsListView.Selected) and Assigned(LogListView.Selected) then
   begin
     debugln('TSVNLogFrm.mnuShowDiffClick Path=' ,SVNActionsListView.Selected.SubItems[0]);
+    revision := StrToInt(LogListView.Selected.Caption);
     path := SVNActionsListView.Selected.SubItems[0];
     Delete(path, 1, 1);
     i := pos('/', path);
-    ShowSVNDiffFrm('-r PREV', RepositoryPath + Copy(path, i, length(path) - i + 1));
+    ShowSVNDiffFrm(Format('-r %d:%d', [revision - 1, revision]),
+                   RepositoryPath + Copy(path, i, length(path) - i + 1));
   end;
 end;
 
