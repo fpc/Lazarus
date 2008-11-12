@@ -822,6 +822,7 @@ var
   TextEnd, DrawnTextLength: integer;
   ARect: TRect;
 begin
+  if Stage <> cdPostPaint then Exit;
   With Sender as TLazSearchResultTV do
   begin
     ARect:=Node.DisplayRect(true);
@@ -872,12 +873,7 @@ begin
         end;
         MatchPos:=MatchPos.NextInThisLine;
       end;
-    end//if
-    else
-    begin
-      TheText:=Node.Text;
-      Canvas.TextOut(ARect.Left, ARect.Top, TheText);
-    end;//else
+    end;//if
   end;//with
 end;//TreeViewDrawItem
 
