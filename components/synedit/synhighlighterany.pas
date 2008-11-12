@@ -771,6 +771,10 @@ end;
 procedure TSynAnySyn.UnknownProc;
 begin
   inc(Run);
+  {$IFDEF SYN_LAZARUS}
+  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  {$ENDIF}
   fTokenID := tkUnKnown;
 end;
 
