@@ -296,7 +296,11 @@ begin
 end;
 
 procedure TSVNLogFrm.FormDestroy(Sender: TObject);
+var
+  i: Integer;
 begin
+  for i := 0 to LogList.Count - 1 do
+    TSVNLogItem(LogList[i]).Free;
   LogList.Free;
 end;
 
@@ -308,7 +312,6 @@ var
   BytesRead: LongInt;
   Doc: TXMLDocument;
   i: integer;
-  j: integer;
   LogItem: TSVNLogItem;
   M: TMemoryStream;
   n: LongInt;
@@ -390,28 +393,23 @@ begin
       //action
       ActionItem.CopyRev := '';
       ActionItem.CopyPath := '';
-
-      for j := 0 to SubNode.ChildNodes.Count - 1 do
+      tmpNode := SubNode.FirstChild;
+      while Assigned(tmpNode) do
       begin
-        tmpNode := SubNode.ChildNodes.Item[j];
+        NodeName := tmpNode.NodeName;
 
-        if Assigned(tmpNode) then
-        begin
-          NodeName := tmpNode.NodeName;
+        //Author
+        if NodeName = 'author' then
+          LogItem.Author := tmpNode.FirstChild.NodeValue;
 
-          //Author
-          if NodeName = 'author' then
-            LogItem.Author := tmpNode.FirstChild.NodeValue;
+        //Date
+        if NodeName = 'date' then
+          LogItem.Date := ISO8601ToDateTime(tmpNode.FirstChild.NodeValue);
 
-          //Date
-          if NodeName = 'date' then
-            LogItem.Date := ISO8601ToDateTime(tmpNode.FirstChild.NodeValue);
-
-          //message
-          if NodeName = 'msg' then
-            if Assigned(tmpNode.FirstChild) then
-              LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
-        end;
+        //message
+        if NodeName = 'msg' then
+          if Assigned(tmpNode.FirstChild) then
+            LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
 
         ActionNode := tmpNode.FirstChild;
         if Assigned(ActionNode) and Assigned(ActionNode.Attributes) then
@@ -439,6 +437,7 @@ begin
 
           ActionNode := ActionNode.NextSibling;
         until not Assigned(ActionNode);
+        tmpNode := tmpNode.NextSibling;
 
       end;
 
@@ -448,6 +447,7 @@ begin
       Node := Node.NextSibling;
     until not Assigned(Node);
   end;
+  Doc.Free;
   UpdateLogListView;
   ChangeCursor(crDefault);
 end;
