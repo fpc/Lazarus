@@ -3,16 +3,15 @@ inherited OIOptionsFrame: TOIOptionsFrame
   Width = 598
   ClientHeight = 395
   ClientWidth = 598
-  TabOrder = 0
   Visible = False
-  DesignLeft = 44
-  DesignTop = 58
+  DesignLeft = 176
+  DesignTop = 232
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 173
+    Height = 186
     Width = 598
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -21,116 +20,37 @@ inherited OIOptionsFrame: TOIOptionsFrame
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 2
     ChildSizing.VerticalSpacing = 2
-    ClientHeight = 155
+    ClientHeight = 168
     ClientWidth = 594
     TabOrder = 0
-    object OIBackgroundColorButton: TColorButton
+    object ColorsListBox: TColorListBox
+      AnchorSideLeft.Control = ObjectInspectorColorsGroupBox
+      AnchorSideTop.Control = ObjectInspectorColorsGroupBox
       Left = 6
-      Height = 23
+      Height = 128
       Top = 6
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
+      Width = 210
+      Style = [cbCustomColors]
+      OnGetColors = ColorsListBoxGetColors
+      BorderSpacing.Around = 6
+      OnSelectionChange = ColorsListBoxSelectionChange
+      TabOrder = 0
     end
-    object OISubPropsColorButton: TColorButton
+    object ColorBox: TColorBox
+      AnchorSideLeft.Control = ObjectInspectorColorsGroupBox
+      AnchorSideTop.Control = ColorsListBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ColorsListBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 30
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
-    object OIReferencesColorButton: TColorButton
-      Left = 6
-      Height = 23
-      Top = 54
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
-    object OIValueColorButton: TColorButton
-      Left = 6
-      Height = 23
-      Top = 78
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
-    object OIDefaultValueColorButton: TColorButton
-      Left = 6
-      Height = 23
-      Top = 102
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
-    object OIPropNameColorButton: TColorButton
-      Left = 6
-      Height = 23
-      Top = 126
-      Width = 50
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
-    object OIBackgroundColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 12
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OIBackgroundColorLabel'
-      ParentColor = False
-    end
-    object OISubPropsColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 36
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OISubPropsColorLabel'
-      ParentColor = False
-    end
-    object OIReferencesColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 60
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OIReferencesColorLabel'
-      ParentColor = False
-    end
-    object OIValueColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 84
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OIValueColorLabel'
-      ParentColor = False
-    end
-    object OIDefaultValueColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 108
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OIDefaultValueColorLabel'
-      ParentColor = False
-    end
-    object OIPropNameColorLabel: TLabel
-      Left = 65
-      Height = 14
-      Top = 132
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'OIPropNameColorLabel'
-      ParentColor = False
+      Height = 22
+      Top = 140
+      Width = 210
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
+      BorderSpacing.Around = 6
+      ItemHeight = 16
+      OnChange = ColorBoxChange
+      TabOrder = 1
     end
   end
   object OIMiscGroupBox: TGroupBox[1]
@@ -140,7 +60,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Height = 184
-    Top = 180
+    Top = 193
     Width = 598
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
