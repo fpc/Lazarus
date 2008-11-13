@@ -5533,6 +5533,7 @@ end;
 Procedure TSourceNotebook.BookMarkSet(Value: Integer);
 var
   ActEdit, AnEdit: TSourceEditor;
+  Cmd: TIDEMenuCommand;
 Begin
   ActEdit:=GetActiveSE;
 
@@ -5542,8 +5543,8 @@ Begin
   end;
   ActEdit.EditorComponent.SetBookMark(Value,
      ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
-  (SrcEditSubMenuSetBookmarks[Value] as TIDEMenuCommand).Checked := true;
-  TIDEMenuCommand(SrcEditSubMenuGotoBookmarks[Value]).Checked:=true;
+  Cmd:=SrcEditSubMenuSetBookmarks[Value] as TIDEMenuCommand;
+  Cmd.Checked := true;
   if Project1<>nil then
     Project1.SessionModified:=true;
 end;
