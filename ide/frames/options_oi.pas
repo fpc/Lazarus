@@ -104,7 +104,7 @@ end;
 
 procedure TOIOptionsFrame.ColorBoxChange(Sender: TObject);
 begin
-  if not FLoaded then
+  if not FLoaded or (ColorsListBox.ItemIndex < 0) then
     Exit;
   ColorsListBox.Items.Objects[ColorsListBox.ItemIndex] := TObject(PtrInt(ColorBox.Selected));
 end;
@@ -112,7 +112,7 @@ end;
 procedure TOIOptionsFrame.ColorsListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
-  if not FLoaded then
+  if not (FLoaded and User) then
     Exit;
   ColorBox.Selected := ColorsListBox.Selected;
 end;
