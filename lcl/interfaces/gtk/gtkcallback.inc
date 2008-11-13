@@ -1972,17 +1972,16 @@ begin
     if (NewTextLength = 1) and (char^ = #13) and (LineEnding = #10) then
       char^ := #10;
     Memo:= TCustomMemo(Data);
-    if Memo.MaxLength < 0 then Exit;
+    if Memo.MaxLength <= 0 then Exit;
 
     CurrLength:= gtk_text_get_length(PGtkText(widget));
     if CurrLength + NewTextLength <= Memo.MaxLength then Exit;
 
     CutLength:= CurrLength + NewTextLength - Memo.MaxLength;
 
-    if NewTextLength - CutLength > 0 then begin
+    if NewTextLength - CutLength > 0 then
       gtk_editable_insert_text(PGtkEditable(widget), char,
                                NewTextLength - CutLength, Position);
-    end;
 
     g_signal_stop_emission_by_name(PGtkObject(widget), 'insert_text');
   end;

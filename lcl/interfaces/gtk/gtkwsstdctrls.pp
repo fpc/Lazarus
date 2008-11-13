@@ -1817,17 +1817,16 @@ end;
 class procedure TGtkWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
-  ImplWidget   : PGtkWidget;
+  ImplWidget: PGtkWidget;
   i: integer;
 begin
-  if (ACustomEdit.MaxLength >= 0) then begin
-    //debugln('TGtkWSCustomMemo.SetMaxLength ',DbgSName(ACustomEdit));
-    ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
-    i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
-    if i > ACustomEdit.MaxLength then begin
+  if (ACustomEdit.MaxLength > 0) then 
+  begin
+    ImplWidget := GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
+    i := gtk_text_get_length(GTK_TEXT(ImplWidget));
+    if i > ACustomEdit.MaxLength then 
        gtk_editable_delete_text(PGtkOldEditable(ImplWidget),
                                 ACustomEdit.MaxLength, i);
-    end;
   end;
 end;
 

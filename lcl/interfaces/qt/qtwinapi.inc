@@ -4336,8 +4336,10 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
+{$IFDEF UNIX}
 var
   QtEdit: IQtEdit;
+{$ENDIF}
 begin
   if hwnd<>0 then
   begin

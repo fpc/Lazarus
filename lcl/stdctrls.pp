@@ -322,7 +322,7 @@ type
     procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
     procedure SetItemIndex(Val: integer); virtual;
-    procedure SetMaxLength(Val: integer); virtual;
+    procedure SetMaxLength(AValue: integer); virtual;
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
@@ -384,9 +384,8 @@ type
     property SelStart: integer read GetSelStart write SetSelStart;// byte position
     property SelText: String read GetSelText write SetSelText;
     property Style: TComboBoxStyle read FStyle write SetStyle;
-    property Text;
-  published
     property TabStop default true;
+    property Text;
   end;
 
 
@@ -729,7 +728,7 @@ type
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
-    property MaxLength: Integer read FMaxLength write SetMaxLength default -1;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
     property Modified: Boolean read GetModified write SetModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
