@@ -706,8 +706,8 @@ type
     procedure ShowCaret;
     // If the translations requires Data, memory will be allocated for it via a
     // GetMem call.  The client must call FreeMem on Data if it is not NIL.
-    function TranslateKeyCode(Code: word; Shift: TShiftState;
-      var Data: pointer): TSynEditorCommand;
+    function TranslateKeyCode(Code: word; Shift: TShiftState; var Data: pointer
+      {$IFDEF SYN_LAZARUS};out IsStartOfCombo: boolean{$ENDIF}): TSynEditorCommand;
     procedure UndoItem;                                                         //sbs 2000-11-19
   protected
     fGutterWidth: Integer;
@@ -2252,6 +2252,9 @@ var
   Data: pointer;
   C: char;
   Cmd: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}
+  IsStartOfCombo: boolean;
+  {$ENDIF}
 begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
@@ -2264,15 +2267,21 @@ begin
   Data := nil;
   C := #0;
   try
-    Cmd := TranslateKeyCode(Key, Shift, Data);
+    Cmd := TranslateKeyCode(Key, Shift, Data {$IFDEF SYN_LAZARUS},IsStartOfCombo{$ENDIF});
     if Cmd <> ecNone then begin
       {$IFDEF SYN_LAZARUS}
       LastMouseCaret:=Point(-1,-1);
       {$ENDIF}
-      //DebugLn('[TCustomSynEdit.KeyDown] key translated ',cmd);
+      //DebugLn(['[TCustomSynEdit.KeyDown] key translated ',cmd]);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);
+    {$IFDEF SYN_LAZARUS}
+    end else if IsStartOfCombo then begin
+      // this key could be the start of a two-key-combo shortcut
+      Key := 0; // eat it.
+      Include(fStateFlags, sfIgnoreNextChar);
+    {$ENDIF}
     end else
       Exclude(fStateFlags, sfIgnoreNextChar);
   finally
@@ -2304,6 +2313,9 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
+  {$IFDEF SYN_LAZARUS}
+  if Key='' then exit;
+  {$ENDIF}
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
@@ -2325,6 +2337,9 @@ end;
 
 procedure TCustomSynEdit.KeyPress(var Key: Char);
 begin
+  {$IFDEF SYN_LAZARUS}
+  if Key=#0 then exit;
+  {$ENDIF}
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     {$IFDEF VerboseKeyboard}
@@ -6532,13 +6547,15 @@ var
   Item: TSynEditUndoItem;
   OldSelMode: TSynSelectionMode;
   Run, StrToDelete: PChar;
-  Len, e, x : integer;
+  Len, x : integer;
   TempString: string;
   CaretPt: TPoint;
   ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
   {$IFDEF SYN_LAZARUS}
   PhysStartPos: TPoint;
   PhysEndPos: TPoint;
+  {$ELSE}
+  e: integer;
   {$ENDIF}
 begin
   OldSelMode := SelectionMode;
@@ -7514,7 +7531,9 @@ end;
 // GetMem call.  The client must call FreeMem on Data if it is not NIL.
 
 function TCustomSynEdit.TranslateKeyCode(Code: word; Shift: TShiftState;
-  var Data: pointer): TSynEditorCommand;
+  var Data: pointer
+  {$IFDEF SYN_LAZARUS};out IsStartOfCombo: boolean{$ENDIF}
+  ): TSynEditorCommand;
 var
   i: integer;
 {$IFNDEF SYN_COMPILER_3_UP}
@@ -7536,9 +7555,15 @@ begin
   begin
     fLastKey := Code;
     fLastShiftState := Shift;
+    {$IFDEF SYN_LAZARUS}
+    IsStartOfCombo:=KeyStrokes.FindKeycode2Start(Code,Shift)>=0;
+    {$ENDIF}
   end else begin
     fLastKey := 0;
     fLastShiftState := [];
+    {$IFDEF SYN_LAZARUS}
+    IsStartOfCombo:=false;
+    {$ENDIF}
   end;
 end;
 
@@ -7547,8 +7572,9 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   Data: pointer);
 begin
   {$IFDEF VerboseKeys}
-  DebugLn('[TCustomSynEdit.CommandProcessor] ',Command
-    ,' AChar=',AChar,' Data=',DbgS(Data));
+  DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
+    ,' AChar=',AChar,' Data=',DbgS(Data)]);
+  DumpStack;
   {$ENDIF}
   // first the program event handler gets a chance to process the command
   DoOnProcessCommand(Command, AChar, Data);
@@ -8579,6 +8605,7 @@ end;
 procedure TCustomSynEdit.DoOnProcessCommand(var Command: TSynEditorCommand;
   var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
 begin
+  //DebugLn(['TCustomSynEdit.DoOnProcessCommand Command=',Command]);
   if Command < ecUserFirst then begin
     if Assigned(FOnProcessCommand) then
       FOnProcessCommand(Self, Command, AChar, Data);
@@ -10032,7 +10059,6 @@ end;
 
 procedure TCustomSynEdit.DoBlockIndent;
 var
-  OrgCaretPos,
   BB,BE            : TPoint;
   Run,
   StrToInsert      : PChar;
@@ -10040,13 +10066,18 @@ var
   i,InsertStrLen   : integer;
   Spaces           : String;
   OrgSelectionMode : TSynSelectionMode;
-  {$IFDEF SYN_LAZARUS}BlockBackward : Boolean;{$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  BlockBackward : Boolean;
+  {$ELSE}
+  OrgCaretPos: TPoint;
+  {$ENDIF}
 begin
   if not SelAvail then exit;
   OrgSelectionMode := fSelectionMode;
-  OrgCaretPos := CaretXY;
   {$IFDEF SYN_LAZARUS}
   BlockBackward:= IsBackwardSel;
+  {$ELSE}
+  OrgCaretPos := CaretXY;
   {$ENDIF}
   x := 1;
   StrToInsert := nil;
@@ -10113,7 +10144,6 @@ end;
 
 procedure TCustomSynEdit.DoBlockUnindent;
 var
-  OrgCaretPos,
   BB, BE: TPoint;
   FullStrToDelete: PChar;
   Line, Run,
@@ -10126,7 +10156,11 @@ var
   TempString: AnsiString;
   OrgSelectionMode : TSynSelectionMode;
   SomethingToDelete : Boolean;
-  {$IFDEF SYN_LAZARUS}BlockBackward : Boolean;{$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  BlockBackward : Boolean;
+  {$ELSE}
+  OrgCaretPos: TPoint;
+  {$ENDIF}
 
   function GetDelLen : integer;
   var
@@ -10152,9 +10186,10 @@ begin
     // store current selection detail
     BB := BlockBegin;
     BE := BlockEnd;
-    OrgCaretPos := CaretXY;
     {$IFDEF SYN_LAZARUS}
     BlockBackward:=  IsBackwardSel;
+    {$ELSE}
+    OrgCaretPos := CaretXY;
     {$ENDIF}
 
     // convert selection to complete lines

@@ -253,6 +253,8 @@ type
       default 0;                                                                //mh 2000-11-07
   end;
 
+  { TSynEditKeyStrokes }
+
   TSynEditKeyStrokes = class(TCollection)
   private
     FOwner: TPersistent;
@@ -270,6 +272,7 @@ type
     function FindKeycode(Code: word; SS: TShiftState): integer;
     function FindKeycode2(Code1: word; SS1: TShiftState;
       Code2: word; SS2: TShiftState): integer;
+    function FindKeycode2Start(Code: word; SS: TShiftState): integer;
     function FindShortcut(SC: TShortcut): integer;
     function FindShortcut2(SC, SC2: TShortcut): integer;
     procedure LoadFromStream(AStream: TStream);                                 //ac 2000-07-05
@@ -746,12 +749,6 @@ begin
   for x := 0 to Count-1 do
     if (Items[x].Key = Code) and (Items[x].Shift = SS) and (Items[x].Key2 = 0)
     then begin
-{
-writeln('TSynEditKeyStrokes.FindKeycode ',Items[x].Key,'=',Code
-  ,'  Shift ',ssShift in Items[x].Shift,'=',ssShift in SS
-  ,'  Ctrl ',ssCtrl in Items[x].Shift,'=',ssCtrl in SS
-);
-}
       Result := x;
       break;
     end;
@@ -766,6 +763,21 @@ begin
   for x := 0 to Count-1 do
     if (Items[x].Key = Code1) and (Items[x].Shift = SS1) and
        (Items[x].Key2 = Code2) and (Items[x].Shift2 = SS2) then
+    begin
+      Result := x;
+      break;
+    end;
+end;
+
+function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState
+  ): integer;
+var
+  x: integer;
+begin
+  Result := -1;
+  for x := 0 to Count-1 do
+    if (Items[x].Key = Code) and (Items[x].Shift = SS) and
+       (Items[x].Key2 <> VK_UNKNOWN) then
     begin
       Result := x;
       break;
