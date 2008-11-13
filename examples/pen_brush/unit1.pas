@@ -16,6 +16,7 @@ type
     Bevel1: TBevel;
     Bevel2: TBevel;
     Button1: TBitBtn;
+    cbCosmetic: TCheckBox;
     FigureCombo: TComboBox;
     Label10: TLabel;
     Label7: TLabel;
@@ -26,7 +27,6 @@ type
     Label1: TLabel;
     Label2: TLabel;
     PenColorBox: TColorBox;
-    GeometricCheck: TCheckBox;
     Label6: TLabel;
     BrushStyleCombo: TComboBox;
     WidthCombo: TComboBox;
@@ -176,11 +176,17 @@ procedure TForm1.PenChange(Sender: TObject);
 var
   Dashes: array[0..3] of DWord = (1, 1, 1, 1);
 begin
+  cbCosmetic.Enabled := WidthCombo.ItemIndex = 0;
+
   if PenStyleCombo.ItemIndex <> -1 then
     PaintBox.Canvas.Pen.Style := TPenStyle(PenStyleCombo.ItemIndex);
   PaintBox.Canvas.Pen.Color := PenColorBox.Selected;
-  PaintBox.Canvas.Pen.Width := StrToInt(WidthCombo.Text);
-  PaintBox.Canvas.Pen.Geometric := GeometricCheck.Checked;
+
+  if cbCosmetic.Enabled and cbCosmetic.Checked then
+    PaintBox.Canvas.Pen.Width := 0
+  else
+    PaintBox.Canvas.Pen.Width := StrToInt(WidthCombo.Text);
+
   PaintBox.Canvas.Pen.EndCap := TPenEndCap(CapsCombo.ItemIndex);
   PaintBox.Canvas.Pen.JoinStyle := TPenJoinStyle(JoinCombo.ItemIndex);
   PaintBox.Canvas.Pen.SetPattern(Dashes);

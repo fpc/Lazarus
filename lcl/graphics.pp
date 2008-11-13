@@ -586,7 +586,7 @@ type
   private
     FColor: TColor;
     FEndCap: TPenEndCap;
-    FGeometric: Boolean;
+    FCosmetic: Boolean;
     FJoinStyle: TPenJoinStyle;
     FPattern: TPenPattern;
     FPenHandleCached: boolean;
@@ -604,7 +604,6 @@ type
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetColor(Value: TColor);
     procedure SetEndCap(const AValue: TPenEndCap);
-    procedure SetGeometric(const AValue: Boolean);
     procedure SetJoinStyle(const AValue: TPenJoinStyle);
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
@@ -620,7 +619,7 @@ type
     procedure SetPattern(APattern: TPenPattern); reintroduce;
   published
     property Color: TColor read FColor write SetColor default clBlack;
-    property Geometric: Boolean read FGeometric write SetGeometric default False;
+    property Cosmetic: Boolean read FCosmetic;
     property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
     property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
     property Mode default pmCopy;

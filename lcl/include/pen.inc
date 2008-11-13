@@ -193,9 +193,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.SetWidth(Value : Integer);
 begin
-  if Width <> Value then
+  // Cosmetic pen is a pen which has width = 0. FCL does not allow pens < 1.
+  // FCosmetic field contains a knowledge about passed value
+
+  if (Value = 0) and (Width = 1) and Cosmetic then
+    Exit;
+
+  if (Width <> Value) or ((Width = 1) and Cosmetic) then
   begin
     FreeReference;
+    FCosmetic := Value = 0;
     inherited SetWidth(Value);
     Changed;
   end;
@@ -214,7 +221,7 @@ begin
   DelayAllocate := True;
   FEndCap := pecRound;
   FJoinStyle := pjsRound;
-  FGeometric := False;
+  FCosmetic := True;
   FPattern := nil;
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
@@ -249,11 +256,15 @@ var
 begin
   if Source is TPen then
   begin
-    Width := APen.Width;
+
+    if APen.Cosmetic then
+      Width := 0
+    else
+      Width := APen.Width;
+
     SetColor(APen.Color, TFPCanvasHelper(Source).FPColor);
     Style := APen.Style;
     Mode := APen.Mode;
-    Geometric := APen.Geometric;
     JoinStyle := APen.JoinStyle;
     EndCap := APen.EndCap;
   end
@@ -372,8 +383,8 @@ begin
   FillChar(AExtPen, SizeOf(AExtPen), 0);
   with AExtPen do
   begin
-    elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[Geometric];
-    if Geometric then
+    elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[not Cosmetic];
+    if not Cosmetic then
       elpPenStyle := elpPenStyle or PEN_ENDCAP[EndCap] or PEN_JOIN[JoinStyle];
     elpWidth := Width;
     elpBrushStyle := BS_SOLID;
@@ -433,16 +444,6 @@ begin
   end;
 end;
 
-procedure TPen.SetGeometric(const AValue: Boolean);
-begin
-  if Geometric <> AValue then
-  begin
-    FreeReference;
-    FGeometric := AValue;
-    Changed;
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TPen.FreeReference
   Params:  none
@@ -485,7 +486,7 @@ begin
   begin
     FreeReference;
     inherited DoCopyProps(From);
-    FGeometric := APen.Geometric;
+    FCosmetic := APen.Cosmetic;
     FEndCap := APen.EndCap;
     FJoinStyle := APen.JoinStyle;
     //TODO: query new parameters
