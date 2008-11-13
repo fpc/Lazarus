@@ -1146,6 +1146,7 @@ begin
 
   // create main IDE register items
   NewIDEItems:=TNewLazIDEItemCategories.Create;
+
   SetupStandardProjectTypes;
 
   // initialize the other IDE managers

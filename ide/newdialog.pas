@@ -63,13 +63,13 @@ type
     procedure Add(ATemplate: TNewIDEItemTemplate); override;
     function LocalizedName: string; override;
     function Description: string; override;
+    function IndexOfTemplate(const TemplateName: string): integer; override;
+    function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; override;
     function IndexOfCategory(const CategoryName: string): integer; override;
-    function FindCategoryByName(const CategoryName: string
-                                ): TNewIDEItemCategory; override;
+    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; override;
   public
     property Count: integer Read GetCount;
     property Items[Index: integer]: TNewIDEItemTemplate Read GetItems; default;
-    property Name: string Read FName;
   end;
 
 
@@ -357,9 +357,9 @@ begin
   InheritableComponentsListView.Visible := false;
   if (ANode <> nil) and (ANode.Data <> nil) then
   begin
-    if TObject(ANode.Data) is TNewLazIDEItemCategory then
-      Desc := TNewLazIDEItemCategory(ANode.Data).Description
-    else
+    if TObject(ANode.Data) is TNewLazIDEItemCategory then begin
+      Desc := TNewLazIDEItemCategory(ANode.Data).Description;
+    end else
     begin
       aNewItemTemplate := TNewIDEItemTemplate(ANode.Data);
       Desc := aNewItemTemplate.Description;
@@ -375,8 +375,9 @@ begin
       end;
     end;
   end
-  else
+  else begin
     Desc := '';
+  end;
   DescriptionLabel.Caption := Desc;
 end;
 
@@ -460,20 +461,39 @@ begin
     Result := '';
 end;
 
-function TNewLazIDEItemCategory.IndexOfCategory(const CategoryName: string): integer;
+function TNewLazIDEItemCategory.IndexOfTemplate(const TemplateName: string): integer;
 begin
-  // TODO
-  Result := -1;
+  Result:=FItems.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(Items[Result].Name,TemplateName)<>0) do
+    dec(Result);
 end;
 
-function TNewLazIDEItemCategory.FindCategoryByName(
-  const CategoryName: string): TNewIDEItemCategory;
+function TNewLazIDEItemCategory.FindTemplateByName(
+  const TemplateName: string): TNewIDEItemTemplate;
 var
   i: longint;
 begin
+  i := IndexOfTemplate(TemplateName);
+  if i >= 0 then
+    Result := Items[i]
+  else
+    Result := nil;
+end;
+
+function TNewLazIDEItemCategory.IndexOfCategory(const CategoryName: string
+  ): integer;
+begin
+  Result:=-1; // Todo
+end;
+
+function TNewLazIDEItemCategory.FindCategoryByName(const CategoryName: string
+  ): TNewIDEItemCategory;
+var
+  i: LongInt;
+begin
   i := IndexOfCategory(CategoryName);
   if i >= 0 then
-    Result := nil // TODO
+    Result := nil // ToDo
   else
     Result := nil;
 end;

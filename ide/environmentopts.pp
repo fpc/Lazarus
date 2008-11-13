@@ -35,7 +35,8 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileUtil, Dialogs,
-  Laz_XMLCfg, IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  Laz_XMLCfg, AvgLvlTree, NewItemIntf,
+  IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
   IDEOptionsIntf;
 
@@ -116,12 +117,8 @@ const
       'Ignore'
     );
 
-  { Environment Options }
-
 type
-  { class for storing environment options }
-
-  { TEnvironmentOptions }
+  { TEnvironmentOptions - class for storing environment options }
 
   TEnvironmentOptions = class(TAbstractIDEOptions)
   private
@@ -225,11 +222,16 @@ type
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
     
+    // lazdoc
     FLazDocPaths: string;
 
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
-    
+
+    // 'new items'
+    FNewFormTemplate: string;
+    FNewUnitTemplate: string;
+
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerSearchPath(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
@@ -433,6 +435,10 @@ type
     property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
                                            write fMsgViewDblClickJumps;
     property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
+
+    // default template for each 'new item' category: Name=Path, Value=TemplateName
+    property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
+    property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
   end;
 
 var
@@ -659,28 +665,29 @@ begin
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
 
+  // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
 end;
 
 destructor TEnvironmentOptions.Destroy;
 begin
-  fExternalTools.Free;
-  FRecentOpenFiles.Free;
-  FRecentProjectFiles.Free;
-  FRecentPackageFiles.Free;
-  FObjectInspectorOptions.Free;
-  FLazarusDirsHistory.Free;
-  FCompilerFileHistory.Free;
-  FFPCSourceDirHistory.Free;
-  FMakeFileHistory.Free;
-  FDebuggerFileHistory.Free;
-  FTestBuildDirHistory.Free;
+  FreeAndNil(fExternalTools);
+  FreeAndNil(FRecentOpenFiles);
+  FreeAndNil(FRecentProjectFiles);
+  FreeAndNil(FRecentPackageFiles);
+  FreeAndNil(FObjectInspectorOptions);
+  FreeAndNil(FLazarusDirsHistory);
+  FreeAndNil(FCompilerFileHistory);
+  FreeAndNil(FFPCSourceDirHistory);
+  FreeAndNil(FMakeFileHistory);
+  FreeAndNil(FDebuggerFileHistory);
+  FreeAndNil(FTestBuildDirHistory);
   if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
     IDEWindowIntf.IDEDialogLayoutList:=nil;
-  FIDEDialogLayoutList.Free;
-  fIDEWindowLayoutList.Free;
-  FConfigStore.Free;
-  FXMLCfg.Free;
+  FreeAndNil(FIDEDialogLayoutList);
+  FreeAndNil(fIDEWindowLayoutList);
+  FreeAndNil(FConfigStore);
+  FreeAndNil(FXMLCfg);
   inherited Destroy;
 end;
 
@@ -968,7 +975,11 @@ begin
       CurPath:=Path+'AmbigiousFileAction/Value';
     fAmbiguousFileAction:=AmbiguousFileActionNameToType(XMLConfig.GetValue(
       CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
-        
+
+    // 'new items'
+    FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value','');
+    FNewFormTemplate:=XMLConfig.GetValue(Path+'New/FormTemplate/Value','');
+
     // object inspector
     FObjectInspectorOptions.Load;
     FObjectInspectorOptions.SaveBounds:=false;
@@ -1173,8 +1184,12 @@ begin
       AmbiguousFileActionNames[fAmbiguousFileAction],
       AmbiguousFileActionNames[afaAsk]);
 
-    //lazdoc
+    // lazdoc
     XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
+
+    // 'new items'
+    XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,'');
+    XMLConfig.SetDeleteValue(Path+'New/FormTemplate/Value',FNewFormTemplate,'');
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
