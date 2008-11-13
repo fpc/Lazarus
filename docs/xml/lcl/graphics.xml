@@ -8926,9 +8926,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TFont.DoAllocateResources">
-        <short>
-          <var>DoAllocateResources</var> - method for allocating resources </short>
+      <element name="TFont.DoAllocateResources" link="#fcl.FPCanvas.TFPCanvasHelper.DoAllocateResources">
         <descr/>
         <errors/>
         <seealso/>
@@ -8944,9 +8942,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TFont.DoDeAllocateResources">
-        <short>
-          <var>DoDeAllocateResources</var> - method for freeing resources</short>
+      <element name="TFont.DoDeAllocateResources" link="#fcl.FPCanvas.TFPCanvasHelper.DoDeAllocateResources">
         <descr/>
         <errors/>
         <seealso/>
@@ -8975,8 +8971,6 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetFPColor" link="#fcl.FPCanvas.TFPCanvasHelper.SetFPColor">
-        <short>
-          <var>SetFPColor</var> - specify the colour using the FreePascal list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14323,6 +14317,15 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>
           <var>TFPImageBitmapClass</var> - class of <var>TFPImageBitmap</var>
         </short>
+      </element>
+      <element name="TPenHandleCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors"/>
+      <element name="TPenHandleCache.FindPen">
+        <short>
+          <var>FindPen</var> - returns a ResourceCacheItem corresponding to the nominated Handle</short>
+      </element>
+      <element name="TPenHandleCache.FindPenDesc">
+        <short>
+          <var>FindPenDesc</var> - returns a descriptor for the given pen and pattern</short>
       </element>
     </module>
     <!-- Graphics -->
