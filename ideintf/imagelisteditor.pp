@@ -89,7 +89,6 @@ type
     FImageList: TImageList;
     FModified: Boolean;
     FPreviewBmp: TBitmap;
-    ColorStrings: TSTrings;
     procedure SavePicture(Picture: TPicture);
   public
     procedure LoadFromImageList(AImageList: TImageList);
