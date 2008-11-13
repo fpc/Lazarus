@@ -218,7 +218,6 @@ object Form1: TForm1
       '6'
       '7'
     )
-    MaxLength = -1
     OnChange = PenChange
     Style = csDropDownList
     TabOrder = 1
@@ -241,7 +240,6 @@ object Form1: TForm1
       'Square'
       'Flat'
     )
-    MaxLength = -1
     OnChange = PenChange
     Style = csDropDownList
     TabOrder = 2
@@ -264,7 +262,6 @@ object Form1: TForm1
       'Bevel'
       'Mitter'
     )
-    MaxLength = -1
     OnChange = PenChange
     Style = csDropDownList
     TabOrder = 3
@@ -296,7 +293,6 @@ object Form1: TForm1
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     ItemHeight = 13
-    MaxLength = -1
     OnChange = PenChange
     Style = csDropDownList
     TabOrder = 5
@@ -312,6 +308,7 @@ object Form1: TForm1
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     ItemHeight = 13
+    MaxLength = -1
     OnChange = BrushChange
     Style = csDropDownList
     TabOrder = 6
@@ -351,7 +348,6 @@ object Form1: TForm1
       'Rectangle'
       'Triangle'
     )
-    MaxLength = -1
     OnChange = FigureComboChange
     Style = csDropDownList
     TabOrder = 8

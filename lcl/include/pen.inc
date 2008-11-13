@@ -193,16 +193,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.SetWidth(Value : Integer);
 begin
-  // Cosmetic pen is a pen which has width = 0. FCL does not allow pens < 1.
-  // FCosmetic field contains a knowledge about passed value
-
-  if (Value = 0) and (Width = 1) and Cosmetic then
-    Exit;
-
-  if (Width <> Value) or ((Width = 1) and Cosmetic) then
+  if (Width <> Value) then
   begin
     FreeReference;
-    FCosmetic := Value = 0;
     inherited SetWidth(Value);
     Changed;
   end;
@@ -256,15 +249,11 @@ var
 begin
   if Source is TPen then
   begin
-
-    if APen.Cosmetic then
-      Width := 0
-    else
-      Width := APen.Width;
-
+    Width := APen.Width;
     SetColor(APen.Color, TFPCanvasHelper(Source).FPColor);
     Style := APen.Style;
     Mode := APen.Mode;
+    Cosmetic := APen.Cosmetic;
     JoinStyle := APen.JoinStyle;
     EndCap := APen.EndCap;
   end
@@ -377,14 +366,17 @@ var
   AExtPen: TExtLogPen;
   ALogBrush: TLogBrush;
   CachedPen: TPenHandleCacheDescriptor;
+  IsGeometric: Boolean;
 begin
   if FReference.Allocated then Exit;
+
+  IsGeometric := (Width > 1) or not Cosmetic;
 
   FillChar(AExtPen, SizeOf(AExtPen), 0);
   with AExtPen do
   begin
-    elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[not Cosmetic];
-    if not Cosmetic then
+    elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[IsGeometric];
+    if IsGeometric then
       elpPenStyle := elpPenStyle or PEN_ENDCAP[EndCap] or PEN_JOIN[JoinStyle];
     elpWidth := Width;
     elpBrushStyle := BS_SOLID;
@@ -432,6 +424,16 @@ begin
       PenResourceCache.Add(FReference.Handle, AExtPen, nil);
   end;
   FPenHandleCached := True;
+end;
+
+procedure TPen.SetCosmetic(const AValue: Boolean);
+begin
+  if Cosmetic <> AValue then
+  begin
+    FreeReference;
+    FCosmetic := AValue;
+    Changed;
+  end;
 end;
 
 procedure TPen.SetEndCap(const AValue: TPenEndCap);
