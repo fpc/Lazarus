@@ -510,7 +510,8 @@ begin
     ShownText:=CurrentTV.BeautifyLine(SearchPos);
     LastPos:=nil;
     if CurrentTV.UpdateState then begin
-      if (CurrentTV.UpdateItems.Count>0) and (CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1] is TLazSearchMatchPos) then
+      if (CurrentTV.UpdateItems.Count>0)
+      and (CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1] is TLazSearchMatchPos) then
         LastPos:=TLazSearchMatchPos(CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1]);
     end else
       if (CurrentTV.Items.Count>0) and Assigned(CurrentTV.Items[CurrentTV.Items.Count-1].Data) then
@@ -1033,6 +1034,7 @@ end;
 procedure TLazSearchResultTV.AddNode(Line: string; MatchPos: TLazSearchMatchPos);
 var
   Node: TTreeNode;
+  ChildNode: TTreeNode;
 begin
   Node := Items.FindNodeWithText(MatchPos.FileName);
 
@@ -1040,8 +1042,9 @@ begin
   if not Assigned(Node) then
     Node := Items.AddFirst(Node, MatchPos.FileName);
 
-  Node := Items.AddChildFirst(Node, Line);
-  Node.Data := MatchPos;
+  ChildNode := Items.AddChildFirst(Node, Line);
+  Node.Expanded:=true;
+  ChildNode.Data := MatchPos;
 end;
 
 {******************************************************************************
