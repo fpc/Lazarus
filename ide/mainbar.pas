@@ -39,10 +39,11 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, StdCtrls, Forms, Controls, Buttons, Menus, ComCtrls, ExtCtrls,
-  Dialogs, LDockCtrl,
+  Classes, SysUtils, LCLProc, StdCtrls, Forms, Controls, Buttons, Menus,
+  ComCtrls, ExtCtrls, Dialogs, LDockCtrl,
   // IDEIntf
-  MenuIntf, LazIDEIntf;
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
   { TMainIDEBar }
@@ -50,21 +51,23 @@ type
   TMainIDEBar = class(TForm)
   
     // the speedbuttons panel for frequently used IDE functions
-    pnlSpeedButtons : TPanel;
-    ViewUnitsSpeedBtn   : TSpeedButton;
-    ViewFormsSpeedBtn   : TSpeedButton;
-    NewUnitSpeedBtn     : TSpeedButton;
-    OpenFileSpeedBtn    : TSpeedButton;
+    pnlSpeedButtons      : TPanel;
+    ViewUnitsSpeedBtn    : TSpeedButton;
+    ViewFormsSpeedBtn    : TSpeedButton;
+    NewUnitSpeedBtn      : TSpeedButton;
+    OpenFileSpeedBtn     : TSpeedButton;
     OpenFileArrowSpeedBtn: TSpeedButton;
-    SaveSpeedBtn        : TSpeedButton;
-    SaveAllSpeedBtn     : TSpeedButton;
-    ToggleFormSpeedBtn  : TSpeedButton;
-    NewFormSpeedBtn     : TSpeedButton;
-    RunSpeedButton      : TSpeedButton;
-    PauseSpeedButton    : TSpeedButton;
-    StepIntoSpeedButton : TSpeedButton;
-    StepOverSpeedButton : TSpeedButton;
-    OpenFilePopUpMenu   : TPopupMenu;
+    OpenFilePopUpMenu    : TPopupMenu;
+    SaveSpeedBtn         : TSpeedButton;
+    SaveAllSpeedBtn      : TSpeedButton;
+    ToggleFormSpeedBtn   : TSpeedButton;
+    NewFormSpeedBtn      : TSpeedButton;
+    RunSpeedButton       : TSpeedButton;
+    PauseSpeedButton     : TSpeedButton;
+    StepIntoSpeedButton  : TSpeedButton;
+    StepOverSpeedButton  : TSpeedButton;
+    NewUnitFormPopupMenu : TPopupMenu;
+      NewUFSetDefaultMenuItem: TMenuItem;
 
     // MainMenu
     mnuMainMenu: TMainMenu;
@@ -326,11 +329,14 @@ type
     GlobalMouseSpeedButton: TSpeedButton;
   private
     FOldWindowState: TWindowState;
+    procedure NewUFDefaultClick(Sender: TObject);
+    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
   public
     ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
     procedure UnhideIDE;
+    procedure CreatePopupMenus(TheOwner: TComponent);
   end;
 
 var
@@ -339,6 +345,71 @@ var
 implementation
 
 { TMainIDEBar }
+
+procedure TMainIDEBar.NewUFDefaultClick(Sender: TObject);
+var
+  Category: TNewIDEItemCategory;
+  i: Integer;
+  Item: TMenuItem;
+  Template: TNewIDEItemTemplate;
+begin
+  Item:=Sender as TMenuItem;
+  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
+  i:=Item.MenuIndex;
+  if (i<0) or (i>=Category.Count) then exit;
+  Template:=Category[i];
+  if NewUnitFormPopupMenu.Tag=1 then
+    EnvironmentOptions.NewUnitTemplate:=Template.Name
+  else
+    EnvironmentOptions.NewFormTemplate:=Template.Name;
+  //DebugLn(['TMainIDEBar.NewUFDefaultClick ',Template.Name]);
+  EnvironmentOptions.Save(False);
+end;
+
+procedure TMainIDEBar.NewUnitFormPopupMenuPopup(Sender: TObject);
+var
+  TemplateName: String;
+  Category: TNewIDEItemCategory;
+  i: Integer;
+  CurTemplate: TNewIDEItemTemplate;
+  Index: Integer;
+  Item: TMenuItem;
+begin
+  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
+  // find default template name
+  if NewUnitFormPopupMenu.PopupComponent=NewUnitSpeedBtn then begin
+    TemplateName:=EnvironmentOptions.NewUnitTemplate;
+    if (TemplateName='') or (Category.FindTemplateByName(TemplateName)=nil) then
+      TemplateName:=FileDescNamePascalUnit;
+    NewUnitFormPopupMenu.Tag:=1;
+  end else begin
+    TemplateName:=EnvironmentOptions.NewFormTemplate;
+    if (TemplateName='') or (Category.FindTemplateByName(TemplateName)=nil) then
+      TemplateName:=FileDescNameLCLForm;
+    NewUnitFormPopupMenu.Tag:=2;
+  end;
+  // create menu items
+  Index:=0;
+  for i:=0 to Category.Count-1 do begin
+    CurTemplate:=Category[i];
+    if not CurTemplate.VisibleInNewDialog then continue;
+    if Index<NewUFSetDefaultMenuItem.Count then
+      Item:=NewUFSetDefaultMenuItem[Index]
+    else begin
+      Item:=TMenuItem.Create(NewUFSetDefaultMenuItem);
+      Item.Name:='NewUFSetDefaultMenuItem'+IntToStr(Index);
+      Item.OnClick:=@NewUFDefaultClick;
+      NewUFSetDefaultMenuItem.Add(Item);
+    end;
+    Item.Caption:=CurTemplate.LocalizedName;
+    Item.ShowAlwaysCheckable:=true;
+    Item.Checked:=SysUtils.CompareText(TemplateName,CurTemplate.Name)=0;
+    inc(Index);
+  end;
+  // remove unneeded items
+  while NewUFSetDefaultMenuItem.Count>Index do
+    NewUFSetDefaultMenuItem.Items[NewUFSetDefaultMenuItem.Count-1].Free;
+end;
 
 constructor TMainIDEBar.Create(TheOwner: TComponent);
 begin
@@ -361,6 +432,24 @@ end;
 procedure TMainIDEBar.UnhideIDE;
 begin
   WindowState:=FOldWindowState;
+end;
+
+procedure TMainIDEBar.CreatePopupMenus(TheOwner: TComponent);
+begin
+  // create the popupmenu for the MainIDEBar.OpenFileArrowSpeedBtn
+  OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
+  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
+  OpenFilePopupMenu.AutoPopup := False;
+
+  NewUnitFormPopupMenu:=TPopupMenu.Create(TheOwner);
+  NewUnitFormPopupMenu.Name:='NewUnitFormPopupMenu';
+  NewUnitFormPopupMenu.OnPopup:=@NewUnitFormPopupMenuPopup;
+  NewUnitSpeedBtn.PopupMenu := NewUnitFormPopupMenu;
+  NewFormSpeedBtn.PopupMenu := NewUnitFormPopupMenu;
+  NewUFSetDefaultMenuItem:=TMenuItem.Create(TheOwner);
+  NewUFSetDefaultMenuItem.Name:='NewUFSetDefaultMenuItem';
+  NewUFSetDefaultMenuItem.Caption:=lisSetDefault;
+  NewUnitFormPopupMenu.Items.Add(NewUFSetDefaultMenuItem);
 end;
 
 end.

@@ -35,7 +35,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileUtil, Dialogs,
-  Laz_XMLCfg, AvgLvlTree, NewItemIntf,
+  Laz_XMLCfg, AvgLvlTree, NewItemIntf, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
   IDEOptionsIntf;
@@ -977,8 +977,8 @@ begin
       CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
 
     // 'new items'
-    FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value','');
-    FNewFormTemplate:=XMLConfig.GetValue(Path+'New/FormTemplate/Value','');
+    FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
+    FNewFormTemplate:=XMLConfig.GetValue(Path+'New/FormTemplate/Value',FileDescNameLCLForm);
 
     // object inspector
     FObjectInspectorOptions.Load;
@@ -1188,8 +1188,8 @@ begin
     XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
 
     // 'new items'
-    XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,'');
-    XMLConfig.SetDeleteValue(Path+'New/FormTemplate/Value',FNewFormTemplate,'');
+    XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,FileDescNamePascalUnit);
+    XMLConfig.SetDeleteValue(Path+'New/FormTemplate/Value',FNewFormTemplate,FileDescNameLCLForm);
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;

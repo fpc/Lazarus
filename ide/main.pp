@@ -1573,10 +1573,7 @@ begin
 
   MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
 
-  // create the popupmenu for the OpenFileArrowSpeedBtn
-  MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(OwningComponent);
-  MainIDEBar.OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-  MainIDEBar.OpenFilePopupMenu.AutoPopup := False;
+  MainIDEBar.CreatePopupMenus(OwningComponent);
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -2320,13 +2317,33 @@ begin
 end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender: TObject);
+var
+  Category: TNewIDEItemCategory;
+  Template: TNewIDEItemTemplate;
+  Desc: TProjectFileDescriptor;
 begin
-  DoNewEditorFile(FileDescriptorUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Category:=NewIDEItems.FindByName(FileDescGroupName);
+  Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
+  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
+    Desc:=TNewItemProjectFile(Template).Descriptor
+  else
+    Desc:=FileDescriptorUnit;
+  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
+var
+  Category: TNewIDEItemCategory;
+  Template: TNewIDEItemTemplate;
+  Desc: TProjectFileDescriptor;
 begin
-  DoNewEditorFile(FileDescriptorForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Category:=NewIDEItems.FindByName(FileDescGroupName);
+  Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
+  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
+    Desc:=TNewItemProjectFile(Template).Descriptor
+  else
+    Desc:=FileDescriptorForm;
+  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);

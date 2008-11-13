@@ -3937,6 +3937,7 @@ resourcestring
   lisOriginalFileName = 'Original File Name:';
   lisProductName = 'Product Name:';
   lisProductVersion = 'Product Version:';
+  lisSetDefault = 'Set default';
 
 implementation
 
