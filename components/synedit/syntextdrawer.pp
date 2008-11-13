@@ -403,7 +403,7 @@ begin
   result := 0;
   for item := low (TFontStyle) to high(TFontStyle) do
     if item in Value then
-      result := result + 1 shr ord(item);
+      result := result + 1 shl ord(item);
 end;
 {$ENDIF}
 
