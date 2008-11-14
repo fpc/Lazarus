@@ -336,6 +336,7 @@ type
     procedure getBrushOrigin(retval: PPoint);
     function getClipping: Boolean;
     function getCompositionMode: QPainterCompositionMode;
+    procedure setCompositionMode(mode: QPainterCompositionMode);
     procedure getPenPos(retval: PPoint);
     function getWorldMatrix: QMatrixH;
     procedure setBrushOrigin(x, y: Integer);
@@ -352,7 +353,6 @@ type
     function SetBkMode(BkMode: Integer): Integer;
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
-    procedure setCompositionMode(mode: QPainterCompositionMode);
     function getClipRegion: TQtRegion;
     procedure setClipping(const AValue: Boolean);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
@@ -360,6 +360,7 @@ type
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
     procedure rotate(a: Double);
+    procedure setRenderHint(AHint: QPainterRenderHint; AValue: Boolean);
     procedure save;
     procedure restore;
     procedure translate(dx: Double; dy: Double);
@@ -2580,6 +2581,11 @@ begin
   Write('TQtDeviceContext.rotate() ');
   {$endif}
   QPainter_rotate(Widget, a);
+end;
+
+procedure TQtDeviceContext.setRenderHint(AHint: QPainterRenderHint; AValue: Boolean);
+begin
+  QPainter_setRenderHint(Widget, AHint, AValue);
 end;
 
 {------------------------------------------------------------------------------

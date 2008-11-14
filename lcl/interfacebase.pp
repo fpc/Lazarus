@@ -105,6 +105,7 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); virtual;
     procedure SetDesigning(AComponent: TComponent); virtual; abstract;
 
     function  InitHintFont(HintFont: TObject): Boolean; virtual;

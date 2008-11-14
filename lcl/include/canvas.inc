@@ -122,6 +122,19 @@ begin
     WidgetSet.DCRedraw(Handle);
 end;
 
+procedure TCanvas.RealizeAntialiasing;
+begin
+  if (FAntialiasingMode <> amDontCare) and HandleAllocated then
+  begin
+    Changing;
+    case FAntialiasingMode of
+      amOn: WidgetSet.DCSetAntialiasing(FHandle, True);
+      amOff: WidgetSet.DCSetAntialiasing(FHandle, False);
+    end;
+    Changed;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.CreateBrush
   Params:   None
@@ -1364,6 +1377,7 @@ begin
   FRegion.OnChange := @RegionChanged;
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
+  FAntialiasingMode := amDontCare;
   // FLock will be initialized on demand, because most canvas don't use it
   with FTextStyle do
   begin
@@ -1451,6 +1465,15 @@ begin
   Result := FHandle;
 end;
 
+procedure TCanvas.SetAntialiasingMode(const AValue: TAntialiasingMode);
+begin
+  if FAntialiasingMode <> AValue then
+  begin
+    FAntialiasingMode := AValue;
+    RealizeAntialiasing;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCanvas.SetHandle
   Params:  NewHandle - the new device context
@@ -1472,6 +1495,7 @@ begin
   FHandle := NewHandle;
   if FHandle <> 0 then
   begin
+    RealizeAntialiasing;
     Include(FState, csHandleValid);
   end;
   //DebugLn('[TCanvas.SetHandle] END Self=',DbgS(Self),' Handle=',DbgS(FHandle,8));
@@ -1540,6 +1564,7 @@ begin
       CreateHandle;
       if FHandle = 0 then
         raise EInvalidOperation.Create(rsCanvasDoesNotAllowDrawing);
+      RealizeAntialiasing;
       Include(FState, csHandleValid);
     end;
     if csFontValid in Needed then CreateFont;
