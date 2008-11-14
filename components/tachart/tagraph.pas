@@ -1775,8 +1775,6 @@ begin
 end;
 
 procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
-var
-  tmpCanvas : TCanvas;
 begin
   PaintOnCanvas(ACanvas, Rect);
 end;
@@ -1787,8 +1785,6 @@ procedure TChart.DisplaySeries(ACanvas: TCanvas);
 var
   i: Integer;
   Serie: TChartSeries;
-  Rgn: HRGN;
-  p: array[0..1] of TPoint;
 begin
   if FSeries.Count = 0 then exit;
 
@@ -1827,8 +1823,8 @@ end;
 procedure TChart.GetPointNextTo(
   X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
 var
-  j, k, XPoint, YPoint, SerieNumber, PointNumber: Integer;
-  Mini, Dist, Xg, Yg, XgOut, YgOut: Double;
+  XPoint, YPoint, SerieNumber, PointNumber: Integer;
+  Mini, Dist, XgOut, YgOut: Double;
   Serie: TComponent;
   TASerie: TSerie;
   T1, T2: Double;
@@ -1863,7 +1859,7 @@ end;
 procedure TChart.GetXPointNextTo(
   X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
 var
-  j, k, XPoint, YPoint, SerieNumber, PointNumber: Integer;
+  XPoint, SerieNumber, PointNumber: Integer;
   Mini, Dist, Xg, Yg: Double;
   Serie: TComponent;
   TASerie: TSerie;
@@ -1896,8 +1892,8 @@ end;
 procedure TChart.GetYPointNextTo(
   X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
 var
-  j, k, XPoint, YPoint, SerieNumber, PointNumber: Integer;
-  Mini, Dist, Xg, Yg: Double;
+  XPoint, YPoint, SerieNumber, PointNumber: Integer;
+  Mini, Dist: Double;
   Serie: TComponent;
   TASerie: TSerie;
 begin
