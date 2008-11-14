@@ -1019,6 +1019,8 @@ resourcestring
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
+  dlgHighlightColor = 'Highlight';
+  dlgHighlightFontColor = 'Highlight Font';
   liswlAdd = '&Add';
   liswlProperties = '&Properties';
   liswlEnabled = '&Enabled';

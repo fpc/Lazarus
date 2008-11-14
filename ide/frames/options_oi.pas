@@ -81,13 +81,15 @@ begin
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
 
-  SetLength(FStoredColors, 6);
+  SetLength(FStoredColors, 8);
   FStoredColors[0].ColorName := dlgBackColor;
   FStoredColors[1].ColorName := dlgSubPropColor;
   FStoredColors[2].ColorName := dlgReferenceColor;
-  FStoredColors[3].ColorName := dlgValueColor;
-  FStoredColors[4].ColorName := dlgDefValueColor;
-  FStoredColors[5].ColorName := dlgPropNameColor;
+  FStoredColors[3].ColorName := dlgHighlightColor;
+  FStoredColors[4].ColorName := dlgHighlightFontColor;
+  FStoredColors[5].ColorName := dlgValueColor;
+  FStoredColors[6].ColorName := dlgDefValueColor;
+  FStoredColors[7].ColorName := dlgPropNameColor;
   FLoaded := False;
 end;
 
@@ -129,9 +131,11 @@ begin
     FStoredColors[0].ColorValue := ObjectInspectorOptions.GridBackgroundColor;
     FStoredColors[1].ColorValue := ObjectInspectorOptions.SubPropertiesColor;
     FStoredColors[2].ColorValue := ObjectInspectorOptions.ReferencesColor;
-    FStoredColors[3].ColorValue := ObjectInspectorOptions.ValueColor;
-    FStoredColors[4].ColorValue := ObjectInspectorOptions.DefaultValueColor;
-    FStoredColors[5].ColorValue := ObjectInspectorOptions.PropertyNameColor;
+    FStoredColors[3].ColorValue := ObjectInspectorOptions.HighlightColor;
+    FStoredColors[4].ColorValue := ObjectInspectorOptions.HighlightFontColor;
+    FStoredColors[5].ColorValue := ObjectInspectorOptions.ValueColor;
+    FStoredColors[6].ColorValue := ObjectInspectorOptions.DefaultValueColor;
+    FStoredColors[7].ColorValue := ObjectInspectorOptions.PropertyNameColor;
 
     OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
@@ -150,9 +154,11 @@ begin
     ObjectInspectorOptions.GridBackgroundColor := ColorsListBox.Colors[0];
     ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[1];
     ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[2];
-    ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[3];
-    ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[4];
-    ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[5];
+    ObjectInspectorOptions.HighlightColor := ColorsListBox.Colors[3];
+    ObjectInspectorOptions.HighlightFontColor := ColorsListBox.Colors[4];
+    ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[5];
+    ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[6];
+    ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[7];
 
     ObjectInspectorOptions.DefaultItemHeight:=
        RoundToInt(OIDefaultItemHeightSpinEdit.Value);
