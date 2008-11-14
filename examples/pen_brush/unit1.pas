@@ -17,6 +17,7 @@ type
     Bevel2: TBevel;
     Button1: TBitBtn;
     cbCosmetic: TCheckBox;
+    cbAntialiasing: TCheckBox;
     FigureCombo: TComboBox;
     Label10: TLabel;
     Label7: TLabel;
@@ -38,6 +39,7 @@ type
     PaintBox: TPaintBox;
     procedure BrushChange(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure cbAntialiasingChange(Sender: TObject);
     procedure FigureComboChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -62,6 +64,19 @@ uses
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TForm1.cbAntialiasingChange(Sender: TObject);
+const
+  AntialiasingMode: array[TCheckBoxState] of TAntialiasingMode =
+  (
+    amOff,
+    amOn,
+    amDontCare
+  );
+begin
+  PaintBox.Canvas.AntialiasingMode := AntialiasingMode[cbAntialiasing.State];
+  PaintBox.Invalidate;
 end;
 
 procedure TForm1.FigureComboChange(Sender: TObject);
@@ -89,6 +104,13 @@ var
   ps: TPenStyle;
   bs: TBrushStyle;
 begin
+  case PaintBox.Canvas.AntialiasingMode of
+    amDontCare: cbAntialiasing.State := cbGrayed;
+    amOn: cbAntialiasing.State := cbChecked;
+    amOff: cbAntialiasing.State := cbUnchecked;
+  end;
+
+
   FPattern := TBitmap.Create;
   FPattern.SetHandles(CreateBitmap(8, 8, 1, 1, @LineBitsDotted), 0);
 
