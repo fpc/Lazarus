@@ -165,8 +165,7 @@ begin
   {we cannot call directly processEvents() with this flag
    since it produces AV's sometimes, so better check is there
    any pending event.}
-  if not QCoreApplication_hasPendingEvents then
-    QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
+  QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
 end;
 
 {------------------------------------------------------------------------------
@@ -178,14 +177,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  if QCoreApplication_hasPendingEvents then
-    {$IFDEF USE_QT_44}
-    {$note we must use QEventLoopDefferedDeletion because of SlotClose.
-      Normal forms are NOT closed without this ...}
-    QCoreApplication_processEvents(QEventLoopAllEvents or $10);
-    {$ELSE}
-    QCoreApplication_processEvents(QEventLoopAllEvents or QEventLoopDeferredDeletion);
-    {$ENDIF}
+  {$IFDEF USE_QT_44}
+  {$note we must use QEventLoopDefferedDeletion because of SlotClose.
+    Normal forms are NOT closed without this ...}
+  QCoreApplication_processEvents(QEventLoopAllEvents or $10);
+  {$ELSE}
+  QCoreApplication_processEvents(QEventLoopAllEvents or QEventLoopDeferredDeletion);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

@@ -796,8 +796,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
     {$endif}
-    
-//    TQtFont(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Brush
@@ -807,8 +805,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
-
-//    TQtBrush(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Image
@@ -838,8 +834,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Region';
     {$endif}
-    
-//    TQtRegion(aObject).Free;
   end
   
   {------------------------------------------------------------------------------
@@ -850,8 +844,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Pen';
     {$endif}
-
-//    TQtRegion(aObject).Free;
   end;
 
   if AObject is TQtResource then
@@ -867,7 +859,9 @@ begin
     //WriteLn('Delete object: ', PtrUInt(AObject));
     AObject.Free;
   end;
-  
+
+  Result := True;
+
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}

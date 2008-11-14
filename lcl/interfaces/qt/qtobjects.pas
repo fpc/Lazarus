@@ -569,12 +569,16 @@ type
 
   TQtTimer = class(TQtObject)
   private
+    FTimerHook: QTimer_hookH;
     FCallbackFunc: TFNTimerProc;
     FId: Integer;
     FAppObject: QObjectH;
   public
     constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    procedure signalTimeout; cdecl;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
@@ -710,6 +714,7 @@ destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
   begin
+    QCoreApplication_removePostedEvents(TheObject);
     DetachEvents;
     QObject_deleteLater(TheObject);
     TheObject := nil;
@@ -3345,6 +3350,29 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtTimer.AttachEvents;
+var
+  Method: TMethod;
+begin
+  FTimerHook := QTimer_hook_create(QTimerH(TheObject));
+  QTimer_timeout_Event(Method) := @signalTimeout;
+  QTimer_hook_hook_timeout(FTimerHook, Method);
+  inherited AttachEvents;
+end;
+
+procedure TQtTimer.DetachEvents;
+begin
+  if FTimerHook <> nil then
+    QTimer_hook_destroy(FTimerHook);
+  inherited DetachEvents;
+end;
+
+procedure TQtTimer.signalTimeout; cdecl;
+begin
+  if Assigned(FCallbackFunc) then
+    FCallbackFunc;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTimer.EventFilter
   Params:  None
@@ -3353,16 +3381,7 @@ end;
 function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
-
-  if QEvent_type(Event) = QEventTimer then
-  begin
-    Result := True;
-
-    QEvent_accept(Event);
-
-    if Assigned(FCallbackFunc) then
-      FCallbackFunc;
-  end;
+  QEvent_accept(Event);
 end;
 
 { TQtIcon }
