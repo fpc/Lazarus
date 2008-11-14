@@ -4,8 +4,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
   ClientHeight = 395
   ClientWidth = 598
   Visible = False
-  DesignLeft = 88
-  DesignTop = 116
+  DesignLeft = 66
+  DesignTop = 87
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -51,6 +51,41 @@ inherited OIOptionsFrame: TOIOptionsFrame
       ItemHeight = 16
       OnChange = ColorBoxChange
       TabOrder = 1
+    end
+    object BtnUseDefaultLazarusColors: TButton
+      AnchorSideLeft.Control = ColorsListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ColorsListBox
+      Left = 222
+      Height = 25
+      Top = 6
+      Width = 162
+      AutoSize = True
+      Caption = 'BtnUseDefaultLazarusColors'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = BtnUseDefaultLazarusColorsClick
+      TabOrder = 2
+    end
+    object BtnUseDefaultDelphiColors: TButton
+      AnchorSideLeft.Control = ColorsListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnUseDefaultLazarusColors
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnUseDefaultLazarusColors
+      AnchorSideRight.Side = asrBottom
+      Left = 222
+      Height = 25
+      Top = 37
+      Width = 162
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'BtnUseDefaultDelphiColors'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = BtnUseDefaultDelphiColorsClick
+      TabOrder = 3
     end
   end
   object OIMiscGroupBox: TGroupBox[1]

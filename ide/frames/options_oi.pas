@@ -38,6 +38,8 @@ type
   { TOIOptionsFrame }
 
   TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BtnUseDefaultLazarusColors: TButton;
+    BtnUseDefaultDelphiColors: TButton;
     ColorBox: TColorBox;
     ColorsListBox: TColorListBox;
     ObjectInspectorColorsGroupBox: TGroupBox;
@@ -48,6 +50,8 @@ type
     OIDrawGridLinesCheckBox: TCheckBox;
     OIMiscGroupBox: TGroupBox;
     OIShowHintCheckBox: TCheckBox;
+    procedure BtnUseDefaultDelphiColorsClick(Sender: TObject);
+    procedure BtnUseDefaultLazarusColorsClick(Sender: TObject);
     procedure ColorBoxChange(Sender: TObject);
     procedure ColorsListBoxGetColors(Sender: TCustomColorListBox;
       Items: TStrings);
@@ -55,6 +59,7 @@ type
   private
     FStoredColors: array of TColorRec;
     FLoaded: Boolean;
+    procedure ChangeColor(AIndex: Integer; NewColor: TColor);
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -90,6 +95,10 @@ begin
   FStoredColors[5].ColorName := dlgValueColor;
   FStoredColors[6].ColorName := dlgDefValueColor;
   FStoredColors[7].ColorName := dlgPropNameColor;
+
+  BtnUseDefaultLazarusColors.Caption := dlgOIUseDefaultLazarusColors;
+  BtnUseDefaultDelphiColors.Caption := dlgOIUseDefaultDelphiColors;
+
   FLoaded := False;
 end;
 
@@ -104,11 +113,42 @@ begin
     Items.AddObject(FStoredColors[i].ColorName, TObject(PtrInt(FStoredColors[i].ColorValue)));
 end;
 
+procedure TOIOptionsFrame.ChangeColor(AIndex: Integer; NewColor: TColor);
+begin
+  ColorsListBox.Items.Objects[AIndex] := TObject(PtrInt(NewColor));
+end;
+
 procedure TOIOptionsFrame.ColorBoxChange(Sender: TObject);
 begin
   if not FLoaded or (ColorsListBox.ItemIndex < 0) then
     Exit;
-  ColorsListBox.Items.Objects[ColorsListBox.ItemIndex] := TObject(PtrInt(ColorBox.Selected));
+  ChangeColor(ColorsListBox.ItemIndex, ColorBox.Selected);
+  ColorsListBox.Invalidate;
+end;
+
+procedure TOIOptionsFrame.BtnUseDefaultLazarusColorsClick(Sender: TObject);
+begin
+  ChangeColor(0, DefBackgroundColor);
+  ChangeColor(1, DefSubPropertiesColor);
+  ChangeColor(2, DefReferencesColor);
+  ChangeColor(3, DefHighlightColor);
+  ChangeColor(4, DefHighlightFontColor);
+  ChangeColor(5, DefValueColor);
+  ChangeColor(6, DefDefaultValueColor);
+  ChangeColor(7, DefNameColor);
+  ColorsListBox.Invalidate;
+end;
+
+procedure TOIOptionsFrame.BtnUseDefaultDelphiColorsClick(Sender: TObject);
+begin
+  ChangeColor(0, clWindow);
+  ChangeColor(1, clGreen);
+  ChangeColor(2, clMaroon);
+  ChangeColor(3, $E0E0E0);
+  ChangeColor(4, clBlack);
+  ChangeColor(5, clNavy);
+  ChangeColor(6, clNavy);
+  ChangeColor(7, clBtnText);
   ColorsListBox.Invalidate;
 end;
 

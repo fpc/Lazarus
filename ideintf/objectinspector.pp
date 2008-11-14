@@ -45,6 +45,15 @@ uses
 const
   OIOptionsFileVersion = 3;
 
+  DefBackgroundColor = clBtnFace;
+  DefReferencesColor = clMaroon;
+  DefSubPropertiesColor = clGreen;
+  DefNameColor = clWindowText;
+  DefDefaultValueColor = clWindowText;
+  DefValueColor = clMaroon;
+  DefHighlightColor = clHighlight;
+  DefHighlightFontColor = clHighlightText;
+
 type
   EObjectInspectorException = class(Exception);
 
@@ -478,12 +487,12 @@ type
     procedure SetItemIndexAndFocus(NewItemIndex: integer);
   public
     property BackgroundColor: TColor read FBackgroundColor
-                                     write SetBackgroundColor default clBtnFace;
-    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default clHighlight;
+                                     write SetBackgroundColor default DefBackgroundColor;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefHighlightColor;
     property ReferencesColor: TColor read FReferencesColor
-                                     write SetReferences default clMaroon;
+                                     write SetReferences default DefReferencesColor;
     property SubPropertiesColor: TColor read FSubPropertiesColor
-                                     write SetSubPropertiesColor default clGreen;
+                                     write SetSubPropertiesColor default DefSubPropertiesColor;
     property NameFont: TFont read FNameFont write FNameFont;
     property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
     property ValueFont: TFont read FValueFont write FValueFont;
@@ -825,19 +834,19 @@ begin
   FPreferredSplitterX:=FSplitterX;
   FIndent:=9;
 
-  FBackgroundColor:=clBtnFace;
-  FReferencesColor:=clMaroon;
-  FSubPropertiesColor:=clGreen;
-  FHighlightColor:=clHighlight;
+  FBackgroundColor:=DefBackgroundColor;
+  FReferencesColor:=DefReferencesColor;
+  FSubPropertiesColor:=DefSubPropertiesColor;
+  FHighlightColor:=DefHighlightColor;
 
   FNameFont:=TFont.Create;
-  FNameFont.Color:=clWindowText;
+  FNameFont.Color:=DefNameColor;
   FValueFont:=TFont.Create;
-  FValueFont.Color:=clMaroon;
+  FValueFont.Color:=DefValueColor;
   FDefaultValueFont:=TFont.Create;
-  FDefaultValueFont.Color:=clWindowText;
+  FDefaultValueFont.Color:=DefDefaultValueColor;
   FHighlightFont:=TFont.Create;
-  FHighlightFont.Color:=clHighlightText;
+  FHighlightFont.Color:=DefHighlightFontColor;
 
   FDrawHorzGridLines := True;
 
@@ -3284,14 +3293,14 @@ begin
   FShowComponentTree:=true;
   FComponentTreeHeight:=100;
 
-  FGridBackgroundColor := clBtnFace;
-  FDefaultValueColor := clWindowText;
-  FSubPropertiesColor := clGreen;
-  FValueColor := clMaroon;
-  FReferencesColor := clMaroon;
-  FPropertyNameColor := clWindowText;
-  FHighlightColor := clHighlight;
-  FHighlightFontColor := clHighlightText;
+  FGridBackgroundColor := DefBackgroundColor;
+  FDefaultValueColor := DefDefaultValueColor;
+  FSubPropertiesColor := DefSubPropertiesColor;
+  FValueColor := DefValueColor;
+  FReferencesColor := DefReferencesColor;
+  FPropertyNameColor := DefNameColor;
+  FHighlightColor := DefHighlightColor;
+  FHighlightFontColor := DefHighlightFontColor;
 
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
@@ -3340,21 +3349,21 @@ begin
        Path+'ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=ConfigStore.GetValue(
-         Path+'Color/GridBackground',clBtnFace);
+         Path+'Color/GridBackground',DefBackgroundColor);
     FDefaultValueColor:=ConfigStore.GetValue(
-         Path+'Color/DefaultValue', clWindowText);
+         Path+'Color/DefaultValue', DefDefaultValueColor);
     FSubPropertiesColor:=ConfigStore.GetValue(
-         Path+'Color/SubProperties', clGreen);
+         Path+'Color/SubProperties', DefSubPropertiesColor);
     FValueColor:=ConfigStore.GetValue(
-         Path+'Color/Value', clMaroon);
+         Path+'Color/Value', DefValueColor);
     FReferencesColor:=ConfigStore.GetValue(
-         Path+'Color/References',clMaroon);
+         Path+'Color/References',DefReferencesColor);
     FPropertyNameColor:=ConfigStore.GetValue(
-         Path+'Color/PropertyName',clWindowText);
+         Path+'Color/PropertyName',DefNameColor);
     FHighlightColor:=ConfigStore.GetValue(
-         Path+'Color/Highlight',clHighlight);
+         Path+'Color/Highlight',DefHighlightColor);
     FHighlightFontColor:=ConfigStore.GetValue(
-         Path+'Color/HighlightFont',clHighlightText);
+         Path+'Color/HighlightFont',DefHighlightFontColor);
 
     FShowHints:=ConfigStore.GetValue(
          Path+'ShowHints',FileVersion>=3);
@@ -3407,21 +3416,21 @@ begin
                              FComponentTreeHeight,100);
 
     ConfigStore.SetDeleteValue(Path+'Color/GridBackground',
-                             FGridBackgroundColor,clBackground);
+                             FGridBackgroundColor,DefBackgroundColor);
     ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',
-                             FDefaultValueColor,clBackground);
+                             FDefaultValueColor,DefDefaultValueColor);
     ConfigStore.SetDeleteValue(Path+'Color/SubProperties',
-                             FSubPropertiesColor,clBackground);
+                             FSubPropertiesColor,DefSubPropertiesColor);
     ConfigStore.SetDeleteValue(Path+'Color/Value',
-                             FValueColor,clBackground);
+                             FValueColor,DefValueColor);
     ConfigStore.SetDeleteValue(Path+'Color/References',
-                             FReferencesColor,clBackground);
+                             FReferencesColor,DefReferencesColor);
     ConfigStore.SetDeleteValue(Path+'Color/PropertyName',
-                              FPropertyNameColor,clWindowText);
+                              FPropertyNameColor,DefNameColor);
     ConfigStore.SetDeleteValue(Path+'Color/Highlight',
-                              FHighlightColor,clHighlight);
+                              FHighlightColor,DefHighlightColor);
     ConfigStore.SetDeleteValue(Path+'Color/HighlightFont',
-                              FHighlightFontColor,clHighlightText);
+                              FHighlightFontColor,DefHighlightFontColor);
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              true);

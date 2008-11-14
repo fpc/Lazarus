@@ -1033,6 +1033,8 @@ resourcestring
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOIItemHeight = 'Item height';
+  dlgOIUseDefaultLazarusColors = 'Use default Lazarus colors';
+  dlgOIUseDefaultDelphiColors = 'Use default Delphi colors';
   lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
   lisAutoShowObjectInspector = 'Auto show Object Inspector';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
