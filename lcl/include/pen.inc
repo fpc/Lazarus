@@ -378,7 +378,10 @@ begin
     elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[IsGeometric];
     if IsGeometric then
       elpPenStyle := elpPenStyle or PEN_ENDCAP[EndCap] or PEN_JOIN[JoinStyle];
-    elpWidth := Width;
+    if IsGeometric then
+      elpWidth := Width
+    else
+      elpWidth := 0;
     elpBrushStyle := BS_SOLID;
     elpColor := FColor;
   end;
