@@ -53,6 +53,8 @@ const
   DefValueColor = clMaroon;
   DefHighlightColor = clHighlight;
   DefHighlightFontColor = clHighlightText;
+  DefGutterColor = DefBackgroundColor;
+  DefGutterEdgeColor = cl3DShadow;
 
 type
   EObjectInspectorException = class(Exception);
@@ -164,6 +166,8 @@ type
     FComponentTreeHeight: integer;
     FConfigStore: TConfigStorage;
     FDefaultItemHeight: integer;
+    FGutterColor: TColor;
+    FGutterEdgeColor: TColor;
     FShowComponentTree: boolean;
 
     FSaveBounds: boolean;
@@ -220,6 +224,8 @@ type
     property PropertyNameColor: TColor read FPropertyNameColor write FPropertyNameColor;
     property HighlightColor: TColor read FHighlightColor write FHighlightColor;
     property HighlightFontColor: TColor read FHighlightFontColor write FHighlightFontColor;
+    property GutterColor: TColor read FGutterColor write FGutterColor;
+    property GutterEdgeColor: TColor read FGutterEdgeColor write FGutterEdgeColor;
 
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
@@ -315,6 +321,8 @@ type
   private
     FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
+    FGutterColor: TColor;
+    FGutterEdgeColor: TColor;
     FHighlightColor: TColor;
     FLayout: TOILayout;
     FOnOIKeyDown: TKeyEvent;
@@ -365,6 +373,8 @@ type
     procedure SetDrawHorzGridLines(const AValue: Boolean);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetFilter(const AValue: TTypeKinds);
+    procedure SetGutterColor(const AValue: TColor);
+    procedure SetGutterEdgeColor(const AValue: TColor);
     procedure SetHighlightColor(const AValue: TColor);
     procedure SetItemIndex(NewIndex:integer);
 
@@ -488,6 +498,8 @@ type
   public
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default DefBackgroundColor;
+    property GutterColor: TColor read FGutterColor write SetGutterColor default DefGutterColor;
+    property GutterEdgeColor: TColor read FGutterEdgeColor write SetGutterEdgeColor default DefGutterEdgeColor;
     property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefHighlightColor;
     property ReferencesColor: TColor read FReferencesColor
                                      write SetReferences default DefReferencesColor;
@@ -838,6 +850,8 @@ begin
   FReferencesColor:=DefReferencesColor;
   FSubPropertiesColor:=DefSubPropertiesColor;
   FHighlightColor:=DefHighlightColor;
+  FGutterColor:=DefGutterColor;
+  FGutterEdgeColor:=DefGutterEdgeColor;
 
   FNameFont:=TFont.Create;
   FNameFont.Color:=DefNameColor;
@@ -2402,7 +2416,10 @@ begin
   if Layout = oilVertical then
     ValueRect.Left := NameTextRect.Left
   else
+  begin
+    inc(NameIconRect.Right, 3);
     inc(NameTextRect.Left, 4);
+  end;
 
   DrawState:=[];
   if ARow = FItemIndex then
@@ -2421,6 +2438,12 @@ begin
     begin
       Brush.Color := FBackgroundColor;
       FillRect(FullRect);
+    end;
+
+    if (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
+    begin
+      Brush.Color := FGutterColor;
+      FillRect(NameIconRect);
     end;
 
     // draw icon
@@ -2501,15 +2524,16 @@ begin
       Pen.Style := psSolid;
       Pen.Cosmetic := True;
       Pen.Color := cl3DHiLight;
-      MoveTo(NameTextRect.Left - 1, NameRect.Bottom - 1);
-      LineTo(NameTextRect.Left - 1, NameRect.Top - 1 - FRowSpacing);
       MoveTo(NameRect.Right - 1, NameRect.Bottom - 1);
       LineTo(NameRect.Right - 1, NameRect.Top - 1 - FRowSpacing);
       Pen.Color := cl3DShadow;
-      MoveTo(NameTextRect.Left - 2, NameRect.Bottom - 1);
-      LineTo(NameTextRect.Left - 2, NameRect.Top - 1 - FRowSpacing);
       MoveTo(NameRect.Right - 2, NameRect.Bottom - 1);
       LineTo(NameRect.Right - 2, NameRect.Top - 1 - FRowSpacing);
+
+      // draw gutter line
+      Pen.Color := GutterEdgeColor;
+      MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+      LineTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
 
       if CurRow.Lvl > 0 then
       begin
@@ -2517,22 +2541,22 @@ begin
         if ARow > 0 then
         begin
           ParentRect := RowRect(ARow - 1);
-          X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 2;
-          if X <> NameTextRect.Left - 2 then
+          X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
+          if X <> NameIconRect.Right then
           begin
-            MoveTo(NameTextRect.Left - 2, NameRect.Top - 1 - FRowSpacing);
-            LineTo(X, NameRect.Top - 1 - FRowSpacing);
+            MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+            LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
           end;
         end;
         // to to parent next sibling
         if ARow < FRows.Count - 1 then
         begin
           ParentRect := RowRect(ARow + 1);
-          X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 2;
-          if X <> NameTextRect.Left - 2 then
+          X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
+          if X <> NameIconRect.Right then
           begin
-            MoveTo(NameTextRect.Left - 2, NameRect.Bottom - 1);
-            LineTo(X, NameRect.Bottom - 1);
+            MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+            LineTo(X - 1, NameRect.Bottom - 1);
           end;
         end;
       end;
@@ -2722,6 +2746,20 @@ begin
     FFilter:=AValue;
     BuildPropertyList;
   end;
+end;
+
+procedure TOICustomPropertyGrid.SetGutterColor(const AValue: TColor);
+begin
+  if FGutterColor=AValue then exit;
+  FGutterColor:=AValue;
+  invalidate;
+end;
+
+procedure TOICustomPropertyGrid.SetGutterEdgeColor(const AValue: TColor);
+begin
+  if FGutterEdgeColor=AValue then exit;
+  FGutterEdgeColor:=AValue;
+  invalidate;
 end;
 
 procedure TOICustomPropertyGrid.SetHighlightColor(const AValue: TColor);
@@ -3301,6 +3339,8 @@ begin
   FPropertyNameColor := DefNameColor;
   FHighlightColor := DefHighlightColor;
   FHighlightFontColor := DefHighlightFontColor;
+  FGutterColor := DefGutterColor;
+  FGutterEdgeColor := DefGutterEdgeColor;
 
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
@@ -3364,6 +3404,10 @@ begin
          Path+'Color/Highlight',DefHighlightColor);
     FHighlightFontColor:=ConfigStore.GetValue(
          Path+'Color/HighlightFont',DefHighlightFontColor);
+    FGutterColor:=ConfigStore.GetValue(
+         Path+'Color/Gutter',DefGutterColor);
+    FGutterEdgeColor:=ConfigStore.GetValue(
+         Path+'Color/GutterEdge',DefGutterEdgeColor);
 
     FShowHints:=ConfigStore.GetValue(
          Path+'ShowHints',FileVersion>=3);
@@ -3431,6 +3475,10 @@ begin
                               FHighlightColor,DefHighlightColor);
     ConfigStore.SetDeleteValue(Path+'Color/HighlightFont',
                               FHighlightFontColor,DefHighlightFontColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Gutter',
+                              FGutterColor,DefGutterColor);
+    ConfigStore.SetDeleteValue(Path+'Color/GutterEdge',
+                              FGutterEdgeColor,DefGutterEdgeColor);
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              true);
@@ -3469,6 +3517,8 @@ begin
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
   FHighlightColor:=AnObjInspector.PropertyGrid.HighlightColor;
   FHighlightFontColor:=AnObjInspector.PropertyGrid.HighlightFont.Color;
+  FGutterColor:=AnObjInspector.PropertyGrid.GutterColor;
+  FGutterEdgeColor:=AnObjInspector.PropertyGrid.GutterEdgeColor;
 
   FShowHints := AnObjInspector.PropertyGrid.ShowHint;
   FAutoShow := AnObjInspector.AutoShow;
@@ -3505,6 +3555,8 @@ begin
     Grid.NameFont.Color := FPropertyNameColor;
     Grid.HighlightColor := FHighlightColor;
     Grid.HighlightFont.Color := FHighlightFontColor;
+    Grid.GutterColor := FGutterColor;
+    Grid.GutterEdgeColor := FGutterEdgeColor;
     Grid.ShowHint := FShowHints;
     Grid.DrawHorzGridLines := FDrawGridLines;
   end;

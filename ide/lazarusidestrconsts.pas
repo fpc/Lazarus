@@ -1030,6 +1030,8 @@ resourcestring
   liswlDeLeteAll = 'De&lete All';
   dlgDefValueColor = 'Default value';
   dlgPropNameColor = 'Property name';
+  dlgPropGutterColor = 'Gutter';
+  dlgPropGutterEdgeColor = 'Gutter Edge';
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOIItemHeight = 'Item height';

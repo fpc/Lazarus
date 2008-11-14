@@ -86,7 +86,7 @@ begin
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
 
-  SetLength(FStoredColors, 8);
+  SetLength(FStoredColors, 10);
   FStoredColors[0].ColorName := dlgBackColor;
   FStoredColors[1].ColorName := dlgSubPropColor;
   FStoredColors[2].ColorName := dlgReferenceColor;
@@ -95,6 +95,8 @@ begin
   FStoredColors[5].ColorName := dlgValueColor;
   FStoredColors[6].ColorName := dlgDefValueColor;
   FStoredColors[7].ColorName := dlgPropNameColor;
+  FStoredColors[8].ColorName := dlgPropGutterColor;
+  FStoredColors[9].ColorName := dlgPropGutterEdgeColor;
 
   BtnUseDefaultLazarusColors.Caption := dlgOIUseDefaultLazarusColors;
   BtnUseDefaultDelphiColors.Caption := dlgOIUseDefaultDelphiColors;
@@ -136,6 +138,8 @@ begin
   ChangeColor(5, DefValueColor);
   ChangeColor(6, DefDefaultValueColor);
   ChangeColor(7, DefNameColor);
+  ChangeColor(8, DefGutterColor);
+  ChangeColor(9, DefGutterEdgeColor);
   ColorsListBox.Invalidate;
 end;
 
@@ -149,6 +153,8 @@ begin
   ChangeColor(5, clNavy);
   ChangeColor(6, clNavy);
   ChangeColor(7, clBtnText);
+  ChangeColor(8, clCream);
+  ChangeColor(9, clGray);
   ColorsListBox.Invalidate;
 end;
 
@@ -177,6 +183,8 @@ begin
     FStoredColors[5].ColorValue := ObjectInspectorOptions.ValueColor;
     FStoredColors[6].ColorValue := ObjectInspectorOptions.DefaultValueColor;
     FStoredColors[7].ColorValue := ObjectInspectorOptions.PropertyNameColor;
+    FStoredColors[8].ColorValue := ObjectInspectorOptions.GutterColor;
+    FStoredColors[9].ColorValue := ObjectInspectorOptions.GutterEdgeColor;
 
     OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
@@ -200,6 +208,8 @@ begin
     ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[5];
     ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[6];
     ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[7];
+    ObjectInspectorOptions.GutterColor := ColorsListBox.Colors[8];
+    ObjectInspectorOptions.GutterEdgeColor := ColorsListBox.Colors[9];
 
     ObjectInspectorOptions.DefaultItemHeight:=
        RoundToInt(OIDefaultItemHeightSpinEdit.Value);
