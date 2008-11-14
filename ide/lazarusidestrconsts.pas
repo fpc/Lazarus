@@ -1041,6 +1041,7 @@ resourcestring
   lisAutoShowObjectInspector = 'Auto show Object Inspector';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
   lisDrawGridLinesObjectInspector = 'Draw grid lines';
+  lisShowGutterInObjectInspector = 'Show gutter';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';

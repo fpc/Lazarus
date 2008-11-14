@@ -195,6 +195,7 @@ propertygrid/issue_nogui.png
 propertygrid/issue_qt.png
 propertygrid/issue_win32.png
 propertygrid/issue_wince.png
+propertygrid/pg_active_row.png
 codetoolsdefines/da_block.png
 codetoolsdefines/da_define.png
 codetoolsdefines/da_definerecurse.png

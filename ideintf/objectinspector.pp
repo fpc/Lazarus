@@ -172,6 +172,7 @@ type
 
     FSaveBounds: boolean;
     FLeft: integer;
+    FShowGutter: boolean;
     FTop: integer;
     FWidth: integer;
     FHeight: integer;
@@ -232,6 +233,7 @@ type
     property AutoShow: boolean read FAutoShow write FAutoShow;
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
+    property ShowGutter: boolean read FShowGutter write FShowGutter;
   end;
 
   TOICustomPropertyGrid = class;
@@ -328,6 +330,7 @@ type
     FOnOIKeyDown: TKeyEvent;
     FReferencesColor: TColor;
     FRowSpacing: integer;
+    FShowGutter: Boolean;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TControl; // nil or ValueButton
@@ -353,6 +356,7 @@ type
     FStates: TOIPropertyGridStates;
     FTopY: integer;
     FDrawHorzGridLines: Boolean;
+    FActiveRowBmp: TCustomBitmap;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -384,6 +388,7 @@ type
     procedure AlignEditComponents;
     procedure EndDragSplitter;
     procedure SetRowSpacing(const AValue: integer);
+    procedure SetShowGutter(const AValue: Boolean);
     procedure SetSplitterX(const NewValue:integer);
     procedure SetTopY(const NewValue:integer);
 
@@ -534,6 +539,7 @@ type
     property RowSpacing: integer read FRowSpacing write SetRowSpacing;
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
+    property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
     property TopY: integer read FTopY write SetTopY default 0;
     property Favourites: TOIFavouriteProperties read FFavourites
@@ -863,6 +869,7 @@ begin
   FHighlightFont.Color:=DefHighlightFontColor;
 
   FDrawHorzGridLines := True;
+  FShowGutter := True;
 
   SetInitialBounds(0,0,200,130);
   ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
@@ -944,6 +951,8 @@ begin
     SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
   end;
+
+  FActiveRowBmp := CreateBitmapFromLazarusResource('pg_active_row');
 
   if DefItemHeight<3 then
     FDefaultItemHeight:=ValueComboBox.Height-3
@@ -1076,11 +1085,13 @@ begin
 end;
 
 destructor TOICustomPropertyGrid.Destroy;
-var a:integer;
+var
+  a: integer;
 begin
   Application.RemoveOnUserInputHandler(@OnUserInput);
-  FItemIndex:=-1;
-  for a:=0 to FRows.Count-1 do Rows[a].Free;
+  FItemIndex := -1;
+  for a := 0 to FRows.Count - 1 do
+    Rows[a].Free;
   FreeAndNil(FRows);
   FreeAndNil(FSelection);
   FreeAndNil(FNotificationComponents);
@@ -1092,6 +1103,7 @@ begin
   FreeAndNil(FHintTimer);
   FreeAndNil(FHintWindow);
   FreeAndNil(FNewComboBoxItems);
+  FreeAndNil(FActiveRowBmp);
   inherited Destroy;
 end;
 
@@ -2204,6 +2216,13 @@ begin
   SetItemsTops;
 end;
 
+procedure TOICustomPropertyGrid.SetShowGutter(const AValue: Boolean);
+begin
+  if FShowGutter=AValue then exit;
+  FShowGutter:=AValue;
+  invalidate;
+end;
+
 procedure TOICustomPropertyGrid.SetSplitterX(const NewValue:integer);
 var AdjustedValue:integer;
 begin
@@ -2376,6 +2395,11 @@ var
     ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + 9, Y + 9), nil);
   end;
 
+  procedure DrawActiveRow(X, Y: Integer);
+  begin
+    Canvas.Draw(X, Y, FActiveRowBmp);
+  end;
+
 // PaintRow
 begin
   CurRow := Rows[ARow];
@@ -2417,8 +2441,8 @@ begin
     ValueRect.Left := NameTextRect.Left
   else
   begin
-    inc(NameIconRect.Right, 3);
-    inc(NameTextRect.Left, 4);
+    inc(NameIconRect.Right, 2 + Ord(ShowGutter));
+    inc(NameTextRect.Left, 3 +  + Ord(ShowGutter));
   end;
 
   DrawState:=[];
@@ -2429,7 +2453,7 @@ begin
   begin
     // clear background in one go
 
-    if (ARow = ItemIndex) and (FHighlightColor <> clNone) then
+    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
       NameBgColor := FHighlightColor
     else
       NameBgColor := FBackgroundColor;
@@ -2440,7 +2464,7 @@ begin
       FillRect(FullRect);
     end;
 
-    if (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
+    if ShowGutter and (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
     begin
       Brush.Color := FGutterColor;
       FillRect(NameIconRect);
@@ -2448,7 +2472,10 @@ begin
 
     // draw icon
     if CanExpandRow(CurRow) then
-      DrawTreeIcon(IconX, IconY, CurRow.Expanded);
+      DrawTreeIcon(IconX, IconY, CurRow.Expanded)
+    else
+    if (ARow = FItemIndex) then
+      DrawActiveRow(IconX, IconY);
 
     // draw name
     OldFont:=Font;
@@ -2531,32 +2558,35 @@ begin
       LineTo(NameRect.Right - 2, NameRect.Top - 1 - FRowSpacing);
 
       // draw gutter line
-      Pen.Color := GutterEdgeColor;
-      MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
-      LineTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
-
-      if CurRow.Lvl > 0 then
+      if ShowGutter then
       begin
-        // draw to parent
-        if ARow > 0 then
+        Pen.Color := GutterEdgeColor;
+        MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+        LineTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+
+        if CurRow.Lvl > 0 then
         begin
-          ParentRect := RowRect(ARow - 1);
-          X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
-          if X <> NameIconRect.Right then
+          // draw to parent
+          if ARow > 0 then
           begin
-            MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
-            LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
+            ParentRect := RowRect(ARow - 1);
+            X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
+            if X <> NameIconRect.Right then
+            begin
+              MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+              LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
+            end;
           end;
-        end;
-        // to to parent next sibling
-        if ARow < FRows.Count - 1 then
-        begin
-          ParentRect := RowRect(ARow + 1);
-          X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
-          if X <> NameIconRect.Right then
+          // to to parent next sibling
+          if ARow < FRows.Count - 1 then
           begin
-            MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
-            LineTo(X - 1, NameRect.Bottom - 1);
+            ParentRect := RowRect(ARow + 1);
+            X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
+            if X <> NameIconRect.Right then
+            begin
+              MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+              LineTo(X - 1, NameRect.Bottom - 1);
+            end;
           end;
         end;
       end;
@@ -2581,9 +2611,11 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
-var a:integer;
-  SpaceRect:TRect;
+procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues: boolean);
+var
+  a: integer;
+  SpaceRect: TRect;
+  GutterX: Integer;
 begin
   BuildPropertyList(true);
   if not PaintOnlyChangedValues then
@@ -2591,28 +2623,43 @@ begin
     with Canvas do
     begin
       // draw properties
-      for a:=0 to FRows.Count-1 do
-      begin
+      for a := 0 to FRows.Count - 1 do
         PaintRow(a);
-      end;
       // draw unused space below rows
-      SpaceRect:=Rect(BorderWidth,BorderWidth,
-                      ClientWidth-BorderWidth+1,ClientHeight-BorderWidth+1);
-      if FRows.Count>0 then
-        SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
-// TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if FBackgroundColor<>clNone then
+      SpaceRect := Rect(BorderWidth, BorderWidth,
+                        ClientWidth - BorderWidth + 1, ClientHeight - BorderWidth + 1);
+      if FRows.Count > 0 then
+        SpaceRect.Top := Rows[FRows.Count - 1].Bottom - FTopY + BorderWidth;
+      if FBackgroundColor <> clNone then
       begin
-        Brush.Color:=FBackgroundColor;
+        Brush.Color := FBackgroundColor;
         FillRect(SpaceRect);
+      end;
+
+      // draw gutter if needed
+      if ShowGutter then
+      begin
+        if FRows.Count > 0 then
+          GutterX := RowRect(FRows.Count - 1).Left + GetTreeIconX(FRows.Count - 1)
+        else
+          GutterX := BorderWidth + 2;
+        inc(GutterX, Indent + 3);
+        SpaceRect.Right := GutterX;
+        if GutterColor <> clNone then
+        begin
+          Brush.Color := GutterColor;
+          FillRect(SpaceRect);
+        end;
+        MoveTo(GutterX, SpaceRect.Top);
+        LineTo(GutterX, SpaceRect.Bottom);
       end;
       // don't draw border: borderstyle=bsSingle
     end;
   end else
   begin
-    for a:=0 to FRows.Count-1 do
+    for a := 0 to FRows.Count-1 do
     begin
-      if Rows[a].Editor.GetVisualValue<>Rows[a].LastPaintedValue then
+      if Rows[a].Editor.GetVisualValue <> Rows[a].LastPaintedValue then
         PaintRow(a);
     end;
   end;
@@ -3344,6 +3391,7 @@ begin
 
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
+  FShowGutter := True;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3417,6 +3465,8 @@ begin
          Path+'BoldNonDefaultValues',true);
     FDrawGridLines := ConfigStore.GetValue(
          Path+'DrawGridLines',true);
+    FShowGutter := ConfigStore.GetValue(
+         Path+'ShowGutter',true);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3485,6 +3535,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
+    ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3524,6 +3575,7 @@ begin
   FAutoShow := AnObjInspector.AutoShow;
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
+  FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3559,6 +3611,7 @@ begin
     Grid.GutterEdgeColor := FGutterEdgeColor;
     Grid.ShowHint := FShowHints;
     Grid.DrawHorzGridLines := FDrawGridLines;
+    Grid.ShowGutter := FShowGutter;
   end;
   AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
   AnObjInspector.ShowComponentTree := FShowComponentTree;
@@ -5270,11 +5323,8 @@ begin
   end;
 end;
 
-
-
 initialization
   {$I objectinspector.lrs}
-  
   
 finalization
 

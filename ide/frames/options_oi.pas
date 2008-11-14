@@ -40,6 +40,7 @@ type
   TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnUseDefaultLazarusColors: TButton;
     BtnUseDefaultDelphiColors: TButton;
+    OIShowGutterCheckBox: TCheckBox;
     ColorBox: TColorBox;
     ColorsListBox: TColorListBox;
     ObjectInspectorColorsGroupBox: TGroupBox;
@@ -85,18 +86,19 @@ begin
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
+  OIShowGutterCheckBox.Caption := lisShowGutterInObjectInspector;
 
   SetLength(FStoredColors, 10);
   FStoredColors[0].ColorName := dlgBackColor;
-  FStoredColors[1].ColorName := dlgSubPropColor;
-  FStoredColors[2].ColorName := dlgReferenceColor;
+  FStoredColors[1].ColorName := dlgPropGutterColor;
+  FStoredColors[2].ColorName := dlgPropGutterEdgeColor;
   FStoredColors[3].ColorName := dlgHighlightColor;
   FStoredColors[4].ColorName := dlgHighlightFontColor;
-  FStoredColors[5].ColorName := dlgValueColor;
-  FStoredColors[6].ColorName := dlgDefValueColor;
-  FStoredColors[7].ColorName := dlgPropNameColor;
-  FStoredColors[8].ColorName := dlgPropGutterColor;
-  FStoredColors[9].ColorName := dlgPropGutterEdgeColor;
+  FStoredColors[5].ColorName := dlgPropNameColor;
+  FStoredColors[6].ColorName := dlgValueColor;
+  FStoredColors[7].ColorName := dlgDefValueColor;
+  FStoredColors[8].ColorName := dlgSubPropColor;
+  FStoredColors[9].ColorName := dlgReferenceColor;
 
   BtnUseDefaultLazarusColors.Caption := dlgOIUseDefaultLazarusColors;
   BtnUseDefaultDelphiColors.Caption := dlgOIUseDefaultDelphiColors;
@@ -131,30 +133,30 @@ end;
 procedure TOIOptionsFrame.BtnUseDefaultLazarusColorsClick(Sender: TObject);
 begin
   ChangeColor(0, DefBackgroundColor);
-  ChangeColor(1, DefSubPropertiesColor);
-  ChangeColor(2, DefReferencesColor);
+  ChangeColor(1, DefGutterColor);
+  ChangeColor(2, DefGutterEdgeColor);
   ChangeColor(3, DefHighlightColor);
   ChangeColor(4, DefHighlightFontColor);
-  ChangeColor(5, DefValueColor);
-  ChangeColor(6, DefDefaultValueColor);
-  ChangeColor(7, DefNameColor);
-  ChangeColor(8, DefGutterColor);
-  ChangeColor(9, DefGutterEdgeColor);
+  ChangeColor(5, DefNameColor);
+  ChangeColor(6, DefValueColor);
+  ChangeColor(7, DefDefaultValueColor);
+  ChangeColor(8, DefSubPropertiesColor);
+  ChangeColor(9, DefReferencesColor);
   ColorsListBox.Invalidate;
 end;
 
 procedure TOIOptionsFrame.BtnUseDefaultDelphiColorsClick(Sender: TObject);
 begin
   ChangeColor(0, clWindow);
-  ChangeColor(1, clGreen);
-  ChangeColor(2, clMaroon);
+  ChangeColor(1, clCream);
+  ChangeColor(2, clGray);
   ChangeColor(3, $E0E0E0);
   ChangeColor(4, clBlack);
-  ChangeColor(5, clNavy);
+  ChangeColor(5, clBtnText);
   ChangeColor(6, clNavy);
-  ChangeColor(7, clBtnText);
-  ChangeColor(8, clCream);
-  ChangeColor(9, clGray);
+  ChangeColor(7, clNavy);
+  ChangeColor(8, clGreen);
+  ChangeColor(9, clMaroon);
   ColorsListBox.Invalidate;
 end;
 
@@ -176,21 +178,22 @@ begin
   with AOptions as TEnvironmentOptions do
   begin
     FStoredColors[0].ColorValue := ObjectInspectorOptions.GridBackgroundColor;
-    FStoredColors[1].ColorValue := ObjectInspectorOptions.SubPropertiesColor;
-    FStoredColors[2].ColorValue := ObjectInspectorOptions.ReferencesColor;
+    FStoredColors[1].ColorValue := ObjectInspectorOptions.GutterColor;
+    FStoredColors[2].ColorValue := ObjectInspectorOptions.GutterEdgeColor;
     FStoredColors[3].ColorValue := ObjectInspectorOptions.HighlightColor;
     FStoredColors[4].ColorValue := ObjectInspectorOptions.HighlightFontColor;
-    FStoredColors[5].ColorValue := ObjectInspectorOptions.ValueColor;
-    FStoredColors[6].ColorValue := ObjectInspectorOptions.DefaultValueColor;
-    FStoredColors[7].ColorValue := ObjectInspectorOptions.PropertyNameColor;
-    FStoredColors[8].ColorValue := ObjectInspectorOptions.GutterColor;
-    FStoredColors[9].ColorValue := ObjectInspectorOptions.GutterEdgeColor;
+    FStoredColors[5].ColorValue := ObjectInspectorOptions.PropertyNameColor;
+    FStoredColors[6].ColorValue := ObjectInspectorOptions.ValueColor;
+    FStoredColors[7].ColorValue := ObjectInspectorOptions.DefaultValueColor;
+    FStoredColors[8].ColorValue := ObjectInspectorOptions.SubPropertiesColor;
+    FStoredColors[9].ColorValue := ObjectInspectorOptions.ReferencesColor;
 
     OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
     OIAutoShowCheckBox.Checked := ObjectInspectorOptions.AutoShow;
     OIBoldNonDefaultCheckBox.Checked := ObjectInspectorOptions.BoldNonDefaultValues;
     OIDrawGridLinesCheckBox.Checked := ObjectInspectorOptions.DrawGridLines;
+    OIShowGutterCheckBox.Checked := ObjectInspectorOptions.ShowGutter;
   end;
   FLoaded := True;
   THackColorListBox(ColorsListBox).SetColorList;
@@ -201,15 +204,15 @@ begin
   with AOptions as TEnvironmentOptions do
   begin
     ObjectInspectorOptions.GridBackgroundColor := ColorsListBox.Colors[0];
-    ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[1];
-    ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[2];
+    ObjectInspectorOptions.GutterColor := ColorsListBox.Colors[1];
+    ObjectInspectorOptions.GutterEdgeColor := ColorsListBox.Colors[2];
     ObjectInspectorOptions.HighlightColor := ColorsListBox.Colors[3];
     ObjectInspectorOptions.HighlightFontColor := ColorsListBox.Colors[4];
-    ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[5];
-    ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[6];
-    ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[7];
-    ObjectInspectorOptions.GutterColor := ColorsListBox.Colors[8];
-    ObjectInspectorOptions.GutterEdgeColor := ColorsListBox.Colors[9];
+    ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[5];
+    ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[6];
+    ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[7];
+    ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[8];
+    ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[9];
 
     ObjectInspectorOptions.DefaultItemHeight:=
        RoundToInt(OIDefaultItemHeightSpinEdit.Value);
@@ -217,6 +220,7 @@ begin
     ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
     ObjectInspectorOptions.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
     ObjectInspectorOptions.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
+    ObjectInspectorOptions.ShowGutter := OIShowGutterCheckBox.Checked;
   end;
 end;
 

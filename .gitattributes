@@ -3132,6 +3132,7 @@ images/propertygrid/issue_nogui.png -text svneol=unset#image/png
 images/propertygrid/issue_qt.png -text svneol=unset#image/png
 images/propertygrid/issue_win32.png -text svneol=unset#image/png
 images/propertygrid/issue_wince.png -text svneol=unset#image/png
+images/propertygrid/pg_active_row.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.png -text
 images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint.png -text
