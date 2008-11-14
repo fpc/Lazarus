@@ -4,8 +4,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
   ClientHeight = 395
   ClientWidth = 598
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 88
+  DesignTop = 116
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
