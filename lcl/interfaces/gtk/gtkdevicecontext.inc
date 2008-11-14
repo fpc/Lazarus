@@ -746,12 +746,6 @@ end;
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
 procedure TGtkDeviceContext.SelectPenProps;
-const
-{$ifdef windows}
-  OS_multiplier = 1;
-{$else}
-  OS_multiplier = 3;
-{$endif}
 
   procedure SetDashes(const ADashes: array of gint8);
   begin
@@ -766,7 +760,7 @@ var
   JoinStyle: TGdkJoinStyle;
   CapStyle: TGdkCapStyle;
   IsGeometric, IsExtPen: Boolean;
-  PenWidth: gint;
+  PenWidth, Multiplier: gint;
 begin
 //  if IsNullPen then Exit;
 
@@ -824,18 +818,17 @@ begin
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
   // Paul Ishenin: I compared patterns with windows and changed numbers to make them the same
-  // but under linux dot is thinner than in windows, so I added os_multiplier to make them the same
-  // in the resulting image
+
+  Multiplier := PenWidth;
+  if Multiplier = 0 then
+    Multiplier := 1;
 
   case PenStyle of
-    PS_DASH:       SetDashes([6*OS_multiplier,2*OS_multiplier]);
-    PS_DOT:        SetDashes([1*OS_multiplier,1*OS_multiplier]);
-    PS_DASHDOT:    SetDashes([3*OS_multiplier,2*OS_multiplier,1*OS_multiplier,2*OS_multiplier]);
-    PS_DASHDOTDOT: SetDashes([3*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier]);
-    PS_USERSTYLE:
-      begin
-        laz_gdk_gc_set_dashes(GC, 0, CurrentPen^.GDIPenDashes, CurrentPen^.GDIPenDashesCount);
-      end;
+    PS_DASH:       SetDashes([6*Multiplier,2*Multiplier]);
+    PS_DOT:        SetDashes([1*Multiplier,1*Multiplier]);
+    PS_DASHDOT:    SetDashes([3*Multiplier,2*Multiplier,1*Multiplier,2*Multiplier]);
+    PS_DASHDOTDOT: SetDashes([3*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier]);
+    PS_USERSTYLE:  laz_gdk_gc_set_dashes(GC, 0, CurrentPen^.GDIPenDashes, CurrentPen^.GDIPenDashesCount);
   end;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   gdk_gc_get_values(GC, @FGCValues);
