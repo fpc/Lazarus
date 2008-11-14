@@ -5984,7 +5984,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
+  // don't fire any events when we are changing it from the LCL side
+  BeginUpdate;
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+  EndUpdate;
 end;
 
 procedure TQtComboBox.setMaxVisibleItems(ACount: Integer);
