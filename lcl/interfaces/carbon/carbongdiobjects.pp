@@ -189,14 +189,13 @@ type
 const
   // Paul Ishenin:
   // pen shapes are compared with windows shapes and now a bit to bit equal
-  // please dont remove multiplier, maybe we will change it later
-  osx_pen_multiplier = 3;
-  CarbonDashStyle: Array [0..1] of Single = (6*osx_pen_multiplier, 2*osx_pen_multiplier);
-  CarbonDotStyle: Array [0..1] of Single = (1*osx_pen_multiplier, 1*osx_pen_multiplier);
-  CarbonDashDotStyle: Array [0..3] of Single = (3*osx_pen_multiplier, 2*osx_pen_multiplier, 1*osx_pen_multiplier, 2*osx_pen_multiplier);
-  CarbonDashDotDotStyle: Array [0..5] of Single = (3*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier);
+  CarbonDashStyle: Array [0..1] of Single = (3, 1);
+  CarbonDotStyle: Array [0..1] of Single = (1, 1);
+  CarbonDashDotStyle: Array [0..3] of Single = (3, 1, 1, 1);
+  CarbonDashDotDotStyle: Array [0..5] of Single = (3, 1, 1, 1, 1, 1);
 
 type
+  TCarbonDashes = array of Float32;
 
   { TCarbonPen }
 
@@ -209,7 +208,7 @@ type
     FEndCap: CGLineCap;
     FJoinStyle: CGLineJoin;
    public
-    Dashes: array of Float32;
+    Dashes: TCarbonDashes;
     constructor Create(AGlobal: Boolean); // create default pen
     constructor Create(ALogPen: TLogPen);
     constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
@@ -1588,9 +1587,20 @@ end;
   Applies pen to the specified context
  ------------------------------------------------------------------------------}
 procedure TCarbonPen.Apply(ADC: TCarbonContext; UseROP2: Boolean);
+
+  function GetDashes(Source: TCarbonDashes): TCarbonDashes;
+  var
+    i: Integer;
+  begin
+    Result := Source;
+    for i := Low(Result) to High(Result) do
+      Result[i] := Result[i] * FWidth;
+  end;
+
 var
   AR, AG, AB, AA: Single;
   AROP2: Integer;
+  ADashes: TCarbonDashes;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -1618,16 +1628,28 @@ begin
   end;
 
   case FStyle of
-    PS_DASH: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashStyle[0],
-      Length(CarbonDashStyle));
-    PS_DOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDotStyle[0],
-      Length(CarbonDotStyle));
-    PS_DASHDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotStyle[0],
-      Length(CarbonDashDotStyle));
-    PS_DASHDOTDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotDotStyle[0],
-      Length(CarbonDashDotDotStyle));
-    PS_USERSTYLE: CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0],
-      Length(Dashes));
+    PS_DASH:
+      begin
+        ADashes := GetDashes(CarbonDashStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DOT:
+      begin
+        ADashes := GetDashes(CarbonDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOT:
+      begin
+        ADashes := GetDashes(CarbonDashDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOTDOT:
+      begin
+        ADashes := GetDashes(CarbonDashDotDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_USERSTYLE:
+      CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes));
   else
     CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
   end;
