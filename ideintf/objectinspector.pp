@@ -2464,7 +2464,8 @@ begin
       FillRect(FullRect);
     end;
 
-    if ShowGutter and (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
+    if ShowGutter and (Layout = oilHorizontal) and
+       (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
     begin
       Brush.Color := FGutterColor;
       FillRect(NameIconRect);
@@ -2637,7 +2638,7 @@ begin
       end;
 
       // draw gutter if needed
-      if ShowGutter then
+      if ShowGutter and (Layout = oilHorizontal) then
       begin
         if FRows.Count > 0 then
           GutterX := RowRect(FRows.Count - 1).Left + GetTreeIconX(FRows.Count - 1)
