@@ -126,7 +126,6 @@ type
 
   TChartAxisTitle = class(TPersistent)
   private
-    FVisible: Boolean;
     FOwner: TCustomChart;
     FAngle: Integer;
     FCaption: String;
@@ -172,6 +171,8 @@ type
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Grid: TChartPen read FGrid write SetGrid;
   end;
+
+  { TChart }
 
   TChart = class(TCustomChart)
   private
@@ -239,7 +240,7 @@ type
     procedure GetPointNextTo(
       X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
     procedure GetXPointNextTo(
-      X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
+      X, Y: Integer; out SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
     procedure GetYPointNextTo(
       X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
     procedure DrawReticule(ACanvas: TCanvas; X, Y: Integer);
@@ -309,6 +310,8 @@ type
 
     function GetNewColor: TColor;
     function GetRectangle: TRect;
+
+    function LineInViewPort(var xg1, yg1, xg2, yg2: Double): Boolean;
 
     property Canvas;
 
@@ -968,7 +971,7 @@ begin
   Refresh(ACanvas, ARect);
 end;
 
-procedure TChart.Clean;
+procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
 begin
   ACanvas.Pen.Mode := pmCopy;
   ACanvas.Pen.Style := psSolid;
@@ -1740,6 +1743,72 @@ begin
   YImageToGraph(YIn, YOut);
 end;
 
+function TChart.LineInViewPort(var xg1, yg1, xg2, yg2: Double): Boolean;
+var
+  dx, dy, dxy, u1, u2, u3, u4: Double;
+
+  procedure CalcDeltas;
+  begin
+    dy := yg1 - yg2;
+    dx := xg1 - xg2;
+    dxy := xg1 * yg2 - yg1 * xg2;
+  end;
+
+begin
+  CalcDeltas;
+  u1 := XGraphMin * dy - YGraphMin * dx + dxy;
+  u2 := XGraphMin * dy - YGraphMax * dx + dxy;
+  u3 := XGraphMax * dy - YGraphMax * dx + dxy;
+  u4 := XGraphMax * dy - YGraphMin * dx + dxy;
+
+  Result := false;
+  if u1 * u2 < 0 then begin
+    Result := true;
+    if xg1 < XGraphMin then begin
+      yg1 := (XGraphMin * dy + dxy) / dx;
+      xg1 := XGraphMin;
+      CalcDeltas;
+    end;
+    if xg2 < XGraphMin then begin
+      yg2 := (XGraphMin * dy + dxy) / dx;
+      xg2 := XGraphMin;
+      CalcDeltas;
+    end;
+  end;
+
+  if u2 * u3 < 0 then begin
+    Result := true;
+    if yg2 > YGraphMax then begin
+       xg2 := (YGraphMax * dx - dxy) / dy;
+       yg2 := YGraphMax;
+       CalcDeltas;
+    end;
+  end;
+
+  if u3 * u4 < 0 then begin
+    Result := true;
+    if xg1 > XGraphMax then begin
+       yg1 := (XGraphMax * dy + dxy) / dx;
+       xg1 := XGraphMax;
+       CalcDeltas;
+    end;
+    if xg2 > XGraphMax then begin
+       yg2:= (XGraphMax * dy + dxy) / dx;
+       xg2:= XGraphMax;
+       CalcDeltas;
+    end;
+  end;
+
+  if u4 * u1 < 0 then begin
+    Result := true;
+    if yg1 < YGraphMin then begin
+       xg1:= (YGraphMin * dx - dxy) / dy;
+       yg1:= YGraphMin;
+       CalcDeltas;
+    end;
+  end;
+end;
+
 procedure TChart.SaveToBitmapFile(const FileName: String);
 var
   tmpR: TRect;
@@ -1857,7 +1926,7 @@ begin
 end;
 
 procedure TChart.GetXPointNextTo(
-  X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
+  X, Y: Integer; out SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
 var
   XPoint, SerieNumber, PointNumber: Integer;
   Mini, Dist, Xg, Yg: Double;
@@ -1960,7 +2029,6 @@ end;
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   i, SerieNumber, PointNumber, XMin, Xmax, YMin, YMax, Temp: Integer;
-  MySerie: TSerie;
 begin
   if Down then begin
     Canvas.Brush.Style := bsClear;
@@ -1993,7 +2061,6 @@ begin
   end;
 
   for i := 0 to SeriesCount - 1 do begin
-    MySerie := Series[i];
     if FShowVerticalReticule then begin
       GetXPointNextTo(X, Y, SerieNumber, PointNumber, XReticule, YReticule);
       if
