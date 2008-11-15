@@ -424,7 +424,11 @@ begin
     eotIndex:
       begin
       POT:=eotIndexes;
+      {$ifdef onlyoldobjects}
+      Result:=TD.Indexes.AddIndexDef(AObjectName);
+      {$else}
       Result:=TD.Indexes.AddIndex(AObjectName);
+      {$endifdef}
       II:=IIIndex;
       end;
 {$ifndef onlyoldobjects}
