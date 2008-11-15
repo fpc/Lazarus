@@ -972,7 +972,7 @@ begin
   Window := LCLObject.GetTopParent;
 
   if Window is TCustomForm then
-    Result := TCarbonWindow((Window as TWinControl).Handle).Widget
+    Result := TCarbonWindow((Window as TWinControl).Handle).GetTopParentWindow
   else Result := nil;
 end;
 

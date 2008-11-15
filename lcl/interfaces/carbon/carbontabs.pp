@@ -747,7 +747,11 @@ begin
 
   if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
       kControlTabContentRectTag, SizeOf(MacOSAll.Rect), @AClientRect, nil),
-    Self, 'GetClientRect', 'GetControlData') then Exit;
+    Self, 'GetClientRect', 'GetControlData') then begin
+    // exitting with False, causes crashes
+    //Exit;
+    AClientRect := GetCarbonRect(0, 0, 0, 0);
+  end;
 
   ARect := CarbonRectToRect(AClientRect);
   
