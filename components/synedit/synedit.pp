@@ -2313,9 +2313,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
-  {$IFDEF SYN_LAZARUS}
   if Key='' then exit;
-  {$ENDIF}
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
@@ -10823,7 +10821,6 @@ begin
 end;
                                                                                  //L505 end
 {$IFDEF SYN_LAZARUS}
-
 procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; var StartX,
   EndX: integer);
 // all params are logical (byte) positions
@@ -10839,17 +10836,10 @@ begin
     Line := Lines[XY.Y - 1];
     Len := Length(Line);
     if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-      {$IFDEF SYN_LAZARUS}
       if Assigned(Highlighter) then
         IdChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
       else
         IdChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
-      {$ELSE}
-      if Assigned(Highlighter) then
-        IdChars := Highlighter.IdentChars
-      else
-        IdChars := ['a'..'z', 'A'..'Z'];
-      {$ENDIF}
       EndX := XY.X;
       while (EndX <= Len) and (Line[EndX] in IdChars) do
         Inc(EndX);
