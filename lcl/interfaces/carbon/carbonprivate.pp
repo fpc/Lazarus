@@ -172,7 +172,6 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
 
     procedure DestroyWidget; override;
-    function GetContent: ControlRef; override;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetMousePos: TPoint; override;
@@ -185,8 +184,6 @@ type
 
     function GetBounds(var ARect: TRect): Boolean; override;
     function GetScreenBounds(var ARect: TRect): Boolean; override;
-    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
-    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
     function SetBounds(const ARect: TRect): Boolean; override;
 
     procedure SetFocus; override;
@@ -217,7 +214,7 @@ type
 
   TCarbonHintWindow = class(TCarbonWindow)
   protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure CreateWindow(const AParams: TCreateParams); override;
   end;
 
   { TCarbonDesignWindow }
@@ -240,8 +237,6 @@ type
     function GetDesignContext: TCarbonContext;
     procedure ReleaseDesignContext;
   end;
-
-
   
   { TCarbonGroupBox }
 
@@ -365,12 +360,12 @@ var LastMousePos: TPoint;
 { TCarbonHintWindow }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonHintWindow.CreateWidget
+  Method:  TCarbonHintWindow.CreateWindow
   Params:  AParams - Creation parameters
 
   Creates Carbon hint window
  ------------------------------------------------------------------------------}
-procedure TCarbonHintWindow.CreateWidget(const AParams: TCreateParams);
+procedure TCarbonHintWindow.CreateWindow(const AParams: TCreateParams);
 var
   Window: WindowRef;
 begin
@@ -380,15 +375,19 @@ begin
       kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
       ParamsToCarbonRect(AParams), Window),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
-      
 
-  Widget := Window;
+  fWindowRef := Window;
+
+  // creating wrapped views
+  if OSError(
+    HIViewFindByID(HIViewGetRoot(fWindowRef), kHIViewWindowContentID, fWinContent),
+    Self, SCreateWidget, 'HIViewGetRoot') then RaiseCreateWidgetError(LCLObject);
 
   OSError(
-    SetWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetWindowProperty(Window, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, 'SetWindowProperty');
   OSError(
-    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetControlProperty(fWinContent, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
   
   SetColor(LCLObject.Color);
@@ -506,7 +505,7 @@ begin
     SetControlProperty(FDesignControl, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
     
-  OSError(HIViewAddSubview(Content, FDesignControl), Self, SCreateWidget, SViewAddView);
+  OSError(HIViewAddSubview(fWinContent, FDesignControl), Self, SCreateWidget, SViewAddView);
   BringDesignerToFront;
 end;
 

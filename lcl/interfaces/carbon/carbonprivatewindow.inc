@@ -1163,7 +1163,6 @@ procedure TCarbonWindow.CreateWidget(const AParams: TCreateParams);
 var
   Params  : TCreateParams;
   Layout  : HILayoutInfo;
-  Control : HIViewRef;
 begin
   CreateWindow(AParams);
   RegisterWindowEvents;
@@ -1171,14 +1170,6 @@ begin
   Params := AParams;
   Params.X := 0;
   Params.Y := 0;
-  {Control := CreateCustomHIView(ParamsToHIRect(Params), LCLObject.ControlStyle);
-  if Control = nil then RaiseCreateWidgetError(LCLObject);
-  Widget := Control;
-
-  Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
-  FScrollView := EmbedInScrollView(Params);
-  if FScrollView = nil then RaiseCreateWidgetError(LCLObject);
-  }
   inherited CreateWidget(Params);
 
   HIViewAddSubview(fWinContent, fScrollView);
@@ -1195,12 +1186,6 @@ begin
   HIViewSetLayoutInfo(fScrollView, Layout);
 
   HIViewSetVisible(fScrollView, true);
-
-  // required?
-  OSError(
-    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
-    Self, SCreateWidget, SSetControlProp);
-
 end;
 
 {------------------------------------------------------------------------------
@@ -1218,15 +1203,6 @@ begin
   end;
   inherited;
   //Widget := nil;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.GetContent
-  Returns: Window content area control
- ------------------------------------------------------------------------------}
-function TCarbonWindow.GetContent: ControlRef;
-begin
-  Result := inherited GetContent;
 end;
 
 {------------------------------------------------------------------------------
@@ -1295,8 +1271,6 @@ begin
   else
     Result := inherited GetMousePos;
 
-  //OSError(GetWindowBounds(Widget), kWindowContentRgn, R),
-  //  Self, 'GetMousePos', SGetWindowBounds);
   Result.X := P.h - R.left;
   Result.Y := P.v - R.Top;
 end;
@@ -1472,33 +1446,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWindow.GetScrollInfo
-  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
-           ScrollInfo - Record fo scrolling info
-  Returns: If the function suceeds
-
-  Gets the scrolling info of the specified scroll bar
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);
-begin
-  inherited GetScrollInfo(SBstyle, ScrollInfo);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.SetScrollInfo
-  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
-           ScrollInfo - Scrolling info
-  Returns: The old scroll bar position
-
-  Sets the scrolling info of the specified scroll bar
- ------------------------------------------------------------------------------}
-function TCarbonWindow.SetScrollInfo(SBStyle: Integer;
-  const ScrollInfo: TScrollInfo): Integer;
-begin
-  Result := inherited SetScrollInfo(SBStyle, ScrollInfo);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWindow.SetBounds
   Params:  ARect - Record for window coordinates
   Returns: If function succeeds
@@ -1581,7 +1528,6 @@ end;
 procedure TCarbonWindow.SetZOrder(AOrder: HIViewZOrderOp;
   ARefWidget: TCarbonWidget);
 begin
-  // not supported
   if Assigned(fWindowRef) then // not supported
   else
     inherited SetZOrder(AOrder, ARefWidget);
@@ -1655,7 +1601,7 @@ end;
 function TCarbonWindow.Update: Boolean;
 begin
   Result := False;
-  if OSError(HIViewRender(Content), Self, 'Update', SViewRender) then Exit;
+  if OSError(HIViewRender(Widget), Self, 'Update', SViewRender) then Exit;
   Result := True;
 end;
 
@@ -1728,12 +1674,9 @@ end;
 ------------------------------------------------------------------------------}
 function TCarbonWindow.SetForeground: Boolean;
 begin
-  if not Assigned(fWindowRef) then
-  begin
-    Result := false;
-    Exit;
-  end;
   Result := False;
+  if not Assigned(fWindowRef) then Exit;
+
   SelectWindow(fWindowRef); // activate and move window to front
   Result := True;
 end;

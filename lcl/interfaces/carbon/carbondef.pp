@@ -79,7 +79,7 @@ type
   public
     LCLObject: TWinControl;  // LCL control which created this widget
     Context: TCarbonContext; // Carbon content area context
-    Widget: Pointer;         // Reference to the Carbon window or control
+    Widget: HIViewRef;       // Reference to the Carbon control
   public
     procedure FocusSet; dynamic;
     procedure FocusKilled; dynamic;
