@@ -1238,7 +1238,7 @@ type
   public
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;
-    property Align: TAlign read FAlign write SetAlign;
+    property Align: TAlign read FAlign write SetAlign default alNone;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
     property AnchorSide[Kind: TAnchorKind]: TAnchorSide read GetAnchorSide;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;

@@ -562,7 +562,7 @@ type
                               stored IsHelpFileStored;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview
-                                 stored IsKeyPreviewStored;
+                                 stored IsKeyPreviewStored default False;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
@@ -580,6 +580,7 @@ type
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChange: TNotifyEvent
                          read fOnWindowStateChange write fOnWindowStateChange;
+    property ParentFont default False;
     property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property RestoredLeft: integer read GetRestoredLeft;
