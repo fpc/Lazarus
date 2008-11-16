@@ -828,8 +828,12 @@ end;
 
 procedure TMainForm.ANewIndexUpdate(Sender: TObject);
 begin
+{$ifdef onlyoldobjects}
+  (Sender as TAction).Enabled:=False
+{$else}
   (Sender as TAction).Enabled:=(CurrentEditor<>nil)
                                 and (CurrentEditor.CurrentTable<>Nil);
+{$endif onlyoldobjects}
 end;
 
 procedure TMainForm.ANewTableExecute(Sender: TObject);

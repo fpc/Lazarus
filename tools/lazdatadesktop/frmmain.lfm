@@ -853,16 +853,19 @@ object MainForm: TMainForm
         Action = AAddForeignKey
         RightJustify = False
         ShowAlwaysCheckable = False
+        OnClick = AAddForeignKeyExecute
       end
       object MenuItem5: TMenuItem
         Action = AAddDomain
         RightJustify = False
         ShowAlwaysCheckable = False
+        OnClick = AAddDomainExecute
       end
       object MenuItem6: TMenuItem
         Action = AAddSequence
         RightJustify = False
         ShowAlwaysCheckable = False
+        OnClick = AAddSequenceExecute
       end
       object MIDDSep2: TMenuItem
         Caption = '-'

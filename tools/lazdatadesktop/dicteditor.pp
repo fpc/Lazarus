@@ -421,17 +421,13 @@ begin
       Result:=TD.Fields.AddField(AObjectName);
       II:=IIfield;
       end;
+{$ifndef onlyoldobjects}
     eotIndex:
       begin
       POT:=eotIndexes;
-      {$ifdef onlyoldobjects}
-      Result:=TD.Indexes.AddIndexDef(AObjectName);
-      {$else}
       Result:=TD.Indexes.AddIndex(AObjectName);
-      {$endifdef}
       II:=IIIndex;
       end;
-{$ifndef onlyoldobjects}
     eotForeignKey :
       begin
       POT:=eotForeignKeys;
@@ -513,9 +509,9 @@ begin
     eotTable      : SelectSingleObject(O as TPersistent);
     eotFields     : SelectTableObjectList(eotField,OP as TDDTableDef);
     eotField      : SelectSingleObject(O as TPersistent);
+{$ifndef onlyoldobjects}
     eotIndexes    : SelectTableObjectList(eotIndex,OP as TDDTableDef);
     eotIndex      : SelectSingleObject(O as TPersistent);
-{$ifndef onlyoldobjects}
     eotDomains      : SelectGlobalObjectList(eotDomain);
     eotDomain       : SelectSingleObject(O as TPersistent);
     eotSequences    : SelectGlobalObjectList(eotSequence);
@@ -700,9 +696,9 @@ begin
   Case AObjectType of
     eotField :  For I:=0 to ATableDef.Fields.Count-1 do
                  List.AddObject(ATableDef.Fields[i].FieldName,ATableDef.Fields[i]);
+{$ifndef onlyoldobjects}
     eotIndex :  For I:=0 to ATableDef.Indexes.Count-1 do
                  List.AddObject(ATableDef.Indexes[i].IndexName,ATableDef.Indexes[i]);
-{$ifndef onlyoldobjects}
     eotForeignKey :  For I:=0 to ATableDef.ForeignKeys.Count-1 do
                  List.AddObject(ATableDef.ForeignKeys[i].KeyName,ATableDef.ForeignKeys[i]);
 {$endif onlyoldobjects}
@@ -723,8 +719,8 @@ begin
   Try
     Case AObjectType of
       eotField : II:=iiField;
-      eotIndex : II:=iiIndex;
 {$ifndef onlyoldobjects}
+      eotIndex : II:=iiIndex;
       eotForeignKey : II:=iiForeignKey;
 {$endif}
     end;
@@ -777,10 +773,12 @@ begin
     TD:=AObject as TDDTableDef;
     N:=NewNode(TV,ParentNode,SNodeFields,iiFields);
     ShowTableObjectList(TV,N,TD,eotField);
+{$ifndef onlyoldobjects}
     N:=NewNode(TV,ParentNode,SNodeIndexes,iiIndexes);
     ShowTableObjectList(TV,N,TD,eotIndex);
     N:=NewNode(TV,ParentNode,SNodeForeignKeys,iiForeignKeys);
     ShowTableObjectList(TV,N,TD,eotForeignKey);
+{$endif onlyoldobjects}
     end;
 end;
 
