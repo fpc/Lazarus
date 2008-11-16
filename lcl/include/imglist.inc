@@ -551,7 +551,7 @@ begin
   then begin
     // bummer, the widgetset doesn't support our 32bit format, try device
     ListImg := TLazIntfImage.Create(RawImg, False);
-    DeviceImg := TLazIntfImage.Create(0, 0);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
     DeviceImg.DataDescription := GetDescriptionFromDevice(0, Width, Height * Count);
     DeviceImg.CopyPixels(ListImg);
     DeviceImg.GetRawImage(RawImg);
@@ -582,7 +582,7 @@ begin
   then begin
     // bummer, the widgetset doesn't support our 32bit format, try device
     ListImg := TLazIntfImage.Create(RawImg, False);
-    DeviceImg := TLazIntfImage.Create(0, 0);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
     DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
     DeviceImg.CopyPixels(ListImg);
     DeviceImg.GetRawImage(RawImg);
@@ -1062,7 +1062,7 @@ var
     MaskIntfImage:=nil;
     ImgReader:=nil;
     try
-      IntfImage:=TLazIntfImage.Create(0,0);
+      IntfImage:=TLazIntfImage.Create(0,0,[]);
       IntfImage.DataDescription := GetDescriptionFromDevice(0, 0, 0);
       // read the image bmp stream into the IntfImage
       ImgReader:=TFPReaderBMP.Create;

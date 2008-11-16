@@ -207,7 +207,7 @@ begin
   while AStream.Position < ASize do
   begin
     if IntfImage = nil
-    then IntfImage := TLazIntfImage.Create(0,0)
+    then IntfImage := TLazIntfImage.Create(0,0,[])
     else IntfImage.SetSize(0,0);
 
     if ImgReader = nil

@@ -115,7 +115,7 @@ begin
   try
     // read image
     ImgReader := GetReaderClass.Create;
-    IntfImg := TLazIntfImage.Create(0,0);
+    IntfImg := TLazIntfImage.Create(0,0,[]);
     InitializeReader(IntfImg, ImgReader);
     if Supports(ImgReader, ILazImageReader, LazReader)
     then LazReader.UpdateDescription := True
@@ -145,7 +145,7 @@ begin
   // write image to temporary stream
 
   ImgWriter := nil;
-  IntfImg := TLazIntfImage.Create(0,0);
+  IntfImg := TLazIntfImage.Create(0,0,[]);
   try
     ImgWriter := GetWriterClass.Create;
     IntfImg.LoadFromBitmap(Handle, FMaskHandle);

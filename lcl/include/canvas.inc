@@ -580,7 +580,7 @@ begin
       LazImg := TLazIntfImage(Image);
     end
     else begin
-      LazImg := TLazIntfImage.Create(0,0);
+      LazImg := TLazIntfImage.Create(0,0,[]);
       RequiredState([csHandleValid]);
       LazImg.DataDescription := GetDescriptionFromDevice(Handle, 0, 0);
       LazImg.Assign(Image);

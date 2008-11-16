@@ -322,7 +322,7 @@ begin
     then begin
       // bummer, the widgetset doesn't support our 32bit format, try device
       ListImg := TLazIntfImage.Create(RawImg, False);
-      DeviceImg := TLazIntfImage.Create(0, 0);
+      DeviceImg := TLazIntfImage.Create(0,0,[]);
       DeviceImg.DataDescription := GetDescriptionFromDevice(0, AList.Width, AList.Height);
       DeviceImg.CopyPixels(ListImg);
       DeviceImg.GetRawImage(RawImg);

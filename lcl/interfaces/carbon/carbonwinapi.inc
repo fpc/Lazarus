@@ -427,7 +427,7 @@ begin
   else begin
     // create compatible copy
     SrcImage := TLazIntfImage.Create(ARawImage, False);
-    DstImage := TLazIntfImage.Create(0, 0);
+    DstImage := TLazIntfImage.Create(0,0,[]);
     DstImage.DataDescription := DevDesc;
     DstImage.CopyPixels(SrcImage);
     SrcImage.Free;

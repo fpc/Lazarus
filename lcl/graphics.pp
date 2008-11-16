@@ -2023,7 +2023,7 @@ begin
   else begin
     // create compatible copy
     SrcImage := TLazIntfImage.Create(ARawImage, False);
-    DstImage := TLazIntfImage.Create(0, 0);
+    DstImage := TLazIntfImage.Create(0,0,[]);
     // create mask for alphachannel when device has no alpha support
     if (DevDesc.AlphaPrec = 0) and (riqfAlpha in QueryFlags)
     then begin

@@ -789,7 +789,7 @@ begin
       
       // create or reset intfimage
       if IntfImage = nil
-      then IntfImage := TLazIntfImage.Create(0,0)
+      then IntfImage := TLazIntfImage.Create(0,0,[])
       else IntfImage.SetSize(0,0);
 
       if Supports(ImgReader, ILazImageReader, LazReader) 
