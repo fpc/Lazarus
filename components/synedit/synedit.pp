@@ -8311,12 +8311,6 @@ begin
 {end}                                                                           //mh 2000-11-20
           end else begin
             Temp := LineText;
-// Added the check for whether or not we're in insert mode.
-// If we are, we append one less space than we would in overwrite mode.
-// This is because in overwrite mode we have to put in a final space
-// character which will be overwritten with the typed character.  If we put the
-// extra space in in insert mode, it would be left at the end of the line and
-// cause problems unless eoTrimTrailingSpaces is set.
             {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
             {debugln('ecChar CaretXY=',dbgs(CaretXY),
@@ -8340,8 +8334,8 @@ begin
                 CaretX := InsertChar(aChar, Temp, CaretX, drLTR);
                 {$ELSE}
                 Len := Length(Temp);
-                if Len < LogCaretXY.X then
-                  Temp := Temp + StringOfChar(' ', LogCaretXY.X - Len);
+                if Len < LogCaretXY.X - 1 then
+                  Temp := Temp + StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 System.Insert(AChar, Temp, LogCaretXY.X);
                 //debugln('ecChar Temp=',DbgStr(Temp),' AChar=',DbgStr(AChar));
                 CaretX := CaretX + 1;
@@ -8380,6 +8374,12 @@ begin
             end;
             {$ELSE below for NOT SYN_LAZARUS ----------------------------------}
             bChangeScroll := not (eoScrollPastEol in fOptions);
+// Added the check for whether or not we're in insert mode.
+// If we are, we append one less space than we would in overwrite mode.
+// This is because in overwrite mode we have to put in a final space
+// character which will be overwritten with the typed character.  If we put the
+// extra space in in insert mode, it would be left at the end of the line and
+// cause problems unless eoTrimTrailingSpaces is set.
             try
               if bChangeScroll then Include(fOptions, eoScrollPastEol);
               StartOfBlock := CaretXY;
