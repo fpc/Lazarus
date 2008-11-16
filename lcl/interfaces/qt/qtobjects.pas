@@ -49,7 +49,7 @@ type
   public
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
-    constructor Create; virtual;
+    constructor Create; virtual; overload;
     destructor Destroy; override;
     procedure Release; virtual;
   public

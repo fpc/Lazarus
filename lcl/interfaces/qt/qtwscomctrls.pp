@@ -359,7 +359,6 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  QtTrackBar.BeginUpdate;
 
   QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
@@ -383,7 +382,6 @@ begin
     QtTrackBar.setInvertedControls(False);
     QtTrackBar.Show;
   end;
-  QtTrackBar.EndUpdate;
 end;
 
 class function  TQtWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;

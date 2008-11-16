@@ -116,7 +116,7 @@ type
   public
     LCLObject: TWinControl;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; overload;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
     procedure InitializeWidget; virtual;
     procedure DeInitializeWidget;
@@ -523,8 +523,6 @@ type
   { TQtTrackBar }
   
   TQtTrackBar = class(TQtAbstractSlider)
-  private
-    FInUpdate: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -536,9 +534,6 @@ type
     
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function InUpdate: Boolean;
   end;
 
   { TQtLineEdit }
@@ -4913,7 +4908,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  FInUpdate := False;
   Result := QSlider_create();
 end;
 
@@ -4991,22 +4985,6 @@ begin
     DeliverMessage(Msg);
   end;
 end;
-
-procedure TQtTrackBar.BeginUpdate;
-begin
-  FInUpdate := True;
-end;
-
-procedure TQtTrackBar.EndUpdate;
-begin
-  FInUpdate := False;
-end;
-
-function TQtTrackBar.InUpdate: Boolean;
-begin
-  Result := FInUpdate;
-end;
-
 
 { TQtLineEdit }
 
