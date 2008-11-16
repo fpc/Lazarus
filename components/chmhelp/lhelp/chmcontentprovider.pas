@@ -27,7 +27,7 @@ type
         fKeywordCombo: TComboBox;
         fSearchBtn: TButton;
         fResultsLabel: TLabel;
-        fSearchResults: TListBox;
+        fSearchResults: TListView;
     fSplitter: TSplitter;
     fHtml: TIpHtmlPanel;
     fPopUp: TPopUpMenu;
@@ -59,6 +59,8 @@ type
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure SetTitle(const ATitle: String);
     procedure SearchEditChange(Sender: TObject);
+    procedure SearchButtonClick(Sender: TObject);
+    procedure SearchResultsDblClick(Sender: TObject);
   public
     function CanGoBack: Boolean; override;
     function CanGoForward: Boolean; override;
@@ -75,7 +77,7 @@ type
   
 implementation
 
-uses ChmSpecialParser;
+uses ChmSpecialParser, chmFIftiMain;
 
 { TChmContentProvider }
 
@@ -331,6 +333,172 @@ begin
   end;
 end;
 
+procedure TChmContentProvider.SearchButtonClick ( Sender: TObject ) ;
+type
+  TTopicEntry = record
+    Topic:Integer;
+    Hits: Integer;
+    TitleHits: Integer;
+    FoundForThisRound: Boolean;
+  end;
+  TFoundTopics = array of TTopicEntry;
+var
+  FoundTopics: TFoundTopics;
+
+  procedure DeleteTopic(ATopicIndex: Integer);
+  var
+    MoveSize: DWord;
+  begin
+    //WriteLn('Deleting Topic');
+    if ATopicIndex < High(FoundTopics) then
+    begin
+      MoveSize := SizeOf(TTopicEntry) * (High(FoundTopics) - (ATopicIndex+1));
+      Move(FoundTopics[ATopicIndex+1], FoundTopics[ATopicIndex], MoveSize);
+    end;
+    SetLength(FoundTopics, Length(FoundTopics) -1);
+  end;
+
+  function GetTopicIndex(ATopicID: Integer): Integer;
+  var
+    i: Integer;
+  begin
+    Result := -1;
+    for i := 0 to High(FoundTopics) do begin
+      if FoundTopics[i].Topic = ATopicID then
+        Exit(i);
+    end;
+  end;
+
+  procedure UpdateTopic(TopicID: Integer; NewHits: Integer; NewTitleHits: Integer; AddNewTopic: Boolean);
+  var
+    TopicIndex: Integer;
+  begin
+    //WriteLn('Updating topic');
+    TopicIndex := GetTopicIndex(TopicID);
+    if TopicIndex = -1 then
+    begin
+      if AddNewTopic = False then
+        Exit;
+      SetLength(FoundTopics, Length(FoundTopics)+1);
+      TopicIndex := High(FoundTopics);
+      FoundTopics[TopicIndex].Topic := TopicID;
+    end;
+
+    FoundTopics[TopicIndex].FoundForThisRound := True;
+    if NewHits > 0 then
+      Inc(FoundTopics[TopicIndex].Hits, NewHits);
+    if NewTitleHits > 0 then
+      Inc(FoundTopics[TopicIndex].TitleHits, NewTitleHits);
+  end;
+
+var
+  TopicResults: TChmWLCTopicArray;
+  TitleResults: TChmWLCTopicArray;
+  FIftiMainStream: TMemoryStream;
+  SearchWords: TStringList;
+  SearchReader: TChmSearchReader;
+  DocTitle: String;
+  DocURL: String;
+  TitleIndex: Integer = -1;
+  i: Integer;
+  j: Integer;
+  k: Integer;
+  ListItem: TListItem;
+begin
+  SearchWords := TStringList.Create;
+  SearchWords.Delimiter := ' ';
+  Searchwords.DelimitedText := fKeywordCombo.Text;
+  fSearchResults.BeginUpdate;
+  fSearchResults.Clear;
+  //WriteLn('Search words: ', SearchWords.Text);
+  for i := 0 to fChms.Count-1 do
+  begin
+    for j := 0 to SearchWords.Count-1 do
+    begin
+      if fChms.Chm[i].SearchReader = nil then
+      begin
+        FIftiMainStream := fchms.Chm[i].GetObject('/$FIftiMain');
+        if FIftiMainStream = nil then
+          continue;
+        SearchReader := TChmSearchReader.Create(FIftiMainStream, True); //frees the stream when done
+        fChms.Chm[i].SearchReader := SearchReader;
+      end
+      else
+        SearchReader := fChms.Chm[i].SearchReader;
+      TopicResults := SearchReader.LookupWord(SearchWords[j], TitleResults);
+      // body results
+      for k := 0 to High(TopicResults) do
+        UpdateTopic(TopicResults[k].TopicIndex, High(TopicResults[k].LocationCodes), 0, j = 0);
+      // title results
+      for k := 0 to High(TitleResults) do
+        UpdateTopic(TitleResults[k].TopicIndex, 0, High(TitleResults[k].LocationCodes), j = 0);
+
+      // remove documents that don't have results
+      k := 0;
+      while k <= High(FoundTopics) do
+      begin
+        if FoundTopics[k].FoundForThisRound = False then
+          DeleteTopic(k)
+        else
+        begin
+          FoundTopics[k].FoundForThisRound := False;
+          Inc(k);
+        end;
+      end;
+    end;
+
+    // clear out results that don't contain all the words we are looking for
+
+    // now lookup titles and urls to add to final search results
+    for j := 0 to High(FoundTopics) do
+    begin
+    try
+      DocURL := fChms.Chm[i].LookupTopicByID(FoundTopics[j].Topic, DocTitle);
+      //WriteLn(Docurl);
+      if DocTitle = '' then
+        Doctitle := 'untitled';
+      ListItem := fSearchResults.Items.Add;
+      ListItem.Caption := DocTitle;
+      ListItem.Data := fChms.Chm[i];
+      ListItem.SubItems.Add(IntToStr(FoundTopics[j].Hits));
+      ListItem.SubItems.Add(IntToStr(FoundTopics[j].TitleHits));
+      ListITem.SubItems.Add(DocURL);
+    except
+      // :)
+    end;
+    end;
+
+    SetLength(FoundTopics, 0);
+  end;
+  SetLength(FoundTopics, 0);
+
+  SearchWords.Free;
+  if fSearchResults.Items.Count = 0 then
+  begin
+    ListItem := fSearchResults.Items.Add;
+    ListItem.Caption := 'No Results';
+  end;
+  fSearchResults.SortColumn := 1;
+  fSearchResults.SortType := stNone;
+  fSearchResults.SortType := stText;
+  fSearchResults.SortColumn := 2;
+  fSearchResults.SortType := stNone;
+  fSearchResults.SortType := stText;
+  fSearchResults.EndUpdate;
+  //WriteLn('THE DUDE');
+end;
+
+procedure TChmContentProvider.SearchResultsDblClick ( Sender: TObject ) ;
+var
+  Item: TListItem;
+begin
+  Item := fSearchResults.Selected;
+  if (Item = nil) or (Item.Data = nil) then
+    Exit;
+
+  DoLoadUrl(Item.SubItems[2], TChmReader(Item.Data));
+end;
+
 
 function TChmContentProvider.CanGoBack: Boolean;
 begin
@@ -467,7 +635,7 @@ begin
     Visible := True;
     OnDblClick := @IndexViewDblClick;
   end;
-  {
+
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do begin
     Caption := 'Search';
@@ -487,17 +655,19 @@ begin
   with fKeywordCombo do begin
     Parent := fSearchTab;
     Top := fKeywordLabel.Top + fKeywordLabel.Height + 5;
-    Left := 0;
-    Width := fSearchTab.ClientWidth;
+    Left := 5;
+    Width := fSearchTab.ClientWidth - Left;
     Anchors := [akLeft, akRight, akTop];
   end;
   fSearchBtn := TButton.Create(fSearchTab);
   with fSearchBtn do begin
-     Parent := fSearchTab
+     Parent := fSearchTab;
      Top := fKeywordCombo.Top + fKeywordCombo.Height + 5;
      Width := 105;
      Left := fSearchTab.ClientWidth - Width;
-     Anchors := [akTop, akRight]
+     Anchors := [akTop, akRight];
+     Caption := 'Find';
+     OnClick := @SearchButtonClick;
   end;
   fResultsLabel := TLabel.Create(fSearchTab);
   with fResultsLabel do begin
@@ -507,14 +677,22 @@ begin
     Left := 0;
     AutoSize := True;
   end;
-  fSearchResults := TListBox.Create(fSearchTab);
+  fSearchResults := TListView.Create(fSearchTab);
   with fSearchResults do begin
     Parent := fSearchTab;
     Top := fResultsLabel.Top + fResultsLabel.Height + 5;
+    //Width := fSearchTab.Width - (Left * 2);
     Height := fSearchTab.ClientHeight - Top;
-    Anchors := [akTop, akBottom, akLeft, akRight];
+    Anchors := [akTop];
+    Align := alBottom;
+    ShowColumnHeaders := False;
+    ViewStyle := vsReport;
+    Columns.Add;                  // title
+    Columns.Add.Visible := False; // topic hits
+    Columns.Add.Visible := False; // title hits
+    Columns.Add.Visible := False; // url
+    OnDblClick := @SearchResultsDblClick;
   end;
-  }
 
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin
