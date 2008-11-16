@@ -464,6 +464,7 @@ begin
       ListItem.SubItems.Add(IntToStr(FoundTopics[j].TitleHits));
       ListITem.SubItems.Add(DocURL);
     except
+      //WriteLn('Exception');
       // :)
     end;
     end;
@@ -478,12 +479,12 @@ begin
     ListItem := fSearchResults.Items.Add;
     ListItem.Caption := 'No Results';
   end;
-  fSearchResults.SortColumn := 1;
+ { fSearchResults.SortColumn := 1;        // causes the listview data to be mixed up!
   fSearchResults.SortType := stNone;
   fSearchResults.SortType := stText;
   fSearchResults.SortColumn := 2;
   fSearchResults.SortType := stNone;
-  fSearchResults.SortType := stText;
+  fSearchResults.SortType := stText;}
   fSearchResults.EndUpdate;
   //WriteLn('THE DUDE');
 end;
@@ -687,7 +688,7 @@ begin
     Align := alBottom;
     ShowColumnHeaders := False;
     ViewStyle := vsReport;
-    Columns.Add;                  // title
+    Columns.Add.AutoSize := True;                  // title
     Columns.Add.Visible := False; // topic hits
     Columns.Add.Visible := False; // title hits
     Columns.Add.Visible := False; // url
