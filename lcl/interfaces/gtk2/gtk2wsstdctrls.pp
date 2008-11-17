@@ -450,6 +450,8 @@ begin
 
   if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AnIndex) then
   begin
+    if gtk_tree_view_get_model(PGtkTreeView(Widget)) = nil then
+      Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
     case ASelected of
       True:
         if not gtk_tree_selection_iter_is_selected(Selection, @Iter) then
@@ -737,6 +739,8 @@ begin
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
+  if gtk_tree_view_get_model(PGtkTreeView(Widget)) = nil then
+    Exit;
   if gtk_tree_model_iter_nth_child(ListStoreModel, @Item, nil, AIndex) then
   begin
     Result := gtk_tree_selection_iter_is_selected(Selection, @Item);

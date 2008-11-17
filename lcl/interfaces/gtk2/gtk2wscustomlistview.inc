@@ -785,6 +785,8 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do begin
+    if gtk_tree_view_get_model(PGtkTreeView(MainView)) = nil then
+      Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
     if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
     begin
       case AState of
@@ -922,6 +924,8 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do begin
+    if gtk_tree_view_get_model(PGtkTreeView(MainView)) = nil then
+      Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
     if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
     begin
       case AState of
