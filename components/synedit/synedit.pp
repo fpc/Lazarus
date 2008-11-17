@@ -385,8 +385,8 @@ type
     fBlockBegin: TPoint;   // logical position (byte)
     fBlockEnd: TPoint;     // logical position (byte)
     fBlockIndent: integer;
-    fCaretX: Integer;      // physical position (screen)
     {$IFDEF SYN_LAZARUS}
+    fCaret: TSynEditCaret;
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
@@ -394,9 +394,11 @@ type
     fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
+    {$ELSE}
+    fCaretX: Integer;      // position in Expanded Line = physical position (screen) when LeftChar=1
+    fCaretY: Integer;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
-    fCaretY: Integer;
     fCharsInWindow: Integer;
     fCharWidth: Integer;
     fFontDummy: TFont;
@@ -512,6 +514,8 @@ type
     function GetCaretXY: TPoint;
     function GetFont: TFont;
     {$IFDEF SYN_LAZARUS}
+    function GetCaretX : Integer;
+    function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetSelectedColor : TSynSelectedColor;
@@ -873,8 +877,13 @@ type
     property CanPaste: Boolean read GetCanPaste;
     property CanRedo: boolean read GetCanRedo;
     property CanUndo: boolean read GetCanUndo;
+    {$IFDEF SYN_LAZARUS}
+    property CaretX: Integer read GetCaretX write SetCaretX;
+    property CaretY: Integer read GetCaretY write SetCaretY;
+    {$ELSE}
     property CaretX: Integer read fCaretX write SetCaretX;
     property CaretY: Integer read fCaretY write SetCaretY;
+    {$ENDIF}
     property CaretXY: TPoint read GetCaretXY write SetCaretXY;
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
@@ -1302,7 +1311,7 @@ begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
   {$IFDEF SYN_LAZARUS}
-  Result.Y := RowToScreenRow(fCaretY) * fTextHeight + 1;
+  Result.Y := RowToScreenRow(CaretY) * fTextHeight + 1;
   {$ELSE}
   Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
   {$ENDIF}
@@ -1448,6 +1457,7 @@ begin
 //  fLines := TSynEditList.Create;
   fLines := TSynEditStringList.Create;
   {$IFDEF SYN_LAZARUS}
+  fCaret := TSynEditCaret.Create;
   fTextView := TSynEditFoldedView.Create(TSynEditStringList(fLines));
   fTextView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
   {$ENDIF}
@@ -1563,10 +1573,11 @@ begin
   fTopLine := 1;
   {$IFDEF SYN_LAZARUS}
   fTextView.TopLine := 1;
-  {$ENDIF}
+  {$ELSE}
   fCaretX := 1;
-  fLastCaretX := 1;                                                             //mh 2000-10-19
   fCaretY := 1;
+  {$ENDIF}
+  fLastCaretX := 1;                                                             //mh 2000-10-19
   fBlockBegin := Point(1, 1);
   fBlockEnd := fBlockBegin;
   // find / replace
@@ -1694,6 +1705,7 @@ begin
   FreeAndNil(fFontDummy);
   FreeAndNil(fTextView);
   FreeAndNil(fLines);
+  FreeAndNil(fCaret);
   {$ENDIF}
   inherited Destroy;
 end;
@@ -1722,13 +1734,13 @@ function TCustomSynEdit.CaretXPix: Integer;
 var
   p: TPoint;
 begin
-  p := Point(fCaretX, fCaretY);
+  p := Point(CaretX, CaretY);
   Result := RowColumnToPixels(p).X;
 end;
 
 function TCustomSynEdit.CaretYPix: Integer;
 begin
-  Result := RowColumnToPixels(Point(1, fCaretY)).Y;
+  Result := RowColumnToPixels(Point(1, CaretY)).Y;
 end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
@@ -2452,7 +2464,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   LogCaretXY:=PhysicalToLogicalPos(CaretXY);
   {$ENDIF}
-  fLastCaretX := fCaretX;                                                       //mh 2000-10-19
+  fLastCaretX := CaretX;                                                       //mh 2000-10-19
   if Button = mbLeft then begin
     //DebugLn('TCustomSynEdit.MouseDown ',DbgSName(Self),' START CAPTURE');
     MouseCapture := True;
@@ -4772,6 +4784,16 @@ begin
   if fBlockIndent=AValue then exit;
   fBlockIndent:=AValue;
 end;
+
+function TCustomSynEdit.GetCaretX : Integer;
+begin
+  Result:= fCaret.CharPos;
+end;
+
+function TCustomSynEdit.GetCaretY : Integer;
+begin
+  Result:= fCaret.LinePos;
+end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetCaretX(Value: Integer);
@@ -4783,7 +4805,7 @@ end;
 procedure TCustomSynEdit.SetCaretY(Value: Integer);
 begin
   if not (eoKeepCaretX in Options) then begin                                        //mh 2000-11-08
-    fLastCaretX := fCaretX;
+    fLastCaretX := CaretX;
   end;
   SetCaretXY(Point(fLastCaretX{CaretX}, Value));                                //mh 2000-10-19
 end;
@@ -4823,27 +4845,33 @@ begin
     Value.X := nMaxX;
   if Value.X < 1 then
     Value.X := 1;
-  if (Value.X <> fCaretX) or (Value.Y <> fCaretY) then begin
+  if (Value.X <> CaretX) or (Value.Y <> CaretY) then begin
     IncPaintLock;
     try
       // simply include the flags, fPaintLock is > 0
-      if fCaretX <> Value.X then begin
+      if CaretX <> Value.X then begin
+        {$IFNDEF SYN_LAZARUS}
         fCaretX := Value.X;
+        {$ENDIF}
         Include(fStatusChanges, scCaretX);
       end;
-      if fCaretY <> Value.Y then begin
+      if CaretY <> Value.Y then begin
         {$IFDEF SYN_LAZARUS}
-        InvalidateGutterLines(fCaretY, fCaretY);
+        InvalidateGutterLines(CaretY, CaretY);
         InvalidateGutterLines(Value.Y, Value.Y);
-        {$ENDIF}
+        {$ELSE}
         fCaretY := Value.Y;
+        {$ENDIF}
         Include(fStatusChanges, scCaretY);
       end;
+      {$IFDEF SYN_LAZARUS}
+      fCaret.LineCharPos:= Value;
+      {$ENDIF}
       EnsureCursorPosVisible;
       Include(fStateFlags, sfCaretChanged);
       {$IFDEF SYN_LAZARUS}
-      if fTextView.FoldedAtTextIndex[fCaretY - 1] then
-        fTextView.UnFoldAtTextIndex(fCaretY - 1, true);
+      if fTextView.FoldedAtTextIndex[CaretY - 1] then
+        fTextView.UnFoldAtTextIndex(CaretY - 1, true);
       {$ELSE}
       Include(fStateFlags, sfScrollbarChanged);
       {$ENDIF}
@@ -4852,7 +4880,7 @@ begin
     end;
   end;
   {$IFDEF SYN_LAZARUS}
-  fLastCaretX:=fCaretX;
+  fLastCaretX:=CaretX;
   {$ENDIF}
 end;
 
@@ -5161,7 +5189,7 @@ var
         TSynEditStringList(Lines).InsertLines(CaretY, CountLines(P));           // djlp 2000-09-07
       end else begin
         TrimmedSetLine(CaretY - 1, sLeftSide + Value + sRightSide);
-        fCaretX := LogicalToPhysicalPos(
+        CaretX := LogicalToPhysicalPos(
                      Point(1 + Length(sLeftSide + Value),CaretY)).X;
       end;
       // step2: insert left lines of Value
@@ -5170,7 +5198,7 @@ var
           Inc(P);
         if P^ = #10 then
           Inc(P);
-        Inc(fCaretY);
+        CaretY := CaretY + 1;
         Start := P;
         P := GetEOL(Start);
         if P = Start then begin
@@ -5195,7 +5223,7 @@ var
         end;
         {$IFDEF SYN_LAZARUS}
         if p^=#0 then
-          fCaretX := LogicalToPhysicalPos(
+          CaretX := LogicalToPhysicalPos(
                          Point(1 + Length(Lines[CaretY - 1]) - Length(sRightSide),
                                CaretY)).X;
         {$ELSE}
@@ -5205,7 +5233,7 @@ var
         Inc(Result);
       end;
       {$IFDEF SYN_LAZARUS}
-      //DebugLn(['InsertNormal ',Length(Lines[CaretY - 1]),' ',Length(sRightSide),' ',fCaretX]);
+      //DebugLn(['InsertNormal ',Length(Lines[CaretY - 1]),' ',Length(sRightSide),' ',CaretX]);
       {$ELSE}
       fCaretX := 1 + Length(Lines[CaretY - 1]) - Length(sRightSide);
       {$ENDIF}
@@ -5266,7 +5294,7 @@ var
             inc(p,2)
           else
             Inc(P);
-          Inc(fCaretY);
+          CaretY := CaretY + 1;
         end;
         {$ELSE}
         if P^ = #13 then begin
@@ -5277,7 +5305,7 @@ var
         {$ENDIF}
         Start := P;
       until P^ = #0;
-      Inc(fCaretX, Length(Str));
+      CaretX:= CaretX + Length(Str);
       Result := 0;
     end;
 
@@ -5289,7 +5317,7 @@ var
       n: Integer;
     begin
       Result := 0;
-      fCaretX := 1;
+      CaretX := 1;
       // Insert string before current line
       Start := PChar(Value);
       repeat
@@ -5307,10 +5335,10 @@ var
             Lines.Add(Str);
           if eoTrimTrailingSpaces in Options then
             Lines[CaretY - 1] := TrimRight(Lines[CaretY - 1]);
-          fCaretX := 1 + Length(Str);
+          CaretX := 1 + Length(Str);
         end else begin
           TrimmedSetLine(CaretY - 1, Str);
-          Inc(fCaretY);
+          CaretY := CaretY + 1;
           Inc(Result);
           if P^ = #13 then
             Inc(P);
@@ -5380,7 +5408,7 @@ begin
       DeleteSelection;
     if (Value <> nil) and (Value[0] <> #0) then
       InsertText;
-    fLastCaretX := fCaretX;                                                     //mh 2000-10-19
+    fLastCaretX := CaretX;                                                     //mh 2000-10-19
     if CaretY < 1 then
       CaretY := 1;
     {$IFDEF SYN_LAZARUS}
@@ -5512,7 +5540,7 @@ begin
   NewX:=Max(1,Min(fMaxLeftChar,NewCaret.X));
   if CaretX<>NewX then begin
     IncPaintLock;
-    fCaretX:=NewX;
+    CaretX:=NewX;
     DecPaintLock;
   end;
 end;
@@ -5908,8 +5936,8 @@ begin
   if Index > Lines.Count - 1 then Exit;
   if not assigned(fHighlighter) then begin
     fTextView.FixFoldingAtTextIndex(Index);
-    if fTextView.FoldedAtTextIndex[fCaretY - 1] then
-      fTextView.UnFoldAtTextIndex(fCaretY - 1);
+    if fTextView.FoldedAtTextIndex[CaretY - 1] then
+      fTextView.UnFoldAtTextIndex(CaretY - 1);
     Topline := TopLine;
     exit;
   end;
@@ -5953,8 +5981,8 @@ begin
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
   fTextView.FixFoldingAtTextIndex(Index, Result);
-  if fTextView.FoldedAtTextIndex[fCaretY - 1] then
-    fTextView.UnFoldAtTextIndex(fCaretY - 1);
+  if fTextView.FoldedAtTextIndex[CaretY - 1] then
+    fTextView.UnFoldAtTextIndex(CaretY - 1);
   Topline := TopLine;
   if FixFStart < index then Invalidate;
   {$ENDIF}
@@ -6707,7 +6735,7 @@ begin
                 Inc(Run,2)
               else
                 Inc(Run);
-              Inc(fCaretY);
+              CaretY := CaretY + 1;
             end;
             {$ELSE}
             if Run <> StrToDelete then begin
@@ -7704,7 +7732,7 @@ begin
           MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
              Command = ecSelLineEnd);
           {$ENDIF}
-          fLastCaretX := fCaretX;
+          fLastCaretX := CaretX;
         end;
 {end}                                                                           //mh 2000-10-19
 // vertical caret movement or selection
@@ -7796,7 +7824,7 @@ begin
           MoveCaretAndSelection
           {$ENDIF}
             (CaretXY, PPoint(Data)^, Command = ecSelGotoXY);
-          fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          fLastCaretX := CaretX;                                               //mh 2000-10-19
           Update;
         end;
 // word selection
@@ -7814,7 +7842,7 @@ begin
           MoveCaretAndSelection
           {$ENDIF}
             (Caret, CaretNew, Command = ecSelWordLeft);
-          fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          fLastCaretX := CaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
           {$ENDIF}
@@ -7831,7 +7859,7 @@ begin
           MoveCaretAndSelection
           {$ENDIF}
             (Caret, CaretNew, Command = ecSelWordRight);
-          fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          fLastCaretX := CaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
           {$ENDIF}
@@ -7911,14 +7939,14 @@ begin
                 //   ' Temp="',DbgStr(Temp),'" Helper="',DbgStr(Helper),'"');
                 Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
                 TrimmedSetLine(CaretY - 1, Temp);
-                fCaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
+                CaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
                 {$ELSE}
                 Helper := Copy(Temp, 1, SpaceCount1 - SpaceCount2);
                 Delete(Temp, 1, SpaceCount1 - SpaceCount2);
                 TrimmedSetLine(CaretY - 1, Temp);
                 fCaretX := fCaretX - (SpaceCount1 - SpaceCount2);
                 {$ENDIF}
-                fLastCaretX := fCaretX;
+                fLastCaretX := CaretX;
                 StatusChanged([scCaretX]);
               end else begin
                 // delete char
@@ -8277,7 +8305,7 @@ begin
           {$ENDIF}
           DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
-          fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          fLastCaretX := CaretX;                                               //mh 2000-10-19
         end;
       ecTab:
         if not ReadOnly then DoTabKey;
@@ -10254,7 +10282,7 @@ begin
               Inc(Run,2)
             else
               Inc(Run);
-            inc(fCaretY);
+            CaretY := CaretY + 1;
           end;
           {$ELSE}
           if Run^ = #13 then

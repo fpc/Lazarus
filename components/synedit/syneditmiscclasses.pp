@@ -271,6 +271,29 @@ type
     property Options: TSynSearchOptions write SetOptions;
   end;
 
+  {$IFDEF SYN_LAZARUS}
+
+  { TSynEditCaret }
+
+  TSynEditCaret = class
+    fLinePos : Integer; // 1 based
+    fCharPos : Integer; // 1 based
+    fOnChangeList : TMethodList;
+  private
+    function  GetLineCharPos : TPoint;
+    procedure SetLineCharPos(const AValue : TPoint);
+    procedure setCharPos(const AValue : Integer);
+    procedure setLinePos(const AValue : Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddChangeHandler(AHandler: TNotifyEvent);
+    procedure RemoveChangeHandler(AHandler: TNotifyEvent);
+    property LinePos : Integer read fLinePos write setLinePos;
+    property CharPos : Integer read fCharPos write setCharPos;
+    property LineCharPos : TPoint read GetLineCharPos write SetLineCharPos;
+  end;
+  {$ENDIF}
 
 implementation
 
@@ -803,6 +826,61 @@ begin
     end;
     ACanvas.BrushCopy(rcDest, InternalImages, rcSrc, TransparentColor);
   end;
+end;
+{$ENDIF}
+
+{ TSynEditCaret }
+
+{$IFDEF SYN_LAZARUS}
+
+function TSynEditCaret.GetLineCharPos : TPoint;
+begin
+  Result := Point(fCharPos, fLinePos);
+end;
+
+procedure TSynEditCaret.SetLineCharPos(const AValue : TPoint);
+begin
+  if (fCharPos = AValue.X) and (fLinePos = AValue.Y) then exit;
+  fCharPos:= AValue.X;
+  fLinePos:= AValue.Y;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.setCharPos(const AValue : Integer);
+begin
+  if fCharPos = AValue then exit;
+  fCharPos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.setLinePos(const AValue : Integer);
+begin
+  if fLinePos = AValue then exit;
+  fLinePos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+constructor TSynEditCaret.Create;
+begin
+  fOnChangeList := TMethodList.Create;
+  fLinePos:= 1;
+  fCharPos:= 1;
+end;
+
+destructor TSynEditCaret.Destroy;
+begin
+  FreeAndNil(fOnChangeList);
+  inherited Destroy;
+end;
+
+procedure TSynEditCaret.AddChangeHandler(AHandler : TNotifyEvent);
+begin
+  fOnChangeList.Add(TMethod(AHandler));
+end;
+
+procedure TSynEditCaret.RemoveChangeHandler(AHandler : TNotifyEvent);
+begin
+  fOnChangeList.Remove(TMethod(AHandler));
 end;
 {$ENDIF}
 
