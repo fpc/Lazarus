@@ -2278,7 +2278,7 @@ begin
       debugln('');
       {$ENDIF}
       FEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(FEditor.Lines,true);
+      FCodeBuffer.AssignTo(FEditor.RealLines,true);
       FEditor.EndUpdate;
     end;
     if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
@@ -2432,7 +2432,7 @@ begin
   if FCodeBuffer=nil then exit;
   IncreaseIgnoreCodeBufferLock;
   FModified:=FModified or FEditor.Modified;
-  FCodeBuffer.Assign(FEditor.Lines);
+  FCodeBuffer.Assign(FEditor.RealLines);
   FEditor.Modified:=false;
   DecreaseIgnoreCodeBufferLock;
 end;
