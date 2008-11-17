@@ -904,6 +904,9 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
+    {$IFDEF SYN_LAZARUS}
+    property RealLines: TStrings read fLines write SetLines;                // No trailing (trimmable) spaces
+    {$ENDIF}
     property Lines: TStrings read fLines write SetLines;
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
