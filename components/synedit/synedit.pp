@@ -11194,7 +11194,7 @@ begin
       break;
     end;
   end;
-  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos<ByteLen)
+  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos-2<ByteLen)
   and (PLine[BytePos-2]=#9) then
     dec(BytePos);
   Result := BytePos;
