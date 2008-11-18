@@ -320,7 +320,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Items">
+      <element name="TColorBox.Items" link="#LCL.StdCtrls.TCustomComboBox.Items">
         <short/>
         <descr/>
         <seealso/>
@@ -380,9 +380,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Selected">
-        <short>The colour that has been <var>Selected</var> from the list</short>
-      </element>
+      <element name="TColorBox.Selected" link="#LCL.ColorBox.TCustomColorBox.Selected"/>
       <!-- property Visibility: published -->
       <element name="TColorBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
@@ -703,7 +701,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Color">
+      <element name="TColorListBox.Color" link="#LCL.Controls.TControl.Color">
         <short>
           <var>Color</var> - Determine the colour for the display of the actual control, not the colour selected from the list</short>
       </element>
@@ -986,6 +984,54 @@
       </element>
       <element name="TColorBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TColorListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomColorBox">
+        <short>
+          <var>TCustomColorBox</var> - base class for <var>TColorBox</var>
+        </short>
+      </element>
+      <element name="TCustomColorBox.SetStyle" link="#LCL.StdCtrls.TCustomComboBox.SetStyle"/>
+      <element name="TCustomColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem"/>
+      <element name="TCustomColorBox.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomColorBox.SetColorList">
+        <short>
+          <var>SetColorList</var> - specifies the list of colours to be presented in the drop-down</short>
+      </element>
+      <element name="TCustomColorBox.Colors">
+        <short>
+          <var>Colors</var> the colour specified by the Index</short>
+      </element>
+      <element name="TCustomColorBox.Palette">
+        <short>The <var>Palette</var> of colours to be included</short>
+      </element>
+      <element name="TCustomColorBox.Selected">
+        <short>the colour that has been <var>Selected</var> from the ComboBox</short>
+      </element>
+      <element name="TCustomColorListBox">
+        <short>
+          <var>TCustomColorListBox</var> - base class for <var>TColorListBox</var>
+        </short>
+      </element>
+      <element name="TCustomColorListBox.SetStyle">
+        <short>
+          <var>SetStyle</var> - specify the Style</short>
+      </element>
+      <element name="TCustomColorListBox.DrawItem">
+        <short>
+          <var>DrawItem</var> - draw the specified item in the list</short>
+      </element>
+      <element name="TCustomColorListBox.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomColorListBox.SetColorList">
+        <short>
+          <var>SetColorList</var> - specifies the list of colours</short>
+      </element>
+      <element name="TCustomColorListBox.Colors">
+        <short>The <var>Colors</var> specified by <var>Index</var>
+        </short>
+      </element>
+      <element name="TCustomColorListBox.Selected" link="#LCL.StdCtrls.TCustomListBox.Selected"/>
+      <element name="TCustomColorListBox.Palette">
+        <short>The <var>Palette</var> to be used to supply the colours</short>
+      </element>
     </module>
     <!-- ColorBox -->
   </package>
