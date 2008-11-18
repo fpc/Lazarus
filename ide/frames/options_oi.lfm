@@ -1,19 +1,18 @@
 inherited OIOptionsFrame: TOIOptionsFrame
-  Height = 469
+  Height = 422
   Width = 598
-  ClientHeight = 469
+  ClientHeight = 422
   ClientWidth = 598
-  TabOrder = 0
   Visible = False
-  DesignLeft = 818
-  DesignTop = 311
+  DesignLeft = 154
+  DesignTop = 203
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 244
+    Height = 228
     Top = 0
     Width = 598
     HelpContext = 0
@@ -33,7 +32,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     ChildSizing.HorizontalSpacing = 2
     ChildSizing.VerticalSpacing = 2
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 226
+    ClientHeight = 210
     ClientWidth = 594
     Ctl3D = False
     DockSite = False
@@ -53,7 +52,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = ObjectInspectorColorsGroupBox
       AnchorSideTop.Control = ObjectInspectorColorsGroupBox
       Left = 6
-      Height = 186
+      Height = 170
       Top = 6
       Width = 210
       HelpContext = 0
@@ -97,7 +96,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 198
+      Top = 182
       Width = 210
       HelpContext = 0
       DefaultColorColor = clBlack
@@ -217,8 +216,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 200
-    Top = 251
+    Height = 180
+    Top = 235
     Width = 598
     HelpContext = 0
     Align = alNone
@@ -237,7 +236,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 182
+    ClientHeight = 162
     ClientWidth = 594
     Ctl3D = False
     DockSite = False
@@ -255,18 +254,18 @@ inherited OIOptionsFrame: TOIOptionsFrame
     Visible = True
     object OIDefaultItemHeightLabel: TLabel
       AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIShowGutterCheckBox
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = OIDefaultItemHeightSpinEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 14
-      Top = 131
+      Top = 136
       Width = 126
       HelpContext = 0
       Align = alNone
       Alignment = taLeftJustify
       AutoSize = True
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
+      BorderSpacing.Top = 0
       BorderSpacing.Right = 0
       BorderSpacing.Bottom = 0
       BorderSpacing.Around = 0
@@ -322,12 +321,13 @@ inherited OIOptionsFrame: TOIOptionsFrame
       Visible = True
     end
     object OIDefaultItemHeightSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIDefaultItemHeightLabel
+      AnchorSideLeft.Control = OIDefaultItemHeightLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OIShowGutterCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 6
+      Left = 138
       Height = 25
-      Top = 151
+      Top = 131
       Width = 69
       HelpContext = 0
       Align = alNone
