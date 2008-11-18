@@ -57,15 +57,6 @@ type
 {begin}                                                                         //mh 2000-10-19
   TSynEditStringFlag = (sfHasTabs, sfHasNoTabs, sfExpandedLengthUnknown);
   TSynEditStringFlags = set of TSynEditStringFlag;
-  {$IFDEF SYN_LAZARUS}
-  TSynEditCodeFoldType = (
-    cfNone,       // line is not in a block
-    cfCollapsed,  // line is start of collapsed block
-    cfExpanded,   // line is start of expanded block
-    cfContinue,   // line is middle part of block(s)
-    cfEnd         // line is end of block(s)
-    );
-  {$ENDIF}
 {end}                                                                           //mh 2000-10-19
 
   PSynEditStringRec = ^TSynEditStringRec;
@@ -77,23 +68,13 @@ type
     fExpandedLength: integer;
     fFlags: TSynEditStringFlags;
     {$IFDEF SYN_LAZARUS}
-    fFolded: boolean;
     fFoldMinLevel: LongInt; // minimum block depth in this line
     fFoldEndLevel: LongInt; // block depth at end of this line
-    fFoldType: TSynEditCodeFoldType;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
   end;
 
 const
-  SynEditCodeFoldTypeNames: array[TSynEditCodeFoldType] of string = (
-    'cfNone',
-    'cfCollapsed',
-    'cfExpanded',
-    'cfContinue',
-    'cfEnd'
-    );
-
   SynEditStringRecSize = SizeOf(TSynEditStringRec);
   MaxSynEditStrings = MaxInt div SynEditStringRecSize;
 
@@ -104,6 +85,9 @@ type
   TSynEditStringRecList = array[0..MaxSynEditStrings - 1] of TSynEditStringRec;
 
   TStringListIndexEvent = procedure(Index: Integer) of object;        
+  {$IFDEF SYN_LAZARUS}
+  TStringListLineCountEvent = procedure(Index, Count: Integer) of object;
+  {$ENDIF}
 
   { TSynEditStringList }
 
@@ -129,12 +113,8 @@ type
     function ExpandedStringLength(Index: integer): integer;
     function GetFoldEndLevel(Index: integer): integer;
     function GetFoldMinLevel(Index: integer): integer;
-    function GetFoldType(Index: integer): TSynEditCodeFoldType;
-    function GetFolded(Index: integer): boolean;
     procedure SetFoldEndLevel(Index: integer; const AValue: integer);
     procedure SetFoldMinLevel(Index: integer; const AValue: integer);
-    procedure SetFoldType(Index: integer; const AValue: TSynEditCodeFoldType);
-    procedure SetFolded(Index: integer; const AValue: boolean);
     {$ENDIF}
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
@@ -150,7 +130,7 @@ type
     fOnInserted: TStringListIndexEvent;
     fOnPutted: TStringListIndexEvent;
     {$IFDEF SYN_LAZARUS}
-    fOnFoldChanged: TStringListIndexEvent;
+    fOnLineCountChanged : TStringListLineCountEvent;
     {$ENDIF}
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
@@ -165,7 +145,6 @@ type
     procedure SetUpdateState(Updating: Boolean); override;
     {$IFDEF SYN_LAZARUS}
     procedure SetTextStr(const Value: string); override;
-    procedure MaybeUnfoldAboveNewLine(ANewLineIndex: Integer);
     {$ENDIF}
   public
     constructor Create;
@@ -183,10 +162,6 @@ type
     procedure SaveToFile(const FileName: string); override;
     {$IFDEF SYN_LAZARUS}
     procedure ClearRanges(ARange: TSynEditRange);
-    procedure FoldLines(AStartIndex: Integer);
-    procedure UnFoldLines(AStartIndex: Integer);
-    procedure UnfoldAll;
-    procedure FixFolding(AStartIndex: Integer; AMinEndIndex: Integer = 0);
     {$ENDIF}
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
@@ -205,15 +180,12 @@ type
       write fOnInserted;
     property OnPutted: TStringListIndexEvent read fOnPutted write fOnPutted;
     {$IFDEF SYN_LAZARUS}
-    property OnFoldChanged: TStringListIndexEvent read fOnFoldChanged
-      write fOnFoldChanged;
-    property Folded[Index: integer]: boolean read GetFolded write SetFolded;
+    property OnLineCountChanged: TStringListLineCountEvent
+      read fOnLineCountChanged write fOnLineCountChanged;
     property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
                                                    write SetFoldMinLevel;
     property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
                                                    write SetFoldEndLevel;
-    property FoldType[Index: integer]: TSynEditCodeFoldType read GetFoldType
-                                                            write SetFoldType;
     {$ENDIF}
   end;
 
@@ -229,6 +201,8 @@ type
     crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
     crNothing);
 
+  { TSynEditUndoItem }
+
   TSynEditUndoItem = class(TObject)
   public
     fChangeReason: TSynChangeReason;
@@ -237,6 +211,10 @@ type
     fChangeEndPos: TPoint; // logical position (byte)
     fChangeStr: string;
     fChangeNumber: integer;                                                     //sbs 2000-11-19
+    {$IFDEF SYN_LAZARUS}
+    function ChangeStartPos: TPoint; // logical position (byte)
+    function ChangeEndPos: TPoint; // logical position (byte)
+    {$ENDIF}
   end;
 
   TSynEditUndoList = class(TObject)
@@ -537,7 +515,8 @@ begin
   Result := fCount;
   InsertItem(Result, S);
   {$IFDEF SYN_LAZARUS}
-  MaybeUnfoldAboveNewLine(Result);
+  if Assigned(fOnLineCountChanged) then
+    fOnLineCountChanged(Result, fCount - Result);
   {$ENDIF}
   if Assigned(fOnAdded) then
     fOnAdded(Result);
@@ -566,16 +545,15 @@ begin
           fExpandedLength := -1;
           fFlags := [sfExpandedLengthUnknown];
           {$IFDEF SYN_LAZARUS}
-          fFolded:=false;
           fFoldMinLevel:=0;
           fFoldEndLevel:=0;
-          fFoldType:=cfNone;
           {$ENDIF}
         end;
         Inc(fCount);
       end;
       {$IFDEF SYN_LAZARUS}
-      MaybeUnfoldAboveNewLine(FirstAdded);
+      if Assigned(fOnLineCountChanged) then
+        fOnLineCountChanged(FirstAdded, fCount - FirstAdded);
       {$ENDIF}
       if Assigned(fOnAdded) then
         fOnAdded(FirstAdded);
@@ -619,6 +597,10 @@ begin
       (fCount - Index) * SynEditStringRecSize);
   end;
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
+  {$IFDEF SYN_LAZARUS}
+  if Assigned(fOnLineCountChanged) then
+    fOnLineCountChanged(Index, -1);
+  {$ENDIF}
   if Assigned(fOnDeleted) then
     fOnDeleted(Index);
   EndUpdate;
@@ -658,7 +640,11 @@ begin
       end;
     end;
     Dec(fCount, NumLines);
-    if Assigned(fOnDeleted) then                                       
+    {$IFDEF SYN_LAZARUS}
+    if Assigned(fOnLineCountChanged) then
+      fOnLineCountChanged(Index, -NumLines);
+    {$ENDIF}
+    if Assigned(fOnDeleted) then
       fOnDeleted(Index);
   end;
 end;
@@ -752,23 +738,6 @@ begin
     Result := 0;
 end;
 
-function TSynEditStringList.GetFoldType(Index: integer): TSynEditCodeFoldType;
-begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFoldType
-  else
-    Result := cfNone;
-end;
-
-function TSynEditStringList.GetFolded(Index: integer): boolean;
-begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFolded
-  else
-    Result := false;
-  //if Result then debugln('TSynEditStringList.GetFolded Index=',dbgs(Index));
-end;
-
 procedure TSynEditStringList.SetFoldEndLevel(Index: integer;
   const AValue: integer);
 begin
@@ -781,20 +750,6 @@ procedure TSynEditStringList.SetFoldMinLevel(Index: integer;
 begin
   if (Index >= 0) and (Index < fCount) then
     fList^[Index].fFoldMinLevel := AValue;
-end;
-
-procedure TSynEditStringList.SetFoldType(Index: integer;
-  const AValue: TSynEditCodeFoldType);
-begin
-  if (Index >= 0) and (Index < fCount) then
-    fList^[Index].fFoldType := AValue;
-end;
-
-procedure TSynEditStringList.SetFolded(Index: integer; const AValue: boolean);
-begin
-  //if AValue then RaiseGDBException('');
-  if (Index >= 0) and (Index < fCount) then
-    fList^[Index].fFolded := AValue;
 end;
 {$ENDIF}
 
@@ -887,13 +842,21 @@ begin
 end;
 
 procedure TSynEditStringList.Insert(Index: integer; const S: string);
+{$IFDEF SYN_LAZARUS}
+var
+  OldCnt : integer;
+{$ENDIF}
 begin
   if (Index < 0) or (Index > fCount) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
+  {$IFDEF SYN_LAZARUS}
+  OldCnt:=fCount;
+  {$ENDIF}
   InsertItem(Index, S);
   {$IFDEF SYN_LAZARUS}
-  MaybeUnfoldAboveNewLine(Index);
+  if Assigned(fOnLineCountChanged) then
+    fOnLineCountChanged(Index, fCount-OldCnt);
   {$ENDIF}
   if Assigned(fOnInserted) then
     fOnInserted(Index);
@@ -919,10 +882,8 @@ begin
     fExpandedLength := -1;
     fFlags := [sfExpandedLengthUnknown];
     {$IFDEF SYN_LAZARUS}
-    fFolded:=false;
     fFoldMinLevel:=0;
     fFoldEndLevel:=0;
-    fFoldType:=cfNone;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
   end;
@@ -947,7 +908,8 @@ begin
       FillChar(fList^[Index], NumLines * SynEditStringRecSize, 0);
       Inc(fCount, NumLines);
       {$IFDEF SYN_LAZARUS}
-      MaybeUnfoldAboveNewLine(Index);
+      if Assigned(fOnLineCountChanged) then
+        fOnLineCountChanged(Index, NumLines);
       {$ENDIF}
       if Assigned(fOnAdded) then
         fOnAdded(Index);
@@ -1068,123 +1030,6 @@ var
 begin
   for Index:=0 to fCount-1 do
     fList^[Index].fRange := ARange;
-end;
-
-procedure TSynEditStringList.FoldLines(AStartIndex : Integer);
-begin
-  //debugln(['TSynEditStringList.FoldLines AstartIndex=', AStartIndex, ' FoldType=', ord(FoldType[AStartIndex]), ' Folded=',dbgs(Folded[AStartIndex]) ]);
-  if (AStartIndex < 0) or (AStartIndex >= Count)
-  or not (FoldType[AStartIndex] = cfExpanded) then exit;
-  
-  FoldType[AStartIndex] := cfCollapsed;
-  FixFolding(AStartIndex);
-
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(AStartIndex);
-end;
-
-procedure TSynEditStringList.UnFoldLines(AStartIndex : Integer);
-var
-  i1, i2: LongInt;
-begin
-  //debugln(['TSynEditStringList.UnFoldLines AstartIndex=', AStartIndex, ' FoldType(0=nil;1=col;2=exp)=', ord(FoldType[AStartIndex]), ' Folded=',dbgs(Folded[AStartIndex]) ]);
-  if (AStartIndex < 0) or (AStartIndex >= Count)
-  and ((FoldType[AStartIndex] = cfCollapsed) or Folded[AStartIndex])
-  then exit;
-  
-  if Folded[AStartIndex] then begin
-    i2 := AStartIndex;
-    while Folded[AStartIndex] do begin
-      i1 := AStartIndex-1;
-      while (i1 >= 0) and Folded[i1] do dec(i1);
-      FoldType[i1] := cfExpanded;
-      FixFolding(i1);
-      if i1 < i2 then i2 := i1;
-    end;
-
-    if Assigned(fOnFoldChanged) then
-      fOnFoldChanged(i2);
-    exit;
-  end;
-
-  FoldType[AStartIndex] := cfExpanded;
-  FixFolding(AStartIndex);
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(AStartIndex);
-end;
-
-procedure TSynEditStringList.UnfoldAll;
-var
-  i: Integer;
-begin
-  for i:=0 to Count-1 do begin
-    Folded[i]:=false;
-    if FoldType[i] = cfCollapsed then FoldType[i] := cfExpanded;
-  end;
-end;
-
-procedure TSynEditStringList.FixFolding(AStartIndex: integer; AMinEndIndex : Integer = 0);
-var
-  Level, CoLevel: LongInt;
-  cnt: Integer;
-begin
-  cnt := Count;
-  if (AStartIndex < 0) or (AStartIndex >= cnt) then exit;
-  //debugln(['TSynEditStringList.FixFolding AStartIndex=', AStartIndex, ' AMinEndindex=', AMinEndIndex, ' FoldType(0=nil;1=col;2=exp)=', ord(FoldType[AStartIndex]), ' Folded=',dbgs(Folded[AStartIndex]) ]);
-
-  // Always do the current line
-  if AMinEndIndex < AStartIndex then AMinEndIndex := AStartIndex;
-  // Always start from unfolded line
-   while (AStartIndex > 0) and Folded[AStartIndex] do
-     dec(AStartIndex);
-  // Remember current Level, fix must run at least to the end of current level
-  Level := FoldEndLevel[AStartIndex];
-
-  while (AStartIndex < cnt)
-  and ((FoldMinLevel[AStartIndex] >= Level) or (AStartIndex <= AMinEndIndex))
-  do begin
-    if (FoldType[AStartIndex] = cfCollapsed) then begin
-      // begin of a new fold; keep first line visible
-      Folded[AStartIndex] := False;
-      CoLevel := FoldEndLevel[AStartIndex];
-      inc(AStartIndex);
-      while (AStartIndex < cnt)
-      and (FoldMinLevel[AStartIndex] >= CoLevel) do begin
-        Folded[AStartIndex] := true;
-        inc(AStartIndex);
-      end;
-      // fold last line of block
-      if (AStartIndex < cnt)
-      and (FoldType[AStartIndex] = cfEnd) then begin
-        Folded[AStartIndex] := true;
-        inc(AStartIndex);
-      end;
-    end
-    else begin
-      //unfolded
-      Folded[AStartIndex] := false;
-      inc(AStartIndex);
-    end;
-  end;
-  
-  // last line of block, if cfEnd (otherwise the next block begins here)
-  if (AStartIndex < cnt)
-  and (FoldType[AStartIndex] = cfEnd) then
-    Folded[AStartIndex] := false;
-end;
-
-procedure TSynEditStringList.MaybeUnfoldAboveNewLine(ANewLineIndex : Integer);
-begin
-exit;
-  if ANewLineIndex = 0 then exit;
-  if (FoldType[ANewLineIndex - 1] = cfCollapsed)
-  and not Folded[ANewLineIndex - 1] then begin
-    FoldType[ANewLineIndex - 1] := cfExpanded;
-    // ScanFrom will override this, unless we moved a "begin" from the previous line
-    FoldType[ANewLineIndex]     := cfCollapsed;
-    if Assigned(fOnFoldChanged) then
-      fOnFoldChanged(ANewLineIndex - 1);
-  end;
 end;
 
 {$ENDIF}
@@ -1456,6 +1301,26 @@ begin
   Result:=fUnModifiedItem>=0;
 end;
 
+{$ENDIF}
+
+{ TSynEditUndoItem }
+
+{$IFDEF SYN_LAZARUS}
+function TSynEditUndoItem.ChangeStartPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeStartPos
+  else result := fChangeEndPos;
+end;
+
+function TSynEditUndoItem.ChangeEndPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeEndPos
+  else result := fChangeStartPos;
+end;
 {$ENDIF}
 
 end.

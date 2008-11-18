@@ -1476,6 +1476,19 @@ begin
       //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
     end;
+
+  ecPrevBookmark: // Note: book mark commands lower than ecUserFirst must be handled here
+     TSourceNotebook(FaOwner).BookmarkGotoNext(false);
+
+  ecNextBookmark:
+    TSourceNotebook(FaOwner).BookmarkGotoNext(true);
+
+  ecGotoMarker0..ecGotoMarker9:
+    TSourceNotebook(FaOwner).BookmarkGoto(Command - ecGotoMarker0);
+
+  ecSetMarker0..ecSetMarker9:
+    TSourceNotebook(FaOwner).BookmarkSet(Command - ecSetMarker0);
+
   end;
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
 end;
@@ -1551,15 +1564,6 @@ Begin
 
   ecFindPrevWordOccurrence:
     FindNextWordOccurrence(false);
-
-  ecSetFreeBookmark:
-    FSourceNoteBook.BookMarkSetFreeClicked(Self);
-
-  ecPrevBookmark:
-    FSourceNoteBook.BookMarkPrevClicked(Self);
-
-  ecNextBookmark:
-    FSourceNoteBook.BookMarkNextClicked(Self);
 
   ecSelectionEnclose:
     EncloseSelection;
@@ -6013,6 +6017,8 @@ Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 begin
+  //DebugLn(['TSourceNotebook.ProcessParentCommand START ',dbgsName(Sender),' Command=',Command,' AChar=',AChar]);
+
   FProcessingCommand:=true;
   if Assigned(FOnProcessUserCommand) then begin
     Handled:=false;
@@ -6023,6 +6029,7 @@ begin
       exit;
     end;
   end;
+  //DebugLn(['TSourceNotebook.ProcessParentCommand after mainide: ',dbgsName(Sender),' Command=',Command,' AChar=',AChar]);
 
   Handled:=true;
   case Command of
@@ -6064,17 +6071,8 @@ begin
   ecToggleObjectInsp:
     ToggleObjectInspClicked(Self);
     
-  ecPrevBookmark:
-    BookmarkGotoNext(false);
-
-  ecNextBookmark:
-    BookmarkGotoNext(true);
-
-  ecGotoMarker0..ecGotoMarker9:
-    BookmarkGoto(Command - ecGotoMarker0);
-
-  ecSetMarker0..ecSetMarker9:
-    BookmarkSet(Command - ecSetMarker0);
+  ecSetFreeBookmark:
+    BookMarkSetFree;
 
   ecJumpBack:
     HistoryJump(Self,jhaBack);

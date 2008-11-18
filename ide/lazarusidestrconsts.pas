@@ -1857,6 +1857,10 @@ resourcestring
   lisKMGoToSourceEditor8 = 'Go to source editor 8';
   lisKMGoToSourceEditor9 = 'Go to source editor 9';
   srkmecGotoEditor            = 'Go to editor %d';
+  srkmEcFoldLevel             = 'Fold to Level %d';
+  srkmecUnFoldAll             = 'Unfold all';
+  srkmecFoldCurrent           = 'Fold at Cursor';
+  srkmecUnFoldCurrent         = 'Unfold at Cursor';
 
   // edit menu
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
@@ -1993,6 +1997,7 @@ resourcestring
   srkmCatCmdCmd         = 'Command commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
   srkmCatMarker         = 'Text marker commands';
+  srkmCatFold           = 'Text folding commands';
   lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
   srkmCatSrcNoteBook    = 'Source Notebook commands';

@@ -155,6 +155,19 @@ const
   ecSetMarker8      = 359;  // Set marker, Data = PPoint - X, Y Pos
   ecSetMarker9      = 360;  // Set marker, Data = PPoint - X, Y Pos
 
+  EcFoldLevel1             = 361;  // fold all folds, greater/equal than nesting level 1
+  EcFoldLevel2             = EcFoldLevel1 + 1;
+  EcFoldLevel3             = EcFoldLevel2 + 1;
+  EcFoldLevel4             = EcFoldLevel3 + 1;
+  EcFoldLevel5             = EcFoldLevel4 + 1;
+  EcFoldLevel6             = EcFoldLevel5 + 1;
+  EcFoldLevel7             = EcFoldLevel6 + 1;
+  EcFoldLevel8             = EcFoldLevel7 + 1;
+  EcFoldLevel9             = EcFoldLevel8 + 1;
+  EcFoldLevel0             = EcFoldLevel9 + 1;
+  EcFoldCurrent            = 371;
+  EcUnFoldCurrent          = 372;
+
   ecDeleteLastChar  = 501;  // Delete last char (i.e. backspace key)
   ecDeleteChar      = 502;  // Delete char at cursor (i.e. delete key)
   ecDeleteWord      = 503;  // Delete from cursor to end of word
@@ -240,6 +253,8 @@ type
       default 0;                                                                //mh 2000-11-07
   end;
 
+  { TSynEditKeyStrokes }
+
   TSynEditKeyStrokes = class(TCollection)
   private
     FOwner: TPersistent;
@@ -257,6 +272,7 @@ type
     function FindKeycode(Code: word; SS: TShiftState): integer;
     function FindKeycode2(Code1: word; SS1: TShiftState;
       Code2: word; SS2: TShiftState): integer;
+    function FindKeycode2Start(Code: word; SS: TShiftState): integer;
     function FindShortcut(SC: TShortcut): integer;
     function FindShortcut2(SC, SC2: TShortcut): integer;
     procedure LoadFromStream(AStream: TStream);                                 //ac 2000-07-05
@@ -381,7 +397,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..89] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..101] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -471,7 +487,20 @@ const
     (Value: ecSetMarker6; Name: 'ecSetMarker6'),
     (Value: ecSetMarker7; Name: 'ecSetMarker7'),
     (Value: ecSetMarker8; Name: 'ecSetMarker8'),
-    (Value: ecSetMarker9; Name: 'ecSetMarker9'));
+    (Value: ecSetMarker9; Name: 'ecSetMarker9'),
+    (Value: EcFoldLevel1; Name: 'EcFoldLevel1'),
+    (Value: EcFoldLevel2; Name: 'EcFoldLevel2'),
+    (Value: EcFoldLevel3; Name: 'EcFoldLevel1'),
+    (Value: EcFoldLevel4; Name: 'EcFoldLevel1'),
+    (Value: EcFoldLevel5; Name: 'EcFoldLevel1'),
+    (Value: EcFoldLevel6; Name: 'EcFoldLevel6'),
+    (Value: EcFoldLevel7; Name: 'EcFoldLevel7'),
+    (Value: EcFoldLevel8; Name: 'EcFoldLevel8'),
+    (Value: EcFoldLevel9; Name: 'EcFoldLevel9'),
+    (Value: EcFoldLevel0; Name: 'EcFoldLevel0'),
+    (Value: EcFoldCurrent; Name: 'EcFoldCurrent'),
+    (Value: EcUnFoldCurrent; Name: 'EcUnFoldCurrent')
+  );
 
 procedure GetEditorCommandValues(Proc: TGetStrProc);
 var
@@ -720,12 +749,6 @@ begin
   for x := 0 to Count-1 do
     if (Items[x].Key = Code) and (Items[x].Shift = SS) and (Items[x].Key2 = 0)
     then begin
-{
-writeln('TSynEditKeyStrokes.FindKeycode ',Items[x].Key,'=',Code
-  ,'  Shift ',ssShift in Items[x].Shift,'=',ssShift in SS
-  ,'  Ctrl ',ssCtrl in Items[x].Shift,'=',ssCtrl in SS
-);
-}
       Result := x;
       break;
     end;
@@ -740,6 +763,21 @@ begin
   for x := 0 to Count-1 do
     if (Items[x].Key = Code1) and (Items[x].Shift = SS1) and
        (Items[x].Key2 = Code2) and (Items[x].Shift2 = SS2) then
+    begin
+      Result := x;
+      break;
+    end;
+end;
+
+function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState
+  ): integer;
+var
+  x: integer;
+begin
+  Result := -1;
+  for x := 0 to Count-1 do
+    if (Items[x].Key = Code) and (Items[x].Shift = SS) and
+       (Items[x].Key2 <> VK_UNKNOWN) then
     begin
       Result := x;
       break;
@@ -888,6 +926,18 @@ begin
   AddKey(ecSetMarker7, ord('7'), [ssCtrl,ssShift]);
   AddKey(ecSetMarker8, ord('8'), [ssCtrl,ssShift]);
   AddKey(ecSetMarker9, ord('9'), [ssCtrl,ssShift]);
+  AddKey(EcFoldLevel1, ord('1'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel2, ord('2'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel3, ord('3'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel4, ord('4'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel5, ord('5'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel6, ord('6'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel7, ord('7'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel8, ord('8'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel9, ord('9'), [ssAlt,ssShift]);
+  AddKey(EcFoldLevel0, ord('0'), [ssAlt,ssShift]);
+  AddKey(EcFoldCurrent, ord('-'), [ssAlt,ssShift]);
+  AddKey(EcUnFoldCurrent, ord('+'), [ssAlt,ssShift]);
   AddKey(ecNormalSelect, ord('N'), [ssCtrl,ssShift]);
   AddKey(ecColumnSelect, ord('C'), [ssCtrl,ssShift]);
   AddKey(ecLineSelect, ord('L'), [ssCtrl,ssShift]);
