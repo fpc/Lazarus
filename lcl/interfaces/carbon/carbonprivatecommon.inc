@@ -323,7 +323,7 @@ var
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
-  if not (AWidget is TCarbonCustomControl) then
+  if not (AWidget is TCarbonCustomControl) or (AWidget is TCarbonWindow) then
     Result := CallNextEventHandler(ANextHandler, AEvent);
 
   if OSError(
@@ -336,7 +336,7 @@ begin
       IntToStr(Integer(FocusPart)));
   {$ENDIF}
   
-  if AWidget is TCarbonCustomControl then
+  if (AWidget is TCarbonCustomControl) and not (AWidget is TCarbonWindow) then
   begin
     OSError(HIViewGetFocusPart(AWidget.Content, CurrentFocus),
       SName, 'HIViewGetFocusPart');

@@ -1153,6 +1153,31 @@ begin
   inherited;
 end;
 
+procedure SetClientAlign(Child, Parent: HIViewRef; FullAlign: Boolean);
+var
+  Layout: HILayoutInfo;
+begin
+  HIViewGetLayoutInfo(Child, Layout);
+  if FullAlign then
+  begin
+    Layout.binding.left.kind  := kHILayoutBindLeft;
+    Layout.binding.right.kind := kHILayoutBindRight;
+    Layout.binding.top.kind    := kHILayoutBindTop;
+    Layout.binding.bottom.kind := kHILayoutBindBottom;
+  end else
+  begin
+    Layout.binding.left.kind  := kHILayoutBindNone;
+    Layout.binding.right.kind := kHILayoutBindNone;
+    Layout.binding.top.kind    := kHILayoutBindNone;
+    Layout.binding.bottom.kind := kHILayoutBindNone;
+  end;
+  Layout.binding.left.toView := Parent;
+  Layout.binding.right.toView := Parent;
+  Layout.binding.top.toView := Parent;
+  Layout.binding.bottom.toView := Parent;
+  HIViewSetLayoutInfo(Child, Layout);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWindow.CreateWidget
   Params:  AParams - Creation parameters
@@ -1162,7 +1187,6 @@ end;
 procedure TCarbonWindow.CreateWidget(const AParams: TCreateParams);
 var
   Params  : TCreateParams;
-  Layout  : HILayoutInfo;
 begin
   CreateWindow(AParams);
   RegisterWindowEvents;
@@ -1173,18 +1197,7 @@ begin
   inherited CreateWidget(Params);
 
   HIViewAddSubview(fWinContent, fScrollView);
-
-  HIViewGetLayoutInfo(fScrollView, Layout);
-  Layout.binding.left.kind  := kHILayoutBindLeft;
-  Layout.binding.left.toView := fWinContent;
-  Layout.binding.right.kind := kHILayoutBindRight;
-  Layout.binding.right.toView := fWinContent;
-  Layout.binding.top.kind    := kHILayoutBindTop;
-  Layout.binding.top.toView := fWinContent;
-  Layout.binding.bottom.kind := kHILayoutBindBottom;
-  Layout.binding.bottom.toView := fWinContent;
-  HIViewSetLayoutInfo(fScrollView, Layout);
-
+  SetClientAlign(fScrollView, fWinContent, true);
   HIViewSetVisible(fScrollView, true);
 end;
 
@@ -1212,46 +1225,24 @@ end;
   Adds window to parent widget
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.AddToWidget(AParent: TCarbonWidget);
-var
-  Layout  : HILayoutInfo;
 begin
-  if Assigned(AParent) then begin
+  if Assigned(AParent) then
+  begin
     fWindowRef := nil;
     fHiddenWin := fWindowRef;
     if IsWindowVisible(fHiddenWin) then HideWindow(fHiddenWin);
     OSError(HIViewAddSubview(AParent.Content, FScrollView), Self, 'AddToWidget', SViewAddView);
     AParent.ControlAdded;
-
-    HIViewGetLayoutInfo(fScrollView, Layout);
-    Layout.binding.left.kind  := kHILayoutBindNone;
-    Layout.binding.left.toView := nil;
-    Layout.binding.right.kind := kHILayoutBindNone;
-    Layout.binding.right.toView := nil;
-    Layout.binding.top.kind    := kHILayoutBindNone;
-    Layout.binding.top.toView := nil;
-    Layout.binding.bottom.kind := kHILayoutBindNone;
-    Layout.binding.bottom.toView := nil;
-    HIViewSetLayoutInfo(fScrollView, Layout);
-
+    SetClientAlign(fScrollView, fWinContent, false);
   end else begin
-    if IsVisible then begin
+    if IsVisible then
+    begin
       ShowWindow(fHiddenWin);
       OSError(HIViewAddSubview(fWinContent, FScrollView), Self, 'AddToWidget', SViewAddView);
     end;
-    HIViewGetLayoutInfo(fScrollView, Layout);
-    Layout.binding.left.kind  := kHILayoutBindLeft;
-    Layout.binding.left.toView := fWinContent;
-    Layout.binding.right.kind := kHILayoutBindRight;
-    Layout.binding.right.toView := fWinContent;
-    Layout.binding.top.kind    := kHILayoutBindTop;
-    Layout.binding.top.toView := fWinContent;
-    Layout.binding.bottom.kind := kHILayoutBindBottom;
-    Layout.binding.bottom.toView := fWinContent;
-    HIViewSetLayoutInfo(fScrollView, Layout);
+    SetClientAlign(fScrollView, fWinContent, true);
     fWindowRef := fHiddenWin;
   end;
-
-
 end;
 
 {------------------------------------------------------------------------------
