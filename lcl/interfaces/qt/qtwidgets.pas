@@ -973,7 +973,7 @@ type
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     function selCount: Integer;
-    function selectedItems: TIntArray;
+    function selectedItems: TPtrIntArray;
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
   public
@@ -2700,7 +2700,7 @@ end;
 
 function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
 var
-  ActionList: TIntArray;
+  ActionList: TPtrIntArray;
 begin
   QWidget_actions(Widget, @ActionList);
   if (AIndex > 0) and (AIndex < Length(ActionList)) then
@@ -7127,13 +7127,13 @@ end;
 
 function TQtTreeWidget.selCount: Integer;
 var
-  FPInts: TIntArray;
+  FPInts: TPtrIntArray;
 begin
   QTreeWidget_selectedItems(QTreeWidgetH(Widget), @FPInts);
   Result := length(FPInts);
 end;
 
-function TQtTreeWidget.selectedItems: TIntArray;
+function TQtTreeWidget.selectedItems: TPtrIntArray;
 begin
   QTreeWidget_selectedItems(QTreeWidgetH(Widget), @Result);
 end;
@@ -8450,7 +8450,7 @@ procedure TQtCalendar.AttachEvents;
 var
   Method: TMethod;
   i: integer;
-  Children: TIntArray;
+  Children: TPtrIntArray;
   AnObject: QObjectH;
 begin
   inherited AttachEvents;
@@ -9051,7 +9051,11 @@ end;
 
 procedure TQtFileDialog.setFilter(const AFilter: WideString);
 begin
+  {$IFDEF USE_QT_44}
+  QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
+  {$ELSE}
   QFileDialog_setFilter(QFileDialogH(Widget), @AFilter);
+  {$ENDIF}
 end;
 
 procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
@@ -9102,7 +9106,11 @@ end;
 
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
+  {$IFDEF USE_QT_44}
+  QFileDialog_nameFilters(QFileDialogH(Widget), retval);
+  {$ELSE}
   QFileDialog_filters(QFileDialogH(Widget), retval);
+  {$ENDIF}
 end;
 
 { TQtGraphicView }

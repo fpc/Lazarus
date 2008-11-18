@@ -1180,7 +1180,7 @@ end;
 class function TQtWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 var
   QtTreeWidget: TQtTreeWidget;
-  FPInts: TIntArray;
+  FPInts: TPtrIntArray;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelection') then
     Exit;

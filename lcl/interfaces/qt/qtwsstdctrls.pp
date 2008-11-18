@@ -433,7 +433,7 @@ end;
 class function TQtWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 var
   QtListWidget: TQtListWidget;
-  SelectedItems: TIntArray;
+  SelectedItems: TPtrIntArray;
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   QListWidget_selectedItems(QListWidgetH(QtListWidget.Widget), @SelectedItems);

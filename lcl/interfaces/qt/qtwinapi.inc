@@ -2659,7 +2659,11 @@ begin
   end;
     
   case nIndex of
+    {$IFDEF USE_QT_44}
+    COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
+    {$ELSE}
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
+    {$ENDIF}
     COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
     COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteBase);
@@ -2682,8 +2686,13 @@ begin
     COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
     COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
+    {$IFDEF USE_QT_44}
+    COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
+    COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
+    {$ELSE}
     COLOR_INFOTEXT                : Result:=GetClInfo(False);
     COLOR_INFOBK                  : Result:=GetClInfo(True);
+    {$ENDIF}
     // PBD: 25 is unassigned in all the docs I can find
     //      if someone finds what this is supposed to be then fill it in
     //      note defaults below, and cl[ColorConst] in graphics
