@@ -5043,27 +5043,39 @@ const
   // MG: Reading in gtk internals is dirty, but there seems to be no other way
   //     to clear the old target lists
   var
-    SelectionLists, CurSelList: PGList;
+    SelectionLists: PGList;
+    {$ifdef gtk1}
+    CurSelList: PGList;
     TargetSelList: PGtkTargetSelectionList;
+    {$else}
+    CurClipboard: TClipboardType;
+    {$endif}
   begin
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW START');
     {$ENDIF}
+    {$ifdef gtk1}
     SelectionLists := gtk_object_get_data (PGtkObject(Widget),
-                                          gtk_selection_handler_key);
+      gtk_selection_handler_key);
     CurSelList := SelectionLists;
-    while (CurSelList<>nil) do begin
+    while (CurSelList<>nil) do
+    begin
       TargetSelList := CurSelList^.Data;
       gtk_target_list_unref(TargetSelList^.List);
-      {$ifndef gtk1}
-      if (gtk_major_version = 2) and (gtk_minor_version > 12) and (@g_slice_free1 <> nil) then
-        g_slice_free1(SizeOf(TGtkTargetSelectionList), TargetSelList)
-      else
-      {$endif}
       g_free(TargetSelList);
       CurSelList := CurSelList^.Next;
     end;
     g_list_free(SelectionLists);
+    {$else}
+    // clear 3 selections
+    for CurClipboard := Low(TClipboardType) to High(CurClipboard) do
+      gtk_selection_clear_targets(Widget, ClipboardTypeAtoms[CurClipboard]);
+
+    SelectionLists := gtk_object_get_data(PGtkObject(Widget),
+      gtk_selection_handler_key);
+    if SelectionLists <> nil then
+      g_list_free(SelectionLists);
+    {$endif}
     gtk_object_set_data (PGtkObject(Widget), gtk_selection_handler_key, GtkNil);
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW END');

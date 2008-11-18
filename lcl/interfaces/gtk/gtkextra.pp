@@ -54,11 +54,4 @@ implementation
 {$I gtk2extra.inc}
 {$endif}
 
-{$ifdef gtk2}
-initialization
-  Initialize;
-finalization
-  Finalize;
-{$endif}
-
 end.
