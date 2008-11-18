@@ -6110,7 +6110,7 @@ begin
   DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
   {$ENDIF}
 
-  Project1.LockUnitComponentDependencies;
+  Project1.LockUnitComponentDependencies; // avoid circles
   try
     // save
     if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0)
@@ -6269,6 +6269,7 @@ begin
   Project1.UpdateUnitComponentDependencies;
   if Project1.UnitComponentIsUsed(AnUnitInfo,CheckHasDesigner) then
     exit(true);
+  //DebugLn(['TMainIDE.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
 end;
 
 function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;

@@ -1144,7 +1144,7 @@ procedure TUnitInfo.WriteDebugReportUnitComponentDependencies(Prefix: string);
 var
   Dependency: TUnitComponentDependency;
 begin
-  DebugLn([Prefix+'TUnitInfo.WriteDebugReportUnitComponentDependencies ',Filename]);
+  DebugLn([Prefix+'TUnitInfo.WriteDebugReportUnitComponentDependencies ',Filename,' ',dbgs(Flags)]);
   Dependency:=FirstRequiredComponent;
   if Dependency<>nil then begin
     DebugLn([Prefix+'  Requires:  >>> ']);
@@ -3734,7 +3734,7 @@ procedure TProject.UpdateUnitComponentDependencies;
     until TypeInfo=nil;
   end;
   
-  procedure DFSUsedByDesigner(AnUnitInfo, IgnoreUnitInfo: TUnitInfo);
+  procedure DFSRequiredDesigner(AnUnitInfo, IgnoreUnitInfo: TUnitInfo);
   var
     Dependency: TUnitComponentDependency;
     UsingUnitInfo: TUnitInfo;
@@ -3743,19 +3743,19 @@ procedure TProject.UpdateUnitComponentDependencies;
     or (uifMarked in AnUnitInfo.FFlags) then
       exit;
     Include(AnUnitInfo.FFlags,uifMarked);
-    Dependency:=AnUnitInfo.FirstUsedByComponent;
+    Dependency:=AnUnitInfo.FirstRequiredComponent;
     while Dependency<>nil do begin
-      UsingUnitInfo:=Dependency.UsedByUnit;
+      UsingUnitInfo:=Dependency.RequiresUnit;
       if (UsingUnitInfo<>IgnoreUnitInfo)
       and (not (uifComponentIndirectlyUsedByDesigner in UsingUnitInfo.FFlags))
       then begin
         {$IFDEF VerboseIDEMultiForm}
-        DebugLn(['TProject.UpdateUnitComponentDependencies.DFSUsedByDesigner designer of ',UsingUnitInfo.Filename,' uses ',AnUnitInfo.Filename]);
+        DebugLn(['TProject.UpdateUnitComponentDependencies.DFSRequiredDesigner designer of ',AnUnitInfo.Filename,' uses ',UsingUnitInfo.Filename]);
         {$ENDIF}
         Include(UsingUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
-        DFSUsedByDesigner(UsingUnitInfo,IgnoreUnitInfo);
+        DFSRequiredDesigner(UsingUnitInfo,IgnoreUnitInfo);
       end;
-      Dependency:=Dependency.NextUsedByDependency;
+      Dependency:=Dependency.NextRequiresDependency;
     end;
   end;
 
@@ -3808,7 +3808,7 @@ begin
       begin
         // mark all that use indirectly this designer
         Exclude(AnUnitInfo.FFlags,uifMarked);
-        DFSUsedByDesigner(AnUnitInfo,AnUnitInfo);
+        DFSRequiredDesigner(AnUnitInfo,AnUnitInfo);
       end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
