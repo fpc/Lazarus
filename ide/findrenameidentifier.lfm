@@ -10,9 +10,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   ClientWidth = 452
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object CurrentGroupBox: TGroupBox
     Left = 6
     Height = 79
@@ -152,6 +151,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Width = 101
     Anchors = [akRight, akBottom]
     AutoSize = True
+    Cancel = True
     Caption = 'CancelButton'
     ModalResult = 2
     NumGlyphs = 0
