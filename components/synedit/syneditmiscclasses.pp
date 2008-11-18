@@ -239,7 +239,7 @@ type
   end;
 
   { TSynInternalImage }
-  
+
   TSynInternalImage = class(TObject)
   public
     constructor Create(const AName: string; Count: integer);
@@ -250,8 +250,8 @@ type
       LineHeight: integer; TransparentColor: TColor);
     {$ENDIF}
   end;
-  
-  
+
+
   { TSynEditSearchCustom }
 
   TSynEditSearchCustom = class(TComponent)
@@ -420,7 +420,7 @@ procedure TSynGutter.AutoSizeDigitCount(LinesCount: integer);
 var
   nDigits: integer;
 begin
-  if fVisible and fAutoSize and fShowLineNumbers then begin            
+  if fVisible and fAutoSize and fShowLineNumbers then begin
     if fZeroStart then Dec(LinesCount);
     nDigits := Max(Length(IntToStr(LinesCount)), fDigitCount);
     if fAutoSizeDigitCount <> nDigits then begin
@@ -458,7 +458,7 @@ begin
     Result := 0;
     Exit;
   end;
-  
+
   if fShowLineNumbers then
     Result := fLeftOffset + fRightOffset + fAutoSizeDigitCount * CharWidth + 2
   else

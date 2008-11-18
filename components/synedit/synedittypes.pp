@@ -72,6 +72,10 @@ type
     ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
   TSynSearchOptions = set of TSynSearchOption;
 
+  {$IFDEF SYN_LAZARUS}
+  TSynEditRange = pointer;
+  {$ENDIF}
+
 implementation
 
 end.

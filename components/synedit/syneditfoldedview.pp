@@ -30,7 +30,7 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTextBuffer;
+  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase;
 
 type
 
@@ -162,7 +162,7 @@ type
 
   TSynEditFoldedView = class {TODO: Make a base class, that just maps everything one to one}
   private
-    fLines : TSynEditStringList;
+    fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
     fTopLine : Integer;
     fLinesInWindow : Integer;          // there may be an additional part visible line
@@ -199,7 +199,7 @@ type
     Procedure LinesDeletedAtViewPos(AStartPos, ALineCount : Integer;
                                     SkipFixFolding : Boolean = False);
   public
-    constructor Create(aTextBuffer : TSynEditStringList);
+    constructor Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings);
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
@@ -1308,13 +1308,13 @@ end;
 
 { TSynEditFoldedView }
 
-constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList);
+constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings);
 begin
-  fLines := aTextBuffer;
+  fLines := aTextView;
   fFoldTree := TSynTextFoldAVLTree.Create;
   fTopLine := 0;
   fLinesInWindow := -1;
-  fLines.OnLineCountChanged := {$IFDEF FPC}@{$ENDIF}LineCountChanged;
+  aTextBuffer.OnLineCountChanged := {$IFDEF FPC}@{$ENDIF}LineCountChanged;
 end;
 
 destructor TSynEditFoldedView.Destroy;

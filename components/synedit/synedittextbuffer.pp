@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
-  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType,
+  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType, SynEditTextBase,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -52,7 +52,9 @@ uses
 
 type
 {begin}                                                                         //mh 2000-10-10
+  {$IFNDEF SYN_LAZARUS}
   TSynEditRange = pointer;
+  {$ENDIF}
 
 {begin}                                                                         //mh 2000-10-19
   TSynEditStringFlag = (sfHasTabs, sfHasNoTabs, sfExpandedLengthUnknown);
@@ -84,14 +86,18 @@ type
   PSynEditStringRecList = ^TSynEditStringRecList;
   TSynEditStringRecList = array[0..MaxSynEditStrings - 1] of TSynEditStringRec;
 
-  TStringListIndexEvent = procedure(Index: Integer) of object;        
+  TStringListIndexEvent = procedure(Index: Integer) of object;
   {$IFDEF SYN_LAZARUS}
   TStringListLineCountEvent = procedure(Index, Count: Integer) of object;
   {$ENDIF}
 
   { TSynEditStringList }
 
+  {$IFDEF SYN_LAZARUS}
+  TSynEditStringList = class(TSynEditStrings)
+  {$ELSE}
   TSynEditStringList = class(TStrings)
+  {$ENDIF}
   private
     fList: PSynEditStringRecList;
     fCount: integer;
@@ -111,18 +117,22 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
-    function GetFoldEndLevel(Index: integer): integer;
-    function GetFoldMinLevel(Index: integer): integer;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer);
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer);
+    function GetFoldEndLevel(Index: integer): integer; override;
+    function GetFoldMinLevel(Index: integer): integer; override;
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
     {$ENDIF}
+    {$IFNDEF SYN_LAZARUS}                                                       // protected in SynLazarus
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
+    {$ENDIF}
 {end}                                                                           //mh 2000-10-19
     function GetRange(Index: integer): TSynEditRange;
+      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
     procedure PutRange(Index: integer; ARange: TSynEditRange);
+      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
   protected
     fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
@@ -131,6 +141,8 @@ type
     fOnPutted: TStringListIndexEvent;
     {$IFDEF SYN_LAZARUS}
     fOnLineCountChanged : TStringListLineCountEvent;
+    function GetExpandedString(Index: integer): string; override;
+    function GetLengthOfLongestLine: integer; override;
     {$ENDIF}
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
@@ -143,9 +155,6 @@ type
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
     procedure SetTabWidth(Value: integer);                                      //mh 2000-10-19
     procedure SetUpdateState(Updating: Boolean); override;
-    {$IFDEF SYN_LAZARUS}
-    procedure SetTextStr(const Value: string); override;
-    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -154,14 +163,17 @@ type
     procedure Clear; override;
     procedure Delete(Index: integer); override;
     procedure DeleteLines(Index, NumLines: integer);                            // DJLP 2000-11-01
+      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure Exchange(Index1, Index2: integer); override;
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer);                            // DJLP 2000-11-01
+      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure InsertStrings(Index: integer; NewStrings: TStrings);              // DJLP 2000-11-01
+      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
     {$IFDEF SYN_LAZARUS}
-    procedure ClearRanges(ARange: TSynEditRange);
+    procedure ClearRanges(ARange: TSynEditRange); override;
     {$ENDIF}
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
@@ -199,7 +211,7 @@ type
     crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
     crLineBreak, crIndent, crUnindent,
     crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
-    crNothing);
+    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace {$ENDIF});
 
   { TSynEditUndoItem }
 
@@ -1075,42 +1087,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
-procedure TSynEditStringList.SetTextStr(const Value: string);
-var
-  StartPos: Integer;
-  p: Integer;
-  Len: Integer;
-  sl: TStringList;
-begin
-  BeginUpdate;
-  sl:=TStringList.Create;
-  try
-    Clear;
-    p:=1;
-    StartPos:=p;
-    Len:=length(Value);
-    while p<=Len do begin
-      if not (Value[p] in [#10,#13]) then begin
-        inc(p);
-      end else begin
-        sl.Add(copy(Value,StartPos,p-StartPos));
-        inc(p);
-        if (p<=Len) and (Value[p] in [#10,#13]) and (Value[p-1]<>Value[p]) then
-          inc(p);
-        StartPos:=p;
-      end;
-    end;
-    if StartPos<=Len then
-      sl.Add(copy(Value,StartPos,Len-StartPos+1));
-    AddStrings(sl);
-  finally
-    sl.Free;
-    EndUpdate;
-  end;
-end;
-{$ENDIF}
-
 { TSynEditUndoList }
 
 constructor TSynEditUndoList.Create;
@@ -1191,8 +1167,8 @@ end;
 procedure TSynEditUndoList.EndBlock;
 begin
   if fBlockCount > 0 then begin
-    Dec(fBlockCount);                                                     
-    if fBlockCount = 0 then begin                                         
+    Dec(fBlockCount);
+    if fBlockCount = 0 then begin
       fBlockChangeNumber := 0;
       Inc(fNextChangeNumber);
       if fNextChangeNumber = 0 then
