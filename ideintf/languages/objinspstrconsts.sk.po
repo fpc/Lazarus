@@ -1,8 +1,10 @@
+# translation of objinspstrconsts.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-31 10:51+0100\n"
+"PO-Revision-Date: 2008-11-16 19:24+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +24,7 @@ msgstr "Databáza"
 #: objinspstrconsts.cactionlisteditordeleteaction
 msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
@@ -33,6 +35,7 @@ msgid "Dialog"
 msgstr "Dialóg"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Edit"
 
@@ -41,16 +44,19 @@ msgid "File"
 msgstr "Súbor"
 
 #: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Pomoc"
 
 #: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr ""
+msgstr "Posunúť dole"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr ""
+msgstr "Posunúť hore"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
@@ -113,6 +119,7 @@ msgid "Delete the Item %d \"%s\"?"
 msgstr "Zmazať položku %d „%s“?"
 
 #: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
 msgstr "Nižšie"
 
@@ -121,6 +128,7 @@ msgid "Modify the Item"
 msgstr "Modifikovať položku"
 
 #: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Vyššie"
 
@@ -145,8 +153,9 @@ msgid "Field's list is not available, can't check for duplicates"
 msgstr "Zoznam polí nie je dostupný, nie je možné skontrolovať duplicity"
 
 #: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Pridať"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -173,17 +182,19 @@ msgid "Show page ..."
 msgstr "Zobraziť stránku..."
 
 #: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
 msgid "Add"
 msgstr "Pridať"
 
 #: objinspstrconsts.oicoleditdelete
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Nižšie"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -192,7 +203,7 @@ msgstr "Editácia"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Vyššie"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -235,14 +246,16 @@ msgid "&Add"
 msgstr "&Pridať"
 
 #: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
 msgid "&Cancel"
-msgstr ""
+msgstr "&Zrušiť"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
 msgstr "Kategória"
 
 #: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
 msgid "&Delete"
 msgstr "&Zmazať"
 
@@ -299,6 +312,7 @@ msgid "Cut components"
 msgstr "Vystrihnúť komponenty"
 
 #: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
 msgid "Delete"
 msgstr "Zmazať"
 
@@ -543,26 +557,28 @@ msgid "Cancel"
 msgstr "Zrušiť"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
 msgstr "&Zrušiť"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Zmazať"
 
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.oistdactdataseteditheadline
 msgid "&Edit"
 msgstr "&Upravovať"
 
 #: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -577,6 +593,7 @@ msgid "&Insert"
 msgstr "&Vložiť"
 
 #: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
 msgstr "Vložiť"
 
@@ -593,6 +610,7 @@ msgid "&Next"
 msgstr "Ď&alší"
 
 #: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
 msgstr "Ďalší"
 
@@ -609,6 +627,7 @@ msgid "&Prior"
 msgstr "&Predošlý"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
 msgstr "Predošlý"
 
@@ -647,7 +666,7 @@ msgstr "Vystrihnúť"
 #: objinspstrconsts.oistdacteditdeleteheadline
 msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Zmazať"
 
 #: objinspstrconsts.oistdacteditdeleteshortcut
 msgid "Del"
@@ -656,7 +675,7 @@ msgstr "Del"
 #: objinspstrconsts.oistdacteditdeleteshorthint
 msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.oistdacteditpasteheadline
 msgid "&Paste"
@@ -691,8 +710,9 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
-msgstr ""
+msgstr "Vrátiť"
 
 #: objinspstrconsts.oistdactfileexitheadline
 msgid "E&xit"
@@ -709,7 +729,7 @@ msgstr "&Otvoriť..."
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
 msgid "Open"
-msgstr ""
+msgstr "Otvoriť"
 
 #: objinspstrconsts.oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -824,10 +844,12 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr "Metóda %s%s%s nie je published.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
 msgstr "Vrátiť"
 
 #: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Neznámy"
 
@@ -884,6 +906,7 @@ msgid "Invalid numeric Value"
 msgstr "Neplatná číselná hodnota"
 
 #: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
 msgstr "Vľavo"
 
@@ -900,6 +923,7 @@ msgid "OK"
 msgstr "OK"
 
 #: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
 msgstr "Vpravo"
 
@@ -926,7 +950,7 @@ msgstr "Doladenie"
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Použiť"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -937,6 +961,7 @@ msgid "Center"
 msgstr "Vystredniť"
 
 #: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "Clear"
 msgstr "Zmazať"
 
@@ -947,7 +972,7 @@ msgstr "Orezať"
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -958,10 +983,12 @@ msgid "Selected Image"
 msgstr "Vybraný obrázok"
 
 #: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
 msgstr "Presunúť nižšie"
 
 #: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
 msgstr "Presunúť vyššie"
 
@@ -978,6 +1005,7 @@ msgid "Transparent Color:"
 msgstr "Transparentná farba:"
 
 #: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
 msgstr "Uložiť..."
 
@@ -1004,7 +1032,7 @@ msgstr "Editvať položky ListView..."
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Použiť"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1013,39 +1041,46 @@ msgstr "Editor položiek ListView"
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Položky"
 
 #: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Vlastnosti položky"
 
 #: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Položka"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
 msgstr "Nadpis:"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr ""
+msgstr "Index obrázka:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Stavový index:"
 
 #: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Nová položka"
 
 #: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Nová podpoložka"
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1058,7 +1093,7 @@ msgstr "Editovať StringGrid..."
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Použiť"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
@@ -1070,7 +1105,7 @@ msgstr "Vyčistiť"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr "Mriežka reťazcov"
+msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load..."
@@ -1083,22 +1118,24 @@ msgstr "Presunúť stĺpce/riadky"
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Otvoriť"
 
 #: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Uložiť..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Uložiť"
 
 #: objinspstrconsts.sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Editovať položky TreeView..."
 
 #: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Použiť"
 
@@ -1109,21 +1146,25 @@ msgstr "Editor položiek TreeView"
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
 msgstr "Položky"
 
 #: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Vlastnosti položiek"
 
 #: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
 msgstr "Položka"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
 msgstr "Index obrázka:"
 
@@ -1132,6 +1173,7 @@ msgid "Selected Index:"
 msgstr "Index výberu:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
 msgstr "Index stavu:"
 
@@ -1144,25 +1186,29 @@ msgid "Load"
 msgstr "Načítať"
 
 #: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
 msgstr "Nová položka"
 
 #: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nová podpoložka"
 
 #: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Otvoriť"
 
 #: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
 msgstr "Uložiť"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Uložiť"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1197,8 +1243,9 @@ msgid "Capital"
 msgstr "Verzálka"
 
 #: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1233,16 +1280,18 @@ msgid "Hanja"
 msgstr "Hanja"
 
 #: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
 msgstr "Home"
 
 #: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Vložiť"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1261,8 +1310,9 @@ msgid "Mouse Button Left"
 msgstr "Ľavé tlač. myši"
 
 #: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "Vľavo"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
@@ -1285,8 +1335,9 @@ msgid "Mode Change"
 msgstr "Zmena módu"
 
 #: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Ďalší"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1313,8 +1364,9 @@ msgid "Print"
 msgstr "Tlačiť"
 
 #: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Predošlý"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1325,8 +1377,9 @@ msgid "Return"
 msgstr "Return"
 
 #: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "Vpravo"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"
@@ -1357,13 +1410,14 @@ msgid "Tab"
 msgstr "Tabulátor"
 
 #: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr ""
+msgstr "Neznámy"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Vyššie"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
