@@ -1,4 +1,4 @@
-{ $Id$}
+{ $Id: objectinspector.pp 17395 2008-11-15 03:53:22Z paul $}
 {
  *****************************************************************************
  *                                                                           *
@@ -5326,6 +5326,7 @@ end;
 
 initialization
   {$I objectinspector.lrs}
+  {$I objectinspector_img.lrs}
   
 finalization
 
