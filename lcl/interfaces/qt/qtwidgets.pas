@@ -7196,10 +7196,14 @@ end;
 
 procedure TQtTreeWidget.setHeaderVisible(AVisible: Boolean);
 begin
- if (csDesigning in LCLObject.ComponentState) then
-   QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
- else
-   Header.setVisible(AVisible);
+  if (csDesigning in LCLObject.ComponentState) then
+    {$IFDEF USE_QT_44}
+    QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
+    {$ELSE}
+    QWidget_setVisible(QTreeView_header(QTreeViewH(Widget)), AVisible)
+    {$ENDIF}
+  else
+    Header.setVisible(AVisible);
 end;
 
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
