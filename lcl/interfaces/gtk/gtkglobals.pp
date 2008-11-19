@@ -156,6 +156,8 @@ const
     $000000,     {COLOR_HOTLIGHT}
     $800000,     {COLOR_GRADIENTACTIVECAPTION}
     $808080,     {COLOR_GRADIENTINACTIVECAPTION}
+    $800000,     {COLOR_MENUHILIGHT}
+    $D0D0D0,     {COLOR_MENUBAR}
     $D0D0D0,     {COLOR_FORM}
     
     // CLX base, mapped, pseudo, rgb values
