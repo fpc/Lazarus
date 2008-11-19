@@ -52,4 +52,3 @@ begin
   gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, DestX, DestY, Width, Height);
 end;
 {$endif}
-
