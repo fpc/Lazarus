@@ -297,7 +297,7 @@ const
   clMenuBar                 = TColor(SYS_COLOR_BASE or COLOR_MENUBAR);
   clForm                    = TColor(SYS_COLOR_BASE or COLOR_FORM);
 
-  clEndColors               = TColor(SYS_COLOR_BASE or COLOR_ENDCOLORS);
+  // synonims: dont show them in color lists
   clColorDesktop            = TColor(SYS_COLOR_BASE or COLOR_DESKTOP);
   cl3DFace                  = TColor(SYS_COLOR_BASE or COLOR_3DFACE);
   cl3DShadow                = TColor(SYS_COLOR_BASE or COLOR_3DSHADOW);
@@ -2100,7 +2100,7 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..112] of TIdentMapEntry = (
+  Colors: array[0..106] of TIdentMapEntry = (
     // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -2162,13 +2162,6 @@ const
     (Value: clGradientActiveCaption; Name: 'clGradientActiveCaption'),
     (Value: clGradientInactiveCaption; Name: 'clGradientInactiveCaption'),
     (Value: clForm; Name: 'clForm'),
-
-    (Value: clEndColors; Name: 'clEndColors'),
-    (Value: clColorDesktop; Name: 'clColorDesktop'),
-    (Value: cl3DFace; Name: 'cl3DFace'),
-    (Value: cl3DShadow; Name: 'cl3DShadow'),
-    (Value: cl3DHiLight; Name: 'cl3DHiLight'),
-    (Value: clBtnHiLight; Name: 'clBtnHiLight'),
 
     // CLX base, mapped, pseudo, rgb values
     (Value: clForeground; Name: 'clForeground'),
