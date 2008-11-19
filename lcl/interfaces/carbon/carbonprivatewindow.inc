@@ -1074,7 +1074,7 @@ end;
 
 procedure TCarbonWindow.CreateWindow(const AParams: TCreateParams);
 var
-  Window: WindowRef;
+  AWindow: WindowRef;
   NewWindowClass: Integer;
   MinSize, MaxSize: HISize;
   Attributes: WindowAttributes;
@@ -1110,10 +1110,10 @@ begin
   if OSError(
     CreateNewWindow(NewWindowClass,
       Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
-      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), Window),
+      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
-  fWindowRef := Window;
+  fWindowRef := AWindow;
 
   // creating wrapped views
   if OSError(
@@ -1121,7 +1121,7 @@ begin
     Self, SCreateWidget, 'HIViewGetRoot') then RaiseCreateWidgetError(LCLObject);
 
   OSError(
-    SetWindowProperty(Window, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetWindowProperty(AWindow, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, 'SetWindowProperty');
   OSError(
     SetControlProperty(fWinContent, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
@@ -1139,7 +1139,7 @@ begin
   if MaxSize.width <= 0 then MaxSize.width := 10000;
   if MaxSize.height <= 0 then MaxSize.height := 10000;
 
-  OSError(SetWindowResizeLimits(Window, @MinSize, @MaxSize), Self, SCreateWidget,
+  OSError(SetWindowResizeLimits(AWindow, @MinSize, @MaxSize), Self, SCreateWidget,
     'SetWindowResizeLimits');
 end;
 

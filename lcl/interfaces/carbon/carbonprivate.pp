@@ -208,6 +208,8 @@ type
 
     procedure SetBorderIcons(ABorderIcons: TBorderIcons); virtual;
     procedure SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle); virtual;
+  public
+    property Window: WindowRef read FWindowRef;
   end;
 
   { TCarbonHintWindow }
@@ -367,16 +369,16 @@ var LastMousePos: TPoint;
  ------------------------------------------------------------------------------}
 procedure TCarbonHintWindow.CreateWindow(const AParams: TCreateParams);
 var
-  Window: WindowRef;
+  AWindow: WindowRef;
 begin
   if OSError(
     CreateNewWindow(kHelpWindowClass,
       kWindowCompositingAttribute or
       kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
-      ParamsToCarbonRect(AParams), Window),
+      ParamsToCarbonRect(AParams), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
-  fWindowRef := Window;
+  fWindowRef := AWindow;
 
   // creating wrapped views
   if OSError(
@@ -384,7 +386,7 @@ begin
     Self, SCreateWidget, 'HIViewGetRoot') then RaiseCreateWidgetError(LCLObject);
 
   OSError(
-    SetWindowProperty(Window, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetWindowProperty(AWindow, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, 'SetWindowProperty');
   OSError(
     SetControlProperty(fWinContent, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
