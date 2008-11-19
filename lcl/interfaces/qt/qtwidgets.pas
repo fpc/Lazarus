@@ -924,6 +924,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure setWordWrap(AValue: Boolean);
     property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
     property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
   end;
@@ -6959,6 +6960,11 @@ end;
 procedure TQtTreeView.setColWidth(AIndex: Integer; const AValue: Integer);
 begin
   QTreeView_setColumnWidth(QTreeViewH(Widget), AIndex, AValue);
+end;
+
+procedure TQtTreeView.setWordWrap(AValue: Boolean);
+begin
+  QTreeView_setWordWrap(QTreeViewH(Widget), AValue);
 end;
 
 {------------------------------------------------------------------------------

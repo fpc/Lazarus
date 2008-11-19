@@ -115,6 +115,8 @@ type
     
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
 
+    class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
+    class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
 
     (*
     // Column
@@ -146,8 +148,6 @@ type
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
 //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); virtual;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
-    class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
-    class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
 
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
@@ -1234,6 +1234,37 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
     Exit;
   Result := TQtTreeWidget(ALV.Handle).getFrameGeometry;
+end;
+
+class procedure TQtWSCustomListView.SetProperty(const ALV: TCustomListView;
+  const AProp: TListViewProperty; const AIsSet: Boolean);
+const
+  BoolToSelection: array[Boolean] of QAbstractItemViewSelectionMode =
+  (
+    QAbstractItemViewSingleSelection,
+    QAbstractItemViewMultiSelection
+  );
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetProperty')
+  then Exit;
+
+  case AProp of
+    lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelection[AIsSet]);
+    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).Header.setVisible(not AIsSet);
+    lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet)
+  end;
+end;
+
+class procedure TQtWSCustomListView.SetProperties(const ALV: TCustomListView;
+  const AProps: TListViewProperties);
+var
+  i: TListViewProperty;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetProperties')
+  then Exit;
+
+  for i := Low(TListViewProperty) to High(TListViewProperty) do
+    SetProperty(ALV, i, i in AProps);
 end;
 
 initialization
