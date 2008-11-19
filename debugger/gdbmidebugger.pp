@@ -301,8 +301,6 @@ type
     function GetValue(const AnIndex: Integer): String; override;
   public
     procedure Changed; override;
-    constructor Create(const ADebugger: TDebugger);
-    destructor Destroy; override;
   end;
 
   { TGDBMIWatch }
@@ -2851,17 +2849,6 @@ begin
   inherited Changed;
 end;
 
-constructor TGDBMIRegisters.Create(const ADebugger: TDebugger);
-begin
-  FValuesValid := False;
-  inherited;
-end;
-
-destructor TGDBMIRegisters.Destroy;
-begin
-  inherited;
-end;
-
 procedure TGDBMIRegisters.DoStateChange(const AOldState: TDBGState);
 begin
   if  Debugger <> nil
@@ -2956,6 +2943,9 @@ var
   Item: PGDBMINameValue;
   n, idx: Integer;
 begin
+  if Debugger = nil then Exit;
+  if FValuesValid then Exit;
+  RegistersNeeded;
   FValuesValid := True;
 
   for n := Low(FRegisters) to High(FRegisters) do
