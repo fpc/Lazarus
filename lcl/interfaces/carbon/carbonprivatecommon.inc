@@ -323,7 +323,7 @@ var
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
-  if not (AWidget is TCarbonCustomControl) or (AWidget is TCarbonWindow) then
+  if AWidget is TCarbonWindow then
     Result := CallNextEventHandler(ANextHandler, AEvent);
 
   if OSError(
