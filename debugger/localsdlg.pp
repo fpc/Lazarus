@@ -77,6 +77,7 @@ end;
 
 destructor TLocalsDlg.Destroy;
 begin
+  SetLocals(nil);
   FLocalsNotification.OnChange := nil;
   FLocalsNotification.ReleaseReference;
   inherited Destroy;

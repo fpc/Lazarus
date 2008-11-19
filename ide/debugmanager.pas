@@ -1526,7 +1526,6 @@ begin
   FDebugger := nil;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-
   FWatches := TManagedWatches.Create(Self);
   FExceptions := TManagedExceptions.Create(Self);
   FSignals := TManagedSignals.Create(Self);
@@ -1557,6 +1556,7 @@ begin
   FreeAndNil(FExceptions);
   FreeAndNil(FSignals);
   FreeAndNil(FLocals);
+  FreeAndNil(FRegisters);
 
   FreeAndNil(FUserSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);

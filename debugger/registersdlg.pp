@@ -77,6 +77,7 @@ end;
 
 destructor TRegistersDlg.Destroy;
 begin
+  SetRegisters(nil);
   FRegistersNotification.OnChange := nil;
   FRegistersNotification.ReleaseReference;
   inherited Destroy;

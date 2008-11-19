@@ -222,6 +222,7 @@ end;
 
 destructor TCallStackDlg.Destroy;
 begin
+  SetCallstack(nil);
   FCallStackNotification.OnChange := nil;
   FCallStackNotification.ReleaseReference;
   inherited Destroy;
