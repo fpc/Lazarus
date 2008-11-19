@@ -924,7 +924,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure setAllColumnsShowFocus(AValue: Boolean);
     procedure setWordWrap(AValue: Boolean);
+    procedure setRootIsDecorated(AValue: Boolean);
     property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
     property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
   end;
@@ -6965,6 +6967,16 @@ end;
 procedure TQtTreeView.setWordWrap(AValue: Boolean);
 begin
   QTreeView_setWordWrap(QTreeViewH(Widget), AValue);
+end;
+
+procedure TQtTreeView.setRootIsDecorated(AValue: Boolean);
+begin
+  QTreeView_setRootIsDecorated(QTreeViewH(Widget), AValue);
+end;
+
+procedure TQtTreeView.setAllColumnsShowFocus(AValue: Boolean);
+begin
+  QTreeView_setAllColumnsShowFocus(QTreeViewH(Widget), AValue);
 end;
 
 {------------------------------------------------------------------------------

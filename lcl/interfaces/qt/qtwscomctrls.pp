@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              QtWSComCtrls.pp                              * 
- *                              ---------------                              * 
+ *                              QtWSComCtrls.pp                              *
+ *                              ---------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    * 
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -77,7 +77,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
   public
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -89,11 +89,11 @@ type
     class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
     class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); override;
     class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); override;
-    
+
     class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer); override;
     class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
-    
-    
+
+
     {items}
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -105,14 +105,14 @@ type
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
     class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
-    
+
     {parent}
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
-    
+
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
 
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
@@ -257,14 +257,14 @@ const
 {trHorizontal} QtHorizontal,
 {trVertical  } QtVertical
   );
-  
+
   AlignmentToQtAlignmentMap: array[TAlignment] of QtAlignment =
   (
 {taLeftJustify } QtAlignLeft,
 {taRightJustify} QtAlignRight,
 {taCenter      } QtAlignCenter
   );
-  
+
 
 { TQtWSToolButton }
 
@@ -523,7 +523,7 @@ var
   QtStatusBar: TQtStatusBar;
 begin
   QtStatusBar := TQtStatusBar(AWinControl.Handle);
-  
+
   ClearPanels(QtStatusBar);
   TQtStatusBar(AWinControl.Handle).Release;
 end;
@@ -546,14 +546,14 @@ begin
       end;
       SetLength(QtStatusBar.Panels, 0);
     end;
-      
+
     Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
   end else
   if AStatusBar.Panels.Count > 0 then
   begin
     QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
-    
+
     if (PanelIndex >= Low(QtStatusBar.Panels)) and (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
@@ -616,6 +616,7 @@ var
   QtTreeWidget: TQtTreeWidget;
 begin
   QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
+  QtTreeWidget.setRootIsDecorated(False);
   QtTreeWidget.AttachEvents;
   Result := TLCLIntfHandle(QtTreeWidget);
 end;
@@ -658,7 +659,7 @@ begin
 
   if QtTreeWidget.ColCount <> TListView(ALV).Columns.Count then
   	QtTreeWidget.ColCount := TListView(ALV).Columns.Count;
-  
+
   TWI := QtTreeWidget.headerItem;
 
   if QTreeWidgetItem_childCount(TWI) < (AIndex + 1) then
@@ -902,7 +903,7 @@ begin
   Result := ALV.CheckBoxes;
   if not Result then
     exit;
-    
+
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QtTreeWidget.topLevelItem(AIndex);
   AState := QTreeWidgetItem_checkState(TWI, 0);
@@ -930,7 +931,7 @@ begin
   R := QtTreeWidget.visualItemRect(TWI);
   Result.X := R.Left;
   Result.Y := R.Top;
-  
+
 end;
 
 {------------------------------------------------------------------------------
@@ -957,11 +958,11 @@ begin
     else
     AIsSet := False;
   end;
-  
+
   Result := True;
-  
+
 end;
-    
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ItemSetChecked
   Params:  None
@@ -975,7 +976,7 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetChecked') then
     Exit;
-    
+
   if not ALV.CheckBoxes then
     exit;
 
@@ -1008,7 +1009,7 @@ begin
     lisFocused: QtTreeWidget.setCurrentItem(TWI);
     lisSelected: QtTreeWidget.setItemSelected(TWI, AIsSet);
   end;
-  
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1038,7 +1039,7 @@ begin
     else
     	QTreeWidgetItem_setCheckState(TWI, 0, QtUnchecked);
   end;
-  
+
   QTreeWidgetItem_setText(TWI, 0, @Str);
   for i := 0 to AItem.SubItems.Count - 1 do
   begin
@@ -1182,7 +1183,7 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelection') then
     Exit;
-    
+
   {implement selection event so we can return Alv.Selected.Index}
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   FPInts := QtTreeWidget.selectedItems;
@@ -1191,7 +1192,7 @@ begin
   else
     Result := -1;
 end;
-    
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.SetSort
   Params:  None
@@ -1204,7 +1205,7 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort') then
     Exit;
-    
+
   if (csDesigning in ALV.ComponentState) then
     exit;
 
@@ -1239,18 +1240,34 @@ end;
 class procedure TQtWSCustomListView.SetProperty(const ALV: TCustomListView;
   const AProp: TListViewProperty; const AIsSet: Boolean);
 const
-  BoolToSelection: array[Boolean] of QAbstractItemViewSelectionMode =
+  BoolToSelectionMode: array[Boolean] of QAbstractItemViewSelectionMode =
   (
     QAbstractItemViewSingleSelection,
-    QAbstractItemViewMultiSelection
+    QAbstractItemViewExtendedSelection
+  );
+  BoolToSelectionBehavior: array[Boolean] of QAbstractItemViewSelectionBehavior =
+  (
+    QAbstractItemViewSelectItems,
+    QAbstractItemViewSelectRows
+  );
+  BoolToEditTriggers: array[Boolean] of QAbstractItemViewEditTriggers =
+  (
+    QAbstractItemViewSelectedClicked,
+    QAbstractItemViewNoEditTriggers
   );
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
 
   case AProp of
-    lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelection[AIsSet]);
-    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).Header.setVisible(not AIsSet);
+    lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
+    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).Header.setVisible(AIsSet);
+    lvpReadOnly: TQtTreeWidget(ALV.Handle).setEditTriggers(BoolToEditTriggers[AIsSet]);
+    lvpRowSelect:
+      begin
+        TQtTreeWidget(ALV.Handle).setAllColumnsShowFocus(AIsSet);
+        TQtTreeWidget(ALV.Handle).setSelectionBehavior(BoolToSelectionBehavior[AIsSet]);
+      end;
     lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet)
   end;
 end;
