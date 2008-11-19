@@ -6491,6 +6491,7 @@ begin
     Result:=true;
     Width:=Max(0,PGtkWidget(Handle)^.Allocation.Width);
     Height:=Max(0,PGtkWidget(Handle)^.Allocation.Height);
+    //DebugLn(['TGtkWidgetSet.GetWindowSize ',DbgSName(GetLCLOwnerObject(Handle)),' Allocation=',Width,'x',Height]);
   end else
     Result:=false;
 end;
