@@ -4032,48 +4032,50 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('IDE path addition',
     Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
     ExternalMacroStart+'SrcPath',
-      d('frames;'
-       +'..;'       
-       +'../designer;'
-       +'../designer/jitform;'
-       +'../debugger;'
-       +'../converter;'
-       +'../packager;'
-       +'../packager/registration;'
-       +'../components/custom;'
-       +'../components/mpaslex;')
+      d(LazarusSrcDir+'/ide/frames;'
+       +LazarusSrcDir
+       +LazarusSrcDir+'/designer;'
+       +LazarusSrcDir+'/designer/jitform;'
+       +LazarusSrcDir+'/debugger;'
+       +LazarusSrcDir+'/converter;'
+       +LazarusSrcDir+'/packager;'
+       +LazarusSrcDir+'/packager/registration;'
+       +LazarusSrcDir+'/components/custom;'
+       +LazarusSrcDir+'/components/mpaslex;')
     ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('IDEIntf path addition',
     Format(ctsAddsDirToSourcePath,['ideintf']),
     ExternalMacroStart+'SrcPath',
-      d('../ideintf;'
+      d(LazarusSrcDir+'/ideintf;'
        +SrcPath)
     ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('SynEdit path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-      d('../components/synedit;'
+      d(LazarusSrcDir+'/components/synedit;'
        +SrcPath)
     ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('CodeTools path addition',
     Format(ctsAddsDirToSourcePath,['codetools']),
     ExternalMacroStart+'SrcPath',
-      d('../components/codetools;'
+      d(LazarusSrcDir+'/components/codetools;'
        +SrcPath)
     ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
-      d('../lcl;'
-       +'../lcl/interfaces/'+WidgetType+';'
+      d(LazarusSrcDir+'/lcl;'
+       +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';'
        +SrcPath)
     ,da_DefineRecurse));
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
     ExternalMacroStart+'IncPath',
-    d('include;include/'+TargetOS+';include/'+SrcOS),
-    da_Define));
+    d(LazarusSrcDir+'/include;'
+      +LazarusSrcDir+'/include/'+TargetOS+';'
+      +LazarusSrcDir+'/include/'+SrcOS),
+    da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
   // <LazarusSrcDir>/designer

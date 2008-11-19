@@ -300,6 +300,7 @@ begin
     end;
 
     fProcess.Execute;
+
     LastProcessMessages:=Now-1;// force one update at start
     repeat
       if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
@@ -382,6 +383,7 @@ begin
         ExceptionMsg:='the process exited with error code '+dbgs(fProcess.ExitStatus);
     end;
   finally
+    // workaround for missing TProcess error handling
     {$IFDEF VerboseOFExecute}
     WriteLn('TOutputFilter.Execute W1');
     {$ENDIF}
