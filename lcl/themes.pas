@@ -1946,7 +1946,7 @@ begin
 
               if IsChecked(Details) and not IsHot(Details) then
               begin
-                InflateRect(ARect, -1, -1);
+                InflateRect(ARect, -2, -2);
                 FillWithDottedBrush(ARect, clBtnHighlight, clBtnFace)
               end;
             end;
