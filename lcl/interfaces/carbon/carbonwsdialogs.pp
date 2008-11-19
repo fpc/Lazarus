@@ -429,8 +429,9 @@ end;  {TCarbonWSFileDialog.ShowModal}
 class procedure TCarbonWSColorDialog.ShowModal(
   const ACommonDialog: TCommonDialog);
 var
-  ColorInfo: ColorPickerInfo;
+  ColorInfo: NColorPickerInfo;
   ColorDialog: TColorDialog;
+  Profile: CMProfileRef;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSColorDialog.ShowModal for ' + ACommonDialog.Name);
@@ -439,19 +440,20 @@ begin
   ACommonDialog.UserChoice := mrCancel;
   ColorDialog := ACommonDialog as TColorDialog;
   
+  CMGetDefaultProfileBySpace(cmRGBData, Profile);
   FillChar(ColorInfo, SizeOf(ColorPickerInfo), 0);
   ColorInfo.theColor.color.rgb := CMRGBColor(ColorToRGBColor(ColorDialog.Color));
-  ColorInfo.theColor.profile := nil;
-  ColorInfo.dstProfile := nil;
-  ColorInfo.flags := kColorPickerDialogIsModal or kColorPickerDialogIsMoveable or
-    kColorPickerInPickerDialog;
+  ColorInfo.theColor.profile := Profile;
+  ColorInfo.dstProfile := Profile;
+  ColorInfo.flags := kColorPickerDialogIsModal or
+                     kColorPickerDialogIsMoveable;
   ColorInfo.placeWhere :=  kCenterOnMainScreen;
   ColorInfo.pickerType := 0; // use last picker subtype
   ColorInfo.eventProc := nil;
   ColorInfo.colorProc := nil;
-  // ColorDialog.Title is ignored, ColorInfo.prompt is not shown anywhere
+  ColorInfo.prompt := ColorDialog.Title;  // ColorDialog.Title is ignored, ColorInfo.prompt is not shown anywhere
   
-  if OSError(PickColor(ColorInfo), Self, SShowModal, 'PickColor') then Exit;
+  if OSError(NPickColor(ColorInfo), Self, SShowModal, 'PickColor') then Exit;
   
   if ColorInfo.newColorChosen then
   begin

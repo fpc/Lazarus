@@ -2009,7 +2009,9 @@ begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePenIndirect]');
 //write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
+  GObject^.GDIPenDashes := nil;
 
+  GObject^.IsExtPen := False;
   with LogPen do
   begin
     GObject^.GDIPenStyle := lopnStyle;
@@ -2484,6 +2486,7 @@ begin
       gdiPen:
         begin
           FreeGDIColor(@GDIPenColor);
+          FreeMem(GDIPenDashes);
         end;
       gdiRegion:
         begin
@@ -3909,6 +3912,26 @@ function TGtkWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
   Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
+end;
+
+function TGTKWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+var
+  GObject: PGdiObject;
+  i: integer;
+begin
+  GObject := NewGDIObject(gdiPen);
+
+  GObject^.IsExtPen := True;
+  GObject^.GDIPenStyle := dwPenStyle;
+  GObject^.GDIPenWidth := dwWidth;
+  SetGDIColorRef(GObject^.GDIPenColor, lplb.lbColor);
+  GObject^.GDIPenDashesCount := dwStyleCount;
+  GetMem(GObject^.GDIPenDashes, dwStyleCount * SizeOf(gint8));
+  for i := 0 to dwStyleCount - 1 do
+    GObject^.GDIPenDashes[i] := lpStyle[i];
+
+  Result := HPEN(PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -5471,6 +5494,8 @@ function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer
 var
   GDIObject: PGDIObject absolute GDIObj;
   ALogPen: PLogPen absolute Buf;
+  AExtLogPen: PExtLogPen absolute Buf;
+  i, RequiredSize: Integer;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
@@ -5503,18 +5528,47 @@ begin
       end;
     gdiPen:
       begin
-        if Buf = nil then
-          Result := SizeOf(TLogPen)
-        else
-        if BufSize >= SizeOf(TLogPen) then
+        if GDIObject^.IsExtPen then
         begin
-          Result := SizeOf(TLogPen);
-          ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
-          ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
-          ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+          RequiredSize := SizeOf(TExtLogPen);
+          if GDIObject^.GDIPenDashesCount > 1 then
+            RequiredSize := RequiredSize + (GDIObject^.GDIPenDashesCount - 1) * SizeOf(DWord);
+
+          if Buf = nil then
+            Result := RequiredSize
+          else
+          if BufSize >= RequiredSize then
+          begin
+            Result := RequiredSize;
+
+            AExtLogPen^.elpPenStyle := GDIObject^.GDIPenStyle;
+            AExtLogPen^.elpWidth := GDIObject^.GDIPenWidth;
+            AExtLogPen^.elpBrushStyle := BS_SOLID;
+            AExtLogPen^.elpColor := GDIObject^.GDIPenColor.ColorRef;
+            AExtLogPen^.elpHatch := 0;
+            AExtLogPen^.elpNumEntries := GDIObject^.GDIPenDashesCount;
+            if GDIObject^.GDIPenDashesCount > 0 then
+            begin
+              for i := 0 to GDIObject^.GDIPenDashesCount - 1 do
+                PDWord(@AExtLogPen^.elpStyleEntry)[i] := GDIObject^.GDIPenDashes[i];
+            end
+            else
+              AExtLogPen^.elpStyleEntry[0] := 0;
+          end;
         end
         else
-          Result := 0;
+        begin
+          if Buf = nil then
+            Result := SizeOf(TLogPen)
+          else
+          if BufSize >= SizeOf(TLogPen) then
+          begin
+            Result := SizeOf(TLogPen);
+            ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
+            ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
+            ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+          end;
+        end;
       end;
     gdiRegion:
       begin
@@ -6835,9 +6889,7 @@ begin
   ToY:=Y+DCOrigin.Y;
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  DevCtx.SetLineSkipLastPoint;
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromX, FromY, ToX, ToY);
-  DevCtx.UnsetLineSkipLastPoint;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
   DevCtx.PenPos:= Point(X, Y);
@@ -7203,9 +7255,7 @@ begin
   if Result and not DevCtx.IsNullPen
   then begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    DevCtx.SetLineSkipLastPoint;
     gdk_draw_lines(DevCtx.Drawable, DevCtx.GC, PointArray, NumPts);
-    DevCtx.UnsetLineSkipLastPoint;
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
 

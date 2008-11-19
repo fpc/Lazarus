@@ -116,11 +116,6 @@ type
     RightToLeft: Boolean;    //For RightToLeft text reading (Text Direction)
   end;
 
-type
-  TPenStyle = TFPPenStyle;
-  TPenMode = TFPPenMode;
-  TBrushStyle = TFPBrushStyle;
-
 const
   psSolid = FPCanvas.psSolid;
   psDash = FPCanvas.psDash;
@@ -538,22 +533,62 @@ type
 
   { TPen }
 
-  TPenHandleCache = class(TBlockResourceCache)
+  TPenStyle = TFPPenStyle;
+  TPenMode = TFPPenMode;
+
+  // pen end caps. valid only for geometric pens
+  TPenEndCap = (
+    pecRound,
+    pecSquare,
+    pecFlat
+  );
+
+  // join style. valid only for geometric pens
+  TPenJoinStyle = (
+    pjsRound,
+    pjsBevel,
+    pjsMiter
+  );
+
+  TPenPattern = array of LongWord;
+
+  { TPenHandleCacheDescriptor }
+
+  TPenHandleCacheDescriptor = class(TResourceCacheDescriptor)
+  public
+    ExtPen: TExtLogPen;
+    Pattern: TPenPattern;
+  end;
+
+  { TPenHandleCache }
+
+  TPenHandleCache = class(TResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
+    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function FindPen(APen: TLCLHandle): TResourceCacheItem;
+    function FindPenDesc(const AExtPen: TExtLogPen;
+                         const APattern: TPenPattern): TPenHandleCacheDescriptor;
+    function Add(APen: TLCLHandle; const AExtPen: TExtLogPen;
+                 const APattern: TPenPattern): TPenHandleCacheDescriptor;
   end;
 
   TPen = class(TFPCustomPen)
   private
     FColor: TColor;
+    FEndCap: TPenEndCap;
+    FCosmetic: Boolean;
+    FJoinStyle: TPenJoinStyle;
+    FPattern: TPenPattern;
     FPenHandleCached: boolean;
     FReference: TWSPenReference;
     procedure FreeReference;
     function GetHandle: HPEN;
     function GetReference: TWSPenReference;
     procedure ReferenceNeeded;
+    procedure SetCosmetic(const AValue: Boolean);
     procedure SetHandle(const Value: HPEN);
   protected
     procedure DoAllocateResources; override;
@@ -562,6 +597,8 @@ type
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetColor(Value: TColor);
+    procedure SetEndCap(const AValue: TPenEndCap);
+    procedure SetJoinStyle(const AValue: TPenJoinStyle);
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
     procedure SetWidth(value: Integer); override;
@@ -571,14 +608,22 @@ type
     procedure Assign(Source: TPersistent); override;
     property Handle: HPEN read GetHandle write SetHandle; deprecated;
     property Reference: TWSPenReference read GetReference;
+
+    function GetPattern: TPenPattern;
+    procedure SetPattern(APattern: TPenPattern); reintroduce;
   published
     property Color: TColor read FColor write SetColor default clBlack;
+    property Cosmetic: Boolean read FCosmetic write SetCosmetic;
+    property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
+    property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
     property Mode default pmCopy;
     property Style default psSolid;
     property Width default 1;
   end;
 
   { TBrush }
+
+  TBrushStyle = TFPBrushStyle;
 
   TBrushHandleCache = class(TBlockResourceCache)
   protected
@@ -1742,6 +1787,7 @@ function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCu
 
 function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
 
+function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
 
 var
   { Stores information about the current screen
@@ -1983,6 +2029,26 @@ begin
   end;
 end;
 
+function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
+var
+  IntfImg: TLazIntfImage;
+  ok: Boolean;
+begin
+  Result:=nil;
+  IntfImg:=nil;
+  ok:=false;
+  try
+    Result:=TBitmap.Create;
+    IntfImg:=Result.CreateIntfImage;
+    IntfImg.SetSize(Img.Width,Img.Height);
+    IntfImg.CopyPixels(Img);
+    Result.LoadFromIntfImage(IntfImg);
+    ok:=true;
+  finally
+    if not ok then FreeAndNil(Result);
+    IntfImg.Free;
+  end;
+end;
 
 procedure Register;
 begin
@@ -2348,7 +2414,6 @@ begin
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);
 end;
-
 
 initialization
   UpdateLock := TCriticalSection.Create;

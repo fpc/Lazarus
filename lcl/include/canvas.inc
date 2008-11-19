@@ -1189,7 +1189,7 @@ begin
   if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then begin
     SetInternalPenPos(Point(X1, Y1));
   end;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.LineTo

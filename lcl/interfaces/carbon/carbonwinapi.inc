@@ -894,6 +894,12 @@ begin
   Result := COMPLEXREGION;
 end;
 
+function TCarbonWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+begin
+  Result := HPEN(TCarbonPen.Create(dwPenStyle, dwWidth, lplb, dwStyleCount, lpStyle));
+end;
+
 {------------------------------------------------------------------------------
   Method:  ExtTextOut
   Params:  DC      - Handle to device context
@@ -1443,8 +1449,11 @@ function TCarbonWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
 var
   AObject: TCarbonGDIObject;
   DIB: TDIBSection;
-  Width, Height: Integer;
+  Width, Height, RequiredSize, i: Integer;
+
+  APen: TCarbonPen absolute AObject;
   ALogPen: PLogPen absolute Buf;
+  AExtLogPen: PExtLogPen absolute Buf;
 begin
   Result := 0;
 
@@ -1505,15 +1514,68 @@ begin
   else
   if AObject is TCarbonPen then
   begin
-    if Buf = nil then
-      Result := SizeOf(TLogPen)
-    else
-    if BufSize = SizeOf(TLogPen) then
+    if APen.IsExtPen then
     begin
-      Result := SizeOf(TLogPen);
-      ALogPen^.lopnStyle := TCarbonPen(AObject).Style;
-      ALogPen^.lopnWidth := Types.Point(TCarbonPen(AObject).Width, 0);
-      ALogPen^.lopnColor := TCarbonPen(AObject).ColorRef;
+      RequiredSize := SizeOf(TExtLogPen);
+      if Length(APen.Dashes) > 1 then
+        inc(RequiredSize, (Length(APen.Dashes) - 1) * SizeOf(DWord));
+      if Buf = nil then
+        Result := RequiredSize
+      else
+      if BufSize >= RequiredSize then
+      begin
+        Result := RequiredSize;
+        AExtLogPen^.elpPenStyle := APen.Style;
+        if APen.IsGeometric then
+        begin
+          case APen.JoinStyle of
+            kCGLineJoinRound:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_ROUND;
+            kCGLineJoinBevel:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_BEVEL;
+            kCGLineJoinMiter:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_MITER;
+          end;
+
+          case APen.CapStyle of
+            kCGLineCapRound:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_ROUND;
+            kCGLineCapSquare:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_SQUARE;
+            kCGLineCapButt:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_FLAT;
+          end;
+          AExtLogPen^.elpWidth := APen.Width;
+        end
+        else
+          AExtLogPen^.elpWidth := 1;
+
+        AExtLogPen^.elpBrushStyle := BS_SOLID;
+        AExtLogPen^.elpColor := APen.ColorRef;
+        AExtLogPen^.elpHatch := 0;
+
+        AExtLogPen^.elpNumEntries := Length(APen.Dashes);
+        if AExtLogPen^.elpNumEntries > 0 then
+        begin
+          for i := 0 to AExtLogPen^.elpNumEntries - 1 do
+            PDword(@AExtLogPen^.elpStyleEntry)[i] := Trunc(APen.Dashes[i]);
+        end
+        else
+          AExtLogPen^.elpStyleEntry[0] := 0;
+      end;
+    end
+    else
+    begin
+      if Buf = nil then
+        Result := SizeOf(TLogPen)
+      else
+      if BufSize >= SizeOf(TLogPen) then
+      begin
+        Result := SizeOf(TLogPen);
+        ALogPen^.lopnStyle := APen.Style;
+        ALogPen^.lopnWidth := Types.Point(APen.Width, 0);
+        ALogPen^.lopnColor := APen.ColorRef;
+      end;
     end;
   end
   else

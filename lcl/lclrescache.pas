@@ -150,7 +150,6 @@ function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle; Item:
 function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
   Item: TBlockResourceCacheDescriptor): integer;
 
-
 implementation
 
 

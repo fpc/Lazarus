@@ -2852,7 +2852,7 @@ Default is psSolid
       <!-- function Visibility: protected -->
       <element name="TRegion.GetClipRect">
         <short>
-          <var>GetClipRect</var> - returns th ecoordinates of the clipping rectangle</short>
+          <var>GetClipRect</var> - returns the coordinates of the clipping rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2864,10 +2864,7 @@ Default is psSolid
       <!-- constructor Visibility: public -->
       <element name="TRegion.Create" link="#rtl.System.TObject.Create"/>
       <!-- destructor Visibility: public -->
-      <element name="TRegion.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short>
-          <var>TRegion</var> destructor</short>
-      </element>
+      <element name="TRegion.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TRegion.Assign" link="#rtl.Classes.TPersistent.Assign"/>
       <!-- argument Visibility: default -->
@@ -2985,7 +2982,7 @@ Default is psSolid
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Draw">
-        <short>Method to <var>Draw</var> the Graphic on th e specified Canvas, in the specified Rectangle</short>
+        <short>Method to <var>Draw</var> the Graphic on the specified Canvas, in the specified Rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3013,7 +3010,7 @@ Default is psSolid
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetHeight">
         <short>
-          <var>GetHeight</var> - - returns the height of the Graphic</short>
+          <var>GetHeight</var> - returns the height of the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3527,7 +3524,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TGraphicClass">
-        <short/>
+        <short>
+          <var>TGraphicClass</var> - class of TGraphic</short>
         <descr/>
         <seealso/>
       </element>
@@ -14326,6 +14324,36 @@ be carefull with this, modify only within a begin/endupdate</descr>
       <element name="TPenHandleCache.FindPenDesc">
         <short>
           <var>FindPenDesc</var> - returns a descriptor for the given pen and pattern</short>
+      </element>
+      <element name="TPenHandleCache.Add">
+        <short>
+          <var>Add</var> - returns a cache descriptor corresponding to the pen that has been added to the cache</short>
+      </element>
+      <element name="TPen.SetEndCap">
+        <short>
+          <var>SetEndCap</var> - specified the type of end cap to be used for the pen, if it is a geometric pen</short>
+      </element>
+      <element name="TPen.SetJoinStyle">
+        <short>
+          <var>SetJoinStyle</var> - specifies the style to be used by the geometric pen when lines join (at corners etc)</short>
+      </element>
+      <element name="TPen.GetPattern">
+        <short>
+          <var>GetPattern</var> - returns the pattern for the pen</short>
+      </element>
+      <element name="TPen.SetPattern">
+        <short>
+          <var>SetPattern</var> - specifies the pattern for the pen</short>
+      </element>
+      <element name="TPen.Cosmetic">
+        <short>Whether the Pen is <var>Cosmetic</var>, ie non-geometric</short>
+      </element>
+      <element name="TPen.EndCap">
+        <short>The sort of <var>EndCap</var> used on th ePen</short>
+      </element>
+      <element name="TPen.JoinStyle">
+        <short>
+          <var>JoinStyle</var> - the style of joint where two lines meet or cross</short>
       </element>
     </module>
     <!-- Graphics -->

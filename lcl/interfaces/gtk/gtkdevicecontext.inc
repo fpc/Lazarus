@@ -652,24 +652,6 @@ begin
   SelectRegion;
 end;
 
-procedure TGtkDeviceContext.SetLineSkipLastPoint;
-begin
-  gdk_gc_get_values(GC, @FCurValues);
-  FLineSkipLastPoint :=
-    (FCurValues.line_width = 1) or
-    (FCurValues.cap_style <> GDK_CAP_NOT_LAST);
-  if FLineSkipLastPoint then
-    gdk_gc_set_line_attributes(GC, 0, FCurValues.line_style,
-                               GDK_CAP_NOT_LAST, FCurValues.join_style);
-end;
-
-procedure TGtkDeviceContext.UnsetLineSkipLastPoint;
-begin
-  if FLineSkipLastPoint then
-    gdk_gc_set_line_attributes(GC, FCurValues.line_width, FCurValues.line_style,
-                               FCurValues.cap_style, FCurValues.join_style);
-end;
-
 function TGtkDeviceContext.SelectBitmap(AGdiObject: PGdiObject): PGdiObject;
 var
   NewDrawable: PGdkPixmap;
@@ -764,12 +746,6 @@ end;
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
 procedure TGtkDeviceContext.SelectPenProps;
-const
-{$ifdef windows}
-  OS_multiplier = 1;
-{$else}
-  OS_multiplier = 3;
-{$endif}
 
   procedure SetDashes(const ADashes: array of gint8);
   begin
@@ -778,6 +754,13 @@ const
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
+var
+  PenStyle: DWord;
+  LineStyle: TGdkLineStyle;
+  JoinStyle: TGdkJoinStyle;
+  CapStyle: TGdkCapStyle;
+  IsGeometric, IsExtPen: Boolean;
+  PenWidth, Multiplier: gint;
 begin
 //  if IsNullPen then Exit;
 
@@ -791,32 +774,64 @@ begin
   // force pen
   GetPen;
 
-  CurrentPen^.IsNullPen := CurrentPen^.GDIPenStyle = PS_NULL;
-  
-  if (CurrentPen^.GDIPenStyle = PS_SOLID)
-  or (CurrentPen^.GDIPenStyle = PS_INSIDEFRAME)
-  then begin
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_gc_set_line_attributes(GC, CurrentPen^.GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  end
-  else begin
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_gc_set_line_attributes(GC, CurrentPen^.GDIPenWidth, GDK_LINE_ON_OFF_DASH, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+  PenStyle := CurrentPen^.GDIPenStyle and PS_STYLE_MASK;
+  IsGeometric := (CurrentPen^.GDIPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC;
+  IsExtPen := CurrentPen^.IsExtPen;
 
-    // Paul Ishenin: I compared patterns with windows and changed numbers to make them the same
-    // but under linux dot is thinner than in windows, so I added os_multiplier to make them the same
-    // in the resulting image
+  CurrentPen^.IsNullPen := PenStyle = PS_NULL;
 
-    case CurrentPen^.GDIPenStyle of
-      PS_DASH:       SetDashes([6*OS_multiplier,2*OS_multiplier]);
-      PS_DOT:        SetDashes([1*OS_multiplier,1*OS_multiplier]);
-      PS_DASHDOT:    SetDashes([3*OS_multiplier,2*OS_multiplier,1*OS_multiplier,2*OS_multiplier]);
-      PS_DASHDOTDOT: SetDashes([3*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier]);
+  PenWidth := CurrentPen^.GDIPenWidth;
+
+  if IsExtPen and IsGeometric then
+  begin
+    case CurrentPen^.GDIPenStyle and PS_JOIN_MASK of
+      PS_JOIN_ROUND: JoinStyle := GDK_JOIN_ROUND;
+      PS_JOIN_BEVEL: JoinStyle := GDK_JOIN_BEVEL;
+      PS_JOIN_MITER: JoinStyle := GDK_JOIN_MITER;
     end;
-    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+
+    case CurrentPen^.GDIPenStyle and PS_ENDCAP_MASK of
+      PS_ENDCAP_ROUND: CapStyle := GDK_CAP_ROUND;
+      PS_ENDCAP_SQUARE: CapStyle := GDK_CAP_PROJECTING;
+      PS_ENDCAP_FLAT: CapStyle := GDK_CAP_NOT_LAST;
+    end;
+  end
+  else
+  begin
+    JoinStyle := GDK_JOIN_MITER;
+    CapStyle := GDK_CAP_NOT_LAST;
+
+    if IsExtPen then // if we are using ExtCreatePen and does not set geometric => use cosmetic pen
+      PenWidth := 0;
   end;
-  gdk_gc_get_values(GC,@FGCValues);
+
+  if not IsExtPen and (PenStyle = PS_USERSTYLE) then
+    PenStyle := PS_SOLID;
+
+  if (PenStyle = PS_SOLID) or (PenStyle = PS_INSIDEFRAME) then
+    LineStyle := GDK_LINE_SOLID
+  else
+    LineStyle := GDK_LINE_ON_OFF_DASH;
+
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  gdk_gc_set_line_attributes(GC, PenWidth, LineStyle, CapStyle, JoinStyle);
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+
+  // Paul Ishenin: I compared patterns with windows and changed numbers to make them the same
+
+  Multiplier := PenWidth;
+  if Multiplier = 0 then
+    Multiplier := 1;
+
+  case PenStyle of
+    PS_DASH:       SetDashes([6*Multiplier,2*Multiplier]);
+    PS_DOT:        SetDashes([1*Multiplier,1*Multiplier]);
+    PS_DASHDOT:    SetDashes([3*Multiplier,2*Multiplier,1*Multiplier,2*Multiplier]);
+    PS_DASHDOTDOT: SetDashes([3*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier]);
+    PS_USERSTYLE:  laz_gdk_gc_set_dashes(GC, 0, CurrentPen^.GDIPenDashes, CurrentPen^.GDIPenDashesCount);
+  end;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  gdk_gc_get_values(GC, @FGCValues);
   Include(FFlags, dcfPenSelected);
 end;
 

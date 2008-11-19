@@ -189,14 +189,13 @@ type
 const
   // Paul Ishenin:
   // pen shapes are compared with windows shapes and now a bit to bit equal
-  // please dont remove multiplier, maybe we will change it later
-  osx_pen_multiplier = 3;
-  CarbonDashStyle: Array [0..1] of Single = (6*osx_pen_multiplier, 2*osx_pen_multiplier);
-  CarbonDotStyle: Array [0..1] of Single = (1*osx_pen_multiplier, 1*osx_pen_multiplier);
-  CarbonDashDotStyle: Array [0..3] of Single = (3*osx_pen_multiplier, 2*osx_pen_multiplier, 1*osx_pen_multiplier, 2*osx_pen_multiplier);
-  CarbonDashDotDotStyle: Array [0..5] of Single = (3*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier, 1*osx_pen_multiplier);
+  CarbonDashStyle: Array [0..1] of Single = (3, 1);
+  CarbonDotStyle: Array [0..1] of Single = (1, 1);
+  CarbonDashDotStyle: Array [0..3] of Single = (3, 1, 1, 1);
+  CarbonDashDotDotStyle: Array [0..5] of Single = (3, 1, 1, 1, 1, 1);
 
 type
+  TCarbonDashes = array of Float32;
 
   { TCarbonPen }
 
@@ -204,13 +203,23 @@ type
   private
     FWidth: Integer;
     FStyle: LongWord;
+    FIsExtPen: Boolean;
+    FIsGeometric: Boolean;
+    FEndCap: CGLineCap;
+    FJoinStyle: CGLineJoin;
    public
+    Dashes: TCarbonDashes;
     constructor Create(AGlobal: Boolean); // create default pen
     constructor Create(ALogPen: TLogPen);
+    constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
     
     property Width: Integer read FWidth;
     property Style: LongWord read FStyle;
+    property IsExtPen: Boolean read FIsExtPen;
+    property IsGeometric: Boolean read FIsGeometric;
+    property JoinStyle: CGLineJoin read FJoinStyle;
+    property CapStyle: CGLineCap read FEndCap;
   end;
 
   { TCarbonBitmap }
@@ -1494,6 +1503,8 @@ begin
   inherited Create(clBlack, True, AGlobal);
   FStyle := PS_SOLID;
   FWidth := 1;
+  FIsExtPen := False;
+  Dashes := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1521,6 +1532,53 @@ begin
   FStyle := ALogPen.lopnStyle;
 end;
 
+constructor TCarbonPen.Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
+var
+  i: integer;
+begin
+  case dwPenStyle and PS_STYLE_MASK of
+    PS_SOLID..PS_DASHDOTDOT,
+    PS_USERSTYLE:
+      begin
+        inherited Create(ColorToRGB(lplb.lbColor), True, False);
+      end;
+    else
+    begin
+      inherited Create(ColorToRGB(lplb.lbColor), False, False);
+    end;
+  end;
+
+  FIsExtPen := True;
+  FIsGeometric := (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC;
+
+  if IsGeometric then
+  begin
+    case dwPenStyle and PS_JOIN_MASK of
+      PS_JOIN_ROUND: FJoinStyle := kCGLineJoinRound;
+      PS_JOIN_BEVEL: FJoinStyle := kCGLineJoinBevel;
+      PS_JOIN_MITER: FJoinStyle := kCGLineJoinMiter;
+    end;
+
+    case dwPenStyle and PS_ENDCAP_MASK of
+      PS_ENDCAP_ROUND: FEndCap := kCGLineCapRound;
+      PS_ENDCAP_SQUARE: FEndCap := kCGLineCapSquare;
+      PS_ENDCAP_FLAT: FEndCap := kCGLineCapButt;
+    end;
+    FWidth := Max(1, dwWidth);
+  end
+  else
+    FWidth := 1;
+
+  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
+  begin
+    SetLength(Dashes, dwStyleCount);
+    for i := 0 to dwStyleCount - 1 do
+      Dashes[i] := lpStyle[i];
+  end;
+
+  FStyle := dwPenStyle and PS_STYLE_MASK;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonPen.Apply
   Params:  ADC     - Context to apply to
@@ -1529,9 +1587,20 @@ end;
   Applies pen to the specified context
  ------------------------------------------------------------------------------}
 procedure TCarbonPen.Apply(ADC: TCarbonContext; UseROP2: Boolean);
+
+  function GetDashes(Source: TCarbonDashes): TCarbonDashes;
+  var
+    i: Integer;
+  begin
+    Result := Source;
+    for i := Low(Result) to High(Result) do
+      Result[i] := Result[i] * FWidth;
+  end;
+
 var
   AR, AG, AB, AA: Single;
   AROP2: Integer;
+  ADashes: TCarbonDashes;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -1549,15 +1618,38 @@ begin
   CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
   CGContextSetLineWidth(ADC.CGContext, FWidth);
 
+  if IsExtPen then
+  begin
+    if IsGeometric then
+    begin
+      CGContextSetLineCap(ADC.CGContext, FEndCap);
+      CGContextSetLineJoin(ADC.CGContext, FJoinStyle);
+    end;
+  end;
+
   case FStyle of
-    PS_DASH: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashStyle[0],
-      Length(CarbonDashStyle));
-    PS_DOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDotStyle[0],
-      Length(CarbonDotStyle));
-    PS_DASHDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotStyle[0],
-      Length(CarbonDashDotStyle));
-    PS_DASHDOTDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotDotStyle[0],
-      Length(CarbonDashDotDotStyle));
+    PS_DASH:
+      begin
+        ADashes := GetDashes(CarbonDashStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DOT:
+      begin
+        ADashes := GetDashes(CarbonDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOT:
+      begin
+        ADashes := GetDashes(CarbonDashDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOTDOT:
+      begin
+        ADashes := GetDashes(CarbonDashDotDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_USERSTYLE:
+      CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes));
   else
     CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
   end;

@@ -183,9 +183,12 @@ type
       );
       gdiPen: (
         IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
+        IsExtPen: Boolean;
         GDIPenColor: TGDIColor;
-        GDIPenWidth: Integer;
-        GDIPenStyle: Word;
+        GDIPenWidth: DWord;
+        GDIPenStyle: DWord;
+        GDIPenDashes: Pgint8;
+        GDIPenDashesCount: DWord;
       ); 
       gdiRegion: (
         GDIRegionObject: PGdkRegion;
@@ -284,8 +287,6 @@ type
     FSelectedColors: TDevContextSelectedColorsType;
 
     FOwnedGDIObjects: array[TGDIType] of PGdiObject;
-    FLineSkipLastPoint: Boolean;
-    FCurValues: TGdkGCValues;
 
     function GetGDIObjects(ID: TGDIType): PGdiObject;
     function GetOffset: TPoint;
@@ -342,9 +343,6 @@ type
     property GC: pgdkGC read GetGC write FGC;
     function HasGC: Boolean;
     procedure ResetGCClipping;
-
-    procedure SetLineSkipLastPoint;
-    procedure UnsetLineSkipLastPoint;
 
     // origins
     property Origin: TPoint read FOrigin write FOrigin;
