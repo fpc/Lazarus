@@ -1,0 +1,27 @@
+inherited RegistersDlg: TRegistersDlg
+  Left = 359
+  Height = 253
+  Top = 126
+  Width = 346
+  ActiveControl = lvRegisters
+  Caption = 'Registers'
+  ClientHeight = 253
+  ClientWidth = 346
+  object lvRegisters: TListView[0]
+    Height = 253
+    Width = 346
+    Align = alClient
+    Columns = <    
+      item
+        Caption = 'Name'
+        Width = 150
+      end    
+      item
+        Caption = 'Value'
+      end>
+    MultiSelect = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+end

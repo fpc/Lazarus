@@ -1929,6 +1929,8 @@ begin
       ;//itmViewWatches.OnClick(Self);
     nmiwLocals:
       ;//itmViewLocals.OnClick(Self);
+    nmiwRegisters:
+      ;//itmViewRegisters.OnClick(Self);
     nmiwCallStack:
       ;//itmViewCallStack.OnClick(Self);
     end;

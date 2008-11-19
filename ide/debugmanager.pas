@@ -52,7 +52,7 @@ uses
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -64,7 +64,8 @@ type
     ddtWatches,
     ddtLocals,
     ddtCallStack,
-    ddtEvaluate
+    ddtEvaluate,
+    ddtRegisters
     );
     
   { TDebugManager }
@@ -122,6 +123,7 @@ type
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
     procedure InitEvaluateDlg;
+    procedure InitRegistersDlg;
 
     procedure FreeDebugger;
     procedure ResetDebugger;
@@ -177,7 +179,7 @@ implementation
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack,
-    nmiwEvaluate
+    nmiwEvaluate, nmiwRegisters
   );
   
 type
@@ -259,6 +261,8 @@ type
     property Master: TDBGWatches read FMaster write SetMaster;
   end;
   
+  { TManagedLocals }
+
   TManagedLocals = class(TIDELocals)
   private
     FMaster: TDBGLocals;
@@ -270,6 +274,21 @@ type
   public
     function Count: Integer; override;
     property Master: TDBGLocals read FMaster write SetMaster;
+  end;
+
+  { TManagedRegisters }
+
+  TManagedRegisters = class(TIDERegisters)
+  private
+    FMaster: TDBGRegisters;
+    procedure RegistersChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGRegisters);
+  protected
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    function Count: Integer; override;
+    property Master: TDBGRegisters read FMaster write SetMaster;
   end;
 
   { TManagedCallStack }
@@ -466,6 +485,59 @@ begin
 end;
 
 function TManagedLocals.Count: Integer;
+begin
+  if Master = nil
+  then Result := 0
+  else Result := Master.Count;
+end;
+
+{ TManagedRegisters }
+
+procedure TManagedRegisters.RegistersChanged(Sender: TObject);
+begin
+  NotifyChange;
+end;
+
+procedure TManagedRegisters.SetMaster(const AMaster: TDBGRegisters);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @RegistersChanged;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+function TManagedRegisters.GetName(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetName(AnIndex)
+  else Result := Master.Names[AnIndex];
+end;
+
+function TManagedRegisters.GetValue(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex)
+  else Result := Master.Values[AnIndex];
+end;
+
+function TManagedRegisters.Count: Integer;
 begin
   if Master = nil
   then Result := 0
@@ -1335,7 +1407,7 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
-    TEvaluateDlg
+    TEvaluateDlg, TRegistersDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1356,6 +1428,7 @@ begin
       ddtBreakpoints: InitBreakPointDlg;
       ddtWatches:     InitWatchesDlg;
       ddtLocals:      InitLocalsDlg;
+      ddtRegisters:   InitRegistersDlg;
       ddtCallStack:   InitCallStackDlg;
       ddtEvaluate:    InitEvaluateDlg;
     end;
@@ -1422,6 +1495,14 @@ begin
   TheDialog.Locals := FLocals;
 end;
 
+procedure TDebugManager.InitRegistersDlg;
+var
+  TheDialog: TRegistersDlg;
+begin
+  TheDialog := TRegistersDlg(FDialogs[ddtRegisters]);
+  TheDialog.Registers := FRegisters;
+end;
+
 procedure TDebugManager.InitCallStackDlg;
 var
   TheDialog: TCallStackDlg;
@@ -1451,6 +1532,7 @@ begin
   FSignals := TManagedSignals.Create(Self);
   FLocals := TManagedLocals.Create;
   FCallStack := TManagedCallStack.Create;
+  FRegisters := TManagedRegisters.Create;
 
   FUserSourceFiles := TStringList.Create;
   
@@ -1491,6 +1573,8 @@ begin
     itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
     itmViewLocals.OnClick := @mnuViewDebugDialogClick;
     itmViewLocals.Tag := Ord(ddtLocals);
+    itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
+    itmViewRegisters.Tag := Ord(ddtRegisters);
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
     itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
@@ -1527,6 +1611,7 @@ begin
     itmViewBreakpoints.Command:=GetCommand(ecToggleBreakPoints);
     itmViewDebugOutput.Command:=GetCommand(ecToggleDebuggerOut);
     itmViewLocals.Command:=GetCommand(ecToggleLocals);
+    itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
 
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
@@ -2092,6 +2177,7 @@ begin
     TManagedCallStack(FCallStack).Master := nil;
     TManagedExceptions(FExceptions).Master := nil;
     TManagedSignals(FSignals).Master := nil;
+    TManagedRegisters(FRegisters).Master := nil;
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
@@ -2100,6 +2186,7 @@ begin
     TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
     TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
     TManagedSignals(FSignals).Master := FDebugger.Signals;
+    TManagedRegisters(FRegisters).Master := FDebugger.Registers;
   end;
 end;
 

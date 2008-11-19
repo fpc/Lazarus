@@ -175,6 +175,7 @@ type
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TDBGLocals; override;
+    function  CreateRegisters: TDBGRegisters; override;
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
@@ -267,6 +268,31 @@ type
     FLocalsValid: Boolean;
     procedure LocalsNeeded;
     procedure AddLocals(const AParams:String);
+  protected
+    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure Invalidate;
+    function GetCount: Integer; override;
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    procedure Changed; override;
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
+  end;
+
+  { TGDBMIRegisters }
+
+  TGDBMIRegisters = class(TDBGRegisters)
+  private
+    FRegisters: array of record
+      Name: String;
+      Value: String;
+      Modified: Boolean;
+    end;
+    FRegistersValid: Boolean;
+    FValuesValid: Boolean;
+    procedure RegistersNeeded;
+    procedure ValuesNeeded;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Invalidate;
@@ -775,6 +801,11 @@ end;
 class function TGDBMIDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TGDBMIDebuggerProperties.Create;
+end;
+
+function TGDBMIDebugger.CreateRegisters: TDBGRegisters;
+begin
+  Result := TGDBMIRegisters.Create(Self);
 end;
 
 function TGDBMIDebugger.CreateWatches: TDBGWatches;
@@ -2808,6 +2839,162 @@ begin
     FreeAndNil(List);
   end;
   FLocalsValid := True;
+end;
+
+{ =========================================================================== }
+{ TGDBMIRegisters }
+{ =========================================================================== }
+
+procedure TGDBMIRegisters.Changed;
+begin
+  Invalidate;
+  inherited Changed;
+end;
+
+constructor TGDBMIRegisters.Create(const ADebugger: TDebugger);
+begin
+  FValuesValid := False;
+  inherited;
+end;
+
+destructor TGDBMIRegisters.Destroy;
+begin
+  inherited;
+end;
+
+procedure TGDBMIRegisters.DoStateChange(const AOldState: TDBGState);
+begin
+  if  Debugger <> nil
+  then begin
+    case Debugger.State of
+      dsPause: DoChange;
+      dsStop : FRegistersValid := False;
+    else
+      Invalidate
+    end;
+  end
+  else Invalidate;
+end;
+
+procedure TGDBMIRegisters.Invalidate;
+var
+  n: Integer;
+begin
+  for n := Low(FRegisters) to High(FRegisters) do
+  begin
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+  FValuesValid := False;
+end;
+
+function TGDBMIRegisters.GetCount: Integer;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  Result := Length(FRegisters)
+end;
+
+function TGDBMIRegisters.GetName(const AnIndex: Integer): String;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if  FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Name
+  else Result := '';
+end;
+
+function TGDBMIRegisters.GetValue(const AnIndex: Integer): String;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then ValuesNeeded;
+
+  if  FValuesValid
+  and FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Value
+  else Result := '';
+end;
+
+procedure TGDBMIRegisters.RegistersNeeded;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  n: Integer;
+begin
+  if Debugger = nil then Exit;
+  if FRegistersValid then Exit;
+
+  FRegistersValid := True;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-names', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['register-names']);
+  SetLength(FRegisters, List.Count);
+  for n := 0 to List.Count - 1 do
+  begin
+    FRegisters[n].Name := UnQuote(List.GetString(n));
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+  FreeAndNil(List);
+end;
+
+procedure TGDBMIRegisters.ValuesNeeded;
+var
+  R: TGDBMIExecResult;
+  List, ValList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  n, idx: Integer;
+begin
+  FValuesValid := True;
+
+  for n := Low(FRegisters) to High(FRegisters) do
+  begin
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-values N', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  ValList := TGDBMINameValueList.Create('');
+  List := TGDBMINameValueList.Create(R, ['register-values']);
+  for n := 0 to List.Count - 1 do
+  begin
+    Item := List.Items[n];
+    ValList.Init(Item^.NamePtr, Item^.NameLen);
+    idx := StrToIntDef(Unquote(ValList.Values['number']), -1);
+    if idx < Low(FRegisters) then Continue;
+    if idx > High(FRegisters) then Continue;
+
+    FRegisters[idx].Value := Unquote(ValList.Values['value']);
+  end;
+  FreeAndNil(List);
+  FreeAndNil(ValList);
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['changed-registers']);
+  for n := 0 to List.Count - 1 do
+  begin
+    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
+    if idx < Low(FRegisters) then Continue;
+    if idx > High(FRegisters) then Continue;
+
+    FRegisters[idx].Modified := True;
+  end;
+  FreeAndNil(List);
 end;
 
 { =========================================================================== }

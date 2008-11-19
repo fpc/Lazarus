@@ -282,6 +282,7 @@ resourcestring
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
+  lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuIDEInternals = 'IDE internals';
@@ -3834,6 +3835,13 @@ resourcestring
   lisLocals = 'Locals';
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
+
+  // Registers Dialog
+  lisRegisters = 'Registers';
+  lisRegistersDlgName = 'Name';
+  lisRegistersDlgValue = 'Value';
+
+
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
   
   // ProjectWizard Dialog

@@ -64,6 +64,7 @@ type
     FBreakPoints: TIDEBreakPoints;
     FLocals: TIDELocals;
     FWatches: TIDEWatches;
+    FRegisters: TIDERegisters;
     FManagerStates: TDebugManagerStates;
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;

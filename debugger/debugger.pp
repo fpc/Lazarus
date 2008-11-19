@@ -634,6 +634,68 @@ type
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
+(**   R E G I S T E R S                                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+  { TBaseRegisters }
+
+  TBaseRegisters = class(TObject)
+  private
+  protected
+    function GetName(const AnIndex: Integer): String; virtual;
+    function GetValue(const AnIndex: Integer): String; virtual;
+  public
+    constructor Create;
+    function Count: Integer; virtual;
+  public
+    property Names[const AnIndex: Integer]: String read GetName;
+    property Values[const AnIndex: Integer]: String read GetValue;
+  end;
+
+  { TIDERegisters }
+
+  TIDERegistersNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TNotifyEvent;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TIDERegisters = class(TBaseRegisters)
+  private
+    FNotificationList: TList;
+  protected
+    procedure NotifyChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TIDERegistersNotification);
+    procedure RemoveNotification(const ANotification: TIDERegistersNotification);
+  end;
+
+  { TDBGRegisters }
+
+  TDBGRegisters = class(TBaseRegisters)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FOnChange: TNotifyEvent;
+  protected
+    procedure Changed; virtual;
+    procedure DoChange;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    function GetCount: Integer; virtual;
+    property Debugger: TDebugger read FDebugger;
+  public
+    function Count: Integer; override;
+    constructor Create(const ADebugger: TDebugger);
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
 (**   C A L L S T A C K                                                      **)
 (**                                                                          **)
 (******************************************************************************)
@@ -986,6 +1048,7 @@ type
     //FExceptions: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
+    FRegisters: TDBGRegisters;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
     FState: TDBGState;
@@ -1008,6 +1071,7 @@ type
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
+    function  CreateRegisters: TDBGRegisters; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
     function  CreateWatches: TDBGWatches; virtual;
     function  CreateSignals: TDBGSignals; virtual;
@@ -1066,6 +1130,7 @@ type
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
+    property Registers: TDBGRegisters read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
     property State: TDBGState read FState;                                       // The current state of the debugger
@@ -1245,6 +1310,7 @@ begin
 
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
+  FRegisters := CreateRegisters;
   FCallStack := CreateCallStack;
   FWatches := CreateWatches;
   FExceptions := CreateExceptions;
@@ -1277,6 +1343,11 @@ begin
   Result := TDebuggerProperties.Create;
 end;
 
+function TDebugger.CreateRegisters: TDBGRegisters;
+begin
+  Result := TDBGRegisters.Create(Self);
+end;
+
 function TDebugger.CreateSignals: TDBGSignals;
 begin
   Result := TDBGSignals.Create(Self, TDBGSignal);
@@ -1304,12 +1375,14 @@ begin
 
   FBreakPoints.FDebugger := nil;
   FLocals.FDebugger := nil;
+  FRegisters.FDebugger := nil;
   FCallStack.FDebugger := nil;
   FWatches.FDebugger := nil;
 
   FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FLocals);
+  FreeAndNil(FRegisters);
   FreeAndNil(FCallStack);
   FreeAndNil(FWatches);
   FreeAndNil(FDebuggerEnvironment);
@@ -1562,6 +1635,7 @@ begin
     FState := AValue;
     FBreakpoints.DoStateChange(OldState);
     FLocals.DoStateChange(OldState);
+    FRegisters.DoStateChange(OldState);
     FCallStack.DoStateChange(OldState);
     FWatches.DoStateChange(OldState);
     DoState(OldState);
@@ -3019,6 +3093,122 @@ begin
 end;
 
 function TDBGLocals.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   R E G I S T E R S                                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+{ =========================================================================== }
+{ TBaseRegisters }
+{ =========================================================================== }
+
+function TBaseRegisters.Count: Integer;
+begin
+  Result := 0;
+end;
+
+constructor TBaseRegisters.Create;
+begin
+  inherited Create;
+end;
+
+function TBaseRegisters.GetName(const AnIndex: Integer): String;
+begin
+  Result := '';
+end;
+
+function TBaseRegisters.GetValue(const AnIndex: Integer): String;
+begin
+  Result := '';
+end;
+
+{ =========================================================================== }
+{ TIDERegisters }
+{ =========================================================================== }
+
+procedure TIDERegisters.AddNotification(const ANotification: TIDERegistersNotification);
+begin
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+constructor TIDERegisters.Create;
+begin
+  FNotificationList := TList.Create;
+  inherited Create;
+end;
+
+destructor TIDERegisters.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+
+  inherited;
+
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TIDERegisters.NotifyChange;
+var
+  n: Integer;
+  Notification: TIDERegistersNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDERegistersNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnChange)
+    then Notification.FOnChange(Self);
+  end;
+end;
+
+procedure TIDERegisters.RemoveNotification(const ANotification: TIDERegistersNotification);
+begin
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
+{ =========================================================================== }
+{ TDBGRegisters }
+{ =========================================================================== }
+
+function TDBGRegisters.Count: Integer;
+begin
+  if  (FDebugger <> nil)
+  and (FDebugger.State = dsPause)
+  then Result := GetCount
+  else Result := 0;
+end;
+
+constructor TDBGRegisters.Create(const ADebugger: TDebugger);
+begin
+  inherited Create;
+  FDebugger := ADebugger;
+end;
+
+procedure TDBGRegisters.DoChange;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TDBGRegisters.DoStateChange(const AOldState: TDBGState);
+begin
+end;
+
+procedure TDBGRegisters.Changed;
+begin
+  DoChange;
+end;
+
+function TDBGRegisters.GetCount: Integer;
 begin
   Result := 0;
 end;

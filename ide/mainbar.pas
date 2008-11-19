@@ -206,6 +206,7 @@ type
           itmViewWatches: TIDEMenuCommand;
           itmViewBreakpoints: TIDEMenuCommand;
           itmViewLocals: TIDEMenuCommand;
+          itmViewRegisters: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;

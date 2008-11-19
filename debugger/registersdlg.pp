@@ -1,13 +1,13 @@
 { $Id$ }
 {               ----------------------------------------------  
-                 localsdlg.pp  -  Overview of local variables 
+                 registersdlg.pp  -  Overview of registers 
                 ---------------------------------------------- 
  
- @created(Thu Mar 14st WET 2002)
+ @created(Sun Nov 16th WET 2008)
  @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.net>)                       
 
- This unit contains the Locals debugger dialog.
+ This unit contains the registers debugger dialog.
  
  
  ***************************************************************************
@@ -29,7 +29,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit LocalsDlg;
+unit RegistersDlg;
 
 {$mode objfpc}{$H+}
 
@@ -40,13 +40,13 @@ uses
   ComCtrls, Debugger, DebuggerDlg;
 
 type
-  TLocalsDlg = class(TDebuggerDlg)
-    lvLocals: TListView;
+  TRegistersDlg = class(TDebuggerDlg)
+    lvRegisters: TListView;
   private
-    FLocals: TIDELocals;
-    FLocalsNotification: TIDELocalsNotification;
-    procedure LocalsChanged(Sender: TObject);
-    procedure SetLocals(const AValue: TIDELocals);
+    FRegisters: TIDERegisters;
+    FRegistersNotification: TIDERegistersNotification;
+    procedure RegistersChanged(Sender: TObject);
+    procedure SetRegisters(const AValue: TIDERegisters);
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -54,7 +54,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property Locals: TIDELocals read FLocals write SetLocals;
+    property Registers: TIDERegisters read FRegisters write SetRegisters;
   end;
 
 
@@ -62,27 +62,27 @@ implementation
 uses
   LazarusIDEStrConsts;
   
-{ TLocalsDlg }
+{ TRegistersDlg }
 
-constructor TLocalsDlg.Create(AOwner: TComponent);
+constructor TRegistersDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLocalsNotification := TIDELocalsNotification.Create;
-  FLocalsNotification.AddReference;
-  FLocalsNotification.OnChange := @LocalsChanged;
-  Caption:= lisLocals;
-  lvLocals.Columns[0].Caption:= lisLocalsDlgName;
-  lvLocals.Columns[1].Caption:= lisLocalsDlgValue;
+  FRegistersNotification := TIDERegistersNotification.Create;
+  FRegistersNotification.AddReference;
+  FRegistersNotification.OnChange := @RegistersChanged;
+  Caption:= lisRegisters;
+  lvRegisters.Columns[0].Caption:= lisRegistersDlgName;
+  lvRegisters.Columns[1].Caption:= lisRegistersDlgValue;
 end;
 
-destructor TLocalsDlg.Destroy;
+destructor TRegistersDlg.Destroy;
 begin
-  FLocalsNotification.OnChange := nil;
-  FLocalsNotification.ReleaseReference;
+  FRegistersNotification.OnChange := nil;
+  FRegistersNotification.ReleaseReference;
   inherited Destroy;
 end;
 
-procedure TLocalsDlg.LocalsChanged(Sender: TObject);
+procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
   n, idx: Integer;                               
   List: TStringList;
@@ -93,43 +93,43 @@ begin
   try
     BeginUpdate;
     try
-      if FLocals = nil
+      if FRegisters = nil
       then begin
-        lvLocals.Items.Clear;
+        lvRegisters.Items.Clear;
         Exit;
       end;
     
       //Get existing items
-      for n := 0 to lvLocals.Items.Count - 1 do
+      for n := 0 to lvRegisters.Items.Count - 1 do
       begin
-        Item := lvLocals.Items[n];
+        Item := lvRegisters.Items[n];
         S := Item.Caption;
         S := UpperCase(S);
         List.AddObject(S, Item);
       end;
 
       // add/update entries
-      for n := 0 to FLocals.Count - 1 do
+      for n := 0 to FRegisters.Count - 1 do
       begin
-        idx := List.IndexOf(Uppercase(FLocals.Names[n]));
+        idx := List.IndexOf(Uppercase(FRegisters.Names[n]));
         if idx = -1
         then begin
           // New entry
-          Item := lvLocals.Items.Add;
-          Item.Caption := FLocals.Names[n];
-          Item.SubItems.Add(FLocals.Values[n]);
+          Item := lvRegisters.Items.Add;
+          Item.Caption := FRegisters.Names[n];
+          Item.SubItems.Add(FRegisters.Values[n]);
         end
         else begin
           // Existing entry
           Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := FLocals.Values[n];
+          Item.SubItems[0] := FRegisters.Values[n];
           List.Delete(idx);
         end;
       end;
 
       // remove obsolete entries
       for n := 0 to List.Count - 1 do
-        lvLocals.Items.Delete(TListItem(List.Objects[n]).Index);
+        lvRegisters.Items.Delete(TListItem(List.Objects[n]).Index);
 
     finally
       EndUpdate;
@@ -139,42 +139,42 @@ begin
   end;
 end;
 
-procedure TLocalsDlg.SetLocals(const AValue: TIDELocals);
+procedure TRegistersDlg.SetRegisters(const AValue: TIDERegisters);
 begin
-  if FLocals = AValue then Exit;
+  if FRegisters = AValue then Exit;
 
   BeginUpdate;
   try
-    if FLocals <> nil
+    if FRegisters <> nil
     then begin
-      FLocals.RemoveNotification(FLocalsNotification);
+      FRegisters.RemoveNotification(FRegistersNotification);
     end;
 
-    FLocals := AValue;
+    FRegisters := AValue;
 
-    if FLocals <> nil
+    if FRegisters <> nil
     then begin
-      FLocals.AddNotification(FLocalsNotification);
+      FRegisters.AddNotification(FRegistersNotification);
     end;
     
-    LocalsChanged(FLocals);
+    RegistersChanged(FRegisters);
   finally
     EndUpdate;
   end;
 end;
 
-procedure TLocalsDlg.DoBeginUpdate;
+procedure TRegistersDlg.DoBeginUpdate;
 begin
-  lvLocals.BeginUpdate;
+  lvRegisters.BeginUpdate;
 end;
 
-procedure TLocalsDlg.DoEndUpdate;
+procedure TRegistersDlg.DoEndUpdate;
 begin
-  lvLocals.EndUpdate;
+  lvRegisters.EndUpdate;
 end;
 
 initialization
-  {$I localsdlg.lrs}
+  {$I registersdlg.lrs}
 
 end.
 

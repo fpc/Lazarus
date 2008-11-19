@@ -2066,7 +2066,8 @@ Begin
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
+//      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
+      if (ChildControl.Owner=FLookupRoot)
       and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
         //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
         RemovePersistentAndChilds(ChildControl);
