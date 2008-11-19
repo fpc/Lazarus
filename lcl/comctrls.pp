@@ -1589,7 +1589,7 @@ type
     property EdgeInner;
     property EdgeOuter;
     property Enabled;
-    property Flat: Boolean read FFlat write SetFlat default False;
+    property Flat: Boolean read FFlat write SetFlat default True;
     property Font;
     property Height default 32;
     //property HideClippedButtons: Boolean read FHideClippedButtons write SetHideClippedButtons default False;
