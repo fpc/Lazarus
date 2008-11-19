@@ -973,6 +973,7 @@ type
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     function selCount: Integer;
     function selectedItems: TPtrIntArray;
+    procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
   public
@@ -7191,6 +7192,14 @@ end;
 function TQtTreeWidget.selectedItems: TPtrIntArray;
 begin
   QTreeWidget_selectedItems(QTreeWidgetH(Widget), @Result);
+end;
+
+procedure TQtTreeWidget.setHeaderVisible(AVisible: Boolean);
+begin
+ if (csDesigning in LCLObject.ComponentState) then
+   QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
+ else
+   Header.setVisible(AVisible);
 end;
 
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;

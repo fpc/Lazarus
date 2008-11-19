@@ -1261,14 +1261,14 @@ begin
 
   case AProp of
     lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
-    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).Header.setVisible(AIsSet);
+    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).setHeaderVisible(AIsSet);
     lvpReadOnly: TQtTreeWidget(ALV.Handle).setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
       begin
         TQtTreeWidget(ALV.Handle).setAllColumnsShowFocus(AIsSet);
         TQtTreeWidget(ALV.Handle).setSelectionBehavior(BoolToSelectionBehavior[AIsSet]);
       end;
-    lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet)
+    lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet);
   end;
 end;
 
