@@ -267,41 +267,44 @@ function GetPrettyColorName(ColorName: String): String;
     Result := IdentToColor(ColorName, Color);
     if Result then
     begin
-      case Color of
-        clScrollBar               : NewColorName := rsScrollBarColorCaption;
-        clBackground              : NewColorName := rsBackgroundColorCaption;
-        clActiveCaption           : NewColorName := rsActiveCaptionColorCaption;
-        clInactiveCaption         : NewColorName := rsInactiveCaptionColorCaption;
-        clMenu                    : NewColorName := rsMenuColorCaption;
-        clWindow                  : NewColorName := rsWindowColorCaption;
-        clWindowFrame             : NewColorName := rsWindowFrameColorCaption;
-        clMenuText                : NewColorName := rsMenuTextColorCaption;
-        clWindowText              : NewColorName := rsWindowTextColorCaption;
-        clCaptionText             : NewColorName := rsCaptionTextColorCaption;
-        clActiveBorder            : NewColorName := rsActiveBorderColorCaption;
-        clInactiveBorder          : NewColorName := rsInactiveBorderColorCaption;
-        clAppWorkspace            : NewColorName := rsAppWorkspaceColorCaption;
-        clHighlight               : NewColorName := rsHighlightColorCaption;
-        clHighlightText           : NewColorName := rsHighlightTextColorCaption;
-        clBtnFace                 : NewColorName := rsBtnFaceColorCaption;
-        clBtnShadow               : NewColorName := rsBtnShadowColorCaption;
-        clGrayText                : NewColorName := rsGrayTextColorCaption;
-        clBtnText                 : NewColorName := rsBtnTextColorCaption;
-        clInactiveCaptionText     : NewColorName := rsInactiveCaptionText;
-        clBtnHighlight            : NewColorName := rsBtnHighlightColorCaption;
-        cl3DDkShadow              : NewColorName := rs3DDkShadowColorCaption;
-        cl3DLight                 : NewColorName := rs3DLightColorCaption;
-        clInfoText                : NewColorName := rsInfoTextColorCaption;
-        clInfoBk                  : NewColorName := rsInfoBkColorCaption;
-        clHotLight                : NewColorName := rsHotLightColorCaption;
-        clGradientActiveCaption   : NewColorName := rsGradientActiveCaptionColorCaption;
-        clGradientInactiveCaption : NewColorName := rsGradientInactiveCaptionColorCaption;
-        clMenuHighlight           : NewColorName := rsMenuHighlightColorCaption;
-        clMenuBar                 : NewColorName := rsMenuBarColorCaption;
-        clForm                    : NewColorName := rsFormColorCaption;
+      { workaround for a bug in fpc 2.2.2 }
+      if Color=clScrollBar then
+        NewColorName := rsScrollBarColorCaption
       else
-        Result := False;
-      end;
+        case Color of
+          clBackground              : NewColorName := rsBackgroundColorCaption;
+          clActiveCaption           : NewColorName := rsActiveCaptionColorCaption;
+          clInactiveCaption         : NewColorName := rsInactiveCaptionColorCaption;
+          clMenu                    : NewColorName := rsMenuColorCaption;
+          clWindow                  : NewColorName := rsWindowColorCaption;
+          clWindowFrame             : NewColorName := rsWindowFrameColorCaption;
+          clMenuText                : NewColorName := rsMenuTextColorCaption;
+          clWindowText              : NewColorName := rsWindowTextColorCaption;
+          clCaptionText             : NewColorName := rsCaptionTextColorCaption;
+          clActiveBorder            : NewColorName := rsActiveBorderColorCaption;
+          clInactiveBorder          : NewColorName := rsInactiveBorderColorCaption;
+          clAppWorkspace            : NewColorName := rsAppWorkspaceColorCaption;
+          clHighlight               : NewColorName := rsHighlightColorCaption;
+          clHighlightText           : NewColorName := rsHighlightTextColorCaption;
+          clBtnFace                 : NewColorName := rsBtnFaceColorCaption;
+          clBtnShadow               : NewColorName := rsBtnShadowColorCaption;
+          clGrayText                : NewColorName := rsGrayTextColorCaption;
+          clBtnText                 : NewColorName := rsBtnTextColorCaption;
+          clInactiveCaptionText     : NewColorName := rsInactiveCaptionText;
+          clBtnHighlight            : NewColorName := rsBtnHighlightColorCaption;
+          cl3DDkShadow              : NewColorName := rs3DDkShadowColorCaption;
+          cl3DLight                 : NewColorName := rs3DLightColorCaption;
+          clInfoText                : NewColorName := rsInfoTextColorCaption;
+          clInfoBk                  : NewColorName := rsInfoBkColorCaption;
+          clHotLight                : NewColorName := rsHotLightColorCaption;
+          clGradientActiveCaption   : NewColorName := rsGradientActiveCaptionColorCaption;
+          clGradientInactiveCaption : NewColorName := rsGradientInactiveCaptionColorCaption;
+          clMenuHighlight           : NewColorName := rsMenuHighlightColorCaption;
+          clMenuBar                 : NewColorName := rsMenuBarColorCaption;
+          clForm                    : NewColorName := rsFormColorCaption;
+        else
+          Result := False;
+        end;
     end;
   end;
 
@@ -529,7 +532,7 @@ begin
   end;
   r := Rect;
   r.left := r.left + 20;
-  
+
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
@@ -820,7 +823,7 @@ begin
   end;
   r := Rect;
   r.left := r.left + 20;
-  
+
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
