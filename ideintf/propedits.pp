@@ -3143,7 +3143,7 @@ end;
 
 procedure TWideStringPropertyEditor.SetValue(const NewValue: ansistring);
 begin
-  SetWideStrValue(UTF8Encode(NewValue));
+  SetWideStrValue(UTF8Decode(NewValue));
 end;
 
 { TNestedPropertyEditor }
