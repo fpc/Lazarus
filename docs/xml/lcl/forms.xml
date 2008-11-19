@@ -260,9 +260,11 @@ wsMaximized - The window appears maximized</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollingWinControl">
-        <short>Scrolling Window Control</short>
+        <short>
+          <var>TScrollingWinControl</var> - a class of Window Contrl that has one or more scroll bars</short>
         <descr>Scrolling Window Control: A window control with scroll bars.<br/>
-An ancestor class for many forms with scrolling windows</descr>
+An ancestor class for many forms with scrolling windows
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -327,10 +329,12 @@ An ancestor class for many forms with scrolling windows</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlScrollBar">
-        <short>Control Scroll Bar</short>
+        <short>
+          <var>TControlScrollBar</var> - base class for defining scroll bars on Forms and windows</short>
         <descr>Control Scroll Bar: Scroll Bar control for adding to windows. Can be horizontal or vertical.<br/>
 
-This is an ancestor class for many form types and classes of windowed controls</descr>
+This is an ancestor class for many form types and classes of windowed controls
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -396,13 +400,15 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- variable Visibility: protected -->
       <element name="TControlScrollBar.FControl">
-        <short/>
+        <short>
+          <var>FControl</var> - local variable to hold the Window Control to which the scroll bar belongs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ControlAutoScroll">
-        <short/>
+        <short>
+          <var>ControlAutoScroll</var> - returns True if the control can Auto-Scroll</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -413,7 +419,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ControlHandle">
-        <short/>
+        <short>
+          <var>ControlHandle</var> - the operating system handle for this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -424,7 +431,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetIncrement">
-        <short/>
+        <short>
+          <var>GetIncrement</var> - returns the size of the increment for each slick in the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -435,7 +443,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetPage">
-        <short/>
+        <short>
+          <var>GetPage</var> - returns the size of the Page-Down (or -Up) Increment for the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -446,7 +455,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetPosition">
-        <short/>
+        <short>
+          <var>GetPosition</var> returns the position of the slider in the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -457,7 +467,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetRange">
-        <short/>
+        <short>
+          <var>GetRange</var> - returns the valid range of values for the scroll bar movement</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -468,7 +479,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetSize">
-        <short/>
+        <short>
+          <var>GetSize</var> - returns the size of the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -479,7 +491,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetSmooth">
-        <short/>
+        <short>
+          <var>GetSmooth</var> - returns True if smooth scrolling is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -490,7 +503,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetVisible">
-        <short/>
+        <short>
+          <var>GetVisible</var> - returns True if the scroll bar is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -501,7 +515,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.HandleAllocated">
-        <short/>
+        <short>
+          <var>HandleAllocated</var> - returns True if a handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -512,7 +527,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.SmoothIsStored">
-        <short/>
+        <short>
+          <var>SmoothIsStored</var> - returns True if the Smooth status has been stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -523,7 +539,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.VisibleIsStored">
-        <short/>
+        <short>
+          <var>VisibleIsStored</var> - returns True if the Visible status has been stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -534,21 +551,24 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.AutoCalcRange">
-        <short/>
+        <short>
+          <var>AutoCalcRange</var> - method for automatically calculating the range of values for the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.ControlUpdateScrollBars">
-        <short/>
+        <short>
+          <var>ControlUpdateScrollBars</var> - method to be used by the owner control for updating its scrollbars</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.ScrollHandler">
-        <short/>
+        <short>
+          <var>ScrollHandler</var> - message handler to control scrolling</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -559,7 +579,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetIncrement">
-        <short/>
+        <short>
+          <var>SetIncrement</var> - specifies the scrolling increment</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -570,7 +591,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetPage">
-        <short/>
+        <short>
+          <var>SetPage</var> - specifies the page scrolling increment</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -581,7 +603,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetPosition">
-        <short/>
+        <short>
+          <var>SetPosition</var> - specifies the position of the slider in the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -592,7 +615,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetRange">
-        <short/>
+        <short>
+          <var>SetRange</var> - specifies the range of values for the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -603,7 +627,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetSize">
-        <short/>
+        <short>
+          <var>SetSize</var> - specifies the size of the scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -614,7 +639,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetSmooth">
-        <short/>
+        <short>
+          <var>SetSmooth</var> - specifies whether smooth scrolling is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -625,7 +651,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetVisible">
-        <short/>
+        <short>
+          <var>SetVisible</var> - specifies whether the scroll bar is to be visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -636,14 +663,16 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.UpdateScrollBar">
-        <short/>
+        <short>
+          <var>UpdateScrollBar</var> - method to update the scroll bar (position etc)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.InvalidateScrollInfo">
-        <short/>
+        <short>
+          <var>InvalidateScrollInfo</var> - method to render scroll information non-valid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1315,7 +1344,9 @@ If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomFrame">
-        <short>Custom Frame: The base type for Frame</short>
+        <short>
+          <var>TCustomFrame</var> - the base type for <var>TFrame</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1413,7 +1444,8 @@ If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TFrame">
-        <short>Frame - a container for all the other components on a form, or for a group of components within a form</short>
+        <short>
+          <var>TFrame</var> - a container for all the other components on a form, or for a group of components within a form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1697,14 +1729,16 @@ If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBorderIcon">
-        <short>Specifies which icon appears on the top border of the Form</short>
+        <short>
+          <var>TBorderIcon</var> - enumerated type to specify which icon appears on the top border of the Form</short>
         <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)<br/>
 
 biMinimize - The form has an minimize button<br/>
 
 biMaximize - The form has a maximize button<br/>
 
-biHelp - When you click this button a Question Cursor appears and the help routines are called if you click on an control</descr>
+biHelp - When you click this button a Question Cursor appears and the help routines are called if you click on an control
+</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1725,7 +1759,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- set type Visibility: default -->
       <element name="TBorderIcons">
-        <short/>
+        <short>
+          <var>TBorderIcons</var> - set of <var>TBorderIcon</var>; the group of icons to appear at the top of the form</short>
         <descr/>
         <seealso/>
       </element>
@@ -1809,8 +1844,20 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFormStateType">
-        <short/>
-        <descr/>
+        <short>
+          <var>TFormStateType</var> - enumerated type to describe the state of a form; whether it is being created or destroyed, its visibility, whether Modal etc</short>
+        <descr>
+          <p>The valid states are:</p>
+          <pre>fsCreating,  // initializing (form streaming)
+    fsVisible,   // form should be shown
+    fsShowing,
+    fsModal,     // form is modal
+    fsCreatedMDIChild,
+    fsBorderStyleChanged,
+    fsFormStyleChanged,
+    fsFirstShow,  // form is shown for the first time
+    fsDisableAutoSize  </pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1851,13 +1898,15 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- set type Visibility: default -->
       <element name="TFormState">
-        <short/>
+        <short>
+          <var>TFormState</var> - the set of form states that apply to this form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- range type Visibility: default -->
       <element name="TModalResult">
-        <short/>
+        <short>
+          <var>TModalResult</var> - the range of values that can be returned as a modal result</short>
         <descr/>
         <seealso/>
       </element>
@@ -3705,14 +3754,16 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TCustomFormClass">
-        <short/>
+        <short>
+          <var>TCustomFormClass</var> - class of <var>TCustomForm</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TForm">
         <short>
-          <i>Form </i>- the fundamental visual object that appears in every application with a Graphical User Interface.</short>
+          <var>Form</var> - the fundamental visual object that appears in every application with a Graphical User Interface.</short>
         <descr>
           <p>Form - the fundamental visual object that appears in every GUI application.</p>
           <p>Most of the properties are inherited from the ancestors</p>
@@ -4161,21 +4212,22 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TFormClass">
-        <short/>
+        <short>
+          <var>TFormClass</var> - class of <var>TForm</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDockForm">
-        <short>TCustomDockForm - Base class for docking forms</short>
+        <short>
+          <var>TCustomDockForm</var> - Base class for docking forms</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoAddDockClient">
-        <short>
-          <var>DoAddDockClient</var> - add the specified control as a client for docking in the specified location (Arect)</short>
+      <element name="TCustomDockForm.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient">
         <descr/>
         <errors/>
         <seealso/>
@@ -4443,7 +4495,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="THintWindowClass">
-        <short/>
+        <short>
+          <var>THintWindowClass</var> - class of <var>THintWindow</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -5199,9 +5253,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TScreen.RemoveAllHandlersOfObject">
-        <short>
-          <var>RemoveAllHandlersOfObject</var> - method for removing all of an object's handlers</short>
+      <element name="TScreen.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <descr/>
         <errors/>
         <seealso/>
@@ -5742,10 +5794,12 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- object Visibility: default -->
       <element name="TApplication">
-        <short>Application - the whole current program, described as an object</short>
+        <short>
+          <var>TApplication</var> - the whole current program, described as an object</short>
         <descr>
-          <p>Application - the whole current program, described as an object.</p>
-          <p>Includes the useful function MessageBox, a simple dialog intended for displaying error messages internally, but available as an alternative to the various Message Dialogs</p>
+          <p>
+            <var>TApplication</var> - the whole current program, described as an object.</p>
+          <p>Includes the useful function <var>MessageBox</var>, a simple dialog intended for displaying error messages internally, but available as an alternative to the various Message Dialogs</p>
         </descr>
         <errors/>
         <seealso/>
@@ -6372,7 +6426,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TApplication.GetConsoleApplication">
-        <short/>
+        <short>
+          <var>GetConsoleApplication</var> - returns True if this is a Console application (ie text-mode, non-GUI)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6829,7 +6884,7 @@ It also writes details of the exception to the appropriate place for debugging.
           <var>Message Box</var>: a useful function to display a message.</short>
         <descr>
           <p>
-            <i>Message Box:</i> a useful function to display a message.</p>
+            <var>MessageBox</var>: a useful function to display a message.</p>
           <p>The function is used internally to display messages during the handling of <i>Exceptions</i>
 , but is also available to application programmers as an alternative to some of the message dialogs found in <i>Dialogs</i>
           </p>
@@ -8138,7 +8193,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetCaptureExceptions">
-        <short/>
+        <short>
+          <var>SetCaptureExceptions</var> - specifies whether exceptions are to be captured</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8149,7 +8205,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHelpFile">
-        <short/>
+        <short>
+          <var>SetHelpFile</var> - specifies which file is to be used for Help messages</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8160,7 +8217,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHint">
-        <short/>
+        <short>
+          <var>SetHint</var> - specifies the text for a Hint</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8171,7 +8229,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintColor">
-        <short/>
+        <short>
+          <var>SetHintColor</var> - specifies the colour for displaying hints</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8182,7 +8241,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintHidePause">
-        <short/>
+        <short>
+          <var>SetHintHidePause</var> - specifies the length of pause before a hint becomes hidden</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8193,7 +8253,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintPause">
-        <short/>
+        <short>
+          <var>SetHintPause</var> - specifies the length of pause before a hint is displayed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8204,7 +8265,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintShortCuts">
-        <short/>
+        <short>
+          <var>SetHintShortCuts</var> - specifies whether hints are to be displayed for Shortcut keys</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8215,7 +8277,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintShortPause">
-        <short/>
+        <short>
+          <var>SetHintShortPause</var> - specifies the length of pause before a shortcut key hint is displayed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8226,7 +8289,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetShowHint">
-        <short/>
+        <short>
+          <var>SetShowHint</var> - specifies whether hints are to be displayed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8237,7 +8301,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetTitle">
-        <short/>
+        <short>
+          <var>SetTitle</var> - specifies the title for the Form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8248,7 +8313,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnException">
-        <short/>
+        <short>
+          <var>SetOnException</var> - specifies the event handler for exceptions</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8259,7 +8325,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnIdle">
-        <short/>
+        <short>
+          <var>SetOnIdle</var> - specifies the handler for Idle events</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8270,7 +8337,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnIdleEnd">
-        <short/>
+        <short>
+          <var>SetOnIdleEnd</var> - specifies the handler to notify the end of an idle period</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8281,7 +8349,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnEndSession">
-        <short/>
+        <short>
+          <var>SetOnEndSession</var> - specifies the event handler to notify the end of a session</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8292,7 +8361,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnQueryEndSession">
-        <short/>
+        <short>
+          <var>SetOnQueryEndSession</var> - specify the event handler for a query at the end of a session</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8303,7 +8373,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnMinimize">
-        <short/>
+        <short>
+          <var>SetOnMinimize</var> - specify the event handler for minimising the application form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8314,7 +8385,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnRestore">
-        <short/>
+        <short>
+          <var>SetOnRestore</var> - specify the event handler for restoring the application's form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8325,7 +8397,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnDropFiles">
-        <short/>
+        <short>
+          <var>SetOnDropFiles</var> - specify the event handler for dropping files</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8336,7 +8409,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnHelp">
-        <short/>
+        <short>
+          <var>SetOnHelp</var> - specify the event handler for help requests</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8347,7 +8421,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnHint">
-        <short/>
+        <short>
+          <var>SetOnHint</var> - specify the event handler for a request to show hints</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8358,7 +8433,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnShowHint">
-        <short/>
+        <short>
+          <var>SetOnShowHint</var> - specify the event handler for showing hints</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8369,7 +8445,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetOnUserInput">
-        <short/>
+        <short>
+          <var>SetOnUserInput</var> - specify the event handler for dealing with User input</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8431,14 +8508,14 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.HintHidePause">
         <short>
-          <var>HintHidePause</var> - the lenght of pause before a hint becomes hidden</short>
+          <var>HintHidePause</var> - the length of pause before a hint becomes hidden</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.HintPause">
         <short>
-          <var>HintPause</var> - th elenght of pause before a hint is desplayed</short>
+          <var>HintPause</var> - the length of pause before a hint is displayed</short>
         <descr/>
         <seealso/>
       </element>
@@ -9282,7 +9359,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function type Visibility: default -->
       <element name="TMessageBoxFunction">
-        <short/>
+        <short>
+          <var>TMessageBoxFunction</var> - the function to be used by a message box: specifies Text and Flags, and returns an integer value</short>
         <descr/>
         <seealso/>
       </element>
@@ -9396,6 +9474,11 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TApplication.SmallIconHandle">
         <short>
           <var>SmallIconHandle</var> - system handle for small Icon</short>
+      </element>
+      <element name="TCustomForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TApplication.BidiMode">
+        <short>
+          <var>BidiMode</var> - whether bi-directional mode is available</short>
       </element>
     </module>
     <!-- Forms -->

@@ -63,7 +63,7 @@
       <!-- procedure Visibility: public -->
       <element name="TLCLComponent.RemoveAllHandlersOfObject">
         <short>
-          <var>RemoveAllHandlersOfObject</var> - part of clean-up procedure</short>
+          <var>RemoveAllHandlersOfObject</var> - method for removing all of an object's handlers: part of a clean-up procedure</short>
         <descr/>
         <errors/>
         <seealso/>
