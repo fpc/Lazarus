@@ -1388,10 +1388,13 @@ const
   COLOR_HOTLIGHT = 26;
   COLOR_GRADIENTACTIVECAPTION = 27;
   COLOR_GRADIENTINACTIVECAPTION = 28;
-  COLOR_FORM = 29;
+  COLOR_MENUHILIGHT = 29;
+  COLOR_MENUBAR = 30;
+
+  COLOR_FORM = 31;
 
   // CLX base, mapped, pseudo, rgb values
-  COLOR_clForeground =  30;
+  COLOR_clForeground =  32;
   COLOR_clButton =  COLOR_clForeground+1;
   COLOR_clLight =  COLOR_clForeground+2;
   COLOR_clMidlight =  COLOR_clForeground+3;
@@ -1407,7 +1410,7 @@ const
   COLOR_clHighlightedText =  COLOR_clForeground+11;
 
   // CLX normal, mapped, pseudo, rgb values
-  COLOR_clNormalForeground =  42;
+  COLOR_clNormalForeground =  44;
   COLOR_clNormalButton =  COLOR_clNormalForeground+1;
   COLOR_clNormalLight =  COLOR_clNormalForeground+2;
   COLOR_clNormalMidlight =  COLOR_clNormalForeground+3;
@@ -1423,7 +1426,7 @@ const
   COLOR_clNormalHighlightedText =  COLOR_clNormalForeground+13;
 
   // CLX disabled, mapped, pseudo, rgb values
-  COLOR_clDisabledForeground =  56;
+  COLOR_clDisabledForeground =  58;
   COLOR_clDisabledButton =  COLOR_clDisabledForeground+1;
   COLOR_clDisabledLight =  COLOR_clDisabledForeground+2;
   COLOR_clDisabledMidlight =  COLOR_clDisabledForeground+3;
@@ -1439,7 +1442,7 @@ const
   COLOR_clDisabledHighlightedText =  COLOR_clDisabledForeground+13;
 
   // CLX active, mapped, pseudo, rgb values
-  COLOR_clActiveForeground =  70;
+  COLOR_clActiveForeground =  72;
   COLOR_clActiveButton =  COLOR_clActiveForeground+1;
   COLOR_clActiveLight =  COLOR_clActiveForeground+2;
   COLOR_clActiveMidlight =  COLOR_clActiveForeground+3;

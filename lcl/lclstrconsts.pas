@@ -338,6 +338,37 @@ resourceString
 
   // colorbox
   rsCustomColorCaption = 'Custom ...';
+  rsScrollBarColorCaption = 'ScrollBar';
+  rsBackgroundColorCaption = 'Desktop';
+  rsActiveCaptionColorCaption = 'Active Caption';
+  rsInactiveCaptionColorCaption = 'Inactive Caption';
+  rsMenuColorCaption = 'Menu';
+  rsWindowColorCaption = 'Window';
+  rsWindowFrameColorCaption = 'Window Frame';
+  rsMenuTextColorCaption = 'Menu Text';
+  rsWindowTextColorCaption = 'Window Text';
+  rsCaptionTextColorCaption = 'Caption Text';
+  rsActiveBorderColorCaption = 'Active Border';
+  rsInactiveBorderColorCaption = 'Inactive Border';
+  rsAppWorkspaceColorCaption = 'Application Workspace';
+  rsHighlightColorCaption = 'Highlight';
+  rsHighlightTextColorCaption = 'Highlight Text';
+  rsBtnFaceColorCaption = 'Button Face';
+  rsBtnShadowColorCaption = 'Button Shadow';
+  rsGrayTextColorCaption = 'Gray Text';
+  rsBtnTextColorCaption = 'Button Text';
+  rsInactiveCaptionText = 'Inactive Caption';
+  rsBtnHighlightColorCaption = 'Button Highlight';
+  rs3DDkShadowColorCaption = '3D Dark Shadow';
+  rs3DLightColorCaption = '3D Light';
+  rsInfoTextColorCaption = 'Info Text';
+  rsInfoBkColorCaption = 'Info Background';
+  rsHotLightColorCaption = 'Hot Light';
+  rsGradientActiveCaptionColorCaption = 'Gradient Active Caption';
+  rsGradientInactiveCaptionColorCaption = 'Gradient Inactive Caption';
+  rsMenuHighlightColorCaption = 'Menu Highlight';
+  rsMenuBarColorCaption = 'Menu Bar';
+  rsFormColorCaption = 'Form';
 
 implementation
 

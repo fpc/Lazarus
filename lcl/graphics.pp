@@ -293,6 +293,8 @@ const
   clHotLight                = TColor(SYS_COLOR_BASE or COLOR_HOTLIGHT);
   clGradientActiveCaption   = TColor(SYS_COLOR_BASE or COLOR_GRADIENTACTIVECAPTION);
   clGradientInactiveCaption = TColor(SYS_COLOR_BASE or COLOR_GRADIENTINACTIVECAPTION);
+  clMenuHighlight           = TColor(SYS_COLOR_BASE or COLOR_MENUHILIGHT);
+  clMenuBar                 = TColor(SYS_COLOR_BASE or COLOR_MENUBAR);
   clForm                    = TColor(SYS_COLOR_BASE or COLOR_FORM);
 
   clEndColors               = TColor(SYS_COLOR_BASE or COLOR_ENDCOLORS);
@@ -2098,7 +2100,7 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..110] of TIdentMapEntry = (
+  Colors: array[0..112] of TIdentMapEntry = (
     // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -2133,9 +2135,11 @@ const
     (Value: clActiveCaption; Name: 'clActiveCaption'),
     (Value: clInactiveCaption; Name: 'clInactiveCaption'),
     (Value: clMenu; Name: 'clMenu'),
+    (Value: clMenuBar; Name: 'clMenuBar'),
+    (Value: clMenuHighlight; Name: 'clMenuHighlight'),
+    (Value: clMenuText; Name: 'clMenuText'),
     (Value: clWindow; Name: 'clWindow'),
     (Value: clWindowFrame; Name: 'clWindowFrame'),
-    (Value: clMenuText; Name: 'clMenuText'),
     (Value: clWindowText; Name: 'clWindowText'),
     (Value: clCaptionText; Name: 'clCaptionText'),
     (Value: clActiveBorder; Name: 'clActiveBorder'),
