@@ -4033,7 +4033,6 @@ begin
     Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
     ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/ide/frames;'
-       +LazarusSrcDir
        +LazarusSrcDir+'/designer;'
        +LazarusSrcDir+'/designer/jitform;'
        +LazarusSrcDir+'/debugger;'
@@ -4072,9 +4071,9 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
     ExternalMacroStart+'IncPath',
-    d(LazarusSrcDir+'/include;'
-      +LazarusSrcDir+'/include/'+TargetOS+';'
-      +LazarusSrcDir+'/include/'+SrcOS),
+    d(LazarusSrcDir+'/ide/include;'
+      +LazarusSrcDir+'/ide/include/'+TargetOS+';'
+      +LazarusSrcDir+'/ide/include/'+SrcOS),
     da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
