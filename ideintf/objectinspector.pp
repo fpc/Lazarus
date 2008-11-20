@@ -3724,7 +3724,7 @@ begin
   FShowFavorites := False;
   FShowRestricted := False;
   FShowStatusBar := True;
-  FInfoBoxHeight := 40;
+  FInfoBoxHeight := 50;
   FShowInfoBox := False;
 
   Caption := oisObjectInspector;
