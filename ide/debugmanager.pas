@@ -284,6 +284,7 @@ type
     procedure RegistersChanged(Sender: TObject);
     procedure SetMaster(const AMaster: TDBGRegisters);
   protected
+    function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
@@ -521,6 +522,13 @@ begin
 
   if DoNotify
   then NotifyChange;
+end;
+
+function TManagedRegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  if Master = nil
+  then Result := inherited GetModified(AnIndex)
+  else Result := Master.Modified[AnIndex];
 end;
 
 function TManagedRegisters.GetName(const AnIndex: Integer): String;

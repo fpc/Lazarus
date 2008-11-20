@@ -1,7 +1,7 @@
 inherited RegistersDlg: TRegistersDlg
-  Left = 359
+  Left = 342
   Height = 253
-  Top = 126
+  Top = 117
   Width = 346
   ActiveControl = lvRegisters
   Caption = 'Registers'

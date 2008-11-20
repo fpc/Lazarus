@@ -12,8 +12,8 @@ LazarusResources.Add('TLocalsDlg','FORMDATA',[
 ]);
 
 LazarusResources.Add('TRegistersDlg','FORMDATA',[
-  'TPF0'#241#13'TRegistersDlg'#12'RegistersDlg'#4'Left'#3'g'#1#6'Height'#3#253#0
-  +#3'Top'#2'~'#5'Width'#3'Z'#1#13'ActiveControl'#7#11'lvRegisters'#7'Caption'#6
+  'TPF0'#241#13'TRegistersDlg'#12'RegistersDlg'#4'Left'#3'V'#1#6'Height'#3#253#0
+  +#3'Top'#2'u'#5'Width'#3'Z'#1#13'ActiveControl'#7#11'lvRegisters'#7'Caption'#6
   +#9'Registers'#12'ClientHeight'#3#253#0#11'ClientWidth'#3'Z'#1#0#242#2#0#9'TL'
   +'istView'#11'lvRegisters'#6'Height'#3#253#0#5'Width'#3'Z'#1#5'Align'#7#8'alC'
   +'lient'#7'Columns'#14#1#7'Caption'#6#4'Name'#5'Width'#3#150#0#0#1#7'Caption'
