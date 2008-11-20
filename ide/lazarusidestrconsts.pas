@@ -1040,12 +1040,13 @@ resourcestring
   dlgOIItemHeight = 'Item height';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
   dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
-  lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
-  lisAutoShowObjectInspector = 'Auto show Object Inspector';
+  lisShowHintsInObjectInspector = 'Show hints';
+  lisAutoShowObjectInspector = 'Auto show';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
   lisDrawGridLinesObjectInspector = 'Draw grid lines';
   lisShowGutterInObjectInspector = 'Show gutter';
   lisShowStatusBarInObjectInspector = 'Show status bar';
+  lisShowInfoBoxInObjectInspector = 'Show information box';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';

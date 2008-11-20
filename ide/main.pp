@@ -391,6 +391,7 @@ type
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OIOnUpdateRestricted(Sender: TObject);
+    procedure OIOnSelectionChange(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
@@ -1386,6 +1387,26 @@ begin
   end;
 end;
 
+procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
+var
+  OI: TObjectInspectorDlg absolute Sender;
+  Row: TOIPropertyGridRow;
+begin
+  if (Sender is TObjectInspectorDlg) then
+  begin
+    if OI.ShowInfoBox then
+    begin
+      // Just a test for now. Later we will show property description here
+      // TODO: use similar way as CodeHelpBoss.GetHTMLHint use
+      Row := OI.GetActivePropertyRow;
+      if Row <> nil then
+        OI.InfoPanel.Caption := 'TODO: show property description for [' + Row.Name + ']'
+      else
+        OI.InfoPanel.Caption := '';
+    end;
+  end;
+end;
+
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
   PropOwner: TObject): String;
 var
@@ -1646,6 +1667,7 @@ begin
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
+  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';

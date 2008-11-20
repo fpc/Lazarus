@@ -59,7 +59,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <ResourceFilename Value="frames\options_oi.lrs"/>
-        <UnitName Value="Options_OI"/>
+        <UnitName Value="options_OI"/>
       </Unit2>
       <Unit3>
         <Filename Value="frames\options_files.pas"/>

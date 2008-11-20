@@ -4,8 +4,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
   ClientHeight = 484
   ClientWidth = 634
   Visible = False
-  DesignLeft = 505
-  DesignTop = 157
+  DesignLeft = 466
+  DesignTop = 124
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -141,7 +141,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 205
+    Height = 230
     Top = 235
     Width = 634
     HelpContext = 0
@@ -161,7 +161,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 187
+    ClientHeight = 212
     ClientWidth = 630
     Ctl3D = False
     DockSite = False
@@ -183,7 +183,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 14
-      Top = 161
+      Top = 186
       Width = 126
       HelpContext = 0
       Align = alNone
@@ -248,11 +248,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
     object OIDefaultItemHeightSpinEdit: TSpinEdit
       AnchorSideLeft.Control = OIDefaultItemHeightLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = OIShowStatusBarCheckBox
+      AnchorSideTop.Control = OIShowInfoBoxCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 138
       Height = 25
-      Top = 156
+      Top = 181
       Width = 53
       HelpContext = 0
       Align = alNone
@@ -448,6 +448,41 @@ inherited OIOptionsFrame: TOIOptionsFrame
       ParentBidiMode = True
       State = cbUnchecked
       TabOrder = 6
+      TabStop = True
+      UseOnChange = False
+      Visible = True
+    end
+    object OIShowInfoBoxCheckBox: TCheckBox
+      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideTop.Control = OIShowStatusBarCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 156
+      Width = 149
+      HelpContext = 0
+      Align = alNone
+      AllowGrayed = False
+      AutoSize = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'OIShowInfoBoxCheckBox'
+      Checked = False
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
+      ParentColor = True
+      ParentFont = True
+      ParentShowHint = True
+      ParentBidiMode = True
+      State = cbUnchecked
+      TabOrder = 7
       TabStop = True
       UseOnChange = False
       Visible = True

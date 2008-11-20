@@ -173,6 +173,7 @@ type
     FSaveBounds: boolean;
     FLeft: integer;
     FShowGutter: boolean;
+    FShowInfoBox: boolean;
     FShowStatusBar: boolean;
     FTop: integer;
     FWidth: integer;
@@ -236,6 +237,7 @@ type
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
     property ShowGutter: boolean read FShowGutter write FShowGutter;
     property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
+    property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
   end;
 
   TOICustomPropertyGrid = class;
@@ -330,6 +332,7 @@ type
     FHighlightColor: TColor;
     FLayout: TOILayout;
     FOnOIKeyDown: TKeyEvent;
+    FOnSelectionChange: TNotifyEvent;
     FReferencesColor: TColor;
     FRowSpacing: integer;
     FShowGutter: Boolean;
@@ -467,6 +470,7 @@ type
     procedure EraseBackground(DC: HDC); override;
 
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure DoSelectionChange;
   public
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
@@ -532,6 +536,7 @@ type
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property PrefferedSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
@@ -578,6 +583,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnSelectionChange;
     property PopupMenu;
     property PrefferedSplitterX;
     property SplitterX;
@@ -627,6 +633,7 @@ type
     ViewRestrictedPropertiesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
     ComponentTree: TComponentTreeView;
+    InfoPanel: TPanel;
     CopyPopupmenuItem: TMenuItem;
     CutPopupmenuItem: TMenuItem;
     DeletePopupmenuItem: TMenuItem;
@@ -651,6 +658,7 @@ type
     ShowHintsPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
     Splitter1: TSplitter;
+    Splitter2: TSplitter;
     StatusBar: TStatusBar;
     UndoPropertyPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
@@ -681,6 +689,8 @@ type
   private
     FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
+    FInfoBoxHeight: integer;
+    FOnSelectionChange: TNotifyEvent;
     FRestricted: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
@@ -701,6 +711,7 @@ type
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
     FShowFavorites: Boolean;
+    FShowInfoBox: Boolean;
     FShowRestricted: Boolean;
     FShowStatusBar: Boolean;
     FUpdateLock: integer;
@@ -709,12 +720,14 @@ type
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
+    procedure SetInfoBoxHeight(const AValue: integer);
     procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
+    procedure SetShowInfoBox(const AValue: Boolean);
     procedure SetShowRestricted(const AValue: Boolean);
     procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
@@ -723,10 +736,11 @@ type
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
+    procedure OnGridSelectionChange(Sender: TObject);
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure CreateSplitter;
+    procedure CreateSplitter(TopSplitter: Boolean);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -757,6 +771,7 @@ type
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property OnShowOptions: TNotifyEvent read FOnShowOptions
                                          write SetOnShowOptions;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
@@ -771,7 +786,9 @@ type
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
+    property InfoBoxHeight: integer read FInfoBoxHeight write SetInfoBoxHeight;
     property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
+    property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
@@ -1500,31 +1517,34 @@ var
   NewValue: string;
   EditorAttributes: TPropertyAttributes;
 begin
-  if GridIsUpdating or (FItemIndex=NewIndex) then
+  if GridIsUpdating or (FItemIndex = NewIndex) then
     exit;
 
   // save old edit value
   SetRowValue;
 
-  Include(FStates,pgsChangingItemIndex);
-  if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
+  Include(FStates, pgsChangingItemIndex);
+  if (FItemIndex >= 0) and (FItemIndex < FRows.Count) then
     Rows[FItemIndex].Editor.Deactivate;
   if CanFocus then
     SetCaptureControl(nil);
 
-  FItemIndex:=NewIndex;
-  if FCurrentEdit<>nil then begin
+  FItemIndex := NewIndex;
+  if FCurrentEdit <> nil then
+  begin
     FCurrentEdit.Visible:=false;
     FCurrentEdit.Enabled:=false;
     FCurrentEdit:=nil;
   end;
-  if FCurrentButton<>nil then begin
+  if FCurrentButton<>nil then
+  begin
     FCurrentButton.Visible:=false;
     FCurrentButton.Enabled:=false;
     FCurrentButton:=nil;
   end;
   FCurrentEditorLookupRoot:=nil;
-  if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
+  if (NewIndex>=0) and (NewIndex<FRows.Count) then
+  begin
     NewRow:=Rows[NewIndex];
 
     ScrollToItem(NewIndex);
@@ -1591,7 +1611,8 @@ begin
     if FCurrentButton<>nil then
       FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
-  Exclude(FStates,pgsChangingItemIndex);
+  Exclude(FStates, pgsChangingItemIndex);
+  DoSelectionChange;
   Invalidate;
 end;
 
@@ -1609,7 +1630,8 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: boolean);
-var a: integer;
+var
+  a: integer;
   CurRow: TOIPropertyGridRow;
   OldSelectedRowPath: string;
 begin
@@ -2186,6 +2208,12 @@ procedure TOICustomPropertyGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: intege
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   UpdateScrollBar;
+end;
+
+procedure TOICustomPropertyGrid.DoSelectionChange;
+begin
+  if Assigned(FOnSelectionChange) then
+    OnSelectionChange(Self);
 end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
@@ -3399,6 +3427,7 @@ begin
   FDrawGridLines := True;
   FShowGutter := True;
   FShowStatusBar := True;
+  FShowInfoBox := False;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3476,6 +3505,8 @@ begin
          Path+'ShowGutter',true);
     FShowStatusBar := ConfigStore.GetValue(
          Path+'ShowStatusBar',true);
+    FShowInfoBox := ConfigStore.GetValue(
+         Path+'ShowInfoBox',false);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3539,13 +3570,13 @@ begin
     ConfigStore.SetDeleteValue(Path+'Color/GutterEdge',
                               FGutterEdgeColor,DefGutterEdgeColor);
 
-    ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
-                             true);
+    ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints, True);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
     ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
+    ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, False);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3587,6 +3618,7 @@ begin
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
   FShowStatusBar := AnObjInspector.ShowStatusBar;
+  FShowInfoBox := AnObjInspector.ShowInfoBox;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3626,6 +3658,7 @@ begin
   end;
   AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
   AnObjInspector.ShowComponentTree := FShowComponentTree;
+  AnObjInspector.ShowInfoBox := FShowInfoBox;
   AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
   AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.ShowStatusBar := ShowStatusBar;
@@ -3691,6 +3724,8 @@ begin
   FShowFavorites := False;
   FShowRestricted := False;
   FShowStatusBar := True;
+  FInfoBoxHeight := 40;
+  FShowInfoBox := False;
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText := oisAll;
@@ -3754,19 +3789,36 @@ begin
   end;
 
   // Component Tree at top (filled with available components)
-  ComponentTree:=TComponentTreeView.Create(Self);
-  with ComponentTree do begin
+  ComponentTree := TComponentTreeView.Create(Self);
+  with ComponentTree do
+  begin
     Name:='ComponentTree';
     Constraints.MinHeight:=16;
     Height:=ComponentTreeHeight;
     Parent:=Self;
     Align:=alTop;
-    OnSelectionChanged:=@ComponentTreeSelectionChanged;
-    Visible:=FShowComponentTree;
+    OnSelectionChanged := @ComponentTreeSelectionChanged;
+    Visible := FShowComponentTree;
     Scrollbars := ssAutoBoth;
   end;
+
+  InfoPanel := TPanel.Create(Self);
+  with InfoPanel do
+  begin
+    Name := 'InfoPanel';
+    Caption := '';
+    Height := InfoBoxHeight;
+    Parent := Self;
+    BevelOuter := bvLowered;
+    Align := alBottom;
+    Visible := FShowInfoBox;
+  end;
+
   if ShowComponentTree then
-    CreateSplitter;
+    CreateSplitter(True);
+
+  if ShowInfoBox then
+    CreateSplitter(False);
 
   CreateNoteBook;
 end;
@@ -3840,6 +3892,12 @@ begin
     if GridControl[Page]<>nil then
       GridControl[Page].DefaultItemHeight:=FDefaultItemHeight;
   RebuildPropertyLists;
+end;
+
+procedure TObjectInspectorDlg.SetInfoBoxHeight(const AValue: integer);
+begin
+  if FInfoBoxHeight=AValue then exit;
+  FInfoBoxHeight:=AValue;
 end;
 
 procedure TObjectInspectorDlg.SetRestricted(const AValue: TOIRestrictedProperties);
@@ -4258,6 +4316,11 @@ begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
+procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
+begin
+  if Assigned(FOnSelectionChange) then OnSelectionChange(Self);
+end;
+
 procedure TObjectInspectorDlg.SetAvailComboBoxText;
 begin
   case FSelection.Count of
@@ -4305,7 +4368,7 @@ begin
     ComponentTree.Parent:=Self;
     ComponentTree.Align:=alTop;
     if FShowComponentTree then
-      CreateSplitter
+      CreateSplitter(True)
     else begin
       ComponentTree.Height:=ComponentTreeHeight;
       FreeAndNil(Splitter1);
@@ -4323,6 +4386,19 @@ begin
   if FShowFavorites = AValue then exit;
   FShowFavorites := AValue;
   NoteBook.Page[2].TabVisible := AValue;
+end;
+
+procedure TObjectInspectorDlg.SetShowInfoBox(const AValue: Boolean);
+begin
+  if FShowInfoBox = AValue then exit;
+  FShowInfoBox := AValue;
+
+  InfoPanel.Visible := AValue;
+
+  if AValue then
+    CreateSplitter(False)
+  else
+    FreeAndNil(Splitter2);
 end;
 
 procedure TObjectInspectorDlg.SetShowRestricted(const AValue: Boolean);
@@ -4461,16 +4537,32 @@ begin
   ComponentRestrictedBox.Canvas.Brush.Style := OldStyle;
 end;
 
-procedure TObjectInspectorDlg.CreateSplitter;
+procedure TObjectInspectorDlg.CreateSplitter(TopSplitter: Boolean);
 begin
   // vertical splitter between component tree and notebook
-  Splitter1:=TSplitter.Create(Self);
-  with Splitter1 do begin
-    Name:='Splitter1';
-    Parent:=Self;
-    Align:=alTop;
-    Top:=ComponentTreeHeight;
-    Height:=5;
+  if TopSplitter then
+  begin
+    Splitter1 := TSplitter.Create(Self);
+    with Splitter1 do
+    begin
+      Name := 'Splitter1';
+      Parent := Self;
+      Align := alTop;
+      Top := ComponentTreeHeight;
+      Height := 5;
+    end;
+  end
+  else
+  begin
+    Splitter2 := TSplitter.Create(Self);
+    with Splitter2 do
+    begin
+      Name := 'Splitter2';
+      Parent := Self;
+      Align := alBottom;
+      Top := InfoPanel.Top - 1;
+      Height := 5;
+    end;
   end;
 end;
 
@@ -4518,7 +4610,7 @@ begin
   end;
 
   // property grid
-  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self, PropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -4530,6 +4622,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4546,6 +4639,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4566,6 +4660,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4586,6 +4681,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;

@@ -54,7 +54,8 @@ type
     ooBoldNonDefault,
     ooDrawGridLines,
     ooShowGutter,
-    ooShowStatusBar
+    ooShowStatusBar,
+    ooShowInfoBox
   );
 
   TSpeedOISettings = record
@@ -81,6 +82,7 @@ type
     OIMiscGroupBox: TGroupBox;
     OIShowStatusBarCheckBox: TCheckBox;
     OIShowHintCheckBox: TCheckBox;
+    OIShowInfoBoxCheckBox: TCheckBox;
     procedure BtnUseDefaultDelphiSettingsClick(Sender: TObject);
     procedure BtnUseDefaultLazarusSettingsClick(Sender: TObject);
     procedure ColorBoxChange(Sender: TObject);
@@ -122,7 +124,8 @@ const
       { ooBoldNonDefault } True,
       { ooDrawGridLines  } True,
       { ooShowGutter     } True,
-      { ooShowStatusBar  } True
+      { ooShowStatusBar  } True,
+      { ooShowInfoBox    } True
     );
   );
 
@@ -146,7 +149,8 @@ const
       { ooBoldNonDefault } True,
       { ooDrawGridLines  } False,
       { ooShowGutter     } True,
-      { ooShowStatusBar  } True
+      { ooShowStatusBar  } True,
+      { ooShowInfoBox    } False
     );
   );
 
@@ -164,6 +168,7 @@ begin
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
   OIShowGutterCheckBox.Caption := lisShowGutterInObjectInspector;
   OIShowStatusBarCheckBox.Caption := lisShowStatusBarInObjectInspector;
+  OIShowInfoBoxCheckBox.Caption := lisShowInfoBoxInObjectInspector;
 
   BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
   BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
@@ -213,6 +218,7 @@ begin
   OIDrawGridLinesCheckBox.Checked := ASettings.Options[ooDrawGridLines];
   OIShowGutterCheckBox.Checked := ASettings.Options[ooShowGutter];
   OIShowStatusBarCheckBox.Checked := ASettings.Options[ooShowStatusBar];
+  OIShowInfoBoxCheckBox.Checked := ASettings.Options[ooShowInfoBox];
 end;
 
 procedure TOIOptionsFrame.ColorBoxChange(Sender: TObject);
@@ -269,6 +275,7 @@ begin
     ASettings.Options[ooDrawGridLines] := ObjectInspectorOptions.DrawGridLines;
     ASettings.Options[ooShowGutter] := ObjectInspectorOptions.ShowGutter;
     ASettings.Options[ooShowStatusBar] := ObjectInspectorOptions.ShowStatusBar;
+    ASettings.Options[ooShowInfoBox] := ObjectInspectorOptions.ShowInfoBox;
     ApplyOISettings(ASettings);
     OIDefaultItemHeightSpinEdit.Value := ObjectInspectorOptions.DefaultItemHeight;
   end;
@@ -296,7 +303,8 @@ begin
     ObjectInspectorOptions.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
     ObjectInspectorOptions.ShowGutter := OIShowGutterCheckBox.Checked;
     ObjectInspectorOptions.ShowStatusBar := OIShowStatusBarCheckBox.Checked;
-    ObjectInspectorOptions.DefaultItemHeight:= RoundToInt(OIDefaultItemHeightSpinEdit.Value);
+    ObjectInspectorOptions.ShowInfoBox := OIShowInfoBoxCheckBox.Checked;
+    ObjectInspectorOptions.DefaultItemHeight := RoundToInt(OIDefaultItemHeightSpinEdit.Value);
   end;
 end;
 
