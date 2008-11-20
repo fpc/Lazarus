@@ -1036,6 +1036,7 @@ var
   Node: TTreeNode;
   ChildNode: TTreeNode;
 begin
+  if MatchPos=nil then exit;
   Node := Items.FindNodeWithText(MatchPos.FileName);
 
   //enter a new file entry
@@ -1091,6 +1092,7 @@ begin
   inc(fUpdateCount);
   if (fUpdateCount = 1) then
   begin
+    // save old treeview content
     if Assigned(Items) then
     begin
       s := ItemsAsStrings;
@@ -1116,6 +1118,7 @@ begin
     FreeObjectsTN(Items);
 
     Items.BeginUpdate;
+    Items.Clear;
 
     for i := 0 to fUpdateStrings.Count - 1 do
       AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
@@ -1133,6 +1136,7 @@ var
   SrcList: TStrings;
   SharedLen: Integer;
   ShownText: String;
+  FreeSrcList: Boolean;
 begin
   if fUpdateCount>0 then begin
     fShortenPathNeeded:=true;
@@ -1140,46 +1144,53 @@ begin
   end;
   fShortenPathNeeded:=false;
   
-  if fUpdating then
-    SrcList:=fUpdateStrings
-  else
+  if fUpdating then begin
+    SrcList:=fUpdateStrings;
+    FreeSrcList:=false;
+  end else begin
     SrcList:=ItemsAsStrings;
-  
-  // find shared path (the path of all filenames, that is the same)
-  SharedPath:='';
-  for i:=0 to SrcList.Count-1 do begin
-    AnObject:=SrcList.Objects[i];
-    if AnObject is TLazSearchMatchPos then begin
-      MatchPos:=TLazSearchMatchPos(AnObject);
-      if i=0 then
-        SharedPath:=ExtractFilePath(MatchPos.Filename)
-      else if (SharedPath<>'') then begin
-        SharedLen:=0;
-        while (SharedLen<length(MatchPos.Filename))
-        and (SharedLen<length(SharedPath))
-        and (MatchPos.Filename[SharedLen+1]=SharedPath[SharedLen+1])
-        do
-          inc(SharedLen);
-        while (SharedLen>0) and (SharedPath[SharedLen]<>PathDelim) do
-          dec(SharedLen);
-        if SharedLen<>length(SharedPath) then
-          SharedPath:=copy(SharedPath,1,SharedLen);
+    FreeSrcList:=true;
+  end;
+  try
+
+    // find shared path (the path of all filenames, that is the same)
+    SharedPath:='';
+    for i:=0 to SrcList.Count-1 do begin
+      AnObject:=SrcList.Objects[i];
+      if AnObject is TLazSearchMatchPos then begin
+        MatchPos:=TLazSearchMatchPos(AnObject);
+        if i=0 then
+          SharedPath:=ExtractFilePath(MatchPos.Filename)
+        else if (SharedPath<>'') then begin
+          SharedLen:=0;
+          while (SharedLen<length(MatchPos.Filename))
+          and (SharedLen<length(SharedPath))
+          and (MatchPos.Filename[SharedLen+1]=SharedPath[SharedLen+1])
+          do
+            inc(SharedLen);
+          while (SharedLen>0) and (SharedPath[SharedLen]<>PathDelim) do
+            dec(SharedLen);
+          if SharedLen<>length(SharedPath) then
+            SharedPath:=copy(SharedPath,1,SharedLen);
+        end;
       end;
     end;
-  end;
-  
-  // shorten shown paths
-  SharedLen:=length(SharedPath);
-  for i:=0 to SrcList.Count-1 do begin
-    AnObject:=SrcList.Objects[i];
-    if AnObject is TLazSearchMatchPos then begin
-      MatchPos:=TLazSearchMatchPos(AnObject);
-      MatchPos.ShownFilename:=copy(MatchPos.Filename,SharedLen+1,
-                                   length(MatchPos.Filename));
-      ShownText:=BeautifyLine(MatchPos);
-      SrcList[i]:=ShownText;
-      SrcList.Objects[i]:=MatchPos;
+
+    // shorten shown paths
+    SharedLen:=length(SharedPath);
+    for i:=0 to SrcList.Count-1 do begin
+      AnObject:=SrcList.Objects[i];
+      if AnObject is TLazSearchMatchPos then begin
+        MatchPos:=TLazSearchMatchPos(AnObject);
+        MatchPos.ShownFilename:=copy(MatchPos.Filename,SharedLen+1,
+                                     length(MatchPos.Filename));
+        ShownText:=BeautifyLine(MatchPos);
+        SrcList[i]:=ShownText;
+        SrcList.Objects[i]:=MatchPos;
+      end;
     end;
+  finally
+    if FreeSrcList then SrcList.Free;
   end;
 end;
 
@@ -1188,7 +1199,7 @@ var i: Integer;
 begin
  for i:=0 to tnItems.Count-1 do
    if Assigned(tnItems[i].Data) then
-    TLazSearchMatchPos(tnItems[i].Data).Free;
+     TLazSearchMatchPos(tnItems[i].Data).Free;
 end;
 
 procedure TLazSearchResultTV.FreeObjects(slItems: TStrings);
@@ -1228,7 +1239,7 @@ begin
   Result := TStringList.Create;
 
   for i := 0 to Items.Count - 1 do
-    Result.Add(Items[i].Text);
+    Result.AddObject(Items[i].Text,TObject(Items[i].Data));
 end;
 
 { TLazSearchMatchPos }
