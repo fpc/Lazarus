@@ -61,7 +61,7 @@ const
   GM_SETMASK    = LM_INTERFACELAST + 105;
   GM_SETPOS     = LM_INTERFACELAST + 106;
   GM_READY      = LM_INTERFACELAST + 107;
-  
+
 
 const
   EO_AUTOSIZE     =   $1;
@@ -118,7 +118,7 @@ type
   TGridDrawState = set of (gdSelected, gdFocused, gdFixed, gdHot, gdPushed);
   TGridState =(gsNormal, gsSelecting, gsRowSizing, gsColSizing, gsRowMoving,
     gsColMoving, gsHeaderClicking);
-  
+
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells, gzInvalid);
   TGridZoneSet = set of TGridZone;
 
@@ -138,11 +138,11 @@ type
 
 
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
-  
+
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged);
   TGridFlags = set of TGridFlagsOption;
-  
+
   TSortOrder = (soAscending, soDescending);
 
 const
@@ -239,7 +239,7 @@ type
     procedure EditingDone; override;
     property BorderStyle;
   end;
-  
+
   { TCompositeCellEditor }
 
   TEditorItem = record
@@ -247,7 +247,7 @@ type
     Align: TAlign;
     ActiveControl: boolean;
   end;
-  
+
   TCompositeCellEditor = class(TWinControl)
   private
     FGrid: TCustomGrid;
@@ -816,6 +816,7 @@ type
     function  EditorIsReadOnly: boolean; virtual;
     procedure EditorHide; virtual;
     function  EditorLocked: boolean;
+    Function  EditingAllowed(ACol : Integer = -1) : Boolean; virtual; // Returns true if grid and current column allow editing
     procedure EditorSelectAll;
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorShowInCell(const aCol,aRow:Integer); virtual;
@@ -1020,7 +1021,7 @@ type
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     procedure SaveToFile(FileName: string);
     procedure SetFocus; override;
-    
+
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
     property TabStop default true;
   end;
@@ -1061,7 +1062,7 @@ type
     procedure SetColor(Value: TColor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
-    
+
   public
 
     // to easy user call
@@ -1290,7 +1291,7 @@ type
   end;
 
   TCustomStringGrid = class;
-  
+
   { TStringGridStrings }
 
   TStringGridStrings = class(TStrings)
@@ -1356,7 +1357,7 @@ type
       //procedure SelectEditor; override;
       procedure SelectionSetText(TheText: String);
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
-      
+
       property Modified: boolean read FModified write FModified;
 
     public
@@ -1846,7 +1847,7 @@ var
 begin
   if AValue<0 then
     Avalue:=-1;
-    
+
   if Avalue<>integer(PtrUInt(FCols[ACol])) then begin
     Bigger := AValue>integer(PtrUInt(FCols[ACol]));
     SetRawColWidths(ACol, Avalue);
@@ -1872,7 +1873,7 @@ begin
         EditorWidthChanged(aCol, aValue);
       ColWidthsChanged;
     end;
-    
+
   end;
 end;
 
@@ -1894,36 +1895,36 @@ procedure TCustomGrid.InvalidateMovement(DCol, DRow: Integer; OldRange: TRect);
   begin
     InvalidateRange(Rect(Col1,Row1,Col2,Row2));
   end;
-  
+
 begin
   if SelectActive then begin
-  
+
     if DCol>FCol then begin
       // expanded cols
       if not (goRowSelect in Options) then
         doInvalidateRange(FCol, OldRange.Top, DCol, Oldrange.Bottom)
-        
+
       else if (goRelaxedRowSelect in Options) and (DRow=FRow) then
         InvalidateRow(DRow)
-        
+
     end else if DCol<FCol then begin
       // shrunk cols
       if not (goRowSelect in Options) then
         doInvalidateRange(DCol,OldRange.Top,FCol,OldRange.Bottom)
-        
+
       else if (goRelaxedRowSelect in Options) and (DRow=FRow) then
         InvalidateRow(DRow)
-        
+
     end;
 
     if DRow>FRow then
       // expanded rows
       doInvalidateRange(OldRange.Left, FRow, OldRange.Right, DRow)
-      
+
     else if DRow<FRow then
       // shrunk rows
       doInvalidateRange(OldRange.Left, DRow, OldRange.Right, FRow);
-    
+
     if not (goRowSelect in Options) then begin
 
       // Above rules do work only if either rows or cols remain
@@ -1931,7 +1932,7 @@ begin
       //
       // four cases are left.
       //
-      
+
       if (DCol>FCol)and(DRow<FRow) then // (1: I   Cuadrant)
         // Rect(FCol+1,FRow-1,DCol,DRow) normalized -v
         doInvalidateRange(FCol+1, DRow, DCol, FRow-1)
@@ -1947,11 +1948,11 @@ begin
       if (DCol>FCol)and(DRow>FRow) then // (4: IV  Cuadrant)
         // normalization not needed
         doInvalidateRange(FCol+1,FRow+1,DCol,DRow);
-        
+
     end;
 
   end else begin
-  
+
     if (OldRange.Right-OldRange.Left>0) or
       (OldRange.Bottom-OldRange.Top>0) then
       // old selected range gone, invalidate old area
@@ -1959,15 +1960,15 @@ begin
     else
       // Single cell
       InvalidateCell(FCol, FRow);
-    
+
     // and invalidate current selecion, cell or full row
     if goRowSelect in Options then
       InvalidateRow(Drow)
     else
       InvalidateCell(DCol, DRow);
-      
+
   end;
-  
+
 end;
 
 function TCustomGrid.IsColumnsStored: boolean;
@@ -2065,14 +2066,14 @@ begin
   FTopLeft.x:=AValue;
 
   if Columns.Enabled then begin
-  
+
     FCol:=AValue;
     UpdateSelectionRange;
     if not (csLoading in componentState) then
       doTopleftChange(true);
 
     ColumnsChanged(nil)
-    
+
   end else begin
 
     if not (csLoading in componentState) then
@@ -2098,7 +2099,7 @@ begin
 
   FFixedRows:=AValue;
   FTopLeft.y:=AValue;
-  
+
   if not (csLoading in ComponentState) then
     doTopleftChange(true);
 
@@ -2152,13 +2153,13 @@ var
 begin
   if AValue<0 then
     AValue:=-1;
-    
+
   if AValue<>integer(PtrUInt(FRows[ARow])) then begin
-  
+
     bigger := aValue > RowHeights[aRow];
 
     FRows[ARow]:=Pointer(PtrInt(AValue));
-    
+
     if not (csLoading in ComponentState) and HandleAllocated then begin
       if FUpdateCount=0 then begin
         UpdateSizes;
@@ -2178,7 +2179,7 @@ begin
       if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
       RowHeightsChanged;
     end;
-    
+
   end;
 end;
 
@@ -2381,7 +2382,7 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
               (not ColSorting and (DoCompareCells(I, index, J, index)<>0))
             then
               DoOPExchangeColRow(not ColSorting, I,J);
-          
+
           if P=I then
             P:=J
           else if P=J then
@@ -2391,7 +2392,7 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
           J:=J-1;
         end;
       until I>J;
-      
+
       if L<J then
         QuickSort(L,J);
 
@@ -2455,7 +2456,7 @@ procedure TCustomGrid.VisualChange;
 begin
   if FUpdateCount<>0 then
     exit;
-    
+
   {$ifdef DbgVisualChange}
   DebugLn('TCustomGrid.VisualChange INIT ',DbgSName(Self));
   {$endif}
@@ -2757,7 +2758,7 @@ begin
       FGCache.TLColOff:=0;
     if OldTopLeft.y<>FTopLeft.y then
       FGCache.TLRowOff:=0;
-      
+
     doTopleftChange(False)
   end else
     ResetOffset(True, True);
@@ -2821,7 +2822,7 @@ end;
 
 function TCustomGrid.CanEditShow: Boolean;
 begin
-  Result := (goEditing in Options) and not (csDesigning in ComponentState)
+  Result := EditingAllowed(FCol) and not (csDesigning in ComponentState)
             and CanFocus;
 end;
 
@@ -2898,7 +2899,7 @@ begin
     Canvas.Brush.Color := clWindow;
     Canvas.Font.Color := clWindowText;
   end;
-  
+
   DoPrepareCanvas(aCol, aRow, aState);
 end;
 
@@ -2971,7 +2972,7 @@ end;
 procedure TCustomGrid.SetCanvasFont(aFont: TFont);
 begin
   if (aFont<>FLastFont) or
-    not Canvas.Font.IsEqual(aFont) then 
+    not Canvas.Font.IsEqual(aFont) then
   begin
     Canvas.Font := aFont;
     FLastFont := AFont;
@@ -3170,7 +3171,7 @@ var
   Rs: Boolean;
   R: TRect;
   ClipArea: Trect;
-  
+
   procedure DoDrawCell;
   begin
     with FGCache do begin
@@ -3184,7 +3185,7 @@ var
     end;
     DrawCell(aCol, aRow, R, gds);
   end;
-  
+
 begin
 
   // Upper and Lower bounds for this row
@@ -3216,7 +3217,7 @@ begin
         if IsCellSelected[aCol, aRow] then
           include(gds, gdSelected);
       end;
-      
+
       DoDrawCell;
     end;
 
@@ -3359,7 +3360,7 @@ begin
       Pen.Color := fGridLineColor;
       Pen.Width := fGridLineWidth;
     end;
-    
+
     if fGridLineWidth > 0 then
     begin
       if Dh then begin
@@ -3379,7 +3380,7 @@ procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
 begin
 
   with ARect do begin
-  
+
     dec(Right, 3);
     case Canvas.TextStyle.Alignment of
       Classes.taLeftJustify: Inc(Left, 3);
@@ -3389,7 +3390,7 @@ begin
       tlTop: Inc(Top, 3);
       tlBottom: Dec(Bottom, 3);
     end;
-  
+
     if Right<Left then
       Right:=Left;
     if Left>Right then
@@ -3398,10 +3399,10 @@ begin
       Bottom:=Top;
     if Top>Bottom then
       Top:=Bottom;
-    
+
     if (Left<>Right) and (Top<>Bottom) then
       Canvas.TextRect(aRect,Left,Top, aText);
-      
+
   end;
 end;
 
@@ -3529,7 +3530,7 @@ begin
   {$Ifdef dbgScroll}
   DebugLn('HSCROLL: Offset=%d TL=%d TLColOff=%d',[C,TL,FGCache.TLColOff]);
   {$Endif}
-  
+
   if not (goSmoothScroll in Options) then
     FGCache.TLColOff:=0;
 
@@ -3621,7 +3622,7 @@ begin
   {$Ifdef dbgScroll}
   DebugLn('VSCROLL: Offset=%d TL=%d TLRowOff=%d',[C,TL,FGCache.TLRowOff]);
   {$Endif}
-  
+
   if not (goSmoothScroll in Options) then
     FGCache.TLRowOff:=0;
 
@@ -3648,7 +3649,7 @@ procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
 begin
   {$ifdef dbgGrid}
   if csDestroying in ComponentState then exit;
-  
+
   DbgOut('*** grid.WMKillFocus, FocusedWnd=%x WillFocus=',[Message.FocusedWnd]);
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
     DebugLn('Editor')
@@ -3690,7 +3691,7 @@ begin
   {$Ifdef GridTraceMsg}
   DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
   {$Endif}
-  if (goEditing in Options) and (Ch in [^H, #32..#255]) then begin
+  if EditingAllowed(FCol) and (Ch in [^H, #32..#255]) then begin
     EditorShowChar(Ch);
     message.CharCode := 0;
     message.Result := 1;
@@ -3922,11 +3923,11 @@ begin
 
   if csLoading in ComponentState then
     exit;
-    
+
   if (aCol=0)and(aFCol=0) then // fixed grid
   else if (aFCol>ACol) then
     raise EGridException.Create(rsFixedColsTooBig);
-    
+
   if (aRow=0)and(aFRow=0) then // fixed grid
   else if (aFRow>ARow) then
     raise EGridException.Create(rsFixedRowsTooBig);
@@ -4249,7 +4250,7 @@ procedure TCustomGrid.SetSelectActive(const AValue: Boolean);
 begin
   if FSelectActive=AValue then exit;
   FSelectActive:=AValue and
-    (not(goEditing in Options) or (ExtendedSelect and not EditorAlwaysShown));
+    (not EditingAllowed(FCol) or (ExtendedSelect and not EditorAlwaysShown));
   if FSelectActive then FPivot:=Point(FCol,FRow);
 end;
 
@@ -4385,18 +4386,18 @@ begin
       FMoveLast:=Point(-1,-1);
       ResetOffset(True, False);
     end;
-    
+
     if (Cursor=crMultiDrag) and
        (CurCell.X>=FFixedCols) and
        ((CurCell.X<=ClickCell.X) or (CurCell.X>ClickCell.X)) and
        (CurCell.X<>FMoveLast.X) then begin
-       
+
       R := CellRect(CurCell.X, CurCell.Y);
       if CurCell.X<=ClickCell.X then
         FMoveLast.Y := R.Left
       else
         FMoveLast.Y := R.Right;
-        
+
       FMoveLast.X := CurCell.X;
       {$ifdef AlternativeMoveIndicator}
       InvalidateRow(0);
@@ -4413,20 +4414,20 @@ var
   R: TRect;
 begin
   CurCell:=MouseToCell(Point(X,Y));
-  
+
   with FGCache do begin
-  
+
     if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
       Cursor:=crMultiDrag;
       FMoveLast:=Point(-1,-1);
       ResetOffset(False, True);
     end;
-    
+
     if (Cursor=crMultiDrag)and
        (CurCell.Y>=FFixedRows) and
        ((CurCell.Y<=ClickCell.Y) or (CurCell.Y>ClickCell.Y))and
        (CurCell.Y<>FMoveLast.Y) then begin
-       
+
       R:=CellRect(CurCell.X, CurCell.Y);
       if CurCell.Y<=ClickCell.Y then
         FMoveLast.X:=R.Top
@@ -4571,7 +4572,7 @@ begin
       }
     end;
   end;
-  
+
 end;
 
 function TCustomGrid.MouseToGridZone(X, Y: Integer): TGridZone;
@@ -4652,7 +4653,7 @@ begin
     ColRow := FCol
   else
     ColRow := FRow;
-    
+
   if Between(ColRow, Index, WithIndex) then begin
     if ColRow=Index then
       ColRow:=WithIndex
@@ -4672,7 +4673,7 @@ var
 begin
   if Index<0 then
     Index:=0;
-    
+
   NewCol := Col;
   NewRow := Row;
   if IsColumn then begin
@@ -4692,7 +4693,7 @@ begin
   end;
   ColRowInserted(IsColumn, index);
   VisualChange;
-  
+
   // adjust editor bounds
   if IsColumn and (Index<=NewCol) then
     Inc(NewCol)
@@ -4816,7 +4817,7 @@ procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   R: TRect;
   WasFocused: boolean;
-  
+
   procedure DoPushCell;
   begin
     with FGCache do
@@ -4827,10 +4828,10 @@ var
       InvalidateCell(PushedCell.x, PushedCell.y);
     end;
   end;
-  
+
   function DoAutoEdit: boolean;
   begin
-    result := FAutoEdit and (goEditing in Options) and
+    result := FAutoEdit and EditingAllowed(FCol) and
       (FSplitter.X=Col) and (FSplitter.Y=Row);
     if result then begin
       SelectEditor;
@@ -4851,12 +4852,12 @@ begin
   {$IFDEF dbgGrid}
   DbgOut('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
-  
+
   FGCache.ClickMouse := Point(X,Y);
   FGCache.ClickCell  := MouseToCell(FGCache.ClickMouse);
 
   case FGCache.HotGridZone of
-  
+
     gzFixedCells:
       begin
         FGridState := gsHeaderClicking;
@@ -4876,7 +4877,7 @@ begin
           DoPushCell;
         end;
       end;
-      
+
     gzFixedRows:
       if (goRowSizing in Options)and(Cursor=crVSplit) then begin
         R:=CellRect(0{FTopLeft.X}, FSplitter.y);
@@ -4888,7 +4889,7 @@ begin
         FMoveLast:=Point(-1,-1);
         DoPushCell;
       end;
-      
+
     gzNormal:
       begin
         FIgnoreClick := False;
@@ -4909,9 +4910,9 @@ begin
           fGridState:=gsSelecting;
           FSplitter:=MouseToCell(Point(X,Y));
 
-          if not (goEditing in Options) or
+          if not EditingAllowed(FCol) or
             (ExtendedSelect and not EditorAlwaysShown) then begin
-            
+
             if ssShift in Shift then
               SelectActive:=(goRangeSelect in Options)
             else begin
@@ -4958,36 +4959,36 @@ begin
 
   if Dragging then
     exit;
-  
+
   HeadersMouseMove(X,Y);
-  
+
   case FGridState of
 
     gsHeaderClicking:
       ;
 
     gsSelecting:
-      if not FixedGrid and (not (goEditing in Options) or
+      if not FixedGrid and (not EditingAllowed(-1) or
         (ExtendedSelect and not EditorAlwaysShown)) then begin
         P:=MouseToLogcell(Point(X,Y));
         if gfNeedsSelectActive in GridFlags then
           SelectActive := (P.x<>FPivot.x)or(P.y<>FPivot.y);
         MoveExtend(False, P.x, P.y);
       end;
-      
+
     gsColMoving:
       if goColMoving in Options then
         doColMoving(X,Y);
-      
+
     gsRowMoving:
       if goRowMoving in Options then
         doRowMoving(X,Y);
-      
+
     else
       begin
         if goColSizing in Options then
           doColSizing(X,Y);
-          
+
         if goRowSizing in Options then
           doRowSizing(X,Y);
       end;
@@ -5001,11 +5002,11 @@ var
 begin
   inherited MouseUp(Button, Shift, X, Y);
   {$IfDef dbgGrid}DebugLn('MouseUP INIT');{$Endif}
-  
+
   Cur:=MouseToCell(Point(x,y));
 
   case fGridState of
-  
+
     gsHeaderClicking:
       if (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then
         HeaderClick(True, FGCache.ClickCell.X);
@@ -5021,7 +5022,7 @@ begin
         else
           CellClick(cur.x, cur.y);
       end;
-      
+
     gsColMoving:
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
@@ -5038,7 +5039,7 @@ begin
           if Cur.X=FGCache.ClickCell.X then
             HeaderClick(True, FGCache.ClickCell.X);
       end;
-      
+
     gsRowMoving:
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
@@ -5049,7 +5050,7 @@ begin
           if Cur.Y=FGCache.ClickCell.Y then
             HeaderClick(False, FGCache.ClickCell.Y);
       end;
-      
+
     gsColSizing:
       begin
         if FUseXORFeatures then begin
@@ -5061,7 +5062,7 @@ begin
         ResizeColumn(FSplitter.x, x-FSplitter.y);
         HeaderSized( True, FSplitter.X);
       end;
-      
+
     gsRowSizing:
       begin
         if FUseXORFeatures then begin
@@ -5073,11 +5074,11 @@ begin
         ResizeRow(FSplitter.y, y-FSplitter.x);
         HeaderSized( False, FSplitter.Y);
       end;
-      
+
   end;
   fGridState:=gsNormal;
   GridFlags := GridFlags - [gfNeedsSelectActive];
-  
+
   if (goHeaderPushedLook in Options) and IsPushCellActive() then
   begin
     ResetPushedCell;
@@ -5241,14 +5242,14 @@ begin
   AVailSpace.x := ClientWidth - FGCache.MaxClientXY.x;
   AVailSpace.y := ClientHeight - FGCache.MaxClientXY.y;
   NewTopLeft := FTopLeft;
-  
+
   while (AvailSpace.x>0) and (NewTopLeft.x>FixedCols) do begin
     PrevSpace := GetColWidths(NewTopLeft.x-1);
     if AvailSpace.x>(PrevSpace-FGCache.TLColOff) then
       Dec(NewTopLeft.x, 1);
     Dec(AvailSpace.x, PrevSpace);
   end;
-  
+
   while (AvailSpace.y>0) and (NewTopLeft.y>FixedRows) do begin
     PrevSpace := GetRowHeights(NewTopLeft.y-1);
     if AvailSpace.y>PrevSpace then
@@ -5288,7 +5289,7 @@ end;
 function TCustomGrid.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
 begin
   Result := inherited DoUTF8KeyPress(UTF8Key);
-  if (goEditing in Options) and (not result) and (Length(UTF8Key)>1) then begin
+  if EditingAllowed(FCol) and (not result) and (Length(UTF8Key)>1) then begin
     EditorShowChar(UTF8Key);
     UTF8Key := '';
     Result := true
@@ -5468,7 +5469,7 @@ begin
       end;
     VK_RETURN:
       begin
-        if not FEditorKey and (goEditing in FOptions) then begin
+        if not FEditorKey and EditingAllowed(FCol) then begin
           EditorShow(True);
           Key := 0;
         end;
@@ -5476,7 +5477,7 @@ begin
     VK_BACK:
       begin
         // Workaround: LM_CHAR doesnt trigger with BACKSPACE
-        if not FEditorKey and (goEditing in FOptions) then begin
+        if not FEditorKey and EditingAllowed(FCol) then begin
           EditorShowChar(^H);
           key:=0;
         end;
@@ -5618,7 +5619,7 @@ begin
 
   {$IfDef dbgGrid}DebugLn(' MoveExtend INIT FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
   BeforeMoveSelection(DCol,DRow);
-  
+
   OldRange := FRange;
 
   if goRowSelect in Options then
@@ -5635,7 +5636,7 @@ begin
 
   if not ScrollToCell(DCol, DRow) then
     InvalidateMovement(DCol, DRow, OldRange);
-    
+
   SwapInt(DCol,FCol);
   SwapInt(DRow,FRow);
 
@@ -5707,7 +5708,7 @@ begin
     SelOk:=SelectCell(NCol, NRow);
   end;
   Result:=MoveExtend(False, NCol, NRow);
-  
+
   // whether or not a movement was valid if goAlwaysShowEditor
   // is set, editor should pop up.
   if not EditorMode and EditorAlwaysShown then begin
@@ -5860,7 +5861,7 @@ begin
 
   // current position is not valid, look for another position
   OldAA := FAutoAdvance;
-  
+
   if OldAA=aaNone then
     FAutoAdvance := aaRightDown;
 
@@ -6003,6 +6004,17 @@ begin
   Result := FEditorHidingCount <> 0;
 end;
 
+function TCustomGrid.EditingAllowed(ACol: Integer = -1): Boolean;
+var
+  C: TGridColumn;
+begin
+  Result:=(goEditing in options);
+  if Result and (ACol>=0) and (ACol<FColumns.Count) then begin
+    C:=ColumnFromGridColumn(ACol);
+    Result:=not C.ReadOnly;
+  end;
+end;
+
 procedure TCustomGrid.EditorShow(const SelAll: boolean);
 begin
   if ([csLoading,csDestroying,csDesigning]*ComponentState<>[])
@@ -6010,7 +6022,7 @@ begin
   or (not HandleAllocated) then
     Exit;
 
-  if (goEditing in Options) and CanEditShow and
+  if EditingAllowed(FCol) and CanEditShow and
      (not FEditorShowing) and (Editor<>nil) and (not Editor.Visible) then
   begin
     {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
@@ -6074,7 +6086,7 @@ var
 begin
   {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
   if FEditor<>nil then begin
-  
+
     // send editor position
     Msg.LclMsg.msg:=GM_SETPOS;
     Msg.Grid:=Self;
@@ -6264,7 +6276,7 @@ var
   aEditor: TWinControl;
 begin
   aEditor := GetDefaultEditor(Col);
-  if (goEditing in Options) and Assigned(OnSelectEditor) then begin
+  if EditingAllowed(FCol) and Assigned(OnSelectEditor) then begin
     // in some situations there are only non-selectable cells
     // if goAlwaysShowEditor is on set initially editor to nil,
     // user can modify this value in OnSelectEditor if needed
@@ -6282,14 +6294,14 @@ end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;
 begin
-  Result:=(goEditing in Options)and(goAlwaysShowEditor in Options)and not FixedGrid;
+  Result:=EditingAllowed(FCol) and (goAlwaysShowEditor in Options) and not FixedGrid;
 end;
 
 //
 procedure TCustomGrid.FixPosition(IsColumn: Boolean; aIndex: Integer);
 var
   OldCol,OldRow: Integer;
-  
+
   procedure FixSelection;
   begin
     if FRow > FRows.Count - 1 then
@@ -6514,7 +6526,7 @@ function TCustomGrid.GetDeltaMoveNext(const Inverse: boolean;
 var
 
   DeltaCol,DeltaRow: Integer;
-  
+
   function CalcNextStep: boolean;
   var
     aa: TAutoAdvance;
@@ -6540,13 +6552,13 @@ var
     case aa of
       aaRight:
         DeltaCol := 1;
-        
+
       aaLeft:
         DeltaCol := -1;
-        
+
       aaDown:
         DeltaRow := 1;
-        
+
       aaRightDown:
         if ACol<ColCount-1 then
           DeltaCol := 1
@@ -6554,7 +6566,7 @@ var
           DeltaCol := FixedCols-ACol;
           DeltaRow := 1;
         end;
-        
+
       aaRightUP:
         if ACol<ColCount-1 then
           DeltaCol := 1
@@ -6562,7 +6574,7 @@ var
           DeltaCol := FixedCols-ACol;
           DeltaRow := -1;
         end;
-        
+
       aaLeftUP:
         if ACol>FixedCols then
           DeltaCol := -1
@@ -6570,7 +6582,7 @@ var
           DeltaCol := ColCount-1-ACol;
           DeltaRow := -1;
         end;
-        
+
       aaLeftDown:
         if ACol>FixedCols then
           DeltaCol := -1
@@ -6579,7 +6591,7 @@ var
           DeltaRow := 1;
         end;
     end;
-    
+
     CCol := ACol + DeltaCol;
     CRow := ARow + DeltaRow;
 
@@ -6594,10 +6606,10 @@ begin
   ARow := FRow;
 
   result := False;
-  
+
   if FAutoAdvance=aaNone then
     exit; // quick case, no auto movement allowed
-    
+
   if [goRowSelect,goRelaxedRowSelect]*Options=[goRowSelect] then begin
     if Inverse then
       ACol := FixedCols
@@ -6614,7 +6626,7 @@ begin
     if Result then
       break;
   end;
-  
+
   if result then begin
     // return relative position
     ACol := ACol - FCol;
@@ -6637,7 +6649,7 @@ var
   bs: TColumnButtonStyle;
 begin
   result := nil;
-  if (goEditing in Options) then begin
+  if EditingAllowed(Col) then begin
     C := ColumnFromGridColumn(Column);
     if C<>nil then begin
       bs := C.ButtonStyle;
@@ -7005,7 +7017,7 @@ begin
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
-  
+
   FButtonStringEditor := TCompositeCellEditor.Create(nil);
   FButtonStringEditor.Name:='ButtonTextEditor';
   FButtonStringEditor.Visible:=False;
@@ -7015,7 +7027,7 @@ begin
   FFastEditing := True;
   TabStop := True;
   FAllowOutboundEvents:=True;
-  
+
   FHeaderHotZones := [gzFixedCols];
   FHeaderPushZones := [gzFixedCols];
   ResetHotCell;
@@ -7122,7 +7134,7 @@ begin
   FGridPropBackup.ValidData := True;
   FGridPropBackup.FixedRowCount := FFixedRows;
   FGridPropBackup.FixedColCount := FFixedCols;
-  
+
   // clear structure
   OldR:=RowCount;
   OldC:=ColCount;
@@ -7620,12 +7632,12 @@ end;
 procedure TStringGridStrings.Put(Index: Integer; const S: string);
 var
   Line, Col: Integer;
-  
+
   procedure RaiseError;
   begin
     raise EGridException.Create('Can not add String');
   end;
-  
+
 begin
   if ConvertIndexLineCol(Index, Line, Col) then
     FGrid.Cells[Line, Col] := S
@@ -7641,7 +7653,7 @@ var
   begin
     raise EGridException.Create('Can not add Object');
   end;
-  
+
 begin
   if ConvertIndexLineCol(Index, Line, Col) then
     FGrid.Objects[Line, Col] := aObject
@@ -7783,7 +7795,7 @@ end;
 procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
   inherited ColRowMoved(IsColumn, FromIndex, ToIndex);
-  
+
   // now move content, if Columns.Enabled and IsColumn then
   // first row header has been already moved, what is in
   // cells[0,0]-cells[colCount-1,0] doesn't matter because
@@ -7930,7 +7942,7 @@ begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
 
   Canvas.FillRect(aRect);
-  
+
   if FTitleStyle<>tsNative then
     DrawColumnText(aCol,aRow,aRect,aState);
 
@@ -8226,7 +8238,7 @@ end;
 
 procedure TCustomStringGrid.DoCutToClipboard;
 begin
-  if goEditing in Options then begin
+  if EditingAllowed(Col) then begin
     doCopyToClipboard;
     Clean(Selection, []);
   end;
@@ -8234,7 +8246,7 @@ end;
 
 procedure TCustomStringGrid.DoPasteFromClipboard;
 begin
-  if (goEditing in Options) and Clipboard.HasFormat(CF_TEXT) then begin
+  if EditingAllowed(Col) and Clipboard.HasFormat(CF_TEXT) then begin
     SelectionSetText(Clipboard.AsText);
   end;
 end;
@@ -9525,7 +9537,7 @@ begin
 
   DefaultValue := Msg.Value;
   for i:=0 to Length(FEditors)-1 do begin
-  
+
     if FEditors[i].Editor=nil then
       continue;
 
@@ -9537,7 +9549,7 @@ begin
       Msg := LocalMsg;
       break;
     end;
-    
+
   end;
 end;
 
@@ -9554,7 +9566,7 @@ begin
 
     LocalMsg := Msg;
     Feditors[i].Editor.Dispatch(LocalMsg);
-    
+
     if LocalMsg.Options and EO_SELECTALL <> 0 then
       ResMsg.Options := ResMsg.Options or EO_SELECTALL;
     if LocalMsg.Options and EO_HOOKKEYDOWN <> 0 then
@@ -9563,7 +9575,7 @@ begin
       ResMsg.Options := ResMsg.Options or EO_HOOKKEYPRESS;
     if LocalMsg.Options and EO_HOOKKEYUP <> 0 then
       ResMsg.Options := ResMsg.Options or EO_HOOKKEYUP;
-      
+
   end;
   Msg := ResMsg;
 end;
@@ -9608,7 +9620,7 @@ var
   Msg: TGridMessage;
 begin
   inherited VisibleChanging;
-  
+
   if Visible then begin
     // hidding: hide all editors
     for i:=0 to Length(Feditors)-1 do
