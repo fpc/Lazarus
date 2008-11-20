@@ -438,7 +438,10 @@ begin
   Result := '';
   // if a dot must be showed
   if IsDot then
-    Result :=  StringOfChar(' ', fAutoSizeDigitCount-1) + '.'
+    if Line mod 5 = 0 then // every 5 lines show '-' instead of '.'
+      Result := StringOfChar(' ', fAutoSizeDigitCount-1) + '-'
+    else
+      Result := StringOfChar(' ', fAutoSizeDigitCount-1) + '.'
   // else format the line number
   else begin
     if fZeroStart then Dec(Line);
