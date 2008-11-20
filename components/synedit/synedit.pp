@@ -9025,6 +9025,7 @@ procedure TCustomSynEdit.BeginUndoBlock;
 begin
   fUndoList.BeginBlock;
   {$IFDEF SYN_LAZARUS}
+  IncPaintLock;
   fTextView.Lock;
   TSynEditStringTrimmingList(fTrimLines).Lock;
   {$ENDIF}
@@ -9044,6 +9045,9 @@ begin
   // so it will be undone first, and other UndoItems do see the expected spaces
   TSynEditStringTrimmingList(fTrimLines).UnLock;
   fTextView.UnLock;
+   // must be last => May call MoveCaretToVisibleArea, which must only happen
+   // after unfold
+  DecPaintLock;
   {$ENDIF}
   fUndoList.EndBlock;
 end;
