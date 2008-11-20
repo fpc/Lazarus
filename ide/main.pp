@@ -94,7 +94,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, HelpManager,
+  IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp,
   // designer
   JITForm, JITForms, ComponentPalette, ComponentList, ComponentReg,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
@@ -524,6 +524,8 @@ type
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
     
     FRenamingComponents: TFPList; // list of TComponents currently renaming
+    FOIHelpProvider: TAbstractIDEHTMLProvider;
+
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
@@ -1391,18 +1393,41 @@ procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
 var
   OI: TObjectInspectorDlg absolute Sender;
   Row: TOIPropertyGridRow;
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  NewTopLine: integer;
+  BaseURL, HTMLHint: String;
+  CacheWasUsed: Boolean;
+  Stream: TStringStream;
 begin
   if (Sender is TObjectInspectorDlg) then
   begin
     if OI.ShowInfoBox then
     begin
-      // Just a test for now. Later we will show property description here
-      // TODO: use similar way as CodeHelpBoss.GetHTMLHint use
       Row := OI.GetActivePropertyRow;
-      if Row <> nil then
-        OI.InfoPanel.Caption := 'TODO: show property description for [' + Row.Name + ']'
-      else
-        OI.InfoPanel.Caption := '';
+      Stream := nil;
+      if (Row <> nil) and FindDeclarationOfOIProperty(OI, Row, Code, Caret, NewTopLine) then
+      begin
+        if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, True, BaseURL, HTMLHint, CacheWasUsed) = chprSuccess then
+        begin
+          FOIHelpProvider.BaseURL := BaseURL;
+          Stream := TStringStream.Create(HTMLHint);
+          try
+            FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+          finally
+            Stream.Free;
+          end;
+        end;
+      end;
+      if Stream = nil then
+      begin
+        Stream := TStringStream.Create('');
+        try
+          FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+        finally
+          Stream.Free;
+        end;
+      end;
     end;
   end;
 end;
@@ -1652,6 +1677,7 @@ end;
 procedure TMainIDE.SetupObjectInspector;
 var
   OIControlDocker: TLazControlDocker;
+  HelpControl: TControl;
 begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
@@ -1669,6 +1695,10 @@ begin
   ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
   ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
+  HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
+  HelpControl.Parent := ObjectInspector1.InfoPanel;
+  HelpControl.Align := alClient;
+
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';
   {$IFDEF EnableIDEDocking}
