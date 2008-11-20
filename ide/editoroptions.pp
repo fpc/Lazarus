@@ -257,7 +257,7 @@ const
       { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;         Styles: []; StylesMask: []),
       { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;         Styles: []; StylesMask: []),
       { ahaErrorLine          } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;         Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;      FG: clNone;          Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: [])
