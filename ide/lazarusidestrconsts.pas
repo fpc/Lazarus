@@ -1016,12 +1016,18 @@ resourcestring
   dlgnoAutomaticRenaming = 'no automatic renaming';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
+  // OI colors
   dlgBackColor = 'Background';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
   dlgHighlightColor = 'Highlight';
   dlgHighlightFontColor = 'Highlight Font';
+  dlgDefValueColor = 'Default Value';
+  dlgPropNameColor = 'Property Name';
+  dlgPropGutterColor = 'Gutter';
+  dlgPropGutterEdgeColor = 'Gutter Edge';
+
   liswlAdd = '&Add';
   liswlProperties = '&Properties';
   liswlEnabled = '&Enabled';
@@ -1029,10 +1035,6 @@ resourcestring
   liswlDIsableAll = 'D&isable All';
   liswlENableAll = 'E&nable All';
   liswlDeLeteAll = 'De&lete All';
-  dlgDefValueColor = 'Default value';
-  dlgPropNameColor = 'Property name';
-  dlgPropGutterColor = 'Gutter';
-  dlgPropGutterEdgeColor = 'Gutter Edge';
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOIItemHeight = 'Item height';
@@ -1152,7 +1154,7 @@ resourcestring
   dlgEdElement = 'Element';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
-  dlgForecolor = 'Foreground color';
+  dlgForecolor = 'Foreground';
   dlgEdUseDefColor = 'Use default color';
   dlgTextAttributes = 'Text attributes';
   dlgEdBold = 'Bold';
