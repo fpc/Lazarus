@@ -5994,12 +5994,30 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
+var
+  ParentForm: TCustomForm;
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
-  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then begin
-    EditingDone;
-    DoExit;
+  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then
+  begin
+    if Self is TCustomForm then
+    begin
+      if TCustomForm(Self).Active then
+      begin
+        EditingDone;
+        DoExit;
+      end;
+    end else
+    begin
+      ParentForm := GetParentForm(Self);
+      if Assigned(ParentForm) and
+        ParentForm.Active then
+      begin
+        EditingDone;
+        DoExit;
+      end;
+    end;
   end;
 end;
 
