@@ -163,6 +163,9 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
+    function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
+                    const BaseURL: string; var TheHint: string;
+                    out HintWinRect: TRect): boolean; override;
     function GetHintForSourcePosition(const ExpandedFilename: string;
                                       const CodePos: TPoint;
                                       out BaseURL, HTMLHint: string): TShowHelpResult;
@@ -1243,6 +1246,50 @@ begin
       ShowContextHelpForIDE(AnInspector);
     end;
   end;
+end;
+
+function TIDEHelpManager.CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
+  const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
+var
+  IsHTML: Boolean;
+  Provider: TAbstractIDEHTMLProvider;
+  HTMLControl: TControl;
+  ms: TMemoryStream;
+  NewWidth, NewHeight: integer;
+begin
+  IsHTML:=SysUtils.CompareText(copy(TheHint,1,6),'<HTML>')=0;
+
+  if aHintWindow.ControlCount>0 then begin
+    aHintWindow.Controls[0].Free;
+  end;
+  if IsHTML then begin
+    Provider:=nil;
+    HTMLControl:=CreateIDEHTMLControl(aHintWindow,Provider);
+    Provider.BaseURL:=BaseURL;
+    HTMLControl.Parent:=aHintWindow;
+    HTMLControl.Align:=alClient;
+    ms:=TMemoryStream.Create;
+    try
+      if TheHint<>'' then
+        ms.Write(TheHint[1],length(TheHint));
+      ms.Position:=0;
+      Provider.ControlIntf.SetHTMLContent(ms);
+    finally
+      ms.Free;
+    end;
+    Provider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
+    if NewWidth<=0 then
+      NewWidth:=500;
+    if NewHeight<=0 then
+      NewHeight:=200;
+    HintWinRect := Rect(0,0,NewWidth,NewHeight);
+    TheHint:='';
+  end else begin
+    HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
+  end;
+  OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
+
+  Result:=true;
 end;
 
 function TIDEHelpManager.GetHintForSourcePosition(const ExpandedFilename: string;

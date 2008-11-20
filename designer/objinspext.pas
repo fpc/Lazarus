@@ -74,6 +74,7 @@ function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
   Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
   out NewTopLine: integer): Boolean;
 
+
 implementation
 
 function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;

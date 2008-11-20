@@ -23,7 +23,8 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, HelpIntfs, LazHelpIntf, TextTools;
+  Classes, SysUtils, LCLProc, Forms, Controls, HelpIntfs, LazHelpIntf,
+  TextTools;
 
 type
   { THelpDBIRegExprMessage
@@ -61,6 +62,9 @@ type
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
     procedure ShowHelpForMessage(Line: integer); virtual; abstract;
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
+    function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
+                    const BaseURL: string; var TheHint: string;
+                    out HintWinRect: TRect): boolean; virtual; abstract;
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                             const Filename: string): TPascalHelpContextList; virtual; abstract;

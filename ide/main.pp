@@ -75,7 +75,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
-  Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
+  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
   // codetools
   LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -83,8 +83,8 @@ uses
   SynEditKeyCmds,
   // IDE interface
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
-  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, PackageIntf,
-  ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, 
+  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
+  PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   // protocol
   IDEProtocol,
   // compile
@@ -115,7 +115,7 @@ uses
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser,
-  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, 
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
@@ -126,7 +126,7 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
-  IDEOptionsIntf, IDEOptionsDlg, 
+  IDEOptionsIntf, IDEOptionsDlg,
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
@@ -144,7 +144,7 @@ type
   );
 
   { TMainIDE }
-  
+
   TMainIDE = class(TMainIDEBase)
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -390,8 +390,11 @@ type
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
-    procedure OIOnUpdateRestricted(Sender: TObject);
     procedure OIOnSelectionChange(Sender: TObject);
+    function OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
+            ScreenPos: TPoint; aHintWindow: THintWindow;
+            out HintWinRect: TRect; out AHint: string): boolean;
+    procedure OIOnUpdateRestricted(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
@@ -522,7 +525,7 @@ type
     FRemoteControlFileValid: boolean;
 
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
-    
+
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
 
@@ -748,7 +751,7 @@ type
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
     function QuitIDE: boolean;
-    
+
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer);
@@ -1032,7 +1035,7 @@ begin
     Application.Terminate;
     exit;
   end;
-  
+
   SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus, EnableRemoteControl, ShowSplashScreen);
 
   DebugLn('TMainIDE.ParseCmdLineOptions:');
@@ -1196,7 +1199,7 @@ begin
   Application.AddOnDropFilesHandler(@OnApplicationDropFiles);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
-  
+
   // Now load a project
   SetupStartProject;
 
@@ -1265,7 +1268,7 @@ begin
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
-  
+
   // free control selection
   if TheControlSelection<>nil then
     FreeThenNil(TheControlSelection);
@@ -1324,8 +1327,8 @@ begin
             else
               if C.InheritsFrom(TFrame) then C := TFrame;
   end;
-      
-  
+
+
   if ObjectInspector1.GetActivePropertyRow = nil then
   begin
     if C <> nil then
@@ -1380,55 +1383,40 @@ begin
   end;
 end;
 
+procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
+begin
+  // handled by property hook
+end;
+
+function TMainIDE.OIOnPropertyHint(Sender: TObject;
+  PointedRow: TOIPropertyGridRow; ScreenPos: TPoint; aHintWindow: THintWindow;
+  out HintWinRect: TRect; out AHint: string): boolean;
+var
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  NewTopLine: integer;
+  BaseURL: string;
+begin
+  Result:=false;
+  AHint:='';
+  HintWinRect:=Rect(0,0,0,0);
+  if not BeginCodeTools then exit;
+  if FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
+  then begin
+    if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,
+                                        Caret,BaseURL,aHint)=shrSuccess
+    then begin
+      Result:=HelpBoss.CreateHint(aHintWindow,ScreenPos,BaseURL,aHint,HintWinRect);
+    end;
+  end;
+end;
+
 procedure TMainIDE.OIOnUpdateRestricted(Sender: TObject);
 begin
   if Sender = nil then Sender := ObjectInspector1;
   if Sender is TObjectInspectorDlg then
   begin
     (Sender as TObjectInspectorDlg).RestrictedProps := GetRestrictedProperties;
-  end;
-end;
-
-procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
-var
-  OI: TObjectInspectorDlg absolute Sender;
-  Row: TOIPropertyGridRow;
-  Code: TCodeBuffer;
-  Caret: TPoint;
-  NewTopLine: integer;
-  BaseURL, HTMLHint: String;
-  CacheWasUsed: Boolean;
-  Stream: TStringStream;
-begin
-  if (Sender is TObjectInspectorDlg) then
-  begin
-    if OI.ShowInfoBox then
-    begin
-      Row := OI.GetActivePropertyRow;
-      Stream := nil;
-      if (Row <> nil) and FindDeclarationOfOIProperty(OI, Row, Code, Caret, NewTopLine) then
-      begin
-        if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, True, BaseURL, HTMLHint, CacheWasUsed) = chprSuccess then
-        begin
-          FOIHelpProvider.BaseURL := BaseURL;
-          Stream := TStringStream.Create(HTMLHint);
-          try
-            FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
-          finally
-            Stream.Free;
-          end;
-        end;
-      end;
-      if Stream = nil then
-      begin
-        Stream := TStringStream.Create('');
-        try
-          FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
-        finally
-          Stream.Free;
-        end;
-      end;
-    end;
   end;
 end;
 
@@ -1694,6 +1682,7 @@ begin
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
   ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
+  ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
   HelpControl.Parent := ObjectInspector1.InfoPanel;
@@ -1788,7 +1777,7 @@ begin
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
-  
+
   SourceNotebook.InitMacros(GlobalMacroList);
 end;
 
@@ -2293,7 +2282,7 @@ end;
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
   inherited SetupEnvironmentMenu;
-  with MainIDEBar do 
+  with MainIDEBar do
   begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
@@ -2354,7 +2343,7 @@ end;
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
 begin
   SetComponentDesignMode(AComponent, Value);
-  if Value then 
+  if Value then
     WidgetSet.SetDesigning(AComponent);
 end;
 
@@ -2761,7 +2750,7 @@ begin
 
   ecViewComponents:
     DoShowComponentList;
-    
+
   ecToggleFPDocEditor:
     DoShowFPDocEditor;
 
@@ -2821,16 +2810,16 @@ begin
 
   ecRemoveBreakPoint:
     SourceNotebook.DeleteBreakpointClicked(Self);
-    
+
   ecProcedureList:
     mnuSearchProcedureList(self);
 
   ecInsertGUID:
     mnuEditInsertGUID(self);
-    
+
   ecInsertTodo:
     mnuEditInsertTodo(self);
-    
+
   else
     Handled:=false;
     // let the bosses handle it
@@ -3413,7 +3402,7 @@ begin
 
   // close
   DoCloseProject;
-  
+
   // ask what to do next
   while (Project1=nil) do begin
     case ShowProjectWizardDlg of
@@ -3503,13 +3492,13 @@ begin
     if POOutDir<>'' then
       POFilename:=TrimFilename(AppendPathDelim(POOutDir)+ExtractFileName(POFilename));
   end;
-  
+
   POFileAgeValid:=false;
   if FileExistsCached(POFilename) then begin
     POFileAge:=FileAgeUTF8(POFilename);
     POFileAgeValid:=true;
   end;
-  
+
   //DebugLn(['TMainIDE.UpdateProjectPOFile Updating POFilename="',POFilename,'"']);
 
   Files := TStringList.Create;
@@ -3526,7 +3515,7 @@ begin
           Files.Add(LRTFilename);
         // check .rst file
         RSTFilename:=ExtractFileName(ChangeFileExt(CurFilename,'.rst'));
-        
+
         // the compiler puts the .rst in the unit output directory
         UnitOutputDir:=AProject.GetOutputDirectory;
         if UnitOutputDir='' then
@@ -3542,7 +3531,7 @@ begin
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
-    
+
     try
       UpdatePoFile(Files, POFilename);
       Result := mrOk;
@@ -3553,7 +3542,7 @@ begin
           E.Message]), mtError, [mbOk]);
       end;
     end;
-    
+
   finally
     Files.Destroy;
   end;
@@ -4021,7 +4010,7 @@ begin
       // load settings from CodetoolsOption to IDEOptionsDialog
       ReadSettings(CodeToolsOpts);
     end;
-    if IDEOptionsDialog.ShowModal = mrOk then 
+    if IDEOptionsDialog.ShowModal = mrOk then
     begin
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
@@ -4037,7 +4026,7 @@ begin
       UpdateDefaultPascalFileExtensions;
 
       //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);
-      if OldLanguage<>EnvironmentOptions.LanguageID then 
+      if OldLanguage<>EnvironmentOptions.LanguageID then
       begin
         TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                                  EnvironmentOptions.LanguageID);
@@ -4216,9 +4205,9 @@ begin
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
   if UseCreateFormStatements and
-     NewUnitInfo.IsPartOfProject and 
-     Project1.AutoCreateForms and 
-     (pfMainUnitHasCreateFormStatements in Project1.Flags) then 
+     NewUnitInfo.IsPartOfProject and
+     Project1.AutoCreateForms and
+     (pfMainUnitHasCreateFormStatements in Project1.Flags) then
   begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
@@ -4295,7 +4284,7 @@ begin
     Result:=mrOk;
     exit;
   end;
-  
+
   LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
   if not FileExistsInIDE(LFMFilename,[]) then begin
     DebugLn(['TMainIDE.DoOpenComponent file not found ',LFMFilename]);
@@ -4329,7 +4318,7 @@ begin
     debugln('TMainIDE.DoOpenComponent DoLoadLFM failed ',LFMFilename);
     exit;
   end;
-  
+
   Component:=AnUnitInfo.Component;
   if Component<>nil then
     Result:=mrOk
@@ -5381,7 +5370,7 @@ begin
       ReferencesLocked:=true;
       Project1.LockUnitComponentDependencies;
       Project1.UpdateUnitComponentDependencies;
-      
+
       // close old designer form
       Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
       if Result<>mrOk then begin
@@ -5413,7 +5402,7 @@ begin
 
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
-      
+
       // find the classname of the LFM, and check for inherited form
       QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
                           NewClassName,LCLVersion,MissingClasses);
@@ -5474,7 +5463,7 @@ begin
             LRSObjectTextToBinary(TxtLFMStream,BinStream);
             AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
             BinStream.Position:=0;
-            
+
             {$IFDEF VerboseIDELFMConversion}
             DebugLn(['TMainIDE.DoLoadLFM Binary START =======================================']);
             debugln(dbgMemStream(BinStream,BinStream.Size));
@@ -5649,7 +5638,7 @@ var
       Result:=RefUnitInfo.Filename;
       exit;
     end;
-    
+
     // search in the used units of the .lpr files
     if (Project1.MainUnitInfo<>nil)
     and (Project1.MainUnitInfo.Source<>nil)
@@ -5688,10 +5677,10 @@ var
         exit;
       end;
     end;
-    
+
     Result:='';
   end;
-  
+
   function LoadDependencyHidden(const RefRootName: string): TModalResult;
   var
     LFMFilename: String;
@@ -5701,7 +5690,7 @@ var
     RefUnitInfo: TUnitInfo;
   begin
     Result:=mrCancel;
-    
+
     // load lfm
     UnitFilename:=FindUnitFilename(RefRootName);
     if UnitFilename='' then begin
@@ -5714,7 +5703,7 @@ var
       debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
       exit(mrCancel);
     end;
-    
+
     RefUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     // create unit info
     if RefUnitInfo=nil then begin
@@ -5732,7 +5721,7 @@ var
       end;
       RefUnitInfo.Source := UnitCode;
     end;
-    
+
     if RefUnitInfo.Component<>nil then begin
       Result:=mrOk;
       exit;
@@ -5742,7 +5731,7 @@ var
     Result:=DoLoadLFM(RefUnitInfo,LFMCode,
                       OpenFlags+[ofLoadHiddenResource],[]);
   end;
-  
+
 var
   CurRoot: TComponent;
   ReferenceRootNames: TStringList;
@@ -5770,7 +5759,7 @@ begin
       // load the referenced component
       Result:=LoadDependencyHidden(RefRootName);
       {$ENDIF}
-      
+
       GlobalFixupReferences;
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
@@ -5778,7 +5767,7 @@ begin
 
       // forget the rest of the dangling references
       RemoveFixupReferences(CurRoot,RefRootName);
-      
+
       if Result<>mrOk then begin
         // ToDo: give a nice error message and give user the choice between
         // a) ignore and loose the references
@@ -5883,7 +5872,7 @@ var
     TheModalResult:=mrCancel;
     LFMCode:=nil;
     ClassFound:=false;
-    
+
     AncestorClassName:='';
     if not CodeToolBoss.FindFormAncestor(UnitCode,AComponentClassName,
       AncestorClassName,true) then
@@ -5929,7 +5918,7 @@ var
     LFMCode.Source:=
       'inherited '+AComponentName+': '+AComponentClassName+LineEnding
       +'end';
-      
+
     Result:=true;
     TheModalResult:=mrOk;
   end;
@@ -5949,7 +5938,7 @@ var
     Result:=false;
     TheModalResult:=mrCancel;
     if not FilenameIsPascalUnit(UnitFilename) then exit;
-    
+
     CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     if (CurUnitInfo<>nil) and (CurUnitInfo.Component<>nil) then
     begin
@@ -5967,7 +5956,7 @@ var
       end;
       exit;
     end;
-    
+
     if not TryWithoutLFM then begin
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
       if FileExistsUTF8(LFMFilename) then begin
@@ -5981,7 +5970,7 @@ var
         ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
         if LFMType='' then ;
         if SysUtils.CompareText(LFMClassName,AComponentClassName)<>0 then exit;
-        
+
         // .lfm found
         Result:=true;
       end else if not TryWithoutLFM then begin
@@ -5997,18 +5986,18 @@ var
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',UnitFilename);
       exit;
     end;
-    
+
     if TryWithoutLFM then begin
       if not FindClassInUnit(UnitCode,TheModalResult,LFMCode,Result) then exit;
     end;
-    
+
     // create unit info
     if CurUnitInfo=nil then begin
       CurUnitInfo:=TUnitInfo.Create(UnitCode);
       CurUnitInfo.ReadUnitNameFromSource(true);
       Project1.AddFile(CurUnitInfo,false);
     end;
-    
+
     // load resource hidden
     TheModalResult:=DoLoadLFM(CurUnitInfo,LFMCode,
                               Flags+[ofLoadHiddenResource],[]);
@@ -6023,7 +6012,7 @@ var
         TheModalResult:=mrCancel;
     end;
   end;
-  
+
   function TryRegisteredClasses(out TheModalResult: TModalResult): boolean;
   begin
     Result:=false;
@@ -6045,7 +6034,7 @@ begin
   CTErrorCode:=nil;
   CTErrorLine:=0;
   CTErrorCol:=0;
-  
+
   if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
   begin
     DebugLn(['TMainIDE.DoLoadComponentDependencyHidden invalid component class name "',AComponentClassName,'"']);
@@ -6074,7 +6063,7 @@ begin
 
     // then try registered global classes
     if TryRegisteredClasses(Result) then exit;
-    
+
     // finally search in used units
     UsedUnitFilenames:=nil;
     try
@@ -6281,7 +6270,7 @@ var
     until false;
     Result:=true;
   end;
-  
+
 begin
   UserAsked:=false;
   Project1.LockUnitComponentDependencies;
@@ -6291,7 +6280,7 @@ begin
     // It is important that first the hard, non cyclic dependencies
     // are freed in the correct order.
     // After that the soft, cyclic dependencies can be freed in any order.
-    
+
     // first close all descendants recursively
     // This must happen in the right order (descendants before ancestor)
     if not CloseNext(Result,[ucdtAncestor]) then exit;
@@ -6620,7 +6609,7 @@ begin
       if Result=mrCancel then exit;
     end;
   end;
-  
+
   TitleWasDefault := Project1.TitleIsDefault(true);
 
   // set new project filename
@@ -6632,7 +6621,7 @@ begin
   if (Project1.MainUnitID >= 0) then
   begin
     GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
-    
+
     if not Project1.Resources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
     then begin
       DebugLn(['TMainIDE.DoShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFilename,'"']);
@@ -6642,7 +6631,7 @@ begin
     // Save old source code, to prevent overwriting it,
     // if the file name didn't actually change.
     OldSource := MainUnitInfo.Source.Source;
-    
+
     // switch MainUnitInfo.Source to new code
     NewBuf := CodeToolBoss.CreateFile(NewProgramFilename);
     if NewBuf=nil then begin
@@ -6686,7 +6675,7 @@ begin
   Project1.CompilerOptions.DebugPath:=
     RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectPath,
                      Project1.ProjectDirectory,true);
-                     
+
   // change title
   if TitleWasDefault then begin
     Project1.Title:=Project1.GetDefaultTitle;
@@ -6804,7 +6793,7 @@ begin
     Project1.InsertEditorIndex(SourceNotebook.Notebook.PageIndex);
   AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
   //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
-  
+
   // restore source editor settings
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
@@ -6922,7 +6911,7 @@ begin
 
   // syntax highlighter type
   NewUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(NewFilename);
-    
+
   // required packages
   if NewUnitInfo.IsPartOfProject and (NewFileDescriptor.RequiredPackages<>'')
   then begin
@@ -7050,7 +7039,7 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  
+
   // check if the unit is currently reverting
   if ActiveUnitInfo.IsReverting then begin
     Result:=mrOk;
@@ -7447,7 +7436,7 @@ begin
       Project1.Modified:=true;
     end;
   end;
-  
+
   Reverting:=false;
   if ofRevert in Flags then begin
     Reverting:=true;
@@ -8341,15 +8330,15 @@ begin
   end;
 
   // save main source
-  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then 
+  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then
   begin
-    if not (sfSaveToTestDir in Flags) then 
+    if not (sfSaveToTestDir in Flags) then
       DestFilename := MainUnitInfo.Filename
     else
       DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
 
     // if we are saving a project to a temporary folder then we also need to save resources
-    // or compilation will be broken   
+    // or compilation will be broken
     if sfSaveToTestDir in Flags then
       if not Project1.Resources.Regenerate(DestFileName, False, True) then
         DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
@@ -8360,20 +8349,20 @@ begin
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
                [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
       if Result=mrAbort then exit;
-    end else 
+    end else
     begin
       // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then 
+      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then
         SkipSavingMainSource := true;
-      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then 
+      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then
       begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
         if Result=mrAbort then exit;
       end;
     end;
-    
+
     // clear modified flags
-    if not (sfSaveToTestDir in Flags) then 
+    if not (sfSaveToTestDir in Flags) then
     begin
       if (Result=mrOk) then begin
         if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
@@ -8411,7 +8400,7 @@ begin
 
   // update all lrs files
   MainBuildBoss.UpdateProjectAutomaticFiles;
-  
+
   // everything went well => clear all modified flags
   Project1.ClearModifieds(true);
 
@@ -8506,7 +8495,7 @@ begin
     Result:=MessageDlg(ACaption, AText, mtError, [mbAbort], 0);
     exit;
   end;
-  
+
   // check symbolic link
   Result:=ChooseSymlink(AFilename);
   if Result<>mrOk then exit;
@@ -8781,7 +8770,7 @@ begin
 
     // add and load default required packages
     PkgBoss.AddDefaultDependencies(Project1);
-    
+
     Result:=DoCompleteLoadingProjectInfo;
     if Result<>mrOk then exit;
   finally
@@ -9461,7 +9450,7 @@ begin
 
   // Setup debugger
   if not DebugBoss.InitDebugger then Exit;
-  
+
   Result := mrOK;
   ToolStatus := itDebugger;
 end;
@@ -9545,11 +9534,11 @@ procedure TMainIDE.DoRestart;
          GetCommandLineParameters(Params, False);
 
       DebugLn('CommandLine 1 : %s', [CmdLine]);
-         
+
       if (pos(PrimaryConfPathOptLong, CmdLine) = 0) and
          (pos(PrimaryConfPathOptShort, CmdLine) = 0) then
         CmdLine := CmdLine + ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
-                            
+
       DebugLn('CommandLine 2 : %s', [CmdLine]);
       StartLazProcess.CommandLine := CmdLine;
       StartLazProcess.Execute;
@@ -9587,7 +9576,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
     if (Files=nil) or (Files.Count=0) then exit;
     ProjectLoaded:=Project1<>nil;
     DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles ProjectLoaded=',ProjectLoaded]);
-    
+
     // open project
     if (Files<>nil) and (Files.Count>0) then begin
       AProjectFilename:=Files[0];
@@ -9731,7 +9720,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  
+
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
     DebugLn('TMainIDE.DoBuildLazarus: failed because saving failed');
@@ -10045,7 +10034,7 @@ begin
     end;
 
     //DebugLn(['TMainIDE.DoConfigBuildFile ',ActiveUnitInfo.Filename,' ',DirectiveList.DelimitedText]);
-    
+
     // save IDE directives
     if FilenameIsPascalSource(ActiveUnitInfo.Filename) then begin
       // parse source for IDE directives (i.e. % comments)
@@ -10524,7 +10513,7 @@ begin
     Result:=ShowDiskDiffsDialog(AnUnitList,APackageList);
     if Result in [mrYesToAll] then
       Result:=mrOk;
-      
+
     // reload units
     if AnUnitList<>nil then begin
       for i:=0 to AnUnitList.Count-1 do begin
@@ -10546,11 +10535,11 @@ begin
         end;
       end;
     end;
-    
+
     // reload packages
     Result:=PkgBoss.RevertPackages(APackageList);
     if Result<>mrOk then exit;
-    
+
     Result:=mrOk;
   finally
     FCheckingFilesOnDisk:=false;
@@ -10926,7 +10915,7 @@ var MaxMessages: integer;
   NewFilename: String;
 begin
   Result:=false;
-  
+
   MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
@@ -11172,7 +11161,7 @@ begin
   and (MessagesView.Parent = nil) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
-  if PutOnTop then 
+  if PutOnTop then
   begin
     if MessagesView.Parent = nil then
       MessagesView.ShowOnTop;
@@ -11551,7 +11540,7 @@ begin
     // mark references modified
     if APersistent is TComponent then
       MarkUnitsModifiedUsingSubComponent(TComponent(APersistent));
-    
+
     // remember cursor position
     SourceNotebook.AddJumpPointClicked(Self);
 
@@ -12131,10 +12120,10 @@ begin
     DumpStack;
     exit;
   end;
-  
+
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-    
+
   if AddJumpPoint and (ActiveUnitInfo <> nil) and (ActiveSrcEdit <> nil)
   then begin
     if (NewSource<>ActiveUnitInfo.Source)
@@ -12142,7 +12131,7 @@ begin
     or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
       SourceNotebook.AddJumpPointClicked(Self);
   end;
-  
+
   if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
   then begin
     // jump to other file -> open it
@@ -13170,7 +13159,7 @@ var
       raise EComponentError.Create(s);
     end;
   end;
-  
+
   procedure RenameInheritedComponents(RenamedUnit: TUnitInfo;
     Simulate: boolean);
   var
@@ -13193,7 +13182,7 @@ var
                                      OldClassName,AComponent.ClassName,false);
           end;
         end;
-        
+
         // rename inherited component
         InheritedComponent:=
                          DependingUnit.Component.FindComponent(AComponent.Name);
@@ -13237,7 +13226,7 @@ var
       UsedByDependency:=UsedByDependency.NextUsedByDependency;
     end;
   end;
-  
+
   procedure RenameMethods;
   var
     PropList: PPropList;
@@ -13683,14 +13672,14 @@ begin
   FormEditor1.PaintAllDesignerItems;
   GetCurrentUnit(SrcEdit,AnUnitInfo);
   UpdateSaveMenuItemsAndButtons(true);
-  if Screen.ActiveForm<>nil then 
+  if Screen.ActiveForm<>nil then
   begin
     AnIDesigner:=Screen.ActiveForm.Designer;
-    if AnIDesigner is TDesigner then 
+    if AnIDesigner is TDesigner then
     begin
       MainIDEBar.itmViewToggleFormUnit.Enabled := true;
-    end 
-    else 
+    end
+    else
     begin
       MainIDEBar.itmViewToggleFormUnit.Enabled := (AnUnitInfo<>nil)
                                              and AnUnitInfo.HasResources;
@@ -13700,7 +13689,7 @@ begin
 
   if FCheckFilesOnDiskNeeded then
     DoCheckFilesOnDisk(true);
-    
+
   if (FRemoteControlTimer=nil) and EnableRemoteControl then
     SetupRemoteControl;
 end;
@@ -13750,7 +13739,7 @@ begin
 
       if DoOpenEditorFile(AFilename, -1, OpenFlags) = mrAbort then Break;
     end;
-    
+
     SetRecentFilesMenu;
     SaveEnvironment;
   end;
@@ -14073,7 +14062,7 @@ begin
   debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
-  
+
   OverrideMethodName:='';
   if APersistent is TComponent then begin
     AComponent:=TComponent(APersistent);
@@ -14155,7 +14144,7 @@ begin
   debugln('');
   debugln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
   {$ENDIF}
-  
+
   AClassName:=ActiveUnitInfo.Component.ClassName;
   CurMethodName:=AMethodName;
 
