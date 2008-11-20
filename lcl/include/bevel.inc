@@ -78,18 +78,18 @@ Var
   AWidth: LongInt;
   AHeight: LongInt;
 Begin
-  Case Style Of
+  case Style Of
   bsRaised:
-    Begin
-      Colora:=cl3DHilight;
-      Colorb:=cl3DShadow;
-    End;
+    begin
+      Colora := cl3DHilight;
+      Colorb := cl3DShadow;
+    end;
   bsLowered:
-    Begin
-      Colora:=cl3DShadow;
-      Colorb:=cl3DHilight;
-    End;
-  End;
+    begin
+      Colora := cl3DShadow;
+      Colorb := cl3DHilight;
+    end;
+  end;
   Canvas.Pen.Width:=1;
   
   ALeft:=0;
