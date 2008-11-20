@@ -1021,12 +1021,11 @@ resourcestring
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
-  dlgHighlightColor = 'Highlight';
-  dlgHighlightFontColor = 'Highlight Font';
+  dlgHighlightColor = 'Highlight Color';
+  dlgHighlightFontColor = 'Highlight Font Color';
   dlgDefValueColor = 'Default Value';
   dlgPropNameColor = 'Property Name';
-  dlgPropGutterColor = 'Gutter';
-  dlgPropGutterEdgeColor = 'Gutter Edge';
+  dlgGutterEdgeColor = 'Gutter Edge Color';
 
   liswlAdd = '&Add';
   liswlProperties = '&Properties';
@@ -1037,9 +1036,10 @@ resourcestring
   liswlDeLeteAll = 'De&lete All';
 
   dlgOIMiscellaneous = 'Miscellaneous';
+  dlgOISpeedSettings = 'Speed settings';
   dlgOIItemHeight = 'Item height';
-  dlgOIUseDefaultLazarusColors = 'Use default Lazarus colors';
-  dlgOIUseDefaultDelphiColors = 'Use default Delphi colors';
+  dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
+  dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
   lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
   lisAutoShowObjectInspector = 'Auto show Object Inspector';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
@@ -1137,7 +1137,7 @@ resourcestring
   dlgRightMargin = 'Right margin';
   dlgRightMarginColor = 'Right margin color';
   dlgGutterWidth = 'Gutter width';
-  dlgGutterColor = 'Gutter color';
+  dlgGutterColor = 'Gutter Color';
   dlgEditorFont = 'Editor font';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontHeight = 'Editor font height';
