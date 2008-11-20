@@ -90,7 +90,7 @@ type
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
-    ahaMouseLink);
+    ahaMouseLink, ahaLineNumber);
 
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
@@ -106,7 +106,8 @@ const
     'Incremental search match',
     'Highlight all',
     'Matching Brackets',
-    'Mouse Link'
+    'Mouse Link',
+    'Line number'
     );
     
 type
@@ -148,7 +149,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -176,7 +178,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -204,7 +207,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -232,7 +236,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -260,7 +265,8 @@ const
       { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;         Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clAqua;      FG: clNone;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
-      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;         Styles: []; StylesMask: [])
     )
   );
 
@@ -269,7 +275,7 @@ const
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
-    (Nil, Nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
+    (nil, nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn);
 
@@ -2066,6 +2072,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
