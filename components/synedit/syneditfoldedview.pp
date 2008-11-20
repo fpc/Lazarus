@@ -30,7 +30,7 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase;
+  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase, SynEditMiscClasses;
 
 type
 
@@ -102,7 +102,7 @@ type
     fNestParent: TSynTextFoldAVLNodeData;
     fNestedNodesTree: TSynTextFoldAVLTree; // FlyWeight Tree used for any nested subtree.
     fRootOffset : Integer;
-    
+
     function NewNode : TSynTextFoldAVLNodeData; inline;
     procedure DisposeNode(var ANode : TSynTextFoldAVLNodeData); inline;
 
@@ -162,6 +162,7 @@ type
 
   TSynEditFoldedView = class {TODO: Make a base class, that just maps everything one to one}
   private
+    fCaret: TSynEditCaret;
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
     fTopLine : Integer;
@@ -170,6 +171,9 @@ type
     fFoldTypeList : Array of TSynEditCodeFoldType;
     fOnFoldChanged : TFoldChangedEvent;
     fCFDividerDrawLevel: Integer;
+    fLockCount : Integer;
+    fNeedFixFrom, fNeedFixMinEnd : Integer;
+    fNeedCaretCheck : Boolean;
 
     function GetCount : integer;
     function GetDrawDivider(Index : integer) : Boolean;
@@ -189,6 +193,7 @@ type
     function  LengthForFoldAtTextIndex(ALine : Integer) : Integer;
     function FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 
+    procedure DoCaretChanged(Sender : TObject);
     Procedure LineCountChanged(AIndex, ACount : Integer);
     Procedure LinesInsertedAtTextIndex(AStartIndex, ALineCount : Integer;
                                        SkipFixFolding : Boolean = False);
@@ -199,7 +204,7 @@ type
     Procedure LinesDeletedAtViewPos(AStartPos, ALineCount : Integer;
                                     SkipFixFolding : Boolean = False);
   public
-    constructor Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings);
+    constructor Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
@@ -238,6 +243,8 @@ type
     property CFDividerDrawLevel: Integer read fCFDividerDrawLevel write fCFDividerDrawLevel;
 
   public
+    procedure Lock;
+    procedure UnLock;
     procedure debug;
     // Action Fold/Unfold
     procedure FoldAtLine(AStartLine: Integer);       (* Folds at ScreenLine / 0-based *)
@@ -263,6 +270,8 @@ type
 
   
 implementation
+uses
+  SynEditMiscProcs;
 
 { TSynTextFoldAVLNodeData }
 
@@ -1308,8 +1317,10 @@ end;
 
 { TSynEditFoldedView }
 
-constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings);
+constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
 begin
+  fCaret := ACaret;
+  fCaret.AddChangeHandler(@DoCaretChanged);
   fLines := aTextView;
   fFoldTree := TSynTextFoldAVLTree.Create;
   fTopLine := 0;
@@ -1319,6 +1330,7 @@ end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
+  fCaret.RemoveChangeHandler(@DoCaretChanged);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -1371,6 +1383,8 @@ end;
 
 function TSynEditFoldedView.ViewPosToTextIndex(aViewPos : Integer) : Integer;
 begin
+  if aViewPos > Count then
+    aViewPos := Count;
   result := aViewPos - 1 + fFoldTree.FindFoldForFoldedLine(aViewPos).FoldedBefore;
 end;
 
@@ -1406,6 +1420,7 @@ begin
       inc(Result);
       if node.IsInFold and (Result+1 >= node.StartLine) then begin
         Result := Result + node.LineCount;
+        if Result >= cnt then exit(cnt-node.LineCount-1);
         node := node.Next;
       end;
       dec(LineOffset);
@@ -1416,6 +1431,27 @@ end;
 function TSynEditFoldedView.TextPosAddLines(aTextpos, LineOffset : Integer) : Integer;
 begin
   Result := TextIndexAddLines(aTextpos-1, LineOffset)+1;
+end;
+
+procedure TSynEditFoldedView.Lock;
+begin
+  if fLockCount=0 then begin
+    fNeedFixFrom := -1;
+    fNeedFixMinEnd := -1;
+    fNeedCaretCheck := false;
+  end;;
+  inc(fLockCount);
+end;
+
+procedure TSynEditFoldedView.UnLock;
+begin
+  dec(fLockCount);
+  if (fLockCount=0) then begin
+    if (fNeedFixFrom >= 0) then
+      FixFolding(fNeedFixFrom, fNeedFixMinEnd, fFoldTree);
+    if fNeedCaretCheck then
+      DoCaretChanged(fCaret);
+  end;
 end;
 
 (* Count *)
@@ -1645,6 +1681,14 @@ var
   node, tmpnode : TSynTextFoldAVLNode;
 begin
   Result := false;
+  if fLockCount > 0 then begin
+    fNeedCaretCheck := true; // We may be here as a result of lines deleted/inserted
+    if fNeedFixFrom < 0 then fNeedFixFrom := AStart
+    else fNeedFixFrom := Min(fNeedFixFrom, AStart);
+    fNeedFixMinEnd := Max(fNeedFixMinEnd, AMinEnd);
+    exit;
+  end;
+
   node := aFoldTree.FindFoldForLine(AStart, true);
   if not node.IsInFold then node:= aFoldTree.FindLastFold;
   if not node.IsInFold then Begin
@@ -1688,10 +1732,27 @@ begin
   CalculateMaps;
 end;
 
+procedure TSynEditFoldedView.DoCaretChanged(Sender : TObject);
+var i : Integer;
+begin
+  if fLockCount > 0 then begin
+    fNeedCaretCheck := true;
+    exit;
+  end;
+  i := TSynEditCaret(Sender).LinePos-1;
+  if FoldedAtTextIndex[i] then
+    UnFoldAtTextIndex(i, true);
+end;
+
 procedure TSynEditFoldedView.LineCountChanged(AIndex, ACount : Integer);
 begin
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
+  if (fLockCount > 0) and (AIndex < max(fNeedFixFrom, fNeedFixMinEnd)) then begin
+    // adapt the fixfold range. Could be done smarter, but it doesn't matter if the range gets bigger than needed.
+    if (ACount < 0) and (AIndex < fNeedFixFrom) then inc(fNeedFixFrom, ACount);
+    if (ACount > 0) and (AIndex < fNeedFixMinEnd) then inc(fNeedFixMinEnd, ACount);
+  end;
   if ACount<0
   then LinesDeletedAtTextIndex(AIndex, -ACount, true)
   else LinesInsertedAtTextIndex(AIndex, ACount, true);

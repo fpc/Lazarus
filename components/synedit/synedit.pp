@@ -1472,7 +1472,8 @@ begin
   fCaret := TSynEditCaret.Create;
   fTrimLines := TSynEditStringTrimmingList.Create(TSynEditStrings(fLines), fCaret);
   fTextView := TSynEditFoldedView.Create(TSynEditStringList(fLines),
-                                         TSynEditStrings(fTrimLines));
+                                         TSynEditStrings(fTrimLines),
+                                         fCaret);
   fTextView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
   {$ENDIF}
 //  with TSynEditList(fLines) do begin
@@ -4917,10 +4918,7 @@ begin
       {$ENDIF}
       EnsureCursorPosVisible;
       Include(fStateFlags, sfCaretChanged);
-      {$IFDEF SYN_LAZARUS}
-      if fTextView.FoldedAtTextIndex[CaretY - 1] then
-        fTextView.UnFoldAtTextIndex(CaretY - 1, true);
-      {$ELSE}
+      {$IFNDEF SYN_LAZARUS}
       Include(fStateFlags, sfScrollbarChanged);
       {$ENDIF}
     finally
@@ -6006,8 +6004,6 @@ begin
   if Index > Lines.Count - 1 then Exit;
   if not assigned(fHighlighter) then begin
     fTextView.FixFoldingAtTextIndex(Index);
-    if fTextView.FoldedAtTextIndex[CaretY - 1] then
-      fTextView.UnFoldAtTextIndex(CaretY - 1);
     Topline := TopLine;
     exit;
   end;
@@ -6054,8 +6050,6 @@ begin
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
   fTextView.FixFoldingAtTextIndex(Index, Result);
-  if fTextView.FoldedAtTextIndex[CaretY - 1] then
-    fTextView.UnFoldAtTextIndex(CaretY - 1);
   Topline := TopLine;
   if FixFStart < index then Invalidate;
   {$ENDIF}
@@ -7921,7 +7915,11 @@ begin
         end;
       ecEditorBottom, ecSelEditorBottom:
         begin
+          {$IFDEF SYN_LAZARUS}
+          CaretNew := Point(1, fTextView.ViewPosToTextIndex(fTextView.Count)+1);
+          {$ELSE}
           CaretNew := Point(1, Lines.Count);
+          {$ENDIF}
           if (CaretNew.Y > 0) then
             CaretNew.X := Length(Lines[CaretNew.Y - 1]) + 1;
           MoveCaretAndSelection(
@@ -8320,14 +8318,14 @@ begin
               // break line in two
               SpaceCount1 := LeftSpaces(Temp);
               Temp := Copy(LineText, 1, LogCaretXY.X - 1);
-              Lines[CaretY - 1] := Temp;
+              Lines.Insert(CaretY - 1, Temp);
               Delete(Temp2, 1, LogCaretXY.X - 1);
               if Assigned(Beautifier) then
                 SpaceCount1:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp2);
               fUndoList.AddChange(crLineBreak,
                 LogCaretXY, LogCaretXY,
                 Temp2, smNormal);
-              Lines.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
+              Lines[CaretY] := StringOfChar(' ', SpaceCount1) + Temp2;
               if Command = ecLineBreak then
                 CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
             end else begin
@@ -9027,6 +9025,7 @@ procedure TCustomSynEdit.BeginUndoBlock;
 begin
   fUndoList.BeginBlock;
   {$IFDEF SYN_LAZARUS}
+  fTextView.Lock;
   TSynEditStringTrimmingList(fTrimLines).Lock;
   {$ENDIF}
 end;
@@ -9044,6 +9043,7 @@ begin
   // Write all trimming info to the end of the undo block,
   // so it will be undone first, and other UndoItems do see the expected spaces
   TSynEditStringTrimmingList(fTrimLines).UnLock;
+  fTextView.UnLock;
   {$ENDIF}
   fUndoList.EndBlock;
 end;
