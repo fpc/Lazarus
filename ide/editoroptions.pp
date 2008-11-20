@@ -259,7 +259,7 @@ const
       { ahaErrorLine          } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
       { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;         Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;      FG: clNone;          Styles: [fsBold]; StylesMask: []),
+      { ahaBracketMatch       } (BG: clAqua;      FG: clNone;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
       { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: [])
     )
   );
