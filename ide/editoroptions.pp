@@ -107,7 +107,7 @@ const
     'Highlight all',
     'Matching Brackets',
     'Mouse Link',
-    'Line number'
+    'Line Number'
     );
     
 type

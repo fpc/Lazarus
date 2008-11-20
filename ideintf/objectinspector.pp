@@ -173,6 +173,7 @@ type
     FSaveBounds: boolean;
     FLeft: integer;
     FShowGutter: boolean;
+    FShowStatusBar: boolean;
     FTop: integer;
     FWidth: integer;
     FHeight: integer;
@@ -234,6 +235,7 @@ type
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
     property ShowGutter: boolean read FShowGutter write FShowGutter;
+    property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
   end;
 
   TOICustomPropertyGrid = class;
@@ -700,6 +702,7 @@ type
     FShowComponentTree: boolean;
     FShowFavorites: Boolean;
     FShowRestricted: Boolean;
+    FShowStatusBar: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
@@ -713,6 +716,7 @@ type
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
     procedure SetShowRestricted(const AValue: Boolean);
+    procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
   protected
     function PersistentToString(APersistent: TPersistent): string;
@@ -767,6 +771,7 @@ type
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
+    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
@@ -3393,6 +3398,7 @@ begin
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
   FShowGutter := True;
+  FShowStatusBar := True;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3468,6 +3474,8 @@ begin
          Path+'DrawGridLines',true);
     FShowGutter := ConfigStore.GetValue(
          Path+'ShowGutter',true);
+    FShowStatusBar := ConfigStore.GetValue(
+         Path+'ShowStatusBar',true);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3537,6 +3545,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
+    ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3577,6 +3586,7 @@ begin
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
+  FShowStatusBar := AnObjInspector.ShowStatusBar;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3618,6 +3628,7 @@ begin
   AnObjInspector.ShowComponentTree := FShowComponentTree;
   AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
   AnObjInspector.AutoShow := AutoShow;
+  AnObjInspector.ShowStatusBar := ShowStatusBar;
 end;
 
 
@@ -3676,12 +3687,13 @@ begin
   FUpdatingAvailComboBox:=false;
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
-  FShowComponentTree:=true;
+  FShowComponentTree := True;
   FShowFavorites := False;
   FShowRestricted := False;
+  FShowStatusBar := True;
 
   Caption := oisObjectInspector;
-  StatusBar.SimpleText:=oisAll;
+  StatusBar.SimpleText := oisAll;
 
   MainPopupMenu.Images := IDEImages.Images_16;
 
@@ -4318,6 +4330,13 @@ begin
   if FShowRestricted = AValue then exit;
   FShowRestricted := AValue;
   NoteBook.Page[3].TabVisible := AValue;
+end;
+
+procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
+begin
+  if FShowStatusBar = AValue then exit;
+  FShowStatusBar := AValue;
+  StatusBar.Visible := AValue;
 end;
 
 procedure TObjectInspectorDlg.ShowNextPage(Delta: integer);
