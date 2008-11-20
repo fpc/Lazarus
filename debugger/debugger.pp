@@ -644,12 +644,14 @@ type
   TBaseRegisters = class(TObject)
   private
   protected
+    function GetModified(const AnIndex: Integer): Boolean; virtual;
     function GetName(const AnIndex: Integer): String; virtual;
     function GetValue(const AnIndex: Integer): String; virtual;
   public
     constructor Create;
     function Count: Integer; virtual;
   public
+    property Modified[const AnIndex: Integer]: Boolean read GetModified;
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
   end;
@@ -3117,6 +3119,11 @@ end;
 constructor TBaseRegisters.Create;
 begin
   inherited Create;
+end;
+
+function TBaseRegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  Result := False;
 end;
 
 function TBaseRegisters.GetName(const AnIndex: Integer): String;

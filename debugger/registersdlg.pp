@@ -40,7 +40,11 @@ uses
   ComCtrls, Debugger, DebuggerDlg;
 
 type
+
+  { TRegistersDlg }
+
   TRegistersDlg = class(TDebuggerDlg)
+    ImageList1: TImageList;
     lvRegisters: TListView;
   private
     FRegisters: TIDERegisters;
@@ -126,6 +130,9 @@ begin
           Item.SubItems[0] := FRegisters.Values[n];
           List.Delete(idx);
         end;
+        if FRegisters.Modified[n]
+        then Item.ImageIndex := 0
+        else Item.ImageIndex := -1;
       end;
 
       // remove obsolete entries

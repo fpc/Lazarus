@@ -297,6 +297,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Invalidate;
     function GetCount: Integer; override;
+    function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
@@ -2882,6 +2883,20 @@ begin
   then RegistersNeeded;
 
   Result := Length(FRegisters)
+end;
+
+function TGDBMIRegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then ValuesNeeded;
+
+  if  FValuesValid
+  and FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Modified
+  else Result := False;
 end;
 
 function TGDBMIRegisters.GetName(const AnIndex: Integer): String;
