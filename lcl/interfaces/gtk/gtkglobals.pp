@@ -158,69 +158,7 @@ const
     $808080,     {COLOR_GRADIENTINACTIVECAPTION}
     $800000,     {COLOR_MENUHILIGHT}
     $D0D0D0,     {COLOR_MENUBAR}
-    $D0D0D0,     {COLOR_FORM}
-    
-    // CLX base, mapped, pseudo, rgb values
-    $000000,   // COLOR_clForeground
-    $000000,   // COLOR_clButton
-    $000000,   // COLOR_clLight
-    $000000,   // COLOR_clMidlight
-    $000000,   // COLOR_clDark
-    $000000,   // COLOR_clMid
-    $000000,   // COLOR_clText
-    $000000,   // COLOR_clBrightText
-    $000000,   // COLOR_clButtonText
-    $000000,   // COLOR_clBase
-    $000000,   // COLOR_clShadow
-    $000000,   // COLOR_clHighlightedText
-
-    // CLX normal, mapped, pseudo, rgb values
-    $000000,   // COLOR_clNormalForeground
-    $000000,   // COLOR_clNormalButton
-    $000000,   // COLOR_clNormalLight
-    $000000,   // COLOR_clNormalMidlight
-    $000000,   // COLOR_clNormalDark
-    $000000,   // COLOR_clNormalMid
-    $000000,   // COLOR_clNormalText
-    $000000,   // COLOR_clNormalBrightText
-    $000000,   // COLOR_clNormalButtonText
-    $000000,   // COLOR_clNormalBase
-    $000000,   // COLOR_clNormalBackground
-    $000000,   // COLOR_clNormalShadow
-    $000000,   // COLOR_clNormalHighlight
-    $000000,   // COLOR_clNormalHighlightedText
-
-    // CLX disabled, mapped, pseudo, rgb values
-    $000000,   // COLOR_clDisabledForeground
-    $000000,   // COLOR_clDisabledButton
-    $000000,   // COLOR_clDisabledLight
-    $000000,   // COLOR_clDisabledMidlight
-    $000000,   // COLOR_clDisabledDark
-    $000000,   // COLOR_clDisabledMid
-    $000000,   // COLOR_clDisabledText
-    $000000,   // COLOR_clDisabledBrightText
-    $000000,   // COLOR_clDisabledButtonText
-    $000000,   // COLOR_clDisabledBase
-    $000000,   // COLOR_clDisabledBackground
-    $000000,   // COLOR_clDisabledShadow
-    $000000,   // COLOR_clDisabledHighlight
-    $000000,   // COLOR_clDisabledHighlightedText
-
-    // CLX active, mapped, pseudo, rgb values
-    $000000,   // COLOR_clActiveForeground
-    $000000,   // COLOR_clActiveButton
-    $000000,   // COLOR_clActiveLight
-    $000000,   // COLOR_clActiveMidlight
-    $000000,   // COLOR_clActiveDark
-    $000000,   // COLOR_clActiveMid
-    $000000,   // COLOR_clActiveText
-    $000000,   // COLOR_clActiveBrightText
-    $000000,   // COLOR_clActiveButtonText
-    $000000,   // COLOR_clActiveBase
-    $000000,   // COLOR_clActiveBackground
-    $000000,   // COLOR_clActiveShadow
-    $000000,   // COLOR_clActiveHighlight
-    $000000    // COLOR_clActiveHighlightedText
+    $D0D0D0      {COLOR_FORM}
   ); {end _SysColors}
 
 const

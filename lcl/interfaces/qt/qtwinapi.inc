@@ -1043,7 +1043,7 @@ begin
   Dec(ClientRect.Bottom, 1);
   QPainter_save(QtDC.Widget);
   try
-    ColorDark := ColorToRGB(clDark);
+    ColorDark := ColorToRGB(clBtnShadow);
     ColorLight := ColorToRGB(clBtnHighlight);
     if grfFlags and BF_FLAT <> 0 then
       ColorLight := clSilver;
@@ -1057,7 +1057,7 @@ begin
         InternalDrawEdge(True, Rect);
       InflateRect(ClientRect, -1, -1);
       if grfFlags and BF_MONO = 0 then
-        ColorDark := ColorToRGB(clMid);
+        ColorDark := ColorToRGB(clBtnFace);
       if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
       begin
         InternalDrawEdge(False, ClientRect);
@@ -1068,7 +1068,7 @@ begin
 
     if grfFlags and BF_MIDDLE <> 0 then
     begin
-      Brush := CreateSolidBrush(clButton);
+      Brush := CreateSolidBrush(clBtnFace);
       try
         FillRect(DC, ClientRect, Brush);
       finally
@@ -2800,15 +2800,6 @@ begin
     COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
     COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
     COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-
-    COLOR_clForeground..COLOR_clHighlightedText
-                                  : Result:=GetColor(QPaletteActive,   nIndex - COLOR_clForeground);
-    COLOR_clNormalForeground..COLOR_clNormalHighlightedText
-                                  : Result:=GetColor(QPaletteInactive, nIndex - COLOR_clNormalForeground);
-    COLOR_clDisabledForeground..COLOR_clDisabledHighlightedText
-                                  : Result:=GetColor(QPaletteDisabled, nIndex - COLOR_clDisabledForeground);
-    COLOR_clActiveForeground..COLOR_clActiveHighlightedText
-                                  : Result:=GetColor(QPaletteActive,   nIndex - COLOR_clActiveForeground);
   else
     Result:=0;
   end;
