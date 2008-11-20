@@ -2686,12 +2686,12 @@ begin
   {$ELSE}
     {$IFDEF ShowCollect}
     if fdfCollect in Params.Flags then begin
-      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
+      DebugLn(['[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
-      );
+      ]);
     end;
     {$ENDIF}
   {$ENDIF}
@@ -4093,7 +4093,7 @@ begin
       // proc identifier found
       // the parameters will be checked by the caller
       {$IFDEF ShowTriedContexts}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(@Src[NameAtom.StartPos]),'"');
       {$ENDIF}
       Params.SetResult(Self,ProcContextNode,NameAtom.StartPos);
       Result:=ifrSuccess;
@@ -4111,6 +4111,7 @@ var
   ClassNameAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
   ClassContext: TFindContext;
+  IdentFoundResult: TIdentifierFoundResult;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ProcContextNode);{$ENDIF}
   Result:=false;
@@ -4166,14 +4167,17 @@ begin
     end;
   end else begin
     // proc is not a method
-    if CompareSrcIdentifiers(ClassNameAtom.StartPos,Params.Identifier) then
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(ClassNameAtom.StartPos,Params.Identifier) then
     begin
       // proc identifier found
       {$IFDEF ShowTriedContexts}
       DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
-      Result:=true;
       Params.SetResult(Self,ProcContextNode,ClassNameAtom.StartPos);
+      IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
+                                                               Params.NewNode);
+      Result:=IdentFoundResult=ifrSuccess;
       exit;
     end else begin
       // proceed the search normally ...
