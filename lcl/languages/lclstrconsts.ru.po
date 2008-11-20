@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-01 02:34+0300\n"
+"PO-Revision-Date: 2008-11-20 05:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -27,7 +27,7 @@ msgstr "Невозможно найти браузер HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Не найдена программа просмотра справки.%s Пожалуйста, задайте её в меню Справка -> Параметры справки -> Программы просмотра"
+msgstr "Не найдена программа просмотра справки.%sЗадайте её в меню Справка -> Параметры справки -> Программы просмотра"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -60,15 +60,15 @@ msgstr "Забой"
 #: lclstrconsts.ifsvk_cancel
 msgctxt "lclstrconsts.ifsvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 #: lclstrconsts.ifsvk_capital
 msgid "Capital"
-msgstr "Прописные"
+msgstr "CapsLock"
 
 #: lclstrconsts.ifsvk_clear
 msgid "Clear"
-msgstr "Очистить"
+msgstr "Clear"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -79,8 +79,9 @@ msgid "Convert"
 msgstr "Преобразовать"
 
 #: lclstrconsts.ifsvk_delete
+msgctxt "lclstrconsts.ifsvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Delete"
 
 #: lclstrconsts.ifsvk_down
 msgid "Down"
@@ -104,7 +105,7 @@ msgstr "Итоговый"
 
 #: lclstrconsts.ifsvk_hanja
 msgid "Hanja"
-msgstr "Ханджа"
+msgstr "Ханчча"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
@@ -115,8 +116,9 @@ msgid "Home"
 msgstr "Home"
 
 #: lclstrconsts.ifsvk_insert
+msgctxt "lclstrconsts.ifsvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Insert"
 
 #: lclstrconsts.ifsvk_junja
 msgid "Junja"
@@ -143,16 +145,18 @@ msgid "Mouse Button Middle"
 msgstr "Средняя клавиша мыши"
 
 #: lclstrconsts.ifsvk_menu
+msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
-msgstr "Меню"
+msgstr "Menu"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Изменение режима"
 
 #: lclstrconsts.ifsvk_next
+msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Next"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"
@@ -175,8 +179,9 @@ msgid "Print"
 msgstr "Печать"
 
 #: lclstrconsts.ifsvk_prior
+msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Prior"
 
 #: lclstrconsts.ifsvk_rbutton
 msgid "Mouse Button Right"
@@ -227,16 +232,41 @@ msgid "Up"
 msgstr "Стрелка вверх"
 
 #: lclstrconsts.lislclresourcesnotfound
+msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Ресурс %s не найден"
+
+#: lclstrconsts.rs3ddkshadowcolorcaption
+msgid "3D Dark Shadow"
+msgstr "Затенённая часть объекта 3D"
+
+#: lclstrconsts.rs3dlightcolorcaption
+msgid "3D Light"
+msgstr "Освещённая часть объекта 3D"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as parent"
 msgstr "Элемент управления не может быть сам себе потомком"
 
+#: lclstrconsts.rsactivebordercolorcaption
+msgid "Active Border"
+msgstr "Граница активного окна"
+
+#: lclstrconsts.rsactivecaptioncolorcaption
+msgid "Active Caption"
+msgstr "Заголовок активного окна"
+
 #: lclstrconsts.rsallfiles
 msgid "All files (%s)|%s|%s"
 msgstr "Все файлы (%s)|%s|%s"
+
+#: lclstrconsts.rsappworkspacecolorcaption
+msgid "Application Workspace"
+msgstr "Рабочая область приложения"
+
+#: lclstrconsts.rsbackgroundcolorcaption
+msgid "Desktop"
+msgstr "Рабочий стол"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
@@ -250,6 +280,22 @@ msgstr "Точечные рисунки"
 msgid "Blank"
 msgstr "Пустой"
 
+#: lclstrconsts.rsbtnfacecolorcaption
+msgid "Button Face"
+msgstr "Лицевая часть кнопки"
+
+#: lclstrconsts.rsbtnhighlightcolorcaption
+msgid "Button Highlight"
+msgstr "Освещаемая сторона кнопки"
+
+#: lclstrconsts.rsbtnshadowcolorcaption
+msgid "Button Shadow"
+msgstr "Затенённая сторона кнопки"
+
+#: lclstrconsts.rsbtntextcolorcaption
+msgid "Button Text"
+msgstr "Текст кнопки"
+
 #: lclstrconsts.rscalculator
 msgid "Calculator"
 msgstr "Калькулятор"
@@ -257,7 +303,7 @@ msgstr "Калькулятор"
 #: lclstrconsts.rscancelrecordhint
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
@@ -266,6 +312,10 @@ msgstr "Не могу принять фокус"
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
 msgstr "Канва не поддерживает рисования"
+
+#: lclstrconsts.rscaptiontextcolorcaption
+msgid "Caption Text"
+msgstr "Текст заголовка"
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
@@ -279,6 +329,10 @@ msgstr "Создание ошибки, захватываемой GDB:"
 msgid "Cursor"
 msgstr "Курсор"
 
+#: lclstrconsts.rscustomcolorcaption
+msgid "Custom ..."
+msgstr "Пользовательский ..."
+
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
 msgstr "права пользователь группа размер дата время"
@@ -288,6 +342,7 @@ msgid "Delete record?"
 msgstr "Удалить запись?"
 
 #: lclstrconsts.rsdeleterecordhint
+msgctxt "lclstrconsts.rsdeleterecordhint"
 msgid "Delete"
 msgstr "Удалить"
 
@@ -312,8 +367,9 @@ msgid "Edit"
 msgstr "Редактировать"
 
 #: lclstrconsts.rserror
+msgctxt "lclstrconsts.rserror"
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
@@ -419,6 +475,10 @@ msgstr "FixedCols не может быть >= ColCount"
 msgid "FixedRows can't be >= RowCount"
 msgstr "FixedRows не может быть >= RowCount"
 
+#: lclstrconsts.rsformcolorcaption
+msgid "Form"
+msgstr "Форма"
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Ошибка потоков \"%s\" форм: %s"
@@ -438,6 +498,14 @@ msgstr "--gdk-no-debug flags Выключить указанные отладо�
 #: lclstrconsts.rsgoptionfatalwarnings
 msgid "--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt the application."
 msgstr "--g-fatal-warnings    Замечания и ошибки, выдаваемые Gtk+/GDK, остановят приложение."
+
+#: lclstrconsts.rsgradientinactivecaptioncolorcaption
+msgid "Gradient Inactive Caption"
+msgstr "Градиент неактивного заголовка"
+
+#: lclstrconsts.rsgraytextcolorcaption
+msgid "Gray Text"
+msgstr "Серый текст"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -571,6 +639,18 @@ msgstr "Ошибка программы просмотра справки"
 msgid "Help Viewer not found"
 msgstr "Программа просмотра справки не найдена"
 
+#: lclstrconsts.rshighlightcolorcaption
+msgid "Highlight"
+msgstr "Выделенное"
+
+#: lclstrconsts.rshighlighttextcolorcaption
+msgid "Highlight Text"
+msgstr "Текст выделенного"
+
+#: lclstrconsts.rshotlightcolorcaption
+msgid "Hot Light"
+msgstr "Выделение"
+
 #: lclstrconsts.rsicns
 msgid "OSX Icon Resource"
 msgstr "Ресурс значков OSX"
@@ -603,6 +683,20 @@ msgstr "Невозможно изменить размер изображени�
 msgid "Icon has no current image"
 msgstr "Значок не имеет текущего изображения"
 
+#: lclstrconsts.rsinactivebordercolorcaption
+msgid "Inactive Border"
+msgstr "Граница неактивного окна"
+
+#: lclstrconsts.rsinactivecaptioncolorcaption
+msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
+msgid "Inactive Caption"
+msgstr "Заголовок неактивного окна"
+
+#: lclstrconsts.rsinactivecaptiontext
+msgctxt "lclstrconsts.rsinactivecaptiontext"
+msgid "Inactive Caption"
+msgstr "Заголовок неактивного окна"
+
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s Индекс %d вне диапазона 0 .. %d"
@@ -611,7 +705,16 @@ msgstr "%s Индекс %d вне диапазона 0 .. %d"
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Индекс вне диапазона Cell[Col=%d Row=%d]"
 
+#: lclstrconsts.rsinfobkcolorcaption
+msgid "Info Background"
+msgstr "Фон сообщения"
+
+#: lclstrconsts.rsinfotextcolorcaption
+msgid "Info Text"
+msgstr "Текст сообщения"
+
 #: lclstrconsts.rsinsertrecordhint
+msgctxt "lclstrconsts.rsinsertrecordhint"
 msgid "Insert"
 msgstr "Вставить"
 
@@ -625,7 +728,7 @@ msgstr "Неверная дата: %s. Должна быть между %s and %
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "неправильный поток объекта Формы"
+msgstr "неправильный поток объекта формы"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -664,6 +767,7 @@ msgid "&All"
 msgstr "&Все"
 
 #: lclstrconsts.rsmbcancel
+msgctxt "lclstrconsts.rsmbcancel"
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -703,6 +807,23 @@ msgstr "&Да"
 msgid "Yes to &All"
 msgstr "Да для &всех"
 
+#: lclstrconsts.rsmenubarcolorcaption
+msgid "Menu Bar"
+msgstr "Панель меню"
+
+#: lclstrconsts.rsmenucolorcaption
+msgctxt "lclstrconsts.rsmenucolorcaption"
+msgid "Menu"
+msgstr "Меню"
+
+#: lclstrconsts.rsmenuhighlightcolorcaption
+msgid "Menu Highlight"
+msgstr "Выделенный пункт меню"
+
+#: lclstrconsts.rsmenutextcolorcaption
+msgid "Menu Text"
+msgstr "Текст меню"
+
 #: lclstrconsts.rsmodified
 msgid "  modified "
 msgstr "  изменён "
@@ -716,6 +837,7 @@ msgid "Custom"
 msgstr "Пользовательский"
 
 #: lclstrconsts.rsmterror
+msgctxt "lclstrconsts.rsmterror"
 msgid "Error"
 msgstr "Ошибка"
 
@@ -728,6 +850,7 @@ msgid "Warning"
 msgstr "Предупреждение"
 
 #: lclstrconsts.rsnextrecordhint
+msgctxt "lclstrconsts.rsnextrecordhint"
 msgid "Next"
 msgstr "Следующая"
 
@@ -772,6 +895,7 @@ msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill th
 msgstr "%s%sНажмите 'Ok' чтобы игнорировать и подвергнуться риску повреждения данных.%sНажмите 'Отмена' для закрытия программы."
 
 #: lclstrconsts.rspriorrecordhint
+msgctxt "lclstrconsts.rspriorrecordhint"
 msgid "Prior"
 msgstr "Предыдущая"
 
@@ -804,8 +928,13 @@ msgid "Replace all"
 msgstr "Заменить всё"
 
 #: lclstrconsts.rsresourcenotfound
+msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
-msgstr ""
+msgstr "Ресурс %s не найден"
+
+#: lclstrconsts.rsscrollbarcolorcaption
+msgid "ScrollBar"
+msgstr "Полоса прокрутки"
 
 #: lclstrconsts.rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
@@ -879,6 +1008,18 @@ msgstr "Ошибка:"
 msgid "Warning:"
 msgstr "Предупреждение:"
 
+#: lclstrconsts.rswindowcolorcaption
+msgid "Window"
+msgstr "Окно"
+
+#: lclstrconsts.rswindowframecolorcaption
+msgid "Window Frame"
+msgstr "Граница окна"
+
+#: lclstrconsts.rswindowtextcolorcaption
+msgid "Window Text"
+msgstr "Текст окна"
+
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Нельзя дать фокус отключённому или невидимому окну"
@@ -921,7 +1062,7 @@ msgstr "Индекс меню вне диапазона"
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
-msgstr "MenuItem - указатель на нуль"
+msgstr "MenuItem указывает на нуль"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
@@ -965,5 +1106,5 @@ msgstr "Неверный символ лексемы: ожидался %s, но 
 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr "Неверный тип лекемы: ожидался %s, но найден %s"
+msgstr "Неверный тип лексемы: ожидался %s, но найден %s"
 

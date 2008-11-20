@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-04 03:57+0300\n"
+"PO-Revision-Date: 2008-11-20 04:28+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -20,7 +20,7 @@ msgstr "База данных"
 #: objinspstrconsts.cactionlisteditordeleteaction
 msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
@@ -31,6 +31,7 @@ msgid "Dialog"
 msgstr "Диалог"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -39,16 +40,19 @@ msgid "File"
 msgstr "Файл"
 
 #: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Справка"
 
 #: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr ""
+msgstr "Переместить вниз"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr ""
+msgstr "Переместить вверх"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
@@ -111,6 +115,7 @@ msgid "Delete the Item %d \"%s\"?"
 msgstr "Удалить элемент %d \"%s\"?"
 
 #: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
 msgstr "Вниз"
 
@@ -119,6 +124,7 @@ msgid "Modify the Item"
 msgstr "Изменить элемент"
 
 #: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Вверх"
 
@@ -143,8 +149,9 @@ msgid "Field's list is not available, can't check for duplicates"
 msgstr "Список полей недоступен, не могу проверить наличие дубликатов"
 
 #: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -171,17 +178,19 @@ msgid "Show page ..."
 msgstr "Показать страницу"
 
 #: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
 msgid "Add"
 msgstr "Добавить"
 
 #: objinspstrconsts.oicoleditdelete
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -190,7 +199,7 @@ msgstr "Редактирование"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -233,14 +242,16 @@ msgid "&Add"
 msgstr "&Добавить"
 
 #: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
 msgid "&Cancel"
-msgstr ""
+msgstr "От&мена"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
 msgstr "Категория"
 
 #: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
 msgid "&Delete"
 msgstr "&Удалить"
 
@@ -297,6 +308,7 @@ msgid "Cut components"
 msgstr "Вырезать компоненты"
 
 #: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
 msgid "Delete"
 msgstr "Удалить"
 
@@ -541,26 +553,28 @@ msgid "Cancel"
 msgstr "Отмена"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
 msgstr "От&мена"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Удалить"
 
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.oistdactdataseteditheadline
 msgid "&Edit"
 msgstr "&Редактировать"
 
 #: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -575,6 +589,7 @@ msgid "&Insert"
 msgstr "&Вставить"
 
 #: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
 msgstr "Вставить"
 
@@ -591,6 +606,7 @@ msgid "&Next"
 msgstr "Следу&ющий"
 
 #: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
 msgstr "Следующий"
 
@@ -607,6 +623,7 @@ msgid "&Prior"
 msgstr "Пред&ыдущий"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
 msgstr "Предыдущий"
 
@@ -645,7 +662,7 @@ msgstr "Вырезать"
 #: objinspstrconsts.oistdacteditdeleteheadline
 msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Удалить"
 
 #: objinspstrconsts.oistdacteditdeleteshortcut
 msgid "Del"
@@ -654,7 +671,7 @@ msgstr "Del"
 #: objinspstrconsts.oistdacteditdeleteshorthint
 msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.oistdacteditpasteheadline
 msgid "&Paste"
@@ -689,8 +706,9 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
-msgstr ""
+msgstr "Отменить"
 
 #: objinspstrconsts.oistdactfileexitheadline
 msgid "E&xit"
@@ -707,7 +725,7 @@ msgstr "О&ткрыть..."
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: objinspstrconsts.oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -822,10 +840,12 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr "Метод %s%s%s не опубликован.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
 msgstr "Отменить"
 
 #: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -882,6 +902,7 @@ msgid "Invalid numeric Value"
 msgstr "Неверное численное значение"
 
 #: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
 msgstr "По левому краю"
 
@@ -898,6 +919,7 @@ msgid "OK"
 msgstr "OK"
 
 #: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
 msgstr "По правому краю"
 
@@ -924,7 +946,7 @@ msgstr "Выравнивание"
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -935,6 +957,7 @@ msgid "Center"
 msgstr "По центру"
 
 #: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "Clear"
 msgstr "Очистить"
 
@@ -945,7 +968,7 @@ msgstr "Обрезать"
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -956,10 +979,12 @@ msgid "Selected Image"
 msgstr "Выбранное изображение"
 
 #: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
 msgstr "Переместить вниз"
 
 #: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
 msgstr "Переместить вверх"
 
@@ -976,6 +1001,7 @@ msgid "Transparent Color:"
 msgstr "Прозрачный цвет:"
 
 #: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
 msgstr "Сохранить..."
 
@@ -1002,7 +1028,7 @@ msgstr "Редактировать элементы ListView..."
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1011,39 +1037,46 @@ msgstr "Редактор элементов ListView"
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Элементы"
 
 #: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Свойства элемента"
 
 #: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Элемент"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
 msgstr "Заголовок:"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr ""
+msgstr "Индекс изображения:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Индекс состояния:"
 
 #: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Новый элемент"
 
 #: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Новый подэлемент"
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1056,7 +1089,7 @@ msgstr "Редактировать StringGrid..."
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
@@ -1081,22 +1114,24 @@ msgstr "Переместить строки/столбцы"
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Сохранить..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: objinspstrconsts.sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Редактировать элементы TreeView..."
 
 #: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Применить"
 
@@ -1107,21 +1142,25 @@ msgstr "Редактор элементов TreeView"
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
 msgstr "Элементы"
 
 #: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Свойства элемента"
 
 #: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
 msgstr "Элемент"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
 msgstr "Индекс изображения:"
 
@@ -1130,6 +1169,7 @@ msgid "Selected Index:"
 msgstr "Выбранный индекс:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
 msgstr "Индекс состояния:"
 
@@ -1142,25 +1182,29 @@ msgid "Load"
 msgstr "Загрузить"
 
 #: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
 msgstr "Новый элемент"
 
 #: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Новый подэлемент"
 
 #: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Открыть"
 
 #: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
 msgstr "Сохранить"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1195,8 +1239,9 @@ msgid "Capital"
 msgstr "Прописные"
 
 #: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1231,16 +1276,18 @@ msgid "Hanja"
 msgstr "Ханчча"
 
 #: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
 msgstr "Home"
 
 #: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Вставить"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1259,8 +1306,9 @@ msgid "Mouse Button Left"
 msgstr "Левая клавиша мыши"
 
 #: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "По левому краю"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
@@ -1283,8 +1331,9 @@ msgid "Mode Change"
 msgstr "Изменение режима"
 
 #: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1311,8 +1360,9 @@ msgid "Print"
 msgstr "Печать"
 
 #: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Предыдущий"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1323,8 +1373,9 @@ msgid "Return"
 msgstr "Ввод"
 
 #: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "По правому краю"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"
@@ -1355,13 +1406,14 @@ msgid "Tab"
 msgstr "ТАБ"
 
 #: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестный"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
