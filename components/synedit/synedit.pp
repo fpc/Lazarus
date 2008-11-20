@@ -519,6 +519,7 @@ type
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
+    function GetLineNumberColor: TSynSelectedColor;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
@@ -976,6 +977,7 @@ type
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
+    property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
     //property Color: TSynSelectedColor read GetSelectedColor;
     {$ELSE}
     property SelectedColor: TSynSelectedColor
@@ -1117,6 +1119,7 @@ type
     property HighlightAllColor;
     property BracketMatchColor;
     property MouseLinkColor;
+    property LineNumberColor;
     {$ENDIF}
     property SelectionMode;
     property TabWidth;
@@ -1787,6 +1790,11 @@ end;
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
 begin
   result := fMarkupSelection.MarkupInfoIncr;
+end;
+
+function TCustomSynEdit.GetLineNumberColor: TSynSelectedColor;
+begin
+  Result := fGutter.MarkupInfoLineNumber;
 end;
 
 function TCustomSynEdit.GetSelectedColor : TSynSelectedColor;
@@ -3151,22 +3159,28 @@ begin
   else
     CodeFoldOffset:=0;
   {$ENDIF}
-  if fGutter.ShowLineNumbers then begin
+  if fGutter.ShowLineNumbers then
+  begin
     fTextDrawer.BeginDrawing(dc);
     try
-      fTextDrawer.SetBackColor(fGutter.Color);
-      fTextDrawer.SetForeColor(Self.Font.Color);
-      if fGutter.UseFontStyle then
-        fTextDrawer.Style := Font.Style
+      if FGutter.MarkupInfoLineNumber.Background <> clNone then
+        fTextDrawer.SetBackColor(FGutter.MarkupInfoLineNumber.Background)
       else
-        fTextDrawer.Style := [];
+        fTextDrawer.SetBackColor(FGutter.Color);
+      if FGutter.MarkupInfoLineNumber.Foreground <> clNone then
+        fTextDrawer.SetForeColor(FGutter.MarkupInfoLineNumber.Foreground)
+      else
+        fTextDrawer.SetForeColor(Self.Font.Color);
+      fTextDrawer.Style := FGutter.MarkupInfoLineNumber.Style;
       // prepare the rect initially
       rcLine := AClip;
       rcLine.Right := fGutterWidth - 2;
       //rcLine.Right := Max(rcLine.Right, fGutterWidth - 2);
       {$IFDEF SYN_LAZARUS}
       rcLine.Bottom := FirstLine * fTextHeight;
-      for i := FirstLine to LastLine do begin
+      rcLine.Left := CodeFoldOffset + fGutter.LeftOffset;
+      for i := FirstLine to LastLine do
+      begin
         iLine := fTextView.DisplayNumber[i];
         // next line rect
         rcLine.Top := rcLine.Bottom;
@@ -3179,8 +3193,8 @@ begin
         s := fGutter.FormatLineNumber(iLine, ShowDot);
         Inc(rcLine.Bottom, fTextHeight);
         // erase the background and draw the line number string in one go
-        fTextDrawer.ExtTextOut(CodeFoldOffset+fGutter.LeftOffset,
-                   rcLine.Top, ETO_OPAQUE,rcLine,PChar(Pointer(S)),Length(S));
+        fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE, rcLine,
+          PChar(Pointer(S)),Length(S));
       end;
       {$ELSE}
       rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
@@ -3195,8 +3209,21 @@ begin
       end;
       {$ENDIF}
       // now erase the remaining area if any
-      if AClip.Bottom > rcLine.Bottom then begin
+      if AClip.Bottom > rcLine.Bottom then
+      begin
         rcLine.Top := rcLine.Bottom;
+        rcLine.Bottom := AClip.Bottom;
+        with rcLine do
+          fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
+      end;
+      // restore original style
+      fTextDrawer.SetBackColor(fGutter.Color);
+      fTextDrawer.SetForeColor(Self.Font.Color);
+      if AClip.Left < rcLine.Left then
+      begin
+        rcLine.Right := rcLine.Left;
+        rcLine.Left := AClip.Left;
+        rcLine.Top := AClip.Top;
         rcLine.Bottom := AClip.Bottom;
         with rcLine do
           fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
@@ -3204,9 +3231,8 @@ begin
     finally
       fTextDrawer.EndDrawing;
     end;
-  end else begin
+  end else
     InternalFillRect(dc, AClip);
-  end;
 
   //draw the code folding marks
   if fGutter.ShowCodeFolding then
