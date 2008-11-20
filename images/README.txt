@@ -54,10 +54,16 @@ rm ../main.ppu
 cd <lazarusdir>/images
 ./tools/lazres splash_logo.lrs splash_logo.png
 
-7. codetoolsdefines.lrs
+7. lazdoc.lrs
 
 cd <lazarusdir>/images/
 ../../tools/lazres ../ide/lazdoc.lrs @ladoc.txt
+
+8. objectinspector_img.lrs
+
+cd <lazarusdir>/images/
+../../tools/lazres ../ideintf/objectinspector_img.lrs pg_active_row.png
+
 
 Others
 
