@@ -5,8 +5,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
   ClientWidth = 634
   TabOrder = 0
   Visible = False
-  DesignLeft = 253
-  DesignTop = 181
+  DesignLeft = 417
+  DesignTop = 325
   object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -85,14 +85,14 @@ inherited OIOptionsFrame: TOIOptionsFrame
       TabOrder = 1
     end
   end
-  object OIMiscGroupBox: TGroupBox[1]
+  object OIOptionsGroupBox: TGroupBox[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ObjectInspectorColorsGroupBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 212
+    Height = 175
     Top = 235
     Width = 634
     HelpContext = 0
@@ -105,39 +105,19 @@ inherited OIOptionsFrame: TOIOptionsFrame
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    Caption = 'OIMiscGroupBox'
+    Caption = 'OIOptionsGroupBox'
     ChildSizing.LeftRightSpacing = 0
     ChildSizing.TopBottomSpacing = 0
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 194
+    ClientHeight = 157
     ClientWidth = 630
     Ctl3D = False
     TabOrder = 1
-    object OIDefaultItemHeightLabel: TLabel
-      AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIDefaultItemHeightSpinEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 14
-      Top = 168
-      Width = 126
-      HelpContext = 0
-      Alignment = taLeftJustify
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Caption = 'OIDefaultItemHeightLabel'
-      ParentColor = False
-    end
     object OIShowHintCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
+      AnchorSideTop.Control = OIOptionsGroupBox
       Left = 6
       Height = 19
       Top = 6
@@ -155,28 +135,8 @@ inherited OIOptionsFrame: TOIOptionsFrame
       TabOrder = 0
       UseOnChange = False
     end
-    object OIDefaultItemHeightSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = OIDefaultItemHeightLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = OIShowInfoBoxCheckBox
-      AnchorSideTop.Side = asrBottom
-      Left = 138
-      Height = 25
-      Top = 163
-      Width = 53
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      TabOrder = 1
-      Value = 1
-    end
     object OIAutoShowCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIShowHintCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -193,11 +153,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIAutoShowCheckBox'
       State = cbUnchecked
-      TabOrder = 2
+      TabOrder = 1
       UseOnChange = False
     end
     object OIBoldNonDefaultCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIAutoShowCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -214,11 +174,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIBoldNonDefaultCheckBox'
       State = cbUnchecked
-      TabOrder = 3
+      TabOrder = 2
       UseOnChange = False
     end
     object OIDrawGridLinesCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIBoldNonDefaultCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -235,11 +195,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIDrawGridLinesCheckBox'
       State = cbUnchecked
-      TabOrder = 4
+      TabOrder = 3
       UseOnChange = False
     end
     object OIShowGutterCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIDrawGridLinesCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -256,11 +216,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIShowGutterCheckBox'
       State = cbUnchecked
-      TabOrder = 5
+      TabOrder = 4
       UseOnChange = False
     end
     object OIShowStatusBarCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIShowGutterCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -277,11 +237,11 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIShowStatusBarCheckBox'
       State = cbUnchecked
-      TabOrder = 6
+      TabOrder = 5
       UseOnChange = False
     end
     object OIShowInfoBoxCheckBox: TCheckBox
-      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIShowStatusBarCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -298,7 +258,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'OIShowInfoBoxCheckBox'
       State = cbUnchecked
-      TabOrder = 7
+      TabOrder = 6
       UseOnChange = False
     end
   end
@@ -308,10 +268,9 @@ inherited OIOptionsFrame: TOIOptionsFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ObjectInspectorColorsGroupBox
-    AnchorSideBottom.Side = asrBottom
+    AnchorSideBottom.Control = OIMiscGroupBox
     Left = 233
-    Height = 228
+    Height = 166
     Top = 0
     Width = 401
     HelpContext = 0
@@ -319,7 +278,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     BorderSpacing.Left = 7
     BorderSpacing.Top = 0
     BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
+    BorderSpacing.Bottom = 7
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
@@ -329,7 +288,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 210
+    ClientHeight = 148
     ClientWidth = 397
     Ctl3D = False
     TabOrder = 2
@@ -380,6 +339,77 @@ inherited OIOptionsFrame: TOIOptionsFrame
       Constraints.MinWidth = 75
       OnClick = BtnUseDefaultDelphiSettingsClick
       TabOrder = 1
+    end
+  end
+  object OIMiscGroupBox: TGroupBox[3]
+    AnchorSideLeft.Control = ObjectInspectorColorsGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ObjectInspectorColorsGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 233
+    Height = 55
+    Top = 173
+    Width = 401
+    HelpContext = 0
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 7
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Caption = 'OIMiscGroupBox'
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
+    ClientHeight = 37
+    ClientWidth = 397
+    Ctl3D = False
+    TabOrder = 3
+    object OIDefaultItemHeightLabel: TLabel
+      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideTop.Control = OIDefaultItemHeightSpinEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 11
+      Width = 126
+      HelpContext = 0
+      Alignment = taLeftJustify
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'OIDefaultItemHeightLabel'
+      ParentColor = False
+    end
+    object OIDefaultItemHeightSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = OIDefaultItemHeightLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OIMiscGroupBox
+      Left = 138
+      Height = 25
+      Top = 6
+      Width = 53
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      TabOrder = 0
+      Value = 1
     end
   end
 end

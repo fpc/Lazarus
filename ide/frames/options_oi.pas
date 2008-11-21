@@ -69,17 +69,18 @@ type
   TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnUseDefaultDelphiSettings: TButton;
     BtnUseDefaultLazarusSettings: TButton;
+    OIMiscGroupBox: TGroupBox;
     ObjectInspectorSpeedSettingsGroupBox: TGroupBox;
+    OIDefaultItemHeightLabel: TLabel;
+    OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIShowGutterCheckBox: TCheckBox;
     ColorBox: TColorBox;
     ColorsListBox: TColorListBox;
     ObjectInspectorColorsGroupBox: TGroupBox;
     OIAutoShowCheckBox: TCheckBox;
     OIBoldNonDefaultCheckBox: TCheckBox;
-    OIDefaultItemHeightLabel: TLabel;
-    OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIDrawGridLinesCheckBox: TCheckBox;
-    OIMiscGroupBox: TGroupBox;
+    OIOptionsGroupBox: TGroupBox;
     OIShowStatusBarCheckBox: TCheckBox;
     OIShowHintCheckBox: TCheckBox;
     OIShowInfoBoxCheckBox: TCheckBox;
@@ -160,6 +161,7 @@ procedure TOIOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ObjectInspectorColorsGroupBox.Caption := dlgEnvColors;
   OIMiscGroupBox.Caption := dlgOIMiscellaneous;
+  OIOptionsGroupBox.Caption := dlgOIOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;

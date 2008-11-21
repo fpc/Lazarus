@@ -1037,6 +1037,7 @@ resourcestring
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOISpeedSettings = 'Speed settings';
+  dlgOIOptions = 'Options';
   dlgOIItemHeight = 'Item height';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
   dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
