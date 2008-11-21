@@ -289,6 +289,35 @@ begin
 end;
 
 procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
+
+  function FindBaseType(Tool: TFindDeclarationTool; Node: TCodeTreeNode;
+    var s: string): boolean;
+  var
+    Context: TFindContext;
+    Params: TFindDeclarationParams;
+  begin
+    Result:=false;
+    Params:=TFindDeclarationParams.Create;
+    try
+      try
+        Context:=Tool.FindBaseTypeOfNode(Params,Node);
+        if Context.Node=nil then exit;
+        case Context.Node.Desc of
+        ctnProcedureType:
+          begin
+            s:=s+Context.Tool.ExtractProcHead(Context.Node,
+               [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
+               phpWithResultType]);
+            Result:=true;
+          end;
+        end;
+      except
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
+
 var
   i: Integer;
   CurExprType: TExpressionType;
@@ -310,7 +339,27 @@ begin
         begin
           s:=CodeTool.ExtractProcHead(CodeNode,
               [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
-               phpWithResultType,phpWithOfObject]);
+               phpWithResultType]);
+        end;
+      ctnProperty:
+        begin
+          if CodeTool.PropertyNodeHasParamList(CodeNode) then begin
+            s:=CodeTool.ExtractProperty(CodeNode,
+                [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
+                 phpWithResultType]);
+          end else if not CodeTool.PropNodeIsTypeLess(CodeNode) then begin
+            s:=CodeTool.ExtractPropName(CodeNode,false);
+            FindBaseType(CodeTool,CodeNode,s);
+          end else begin
+            // ignore properties without type
+            continue;
+          end;
+        end;
+      ctnVarDefinition:
+        begin
+          s:=CodeTool.ExtractDefinitionName(CodeNode);
+          if not FindBaseType(CodeTool,CodeNode,s) then
+            continue; // ignore normal variables
         end;
       end;
     end;

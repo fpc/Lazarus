@@ -1312,6 +1312,7 @@ function TIdentCompletionTool.CollectAllContexts(
 begin
   Result:=ifrProceedSearch;
   if FoundContext.Node=nil then exit;
+  //DebugLn(['TIdentCompletionTool.CollectAllContexts ',FoundContext.Node.DescAsString]);
   case FoundContext.Node.Desc of
   ctnProcedure:
     begin
@@ -1321,6 +1322,23 @@ begin
       //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
       if not FoundContext.Tool.CompareSrcIdentifier(
         FoundContext.Tool.CurPos.StartPos,
+        CurrentContexts.ProcName)
+      then exit;
+    end;
+  ctnProperty:
+    begin
+      if (CurrentContexts.ProcName='') then exit;
+      FoundContext.Tool.MoveCursorToPropName(FoundContext.Node);
+      if not FoundContext.Tool.CompareSrcIdentifier(
+        FoundContext.Tool.CurPos.StartPos,
+        CurrentContexts.ProcName)
+      then exit;
+    end;
+  ctnVarDefinition:
+    begin
+      if (CurrentContexts.ProcName='') then exit;
+      if not FoundContext.Tool.CompareSrcIdentifier(
+        FoundContext.Node.StartPos,
         CurrentContexts.ProcName)
       then exit;
     end;
