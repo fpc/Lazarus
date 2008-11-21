@@ -883,6 +883,7 @@ type
     procedure setItemText(AIndex: Integer; AText: String);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
+    procedure exchangeItems(AIndex1, AIndex2: Integer);
   end;
   
   { TQtHeaderView }
@@ -6817,6 +6818,40 @@ begin
       setCurrentRow(-1);
   Item := QListWidget_takeitem(QListWidgetH(Widget), AIndex);
   QListWidgetItem_destroy(Item);
+end;
+
+procedure TQtListWidget.exchangeItems(AIndex1, AIndex2: Integer);
+var
+  Item1, Item2: QListWidgetItemH;
+  R: TRect;
+begin
+  if AIndex1 = AIndex2 then
+    exit;
+
+  if (currentRow = AIndex1) or (currentRow = AIndex2) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
+
+  if AIndex1 < AIndex2 then
+  begin
+    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1);
+    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2 - 1);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item2);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item1);
+  end else
+  begin
+    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
+    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1 - 1);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item2);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item1);
+  end;
+  if OwnerDrawn then
+  begin
+    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item1);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item2);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+  end;
 end;
 
   { TQtHeaderView }
