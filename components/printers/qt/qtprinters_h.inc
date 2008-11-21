@@ -1,7 +1,9 @@
 {%MainUnit ../osprinters.pas}
 uses
+  {$IFNDEF USE_QT_44}
   {$IFDEF WINDOWS}Windows,{$ENDIF}
   {$IFDEF UNIX}CUPSDyn,{$ENDIF}
+  {$ENDIF}
   Classes, SysUtils, Printers, qt4, qtobjects,
   LCLType, LCLProc;
 
