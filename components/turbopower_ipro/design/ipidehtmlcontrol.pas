@@ -196,8 +196,11 @@ end;
 
 procedure TIPLazHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
 begin
-  AWidth:=500;
-  AHeight:=250;
+  with GetContentSize do
+  begin
+    AWidth := cx;
+    AHeight := cy;
+  end;
 end;
 
 end.

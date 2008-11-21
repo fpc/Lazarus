@@ -2838,6 +2838,9 @@ type
 
     procedure Print(FromPg, ToPg: LongInt);
     procedure PrintPreview;                                            {!!.10}
+
+    function GetContentSize: TSize;
+
     property VScrollPos: Integer
                 read GetVScrollPos write SetVScrollPos; //JMN
 
@@ -18468,6 +18471,20 @@ begin
   {$ENDIF}
   if Assigned(MasterFrame) then
     MasterFrame.HyperPanel.PrintPreview;
+end;
+
+function TIpHtmlCustomPanel.GetContentSize: TSize;
+begin
+  if MasterFrame <> nil then
+  begin
+    with MasterFrame.HTML.FPageRect do
+    begin
+      Result.cx := Right - Left;
+      Result.cy := Bottom - Top;
+    end;
+  end
+  else
+    Result := Size(0, 0);
 end;
 
 procedure TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction);
