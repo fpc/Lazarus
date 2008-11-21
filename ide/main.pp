@@ -1722,6 +1722,7 @@ begin
   HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
   HelpControl.Parent := ObjectInspector1.InfoPanel;
   HelpControl.Align := alClient;
+  HelpControl.BorderSpacing.Around := 2;
 
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';
