@@ -1659,6 +1659,9 @@ begin
     end;
     {$ENDIF}
   end;
+  {$IFDEF SYN_LAZARUS}
+  fTextView.UnLock; // after ScanFrom, but before UpdateCaret
+  {$ENDIF}
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
     if sfScrollbarChanged in fStateFlags then
@@ -2175,6 +2178,9 @@ end;
 procedure TCustomSynEdit.IncPaintLock;
 begin
   inc(fPaintLock);
+  {$IFDEF SYN_LAZARUS}
+  fTextView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.InvalidateGutter;
@@ -5237,8 +5243,8 @@ var
       if P^ <> #0 then begin
         SetString(Str, Value, P - Start);
         {$IFDEF SYN_LAZARUS}
+        TSynEditStrings(Lines).InsertLines(CaretY - 1, CountLines(P));
         Lines[CaretY - 1] := sLeftSide + Str;
-        TSynEditStrings(Lines).InsertLines(CaretY, CountLines(P));
         {$ELSE}
         TrimmedSetLine(CaretY - 1, sLeftSide + Str);
         TSynEditStringList(Lines).InsertLines(CaretY, CountLines(P));           // djlp 2000-09-07
