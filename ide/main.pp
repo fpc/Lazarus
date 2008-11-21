@@ -530,6 +530,7 @@ type
     FOIHelpProvider: TAbstractIDEHTMLProvider;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
+    function OIHelpProvider: TAbstractIDEHTMLProvider;
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     function DoResetToolStatus(Interactive: boolean): boolean; override;
@@ -1414,10 +1415,10 @@ begin
     end;
   end;
 
-  FOIHelpProvider.BaseURL := BaseURL;
+  OIHelpProvider.BaseURL := BaseURL;
   Stream := TStringStream.Create(HtmlHint);
   try
-    FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+    OIHelpProvider.ControlIntf.SetHTMLContent(Stream);
   finally
     Stream.Free;
   end;
@@ -1700,7 +1701,6 @@ end;
 procedure TMainIDE.SetupObjectInspector;
 var
   OIControlDocker: TLazControlDocker;
-  HelpControl: TControl;
 begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
@@ -1719,10 +1719,6 @@ begin
   ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
-  HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
-  HelpControl.Parent := ObjectInspector1.InfoPanel;
-  HelpControl.Align := alClient;
-  HelpControl.BorderSpacing.Around := 2;
 
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';
@@ -13973,6 +13969,20 @@ begin
     end;
     UsedByDependency:=UsedByDependency.NextUsedByDependency;
   end;
+end;
+
+function TMainIDE.OIHelpProvider: TAbstractIDEHTMLProvider;
+var
+  HelpControl: TControl;
+begin
+  if FOIHelpProvider = nil then
+  begin
+    HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
+    HelpControl.Parent := ObjectInspector1.InfoPanel;
+    HelpControl.Align := alClient;
+    HelpControl.BorderSpacing.Around := 2;
+  end;
+  Result := FOIHelpProvider;
 end;
 
 procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;

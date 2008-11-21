@@ -36,5 +36,7 @@
 
 {off $apptype console}
 
+{off $define UseTurbopowerInHelp}
+
 // end.
 
