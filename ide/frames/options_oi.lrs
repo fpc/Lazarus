@@ -3,42 +3,42 @@
 LazarusResources.Add('TOIOptionsFrame','FORMDATA',[
   'TPF0'#241#15'TOIOptionsFrame'#14'OIOptionsFrame'#6'Height'#3#228#1#5'Width'#3
   +'z'#2#12'ClientHeight'#3#228#1#11'ClientWidth'#3'z'#2#8'TabOrder'#2#0#7'Visi'
-  +'ble'#8#10'DesignLeft'#3#161#1#9'DesignTop'#3'E'#1#0#242#2#0#9'TGroupBox'#29
-  +'ObjectInspectorColorsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'Anc'
-  +'horSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#20'An'
-  +'chorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#3#228#0#3'Top'#2#0
-  +#5'Width'#3#226#0#11'HelpContext'#2#0#8'AutoSize'#9#18'BorderSpacing.Left'#2
-  +#0#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bo'
-  +'ttom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7
-  +#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#29
-  +'ObjectInspectorColorsGroupBox'#28'ChildSizing.LeftRightSpacing'#2#6#28'Chil'
-  +'dSizing.TopBottomSpacing'#2#6#29'ChildSizing.HorizontalSpacing'#2#2#27'Chil'
-  +'dSizing.VerticalSpacing'#2#2#27'ChildSizing.ControlsPerLine'#2#0#12'ClientH'
-  +'eight'#3#210#0#11'ClientWidth'#3#222#0#5'Ctl3D'#8#8'TabOrder'#2#0#0#13'TCol'
-  +'orListBox'#13'ColorsListBox'#22'AnchorSideLeft.Control'#7#29'ObjectInspecto'
-  +'rColorsGroupBox'#21'AnchorSideTop.Control'#7#29'ObjectInspectorColorsGroupB'
-  +'ox'#4'Left'#2#6#6'Height'#3#170#0#3'Top'#2#6#5'Width'#3#210#0#11'HelpContex'
-  +'t'#2#0#5'Style'#11#14'cbCustomColors'#0#11'OnGetColors'#7#22'ColorsListBoxG'
-  +'etColors'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpa'
-  +'cing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!'
-  +'BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignV'
-  +'ertical'#7#7'ccaFill'#14'IntegralHeight'#8#10'ItemHeight'#2#0#17'OnSelectio'
-  +'nChange'#7#28'ColorsListBoxSelectionChange'#8'TabOrder'#2#0#8'TopIndex'#2#0
-  +#0#0#9'TColorBox'#8'ColorBox'#22'AnchorSideLeft.Control'#7#29'ObjectInspecto'
-  +'rColorsGroupBox'#21'AnchorSideTop.Control'#7#13'ColorsListBox'#18'AnchorSid'
-  +'eTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#13'ColorsListBox'#20
-  +'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#3#182
-  +#0#5'Width'#3#210#0#11'HelpContext'#2#0#5'Style'#11#16'cbStandardColors'#16
-  +'cbExtendedColors'#14'cbSystemColors'#13'cbCustomColor'#13'cbPrettyNames'#0
-  +#12'AutoComplete'#8#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19
-  +'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Arou'
-  +'nd'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.C'
-  +'ellAlignVertical'#7#7'ccaFill'#5'Ctl3D'#8#10'ItemHeight'#2#16#9'ItemWidth'#2
-  +#0#8'OnChange'#7#14'ColorBoxChange'#8'TabOrder'#2#1#0#0#0#242#2#1#9'TGroupBo'
-  +'x'#17'OIOptionsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSid'
-  +'eTop.Control'#7#29'ObjectInspectorColorsGroupBox'#18'AnchorSideTop.Side'#7#9
-  +'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7
-  +#9'asrBottom'#4'Left'#2#0#6'Height'#3#175#0#3'Top'#3#235#0#5'Width'#3'z'#2#11
+  +'ble'#8#10'DesignLeft'#3#2#4#9'DesignTop'#3'D'#1#0#242#2#0#9'TGroupBox'#29'O'
+  +'bjectInspectorColorsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'Anch'
+  +'orSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#20'Anc'
+  +'horSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#3#228#0#3'Top'#2#0#5
+  +'Width'#3#226#0#11'HelpContext'#2#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#0
+  +#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bott'
+  +'om'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7
+  +'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#29'O'
+  +'bjectInspectorColorsGroupBox'#28'ChildSizing.LeftRightSpacing'#2#6#28'Child'
+  +'Sizing.TopBottomSpacing'#2#6#29'ChildSizing.HorizontalSpacing'#2#2#27'Child'
+  +'Sizing.VerticalSpacing'#2#2#27'ChildSizing.ControlsPerLine'#2#0#12'ClientHe'
+  +'ight'#3#210#0#11'ClientWidth'#3#222#0#5'Ctl3D'#8#8'TabOrder'#2#0#0#13'TColo'
+  +'rListBox'#13'ColorsListBox'#22'AnchorSideLeft.Control'#7#29'ObjectInspector'
+  +'ColorsGroupBox'#21'AnchorSideTop.Control'#7#29'ObjectInspectorColorsGroupBo'
+  +'x'#4'Left'#2#6#6'Height'#3#170#0#3'Top'#2#6#5'Width'#3#210#0#11'HelpContext'
+  +#2#0#5'Style'#11#14'cbCustomColors'#0#11'OnGetColors'#7#22'ColorsListBoxGetC'
+  +'olors'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacin'
+  +'g.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!Bor'
+  +'derSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVert'
+  +'ical'#7#7'ccaFill'#14'IntegralHeight'#8#10'ItemHeight'#2#0#17'OnSelectionCh'
+  +'ange'#7#28'ColorsListBoxSelectionChange'#8'TabOrder'#2#0#8'TopIndex'#2#0#0#0
+  +#9'TColorBox'#8'ColorBox'#22'AnchorSideLeft.Control'#7#29'ObjectInspectorCol'
+  +'orsGroupBox'#21'AnchorSideTop.Control'#7#13'ColorsListBox'#18'AnchorSideTop'
+  +'.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#13'ColorsListBox'#20'An'
+  +'chorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#3#182#0
+  +#5'Width'#3#210#0#11'HelpContext'#2#0#5'Style'#11#16'cbStandardColors'#16'cb'
+  +'ExtendedColors'#14'cbSystemColors'#13'cbCustomColor'#13'cbPrettyNames'#0#12
+  +'AutoComplete'#8#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'Bor'
+  +'derSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'
+  +#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellA'
+  +'lignVertical'#7#7'ccaFill'#5'Ctl3D'#8#10'ItemHeight'#2#16#9'ItemWidth'#2#0#8
+  +'OnChange'#7#14'ColorBoxChange'#8'TabOrder'#2#1#0#0#0#242#2#1#9'TGroupBox'#17
+  +'OIOptionsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.C'
+  +'ontrol'#7#29'ObjectInspectorColorsGroupBox'#18'AnchorSideTop.Side'#7#9'asrB'
+  +'ottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9
+  +'asrBottom'#4'Left'#2#0#6'Height'#3#178#0#3'Top'#3#235#0#5'Width'#3'z'#2#11
   +'HelpContext'#2#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9
   +#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#7#19'BorderSpacing.Right'
   +#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacin'
@@ -46,7 +46,7 @@ LazarusResources.Add('TOIOptionsFrame','FORMDATA',[
   +'ccaFill'#7'Caption'#6#17'OIOptionsGroupBox'#28'ChildSizing.LeftRightSpacing'
   +#2#0#28'ChildSizing.TopBottomSpacing'#2#0#29'ChildSizing.HorizontalSpacing'#2
   +#0#27'ChildSizing.VerticalSpacing'#2#0#27'ChildSizing.ControlsPerLine'#2#0#12
-  +'ClientHeight'#3#157#0#11'ClientWidth'#3'v'#2#5'Ctl3D'#8#8'TabOrder'#2#1#0#9
+  +'ClientHeight'#3#160#0#11'ClientWidth'#3'v'#2#5'Ctl3D'#8#8'TabOrder'#2#1#0#9
   +'TCheckBox'#18'OIShowHintCheckBox'#22'AnchorSideLeft.Control'#7#17'OIOptions'
   +'GroupBox'#21'AnchorSideTop.Control'#7#17'OIOptionsGroupBox'#4'Left'#2#6#6'H'
   +'eight'#2#19#3'Top'#2#6#5'Width'#3#130#0#11'HelpContext'#2#0#18'BorderSpacin'
@@ -97,9 +97,9 @@ LazarusResources.Add('TOIOptionsFrame','FORMDATA',[
   +'TCheckBox'#21'OIShowInfoBoxCheckBox'#22'AnchorSideLeft.Control'#7#17'OIOpti'
   +'onsGroupBox'#21'AnchorSideTop.Control'#7#23'OIShowStatusBarCheckBox'#18'Anc'
   +'horSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#19#3'Top'#3#138#0#5
-  +'Width'#3#149#0#11'HelpContext'#2#0#18'BorderSpacing.Left'#2#6#17'BorderSpac'
-  +'ing.Top'#2#3#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'Bo'
-  +'rderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31
+  +'Width'#3#149#0#11'HelpContext'#2#0#18'BorderSpacing.Left'#2#3#17'BorderSpac'
+  +'ing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'Bo'
+  +'rderSpacing.Around'#2#3'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31
   +'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#21'OIShowInfoBox'
   +'CheckBox'#5'State'#7#11'cbUnchecked'#8'TabOrder'#2#6#11'UseOnChange'#8#0#0#0
   +#242#2#2#9'TGroupBox$ObjectInspectorSpeedSettingsGroupBox'#22'AnchorSideLeft'
