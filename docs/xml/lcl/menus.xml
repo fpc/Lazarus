@@ -139,12 +139,13 @@
       </element>
       <!-- variable Visibility: protected -->
       <element name="TMenuActionLink.FClient">
-        <short/>
+        <short>
+          <var>FClient</var> - local variable holding the MenuItem to which this action link applies</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuActionLink.AssignClient">
+      <element name="TMenuActionLink.AssignClient" link="Classes.TBasicActionLink.AssignClient">
         <short/>
         <descr/>
         <errors/>
@@ -156,7 +157,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsAutoCheckLinked">
-        <short/>
+        <short>
+          <var>IsAutoCheckLinked</var> - returns True if the client's AutoCheck property is linked</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -166,7 +168,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsCaptionLinked">
+      <element name="TMenuActionLink.IsCaptionLinked" link="#LCL.ActnList.TActionLink.IsCaptionLinked">
         <short/>
         <descr/>
         <errors/>
@@ -177,7 +179,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsCheckedLinked">
+      <element name="TMenuActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked">
         <short/>
         <descr/>
         <errors/>
@@ -188,7 +190,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsEnabledLinked">
+      <element name="TMenuActionLink.IsEnabledLinked" link="#LCL.ActnList.TActionLink.IsEnabledLinked">
         <short/>
         <descr/>
         <errors/>
@@ -199,7 +201,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsHelpContextLinked">
+      <element name="TMenuActionLink.IsHelpContextLinked" link="#LCL.ActnList.TActionLink.IsHelpContextLinked">
         <short/>
         <descr/>
         <errors/>
@@ -210,7 +212,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsHintLinked">
+      <element name="TMenuActionLink.IsHintLinked" link="#LCL.ActnList.TActionLink.IsHintLinked">
         <short/>
         <descr/>
         <errors/>
@@ -221,7 +223,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsGroupIndexLinked">
+      <element name="TMenuActionLink.IsGroupIndexLinked" link="#LCL.ActnList.TActionLink.IsGroupIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -232,7 +234,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsImageIndexLinked">
+      <element name="TMenuActionLink.IsImageIndexLinked" link="#LCL.ActnList.TActionLink.IsImageIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -243,7 +245,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsShortCutLinked">
+      <element name="TMenuActionLink.IsShortCutLinked" link="#LCL.ActnList.TActionLink.IsShortCutLinked">
         <short/>
         <descr/>
         <errors/>
@@ -254,7 +256,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsVisibleLinked">
+      <element name="TMenuActionLink.IsVisibleLinked" link="#LCL.ActnList.TActionLink.IsVisibleLinked">
         <short/>
         <descr/>
         <errors/>
@@ -265,9 +267,11 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsOnExecuteLinked">
-        <short/>
-        <descr/>
+      <element name="TMenuActionLink.IsOnExecuteLinked" link="#rtl.Classes.TBasicActionLink.IsOnExecuteLinked">
+        <descr>
+          <var>IsOnExecuteLinked</var> always returns true in <var>TBasicActionLink</var>. 
+Descendent classes can override this method to provide a different result.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -277,7 +281,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetAutoCheck">
-        <short/>
+        <short>
+          <var>SetAutoCheck</var> - specifies whether AutoCheck is to apply</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -288,7 +293,9 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetCaption">
-        <short/>
+        <short>
+          <var>SetCaption</var> - specifies the caption for the linked <var>MenuItem</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -299,7 +306,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetChecked">
-        <short/>
+        <short>
+          <var>SetChecked</var> - specifies whether the Item is checked</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -310,7 +318,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetEnabled">
-        <short/>
+        <short>
+          <var>SetEnabled</var> - specifies whether the action is enabled</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -321,7 +330,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetHelpContext">
-        <short/>
+        <short>
+          <var>SetHelpContext</var> - specifies the Help context</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -332,7 +342,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetHint">
-        <short/>
+        <short>
+          <var>SetHint</var> - specifies the Hint string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -343,7 +354,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetImageIndex">
-        <short/>
+        <short>
+          <var>SetImageIndex</var> - specifies the index of the associated image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -354,7 +366,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetShortCut">
-        <short/>
+        <short>
+          <var>SetShortCut</var> - specifies the ShortCut for the Item and action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -365,7 +378,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetVisible">
-        <short/>
+        <short>
+          <var>SetVisible</var> - specifies if item is to be visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -375,7 +389,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuActionLink.SetOnExecute">
+      <element name="TMenuActionLink.SetOnExecute" link="#rtl.Classes.TBasicActionLink.SetOnExecute">
         <short/>
         <descr/>
         <errors/>
@@ -387,7 +401,9 @@
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TMenuActionLinkClass">
-        <short/>
+        <short>
+          <var>TMenuActionLinkClass</var> - class of <var>TMenuActionLink</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -921,7 +937,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.AssignTo">
+      <element name="TMenuItem.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <short/>
         <descr/>
         <errors/>
@@ -996,14 +1012,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.Loaded">
+      <element name="TMenuItem.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.Notification">
+      <element name="TMenuItem.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -1018,7 +1034,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.GetChildren">
+      <element name="TMenuItem.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
         <short/>
         <descr/>
         <errors/>
@@ -1065,7 +1081,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.SetChildOrder">
+      <element name="TMenuItem.SetChildOrder" link="#rtl.Classes.TComponent.SetChildOrder">
         <short/>
         <descr/>
         <errors/>
@@ -1104,7 +1120,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuItem.SetParentComponent">
+      <element name="TMenuItem.SetParentComponent" link="#rtl.Classes.TComponent.SetParentComponent">
         <short/>
         <descr/>
         <errors/>
@@ -1167,12 +1183,14 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TMenuItem.FCompStyle">
-        <short/>
+        <short>
+          <var>FCompStyle</var> - local variable holding value of <var>CompStyle</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMenuItem.Create">
+      <element name="TMenuItem.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1183,7 +1201,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TMenuItem.Destroy">
+      <element name="TMenuItem.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1202,7 +1220,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TMenuItem.GetParentComponent">
+      <element name="TMenuItem.GetParentComponent" link="#rtl.Classes.TComponent.GetParentComponent">
         <short/>
         <descr/>
         <errors/>
@@ -1249,7 +1267,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TMenuItem.HasParent">
+      <element name="TMenuItem.HasParent" link="#rtl.Classes.TComponent.HasParent">
         <short/>
         <descr/>
         <errors/>
@@ -1490,8 +1508,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TMenuItem.Parent">
-        <short>
-          <var>Parent</var> - the parent from which this item is derived</short>
+        <short>The <var>Parent</var> MenuItem from which this item is derived</short>
         <descr/>
         <seealso/>
       </element>
@@ -1651,7 +1668,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.ShowAlwaysCheckable">
-        <short/>
+        <short>
+          <var>ShowAlwaysCheckable</var> - if True, Item is always shown as checkable</short>
         <descr/>
         <seealso/>
       </element>
@@ -1789,14 +1807,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.CreateHandle">
-        <short/>
+        <short>
+          <var>CreateHandle</var> - method for creating handle</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.DoChange">
-        <short/>
+        <short>
+          <var>DoChange</var> - perform the <var>OnChange</var> event, completely rebuilding the <var>Source</var> menuitem if <var>Rebuild</var> is true</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1811,7 +1831,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TMenu.GetHandle">
-        <short/>
+        <short>
+          <var>GetHandle</var> - returns the handle for this Menu</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1821,7 +1842,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenu.GetChildren">
+      <element name="TMenu.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
         <short/>
         <descr/>
         <errors/>
@@ -1837,7 +1858,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.MenuChanged">
-        <short/>
+        <short>
+          <var>MenuChanged</var> - method to signal that a menu has been changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1856,25 +1878,29 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TMenu.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change to the menu</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.UpdateItems">
-        <short/>
+        <short>
+          <var>UpdateItems</var> - implement all pending changes to Items</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TMenu.FCompStyle">
-        <short/>
+        <short>
+          <var>FCompStyle</var> - local variable holding value of <var>CompStyle</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMenu.Create">
+      <element name="TMenu.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1885,7 +1911,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TMenu.Destroy">
+      <element name="TMenu.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1893,14 +1919,16 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMenu.DestroyHandle">
-        <short/>
+        <short>
+          <var>DestroyHandle</var> - method for destroying handle</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TMenu.FindItem">
-        <short/>
+        <short>
+          <var>FindItem</var> - returns the menuitem corresponding to the supplied value or kind</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1919,7 +1947,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TMenu.HandleAllocated">
-        <short/>
+        <short>
+          <var>HandleAllocated</var> - returns True if a handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1930,7 +1959,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TMenu.IsRightToLeft">
-        <short/>
+        <short>
+          <var>IsRightToLeft</var> - returns True if Right to Left mode is being used (eg for Hebrew or Arabic languages)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1941,14 +1971,16 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMenu.HandleNeeded">
-        <short/>
+        <short>
+          <var>HandleNeeded</var> - method to signal that a handle is required</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TMenu.DispatchCommand">
-        <short/>
+        <short>
+          <var>DispatchCommand</var> - returns True if the supplied command is a dispatch command</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1963,13 +1995,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TMenu.Handle">
-        <short/>
+        <short>
+          <var>Handle</var> - the Operating System Handle for this Menu</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TMenu.Parent">
-        <short/>
+        <short>The <var>Parent</var> component for this Menu</short>
         <descr/>
         <seealso/>
       </element>
@@ -2019,13 +2052,14 @@ customise by choosing various menu items.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMainMenu.ItemChanged">
-        <short/>
+        <short>
+          <var>ItemChanged</var> - method to deal with a changed Item</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMainMenu.Create">
+      <element name="TMainMenu.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2043,7 +2077,8 @@ customise by choosing various menu items.</p>
       </element>
       <!-- property Visibility: published -->
       <element name="TMainMenu.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the Menu</short>
         <descr/>
         <seealso/>
       </element>
@@ -2310,7 +2345,7 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <short>
           <var>IsLine</var> - if true, this item is a line (separator) on the menu</short>
       </element>
-      <element name="TMenuItem.RemoveAllHandlersOfObject">
+      <element name="TMenuItem.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <short/>
       </element>
       <element name="TMenuItem.Menu">
@@ -2320,6 +2355,65 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
       <element name="TMenuItem.WriteDebugReport">
         <short>
           <var>WriteDebugReport</var> - used in debugging</short>
+      </element>
+      <element name="TMenuItem.IntfDoSelect">
+        <short>
+          <var>IntfDoSelect</var> - perform the selection using the interface</short>
+      </element>
+      <element name="TMenuItem.AddHandlerOnDestroy">
+        <short>
+          <var>AddHandlerOnDestroy</var> - add a handler for the <var>OnDestroy</var> event</short>
+      </element>
+      <element name="TMenuItem.RemoveHandlerOnDestroy">
+        <short>
+          <var>RemoveHandlerOnDestroy</var> - remove a handler for the OnDestroy event</short>
+      </element>
+      <element name="TMenuItem.AddHandler">
+        <short>
+          <var>AddHandler</var> - method to add a handler</short>
+      </element>
+      <element name="TMenuItem.RemoveHandler">
+        <short>
+          <var>RemoveHandler</var> - method for removing a handler</short>
+      </element>
+      <element name="TMenuItemClass">
+        <short>
+          <var>TMenuItemClass</var> - class of <var>TMenuItem</var>
+        </short>
+      </element>
+      <element name="TMenu.BidiModeChanged">
+        <short>
+          <var>BidiModeChanged</var> - method for dealing with changed Bi-directional mode</short>
+      </element>
+      <element name="TMenu.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TMenu.ParentBidiModeChanged">
+        <short>
+          <var>ParentBidiModeChanged</var> - procedure to deal with a change in the Parent Bi-directional mode</short>
+      </element>
+      <element name="TMenu.SetChildOrder" link="#rtl.Classes.TComponent.SetChildOrder"/>
+      <element name="TMenu.IsShortcut">
+        <short>
+          <var>IsShortcut</var> - returns True if the specified message key represents a shortcut</short>
+      </element>
+      <element name="TMenu.UseRightToLeftAlignment">
+        <short>
+          <var>UseRightToLeftAlignment</var> - returns True if Right-Left alignment is being used</short>
+      </element>
+      <element name="TMenu.UseRightToLeftReading">
+        <short>
+          <var>UseRightToLeftReading</var> - returns True if reading from Right to Left</short>
+      </element>
+      <element name="TMenu.ShortcutHandled">
+        <short>
+          <var>ShortcutHandled</var> - if True, the shortcut for the menu is properly handled</short>
+      </element>
+      <element name="TMenu.BidiMode">
+        <short>
+          <var>BidiMode</var> - whether Bi-directional mode is implemented, allowing use with languages like Arabic or Hebrew</short>
+      </element>
+      <element name="TMenu.ParentBidiMode">
+        <short>
+          <var>ParentBidiMode</var> - the BidiMode of the parent</short>
       </element>
     </module>
     <!-- Menus -->
