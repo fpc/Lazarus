@@ -1384,8 +1384,43 @@ begin
 end;
 
 procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
+var
+  OI: TObjectInspectorDlg absolute Sender;
+  ARow: TOIPropertyGridRow;
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  NewTopLine: integer;
+  HtmlHint, BaseURL: string;
+  CacheWasUsed: Boolean;
+  Stream: TStringStream;
 begin
-  // handled by property hook
+  if not (Sender is TObjectInspectorDlg) then
+    Exit;
+
+  if not BeginCodeTools or not OI.ShowInfoBox then
+    Exit;
+
+  HtmlHint := '';
+  BaseURL := '';
+
+  ARow := OI.GetActivePropertyRow;
+
+  if (ARow <> nil) and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
+  begin
+    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, True, False, BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
+    begin
+      HtmlHint := '';
+      BaseURL := '';
+    end;
+  end;
+
+  FOIHelpProvider.BaseURL := BaseURL;
+  Stream := TStringStream.Create(HtmlHint);
+  try
+    FOIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 function TMainIDE.OIOnPropertyHint(Sender: TObject;

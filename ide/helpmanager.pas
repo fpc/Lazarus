@@ -102,6 +102,7 @@ type
     procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
     function HTMLToCaption(const s: string): string;
   public
+    constructor Create(AOwner: TComponent); override;
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
@@ -308,7 +309,13 @@ begin
     end else
       inc(p);
   end;
-  DebugLn(['TSimpleHTMLControl.HTMLToCaption "',dbgstr(Result),'"']);
+  //DebugLn(['TSimpleHTMLControl.HTMLToCaption "',dbgstr(Result),'"']);
+end;
+
+constructor TSimpleHTMLControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  WordWrap := True;
 end;
 
 function TSimpleHTMLControl.GetURL: string;
@@ -1302,7 +1309,7 @@ begin
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit(shrHelpNotFound);
-  if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,true,
+  if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,true,true,
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);

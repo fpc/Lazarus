@@ -30,6 +30,7 @@ unit CodeHelp;
 
 {off $DEFINE VerboseLazDoc}
 {off $DEFINE VerboseLazDocFails}
+{off $DEFINE VerboseHints}
 
 {$IFDEF VerboseLazDoc}
   {$DEFINE VerboseLazDocFails}
@@ -256,7 +257,7 @@ type
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TCodeHelpElementChain;
                              out CacheWasUsed: boolean): TCodeHelpParseResult;
-    function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
+    function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Complete, NeedSmartHint: boolean;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
@@ -583,8 +584,10 @@ begin
   finally
     MemStream.Free;
   end;
+  {$ifdef VerboseLazDoc}
   if Result<>'' then
     DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
+  {$endif}
 end;
 
 function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
@@ -1314,7 +1317,8 @@ begin
     end;
   end;
   
-  if not FilenameIsPascalSource(SrcFilename) then begin
+  if not FilenameIsPascalSource(SrcFilename) then
+  begin
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource error: not a source file: "',SrcFilename,'"']);
     exit;
   end;
@@ -1368,7 +1372,9 @@ begin
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
   end;
+  {$ifdef VerboseLazDoc}
   DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource ',dbgsName(AnOwner)]);
+  {$endif}
 end;
 
 procedure TCodeHelpManager.GetFPDocFilenamesForSources(
@@ -1720,7 +1726,7 @@ begin
 end;
 
 function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
-  Complete: boolean; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
+  Complete, NeedSmartHint: boolean; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
   ): TCodeHelpParseResult;
 const
   le = '<BR>'+LineEnding;
@@ -1791,7 +1797,6 @@ var
   i: Integer;
   Item: TCodeHelpElement;
   NodeValues: TFPDocElementValues;
-  f: TFPDocItem;
   ListOfPCodeXYPosition: TFPList;
   CodeXYPos: PCodeXYPosition;
   CommentStart: integer;
@@ -1800,33 +1805,50 @@ var
   ItemAdded: Boolean;
   CommentCode: TCodeBuffer;
   j: Integer;
+  {$ifdef VerboseHints}
+  f: TFPDocItem;
+  {$endif}
 begin
-  //DebugLn(['TCodeHelpManager.GetHint ',Code.Filename,' ',X,',',Y]);
+  {$ifdef VerboseHints}
+    DebugLn(['TCodeHelpManager.GetHint ',Code.Filename,' ',X,',',Y]);
+  {$endif}
   BaseURL:='lazdoc://';
   IsHTML:=false;
   try
-    HTMLHint:=CodeToolBoss.FindSmartHint(Code,X,Y);
+    if NeedSmartHint then
+      HTMLHint := CodeToolBoss.FindSmartHint(Code,X,Y)
+    else
+      HTMLHint := '';
 
     CacheWasUsed:=true;
     Chain:=nil;
     ListOfPCodeXYPosition:=nil;
     try
-      //DebugLn(['TCodeHelpManager.GetHint GetElementChain...']);
+      {$ifdef VerboseHints}
+      DebugLn(['TCodeHelpManager.GetHint GetElementChain...']);
+      {$endif}
       Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
       if EndNow(Result) then exit;
 
-      if Chain<>nil then begin
-        for i:=0 to Chain.Count-1 do begin
+      if Chain<>nil then
+      begin
+        for i := 0 to Chain.Count - 1 do
+        begin
           Item:=Chain[i];
           ItemAdded:=false;
+          {$ifdef VerboseHints}
           DebugLn(['TCodeHelpManager.GetHint ',i,' Element=',Item.ElementName]);
-          if Item.ElementNode<>nil then begin
+          {$endif}
+          if Item.ElementNode<>nil then
+          begin
             NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
+           {$ifdef VerboseHints}
             for f:=Low(TFPDocItem) to High(TFPDocItem) do
               DebugLn(['TCodeHelpManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
-            if NodeValues[fpdiShort]<>'' then begin
-              AddHTML(Item.ElementName+le
-                      +NodeValues[fpdiShort]);
+            {$endif}
+            if NodeValues[fpdiShort]<>'' then
+            begin
+              AddHTML('<B>' + Item.ElementName + '</B>' + le + NodeValues[fpdiShort]);
               ItemAdded:=true;
             end;
           end;
@@ -1870,7 +1892,9 @@ begin
     if IsHTML then
       HTMLHint:='<HTML><BODY>'+HTMLHint+'</BODY></HTML>';
   end;
+  {$ifdef VerboseHints}
   DebugLn(['TCodeHelpManager.GetHint END Hint="',HTMLHint,'"']);
+  {$endif}
 end;
 
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
