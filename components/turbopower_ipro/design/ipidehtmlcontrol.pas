@@ -41,6 +41,7 @@ type
     procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
                             var Picture: TPicture);
   public
+    constructor Create(AOwner: TComponent); override;
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
@@ -125,6 +126,14 @@ begin
       DebugLn(['TIPLazHtmlControl.HTMLGetImageX ERROR: ',E.Message]);
     end;
   end;
+end;
+
+constructor TIPLazHtmlControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DefaultFontSize := 8;
+  MarginHeight := 0;
+  MarginWidth := 0; 
 end;
 
 function TIPLazHtmlControl.GetURL: string;

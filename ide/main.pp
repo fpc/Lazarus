@@ -1415,12 +1415,17 @@ begin
     end;
   end;
 
-  OIHelpProvider.BaseURL := BaseURL;
-  Stream := TStringStream.Create(HtmlHint);
-  try
-    OIHelpProvider.ControlIntf.SetHTMLContent(Stream);
-  finally
-    Stream.Free;
+  if OI.InfoPanel.ControlCount > 0 then
+    OI.InfoPanel.Controls[0].Visible := HtmlHint <> '';
+  if HtmlHint <> '' then
+  begin
+    OIHelpProvider.BaseURL := BaseURL;
+    Stream := TStringStream.Create(HtmlHint);
+    try
+      OIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+    finally
+      Stream.Free;
+    end;
   end;
 end;
 
