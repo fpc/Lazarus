@@ -1309,7 +1309,7 @@ begin
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit(shrHelpNotFound);
-  if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,true,true,
+  if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,[chhoSmartHint, chhoComplete, chhoComments],
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);

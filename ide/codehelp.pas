@@ -192,6 +192,14 @@ type
     chprFailed,
     chprSuccess
     );
+
+  TCodeHelpHintOption = (
+    chhoComplete,         // ??
+    chhoSmartHint,    // add smart hint
+    chhoComments      // return info from comments in the code
+  );
+
+  TCodeHelpHintOptions = set of TCodeHelpHintOption;
     
   { TCodeHelpManager }
 
@@ -257,7 +265,7 @@ type
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TCodeHelpElementChain;
                              out CacheWasUsed: boolean): TCodeHelpParseResult;
-    function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Complete, NeedSmartHint: boolean;
+    function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
@@ -1726,7 +1734,7 @@ begin
 end;
 
 function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
-  Complete, NeedSmartHint: boolean; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
+  Options: TCodeHelpHintOptions; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
   ): TCodeHelpParseResult;
 const
   le = '<BR>'+LineEnding;
@@ -1735,7 +1743,8 @@ var
   
   function EndNow(var LastResult: TCodeHelpParseResult): boolean;
   begin
-    if LastResult<>chprSuccess then begin
+    if LastResult<>chprSuccess then
+    begin
       Result:=true;
       if HTMLHint<>'' then
         LastResult:=chprSuccess
@@ -1743,7 +1752,8 @@ var
         LastResult:=chprFailed;
       exit;
     end;
-    if (not CacheWasUsed) and (not Complete) then begin
+    if (not CacheWasUsed) and not(chhoComplete in Options) then
+    begin
       Result:=true;
       LastResult:=chprParsing;
     end;
@@ -1815,7 +1825,7 @@ begin
   BaseURL:='lazdoc://';
   IsHTML:=false;
   try
-    if NeedSmartHint then
+    if chhoSmartHint in Options then
       HTMLHint := CodeToolBoss.FindSmartHint(Code,X,Y)
     else
       HTMLHint := '';
@@ -1827,10 +1837,10 @@ begin
       {$ifdef VerboseHints}
       DebugLn(['TCodeHelpManager.GetHint GetElementChain...']);
       {$endif}
-      Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
+      Result := GetElementChain(Code, X, Y, chhoComplete in Options, Chain, CacheWasUsed);
       if EndNow(Result) then exit;
 
-      if Chain<>nil then
+      if Chain <> nil then
       begin
         for i := 0 to Chain.Count - 1 do
         begin
@@ -1854,30 +1864,37 @@ begin
           end;
 
           // Add comments
-          FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-          if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
-            Item.CodeXYPos.X,Item.CodeXYPos.Y,ListOfPCodeXYPosition)
-          and (ListOfPCodeXYPosition<>nil) then
+          if chhoComments in Options then
           begin
-            NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(
-                                                    Item.CodeXYPos.Code.Filename);
-            for j:=0 to ListOfPCodeXYPosition.Count-1 do begin
-              CodeXYPos:=PCodeXYPosition(ListOfPCodeXYPosition[j]);
-              CommentCode:=CodeXYPos^.Code;
-              CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
-              if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
-              then
-                continue;
-              CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
-                                                NestedComments,true,true,true);
-              if CommentStr<>'' then begin
-                if not ItemAdded then begin
-                  AddText(Item.ElementName+LineEnding
-                          +CommentStr);
-                end else begin
-                  AddText(CommentStr);
+            FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+            if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
+               Item.CodeXYPos.X, Item.CodeXYPos.Y, ListOfPCodeXYPosition) and
+               (ListOfPCodeXYPosition<>nil) then
+            begin
+              NestedComments := CodeToolBoss.GetNestedCommentsFlagForFile(
+                                                      Item.CodeXYPos.Code.Filename);
+              for j := 0 to ListOfPCodeXYPosition.Count - 1 do
+              begin
+                CodeXYPos := PCodeXYPosition(ListOfPCodeXYPosition[j]);
+                CommentCode := CodeXYPos^.Code;
+                CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
+                if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
+                then
+                  continue;
+                CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
+                                                  NestedComments,true,true,true);
+                if CommentStr <> '' then
+                begin
+                  if not ItemAdded then
+                  begin
+                    AddText(Item.ElementName+LineEnding
+                            +CommentStr);
+                  end else
+                  begin
+                    AddText(CommentStr);
+                  end;
+                  ItemAdded := true;
                 end;
-                ItemAdded:=true;
               end;
             end;
           end;
