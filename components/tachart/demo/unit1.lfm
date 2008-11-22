@@ -5,12 +5,6 @@ object Form1: TForm1
   Width = 585
   HelpContext = 0
   ActiveControl = Panel1
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
   Caption = 'Form1'
   ChildSizing.LeftRightSpacing = 0
   ChildSizing.TopBottomSpacing = 0
@@ -19,26 +13,20 @@ object Form1: TForm1
   ChildSizing.ControlsPerLine = 0
   ClientHeight = 499
   ClientWidth = 585
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
   Font.Height = 0
   Font.Style = []
-  FormStyle = fsNormal
-  ParentBiDiMode = True
-  ParentFont = False
   Position = poScreenCenter
-  ShowInTaskBar = stDefault
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object Chart1: TChart
     Left = 0
-    Height = 424
+    Height = 408
     Top = 0
     Width = 585
     HelpContext = 0
+    XGraphMin = 0
+    YGraphMin = 0
+    XGraphMax = 0
+    YGraphMax = 0
     MirrorX = False
     ShowVerticalReticule = False
     ShowReticule = False
@@ -98,22 +86,15 @@ object Form1: TForm1
     BackColor = clBtnFace
     Align = alClient
     Color = clBtnFace
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
     ParentColor = False
-    ParentShowHint = True
-    Visible = True
   end
   object Panel1: TPanel
     Left = 0
-    Height = 75
-    Top = 424
+    Height = 91
+    Top = 408
     Width = 585
     HelpContext = 0
     Align = alBottom
-    Alignment = taCenter
-    AutoSize = False
     BorderSpacing.Left = 0
     BorderSpacing.Top = 0
     BorderSpacing.Right = 0
@@ -121,39 +102,20 @@ object Form1: TForm1
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    BevelInner = bvNone
-    BevelOuter = bvRaised
-    BevelWidth = 1
-    BorderWidth = 0
-    BorderStyle = bsNone
     ChildSizing.LeftRightSpacing = 0
     ChildSizing.TopBottomSpacing = 0
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 75
+    ClientHeight = 91
     ClientWidth = 585
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    FullRepaint = True
-    ParentColor = True
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 0
-    TabStop = False
-    Visible = True
     object lblAdd: TLabel
       Left = 13
       Height = 18
       Top = 10
       Width = 30
       HelpContext = 0
-      Align = alNone
-      Alignment = taLeftJustify
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -162,19 +124,7 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Add:'
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      Layout = tlTop
-      ParentBidiMode = True
       ParentColor = False
-      ParentFont = True
-      ParentShowHint = True
-      ShowAccelChar = True
-      Transparent = True
-      Visible = True
-      WordWrap = False
-      OptimalFill = False
     end
     object lblAdd1: TLabel
       Left = 13
@@ -182,9 +132,6 @@ object Form1: TForm1
       Top = 40
       Width = 38
       HelpContext = 0
-      Align = alNone
-      Alignment = taLeftJustify
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -193,19 +140,7 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Clear:'
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      Layout = tlTop
-      ParentBidiMode = True
       ParentColor = False
-      ParentFont = True
-      ParentShowHint = True
-      ShowAccelChar = True
-      Transparent = True
-      Visible = True
-      WordWrap = False
-      OptimalFill = False
     end
     object Label1: TLabel
       Left = 288
@@ -213,9 +148,6 @@ object Form1: TForm1
       Top = 16
       Width = 78
       HelpContext = 0
-      Align = alNone
-      Alignment = taLeftJustify
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -224,19 +156,7 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Multiple add'
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      Layout = tlTop
-      ParentBidiMode = True
       ParentColor = False
-      ParentFont = True
-      ParentShowHint = True
-      ShowAccelChar = True
-      Transparent = True
-      Visible = True
-      WordWrap = False
-      OptimalFill = False
     end
     object btnAddPie: TButton
       Left = 48
@@ -244,8 +164,6 @@ object Form1: TForm1
       Top = 8
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -254,20 +172,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Pie'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnAddPieClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 0
-      TabStop = True
-      Visible = True
     end
     object btnAddLine: TButton
       Left = 216
@@ -275,8 +182,6 @@ object Form1: TForm1
       Top = 8
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -285,20 +190,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Line'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnAddLineClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 1
-      TabStop = True
-      Visible = True
     end
     object btnAddArea: TButton
       Left = 104
@@ -306,8 +200,6 @@ object Form1: TForm1
       Top = 8
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -316,20 +208,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Area'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnAddAreaClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 2
-      TabStop = True
-      Visible = True
     end
     object btnAddBar: TButton
       Left = 160
@@ -337,8 +218,6 @@ object Form1: TForm1
       Top = 8
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -347,20 +226,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Bar'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnAddBarClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 3
-      TabStop = True
-      Visible = True
     end
     object cbLegend: TCheckBox
       Left = 384
@@ -368,9 +236,6 @@ object Form1: TForm1
       Top = 8
       Width = 71
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -379,21 +244,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Legend'
-      Checked = False
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbLegendChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbUnchecked
       TabOrder = 4
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object cbBottomAxis: TCheckBox
       Left = 384
@@ -401,9 +255,6 @@ object Form1: TForm1
       Top = 24
       Width = 102
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -413,20 +264,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Bottom Axis'
       Checked = True
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbBottomAxisChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbChecked
       TabOrder = 5
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object cbLeftAxis: TCheckBox
       Left = 384
@@ -434,9 +275,6 @@ object Form1: TForm1
       Top = 40
       Width = 78
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -446,20 +284,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Left Axis'
       Checked = True
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbLeftAxisChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbChecked
       TabOrder = 6
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object cbTitle: TCheckBox
       Left = 496
@@ -467,9 +295,6 @@ object Form1: TForm1
       Top = 8
       Width = 50
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -479,20 +304,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Title'
       Checked = True
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbTitleChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbChecked
       TabOrder = 7
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object cbFooter: TCheckBox
       Left = 496
@@ -500,9 +315,6 @@ object Form1: TForm1
       Top = 24
       Width = 65
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -511,21 +323,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Footer'
-      Checked = False
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbFooterChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbUnchecked
       TabOrder = 8
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object cbInverted: TCheckBox
       Left = 496
@@ -533,9 +334,6 @@ object Form1: TForm1
       Top = 40
       Width = 76
       HelpContext = 0
-      Align = alNone
-      AllowGrayed = False
-      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -544,21 +342,10 @@ object Form1: TForm1
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Inverted'
-      Checked = False
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       OnChange = cbInvertedChange
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
-      ParentBidiMode = True
       State = cbUnchecked
       TabOrder = 9
-      TabStop = True
       UseOnChange = False
-      Visible = True
     end
     object btnClearBar: TButton
       Left = 160
@@ -566,8 +353,6 @@ object Form1: TForm1
       Top = 38
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -576,20 +361,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Bar'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnClearBarClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 10
-      TabStop = True
-      Visible = True
     end
     object btnClearArea: TButton
       Left = 104
@@ -597,8 +371,6 @@ object Form1: TForm1
       Top = 38
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -607,20 +379,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Area'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnClearAreaClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 11
-      TabStop = True
-      Visible = True
     end
     object btnClearLine: TButton
       Left = 216
@@ -628,8 +389,6 @@ object Form1: TForm1
       Top = 38
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -638,20 +397,9 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Line'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnClearLineClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 12
-      TabStop = True
-      Visible = True
     end
     object btnClearPie: TButton
       Left = 48
@@ -659,8 +407,6 @@ object Form1: TForm1
       Top = 38
       Width = 52
       HelpContext = 0
-      Align = alNone
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -669,30 +415,16 @@ object Form1: TForm1
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'Pie'
-      Default = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentBidiMode = True
-      ModalResult = 0
       OnClick = btnClearPieClick
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 13
-      TabStop = True
-      Visible = True
     end
     object edAddCount: TSpinEdit
       Left = 288
       Height = 21
-      Top = 40
+      Top = 41
       Width = 90
       HelpContext = 0
-      Align = alNone
-      AutoSelect = False
-      AutoSize = False
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -700,17 +432,33 @@ object Form1: TForm1
       BorderSpacing.Around = 0
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Enabled = True
-      Increment = 1
       MaxValue = 1000000
       MinValue = 1
-      ParentFont = True
-      ParentShowHint = True
-      ReadOnly = False
-      TabStop = True
       TabOrder = 14
       Value = 1
-      Visible = True
+    end
+    object ShowGridCheckBox: TCheckBox
+      AnchorSideLeft.Control = cbLeftAxis
+      AnchorSideTop.Control = cbLeftAxis
+      AnchorSideTop.Side = asrBottom
+      Left = -360
+      Height = 23
+      Top = 56
+      Width = 90
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'Show grid '
+      Checked = True
+      OnChange = ShowGridCheckBoxChange
+      State = cbChecked
+      TabOrder = 15
+      UseOnChange = False
     end
   end
 end

@@ -27,6 +27,7 @@ type
     cbFooter: TCheckBox;
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
+    ShowGridCheckBox: TCheckBox;
     Label1: TLabel;
     lblAdd: TLabel;
     lblAdd1: TLabel;
@@ -46,6 +47,7 @@ type
     procedure cbTitleChange(Sender: TObject);
     procedure cbFooterChange(Sender: TObject);
     procedure cbLegendChange(Sender: TObject);
+    procedure ShowGridCheckBoxChange(Sender: TObject);
   private
     FArea: TAreaSeries;
     FBar: TBarSeries;
@@ -159,6 +161,12 @@ end;
 procedure TForm1.cbLegendChange(Sender: TObject);
 begin
   Chart1.Legend.Visible := cbLegend.Checked;
+end;
+
+procedure TForm1.ShowGridCheckBoxChange(Sender: TObject);
+begin
+  Chart1.LeftAxis.Grid.Visible := ShowGridCheckBox.Checked;
+  Chart1.BottomAxis.Grid.Visible := ShowGridCheckBox.Checked;
 end;
 
 procedure TForm1.cbLeftAxisChange(Sender: TObject);
