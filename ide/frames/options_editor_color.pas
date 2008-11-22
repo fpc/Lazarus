@@ -935,5 +935,5 @@ end;
 
 initialization
   {$I options_editor_color.lrs}
-  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors, EdtOptionsDisplay);
+  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors);
 end.
