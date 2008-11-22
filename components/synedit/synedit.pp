@@ -6715,7 +6715,7 @@ begin
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
           {$IFDEF SYN_LAZARUS}
-          CaretXY := PhysStartPos;
+          CaretXY := LogicalToPhysicalPos(Item.ChangeStartPos);
           {$ELSE}
           CaretXY := Item.fChangeStartPos;
           {$ENDIF}
@@ -6732,7 +6732,7 @@ begin
           {$IFDEF SYN_LAZARUS}
           CaretXY := PhysStartPos;
           {$ELSE}
-          CaretXY := Item.fChangeStartPos;
+          CaretXY := LogicalToPhysicalPos(Item.ChangeStartPos);
           {$ENDIF}
 {begin}                                                                         //mh 2000-11-20
 (*
