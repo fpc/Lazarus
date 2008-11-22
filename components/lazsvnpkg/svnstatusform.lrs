@@ -35,18 +35,20 @@ LazarusResources.Add('TSVNStatusFrm','FORMDATA',[
   +'ttom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7
   +#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#10'DragCursor'#7
   +#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#11'Font.Height'#2#0#10'Fon'
-  +'t.Style'#11#0#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'Re'
-  +'adOnly'#8#10'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'
-  +#9#11'WantReturns'#9#8'WantTabs'#8#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Le'
-  +'ft'#2#6#6'Height'#2'0'#3'Top'#3'h'#1#5'Width'#3#214#2#11'HelpContext'#2#0#5
-  +'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOrde'
-  +'r'#2#2#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0
-  +#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0
-  +#0#9'TSplitter'#8'Splitter'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#5
-  +#3'Top'#2'S'#5'Width'#3#226#2#11'HelpContext'#2#0#5'Align'#7#5'alTop'#8'Auto'
-  +'Snap'#9#7'Beveled'#8#7'MinSize'#2#30#11'ParentColor'#9#14'ParentShowHint'#9
-  +#12'ResizeAnchor'#7#5'akTop'#11'ResizeStyle'#7#8'rsUpdate'#7'Visible'#9#0#0
-  +#10'TPopupMenu'#10'PopupMenu1'#4'left'#2'5'#3'top'#3#213#0#0#9'TMenuItem'#11
-  +'mnuShowDiff'#7'Caption'#6#9'New Item1'#12'RightJustify'#8#19'ShowAlwaysChec'
-  +'kable'#8#7'OnClick'#7#16'mnuShowDiffClick'#0#0#0#0
+  +'t.Style'#11#0#9'MaxLength'#2#0#14'ParentBidiMode'#9#10'ParentFont'#8#8'Read'
+  +'Only'#8#10'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9
+  +#11'WantReturns'#9#8'WantTabs'#8#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'
+  +#2#6#6'Height'#2'0'#3'Top'#3'h'#1#5'Width'#3#214#2#11'HelpContext'#2#0#5'Ali'
+  +'gn'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOrder'#2
+  +#2#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0#10'S'
+  +'howGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0#0#9
+  +'TSplitter'#8'Splitter'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#5#3
+  +'Top'#2'S'#5'Width'#3#226#2#11'HelpContext'#2#0#5'Align'#7#5'alTop'#8'AutoSn'
+  +'ap'#9#7'Beveled'#8#7'MinSize'#2#30#11'ParentColor'#9#14'ParentShowHint'#9#12
+  +'ResizeAnchor'#7#5'akTop'#11'ResizeStyle'#7#8'rsUpdate'#7'Visible'#9#0#0#10
+  +'TPopupMenu'#10'PopupMenu1'#4'left'#2'5'#3'top'#3#213#0#0#9'TMenuItem'#11'mn'
+  +'uShowDiff'#7'Caption'#6#9'New Item1'#12'RightJustify'#8#19'ShowAlwaysChecka'
+  +'ble'#8#7'OnClick'#7#16'mnuShowDiffClick'#0#0#9'TMenuItem'#9'mnuRevert'#7'Ca'
+  +'ption'#6#9'New Item2'#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#7'OnClic'
+  +'k'#7#14'mnuRevertClick'#0#0#0#0
 ]);

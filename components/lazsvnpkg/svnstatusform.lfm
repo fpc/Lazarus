@@ -123,7 +123,7 @@ object SVNStatusFrm: TSVNStatusFrm
     Enabled = True
     Font.Height = 0
     Font.Style = []
-    MaxLength = -1
+    MaxLength = 0
     ParentBidiMode = True
     ParentFont = False
     ReadOnly = False
@@ -174,6 +174,12 @@ object SVNStatusFrm: TSVNStatusFrm
       RightJustify = False
       ShowAlwaysCheckable = False
       OnClick = mnuShowDiffClick
+    end
+    object mnuRevert: TMenuItem
+      Caption = 'New Item2'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+      OnClick = mnuRevertClick
     end
   end
 end

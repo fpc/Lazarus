@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc,
+  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc, Process,
   SVNClasses, Menus;
 
 type
@@ -32,6 +32,7 @@ type
 
   TSVNStatusFrm = class(TForm)
     ButtonPanel: TButtonPanel;
+    mnuRevert: TMenuItem;
     mnuShowDiff: TMenuItem;
     PopupMenu1: TPopupMenu;
     Splitter: TSplitter;
@@ -40,6 +41,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure mnuRevertClick(Sender: TObject);
     procedure mnuShowDiffClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure SVNFileListViewColumnClick(Sender: TObject; Column: TListColumn);
@@ -85,6 +87,34 @@ begin
 
   Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
   Application.QueueAsyncCall(@UpdateFilesListView, 0);
+end;
+
+procedure TSVNStatusFrm.mnuRevertClick(Sender: TObject);
+var
+  AProcess: TProcess;
+begin
+  if Assigned(SVNFileListView.Selected) then
+  begin
+
+    AProcess := TProcess.Create(nil);
+
+    if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
+      AProcess.CommandLine := SVNExecutable + ' revert ' + SVNFileListView.Selected.SubItems[0]
+    else
+      AProcess.CommandLine := SVNExecutable + ' revert ' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0];
+
+    debugln('TSVNStatusFrm.mnuRevertClick commandline=', AProcess.CommandLine);
+    AProcess.Options := AProcess.Options + [poWaitOnExit];
+    AProcess.ShowWindow := swoHIDE;
+    AProcess.Execute;
+    AProcess.Free;
+
+    //now delete the entry from the list
+    SVNStatus.List.Delete(SVNFileListView.Selected.Index);
+
+    //update the listview again
+    UpdateFilesListView(0);
+  end;
 end;
 
 procedure TSVNStatusFrm.mnuShowDiffClick(Sender: TObject);
@@ -233,6 +263,7 @@ begin
   ChangeCursor(crHourGlass);
 
   mnuShowDiff.Caption:=rsShowDiff;
+  mnuRevert.Caption := rsRevert;
 
   ButtonPanel.OKButton.OnClick:=@OKButtonClick;
 

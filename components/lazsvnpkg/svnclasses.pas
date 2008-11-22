@@ -57,6 +57,7 @@ resourcestring
   rsProjectName = 'Project name';
   rsPropertyStatus = 'Property status';
   rsRepositoryPath = 'Repository path';
+  rsRevert = 'Revert';
   rsRevision = 'Revision';
   rsSave = 'Save';
   rsSettings = 'Settings';
