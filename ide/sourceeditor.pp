@@ -6091,7 +6091,7 @@ Begin
   // reload code templates
   with CodeTemplateModul do begin
     if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(EditorOpts.CodeTemplateFilename)
+      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
     else
       if FileExistsUTF8('lazarus.dci') then
         AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
