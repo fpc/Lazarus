@@ -3161,6 +3161,7 @@ var
   QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
+  FontWeight: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
@@ -3174,9 +3175,8 @@ begin
     TM.tmHeight := QtFontMetrics.height;
     TM.tmAscent := QtFontMetrics.ascent;
     TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := QtFontMetrics.leading;
-    TM.tmExternalLeading := 0;
-
+    TM.tmInternalLeading := 0;
+    TM.tmExternalLeading := QtFontMetrics.leading;
     {this is due qt bug in fontmetrics::averageCharWidth() under Mac
      http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
     {$IFDEF DARWIN}
@@ -3186,7 +3186,16 @@ begin
     {$ENDIF}
 
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    TM.tmWeight := QtDC.font.getWeight;
+    FontWeight := QtDC.font.getWeight;
+    case FontWeight of
+      25: TM.tmWeight := FW_LIGHT;
+      50: TM.tmWeight := FW_NORMAL;
+      63: TM.tmWeight := FW_SEMIBOLD;
+      75: TM.tmWeight := FW_BOLD;
+      87: TM.tmWeight := FW_HEAVY;
+      else
+        TM.tmWeight := Round(FontWeight * 9.5);
+    end;
     TM.tmOverhang := 0;
     TM.tmDigitizedAspectX := 0;
     TM.tmDigitizedAspectY := 0;
@@ -3194,10 +3203,10 @@ begin
     TM.tmLastChar := 'z';
     TM.tmDefaultChar := 'x';
     TM.tmBreakChar := '?';
-    TM.tmItalic := 0;
-    TM.tmUnderlined := 0;
-    TM.tmStruckOut := 0;
-    
+    TM.tmItalic := Ord(QtDC.Font.getItalic);
+    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
+    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
+
     QtDC.font.family(@FontFamily);
     
     { Defaults to a TrueType font.
@@ -3209,7 +3218,7 @@ begin
     else
       TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
-    TM.tmCharSet := EASTEUROPE_CHARSET;
+    TM.tmCharSet := DEFAULT_CHARSET;
   end;
 end;
 
