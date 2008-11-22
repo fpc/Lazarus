@@ -39,15 +39,24 @@ type
 
   TSynEditMarkupSpecialLine = class(TSynEditMarkup)
   private
+    FMarkupLineHighlightInfo: TSynSelectedColor;
     FOnSpecialLineColors: TSpecialLineColorsEvent;
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;
     FSpecialLine : Boolean;
+    FHighlightedLine: Integer;
+  protected
+    procedure DoMarkupLineHighlightInfoChange(Sender: TObject);
   public
     constructor Create(ASynEdit: TCustomControl);
+    destructor Destroy; override;
 
     procedure PrepareMarkupForRow(ARow: Integer); override;
     function GetMarkupAttributeAtRowCol(const ARow, ACol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const ARow, ACol: Integer): Integer; override;
+
+    procedure InvalidateLineHighlight;
+
+    property MarkupLineHighlightInfo: TSynSelectedColor read FMarkupLineHighlightInfo;
 
     property OnSpecialLineColors: TSpecialLineColorsEvent
       read FOnSpecialLineColors write FOnSpecialLineColors;
@@ -56,14 +65,36 @@ type
   end;
 
 implementation
+uses
+  SynEdit;
 
 { TSynEditMarkupBracket }
+
+procedure TSynEditMarkupSpecialLine.DoMarkupLineHighlightInfoChange(
+  Sender: TObject);
+begin
+  if FHighlightedLine > 0 then
+    InvalidateSynLines(FHighlightedLine, FHighlightedLine);
+end;
 
 constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
+
+  FHighlightedLine := -1;
+  FMarkupLineHighlightInfo := TSynSelectedColor.Create;
+  FMarkupLineHighlightInfo.Background := clNone;
+  FMarkupLineHighlightInfo.Foreground := clNone;
+  FMarkupLineHighlightInfo.OnChange := @DoMarkupLineHighlightInfoChange;
+
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
+end;
+
+destructor TSynEditMarkupSpecialLine.Destroy;
+begin
+  FMarkupLineHighlightInfo.Free;
+  inherited Destroy;
 end;
 
 procedure TSynEditMarkupSpecialLine.PrepareMarkupForRow(ARow: Integer);
@@ -89,6 +120,18 @@ begin
     MarkupInfo.Foreground := colFg;
     MarkupInfo.Background := colBg;
   end;
+
+  // if line is not special then check whether it is a current line
+  // if it is so then use own bg,fg colors to setup highlight
+  if not FSpecialLine then
+  begin
+    if FHighlightedLine = ARow then
+    begin
+      FSpecialLine := True;
+      MarkupInfo.Foreground := FMarkupLineHighlightInfo.Foreground;
+      MarkupInfo.Background := FMarkupLineHighlightInfo.Background;
+    end;
+  end;
 end;
 
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const ARow, ACol : Integer): TSynSelectedColor;
@@ -101,6 +144,23 @@ end;
 function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const ARow, ACol : Integer): Integer;
 begin
   Result := -1; // always valid for the whole line
+end;
+
+procedure TSynEditMarkupSpecialLine.InvalidateLineHighlight;
+var
+  NewLine: Integer;
+begin
+  NewLine := TSynEdit(SynEdit).CaretY;
+
+  // invalidate old line highlighting, if changed
+  if (FHighlightedLine > 0) and (NewLine <> FHighlightedLine) then
+    InvalidateSynLines(FHighlightedLine, FHighlightedLine);
+
+  // invalidate new line highlighting, if changed
+  if (NewLine > 0) and (NewLine <> FHighlightedLine) then
+    InvalidateSynLines(NewLine, NewLine);
+
+  FHighlightedLine := NewLine;
 end;
 
 end.

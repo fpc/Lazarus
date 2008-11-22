@@ -519,6 +519,7 @@ type
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
+    function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
@@ -978,6 +979,7 @@ type
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
+    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
     //property Color: TSynSelectedColor read GetSelectedColor;
     {$ELSE}
     property SelectedColor: TSynSelectedColor
@@ -1120,6 +1122,7 @@ type
     property BracketMatchColor;
     property MouseLinkColor;
     property LineNumberColor;
+    property LineHighlightColor;
     {$ENDIF}
     property SelectionMode;
     property TabWidth;
@@ -1529,9 +1532,9 @@ begin
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
-  fMarkupManager.AddMarkUp(fMarkupBracket);
   fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
   fMarkupManager.AddMarkUp(fMarkupSpecialLine);
+  fMarkupManager.AddMarkUp(fMarkupBracket);
   fMarkupManager.AddMarkUp(fMarkupSelection);
   fMarkupManager.Lines := TSynEditStrings(Lines);
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
@@ -1668,8 +1671,12 @@ begin
       UpdateScrollbars;
     if sfCaretChanged in fStateFlags then
       UpdateCaret
-    else if not(sfPainting in fStateFlags) and assigned(fMarkupBracket)
-      then fMarkupBracket.InvalidateBracketHighlight;
+    else
+    if not(sfPainting in fStateFlags) and assigned(fMarkupBracket) then
+    begin
+      fMarkupBracket.InvalidateBracketHighlight;
+      fMarkupSpecialLine.InvalidateLineHighlight;
+    end;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
   end;
@@ -1794,6 +1801,11 @@ end;
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
 begin
   result := fMarkupSelection.MarkupInfoIncr;
+end;
+
+function TCustomSynEdit.GetLineHighlightColor: TSynSelectedColor;
+begin
+  Result := fMarkupSpecialLine.MarkupLineHighlightInfo;
 end;
 
 function TCustomSynEdit.GetLineNumberColor: TSynSelectedColor;
@@ -5638,6 +5650,7 @@ begin
     Include(fStateFlags, sfCaretChanged);
     {$IFDEF SYN_LAZARUS}
     if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
+    if assigned(fMarkupSpecialLine) then fMarkupSpecialLine.InvalidateLineHighlight;
     {$ENDIF}
   end else begin
     Exclude(fStateFlags, sfCaretChanged);
@@ -5670,6 +5683,7 @@ begin
     end;
     {$IFDEF SYN_LAZARUS}
     if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
+    if assigned(fMarkupSpecialLine) then fMarkupSpecialLine.InvalidateLineHighlight;
     {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
