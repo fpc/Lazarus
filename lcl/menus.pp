@@ -65,15 +65,7 @@ type
     FClient: TMenuItem;
     procedure AssignClient(AClient: TObject); override;
     function IsAutoCheckLinked: Boolean; virtual;
-    function IsCaptionLinked: Boolean; override;
-    function IsCheckedLinked: Boolean; override;
-    function IsEnabledLinked: Boolean; override;
-    function IsHelpContextLinked: Boolean; override;
-    function IsHintLinked: Boolean; override;
-    function IsGroupIndexLinked: Boolean; override;
-    function IsImageIndexLinked: Boolean; override;
-    function IsShortCutLinked: Boolean; override;
-    function IsVisibleLinked: Boolean; override;
+  protected
     function IsOnExecuteLinked: Boolean; override;
     procedure SetAutoCheck(Value: Boolean); override;
     procedure SetCaption(const Value: string); override;
@@ -85,6 +77,16 @@ type
     procedure SetShortCut(Value: TShortCut); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
+  public
+    function IsCaptionLinked: Boolean; override;
+    function IsCheckedLinked: Boolean; override;
+    function IsEnabledLinked: Boolean; override;
+    function IsHelpContextLinked: Boolean; override;
+    function IsHintLinked: Boolean; override;
+    function IsGroupIndexLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    function IsShortCutLinked: Boolean; override;
+    function IsVisibleLinked: Boolean; override;
   end;
 
   TMenuActionLinkClass = class of TMenuActionLink;

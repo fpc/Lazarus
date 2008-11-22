@@ -241,9 +241,9 @@ type
     FDeviceContext: HDC;
     FWindowHandle: HWND;
     procedure SetControl(AControl: TControl);
-    procedure CreateFont; override;
   protected
     procedure CreateHandle; override;
+    procedure CreateFont; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -699,13 +699,6 @@ type
   protected
     FClient: TControl;
     procedure AssignClient(AClient: TObject); override;
-    function IsCaptionLinked: Boolean; override;
-    function IsEnabledLinked: Boolean; override;
-    function IsHelpLinked: Boolean;  override;
-    function IsHintLinked: Boolean; override;
-    function IsVisibleLinked: Boolean; override;
-    function IsOnExecuteLinked: Boolean; override;
-    function DoShowHint(var HintStr: string): Boolean; virtual;
     procedure SetCaption(const Value: string); override;
     procedure SetEnabled(Value: Boolean); override;
     procedure SetHint(const Value: String); override;
@@ -714,6 +707,14 @@ type
     procedure SetHelpType(Value: THelpType); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
+    function IsOnExecuteLinked: Boolean; override;
+    function DoShowHint(var HintStr: string): Boolean; virtual;
+  public
+    function IsCaptionLinked: Boolean; override;
+    function IsEnabledLinked: Boolean; override;
+    function IsHelpLinked: Boolean;  override;
+    function IsHintLinked: Boolean; override;
+    function IsVisibleLinked: Boolean; override;
   end;
 
   TControlActionLinkClass = class of TControlActionLink;
@@ -1560,8 +1561,6 @@ type
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
-    function IsClientHeightStored: boolean; override;
-    function IsClientWidthStored: boolean; override;
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AdjustClientRect(var ARect: TRect); virtual;
@@ -1575,6 +1574,8 @@ type
     procedure ResizeDelayedAutoSizeChildren; virtual;
     procedure InvalidatePreferredChildSizes;
     function CanTab: Boolean; override;
+    function IsClientHeightStored: boolean; override;
+    function IsClientWidthStored: boolean; override;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure DoSendShowHideToInterface; virtual;
@@ -1699,7 +1700,6 @@ type
     procedure SetColor(Value: TColor); override;
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
     procedure ShowControl(AControl: TControl); virtual;
-    procedure Update; override;
     procedure UpdateControlState;
     procedure UpdateShowing; virtual;
     procedure WndProc(var Message: TLMessage); override;
@@ -1789,6 +1789,7 @@ type
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl);
     procedure Repaint; override;
+    procedure Update; override;
     procedure SetFocus; virtual;
     function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
