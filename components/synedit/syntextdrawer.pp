@@ -71,7 +71,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLType, LCLIntf, GraphType,
+  LCLProc, LCLType, LCLIntf, GraphType, SynEditMiscProcs,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -663,6 +663,12 @@ begin
   // Result(CharWidth)
   with ABC do
     Result := abcA + Integer(abcB) + abcC + TM.tmOverhang;
+  {$IFDEF SYN_LAZARUS}
+  // SynEdit would crash if a (defect) font returns 0.
+  if Result <= 0 then result := TM.tmAveCharWidth + Max(TM.tmOverhang,0);
+  if Result <= 0 then result := 1 + CharHeight * 8 div 10;
+  {$ENDIF}
+
   // pCharHeight
   if Assigned(pCharHeight) then
     pCharHeight^ := Abs(TM.tmHeight) {+ TM.tmInternalLeading};
