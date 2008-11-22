@@ -2141,7 +2141,8 @@ customise by choosing various menu items.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPopupMenu.DoPopup">
-        <short/>
+        <short>
+          <var>DoPopup</var>  perform the popup method</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2151,7 +2152,7 @@ customise by choosing various menu items.</p>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPopupMenu.Create">
+      <element name="TPopupMenu.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2162,7 +2163,7 @@ customise by choosing various menu items.</p>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPopupMenu.Destroy">
+      <element name="TPopupMenu.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -2170,7 +2171,8 @@ customise by choosing various menu items.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPopupMenu.PopUp">
-        <short/>
+        <short>
+          <var>PopUp</var> - sofware emulation of the <var>OnPopup</var> event </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2185,19 +2187,22 @@ customise by choosing various menu items.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TPopupMenu.PopupComponent">
-        <short/>
+        <short>
+          <var>PopupComponent</var> - the Component to which this popup applies</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPopupMenu.PopupPoint">
-        <short/>
+        <short>
+          <var>PopupPoint</var> - the position at which the Popup is to appear</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPopupMenu.Close">
-        <short/>
+        <short>
+          <var>Close</var> - software emulation of the <var>OnClose</var> event, to shut down the Popup</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2211,19 +2216,22 @@ customise by choosing various menu items.</p>
       </element>
       <!-- property Visibility: published -->
       <element name="TPopupMenu.AutoPopup">
-        <short/>
+        <short>
+          <var>AutoPopup</var> - if True, the Popup window automatically appears when the mouse hovers over the relevant object</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TPopupMenu.OnPopup">
-        <short/>
+        <short>
+          <var>OnPopup</var> - event handler for a requirement for a popup menu</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TPopupMenu.OnClose">
-        <short/>
+        <short>
+          <var>OnClose</var> - event handler for closing down the popup</short>
         <descr/>
         <seealso/>
       </element>
