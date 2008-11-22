@@ -348,7 +348,7 @@ type
       read FOnMeasureItem write FOnMeasureItem;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property ParentColor default false;
-    property Sorted: boolean read FSorted write SetSorted;
+    property Sorted: boolean read FSorted write SetSorted default False;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -360,7 +360,7 @@ type
                    MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; virtual;
     procedure ClearSelection; //override;
-    property CharCase: TEditCharCase read FCharCase write SetCharCase;
+    property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
@@ -383,7 +383,7 @@ type
     property SelLength: integer read GetSelLength write SetSelLength;// byte length
     property SelStart: integer read GetSelStart write SetSelStart;// byte position
     property SelText: String read GetSelText write SetSelText;
-    property Style: TComboBoxStyle read FStyle write SetStyle;
+    property Style: TComboBoxStyle read FStyle write SetStyle default csDropDown;
     property TabStop default true;
     property Text;
   end;
@@ -1360,7 +1360,7 @@ type
     procedure SetWordWrap(Value: Boolean);
     procedure Loaded; override;
 
-    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;
