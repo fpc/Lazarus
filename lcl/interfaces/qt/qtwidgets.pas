@@ -6126,6 +6126,10 @@ begin
     TQtDeviceContext(Msg.DC).restore;
   end;
 
+  inc(R.Top);
+  dec(R.Bottom);
+  QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
+
   DrawStruct.ItemID := TCustomComboBox(LCLObject).Items.IndexOf(TCustomComboBox(LCLObject).Text);
   DrawStruct.Area := R;
   DrawStruct.DC := Msg.DC;
