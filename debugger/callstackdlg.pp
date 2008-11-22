@@ -38,7 +38,7 @@ interface
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList;
+  ActnList, MainBase;
 
 type
 
@@ -264,9 +264,8 @@ begin
   if Entry = nil then Exit;
 
   Filename := Entry.Source;
-  if DoGetFullDebugFilename(Filename, true) <> mrOk then exit;
-
-  DoJumpToCodePos(Filename, Entry.Line, 0);
+  if DebugBoss.GetFullFilename(Filename, true)
+  then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True);
 end;
 
 procedure TCallStackDlg.CopyToClipBoard;

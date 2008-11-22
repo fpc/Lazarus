@@ -52,7 +52,7 @@ uses
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, {AssemblerDlg,} DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -87,12 +87,8 @@ type
     procedure OnDebuggerException(Sender: TObject; const AExceptionClass: String;
                                   const AExceptionText: String);
 
-    // debugger dialog events
-    function DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
-      const Filename: string; Line, Column: integer): TModalresult;
+    // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
-    function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
-      var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
     FDebugger: TDebugger;
     FBreakPointGroups: TIDEBreakPointGroups;
@@ -159,6 +155,8 @@ type
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
+
+    function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
@@ -1048,17 +1046,7 @@ end;
 // Menu events
 //-----------------------------------------------------------------------------
 
-function TDebugManager.DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
-  const Filename: string; Line, Column: integer): TModalresult;
-begin
-  if not Destroying then
-    Result:=MainIDE.DoJumpToSourcePosition(Filename,Column,Line,0,true)
-  else
-    Result:=mrCancel;
-end;
-
-function TDebugManager.DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
-  var Filename: string; AskUserIfNotFound: boolean): TModalresult;
+function TDebugManager.GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean;
 var
   SrcFile: String;
   n: Integer;
@@ -1066,7 +1054,7 @@ var
   OpenDialog: TOpenDialog;
   AnUnitInfo: TLazProjectFile;
 begin
-  Result:=mrCancel;
+  Result:=False;
   if Destroying then exit;
 
   SrcFile := Filename;
@@ -1131,9 +1119,10 @@ begin
     FUserSourceFiles.Insert(0, SrcFile);
   end;
   
-  if SrcFile<>'' then begin
+  if SrcFile<>''
+  then begin
     Filename:=SrcFile;
-    Result:=mrOk;
+    Result:=True;
   end;
 end;
 
@@ -1356,7 +1345,7 @@ begin
       Exit;
   end;
   
-  if DebuggerDlgGetFullFilename(nil,SrcFile,true)<>mrOk then exit;
+  if not GetFullFilename(SrcFile, true) then exit;
 
   NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
   if NewSource=nil then begin
@@ -1428,8 +1417,6 @@ begin
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
-    CurDialog.OnJumpToCodePos:=@DebuggerDlgJumpToCodePos;
-    CurDialog.OnGetFullDebugFilename:=@DebuggerDlgGetFullFilename;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
       ddtOutput:      InitDebugOutputDlg;

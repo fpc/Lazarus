@@ -40,20 +40,10 @@ uses
   Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts;
 
 type
-  TDebuggerDlg = class;
-  TJumpToCodePosEvent = function(Sender: TDebuggerDlg;
-                                 const Filename: string; Line, Column: integer
-                                 ): TModalresult of object;
-  TGetFullDebugFilenameEvent =
-    function(Sender: TDebuggerDlg; var Filename: string;
-             AskUserIfNotFound: boolean): TModalresult of object;
-
   TDebuggerDlgClass = class of TDebuggerDlg;
   
   TDebuggerDlg = class(TForm)
   private
-    FOnGetFullDebugFilename: TGetFullDebugFilenameEvent;
-    FOnJumpToCodePos: TJumpToCodePosEvent;
     FUpdateCount: integer;
   protected                                              
     procedure DoClose(var CloseAction: TCloseAction); override;
@@ -63,14 +53,6 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateCount: integer;
-    function DoJumpToCodePos(const Filename: string; Line, Column: integer
-                             ): TModalresult;
-    function DoGetFullDebugFilename(var Filename: string; AskUser: boolean
-                                    ): TModalresult;
-    property OnJumpToCodePos: TJumpToCodePosEvent read FOnJumpToCodePos
-                                                  write FOnJumpToCodePos;
-    property OnGetFullDebugFilename: TGetFullDebugFilenameEvent
-                     read FOnGetFullDebugFilename write FOnGetFullDebugFilename;
   end;
 
 implementation 
@@ -93,24 +75,6 @@ end;
 function TDebuggerDlg.UpdateCount: integer;
 begin
   Result := FUpdateCount;
-end;
-
-function TDebuggerDlg.DoJumpToCodePos(const Filename: string; Line,
-  Column: integer): TModalresult;
-begin
-  if Assigned(OnJumpToCodePos) then
-    Result:=OnJumpToCodePos(Self,Filename,Line,Column)
-  else
-    Result:=mrCancel;
-end;
-
-function TDebuggerDlg.DoGetFullDebugFilename(var Filename: string;
-  AskUser: boolean): TModalresult;
-begin
-  if Assigned(OnGetFullDebugFilename) then
-    Result:=OnGetFullDebugFilename(Self,Filename,AskUser)
-  else
-    Result:=mrCancel;
 end;
 
 (*
