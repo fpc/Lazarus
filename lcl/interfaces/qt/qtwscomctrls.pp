@@ -101,6 +101,7 @@ type
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
@@ -786,20 +787,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
-{var
-  TW: QTreeWidgetH;
-  TWI: QTreeWidgetItemH;}
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetImage') then
     Exit;
-{$note review}
-{  TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
-  TWI := QTreeWidget_headerItem(TW);
-  if Assigned(TListView(ALV).SmallImages) then
-  begin
-    // what to implement here ?!? SmallImages, LargeImages, StateImages ?!?
-    // QTreeWidgetItem_setIcon(TWI, AIndex, QIconH ?!? -> wait for TImageList implementation ?!? );
-  end;}
+  {$note review - must add item into header before adding image ...}
 end;
 
 {------------------------------------------------------------------------------
@@ -961,6 +952,48 @@ begin
 
   Result := True;
 
+end;
+
+class procedure TQtWSCustomListView.ItemSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex,
+  AImageIndex: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+  TWI: QTreeWidgetItemH;
+  Bmp: TBitmap;
+  ImgList: TImageList;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetImage') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  TWI := QtTreeWidget.topLevelItem(AIndex);
+  if (TWI <> nil) then
+  begin
+    ImgList := TImageList.Create(nil);
+      try
+      if (TListView(ALV).ViewStyle = vsIcon) and
+        Assigned(TListView(ALV).LargeImages) then
+        ImgList.Assign(TListView(ALV).LargeImages);
+
+      if (TListView(ALV).ViewStyle = vsSmallIcon) and
+        Assigned(TListView(ALV).LargeImages) then
+        ImgList.Assign(TListView(ALV).SmallImages);
+
+      if (ImgList.Count > 0) and
+        ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+      begin
+        Bmp := TBitmap.Create;
+        try
+          ImgList.GetBitmap(AImageIndex, Bmp);
+          QTreeWidgetItem_setIcon(TWI, ASubIndex, TQtImage(Bmp.Handle).AsIcon);
+        finally
+          Bmp.Free;
+        end;
+      end;
+    finally
+      ImgList.Free;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
