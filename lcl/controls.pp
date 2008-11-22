@@ -1239,7 +1239,7 @@ type
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign default alNone;
-    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
+    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AnchorSide[Kind: TAnchorKind]: TAnchorSide read GetAnchorSide;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
