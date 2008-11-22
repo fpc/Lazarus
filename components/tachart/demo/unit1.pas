@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  TAGraph, TASeries, Buttons, StdCtrls;
+  TAGraph, TASeries, Buttons, StdCtrls, Spin;
 
 type
   { TForm1 }
@@ -27,9 +27,11 @@ type
     cbFooter: TCheckBox;
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
+    Label1: TLabel;
     lblAdd: TLabel;
     lblAdd1: TLabel;
     Panel1: TPanel;
+    edAddCount: TSpinEdit;
     procedure btnClearAreaClick(Sender: TObject);
     procedure btnClearBarClick(Sender: TObject);
     procedure btnClearLineClick(Sender: TObject);
@@ -64,45 +66,58 @@ implementation
 { TForm1 }
 
 procedure TForm1.btnAddAreaClick(Sender: TObject);
+var
+  i: integer;
 begin
   if FArea = nil then InitArea;
 
-  X3 := X3 + 1;
-  if random(2) >= 0.7 then Y3 := Y3 + random(5)
-  else if random(2) >= 0.7 then Y3 := 0
-  else Y3 := Y3 - random(5);
-  FArea.AddXY(x3, y3, '', clTAColor);
+  for i := 1 to edAddCount.Value do begin
+    X3 := X3 + 1;
+    if random(2) >= 0.7 then Y3 := Y3 + random(5)
+    else if random(2) >= 0.7 then Y3 := 0
+    else Y3 := Y3 - random(5);
+    FArea.AddXY(x3, y3, '', clTAColor);
+  end;
 end;
 
 procedure TForm1.btnAddBarClick(Sender: TObject);
+var
+  i: integer;
 begin
   if FBar = nil then InitBar;
-
-  FBar.AddXY(x, y, '', clRed);
-  X := X + 1;
-  if random(2) >= 0.7 then Y := Y + random(5)
-  else if random(2) >= 0.7 then Y := 0
-  else Y := Y - random(5);
+  for i := 1 to edAddCount.Value do begin
+    FBar.AddXY(x, y, '', clRed);
+    X := X + 1;
+    if random(2) >= 0.7 then Y := Y + random(5)
+    else if random(2) >= 0.7 then Y := 0
+    else Y := Y - random(5);
+  end;
 end;
 
 procedure TForm1.btnAddLineClick(Sender: TObject);
+var
+  i: integer;
 begin
   if FLine = nil then InitLine;
-
-  FLine.AddXY(x1, y1, '', clGreen);
-  X1 := X1 + 1.5;
-  if random(2) >= 0.5 then Y1 := Y1 + random(10)
-  else Y1 := Y1 - random(5);
+  for i := 1 to edAddCount.Value do begin
+    FLine.AddXY(x1, y1, '', clGreen);
+    X1 := X1 + 1.5;
+    if random(2) >= 0.5 then Y1 := Y1 + random(10)
+    else Y1 := Y1 - random(5);
+  end;
 end;
 
 procedure TForm1.btnAddPieClick(Sender: TObject);
+var
+  i: integer;
 begin
   if FPie = nil then InitPie;
-
-  FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
-  FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);
-  FPie.AddPie(30, 'filipe romao', clTAColor);
-  FPie.AddPie(40, '234eds sa', clTAColor);
+  for i := 1 to edAddCount.Value do begin
+    FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
+    FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);
+    FPie.AddPie(30, 'filipe romao', clTAColor);
+    FPie.AddPie(40, '234eds sa', clTAColor);
+  end;
 end;
 
 procedure TForm1.btnClearAreaClick(Sender: TObject);
@@ -160,8 +175,8 @@ procedure TForm1.InitArea;
 begin
   FArea := TAreaSeries.Create(Chart1);
   Chart1.AddSerie(FArea);
-  FArea.SeriesColor := clred;
-  FArea.Stairs := true;
+  FArea.SeriesColor := clFuchsia;
+  //FArea.Stairs := true;
   FArea.InvertedStairs := false;
 end;
 

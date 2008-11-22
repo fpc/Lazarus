@@ -387,24 +387,23 @@ end;
 
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 var
-  coordn: PChartCoord;
-  i: Integer;
+  pcc: PChartCoord;
 begin
-  //save the coord and color
-  New(coordn);
-  coordn^.x := X;
-  coordn^.y := Y;
-  coordn^.Color := Color;
-  coordn^.Text := XLabel;
+  New(pcc);
+  pcc^.x := X;
+  pcc^.y := Y;
+  pcc^.Color := Color;
+  pcc^.Text := XLabel;
 
-  //add in order or at end
-  i := 0;
-  while (i < FCoordList.Count) and (PChartCoord(FCoordList.Items[i])^.x <= X) do
-    Inc(i);
-  if i = FCoordList.Count then FCoordList.Add(coordn)
-  else FCoordList.Insert(i, coordn);
-
-  Result := FCoordList.IndexOf(coordn);
+  // We keep FCoordList ordered by X coordinate.
+  // Note that this leads to O(N^2) time except
+  // for the case of adding already ordered points.
+  // So, is the user wants to add many (>10000) points to a graph,
+  // he should pre-sort them to avoid performance penalty.
+  Result := FCoordList.Count;
+  while (Result > 0) and (PChartCoord(FCoordList.Items[Result - 1])^.x > X) do
+    Dec(Result);
+  FCoordList.Insert(Result, pcc);
 end;
 
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
