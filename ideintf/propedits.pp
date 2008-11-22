@@ -1593,8 +1593,10 @@ type
 procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
-implementation
+const
+  NoDefaultValue = Longint($80000000);
 
+implementation
 
 var
   ListPropertyEditors: TList = nil;
@@ -2827,7 +2829,9 @@ end;
 
 function TOrdinalPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)+[paHasDefaultValue];
+  Result:=(inherited GetAttributes);
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TOrdinalPropertyEditor.GetValue: ansistring;

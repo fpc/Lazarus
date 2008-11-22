@@ -308,8 +308,9 @@ end;
 
 function TColorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect,paDialog,paValueList,paCustomDrawn,paRevertable,
-             paHasDefaultValue];
+  Result := [paMultiSelect,paDialog,paValueList,paCustomDrawn,paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
