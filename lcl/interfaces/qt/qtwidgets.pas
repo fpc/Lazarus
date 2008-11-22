@@ -8019,6 +8019,7 @@ function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   SetLength(Panels, 0);
   Result := QStatusBar_create();
+  QWidget_setAutoFillBackground(Result, True);
   Widget := Result;
 end;
 
