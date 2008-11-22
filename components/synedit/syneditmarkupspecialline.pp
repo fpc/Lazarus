@@ -39,64 +39,68 @@ type
 
   TSynEditMarkupSpecialLine = class(TSynEditMarkup)
   private
-    fOnSpecialLineColors : TSpecialLineColorsEvent;
-    fOnSpecialLineMarkup : TSpecialLineMarkupEvent;
-    bSpecialLine : Boolean;
+    FOnSpecialLineColors: TSpecialLineColorsEvent;
+    FOnSpecialLineMarkup: TSpecialLineMarkupEvent;
+    FSpecialLine : Boolean;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit: TCustomControl);
 
-    Procedure PrepareMarkupForRow(aRow : Integer); override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    procedure PrepareMarkupForRow(ARow: Integer); override;
+    function GetMarkupAttributeAtRowCol(const ARow, ACol: Integer): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const ARow, ACol: Integer): Integer; override;
 
     property OnSpecialLineColors: TSpecialLineColorsEvent
-      read fOnSpecialLineColors write fOnSpecialLineColors;
+      read FOnSpecialLineColors write FOnSpecialLineColors;
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
-      read fOnSpecialLineMarkup write fOnSpecialLineMarkup;
+      read FOnSpecialLineMarkup write FOnSpecialLineMarkup;
   end;
 
 implementation
 
 { TSynEditMarkupBracket }
 
-constructor TSynEditMarkupSpecialLine.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
 end;
 
-procedure TSynEditMarkupSpecialLine.PrepareMarkupForRow(aRow : Integer);
+procedure TSynEditMarkupSpecialLine.PrepareMarkupForRow(ARow: Integer);
 var
-  colFg, colBg : TColor;
+  colFg, colBg: TColor;
 begin
-  bSpecialLine := False;
-  if Assigned(fOnSpecialLineMarkup) then
-    fOnSpecialLineMarkup(SynEdit, aRow, bSpecialLine, MarkupInfo);
+  FSpecialLine := False;
+  if Assigned(FOnSpecialLineMarkup) then
+    FOnSpecialLineMarkup(SynEdit, ARow, FSpecialLine, MarkupInfo);
     
-  if Assigned(fOnSpecialLineColors) then begin
-    If bSpecialLine then begin
+  if Assigned(FOnSpecialLineColors) then
+  begin
+    if FSpecialLine then
+    begin
       colFg := MarkupInfo.Foreground;
       colBg := MarkupInfo.Background;
-    end else begin
+    end else
+    begin
       colFg := clNone;
       colBg := clNone;
     end;
-    fOnSpecialLineColors(SynEdit, aRow, bSpecialLine, colFg, colBg);
+    FOnSpecialLineColors(SynEdit, ARow, FSpecialLine, colFg, colBg);
     MarkupInfo.Foreground := colFg;
     MarkupInfo.Background := colBg;
   end;
 end;
 
-function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const ARow, ACol : Integer): TSynSelectedColor;
 begin
   Result := nil;
-  if bSpecialLine then result := MarkupInfo;
+  if FSpecialLine then
+    Result := MarkupInfo;
 end;
 
-function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
+function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const ARow, ACol : Integer): Integer;
 begin
-  result := -1; // always valid for the whole line
+  Result := -1; // always valid for the whole line
 end;
 
 end.
