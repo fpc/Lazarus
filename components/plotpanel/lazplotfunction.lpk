@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <Name Value="lazplotpanel"/>
+    <Name Value="lazplotfunction"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>

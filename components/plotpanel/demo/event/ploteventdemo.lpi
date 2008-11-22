@@ -4,10 +4,7 @@
     <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
-      <Flags>
-        <SaveOnlyProjectUnits Value="True"/>
-      </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="ploteventdemo"/>
@@ -30,7 +27,8 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="lazplotpanel"/>
+        <PackageName Value="lazplotfunction"/>
+        <MinVersion Release="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>

@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit lazplotpanel; 
+unit lazplotfunction; 
 
 interface
 
@@ -17,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('lazplotpanel', @Register); 
+  RegisterPackage('lazplotfunction', @Register); 
 end.

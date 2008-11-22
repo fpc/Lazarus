@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { you can add units after this }, frmmain, LResources, lazplotpanel;
+  { you can add units after this }, frmmain, LResources;
 
 {$IFDEF WINDOWS}{$R ploteventdemo.rc}{$ENDIF}
 
