@@ -357,7 +357,6 @@ var
   Str: String;
   ListColumn: TListColumn;
   ListItem: TListItem;
-  Value: TGValue;
 begin
   if G_IS_OBJECT(cell) = false then
     exit;

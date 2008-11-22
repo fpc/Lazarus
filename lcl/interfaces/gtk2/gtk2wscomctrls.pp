@@ -247,7 +247,7 @@ type
 
 implementation
 
-uses Gtk2CellRenderer;
+uses Gtk2CellRenderer, GtkExtra;
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;

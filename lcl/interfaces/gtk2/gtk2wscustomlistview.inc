@@ -27,12 +27,10 @@ type
 
 procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
 var
-  Widgets: PTVWidgets;
   LV: TLVHack;
   Index: Integer;
   LI: TLVItemHack;
 begin
-  Widgets := PTVWidgets(WidgetInfo^.UserData);
   LV := TLVHack(WidgetInfo^.LCLObject);
   Index := StrToInt(PathStr);
   LI := TLVItemHack(LV.Items.Item[Index]);
@@ -266,8 +264,6 @@ end;
 procedure Gtk2WSLV_ListViewGetPixbufDataFunc(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
 var
-  ItemIndex: Integer;
-  TreePath: PGtkTreePath;
   ListItem: TListItem;
   Images: TList;
   Widgets: PTVWidgets;
@@ -549,7 +545,6 @@ var
   column: PGtkTreeViewColumn;
   pixrenderer,
   textrenderer: PGtkCellRenderer;
-  RealIndex: Integer;
   WidgetInfo: PWidgetInfo;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
@@ -557,19 +552,7 @@ begin
 
   WidgetInfo := GetWidgetInfo(PGtkWidget(ALV.Handle));
 
-  if AIndex < 0 then
-    RealIndex := 0
-  else
-    RealIndex := AIndex * 2;
-
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
-  {if gtk_tree_model_get_n_columns(Widgets^.TreeModel) div 2 < TLVHack(ALV).Columns.Count then
-  begin
-    ReCreateListStore(ALV, PTVWidgets(Widgets^.WidgetInfo^.UserData));
-    ReCreateItems(ALV);
-    GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  end;}
 
   column := gtk_tree_view_column_new();
 
@@ -1058,7 +1041,6 @@ class function TGtk2WSCustomListView.ItemGetPosition (
   const ALV: TCustomListView; const AIndex: Integer ) : TPoint;
 var
   Widgets: PTVWidgets;
-  Iter: TGtkTreeIter;
   Path: PGtkTreePath;
   ARect: TGdkRectangle;
   Column: PGtkTreeViewColumn;
@@ -1082,14 +1064,12 @@ class function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): HWND;
 var
   Widgets: PTVWidgets;
-  ListView: TCustomListView;
   OrigScrollingData: PBaseScrollingWinControlData;
   //ListViewData: PCustomListViewData;
   //Allocation: TGTKAllocation;
   ScrollWidget: PGtkScrolledWindow;
   PtrType: GType;
 begin
-  ListView := TCustomListView(AWinControl as TCustomListView);
 
   Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   if Result = 0 then Exit;
