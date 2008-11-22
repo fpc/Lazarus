@@ -5,8 +5,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 531
   TabOrder = 0
   Visible = False
-  DesignLeft = 674
-  DesignTop = 208
+  DesignLeft = 22
+  DesignTop = 29
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -17,7 +17,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Top = 51
     Width = 94
     HelpContext = 0
-    Alignment = taLeftJustify
     BorderSpacing.Left = 6
     BorderSpacing.Top = 0
     BorderSpacing.Right = 0
@@ -38,7 +37,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Top = 27
     Width = 88
     HelpContext = 0
-    Alignment = taLeftJustify
     BorderSpacing.Left = 6
     BorderSpacing.Top = 0
     BorderSpacing.Right = 0
@@ -59,7 +57,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Top = 3
     Width = 73
     HelpContext = 0
-    Alignment = taLeftJustify
     BorderSpacing.Left = 6
     BorderSpacing.Top = 0
     BorderSpacing.Right = 6
@@ -79,7 +76,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Top = 75
     Width = 89
     HelpContext = 0
-    Alignment = taLeftJustify
     BorderSpacing.Left = 0
     BorderSpacing.Top = 6
     BorderSpacing.Right = 0
@@ -106,15 +102,12 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    CharCase = ecNormal
     Ctl3D = False
     ItemHeight = 13
     ItemWidth = 0
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
-    Sorted = False
-    Style = csDropDown
     TabOrder = 0
     Text = 'LanguageComboBox'
   end
@@ -135,15 +128,12 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    CharCase = ecNormal
     Ctl3D = False
     ItemHeight = 13
     ItemWidth = 0
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
-    Sorted = False
-    Style = csDropDown
     TabOrder = 1
     Text = 'ColorSchemeComboBox'
   end
@@ -164,7 +154,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    CharCase = ecNormal
     Ctl3D = False
     ItemHeight = 13
     Items.Strings = (
@@ -176,8 +165,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
-    Sorted = False
-    Style = csDropDown
     TabOrder = 2
   end
   object ColorElementListBox: TListBox[7]
@@ -297,7 +284,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 6
       Width = 83
       HelpContext = 0
-      Alignment = taLeftJustify
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 0
@@ -317,7 +303,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 47
       Width = 83
       HelpContext = 0
-      Alignment = taLeftJustify
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 0
@@ -818,6 +803,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ParentColor = False
     ParentFont = False
     TabOrder = 7
+    BookMarkOptions.OnChange = nil
     Keystrokes = <    
       item
         Command = 3
@@ -1142,8 +1128,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Lines.Strings = (
       'ColorPreview'
     )
-    ReadOnly = True
-    SelectedColor.OnChange = nil
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[12]
     AnchorSideLeft.Control = Owner

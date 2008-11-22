@@ -90,7 +90,7 @@ type
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
-    ahaMouseLink, ahaLineNumber);
+    ahaMouseLink, ahaLineNumber, ahaLineHighlight);
 
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
@@ -107,7 +107,8 @@ const
     'Highlight all',
     'Matching Brackets',
     'Mouse Link',
-    'Line Number'
+    'Line Number',
+    'Line Highlight'
     );
     
 type
@@ -150,7 +151,8 @@ const
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -179,7 +181,8 @@ const
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -208,7 +211,8 @@ const
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -237,7 +241,8 @@ const
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -266,7 +271,8 @@ const
       { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clAqua;      FG: clNone;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
       { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;         Styles: []; StylesMask: [])
+      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;         Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;          Styles: []; StylesMask: [])
     )
   );
 
@@ -2073,6 +2079,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
