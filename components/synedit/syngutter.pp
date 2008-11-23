@@ -562,7 +562,6 @@ end;
 procedure TSynGutter.DoOnGutterClick(X, Y: integer);
 var
   i, x2 : integer;
-  line: integer;
 begin
   i := 0;
   x2 := x;
