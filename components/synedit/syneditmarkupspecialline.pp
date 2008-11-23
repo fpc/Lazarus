@@ -75,7 +75,9 @@ procedure TSynEditMarkupSpecialLine.DoMarkupLineHighlightInfoChange(
   Sender: TObject);
 begin
   if FHighlightedLine > 0 then
-    InvalidateSynLines(FHighlightedLine, FHighlightedLine);
+    InvalidateSynLines(FHighlightedLine, FHighlightedLine)
+  else
+    InvalidateLineHighlight;
 end;
 
 function TSynEditMarkupSpecialLine.HasLineHighlight: Boolean;
@@ -158,6 +160,9 @@ procedure TSynEditMarkupSpecialLine.InvalidateLineHighlight;
 var
   NewLine: Integer;
 begin
+  if not HasLineHighlight then
+    Exit;
+
   NewLine := TSynEdit(SynEdit).CaretY;
 
   // invalidate old line highlighting, if changed
