@@ -80,21 +80,24 @@ var
   OldWidth: Integer;
   OldHeight: Integer;
 begin
-  if FKind <> Value then begin
-    FKind := Value;
-    // switch width and height, but not when loading, because we assume that
-    // the lfm contains a consistent combination of kind and (width, height)
-    if not (csLoading in ComponentState) then begin
-      OldWidth:=Width;
-      OldHeight:=Height;
-      // TODO: Remove RecreateWnd
-      if HandleAllocated then
-        RecreateWnd(Self)
-      else
-        Constraints.UpdateInterfaceConstraints;
-      SetBounds(Left,Top,OldHeight,OldWidth);
-    end;
-  end;
+  if FKind = Value then Exit;
+
+  FKind := Value;
+
+  // the InterfaceConstraints need to get updated, even when loading
+  OldWidth:=Width;
+  OldHeight:=Height;
+  Constraints.UpdateInterfaceConstraints;
+
+  // switch width and height, but not when loading, because we assume that
+  // the lfm contains a consistent combination of kind and (width, height)
+  if csLoading in ComponentState then Exit;
+
+  // TODO: Remove RecreateWnd
+  if HandleAllocated
+  then RecreateWnd(Self);
+
+  SetBounds(Left,Top,OldHeight,OldWidth);
 end;
 
 procedure TCustomScrollBar.SetParams(APosition, AMin, AMax, APageSize: Integer);
