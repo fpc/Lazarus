@@ -55,7 +55,6 @@ type
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
     UseSyntaxHighlightCheckBox: TCheckBox;
-    ColorElementLabel: TLabel;
     ColorElementListBox: TListBox;
     ColorPreview: TSynEdit;
     ColorSchemeComboBox: TComboBox;
@@ -68,7 +67,7 @@ type
     LanguageLabel: TLabel;
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
-    TextAttributesGroupBox: TGroupBox;
+    ElementAttributesGroupBox: TGroupBox;
     procedure ColorElementListBoxClick(Sender: TObject);
     procedure ColorElementListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ForegroundColorBoxChange(Sender: TObject);
@@ -707,14 +706,13 @@ begin
   end;
 
   FileExtensionsLabel.Caption := dlgFileExts;
-  ColorElementLabel.Caption := dlgEdElement;
   SetAttributeToDefaultButton.Caption := dlgSetElementDefault;
   SetAllAttributesToDefaultButton.Caption := dlgSetAllElementDefault;
   ForeGroundLabel.Caption := dlgForecolor;
   ForeGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   BackGroundLabel.Caption := dlgBackColor;
   BackGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
-  TextAttributesGroupBox.Caption := dlgTextAttributes;
+  ElementAttributesGroupBox.Caption := dlgElementAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;

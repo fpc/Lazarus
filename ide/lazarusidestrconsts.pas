@@ -1154,12 +1154,11 @@ resourcestring
   dlgLang = 'Language';
   dlgClrScheme = 'Color Scheme';
   dlgFileExts = 'File extensions';
-  dlgEdElement = 'Element';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
   dlgForecolor = 'Foreground';
   dlgEdUseDefColor = 'Use default color';
-  dlgTextAttributes = 'Text attributes';
+  dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
   dlgEdUnder = 'Underline';
