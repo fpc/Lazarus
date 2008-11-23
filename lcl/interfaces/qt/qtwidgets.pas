@@ -5941,6 +5941,9 @@ end;
 function TQtComboBox.getText: WideString;
 begin
   QComboBox_currentText(QComboBoxH(Widget), @Result);
+  if FOwnerDrawn and (FLineEdit = nil) and
+    (Result = '') and (Result <> FText) then
+    Result := FText;
 end;
 
 function TQtComboBox.getTextStatic: Boolean;
@@ -6077,10 +6080,12 @@ var
   Opt: QStyleOptionComboBoxH;
   R: TRect;
   State: QStyleState;
+  CurrIndex: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.SlotPaintCombo ', dbgsName(LCLObject));
   {$endif}
+  CurrIndex := currentIndex;
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_PAINT;
@@ -6120,6 +6125,12 @@ begin
       TQtDeviceContext(Msg.DC).Widget, Widget);
     QStyle_subControlRect(QApplication_style(), @R, QStyleCC_ComboBox, Opt,
       QStyleSC_ComboBoxEditField , Widget);
+    if CurrIndex < 0 then
+    begin
+      QStyleOptionComboBox_setCurrentText(Opt, @FText);
+      QStyle_drawControl(QApplication_style(), QStyleCE_ComboBoxLabel, opt,
+        TQtDeviceContext(Msg.DC).Widget, Widget);
+    end;
 
   finally
     QStyleOptionComboBox_destroy(Opt);
@@ -6130,7 +6141,7 @@ begin
   dec(R.Bottom);
   QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
 
-  DrawStruct.ItemID := currentIndex;
+  DrawStruct.ItemID := CurrIndex;
   DrawStruct.Area := R;
   DrawStruct.DC := Msg.DC;
 
@@ -6154,7 +6165,8 @@ begin
   MsgItem.DrawListItemStruct := @DrawStruct;
 
   try
-    DeliverMessage(MsgItem);
+    if CurrIndex >= 0 then
+      DeliverMessage(MsgItem);
   finally
     Dispose(PaintData.ClipRect);
     Fillchar(FPaintData, SizeOf(FPaintData), 0);
