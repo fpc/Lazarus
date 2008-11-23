@@ -211,6 +211,9 @@ implementation
 uses
   SynEdit, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks;
 
+type  // This is until InvalidateGutterLines, can be moved to an accessible place
+  SynEditAccess = Class(TCustomSynEdit);
+
 { TSynEditMark }
 
 function TSynEditMark.GetEdit: TSynEditBase;
@@ -238,23 +241,23 @@ procedure TSynEditMark.SetImage(const Value: Integer);
 begin
   FImage := Value;
   if fVisible and Assigned(fEdit) then
-    TCustomSynEdit(FEdit).InvalidateGutterLines(fLine, fLine);
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
 end;
 
 procedure TSynEditMark.SetInternalImage(const Value: boolean);
 begin
   fInternalImage := Value;
   if fVisible and Assigned(fEdit) then
-    TCustomSynEdit(FEdit).InvalidateGutterLines(fLine, fLine);
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
 end;
 
 procedure TSynEditMark.SetLine(const Value: Integer);
 begin
   if fVisible and Assigned(fEdit) then begin
     if fLine > 0 then
-      TCustomSynEdit(FEdit).InvalidateGutterLines(fLine, fLine);
+      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
     fLine := Value;
-    TCustomSynEdit(FEdit).InvalidateGutterLines(fLine, fLine);
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
   end else
     fLine := Value;
 end;
@@ -264,7 +267,7 @@ begin
   if fVisible <> Value then begin
     fVisible := Value;
     if Assigned(fEdit) then
-      TCustomSynEdit(FEdit).InvalidateGutterLines(fLine, fLine);
+      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
   end;
 end;
 

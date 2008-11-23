@@ -77,6 +77,7 @@ uses
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView,
+  SynGutter,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
@@ -116,10 +117,6 @@ const
 
    // maximum scroll range
   MAX_SCROLL = 32767;
-
-// Max number of book/gutter marks returned from GetEditMarksForLine - that
-// really should be enough.
-  maxMarks = 16;
 
   SYNEDIT_CLIPBOARD_FORMAT = 'SynEdit Control Block Type';
 
@@ -270,64 +267,13 @@ type
 
   TCustomSynEdit = class;
 
-  TSynEditMark = class
-  protected
-    fLine, fColumn, fImage: Integer;
-    fEdit: TCustomSynEdit;
-    fVisible: boolean;
-    fInternalImage: boolean;
-    fBookmarkNum: integer;
-    function GetEdit: TCustomSynEdit; virtual;
-    procedure SetColumn(const Value: Integer); virtual;
-    procedure SetImage(const Value: Integer); virtual;
-    procedure SetLine(const Value: Integer); virtual;
-    procedure SetVisible(const Value: boolean); {$IFDEF SYN_LAZARUS}virtual;{$ENDIF} //MWE: Laz needs to know when a line gets visible, so the editor color can be updated
-    procedure SetInternalImage(const Value: boolean);
-    function GetIsBookmark: boolean;
-  public
-    constructor Create(AOwner: TCustomSynEdit);
-    property Line: integer read fLine write SetLine;
-    property Column: integer read fColumn write SetColumn;
-    property ImageIndex: integer read fImage write SetImage;
-    property BookmarkNumber: integer read fBookmarkNum write fBookmarkNum;
-    property Visible: boolean read fVisible write SetVisible;
-    property InternalImage: boolean read fInternalImage write SetInternalImage;
-    property IsBookmark: boolean read GetIsBookmark;
-  end;
+  { Make them visible for Units that use TSynEdit }
+  TSynEditMark = SynGutter.TSynEditMark;
+  TPlaceMarkEvent = SynGutter.TPlaceMarkEvent;
+  TSynEditMarks = SynGutter.TSynEditMarks;
+  TSynEditMarkList = SynGutter.TSynEditMarkList;
+  TGutterClickEvent = SynGutter.TGutterClickEvent;
 
-  TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark)
-    of object;
-
-  TSynEditMarks = array[1..maxMarks] of TSynEditMark;
-
-  { A list of mark objects. Each object cause a litle picture to be drawn in the
-    gutter. }
-  TSynEditMarkList = class(TList)
-  protected
-    fEdit: TCustomSynEdit;
-    fOnChange: TNotifyEvent;
-    procedure DoChange;
-    function Get(Index: Integer): TSynEditMark;
-    procedure Put(Index: Integer; Item: TSynEditMark);
-  public
-    constructor Create(AOwner: TCustomSynEdit);
-    destructor Destroy; override;
-    function Add(Item: TSynEditMark): Integer;
-    procedure ClearLine(line: integer);
-    procedure Delete(Index: Integer);
-    function First: TSynEditMark;
-    procedure GetMarksForLine(line: integer; var Marks: TSynEditMarks);
-    procedure Insert(Index: Integer; Item: TSynEditMark);
-    function Last: TSynEditMark;
-    procedure Place(Mark: TSynEditMark);
-    function Remove(Item: TSynEditMark): Integer;
-  public
-    property Items[Index: Integer]: TSynEditMark read Get write Put; default;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  end;
-
-  TGutterClickEvent = procedure(Sender: TObject; X, Y, Line: integer;
-    mark: TSynEditMark) of object;
 
   TSynEditPlugin = class(TObject)
   private
@@ -359,7 +305,7 @@ type
 
   { TCustomSynEdit }
 
-  TCustomSynEdit = class(TCustomControl)
+  TCustomSynEdit = class(TSynEditBase)
   private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
@@ -481,7 +427,6 @@ type
     fOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
     fOnCommandProcessed: TProcessCommandEvent;
     fOnDropFiles: TDropFilesEvent;
-    fOnGutterClick: TGutterClickEvent;
     fOnPaint: TPaintEvent;
     fOnPlaceMark: TPlaceMarkEvent;
     fOnProcessCommand: TProcessCommandEvent;
@@ -521,9 +466,11 @@ type
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
+    function GetOnGutterClick : TGutterClickEvent;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
+    procedure SetOnGutterClick(const AValue : TGutterClickEvent);
     procedure SetRealLines(const AValue : TStrings);
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
@@ -698,7 +645,6 @@ type
       var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer); virtual;
     procedure Paint; override;
-    procedure PaintGutter(AClip: TRect; FirstLine, LastLine: integer); virtual;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
     {$IFDEF SYN_LAZARUS}
@@ -721,7 +667,6 @@ type
     procedure UndoItem;                                                         //sbs 2000-11-19
   protected
     fGutterWidth: Integer;
-    fInternalImage: TSynInternalImage;
     {$IFDEF EnableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
     {$ENDIF}
@@ -731,7 +676,6 @@ type
       AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
-    procedure DoOnGutterClick(X, Y: integer); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnPlaceMark(var Mark: TSynEditMark); virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
@@ -1001,7 +945,7 @@ type
       read fOnCommandProcessed write fOnCommandProcessed;
     property OnDropFiles: TDropFilesEvent read fOnDropFiles write fOnDropFiles;
     property OnGutterClick: TGutterClickEvent
-      read fOnGutterClick write fOnGutterClick;
+      read GetOnGutterClick write SetOnGutterClick;
     property OnPaint: TPaintEvent read fOnPaint write fOnPaint;
     property OnPlaceBookmark: TPlaceMarkEvent
       read FOnPlaceMark write FOnPlaceMark;
@@ -1509,11 +1453,12 @@ begin
   fSelectedColor := TSynSelectedColor.Create;
   fSelectedColor.OnChange := {$IFDEF FPC}@{$ENDIF}SelectedColorsChanged;
   {$ENDIF}
+  fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
   fRightEdge := 80;
-  fGutter := TSynGutter.Create;
+  fGutter := TSynGutter.Create(self, fTextView, fBookMarkOpt, fTextDrawer);
   fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   fGutterWidth := fGutter.Width;
   fTextOffset := fGutterWidth + 2;
@@ -1558,7 +1503,6 @@ begin
   fFontDummy.CharSet := DEFAULT_CHARSET;
 {$ENDIF}
 {$ENDIF}
-  fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   Font.Assign(fFontDummy);
   Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
   FontChanged(nil);
@@ -1714,7 +1658,6 @@ begin
   fRedoList.Free;
   fGutter.Free;
   fTextDrawer.Free;
-  fInternalImage.Free;
   fFontDummy.Free;
   Lines.Free;
   {$ELSE}
@@ -1730,7 +1673,6 @@ begin
   FreeAndNil(fRedoList);
   FreeAndNil(fGutter);
   FreeAndNil(fTextDrawer);
-  FreeAndNil(fInternalImage);
   FreeAndNil(fFontDummy);
   FreeAndNil(fTextView);
   FreeAndNil(fTrimLines);
@@ -1813,6 +1755,11 @@ begin
   Result := fGutter.MarkupInfoLineNumber;
 end;
 
+function TCustomSynEdit.GetOnGutterClick : TGutterClickEvent;
+begin
+  Result := fGutter.OnGutterClick;
+end;
+
 function TCustomSynEdit.GetSelectedColor : TSynSelectedColor;
 begin
   result := fMarkupSelection.MarkupInfoSeletion;
@@ -1843,6 +1790,11 @@ end;
 function TCustomSynEdit.GetMouseLinkColor : TSynSelectedColor;
 begin
   Result := fMarkupCtrlMouse.MarkupInfo;
+end;
+
+procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);
+begin
+  fGutter.OnGutterClick := AValue;
 end;
 
 procedure TCustomSynEdit.SetRealLines(const AValue : TStrings);
@@ -2570,7 +2522,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   if (X < fGutterWidth) and (Button=mbLeft) then begin
     Include(fStateFlags, sfPossibleGutterClick);
-    DoOnGutterClick(X, Y);
+    fGutter.DoOnGutterClick(X, Y);
   end;
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
@@ -2798,7 +2750,7 @@ begin
     {$IFDEF SYN_LAZARUS}and (Button = mbLeft){$ENDIF} then
   begin
     {$IFNDEF SYN_LAZARUS}
-    DoOnGutterClick(X, Y);
+    fGutter.DoOnGutterClick(X, Y);
     {$ENDIF}
   end else
   if fStateFlags * [sfDblClicked,
@@ -2812,6 +2764,7 @@ begin
                   {$ELSE}CaretXY{$ENDIF});
     Exclude(fStateFlags, sfWaitForDragging);
   end;
+
   if (Button=mbLeft)
   and (fStateFlags * [sfWaitForDragging] = []) then
   begin
@@ -2837,62 +2790,6 @@ begin
     end;
   {$ENDIF}
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-end;
-
-procedure TCustomSynEdit.DoOnGutterClick(X, Y: integer);
-var
-  i     : integer;
-  offs  : integer;
-  line  : integer;
-  allmrk: TSynEditMarks;
-  mark  : TSynEditMark;
-begin
-  {$IFDEF SYN_LAZARUS}
-  line := PixelsToRowColumn(Point(X, Y)).Y;
-  //debugln('TCustomSynEdit.DoOnGutterClick A ',dbgs(line));
-  if line <= Lines.Count then begin
-    mark := nil;
-    if Gutter.ShowCodeFolding and (X<Gutter.CodeFoldingWidth) then begin
-      CodeFoldAction(line);
-    end else begin
-      Marks.GetMarksForLine(line, allmrk);
-      offs := 0;
-      for i := 1 to maxMarks do begin
-        if assigned(allmrk[i]) then begin
-          Inc(offs, BookMarkOptions.XOffset);
-          if X < offs then begin
-            mark := allmrk[i];
-            break;
-          end;
-        end;
-      end;
-    end;
-    if Assigned(fOnGutterClick) then begin
-      // for compatibility invoke this only on the markable area
-      fOnGutterClick(Self, X, Y, line, mark);
-    end;
-  end;
-  {$ELSE}
-  if Assigned(fOnGutterClick) then begin
-    line := PixelsToRowColumn(Point(X, Y)).Y;
-    if line <= Lines.Count then begin
-      mark := nil;
-      Marks.GetMarksForLine(line, allmrk);
-      offs := 0;
-      mark := nil;
-      for i := 1 to maxMarks do begin
-        if assigned(allmrk[i]) then begin
-          Inc(offs, BookMarkOptions.XOffset);
-          if X < offs then begin
-            mark := allmrk[i];
-            break;
-          end;
-        end;
-      end; //for
-      fOnGutterClick(Self, X, Y, line, mark);
-    end;
-  end;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.Paint;
@@ -2941,7 +2838,7 @@ begin
     if (rcClip.Left < fGutterWidth) then begin
       rcDraw := rcClip;
       rcDraw.Right := fGutterWidth;
-      PaintGutter(rcDraw, nL1, nL2);
+      fGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // Then paint the text area if it was (partly) invalidated.
     if (rcClip.Right > fGutterWidth) then begin
@@ -3000,343 +2897,6 @@ begin
   Invalidate;
 end;
 {$ENDIF}
-
-procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
-var
-  i, iLine: integer;
-  rcLine: TRect;
-  bHasOtherMarks: boolean;
-  aGutterOffs: PIntArray;
-  s: string;
-  dc: HDC;
-  rcCodeFold: TRect;
-  tmp: TSynEditCodeFoldType;
-  CodeFoldOffset: Integer;
-  ShowDot: boolean;
-
-  procedure DrawMark(iMark: integer);
-  {$IFDEF SYN_LAZARUS}
-  var
-    iLine: integer;
-    itop : Longint;
-    CurMark: TSynEditMark;
-  begin
-    iTop := 0;
-    CurMark:=Marks[iMark];
-    if (CurMark.Line<1) or (CurMark.Line>Lines.Count) then exit;
-    if fTextView.FoldedAtTextIndex[CurMark.Line-1] then exit;
-    iLine := fTextView.TextIndexToScreenLine(CurMark.Line-1);
-
-    if Assigned(fBookMarkOpt.BookmarkImages) and not CurMark.InternalImage
-    then begin
-      if (CurMark.ImageIndex <= fBookMarkOpt.BookmarkImages.Count) then begin
-        if CurMark.IsBookmark = BookMarkOptions.DrawBookmarksFirst then
-          aGutterOffs^[iLine] := CodeFoldOffset
-        else if aGutterOffs^[iLine] = 0 then
-          aGutterOffs^[iLine] := fBookMarkOpt.BookmarkImages.Width + CodeFoldOffset;
-        if fTextHeight > fBookMarkOpt.BookmarkImages.Height then
-          iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
-        with fBookMarkOpt do
-          BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
-                           iTop + iLine * fTextHeight, CurMark.ImageIndex,true);
-
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
-      end;
-    end else
-    begin
-      if CurMark.ImageIndex in [0..9] then begin
-        if not Assigned(fInternalImage) then begin
-          fInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
-        end;
-        if (aGutterOffs^[iLine]=0) and Gutter.ShowCodeFolding then
-          aGutterOffs^[iLine]:=Gutter.CodeFoldingWidth;
-        fInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
-            fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight,
-            fTextHeight);
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.Xoffset);
-      end;
-    end;
-  end;
-  {$ELSE below: not SYN_LAZARUS}
-  var
-    iLine: integer;
-    itop : Longint;
-  begin
-    iTop := 0;
-    if Assigned(fBookMarkOpt.BookmarkImages) and not Marks[i].InternalImage
-    then begin
-      if Marks[iMark].ImageIndex <= fBookMarkOpt.BookmarkImages.Count then begin
-        iLine := Marks[iMark].Line - TopLine;
-//        if Marks[iMark].IsBookmark then
-        if Marks[iMark].IsBookmark = BookMarkOptions.DrawBookmarksFirst then    //mh 2000-10-12
-          aGutterOffs^[iLine] := 0
-        else if aGutterOffs^[iLine] = 0 then
-          aGutterOffs^[iLine] := fBookMarkOpt.XOffset;
-        If fTextHeight > fBookMarkOpt.BookmarkImages.Height then
-          iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
-        with fBookMarkOpt do
-          if not TSynEditStringList(fLines).Folded[iLine] then
-            BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine], iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
-
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
-      end;
-    end else
-    begin
-      if Marks[iMark].ImageIndex in [0..9] then begin
-        iLine := Marks[iMark].Line - TopLine;
-        if not Assigned(fInternalImage) then begin
-          fInternalImage := TSynInternalImage.Create('SynEditInternalImages',
-            10);
-        end;
-        fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
-      end;
-    end;
-  end;
-  {$ENDIF}
-
-  procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
-  const cNodeOffset = 3;
-  var
-    rcNode: TRect;
-    ptCenter : TPoint;
-    iSquare: integer;
-  begin
-    //center of the draw area
-    ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
-    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
-
-    //make node rect square
-    iSquare := Max(0, rcCodeFold.Bottom - rcCodeFold.Top - 14) div 2;
-
-    //area of drawbox
-    rcNode.Right := rcCodeFold.Right - cNodeOffset + 1;
-    rcNode.Left := rcCodeFold.Left + cNodeOffset;
-    rcNode.Top := rcCodeFold.Top + cNodeOffset + iSquare;
-    rcNode.Bottom := rcCodeFold.Bottom - cNodeOffset - iSquare + 1;
-
-    Canvas.Brush.Color:=clWhite;
-    Canvas.Rectangle(rcNode);
-
-    //draw bottom handle to paragraph line
-    Canvas.MoveTo((rcNode.Left + rcNode.Right) div 2, rcNode.Bottom);
-    Canvas.LineTo((rcNode.Left + rcNode.Right) div 2, rcCodeFold.Bottom);
-
-    //draw unfolded sign in node box
-    Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
-    Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
-
-    //draw folded sign
-    if Collapsed then
-    begin
-      Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
-      Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
-    end;
-  end;
-
-  procedure DrawParagraphContinue(rcCodeFold: TRect);
-  var
-    iCenter : integer;
-  begin
-    //center of the draw area
-    iCenter := (rcCodeFold.Left + rcCodeFold.Right) div 2;
-
-    Canvas.MoveTo(iCenter, rcCodeFold.Top);
-    Canvas.LineTo(iCenter, rcCodeFold.Bottom);
-  end;
-
-  procedure DrawParagraphEnd(rcCodeFold: TRect);
-  var
-    ptCenter : TPoint;
-  begin
-    //center of the draw area
-    ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
-    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
-
-    Canvas.MoveTo(ptCenter.X, rcCodeFold.Top);
-    Canvas.LineTo(ptCenter.X, ptCenter.Y);
-    Canvas.LineTo(rcCodeFold.Right, ptCenter.Y);
-  end;
-
-begin
-  {$IFNDEF SYN_LAZARUS}
-  if (FirstLine = 1) and (LastLine = 0) then
-    LastLine := 1;
-  {$ENDIF}
-  // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
-  // when absolutely necessary.  Note: Never change brush / pen / font of the
-  // canvas inside of this block (only through methods of fTextDrawer)!
-  Canvas.Brush.Color := Gutter.Color;
-  // If we have to draw the line numbers then we don't want to erase
-  // the background first. Do it line by line with TextRect instead
-  // and fill only the area after the last visible line.
-  dc := Canvas.Handle;
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
-  if Gutter.ShowCodeFolding then
-    CodeFoldOffset:=Gutter.CodeFoldingWidth
-  else
-    CodeFoldOffset:=0;
-  {$ENDIF}
-  if fGutter.ShowLineNumbers then
-  begin
-    fTextDrawer.BeginDrawing(dc);
-    try
-      if FGutter.MarkupInfoLineNumber.Background <> clNone then
-        fTextDrawer.SetBackColor(FGutter.MarkupInfoLineNumber.Background)
-      else
-        fTextDrawer.SetBackColor(FGutter.Color);
-      if FGutter.MarkupInfoLineNumber.Foreground <> clNone then
-        fTextDrawer.SetForeColor(FGutter.MarkupInfoLineNumber.Foreground)
-      else
-        fTextDrawer.SetForeColor(Self.Font.Color);
-      fTextDrawer.Style := FGutter.MarkupInfoLineNumber.Style;
-      // prepare the rect initially
-      rcLine := AClip;
-      rcLine.Right := fGutterWidth - 2;
-      //rcLine.Right := Max(rcLine.Right, fGutterWidth - 2);
-      {$IFDEF SYN_LAZARUS}
-      rcLine.Bottom := FirstLine * fTextHeight;
-      rcLine.Left := CodeFoldOffset + fGutter.LeftOffset;
-      for i := FirstLine to LastLine do
-      begin
-        iLine := fTextView.DisplayNumber[i];
-        // next line rect
-        rcLine.Top := rcLine.Bottom;
-        // Must show a dot instead of line number if
-        // line number is not the first, the last, the current line
-        // or a multiple of Gutter.ShowOnlyLineNumbersMultiplesOf
-        ShowDot := ((iLine mod fGutter.ShowOnlyLineNumbersMultiplesOf) <> 0)
-            and (iLine <> CaretY) and (iLine <> 1) and (iLine <> Lines.Count);
-        // Get the formatted line number or dot
-        s := fGutter.FormatLineNumber(iLine, ShowDot);
-        Inc(rcLine.Bottom, fTextHeight);
-        // erase the background and draw the line number string in one go
-        fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE, rcLine,
-          PChar(Pointer(S)),Length(S));
-      end;
-      {$ELSE}
-      rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
-      for iLine := FirstLine to LastLine do begin
-        // next line rect
-        rcLine.Top := rcLine.Bottom;
-        s := fGutter.FormatLineNumber(iLine, false);
-        Inc(rcLine.Bottom, fTextHeight);
-        // erase the background and draw the line number string in one go
-        Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
-          @rcLine, PChar(s), Length(s), nil);
-      end;
-      {$ENDIF}
-      // now erase the remaining area if any
-      if AClip.Bottom > rcLine.Bottom then
-      begin
-        rcLine.Top := rcLine.Bottom;
-        rcLine.Bottom := AClip.Bottom;
-        with rcLine do
-          fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
-      end;
-      // restore original style
-      fTextDrawer.SetBackColor(fGutter.Color);
-      fTextDrawer.SetForeColor(Self.Font.Color);
-      if AClip.Left < rcLine.Left then
-      begin
-        rcLine.Right := rcLine.Left;
-        rcLine.Left := AClip.Left;
-        rcLine.Top := AClip.Top;
-        rcLine.Bottom := AClip.Bottom;
-        with rcLine do
-          fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
-      end;
-    finally
-      fTextDrawer.EndDrawing;
-    end;
-  end else
-    InternalFillRect(dc, AClip);
-
-  //draw the code folding marks
-  if fGutter.ShowCodeFolding then
-  begin
-    with Canvas do
-    begin
-      Pen.Color := clDkGray;
-      Pen.Width := 1;
-
-      rcLine.Bottom := FirstLine * fTextHeight;
-      for iLine := FirstLine to LastLine do
-      begin
-        // next line rect
-        rcLine.Top := rcLine.Bottom;
-        Inc(rcLine.Bottom, fTextHeight);
-
-        rcCodeFold.Left := 0;
-        rcCodeFold.Right := 14;
-        rcCodeFold.Top := rcLine.Top;
-        rcCodeFold.Bottom := rcLine.Bottom;
-
-//DebugLn(['** GUTTER at ',iLine,' scrline=',fTextView.TextIndexToScreenLine(iLine-1),' type ', SynEditCodeFoldTypeNames[fTextView.FoldType[fTextView.TextIndexToScreenLine(iLine-1)]]]);
-        tmp := fTextView.FoldType[iLine];
-
-        case tmp of
-          cfCollapsed: DrawNodeBox(rcCodeFold, True);
-          cfExpanded: DrawNodeBox(rcCodeFold, False);
-          cfContinue: DrawParagraphContinue(rcCodeFold);
-          cfEnd: DrawParagraphEnd(rcCodeFold);
-        end;
-      end;
-    end;
-  end;
-
-  // the gutter separator if visible
-  if AClip.Right >= fGutterWidth - 2 then
-    with Canvas do begin
-      Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
-      Pen.Width := 1;
-      with AClip do begin
-        MoveTo(fGutterWidth - 2, Top);
-        LineTo(fGutterWidth - 2, Bottom);
-        Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
-        MoveTo(fGutterWidth - 1, Top);
-        LineTo(fGutterWidth - 1, Bottom);
-      end;
-    end;
-  // now the gutter marks
-  if BookMarkOptions.GlyphsVisible and (Marks.Count > 0)
-    and (LastLine >= FirstLine)
-  then begin
-    aGutterOffs := AllocMem((LastLine+1{$IFNDEF SYN_LAZARUS}-TopLine{$ENDIF}) * SizeOf(integer));
-    try
-      // Instead of making a two pass loop we look while drawing the bookmarks
-      // whether there is any other mark to be drawn
-      bHasOtherMarks := FALSE;
-      for i := 0 to Marks.Count - 1 do with Marks[i] do
-        {$IFDEF SYN_LAZARUS}
-        if Visible and (Line >= fTextView.TextIndex[FirstLine]+1) and (Line <= fTextView.TextIndex[LastLine]+1) then
-        {$ELSE}
-        if Visible and (Line >= FirstLine) and (Line <= LastLine) then
-        {$ENDIF}
-        begin
-          if IsBookmark <> BookMarkOptions.DrawBookmarksFirst then              //mh 2000-10-12
-            bHasOtherMarks := TRUE
-          else
-            DrawMark(i);
-        end;
-      if bHasOtherMarks then
-        for i := 0 to Marks.Count - 1 do with Marks[i] do
-        begin
-          if Visible and (IsBookmark <> BookMarkOptions.DrawBookmarksFirst)     //mh 2000-10-12
-            {$IFDEF SYN_LAZARUS}
-            and (Line >= fTextView.TextIndex[FirstLine]+1) and (Line <= fTextView.TextIndex[LastLine]+1)
-            {$ELSE}
-            and (Line >= FirstLine) and (Line <= LastLine)
-            {$ENDIF}
-          then
-            DrawMark(i);
-        end;
-    finally
-      FreeMem(aGutterOffs);
-    end;
-  end;
-end;
 
 procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
   FirstCol, LastCol: integer);
@@ -11470,174 +11030,6 @@ begin
     Lines[ALine] := ALineText;
 end;
 {$ENDIF}
-
-{ TSynEditMark }
-
-function TSynEditMark.GetEdit: TCustomSynEdit;
-begin
-  if FEdit <> nil then try
-    if FEdit.Marks.IndexOf(self) = -1 then
-      FEdit := nil;
-  except
-    FEdit := nil;
-  end;
-  Result := FEdit;
-end;
-
-function TSynEditMark.GetIsBookmark: boolean;
-begin
-  Result := (fBookmarkNum >= 0);
-end;
-
-procedure TSynEditMark.SetColumn(const Value: Integer);
-begin
-  FColumn := Value;
-end;
-
-procedure TSynEditMark.SetImage(const Value: Integer);
-begin
-  FImage := Value;
-  if fVisible and Assigned(fEdit) then
-    fEdit.InvalidateGutterLines(fLine, fLine);
-end;
-
-procedure TSynEditMark.SetInternalImage(const Value: boolean);
-begin
-  fInternalImage := Value;
-  if fVisible and Assigned(fEdit) then
-    fEdit.InvalidateGutterLines(fLine, fLine);
-end;
-
-procedure TSynEditMark.SetLine(const Value: Integer);
-begin
-  if fVisible and Assigned(fEdit) then begin
-    if fLine > 0 then
-      fEdit.InvalidateGutterLines(fLine, fLine);
-    fLine := Value;
-    fEdit.InvalidateGutterLines(fLine, fLine);
-  end else
-    fLine := Value;
-end;
-
-procedure TSynEditMark.SetVisible(const Value: boolean);
-begin
-  if fVisible <> Value then begin
-    fVisible := Value;
-    if Assigned(fEdit) then
-      fEdit.InvalidateGutterLines(fLine, fLine);
-  end;
-end;
-
-constructor TSynEditMark.Create(AOwner: TCustomSynEdit);
-begin
-  inherited Create;
-  fBookmarkNum := -1;
-  fEdit := AOwner;
-end;
-
-{ TSynEditMarkList }
-
-function TSynEditMarkList.Add(Item: TSynEditMark): Integer;
-begin
-  Result := inherited Add(Item);
-  DoChange;
-end;
-
-procedure TSynEditMarkList.ClearLine(Line: integer);
-var
-  i: integer;
-begin
-  for i := Count - 1 downto 0 do
-    if not Items[i].IsBookmark and (Items[i].Line = Line) then Delete(i);
-end;
-
-constructor TSynEditMarkList.Create(AOwner: TCustomSynEdit);
-begin
-  inherited Create;
-  fEdit := AOwner;
-end;
-
-destructor TSynEditMarkList.Destroy;
-var
-  i: integer;
-begin
-  for i := 0 to Pred(Count) do
-    Get(i).Free;
-  inherited Destroy;
-end;
-
-procedure TSynEditMarkList.Delete(Index: Integer);
-begin
-  inherited Delete(Index);
-  DoChange;
-end;
-
-procedure TSynEditMarkList.DoChange;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-function TSynEditMarkList.First: TSynEditMark;
-begin
-  result := TSynEditMark(inherited First);
-end;
-
-function TSynEditMarkList.Get(Index: Integer): TSynEditMark;
-begin
-  result := TSynEditMark(inherited Get(Index));
-end;
-
-//Returns up to maxMarks book/gutter marks for a chosen line.
-
-procedure TSynEditMarkList.GetMarksForLine(line: integer;
-  var marks: TSynEditMarks);
-var
-  cnt: integer;
-  i: integer;
-begin
-  FillChar(marks, SizeOf(marks), 0);
-  cnt := 0;
-  for i := 0 to Count - 1 do begin
-    if Items[i].Line = line then begin
-      Inc(cnt);
-      marks[cnt] := Items[i];
-      if cnt = maxMarks then break;
-    end;
-  end;
-end;
-
-procedure TSynEditMarkList.Insert(Index: Integer; Item: TSynEditMark);
-begin
-  inherited Insert(Index, Item);
-  DoChange;
-end;
-
-function TSynEditMarkList.Last: TSynEditMark;
-begin
-  result := TSynEditMark(inherited Last);
-end;
-
-procedure TSynEditMarkList.Place(mark: TSynEditMark);
-begin
-  if assigned(fEdit) then
-    if assigned(fEdit.OnPlaceBookmark) then fEdit.OnPlaceBookmark(fEdit, mark);
-  if assigned(mark) then
-    Add(mark);
-  DoChange;
-end;
-
-procedure TSynEditMarkList.Put(Index: Integer; Item: TSynEditMark);
-begin
-  inherited Put(Index, Item);
-  DoChange;
-end;
-
-function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;
-begin
-  Result := inherited Remove(Item);
-  DoChange;
-end;
 
 { TSynEditPlugin }
 
