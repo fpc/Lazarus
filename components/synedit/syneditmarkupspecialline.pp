@@ -46,6 +46,7 @@ type
     FHighlightedLine: Integer;
   protected
     procedure DoMarkupLineHighlightInfoChange(Sender: TObject);
+    function HasLineHighlight: Boolean;
   public
     constructor Create(ASynEdit: TCustomControl);
     destructor Destroy; override;
@@ -75,6 +76,13 @@ procedure TSynEditMarkupSpecialLine.DoMarkupLineHighlightInfoChange(
 begin
   if FHighlightedLine > 0 then
     InvalidateSynLines(FHighlightedLine, FHighlightedLine);
+end;
+
+function TSynEditMarkupSpecialLine.HasLineHighlight: Boolean;
+begin
+  Result :=
+    (FMarkupLineHighlightInfo.Background <> clNone) or
+    (FMarkupLineHighlightInfo.Foreground <> clNone);
 end;
 
 constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TCustomControl);
@@ -125,7 +133,7 @@ begin
   // if it is so then use own bg,fg colors to setup highlight
   if not FSpecialLine then
   begin
-    if FHighlightedLine = ARow then
+    if (FHighlightedLine = ARow) and HasLineHighlight then
     begin
       FSpecialLine := True;
       MarkupInfo.Foreground := FMarkupLineHighlightInfo.Foreground;
