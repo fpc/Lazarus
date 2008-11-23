@@ -607,9 +607,11 @@ begin
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
   for i := 0 to FGutterPartList.Count -1 do begin
-    rcLine.Left := rcLine.Right;
-    rcLine.Right := rcLine.Left + GutterPart[i].Width;
-    GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
+    if GutterPart[i].Visible then begin
+      rcLine.Left := rcLine.Right;
+      rcLine.Right := rcLine.Left + GutterPart[i].Width;
+      GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
+    end;
   end;
 
   // the gutter separator if visible
