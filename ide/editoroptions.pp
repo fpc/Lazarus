@@ -105,10 +105,10 @@ const
     'Error line',
     'Incremental search match',
     'Highlight all',
-    'Matching Brackets',
-    'Mouse Link',
-    'Line Number',
-    'Line Highlight'
+    'Brackets highlight',
+    'Mouse link',
+    'Line number',
+    'Line highlight'
     );
     
 type
@@ -130,29 +130,29 @@ const
     Name: 'Default';
     Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clGreen; Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clBlue;  Styles: [fsBold]; StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clRed;   Styles: [fsBold]; StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clNavy;  Styles: [];       StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clBlue;  Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clRed;   Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clGreen;    Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clBlue;     Styles: [fsBold]; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;      Styles: [fsBold]; StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clDefault;  Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clNavy;     Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clBlue;     Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clRed;      Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clNavy;   FG: clWhite; Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clDKGray; FG: clWhite; Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clGreen;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clNavy;      FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clDKGray;    FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clGreen;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
     )
   );
   
@@ -160,29 +160,29 @@ const
     Name: 'Twilight';
     Default: (BG: clBlack;  FG: clWhite; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clGray;    Styles: [];       StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: [];       StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: [];       StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGray;    Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;     Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clFuchsia; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clAqua;    Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
     )
   );
 
@@ -190,29 +190,29 @@ const
     Name: 'Pascal Classic';
     Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []; StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clSilver;  Styles: []; StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clSilver;  Styles: []; StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clWhite;   Styles: []; StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: []; StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clSilver;  Styles: []; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clSilver;  Styles: []; StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clWhite;   Styles: []; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clAqua;   FG: clBlack; Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clLime;  Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: clMaroon; FG: clWhite; Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clAqua;      FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;     Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
     )
   );
   
@@ -220,29 +220,29 @@ const
     Name: 'Ocean';
     Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clGray;    Styles: [];       StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: [];       StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: [];       StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGray;    Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;     Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clFuchsia; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clAqua;    Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50A0FF;  FG: clBlack; Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50A0FF;     FG: clBlack;    Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
     )
   );
 
@@ -250,29 +250,29 @@ const
     Name: 'Delphi';
     Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clBlack;   Styles: [];         StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clGreen;   Styles: [fsItalic]; StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clTeal;    Styles: [];         StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clNavy;    Styles: [fsBold];   StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clBlue;    Styles: [];         StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clBlue;    Styles: [];         StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clNone;    Styles: [];         StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clBlack;      Styles: [];         StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGreen;      Styles: [fsItalic]; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clTeal;       Styles: [];         StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clNavy;       Styles: [fsBold];   StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clBlue;       Styles: [];         StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clBlue;       Styles: [];         StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clDefault;    Styles: [];         StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;      FG: clNone;          Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: $A56D53;     FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: $9999CC;     FG: clBlack;         Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: $FFC7C7;     FG: clBlack;         Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: $FFC7C7;     FG: clGray;          Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;         Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;         Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clAqua;      FG: clNone;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
-      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;         Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;          Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;            Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: $A56D53;     FG: clWhite;              Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: $9999CC;     FG: clBlack;              Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: $FFC7C7;     FG: clBlack;              Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: $FFC7C7;     FG: clGray;               Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;              Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;              Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clRed;       FG: clWhite;              Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;              Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;            Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clAqua;      FG: clDefault;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;               Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;              Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;               Styles: []; StylesMask: [])
     )
   );
 
@@ -1764,10 +1764,10 @@ begin
   for pha := low(pha) to High(pha) do
   begin
     if AttriName <> LowerCase(PascalHilightAttributeNames[pha]) then Continue;
-    if Scheme.Attributes[pha].FG = clNone
+    if Scheme.Attributes[pha].FG = clDefault
     then Attr.Foreground := Scheme.Default.FG
     else Attr.Foreground := Scheme.Attributes[pha].FG;
-    if Scheme.Attributes[pha].BG = clNone
+    if Scheme.Attributes[pha].BG = clDefault
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Attributes[pha].BG;
     //DebugLn(['TEditorOptions.GetDefaultsForPascalAttribute SynColorScheme=',SynColorScheme,' AttriName=',AttriName,' BG=',ColorToString(Scheme.Attributes[pha].BG),' Background=',ColorToString(Attr.Background),' SchemeBG=',ColorToString(Scheme.Default.BG)]);
@@ -1779,10 +1779,10 @@ begin
   for aha := low(aha) to High(aha) do
   begin
     if AttriName <> LowerCase(AdditionalHighlightAttributes[aha]) then Continue;
-    if Scheme.Additional[aha].FG = clNone
+    if Scheme.Additional[aha].FG = clDefault
     then Attr.Foreground := Scheme.Default.FG
     else Attr.Foreground := Scheme.Additional[aha].FG;
-    if Scheme.Additional[aha].BG = clNone
+    if Scheme.Additional[aha].BG = clDefault
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Additional[aha].BG;
     Attr.Style := Scheme.Additional[aha].Styles;
