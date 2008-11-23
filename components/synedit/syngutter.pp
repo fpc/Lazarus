@@ -612,19 +612,6 @@ begin
     GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
   end;
 
-(*  // CodeFolding
-  rcLine := AClip;
-  rcLine.Right := 0;
-  rcLine.Left := CodeFoldOffset;
-  FCodeFoldGutter.Paint(Canvas, rcLine, FirstLine, LastLine);
-
-  // LineNumbers
-  rcLine := AClip;
-  rcLine.Right := TSynEdit(FEdit).GutterWidth - 2;
-  rcLine.Left := CodeFoldOffset + LeftOffset;
-  FLineNumGutter.Paint(Canvas, rcLine, FirstLine, LastLine);
-*)
-
   // the gutter separator if visible
   if AClip.Right >= TSynEdit(FEdit).GutterWidth - 2 then
     with Canvas do begin
