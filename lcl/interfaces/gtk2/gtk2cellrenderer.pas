@@ -60,6 +60,7 @@ type
                                 cell_area: PGdkRectangle;
                                 expose_area:PGdkRectangle;
                                 flags: TGtkCellRendererState); cdecl;
+    DefaultFinalize: procedure(aObject: PGObject); cdecl;
   end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;
@@ -295,6 +296,12 @@ begin
   //DebugLn(['LCLIntfCellRenderer_Render END ',DbgSName(LCLObject)]);
 end;
 
+procedure LCLIntfCellRenderer_ClassFinalize(aObject: PGObject); cdecl;
+begin
+  PGtkCellRendererText(aObject)^.text := nil;
+  PLCLIntfCellRendererClass(G_OBJECT_GET_CLASS(aObject))^.DefaultFinalize(aObject);
+end;
+
 procedure LCLIntfCellRenderer_ClassInit(aClass: Pointer); cdecl;
 //aClass: PLCLIntfCellRendererClass
 var
@@ -306,6 +313,8 @@ begin
   RendererClass := GTK_CELL_RENDERER_CLASS(aClass);
   LCLClass^.DefaultGtkGetSize := RendererClass^.get_size;
   LCLClass^.DefaultGtkRender := RendererClass^.render;
+  LCLClass^.DefaultFinalize := PGObjectClass(RendererClass)^.finalize;
+  PGObjectClass(RendererClass)^.finalize := @LCLIntfCellRenderer_ClassFinalize;
   RendererClass^.get_size := @LCLIntfCellRenderer_GetSize;
   RendererClass^.render := @LCLIntfCellRenderer_Render;
 end;
@@ -316,6 +325,7 @@ procedure LCLIntfCellRenderer_Init(Instance:PGTypeInstance;
 // theClass: PLCLIntfCellRendererClass
 begin
   //DebugLn(['LCLIntfCellRenderer_Init ']);
+  PGtkCellRendererText(Instance)^.text := nil;
 end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;

@@ -1004,6 +1004,8 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do
   begin
+    if gtk_widget_realized(MainView) = False then
+      exit;
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
     gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect);
     gtk_tree_path_free(Path);
