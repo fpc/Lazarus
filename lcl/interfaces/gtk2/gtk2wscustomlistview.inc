@@ -222,33 +222,6 @@ begin
   Widgets^.ItemCache.AddObject(IntToStr(NM.iItem),TObject(ptrint(Ord(path_is_currently_selected))));
 end;
 
-{procedure Gtk2WSLV_ListViewGetTextDataFunc(tree_column: PGtkTreeViewColumn;
-  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
-var
-//  ItemIndex: Integer;
-//  TreePath: PGtkTreePath;
-  ListColumn: TListColumn;
-  ListItem: TListItem;
-  TheText: String;
-begin
-  gtk_tree_model_get(tree_model, iter,
-                       [0, @ListItem, -1]);
-  //TreePath := gtk_tree_model_get_path (tree_model, iter);
-  //ItemIndex := gtk_tree_path_get_indices (TreePath)^;
-  //gtk_tree_path_free(TreePath);
-  //ListItem := TListView(WidgetInfo^.LCLObject).Items.Item[ItemIndex];
-
-  ListColumn := TListColumn(g_object_get_data(G_OBJECT(tree_column), 'TListColumn'));
-
-  if ListColumn.Index <= 0 then
-    TheText := ListItem.Caption
-  else
-    if ListColumn.Index-1 <= ListItem.SubItems.Count-1 then
-      TheText := ListItem.SubItems.Strings[ListColumn.Index-1];
-
-  PGtkCellRendererText(cell)^.text := strnew(PChar(TheText));  // strnew is needed to save a crash
-end;}
-
 procedure Gtk2WSLV_ListViewGetCheckedDataFunc(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
 var
@@ -273,13 +246,8 @@ var
 begin
   PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-  //TreePath := gtk_tree_model_get_path (tree_model, iter);
-  //ItemIndex := gtk_tree_path_get_indices (TreePath)^;
-  //gtk_tree_path_free(TreePath);
-  // figure out
   gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
-  //if ListItem = nil then
-  //  Exit;
+
   ListColumn := TListColumn(g_object_get_data(G_OBJECT(tree_column), 'TListColumn'));
   ColumnIndex := ListColumn.Index;
   Images :=  Widgets^.Images;
@@ -870,69 +838,25 @@ class procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
   AImageIndex: Integer);
 var
   Widgets: PTVWidgets;
-  Iter: TGtkTreeIter;
-
-  BitImage: TBitmap;
-  pixbuf: PGDKPixBuf;
-  pixmap: PGdkDrawable;
-  bitmap: PGdkBitmap;
-  Width, Height: integer;
-  i: Integer;
+  Path: PGtkTreePath;
+  ItemRect: TGdkRectangle;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
-  exit;
+
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  if (TListView(ALV).SmallImages <> nil) and (AImageIndex > -1) then
+  with Widgets^ do
   begin
-    if Widgets^.Images = nil then
-    begin
-      Widgets^.Images := TList.Create;
-      for i := 0 to TListView(ALV).SmallImages.Count-1 do
-      begin
-        pixbuf := nil;
-        BitImage := TBitmap.Create;
-        try
-          TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
-          pixmap := PGDIObject(BitImage.Handle)^.GDIPixmapObject.Image;
-          if pixmap <> nil then
-          begin
-            gdk_drawable_get_size(pixmap, @Width, @Height);
-            bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
-            pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
-          end;
-          Widgets^.Images.Add(pixbuf);
-        finally
-            BitImage.Free;
-        end;
-      end;
-    end;
+    if gtk_widget_realized(MainView) = False then
+      exit;
+    Path := gtk_tree_path_new_from_indices(AIndex, -1);
+    gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect);
+    gtk_tree_path_free(Path);
+
+    if ItemRect.height <> 0 then // item is visible
+      gtk_widget_queue_draw(MainView);
 
   end;
-
-  exit;
-  //Icon
-  if not gtk_tree_model_iter_nth_child(Widgets^.TreeModel, @Iter, nil, AIndex) then Exit;
-
-  pixbuf := nil;
-  if  (TLVHack(ALV).SmallImages <> nil) and (AItem.ImageIndex > -1)
-  then begin
-    BitImage := TBitmap.Create;
-    try
-      TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
-      pixmap := PGDIObject(BitImage.Handle)^.GDIPixmapObject.Image;
-      if pixmap <> nil then
-      begin
-        gdk_drawable_get_size(pixmap, @Width, @Height);
-        bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
-        pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
-      end;
-    finally
-      BitImage.Free;
-    end;
-  end;
-
-  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0, pixbuf, -1]);
 end;
 
 class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;

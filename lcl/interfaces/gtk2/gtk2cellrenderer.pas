@@ -60,7 +60,6 @@ type
                                 cell_area: PGdkRectangle;
                                 expose_area:PGdkRectangle;
                                 flags: TGtkCellRendererState); cdecl;
-    DefaultFinalize: procedure(aObject: PGObject); cdecl;
   end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;
@@ -212,7 +211,6 @@ begin
   CellClass := PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
                               expose_area, flags);
-  PGtkCellRendererText(cell)^.text := nil;
   
   if ColumnIndex < 0 then  // is a listbox or combobox
   begin
@@ -296,12 +294,6 @@ begin
   //DebugLn(['LCLIntfCellRenderer_Render END ',DbgSName(LCLObject)]);
 end;
 
-procedure LCLIntfCellRenderer_ClassFinalize(aObject: PGObject); cdecl;
-begin
-  PGtkCellRendererText(aObject)^.text := nil;
-  PLCLIntfCellRendererClass(G_OBJECT_GET_CLASS(aObject))^.DefaultFinalize(aObject);
-end;
-
 procedure LCLIntfCellRenderer_ClassInit(aClass: Pointer); cdecl;
 //aClass: PLCLIntfCellRendererClass
 var
@@ -313,8 +305,6 @@ begin
   RendererClass := GTK_CELL_RENDERER_CLASS(aClass);
   LCLClass^.DefaultGtkGetSize := RendererClass^.get_size;
   LCLClass^.DefaultGtkRender := RendererClass^.render;
-  LCLClass^.DefaultFinalize := PGObjectClass(RendererClass)^.finalize;
-  PGObjectClass(RendererClass)^.finalize := @LCLIntfCellRenderer_ClassFinalize;
   RendererClass^.get_size := @LCLIntfCellRenderer_GetSize;
   RendererClass^.render := @LCLIntfCellRenderer_Render;
 end;
@@ -325,7 +315,6 @@ procedure LCLIntfCellRenderer_Init(Instance:PGTypeInstance;
 // theClass: PLCLIntfCellRendererClass
 begin
   //DebugLn(['LCLIntfCellRenderer_Init ']);
-  PGtkCellRendererText(Instance)^.text := nil;
 end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;
@@ -367,6 +356,7 @@ var
   Str: String;
   ListColumn: TListColumn;
   ListItem: TListItem;
+  Value: TGValue;
 begin
   if G_IS_OBJECT(cell) = false then
     exit;
@@ -375,6 +365,9 @@ begin
   LCLCellRenderer^.Index := gtk_tree_path_get_indices(APath)^;
   LCLCellRenderer^.ColumnIndex := -1;
   gtk_tree_path_free(APath);
+
+  Value.g_type := G_TYPE_STRING;
+
 
   WidgetInfo := PWidgetInfo(data);
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
@@ -388,7 +381,9 @@ begin
     else
       if ListColumn.Index-1 <= ListItem.SubItems.Count-1 then
         Str := ListItem.SubItems.Strings[LCLCellRenderer^.ColumnIndex-1];
-    PGtkCellRendererText(cell)^.text := PChar(Str);
+
+    Value.data[0].v_pointer := PChar(Str);
+    g_object_set_property(PGObject(cell), 'text', @Value);
   end;
 
   //DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
