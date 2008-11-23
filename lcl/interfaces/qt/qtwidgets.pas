@@ -6130,7 +6130,7 @@ begin
   dec(R.Bottom);
   QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
 
-  DrawStruct.ItemID := TCustomComboBox(LCLObject).Items.IndexOf(TCustomComboBox(LCLObject).Text);
+  DrawStruct.ItemID := currentIndex;
   DrawStruct.Area := R;
   DrawStruct.DC := Msg.DC;
 
@@ -6156,7 +6156,6 @@ begin
   try
     DeliverMessage(MsgItem);
   finally
-    LCLIntf.DeleteDC(Msg.DC);
     Dispose(PaintData.ClipRect);
     Fillchar(FPaintData, SizeOf(FPaintData), 0);
     FContext := 0;
