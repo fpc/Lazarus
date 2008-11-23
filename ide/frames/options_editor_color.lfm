@@ -5,8 +5,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 531
   TabOrder = 0
   Visible = False
-  DesignLeft = 574
-  DesignTop = 344
+  DesignLeft = 644
+  DesignTop = 227
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -181,7 +181,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = ColorElementListBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 215
+    Height = 256
     Top = 75
     Width = 531
     HelpContext = 0
@@ -200,7 +200,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 197
+    ClientHeight = 238
     ClientWidth = 527
     Ctl3D = False
     TabOrder = 4
@@ -244,13 +244,33 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Caption = 'BackGroundLabel'
       ParentColor = False
     end
+    object FrameColorLabel: TLabel
+      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BackGroundColorBox
+      AnchorSideTop.Side = asrBottom
+      Left = 212
+      Height = 14
+      Top = 119
+      Width = 81
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'FrameColorLabel'
+      ParentColor = False
+    end
     object ColorElementListBox: TListBox
       AnchorSideLeft.Control = ElementAttributesGroupBox
       AnchorSideTop.Control = ElementAttributesGroupBox
       AnchorSideBottom.Control = TextItalicCheckBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 185
+      Height = 226
       Top = 6
       Width = 200
       HelpContext = 0
@@ -263,13 +283,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       ClickOnSelChange = False
-      IntegralHeight = False
       ItemHeight = 0
-      MultiSelect = False
       OnClick = ColorElementListBoxClick
       OnSelectionChange = ColorElementListBoxSelectionChange
-      Sorted = False
-      Style = lbStandard
       TabOrder = 11
       TopIndex = 0
     end
@@ -292,7 +308,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ForeGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      State = cbUnchecked
       TabOrder = 0
       UseOnChange = False
     end
@@ -315,7 +330,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'BackGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      State = cbUnchecked
       TabOrder = 1
       UseOnChange = False
     end
@@ -371,11 +385,11 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     object TextUnderlineCheckBox: TCheckBox
       AnchorSideLeft.Control = ColorElementListBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BackGroundColorBox
+      AnchorSideTop.Control = FrameColorBox
       AnchorSideTop.Side = asrBottom
       Left = 212
       Height = 19
-      Top = 122
+      Top = 163
       Width = 140
       HelpContext = 0
       BorderSpacing.Left = 0
@@ -387,7 +401,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextUnderlineCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      State = cbUnchecked
       TabOrder = 4
       UseOnChange = False
     end
@@ -398,7 +411,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 212
       Height = 19
-      Top = 147
+      Top = 188
       Width = 115
       HelpContext = 0
       BorderSpacing.Left = 0
@@ -410,7 +423,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextBoldCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      State = cbUnchecked
       TabOrder = 5
       UseOnChange = False
     end
@@ -421,7 +433,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 212
       Height = 19
-      Top = 172
+      Top = 213
       Width = 118
       HelpContext = 0
       BorderSpacing.Left = 0
@@ -433,7 +445,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextItalicCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      State = cbUnchecked
       TabOrder = 6
       UseOnChange = False
     end
@@ -443,7 +454,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 377
       Height = 19
-      Top = 122
+      Top = 163
       Width = 144
       HelpContext = 0
       Anchors = [akTop, akRight]
@@ -507,7 +518,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Off'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 1
         UseOnChange = False
       end
@@ -531,7 +541,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 2
         UseOnChange = False
       end
@@ -542,7 +551,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 377
       Height = 19
-      Top = 147
+      Top = 188
       Width = 144
       HelpContext = 0
       Anchors = [akTop, akRight]
@@ -583,7 +592,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 0
         UseOnChange = False
       end
@@ -630,7 +638,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Off'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 2
         UseOnChange = False
       end
@@ -641,7 +648,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 377
       Height = 19
-      Top = 172
+      Top = 213
       Width = 144
       HelpContext = 0
       Anchors = [akTop, akRight]
@@ -682,7 +689,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 0
         UseOnChange = False
       end
@@ -729,7 +735,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.CellAlignVertical = ccaFill
         Caption = 'Off'
         OnChange = TextStyleRadioOnChange
-        State = cbUnchecked
         TabOrder = 2
         UseOnChange = False
       end
@@ -743,9 +748,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Left = 212
       Height = 25
       Top = 6
-      Width = 309
+      Width = 164
       HelpContext = 0
-      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
@@ -754,8 +759,57 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'SetAttributeToDefaultButton'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
       OnClick = SetAttributeToDefaultButtonClick
       TabOrder = 10
+    end
+    object FrameColorBox: TColorBox
+      AnchorSideLeft.Control = FrameColorLabel
+      AnchorSideTop.Control = FrameColorLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 212
+      Height = 22
+      Top = 135
+      Width = 100
+      HelpContext = 0
+      DefaultColorColor = clWhite
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+      AutoComplete = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Ctl3D = False
+      ItemHeight = 16
+      ItemWidth = 0
+      OnChange = ForegroundColorBoxChange
+      TabOrder = 12
+    end
+    object FrameColorUseDefaultCheckBox: TCheckBox
+      AnchorSideLeft.Control = FrameColorBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FrameColorBox
+      AnchorSideTop.Side = asrCenter
+      Left = 318
+      Height = 19
+      Top = 137
+      Width = 181
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'FrameColorUseDefaultCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 13
+      UseOnChange = False
     end
   end
   object ColorPreview: TSynEdit[8]
@@ -767,8 +821,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 281
-    Top = 296
+    Height = 240
+    Top = 337
     Width = 531
     HelpContext = 0
     BorderSpacing.Left = 0
@@ -790,6 +844,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ParentFont = False
     TabOrder = 5
     BookMarkOptions.Xoffset = 24
+    BookMarkOptions.OnChange = nil
     Gutter.ShowCodeFolding = True
     Gutter.ShowLineNumbers = True
     Gutter.ZeroStart = False
@@ -1117,7 +1172,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Lines.Strings = (
       'ColorPreview'
     )
-    SelectedColor.OnChange = nil
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[9]
     AnchorSideLeft.Control = SetAllAttributesToDefaultButton
@@ -1138,7 +1192,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'UseSyntaxHighlightCheckBox'
     OnChange = GeneralCheckBoxOnChange
-    State = cbUnchecked
     TabOrder = 6
     UseOnChange = False
   end

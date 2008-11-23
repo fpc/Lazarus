@@ -1157,6 +1157,7 @@ resourcestring
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
   dlgForecolor = 'Foreground';
+  dlgFrameColor = 'Frame color';
   dlgEdUseDefColor = 'Use default color';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';

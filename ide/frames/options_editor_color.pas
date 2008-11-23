@@ -36,8 +36,11 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
+    FrameColorBox: TColorBox;
     BackGroundLabel: TLabel;
+    FrameColorLabel: TLabel;
     BackGroundUseDefaultCheckBox: TCheckBox;
+    FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
@@ -171,6 +174,14 @@ begin
     BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
     InvalidatePreviews;
   end;
+  if Sender = FrameColorBox then
+  begin
+    if (CurHighlightElement = nil) or UpdatingColor then
+      exit;
+    CurHighlightElement.FrameColor := DefaultToNone(FrameColorBox.Selected);
+    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
+    InvalidatePreviews;
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
@@ -214,6 +225,22 @@ begin
         if DefaultToNone(BackGroundColorBox.Selected) <> CurHighlightElement.Background then
         begin
           CurHighlightElement.Background := DefaultToNone(BackGroundColorBox.Selected);
+          InvalidatePreviews;
+        end;
+      end;
+    if Sender = FrameColorUseDefaultCheckBox then
+      if UpdatingColor = False then
+      begin
+        if FrameColorUseDefaultCheckBox.Checked then
+        begin
+          FrameColorBox.Tag := FrameColorBox.Selected;
+          FrameColorBox.Selected := clDefault;
+        end
+        else
+          FrameColorBox.Selected := FrameColorBox.Tag;
+        if DefaultToNone(FrameColorBox.Selected) <> CurHighlightElement.FrameColor then
+        begin
+          CurHighlightElement.FrameColor := DefaultToNone(FrameColorBox.Selected);
           InvalidatePreviews;
         end;
       end;
@@ -485,6 +512,13 @@ begin
     BackGroundColorBox.Tag := BackGroundColorBox.Selected;
   BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
 
+  FrameColorBox.Selected := NoneToDefault(CurHighlightElement.FrameColor);
+  if FrameColorBox.Selected = clDefault then
+    FrameColorBox.Tag := FrameColorBox.DefaultColorColor
+  else
+    FrameColorBox.Tag := FrameColorBox.Selected;
+  FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
+
   UpdatingColor := False;
 end;
 
@@ -712,6 +746,8 @@ begin
   ForeGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   BackGroundLabel.Caption := dlgBackColor;
   BackGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
+  FrameColorLabel.Caption := dlgFrameColor;
+  FrameColorUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   ElementAttributesGroupBox.Caption := dlgElementAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;

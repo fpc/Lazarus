@@ -113,7 +113,7 @@ const
     
 type
   TSchemeAttribute = record
-    BG, FG: TColor;
+    BG, FG, FC: TColor;
     Styles: TFontStyles;
     StylesMask: TFontStyles; // For Markup, normal Attributes will ignore this
   end;
@@ -128,151 +128,151 @@ type
 const
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
-    Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
+    Default: (BG: clNone;  FG: clNone; FC: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clDefault;  FG: clGreen;    Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clDefault;  FG: clBlue;     Styles: [fsBold]; StylesMask: []),
-      { phaDirective    } (BG: clDefault;  FG: clRed;      Styles: [fsBold]; StylesMask: []),
-      { phaReservedWord } (BG: clDefault;  FG: clDefault;  Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clDefault;  FG: clNavy;     Styles: [];       StylesMask: []),
-      { phaString       } (BG: clDefault;  FG: clBlue;     Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clDefault;  FG: clRed;      Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clGreen;    FC: clNone; Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clBlue;     FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;      FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clNavy;     FC: clNone; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clBlue;     FC: clNone; Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clRed;      FC: clNone; Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clNavy;      FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clDKGray;    FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clGreen;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clWhite;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clNavy;      FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clDKGray;    FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clGreen;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
   
   TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Twilight';
-    Default: (BG: clBlack;  FG: clWhite; Styles: []; StylesMask: []);
+    Default: (BG: clBlack;  FG: clWhite; FC: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clDefault;  FG: clGray;    Styles: [];       StylesMask: []),
-      { phaDirective    } (BG: clDefault;  FG: clRed;     Styles: [];       StylesMask: []),
-      { phaReservedWord } (BG: clDefault;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clDefault;  FG: clFuchsia; Styles: [];       StylesMask: []),
-      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clDefault;  FG: clAqua;    Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    FC: clNone; Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGray;    FC: clNone; Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;     FC: clNone; Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clFuchsia; FC: clNone; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      FC: clNone; Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
 
   CLASSIC_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Pascal Classic';
-    Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
+    Default: (BG: clNavy;  FG: clYellow; FC: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: []; StylesMask: []),
-      { phaComment      } (BG: clDefault;  FG: clSilver;  Styles: []; StylesMask: []),
-      { phaDirective    } (BG: clDefault;  FG: clSilver;  Styles: []; StylesMask: []),
-      { phaReservedWord } (BG: clDefault;  FG: clWhite;   Styles: []; StylesMask: []),
-      { phaNumber       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: []),
-      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: []),
-      { phaSymbol       } (BG: clDefault;  FG: clYellow;  Styles: []; StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    FC: clNone; Styles: []; StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clSilver;  FC: clNone; Styles: []; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clSilver;  FC: clNone; Styles: []; StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clWhite;   FC: clNone; Styles: []; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clAqua;      FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;     Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clBlue;      FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clAqua;      FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      FC: clNone; Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
   
   OCEAN_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Ocean';
-    Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
+    Default: (BG: clNavy;  FG: clYellow; FC: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clDefault;  FG: clLime;    Styles: [];       StylesMask: []),
-      { phaComment      } (BG: clDefault;  FG: clGray;    Styles: [];       StylesMask: []),
-      { phaDirective    } (BG: clDefault;  FG: clRed;     Styles: [];       StylesMask: []),
-      { phaReservedWord } (BG: clDefault;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
-      { phaNumber       } (BG: clDefault;  FG: clFuchsia; Styles: [];       StylesMask: []),
-      { phaString       } (BG: clDefault;  FG: clYellow;  Styles: [];       StylesMask: []),
-      { phaSymbol       } (BG: clDefault;  FG: clAqua;    Styles: [];       StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clLime;    FC: clNone; Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGray;    FC: clNone; Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clRed;     FC: clNone; Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clFuchsia; FC: clNone; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clDefault;   FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: $50A0FF;     FG: clBlack;    Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: clNone;      FG: clNone;     Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;      FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;      FC: clNone; Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clGreen;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50A0FF;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;    FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
 
   DELPHI_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Delphi';
-    Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
+    Default: (BG: clNone;  FG: clNone; FC: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clDefault;  FG: clBlack;      Styles: [];         StylesMask: []),
-      { phaComment      } (BG: clDefault;  FG: clGreen;      Styles: [fsItalic]; StylesMask: []),
-      { phaDirective    } (BG: clDefault;  FG: clTeal;       Styles: [];         StylesMask: []),
-      { phaReservedWord } (BG: clDefault;  FG: clNavy;       Styles: [fsBold];   StylesMask: []),
-      { phaNumber       } (BG: clDefault;  FG: clBlue;       Styles: [];         StylesMask: []),
-      { phaString       } (BG: clDefault;  FG: clBlue;       Styles: [];         StylesMask: []),
-      { phaSymbol       } (BG: clDefault;  FG: clDefault;    Styles: [];         StylesMask: [])
+      { phaAssembler    } (BG: clDefault;  FG: clBlack;      FC: clNone; Styles: [];         StylesMask: []),
+      { phaComment      } (BG: clDefault;  FG: clGreen;      FC: clNone; Styles: [fsItalic]; StylesMask: []),
+      { phaDirective    } (BG: clDefault;  FG: clTeal;       FC: clNone; Styles: [];         StylesMask: []),
+      { phaReservedWord } (BG: clDefault;  FG: clNavy;       FC: clNone; Styles: [fsBold];   StylesMask: []),
+      { phaNumber       } (BG: clDefault;  FG: clBlue;       FC: clNone; Styles: [];         StylesMask: []),
+      { phaString       } (BG: clDefault;  FG: clBlue;       FC: clNone; Styles: [];         StylesMask: []),
+      { phaSymbol       } (BG: clDefault;  FG: clDefault;    FC: clNone; Styles: [];         StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clDefault;   FG: clDefault;            Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: $A56D53;     FG: clWhite;              Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: $9999CC;     FG: clBlack;              Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: $FFC7C7;     FG: clBlack;              Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: $FFC7C7;     FG: clGray;               Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;              Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;              Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: clRed;       FG: clWhite;              Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;              Styles: []; StylesMask: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;            Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clAqua;      FG: clDefault;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
-      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;               Styles: []; StylesMask: []),
-      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;              Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;               Styles: []; StylesMask: [])
+      { ahaNone               } (BG: clDefault;   FG: clDefault;   FC: clNone;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: $A56D53;     FG: clWhite;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: $9999CC;     FG: clBlack;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: $FFC7C7;     FG: clBlack;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: $FFC7C7;     FG: clGray;      FC: clNone;  Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clRed;       FG: clWhite;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clDefault;   FC: clNone;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clAqua;      FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: []),
+      { ahaMouseLink          } (BG: clDefault;   FG: clBlue;      FC: clNone;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;      FC: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -733,6 +733,7 @@ procedure CopyHiLightAttributeValues(Src, Dest: TSynHighlightElement);
 begin
   Dest.Background := Src.Background;
   Dest.Foreground := Src.Foreground;
+  Dest.FrameColor := Src.FrameColor;
   Dest.Style      := Src.Style;
   Dest.StyleMask  := Src.StyleMask;
 end;
@@ -1770,6 +1771,9 @@ begin
     if Scheme.Attributes[pha].BG = clDefault
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Attributes[pha].BG;
+    if Scheme.Attributes[pha].FC = clDefault
+    then Attr.FrameColor := Scheme.Default.FC
+    else Attr.FrameColor := Scheme.Attributes[pha].FC;
     //DebugLn(['TEditorOptions.GetDefaultsForPascalAttribute SynColorScheme=',SynColorScheme,' AttriName=',AttriName,' BG=',ColorToString(Scheme.Attributes[pha].BG),' Background=',ColorToString(Attr.Background),' SchemeBG=',ColorToString(Scheme.Default.BG)]);
     Attr.Style := Scheme.Attributes[pha].Styles;
     Attr.StyleMask := Scheme.Attributes[pha].StylesMask;
@@ -1785,6 +1789,9 @@ begin
     if Scheme.Additional[aha].BG = clDefault
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Additional[aha].BG;
+    if Scheme.Additional[aha].FC = clDefault
+    then Attr.FrameColor := Scheme.Default.FC
+    else Attr.FrameColor := Scheme.Additional[aha].FC;
     Attr.Style := Scheme.Additional[aha].Styles;
     Attr.StyleMask := Scheme.Additional[aha].StylesMask;
     Exit;
@@ -1792,6 +1799,7 @@ begin
   
   Attr.Foreground := Scheme.Default.FG;
   Attr.Background := Scheme.Default.BG;
+  Attr.FrameColor := Scheme.Default.FC;
   Attr.Style := Scheme.Default.Styles;
   Attr.StyleMask := Scheme.Default.StylesMask;
 end;
@@ -1920,6 +1928,8 @@ begin
         Attri.Background);
       Attri.ForeGround := XMLConfig.GetValue(Path + 'ForegroundColor/Value',
         Attri.Foreground);
+      Attri.FrameColor := XMLConfig.GetValue(Path + 'FrameColor/Value',
+        Attri.FrameColor);
       fs   := [];
       b    := XMLConfig.GetValue(Path + 'Style/Bold', fsBold in Attri.Style);
       if b then
@@ -1957,6 +1967,8 @@ begin
         Attri.Background);
       Attri.ForeGround := XMLConfig.GetValue(Path + 'ForegroundColor',
         Attri.Foreground);
+      Attri.FrameColor := XMLConfig.GetValue(Path + 'FrameColorColor',
+        Attri.FrameColor);
       fs   := [];
       b    := XMLConfig.GetValue(Path + 'Bold', fsBold in Attri.Style);
       if b then
@@ -2009,6 +2021,8 @@ begin
         XMLConfig.SetValue(Path + 'BackgroundColor/Value', Attri.Background);
       if Attri.Foreground <> OldAttri.Foreground then
         XMLConfig.SetValue(Path + 'ForegroundColor/Value', Attri.Foreground);
+      if Attri.FrameColor <> OldAttri.FrameColor then
+        XMLConfig.SetValue(Path + 'FrameColor/Value', Attri.FrameColor);
       if Attri.Style <> OldAttri.Style then
       begin
         XMLConfig.SetValue(Path + 'Style/Bold', fsBold in Attri.Style);
@@ -2099,6 +2113,7 @@ begin
 
       aMarkup.Foreground := Attrib.Foreground;
       aMarkup.Background := Attrib.Background;
+      aMarkup.FrameColor := Attrib.FrameColor;
       aMarkup.Style      := Attrib.Style;
       aMarkup.StyleMask  := Attrib.StyleMask;
       Exit;
@@ -2108,6 +2123,7 @@ begin
   // set default
   aMarkup.Foreground := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;;
   aMarkup.Background := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
+  aMarkup.FrameColor := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FC;
   aMarkup.Style := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].Styles;
   aMarkup.StyleMask := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].StylesMask;
 end;
