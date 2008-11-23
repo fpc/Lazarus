@@ -309,6 +309,86 @@ const
   clMask = clWhite;
   clDontMask = clBlack;
 
+  // !! deprecated colors !!
+  {$warnings off}
+  // CLX base, mapped, pseudo, rgb values
+  clForeground = TColor(-1) deprecated;
+  clButton = TColor(-2) deprecated;
+  clLight = TColor(-3) deprecated;
+  clMidlight = TColor(-4) deprecated;
+  clDark = TColor(-5) deprecated;
+  clMid = TColor(-6) deprecated;
+  clText = TColor(-7) deprecated;
+  clBrightText = TColor(-8) deprecated;
+  clButtonText = TColor(-9) deprecated;
+  clBase = TColor(-10) deprecated;
+  clxBackground = TColor(-11) deprecated;
+  clShadow = TColor(-12) deprecated;
+  clxHighlight = TColor(-13) deprecated;
+  clHighlightedText = TColor(-14) deprecated;
+
+  // CLX mapped role offsets
+  cloNormal = 32 deprecated;
+  cloDisabled = 64 deprecated;
+  cloActive = 96 deprecated;
+
+  // CLX normal, mapped, pseudo, rgb values
+  clNormalForeground = TColor(clForeground - cloNormal) deprecated;
+  clNormalButton = TColor(clButton - cloNormal) deprecated;
+  clNormalLight = TColor(clLight - cloNormal) deprecated;
+  clNormalMidlight = TColor(clMidlight - cloNormal) deprecated;
+  clNormalDark = TColor(clDark - cloNormal) deprecated;
+  clNormalMid = TColor(clMid - cloNormal) deprecated;
+  clNormalText = TColor(clText - cloNormal) deprecated;
+  clNormalBrightText = TColor(clBrightText - cloNormal) deprecated;
+  clNormalButtonText = TColor(clButtonText - cloNormal) deprecated;
+  clNormalBase = TColor(clBase - cloNormal) deprecated;
+  clNormalBackground = TColor(clxBackground - cloNormal) deprecated;
+  clNormalShadow = TColor(clShadow - cloNormal) deprecated;
+  clNormalHighlight = TColor(clxHighlight - cloNormal) deprecated;
+  clNormalHighlightedText = TColor(clHighlightedText - cloNormal) deprecated;
+
+  // CLX disabled, mapped, pseudo, rgb values
+  clDisabledForeground = TColor(clForeground - cloDisabled) deprecated;
+  clDisabledButton = TColor(clButton - cloDisabled) deprecated;
+  clDisabledLight = TColor(clLight - cloDisabled) deprecated;
+  clDisabledMidlight = TColor(clMidlight - cloDisabled) deprecated;
+  clDisabledDark = TColor(clDark - cloDisabled) deprecated;
+  clDisabledMid = TColor(clMid - cloDisabled) deprecated;
+  clDisabledText = TColor(clText - cloDisabled) deprecated;
+  clDisabledBrightText = TColor(clBrightText - cloDisabled) deprecated;
+  clDisabledButtonText = TColor(clButtonText - cloDisabled) deprecated;
+  clDisabledBase = TColor(clBase - cloDisabled) deprecated;
+  clDisabledBackground = TColor(clxBackground - cloDisabled) deprecated;
+  clDisabledShadow = TColor(clShadow - cloDisabled) deprecated;
+  clDisabledHighlight = TColor(clxHighlight - cloDisabled) deprecated;
+  clDisabledHighlightedText = TColor(clHighlightedText - cloDisabled) deprecated;
+
+  // CLX active, mapped, pseudo, rgb values
+  clActiveForeground = TColor(clForeground - cloActive) deprecated;
+  clActiveButton = TColor(clButton - cloActive) deprecated;
+  clActiveLight = TColor(clLight - cloActive) deprecated;
+  clActiveMidlight = TColor(clMidlight - cloActive) deprecated;
+  clActiveDark = TColor(clDark - cloActive) deprecated;
+  clActiveMid = TColor(clMid - cloActive) deprecated;
+  clActiveText = TColor(clText - cloActive) deprecated;
+  clActiveBrightText = TColor(clBrightText - cloActive) deprecated;
+  clActiveButtonText = TColor(clButtonText - cloActive) deprecated;
+  clActiveBase = TColor(clBase - cloActive) deprecated;
+  clActiveBackground = TColor(clxBackground - cloActive) deprecated;
+  clActiveShadow = TColor(clShadow - cloActive) deprecated;
+  clActiveHighlight = TColor(clxHighlight - cloActive) deprecated;
+  clActiveHighlightedText = TColor(clHighlightedText - cloActive) deprecated;
+
+type
+  TMappedColor = clActiveHighlightedText..clNormalForeground;
+
+  TColorGroup = (cgInactive, cgDisabled, cgActive);
+  TColorRole = (crForeground, crButton, crLight, crMidlight, crDark, crMid,
+    crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
+    crHighlight, crHighlightText, crNoRole);
+  {$warnings on}
+
 const
   cmBlackness = BLACKNESS;
   cmDstInvert = DSTINVERT;
@@ -325,6 +405,7 @@ const
   cmSrcInvert = SRCINVERT;
   cmSrcPaint = SRCPAINT;
   cmWhiteness = WHITENESS;
+
 
 type
   TCanvas = class;
@@ -2022,7 +2103,9 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..52] of TIdentMapEntry = (
+  FirstDeprecatedColorIndex = 53;
+  LastDeprecatedColorIndex = 106;
+  Colors: array[0..106] of TIdentMapEntry = (
     // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -2085,8 +2168,74 @@ const
     (Value: clGradientInactiveCaption; Name: 'clGradientInactiveCaption'),
 
     // one our special color
-    (Value: clForm; Name: 'clForm')
-  );
+    (Value: clForm; Name: 'clForm'),
+
+    {$warnings off}
+    // CLX base, mapped, pseudo, rgb values
+    (Value: clForeground; Name: 'clForeground'),
+    (Value: clButton; Name: 'clButton'),
+    (Value: clLight; Name: 'clLight'),
+    (Value: clMidlight; Name: 'clMidlight'),
+    (Value: clDark; Name: 'clDark'),
+    (Value: clMid; Name: 'clMid'),
+    (Value: clText; Name: 'clText'),
+    (Value: clBrightText; Name: 'clBrightText'),
+    (Value: clButtonText; Name: 'clButtonText'),
+    (Value: clBase; Name: 'clBase'),
+    //clBackground
+    (Value: clShadow; Name: 'clShadow'),
+    //clHighlight
+    (Value: clHighlightedText; Name: 'clHighlightedText'),
+
+    // CLX normal, mapped, pseudo, rgb values
+    (Value: clNormalForeground; Name: 'clNormalForeground'),
+    (Value: clNormalButton; Name: 'clNormalButton'),
+    (Value: clNormalLight; Name: 'clNormalLight'),
+    (Value: clNormalMidlight; Name: 'clNormalMidlight'),
+    (Value: clNormalDark; Name: 'clNormalDark'),
+    (Value: clNormalMid; Name: 'clNormalMid'),
+    (Value: clNormalText; Name: 'clNormalText'),
+    (Value: clNormalBrightText; Name: 'clNormalBrightText'),
+    (Value: clNormalButtonText; Name: 'clNormalButtonText'),
+    (Value: clNormalBase; Name: 'clNormalBase'),
+    (Value: clNormalBackground; Name: 'clNormalBackground'),
+    (Value: clNormalShadow; Name: 'clNormalShadow'),
+    (Value: clNormalHighlight; Name: 'clNormalHighlight'),
+    (Value: clNormalHighlightedText; Name: 'clNormalHighlightedText'),
+
+    // CLX disabled, mapped, pseudo, rgb values
+    (Value: clDisabledForeground; Name: 'clDisabledForeground'),
+    (Value: clDisabledButton; Name: 'clDisabledButton'),
+    (Value: clDisabledLight; Name: 'clDisabledLight'),
+    (Value: clDisabledMidlight; Name: 'clDisabledMidlight'),
+    (Value: clDisabledDark; Name: 'clDisabledDark'),
+    (Value: clDisabledMid; Name: 'clDisabledMid'),
+    (Value: clDisabledText; Name: 'clDisabledText'),
+    (Value: clDisabledBrightText; Name: 'clDisabledBrightText'),
+    (Value: clDisabledButtonText; Name: 'clDisabledButtonText'),
+    (Value: clDisabledBase; Name: 'clDisabledBase'),
+    (Value: clDisabledBackground; Name: 'clDisabledBackground'),
+    (Value: clDisabledShadow; Name: 'clDisabledShadow'),
+    (Value: clDisabledHighlight; Name: 'clDisabledHighlight'),
+    (Value: clDisabledHighlightedText; Name: 'clDisabledHighlightedText'),
+
+    // CLX active, mapped, pseudo, rgb values
+    (Value: clActiveForeground; Name: 'clActiveForeground'),
+    (Value: clActiveButton; Name: 'clActiveButton'),
+    (Value: clActiveLight; Name: 'clActiveLight'),
+    (Value: clActiveMidlight; Name: 'clActiveMidlight'),
+    (Value: clActiveDark; Name: 'clActiveDark'),
+    (Value: clActiveMid; Name: 'clActiveMid'),
+    (Value: clActiveText; Name: 'clActiveText'),
+    (Value: clActiveBrightText; Name: 'clActiveBrightText'),
+    (Value: clActiveButtonText; Name: 'clActiveButtonText'),
+    (Value: clActiveBase; Name: 'clActiveBase'),
+    (Value: clActiveBackground; Name: 'clActiveBackground'),
+    (Value: clActiveShadow; Name: 'clActiveShadow'),
+    (Value: clActiveHighlight; Name: 'clActiveHighlight'),
+    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
+    {$warnings on}
+    );
 
 function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
 begin
@@ -2124,10 +2273,24 @@ end;
 
 function SysColorToSysColorIndex(Color: TColor): integer;
 begin
-  if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0 then
-    Result := Color and $FF
-  else
-    Result := -1;
+  if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0 then begin
+    case Color of
+    {$warnings off}
+    clHighlightedText..clForeground:
+      Result:=clForeground+COLOR_clForeground-Color;
+    clNormalHighlightedText..clNormalForeground:
+      Result:=clNormalForeground+COLOR_clNormalForeground-Color;
+    clDisabledHighlightedText..clDisabledForeground:
+      Result:=clDisabledForeground+COLOR_clDisabledForeground-Color;
+    clActiveHighlightedText..clActiveForeground:
+      Result:=clActiveForeground+COLOR_clActiveForeground-Color;
+    {$warnings on}
+    else
+      Result:=Color and $FF;
+    end;
+  end else begin
+    Result:=-1;
+  end;
 end;
 
 function ColorToRGB(Color: TColor): TColor;
@@ -2156,7 +2319,11 @@ procedure GetColorValues(Proc: TGetColorStringProc);
 var
   I: Integer;
 begin
-  for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
+  for I := Low(Colors) to High(Colors) do
+    if (I >= FirstDeprecatedColorIndex) and (I <= LastDeprecatedColorIndex) then
+      Continue
+    else
+      Proc(Colors[I].Name);
 end;
 
 function InvertColor(AColor: TColor): TColor;

@@ -1405,6 +1405,71 @@ const
   MAX_SYS_COLORS = COLOR_ENDCOLORS;
   SYS_COLOR_BASE = TColorRef($80000000);
 
+  // !! deprecated colors !!
+
+  // CLX base, mapped, pseudo, rgb values
+  COLOR_clForeground =  32;
+  COLOR_clButton =  COLOR_clForeground+1;
+  COLOR_clLight =  COLOR_clForeground+2;
+  COLOR_clMidlight =  COLOR_clForeground+3;
+  COLOR_clDark =  COLOR_clForeground+4;
+  COLOR_clMid =  COLOR_clForeground+5;
+  COLOR_clText =  COLOR_clForeground+6;
+  COLOR_clBrightText =  COLOR_clForeground+7;
+  COLOR_clButtonText =  COLOR_clForeground+8;
+  COLOR_clBase =  COLOR_clForeground+9;
+  //clBackground
+  COLOR_clShadow =  COLOR_clForeground+10;
+  //clHighlight
+  COLOR_clHighlightedText =  COLOR_clForeground+11;
+
+  // CLX normal, mapped, pseudo, rgb values
+  COLOR_clNormalForeground =  44;
+  COLOR_clNormalButton =  COLOR_clNormalForeground+1;
+  COLOR_clNormalLight =  COLOR_clNormalForeground+2;
+  COLOR_clNormalMidlight =  COLOR_clNormalForeground+3;
+  COLOR_clNormalDark =  COLOR_clNormalForeground+4;
+  COLOR_clNormalMid =  COLOR_clNormalForeground+5;
+  COLOR_clNormalText =  COLOR_clNormalForeground+6;
+  COLOR_clNormalBrightText =  COLOR_clNormalForeground+7;
+  COLOR_clNormalButtonText =  COLOR_clNormalForeground+8;
+  COLOR_clNormalBase =  COLOR_clNormalForeground+9;
+  COLOR_clNormalBackground =  COLOR_clNormalForeground+10;
+  COLOR_clNormalShadow =  COLOR_clNormalForeground+11;
+  COLOR_clNormalHighlight =  COLOR_clNormalForeground+12;
+  COLOR_clNormalHighlightedText =  COLOR_clNormalForeground+13;
+
+  // CLX disabled, mapped, pseudo, rgb values
+  COLOR_clDisabledForeground =  58;
+  COLOR_clDisabledButton =  COLOR_clDisabledForeground+1;
+  COLOR_clDisabledLight =  COLOR_clDisabledForeground+2;
+  COLOR_clDisabledMidlight =  COLOR_clDisabledForeground+3;
+  COLOR_clDisabledDark =  COLOR_clDisabledForeground+4;
+  COLOR_clDisabledMid =  COLOR_clDisabledForeground+5;
+  COLOR_clDisabledText =  COLOR_clDisabledForeground+6;
+  COLOR_clDisabledBrightText =  COLOR_clDisabledForeground+7;
+  COLOR_clDisabledButtonText =  COLOR_clDisabledForeground+8;
+  COLOR_clDisabledBase =  COLOR_clDisabledForeground+9;
+  COLOR_clDisabledBackground =  COLOR_clDisabledForeground+10;
+  COLOR_clDisabledShadow =  COLOR_clDisabledForeground+11;
+  COLOR_clDisabledHighlight =  COLOR_clDisabledForeground+12;
+  COLOR_clDisabledHighlightedText =  COLOR_clDisabledForeground+13;
+
+  // CLX active, mapped, pseudo, rgb values
+  COLOR_clActiveForeground =  72;
+  COLOR_clActiveButton =  COLOR_clActiveForeground+1;
+  COLOR_clActiveLight =  COLOR_clActiveForeground+2;
+  COLOR_clActiveMidlight =  COLOR_clActiveForeground+3;
+  COLOR_clActiveDark =  COLOR_clActiveForeground+4;
+  COLOR_clActiveMid =  COLOR_clActiveForeground+5;
+  COLOR_clActiveText =  COLOR_clActiveForeground+6;
+  COLOR_clActiveBrightText =  COLOR_clActiveForeground+7;
+  COLOR_clActiveButtonText =  COLOR_clActiveForeground+8;
+  COLOR_clActiveBase =  COLOR_clActiveForeground+9;
+  COLOR_clActiveBackground =  COLOR_clActiveForeground+10;
+  COLOR_clActiveShadow =  COLOR_clActiveForeground+11;
+  COLOR_clActiveHighlight =  COLOR_clActiveForeground+12;
+  COLOR_clActiveHighlightedText =  COLOR_clActiveForeground+13;
 
 {$ifndef WINDOWS}
   R2_BLACK        = 0;
