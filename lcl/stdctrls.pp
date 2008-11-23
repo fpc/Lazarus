@@ -556,11 +556,11 @@ type
     property Count: Integer read GetCount; // for Delphi compatability
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;
-    property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
+    property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight default False; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
     property Items: TStrings read FItems write SetItems;
-    property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
+    property MultiSelect: boolean read FMultiSelect write SetMultiSelect default False;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -591,8 +591,8 @@ type
     property SelCount: integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property ShowHint;
-    property Sorted: boolean read FSorted write SetSorted;
-    property Style: TListBoxStyle read FStyle write SetStyle;
+    property Sorted: boolean read FSorted write SetSorted default False;
+    property Style: TListBoxStyle read FStyle write SetStyle default lbStandard;
     property TabOrder;
     property TabStop default true;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
@@ -807,7 +807,7 @@ type
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;
     property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
@@ -966,7 +966,7 @@ type
     property BorderSpacing;
     property BorderStyle;
     property Caption;
-    property Color;
+    property Color nodefault;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -1164,7 +1164,7 @@ type
   public
     property AutoSize default true;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
-    property State: TCheckBoxState read GetState write SetState;
+    property State: TCheckBoxState read GetState write SetState default cbUnchecked;
     property TabStop default true;
     property UseOnChange;
     property OnChange;
@@ -1182,7 +1182,7 @@ type
     property BorderSpacing;
     property Caption;
     property Checked;
-    property Color;
+    property Color nodefault;
     property Constraints;
     property DragCursor;
     property DragKind;
