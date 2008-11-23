@@ -2916,7 +2916,7 @@ var
     Len, MaxLen: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
     p: PChar;
-    FG, BG: TColor;
+    FG, BG, FC: TColor;
     Style: TFontStyles;
   end;
   dc: HDC;
@@ -3135,6 +3135,7 @@ var
       with fTextDrawer do begin
         SetBackColor(TokenAccu.BG);
         SetForeColor(TokenAccu.FG);
+        SetFrameColor(TokenAccu.FC);
         SetStyle(TokenAccu.Style);
       end;
       // Paint the chars
@@ -3188,7 +3189,7 @@ var
   procedure AddHighlightToken(
     Token: PChar;
     TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
-    Foreground, Background: TColor;
+    Foreground, Background, FrameColor: TColor;
     Style: TFontStyles);
   var
     bCanAppend: boolean;
@@ -3267,6 +3268,7 @@ var
       TokenAccu.PhysicalEndPos := PhysicalEndPos;
       TokenAccu.FG := Foreground;
       TokenAccu.BG := Background;
+      TokenAccu.FC := FrameColor;
       TokenAccu.Style := Style;
     end;
     {debugln('AddHighlightToken END bCanAppend=',dbgs(bCanAppend),
@@ -3279,9 +3281,9 @@ var
   procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
     sToken: PChar; nTokenByteLen: integer);
   var
-    DefaultFGCol, DefaultBGCol: TColor;
+    DefaultFGCol, DefaultBGCol, DefaultFCCol: TColor;
     DefaultStyle: TFontStyles;
-    BG, FG : TColor;
+    BG, FG, FC : TColor;
     Style: TFontStyles;
     PhysicalStartPos: integer;
     PhysicalEndPos: integer;
@@ -3324,16 +3326,20 @@ var
       end;
     end;
 
-    if Assigned(attr) then begin
-      DefaultFGCol:=attr.Foreground;
-      DefaultBGCol:=attr.Background;
-      DefaultStyle:=attr.Style;
+    if Assigned(attr) then
+    begin
+      DefaultFGCol := attr.Foreground;
+      DefaultBGCol := attr.Background;
+      DefaultFCCol := attr.FrameColor;
+      DefaultStyle := attr.Style;
       if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
       if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
-    end else begin
-      DefaultFGCol:=Font.Color;
-      DefaultBGCol:=colEditorBG;
-      DefaultStyle:=Font.Style;
+    end else
+    begin
+      DefaultFGCol := Font.Color;
+      DefaultBGCol := colEditorBG;
+      DefaultFCCol := clNone;
+      DefaultStyle := Font.Style;
     end;
 
     {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
@@ -3360,10 +3366,11 @@ var
       // Calculate Markup
       BG := DefaultBGCol;
       FG := DefaultFGCol;
+      FC := DefaultFCCol;
       Style := DefaultStyle;
       MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(fTextView.TextIndex[CurLine]+1, PhysicalStartPos);
       if assigned(MarkupInfo)
-      then MarkupInfo.ModifyColors(FG, BG, Style);
+      then MarkupInfo.ModifyColors(FG, BG, FC, Style);
       // Deal with equal colors
       if (BG = FG) then begin // or if diff(gb,fg) < x
         if BG = DefaultBGCol
@@ -3373,7 +3380,7 @@ var
 
       // Add to TokenAccu
       AddHighlightToken(sToken, SubTokenByteLen,
-        PhysicalStartPos, PhysicalEndPos, FG, BG, Style);
+        PhysicalStartPos, PhysicalEndPos, FG, BG, FC, Style);
 
       PhysicalStartPos:=PhysicalEndPos + 1;
       dec(nTokenByteLen,SubTokenByteLen);

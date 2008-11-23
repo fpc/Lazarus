@@ -194,6 +194,8 @@ type
     FSaveDC: Integer;
     {$IFDEF SYN_LAZARUS}
     FSavedFont: HFont;
+    FCrntPen: HPen;
+    FSavedPen: HPen;
     {$ENDIF}
 
     // Font information
@@ -210,6 +212,7 @@ type
     // current font attributes
     FColor: TColor;
     FBkColor: TColor;
+    FFrameColor: TColor;
     FCharExtra: Integer;
 
     // Begin/EndDrawing calling count
@@ -244,6 +247,7 @@ type
     procedure SetStyle(Value: TFontStyles); virtual;
     procedure SetForeColor(Value: TColor); virtual;
     procedure SetBackColor(Value: TColor); virtual;
+    procedure SetFrameColor(AValue: TColor); virtual;
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
     property CharWidth: Integer read GetCharWidth;
@@ -252,6 +256,7 @@ type
     property BaseStyle: TFontStyles write SetBaseStyle;
     property ForeColor: TColor write SetForeColor;
     property BackColor: TColor write SetBackColor;
+    property FrameColor: TColor write SetFrameColor;
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
     {$IFDEF SYN_LAZARUS}
@@ -962,6 +967,10 @@ begin
   SetBaseFont(ABaseFont);
   FColor := clWindowText;
   FBkColor := clWindow;
+  FFrameColor := clNone;
+
+  FSavedPen := 0;
+  FCrntPen := 0;
 end;
 
 destructor TheTextDrawer.Destroy;
@@ -1014,6 +1023,10 @@ begin
     DoSetCharExtra(FCharExtra);
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
+    if FCrntPen <> 0 then
+      FSavedPen := SelectObject(DC, FCrntPen)
+    else
+      FSavedPen := 0;
     LCLIntf.SetTextColor(DC, FColor);
     LCLIntf.SetBkColor(DC, FBkColor);
     {$ENDIF}
@@ -1027,10 +1040,17 @@ begin
   Dec(FDrawingCount);
   if FDrawingCount <= 0 then
   begin
-    if FDC <> 0 then begin
+    if FDC <> 0 then
+    begin
       {$IFDEF SYN_LAZARUS}
       if FSavedFont <> 0 then
-        SelectObject(FDC,FSavedFont);
+        SelectObject(FDC, FSavedFont);
+      if FSavedPen <> 0 then
+      begin
+        DeleteObject(SelectObject(FDC, FSavedPen));
+        FSavedPen := 0;
+        FCrntPen := 0;
+      end;
       {$ENDIF}
       RestoreDC(FDC, FSaveDC);
     end;
@@ -1128,6 +1148,27 @@ begin
   end;
 end;
 
+procedure TheTextDrawer.SetFrameColor(AValue: TColor);
+var
+  lp: TLogPen;
+begin
+  if FFrameColor <> AValue then
+  begin
+    FFrameColor := AValue;
+    lp.lopnColor := ColorToRGB(FFrameColor);
+    lp.lopnWidth := Point(1, 0);
+    lp.lopnStyle := PS_SOLID;
+
+    FCrntPen := CreatePenIndirect(lp);
+    if FDC <> 0 then
+    begin
+      if FSavedPen <> 0 then
+        DeleteObject(SelectObject(FDC, FSavedPen));
+      FSavedPen := SelectObject(FDC, FCrntPen);
+    end;
+  end;
+end;
+
 procedure TheTextDrawer.SetCharExtra(Value: Integer);
 begin
   if FCharExtra <> Value then
@@ -1190,6 +1231,7 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
 var
   NeedDistArray: Boolean;
   DistArray: PInteger;
+  Points: array[0..4] of TPoint;
 begin
   {$IFDEF SYN_LAZARUS}
   NeedDistArray:= (FCharExtra > 0) or not MonoSpace;
@@ -1204,13 +1246,26 @@ begin
   if UseUTF8 then
     LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
   else
-    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
+    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
   {$ELSE}
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
   {$ENDIF}
+  if FFrameColor <> clNone then
+  begin
+    with ARect do
+    begin
+      Points[0] := TopLeft;
+      Points[1] := Point(Right - 1, Top);
+      Points[2] := Point(Right - 1, Bottom - 1);
+      Points[3] := Point(Left, Bottom - 1);
+      Points[4] := TopLeft;
+    end;
+
+    Polyline(FDC, @Points, 5);
+  end;
 end;
 
 procedure TheTextDrawer.ReleaseTemporaryResources;
