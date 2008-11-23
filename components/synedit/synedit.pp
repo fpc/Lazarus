@@ -5489,7 +5489,7 @@ begin
     SB_TOP: TopLine := 1;
     SB_BOTTOM: TopLine := Lines.Count;
       // Scrolls one line up / down
-{$IFNDEF SYN_LAZARUS}
+{$IFDEF SYN_LAZARUS}
     SB_LINEDOWN: TopView := TopView + 1;
     SB_LINEUP: TopView := TopView - 1;
       // Scrolls one page of lines up / down
