@@ -162,25 +162,31 @@ begin
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
       exit;
+    UpdatingColor := True;
     CurHighlightElement.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
     ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected = clDefault;
     InvalidatePreviews;
+    UpdatingColor := False;
   end;
   if Sender = BackGroundColorBox then
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
       exit;
+    UpdatingColor := True;
     CurHighlightElement.Background := DefaultToNone(BackGroundColorBox.Selected);
     BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
     InvalidatePreviews;
+    UpdatingColor := False;
   end;
   if Sender = FrameColorBox then
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
       exit;
+    UpdatingColor := True;
     CurHighlightElement.FrameColor := DefaultToNone(FrameColorBox.Selected);
     FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
     InvalidatePreviews;
+    UpdatingColor := False;
   end;
 end;
 
