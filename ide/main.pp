@@ -11213,8 +11213,9 @@ end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
 var
-  SearchPath, ProjectDir: string;
+  ProjectDir: string;
   AnUnitInfo: TUnitInfo;
+  AnUnitName: String;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
@@ -11229,11 +11230,11 @@ begin
     exit;
   end;
   // search in search path
+  AnUnitName:=ExtractFileNameOnly(AFilename);
   if not Project1.IsVirtual then begin
-    // ToDo: use the CodeTools way to find the pascal source
+    // use the CodeTools way to find the pascal source
     ProjectDir:=Project1.ProjectDirectory;
-    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ProjectDir);
-    Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(ProjectDir,AnUnitName,true);
     if Result<>'' then exit;
   end;
 end;
