@@ -105,6 +105,8 @@ type
 
     function NewNode : TSynTextFoldAVLNodeData; inline;
     procedure DisposeNode(var ANode : TSynTextFoldAVLNodeData); inline;
+    Function RemoveFoldForNodeAtLine(ANode: TSynTextFoldAVLNode; ALine : Integer;
+      IgnoreFirst : Boolean = False) : Integer; overload; // Line is for Nested Nodes
 
     procedure SetRoot(ANode : TSynTextFoldAVLNodeData); overload; inline;
     procedure SetRoot(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); overload; inline;
@@ -128,7 +130,8 @@ type
        If IgnoreFirst, the cfCollapsed will *not* unfold => Hint: IgnoreFirst = Make folded visible
        Returns the pos(1-based) of the cfCollapsed Line that was expanded; or ALine, if nothing was done
     *)
-    Function RemoveFoldForLine(ALine : Integer; IgnoreFirst : Boolean = False) : Integer;
+    Function RemoveFoldForLine(ALine : Integer;
+      IgnoreFirst : Boolean = False) : Integer; overload;
     Procedure AdjustForLinesInserted(AStartLine, ALineCount : Integer);
     Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
     Function FindLastFold : TSynTextFoldAVLNode;
@@ -757,29 +760,36 @@ end;
 
 function TSynTextFoldAVLTree.RemoveFoldForLine(ALine : Integer; IgnoreFirst : Boolean = False) : Integer;
 var
-  NestedNode, MergeNode : TSynTextFoldAVLNodeData;
-  NestedLine : LongInt;
   OldFold : TSynTextFoldAVLNode;
 begin
-  // The cfCollapsed line is one line before the fold
   Result := ALine;
   OldFold := FindFoldForLine(ALine, true);
   if (not OldFold.IsInFold) // behind last node
   or (IgnoreFirst and (OldFold.StartLine > ALine))
   or ((not IgnoreFirst) and (OldFold.StartLine > ALine+1))
   then exit;
-  Result := OldFold.StartLine-1;  // Return the cfcollapsed that was unfolded
-  RemoveNode(OldFold.fData);
+  RemoveFoldForNodeAtLine(OldFold, ALine, IgnoreFirst);
+end;
 
-  If OldFold.fData.Nested <> nil then
+function TSynTextFoldAVLTree.RemoveFoldForNodeAtLine(ANode : TSynTextFoldAVLNode;
+  ALine : Integer; IgnoreFirst : Boolean = False) : Integer;
+var
+  NestedNode, MergeNode : TSynTextFoldAVLNodeData;
+  NestedLine : LongInt;
+begin
+  // The cfCollapsed line is one line before the fold
+  Result := ANode.StartLine-1;  // Return the cfcollapsed that was unfolded
+  RemoveNode(ANode.fData);
+
+  If ANode.fData.Nested <> nil then
   begin
     (*Todo: should we mark the tree as NO balancing needed ???*)
-    TreeForNestedNode(OldFold.fData, OldFold.StartLine).RemoveFoldForLine(ALine, IgnoreFirst);
+    TreeForNestedNode(ANode.fData, ANode.StartLine).RemoveFoldForLine(ALine, IgnoreFirst);
 
     // merge the remaining nested into current
-    NestedNode := OldFold.fData.Nested;
+    NestedNode := ANode.fData.Nested;
     if NestedNode <> nil
-    then NestedLine := OldFold.fStartLine + NestedNode.LineOffset;
+    then NestedLine := ANode.fStartLine + NestedNode.LineOffset;
     
     while NestedNode <> nil do begin
       while NestedNode.Left <> nil do begin
@@ -812,7 +822,7 @@ begin
     
   end;
   
-  DisposeNode(OldFold.fData);
+  DisposeNode(ANode.fData);
 end;
 
 function TSynTextFoldAVLTree.InsertNode(ANode : TSynTextFoldAVLNodeData) : Integer;
@@ -1700,11 +1710,12 @@ begin
   if tmpnode.IsInFold then node := tmpnode;
 
   while node.IsInFold do begin
-    line := node.StartLine - 1; // the 1-based (unfolded) Line, that is Start of a fold
+    line := node.StartLine - 1; // the 1-based cfCollapsed (last visible) Line
+    // look at the 0-based cfCollapsed (visible) Line
     if not(fLines.FoldEndLevel[line -1] > fLines.FoldMinLevel[line - 1]) then begin
       // the Fold-Begin of this node has gone
       tmpnode := node.Prev;
-      aFoldTree.RemoveFoldForLine(line); // because the line itself is not folded
+      aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
       if tmpnode.IsInFold then node := tmpnode.Next
       else node := aFoldTree.FindFoldForLine(0, true); // firstnode
       continue; // catch nested nodes (now unfolded)
@@ -1714,7 +1725,7 @@ begin
     if not(node.LineCount = a) then begin
       // the Fold-End of this node has gone or moved
       tmpnode := node.Prev;
-      aFoldTree.RemoveFoldForLine(line); // because the line itself is not folded
+      aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
       if tmpnode.IsInFold then node := tmpnode.Next
       else node := aFoldTree.FindFoldForLine(0, true); // firstnode
       continue; // catch nested nodes (now unfolded)
