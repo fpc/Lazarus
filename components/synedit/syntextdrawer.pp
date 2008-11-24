@@ -194,8 +194,6 @@ type
     FSaveDC: Integer;
     {$IFDEF SYN_LAZARUS}
     FSavedFont: HFont;
-    FCrntPen: HPen;
-    FSavedPen: HPen;
     {$ENDIF}
 
     // Font information
@@ -227,6 +225,7 @@ type
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
     {$ENDIF}
+    function CreateColorPen(AColor: TColor): HPen;
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
     property FontStock: TheFontStock read FFontStock;
@@ -968,9 +967,6 @@ begin
   FColor := clWindowText;
   FBkColor := clWindow;
   FFrameColor := clNone;
-
-  FSavedPen := 0;
-  FCrntPen := 0;
 end;
 
 destructor TheTextDrawer.Destroy;
@@ -995,6 +991,18 @@ begin
   Result:=FFontStock.BaseFont.IsMonoSpace;
   //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
+
+function TheTextDrawer.CreateColorPen(AColor: TColor): HPen;
+var
+  lp: TLogPen;
+begin
+  lp.lopnColor := ColorToRGB(AColor);
+  lp.lopnWidth := Point(1, 0);
+  lp.lopnStyle := PS_SOLID;
+
+  Result := CreatePenIndirect(lp);
+end;
+
 {$ENDIF}
 
 procedure TheTextDrawer.ReleaseETODist;
@@ -1023,10 +1031,6 @@ begin
     DoSetCharExtra(FCharExtra);
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
-    if FCrntPen <> 0 then
-      FSavedPen := SelectObject(DC, FCrntPen)
-    else
-      FSavedPen := 0;
     LCLIntf.SetTextColor(DC, FColor);
     LCLIntf.SetBkColor(DC, FBkColor);
     {$ENDIF}
@@ -1045,12 +1049,6 @@ begin
       {$IFDEF SYN_LAZARUS}
       if FSavedFont <> 0 then
         SelectObject(FDC, FSavedFont);
-      if FSavedPen <> 0 then
-      begin
-        DeleteObject(SelectObject(FDC, FSavedPen));
-        FSavedPen := 0;
-        FCrntPen := 0;
-      end;
       {$ENDIF}
       RestoreDC(FDC, FSaveDC);
     end;
@@ -1149,23 +1147,10 @@ begin
 end;
 
 procedure TheTextDrawer.SetFrameColor(AValue: TColor);
-var
-  lp: TLogPen;
 begin
   if FFrameColor <> AValue then
   begin
     FFrameColor := AValue;
-    lp.lopnColor := ColorToRGB(FFrameColor);
-    lp.lopnWidth := Point(1, 0);
-    lp.lopnStyle := PS_SOLID;
-
-    FCrntPen := CreatePenIndirect(lp);
-    if FDC <> 0 then
-    begin
-      if FSavedPen <> 0 then
-        DeleteObject(SelectObject(FDC, FSavedPen));
-      FSavedPen := SelectObject(FDC, FCrntPen);
-    end;
   end;
 end;
 
@@ -1231,6 +1216,7 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
 var
   NeedDistArray: Boolean;
   DistArray: PInteger;
+  Pen, OldPen: HPen;
   Points: array[0..4] of TPoint;
 begin
   {$IFDEF SYN_LAZARUS}
@@ -1264,7 +1250,10 @@ begin
       Points[4] := TopLeft;
     end;
 
+    Pen := CreateColorPen(FFrameColor);
+    OldPen := SelectObject(FDC, Pen);
     Polyline(FDC, @Points, 5);
+    DeleteObject(SelectObject(FDC, OldPen));
   end;
 end;
 
