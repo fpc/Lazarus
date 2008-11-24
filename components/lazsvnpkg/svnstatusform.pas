@@ -32,6 +32,7 @@ type
 
   TSVNStatusFrm = class(TForm)
     ButtonPanel: TButtonPanel;
+    ImageList: TImageList;
     mnuRevert: TMenuItem;
     mnuShowDiff: TMenuItem;
     PopupMenu1: TPopupMenu;
@@ -99,9 +100,9 @@ begin
     AProcess := TProcess.Create(nil);
 
     if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
-      AProcess.CommandLine := SVNExecutable + ' revert ' + SVNFileListView.Selected.SubItems[0]
+      AProcess.CommandLine := SVNExecutable + ' revert "' + SVNFileListView.Selected.SubItems[0] + '"'
     else
-      AProcess.CommandLine := SVNExecutable + ' revert ' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0];
+      AProcess.CommandLine := SVNExecutable + ' revert "' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0] + '"';
 
     debugln('TSVNStatusFrm.mnuRevertClick commandline=', AProcess.CommandLine);
     AProcess.Options := AProcess.Options + [poWaitOnExit];
@@ -125,9 +126,9 @@ begin
     debugln('TSVNStatusFrm.mnuShowDiffClick Path=' ,SVNFileListView.Selected.SubItems[0]);
 
     if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
-      ShowSVNDiffFrm('-r HEAD', SVNFileListView.Selected.SubItems[0])
+      ShowSVNDiffFrm('-r HEAD', '"' + SVNFileListView.Selected.SubItems[0] + '"')
     else
-      ShowSVNDiffFrm('-r HEAD', AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0]);
+      ShowSVNDiffFrm('-r HEAD', '"' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0] + '"');
   end;
 end;
 
@@ -152,9 +153,9 @@ begin
 
     if StatusItem^.Checked then
       if pos(RepositoryPath,StatusItem^.Path) = 0 then
-        CmdLine := CmdLine + ' ''' + AppendPathDelim(RepositoryPath) + StatusItem^.Path + ''''
+        CmdLine := CmdLine + ' "' + AppendPathDelim(RepositoryPath) + StatusItem^.Path + '"'
       else
-        CmdLine := CmdLine + ' ''' + StatusItem^.Path + '''';
+        CmdLine := CmdLine + ' "' + StatusItem^.Path + '"';
   end;
 
   FileName := GetTempFileName('','');
@@ -276,6 +277,9 @@ begin
   SetColumn(SVNFileListView, 6, 75, rsCommitRevision, True);
   SetColumn(SVNFileListView, 7, 75, rsAuthor, True);
   SetColumn(SVNFileListView, 8, 75, rsDate, True);
+
+  ImageList.AddLazarusResource('menu_svn_diff');
+  ImageList.AddLazarusResource('menu_svn_revert');
 end;
 
 procedure TSVNStatusFrm.FormDestroy(Sender: TObject);
@@ -285,6 +289,7 @@ end;
 
 initialization
   {$I svnstatusform.lrs}
+  {$I lazsvnpkg_images.lrs}
 
 end.
 

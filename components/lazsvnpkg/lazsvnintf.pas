@@ -172,7 +172,7 @@ begin
       SrcFile := SourceEditorWindow.ActiveEditor.FileName;
 
       if LazarusIDE.ActiveProject.FindFile(SrcFile, [pfsfOnlyEditorFiles]).IsPartOfProject then
-        ShowSVNDiffFrm('-r PREV', SrcFile)
+        ShowSVNDiffFrm('-r PREV', '"' + SrcFile + '"')
       else
         ShowMessage(rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst);
     end

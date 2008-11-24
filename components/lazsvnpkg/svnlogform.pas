@@ -332,7 +332,7 @@ begin
   debugln('TSVNLogFrm.Execute RepositoryPath=' ,RepositoryPath);
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' ' + RepositoryPath  + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' "' + RepositoryPath  + '" --non-interactive';
   debugln('TSVNLogFrm.Execute CommandLine ' + AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;
@@ -440,7 +440,6 @@ begin
         tmpNode := tmpNode.NextSibling;
 
       end;
-
 
       LogList.Add(LogItem);
 

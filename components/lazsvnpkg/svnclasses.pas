@@ -388,7 +388,7 @@ begin
   BytesRead := 0;
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' stat --verbose --xml ' + RepositoryPath  + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' stat --verbose --xml "' + RepositoryPath  + '" --non-interactive';
   debugln('TSVNStatus.Create CommandLine ' + AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

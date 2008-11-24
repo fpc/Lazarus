@@ -67,7 +67,7 @@ var
 begin
   SVNUpdateFrm := TSVNUpdateFrm.Create(nil);
 
-  SVNUpdateFrm.RepositoryPath:=ARepoPath;
+  SVNUpdateFrm.RepositoryPath := ARepoPath;
   SVNUpdateFrm.ShowModal;
 
   SVNUpdateFrm.Free;
@@ -168,7 +168,7 @@ begin
   BytesRead := 0;
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' update ' + RepositoryPath + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' update "' + RepositoryPath + '" --non-interactive';
   debugln('TSVNUpdateFrm.Execute CommandLine ' + AProcess.CommandLine);
   AProcess.Options := [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

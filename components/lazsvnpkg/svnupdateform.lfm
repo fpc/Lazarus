@@ -4,12 +4,6 @@ object SVNUpdateFrm: TSVNUpdateFrm
   Top = 209
   Width = 640
   HelpContext = 0
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
   Caption = 'SVNUpdateFrm'
   ChildSizing.LeftRightSpacing = 0
   ChildSizing.TopBottomSpacing = 0
@@ -18,22 +12,12 @@ object SVNUpdateFrm: TSVNUpdateFrm
   ChildSizing.ControlsPerLine = 0
   ClientHeight = 300
   ClientWidth = 640
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
   Font.Height = 0
   Font.Style = []
-  FormStyle = fsNormal
   OnCreate = FormCreate
   OnShow = FormShow
-  ParentBiDiMode = True
-  ParentFont = False
   Position = poScreenCenter
-  ShowInTaskBar = stDefault
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object SVNUpdateListView: TListView
     Left = 6
     Height = 240
@@ -48,8 +32,6 @@ object SVNUpdateFrm: TSVNUpdateFrm
     BorderSpacing.Around = 6
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
-    BorderWidth = 0
-    Checkboxes = False
     Columns = <    
       item
         AutoSize = False
@@ -59,24 +41,12 @@ object SVNUpdateFrm: TSVNUpdateFrm
         AutoSize = False
         Width = 553
       end>
-    ColumnClick = True
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
-    HideSelection = True
-    MultiSelect = False
-    ParentShowHint = True
     PopupMenu = UpdatePopupMenu
-    ReadOnly = False
     RowSelect = True
     ScrollBars = ssAutoBoth
-    ShowColumnHeaders = True
     SortColumn = 0
     SortType = stNone
-    TabStop = True
     TabOrder = 0
-    ToolTips = True
-    Visible = True
     ViewStyle = vsReport
   end
   object ButtonPanel: TButtonPanel
@@ -91,8 +61,6 @@ object SVNUpdateFrm: TSVNUpdateFrm
     TabOrder = 1
     DefaultButton = pbOK
     ShowButtons = [pbOK]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
-    Visible = True
     object ShowLogButton: TBitBtn
       Left = 78
       Height = 34
@@ -108,10 +76,7 @@ object SVNUpdateFrm: TSVNUpdateFrm
       BorderSpacing.Around = 6
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
       Caption = 'ShowLogButton'
-      Default = False
-      Enabled = True
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         20000000000000040000640000006400000000000000000000000000000080B1
@@ -148,18 +113,9 @@ object SVNUpdateFrm: TSVNUpdateFrm
         25000100CA00000000000000000000000000CC0000001900000048346B00A815
         60000900000028156000A000000038000000C015600073AB2000
       }
-      Kind = bkCustom
-      Layout = blGlyphLeft
-      Margin = -1
-      ModalResult = 0
       NumGlyphs = 0
       OnClick = ShowLogButtonClick
-      ParentFont = True
-      ParentShowHint = True
-      Spacing = 3
       TabOrder = 4
-      TabStop = True
-      Visible = True
     end
   end
   object UpdatePopupMenu: TPopupMenu
