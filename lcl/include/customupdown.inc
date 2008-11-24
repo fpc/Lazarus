@@ -27,7 +27,6 @@ Type
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
   protected
-    procedure Click; Override;
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
@@ -37,7 +36,8 @@ Type
     constructor CreateWithParams(UpDown : TCustomUpDown;
       ButtonType : TUDBtnType);
 
-    procedure Paint; Override;
+    procedure Click; override;
+    procedure Paint; override;
   end;
 
 procedure TUpDownButton.ButtonMouseDown(Sender: TObject; Button: TMouseButton;

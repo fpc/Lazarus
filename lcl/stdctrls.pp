@@ -1028,8 +1028,9 @@ type
   protected
     FClientButton: TButtonControl;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
+  public
+    function IsCheckedLinked: Boolean; override;
   end;
 
   TButtonActionLinkClass = class of TButtonActionLink;
@@ -1060,7 +1061,6 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
     property ParentColor default false;
-    function UseRightToLeftAlignment: Boolean; override;
     procedure WSSetDefault;
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
@@ -1070,6 +1070,7 @@ type
     procedure ExecuteCancelAction; override;
     procedure ActiveDefaultControlChanged(NewControl: TControl); override;
     procedure UpdateRolesForForm; override;
+    function UseRightToLeftAlignment: Boolean; override;
   public
     property Active: boolean read FActive stored false;
     property Default: Boolean read FDefault write SetDefault default false;

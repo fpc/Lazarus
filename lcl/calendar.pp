@@ -78,10 +78,10 @@ Type
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
     procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     procedure InitializeWnd; override;
     property Date: String read GetDate write SetDate stored false;
     property DateTime: TDateTime read GetDateTime write SetDateTime;

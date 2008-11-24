@@ -127,24 +127,24 @@ type
     FMouseState: TDockHeaderMouseState;
     FDockHeaderImages: TDockHeaderImages;
     procedure SetMainControl(const AValue: TControl);
-    procedure PaintWindow(DC: HDC); override;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure InsertControl(AControl: TControl; Index: integer); override;
     procedure UpdateMainControl;
-    function CloseQuery: boolean; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseLeave; override;
+    procedure PaintWindow(DC: HDC); override;
     procedure TrackMouse(X, Y: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function CloseQuery: boolean; override;
     procedure UpdateCaption; virtual;
     class procedure UpdateMainControlInParents(StartControl: TControl);
     function FindMainControlCandidate: TControl;
     function FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
+    procedure InsertControl(AControl: TControl; Index: integer); override;
     function IsDockedControl(Control: TControl): boolean;
     function ControlHasTitle(Control: TControl): boolean;
     function GetTitleRect(Control: TControl): TRect;
@@ -160,9 +160,8 @@ type
   private
     FDockZone: TDockZone;
     function GetPageControl: TLazDockPages;
-  protected
-    procedure InsertControl(AControl: TControl; Index: integer); override;
   public
+    procedure InsertControl(AControl: TControl; Index: integer); override;
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read GetPageControl;
   end;

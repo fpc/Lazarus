@@ -231,7 +231,6 @@ type
     procedure SetValueChecked(const AValue: string);
     procedure SetValueUnchecked(const AValue: string);
   protected
-    procedure Assign(Source: TPersistent); override;
     function  CreateTitle: TGridColumnTitle; override;
     function  GetDefaultAlignment: TAlignment; override;
     function  GetDefaultDisplayFormat: string;
@@ -247,6 +246,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     function  IsDefault: boolean; override;
     property  DesignIndex: integer read FDesignIndex;
     property  Field: TField read GetField write SetField;

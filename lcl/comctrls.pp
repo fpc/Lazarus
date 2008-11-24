@@ -1354,10 +1354,11 @@ type
   TToolButtonActionLink = class(TControlActionLink)
   protected
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
-    function IsImageIndexLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
+  public
+    function IsCheckedLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
   end;
 
   TToolButtonActionLinkClass = class of TToolButtonActionLink;
@@ -1384,7 +1385,6 @@ type
     function IsCheckedStored: Boolean;
     function IsImageIndexStored: Boolean;
     function IsWidthStored: Boolean;
-    procedure SetAutoSize(const Value: Boolean); Override;
     procedure SetDown(Value: Boolean);
     procedure SetDropdownMenu(Value: TPopupMenu);
     procedure SetGrouped(Value: Boolean);
@@ -1426,6 +1426,7 @@ type
     procedure UpdateVisibleToolbar;
     function GroupAllUpAllowed: boolean;
     function DialogChar(var Message: TLMKey): boolean; override;
+    procedure SetAutoSize(const Value: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
@@ -2315,8 +2316,6 @@ type
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
-    procedure Invalidate; override;
-    procedure EraseBackground(DC: HDC); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
@@ -2391,6 +2390,7 @@ type
     procedure ConsistencyCheck;
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
     function DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
+    procedure EraseBackground(DC: HDC); override;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
     procedure GetInsertMarkAt(X, Y: Integer; var AnInsertMarkNode: TTreeNode;
@@ -2398,6 +2398,7 @@ type
     procedure SetInsertMark(AnInsertMarkNode: TTreeNode;
                             AnInsertMarkType: TTreeViewInsertMarkType);
     procedure SetInsertMarkAt(X,Y: integer); virtual;
+    procedure Invalidate; override;
     function IsEditing: Boolean;
     procedure BeginUpdate;
     procedure EndUpdate;

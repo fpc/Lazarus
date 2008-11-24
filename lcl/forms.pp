@@ -122,6 +122,8 @@ type
   {$ifdef VerboseScrollingWinControl}
     function DebugCondition: Boolean;
   {$endif}
+    function GetHorzScrollBar: TControlScrollBar; virtual;
+    function GetVertScrollBar: TControlScrollBar; virtual;
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
@@ -129,8 +131,6 @@ type
     function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
-    function GetHorzScrollBar: TControlScrollBar; virtual;
-    function GetVertScrollBar: TControlScrollBar; virtual;
     property Size: integer read GetSize write SetSize stored false;
   published
     property Increment: TScrollBarInc read GetIncrement write SetIncrement default 8;

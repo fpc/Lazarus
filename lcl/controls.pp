@@ -1071,6 +1071,9 @@ type
     function GetEnabled: Boolean; virtual;
     function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     procedure VisibleChanging; dynamic;
     procedure VisibleChanged; dynamic;
     procedure AddHandler(HandlerType: TControlHandlerType;
@@ -1080,6 +1083,8 @@ type
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
+    class function GetControlClassDefaultSize: TPoint; virtual;
+    function ColorIsStored: boolean; virtual;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
@@ -1164,7 +1169,6 @@ type
                                WithThemeSpace: boolean = true); virtual;
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
-    class function GetControlClassDefaultSize: TPoint; virtual;
     function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
@@ -1186,7 +1190,6 @@ type
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
     procedure BringToFront;
-    function ColorIsStored: boolean; virtual;
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
@@ -1266,9 +1269,6 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
@@ -1660,9 +1660,11 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: char); dynamic;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
@@ -1677,7 +1679,6 @@ type
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage: TLMMouse): Boolean;
-    function  ParentHandlesAllocated: boolean; override;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
@@ -1796,11 +1797,10 @@ type
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
+    function ParentHandlesAllocated: boolean; override;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
@@ -1836,14 +1836,14 @@ type
     FOnPaint: TNotifyEvent;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    procedure DestroyWnd; override;
     procedure PaintWindow(DC: HDC); override;
     procedure FontChanged(Sender: TObject); override;
     procedure SetColor(Value: TColor); override;
+    procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DestroyWnd; override;
-    procedure Paint; virtual;
   public
     property Canvas: TCanvas read FCanvas write FCanvas;
     property BorderStyle;

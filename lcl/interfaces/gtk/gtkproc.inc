@@ -8919,7 +8919,7 @@ begin
       end;
     end
     else
-    if AWinControl.ColorIsStored
+    if TWinControlAccess(AWinControl).ColorIsStored
     and ((AWinControl.Color and SYS_COLOR_BASE)=0) then begin
       // set background to user defined color
 

@@ -88,6 +88,9 @@ function ShowCodeContext(Code: TCodeBuffer): boolean;
 
 implementation
 
+type
+  TWinControlAccess = class(TWinControl);
+
 function ShowCodeContext(Code: TCodeBuffer): boolean;
 var
   LogCaretXY: TPoint;
@@ -143,7 +146,7 @@ begin
       Hide
     else begin
       // redirect keys
-      SrcEdit.EditorControl.KeyDown(Key,Shift);
+      TWinControlAccess(SrcEdit.EditorControl).KeyDown(Key,Shift);
       SetActiveWindow(SourceEditorWindow.Handle);
     end;
   end;

@@ -93,6 +93,9 @@ var
 
 implementation
 
+type
+  TWinControlAccess = class(TWinControl);
+
 { TSrcEditHintWindow }
 
 procedure TSrcEditHintWindow.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -128,7 +131,7 @@ begin
       Hide
     else begin
       // redirect keys
-      SrcEdit.EditorControl.KeyDown(Key,Shift);
+      TWinControlAccess(SrcEdit.EditorControl).KeyDown(Key,Shift);
       SetActiveWindow(SourceEditorWindow.Handle);
     end;
   end;

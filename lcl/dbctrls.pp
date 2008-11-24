@@ -151,7 +151,6 @@ Type
     procedure Change; override;
     procedure Reset; override;
 
-    procedure EditingDone; override;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
@@ -159,6 +158,7 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     property Field: TField read GetField;
   published
     property DataField: string read GetDataField write SetDataField;
@@ -285,11 +285,11 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure Click; override;
-    procedure EditingDone; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
+    procedure EditingDone; override;
 
     property Field: TField read GetField;
   published
@@ -371,10 +371,10 @@ Type
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
     procedure Loaded; override;
-    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     property Field: TField read GetField;
     property ItemIndex;
     property Value: string read FValue write SetValue;
@@ -434,10 +434,10 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Loaded; override;
-    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     property Checked;
     property Field: TField read GetField;
     property State;
@@ -504,11 +504,11 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
-    procedure EditingDone; override;
     procedure UpdateText;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     property Field: TField read GetField;
     property Text;
     property ItemIndex;
@@ -593,13 +593,13 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
-    procedure EditingDone; override;
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     procedure LoadMemo; virtual;
     property Field: TField read GetField;
   published
@@ -790,10 +790,10 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
 
     property Field: TField read GetField;
   published
