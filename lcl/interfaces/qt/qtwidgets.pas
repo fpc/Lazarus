@@ -2912,7 +2912,7 @@ end;
 
 procedure TQtWidget.scroll(dx, dy: integer);
 begin
-  QWidget_scroll(Widget, dx, dy);
+  QWidget_scroll(getContainerWidget, dx, dy);
   FScrollX := FScrollX + dx;
   FScrollY := FScrollY + dy;
 end;
