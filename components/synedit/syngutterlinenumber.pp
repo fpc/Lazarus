@@ -220,6 +220,7 @@ begin
       fTextDrawer.SetForeColor(MarkupInfoLineNumber.Foreground)
     else
       fTextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
+    fTextDrawer.SetFrameColor(MarkupInfoLineNumber.FrameColor);
     fTextDrawer.Style := MarkupInfoLineNumber.Style;
     // prepare the rect initially
     rcLine := AClip;
@@ -254,6 +255,7 @@ begin
     // restore original style
     fTextDrawer.SetBackColor(Color);
     fTextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
+    fTextDrawer.SetFrameColor(clNone);
     if AClip.Left < rcLine.Left then
     begin
       rcLine.Right := rcLine.Left;

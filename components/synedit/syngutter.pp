@@ -600,6 +600,7 @@ begin
   fTextDrawer.BeginDrawing(dc);
   fTextDrawer.SetBackColor(Color);
   fTextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
+  fTextDrawer.SetFrameColor(clNone);
    with AClip do
      fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   fTextDrawer.EndDrawing;
