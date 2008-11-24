@@ -488,6 +488,7 @@ begin
   if FMap = nil then Exit;
   FCurrent := FMap.FFirst;
   FBOM := FCurrent = nil;
+  FEOM := FCurrent = nil;
 end;
 
 function TBaseMapIterator.InternalLocate(const AId): Boolean;
@@ -499,6 +500,7 @@ begin
   ValidateMap;
   
   FInvalid := True;
+
   Node := FMap.FTree.Root;
   if Node <> nil
   then begin
@@ -532,9 +534,13 @@ begin
   if Node = nil
   then begin
     FEOM := True;
+    FCurrent := FMap.FLast;
+    FBOM := FCurrent = nil;
   end
   else begin
     FCurrent := Node.Data;
+    FBOM := FCurrent = nil;
+    FEOM := FCurrent = nil;
   end;
   Result := not FInvalid;
 end;
@@ -552,6 +558,7 @@ begin
   if FMap = nil then Exit;
   FCurrent := FMap.FLast;
   FEOM := FCurrent = nil;
+  FBOM := FCurrent = nil;
 end;
 
 procedure TBaseMapIterator.MapCleared;
