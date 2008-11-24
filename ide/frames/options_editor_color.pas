@@ -613,6 +613,7 @@ begin
     DefaultSyn.Free;
   end;
   ShowCurAttribute;
+  InvalidatePreviews;
 end;
 
 function TEditorColorOptionsFrame.GetCurColorScheme(const LanguageName: String): String;
