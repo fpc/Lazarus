@@ -524,6 +524,7 @@ type
     property TabStop;
     property TitleFont;
     property TitleStyle;
+    property UseXORFeatures;
     property Visible;
     property OnCellClick;
     property OnColEnter;
