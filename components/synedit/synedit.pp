@@ -3224,17 +3224,27 @@ var
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := FALSE;
     bSpacesTest := FALSE;
-    if (TokenAccu.Len > 0) then begin
+    if (TokenAccu.Len > 0) then
+    begin
       // font style must be the same or token is only spaces
-      if ( (TokenAccu.Style = Style)
-          or (not(fsUnderline in Style) and not(fsUnderline in TokenAccu.Style)
-              and not(eoShowSpecialChars in fOptions) and TokenIsSpaces )
+      if (
+           (TokenAccu.Style = Style) or
+           ( not (fsUnderline in Style) and
+             not (fsUnderline in TokenAccu.Style) and
+             not (eoShowSpecialChars in fOptions) and TokenIsSpaces
+           )
          )
       // background color must be the same and
+      // frame color must be the same and
       // foreground color must be the same or token is only spaces
-      and ( ((TokenAccu.BG = Background)
-           and ((TokenAccu.FG = Foreground)
-                or (not(eoShowSpecialChars in fOptions) and TokenIsSpaces)))
+      and (
+            ( (TokenAccu.BG = Background) and
+              (TokenAccu.FC = FrameColor) and
+              (
+                (TokenAccu.FG = Foreground) or
+                (not (eoShowSpecialChars in fOptions) and TokenIsSpaces)
+              )
+            )
           )
       then
         bCanAppend := TRUE;
