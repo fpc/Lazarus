@@ -3239,7 +3239,7 @@ var
       // foreground color must be the same or token is only spaces
       and (
             ( (TokenAccu.BG = Background) and
-              (TokenAccu.FC = FrameColor) and
+              ((TokenAccu.FC = FrameColor) and (TokenAccu.FC = clNone)) and
               (
                 (TokenAccu.FG = Foreground) or
                 (not (eoShowSpecialChars in fOptions) and TokenIsSpaces)
