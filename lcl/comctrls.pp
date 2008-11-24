@@ -1172,13 +1172,13 @@ type
     procedure StepIt;
     procedure StepBy(Delta: Integer);
   public
-    property Max: Integer read GetMax write SetMax;
-    property Min: Integer read GetMin write SetMin;
+    property Max: Integer read GetMax write SetMax default 100;
+    property Min: Integer read GetMin write SetMin default 0;
     property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
     property Position: Integer read GetPosition write SetPosition default 0;
-    property Smooth : boolean read FSmooth write SetSmooth default false;
+    property Smooth : boolean read FSmooth write SetSmooth default False;
     property Step: Integer read FStep write SetStep default 10;
-    property BarShowText : boolean read FBarShowText write SetBarShowText;
+    property BarShowText : boolean read FBarShowText write SetBarShowText default False;
   end;
  
  
@@ -1676,10 +1676,10 @@ type
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property PageSize: Integer read FPageSize write SetPageSize default 2;
     property Position: Integer read FPosition write SetPosition;
-    property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos;
+    property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos default trTop;
     property TabStop default True;
     property TickMarks: TTickMark read FTickMarks write SetTickMarks default tmBottomRight;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle default tsAuto;

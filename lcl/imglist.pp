@@ -198,7 +198,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Masked: boolean read FMasked write SetMasked;
     property Reference: TWSCustomImageListReference read GetReference;
-    property ShareImages: Boolean read FShareImages write SetShareImages;
+    property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
   end;
 
