@@ -182,7 +182,7 @@ const
       { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
 
@@ -212,7 +212,7 @@ const
       { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
   
@@ -242,7 +242,7 @@ const
       { ahaBracketMatch       } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: [fsBold]; StylesMask: []),
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaLineHighlight      } (BG: clDefault;   FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
     )
   );
 
