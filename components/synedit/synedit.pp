@@ -2156,13 +2156,10 @@ procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
 begin
-  {$IFDEF SYN_LAZARUS}
   if sfPainting in fStateFlags then exit;
-  {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := Rect(0, 0, fGutterWidth,
-                      ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
+      rcInval := Rect(0, 0, fGutterWidth, ClientHeight - ScrollBarWidth);
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
       else begin
@@ -2173,23 +2170,17 @@ begin
       end;
     end else begin
       { find the visible lines first }
-      if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
-      FirstLine := Max(FirstLine, TopLine);
-      LastLine := Min(LastLine,
-                      {$IFDEF SYN_LAZARUS}
-                      ScreenRowToRow(LinesInWindow)
-                      {$ELSE}
-                      TopLine + LinesInWindow
-                      {$ENDIF}
-                      );
+      if LastLine >= 0 then begin
+        if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
+        LastLine := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
+      end
+      else
+        LastLine := LinesInWindow + 1;
+      FirstLine := RowToScreenRow(Max(FirstLine, TopLine));
       { any line visible? }
       if (LastLine >= FirstLine) then begin
-        rcInval := Rect(0,
-          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
-                        {$ELSE}(FirstLine - TopLine){$ENDIF},
-          fGutterWidth,
-          fTextHeight * {$IFDEF SYN_LAZARUS}(RowToScreenRow(LastLine)+1)
-                        {$ELSE}(LastLine - TopLine + 1){$ENDIF});
+        rcInval := Rect(0, fTextHeight * FirstLine,
+          fGutterWidth, fTextHeight * LastLine);
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else begin
@@ -2205,15 +2196,12 @@ end;
 procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
+  f, l: Integer;
 begin
-  {$IFDEF SYN_LAZARUS}
   if sfPainting in fStateFlags then exit;
-  {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      {$IFDEF SYN_LAZARUS}
       fMarkupHighAll.InvalidateScreenLines(0, LinesInWindow+1);
-      {$ENDIF}
       rcInval := ClientRect;
       rcInval.Left := fGutterWidth;
       if sfLinesChanging in fStateFlags then
@@ -2226,28 +2214,19 @@ begin
       end;
     end else begin
       { find the visible lines first }
-      if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
-      FirstLine := Max(FirstLine, TopLine);
-      LastLine := Min(LastLine,
-                      {$IFDEF SYN_LAZARUS}
-                      ScreenRowToRow(LinesInWindow)
-                      {$ELSE}
-                      TopLine + LinesInWindow
-                      {$ENDIF}
-                      );
+      if LastLine >= 0 then begin
+        if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
+        l := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
+      end
+      else
+        l := LinesInWindow + 1;
+      f := RowToScreenRow(Max(FirstLine, TopLine));
       { any line visible? }
-      if (LastLine >= FirstLine) then begin
-        {$IFDEF SYN_LAZARUS}
+      if (l >= f) then begin
+        If LastLine < 0 then LastLine := ScreenRowToRow(LinesInWindow + 1);
         fMarkupHighAll.InvalidateLines(FirstLine, LastLine);
-        {$ENDIF}
-        {$IFDEF SYN_LAZARUS}
-        rcInval := Rect(fGutterWidth, fTextHeight * RowToScreenRow(FirstLine),
-          ClientWidth-ScrollBarWidth,
-          fTextHeight * (RowToScreenRow(LastLine)+1));
-        {$ELSE}
-        rcInval := Rect(fGutterWidth,fTextHeight * (FirstLine - TopLine),
-          ClientWidth, fTextHeight * (LastLine - TopLine + 1));
-        {$ENDIF}
+        rcInval := Rect(fGutterWidth, fTextHeight * f,
+          ClientWidth-ScrollBarWidth, fTextHeight * l);
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else begin
@@ -5694,8 +5673,8 @@ begin
     end;
   end;
   {$ENDIF}
-  InvalidateLines(Index + 1, MaxInt);
-  InvalidateGutterLines(Index + 1, MaxInt);
+  InvalidateLines(Index + 1, -1);
+  InvalidateGutterLines(Index + 1, -1);
 end;
 {end}                                                                           //mh 2000-10-10
 
@@ -5737,8 +5716,8 @@ begin
     end;
   end;
   {$ENDIF}
-  InvalidateLines(Index + 1, MaxInt);
-  InvalidateGutterLines(Index + 1, MaxInt);
+  InvalidateLines(Index + 1, -1);
+  InvalidateGutterLines(Index + 1, -1);
 end;
 
 procedure TCustomSynEdit.ListInserted(Index: Integer);
@@ -5765,8 +5744,8 @@ begin
     end;
   end;
   {$ENDIF}
-  InvalidateLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
-  InvalidateGutterLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
+  InvalidateLines(Index + 1, -1);
+  InvalidateGutterLines(Index + 1, -1);
 end;
 
 procedure TCustomSynEdit.ListPutted(Index: Integer);
@@ -5814,8 +5793,8 @@ begin
   UpdateScrollBars;
   if Index + 1 > ScreenRowToRow(LinesInWindow + 1) then exit;
   if Index + 1 < TopLine then Index := TopLine;
-  InvalidateLines(Index + 1, ScreenRowToRow(LinesInWindow + 1));
-  InvalidateGutterLines(Index + 1, ScreenRowToRow(LinesInWindow + 1));
+  InvalidateLines(Index + 1, -1);
+  InvalidateGutterLines(Index + 1, -1);
 end;
 
 procedure TCustomSynEdit.SetTopView(const AValue : Integer);
