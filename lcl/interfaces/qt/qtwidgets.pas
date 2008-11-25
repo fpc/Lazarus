@@ -941,6 +941,8 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     FHeader: TQtHeaderView;
+    FSectionClicked: QHeaderView_hookH;
+    FHeaderEventFilterHook: QObject_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
@@ -984,6 +986,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function headerViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 
     procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -7053,6 +7056,9 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtHeaderView.signalSectionClicked index ',logicalIndex);
+  {$endif}
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
   
@@ -7201,13 +7207,20 @@ begin
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
+var
+  Method: TMethod;
 begin
   {while designing TQtHeaderView is a no-no}
   if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
   begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
-    FHeader.AttachEvents;
-    QTreeView_setHeader(QTreeViewH(Widget), QHeaderViewH(FHeader.Widget));
+    FHeaderEventFilterHook := QObject_hook_create(FHeader.Widget);
+    TEventFilterMethod(Method) := @headerViewEventFilter;
+    QObject_hook_hook_events(FHeaderEventFilterHook, Method);
+
+    FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
+    QHeaderView_sectionClicked_Event(Method) := @FHeader.SignalSectionClicked;
+    QHeaderView_hook_hook_sectionClicked(FSectionClicked, Method);
   end;
   Result := FHeader;
 end;
@@ -7439,8 +7452,27 @@ begin
   QTreeWidget_hook_destroy(FItemSelectionChangedHook);
   QTreeWidget_hook_destroy(FItemPressedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
+  if FHeaderEventFilterHook <> nil then
+    QObject_hook_destroy(FHeaderEventFilterHook);
+  if FSectionClicked <> nil then
+    QHeaderView_hook_destroy(FSectionClicked);
 
   inherited DetachEvents;
+end;
+
+function TQtTreeWidget.headerViewEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  {TQtTreeWidget header event filter hook}
+  Result := False;
+  case QEvent_type(Event) of
+    QEventFocusIn:
+    begin
+      Result := True;
+      QEvent_ignore(Event);
+      QWidget_setFocus(Widget);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
