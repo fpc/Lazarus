@@ -1099,8 +1099,12 @@ resourcestring
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
   dlgAltSetClMode = 'Alt-Key sets column mode';
+
+  dlgUndoGroupOptions = 'Undo options:';
+  dlgScrollGroupOptions = 'Scroll options:';
+  dlgIndentsTabsGroupOptions = 'Indents/Tabs options:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
-  dlgAutoIdent = 'Auto indent';
+  dlgAutoIndent = 'Auto indent';
   dlgDragDropEd = 'Drag Drop editing';
   dlgDropFiles = 'Drop files';
   dlgGroupUndo = 'Group Undo';
@@ -1121,7 +1125,6 @@ resourcestring
   dlgTabsToSpaces = 'Tabs to spaces';
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
-  dlgUndoGroupOptions = 'Undo options';
   dlgUndoAfterSave = 'Undo after save';
   dlgDoubleClickLine = 'Double click line';
   dlgFindTextatCursor = 'Find text at cursor';

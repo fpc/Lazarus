@@ -34,24 +34,45 @@ type
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
+    Bevel1: TBevel;
+    Bevel2: TBevel;
+    Bevel3: TBevel;
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     BracketLabel: TLabel;
     BracketCombo: TComboBox;
+    AutoIndentCheckBox: TCheckBox;
+    TabIndentBlocksCheckBox: TCheckBox;
+    SmartTabsCheckBox: TCheckBox;
+    TabsToSpacesCheckBox: TCheckBox;
+    HalfPageScrollCheckBox: TCheckBox;
+    ScrollPastEndFileCheckBox: TCheckBox;
+    ScrollPastEndLineCheckBox: TCheckBox;
+    ScrollByOneLessCheckBox: TCheckBox;
+    UndoGroupLabel: TLabel;
     UndoAfterSaveCheckBox: TCheckBox;
     GroupUndoCheckBox: TCheckBox;
     EditorOptionsGroupBox: TCheckGroup;
-    UndoGroupBox: TGroupBox;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
+    ScrollGroupLabel: TLabel;
+    IndentsTabsGroupLabel: TLabel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
+    procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure GroupUndoCheckBoxChange(Sender: TObject);
+    procedure HalfPageScrollCheckBoxChange(Sender: TObject);
+    procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
+    procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
+    procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
+    procedure SmartTabsCheckBoxChange(Sender: TObject);
+    procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
+    procedure TabsToSpacesCheckBoxChange(Sender: TObject);
   public
     PreviewEdits: array of TPreviewEditor;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption);
@@ -81,7 +102,6 @@ begin
   begin
     // selections
     Items.Add(dlgAltSetClMode);
-    Items.Add(dlgAutoIdent);
     // visual effects
     Items.Add(dlgShowGutterHints);
     //Items.Add(dlgShowScrollHint);
@@ -91,20 +111,12 @@ begin
     Items.Add(dlgDragDropEd);
     Items.Add(dlgDropFiles);
     // caret + scrolling + key navigation
-    Items.Add(dlgHalfPageScroll);
     Items.Add(dlgKeepCursorX);
     Items.Add(dlgPersistentCursor);
     Items.Add(dlgCursorSkipsSelection);
     Items.Add(dlgRightMouseMovesCursor);
-    Items.Add(dlgScrollByOneLess);
-    Items.Add(dlgScrollPastEndFile);
-    Items.Add(dlgScrollPastEndLine);
     Items.Add(dlgHomeKeyJumpsToNearestStart);
     Items.Add(dlgAlwaysVisibleCursor);
-    // tabs
-    Items.Add(dlgSmartTabs);
-    Items.Add(dlgTabsToSpaces);
-    Items.Add(dlgTabIndent);
     // spaces
     Items.Add(dlgTrimTrailingSpaces);
     // mouse
@@ -126,10 +138,24 @@ begin
   TabWidthsLabel.Caption := dlgTabWidths;
 
   // undo
-  UndoGroupBox.Caption := dlgUndoGroupOptions;
+  UndoGroupLabel.Caption := dlgUndoGroupOptions;
   UndoAfterSaveCheckBox.Caption := dlgUndoAfterSave;
   GroupUndoCheckBox.Caption := dlgGroupUndo;
   UndoLimitLabel.Caption := dlgUndoLimit;
+
+  // scroll
+  ScrollGroupLabel.Caption := dlgScrollGroupOptions;
+  HalfPageScrollCheckBox.Caption := dlgHalfPageScroll;
+  ScrollByOneLessCheckBox.Caption := dlgScrollByOneLess;
+  ScrollPastEndFileCheckBox.Caption := dlgScrollPastEndFile;
+  ScrollPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
+
+  // indents, tabs
+  IndentsTabsGroupLabel.Caption := dlgIndentsTabsGroupOptions;
+  AutoIndentCheckBox.Caption := dlgAutoIndent;
+  TabIndentBlocksCheckBox.Caption := dlgTabIndent;
+  SmartTabsCheckBox.Caption := dlgSmartTabs;
+  TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -141,20 +167,12 @@ begin
     with EditorOptionsGroupBox do
     begin
       Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in SynEditOptions;
-      Checked[Items.IndexOf(dlgAutoIdent)]    := eoAutoIndent in SynEditOptions;
       Checked[Items.IndexOf(dlgDragDropEd)] := eoDragDropEditing in SynEditOptions;
       Checked[Items.IndexOf(dlgDropFiles)]    := eoDropFiles in SynEditOptions;
-      Checked[Items.IndexOf(dlgHalfPageScroll)] := eoHalfPageScroll in SynEditOptions;
       Checked[Items.IndexOf(dlgKeepCursorX)] := eoKeepCaretX in SynEditOptions;
       Checked[Items.IndexOf(dlgPersistentCursor)] := eoPersistentCaret in SynEditOptions;
       Checked[Items.IndexOf(dlgRightMouseMovesCursor)] := eoRightMouseMovesCursor in SynEditOptions;
-      Checked[Items.IndexOf(dlgScrollByOneLess)] := eoScrollByOneLess in SynEditOptions;
-      Checked[Items.IndexOf(dlgScrollPastEndFile)] := eoScrollPastEoF in SynEditOptions;
-      Checked[Items.IndexOf(dlgScrollPastEndLine)] := eoScrollPastEoL in SynEditOptions;
       Checked[Items.IndexOf(lisShowSpecialCharacters)] := eoShowSpecialChars in SynEditOptions;
-      Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in SynEditOptions;
-      Checked[Items.IndexOf(dlgTabsToSpaces)] := eoTabsToSpaces in SynEditOptions;
-      Checked[Items.IndexOf(dlgTabIndent)]    := eoTabIndent in SynEditOptions;
       Checked[Items.IndexOf(dlgTrimTrailingSpaces)] := eoTrimTrailingSpaces in SynEditOptions;
       Checked[Items.IndexOf(dlgDoubleClickLine)] := eoDoubleClickSelectsLine in SynEditOptions;
       Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] := eoEnhanceHomeKey in SynEditOptions;
@@ -181,6 +199,18 @@ begin
     UndoAfterSaveCheckBox.Checked := UndoAfterSave;
     GroupUndoCheckBox.Checked := eoGroupUndo in SynEditOptions;
     SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
+
+    // scroll
+    HalfPageScrollCheckBox.Checked := eoHalfPageScroll in SynEditOptions;
+    ScrollByOneLessCheckBox.Checked := eoScrollByOneLess in SynEditOptions;
+    ScrollPastEndFileCheckBox.Checked := eoScrollPastEoF in SynEditOptions;
+    ScrollPastEndLineCheckBox.Checked := eoScrollPastEoL in SynEditOptions;
+
+    // tabs, indents
+    AutoIndentCheckBox.Checked := eoAutoIndent in SynEditOptions;
+    TabIndentBlocksCheckBox.Checked := eoTabIndent in SynEditOptions;
+    SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
+    TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -223,22 +253,14 @@ begin
   with AOptions as TEditorOptions do
   begin
     UpdateOption(dlgAltSetClMode, eoAltSetsColumnMode);
-    UpdateOption(dlgAutoIdent, eoAutoIndent);
     UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
     UpdateOption(dlgDragDropEd, eoDragDropEditing);
     UpdateOption(dlgDropFiles, eoDropFiles);
     UpdateOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
-    UpdateOption(dlgHalfPageScroll, eoHalfPageScroll);
     UpdateOption(dlgKeepCursorX, eoKeepCaretX);
     UpdateOption(dlgPersistentCursor, eoPersistentCaret);
     UpdateOption(dlgRightMouseMovesCursor, eoRightMouseMovesCursor);
-    UpdateOption(dlgScrollByOneLess, eoScrollByOneLess);
-    UpdateOption(dlgScrollPastEndFile, eoScrollPastEoF);
-    UpdateOption(dlgScrollPastEndLine, eoScrollPastEoL);
     UpdateOption(lisShowSpecialCharacters, eoShowSpecialChars);
-    UpdateOption(dlgSmartTabs, eoSmartTabs);
-    UpdateOption(dlgTabsToSpaces, eoTabsToSpaces);
-    UpdateOption(dlgTabIndent, eoTabIndent);
     UpdateOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
     UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
     UpdateOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
@@ -265,16 +287,27 @@ begin
     else
       BracketCombo.ItemIndex := 0;
 
-
+    // undo
     UndoAfterSave := UndoAfterSaveCheckBox.Checked;
     UpdateOptionFromBool(GroupUndoCheckBox.Checked, eoGroupUndo);
-
     i := StrToIntDef(UndoLimitComboBox.Text, 32767);
     if i < 1 then
       i := 1;
     if i > 32767 then
       i := 32767;
     UndoLimit := i;
+
+    // scroll
+    UpdateOptionFromBool(HalfPageScrollCheckBox.Checked, eoHalfPageScroll);
+    UpdateOptionFromBool(ScrollByOneLessCheckBox.Checked, eoScrollByOneLess);
+    UpdateOptionFromBool(ScrollPastEndFileCheckBox.Checked, eoScrollPastEoF);
+    UpdateOptionFromBool(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
+
+    // tabs, indents
+    UpdateOptionFromBool(AutoIndentCheckBox.Checked, eoAutoIndent);
+    UpdateOptionFromBool(TabIndentBlocksCheckBox.Checked, eoTabIndent);
+    UpdateOptionFromBool(SmartTabsCheckBox.Checked, eoSmartTabs);
+    UpdateOptionFromBool(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
 
     i := StrToIntDef(TabWidthsComboBox.Text, 2);
     if i < 1 then
@@ -351,24 +384,16 @@ procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
 
 begin
   SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
-  SetOption(dlgAutoIdent, eoAutoIndent);
   SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
   SetOption(dlgDragDropEd, eoDragDropEditing);
   SetOption(dlgDropFiles, eoDropFiles);
   SetOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
-  SetOption(dlgHalfPageScroll, eoHalfPageScroll);
   SetOption(dlgKeepCursorX, eoKeepCaretX);
   SetOption(dlgPersistentCursor, eoPersistentCaret);
   SetOption(dlgRightMouseMovesCursor, eoRightMouseMovesCursor);
   // not for Preview: SetOption('NoSelectionCheckBox',eoNoSelection);
-  SetOption(dlgScrollByOneLess, eoScrollByOneLess);
-  SetOption(dlgScrollPastEndFile, eoScrollPastEoF);
-  SetOption(dlgScrollPastEndLine, eoScrollPastEoL);
   SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
   //SetOption(dlgShowScrollHint, eoShowScrollHint);
-  SetOption(dlgSmartTabs, eoSmartTabs);
-  SetOption(dlgTabsToSpaces, eoTabsToSpaces);
-  SetOption(dlgTabIndent, eoTabIndent);
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
 
   SetOption2(dlgCursorSkipsSelection, eoCaretSkipsSelection);
@@ -381,6 +406,11 @@ var
 begin
   if ComboBox.Items.IndexOf(ComboBox.Text) >= 0 then
     ComboBoxOnExit(Sender);
+end;
+
+procedure TEditorGeneralOptionsFrame.AutoIndentCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(AutoIndentCheckBox.Checked, eoAutoIndent);
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboboxOnKeyDown(
@@ -431,6 +461,47 @@ end;
 procedure TEditorGeneralOptionsFrame.GroupUndoCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(GroupUndoCheckBox.Checked, eoGroupUndo);
+end;
+
+procedure TEditorGeneralOptionsFrame.HalfPageScrollCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(HalfPageScrollCheckBox.Checked, eoHalfPageScroll);
+end;
+
+procedure TEditorGeneralOptionsFrame.ScrollByOneLessCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(ScrollByOneLessCheckBox.Checked, eoScrollByOneLess);
+end;
+
+procedure TEditorGeneralOptionsFrame.ScrollPastEndFileCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(ScrollPastEndFileCheckBox.Checked, eoScrollPastEoF);
+end;
+
+procedure TEditorGeneralOptionsFrame.ScrollPastEndLineCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
+end;
+
+procedure TEditorGeneralOptionsFrame.SmartTabsCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(SmartTabsCheckBox.Checked, eoSmartTabs);
+end;
+
+procedure TEditorGeneralOptionsFrame.TabIndentBlocksCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(TabIndentBlocksCheckBox.Checked, eoTabIndent);
+end;
+
+procedure TEditorGeneralOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject
+  );
+begin
+  SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
 end;
 
 constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);
