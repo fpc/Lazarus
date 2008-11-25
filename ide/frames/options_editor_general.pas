@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
-  StdCtrls, SynEdit, Controls, ExtCtrls,
+  StdCtrls, SynEdit, SynEditMarkupBracket, Controls, ExtCtrls,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -36,6 +36,8 @@ type
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
+    BracketLabel: TLabel;
+    BracketCombo: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
@@ -77,7 +79,6 @@ begin
     Items.Add(dlgAltSetClMode);
     Items.Add(dlgAutoIdent);
     // visual effects
-    Items.Add(dlgBracHighlight);
     Items.Add(dlgShowGutterHints);
     //Items.Add(dlgShowScrollHint);
     Items.Add(lisShowSpecialCharacters);
@@ -113,6 +114,13 @@ begin
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
   end;
+
+  BracketCombo.Items.Add(dlgNoBracketHighlight);
+  BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
+  BracketCombo.Items.Add(dlgHighlightRightOfCursor);
+  BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
+
+  BracketLabel.Caption := dlgBracketHighlight;
   BlockIndentLabel.Caption := dlgBlockIndent;
   UndoLimitLabel.Caption := dlgUndoLimit;
   TabWidthsLabel.Caption := dlgTabWidths;
@@ -128,7 +136,6 @@ begin
     begin
       Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in SynEditOptions;
       Checked[Items.IndexOf(dlgAutoIdent)]    := eoAutoIndent in SynEditOptions;
-      Checked[Items.IndexOf(dlgBracHighlight)] := eoBracketHighlight in SynEditOptions;
       Checked[Items.IndexOf(dlgDragDropEd)] := eoDragDropEditing in SynEditOptions;
       Checked[Items.IndexOf(dlgDropFiles)]    := eoDropFiles in SynEditOptions;
       Checked[Items.IndexOf(dlgGroupUndo)] := eoGroupUndo in SynEditOptions;
@@ -157,6 +164,11 @@ begin
       //Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := UseSyntaxHighlight;
       Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
     end;
+
+    if eoBracketHighlight in SynEditOptions then
+      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
+    else
+      BracketCombo.ItemIndex := 0;
 
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent));
     SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
@@ -199,7 +211,6 @@ begin
   begin
     UpdateOption(dlgAltSetClMode, eoAltSetsColumnMode);
     UpdateOption(dlgAutoIdent, eoAutoIndent);
-    UpdateOption(dlgBracHighlight,eoBracketHighlight);
     UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
     UpdateOption(dlgDragDropEd, eoDragDropEditing);
     UpdateOption(dlgDropFiles, eoDropFiles);
@@ -229,6 +240,20 @@ begin
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
     //UseSyntaxHighlight := CheckGroupItemChecked(EditorOptionsGroupBox, dlgUseSyntaxHighlight);
     CtrlMouseLinks := CheckGroupItemChecked(EditorOptionsGroupBox, dlgMouseLinks);
+
+    if BracketCombo.ItemIndex = 0 then
+      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [eoBracketHighlight]
+    else
+    begin
+      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions + [eoBracketHighlight];
+      TEditorOptions(AOptions).BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+    end;
+
+    if eoBracketHighlight in SynEditOptions then
+      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
+    else
+      BracketCombo.ItemIndex := 0;
+
 
     i := StrToIntDef(UndoLimitComboBox.Text, 32767);
     if i < 1 then
@@ -301,7 +326,6 @@ procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
 begin
   SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
   SetOption(dlgAutoIdent, eoAutoIndent);
-  SetOption(dlgBracHighlight,eoBracketHighlight);
   SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
   SetOption(dlgDragDropEd, eoDragDropEditing);
   SetOption(dlgDropFiles, eoDropFiles);
@@ -361,6 +385,21 @@ begin
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].TabWidth := NewVal;
+  end
+  else
+  if Sender = BracketCombo then
+  begin
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[a] <> nil then
+      begin
+        if BracketCombo.ItemIndex = 0 then
+          PreviewEdits[a].Options := PreviewEdits[a].Options - [eoBracketHighlight]
+        else
+        begin
+          PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
+          PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+        end;
+      end;
   end;
 end;
 

@@ -1101,7 +1101,6 @@ resourcestring
   dlgAltSetClMode = 'Alt-Key sets column mode';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIdent = 'Auto indent';
-  dlgBracHighlight = 'Bracket highlighting';
   dlgDragDropEd = 'Drag Drop editing';
   dlgDropFiles = 'Drop files';
   dlgGroupUndo = 'Group Undo';
@@ -1129,6 +1128,11 @@ resourcestring
   dlgUseCodeFolding = 'Code folding';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
+  dlgBracketHighlight = 'Bracket highlight style';
+  dlgNoBracketHighlight = 'No Highlight';
+  dlgHighlightLeftOfCursor = 'Left Of Cursor';
+  dlgHighlightRightOfCursor = 'Right Of Cursor';
+  gldHighlightBothSidesOfCursor = 'On Both Sides';
   dlgBlockIndent = 'Block indent';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';

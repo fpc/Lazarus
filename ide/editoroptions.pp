@@ -40,7 +40,7 @@ uses
   Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
-  SynEditStrConst,
+  SynEditStrConst, SynEditMarkupBracket,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
@@ -382,6 +382,7 @@ type
     fBlockIndent: Integer;
     fUndoLimit: Integer;
     fTabWidth:  Integer;
+    FBracketHighlightStyle: TSynEditBracketHighlightStyle;
 
     // Display options
     fVisibleRightMargin: Boolean;
@@ -476,6 +477,7 @@ type
       read fBlockIndent write fBlockIndent default 2;
     property UndoLimit: Integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidth: Integer read fTabWidth write fTabWidth default 8;
+    property BracketHighlightStyle: TSynEditBracketHighlightStyle read FBracketHighlightStyle write FBracketHighlightStyle default sbhsBoth;
 
     // Display options
     property VisibleRightMargin: Boolean
@@ -1300,6 +1302,7 @@ begin
   fBlockIndent := 2;
   fUndoLimit := 32767;
   fTabWidth := 8;
+  FBracketHighlightStyle := sbhsBoth;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -1410,6 +1413,8 @@ begin
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit', 32767);
     fTabWidth :=
       XMLConfig.GetValue('EditorOptions/General/Editor/TabWidth', 8);
+    FBracketHighlightStyle :=
+      TSynEditBracketHighlightStyle(XMLConfig.GetValue('EditorOptions/General/Editor/BracketHighlightStyle', 2));
 
     // Display options
     fVisibleRightMargin :=
@@ -1555,6 +1560,8 @@ begin
       , fUndoLimit, 32767);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/TabWidth'
       , fTabWidth, 8);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BracketHighlightStyle'
+      , Ord(FBracketHighlightStyle), 2);
 
     // Display options
     XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleRightMargin'
@@ -2136,6 +2143,7 @@ begin
   ASynEdit.Options2 := fSynEditOptions2;
   ASynEdit.BlockIndent := fBlockIndent;
   ASynEdit.TabWidth := fTabWidth;
+  ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
 
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;
@@ -2184,6 +2192,7 @@ begin
   fSynEditOptions2 := ASynEdit.Options2;
   fBlockIndent := ASynEdit.BlockIndent;
   fTabWidth := ASynEdit.TabWidth;
+  FBracketHighlightStyle := ASynEdit.BracketHighlightStyle;
 
   // Display options
   fVisibleGutter := ASynEdit.Gutter.Visible;
