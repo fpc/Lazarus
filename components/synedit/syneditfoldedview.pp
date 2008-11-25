@@ -407,7 +407,6 @@ end;
 
 function TSynTextFoldAVLNodeData.Precessor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
 begin
-  aLinesBefore := aLinesBefore - LineCount;
   Result := Left;
   if Result<>nil then begin
     aStartLine := aStartLine + Result.LineOffset;
@@ -425,6 +424,10 @@ begin
     aStartLine := aStartLine - Result.LineOffset;
     Result := Result.Parent;
   end;
+  if result <> nil then
+    aLinesBefore := aLinesBefore - result.LineCount
+  else
+    aLinesBefore := 0;
 end;
 
 function TSynTextFoldAVLNodeData.Successor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
