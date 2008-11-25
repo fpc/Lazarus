@@ -4,8 +4,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientHeight = 504
   ClientWidth = 454
   Visible = False
-  DesignLeft = 403
-  DesignTop = 264
+  DesignLeft = 44
+  DesignTop = 58
   object BlockIndentLabel: TLabel[0]
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -13,7 +13,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideBottom.Side = asrCenter
     Left = 106
     Height = 14
-    Top = 435
+    Top = 459
     Width = 82
     HelpContext = 0
     Anchors = [akLeft, akBottom]
@@ -27,28 +27,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'BlockIndentLabel'
     ParentColor = False
   end
-  object UndoLimitLabel: TLabel[1]
-    AnchorSideLeft.Control = UndoLimitComboBox
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Control = UndoLimitComboBox
-    AnchorSideBottom.Side = asrCenter
-    Left = 106
-    Height = 14
-    Top = 462
-    Width = 72
-    HelpContext = 0
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Caption = 'UndoLimitLabel'
-    ParentColor = False
-  end
-  object TabWidthsLabel: TLabel[2]
+  object TabWidthsLabel: TLabel[1]
     AnchorSideLeft.Control = TabWidthsComboBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = TabWidthsComboBox
@@ -69,14 +48,14 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'TabWidthsLabel'
     ParentColor = False
   end
-  object BracketLabel: TLabel[3]
+  object BracketLabel: TLabel[2]
     AnchorSideLeft.Control = BracketCombo
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = BracketCombo
     AnchorSideBottom.Side = asrCenter
     Left = 106
     Height = 14
-    Top = 408
+    Top = 432
     Width = 62
     HelpContext = 0
     Anchors = [akLeft, akBottom]
@@ -90,14 +69,14 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'BracketLabel'
     ParentColor = False
   end
-  object EditorOptionsGroupBox: TCheckGroup[4]
+  object EditorOptionsGroupBox: TCheckGroup[3]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = BracketCombo
+    AnchorSideBottom.Control = UndoGroupBox
     Left = 0
-    Height = 399
+    Height = 397
     Top = 0
     Width = 454
     HelpContext = 0
@@ -128,12 +107,12 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnItemClick = EditorOptionsGroupBoxItemClick
     TabOrder = 0
   end
-  object BlockIndentComboBox: TComboBox[5]
+  object BlockIndentComboBox: TComboBox[4]
     AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = UndoLimitComboBox
+    AnchorSideBottom.Control = TabWidthsComboBox
     Left = 0
     Height = 21
-    Top = 432
+    Top = 456
     Width = 100
     HelpContext = 0
     Anchors = [akLeft, akBottom]
@@ -159,37 +138,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnKeyDown = ComboboxOnKeyDown
     TabOrder = 1
   end
-  object UndoLimitComboBox: TComboBox[6]
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = TabWidthsLabel
-    Left = 0
-    Height = 21
-    Top = 459
-    Width = 100
-    HelpContext = 0
-    Anchors = [akLeft, akBottom]
-    AutoComplete = False
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 6
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Ctl3D = False
-    ItemHeight = 13
-    Items.Strings = (
-      '32767'
-      '4096'
-      '512'
-    )
-    ItemWidth = 0
-    OnChange = ComboboxOnChange
-    OnExit = ComboBoxOnExit
-    OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 2
-  end
-  object TabWidthsComboBox: TComboBox[7]
+  object TabWidthsComboBox: TComboBox[5]
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
@@ -219,14 +168,14 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 3
+    TabOrder = 2
   end
-  object BracketCombo: TComboBox[8]
+  object BracketCombo: TComboBox[6]
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = BlockIndentComboBox
     Left = 0
     Height = 21
-    Top = 405
+    Top = 429
     Width = 100
     HelpContext = 0
     Anchors = [akLeft, akBottom]
@@ -245,6 +194,126 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
     Style = csDropDownList
+    TabOrder = 3
+  end
+  object UndoGroupBox: TGroupBox[7]
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 260
+    Height = 101
+    Top = 403
+    Width = 194
+    HelpContext = 0
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Caption = 'UndoGroupBox'
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
+    ClientHeight = 83
+    ClientWidth = 190
+    Ctl3D = False
     TabOrder = 4
+    object UndoLimitLabel: TLabel
+      AnchorSideLeft.Control = UndoLimitComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UndoLimitComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 112
+      Height = 14
+      Top = 59
+      Width = 72
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'UndoLimitLabel'
+      ParentColor = False
+    end
+    object UndoAfterSaveCheckBox: TCheckBox
+      AnchorSideLeft.Control = UndoGroupBox
+      AnchorSideTop.Control = UndoGroupBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 147
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'UndoAfterSaveCheckBox'
+      TabOrder = 0
+      UseOnChange = False
+    end
+    object GroupUndoCheckBox: TCheckBox
+      AnchorSideLeft.Control = UndoGroupBox
+      AnchorSideTop.Control = UndoAfterSaveCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 127
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'GroupUndoCheckBox'
+      OnChange = GroupUndoCheckBoxChange
+      TabOrder = 1
+      UseOnChange = False
+    end
+    object UndoLimitComboBox: TComboBox
+      AnchorSideLeft.Control = UndoGroupBox
+      AnchorSideTop.Control = GroupUndoCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 56
+      Width = 100
+      HelpContext = 0
+      AutoComplete = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Ctl3D = False
+      ItemHeight = 13
+      Items.Strings = (
+        '32767'
+        '4096'
+        '512'
+      )
+      ItemWidth = 0
+      OnChange = ComboboxOnChange
+      OnExit = ComboBoxOnExit
+      OnKeyDown = ComboboxOnKeyDown
+      TabOrder = 2
+    end
   end
 end

@@ -1121,6 +1121,7 @@ resourcestring
   dlgTabsToSpaces = 'Tabs to spaces';
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
+  dlgUndoGroupOptions = 'Undo options';
   dlgUndoAfterSave = 'Undo after save';
   dlgDoubleClickLine = 'Double click line';
   dlgFindTextatCursor = 'Find text at cursor';

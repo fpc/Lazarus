@@ -38,7 +38,10 @@ type
     BlockIndentLabel: TLabel;
     BracketLabel: TLabel;
     BracketCombo: TComboBox;
+    UndoAfterSaveCheckBox: TCheckBox;
+    GroupUndoCheckBox: TCheckBox;
     EditorOptionsGroupBox: TCheckGroup;
+    UndoGroupBox: TGroupBox;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
     UndoLimitComboBox: TComboBox;
@@ -48,10 +51,11 @@ type
       Shift: TShiftState);
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
     procedure ComboBoxOnExit(Sender: TObject);
-  private
-    { private declarations }
+    procedure GroupUndoCheckBoxChange(Sender: TObject);
   public
     PreviewEdits: array of TPreviewEditor;
+    procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption);
+    procedure SetPreviewOption2(AValue: Boolean; AnOption: TSynEditorOption2);
 
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
@@ -103,9 +107,6 @@ begin
     Items.Add(dlgTabIndent);
     // spaces
     Items.Add(dlgTrimTrailingSpaces);
-    // undo
-    Items.Add(dlgUndoAfterSave);
-    Items.Add(dlgGroupUndo);
     // mouse
     Items.Add(dlgDoubleClickLine);
     Items.Add(dlgMouseLinks);
@@ -122,8 +123,13 @@ begin
 
   BracketLabel.Caption := dlgBracketHighlight;
   BlockIndentLabel.Caption := dlgBlockIndent;
-  UndoLimitLabel.Caption := dlgUndoLimit;
   TabWidthsLabel.Caption := dlgTabWidths;
+
+  // undo
+  UndoGroupBox.Caption := dlgUndoGroupOptions;
+  UndoAfterSaveCheckBox.Caption := dlgUndoAfterSave;
+  GroupUndoCheckBox.Caption := dlgGroupUndo;
+  UndoLimitLabel.Caption := dlgUndoLimit;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -138,7 +144,6 @@ begin
       Checked[Items.IndexOf(dlgAutoIdent)]    := eoAutoIndent in SynEditOptions;
       Checked[Items.IndexOf(dlgDragDropEd)] := eoDragDropEditing in SynEditOptions;
       Checked[Items.IndexOf(dlgDropFiles)]    := eoDropFiles in SynEditOptions;
-      Checked[Items.IndexOf(dlgGroupUndo)] := eoGroupUndo in SynEditOptions;
       Checked[Items.IndexOf(dlgHalfPageScroll)] := eoHalfPageScroll in SynEditOptions;
       Checked[Items.IndexOf(dlgKeepCursorX)] := eoKeepCaretX in SynEditOptions;
       Checked[Items.IndexOf(dlgPersistentCursor)] := eoPersistentCaret in SynEditOptions;
@@ -157,7 +162,6 @@ begin
       Checked[Items.IndexOf(dlgAlwaysVisibleCursor)] := eoAlwaysVisibleCaret in SynEditOptions2;
 
       Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := ShowTabCloseButtons;
-      Checked[Items.IndexOf(dlgUndoAfterSave)] := UndoAfterSave;
       Checked[Items.IndexOf(dlgMouseLinks)]   := CtrlMouseLinks;
       Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
       Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
@@ -171,8 +175,12 @@ begin
       BracketCombo.ItemIndex := 0;
 
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent));
-    SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth));
+
+    // undo
+    UndoAfterSaveCheckBox.Checked := UndoAfterSave;
+    GroupUndoCheckBox.Checked := eoGroupUndo in SynEditOptions;
+    SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -182,15 +190,20 @@ end;
 
 procedure TEditorGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
+  procedure UpdateOptionFromBool(AValue: Boolean; AnOption: TSynEditorOption);
+  begin
+    if AValue then
+      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions + [AnOption]
+    else
+      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [AnOption];
+  end;
+
   procedure UpdateOption(const CheckBoxName: String; AnOption: TSynEditorOption);
   var
     i: integer;
   begin
-      i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-      if EditorOptionsGroupBox.Checked[i] then
-        TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions + [AnOption]
-      else
-        TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [AnOption];
+    i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
+    UpdateOptionFromBool(EditorOptionsGroupBox.Checked[i], AnOption);
   end;
 
   procedure UpdateOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
@@ -214,7 +227,6 @@ begin
     UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
     UpdateOption(dlgDragDropEd, eoDragDropEditing);
     UpdateOption(dlgDropFiles, eoDropFiles);
-    UpdateOption(dlgGroupUndo, eoGroupUndo);
     UpdateOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
     UpdateOption(dlgHalfPageScroll, eoHalfPageScroll);
     UpdateOption(dlgKeepCursorX, eoKeepCaretX);
@@ -234,7 +246,6 @@ begin
     UpdateOption2(dlgAlwaysVisibleCursor, eoAlwaysVisibleCaret);
 
     ShowTabCloseButtons := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCloseButtonsNotebook);
-    UndoAfterSave := CheckGroupItemChecked(EditorOptionsGroupBox, dlgUndoAfterSave);
     CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
     ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
@@ -254,6 +265,9 @@ begin
     else
       BracketCombo.ItemIndex := 0;
 
+
+    UndoAfterSave := UndoAfterSaveCheckBox.Checked;
+    UpdateOptionFromBool(GroupUndoCheckBox.Checked, eoGroupUndo);
 
     i := StrToIntDef(UndoLimitComboBox.Text, 32767);
     if i < 1 then
@@ -283,44 +297,56 @@ begin
   Result := TEditorOptions;
 end;
 
+procedure TEditorGeneralOptionsFrame.SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption);
+var
+  a: Integer;
+begin
+  for a := Low(PreviewEdits) to High(PreviewEdits) do
+  begin
+    if PreviewEdits[a] <> nil then
+      if AValue then
+        PreviewEdits[a].Options := PreviewEdits[a].Options + [AnOption]
+      else
+        PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
+  end;
+end;
+
+procedure TEditorGeneralOptionsFrame.SetPreviewOption2(AValue: Boolean; AnOption: TSynEditorOption2);
+var
+  a: Integer;
+begin
+  for a := Low(PreviewEdits) to High(PreviewEdits) do
+  begin
+    if PreviewEdits[a] <> nil then
+      if AValue then
+        PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
+      else
+        PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
+  end;
+end;
+
 procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
   Sender: TObject; Index: integer);
 
   procedure SetOption(const CheckBoxName: String; AnOption: TSynEditorOption);
   var
-    a: Integer;
     i: LongInt;
   begin
     i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
     if i < 0 then
       Exit;
 
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-    begin
-      if PreviewEdits[a] <> nil then
-        if EditorOptionsGroupBox.Checked[i] then
-          PreviewEdits[a].Options := PreviewEdits[a].Options + [AnOption]
-        else
-          PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
-    end;
+    SetPreviewOption(EditorOptionsGroupBox.Checked[i], AnOption);
   end;
 
   procedure SetOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
   var
-    a: Integer;
     i: LongInt;
   begin
     i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
     if i < 0 then
       Exit;
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-    begin
-      if PreviewEdits[a] <> nil then
-        if EditorOptionsGroupBox.Checked[i] then
-          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
-        else
-          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
-    end;
+    SetPreviewOption2(EditorOptionsGroupBox.Checked[i], AnOption);
   end;
 
 begin
@@ -329,7 +355,6 @@ begin
   SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
   SetOption(dlgDragDropEd, eoDragDropEditing);
   SetOption(dlgDropFiles, eoDropFiles);
-  SetOption(dlgGroupUndo, eoGroupUndo);
   SetOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
   SetOption(dlgHalfPageScroll, eoHalfPageScroll);
   SetOption(dlgKeepCursorX, eoKeepCaretX);
@@ -401,6 +426,11 @@ begin
         end;
       end;
   end;
+end;
+
+procedure TEditorGeneralOptionsFrame.GroupUndoCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(GroupUndoCheckBox.Checked, eoGroupUndo);
 end;
 
 constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);
