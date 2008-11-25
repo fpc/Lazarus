@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TWin32WSDragImageList }
 
   TWin32WSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
     class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND;
       AIndex, X, Y: Integer): Boolean; override;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
@@ -61,17 +59,13 @@ type
   { TWin32WSControl }
 
   TWin32WSControl = class(TWSControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSWinControl }
 
   TWin32WSWinControl = class(TWSWinControl)
-  private
-  protected
-  public
+  published
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -99,27 +93,20 @@ type
   { TWin32WSGraphicControl }
 
   TWin32WSGraphicControl = class(TWSGraphicControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomControl }
 
   TWin32WSCustomControl = class(TWSCustomControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSImageList }
 
   TWin32WSImageList = class(TWSImageList)
-  private
-  protected
-  public
+  published
   end;
-
 
 type
   TCreateWindowExParams = record

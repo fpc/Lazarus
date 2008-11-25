@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,34 +44,26 @@ type
   { TWin32WSStringCellEditor }
 
   TWin32WSStringCellEditor = class(TWSStringCellEditor)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomGrid }
 
   TWin32WSCustomGrid = class(TWSCustomGrid)
-  private
-  protected
-  public
+  published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); override;
   end;
 
   { TWin32WSDrawGrid }
 
   TWin32WSDrawGrid = class(TWSDrawGrid)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSStringGrid }
 
   TWin32WSStringGrid = class(TWSStringGrid)
-  private
-  protected
-  public
+  published
   end;
 
 

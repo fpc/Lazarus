@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -53,6 +53,7 @@ type
 
   TWSScrollingWinControlClass = class of TWSScrollingWinControl;
   TWSScrollingWinControl = class(TWSWinControl)
+  published
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; 
       const DeltaX, DeltaY: integer); virtual;
   end;
@@ -60,21 +61,25 @@ type
   { TWSScrollBox }
 
   TWSScrollBox = class(TWSScrollingWinControl)
+  published
   end;
 
   { TWSCustomFrame }
 
   TWSCustomFrame = class(TWSScrollingWinControl)
+  published
   end;
 
   { TWSFrame }
 
   TWSFrame = class(TWSCustomFrame)
+  published
   end;
 
   { TWSCustomForm }
 
   TWSCustomForm = class(TWSScrollingWinControl)
+  published
     class procedure CloseModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); virtual;
     class procedure SetBorderIcons(const AForm: TCustomForm;
@@ -92,21 +97,25 @@ type
   { TWSForm }
 
   TWSForm = class(TWSCustomForm)
+  published
   end;
 
   { TWSHintWindow }
 
   TWSHintWindow = class(TWSCustomForm)
+  published
   end;
 
   { TWSScreen }
 
   TWSScreen = class(TWSLCLComponent)
+  published
   end;
 
   { TWSApplicationProperties }
 
   TWSApplicationProperties = class(TWSLCLComponent)
+  published
   end;
 
 

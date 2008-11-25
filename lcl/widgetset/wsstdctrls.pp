@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -52,6 +52,7 @@ type
   { TWSScrollBar }
 
   TWSScrollBar = class(TWSWinControl)
+  published
     class procedure SetParams(const AScrollBar: TCustomScrollBar); virtual;
   end;
   TWSScrollBarClass = class of TWSScrollBar;
@@ -59,16 +60,19 @@ type
   { TWSCustomGroupBox }
 
   TWSCustomGroupBox = class(TWSCustomControl)
+  published
   end;
 
   { TWSGroupBox }
 
   TWSGroupBox = class(TWSCustomGroupBox)
+  published
   end;
 
   { TWSCustomComboBox }
 
   TWSCustomComboBox = class(TWSWinControl)
+  published
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
@@ -95,11 +99,13 @@ type
   { TWSComboBox }
 
   TWSComboBox = class(TWSCustomComboBox)
+  published
   end;
 
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
+  published
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; virtual;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; virtual;
@@ -124,11 +130,13 @@ type
   { TWSListBox }
 
   TWSListBox = class(TWSCustomListBox)
+  published
   end;
 
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
+  published
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; virtual;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; virtual;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
@@ -150,6 +158,7 @@ type
   { TWSCustomMemo }
 
   TWSCustomMemo = class(TWSCustomEdit)
+  published
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); virtual;
@@ -163,17 +172,20 @@ type
   { TWSEdit }
 
   TWSEdit = class(TWSCustomEdit)
+  published
   end;
 
   { TWSMemo }
 
   TWSMemo = class(TWSCustomMemo)
+  published
   end;
 
   { TWSCustomStaticText }
 
   TWSCustomStaticTextClass = class of TWSCustomStaticText;
   TWSCustomStaticText = class(TWSWinControl)
+  published
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); virtual;
   end;
@@ -181,16 +193,19 @@ type
   { TWSStaticText }
 
   TWSStaticText = class(TWSCustomStaticText)
+  published
   end;
 
   { TWSButtonControl }
 
   TWSButtonControl = class(TWSWinControl)
+  published
   end;
 
   { TWSButton }
 
   TWSButton = class(TWSButtonControl)
+  published
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); virtual;
     class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
@@ -199,6 +214,7 @@ type
   { TWSCustomCheckBox }
 
   TWSCustomCheckBox = class(TWSButtonControl)
+  published
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
       const OldShortCut, NewShortCut: TShortCut); virtual;
@@ -209,16 +225,19 @@ type
   { TWSCheckBox }
 
   TWSCheckBox = class(TWSCustomCheckBox)
+  published
   end;
 
   { TWSToggleBox }
 
   TWSToggleBox = class(TWSCustomCheckBox)
+  published
   end;
 
   { TWSRadioButton }
 
   TWSRadioButton = class(TWSCustomCheckBox)
+  published
   end;
 
 

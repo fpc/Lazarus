@@ -55,6 +55,7 @@ type
 
   TWSStatusBarClass = class of TWSStatusBar;
   TWSStatusBar = class(TWSWinControl)
+  published
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); virtual;
@@ -64,11 +65,13 @@ type
   { TWSTabSheet }
 
   TWSTabSheet = class(TWSCustomPage)
+  published
   end;
 
   { TWSPageControl }
 
   TWSPageControl = class(TWSCustomNotebook)
+  published
   end;
 
   { TWSCustomListView }
@@ -77,6 +80,7 @@ type
 
   TWSCustomListViewClass = class of TWSCustomListView;
   TWSCustomListView = class(TWSWinControl)
+  published
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; virtual;
@@ -137,12 +141,14 @@ type
   { TWSListView }                             
 
   TWSListView = class(TWSCustomListView)
+  published
   end;
 
   { TWSProgressBar }
 
   TWSProgressBarClass = class of TWSProgressBar;
   TWSProgressBar = class(TWSWinControl)
+  published
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); virtual;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); virtual;
   end;
@@ -150,22 +156,26 @@ type
   { TWSCustomUpDown }
 
   TWSCustomUpDown = class(TWSCustomControl)
+  published
   end;
 
   { TWSUpDown }
 
   TWSUpDown = class(TWSCustomUpDown)
+  published
   end;
 
   { TWSToolButton }
 
   TWSToolButton = class(TWSCustomControl)
+  published
   end;
 
   { TWSToolBar }
 
   TWSToolbarClass = class of TWSToolbar;
   TWSToolBar = class(TWSToolWindow)
+  published
 {$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; virtual;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;
@@ -177,6 +187,7 @@ type
 
   TWSTrackBarClass = class of TWSTrackBar;
   TWSTrackBar = class(TWSWinControl)
+  published
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
@@ -185,11 +196,13 @@ type
   { TWSCustomTreeView }
 
   TWSCustomTreeView = class(TWSCustomControl)
+  published
   end;
 
   { TWSTreeView }
 
   TWSTreeView = class(TWSCustomTreeView)
+  published
   end;
 
 

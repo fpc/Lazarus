@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TWin32WSScrollBar }
 
   TWin32WSScrollBar = class(TWSScrollBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
@@ -56,9 +54,7 @@ type
   { TWin32WSCustomGroupBox }
 
   TWin32WSCustomGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
@@ -70,9 +66,7 @@ type
   { TWin32WSGroupBox }
 
   TWin32WSGroupBox = class(TWSGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomComboBox }
@@ -80,8 +74,7 @@ type
   TWin32WSCustomComboBox = class(TWSCustomComboBox)
   private
     class function GetStringList(const ACustomComboBox: TCustomComboBox): TWin32ComboBoxStringList;
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
@@ -115,17 +108,13 @@ type
   { TWin32WSComboBox }
 
   TWin32WSComboBox = class(TWSComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomListBox }
 
   TWin32WSCustomListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
+  published
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -152,17 +141,13 @@ type
   { TWin32WSListBox }
 
   TWin32WSListBox = class(TWSListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomEdit }
 
   TWin32WSCustomEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
@@ -187,9 +172,7 @@ type
   { TWin32WSCustomMemo }
 
   TWin32WSCustomMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
@@ -207,25 +190,19 @@ type
   { TWin32WSEdit }
 
   TWin32WSEdit = class(TWSEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSMemo }
 
   TWin32WSMemo = class(TWSMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomStaticText }
 
   TWin32WSCustomStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
@@ -236,17 +213,13 @@ type
   { TWin32WSStaticText }
 
   TWin32WSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSButtonControl }
 
   TWin32WSButtonControl = class(TWSButtonControl)
-  private
-  protected
-  public
+  published
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
@@ -255,9 +228,7 @@ type
   { TWin32WSButton }
 
   TWin32WSButton = class(TWSButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
@@ -267,9 +238,7 @@ type
   { TWin32WSCustomCheckBox }
 
   TWin32WSCustomCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -286,17 +255,13 @@ type
   { TWin32WSCheckBox }
 
   TWin32WSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSToggleBox }
 
   TWin32WSToggleBox = class(TWSToggleBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -304,9 +269,7 @@ type
   { TWin32WSRadioButton }
 
   TWin32WSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;

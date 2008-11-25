@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,49 +42,37 @@ type
   { TWin32WSCustomEditButton }
 
   TWin32WSCustomEditButton = class(TWSCustomEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSEditButton }
 
   TWin32WSEditButton = class(TWSEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSFileNameEdit }
 
   TWin32WSFileNameEdit = class(TWSFileNameEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDirectoryEdit }
 
   TWin32WSDirectoryEdit = class(TWSDirectoryEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDateEdit }
 
   TWin32WSDateEdit = class(TWSDateEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCalcEdit }
 
   TWin32WSCalcEdit = class(TWSCalcEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

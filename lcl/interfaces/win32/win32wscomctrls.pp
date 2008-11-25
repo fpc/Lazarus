@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,9 +44,7 @@ type
   { TWin32WSStatusBar }
 
   TWin32WSStatusBar = class(TWSStatusBar)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -62,17 +60,13 @@ type
   { TWin32WSTabSheet }
 
   TWin32WSTabSheet = class(TWSTabSheet)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSPageControl }
 
   TWin32WSPageControl = class(TWSPageControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomListView }
@@ -83,8 +77,7 @@ type
     class procedure PositionHeader(const AHandle: THandle);
     class procedure UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
     class procedure UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
-  protected
-  public
+  published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -148,17 +141,13 @@ type
   { TWin32WSListView }
 
   TWin32WSListView = class(TWSListView)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSProgressBar }
 
   TWin32WSProgressBar = class(TWSProgressBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
@@ -168,34 +157,26 @@ type
   { TWin32WSCustomUpDown }
 
   TWin32WSCustomUpDown = class(TWSCustomUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSUpDown }
 
   TWin32WSUpDown = class(TWSUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSToolButton }
 
   TWin32WSToolButton = class(TWSToolButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSToolBar }
 
   TWin32WSToolBar = class(TWSToolBar)
-  private
-  protected
-  public
-{$ifdef OldToolbar}  
+  published
+{$ifdef OldToolbar}
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
@@ -207,9 +188,7 @@ type
   { TWin32WSTrackBar }
 
   TWin32WSTrackBar = class(TWSTrackBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
@@ -220,17 +199,13 @@ type
   { TWin32WSCustomTreeView }
 
   TWin32WSCustomTreeView = class(TWSCustomTreeView)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSTreeView }
 
   TWin32WSTreeView = class(TWSTreeView)
-  private
-  protected
-  public
+  published
   end;
 
 

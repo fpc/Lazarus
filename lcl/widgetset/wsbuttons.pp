@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -54,6 +54,7 @@ type
   
   TWSBitBtnClass = class of TWSBitBtn;
   TWSBitBtn = class(TWSButton)
+  published
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); virtual;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); virtual;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
@@ -64,6 +65,7 @@ type
 
   TWSSpeedButtonClass = class of TWSSpeedButton;
   TWSSpeedButton = class(TWSGraphicControl)
+  published
   end;
 
 

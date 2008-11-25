@@ -68,9 +68,7 @@ type
   { TWin32WSCommonDialog }
 
   TWin32WSCommonDialog = class(TWSCommonDialog)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -78,17 +76,13 @@ type
   { TWin32WSFileDialog }
 
   TWin32WSFileDialog = class(TWSFileDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSOpenDialog }
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
@@ -97,27 +91,21 @@ type
   { TWin32WSSaveDialog }
 
   TWin32WSSaveDialog = class(TWSSaveDialog)
-  private
-  protected
-  public
+  published
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWin32WSSelectDirectoryDialog }
 
   TWin32WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSColorDialog }
 
   TWin32WSColorDialog = class(TWSColorDialog)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -126,17 +114,13 @@ type
   { TWin32WSColorButton }
 
   TWin32WSColorButton = class(TWSColorButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSFontDialog }
 
   TWin32WSFontDialog = class(TWSFontDialog)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -52,6 +52,7 @@ type
   { TWSCustomFloatSpinEdit }
 
   TWSCustomFloatSpinEdit = class(TWSCustomEdit)
+  published
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double; virtual;
 
 (*  TODO: seperation into properties instead of bulk update
@@ -68,6 +69,7 @@ type
   { TWSFloatSpinEdit }
 
   TWSFloatSpinEdit = class(TWSCustomFloatSpinEdit)
+  published
   end;
 
 

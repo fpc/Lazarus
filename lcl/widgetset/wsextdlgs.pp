@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -52,41 +52,49 @@ type
   { TWSPreviewFileControl }
 
   TWSPreviewFileControl = class(TWSWinControl)
+  published
   end;
 
   { TWSPreviewFileDialog }
 
   TWSPreviewFileDialog = class(TWSOpenDialog)
+  published
   end;
 
   { TWSOpenPictureDialog }
 
   TWSOpenPictureDialog = class(TWSPreviewFileDialog)
+  published
   end;
 
   { TWSSavePictureDialog }
 
   TWSSavePictureDialog = class(TWSOpenPictureDialog)
+  published
   end;
 
   { TWSCalculatorDialog }
 
   TWSCalculatorDialog = class(TWSCommonDialog)
+  published
   end;
 
   { TWSCalculatorForm }
 
   TWSCalculatorForm = class(TWSForm)
+  published
   end;
 
   { TWSCalendarDialogForm }
 
   TWSCalendarDialogForm = class(TWSForm)
+  published
   end;
 
   { TWSCalendarDialog }
 
   TWSCalendarDialog = class(TWSCommonDialog)
+  published
   end;
 
 

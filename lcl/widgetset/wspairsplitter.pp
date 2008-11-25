@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -49,11 +49,13 @@ type
   { TWSPairSplitterSide }
 
   TWSPairSplitterSide = class(TWSWinControl)
+  published
   end;
 
   { TWSCustomPairSplitter }
 
   TWSCustomPairSplitter = class(TWSWinControl)
+  published
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; virtual;
@@ -67,6 +69,7 @@ type
   { TWSPairSplitter }
 
   TWSPairSplitter = class(TWSCustomPairSplitter)
+  published
   end;
 
 

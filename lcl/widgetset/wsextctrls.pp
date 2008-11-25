@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -53,12 +53,14 @@ type
 
   TWSCustomPageClass = class of TWSCustomPage;
   TWSCustomPage = class(TWSWinControl)
+  published
     class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
   end;
 
   { TWSCustomNotebook }
 
   TWSCustomNotebook = class(TWSWinControl)
+  published
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
     class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); virtual;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
@@ -80,82 +82,97 @@ type
   { TWSPage }
 
   TWSPage = class(TWSCustomPage)
+  published
   end;
 
   { TWSNotebook }
 
   TWSNotebook = class(TWSCustomNotebook)
+  published
   end;
 
   { TWSShape }
 
   TWSShape = class(TWSGraphicControl)
+  published
   end;
 
   { TWSCustomSplitter }
 
   TWSCustomSplitter = class(TWSCustomControl)
-  public
+  published
   end;
 
   { TWSSplitter }
 
   TWSSplitter = class(TWSCustomSplitter)
+  published
   end;
 
   { TWSPaintBox }
 
   TWSPaintBox = class(TWSGraphicControl)
+  published
   end;
 
   { TWSCustomImage }
 
   TWSCustomImage = class(TWSGraphicControl)
+  published
   end;
 
   { TWSImage }
 
   TWSImage = class(TWSCustomImage)
+  published
   end;
 
   { TWSBevel }
 
   TWSBevel = class(TWSGraphicControl)
+  published
   end;
 
   { TWSCustomRadioGroup }
 
   TWSCustomRadioGroup = class(TWSCustomGroupBox)
+  published
   end;
 
   { TWSRadioGroup }
 
   TWSRadioGroup = class(TWSCustomRadioGroup)
+  published
   end;
 
   { TWSCustomCheckGroup }
 
   TWSCustomCheckGroup = class(TWSCustomGroupBox)
+  published
   end;
 
   { TWSCheckGroup }
 
   TWSCheckGroup = class(TWSCustomCheckGroup)
+  published
   end;
 
   { TWSCustomLabeledEdit }
 
   TWSCustomLabeledEdit = class(TWSCustomEdit)
+  published
   end;
 
   { TWSLabeledEdit }
 
   TWSLabeledEdit = class(TWSCustomLabeledEdit)
+  published
   end;
 
   { TWSCustomPanel }
 
   TWSCustomPanel = class(TWSCustomControl)
+  published
   end;
 
   { TWSPanel }
@@ -166,7 +183,7 @@ type
   { TWSCustomTrayIcon }
 
   TWSCustomTrayIcon = class(TWSLCLComponent)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -55,6 +55,7 @@ type
   { TWSDragImageList }
 
   TWSDragImageList = class(TWSCustomImageList)
+  published
     class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; virtual;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; virtual;
     class procedure EndDrag(const ADragImageList: TDragImageList); virtual;
@@ -69,6 +70,7 @@ type
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
+  published
     class procedure AddControl(const AControl: TControl); virtual;
   end;
 
@@ -81,6 +83,7 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
+  published
     class function  CanFocus(const AWincontrol: TWinControl): Boolean; virtual;
     
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
@@ -120,16 +123,19 @@ type
   { TWSGraphicControl }
 
   TWSGraphicControl = class(TWSControl)
+  published
   end;
 
   { TWSCustomControl }
 
   TWSCustomControl = class(TWSWinControl)
+  published
   end;
 
   { TWSImageList }
 
   TWSImageList = class(TWSDragImageList)
+  published
   end;
 
 
