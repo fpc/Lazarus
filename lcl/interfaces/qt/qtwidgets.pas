@@ -622,7 +622,9 @@ type
     FTabBarEventHook: QWidget_hookH;
     FTabBarChangedHook: QTabBar_hookH;
     FTabBar: QTabBarH;
+    FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
+    function getStackWidget: QWidgetH;
     function getTabBar: QTabBarH;
     procedure setShowTabs(const AValue: Boolean);
   protected
@@ -652,6 +654,7 @@ type
 
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
     property TabBar: QTabBarH read getTabBar;
+    property StackWidget: QWidgetH read getStackWidget;
   end;
 
   { TQtComboBox }
@@ -5499,6 +5502,8 @@ function TQtTabWidget.getTabBar: QTabBarH;
 begin
   if FTabBar = nil then
   begin
+    {$note we can remove QLCLTabWidget, and get it like StackWidget,
+     objectName is qt_tabwidget_tabbar.}
     FTabBar := QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget));
     QWidget_setFocusPolicy(FTabBar, QtNoFocus);
   end;
@@ -5508,6 +5513,32 @@ end;
 function TQtTabWidget.getShowTabs: Boolean;
 begin
   Result := QWidget_isVisible(TabBar);
+end;
+
+function TQtTabWidget.getStackWidget: QWidgetH;
+var
+  List: TPtrIntArray;
+  Obj: QObjectH;
+  i: Integer;
+  WStr: WideString;
+begin
+  if FStackWidget = nil then
+  begin
+    QObject_children(Widget, @List);
+    for i := 0 to High(List) do
+    begin
+      Obj := QObjectH(List[i]);
+      QObject_objectName(Obj, @WStr);
+      {do not localize !}
+      if WStr = 'qt_tabwidget_stackedwidget' then
+      begin
+        FStackWidget := QWidgetH(List[i]);
+        break;
+      end;
+    end;
+    FCentralWidget := FStackWidget;
+  end;
+  Result := FStackWidget;
 end;
 
 procedure TQtTabWidget.setShowTabs(const AValue: Boolean);
@@ -5608,23 +5639,8 @@ begin
 end;
 
 function TQtTabWidget.getClientBounds: TRect;
-var
-  ATabSize: TSize;
-  option: QStyleOptionTabWidgetFrameH;
 begin
-  option := QStyleOptionTabWidgetFrame_create();
-  QStyleOption_initFrom(QStyleOptionH(option), Widget);
-  QStyle_subElementRect(QWidget_style(Widget), @Result, QStyleSE_TabWidgetTabContents, option, Widget);
-  QStyleOptionTabWidgetFrame_destroy(option);
-
-  QWidget_size(TabBar, @ATabSize);
-  case getTabPosition of
-    QTabWidgetNorth: inc(Result.Top, ATabSize.cy);
-    QTabWidgetSouth: dec(Result.Bottom, ATabSize.cy);
-    QTabWidgetWest : inc(Result.Left, ATabSize.cx);
-    QTabWidgetEast : dec(Result.Right, ATabSize.cx);
-  end;
-  //WriteLn(dbgs(Result));
+  QWidget_contentsRect(StackWidget, @Result)
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
