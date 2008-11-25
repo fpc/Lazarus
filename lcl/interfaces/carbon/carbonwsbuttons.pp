@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,9 +44,7 @@ type
   { TCarbonWSBitBtn }
 
   TCarbonWSBitBtn = class(TWSBitBtn)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
@@ -55,9 +53,7 @@ type
   { TCarbonWSSpeedButton }
 
   TCarbonWSSpeedButton = class(TWSSpeedButton)
-  private
-  protected
-  public
+  published
   end;
 
 

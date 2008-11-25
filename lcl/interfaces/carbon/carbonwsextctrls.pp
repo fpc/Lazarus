@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -49,9 +49,7 @@ type
   { TCarbonWSCustomPage }
 
   TCarbonWSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
@@ -59,9 +57,7 @@ type
   { TCarbonWSCustomNotebook }
 
   TCarbonWSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
@@ -80,143 +76,109 @@ type
   { TCarbonWSPage }
 
   TCarbonWSPage = class(TWSPage)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSNotebook }
 
   TCarbonWSNotebook = class(TWSNotebook)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSShape }
 
   TCarbonWSShape = class(TWSShape)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomSplitter }
 
   TCarbonWSCustomSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSSplitter }
 
   TCarbonWSSplitter = class(TWSSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSPaintBox }
 
   TCarbonWSPaintBox = class(TWSPaintBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomImage }
 
   TCarbonWSCustomImage = class(TWSCustomImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSImage }
 
   TCarbonWSImage = class(TWSImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSBevel }
 
   TCarbonWSBevel = class(TWSBevel)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomRadioGroup }
 
   TCarbonWSCustomRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSRadioGroup }
 
   TCarbonWSRadioGroup = class(TWSRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomCheckGroup }
 
   TCarbonWSCustomCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCheckGroup }
 
   TCarbonWSCheckGroup = class(TWSCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomLabeledEdit }
 
   TCarbonWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSLabeledEdit }
 
   TCarbonWSLabeledEdit = class(TWSLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomPanel }
 
   TCarbonWSCustomPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSPanel }
 
   TCarbonWSPanel = class(TWSPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomTrayIcon }
 
   TCarbonWSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     {$ifdef CarbonUseCocoa}
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;

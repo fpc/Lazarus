@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSDbCtrls.pp                               * 
+ *                              CarbonWSDbCtrls.pp                           *
  *                              --------------                               * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,105 +42,79 @@ type
   { TCarbonWSDBEdit }
 
   TCarbonWSDBEdit = class(TWSDBEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBText }
 
   TCarbonWSDBText = class(TWSDBText)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBListBox }
 
   TCarbonWSDBListBox = class(TWSDBListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBRadioGroup }
 
   TCarbonWSDBRadioGroup = class(TWSDBRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBCheckBox }
 
   TCarbonWSDBCheckBox = class(TWSDBCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBComboBox }
 
   TCarbonWSDBComboBox = class(TWSDBComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBMemo }
 
   TCarbonWSDBMemo = class(TWSDBMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBGroupBox }
 
   TCarbonWSDBGroupBox = class(TWSDBGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBImage }
 
   TCarbonWSDBImage = class(TWSDBImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBCalendar }
 
   TCarbonWSDBCalendar = class(TWSDBCalendar)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBCustomNavigator }
 
   TCarbonWSDBCustomNavigator = class(TWSDBCustomNavigator)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBNavButton }
 
   TCarbonWSDBNavButton = class(TWSDBNavButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDBNavigator }
 
   TCarbonWSDBNavigator = class(TWSDBNavigator)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                                CarbonWSSpin.pp                                * 
+ *                                CarbonWSSpin.pp                            * 
  *                                -----------                                * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TCarbonWSCustomFloatSpinEdit }
 
   TCarbonWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
@@ -56,9 +54,7 @@ type
   { TCarbonWSFloatSpinEdit }
 
   TCarbonWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

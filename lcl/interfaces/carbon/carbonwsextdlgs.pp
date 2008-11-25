@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSExtDlgs.pp                               * 
+ *                              CarbonWSExtDlgs.pp                           *
  *                              --------------                               * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,65 +42,49 @@ type
   { TCarbonWSPreviewFileControl }
 
   TCarbonWSPreviewFileControl = class(TWSPreviewFileControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSPreviewFileDialog }
 
   TCarbonWSPreviewFileDialog = class(TWSPreviewFileDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSOpenPictureDialog }
 
   TCarbonWSOpenPictureDialog = class(TWSOpenPictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSSavePictureDialog }
 
   TCarbonWSSavePictureDialog = class(TWSSavePictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCalculatorDialog }
 
   TCarbonWSCalculatorDialog = class(TWSCalculatorDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCalculatorForm }
 
   TCarbonWSCalculatorForm = class(TWSCalculatorForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCalendarDialogForm }
 
   TCarbonWSCalendarDialogForm = class(TWSCalendarDialogForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCalendarDialog }
 
   TCarbonWSCalendarDialog = class(TWSCalendarDialog)
-  private
-  protected
-  public
+  published
   end;
 
 

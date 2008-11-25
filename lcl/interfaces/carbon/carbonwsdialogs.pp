@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,67 +44,51 @@ type
   { TCarbonWSCommonDialog }
 
   TCarbonWSCommonDialog = class(TWSCommonDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSFileDialog }
 
   TCarbonWSFileDialog = class(TWSFileDialog)
-  private
-  protected
-  public
+  published
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TCarbonWSOpenDialog }
 
   TCarbonWSOpenDialog = class(TWSOpenDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSSaveDialog }
 
   TCarbonWSSaveDialog = class(TWSSaveDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSSelectDirectoryDialog }
 
   TCarbonWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSColorDialog }
 
   TCarbonWSColorDialog = class(TWSColorDialog)
-  private
-  protected
-  public
+  published
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TCarbonWSColorButton }
 
   TCarbonWSColorButton = class(TWSColorButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSFontDialog }
 
   TCarbonWSFontDialog = class(TWSFontDialog)
-  private
-  protected
-  public
+  published
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 

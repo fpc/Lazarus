@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TCarbonWSStatusBar }
 
   TCarbonWSStatusBar = class(TWSStatusBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -57,25 +55,19 @@ type
   { TCarbonWSTabSheet }
 
   TCarbonWSTabSheet = class(TWSTabSheet)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSPageControl }
 
   TCarbonWSPageControl = class(TWSPageControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomListView }
 
   TCarbonWSCustomListView = class(TWSCustomListView)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -136,17 +128,13 @@ type
   { TCarbonWSListView }
 
   TCarbonWSListView = class(TWSListView)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSProgressBar }
 
   TCarbonWSProgressBar = class(TWSProgressBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -155,41 +143,31 @@ type
   { TCarbonWSCustomUpDown }
 
   TCarbonWSCustomUpDown = class(TWSCustomUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSUpDown }
 
   TCarbonWSUpDown = class(TWSUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSToolButton }
 
   TCarbonWSToolButton = class(TWSToolButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSToolBar }
 
   TCarbonWSToolBar = class(TWSToolBar)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSTrackBar }
 
   TCarbonWSTrackBar = class(TWSTrackBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
@@ -199,17 +177,13 @@ type
   { TCarbonWSCustomTreeView }
 
   TCarbonWSCustomTreeView = class(TWSCustomTreeView)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSTreeView }
 
   TCarbonWSTreeView = class(TWSTreeView)
-  private
-  protected
-  public
+  published
   end;
 
 
