@@ -1155,6 +1155,7 @@ type
     procedure setAcceptMode(const AMode: QFileDialogAcceptMode);
     procedure setConfirmOverwrite(const AValue: Boolean);
     procedure setDirectory(const ADirectory: WideString);
+    procedure setHistory(AList: TStrings);
     procedure setFileMode(const AMode: QFileDialogFileMode);
     procedure setFilter(const AFilter: WideString);
     procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
@@ -9282,6 +9283,25 @@ end;
 procedure TQtFileDialog.setDirectory(const ADirectory: WideString);
 begin
   QFileDialog_setDirectory(QFileDialogH(Widget), @ADirectory);
+end;
+
+procedure TQtFileDialog.setHistory(AList: TStrings);
+var
+  List: QStringListH;
+  i: Integer;
+  WStr: WideString;
+begin
+  List := QStringList_create();
+  try
+    for i := 0 to AList.Count - 1 do
+    begin
+      WStr := GetUTF8String(AList.Strings[i]);
+      QStringList_append(List, @WStr);
+    end;
+    QFileDialog_setHistory(QFileDialogH(Widget), List);
+  finally
+    QStringList_destroy(List);
+  end;
 end;
 
 procedure TQtFileDialog.setFileMode(const AMode: QFileDialogFileMode);
