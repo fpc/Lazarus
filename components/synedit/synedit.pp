@@ -454,6 +454,7 @@ type
     procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function GetBlockBegin: TPoint;
     function GetBlockEnd: TPoint;
+    function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
     function GetCanPaste: Boolean;
     function GetCanRedo: Boolean;
     function GetCanUndo: Boolean;
@@ -470,6 +471,8 @@ type
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
+    procedure SetBracketHighlightStyle(
+      const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
     procedure SetRealLines(const AValue : TStrings);
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
@@ -924,6 +927,8 @@ type
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
+    property BracketHighlightStyle: TSynEditBracketHighlightStyle
+      read GetBracketHighlightStyle write SetBracketHighlightStyle;
     //property Color: TSynSelectedColor read GetSelectedColor;
     {$ELSE}
     property SelectedColor: TSynSelectedColor
@@ -1063,6 +1068,7 @@ type
     {$IFDEF SYN_LAZARUS}
     property IncrementColor;
     property HighlightAllColor;
+    property BracketHighlightStyle;
     property BracketMatchColor;
     property MouseLinkColor;
     property LineNumberColor;
@@ -1616,10 +1622,12 @@ begin
     if sfCaretChanged in fStateFlags then
       UpdateCaret
     else
-    if not(sfPainting in fStateFlags) and assigned(fMarkupBracket) then
+    if not(sfPainting in fStateFlags) then
     begin
-      fMarkupBracket.InvalidateBracketHighlight;
-      fMarkupSpecialLine.InvalidateLineHighlight;
+      if Assigned(fMarkupBracket) then
+        fMarkupBracket.InvalidateBracketHighlight;
+      if Assigned(fMarkupSpecialLine) then
+        fMarkupSpecialLine.InvalidateLineHighlight;
     end;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
@@ -1700,6 +1708,11 @@ begin
     Result := fBlockBegin
   else
     Result := fBlockEnd;
+end;
+
+function TCustomSynEdit.GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
+begin
+  Result := fMarkupBracket.HighlightStyle;
 end;
 
 function TCustomSynEdit.CaretXPix: Integer;
@@ -1790,6 +1803,12 @@ end;
 function TCustomSynEdit.GetMouseLinkColor : TSynSelectedColor;
 begin
   Result := fMarkupCtrlMouse.MarkupInfo;
+end;
+
+procedure TCustomSynEdit.SetBracketHighlightStyle(
+  const AValue: TSynEditBracketHighlightStyle);
+begin
+  fMarkupBracket.HighlightStyle := AValue;
 end;
 
 procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);

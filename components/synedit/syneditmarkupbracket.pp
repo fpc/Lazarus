@@ -29,6 +29,11 @@ uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls, LCLProc;
 
 type
+  TSynEditBracketHighlightStyle = (
+    sbhsLeftOfCursor,
+    sbhsRightOfCursor,
+    sbhsBoth
+  );
   { TSynEditMarkupBracket }
 
   TSynEditMarkupBracket = class(TSynEditMarkup)
@@ -36,6 +41,8 @@ type
     // Physical Position
     FBracketHighlightPos: TPoint;
     FBracketHighlightAntiPos: TPoint;
+    FHighlightStyle: TSynEditBracketHighlightStyle;
+    procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
   protected
     procedure FindMatchingBracketPair(PhysCaret: TPoint;
       var StartBracket, EndBracket: TPoint);
@@ -46,6 +53,7 @@ type
     function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
 
     procedure InvalidateBracketHighlight;
+    property HighlightStyle: TSynEditBracketHighlightStyle read FHighlightStyle write SetHighlightStyle;
   end;
 
 implementation
@@ -59,47 +67,66 @@ begin
   inherited Create(ASynEdit);
   FBracketHighlightPos.Y := -1;
   FBracketHighlightAntiPos.Y := -1;
+  FHighlightStyle := sbhsBoth;
   MarkupInfo.Foreground := clNone;
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [fsBold];
   MarkupInfo.StyleMask := [];
 end;
 
-procedure TSynEditMarkupBracket.FindMatchingBracketPair(PhysCaret : TPoint;
-  var StartBracket, EndBracket : TPoint);
+procedure TSynEditMarkupBracket.SetHighlightStyle(
+  const AValue: TSynEditBracketHighlightStyle);
+begin
+  if FHighlightStyle <> AValue then
+  begin
+    FHighlightStyle := AValue;
+    InvalidateBracketHighlight;
+  end;
+end;
+
+procedure TSynEditMarkupBracket.FindMatchingBracketPair(PhysCaret: TPoint;
+  var StartBracket, EndBracket: TPoint);
+const
+  Brackets: set of Char = ['(',')','{','}','[',']'];
 var
   StartLine: string;
   LogCaretXY: TPoint;
   x: Integer;
 begin
-  StartBracket.Y:=-1;
-  EndBracket.Y:=-1;
-  if (PhysCaret.Y<1) or (PhysCaret.Y>Lines.Count) or (PhysCaret.X<1) then exit;
+  StartBracket.Y := -1;
+  EndBracket.Y := -1;
+  if (PhysCaret.Y < 1) or (PhysCaret.Y > Lines.Count) or (PhysCaret.X < 1) then
+    Exit;
+
   StartLine := Lines[PhysCaret.Y - 1];
 
-  // check for bracket, before cursor
-  if PhysCaret.x > 1 then begin
+  // check for bracket, left of cursor
+  if (HighlightStyle in [sbhsLeftOfCursor, sbhsBoth]) and (PhysCaret.x > 1) then
+  begin
     // need to dec PhysCaret, in case we are in the middle of a tab
     dec(PhysCaret.x);
-    LogCaretXY:=TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
     x := LogCaretXY.x;
-    if (x <= length(StartLine))
-    and (StartLine[x] in ['(',')','{','}','[',']']) then begin
-      StartBracket:=PhysCaret;
-      EndBracket:=TSynEdit(SynEdit).FindMatchingBracket(PhysCaret,false,false,false,false);
-      exit;
+    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
+    begin
+      StartBracket := PhysCaret;
+      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      Exit;
     end;
     // check for bracket after caret
     inc(PhysCaret.x);;
   end;
 
-  LogCaretXY:=TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
-  x := LogCaretXY.x;
-  if (length(StartLine) < x)
-  or (not (StartLine[x] in ['(',')','{','}','[',']'])) then exit;
-
-  StartBracket:=PhysCaret;
-  EndBracket:=TSynEdit(SynEdit).FindMatchingBracket(PhysCaret,false,false,false,false);
+  if (HighlightStyle in [sbhsRightOfCursor, sbhsBoth]) then
+  begin
+    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    x := LogCaretXY.x;
+    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
+    begin
+      StartBracket := PhysCaret;
+      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+    end;
+  end;
 end;
 
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
