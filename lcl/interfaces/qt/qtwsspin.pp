@@ -46,7 +46,7 @@ type
   protected
     class procedure InternalUpdateControl(const ASpinWidget: TQtAbstractSpinBox;
       const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
@@ -65,9 +65,7 @@ type
   { TQtWSFloatSpinEdit }
 
   TQtWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

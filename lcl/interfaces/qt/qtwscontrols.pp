@@ -43,9 +43,7 @@ type
   { TQtWSDragImageList }
 
   TQtWSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
     class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
     class procedure EndDrag(const ADragImageList: TDragImageList); override;
@@ -58,23 +56,18 @@ type
   { TQtWSControl }
 
   TQtWSControl = class(TWSControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSWinControl }
 
   TQtWSWinControl = class(TWSWinControl)
-  private
-  protected
-  public
+  published
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
-  public
     class procedure AddControl(const AControl: TControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
@@ -107,17 +100,13 @@ type
   { TQtWSGraphicControl }
 
   TQtWSGraphicControl = class(TWSGraphicControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomControl }
 
   TQtWSCustomControl = class(TWSCustomControl)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
@@ -126,9 +115,7 @@ type
   { TQtWSImageList }
 
   TQtWSImageList = class(TWSImageList)
-  private
-  protected
-  public
+  published
   end;
 
 const

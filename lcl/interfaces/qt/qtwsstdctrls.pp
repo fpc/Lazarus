@@ -44,9 +44,7 @@ type
   { TQtWSScrollBar }
 
   TQtWSScrollBar = class(TWSScrollBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
@@ -55,9 +53,7 @@ type
   { TQtWSCustomGroupBox }
 
   TQtWSCustomGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
@@ -68,20 +64,15 @@ type
   { TQtWSGroupBox }
 
   TQtWSGroupBox = class(TWSGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomComboBox }
 
   TQtWSCustomComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-  public
     class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -105,20 +96,15 @@ type
   { TQtWSComboBox }
 
   TQtWSComboBox = class(TWSComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomListBox }
 
   TQtWSCustomListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
-  public
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -140,20 +126,15 @@ type
   { TQtWSListBox }
 
   TQtWSListBox = class(TWSListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomEdit }
 
   TQtWSCustomEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-  public
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -170,12 +151,9 @@ type
   { TQtWSCustomMemo }
 
   TQtWSCustomMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-  public
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
@@ -188,33 +166,25 @@ type
   { TQtWSEdit }
 
   TQtWSEdit = class(TWSEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSMemo }
 
   TQtWSMemo = class(TWSMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSButtonControl }
 
   TQtWSButtonControl = class(TWSButtonControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSButton }
 
   TQtWSButton = class(TWSButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
@@ -224,9 +194,7 @@ type
   { TQtWSCustomCheckBox }
 
   TQtWSCustomCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -240,17 +208,13 @@ type
   { TQtWSCheckBox }
 
   TQtWSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSToggleBox }
 
   TQtWSToggleBox = class(TWSToggleBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -264,9 +228,7 @@ type
   { TQtWSRadioButton }
 
   TQtWSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -280,9 +242,7 @@ type
   { TQtWSCustomStaticText }
 
   TQtWSCustomStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
@@ -292,9 +252,7 @@ type
   { TQtWSStaticText }
 
   TQtWSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
+  published
   end;
 
 

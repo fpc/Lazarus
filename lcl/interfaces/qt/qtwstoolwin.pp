@@ -42,9 +42,7 @@ type
   { TQtWSToolWindow }
 
   TQtWSToolWindow = class(TWSToolWindow)
-  private
-  protected
-  public
+  published
   end;
 
 

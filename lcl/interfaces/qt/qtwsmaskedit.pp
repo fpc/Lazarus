@@ -42,17 +42,13 @@ type
   { TQtWSCustomMaskEdit }
 
   TQtWSCustomMaskEdit = class(TWSCustomMaskEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSMaskEdit }
 
   TQtWSMaskEdit = class(TWSMaskEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

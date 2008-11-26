@@ -42,17 +42,13 @@ type
   { TQtWSCustomFileListBox }
 
   TQtWSCustomFileListBox = class(TWSCustomFileListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSFileListBox }
 
   TQtWSFileListBox = class(TWSFileListBox)
-  private
-  protected
-  public
+  published
   end;
 
 

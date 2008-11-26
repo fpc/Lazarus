@@ -45,7 +45,7 @@ type
   private
   protected
     class function GetDialogParent(const ACommonDialog: TCommonDialog): QWidgetH;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
@@ -58,7 +58,7 @@ type
   protected
     class function GetQtFilterString(const AFileDialog: TFileDialog): WideString;
     class procedure UpdateProperties(const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -66,26 +66,21 @@ type
   { TQtWSOpenDialog }
 
   TQtWSOpenDialog = class(TWSOpenDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSSaveDialog }
 
   TQtWSSaveDialog = class(TWSSaveDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSSelectDirectoryDialog }
 
   TQtWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
-  private
   protected
     class procedure UpdateProperties(const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -93,9 +88,7 @@ type
   { TQtWSColorDialog }
 
   TQtWSColorDialog = class(TWSColorDialog)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -103,17 +96,13 @@ type
   { TQtWSColorButton }
 
   TQtWSColorButton = class(TWSColorButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSFontDialog }
 
   TQtWSFontDialog = class(TWSFontDialog)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;

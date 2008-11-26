@@ -42,33 +42,25 @@ type
   { TQtWSStringCellEditor }
 
   TQtWSStringCellEditor = class(TWSStringCellEditor)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomGrid }
 
   TQtWSCustomGrid = class(TWSCustomGrid)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDrawGrid }
 
   TQtWSDrawGrid = class(TWSDrawGrid)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSStringGrid }
 
   TQtWSStringGrid = class(TWSStringGrid)
-  private
-  protected
-  public
+  published
   end;
 
 

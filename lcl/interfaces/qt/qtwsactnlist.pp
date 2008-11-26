@@ -42,17 +42,13 @@ type
   { TQtWSCustomActionList }
 
   TQtWSCustomActionList = class(TWSCustomActionList)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSActionList }
 
   TQtWSActionList = class(TWSActionList)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -42,49 +42,37 @@ type
   { TQtWSCustomEditButton }
 
   TQtWSCustomEditButton = class(TWSCustomEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSEditButton }
 
   TQtWSEditButton = class(TWSEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSFileNameEdit }
 
   TQtWSFileNameEdit = class(TWSFileNameEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDirectoryEdit }
 
   TQtWSDirectoryEdit = class(TWSDirectoryEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDateEdit }
 
   TQtWSDateEdit = class(TWSDateEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCalcEdit }
 
   TQtWSCalcEdit = class(TWSCalcEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

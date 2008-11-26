@@ -42,17 +42,13 @@ type
   { TQtWSCustomDbGrid }
 
   TQtWSCustomDbGrid = class(TWSCustomDbGrid)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSdbGrid }
 
   TQtWSdbGrid = class(TWSdbGrid)
-  private
-  protected
-  public
+  published
   end;
 
 

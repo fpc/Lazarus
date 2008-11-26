@@ -57,6 +57,7 @@ type
   { TQtWsCustomRubberBand }
 
   TQtWsCustomRubberBand = class(TWsCustomRubberBand)
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetShape(ARubberBand: TCustomRubberBand; AShape: TRubberBandShape); override;
   end;

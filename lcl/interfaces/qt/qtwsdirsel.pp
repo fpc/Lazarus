@@ -42,9 +42,7 @@ type
   { TQtWSDirSelDlg }
 
   TQtWSDirSelDlg = class(TWSDirSelDlg)
-  private
-  protected
-  public
+  published
   end;
 
 

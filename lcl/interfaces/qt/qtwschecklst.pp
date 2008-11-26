@@ -44,9 +44,7 @@ type
   { TQtWSCustomCheckListBox }
 
   TQtWSCustomCheckListBox = class(TWSCustomCheckListBox)
-  private
-  protected
-  public
+  published
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;

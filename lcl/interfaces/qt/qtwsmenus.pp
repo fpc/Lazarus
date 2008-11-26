@@ -42,10 +42,9 @@ type
   { TQtWSMenuItem }
 
   TQtWSMenuItem = class(TWSMenuItem)
-  private
   protected
     class function CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -62,9 +61,7 @@ type
   { TQtWSMenu }
 
   TQtWSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
@@ -72,17 +69,13 @@ type
   { TQtWSMainMenu }
 
   TQtWSMainMenu = class(TWSMainMenu)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSPopupMenu }
 
   TQtWSPopupMenu = class(TWSPopupMenu)
-  private
-  protected
-  public
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
