@@ -144,6 +144,7 @@ procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string);
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
+function TranslateUnitResourceStrings(const ResUnitName:string; po: TPOFile): boolean;
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
 function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
@@ -341,53 +342,59 @@ end;
 
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
-var
+var po: TPOFile;
+begin
+  //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
+  if (ResUnitName='') or (AFilename='') or (not FileExistsUTF8(AFilename)) then
+    exit;
+  result:=false;
+  po:=nil;
+  try
+    po:=TPOFile.Create(AFilename);
+    result:=TranslateUnitResourceStrings(ResUnitName,TPOFile.Create(AFilename));
+  finally
+    po.free;
+  end;
+end;
+
+function TranslateUnitResourceStrings(const ResUnitName: string; po: TPOFile
+  ): boolean;
 {$ifdef ver2_0}
+var
   TableID, StringID, TableCount: Integer;
   s: String;
   DefValue: String;
 {$endif ver2_0}
-  po: TPOFile;
 begin
   Result:=false;
-  //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
-  if (ResUnitName='') or (AFilename='') or (not FileExistsUTF8(AFilename)) then
-    exit;
   try
-    po := nil;
-    // read .po file
-    po := TPOFile.Create(AFilename);
-    try
 {$ifdef ver2_0}
-      for TableID:=0 to ResourceStringTableCount - 1 do begin
-        TableCount := ResourceStringCount(TableID);
+    for TableID:=0 to ResourceStringTableCount - 1 do begin
+      TableCount := ResourceStringCount(TableID);
 
-        // check if this table belongs to the ResUnitName
-        if TableCount=0 then continue;
-        s:=GetResourceStringName(TableID,0);
-        if CompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
-        then continue;
-        
-        // translate all resource strings of the unit
-        for StringID := 0 to TableCount - 1 do begin
-          DefValue:=GetResourceStringDefaultValue(TableID,StringID);
-          // get UTF8 string
-          s := po.Translate(GetResourceStringName(TableID,StringID),DefValue);
+      // check if this table belongs to the ResUnitName
+      if TableCount=0 then continue;
+      s:=GetResourceStringName(TableID,0);
+      if CompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
+      then continue;
+      
+      // translate all resource strings of the unit
+      for StringID := 0 to TableCount - 1 do begin
+        DefValue:=GetResourceStringDefaultValue(TableID,StringID);
+        // get UTF8 string
+        s := po.Translate(GetResourceStringName(TableID,StringID),DefValue);
 
-          if Length(s) > 0 then begin
-            // convert UTF8 to current local
-            s:=UTF8ToSystemCharSet(s);
-            SetResourceStringValue(TableID,StringID,s);
-          end;
+        if Length(s) > 0 then begin
+          // convert UTF8 to current local
+          s:=UTF8ToSystemCharSet(s);
+          SetResourceStringValue(TableID,StringID,s);
         end;
       end;
-{$else ver2_0}
-      SetUnitResourceStrings(ResUnitName,@Translate,po);
-{$endif ver2_0}
-    finally
-      po.Free;
     end;
-    Result:=true;
+{$else ver2_0}
+    SetUnitResourceStrings(ResUnitName,@Translate,po);
+{$endif ver2_0}
+  Result:=true;
   except
     on e: Exception do begin
       DebugLn('Exception while translating ', ResUnitName);
