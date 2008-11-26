@@ -668,7 +668,6 @@ type
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetRegistered(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
-    procedure SetName(const AValue: string); override;
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetUserReadOnly(const AValue: boolean);
@@ -678,8 +677,10 @@ type
     procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
     procedure UpdateSourceDirectories;
-    procedure VersionChanged(Sender: TObject); override;
     procedure SourceDirectoriesChanged(Sender: TObject);
+  protected
+    procedure SetName(const AValue: string); override;
+    procedure VersionChanged(Sender: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;

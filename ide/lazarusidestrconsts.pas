@@ -3981,6 +3981,10 @@ resourcestring
   lisProductName = 'Product Name:';
   lisProductVersion = 'Product Version:';
   lisSetDefault = 'Set default';
+  lisSelectedLeftNeighbour = '(selected left neighbour)';
+  lisSelectedRightNeighbour = '(selected right neighbour)';
+  lisSelectedTopNeighbour = '(selected top neighbour)';
+  lisSelectedBottomNeighbour = '(selected bottom neighbour)';
 
 implementation
 

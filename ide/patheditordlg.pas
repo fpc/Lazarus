@@ -76,9 +76,9 @@ type
     FCurrentPathEditor: TPathEditorDialog;
     FOnExecuted: TOnPathEditorExecuted;
   protected
-    procedure Click; override;
     procedure DoOnPathEditorExecuted;
   public
+    procedure Click; override;
     property CurrentPathEditor: TPathEditorDialog read FCurrentPathEditor;
     property OnExecuted: TOnPathEditorExecuted
       read FOnExecuted write FOnExecuted;
