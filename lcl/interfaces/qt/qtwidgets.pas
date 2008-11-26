@@ -1038,11 +1038,11 @@ type
     FMenuItem: TMenuItem;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
-    procedure InitializeWidget; override;
     procedure DoPopupClose;
   public
     constructor Create(const AMenuItem: TMenuItem); overload;
     destructor Destroy; override;
+    procedure InitializeWidget; override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;

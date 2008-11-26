@@ -532,8 +532,6 @@ begin
 end;
 
 procedure TQtListStrings.Exchange(AIndex1, AIndex2: Integer);
-var
-  i: Integer;
 begin
   inherited Exchange(AIndex1, AIndex2);
   FOwner.exchangeItems(AIndex1, AIndex2);
