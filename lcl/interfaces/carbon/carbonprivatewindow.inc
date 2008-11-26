@@ -615,10 +615,22 @@ const
               VKKeyChar:=#13;
               UTF8Character:=VKKeyChar;
             end;
+          MK_TILDE: VKKeyCode := VK_OEM_3;
+          MK_MINUS: VKKeyCode := VK_OEM_MINUS;
+          MK_EQUAL: VKKeyCode := VK_OEM_PLUS;
+          MK_BACKSLASH:    VKKeyCode := VK_OEM_5;
+          MK_LEFTBRACKET:  VKKeyCode := VK_OEM_4;
+          MK_RIGHTBRACKET: VKKeyCode := VK_OEM_6;
+          MK_SEMICOLON:    VKKeyCode := VK_OEM_1;
+          MK_QUOTE:  VKKeyCode := VK_OEM_7;
+          MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
+          MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
+          MK_SLASH:  VKKeyCode := VK_OEM_2;
         end;
       end;
 
-      if VKKeyCode=VK_UNKNOWN then begin
+      if VKKeyCode=VK_UNKNOWN then
+      begin
         // There is no known VK_ code for this characther. Use a dummy keycode
         // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
         // triggered by LCL.

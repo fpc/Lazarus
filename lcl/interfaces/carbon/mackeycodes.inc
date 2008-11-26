@@ -79,4 +79,15 @@ const
   MK_ALT       = $3A; MK_OPTION = MK_ALT;
   MK_COMMAND   = $37; MK_APPLE  = MK_COMMAND;
 
+  MK_TILDE        = 50; // `/~ key
+  MK_MINUS        = 27; // -/_ key
+  MK_EQUAL        = 24; // =/+ key
+  MK_BACKSLASH    = 42; // \ | key
+  MK_LEFTBRACKET  = 33; // [ { key
+  MK_RIGHTBRACKET = 30; // ] } key
+  MK_SEMICOLON    = 41; // ; : key
+  MK_QUOTE        = 39; // ' " key
+  MK_COMMA        = 43; // , < key
+  MK_PERIOD       = 47; // . > key
+  MK_SLASH        = 44; // / ? key
 
