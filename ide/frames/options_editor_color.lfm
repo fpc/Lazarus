@@ -4,8 +4,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientHeight = 577
   ClientWidth = 531
   Visible = False
-  DesignLeft = 176
-  DesignTop = 232
+  DesignLeft = 536
+  DesignTop = 283
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -66,7 +66,29 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Caption = 'LanguageLabel'
     ParentColor = False
   end
-  object LanguageComboBox: TComboBox[3]
+  object BracketLabel: TLabel[3]
+    AnchorSideLeft.Control = BracketCombo
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = BracketCombo
+    AnchorSideBottom.Side = asrCenter
+    Left = 426
+    Height = 14
+    Top = 27
+    Width = 62
+    HelpContext = 0
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 6
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Caption = 'BracketLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object LanguageComboBox: TComboBox[4]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
@@ -91,7 +113,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     TabOrder = 0
     Text = 'LanguageComboBox'
   end
-  object ColorSchemeComboBox: TComboBox[4]
+  object ColorSchemeComboBox: TComboBox[5]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
@@ -117,7 +139,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     TabOrder = 1
     Text = 'ColorSchemeComboBox'
   end
-  object FileExtensionsComboBox: TComboBox[5]
+  object FileExtensionsComboBox: TComboBox[6]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ColorSchemeComboBox
     AnchorSideTop.Side = asrBottom
@@ -147,21 +169,20 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnKeyDown = ComboBoxOnKeyDown
     TabOrder = 2
   end
-  object SetAllAttributesToDefaultButton: TButton[6]
+  object SetAllAttributesToDefaultButton: TButton[7]
     AnchorSideLeft.Control = FileExtensionsLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = UseSyntaxHighlightCheckBox
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = FileExtensionsComboBox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 330
+    Left = 320
     Height = 25
-    Top = 25
-    Width = 201
+    Top = 48
+    Width = 211
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 30
-    BorderSpacing.Top = 6
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 0
     BorderSpacing.Right = 0
     BorderSpacing.Bottom = 0
     BorderSpacing.Around = 0
@@ -171,7 +192,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnClick = SetAllAttributesToDefaultButtonClick
     TabOrder = 3
   end
-  object ElementAttributesGroupBox: TGroupBox[7]
+  object ElementAttributesGroupBox: TGroupBox[8]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FileExtensionsComboBox
     AnchorSideTop.Side = asrBottom
@@ -180,7 +201,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = ColorElementListBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 256
+    Height = 244
     Top = 75
     Width = 531
     HelpContext = 0
@@ -189,8 +210,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     BorderSpacing.Left = 0
     BorderSpacing.Top = 6
     BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
+    BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
+    BorderSpacing.InnerBorder = 6
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'Attributes'
@@ -199,7 +221,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 238
+    ClientHeight = 226
     ClientWidth = 527
     Ctl3D = False
     TabOrder = 4
@@ -269,7 +291,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = TextItalicCheckBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 226
+      Height = 214
       Top = 6
       Width = 200
       HelpContext = 0
@@ -391,11 +413,11 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 163
       Width = 140
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       BorderSpacing.Right = 0
       BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 0
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextUnderlineCheckBox'
@@ -410,14 +432,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 212
       Height = 19
-      Top = 188
+      Top = 182
       Width = 115
       HelpContext = 0
-      BorderSpacing.Left = 0
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
       BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 0
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextBoldCheckBox'
@@ -432,14 +454,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 212
       Height = 19
-      Top = 213
+      Top = 201
       Width = 118
       HelpContext = 0
       BorderSpacing.Left = 0
       BorderSpacing.Top = 0
       BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
+      BorderSpacing.Bottom = 6
+      BorderSpacing.Around = 0
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'TextItalicCheckBox'
@@ -550,7 +572,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 377
       Height = 19
-      Top = 188
+      Top = 182
       Width = 144
       HelpContext = 0
       Anchors = [akTop, akRight]
@@ -647,7 +669,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 377
       Height = 19
-      Top = 213
+      Top = 201
       Width = 144
       HelpContext = 0
       Anchors = [akTop, akRight]
@@ -811,7 +833,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       UseOnChange = False
     end
   end
-  object ColorPreview: TSynEdit[8]
+  object ColorPreview: TSynEdit[9]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ElementAttributesGroupBox
     AnchorSideTop.Side = asrBottom
@@ -820,8 +842,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 240
-    Top = 337
+    Height = 252
+    Top = 325
     Width = 531
     HelpContext = 0
     BorderSpacing.Left = 0
@@ -1171,13 +1193,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       'ColorPreview'
     )
     SelectedColor.OnChange = nil
+    BracketHighlightStyle = sbhsBoth
   end
-  object UseSyntaxHighlightCheckBox: TCheckBox[9]
+  object UseSyntaxHighlightCheckBox: TCheckBox[10]
     AnchorSideLeft.Control = SetAllAttributesToDefaultButton
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 330
+    Left = 320
     Height = 19
     Top = 0
     Width = 166
@@ -1193,5 +1216,32 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnChange = GeneralCheckBoxOnChange
     TabOrder = 6
     UseOnChange = False
+  end
+  object BracketCombo: TComboBox[11]
+    AnchorSideLeft.Control = UseSyntaxHighlightCheckBox
+    AnchorSideTop.Control = ColorSchemeComboBox
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 320
+    Height = 21
+    Top = 24
+    Width = 100
+    HelpContext = 0
+    AutoComplete = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Ctl3D = False
+    ItemHeight = 13
+    ItemWidth = 0
+    OnChange = ComboBoxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboBoxOnKeyDown
+    Style = csDropDownList
+    TabOrder = 7
   end
 end

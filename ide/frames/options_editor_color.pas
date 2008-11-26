@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
   Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, options_editor_general,
-  IDEProcs, ColorBox;
+  IDEProcs, ColorBox, SynEditMarkupBracket;
 
 type
 
@@ -36,6 +36,8 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
+    BracketCombo: TComboBox;
+    BracketLabel: TLabel;
     FrameColorBox: TColorBox;
     BackGroundLabel: TLabel;
     FrameColorLabel: TLabel;
@@ -336,6 +338,7 @@ begin
   end
   else
   if Sender = LanguageComboBox then
+  begin
     if Box.Items.IndexOf(Box.Text) < 0 then
       SetComboBoxText(Box, PreviewSyn.LanguageName)// unknown language -> switch back
     else
@@ -370,6 +373,23 @@ begin
         InvalidatePreviews;
       end;
     end;
+  end
+  else
+  if Sender = BracketCombo then
+  begin
+    with GeneralPage do
+      for a := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[a] <> nil then
+        begin
+          if BracketCombo.ItemIndex = 0 then
+            PreviewEdits[a].Options := PreviewEdits[a].Options - [eoBracketHighlight]
+          else
+          begin
+            PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
+            PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+          end;
+        end;
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
@@ -772,6 +792,12 @@ begin
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
 
+  BracketLabel.Caption := dlgBracketHighlight;
+  BracketCombo.Items.Add(dlgNoBracketHighlight);
+  BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
+  BracketCombo.Items.Add(dlgHighlightRightOfCursor);
+  BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
+
   with GeneralPage do
   begin
     SetLength(PreviewEdits, Length(PreviewEdits) + 1);
@@ -796,6 +822,10 @@ begin
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlightCheckBox.Checked := UseSyntaxHighlight;
+    if eoBracketHighlight in SynEditOptions then
+      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
+    else
+      BracketCombo.ItemIndex := 0;
 
     with LanguageComboBox do
       with Items do
@@ -833,6 +863,7 @@ begin
     SetComboBoxText(LanguageComboBox, LanguageComboBox.Text);
     ColorSchemeComboBox.Text := GetCurColorScheme(PreviewSyn.LanguageName);
     SetComboBoxText(ColorSchemeComboBox, ColorSchemeComboBox.Text);
+
     FillColorElementListBox;
     FindCurHighlightElement;
     ShowCurAttribute;
@@ -848,6 +879,15 @@ begin
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Checked;
+
+    if BracketCombo.ItemIndex = 0 then
+      SynEditOptions := SynEditOptions - [eoBracketHighlight]
+    else
+    begin
+      SynEditOptions := SynEditOptions + [eoBracketHighlight];
+      BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+    end;
+
     if FFileExtensions <> nil then
     begin
       for i := 0 to FFileExtensions.Count - 1 do

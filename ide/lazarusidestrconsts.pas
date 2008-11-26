@@ -1074,6 +1074,7 @@ resourcestring
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
+  dlgEdMisc = 'Misc';
   dlgEdDisplay = 'Display';
   lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
@@ -1103,6 +1104,8 @@ resourcestring
   dlgUndoGroupOptions = 'Undo options:';
   dlgScrollGroupOptions = 'Scroll options:';
   dlgIndentsTabsGroupOptions = 'Indents/Tabs options:';
+  dlgMouseGroupOptions = 'Mouse options:';
+  dlgCursorGroupOptions = 'Cursor options:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
   dlgDragDropEd = 'Drag Drop editing';
@@ -1132,7 +1135,7 @@ resourcestring
   dlgUseCodeFolding = 'Code folding';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
-  dlgBracketHighlight = 'Bracket highlight style';
+  dlgBracketHighlight = 'Bracket highlight';
   dlgNoBracketHighlight = 'No Highlight';
   dlgHighlightLeftOfCursor = 'Left Of Cursor';
   dlgHighlightRightOfCursor = 'Right Of Cursor';

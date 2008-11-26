@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
-  StdCtrls, SynEdit, SynEditMarkupBracket, Controls, ExtCtrls,
+  StdCtrls, SynEdit, Controls, ExtCtrls,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -37,11 +37,23 @@ type
     Bevel1: TBevel;
     Bevel2: TBevel;
     Bevel3: TBevel;
+    Bevel4: TBevel;
+    Bevel5: TBevel;
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
-    BracketLabel: TLabel;
-    BracketCombo: TComboBox;
     AutoIndentCheckBox: TCheckBox;
+    KeepCursorXCheckBox: TCheckBox;
+    PersistentCursorCheckBox: TCheckBox;
+    AlwaysVisibleCursorCheckBox: TCheckBox;
+    CursorSkipsSelectionCheckBox: TCheckBox;
+    RightMouseMovesCursorCheckBox: TCheckBox;
+    HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
+    DoubleClickLineCheckBox: TCheckBox;
+    CursorGroupLabel: TLabel;
+    MouseLinksCheckBox: TCheckBox;
+    DragDropEdCheckBox: TCheckBox;
+    DropFilesCheckBox: TCheckBox;
+    MouseGroupLabel: TLabel;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
     TabsToSpacesCheckBox: TCheckBox;
@@ -52,21 +64,29 @@ type
     UndoGroupLabel: TLabel;
     UndoAfterSaveCheckBox: TCheckBox;
     GroupUndoCheckBox: TCheckBox;
-    EditorOptionsGroupBox: TCheckGroup;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
     ScrollGroupLabel: TLabel;
     IndentsTabsGroupLabel: TLabel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
+    procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
+    procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
+    procedure DoubleClickLineCheckBoxChange(Sender: TObject);
+    procedure DragDropEdCheckBoxChange(Sender: TObject);
+    procedure DropFilesCheckBoxChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure GroupUndoCheckBoxChange(Sender: TObject);
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
+    procedure HomeKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
+    procedure KeepCursorXCheckBoxChange(Sender: TObject);
+    procedure MouseLinksCheckBoxChange(Sender: TObject);
+    procedure PersistentCursorCheckBoxChange(Sender: TObject);
+    procedure RightMouseMovesCursorCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
@@ -75,8 +95,8 @@ type
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
   public
     PreviewEdits: array of TPreviewEditor;
-    procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption);
-    procedure SetPreviewOption2(AValue: Boolean; AnOption: TSynEditorOption2);
+    procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
+    procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
 
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
@@ -97,43 +117,6 @@ end;
 
 procedure TEditorGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  EditorOptionsGroupBox.Caption := lismenueditoroptions;
-  with EditorOptionsGroupBox do
-  begin
-    // selections
-    Items.Add(dlgAltSetClMode);
-    // visual effects
-    Items.Add(dlgShowGutterHints);
-    //Items.Add(dlgShowScrollHint);
-    Items.Add(lisShowSpecialCharacters);
-    //Items.Add(dlgUseSyntaxHighlight);
-    // drag&drop
-    Items.Add(dlgDragDropEd);
-    Items.Add(dlgDropFiles);
-    // caret + scrolling + key navigation
-    Items.Add(dlgKeepCursorX);
-    Items.Add(dlgPersistentCursor);
-    Items.Add(dlgCursorSkipsSelection);
-    Items.Add(dlgRightMouseMovesCursor);
-    Items.Add(dlgHomeKeyJumpsToNearestStart);
-    Items.Add(dlgAlwaysVisibleCursor);
-    // spaces
-    Items.Add(dlgTrimTrailingSpaces);
-    // mouse
-    Items.Add(dlgDoubleClickLine);
-    Items.Add(dlgMouseLinks);
-    Items.Add(dlgCloseButtonsNotebook);
-    // copying
-    Items.Add(dlgFindTextatCursor);
-    Items.Add(dlgCopyWordAtCursorOnCopyNone);
-  end;
-
-  BracketCombo.Items.Add(dlgNoBracketHighlight);
-  BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
-  BracketCombo.Items.Add(dlgHighlightRightOfCursor);
-  BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
-
-  BracketLabel.Caption := dlgBracketHighlight;
   BlockIndentLabel.Caption := dlgBlockIndent;
   TabWidthsLabel.Caption := dlgTabWidths;
 
@@ -156,6 +139,22 @@ begin
   TabIndentBlocksCheckBox.Caption := dlgTabIndent;
   SmartTabsCheckBox.Caption := dlgSmartTabs;
   TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
+
+  // mouse, drag&drop
+  MouseGroupLabel.Caption := dlgMouseGroupOptions;
+  DoubleClickLineCheckBox.Caption := dlgDoubleClickLine;
+  MouseLinksCheckBox.Caption := dlgMouseLinks;
+  DragDropEdCheckBox.Caption := dlgDragDropEd;
+  DropFilesCheckBox.Caption := dlgDropFiles;
+
+  // caret + key navigation
+  CursorGroupLabel.Caption := dlgCursorGroupOptions;
+  KeepCursorXCheckBox.Caption := dlgKeepCursorX;
+  PersistentCursorCheckBox.Caption := dlgPersistentCursor;
+  AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
+  CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
+  RightMouseMovesCursorCheckBox.Caption := dlgRightMouseMovesCursor;
+  HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -164,34 +163,6 @@ var
 begin
   with AOptions as TEditorOptions do
   begin
-    with EditorOptionsGroupBox do
-    begin
-      Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in SynEditOptions;
-      Checked[Items.IndexOf(dlgDragDropEd)] := eoDragDropEditing in SynEditOptions;
-      Checked[Items.IndexOf(dlgDropFiles)]    := eoDropFiles in SynEditOptions;
-      Checked[Items.IndexOf(dlgKeepCursorX)] := eoKeepCaretX in SynEditOptions;
-      Checked[Items.IndexOf(dlgPersistentCursor)] := eoPersistentCaret in SynEditOptions;
-      Checked[Items.IndexOf(dlgRightMouseMovesCursor)] := eoRightMouseMovesCursor in SynEditOptions;
-      Checked[Items.IndexOf(lisShowSpecialCharacters)] := eoShowSpecialChars in SynEditOptions;
-      Checked[Items.IndexOf(dlgTrimTrailingSpaces)] := eoTrimTrailingSpaces in SynEditOptions;
-      Checked[Items.IndexOf(dlgDoubleClickLine)] := eoDoubleClickSelectsLine in SynEditOptions;
-      Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] := eoEnhanceHomeKey in SynEditOptions;
-      Checked[Items.IndexOf(dlgCursorSkipsSelection)] := eoCaretSkipsSelection in SynEditOptions2;
-      Checked[Items.IndexOf(dlgAlwaysVisibleCursor)] := eoAlwaysVisibleCaret in SynEditOptions2;
-
-      Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := ShowTabCloseButtons;
-      Checked[Items.IndexOf(dlgMouseLinks)]   := CtrlMouseLinks;
-      Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
-      Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
-      //Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := UseSyntaxHighlight;
-      Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
-    end;
-
-    if eoBracketHighlight in SynEditOptions then
-      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
-    else
-      BracketCombo.ItemIndex := 0;
-
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent));
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth));
 
@@ -212,6 +183,20 @@ begin
     SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
     TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
 
+    // mouse
+    DoubleClickLineCheckBox.Checked := eoDoubleClickSelectsLine in SynEditOptions;
+    MouseLinksCheckBox.Checked := CtrlMouseLinks;
+    DragDropEdCheckBox.Checked := eoDragDropEditing in SynEditOptions;
+    DropFilesCheckBox.Checked := eoDropFiles in SynEditOptions;
+
+    // cursor
+    KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
+    PersistentCursorCheckBox.Checked := eoPersistentCaret in SynEditOptions;
+    AlwaysVisibleCursorCheckBox.Checked := eoAlwaysVisibleCaret in SynEditOptions2;
+    CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
+    RightMouseMovesCursorCheckBox.Checked := eoRightMouseMovesCursor in SynEditOptions;
+    HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
+
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
         GetSynEditPreviewSettings(PreviewEdits[i]);
@@ -220,7 +205,7 @@ end;
 
 procedure TEditorGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
-  procedure UpdateOptionFromBool(AValue: Boolean; AnOption: TSynEditorOption);
+  procedure UpdateOptionFromBool(AValue: Boolean; AnOption: TSynEditorOption); overload;
   begin
     if AValue then
       TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions + [AnOption]
@@ -228,23 +213,12 @@ procedure TEditorGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions
       TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [AnOption];
   end;
 
-  procedure UpdateOption(const CheckBoxName: String; AnOption: TSynEditorOption);
-  var
-    i: integer;
+  procedure UpdateOptionFromBool(AValue: Boolean; AnOption: TSynEditorOption2); overload;
   begin
-    i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-    UpdateOptionFromBool(EditorOptionsGroupBox.Checked[i], AnOption);
-  end;
-
-  procedure UpdateOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
-  var
-    i: integer;
-  begin
-      i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-      if EditorOptionsGroupBox.Checked[i] then
-        TEditorOptions(AOptions).SynEditOptions2 := TEditorOptions(AOptions).SynEditOptions2 + [AnOption]
-      else
-        TEditorOptions(AOptions).SynEditOptions2 := TEditorOptions(AOptions).SynEditOptions2 - [AnOption];
+    if AValue then
+      TEditorOptions(AOptions).SynEditOptions2 := TEditorOptions(AOptions).SynEditOptions2 + [AnOption]
+    else
+      TEditorOptions(AOptions).SynEditOptions2 := TEditorOptions(AOptions).SynEditOptions2 - [AnOption];
   end;
 
 var
@@ -252,41 +226,6 @@ var
 begin
   with AOptions as TEditorOptions do
   begin
-    UpdateOption(dlgAltSetClMode, eoAltSetsColumnMode);
-    UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
-    UpdateOption(dlgDragDropEd, eoDragDropEditing);
-    UpdateOption(dlgDropFiles, eoDropFiles);
-    UpdateOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
-    UpdateOption(dlgKeepCursorX, eoKeepCaretX);
-    UpdateOption(dlgPersistentCursor, eoPersistentCaret);
-    UpdateOption(dlgRightMouseMovesCursor, eoRightMouseMovesCursor);
-    UpdateOption(lisShowSpecialCharacters, eoShowSpecialChars);
-    UpdateOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
-    UpdateOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
-    UpdateOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
-    UpdateOption2(dlgCursorSkipsSelection, eoCaretSkipsSelection);
-    UpdateOption2(dlgAlwaysVisibleCursor, eoAlwaysVisibleCaret);
-
-    ShowTabCloseButtons := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCloseButtonsNotebook);
-    CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
-    ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
-    FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
-    //UseSyntaxHighlight := CheckGroupItemChecked(EditorOptionsGroupBox, dlgUseSyntaxHighlight);
-    CtrlMouseLinks := CheckGroupItemChecked(EditorOptionsGroupBox, dlgMouseLinks);
-
-    if BracketCombo.ItemIndex = 0 then
-      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [eoBracketHighlight]
-    else
-    begin
-      TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions + [eoBracketHighlight];
-      TEditorOptions(AOptions).BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
-    end;
-
-    if eoBracketHighlight in SynEditOptions then
-      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
-    else
-      BracketCombo.ItemIndex := 0;
-
     // undo
     UndoAfterSave := UndoAfterSaveCheckBox.Checked;
     UpdateOptionFromBool(GroupUndoCheckBox.Checked, eoGroupUndo);
@@ -322,6 +261,20 @@ begin
     if i > 20 then
       i := 20;
     BlockIndent := i;
+
+    // mouse
+    UpdateOptionFromBool(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
+    CtrlMouseLinks := MouseLinksCheckBox.Checked;
+    UpdateOptionFromBool(DragDropEdCheckBox.Checked, eoDragDropEditing);
+    UpdateOptionFromBool(DropFilesCheckBox.Checked, eoDropFiles);
+
+    // cursor
+    UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
+    UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
+    UpdateOptionFromBool(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
+    UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
+    UpdateOptionFromBool(RightMouseMovesCursorCheckBox.Checked, eoRightMouseMovesCursor);
+    UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
   end;
 end;
 
@@ -344,7 +297,7 @@ begin
   end;
 end;
 
-procedure TEditorGeneralOptionsFrame.SetPreviewOption2(AValue: Boolean; AnOption: TSynEditorOption2);
+procedure TEditorGeneralOptionsFrame.SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2);
 var
   a: Integer;
 begin
@@ -356,48 +309,6 @@ begin
       else
         PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
   end;
-end;
-
-procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
-  Sender: TObject; Index: integer);
-
-  procedure SetOption(const CheckBoxName: String; AnOption: TSynEditorOption);
-  var
-    i: LongInt;
-  begin
-    i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-    if i < 0 then
-      Exit;
-
-    SetPreviewOption(EditorOptionsGroupBox.Checked[i], AnOption);
-  end;
-
-  procedure SetOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
-  var
-    i: LongInt;
-  begin
-    i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-    if i < 0 then
-      Exit;
-    SetPreviewOption2(EditorOptionsGroupBox.Checked[i], AnOption);
-  end;
-
-begin
-  SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
-  SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
-  SetOption(dlgDragDropEd, eoDragDropEditing);
-  SetOption(dlgDropFiles, eoDropFiles);
-  SetOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
-  SetOption(dlgKeepCursorX, eoKeepCaretX);
-  SetOption(dlgPersistentCursor, eoPersistentCaret);
-  SetOption(dlgRightMouseMovesCursor, eoRightMouseMovesCursor);
-  // not for Preview: SetOption('NoSelectionCheckBox',eoNoSelection);
-  SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
-  //SetOption(dlgShowScrollHint, eoShowScrollHint);
-  SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
-
-  SetOption2(dlgCursorSkipsSelection, eoCaretSkipsSelection);
-  SetOption2(dlgAlwaysVisibleCursor, eoAlwaysVisibleCaret);
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboboxOnChange(Sender: TObject);
@@ -413,11 +324,39 @@ begin
   SetPreviewOption(AutoIndentCheckBox.Checked, eoAutoIndent);
 end;
 
+procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
+end;
+
 procedure TEditorGeneralOptionsFrame.ComboboxOnKeyDown(
   Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
+end;
+
+procedure TEditorGeneralOptionsFrame.CursorSkipsSelectionCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
+end;
+
+procedure TEditorGeneralOptionsFrame.DoubleClickLineCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
+end;
+
+procedure TEditorGeneralOptionsFrame.DragDropEdCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(DragDropEdCheckBox.Checked, eoDragDropEditing);
+end;
+
+procedure TEditorGeneralOptionsFrame.DropFilesCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(DropFilesCheckBox.Checked, eoDropFiles);
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboBoxOnExit(Sender: TObject);
@@ -441,21 +380,6 @@ begin
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].TabWidth := NewVal;
   end
-  else
-  if Sender = BracketCombo then
-  begin
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-      begin
-        if BracketCombo.ItemIndex = 0 then
-          PreviewEdits[a].Options := PreviewEdits[a].Options - [eoBracketHighlight]
-        else
-        begin
-          PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
-          PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
-        end;
-      end;
-  end;
 end;
 
 procedure TEditorGeneralOptionsFrame.GroupUndoCheckBoxChange(Sender: TObject);
@@ -467,6 +391,34 @@ procedure TEditorGeneralOptionsFrame.HalfPageScrollCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(HalfPageScrollCheckBox.Checked, eoHalfPageScroll);
+end;
+
+procedure TEditorGeneralOptionsFrame.HomeKeyJumpsToNearestStartCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
+end;
+
+procedure TEditorGeneralOptionsFrame.KeepCursorXCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(KeepCursorXCheckBox.Checked, eoKeepCaretX);
+end;
+
+procedure TEditorGeneralOptionsFrame.MouseLinksCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(HalfPageScrollCheckBox.Checked, eoShowCtrlMouseLinks);
+end;
+
+procedure TEditorGeneralOptionsFrame.PersistentCursorCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(PersistentCursorCheckBox.Checked, eoPersistentCaret);
+end;
+
+procedure TEditorGeneralOptionsFrame.RightMouseMovesCursorCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(RightMouseMovesCursorCheckBox.Checked, eoRightMouseMovesCursor);
 end;
 
 procedure TEditorGeneralOptionsFrame.ScrollByOneLessCheckBoxChange(
