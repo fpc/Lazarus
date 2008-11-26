@@ -341,16 +341,26 @@ begin
   ecGotoMarker7: SetResult2(VK_7,[ssCtrl],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_7,[]);
   ecGotoMarker8: SetResult2(VK_8,[ssCtrl],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_8,[]);
   ecGotoMarker9: SetResult2(VK_9,[ssCtrl],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_9,[]);
-  ecSetMarker0: SetResult2(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_0,[]);
-  ecSetMarker1: SetResult2(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_1,[]);
-  ecSetMarker2: SetResult2(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_2,[]);
-  ecSetMarker3: SetResult2(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_3,[]);
-  ecSetMarker4: SetResult2(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_4,[]);
-  ecSetMarker5: SetResult2(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_5,[]);
-  ecSetMarker6: SetResult2(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_6,[]);
-  ecSetMarker7: SetResult2(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_7,[]);
-  ecSetMarker8: SetResult2(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_8,[]);
-  ecSetMarker9: SetResult2(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_9,[]);
+  ecToggleMarker0: SetResult2(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_0,[]);
+  ecToggleMarker1: SetResult2(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_1,[]);
+  ecToggleMarker2: SetResult2(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_2,[]);
+  ecToggleMarker3: SetResult2(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_3,[]);
+  ecToggleMarker4: SetResult2(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_4,[]);
+  ecToggleMarker5: SetResult2(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_5,[]);
+  ecToggleMarker6: SetResult2(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_6,[]);
+  ecToggleMarker7: SetResult2(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_7,[]);
+  ecToggleMarker8: SetResult2(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_8,[]);
+  ecToggleMarker9: SetResult2(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_9,[]);
+  ecSetMarker0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker1: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker2: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker3: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker4: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker5: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker6: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker7: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker8: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // codetools
   ecAutoCompletion: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[]);
@@ -538,7 +548,7 @@ end;
 
 procedure GetDefaultKeyForClassicScheme(Command: word;
   var TheKeyA, TheKeyB: TIDEShortCut);
-  
+
   procedure SetResult(
     NewKey1A: word; NewShift1A: TShiftState;
     NewKey1B: word; NewShift1B: TShiftState;
@@ -680,16 +690,8 @@ begin
   ecGotoMarker7: SetResult(VK_Q,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker8: SetResult(VK_Q,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker9: SetResult(VK_Q,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker0: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker1: SetResult(VK_K,[ssCtrl],VK_1,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker2: SetResult(VK_K,[ssCtrl],VK_2,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker3: SetResult(VK_K,[ssCtrl],VK_3,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker4: SetResult(VK_K,[ssCtrl],VK_4,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker5: SetResult(VK_K,[ssCtrl],VK_5,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker6: SetResult(VK_K,[ssCtrl],VK_6,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker7: SetResult(VK_K,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker8: SetResult(VK_K,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker9: SetResult(VK_K,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker0..ecSetMarker9: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker0..ecToggleMarker9: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // codetools
   ecAutoCompletion: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1066,7 +1068,7 @@ procedure GetDefaultKeyForMacOSXScheme(Command: word; var TheKeyA, TheKeyB: TIDE
     TheKeyA:=IDEShortCut(NewKeyA, NewShiftA, VK_UNKNOWN, []);
     TheKeyB:=IDEShortCut(NewKeyB, NewShiftB, VK_UNKNOWN, []);
   end;
-  
+
   procedure SetResult2(
     NewKey1A: word; NewShift1A: TShiftState;
     NewKey1B: word; NewShift1B: TShiftState;
@@ -1198,16 +1200,17 @@ begin
   ecGotoMarker7: SetResult(VK_7,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker8: SetResult(VK_8,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker9: SetResult(VK_9,[ssCtrl],VK_UNKNOWN,[]);
-  ecSetMarker0: SetResult2(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_0,[]);
-  ecSetMarker1: SetResult2(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_1,[]);
-  ecSetMarker2: SetResult2(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_2,[]);
-  ecSetMarker3: SetResult2(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_3,[]);
-  ecSetMarker4: SetResult2(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_4,[]);
-  ecSetMarker5: SetResult2(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_5,[]);
-  ecSetMarker6: SetResult2(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_6,[]);
-  ecSetMarker7: SetResult2(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_7,[]);
-  ecSetMarker8: SetResult2(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_8,[]);
-  ecSetMarker9: SetResult2(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_9,[]);
+  ecToggleMarker0: SetResult2(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_0,[]);
+  ecToggleMarker1: SetResult2(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_1,[]);
+  ecToggleMarker2: SetResult2(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_2,[]);
+  ecToggleMarker3: SetResult2(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_3,[]);
+  ecToggleMarker4: SetResult2(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_4,[]);
+  ecToggleMarker5: SetResult2(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_5,[]);
+  ecToggleMarker6: SetResult2(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_6,[]);
+  ecToggleMarker7: SetResult2(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_7,[]);
+  ecToggleMarker8: SetResult2(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_8,[]);
+  ecToggleMarker9: SetResult2(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_9,[]);
+  ecSetMarker0..ecSetMarker9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // codetools
   ecAutoCompletion: SetResult(VK_J,[ssMeta],VK_UNKNOWN,[]);
@@ -1564,6 +1567,8 @@ begin
     ecGotoMarker9             : Result:= Format(srkmecGotoMarker,[cmd-ecGotoMarker0]);
     ecSetMarker0 ..
     ecSetMarker9              : Result:= Format(srkmecSetMarker,[cmd-ecSetMarker0]);
+    ecToggleMarker0 ..
+    ecToggleMarker9           : Result:= Format(srkmecToggleMarker,[cmd-ecToggleMarker0]);
 
     // sourcenotebook
     ecJumpToEditor            : Result:= srkmecJumpToEditor;
@@ -1597,7 +1602,7 @@ begin
     ecCleanDirectory          : Result:= lisMenuCleanDirectory;
     ecRestart                 : Result:= lisMenuRestart;
     ecQuit                    : Result:= lisMenuQuit;
-    
+
     // edit menu
     ecSelectionUpperCase      : Result:= lismenuuppercaseselection;
     ecSelectionLowerCase      : Result:= lismenulowercaseselection;
@@ -1795,7 +1800,7 @@ var
   a,b:integer;
   Key1: TKeyCommandRelation;
   Key2: TKeyCommandRelation;
-  
+
   procedure Add(const s: string);
   begin
     debugln(s);
@@ -1832,7 +1837,7 @@ var
       end;
     end;
   end;
-  
+
 begin
   Result:=0;
   Index1:=0;
@@ -2100,6 +2105,16 @@ begin
   AddDefault(C, 'Set marker 7', lisKMSetMarker7, ecSetMarker7);
   AddDefault(C, 'Set marker 8', lisKMSetMarker8, ecSetMarker8);
   AddDefault(C, 'Set marker 9', lisKMSetMarker9, ecSetMarker9);
+  AddDefault(C, 'Toggle marker 0', lisKMToggleMarker0, ecToggleMarker0);
+  AddDefault(C, 'Toggle marker 1', lisKMToggleMarker1, ecToggleMarker1);
+  AddDefault(C, 'Toggle marker 2', lisKMToggleMarker2, ecToggleMarker2);
+  AddDefault(C, 'Toggle marker 3', lisKMToggleMarker3, ecToggleMarker3);
+  AddDefault(C, 'Toggle marker 4', lisKMToggleMarker4, ecToggleMarker4);
+  AddDefault(C, 'Toggle marker 5', lisKMToggleMarker5, ecToggleMarker5);
+  AddDefault(C, 'Toggle marker 6', lisKMToggleMarker6, ecToggleMarker6);
+  AddDefault(C, 'Toggle marker 7', lisKMToggleMarker7, ecToggleMarker7);
+  AddDefault(C, 'Toggle marker 8', lisKMToggleMarker8, ecToggleMarker8);
+  AddDefault(C, 'Toggle marker 9', lisKMToggleMarker9, ecToggleMarker9);
 
   // codetools
   C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEditOnly)];
@@ -2157,7 +2172,7 @@ begin
   AddDefault(C, 'Go to source editor 8', lisKMGoToSourceEditor8, ecGotoEditor8);
   AddDefault(C, 'Go to source editor 9', lisKMGoToSourceEditor9, ecGotoEditor9);
   AddDefault(C, 'Go to source editor 10', lisKMGoToSourceEditor10, ecGotoEditor0);
-  
+
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];
   AddDefault(C, 'New', lisMenuTemplateNew, ecNew);
@@ -2450,7 +2465,7 @@ var
     Result:=0;
     while (p<=length(NewValue)) and (not (NewValue[p] in ['0'..'9']))
       do inc(p);
-    while (p<=length(NewValue)) and (NewValue[p] in ['0'..'9']) 
+    while (p<=length(NewValue)) and (NewValue[p] in ['0'..'9'])
     and (Result<$10000)do begin
       Result:=Result*10+ord(NewValue[p])-ord('0');
       inc(p);
@@ -2481,7 +2496,7 @@ var
       Result:=Result-[ssCtrl]+[ssMeta];
     {$ENDIF}
   end;
-  
+
 // LoadFromXMLConfig
 var
   Key1, Key2: word;
@@ -2701,7 +2716,7 @@ begin
       AddCategory(OtherCategory.Name,OtherCategory.Description,OtherCategory.Scope);
     end;
   end;
-  
+
   // add/assign keys
   for i:=0 to List.Count-1 do begin
     OtherRelation:=List.Relations[i];

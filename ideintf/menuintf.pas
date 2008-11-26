@@ -378,7 +378,7 @@ var
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
-      SrcEditSubMenuSetBookmarks: TIDEMenuSection;
+      SrcEditSubMenuToggleBookmarks: TIDEMenuSection;
     SrcEditSubMenuDebug: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;

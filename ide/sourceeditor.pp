@@ -427,11 +427,10 @@ type
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure BookMarkGotoClicked(Sender: TObject);
-    procedure BookMarkSet(Value: Integer);
-    procedure BookMarkSetFree;
-    procedure BookMarkSetClicked(Sender: TObject);
+    procedure BookMarkSet(Value: Integer; Toggle: boolean = false);
+    procedure BookMarkSetFree;// set a free bookmark
+    procedure BookMarkToggleClicked(Sender: TObject);
     procedure BookmarkSetFreeClicked(Sender: TObject);
-    procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
@@ -952,11 +951,11 @@ begin
                                       'Goto previous Bookmark',uemPrevBookmark, nil, nil, nil, 'menu_search_previous_bookmark');
 
     // register the Set Bookmarks Submenu
-    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
-                                                'Set bookmarks',uemSetBookmark);
-    AParent:=SrcEditSubMenuSetBookmarks;
+    SrcEditSubMenuToggleBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
+                                          'Toggle bookmarks',uemToggleBookmark);
+    AParent:=SrcEditSubMenuToggleBookmarks;
       for I := 0 to 9 do
-        RegisterIDEMenuCommand(AParent,'SetBookmark'+IntToStr(I),
+        RegisterIDEMenuCommand(AParent,'ToggleBookmark'+IntToStr(I),
                                uemBookmarkN+IntToStr(i));
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Set a free Bookmark',uemSetFreeBookmark);
@@ -1488,6 +1487,9 @@ begin
 
   ecSetMarker0..ecSetMarker9:
     TSourceNotebook(FaOwner).BookmarkSet(Command - ecSetMarker0);
+
+  ecToggleMarker0..ecToggleMarker9:
+    TSourceNotebook(FaOwner).BookmarkSet(Command - ecToggleMarker0,true);
 
   end;
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
@@ -4025,10 +4027,10 @@ begin
         TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
       MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
       // set book mark item
-      MarkMenuItem:=SrcEditSubMenuSetBookmarks[BookMarkID];
+      MarkMenuItem:=SrcEditSubMenuToggleBookmarks[BookMarkID];
       if MarkMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
-      MarkMenuItem.Caption:=uemSetBookmark+MarkDesc;
+      MarkMenuItem.Caption:=uemToggleBookmark+MarkDesc;
     end;
 
     // editor layout
@@ -4192,8 +4194,8 @@ begin
   for i:=0 to 9 do begin
     SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i))
                                            .OnClick:=@BookmarkGotoClicked;
-    SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
-                                            .OnClick:=@BookMarkSetClicked;
+    SrcEditSubMenuToggleBookmarks.FindByName('ToggleBookmark'+IntToStr(i))
+                                            .OnClick:=@BookMarkToggleClicked;
   end;
   SrcEditMenuSetFreeBookmark.OnClick:=@BookMarkSetFreeClicked;
   SrcEditMenuNextBookmark.OnClick:=@BookMarkNextClicked;
@@ -5135,13 +5137,13 @@ begin
   {$ENDIF}
 end;
 
-procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
-// popup menu:  set bookmark clicked
+procedure TSourceNotebook.BookMarkToggleClicked(Sender: TObject);
+// popup menu: toggle bookmark clicked
 var
   MenuItem: TIDEMenuItem;
 Begin
   MenuItem := Sender as TIDEMenuItem;
-  BookMarkSet(MenuItem.SectionIndex);
+  BookMarkSet(MenuItem.SectionIndex,true);
 end;
 
 procedure TSourceNotebook.BookmarkSetFreeClicked(Sender: TObject);
@@ -5337,29 +5339,6 @@ begin
     Clipboard.AsText:=ActSE.FileName;
 end;
 
-Procedure TSourceNotebook.BookMarkToggle(Value: Integer);
-var
-  MenuItem: TIDEMenuCommand;
-  ActEdit,AnEdit:TSourceEditor;
-Begin
-  MenuItem := SrcEditSubMenuSetBookmarks.Items[Value] as TIDEMenuCommand;
-  MenuItem.Checked := not MenuItem.Checked;
-  ActEdit:=GetActiveSE;
-
-  AnEdit:=FindBookmark(Value);
-  if AnEdit<>nil then AnEdit.EditorComponent.ClearBookMark(Value);
-  if MenuItem.Checked then
-    Begin
-      ActEdit.EditorComponent.SetBookMark(Value,
-         ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
-      MenuItem.Caption := MenuItem.Caption + '*';
-    end
-  else
-    begin
-      MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
-    end;
-end;
-
 procedure TSourceNotebook.MoveEditorLeftClicked(Sender: TObject);
 begin
   MoveActivePageLeft;
@@ -5388,7 +5367,7 @@ end;
 {This is called from outside to toggle a bookmark}
 Procedure TSourceNotebook.ToggleBookmark(Value: Integer);
 Begin
-  BookMarkToggle(Value);
+  BookMarkSet(Value,true);
 End;
 
 procedure TSourceNotebook.AddBreakpointClicked(Sender: TObject );
@@ -5499,21 +5478,31 @@ begin
   ProcessParentCommand(Self,Command,AChar,nil,Handled);
 end;
 
-Procedure TSourceNotebook.BookMarkSet(Value: Integer);
+Procedure TSourceNotebook.BookMarkSet(Value: Integer; Toggle: boolean);
 var
   ActEdit, AnEdit: TSourceEditor;
   Cmd: TIDEMenuCommand;
+  OldX, OldY: integer;
+  NewXY: TPoint;
+  SetMark: Boolean;
 Begin
   ActEdit:=GetActiveSE;
+  NewXY:=ActEdit.EditorComponent.CaretXY;
 
+  SetMark:=true;
   AnEdit:=FindBookmark(Value);
-  if AnEdit<>nil then begin
+  if (AnEdit<>nil) and AnEdit.EditorComponent.GetBookMark(Value,OldX,OldY) then
+  begin
+    if (not Toggle) and (OldX=NewXY.X) and (OldY=NewXY.Y) then
+      exit;  // no change
     AnEdit.EditorComponent.ClearBookMark(Value);
+    if Toggle and (OldY=NewXY.Y) then
+      SetMark:=false;
   end;
-  ActEdit.EditorComponent.SetBookMark(Value,
-     ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
-  Cmd:=SrcEditSubMenuSetBookmarks[Value] as TIDEMenuCommand;
-  Cmd.Checked := true;
+  if SetMark then
+    ActEdit.EditorComponent.SetBookMark(Value,NewXY.X,NewXY.Y);
+  Cmd:=SrcEditSubMenuToggleBookmarks[Value] as TIDEMenuCommand;
+  Cmd.Checked := SetMark;
   if Project1<>nil then
     Project1.SessionModified:=true;
 end;
@@ -6175,6 +6164,12 @@ Begin
     ecSetMarker0..ecSetMarker9:
       begin
         BookMarkSet(Command - ecSetMarker0);
+        Key:=0;
+      end;
+
+    ecToggleMarker0..ecToggleMarker9:
+      begin
+        BookMarkSet(Command - ecToggleMarker0,true);
         Key:=0;
       end;
 

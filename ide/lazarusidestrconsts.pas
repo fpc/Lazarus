@@ -1671,6 +1671,7 @@ resourcestring
     +'ns to %s%s%s%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
   uemSetBookmark = '&Set Bookmark';
+  uemToggleBookmark = '&Toggle Bookmark';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
   uemShowUnitInfo = 'Unit Info';
@@ -1869,8 +1870,19 @@ resourcestring
   lisKMSetMarker7 = 'Set marker 7';
   lisKMSetMarker8 = 'Set marker 8';
   lisKMSetMarker9 = 'Set marker 9';
+  lisKMToggleMarker0 = 'Toggle marker 0';
+  lisKMToggleMarker1 = 'Toggle marker 1';
+  lisKMToggleMarker2 = 'Toggle marker 2';
+  lisKMToggleMarker3 = 'Toggle marker 3';
+  lisKMToggleMarker4 = 'Toggle marker 4';
+  lisKMToggleMarker5 = 'Toggle marker 5';
+  lisKMToggleMarker6 = 'Toggle marker 6';
+  lisKMToggleMarker7 = 'Toggle marker 7';
+  lisKMToggleMarker8 = 'Toggle marker 8';
+  lisKMToggleMarker9 = 'Toggle marker 9';
   srkmecGotoMarker            = 'Go to Marker %d';
   srkmecSetMarker             = 'Set Marker %d';
+  srkmecToggleMarker          = 'Toggle Marker %d';
 
   // sourcenotebook
   srkmecJumpToEditor          = 'Focus to source editor';
