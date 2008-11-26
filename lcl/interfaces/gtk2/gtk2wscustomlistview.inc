@@ -249,6 +249,8 @@ begin
   gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
 
   ListColumn := TListColumn(g_object_get_data(G_OBJECT(tree_column), 'TListColumn'));
+  if ListColumn = nil then
+    Exit;
   ColumnIndex := ListColumn.Index;
   Images :=  Widgets^.Images;
   if Images = nil then

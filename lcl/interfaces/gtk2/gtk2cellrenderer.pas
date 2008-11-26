@@ -373,8 +373,13 @@ begin
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
   begin
     gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+    if ListItem = nil then
+      exit;
     ListColumn := TListColumn(g_object_get_data(G_OBJECT(cell_layout), 'TListColumn'));
-    LCLCellRenderer^.ColumnIndex := ListColumn.Index;
+    if ListColumn = nil then
+      LCLCellRenderer^.ColumnIndex := -1
+    else
+      LCLCellRenderer^.ColumnIndex := ListColumn.Index;
 
     if LCLCellRenderer^.ColumnIndex <= 0 then
       Str := ListItem.Caption
