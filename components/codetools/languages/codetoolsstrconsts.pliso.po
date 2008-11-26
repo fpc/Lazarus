@@ -157,6 +157,10 @@ msgstr "Domy¶lny docelowy system operacyjny ppc386"
 msgid "Default ppc386 target processor"
 msgstr "Domy¶lny docelowy procesor ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "specyfikator \"default\" zredefiniowany"
@@ -404,6 +408,10 @@ msgstr "brakuje elementu implementacji"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Wykryto zapêtlenie Include"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

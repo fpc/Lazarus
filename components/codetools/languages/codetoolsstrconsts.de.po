@@ -160,6 +160,10 @@ msgstr "Voreingestelltes ppc386-Zielbetriebssystem"
 msgid "Default ppc386 target processor"
 msgstr "Voreingestellter ppc386-Zielprozessor"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "Default-Bezeichner neu definiert"
@@ -407,6 +411,10 @@ msgstr "Implementationsknoten nicht gefunden"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Zirkuläres Include ermittelt"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

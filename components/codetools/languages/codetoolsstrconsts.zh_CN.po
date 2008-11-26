@@ -157,6 +157,10 @@ msgstr "Default ppc386 target Operating System"
 msgid "Default ppc386 target processor"
 msgstr "Default ppc386 target processor"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "default specifier redefined"
@@ -404,6 +408,10 @@ msgstr "未找到 implementation 节点"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "检测到循环包含"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

@@ -158,6 +158,10 @@ msgstr "Numatyta ppc386 paskirties operacinė sistema"
 msgid "Default ppc386 target processor"
 msgstr "Numatytas ppc386 paskirties procesorius"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "numatytas specifikatorius apibrėžtas pakartotinai"
@@ -405,6 +409,10 @@ msgstr "nerastas realizacijos mazgas"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Aptiktas įdėjimų žiedas"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

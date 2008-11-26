@@ -26,6 +26,7 @@ msgid "Dialog"
 msgstr "Dialoog"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Edit"
 
@@ -34,14 +35,17 @@ msgid "File"
 msgstr "Bestand"
 
 #: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Help"
 
 #: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
 msgstr ""
 
 #: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
 msgstr ""
 
@@ -106,6 +110,7 @@ msgid "Delete the Item %d \"%s\"?"
 msgstr "Item %d \"%s\" verwijderen?"
 
 #: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
 msgstr "Neer"
 
@@ -114,6 +119,7 @@ msgid "Modify the Item"
 msgstr "Wijzig het item"
 
 #: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Omhoog"
 
@@ -138,6 +144,7 @@ msgid "Field's list is not available, can't check for duplicates"
 msgstr ""
 
 #: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr ""
 
@@ -166,6 +173,7 @@ msgid "Show page ..."
 msgstr "Laat pagina zien ..."
 
 #: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -175,8 +183,9 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Neer"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -185,7 +194,7 @@ msgstr "Bewerken"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Omhoog"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -228,6 +237,7 @@ msgid "&Add"
 msgstr "&Toevoegen"
 
 #: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
 msgid "&Cancel"
 msgstr ""
 
@@ -236,6 +246,7 @@ msgid "Category"
 msgstr "Categorie"
 
 #: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
 msgid "&Delete"
 msgstr "&Verwijderen"
 
@@ -292,6 +303,7 @@ msgid "Cut components"
 msgstr ""
 
 #: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -536,13 +548,14 @@ msgid "Cancel"
 msgstr "Ongedaan maken"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
 msgstr "&Ongedaan"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Verwijderen"
 
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
@@ -554,8 +567,9 @@ msgid "&Edit"
 msgstr "&Edit"
 
 #: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -570,6 +584,7 @@ msgid "&Insert"
 msgstr "&Invoegen"
 
 #: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
 msgstr "Invoegen"
 
@@ -586,6 +601,7 @@ msgid "&Next"
 msgstr "&Volgende"
 
 #: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
 msgstr "Volgende"
 
@@ -602,6 +618,7 @@ msgid "&Prior"
 msgstr "&Vorige"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
 msgstr "Vorige"
 
@@ -640,7 +657,7 @@ msgstr "Knip"
 #: objinspstrconsts.oistdacteditdeleteheadline
 msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Verwijderen"
 
 #: objinspstrconsts.oistdacteditdeleteshortcut
 msgid "Del"
@@ -684,6 +701,7 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
 msgstr ""
 
@@ -817,10 +835,12 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr ""
 
 #: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
 msgstr "Ongedaan maken"
 
 #: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -877,6 +897,7 @@ msgid "Invalid numeric Value"
 msgstr ""
 
 #: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
 msgstr ""
 
@@ -893,6 +914,7 @@ msgid "OK"
 msgstr ""
 
 #: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
 msgstr ""
 
@@ -930,6 +952,7 @@ msgid "Center"
 msgstr "Midden"
 
 #: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "Clear"
 msgstr "Opschonen"
 
@@ -940,7 +963,7 @@ msgstr "Afsnijden"
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Verwijderen"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -951,10 +974,12 @@ msgid "Selected Image"
 msgstr "Geselecteerde afbeelding"
 
 #: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
 msgstr "Ga naar beneden"
 
 #: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
 msgstr "Ga naar boven"
 
@@ -971,6 +996,7 @@ msgid "Transparent Color:"
 msgstr "Tansparantie kleur"
 
 #: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
 msgstr "Opslaan..."
 
@@ -1009,14 +1035,17 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
 msgstr ""
 
@@ -1025,18 +1054,22 @@ msgid "Caption:"
 msgstr "Titel:"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
 msgstr ""
 
@@ -1079,8 +1112,9 @@ msgid "Open"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Opslaan..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1092,6 +1126,7 @@ msgid "Edit TreeView Items..."
 msgstr "Treeview onderdelen bewerken..."
 
 #: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Toepassen"
 
@@ -1105,18 +1140,22 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
 msgstr "Onderdelen"
 
 #: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Onderdeel properties"
 
 #: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
 msgstr "Onderdeel"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
 msgstr "Afbeelding Index:"
 
@@ -1125,6 +1164,7 @@ msgid "Selected Index:"
 msgstr "Geselecteerde index"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
 msgstr "Status index:"
 
@@ -1137,25 +1177,29 @@ msgid "Load"
 msgstr "Laad"
 
 #: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
 msgstr "Nieuw onderdeel"
 
 #: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nieuw subonderdeel"
 
 #: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Open"
 
 #: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
 msgstr "Opslaan"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Opslaan"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1190,8 +1234,9 @@ msgid "Capital"
 msgstr ""
 
 #: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "Opschonen"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1226,16 +1271,18 @@ msgid "Hanja"
 msgstr ""
 
 #: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "Help"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
 msgstr ""
 
 #: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Invoegen"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1254,6 +1301,7 @@ msgid "Mouse Button Left"
 msgstr ""
 
 #: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
 msgstr ""
 
@@ -1278,8 +1326,9 @@ msgid "Mode Change"
 msgstr ""
 
 #: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1306,8 +1355,9 @@ msgid "Print"
 msgstr ""
 
 #: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Vorige"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1318,6 +1368,7 @@ msgid "Return"
 msgstr ""
 
 #: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
 msgstr ""
 
@@ -1350,13 +1401,14 @@ msgid "Tab"
 msgstr ""
 
 #: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Omhoog"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"

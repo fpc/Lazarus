@@ -32,6 +32,7 @@ msgid "Dialog"
 msgstr "Dialogas"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Keitimas"
 
@@ -40,14 +41,17 @@ msgid "File"
 msgstr "Failas"
 
 #: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Žinynas"
 
 #: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
 msgstr ""
 
 #: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
 msgstr ""
 
@@ -112,6 +116,7 @@ msgid "Delete the Item %d \"%s\"?"
 msgstr "Pašalinti elementą  %d „%s“?"
 
 #: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
 msgstr "Žemyn"
 
@@ -120,6 +125,7 @@ msgid "Modify the Item"
 msgstr "Keisti elementą"
 
 #: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Viršun"
 
@@ -144,6 +150,7 @@ msgid "Field's list is not available, can't check for duplicates"
 msgstr "Nėra laukų sąrašo, tad neis patikrinti ar yra dublikatų"
 
 #: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr ""
 
@@ -172,6 +179,7 @@ msgid "Show page ..."
 msgstr "Rodyti lapą..."
 
 #: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
 msgid "Add"
 msgstr "Pridėti"
 
@@ -181,8 +189,9 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Žemyn"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -191,7 +200,7 @@ msgstr "Keičiama"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Viršun"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -234,6 +243,7 @@ msgid "&Add"
 msgstr "Pri&dėti"
 
 #: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
 msgid "&Cancel"
 msgstr ""
 
@@ -242,6 +252,7 @@ msgid "Category"
 msgstr "Kategorija"
 
 #: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
 msgid "&Delete"
 msgstr "Paša&linti"
 
@@ -298,6 +309,7 @@ msgid "Cut components"
 msgstr "Iškirpti komponentą"
 
 #: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
 msgid "Delete"
 msgstr "Pašalinti"
 
@@ -542,13 +554,14 @@ msgid "Cancel"
 msgstr "Atsisakyti"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
 msgstr "&Atsisakyti"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "Paša&linti"
 
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
@@ -560,8 +573,9 @@ msgid "&Edit"
 msgstr "&Taisa"
 
 #: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr ""
+msgstr "Keitimas"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -576,6 +590,7 @@ msgid "&Insert"
 msgstr "Į&terpti"
 
 #: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
 msgstr "Įterpti"
 
@@ -592,6 +607,7 @@ msgid "&Next"
 msgstr "&Kitas"
 
 #: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
 msgstr "Kitas"
 
@@ -608,6 +624,7 @@ msgid "&Prior"
 msgstr "Ank&stesnis"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
 msgstr "Ankstesnis"
 
@@ -646,7 +663,7 @@ msgstr "Iškirpti"
 #: objinspstrconsts.oistdacteditdeleteheadline
 msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "Paša&linti"
 
 #: objinspstrconsts.oistdacteditdeleteshortcut
 msgid "Del"
@@ -690,6 +707,7 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
 msgstr ""
 
@@ -823,10 +841,12 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
 msgstr "Grąžinti"
 
 #: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Nežinoma"
 
@@ -883,6 +903,7 @@ msgid "Invalid numeric Value"
 msgstr "Klaidingas numeris"
 
 #: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
 msgstr "Kairė"
 
@@ -899,6 +920,7 @@ msgid "OK"
 msgstr "Tinka"
 
 #: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
 msgstr "Dešinė"
 
@@ -936,6 +958,7 @@ msgid "Center"
 msgstr "Centruoti"
 
 #: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "Clear"
 msgstr "Išvalyti"
 
@@ -946,7 +969,7 @@ msgstr "Apkirtpti"
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Pašalinti"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -957,10 +980,12 @@ msgid "Selected Image"
 msgstr "Pažymėtas paveikslas"
 
 #: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
 msgstr "Perkelti žemyn"
 
 #: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
 msgstr "Perkelti aukštyn"
 
@@ -977,6 +1002,7 @@ msgid "Transparent Color:"
 msgstr "Permatoma spalva:"
 
 #: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
 msgstr "Įrašyti..."
 
@@ -1015,14 +1041,17 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
 msgstr ""
 
@@ -1031,18 +1060,22 @@ msgid "Caption:"
 msgstr "Užrašas:"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
 msgstr ""
 
@@ -1085,8 +1118,9 @@ msgid "Open"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Įrašyti..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1098,6 +1132,7 @@ msgid "Edit TreeView Items..."
 msgstr "Keisti TreeView elementus..."
 
 #: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Pritaikyti"
 
@@ -1111,18 +1146,22 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
 msgstr "Elementai"
 
 #: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Elemento savybės"
 
 #: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
 msgstr "Elementas"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
 msgstr "Įprastas pav.:"
 
@@ -1131,6 +1170,7 @@ msgid "Selected Index:"
 msgstr "Pav. pažymėjus:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
 msgstr "Būsenos pav.:"
 
@@ -1143,25 +1183,29 @@ msgid "Load"
 msgstr "Įkelti"
 
 #: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
 msgstr "Naujas elementas"
 
 #: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Naujas poelementis"
 
 #: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Įkelti"
 
 #: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
 msgstr "Įrašyti"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Įrašyti"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1196,8 +1240,9 @@ msgid "Capital"
 msgstr "Capital"
 
 #: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "Išvalyti"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1232,16 +1277,18 @@ msgid "Hanja"
 msgstr "Hanja"
 
 #: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "Žinynas"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
 msgstr "Home"
 
 #: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Įterpti"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1260,8 +1307,9 @@ msgid "Mouse Button Left"
 msgstr "Kairysis pelės klavišas"
 
 #: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "Kairė"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
@@ -1284,8 +1332,9 @@ msgid "Mode Change"
 msgstr "Mode Change"
 
 #: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Kitas"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1312,8 +1361,9 @@ msgid "Print"
 msgstr "Print"
 
 #: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Ankstesnis"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1324,8 +1374,9 @@ msgid "Return"
 msgstr "Return"
 
 #: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "Dešinė"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"
@@ -1356,13 +1407,14 @@ msgid "Tab"
 msgstr "Tab"
 
 #: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr ""
+msgstr "Nežinoma"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Viršun"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"

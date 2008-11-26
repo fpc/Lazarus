@@ -533,6 +533,10 @@ msgstr "Sėkmingas"
 msgid "Time to live expired during reassembly"
 msgstr "Surenkant pakartotinai, gyvavimo laikas baigėsi"
 
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr ""
+
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
 msgstr "Nežinomas statusas"
@@ -1458,6 +1462,14 @@ msgstr "USER"
 msgid "-ERR"
 msgstr "-ERR"
 
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr ""
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr ""
+
 #: ipconst.spop3okresp
 msgid "+OK"
 msgstr "+ OK"
@@ -2096,6 +2108,10 @@ msgstr "Perskaitytas kiekis nesiderina."
 msgid "Revoked Certificate."
 msgstr "Panaikintas sertifikatas."
 
+#: ipconst.ssslservernohandshake
+msgid "Server cid not return a handshake message."
+msgstr ""
+
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
 msgstr "serverio „cid“ negrąžino serverio hello pranešimo."
@@ -2262,6 +2278,10 @@ msgstr "Adresas jau naudojamas"
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
 msgstr "Neina priskirti reikalaujamą adresą"
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr ""
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"

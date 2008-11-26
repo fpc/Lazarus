@@ -157,6 +157,10 @@ msgstr "SO de destinació predeterminat del ppc386"
 msgid "Default ppc386 target processor"
 msgstr "Processador destinació predeterminat del ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "s'ha redefinit l'especificador predeterminat"
@@ -404,6 +408,10 @@ msgstr "no s'ha trobat el node d'implementació"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "S'ha detectat un cercle Include"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

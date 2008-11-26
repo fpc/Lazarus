@@ -156,6 +156,10 @@ msgstr "Por defecto ppc386 destino del Sistema Operativo"
 msgid "Default ppc386 target processor"
 msgstr "Por defecto ppc386 procesador de destino"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "especificador por defecto redefinido"
@@ -403,6 +407,10 @@ msgstr "nodo implementation no encontrado"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Detectado círculo en incluido"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

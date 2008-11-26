@@ -77,7 +77,7 @@ msgstr ""
 msgid "Auto create form when opening unit"
 msgstr ""
 
-#: lazarusidestrconsts.dlgautoident
+#: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr ""
 
@@ -117,8 +117,8 @@ msgstr ""
 msgid "TP/BP 7.0 Compatible"
 msgstr ""
 
-#: lazarusidestrconsts.dlgbrachighlight
-msgid "Bracket highlighting"
+#: lazarusidestrconsts.dlgbrackethighlight
+msgid "Bracket highlight"
 msgstr ""
 
 #: lazarusidestrconsts.dlgbutapply
@@ -334,6 +334,10 @@ msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcokeepvarsreg
+msgid "Keep certain variables in registers"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
 msgstr ""
@@ -393,6 +397,10 @@ msgstr ""
 msgid "Parsing"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcopywordatcursoroncopynone
+msgid "Copy word on copy none"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcorange
 msgid "Range"
 msgstr ""
@@ -441,6 +449,10 @@ msgstr ""
 msgid "Cursor beyond EOL"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcursorgroupoptions
+msgid "Cursor options:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
 msgstr ""
@@ -462,7 +474,7 @@ msgid "Default editor font"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
-msgid "Default value"
+msgid "Default Value"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdelphi2ext
@@ -543,7 +555,7 @@ msgid "Code templates"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcolor
-msgid "Color"
+msgid "Syntax highlight"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext
@@ -564,10 +576,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgededit
 msgid "Edit..."
-msgstr ""
-
-#: lazarusidestrconsts.dlgedelement
-msgid "Element"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedfiles
@@ -599,6 +607,10 @@ msgstr ""
 msgid "Editor font height"
 msgstr ""
 
+#: lazarusidestrconsts.dlgedmisc
+msgid "Misc"
+msgstr ""
+
 #: lazarusidestrconsts.dlgednoerr
 msgid "No errors in key mapping found."
 msgstr ""
@@ -617,6 +629,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedusedefcolor
 msgid "Use default color"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelementattributes
+msgid "Element Attributes"
 msgstr ""
 
 #: lazarusidestrconsts.dlgentirescope
@@ -704,7 +720,7 @@ msgid "Find text at cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgforecolor
-msgid "Foreground color"
+msgid "Foreground"
 msgstr ""
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
@@ -721,6 +737,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
+msgstr ""
+
+#: lazarusidestrconsts.dlgframecolor
+msgid "Frame color"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -798,7 +818,11 @@ msgid "Show Guide Lines"
 msgstr ""
 
 #: lazarusidestrconsts.dlgguttercolor
-msgid "Gutter color"
+msgid "Gutter Color"
+msgstr ""
+
+#: lazarusidestrconsts.dlggutteredgecolor
+msgid "Gutter Edge Color"
 msgstr ""
 
 #: lazarusidestrconsts.dlggutterwidth
@@ -819,6 +843,22 @@ msgstr ""
 
 #: lazarusidestrconsts.dlghideideonrun
 msgid "Hide IDE windows on run"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightcolor
+msgid "Highlight Color"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightfontcolor
+msgid "Highlight Font Color"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightleftofcursor
+msgid "Left Of Cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightrightofcursor
+msgid "Right Of Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -856,6 +896,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgindentcodeto
 msgid "Indent code to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabsgroupoptions
+msgid "Indents/Tabs options:"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -929,6 +973,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlglevel1opt
 msgid "Level 1 (quick and debugger friendly)"
+msgstr ""
+
+#: lazarusidestrconsts.dlglevel2opt
+msgid "Level 2 (Level 1 + quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel3opt
@@ -1015,6 +1063,10 @@ msgstr ""
 msgid "Mix methods and properties"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmousegroupoptions
+msgid "Mouse options:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouselinks
 msgid "Mouse links"
 msgstr ""
@@ -1034,6 +1086,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "no automatic renaming"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnobrackethighlight
+msgid "No Highlight"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
@@ -1056,6 +1112,23 @@ msgstr ""
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoioptions
+msgctxt "lazarusidestrconsts.dlgoioptions"
+msgid "Options"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoispeedsettings
+msgid "Speed settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoiusedefaultdelphisettings
+msgid "Use default Delphi settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoiusedefaultlazarussettings
+msgid "Use default Lazarus settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptimiz
@@ -1173,7 +1246,7 @@ msgid "Property completion"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpropnamecolor
-msgid "Property name"
+msgid "Property Name"
 msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
@@ -1312,6 +1385,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollgroupoptions
+msgid "Scroll options:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollpastendfile
@@ -1528,10 +1605,6 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtextattributes
-msgid "Text attributes"
-msgstr ""
-
 #: lazarusidestrconsts.dlgtexttofing
 msgid "&Text to Find"
 msgstr ""
@@ -1572,6 +1645,10 @@ msgstr ""
 msgid "Undo after save"
 msgstr ""
 
+#: lazarusidestrconsts.dlgundogroupoptions
+msgid "Undo options:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr ""
@@ -1600,6 +1677,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code folding"
+msgstr ""
+
+#: lazarusidestrconsts.dlgusecustomconfig
+msgid "Use addional Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts.dlgusefpccfg
@@ -1734,6 +1815,10 @@ msgstr ""
 msgid "Tab order..."
 msgstr ""
 
+#: lazarusidestrconsts.gldhighlightbothsidesofcursor
+msgid "On Both Sides"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2paddfile
 msgid "Add File"
 msgstr ""
@@ -1781,6 +1866,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2pchooseanexistingfile
+msgid "<choose an existing file>"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pclassnamealreadyexists
@@ -2207,6 +2296,10 @@ msgstr ""
 msgid "Anchor Editor - no control selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisanchorenabledhint
+msgid "Enabled = Include %s in Anchors"
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr ""
@@ -2267,12 +2360,16 @@ msgstr ""
 msgid "word end"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Automatic features"
 msgstr ""
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
-msgid "Auto show Object Inspector"
+msgid "Auto show"
 msgstr ""
 
 #: lazarusidestrconsts.lisavailablepackages
@@ -2516,6 +2613,10 @@ msgstr ""
 msgid "relative unit path found in fpc cfg: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisccoseveralcompilers
+msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr ""
+
 #: lazarusidestrconsts.lisccoskip
 msgid "Skip"
 msgstr ""
@@ -2713,6 +2814,14 @@ msgstr ""
 msgid "Choose debugger filename"
 msgstr ""
 
+#: lazarusidestrconsts.lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
+#: lazarusidestrconsts.lischoosedelphiproject
+msgid "Choose Delphi project (*.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
 msgstr ""
@@ -2755,6 +2864,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
+msgstr ""
+
+#: lazarusidestrconsts.lischoosetestbuilddir
+msgid "Choose the directory for tests"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -2932,6 +3045,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
+msgstr ""
+
+#: lazarusidestrconsts.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelphintinsertcodetag
@@ -3356,6 +3473,10 @@ msgstr ""
 msgid "%s project directory"
 msgstr ""
 
+#: lazarusidestrconsts.liscodetoolsdefsprojectspecific
+msgid "%s, project specific"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefsreaderror
 msgid "Read error"
 msgstr ""
@@ -3406,6 +3527,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsundefinerecurse
 msgid "Undefine Recurse"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueasfilepaths
+msgid "Value as File Paths"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
@@ -3603,6 +3728,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfigurebuildlazarus
+msgid "Configure %sBuild Lazarus%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconfirmchanges
@@ -4106,6 +4235,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableallinsamesource
+msgid "Disable All in same source"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
@@ -4730,6 +4863,10 @@ msgstr ""
 msgid "File filter"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilehaschangedsave
+msgid "File %s%s%s has changed. Save?"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr ""
@@ -4828,6 +4965,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindfilesearchallopenfiles
+msgid "search all &open files"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
@@ -5307,6 +5448,10 @@ msgstr ""
 msgid "Invalid command"
 msgstr ""
 
+#: lazarusidestrconsts.lisinvalidcompilerfilename
+msgid "Invalid Compiler Filename"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
 msgstr ""
@@ -5431,6 +5576,10 @@ msgstr ""
 msgid "Build project/program"
 msgstr ""
 
+#: lazarusidestrconsts.liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr ""
@@ -5441,6 +5590,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcodetoolsdefineseditor
+msgid "CodeTools defines editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
@@ -5684,6 +5837,10 @@ msgstr ""
 msgid "Publish project"
 msgstr ""
 
+#: lazarusidestrconsts.liskmquickcompilenolinking
+msgid "Quick compile, no linking"
+msgstr ""
+
 #: lazarusidestrconsts.liskmremoveactiveunitfromproject
 msgid "Remove active unit from project"
 msgstr ""
@@ -5786,6 +5943,46 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker0
+msgid "Toggle marker 0"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker1
+msgid "Toggle marker 1"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker2
+msgid "Toggle marker 2"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker3
+msgid "Toggle marker 3"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker4
+msgid "Toggle marker 4"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker5
+msgid "Toggle marker 5"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker6
+msgid "Toggle marker 6"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker7
+msgid "Toggle marker 7"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker8
+msgid "Toggle marker 8"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtogglemarker9
+msgid "Toggle marker 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
@@ -6244,6 +6441,10 @@ msgstr ""
 msgid "Main Unit has Uses Section containing all Units of project"
 msgstr ""
 
+#: lazarusidestrconsts.lismainunitispascalsource
+msgid "Main Unit is Pascal Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr ""
@@ -6359,6 +6560,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuaddwatch
 msgid "Add watch ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenubeaklinesinselection
+msgid "Break Lines in selection"
 msgstr ""
 
 #: lazarusidestrconsts.lismenubuild
@@ -6530,6 +6735,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "Delete Item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorhandleonclickevent
+msgid "Handle OnClick Event"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
@@ -6704,6 +6913,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 msgid "LGPL notice"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
+msgid "Modified LGPL notice"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinserttext
@@ -7198,6 +7411,11 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuviewregisters
+msgctxt "lazarusidestrconsts.lismenuviewregisters"
+msgid "Registers"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
 msgstr ""
@@ -7308,6 +7526,10 @@ msgstr ""
 msgid "New console application"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
+msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgstr ""
+
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
 msgstr ""
@@ -7410,6 +7632,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisnoprogramfilesfound
+msgid "No program file %s%s%s found."
 msgstr ""
 
 #: lazarusidestrconsts.lisnoresourcestringsectionfound
@@ -7816,6 +8042,10 @@ msgstr ""
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditdependencyproperties
+msgid "Dependency Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
@@ -8468,6 +8698,10 @@ msgstr ""
 msgid "Package file missing"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangpackagehasnovalidoutputdirectory
 msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
 msgstr ""
@@ -8510,6 +8744,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangrenamefileinpackage
 msgid "Rename file in package?"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangrenamefilelowercase
+msgid "Rename File lowercase?"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
@@ -8703,6 +8941,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
@@ -8912,6 +9154,10 @@ msgstr ""
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
 msgid "Type"
+msgstr ""
+
+#: lazarusidestrconsts.lispochoosepofiledirectory
+msgid "Choose .po file directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispodonotsaveanysessioninfo
@@ -9147,6 +9393,10 @@ msgstr ""
 msgid "Confirm deleting dependency"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojinspconfirmremovingfile
+msgid "Confirm removing file"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
 msgid "Delete dependency for %s?"
 msgstr ""
@@ -9271,6 +9521,21 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
+msgstr ""
+
+#: lazarusidestrconsts.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
+msgid "Registers"
+msgstr ""
+
+#: lazarusidestrconsts.lisregistersdlgname
+msgctxt "lazarusidestrconsts.lisregistersdlgname"
+msgid "Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisregistersdlgvalue
+msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
+msgid "Value"
 msgstr ""
 
 #: lazarusidestrconsts.lisregularexpression
@@ -9521,6 +9786,22 @@ msgstr ""
 msgid "Select Delphi form files (*.dfm)"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectedbottomneighbour
+msgid "(selected bottom neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedleftneighbour
+msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedrightneighbour
+msgid "(selected right neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedtopneighbour
+msgid "(selected top neighbour)"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectfile
 msgid "Select the file"
 msgstr ""
@@ -9533,6 +9814,10 @@ msgstr ""
 msgid "Selection tool"
 msgstr ""
 
+#: lazarusidestrconsts.lissetdefault
+msgid "Set default"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr ""
@@ -9541,12 +9826,20 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowgutterinobjectinspector
+msgid "Show gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
-msgid "Show hints in Object Inspector"
+msgid "Show hints"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowinfoboxinobjectinspector
+msgid "Show information box"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoldtaborder
@@ -9559,6 +9852,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowstatusbarinobjectinspector
+msgid "Show status bar"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowunits
@@ -9595,6 +9892,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
+msgstr ""
+
+#: lazarusidestrconsts.lissorrynotimplementedyet
+msgid "Sorry, not implemented yet"
 msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
@@ -9797,6 +10098,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
+msgstr ""
+
+#: lazarusidestrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
 msgstr ""
 
 #: lazarusidestrconsts.listargetos
@@ -10058,6 +10363,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
+msgstr ""
+
+#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
+msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
@@ -10420,6 +10729,10 @@ msgstr ""
 msgid "Unable to create file %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletocreatefile3
+msgid "Unable to create file%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."
 msgstr ""
@@ -10438,6 +10751,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
+msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
@@ -10474,6 +10791,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoloadpackage
+msgid "Unable to load package %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
@@ -10618,6 +10939,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
+msgstr ""
+
+#: lazarusidestrconsts.lisunithaschangedsave
+msgid "Unit %s%s%s has changed. Save?"
 msgstr ""
 
 #: lazarusidestrconsts.lisunitidentifierexists
@@ -10867,6 +11192,10 @@ msgstr ""
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
 msgstr ""
 
 #: lazarusidestrconsts.rsgotothenextiteminthesearchlist
@@ -11282,6 +11611,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeceditortop
 msgid "Move cursor to absolute beginning"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecenvironmentoptions
+msgid "General environment options"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecevaluate
@@ -11770,6 +12103,10 @@ msgstr ""
 msgid "View local variables"
 msgstr ""
 
+#: lazarusidestrconsts.srkmectogglemarker
+msgid "Toggle Marker %d"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
 msgstr ""
@@ -12043,6 +12380,10 @@ msgstr ""
 
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
+msgstr ""
+
+#: lazarusidestrconsts.uemtogglebookmark
+msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack

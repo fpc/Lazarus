@@ -152,6 +152,10 @@ msgstr "Sistema operacional alvo padrão ppc386"
 msgid "Default ppc386 target processor"
 msgstr "Processador alvo padrão ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "especificador padrao redefinido"
@@ -399,6 +403,10 @@ msgstr "nó de implementação não encontrado"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Refeerencia circular Include encontrada"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

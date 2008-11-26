@@ -152,6 +152,10 @@ msgstr "Операційна система для виконуваного фа
 msgid "Default ppc386 target processor"
 msgstr "Процесор для виконуваного файлу за замовчуванням для ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "модифікатор за замовчуванням перевизначений"
@@ -399,6 +403,10 @@ msgstr "слово implementation не знайдене"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Знайдене циклічне включення"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

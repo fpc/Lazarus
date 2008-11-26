@@ -157,6 +157,10 @@ msgstr "Целевая операционная система для ppc386 п�
 msgid "Default ppc386 target processor"
 msgstr "Целевой процессор для ppc386 по умолчанию"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "переопределён модификатор default (по умолчанию)"
@@ -404,6 +408,10 @@ msgstr "слово implementation не найдено"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Обнаружено циклическое включение"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

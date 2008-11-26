@@ -158,6 +158,10 @@ msgstr "OS cible par défaut pour ppc386"
 msgid "Default ppc386 target processor"
 msgstr "Micro processeur cible par défaut pour ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "défaut (default) redéfini"
@@ -405,6 +409,10 @@ msgstr "implémentation non trouvée"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Référence circulaire détectée"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

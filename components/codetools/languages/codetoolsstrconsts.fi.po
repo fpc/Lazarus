@@ -152,6 +152,10 @@ msgstr ""
 msgid "Default ppc386 target processor"
 msgstr ""
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr ""
@@ -398,6 +402,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
+msgstr ""
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound

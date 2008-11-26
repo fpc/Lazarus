@@ -159,6 +159,10 @@ msgstr "Target default Sistem Operasi ppc386"
 msgid "Default ppc386 target processor"
 msgstr "Target prosesor default ppc386"
 
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "pemisah default didefinisikan ulang"
@@ -406,6 +410,10 @@ msgstr "node implementation tidak ditemukan"
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
 msgstr "Lingkaran Include terdeteksi"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

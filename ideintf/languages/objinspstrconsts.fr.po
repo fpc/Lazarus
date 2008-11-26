@@ -34,6 +34,7 @@ msgid "Dialog"
 msgstr "Dialogue"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Editer"
 
@@ -42,14 +43,17 @@ msgid "File"
 msgstr "Fichier"
 
 #: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Aide"
 
 #: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
 msgstr ""
 
 #: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
 msgstr ""
 
@@ -114,6 +118,7 @@ msgid "Delete the Item %d \"%s\"?"
 msgstr "Supprimer l'élément %d \"%s\"?"
 
 #: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
 msgstr "Bas"
 
@@ -122,6 +127,7 @@ msgid "Modify the Item"
 msgstr "Modifier l'élément"
 
 #: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Haut"
 
@@ -146,6 +152,7 @@ msgid "Field's list is not available, can't check for duplicates"
 msgstr "Champs de liste indisponible, impossible de vérifier les doublons"
 
 #: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr ""
 
@@ -174,6 +181,7 @@ msgid "Show page ..."
 msgstr "Afficher la page..."
 
 #: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
 msgid "Add"
 msgstr "Ajouter"
 
@@ -183,8 +191,9 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Bas"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -193,7 +202,7 @@ msgstr "Edition"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Haut"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -236,6 +245,7 @@ msgid "&Add"
 msgstr "&Ajouter"
 
 #: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
 msgid "&Cancel"
 msgstr ""
 
@@ -244,6 +254,7 @@ msgid "Category"
 msgstr "Catégorie"
 
 #: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
 msgid "&Delete"
 msgstr "&Supprimer"
 
@@ -300,6 +311,7 @@ msgid "Cut components"
 msgstr "Couper les composants"
 
 #: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -544,13 +556,14 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
 msgstr "&Annuler"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Supprimer"
 
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
@@ -562,8 +575,9 @@ msgid "&Edit"
 msgstr "&Edition"
 
 #: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr ""
+msgstr "Editer"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -578,6 +592,7 @@ msgid "&Insert"
 msgstr "&Insérer"
 
 #: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
 msgstr "Insérer"
 
@@ -594,6 +609,7 @@ msgid "&Next"
 msgstr "&Suivant"
 
 #: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
 msgstr "Suivant"
 
@@ -610,6 +626,7 @@ msgid "&Prior"
 msgstr "Précédent"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
 msgstr "Précédent"
 
@@ -648,7 +665,7 @@ msgstr "Couper"
 #: objinspstrconsts.oistdacteditdeleteheadline
 msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
 msgid "&Delete"
-msgstr ""
+msgstr "&Supprimer"
 
 #: objinspstrconsts.oistdacteditdeleteshortcut
 msgid "Del"
@@ -692,6 +709,7 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
 msgstr ""
 
@@ -825,10 +843,12 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr "La méthode %s%s%s n'est pas publié.%s Appuyer sur Annuler pour annuler, appuyez sur %s Ignorer et la forcer."
 
 #: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
 msgstr "Défaire"
 
 #: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -885,6 +905,7 @@ msgid "Invalid numeric Value"
 msgstr "Valeur numérique incorrecte"
 
 #: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
 msgstr "Gauche"
 
@@ -901,6 +922,7 @@ msgid "OK"
 msgstr "OK"
 
 #: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
 msgstr "Droite"
 
@@ -938,6 +960,7 @@ msgid "Center"
 msgstr "Centrer"
 
 #: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "Clear"
 msgstr "Effacer"
 
@@ -948,7 +971,7 @@ msgstr "Rogner"
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -959,10 +982,12 @@ msgid "Selected Image"
 msgstr "Image sélectionné:"
 
 #: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
 msgstr "Déplacer vers le bas"
 
 #: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
 msgstr "Déplacer vers le haut"
 
@@ -979,6 +1004,7 @@ msgid "Transparent Color:"
 msgstr "Couleur transparente :"
 
 #: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
 msgstr "Enregistrer..."
 
@@ -1017,14 +1043,17 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
 msgstr ""
 
@@ -1033,18 +1062,22 @@ msgid "Caption:"
 msgstr "Légende :"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
 msgstr ""
 
@@ -1087,8 +1120,9 @@ msgid "Open"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Enregistrer..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1100,6 +1134,7 @@ msgid "Edit TreeView Items..."
 msgstr "Editer les éléments du TreeView..."
 
 #: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -1113,18 +1148,22 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
 msgstr "Eléments"
 
 #: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Propriétés des éléments"
 
 #: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
 msgstr "Elément"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
 msgstr "Index d'image :"
 
@@ -1133,6 +1172,7 @@ msgid "Selected Index:"
 msgstr "Indexe sélectionné:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
 msgstr "Index d'état :"
 
@@ -1145,25 +1185,29 @@ msgid "Load"
 msgstr "Charger"
 
 #: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
 msgstr "Ajouter un élément"
 
 #: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nouveau sous-élément "
 
 #: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Ouvrir"
 
 #: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
 msgstr "Enregistrer"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1198,8 +1242,9 @@ msgid "Capital"
 msgstr "Majuscule"
 
 #: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1234,16 +1279,18 @@ msgid "Hanja"
 msgstr "Hanja"
 
 #: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "Aide"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
 msgstr "Début"
 
 #: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Insérer"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1262,8 +1309,9 @@ msgid "Mouse Button Left"
 msgstr "Bouton gauche"
 
 #: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "Gauche"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
@@ -1286,8 +1334,9 @@ msgid "Mode Change"
 msgstr "Changement de mode"
 
 #: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1314,8 +1363,9 @@ msgid "Print"
 msgstr "Imprimer"
 
 #: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Précédent"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1326,8 +1376,9 @@ msgid "Return"
 msgstr "Entrée"
 
 #: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "Droite"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"
@@ -1358,13 +1409,14 @@ msgid "Tab"
 msgstr "Tab"
 
 #: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Haut"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
