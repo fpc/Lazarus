@@ -154,8 +154,18 @@ const
   ecSetMarker7      = 358;  // Set marker, Data = PPoint - X, Y Pos
   ecSetMarker8      = 359;  // Set marker, Data = PPoint - X, Y Pos
   ecSetMarker9      = 360;  // Set marker, Data = PPoint - X, Y Pos
+  ecToggleMarker0   = 361;  // If marker is in the lie, remove marker, lese set marker, Data = PPoint - X, Y Pos
+  ecToggleMarker1   = 362;
+  ecToggleMarker2   = 363;
+  ecToggleMarker3   = 364;
+  ecToggleMarker4   = 365;
+  ecToggleMarker5   = 366;
+  ecToggleMarker6   = 367;
+  ecToggleMarker7   = 368;
+  ecToggleMarker8   = 369;
+  ecToggleMarker9   = 370;
 
-  EcFoldLevel1             = 361;  // fold all folds, greater/equal than nesting level 1
+  EcFoldLevel1             = 371;  // fold all folds, greater/equal than nesting level 1
   EcFoldLevel2             = EcFoldLevel1 + 1;
   EcFoldLevel3             = EcFoldLevel2 + 1;
   EcFoldLevel4             = EcFoldLevel3 + 1;
@@ -165,8 +175,8 @@ const
   EcFoldLevel8             = EcFoldLevel7 + 1;
   EcFoldLevel9             = EcFoldLevel8 + 1;
   EcFoldLevel0             = EcFoldLevel9 + 1;
-  EcFoldCurrent            = 371;
-  EcUnFoldCurrent          = 372;
+  EcFoldCurrent            = 381;
+  EcUnFoldCurrent          = 382;
 
   ecDeleteLastChar  = 501;  // Delete last char (i.e. backspace key)
   ecDeleteChar      = 502;  // Delete char at cursor (i.e. delete key)
@@ -397,7 +407,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..101] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..111] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -488,6 +498,16 @@ const
     (Value: ecSetMarker7; Name: 'ecSetMarker7'),
     (Value: ecSetMarker8; Name: 'ecSetMarker8'),
     (Value: ecSetMarker9; Name: 'ecSetMarker9'),
+    (Value: ecToggleMarker0; Name: 'ecToggleMarker0'),
+    (Value: ecToggleMarker1; Name: 'ecToggleMarker1'),
+    (Value: ecToggleMarker2; Name: 'ecToggleMarker2'),
+    (Value: ecToggleMarker3; Name: 'ecToggleMarker3'),
+    (Value: ecToggleMarker4; Name: 'ecToggleMarker4'),
+    (Value: ecToggleMarker5; Name: 'ecToggleMarker5'),
+    (Value: ecToggleMarker6; Name: 'ecToggleMarker6'),
+    (Value: ecToggleMarker7; Name: 'ecToggleMarker7'),
+    (Value: ecToggleMarker8; Name: 'ecToggleMarker8'),
+    (Value: ecToggleMarker9; Name: 'ecToggleMarker9'),
     (Value: EcFoldLevel1; Name: 'EcFoldLevel1'),
     (Value: EcFoldLevel2; Name: 'EcFoldLevel2'),
     (Value: EcFoldLevel3; Name: 'EcFoldLevel1'),
@@ -926,18 +946,18 @@ begin
   AddKey(ecSetMarker7, ord('7'), [ssCtrl,ssShift]);
   AddKey(ecSetMarker8, ord('8'), [ssCtrl,ssShift]);
   AddKey(ecSetMarker9, ord('9'), [ssCtrl,ssShift]);
-  AddKey(EcFoldLevel1, ord('1'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel2, ord('2'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel3, ord('3'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel4, ord('4'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel5, ord('5'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel6, ord('6'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel7, ord('7'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel8, ord('8'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel9, ord('9'), [ssAlt,ssShift]);
-  AddKey(EcFoldLevel0, ord('0'), [ssAlt,ssShift]);
-  AddKey(EcFoldCurrent, ord('-'), [ssAlt,ssShift]);
-  AddKey(EcUnFoldCurrent, ord('+'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel1, ord('1'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel2, ord('2'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel3, ord('3'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel4, ord('4'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel5, ord('5'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel6, ord('6'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel7, ord('7'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel8, ord('8'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel9, ord('9'), [ssAlt,ssShift]);
+  AddKey(ecFoldLevel0, ord('0'), [ssAlt,ssShift]);
+  AddKey(ecFoldCurrent, ord('-'), [ssAlt,ssShift]);
+  AddKey(ecUnFoldCurrent, ord('+'), [ssAlt,ssShift]);
   AddKey(ecNormalSelect, ord('N'), [ssCtrl,ssShift]);
   AddKey(ecColumnSelect, ord('C'), [ssCtrl,ssShift]);
   AddKey(ecLineSelect, ord('L'), [ssCtrl,ssShift]);

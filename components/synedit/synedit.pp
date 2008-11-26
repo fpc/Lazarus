@@ -8181,12 +8181,16 @@ begin
           if BookMarkOptions.EnableKeys then
             GotoBookMark(Command - ecGotoMarker0);
         end;
-      ecSetMarker0..ecSetMarker9:
+      ecSetMarker0..ecSetMarker9,ecToggleMarker0..ecToggleMarker9:
         begin
           if BookMarkOptions.EnableKeys then begin
-            CX := Command - ecSetMarker0;
+            if Command in [ecSetMarker0..ecSetMarker9] then
+              CX := Command - ecSetMarker0
+            else
+              CX := Command - ecToggleMarker0;
             if assigned(fBookMarks[CX]) then begin
-              moveBkm := (fBookMarks[CX].Line <> CaretY);
+              moveBkm := (Command in [ecSetMarker0..ecSetMarker9])
+                         or (fBookMarks[CX].Line <> CaretY);
               ClearBookMark(CX);
               if moveBkm then
                 SetBookMark(CX, CaretX, CaretY);

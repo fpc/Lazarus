@@ -160,8 +160,6 @@ type
     procedure SetCurrentCursorXLine(num : Integer);
     function GetCurrentCursorYLine: Integer;
     procedure SetCurrentCursorYLine(num: Integer);
-    function GetModified: Boolean; override;
-    procedure SetModified(const NewValue:boolean); override;
     Function GetInsertMode: Boolean;
     procedure SetCodeTemplates(NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -191,6 +189,8 @@ type
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
+    function GetModified: Boolean; override;
+    procedure SetModified(const NewValue:boolean); override;
     procedure SetSyntaxHighlighterType(
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
