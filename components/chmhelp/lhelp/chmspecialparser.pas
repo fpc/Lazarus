@@ -105,7 +105,7 @@ begin
     Insert(' ', Url, X);
     X := Pos('%20', Url);
   end;
-  Result := Url;
+  Result := StringReplace(Url, '\', '/', [rfReplaceAll]);
 end;
 
 { TContentsFiller }
