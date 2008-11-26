@@ -204,6 +204,12 @@ begin
     X := Pos('//', Result);
   end;
 
+  X := Pos('\', Result);
+  while X > 0 do begin
+    Result[X] := '/';
+    X := Pos('\', Result);
+  end;
+
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;

@@ -2,6 +2,8 @@ unit chmcontentprovider;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE CHM_DEBUG_TIME}
+
 interface
 
 uses
@@ -20,7 +22,7 @@ type
        fContentsPanel: TPanel;
          fContentsTree: TTreeView;
       fIndexTab: TTabSheet;
-        fIndexEdit: TEdit;
+        fIndexEdit: TLabeledEdit;
         fIndexView: TListView;
       fSearchTab: TTabSheet;
         fKeywordLabel: TLabel;
@@ -198,13 +200,17 @@ begin
   fFillingToc := True;
   fContentsTree.Visible := False;
   fChm := TChmReader(Data);
+  {$IFDEF CHM_DEBUG_TIME}
   writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
+  {$ENDIF}
   if fChm <> nil then begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
+      {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
+      {$ENDIF}
       with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer) do begin
         DoFill(ParentNode);
         Free;
@@ -227,7 +233,9 @@ begin
 
 
   fContentsTree.Visible := True;
+  {$IFDEF CHM_DEBUG_TIME}
   writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
+  {$ENDIF}
   fFillingToc := False;
 end;
 
@@ -571,6 +579,8 @@ begin
 end;
 
 constructor TChmContentProvider.Create(AParent: TWinControl);
+const
+  TAB_WIDTH = 215;
 begin
   inherited Create(AParent);
 
@@ -578,7 +588,7 @@ begin
 
   fTabsControl := TPageControl.Create(AParent);
   with fTabsControl do begin
-    Width := 215;
+    Width := TAB_WIDTH + 12;
     Align := alLeft;
     Parent := AParent;
     Visible := True;
@@ -589,6 +599,7 @@ begin
     Caption := 'Contents';
     Parent := fTabsControl;
     Visible := True;
+    //BorderSpacing.Around := 6;
   end;
   fContentsPanel := TPanel.Create(fContentsTab);
   with fContentsPanel do begin
@@ -610,31 +621,36 @@ begin
     Caption := 'Index';
     Parent := fTabsControl;
     Visible := True;
+    //BorderSpacing.Around := 6;
   end;
 
-  with TLabel.Create(fIndexTab) do begin
-    Caption := 'Search';
-    Align := alTop;
-    Parent := fIndexTab;
-    Top := 0;
-    Visible := True;
-  end;
-
-  fIndexEdit := TEdit.Create(fIndexTab);
+  fIndexEdit := TLabeledEdit.Create(fIndexTab);
   with fIndexEdit do begin
     Parent := fIndexTab;
-    Top := 10;
-    Align := alTop;
+    Top := EditLabel.Height+9;
+    Left := 5;
+    Width := TAB_WIDTH;
     Visible := True;
+    EditLabel.AutoSize := True;
+    LabelPosition := lpAbove;
     BorderSpacing.Bottom := 15;
     OnChange := @SearchEditChange;
+    EditLabel.Caption := 'Search';
+    Anchors := [akTop, akLeft, akRight];
   end;
   fIndexView := TListView.Create(fIndexTab);
   with fIndexView do begin
     Parent := fIndexTab;
-    Align := alClient;
+    Top := fIndexEdit.Top + fIndexEdit.Height + 10;
+    Left := 5;
+    Width := TAB_WIDTH;
+    Height := fIndexTab.Height-Top-6 ;
+    Align := alBottom;
+    BorderSpacing.Left := 6;
+    BorderSpacing.Right := 6;
     Visible := True;
     OnDblClick := @IndexViewDblClick;
+    Anchors := [akTop, akLeft, akRight, akBottom];
   end;
 
   fSearchTab := TTabSheet.Create(fTabsControl);
@@ -642,14 +658,14 @@ begin
     Caption := 'Search';
     Parent := fTabsControl;
     Visible := True;
-    BorderSpacing.Around := 3;
+
   end;
   fKeywordLabel := TLabel.Create(fSearchTab);
   with fKeywordLabel do begin
     Parent := fSearchTab;
     Top := 5;
     Caption := 'Keyword:';
-    Left := 0;
+    Left := 5;
     AutoSize := True;
   end;
   fKeywordCombo := TComboBox.Create(fSearchTab);
@@ -657,7 +673,7 @@ begin
     Parent := fSearchTab;
     Top := fKeywordLabel.Top + fKeywordLabel.Height + 5;
     Left := 5;
-    Width := fSearchTab.ClientWidth - Left;
+    Width := TAB_WIDTH;
     Anchors := [akLeft, akRight, akTop];
   end;
   fSearchBtn := TButton.Create(fSearchTab);
@@ -665,7 +681,7 @@ begin
      Parent := fSearchTab;
      Top := fKeywordCombo.Top + fKeywordCombo.Height + 5;
      Width := 105;
-     Left := fSearchTab.ClientWidth - Width;
+     Left := 5;
      Anchors := [akTop, akRight];
      Caption := 'Find';
      OnClick := @SearchButtonClick;
@@ -674,8 +690,9 @@ begin
   with fResultsLabel do begin
     Parent := fSearchTab;
     Top := fSearchBtn.Top + fSearchBtn.Height + 15;
+    Align := alBottom;
     Caption := 'Search Results:';
-    Left := 0;
+    BorderSpacing.Around := 6;
     AutoSize := True;
   end;
   fSearchResults := TListView.Create(fSearchTab);
@@ -686,6 +703,7 @@ begin
     Height := fSearchTab.ClientHeight - Top;
     Anchors := [akTop];
     Align := alBottom;
+    BorderSpacing.Around := 6;
     ShowColumnHeaders := False;
     ViewStyle := vsReport;
     Columns.Add.AutoSize := True;                  // title
