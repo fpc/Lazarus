@@ -722,11 +722,18 @@ begin
   UntagAll;
   // for each string in lrt/rst list check if it's already
   // in PO if not add it
+  Value := '';
+  Multi := false;
   for i:=0 to InputLines.Count-1 do begin
     Line:=InputLines[i];
     n := Length(Line);
-    if n=0 then
+    if n=0 then begin
+      if Multi and (Value<>'') then begin
+        // process pending multiline values (bug in fpc?)
+        UpdateItem(Identifier, Value);
+      end;
       continue;
+    end;
 
     if SType=stLrt then begin
       p:=Pos('=',Line);
