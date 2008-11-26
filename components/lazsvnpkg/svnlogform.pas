@@ -63,6 +63,7 @@ type
   { TSVNLogFrm }
 
   TSVNLogFrm = class(TForm)
+    ImageList: TImageList;
     mnuShowDiff: TMenuItem;
     SVNActionsPopupMenu: TPopupMenu;
     RefreshButton: TButton;
@@ -291,6 +292,8 @@ begin
   SetColumn(SVNActionsListView, 1, 200, rsPath);
   SetColumn(SVNActionsListView, 2, 150, rsCopyFromPath);
   SetColumn(SVNActionsListView, 3, 75, rsRevision);
+
+  ImageList.AddLazarusResource('menu_svn_diff');
 
   mnuShowDiff.Caption := rsShowDiff;
 end;

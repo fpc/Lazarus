@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   'TPF0'#10'TSVNLogFrm'#9'SVNLogFrm'#4'Left'#3'"'#1#6'Height'#3'6'#2#3'Top'#3
   +#175#0#5'Width'#3#214#2#11'HelpContext'#2#0#13'ActiveControl'#7#11'LogListVi'
@@ -63,7 +61,8 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +'ng.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSp'
   +'acing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#7'Refresh'#7'OnClick'#7
   +#18'RefreshButtonClick'#8'TabOrder'#2#7#0#0#10'TPopupMenu'#19'SVNActionsPopu'
-  +'pMenu'#4'left'#2'%'#3'top'#3'q'#1#0#9'TMenuItem'#11'mnuShowDiff'#7'Caption'
-  +#6#9'New Item1'#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#7'OnClick'#7#16
-  ,'mnuShowDiffClick'#0#0#0#0
+  +'pMenu'#6'Images'#7#9'ImageList'#4'left'#2'%'#3'top'#3'q'#1#0#9'TMenuItem'#11
+  +'mnuShowDiff'#7'Caption'#6#9'New Item1'#10'ImageIndex'#2#0#12'RightJustify'#8
+  ,#19'ShowAlwaysCheckable'#8#7'OnClick'#7#16'mnuShowDiffClick'#0#0#0#10'TImage'
+  +'List'#9'ImageList'#6'Masked'#8#4'left'#2'K'#3'top'#3'q'#1#0#0#0
 ]);

@@ -206,13 +206,20 @@ object SVNLogFrm: TSVNLogFrm
     TabOrder = 7
   end
   object SVNActionsPopupMenu: TPopupMenu
+    Images = ImageList
     left = 37
     top = 369
     object mnuShowDiff: TMenuItem
       Caption = 'New Item1'
+      ImageIndex = 0
       RightJustify = False
       ShowAlwaysCheckable = False
       OnClick = mnuShowDiffClick
     end
+  end
+  object ImageList: TImageList
+    Masked = False
+    left = 75
+    top = 369
   end
 end
