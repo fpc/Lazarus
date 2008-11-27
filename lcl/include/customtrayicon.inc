@@ -41,6 +41,8 @@ begin
   { Default property values }
   FBalloonTimeout := 3000;
   FShowIcon := True;
+  FBalloonFlags := bfNone;
+  FVisible := False;
 
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;

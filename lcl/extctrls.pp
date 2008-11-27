@@ -1135,7 +1135,7 @@ type
     procedure ShowBalloonHint;
     function GetPosition: TPoint;
     { Properties }
-    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags;
+    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags default bfNone;
     property BalloonHint: string read FBalloonHint write FBalloonHint;
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
@@ -1144,7 +1144,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible: Boolean read FVisible write SetVisible default False;
     { Events }
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
