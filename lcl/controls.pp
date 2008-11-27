@@ -612,14 +612,14 @@ type
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Left: TSpacingSize read FLeft write SetLeft;
-    property Top: TSpacingSize read FTop write SetTop;
-    property Right: TSpacingSize read FRight write SetRight;
-    property Bottom: TSpacingSize read FBottom write SetBottom;
-    property Around: TSpacingSize read FAround write SetAround;
-    property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default -1;
-    property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal;
-    property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical;
+    property Left: TSpacingSize read FLeft write SetLeft default 0;
+    property Top: TSpacingSize read FTop write SetTop default 0;
+    property Right: TSpacingSize read FRight write SetRight default 0;
+    property Bottom: TSpacingSize read FBottom write SetBottom default 0;
+    property Around: TSpacingSize read FAround write SetAround default 0;
+    property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default 0;
+    property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
+    property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
   end;
   
   
@@ -1446,10 +1446,10 @@ type
     property Control: TWinControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
-    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
-    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
-    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
+    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing default 0;
+    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing default 0;
+    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing default 0;
+    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing default 0;
     property EnlargeHorizontal: TChildControlResizeStyle read FEnlargeHorizontal
                            write SetEnlargeHorizontal default crsAnchorAligning;
     property EnlargeVertical: TChildControlResizeStyle read FEnlargeVertical
@@ -1459,7 +1459,7 @@ type
     property ShrinkVertical: TChildControlResizeStyle read FShrinkVertical
                               write SetShrinkVertical default crsAnchorAligning;
     property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
-    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine;
+    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine default 0;
   end;
 
 
@@ -2757,7 +2757,14 @@ end;
 
 constructor TControlBorderSpacing.Create(OwnerControl: TControl);
 begin
-  FControl:=OwnerControl;
+  FControl := OwnerControl;
+  FLeft := 0;
+  FRight := 0;
+  FTop := 0;
+  FBottom := 0;
+  FAround := 0;
+  FCellAlignHorizontal := ccaFill;
+  FCellAlignVertical := ccaFill;
   inherited Create;
 end;
 
@@ -2906,13 +2913,18 @@ end;
 
 constructor TControlChildSizing.Create(OwnerControl: TWinControl);
 begin
-  FControl:=OwnerControl;
+  FControl := OwnerControl;
   inherited Create;
-  FLayout:=cclNone;
-  FEnlargeHorizontal:=crsAnchorAligning;
-  FEnlargeVertical:=crsAnchorAligning;
-  FShrinkHorizontal:=crsAnchorAligning;
-  FShrinkVertical:=crsAnchorAligning;
+  FLayout := cclNone;
+  FEnlargeHorizontal :=crsAnchorAligning;
+  FEnlargeVertical := crsAnchorAligning;
+  FShrinkHorizontal := crsAnchorAligning;
+  FShrinkVertical := crsAnchorAligning;
+  FLeftRightSpacing := 0;
+  FTopBottomSpacing := 0;
+  FHorizontalSpacing := 0;
+  FVerticalSpacing := 0;
+  FControlsPerLine := 0;
 end;
 
 procedure TControlChildSizing.Assign(Source: TPersistent);

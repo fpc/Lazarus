@@ -280,6 +280,7 @@ type
     property Anchors;
     property AutoScroll;
     property AutoSize;
+    property BorderSpacing;
     property ClientHeight;
     property ClientWidth;
     property Color nodefault;
