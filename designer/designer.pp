@@ -1443,7 +1443,7 @@ var
     ControlSelection.Clear;
 
     // find a parent for the new component
-    if FLookupRoot is TCustomForm then begin
+    if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame) then begin
       if MouseDownComponent is TWinControl then
         NewParentControl:=TWinControl(MouseDownComponent)
       else
