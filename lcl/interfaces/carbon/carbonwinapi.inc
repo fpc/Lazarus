@@ -1281,9 +1281,25 @@ end;
 
 function TCarbonWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  DC      : TCarbonDeviceContext;
+  affine  : CGAffineTransform;
+  r : TRect;
 begin
-  Result:=inherited GetDCOriginRelativeToWindow(PaintDC, WindowHandle,
-    OriginDiff);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDCOriginRelativeToWindow HWnd: ' + DbgS(HWnd) + ' PaintDC: ' + DbgS(PaintDC));
+  {$ENDIF}
+
+  Result := CheckDC(PaintDC, 'GetDCOriginRelativeToWindow');
+  if Result then
+  begin
+    DC := TCarbonDeviceContext(PaintDC);
+    affine := CGContextGetCTM(DC.CGContext);
+    TCarbonWidget(WindowHandle).GetBounds(r);
+    OriginDiff.x := Round(affine.tx);
+    OriginDiff.y := Round((r.Bottom - r.Top) - affine.ty);
+    Result := true;
+  end;
 end;
 
 {------------------------------------------------------------------------------
