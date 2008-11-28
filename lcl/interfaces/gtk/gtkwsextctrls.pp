@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -43,10 +43,9 @@ type
   { TGtkWSCustomPage }
 
   TGtkWSCustomPage = class(TWSCustomPage)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
@@ -56,10 +55,9 @@ type
   { TGtkWSCustomNotebook }
 
   TGtkWSCustomNotebook = class(TWSCustomNotebook)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure AddPage(const ANotebook: TCustomNotebook;
@@ -81,144 +79,110 @@ type
   { TGtkWSPage }
 
   TGtkWSPage = class(TWSPage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSNotebook }
 
   TGtkWSNotebook = class(TWSNotebook)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSShape }
 
   TGtkWSShape = class(TWSShape)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomSplitter }
 
   TGtkWSCustomSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSSplitter }
 
   TGtkWSSplitter = class(TWSSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSPaintBox }
 
   TGtkWSPaintBox = class(TWSPaintBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomImage }
 
   TGtkWSCustomImage = class(TWSCustomImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSImage }
 
   TGtkWSImage = class(TWSImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSBevel }
 
   TGtkWSBevel = class(TWSBevel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomRadioGroup }
 
   TGtkWSCustomRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSRadioGroup }
 
   TGtkWSRadioGroup = class(TWSRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomCheckGroup }
 
   TGtkWSCustomCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCheckGroup }
 
   TGtkWSCheckGroup = class(TWSCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomLabeledEdit }
 
   TGtkWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSLabeledEdit }
 
   TGtkWSLabeledEdit = class(TWSLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomPanel }
 
   TGtkWSCustomPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSPanel }
 
   TGtkWSPanel = class(TWSPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomTrayIcon }
 
 {$IFDEF GTK1}
   TGtkWSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;

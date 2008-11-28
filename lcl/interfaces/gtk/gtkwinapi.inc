@@ -3415,6 +3415,7 @@ begin
     XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
     {$else}
     {$IFDEF VerboseGtkToDos}{$warning implement getting XFonts for this OS}{$ENDIF}
+    XFonts := nil;
     N:=0;
     {$endif}
     try
@@ -3800,6 +3801,7 @@ begin
         XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
         {$else}
         {$IFDEF VerboseGtkToDos}{$warning implement getting XFonts for this OS}{$ENDIF}
+        XFonts := nil;
         N:=0;
         {$endif}
         try

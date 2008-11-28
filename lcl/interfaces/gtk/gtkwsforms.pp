@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,10 +42,9 @@ type
   { TGtkWSScrollingWinControl }
 
   TGtkWSScrollingWinControl = class(TWSScrollingWinControl)
-  private
   protected
     class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -54,34 +53,27 @@ type
   { TGtkWSScrollBox }
 
   TGtkWSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomFrame }
 
   TGtkWSCustomFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSFrame }
 
   TGtkWSFrame = class(TWSFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomForm }
 
   TGtkWSCustomForm = class(TWSCustomForm)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
@@ -98,35 +90,28 @@ type
   { TGtkWSForm }
 
   TGtkWSForm = class(TWSForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSHintWindow }
 
   TGtkWSHintWindow = class(TWSHintWindow)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSScreen }
 
   TGtkWSScreen = class(TWSScreen)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSApplicationProperties }
 
   TGtkWSApplicationProperties = class(TWSApplicationProperties)
-  private
-  protected
-  public
+  published
   end;
 
 

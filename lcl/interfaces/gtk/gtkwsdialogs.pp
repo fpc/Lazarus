@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -43,12 +43,10 @@ type
   { TGtkWSCommonDialog }
 
   TGtkWSCommonDialog = class(TWSCommonDialog)
-  private
-  protected
   public
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetSizes(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -57,67 +55,56 @@ type
   { TGtkWSFileDialog }
 
   TGtkWSFileDialog = class(TWSFileDialog)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtkWSOpenDialog }
 
   TGtkWSOpenDialog = class(TWSOpenDialog)
-  private
   protected
     class function CreateOpenDialogFilter(OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string; virtual;
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog; SelWidget: PGtkWidget); virtual;
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtkWSSaveDialog }
 
   TGtkWSSaveDialog = class(TWSSaveDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSSelectDirectoryDialog }
 
   TGtkWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSColorDialog }
 
   TGtkWSColorDialog = class(TWSColorDialog)
-  private
-  protected
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtkWSColorButton }
 
   TGtkWSColorButton = class(TWSColorButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSFontDialog }
 
   TGtkWSFontDialog = class(TWSFontDialog)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 

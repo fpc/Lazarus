@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,9 +42,7 @@ type
   { TGtk2WSCustomPage }
 
   TGtk2WSCustomPage = class(TGtkWSCustomPage)
-  private
-  protected
-  public
+  published
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -53,9 +51,7 @@ type
   { TGtk2WSCustomNotebook }
   
   TGtk2WSCustomNotebook = class(TGtkWSCustomNotebook)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
@@ -66,105 +62,79 @@ type
   { TGtk2WSPage }
 
   TGtk2WSPage = class(TWSPage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSNotebook }
 
   TGtk2WSNotebook = class(TWSNotebook)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSShape }
 
   TGtk2WSShape = class(TWSShape)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomSplitter }
 
   TGtk2WSCustomSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSSplitter }
 
   TGtk2WSSplitter = class(TWSSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSPaintBox }
 
   TGtk2WSPaintBox = class(TWSPaintBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomImage }
 
   TGtk2WSCustomImage = class(TWSCustomImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSImage }
 
   TGtk2WSImage = class(TWSImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSBevel }
 
   TGtk2WSBevel = class(TWSBevel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomRadioGroup }
 
   TGtk2WSCustomRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSRadioGroup }
 
   TGtk2WSRadioGroup = class(TWSRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomCheckGroup }
 
   TGtk2WSCustomCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCheckGroup }
 
   TGtk2WSCheckGroup = class(TGtkWSCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSBoundLabel }
@@ -178,39 +148,31 @@ type
   { TGtk2WSCustomLabeledEdit }
 
   TGtk2WSCustomLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSLabeledEdit }
 
   TGtk2WSLabeledEdit = class(TGtkWSLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomPanel }
 
   TGtk2WSCustomPanel = class(TGtkWSCustomPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSPanel }
 
   TGtk2WSPanel = class(TGtkWSPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomTrayIcon }
 
   TGtk2WSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;

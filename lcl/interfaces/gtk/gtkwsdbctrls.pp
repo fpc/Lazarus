@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -34,105 +34,79 @@ type
   { TGtkWSDBEdit }
 
   TGtkWSDBEdit = class(TWSDBEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBText }
 
   TGtkWSDBText = class(TWSDBText)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBListBox }
 
   TGtkWSDBListBox = class(TWSDBListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBRadioGroup }
 
   TGtkWSDBRadioGroup = class(TWSDBRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBCheckBox }
 
   TGtkWSDBCheckBox = class(TWSDBCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBComboBox }
 
   TGtkWSDBComboBox = class(TWSDBComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBMemo }
 
   TGtkWSDBMemo = class(TWSDBMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBGroupBox }
 
   TGtkWSDBGroupBox = class(TWSDBGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBImage }
 
   TGtkWSDBImage = class(TWSDBImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBCalendar }
 
   TGtkWSDBCalendar = class(TWSDBCalendar)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBCustomNavigator }
 
   TGtkWSDBCustomNavigator = class(TWSDBCustomNavigator)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBNavButton }
 
   TGtkWSDBNavButton = class(TWSDBNavButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSDBNavigator }
 
   TGtkWSDBNavigator = class(TWSDBNavigator)
-  private
-  protected
-  public
+  published
   end;
 
 

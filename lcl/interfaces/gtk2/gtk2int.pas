@@ -58,11 +58,6 @@ type
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function GetText(Sender: TComponent; var Text: String): Boolean;
-    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
-    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
-    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-      MultiSelect, ExtendedSelect: boolean); override;
-
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; override;
   public
@@ -70,10 +65,14 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
+    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     function AppHandle: THandle; override;
 
+    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
+    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+      MultiSelect, ExtendedSelect: boolean); override;
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
     {$I gtk2winapih.inc}

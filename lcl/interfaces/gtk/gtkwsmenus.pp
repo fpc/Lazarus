@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -40,9 +40,7 @@ type
   { TGtkWSMenuItem }
 
   TGtkWSMenuItem = class(TWSMenuItem)
-  private
-  protected
-  public
+  published
     {$IFDEF GTK1}
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -61,27 +59,22 @@ type
   { TGtkWSMenu }
 
   TGtkWSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TGtkWSMainMenu }
 
   TGtkWSMainMenu = class(TWSMainMenu)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSPopupMenu }
 
   TGtkWSPopupMenu = class(TWSPopupMenu)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;

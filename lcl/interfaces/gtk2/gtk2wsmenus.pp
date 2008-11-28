@@ -37,10 +37,9 @@ type
   { TGtk2WSMenuItem }
 
   TGtk2WSMenuItem = class(TWSMenuItem)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -57,26 +56,20 @@ type
   { TGtk2WSMenu }
 
   TGtk2WSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
   { TGtk2WSMainMenu }
 
   TGtk2WSMainMenu = class(TWSMainMenu)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSPopupMenu }
 
   TGtk2WSPopupMenu = class(TWSPopupMenu)
-  private
-  protected
-  public
+  published
   end;
 
 

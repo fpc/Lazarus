@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,9 +44,7 @@ type
   { TGtkWSDragImageList }
 
   TGtkWSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
     class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
     class procedure EndDrag(const ADragImageList: TDragImageList); override;
@@ -59,9 +57,7 @@ type
   { TGtkWSControl }
 
   TGtkWSControl = class(TWSControl)
-  private
-  protected
-  public
+  published
   end;
 
 
@@ -76,7 +72,7 @@ type
   public
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
-  public
+  published
   {$IFDEF GTK1}
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   {$ENDIF}
@@ -106,24 +102,19 @@ type
   { TGtkWSGraphicControl }
 
   TGtkWSGraphicControl = class(TWSGraphicControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomControl }
 
   TGtkWSCustomControl = class(TWSCustomControl)
-  protected
-  public
+  published
   end;
 
   { TGtkWSImageList }
 
   TGtkWSImageList = class(TWSImageList)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSBaseScrollingWinControl }
@@ -144,11 +135,10 @@ type
   { TGtkWSBaseScrollingWinControl }
 
   TGtkWSBaseScrollingWinControl = class(TWSWinControl)
-  private
-  protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);

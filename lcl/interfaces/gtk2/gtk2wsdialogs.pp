@@ -44,10 +44,9 @@ type
     class procedure SetColorDialogColor(ColorSelection: PGtkColorSelectionDialog; Color: TColor);
     class procedure SetColorDialogPalette(ColorSelection: PGtkColorSelectionDialog; Palette: TStrings);
   protected
-  public
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetSizes(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -56,66 +55,56 @@ type
   { TGtk2WSFileDialog }
 
   TGtk2WSFileDialog = class(TWSFileDialog)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtk2WSOpenDialog }
 
   TGtk2WSOpenDialog = class(TWSOpenDialog)
-  private
   protected
     class function CreateOpenDialogFilter(OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string; virtual;
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog; SelWidget: PGtkWidget); virtual;
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtk2WSSaveDialog }
 
   TGtk2WSSaveDialog = class(TWSSaveDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSSelectDirectoryDialog }
 
   TGtk2WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSColorDialog }
 
   TGtk2WSColorDialog = class(TWSColorDialog)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TGtk2WSColorButton }
 
   TGtk2WSColorButton = class(TWSColorButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSFontDialog }
 
   TGtk2WSFontDialog = class(TWSFontDialog)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 

@@ -3253,14 +3253,13 @@ begin
       if (KeySymCharLen > 0) and (KeySymChars[KeySymCharLen - 1] = #0)
       then Dec(KeySymCharLen);
       if (KeySymCharLen <= 0) then Continue;
-      if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
-      then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [KeyCode, SizeOf(TVKeyUTF8Char), KeySymChars]);
-
     {$else gtk1}
       UniChar := gdk_keyval_to_unicode(KeySyms[m]);
       if UniChar = 0 then Continue;
       KeySymCharLen := g_unichar_to_utf8(UniChar, @KeySymChars[0]);
     {$endif}
+      if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
+      then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [KeyCode, SizeOf(TVKeyUTF8Char), KeySymChars]);
       Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
     end;
   end;

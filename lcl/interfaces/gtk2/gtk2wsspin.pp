@@ -40,10 +40,9 @@ type
   { TGtk2WSCustomFloatSpinEdit }
 
   TGtk2WSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;

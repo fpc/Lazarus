@@ -49,8 +49,7 @@ type
   TGtk2WSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
