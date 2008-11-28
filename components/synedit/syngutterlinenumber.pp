@@ -64,7 +64,7 @@ begin
   FFoldView := AFoldView;
   FTextDrawer := ATextDrawer;
 
-  FDigitCount := 4;
+  FDigitCount := 2;
   FAutoSizeDigitCount := FDigitCount;
   FShowOnlyLineNumbersMultiplesOf := 1;
   FLeadingZeros := false;

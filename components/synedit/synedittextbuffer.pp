@@ -261,6 +261,7 @@ type
     procedure MarkTopAsUnmodified;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
+    function IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
     {$ENDIF}
   public
     property BlockChangeNumber: integer read fBlockChangeNumber                 //sbs 2000-11-19
@@ -1273,6 +1274,34 @@ end;
 function TSynEditUndoList.UnModifiedMarkerExists: boolean;
 begin
   Result:=fUnModifiedItem>=0;
+end;
+
+function TSynEditUndoList.IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
+var
+  I, Start, Stop: Integer;
+  Item: TSynEditUndoItem;
+begin
+  Result := False;
+  if InUnmodified then
+  begin
+    Start := 0;
+    Stop := fUnModifiedItem - 1;
+  end
+  else
+  begin
+    Start := fUnModifiedItem + 1;
+    Stop := fItems.Count - 1;
+  end;
+
+  for I := Start to Stop do
+  begin
+    Item := TSynEditUndoItem(FItems[I]);
+    if (ALine >= Item.ChangeStartPos.y) and (ALine <= Item.ChangeEndPos.y) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
 end;
 
 {$ENDIF}

@@ -274,6 +274,8 @@ type
   TSynEditMarkList = SynGutter.TSynEditMarkList;
   TGutterClickEvent = SynGutter.TGutterClickEvent;
 
+  TSynLineState = (slsNone, slsSaved, slsUnsaved);
+
 
   TSynEditPlugin = class(TObject)
   private
@@ -465,6 +467,7 @@ type
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
+    function GetModifiedLineColor: TSynSelectedColor;
     function GetOnGutterClick : TGutterClickEvent;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
@@ -817,6 +820,7 @@ type
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     procedure SetSelWord;
     procedure Undo;
+    function GetLineState(ALine: Integer): TSynLineState;
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
 {$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
@@ -925,6 +929,7 @@ type
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
+    property ModifiedLineColor: TSynSelectedColor read GetModifiedLineColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     //property Color: TSynSelectedColor read GetSelectedColor;
@@ -1068,6 +1073,7 @@ type
     property HighlightAllColor;
     property BracketHighlightStyle;
     property BracketMatchColor;
+    property ModifiedLineColor;
     property MouseLinkColor;
     property LineNumberColor;
     property LineHighlightColor;
@@ -1764,6 +1770,11 @@ end;
 function TCustomSynEdit.GetLineNumberColor: TSynSelectedColor;
 begin
   Result := fGutter.MarkupInfoLineNumber;
+end;
+
+function TCustomSynEdit.GetModifiedLineColor: TSynSelectedColor;
+begin
+  Result := fGutter.MarkupInfoModifiedLine;
 end;
 
 function TCustomSynEdit.GetOnGutterClick : TGutterClickEvent;
@@ -6500,6 +6511,17 @@ begin
   end;
 end;
 
+function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
+begin
+  if fUndoList.IsLineExists(ALine, False) then
+    Result := slsUnsaved
+  else
+  if fUndoList.IsLineExists(ALine, True) then
+    Result := slsSaved
+  else
+    Result := slsNone;
+end;
+
 procedure TCustomSynEdit.UndoItem;
 {end}                                                                           //sbs 2000-11-19
 var
@@ -10170,13 +10192,17 @@ end;
 
 procedure TCustomSynEdit.SetModified(Value: boolean);
 begin
-  if Value <> fModified then begin
+  if Value <> fModified then
+  begin
     fModified := Value;
     {$IFDEF SYN_LAZARUS}
-    if not fModified then begin
+    if not fModified then
+    begin
       // the current state should be the unmodified state.
       fUndoList.MarkTopAsUnmodified;
       fRedoList.MarkTopAsUnmodified;
+      if fGutter.Visible and fGutter.ShowChanges then
+        InvalidateGutter;
     end;
     {$ENDIF}
     StatusChanged([scModified]);

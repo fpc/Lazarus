@@ -99,11 +99,11 @@ type
     function RealGutterWidth(CharWidth: integer): integer;  virtual; abstract;
     // X/Y are relative to the gutter, not the gutter part
     procedure DoOnGutterClick(X, Y: integer);  virtual;
-    property AutoSize: boolean read FAutoSize write SetAutoSize default FALSE;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property Width: integer read FWidth write SetWidth default 30;
-    property Visible: boolean read FVisible write SetVisible default TRUE;
+    property Visible: boolean read FVisible write SetVisible default True;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -120,6 +120,7 @@ type
     FLineNumGutter: TSynGutterPartBase;
     FCodeFoldGutter: TSynGutterPartBase;
     FMarkGutter: TSynGutterPartBase;
+    FChangesGutter: TSynGutterPartBase;
 
     FEdit: TSynEditBase;
 //    FFoldView: TSynEditFoldedView;
@@ -148,20 +149,24 @@ type
     // Forward to Code Folding
     procedure SetShowCodeFolding(const Value: boolean);
     procedure SetCodeFoldingWidth(const AValue: integer);
-    Function  GetShowCodeFolding: boolean;
-    Function  GetCodeFoldingWidth: Integer;
+    function  GetShowCodeFolding: boolean;
+    function  GetCodeFoldingWidth: Integer;
     // Forward to Line Number
     procedure SetShowLineNumbers(const Value: boolean);
     procedure SetLeadingZeros(const Value: boolean);
     procedure SetDigitCount(Value: integer);
     procedure SetZeroStart(const Value: boolean);
     procedure SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
-    Function  GetMarkupInfoLineNumber: TSynSelectedColor;
-    Function  GetDigitCount : Integer;
-    Function  GetZeroStart : Boolean;
-    Function  GetShowOnlyLineNumbersMultiplesOf : Integer;
-    Function  GetShowLineNumbers : Boolean;
-    Function  GetLeadingZeros : Boolean;
+    function GetMarkupInfoLineNumber: TSynSelectedColor;
+    function GetMarkupInfoModifiedLine: TSynSelectedColor;
+    function GetDigitCount : Integer;
+    function GetZeroStart : Boolean;
+    function GetShowOnlyLineNumbersMultiplesOf : Integer;
+    function GetShowLineNumbers : Boolean;
+    function GetLeadingZeros : Boolean;
+    // changes
+    procedure SetShowChanges(const AValue: Boolean);
+    function GetShowChanges: Boolean;
   protected
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark);
@@ -194,13 +199,15 @@ type
     property CodeFoldingWidth: integer read GetCodeFoldingWidth write SetCodeFoldingWidth
       default 14;
     // Forward to Line Number
+    property ShowChanges: Boolean read GetShowChanges write SetShowChanges default False;
     property ShowLineNumbers: boolean read GetShowLineNumbers
-      write SetShowLineNumbers default FALSE;
+      write SetShowLineNumbers default False;
     property ShowOnlyLineNumbersMultiplesOf: integer
       read GetShowOnlyLineNumbersMultiplesOf
       write SetShowOnlyLineNumbersMultiplesOf default 1;
     property ZeroStart: boolean read GetZeroStart write SetZeroStart;
     property MarkupInfoLineNumber: TSynSelectedColor read GetMarkupInfoLineNumber;
+    property MarkupInfoModifiedLine: TSynSelectedColor read GetMarkupInfoModifiedLine;
     property LeadingZeros: boolean read GetLeadingZeros write SetLeadingZeros
       default FALSE;
     property DigitCount: integer read GetDigitCount  write SetDigitCount
@@ -209,7 +216,7 @@ type
 
 implementation
 uses
-  SynEdit, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks;
+  SynEdit, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges;
 
 type  // This is until InvalidateGutterLines, can be moved to an accessible place
   SynEditAccess = Class(TCustomSynEdit);
@@ -407,13 +414,16 @@ begin
   FLineNumGutter := TSynGutterLineNumber.Create(AOwner, AFoldView, ATextDrawer);
   FGutterPartList.Add(FLineNumGutter);
 
+  FChangesGutter := TSynGutterChanges.Create(AOwner, AFoldView);
+  FGutterPartList.Add(FChangesGutter);
+
   for i := 0 to FGutterPartList.Count-1 do begin
     GutterPart[i].OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
     GutterPart[i].OnGutterClick := {$IFDEF FPC}@{$ENDIF}DoDefaultGutterClick;
   end;
 
   Color := clBtnFace;
-  Visible := TRUE;
+  Visible := True;
   Width := 30;
   LeftOffset := 16;
   FRightOffset := 2;
@@ -445,6 +455,7 @@ begin
     FCodeFoldGutter.Assign(Src.FCodeFoldGutter);
     FMarkGutter.Assign(Src.FMarkGutter);
     FLineNumGutter.Assign(Src.FLineNumGutter);
+    FChangesGutter.Assign(Src.FChangesGutter);
     DoChange(Self);
   end else
     inherited;
@@ -468,6 +479,16 @@ end;
 function TSynGutter.GetPartGutter(Index : Integer) : TSynGutterPartBase;
 begin
   Result := TSynGutterPartBase(FGutterPartList[Index]);
+end;
+
+function TSynGutter.GetShowChanges: Boolean;
+begin
+  Result := TSynGutterChanges(FChangesGutter).Visible;
+end;
+
+function TSynGutter.GetMarkupInfoModifiedLine: TSynSelectedColor;
+begin
+  Result := TSynGutterChanges(FChangesGutter).MarkupInfoModifiedLine;
 end;
 
 procedure TSynGutter.SetAutoSize(const Value: boolean);
@@ -668,9 +689,9 @@ end;
 
 constructor TSynGutterPartBase.Create;
 begin
-  Inherited Create;
+  inherited Create;
   FColor := clBtnFace;
-  FVisible := TRUE;
+  FVisible := True;
   FWidth := 10;
 end;
 
@@ -788,6 +809,11 @@ end;
 function TSynGutter.GetLeftOffset : Integer;
 begin
   Result := FMarkGutter.Width;
+end;
+
+procedure TSynGutter.SetShowChanges(const AValue: Boolean);
+begin
+  TSynGutterChanges(FChangesGutter).Visible := AValue;
 end;
 
 
