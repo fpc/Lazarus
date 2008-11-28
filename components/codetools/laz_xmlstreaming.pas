@@ -131,6 +131,9 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
+  {$IF DECLARED(UnicodeString)}
+    function ReadUnicodeString: UnicodeString; override;
+  {$IFEND}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
     {$IFDEF HasReadWriteBuf}
@@ -461,7 +464,7 @@ procedure TXMLObjectWriter.WriteUnicodeString(const Value: UnicodeString);
 begin
   GetPropertyElement('unicodestring')['value'] := System.UTF8Encode(Value);
 end;
-{$endif}
+{$IFEND}
 
 {$IFDEF HasReadWriteBuf}
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
@@ -670,6 +673,10 @@ begin
           Result:=vaExtended
         else if FElement.NodeName='widestring' then
           Result:=vaWString
+{$IF DECLARED(UnicodeString)}
+        else if FElement.NodeName='unicodestring' then
+          Result:=vaUString
+{$IFEND}
         else if FElement.NodeName='collectionproperty' then
           Result:=vaCollection
         else
@@ -1051,6 +1058,17 @@ begin
   ReadValue;
   //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
+
+{$IF DECLARED(UnicodeString)}
+function TXMLObjectReader.ReadUnicodeString: UnicodeString;
+var
+  ValueAsUTF8: String;
+begin
+  ValueAsUTF8:=FElement['value'];
+  Result:=System.UTF8Decode(ValueAsUTF8);
+  ReadValue;
+end;
+{$IFEND}
 
 procedure TXMLObjectReader.SkipComponent(SkipComponentInfos: Boolean);
 var
