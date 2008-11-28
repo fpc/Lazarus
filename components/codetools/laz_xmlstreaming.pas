@@ -82,6 +82,9 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+  {$IF DECLARED(UnicodeString)}
+    procedure WriteUnicodeString(const Value: UnicodeString); override;
+  {$IFEND}
     {$IFDEF HasReadWriteBuf}
     procedure Write(const Buffer; Count: Longint); override;
     {$ENDIF}
@@ -451,6 +454,14 @@ procedure TXMLObjectWriter.WriteWideString(const Value: WideString);
 begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
+
+{$IF DECLARED(UnicodeString)}
+procedure TXMLObjectWriter.WriteUnicodeString(const Value: UnicodeString);
+// save unicodestrings as utf8
+begin
+  GetPropertyElement('unicodestring')['value'] := System.UTF8Encode(Value);
+end;
+{$endif}
 
 {$IFDEF HasReadWriteBuf}
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);

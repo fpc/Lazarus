@@ -2,35 +2,17 @@
 
 LazarusResources.Add('TObjectInspectorDlg','FORMDATA',[
   'TPF0'#19'TObjectInspectorDlg'#18'ObjectInspectorDlg'#4'Left'#3'$'#1#6'Height'
-  +#3#157#2#3'Top'#3#175#0#5'Width'#3#19#1#11'HelpContext'#2#0#5'Align'#7#6'alN'
-  +'one'#14'AllowDropFiles'#8#10'AutoScroll'#9#8'AutoSize'#8#11'BorderIcons'#11
-  +#12'biSystemMenu'#10'biMinimize'#10'biMaximize'#0#11'BorderStyle'#7#10'bsSiz'
-  +'eable'#7'Caption'#6#18'ObjectInspectorDlg'#28'ChildSizing.LeftRightSpacing'
-  +#2#0#28'ChildSizing.TopBottomSpacing'#2#0#29'ChildSizing.HorizontalSpacing'#2
-  +#0#27'ChildSizing.VerticalSpacing'#2#0#27'ChildSizing.ControlsPerLine'#2#0#12
-  +'ClientHeight'#3#157#2#11'ClientWidth'#3#19#1#8'DockSite'#8#8'DragKind'#7#6
-  +'dkDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#11'Font.Height'#2#0#10'Font.'
-  +'Style'#11#0#9'FormStyle'#7#8'fsNormal'#10'KeyPreview'#9#8'OnResize'#7#21'Ob'
-  +'jectInspectorResize'#14'ParentBiDiMode'#9#10'ParentFont'#8#9'PopupMenu'#7#13
-  +'MainPopupMenu'#8'Position'#7#10'poDesigned'#13'ShowInTaskBar'#7#9'stDefault'
-  +#14'UseDockManager'#8#10'LCLVersion'#6#6'0.9.27'#11'WindowState'#7#8'wsNorma'
-  +'l'#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#23#3'Top'#3#134#2#5
-  +'Width'#3#19#1#11'HelpContext'#2#0#10'DragCursor'#7#6'crDrag'#8'DragKind'#7#6
-  +'dkDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#6'Panels'#14#1#9'Alignment'#7
-  +#13'taLeftJustify'#5'Width'#2'd'#0#1#9'Alignment'#7#13'taLeftJustify'#5'Widt'
-  +'h'#2'2'#0#0#14'ParentShowHint'#9#11'SimplePanel'#8#0#0#9'TComboBox'#23'Avai'
-  +'lPersistentComboBox'#4'Left'#2#0#6'Height'#2#21#3'Top'#2#0#5'Width'#3#19#1
-  +#11'HelpContext'#2#0#5'Align'#7#5'alTop'#21'ArrowKeysTraverseList'#9#12'Auto'
-  +'Complete'#8#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSear'
-  +'chAscending'#0#12'AutoDropDown'#8#10'AutoSelect'#8#8'AutoSize'#9#18'BorderS'
-  +'pacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'B'
-  +'orderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAl'
-  +'ignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'
-  +#8'CharCase'#7#8'ecNormal'#5'Ctl3D'#8#10'DragCursor'#7#6'crDrag'#8'DragMode'
-  +#7#8'dmManual'#13'DropDownCount'#2#8#7'Enabled'#9#10'ItemHeight'#2#13#9'Item'
-  +'Index'#2#255#9'ItemWidth'#2#0#9'MaxLength'#2#0#9'OnCloseUp'#7#20'AvailCombo'
-  +'BoxCloseUp'#14'ParentBidiMode'#9#11'ParentColor'#8#11'ParentCtl3D'#9#10'Par'
-  +'entFont'#9#14'ParentShowHint'#9#6'Sorted'#8#5'Style'#7#14'csDropDownList'#8
-  +'TabOrder'#2#0#7'TabStop'#9#7'Visible'#9#0#0#10'TPopupMenu'#13'MainPopupMenu'
-  +#7'OnPopup'#7#20'OnMainPopupMenuPopup'#4'left'#2#9#3'top'#2#11#0#0#0
+  +#3#157#2#3'Top'#3#175#0#5'Width'#3#19#1#11'HelpContext'#2#0#7'Caption'#6#18
+  +'ObjectInspectorDlg'#12'ClientHeight'#3#157#2#11'ClientWidth'#3#19#1#11'Font'
+  +'.Height'#2#0#10'Font.Style'#11#0#10'KeyPreview'#9#8'OnResize'#7#21'ObjectIn'
+  +'spectorResize'#9'PopupMenu'#7#13'MainPopupMenu'#10'LCLVersion'#6#6'0.9.27'#0
+  +#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#23#3'Top'#3#134#2#5'Wid'
+  +'th'#3#19#1#11'HelpContext'#2#0#6'Panels'#14#1#9'Alignment'#7#13'taLeftJusti'
+  +'fy'#5'Width'#2'd'#0#1#9'Alignment'#7#13'taLeftJustify'#5'Width'#2'2'#0#0#11
+  +'SimplePanel'#8#0#0#9'TComboBox'#23'AvailPersistentComboBox'#4'Left'#2#0#6'H'
+  +'eight'#2#21#3'Top'#2#0#5'Width'#3#19#1#11'HelpContext'#2#0#5'Align'#7#5'alT'
+  +'op'#12'AutoComplete'#8#5'Ctl3D'#8#10'ItemHeight'#2#13#9'ItemWidth'#2#0#9'On'
+  +'CloseUp'#7#20'AvailComboBoxCloseUp'#5'Style'#7#14'csDropDownList'#8'TabOrde'
+  +'r'#2#0#0#0#10'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#20'OnMainPopupMenu'
+  +'Popup'#4'left'#2#9#3'top'#2#11#0#0#0
 ]);

@@ -477,9 +477,6 @@ type
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
     procedure DoTabKey; virtual;
-
-    procedure EraseBackground(DC: HDC); override;
-
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoSelectionChange;
   public
@@ -498,6 +495,7 @@ type
     function CanEditRowValue: boolean;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
+    procedure EraseBackground(DC: HDC); override;
     function GetActiveRow: TOIPropertyGridRow;
     function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
 

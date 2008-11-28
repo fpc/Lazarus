@@ -592,7 +592,6 @@ type
       Params: TFindDeclarationParams): boolean;
   protected
     WordIsPredefinedIdentifier: TKeyWordFunctionList;
-    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
   protected
     // node caches
     procedure DoDeleteNodes; override;
@@ -697,6 +696,7 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
 
+    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure ValidateToolDependencies; override;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
