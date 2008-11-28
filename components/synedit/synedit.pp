@@ -5596,8 +5596,7 @@ begin
   {$ENDIF}
   Result := Index;
   {$IFDEF SYN_LAZARUS}
-  if Index > Lines.Count - 1 then Exit;
-  if not assigned(fHighlighter) then begin
+  if not assigned(fHighlighter) or (Index > Lines.Count - 1) then begin
     fTextView.FixFoldingAtTextIndex(Index);
     Topline := TopLine;
     exit;
@@ -5610,7 +5609,11 @@ begin
     TSynEditStrings(Lines).Ranges[0] := fHighlighter.GetRange;
   end;
   {$ENDIF}
-  if Index >= Lines.Count - 1 then Exit;
+  if Index >= Lines.Count - 1 then begin
+    fTextView.FixFoldingAtTextIndex(Index);
+    Topline := TopLine;
+    Exit;
+  end;
   //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' Line="',Lines[Index],'"');
   fHighlighter.SetLine(Lines[Result], Result);
   inc(Result);
