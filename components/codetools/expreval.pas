@@ -344,8 +344,15 @@ begin
           ErrorPos:=CurPos;
           exit;
         end;
-        Result:='0';// this can only be answered by a real compiler
-        if (not ReadNextAtom) then begin
+        if CompAtom('UNICODESTRING') then begin
+          if IsDefined('FPC_HAS_UNICODESTRING') then
+            Result:='1'
+          else
+            Result:='0';
+        end else begin
+          Result:='0';// this can only be answered by a real compiler
+        end;
+        if (not ReadNextAtom) or (not CompAtom(')')) then begin
           ErrorPos:=CurPos;
           exit;
         end;

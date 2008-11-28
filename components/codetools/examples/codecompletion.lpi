@@ -6,7 +6,6 @@
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="finddeclaration"/>
     </General>
@@ -35,13 +34,10 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <OtherUnitFiles Value="scanexamples/"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
