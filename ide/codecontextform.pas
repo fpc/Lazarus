@@ -67,13 +67,12 @@ type
     procedure MarkCurrentParameterInHints(ParameterIndex: integer); // 0 based
     procedure CalculateHintsBounds(const CodeContexts: TCodeContextInfo);
     procedure DrawHints(var MaxWidth, MaxHeight: Integer; Draw: boolean);
-  protected
-    procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetCodeContexts(const CodeContexts: TCodeContextInfo);
     procedure UpdateHints;
+    procedure Paint; override;
     property ProcNameCodeXYPos: TCodeXYPosition read FProcNameCodeXYPos;
     property ParamListBracketOpenCodeXYPos: TCodeXYPosition
                                             read FParamListBracketOpenCodeXYPos;

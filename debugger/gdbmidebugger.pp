@@ -253,11 +253,11 @@ type
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure SetLocation(const ASource: String; const ALine: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Hit(var ACanContinue: Boolean);
+    procedure SetLocation(const ASource: String; const ALine: Integer); override;
   end;
 
   { TGDBMILocals }

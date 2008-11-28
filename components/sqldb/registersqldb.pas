@@ -71,7 +71,7 @@ Type
   end;
 
   TSQLFirebirdFileNamePropertyEditor=class(TFileNamePropertyEditor)
-  protected
+  public
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
