@@ -2035,12 +2035,25 @@ begin
   {$endif}
 end;
 
-function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  QtDC: TQtDeviceContext absolute PaintDC;
+  Matrix: QMatrixH;
 begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetDCOriginRelativeToWindow] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetDCOriginRelativeToWindow] PaintDC ' + dbghex(PaintDC));
   {$endif}
+  Result := IsValidDC(PaintDC);
+  if not Result then
+    exit;
+  Matrix := QPainter_Matrix(QtDC.Widget);
+  OriginDiff := Point(0, 0);
+  if Matrix <> nil then
+  begin
+    OriginDiff.X := Round(QMatrix_Dx(Matrix));
+    OriginDiff.Y := Round(QMatrix_Dy(Matrix));
+  end;
 end;
 
 {------------------------------------------------------------------------------
