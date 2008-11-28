@@ -1415,6 +1415,7 @@ components/synedit/synedittexttrimmer.pas svneol=native#text/plain
 components/synedit/synedittypes.pp svneol=native#text/pascal
 components/synedit/synexporthtml.pas svneol=native#text/pascal
 components/synedit/syngutter.pp svneol=native#text/plain
+components/synedit/syngutterchanges.pas svneol=native#text/pascal
 components/synedit/synguttercodefolding.pp svneol=native#text/plain
 components/synedit/syngutterlinenumber.pp svneol=native#text/plain
 components/synedit/synguttermarks.pp svneol=native#text/plain
