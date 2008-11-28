@@ -581,7 +581,6 @@ var
   rcLine: TRect;
   dc: HDC;
   CodeFoldOffset: Integer;
-
 begin
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;

@@ -84,12 +84,11 @@ type
   private
     FCompletionForm: TSynBaseCompletionForm;
     FIndex: Integer;
-  protected
-    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
       AData: Pointer): TRect; override;
+    procedure Paint; override;
     property Index: Integer read FIndex write FIndex;
   end;
   {$ENDIF}

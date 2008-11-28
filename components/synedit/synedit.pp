@@ -318,7 +318,6 @@ type
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     {$IFDEF SYN_LAZARUS}
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    procedure Resize; override;
     {$ELSE}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
@@ -451,7 +450,6 @@ type
     procedure DoLinesInserted(FirstLine, Count: integer);
     procedure DoTabKey;
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
-    procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function GetBlockBegin: TPoint;
     function GetBlockEnd: TPoint;
     function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
@@ -498,7 +496,6 @@ type
     {$IFDEF SYN_LAZARUS}
     function IsBackwardSel: Boolean; // SelStart < SelEnd ?
     procedure SetTabChar(const AValue: Char);
-    function RealGetText: TCaption; override;
     {$ENDIF}
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
@@ -573,9 +570,6 @@ type
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
-    {$IFDEF SYN_LAZARUS}
-    procedure RealSetText(const Value: TCaption); override;
-    {$ENDIF}
     procedure SetTopLine(Value: Integer);
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
@@ -600,11 +594,15 @@ type
     {$IFDEF SYN_LAZARUS}
     procedure TripleClick; override;
     procedure QuadClick; override;
+    procedure Resize; override;
+    function RealGetText: TCaption; override;
+    procedure RealSetText(const Value: TCaption); override;
     {$ENDIF}
     procedure DecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
+    procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
     procedure HighlighterAttrChanged(Sender: TObject);
@@ -653,7 +651,6 @@ type
     {$IFDEF SYN_LAZARUS}
     procedure StartPaintBuffer(const ClipRect: TRect);
     procedure EndPaintBuffer(const ClipRect: TRect);
-    procedure EraseBackground(DC: HDC); override;
     {$ENDIF}
     procedure RecalcCharExtent;
     procedure RedoItem;                                                         //sbs 2000-11-19
@@ -712,6 +709,7 @@ type
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
+    procedure EraseBackground(DC: HDC); override;
     {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;

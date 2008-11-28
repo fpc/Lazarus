@@ -117,22 +117,14 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
-    function GetFoldEndLevel(Index: integer): integer; override;
-    function GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
     {$ENDIF}
     {$IFNDEF SYN_LAZARUS}                                                       // protected in SynLazarus
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
-    function GetRange(Index: integer): TSynEditRange;
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
-    procedure PutRange(Index: integer; ARange: TSynEditRange);
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
   protected
     fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
@@ -143,7 +135,13 @@ type
     fOnLineCountChanged : TStringListLineCountEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
+    function GetFoldEndLevel(Index: integer): integer; override;
+    function GetFoldMinLevel(Index: integer): integer; override;
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
     {$ENDIF}
+    function GetRange(Index: integer): TSynEditRange; {$IFDEF SYN_LAZARUS}override;{$ENDIF}
+    procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
