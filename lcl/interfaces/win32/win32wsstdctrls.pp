@@ -586,11 +586,6 @@ begin
   else
     // LB_GETCURSEL is only for single select listbox
     Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
-  if Result = LB_ERR then
-  begin
-    Assert(false, 'Trace:[TWin32WSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
-    Result := -1;
-  end;
 end;
 
 class function TWin32WSCustomListBox.GetItemRect(
