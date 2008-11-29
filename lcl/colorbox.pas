@@ -65,7 +65,7 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure DoGetColors; dynamic;
-    procedure Select; override;
+    procedure Change; override;
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -583,13 +583,13 @@ begin
     OnGetColors(Self, Items)
 end;
 
-procedure TCustomColorBox.Select;
+procedure TCustomColorBox.Change;
 begin
   if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
     PickCustomColor;
   if ItemIndex <> -1 then
     FSelected := Colors[ItemIndex];
-  inherited Select;
+  inherited Change;
 end;
 
 function TCustomColorBox.PickCustomColor: Boolean;
