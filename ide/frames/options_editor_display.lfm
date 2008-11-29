@@ -3,9 +3,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 501
   ClientHeight = 441
   ClientWidth = 501
+  TabOrder = 0
   Visible = False
-  DesignLeft = 404
-  DesignTop = 257
+  DesignLeft = 176
+  DesignTop = 232
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,19 +19,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     HelpContext = 0
     Align = alTop
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'MarginAndGutterGroupBox'
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
     ClientHeight = 110
     ClientWidth = 497
     Ctl3D = False
@@ -46,99 +35,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Width = 83
       HelpContext = 0
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'RightMarginLabel'
-      ParentColor = False
-    end
-    object RightMarginColorButton: TColorButton
-      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginComboBox
-      AnchorSideTop.Side = asrBottom
-      Left = 232
-      Height = 21
-      Top = 33
-      Width = 100
-      HelpContext = 0
-      BorderSpacing.Left = 50
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      BorderWidth = 2
-      ButtonColorSize = 16
-      ButtonColor = clBlack
-      Color = clBtnFace
-      OnColorChanged = RightMarginColorButtonColorChanged
-    end
-    object GutterColorButton: TColorButton
-      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginColorButton
-      AnchorSideTop.Side = asrBottom
-      Left = 232
-      Height = 21
-      Top = 60
-      Width = 100
-      HelpContext = 0
-      BorderSpacing.Left = 50
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      BorderWidth = 2
-      ButtonColorSize = 16
-      ButtonColor = clBlack
-      Color = clBtnFace
-      OnColorChanged = GutterColorButtonColorChanged
-    end
-    object RightMarginColorLabel: TLabel
-      AnchorSideLeft.Control = RightMarginColorButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginColorButton
-      AnchorSideTop.Side = asrCenter
-      Left = 338
-      Height = 14
-      Top = 36
-      Width = 108
-      HelpContext = 0
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Caption = 'RightMarginColorLabel'
-      ParentColor = False
-    end
-    object GutterColorLabel: TLabel
-      AnchorSideLeft.Control = GutterColorButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = GutterColorButton
-      AnchorSideTop.Side = asrCenter
-      Left = 338
-      Height = 14
-      Top = 63
-      Width = 82
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Caption = 'GutterColorLabel'
       ParentColor = False
     end
     object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
@@ -152,11 +49,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Every n-th line number'
       ParentColor = False
     end
@@ -168,13 +60,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 6
       Width = 159
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'VisibleRightMarginCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 0
@@ -189,13 +75,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 31
       Width = 133
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'VisibleGutterCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 1
@@ -210,13 +90,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 56
       Width = 160
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ShowLineNumbersCheckBox'
       OnChange = GeneralCheckBoxOnChange
       OnClick = ShowLineNumbersCheckBoxClick
@@ -234,12 +108,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       HelpContext = 0
       AutoComplete = False
       BorderSpacing.Left = 50
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Ctl3D = False
       ItemHeight = 13
       Items.Strings = (
@@ -263,13 +132,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 81
       Width = 54
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       MinValue = 1
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 4
@@ -288,19 +151,8 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     HelpContext = 0
     Align = alTop
     AutoSize = True
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'EditorFontGroupBox'
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
     ClientHeight = 87
     ClientWidth = 497
     Ctl3D = False
@@ -315,13 +167,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 36
       Width = 107
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'EditorFontHeightLabel'
       ParentColor = False
     end
@@ -335,13 +181,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 36
       Width = 108
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ExtraLineSpacingLabel'
       ParentColor = False
     end
@@ -355,13 +195,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Top = 63
       Width = 112
       HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ExtraCharSpacingLabel'
       ParentColor = False
     end
@@ -379,10 +213,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 2
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Ctl3D = False
       ItemHeight = 13
       ItemWidth = 0
@@ -402,13 +232,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Width = 25
       HelpContext = 0
       Anchors = [akTop, akRight, akBottom]
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
       BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = '...'
       OnClick = EditorFontButtonClick
       TabOrder = 1
@@ -423,13 +247,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Width = 100
       HelpContext = 0
       AutoComplete = False
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Ctl3D = False
       ItemHeight = 13
       Items.Strings = (
@@ -460,12 +278,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       HelpContext = 0
       AutoComplete = False
       BorderSpacing.Left = 20
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Ctl3D = False
       ItemHeight = 13
       Items.Strings = (
@@ -488,13 +301,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Width = 100
       HelpContext = 0
       AutoComplete = False
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
       BorderSpacing.Bottom = 6
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Ctl3D = False
       ItemHeight = 13
       Items.Strings = (
@@ -517,13 +324,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Width = 161
       HelpContext = 0
       Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'DisableAntialiasingCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 5
@@ -543,13 +344,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     Width = 501
     HelpContext = 0
     Align = alClient
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     CFDividerDrawLevel = 0
     Ctl3D = False
     Font.Height = -16
@@ -560,11 +355,12 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     ParentColor = False
     ParentFont = False
     TabOrder = 2
-    BookMarkOptions.Xoffset = 24
-    BookMarkOptions.OnChange = nil
+    BookMarkOptions.Xoffset = 30
     Gutter.ShowCodeFolding = True
+    Gutter.ShowChanges = True
     Gutter.ShowLineNumbers = True
     Gutter.ZeroStart = False
+    Gutter.DigitCount = 2
     Keystrokes = <    
       item
         Command = 3
@@ -890,6 +686,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       'DisplayPreview'
     )
     ReadOnly = True
+    SelectedColor.OnChange = nil
     BracketHighlightStyle = sbhsBoth
   end
 end

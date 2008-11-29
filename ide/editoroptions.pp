@@ -92,9 +92,11 @@ type
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
     ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine);
 
+  TSingleColorAttribute = (scaGutter, scaRightMargin);
+
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
-    (
+  (
     '',
     'Text block',
     'Execution point',
@@ -110,7 +112,13 @@ const
     'Line number',
     'Line highlight',
     'Modified line'
-    );
+  );
+
+  SingleColorAttributes: array[TSingleColorAttribute] of String =
+  (
+    dlgGutter,
+    dlgRightMargin
+  );
     
 type
   TSchemeAttribute = record
@@ -124,6 +132,7 @@ type
     Default: TSchemeAttribute;
     Attributes: array[TPascalHilightAttribute] of TSchemeAttribute;
     Additional: array[TAdditionalHilightAttribute] of TSchemeAttribute;
+    Single: array[TSingleColorAttribute] of TColor;
   end;
   
 const
@@ -155,6 +164,10 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+    );
+    Single: (
+      { shaGutter      } clBtnFace,
+      { shaRightMargin } clBtnFace
     )
   );
   
@@ -186,6 +199,10 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+    );
+    Single: (
+      { shaGutter      } clBtnFace,
+      { shaRightMargin } clBtnFace
     )
   );
 
@@ -217,6 +234,10 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+    );
+    Single: (
+      { shaGutter      } clBtnFace,
+      { shaRightMargin } clBtnFace
     )
   );
   
@@ -248,6 +269,10 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+    );
+    Single: (
+      { shaGutter      } clBtnFace,
+      { shaRightMargin } clBtnFace
     )
   );
 
@@ -279,6 +304,10 @@ const
       { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;      FC: clNone;  Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow; Styles: []; StylesMask: [])
+    );
+    Single: (
+      { shaGutter      } clBtnFace,
+      { shaRightMargin } clSilver
     )
   );
 
@@ -443,6 +472,7 @@ type
     function ReadColorScheme(const LanguageName: String): String;
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
+    function GetColorScheme(const SynColorScheme: String): TPascalColorScheme;
     procedure GetDefaultsForPascalAttribute(Attr: TSynHighlightElement;
                                             const SynColorScheme: String);
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
@@ -1749,6 +1779,23 @@ begin
   XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
 end;
 
+function TEditorOptions.GetColorScheme(const SynColorScheme: String): TPascalColorScheme;
+begin
+  case StringCase(SynColorScheme, [
+         TWILIGHT_COLOR_SCHEME.Name,
+         CLASSIC_COLOR_SCHEME.Name,
+         OCEAN_COLOR_SCHEME.Name,
+         DELPHI_COLOR_SCHEME.Name
+       ], True, False) of
+    0: Result := TWILIGHT_COLOR_SCHEME;
+    1: Result := CLASSIC_COLOR_SCHEME;
+    2: Result := OCEAN_COLOR_SCHEME;
+    3: Result := DELPHI_COLOR_SCHEME;
+  else
+    Result := DEFAULT_COLOR_SCHEME;
+  end;
+end;
+
 procedure TEditorOptions.GetDefaultsForPascalAttribute(
   Attr: TSynHighlightElement; const SynColorScheme: String);
 var
@@ -1761,19 +1808,7 @@ begin
   if AttriName = '' then
     exit;
 
-  case StringCase(SynColorScheme, [
-    TWILIGHT_COLOR_SCHEME.Name,
-    CLASSIC_COLOR_SCHEME.Name,
-    OCEAN_COLOR_SCHEME.Name,
-    DELPHI_COLOR_SCHEME.Name
-  ], True, False) of
-    0: Scheme := TWILIGHT_COLOR_SCHEME;
-    1: Scheme := CLASSIC_COLOR_SCHEME;
-    2: Scheme := OCEAN_COLOR_SCHEME;
-    3: Scheme := DELPHI_COLOR_SCHEME;
-  else
-    Scheme := DEFAULT_COLOR_SCHEME;
-  end;
+  Scheme := GetColorScheme(SynColorScheme);
 
   for pha := low(pha) to High(pha) do
   begin
@@ -1922,7 +1957,7 @@ begin
   //DebugLn(['TEditorOptions.ReadHighlighterSettings ',SynColorScheme,' Syn.ClassName=',Syn.ClassName]);
   if (SynColorScheme = '') or (Syn.LanguageName = '') then
     exit;
-  ReadDefaultsForHighlighterSettings(Syn, SynColorScheme, Nil);
+  ReadDefaultsForHighlighterSettings(Syn, SynColorScheme, nil);
   // read settings, that are different from the defaults
   FormatVersion := XMLConfig.GetValue(
     'EditorOptions/Color/Lang' + StrToValidXMLName(Syn.LanguageName) +
@@ -2098,7 +2133,7 @@ begin
   Result := True;
 end;
 
-procedure TEditorOptions.SetMarkupColors(Syn : TSrcIDEHighlighter; aSynEd : TSynEdit);
+procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);

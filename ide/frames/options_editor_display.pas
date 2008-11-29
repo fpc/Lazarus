@@ -45,11 +45,7 @@ type
     ExtraCharSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
-    GutterColorButton: TColorButton;
-    GutterColorLabel: TLabel;
     MarginAndGutterGroupBox: TGroupBox;
-    RightMarginColorButton: TColorButton;
-    RightMarginColorLabel: TLabel;
     RightMarginComboBox: TComboBox;
     RightMarginLabel: TLabel;
     ShowLineNumbersCheckBox: TCheckBox;
@@ -60,10 +56,8 @@ type
     procedure EditorFontButtonClick(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure ComboboxOnExit(Sender: TObject);
-    procedure GutterColorButtonColorChanged(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure RightMarginColorButtonColorChanged(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
@@ -179,35 +173,11 @@ begin
   end;
 end;
 
-procedure TEditorDisplayOptionsFrame.GutterColorButtonColorChanged(
-  Sender: TObject);
-var
-  a: integer;
-begin
-  with GeneralPage do
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-      begin
-        PreviewEdits[a].Gutter.Color := GutterColorButton.ButtonColor;
-        PreviewEdits[a].Invalidate;
-      end;
-end;
-
 procedure TEditorDisplayOptionsFrame.ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
-end;
-
-procedure TEditorDisplayOptionsFrame.RightMarginColorButtonColorChanged(Sender: TObject);
-var
-  a: Integer;
-begin
-  with GeneralPage do
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
 end;
 
 procedure TEditorDisplayOptionsFrame.ComboboxOnChange(Sender: TObject);
@@ -235,7 +205,6 @@ begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
         PreviewEdits[a].Gutter.ShowLineNumbers  := ShowLineNumbersCheckBox.Checked;
         PreviewEdits[a].Gutter.ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
-        PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
         if VisibleRightMarginCheckBox.Checked then
           PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80)
         else
@@ -273,8 +242,6 @@ begin
   ShowLineNumbersCheckBox.Caption := dlgShowLineNumbers;
   ShowOnlyLineNumbersMultiplesOfLabel.Caption := lisEveryNThLineNumber;
   RightMarginLabel.Caption := dlgRightMargin;
-  RightMarginColorLabel.Caption := dlgRightMarginColor;
-  GutterColorLabel.Caption := dlgGutterColor;
   EditorFontGroupBox.Caption := dlgDefaultEditorFont;
   EditorFontHeightLabel.Caption := dlgEditorFontHeight;
   ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
@@ -298,8 +265,6 @@ begin
     ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := ShowOnlyLineNumbersMultiplesOf;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
     SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin));
-    RightMarginColorButton.ButtonColor := RightMarginColor;
-    GutterColorButton.ButtonColor := GutterColor;
     SetComboBoxText(EditorFontComboBox, EditorFont);
     SetComboBoxText(EditorFontHeightComboBox, IntToStr(EditorFontHeight));
     SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing));
@@ -321,8 +286,6 @@ begin
     ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;
     RightMargin := StrToIntDef(RightMarginComboBox.Text, 80);
-    RightMarginColor := RightMarginColorButton.ButtonColor;
-    GutterColor := GutterColorButton.ButtonColor;
     EditorFont := EditorFontComboBox.Text;
     EditorFontHeight := StrToIntDef(EditorFontHeightComboBox.Text, EditorFontHeight);
     ExtraCharSpacing := StrToIntDef(ExtraCharSpacingComboBox.Text, ExtraCharSpacing);

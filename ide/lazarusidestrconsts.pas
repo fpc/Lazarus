@@ -1149,7 +1149,7 @@ resourcestring
   dlgShowLineNumbers = 'Show line numbers';
   dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';
-  dlgRightMarginColor = 'Right margin color';
+  dlgGutter = 'Gutter';
   dlgGutterWidth = 'Gutter width';
   dlgGutterColor = 'Gutter Color';
   dlgEditorFont = 'Editor font';
@@ -1167,6 +1167,7 @@ resourcestring
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
+  dlgColor = 'Color';
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
   dlgEdUseDefColor = 'Use default color';
