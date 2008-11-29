@@ -12,22 +12,28 @@ uses
     Unix,
   {$ENDIF}
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, PostScriptCanvas;
+  Buttons, PostScriptCanvas, StdCtrls;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Label1: TLabel;
+    ListBox1: TListBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
-  end; 
+  end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
 
 implementation
 
@@ -40,43 +46,127 @@ var
     Bmp : TBitMap;
     Xpm : TPixMap;
     png : TPortableNetworkGraphic;
+    x,y,tmp : Integer;
+    PsCanvas: TPostscriptCanvas;
+
+    procedure LineSample(txt:string);
+    begin
+      tmp := PsCanvas.Font.Size div 2;
+      PsCanvas.Line(x+170,y+tmp,x+170+100,y+tmp);
+      PsCanvas.TextOut(x,y,txt);
+      inc(y,tmp*3);
+    end;
+
+    procedure BrushSample(txt:string);
+    begin
+      PsCanvas.Rectangle(x,y,x+50,y+40);
+      PsCanvas.TextOut(x+55,y+40-PsCanvas.Font.Size,txt);
+      inc(y,50);
+    end;
+
+    procedure FontSample(txt:string);
+    begin
+      PsCanvas.TextOut(x,y,txt);
+      inc(y,PsCanvas.Font.Size+4);
+    end;
+
+    procedure LineSamples(AX,AY:Integer);
+    begin
+      x := AX;
+      y := AY;
+      PsCanvas.Pen.Style:=psSolid;
+      LineSample('Line style=psSolid');
+      PsCanvas.Pen.Style:=psDash;
+      LineSample('Line style=psDash');
+      PsCanvas.Pen.Style:=psDot;
+      LineSample('Line style=psDot');
+      PsCanvas.Pen.Style:=psDashDot;
+      LineSample('Line style=psDashDot');
+      PsCanvas.Pen.Style:=psDashDotDot;
+      LineSample('Line style=psDashDotDot');
+    end;
+
+    procedure BrushSamples(AX,AY:Integer);
+    begin
+      x := AX;
+      y := AY;
+      PsCanvas.Pen.Style:=psSolid;
+      PsCanvas.Brush.Color:=clBlack;
+
+      PsCanvas.Brush.Style:=bsCross;
+      BrushSample('Brush.Style:=bsCross');
+      PsCanvas.Brush.Style:=bsDiagCross;
+      BrushSample('Brush.Style:=bsDiagCross');
+      PsCanvas.Brush.Style:=bsBDiagonal;
+      BrushSample('Brush.Style:=bsBDiagonal');
+      PsCanvas.Brush.Style:=bsFDiagonal;
+      BrushSample('Brush.Style:=bsFDiagonal');
+      PsCanvas.Brush.Style:=bsVertical;
+      BrushSample('Brush.Style:=bsVertical');
+      PsCanvas.Brush.Style:=bsHorizontal;
+      BrushSample('Brush.Style:=bsHorizontal');
+    end;
+
+    procedure FontSamples(AX,AY:Integer);
+    begin
+      x := AX;
+      y := Ay;
+      PsCanvas.Font.Name:='Courier';
+      tmp := PsCanvas.Font.Size;
+      PsCanvas.Font.Style:=[fsUnderline];
+      FontSample('Underline text '+#13#10+'sample (éàçè)');
+      PsCanvas.Font.Style:=[fsUnderline,fsBold];
+      FontSample('Underline and bold text sample (éàçè)');
+      PsCanvas.Font.Style:=[fsItalic];
+      FontSample('Italic Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
+      PsCanvas.Font.Style:=[];
+      FontSample('Normal Пример AQUIтESекста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
+      PsCanvas.Font.Style:=[fsUnderline,fsBold,fsItalic];
+      FontSample('all Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
+      PsCanvas.Font.Style:=[];
+    end;
 begin
   if Sender=nil then ;
-  With TPostscriptCanvas.Create do
+  PsCanvas := TPostscriptCanvas.Create;
+  With PsCanvas do
   try
-    PageHeight:=842;
-    PageWidth:=595;
+    if ListBox1.ItemIndex=1 then begin
+      PageHeight:=792;
+      PageWidth:=612;
+    end else begin
+      PageHeight:=842;
+      PageWidth:=595;
+    end;
     TopMargin:=40;
     LeftMargin:=20;
 
     BeginDoc;
+
+    // title
     Font.Size:=24;
     Font.Style:=[fsBold,fsItalic,fsUnderline];
     TextOut(100,-10,'PostScript Canvas Lazarus sample');
+
     Font.Size:=12;
     Brush.Color:=clRed;
     Pen.Width:=1;
-    RoundRect(10,10,100,100,8,8);
+    RoundRect(10,60,60,110,8,8);
     Brush.Color:=clMaroon;
-    Rectangle(130,10,220,100);
-    Font.Name:='Courier';
-    Font.Style:=[fsUnderline];
-    TextOut(240,20,'Underline text '+#13#10+'sample (����)');
-    Font.Style:=[fsUnderline,fsBold];
-    TextOut(240,35,'Underline and bold text sample (����)');
-    Font.Style:=[fsItalic];
-    TextOut(240,50,'Italic text sample (����)');
-    Font.Style:=[];
-    TextOut(240,65,'Normal text sample (�����)');
+    Rectangle(70,60,170,110);
 
+    FontSamples(200, 60);
+
+    // green ellipse
     Pen.Style:=psSolid;
     Brush.Color:=clGreen;
     Ellipse(10,260,60,310);
 
+    // ??
     Brush.Color:=clTeal;
     Brush.Style:=bsSolid;
-    RadialPie(10,380,50,50,0,60*16);
+    RadialPie(10,360,90,440,0,60*16);
 
+    // polygon: triangle
     Pen.Style:=psSolid;
     Brush.Color:=clGray;
     Pt[0]:=Point(10,140);
@@ -84,53 +174,25 @@ begin
     Pt[2]:=Point(140,140);
     Polygon(@Pt,3,True);
 
+    // polyline: angle
     Pen.Style:=psDot;
     Pt1[0]:=Point(10,400);
     Pt1[1]:=Point(50,390);
     Pt1[2]:=Point(120,410);
     Pt1[3]:=Point(180,425);
     Polyline(@Pt1,4);
+
+    // bezier
     Brush.Color:=clAqua;
     Pen.Style:=psSolid;
     Pt1[0]:=Point(10,430);
     PolyBezier(@Pt1,4,true,True);
 
-    TextOut(240,165,'Line style=psSolid');
-    Pen.Style:=psSolid;
-    Line(360,168,450,168);
-    TextOut(240,185,'Line style=psDash');
-    Pen.Style:=psDash;
-    Line(360,188,450,188);
-    TextOut(240,205,'Line style=psDot');
-    Pen.Style:=psDot;
-    Line(360,208,450,208);
-    TextOut(240,225,'Line style=psDashDot');
-    Pen.Style:=psDashDot;
-    Line(360,228,450,228);
-    TextOut(240,245,'Line style=psDashDotDot');
-    Pen.Style:=psDashDotDot;
-    Line(360,248,450,248);
+    // line samples
 
-    Pen.Style:=psSolid;
-    Brush.Color:=clBlack;
-    Brush.Style:=bsCross;
-    Rectangle(240,260,290,300);
-    TextOut(300,285,'Brush.Style:=bsCross');
-    Brush.Style:=bsDiagCross;
-    Rectangle(240,310,290,350);
-    TextOut(300,335,'Brush.Style:=bsDiagCross');
-    Brush.Style:=bsBDiagonal;
-    Rectangle(240,360,290,400);
-    TextOut(300,385,'Brush.Style:=bsBDiagonal');
-    Brush.Style:=bsFDiagonal;
-    Rectangle(240,410,290,450);
-    TextOut(300,435,'Brush.Style:=bsFDiagonal');
-    Brush.Style:=bsVertical;
-    Rectangle(240,460,290,500);
-    TextOut(300,485,'Brush.Style:=bsVertical');
-    Brush.Style:=bsHorizontal;
-    Rectangle(240,510,290,550);
-    TextOut(300,535,'Brush.Style:=bsHorizontal');
+    LineSamples(200,165);
+
+    BrushSamples(240,280);
 
     Bmp:=TBitMap.Create;
     try
@@ -161,31 +223,12 @@ begin
     Pen.Color:=clBlack;
     Brush.Color:=clTeal;
     Brush.Style:=bsSolid;
-    Chord(10,380,50,50,0,60*16);
+    Chord(10,360,90,440,0,60*16);
 
-    Pen.Style:=psSolid;
-    Brush.Color:=clBlack;
-    Brush.Style:=bsCross;
-    Rectangle(240,260,290,300);
-    TextOut(300,285,'Brush.Style:=bsCross');
-    Brush.Style:=bsDiagCross;
-    Rectangle(240,310,290,350);
-    TextOut(300,335,'Brush.Style:=bsDiagCross');
-    Brush.Style:=bsBDiagonal;
-    Rectangle(240,360,290,400);
-    TextOut(300,385,'Brush.Style:=bsBDiagonal');
-    Brush.Style:=bsFDiagonal;
-    Rectangle(240,410,290,450);
-    TextOut(300,435,'Brush.Style:=bsFDiagonal');
-    Brush.Style:=bsVertical;
-    Rectangle(240,460,290,500);
-    TextOut(300,485,'Brush.Style:=bsVertical');
-    Brush.Style:=bsHorizontal;
-    Rectangle(240,510,290,550);
-    TextOut(300,535,'Brush.Style:=bsHorizontal');
+    BrushSamples(100,100);
 
     EndDoc;
-    SaveToFile('./test1.ps');
+    SaveToFile('test1.ps');
   finally
     Free;
   end;
@@ -206,6 +249,11 @@ begin
       Shell(format('kghostview %s',[ExpandFileNameUTF8('./test1.ps')]));
     {$ENDIF}
   end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  ListBox1.ItemIndex:=0;
 end;
 
 initialization

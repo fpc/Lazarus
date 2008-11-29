@@ -42,7 +42,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Math, Types, Graphics, Forms, GraphMath,
-  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
+  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf,
+  PostScriptUnicode;
   
 Type
 
@@ -61,11 +62,8 @@ Type
     fcPenColor     : TColor;      //Color of Pen and Brush
     fcPenWidth     : Integer;
     fcPenStyle     : TPenStyle;
-    fcLastFont     : TFont;
-    
     fPenPos        : TPoint;
-    
-    FirstUpdatefont: Boolean;
+    FPsUnicode     : TPSUnicode;
     
     procedure WriteHeader(St : String);
     procedure Write(const St : String; Lst : TstringList = nil); overload;
@@ -186,7 +184,7 @@ Const
 
 
   cFontPSMetrics : Array[0..12] of TFontPSMetrics =(
-    (Name  : 'CourierISO';
+    (Name  : 'Courier';
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -211,7 +209,7 @@ Const
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600)
      ),
-    (Name  : 'CourierISO-Bold';
+    (Name  : 'Courier-Bold';
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -236,7 +234,7 @@ Const
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600)
      ),
-    (Name  : 'CourierISO-Oblique';
+    (Name  : 'Courier-Oblique';
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -261,7 +259,7 @@ Const
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600)
      ),
-    (Name  : 'CourierISO-BoldOblique';
+    (Name  : 'Courier-BoldOblique';
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -286,7 +284,7 @@ Const
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600)
      ),
-    (Name  : 'HelveticaISO';
+    (Name  : 'Helvetica';
      Widths:  (278, 278, 355, 556, 556, 889, 667, 191,
                333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
                556, 556, 556, 556, 556, 556, 556, 556, 278, 278,
@@ -311,7 +309,7 @@ Const
                556, 556, 556, 556, 556, 556, 556, 584, 611, 556,
                556, 556, 556, 500, 556, 500)
      ),
-    (Name  : 'HelveticaISO-Bold';
+    (Name  : 'Helvetica-Bold';
      Widths: (278, 333, 474, 556, 556, 889, 722, 238,
               333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
               556, 556, 556, 556, 556, 556, 556, 556, 333, 333,
@@ -336,7 +334,7 @@ Const
               611, 611, 611, 611, 611, 611, 611, 584, 611, 611,
               611, 611, 611, 556, 611, 556)
     ),
-    (Name  : 'HelveticaISO-Oblique';
+    (Name  : 'Helvetica-Oblique';
      Widths: (278, 278, 355, 556, 556, 889, 667, 191,
               333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
               556, 556, 556, 556, 556, 556, 556, 556, 278, 278,
@@ -361,7 +359,7 @@ Const
               556, 556, 556, 556, 556, 556, 556, 584, 611, 556,
               556, 556, 556, 500, 556, 500)
     ),
-   (Name  : 'HelveticaISO-BoldOblique';
+   (Name  : 'Helvetica-BoldOblique';
     Widths: (278, 333, 474, 556, 556, 889, 722, 238,
              333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
              556, 556, 556, 556, 556, 556, 556, 556, 333, 333,
@@ -386,7 +384,7 @@ Const
              611, 611, 611, 611, 611, 611, 611, 584, 611, 611,
              611, 611, 611, 556, 611, 556)
     ),
-   (Name  : 'Times-RomanISO';
+   (Name  : 'Times-Roman';
     Widths: (250, 333, 408, 500, 500, 833, 778, 180,
              333, 333, 500, 564, 250, 333, 250, 278, 500, 500,
              500, 500, 500, 500, 500, 500, 500, 500, 278, 278,
@@ -411,7 +409,7 @@ Const
              500, 500, 500, 500, 500, 500, 500, 564, 500, 500,
              500, 500, 500, 500, 500, 500)
    ),
-  (Name  : 'TimesISO-Bold';
+  (Name  : 'Times-Bold';
    Widths: (250, 333, 555, 500, 500, 1000, 833, 278,
             333, 333, 500, 570, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -436,7 +434,7 @@ Const
             500, 556, 500, 500, 500, 500, 500, 570, 500, 556,
             556, 556, 556, 500, 556, 500)
    ),
-  (Name  : 'TimesISO-Italic';
+  (Name  : 'Times-Italic';
    Widths: (250, 333, 420, 500, 500, 833, 778, 214,
             333, 333, 500, 675, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -461,7 +459,7 @@ Const
             500, 500, 500, 500, 500, 500, 500, 675, 500, 500,
             500, 500, 500, 444, 500, 444)
    ),
-  (Name  : 'TimesISO-BoldItalic';
+  (Name  : 'Times-BoldItalic';
    Widths: (250, 389, 555, 500, 500, 833, 778, 278,
             333, 333, 500, 570, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -649,32 +647,21 @@ procedure TPostScriptPrinterCanvas.UpdateFont;
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
-  try
-    if Font.Color=clNone then
-      Font.Color:=clBlack;
-    if Font.Size=0 then
-      Font.Size:=12;
-      
-    if Font.Color<>fcPenColor then
-    begin
-      RGBColor:=ColorToRGB(Font.Color);
+  if Font.Color=clNone then
+    Font.Color:=clBlack;
+  if Font.Size=0 then
+    Font.Size:=12;
 
-      R:=Red(RGBColor)/255;
-      G:=Green(RGBColor)/255;
-      B:=Blue(RGBColor)/255;
+  if Font.Color<>fcPenColor then
+  begin
+    RGBColor:=ColorToRGB(Font.Color);
 
-      Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
-      fcPenColor:=Font.Color;
-    end;
+    R:=Red(RGBColor)/255;
+    G:=Green(RGBColor)/255;
+    B:=Blue(RGBColor)/255;
 
-    if (Font.Name<>fcLastFont.Name) or (Font.Size<>fcLastFont.Size) or
-       (Font.Style<>fcLastFont.Style) or FirstUpdatefont then
-    begin
-      FirstUpdatefont:=False;
-      Write(Format('/%s findfont %d scalefont setfont',[MappedFontName,Font.Size]));
-    end;
-  finally
-    fcLastFont.Assign(Font);
+    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
+    fcPenColor:=Font.Color;
   end;
 end;
 
@@ -683,15 +670,15 @@ function TPostScriptPrinterCanvas.MappedFontName: string;
 Var Atr : string;
 begin
   Atr:='';
-  Result:='HelveticaISO';
+  Result:='Helvetica';
   if Copy(LowerCase(Font.Name),1,5)='times' then
-    Result:='TimesISO';
+    Result:='Times';
   if (LowerCase(Font.Name)='monospaced') or (Copy(LowerCase(Font.Name),1,7)='courier') then
-    Result:='CourierISO';
+    Result:='Courier';
   if LowerCase(Font.Name)='serif' then
-    Result:='TimesISO';
+    Result:='Times';
   if LowerCase(Font.Name)='sansserif' then
-    Result:='HelveticaISO';
+    Result:='Helvetica';
   if LowerCase(Font.Name)='symbol' then
     Result:='Symbol';
 
@@ -701,10 +688,10 @@ begin
     Atr:=Atr+'Oblique';
   if (fsItalic in Font.Style) and (Pos('Times',Result)=1)  then
     Atr:=Atr+'Italic';
-  if (Result+Atr='Times') or (Result+Atr='TimesISO') then
-    Result:='Times-RomanISO';
+  if (Result+Atr='Times') or (Result+Atr='Times') then
+    Result:='Times-Roman';
 
-  WriteComment(Format('MapedFontName "%s" -> "%s"',[Font.Name,Result]));
+  //WriteComment(Format('MapedFontName "%s" -> "%s"',[Font.Name,Result]));
   
   if Atr <> '' then
     Result:=Result+'-'+Atr;
@@ -893,7 +880,6 @@ begin
   fcPenColor  :=clBlack;
   fcPenWidth  :=0;
   fcPenStyle  :=psSolid;
-  fcLastFont  :=TFont.Create;
   
   fHeader:=TStringList.Create;
   fBuffer:=TstringList.Create;
@@ -902,10 +888,12 @@ end;
 
 destructor TPostScriptPrinterCanvas.Destroy;
 begin
+  if FPSUnicode<>nil then
+    FPSUnicode.Free;
+
   fBuffer.Free;
   fHeader.Free;
   fDocument.Free;
-  fcLastFont.Free;
   
   inherited Destroy;
 end;
@@ -926,14 +914,16 @@ end;
 
 procedure TPostScriptPrinterCanvas.BeginDoc;
 begin
-  Inherited BeginDoc;
-  
+  inherited BeginDoc;
+
+  if FPSUnicode=nil then
+    FPSUnicode := TPSUnicode.Create;
+  FPSUnicode.OutLst := FDocument;
   //Clear all existing values
   //before starting an new document
   fDocument.Clear;
   fHeader.Clear;
   
-  FirstUpdatefont:=True;
   Font.Size:=12;
   Font.Color:=clBlack;
   
@@ -952,143 +942,26 @@ begin
   WriteHeader('%------------------------------------------------------------');
   WriteHeader('%================== BEGIN SETUP==============================');
   WriteHeader('');
-  WriteHeader('% ISO Fonts');
-  WriteHeader('/Helvetica findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-Oblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-Oblique exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-BoldOblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-BoldOblique exch definefont pop');
-  WriteHeader('');
-
-  WriteHeader('/Courier findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-Oblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-Oblique exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-BoldOblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-BoldOblique exch definefont pop');
-  WriteHeader('');
-
-  WriteHeader('/Times findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-Italic findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-Italic exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-BoldItalic findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-BoldItalic exch definefont pop');
-  WriteHeader('');
-
-  WriteHeader('/Times-Roman findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/Times-RomanISO exch definefont pop');
-  WriteHeader('');
-
-
-  WriteHeader('/underline_on');
-  WriteHeader('{%def');
-  WriteHeader('    /underline true def');
-  WriteHeader('    /underlineposition exch def');
-  WriteHeader('    /underlinethickness exch def');
-  WriteHeader('    /TEXT { TEXTwith } def');
-  WriteHeader('} def');
-
-  WriteHeader('/underline_off');
-  WriteHeader('{ %def');
-  WriteHeader('    /underline false def');
-  WriteHeader('    /TEXT { TEXTwithout } def');
-  WriteHeader('} def');
-
-  WriteHeader('/TEXTwithout { moveto show } bind def');
-  
-  WriteHeader('/TEXTwith { %def');
-  WriteHeader('    moveto');
-  WriteHeader('    gsave');
-  WriteHeader('       [] 0 setdash');
-  WriteHeader('       0 underlineposition rmoveto');
-  WriteHeader('       underlinethickness setlinewidth');
-  WriteHeader('       dup stringwidth rlineto stroke');
-  WriteHeader('    grestore');
-  WriteHeader('    show');
+  WriteHeader('/RE { % /NewFontName [NewEncodingArray] /FontName RE -');
+  WriteHeader('  findfont dup length dict begin');
+  WriteHeader('  {');
+  WriteHeader('    1 index /FID ne');
+  WriteHeader('    {def}');
+  WriteHeader('    {pop pop} ifelse');
+  WriteHeader('  } forall');
+  WriteHeader('  /Encoding exch def');
+  WriteHeader('  /FontName 1 index def');
+  WriteHeader('  currentdict definefont pop');
+  WriteHeader('  end');
   WriteHeader('} bind def');
-  
+  WriteHeader('');
+  WriteHeader('/scp {currentpoint /oldy exch def /oldx exch def } def');
+  WriteHeader('/rcp {oldx oldy moveto} bind def');
+  WriteHeader('/uli { 2 copy /uposy exch def /uposx exch def moveto } def');
+  WriteHeader('/ule { % underlinepenwidh underlinepos');
+  WriteHeader('scp gsave 0 exch rmoveto setlinewidth');
+  WriteHeader('uposx oldx sub 0 rlineto [] 0 setdash stroke grestore rcp } def');
+  WriteHeader('');
   WriteHeader('%%BeginProcSet: patternfill 1.0 0');
   WriteHeader('% width height matrix proc key cache');
   WriteHeader('% definepattern -\> font');
@@ -1329,10 +1202,6 @@ begin
   Write('showpage');
   Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
   write('newpath');
-  
-  // after showpage, font holds an invalid font dictionary
-  // force selection of current font
-  FirstUpdatefont:=True;
 end;
 
 //Move the current position
@@ -1768,6 +1637,19 @@ begin
   Changed;
 end;
 
+function FontStyleToInt(AStyles: TFontStyles): Integer;
+begin
+  result := 0;
+  if fsBold in AStyles then
+    result := result or (1 shl ord(fsBold));
+  if fsItalic in AStyles then
+    result := result or (1 shl ord(fsItalic));
+  if fsStrikeOut in AStyles then
+    result := result or (1 shl ord(fsStrikeout));
+  if fsUnderline in AStyles then
+    result := result or (1 shl ord(fsUnderline));
+end;
+
 //Out the text at the X,Y coord. Set the font
 procedure TPostScriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
 Var PenUnder : Real;
@@ -1775,6 +1657,9 @@ Var PenUnder : Real;
 begin
   TranslateCoord(X,Y);
   UpdateFont;
+  FPSUnicode.Font:=MappedFontName;
+  FPSUnicode.FontSize:=Font.Size;
+  FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
   //The Y origine for ps text it's Left bottom corner
   Dec(Y,Abs(Font.Size));
@@ -1785,15 +1670,14 @@ begin
     if fsBold in Font.Style then
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
-
-    write(PPCFormat('%.3f %d underline_on',[PenUnder,PosUnder]));
-    write(Format('(%s) %d %d TEXT',[MapedString(Text),X,Y]));
-    write('underline_off');
+    Write(format('%d %d uli',[X,Y]));
+    FPSUnicode.OutputString(MapedString(Text));
+    write(PPCFormat('%.3f %d ule',[PenUnder,PosUnder]));
   end
   else
   begin
     write(Format('%d %d moveto',[X,Y]));
-    write(Format('(%s) show',[MapedString(Text)]));
+    FPSUnicode.OutputString(MapedString(Text));
   end;
 
   MoveToLastPos;
@@ -1811,7 +1695,7 @@ begin
   Result.cY:=Font.Size;
 
   FontName:=MappedFontName;
-  IndexFont:=0; //By default, use CourierISO metrics
+  IndexFont:=0; //By default, use Courier metrics
   for i:=0 to High(cFontPSMetrics) do
   begin
     if cFontPSMetrics[i].Name=FontName then
