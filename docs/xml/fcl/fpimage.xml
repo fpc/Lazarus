@@ -120,7 +120,7 @@
         <short>
           <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
         <descr>
-          <printshort id="TFPCustomImage.Progress"/>
+	  <p><var>Progress</var> - method for displaying the progress of a drawing or painting action</p>
           <p>Sender: calling routine</p>
           <p>Stage: Starting, Running or Ending</p>
           <p>PercentDone: how much has been accomplished</p>
@@ -218,7 +218,7 @@
         <short>
           <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
         <descr>
-          <printshort id="TFPCustomImageHandler.Progress"/>
+	  <p><var>Progress</var> - method for displaying the progress of a drawing or painting action</p>
           <p>Sender: calling routine</p>
           <p>Stage: Starting, Running or Ending</p>
           <p>PercentDone: how much has been accomplished</p>
