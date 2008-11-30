@@ -102,7 +102,7 @@ type
     property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
-    property Width: integer read FWidth write SetWidth default 30;
+    property Width: integer read FWidth write SetWidth default 10;
     property Visible: boolean read FVisible write SetVisible default True;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -195,7 +195,7 @@ type
       default 16;
     // Forward to Code Folding
     property ShowCodeFolding: boolean read GetShowCodeFolding
-      write SetShowCodeFolding default FALSE;
+      write SetShowCodeFolding default False;
     property CodeFoldingWidth: integer read GetCodeFoldingWidth write SetCodeFoldingWidth
       default 14;
     // Forward to Line Number
@@ -211,7 +211,7 @@ type
     property LeadingZeros: boolean read GetLeadingZeros write SetLeadingZeros
       default FALSE;
     property DigitCount: integer read GetDigitCount  write SetDigitCount
-      default 4;
+      default 2;
   end;
 
 implementation

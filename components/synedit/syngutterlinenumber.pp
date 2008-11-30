@@ -240,7 +240,7 @@ begin
       s := FormatLineNumber(iLine, ShowDot);
       Inc(rcLine.Bottom, LineHeight);
       // erase the background and draw the line number string in one go
-      fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE, rcLine,
+      fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
         PChar(Pointer(S)),Length(S));
     end;
 
