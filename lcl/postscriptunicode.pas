@@ -309,7 +309,11 @@ end;
 
 procedure TPsUnicode.OutputString(S: string);
 var
+{$IFDEF FPC_HAS_UNICODESTRING}
   UStr: UnicodeString;
+{$ELSE}
+  UStr: WideString;
+{$ENDIF}
   w: word;
   i, b: Integer;
   c: byte;
