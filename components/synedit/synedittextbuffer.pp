@@ -1289,8 +1289,12 @@ begin
   end
   else
   begin
-    Start := fUnModifiedItem + 1;
+    Start := fUnModifiedItem;
     Stop := fItems.Count - 1;
+    if Stop < 0 then
+      Exit;
+    if Start < 0 then
+      Start := 0;
   end;
 
   for I := Start to Stop do
