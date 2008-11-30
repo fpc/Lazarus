@@ -601,16 +601,11 @@ var
   i: integer;
   rcLine: TRect;
   dc: HDC;
-  CodeFoldOffset: Integer;
 begin
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
-  if ShowCodeFolding then
-    CodeFoldOffset:= FCodeFoldGutter.Width
-  else
-    CodeFoldOffset:= 0;
   {$ENDIF}
 
   // currently redraw full gutter
