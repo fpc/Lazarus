@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-24 02:31+0300\n"
+"PO-Revision-Date: 2008-11-27 02:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -159,7 +159,7 @@ msgstr "Целевой процессор для ppc386 по умолчанию"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "свойство по умолчанию не найдено"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -411,7 +411,7 @@ msgstr "Обнаружено циклическое включение"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "каталоги включений: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

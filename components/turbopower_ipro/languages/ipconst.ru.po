@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 00:34+0300\n"
+"PO-Revision-Date: 2008-11-27 02:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -534,7 +534,7 @@ msgstr "Время жизни истекло во время пересборк�
 
 #: ipconst.sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
-msgstr ""
+msgstr "Время жизни истекло во время передачи"
 
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
@@ -1463,11 +1463,11 @@ msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s нельзя вызвать во время транзакции"
 
 #: ipconst.spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s нельзя вызвать во время проверки подлинности"
 
 #: ipconst.spop3okresp
 msgid "+OK"
@@ -2109,7 +2109,7 @@ msgstr "Отозванный сертификат."
 
 #: ipconst.ssslservernohandshake
 msgid "Server cid not return a handshake message."
-msgstr ""
+msgstr "Сервер не возвратил инициализационное (handshake) сообщение."
 
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
@@ -2280,7 +2280,7 @@ msgstr "Невозможно назначить запрашиваемый ад�
 
 #: ipconst.swsaeafnosupport
 msgid "Address family not supported by protocol family"
-msgstr ""
+msgstr "Семейство адресов не поддерживается семейством протоколов"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"
