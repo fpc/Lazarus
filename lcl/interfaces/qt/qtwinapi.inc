@@ -1027,7 +1027,7 @@ begin
   {$endif}
 
   Result := False;
-  if not IsValidDC(DC) then exit;
+  if not IsValidDC(DC) or IsRectEmpty(Rect) then exit;
 
   QtDC := TQtDeviceContext(DC);
 
