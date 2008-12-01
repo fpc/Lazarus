@@ -9285,9 +9285,10 @@ begin
 
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams :=
-      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[]) + ' ' +
-      PrepareCmdLineOption(SrcFilename);
+      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[cclAbsolutePaths])
+             + ' ' + PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
     // warn for ambiguous files

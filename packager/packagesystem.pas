@@ -2851,9 +2851,10 @@ begin
 
     SrcFilename:=APackage.GetSrcFilename;
     CompilerFilename:=APackage.GetCompilerFilename;
+    // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
-                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                        +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+            APackage.CompilerOptions.DefaultMakeOptionsFlags+[cclAbsolutePaths])
+            +' '+CreateRelativePath(SrcFilename,APackage.Directory);
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'" TargetCPU=',Globals.TargetCPU,' TargetOS=',Globals.TargetOS]);
 
     // check if compilation is needed and if a clean build is needed

@@ -391,8 +391,8 @@ begin
   try
     // create compiler command line options
     CmdLineParams:=Options.MakeOptionsString(BogusFilename,nil,
-                              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption])
-                   +' '+BogusFilename;
+              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,cclAbsolutePaths])
+              +' '+BogusFilename;
 
     CompileTool:=TExternalToolOptions.Create;
     CompileTool.Title:=dlgCCOTestToolCompilingEmptyFile;
