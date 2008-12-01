@@ -153,8 +153,10 @@ end;
 
 procedure TDBMemo.EditingDone;
 begin
-  FDataLink.UpdateRecord;
-  inherited EditingDone;
+  if FDataLink.CanModify and FDatalink.Editing then begin
+    FDataLink.UpdateRecord;
+    inherited EditingDone;
+  end;
 end;
 
 procedure TDBMemo.Change;
