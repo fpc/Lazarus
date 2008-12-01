@@ -4695,11 +4695,19 @@ begin
   VisualChange;
 
   // adjust editor bounds
-  if IsColumn and (Index<=NewCol) then
-    Inc(NewCol)
-  else
-  if (not IsColumn) and (Index<=NewRow) then
-    Inc(NewRow);
+  if IsColumn then begin
+    if NewCol<FixedCols then
+      NewCol := FixedCols
+    else
+    if Index<=NewCol then
+      Inc(NewCol);
+  end else begin
+    if NewRow<FixedRows then
+      NewRow := FixedRows
+    else
+    if Index<=NewRow then
+      Inc(NewRow);
+  end;
   AdjustEditorBounds(NewCol, NewRow)
 end;
 
