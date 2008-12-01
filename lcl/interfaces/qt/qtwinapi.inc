@@ -944,9 +944,6 @@ var
 
     ColorLeftTop := clNone;
     ColorRightBottom := clNone;
-    EdgeQtColor.ColorSpec := 1; // rgb
-    EdgeQtColor.Alpha := $FFFF;
-    EdgeQtColor.Pad := 0;
 
     if Outer then
     begin
@@ -977,8 +974,6 @@ var
 
     if grfFlags and BF_DIAGONAL = 0 then
     begin
-      if grfFlags and BF_MONO = 0 then
-        ColorLeftTop := ColorToRgb(ColorLeftTop);
 
       APen := TQtPen.Create(True);
       ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
@@ -994,9 +989,6 @@ var
       APen.Free;
       APen := TQtPen.Create(True);
 
-      if grfFlags and BF_MONO = 0 then
-        ColorRightBottom := ColorToRgb(ColorRightBottom);
-
       ColorRefToTQColor(ColorRightBottom, EdgeQtColor);
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.SetPen(APen);
@@ -1010,8 +1002,6 @@ var
     end
     else
     begin
-      if grfFlags and BF_MONO = 0 then
-        ColorRightBottom := ColorToRgb(ColorRightBottom);
 
       APen := TQtPen.Create(True);
       ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
@@ -1041,7 +1031,7 @@ begin
   ClientRect := Rect;
   Dec(ClientRect.Right, 1);
   Dec(ClientRect.Bottom, 1);
-  QPainter_save(QtDC.Widget);
+  QtDC.save;
   try
     ColorDark := ColorToRGB(cl3DDkShadow);
     ColorLight := ColorToRGB(cl3DLight);
@@ -1087,7 +1077,7 @@ begin
 
     Result := True;
   finally
-    QPainter_restore(QtDC.Widget);
+    QtDC.Restore;
   end;
 
 end;
