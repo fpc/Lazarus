@@ -911,7 +911,8 @@ begin
   QtDC.save;
   try
     QStyleOption_setRect(StyleOption, @Rect);
-    QPainter_setClipRect(QtDC.Widget, @Rect);
+    if not QtDC.getClipping then
+      QtDC.setClipRect(Rect);
     QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
     Result := True;
   finally

@@ -355,6 +355,7 @@ type
     function getRegionType(ARegion: QRegionH): integer;
     function getClipRegion: TQtRegion;
     procedure setClipping(const AValue: Boolean);
+    procedure setClipRect(const ARect: TRect);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
     procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect;
@@ -2482,6 +2483,11 @@ end;
 procedure TQtDeviceContext.setClipping(const AValue: Boolean);
 begin
   QPainter_setClipping(Widget, AValue);
+end;
+
+procedure TQtDeviceContext.setClipRect(const ARect: TRect);
+begin
+  QPainter_setClipRect(Widget, @ARect);
 end;
 
 procedure TQtDeviceContext.setClipRegion(ARegion: QRegionH;
