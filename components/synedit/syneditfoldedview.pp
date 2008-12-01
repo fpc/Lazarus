@@ -136,6 +136,7 @@ type
     Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
     Function FindLastFold : TSynTextFoldAVLNode;
     Function FindFirstFold : TSynTextFoldAVLNode;
+    procedure debug;
   end;
 
   TSynEditCodeFoldType = (
@@ -757,6 +758,23 @@ begin
   Result.fFoldedBefore := 0; // first fold
 end;
 
+procedure TSynTextFoldAVLTree.debug;
+  function debug2(ind, typ : String; ANode, AParent : TSynTextFoldAVLNodeData; offset : integer) :integer;
+  begin
+    result := 0;
+    if ANode = nil then exit;
+    with ANode do
+      DebugLn([ind,typ,' LineOffset: ',LineOffset,',  LineCount: ', LineCount,',  LeftCount: ',LeftCount,',  Balance: ',Balance,'    ##Line=', offset+LineOffset]);
+    if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
+    Result := debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
+    If Result <> ANode.LeftCount then  debugln([ind,'   ***** Leftcount was ',Result, ' but should be ', ANode.LeftCount]);
+    Result += debug2(ind+'   ', 'R', ANode.Right, ANode, offset+ANode.LineOffset);
+    debug2(ind+'  #', 'N', ANode.Nested, nil, offset+ANode.LineOffset);
+    Result += ANode.LineCount;
+  end;
+begin
+  debug2('', '-', fRoot, nil, 0);
+end;
 
 function TSynTextFoldAVLTree.InsertNewFold(ALine, ACount : Integer) : TSynTextFoldAVLNode;
 var
@@ -989,50 +1007,65 @@ begin
   Result := rFoldedBefore;
 end;
 
-procedure TSynTextFoldAVLTree.RemoveNode(ANode : TSynTextFoldAVLNodeData);
-var OldParent, Successor, OldSuccParent, OldSuccRight,
-  OldSubTree : TSynTextFoldAVLNodeData;
-  OldBalance, SuccOffset, SuccLeftCount : integer;
+procedure TSynTextFoldAVLTree.RemoveNode(ANode: TSynTextFoldAVLNodeData);
+var OldParent, Precessor, PrecOldParent, PrecOldLeft,
+  OldSubTree: TSynTextFoldAVLNodeData;
+  OldBalance, PrecOffset, PrecLeftCount: integer;
+
 begin
   if ((ANode.Left<>nil) and (ANode.Right<>nil)) then begin
-    // DelNode has both: Left and Right
-    Successor := ANode.Right;
-    SuccOffset := ANode.LineOffset;
-    while (Successor.Left<>nil) do begin
-      SuccOffset := SuccOffset + Successor.LineOffset;
-      Successor := Successor.Left;
+    PrecOffset := 0;
+//    PrecOffset := ANode.LineOffset;
+    Precessor := ANode.Left;
+    while (Precessor.Right<>nil) do begin
+      PrecOffset := PrecOffset + Precessor.LineOffset;
+      Precessor := Precessor.Right;
     end;
+(*                            *OR*
+ PnL              PnL
+   \               \
+   Precessor       Anode
+   /               /
+  *               *                     PnL             PnL
+ /               /                        \               \
+AnL   AnR       AnL      AnR        Precessor   AnR       AnL      AnR
+  \   /           \      /                  \   /           \      /
+   Anode          Precessor()               Anode          Precessor()
+*)
+    OldBalance := ANode.Balance;
+    ANode.Balance     := Precessor.Balance;
+    Precessor.Balance := OldBalance;
 
     // Successor.Left = nil
-    OldSuccRight := Successor.Right;
-    OldSuccParent := Successor.Parent;
-
-    OldBalance := ANode.Balance;
-    ANode.Balance     := Successor.Balance;
-    Successor.Balance := OldBalance;
+    PrecOldLeft   := Precessor.Left;
+    PrecOldParent := Precessor.Parent;
 
     if (ANode.Parent<>nil)
-    then ANode.Parent.ReplaceChild(ANode, Successor, +SuccOffset)
-    else SetRoot(Successor, SuccOffset);
+    then ANode.Parent.ReplaceChild(ANode, Precessor, PrecOffset + ANode.LineOffset)
+    else SetRoot(Precessor, PrecOffset + ANode.LineOffset);
 
-    SuccLeftCount := Successor.LeftCount;
-    Successor.SetLeftChild(ANode.Left, +ANode.LineOffset -Successor.LineOffset, ANode.LeftCount);
+    Precessor.SetRightChild(ANode.Right,
+                           +ANode.LineOffset-Precessor.LineOffset);
 
-    if (OldSuccParent<>ANode) then begin
-      // at least one node between ANode and Successor ==> Successor = OldSuccParent.Left 
-      Successor.SetRightChild(ANode.Right, +ANode.LineOffset-Successor.LineOffset);
-      // ANode.Left will be empty / ANode.Right will be Succesor.Right
-      // Successor.LeftCount := ANode.LineCount + CountTree(Successor.Right)
-      OldSuccParent.SetLeftChild(ANode, -ANode.LineOffset, ANode.LineCount +OldSuccParent.LeftCount -SuccLeftCount -Successor.LineCount);
-      ANode.SetRightChild(OldSuccRight, Successor.LineOffset - SuccOffset);  // the original succ.lineoffset {TODO: keep in var }
+    PrecLeftCount := Precessor.LeftCount;
+    // ANode.Right will be empty  // ANode.Left will be Succesor.Left
+    if (PrecOldParent = ANode) then begin
+      // Precessor is left son of ANode
+      // set ANode.LineOffset=0 => LineOffset for the Prec-Children is already correct;
+      Precessor.SetLeftChild(ANode, -ANode.LineOffset,
+                             PrecLeftCount + ANode.LineCount);
+      ANode.SetLeftChild(PrecOldLeft, 0, PrecLeftCount);
     end else begin
-      // Successor is right son of ANode ==> OldSuccParent = ANode;
-      Successor.SetRightChild(ANode, -ANode.LineOffset);
-      ANode.SetRightChild(OldSuccRight, 0);
+      // at least one node between ANode and Precessor ==> Precessor = PrecOldParent.Right
+      Precessor.SetLeftChild(ANode.Left, +ANode.LineOffset - Precessor.LineOffset,
+                             ANode.LeftCount + ANode.LineCount - Precessor.LineCount);
+      PrecOffset:=PrecOffset + ANode.LineOffset - Precessor.LineOffset;
+      // Set Anode.LineOffset, so ANode movesinto position of Precessor;
+      PrecOldParent.SetRightChild(ANode, - ANode.LineOffset -  PrecOffset);
+      ANode.SetLeftChild(PrecOldLeft, 0, PrecLeftCount);
     end;
 
-    ANode.Left := nil;
-    ANode.LeftCount     := 0;
+    ANode.Right := nil;
   end;
 
   if (ANode.Right<>nil) then begin
@@ -1254,6 +1287,17 @@ begin
       OldLeftRightLeft := OldLeftRight.Left;
       OldLeftRightRight := OldLeftRight.Right;
       
+(*
+ OLR-Left   OLR-Right
+      \     /
+      OldLeftRight          OLR-Left    OLR-Right
+       /                       /            \
+   OldLeft                 OldLeft         ANode
+      \                         \           /
+     ANode                       OldLeftRight
+       |                            |
+     OldParent                   OldParent  (or root)
+*)
       if (OldParent<>nil)
       then OldParent.ReplaceChild(ANode, OldLeftRight, ANode.LineOffset + OldLeft.LineOffset)
       else SetRoot(OldLeftRight, ANode.LineOffset + OldLeft.LineOffset);
@@ -1857,18 +1901,8 @@ begin
 end;
 
 procedure TSynEditFoldedView.debug;
-  procedure debug2(ind, typ : String; ANode, AParent : TSynTextFoldAVLNodeData; offset : integer);
-  begin
-    if ANode = nil then exit;
-    with ANode do
-      DebugLn([ind,typ,' LineOffset: ',LineOffset,',  LineCount: ', LineCount,',  LeftCount: ',LeftCount,',  Balance: ',Balance,'    ##Line=', offset+LineOffset]);
-    if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
-    debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
-    debug2(ind+'   ', 'R', ANode.Right, ANode, offset+ANode.LineOffset);
-    debug2(ind+'  #', 'N', ANode.Nested, nil, offset+ANode.LineOffset);
-  end;
 begin
-  debug2('', '-', fFoldTree.fRoot, nil, 0);
+  fFoldTree.debug;
 end;
 
 
