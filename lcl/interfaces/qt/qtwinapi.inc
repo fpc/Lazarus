@@ -1054,10 +1054,13 @@ begin
     end;
     try
       if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
-        InternalDrawEdge(True, Rect);
+        InternalDrawEdge(True, ClientRect);
       InflateRect(ClientRect, -1, -1);
       if grfFlags and BF_MONO = 0 then
-        ColorDark := ColorToRGB(clBtnFace);
+      begin
+        ColorLight := ColorToRGB(clBtnHiLight);
+        ColorDark := ColorToRGB(clBtnShadow);
+      end;
       if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
       begin
         InternalDrawEdge(False, ClientRect);
@@ -1065,6 +1068,9 @@ begin
       end;
     finally
     end;
+
+    inc(ClientRect.Right);
+    inc(ClientRect.Bottom);
 
     if grfFlags and BF_MIDDLE <> 0 then
     begin
