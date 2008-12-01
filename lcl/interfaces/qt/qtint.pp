@@ -36,6 +36,9 @@ interface
 {$endif}
  
 uses 
+  {$IFDEF MSWINDOWS}
+  Windows, // used to retrieve correct caption color values
+  {$ENDIF}
   // Bindings - qt4 must come first to avoid type redefinition problems
   qt4,
   // FPC
