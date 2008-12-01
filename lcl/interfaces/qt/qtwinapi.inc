@@ -1043,8 +1043,8 @@ begin
   Dec(ClientRect.Bottom, 1);
   QPainter_save(QtDC.Widget);
   try
-    ColorDark := ColorToRGB(clBtnShadow);
-    ColorLight := ColorToRGB(clBtnHighlight);
+    ColorDark := ColorToRGB(cl3DDkShadow);
+    ColorLight := ColorToRGB(cl3DLight);
     if grfFlags and BF_FLAT <> 0 then
       ColorLight := clSilver;
     if grfFlags and BF_MONO <> 0 then
