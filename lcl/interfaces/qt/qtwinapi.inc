@@ -3698,7 +3698,8 @@ begin
 
   TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
-  LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
+  if TQtDeviceContext(DC).pen.getCosmetic then
+    LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
   MoveToEx(DC, X, Y, nil);
   
