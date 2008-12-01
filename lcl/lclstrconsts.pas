@@ -338,6 +338,28 @@ resourceString
 
   // colorbox
   rsCustomColorCaption = 'Custom ...';
+  rsBlackColorCaption = 'Black';
+  rsMaroonColorCaption = 'Maroon';
+  rsGreenColorCaption = 'Green';
+  rsOliveColorCaption = 'Olive';
+  rsNavyColorCaption = 'Navy';
+  rsPurpleColorCaption = 'Purple';
+  rsTealColorCaption = 'Teal';
+  rsGrayColorCaption = 'Gray';
+  rsSilverColorCaption = 'Silver';
+  rsRedColorCaption = 'Red';
+  rsLimeColorCaption = 'Lime';
+  rsYellowColorCaption = 'Yellow';
+  rsBlueColorCaption = 'Blue';
+  rsFuchsiaColorCaption = 'Fuchsia';
+  rsAquaColorCaption = 'Aqua';
+  rsWhiteColorCaption = 'White';
+  rsMoneyGreenColorCaption = 'Money Green';
+  rsSkyBlueColorCaption = 'Sky Blue';
+  rsCreamColorCaption = 'Cream';
+  rsMedGrayColorCaption = 'Medium Gray';
+  rsNoneColorCaption = 'None';
+  rsDefaultColorCaption = 'Default';
   rsScrollBarColorCaption = 'ScrollBar';
   rsBackgroundColorCaption = 'Desktop';
   rsActiveCaptionColorCaption = 'Active Caption';

@@ -272,6 +272,28 @@ function GetPrettyColorName(ColorName: String): String;
         NewColorName := rsScrollBarColorCaption
       else
         case Color of
+          clBlack                   : NewColorName := rsBlackColorCaption;
+          clMaroon                  : NewColorName := rsMaroonColorCaption;
+          clGreen                   : NewColorName := rsGreenColorCaption;
+          clOlive                   : NewColorName := rsOliveColorCaption;
+          clNavy                    : NewColorName := rsNavyColorCaption;
+          clPurple                  : NewColorName := rsPurpleColorCaption;
+          clTeal                    : NewColorName := rsTealColorCaption;
+          clGray                    : NewColorName := rsGrayColorCaption;
+          clSilver                  : NewColorName := rsSilverColorCaption;
+          clRed                     : NewColorName := rsRedColorCaption;
+          clLime                    : NewColorName := rsLimeColorCaption;
+          clYellow                  : NewColorName := rsYellowColorCaption;
+          clBlue                    : NewColorName := rsBlueColorCaption;
+          clFuchsia                 : NewColorName := rsFuchsiaColorCaption;
+          clAqua                    : NewColorName := rsAquaColorCaption;
+          clWhite                   : NewColorName := rsWhiteColorCaption;
+          clMoneyGreen              : NewColorName := rsMoneyGreenColorCaption;
+          clSkyBlue                 : NewColorName := rsSkyBlueColorCaption;
+          clCream                   : NewColorName := rsCreamColorCaption;
+          clMedGray                 : NewColorName := rsMedGrayColorCaption;
+          clNone                    : NewColorName := rsNoneColorCaption;
+          clDefault                 : NewColorName := rsDefaultColorCaption;
           clBackground              : NewColorName := rsBackgroundColorCaption;
           clActiveCaption           : NewColorName := rsActiveCaptionColorCaption;
           clInactiveCaption         : NewColorName := rsInactiveCaptionColorCaption;
