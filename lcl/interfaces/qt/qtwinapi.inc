@@ -4069,12 +4069,17 @@ begin
       QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
     else
     begin
+      {$IFDEF UNIX}
+      {looks like a qt bug, this helps to mac & linux}
+      QPainter_setClipping(Painter, False);
+      {$ELSE}
       EmptyRegion := QRegion_create;
       try
         QPainter_setClipRegion(Painter, EmptyRegion, QtNoClip);
       finally
         QRegion_destroy(EmptyRegion);
       end;
+      {$ENDIF}
     end;
     if QPainter_hasClipping(Painter) then
     begin
