@@ -908,12 +908,15 @@ begin
 
   QtDC := TQtDeviceContext(DC);
   StyleOption := QStyleOptionFocusRect_create;
+  QtDC.save;
   try
     QStyleOption_setRect(StyleOption, @Rect);
+    QPainter_setClipRect(QtDC.Widget, @Rect);
     QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
     Result := True;
   finally
     QStyleOptionFocusRect_destroy(StyleOption);
+    QtDC.restore;
   end;
 
 end;
