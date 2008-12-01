@@ -180,25 +180,17 @@ end;
 
 procedure TOIOptionsFrame.ColorsListBoxGetColors(Sender: TCustomColorListBox;
   Items: TStrings);
-
-const
-  ColorName: array[TOIColor] of String = (
-    dlgBackColor,
-    dlgGutterColor,
-    dlgGutterEdgeColor,
-    dlgHighlightColor,
-    dlgHighlightFontColor,
-    dlgPropNameColor,
-    dlgValueColor,
-    dlgDefValueColor,
-    dlgSubPropColor,
-    dlgReferenceColor
-  );
-var
-  OIColor: TOIColor;
 begin
-  for OIColor := Low(TOIColor) to High(TOIColor) do
-    Items.Add(ColorName[OIColor]);
+  Items.Add(dlgBackColor);
+  Items.Add(dlgGutterColor);
+  Items.Add(dlgGutterEdgeColor);
+  Items.Add(dlgHighlightColor);
+  Items.Add(dlgHighlightFontColor);
+  Items.Add(dlgPropNameColor);
+  Items.Add(dlgValueColor);
+  Items.Add(dlgDefValueColor);
+  Items.Add(dlgSubPropColor);
+  Items.Add(dlgReferenceColor);
 end;
 
 procedure TOIOptionsFrame.ChangeColor(AIndex: Integer; NewColor: TColor);
