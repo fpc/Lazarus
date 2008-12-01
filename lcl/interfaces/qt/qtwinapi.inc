@@ -2749,12 +2749,15 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     Returns:  TColor
 
   ------------------------------------------------------------------------------}
-  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
+  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): TColor;
   var
     Handle : QPaletteH;
   begin
     Handle := QPalette_create;
-    QApplication_palette(Handle);
+    if ClassName = nil then
+      QApplication_palette(Handle)
+    else
+      QApplication_palette(Handle, ClassName);
 
     Result := GetPaletteColor(Handle, Group, Role);
 
@@ -2777,10 +2780,8 @@ begin
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
     {$ENDIF}
     COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
     COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
@@ -2819,6 +2820,10 @@ begin
     COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
     COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
   {$ENDIF}
+    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
+    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
+    COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
+    COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
     COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
   else
     Result:=0;
