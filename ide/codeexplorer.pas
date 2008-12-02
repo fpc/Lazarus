@@ -303,7 +303,7 @@ begin
   DirectivesPage.Caption:=lisDirectives;
   
 
-  RefreshSpeedButton.LoadGlyphFromLazarusResource('refresh');
+  RefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
   OptionsSpeedButton.LoadGlyphFromLazarusResource('menu_editor_options');
 
   ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');

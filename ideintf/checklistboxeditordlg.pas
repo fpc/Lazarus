@@ -105,11 +105,11 @@ end;
 procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
 begin
   ToolBar.Images := IDEImages.Images_16;
-  tbAdd.ImageIndex := IDEImages.LoadImage(16, 'add');
-  tbDelete.ImageIndex := IDEImages.LoadImage(16, 'delete');
+  tbAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  tbDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
   tbUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   tbDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
-  tbEdit.ImageIndex := IDEImages.LoadImage(16, 'edit');
+  tbEdit.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
 
   Caption := clbCheckListBoxEditor;
   BtnOK.Caption := oisOk;

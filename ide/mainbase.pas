@@ -355,7 +355,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
 
-    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'open');
+    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'laz_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
@@ -372,7 +372,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
 
-    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'refresh');
+    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'laz_refresh');
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit, 'menu_exit');
   end;
 end;
@@ -392,9 +392,9 @@ begin
     CreateMenuSeparatorSection(mnuEdit,itmEditClipboard,'itmEditClipboard');
     ParentMI:=itmEditClipboard;
 
-    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'cut');
-    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'copy');
-    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'paste');
+    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'laz_cut');
+    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'laz_copy');
+    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'laz_paste');
 
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockIndentation,'itmEditBlockIndentation');
     ParentMI:=itmEditBlockIndentation;

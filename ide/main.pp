@@ -1623,7 +1623,7 @@ begin
   ButtonLeft := 2;
   MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'item_unit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
 
-  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'open'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
+  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'laz_open'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
 
   // store left
   n := ButtonLeft;

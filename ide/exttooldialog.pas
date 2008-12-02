@@ -523,9 +523,9 @@ begin
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
-  AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
-  RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'delete');
-  EditButton.ImageIndex := IDEImages.LoadImage(16, 'edit');
+  AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  EditButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 

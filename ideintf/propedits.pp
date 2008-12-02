@@ -3605,8 +3605,8 @@ begin
   DeleteButton.Caption := oiColEditDelete;
   MoveUpButton.Caption := oiColEditUp;
   MoveDownButton.Caption := oiColEditDown;
-  AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
-  DeleteButton.ImageIndex := IDEImages.LoadImage(16, 'delete');
+  AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  DeleteButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
   MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 end;

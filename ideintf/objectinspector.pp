@@ -3777,13 +3777,13 @@ begin
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
-     oisCutComponents,'Cut selected item', 'cut',
+     oisCutComponents,'Cut selected item', 'laz_cut',
      @OnCutPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
-     oisCopyComponents,'Copy selected item', 'copy',
+     oisCopyComponents,'Copy selected item', 'laz_copy',
      @OnCopyPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
-     oisPasteComponents,'Paste selected item', 'paste',
+     oisPasteComponents,'Paste selected item', 'laz_paste',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
      oisDeleteComponents,'Delete selected item', '',

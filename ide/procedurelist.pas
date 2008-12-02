@@ -267,7 +267,7 @@ begin
   
   // assign resource images to toolbuttons
   TB.Images := IDEImages.Images_16;
-  tbCopy.ImageIndex        := IDEImages.LoadImage(16, 'copy');
+  tbCopy.ImageIndex        := IDEImages.LoadImage(16, 'laz_copy');
   tbChangeFont.ImageIndex  := IDEImages.LoadImage(16, 'item_font');
   tbAbout.ImageIndex       := IDEImages.LoadImage(16, 'menu_information');
   tbJumpTo.ImageIndex      := IDEImages.LoadImage(16, 'menu_goto_line');

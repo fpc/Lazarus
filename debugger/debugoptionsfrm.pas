@@ -426,8 +426,8 @@ begin
   bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
   cmdExceptionRemove.Caption := lisExtToolRemove;
   cmdExceptionAdd.Caption := lisCodeTemplAdd;
-  cmdExceptionRemove.LoadGlyphFromLazarusResource('delete');
-  cmdExceptionAdd.LoadGlyphFromLazarusResource('add');
+  cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
+  cmdExceptionAdd.LoadGlyphFromLazarusResource('laz_add');
   chkBreakOnException.Caption := lisDebugOptionsFrmBreakOnLazarusExceptions;
   
   pgSignals.Caption := lisDebugOptionsFrmOSExceptions;
@@ -438,8 +438,8 @@ begin
   lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
   cmdSignalAdd.Caption := lisCodeTemplAdd;
   cmdSignalRemove.Caption := lisExtToolRemove;
-  cmdSignalAdd.LoadGlyphFromLazarusResource('add');
-  cmdSignalRemove.LoadGlyphFromLazarusResource('delete');
+  cmdSignalAdd.LoadGlyphFromLazarusResource('laz_add');
+  cmdSignalRemove.LoadGlyphFromLazarusResource('laz_delete');
 
   mnuHandledByProgram.Caption := lisDebugOptionsFrmHandledByProgram;
   mnuiHandledByDebugger.Caption := lisDebugOptionsFrmHandledByDebugger;

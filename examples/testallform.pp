@@ -2250,7 +2250,7 @@ SpeedButton1 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph.LoadFromLazarusResource('open');
+     Glyph.LoadFromLazarusResource('laz_open');
      Visible := True;
   end;
 

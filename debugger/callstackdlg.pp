@@ -340,7 +340,7 @@ begin
   Imagelist1.AddLazarusResource('callstack_top');
   Imagelist1.AddLazarusResource('callstack_bottom');
   Imagelist1.AddLazarusResource('callstack_goto');
-  Imagelist1.AddLazarusResource('copy');
+  Imagelist1.AddLazarusResource('laz_copy');
 end;
 
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
