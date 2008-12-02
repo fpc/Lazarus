@@ -225,7 +225,7 @@ begin
   if CaseSensetive then
     Result := Pos(SubStr, Trc[TrcIndex])>0
   else // slow?
-    Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0
+    Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
 end;
 
 function THeapTrcInfo.TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
@@ -260,7 +260,10 @@ begin
   TraceInfo.ExeName := Trc[TrcIndex];
   inc(TrcIndex);
 
-  if not PosInTrc('Heap dump') then Exit;
+  while (TrcIndex < Trc.Count) and (not PosInTrc('Heap dump')) do
+    inc(TrcIndex);
+
+  if TrcIndex >= Trc.Count then Exit;
   inc(TrcIndex);
 
   with TraceInfo do begin
@@ -329,7 +332,8 @@ end;
 function THeapTrcInfo.GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean;
 begin
   Result := false;
-  if not FileExistsUTF8(fTRCFile) then Exit;
+  if not FileExistsUTF8(fTRCFile) then
+    Exit;
   try
     Trc := TStringList.Create;
     try
