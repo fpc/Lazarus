@@ -440,6 +440,7 @@ begin
 
     Result := TCarbonBitmap(ImgHandle);
   finally
+    ARawImage.FreeData;
     DstImage.Free;
   end;
 end;
