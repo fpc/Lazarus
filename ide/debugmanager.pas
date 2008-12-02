@@ -703,6 +703,7 @@ begin
   FManager := AManager;
   inherited Create(TManagedException);
 
+  Add('EAbort');
   Add('ECodetoolError');
   Add('EFOpenError');
 end;
