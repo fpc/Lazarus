@@ -337,10 +337,10 @@ begin
     w := word(UStr[i]);
     b := BlockFor(w);
 
-    FontIndex := IndexOfFont(Font, FontSize, 0, b);
+    FontIndex := IndexOfFont(Font, FontSize, FontStyle, b);
     if (FontIndex<0) or (FontIndex<>FLastFontIndex) then begin
       EmitSubStr;
-      FontStr := SelectFont(Font, FontSize, 0, b);
+      FontStr := SelectFont(Font, FontSize, FontStyle, b);
     end;
 
     c := byte(w-FBlocks[b].Ini);
@@ -460,7 +460,7 @@ begin
   i := FUsedFonts.IndexOf(EncScaledFont);
   if i<0 then begin
     i := FUsedFonts.Add(EncScaledFont);
-    OutLst.Add(format('/%s { /%s findfont %d scalefont setfont } bind def',
+    OutLst.Add(format('/%s { /%s %d selectfont } bind def',
       [EncScaledFont,EncFont,AFontSize]));
     OutLst.Add('');
   end;
