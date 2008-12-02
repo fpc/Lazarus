@@ -28,7 +28,7 @@ type
     function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     { Objective-C compatible methods }
-    class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
+    class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
 
 const
