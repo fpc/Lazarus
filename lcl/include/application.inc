@@ -125,11 +125,15 @@ begin
   FFindGlobalComponentEnabled:=true;
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
 
+  {$ifndef wince}// remove ifdef when gettext is fixed
   GetLanguageIDs(LangDefault, LangFallback);
   if LangDefault <> '' then
     FBidiMode := BidiModeMap[IsRTLLang(LangDefault)]
   else
     FBidiMode := BidiModeMap[IsRTLLang(LangFallback)];
+  {$else}
+    FBidiMode := bdLeftToRight;
+  {$endif}
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
