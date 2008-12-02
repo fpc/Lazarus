@@ -35,7 +35,6 @@ type
     fPopUp: TPopUpMenu;
     fStatusBar: TStatusBar;
     fContext: THelpContext;
-    fPendingChm: TChmReader;
   protected
     fIsUsingHistory: Boolean;
     fChms: TChmFileList;
@@ -44,11 +43,13 @@ type
     fStopTimer: Boolean;
     fFillingToc: Boolean;
 
+    function  MakeURI(AUrl: String; AChm: TChmReader): String;
+
     procedure AddHistory(URL: String);
     procedure DoOpenChm(AFile: String);
     procedure DoCloseChm;
     procedure DoLoadContext(Context: THelpContext);
-    procedure DoLoadUrl(Url: String; AChm: TChmReader = nil);
+    procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
     procedure DoError(Error: Integer);
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     
@@ -81,7 +82,47 @@ implementation
 
 uses ChmSpecialParser, chmFIftiMain;
 
+function GetURIFileName(AURI: String): String;
+var
+  FileStart,
+  FileEnd: Integer;
+begin
+  FileStart := Pos(':', AURI)+1;
+  FileEnd := Pos('::', AURI);
+
+  Result := Copy(AURI, FileStart, FileEnd-FileStart);
+end;
+
+function GetURIURL(AURI: String): String;
+var
+  URLStart: Integer;
+begin
+  URLStart := Pos('::', AURI) + 2;
+  Result := Copy(AURI, URLStart, Length(AURI));
+end;
+
+function ChmURI(AUrl: String; AFileName: String): String;
+var
+  FileNameNoPath: String;
+begin
+  Result := AUrl;
+  if Pos('ms-its:', Result) > 0 then
+    Exit;
+  FileNameNoPath := ExtractFileName(AFileName);
+
+  Result := 'ms-its:'+FileNameNoPath+'::'+AUrl;
+end;
+
 { TChmContentProvider }
+
+function TChmContentProvider.MakeURI ( AUrl: String; AChm: TChmReader ) : String;
+var
+  ChmIndex: Integer;
+begin
+  ChmIndex := fChms.IndexOfObject(AChm);
+
+  Result := ChmURI(AUrl, fChms.FileName[ChmIndex]);
+end;
 
 procedure TChmContentProvider.AddHistory(URL: String);
 begin
@@ -89,6 +130,7 @@ begin
     while fHistory.Count-1 > fHistoryIndex do
       fHistory.Delete(fHistory.Count-1);
   end;
+
   fHistory.Add(URL);
   Inc(fHistoryIndex);
 end;
@@ -115,7 +157,7 @@ begin
     Exit;
   end;
   if fChms = nil then Exit;
-  fChms.OnOpenNewFile := @NewChmOpened;
+
   fHistoryIndex := -1;
   fHistory.Clear;
 
@@ -144,20 +186,31 @@ var
 begin
   if fChms = nil then exit;
   Str := fChms.Chm[0].GetContextUrl(Context);
-  if Str <> '' then DoLoadUrl(Str);
+  if Str <> '' then DoLoadUri(Str, fChms.Chm[0]);
 end;
 
-procedure TChmContentProvider.DoLoadUrl(Url: String; AChm: TChmReader = nil);
+procedure TChmContentProvider.DoLoadUri(Uri: String; AChm: TChmReader = nil);
+var
+  ChmIndex: Integer;
+  NewUrl: String;
 begin
   if (fChms = nil) and (AChm = nil) then exit;
-  if fChms.ObjectExists(Url, AChm) = 0 then begin
-    fStatusBar.SimpleText := URL + ' not found!';
+  if fChms.ObjectExists(Uri, AChm) = 0 then begin
+    fStatusBar.SimpleText := URI + ' not found!';
     Exit;
   end;
+  if (Pos('ms-its', Uri) = 0) and (AChm <> nil) then
+  begin
+    ChmIndex := fChms.IndexOfObject(AChm);
+    NewUrl := ExtractFileName(fChms.FileName[ChmIndex]);
+    NewUrl := 'ms-its:'+NewUrl+'::/'+Uri;
+    Uri := NewUrl;
+  end;
+
   fIsUsingHistory := True;
-  fHtml.OpenURL(Url);
-  TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
-  AddHistory(Url);
+  fHtml.OpenURL(Uri);
+  TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
+  AddHistory(Uri);
 end;
 
 
@@ -172,19 +225,20 @@ procedure TChmContentProvider.NewChmOpened(ChmFileList: TChmFileList;
 begin
   if Index = 0 then begin
     fContentsTree.Items.Clear;
-    fPendingChm := ChmFileList.Chm[Index];
     if fContext > -1 then begin
       DoLoadContext(fContext);
       fContext := -1;
     end
     else if ChmFileList.Chm[Index].DefaultPage <> '' then begin
-      DoLoadUrl(ChmFileList.Chm[Index].DefaultPage);
+      DoLoadUri(MakeURI(ChmFileList.Chm[Index].DefaultPage, ChmFileList.Chm[Index]));
     end;
   end;
   if ChmFileList.Chm[Index].Title = '' then
     ChmFileList.Chm[Index].Title := ExtractFileName(ChmFileList.FileName[Index]);
-  // Fill the table of contents. This actually works very well
-  fContentsTree.Visible := False;
+
+  // Fill the table of contents.
+  if Index <> 0 then
+    Application.QueueAsyncCall(@FillToc, PtrInt(ChmFileList.Chm[Index]));
 end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
@@ -199,6 +253,7 @@ begin
   end;
   fFillingToc := True;
   fContentsTree.Visible := False;
+  Application.ProcessMessages;
   fChm := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
@@ -217,15 +272,18 @@ begin
       end;
     end;
     Stream.Free;
-    // we fill the index here too
-    Stream := fchms.GetObject(fChm.IndexFile);
-    if Stream <> nil then begin
-      Stream.position := 0;
-      with TIndexFiller.Create(fIndexView, Stream) do begin;
-        DoFill;
-        Free;
+    // we fill the index here too but only for the main file
+    if fChms.IndexOfObject(fChm) < 1 then
+    begin
+      Stream := fchms.GetObject(fChm.IndexFile);
+      if Stream <> nil then begin
+        Stream.position := 0;
+        with TIndexFiller.Create(fIndexView, Stream) do begin;
+          DoFill;
+          Free;
+        end;
+        Stream.Free;
       end;
-      Stream.Free;
     end;
   end;
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
@@ -247,12 +305,6 @@ begin
  if fIsUsingHistory = False then
    AddHistory(TIpChmDataProvider(fHtml.DataProvider).CurrentPage)
  else fIsUsingHistory := False;
- if fPendingChm<>nil then
- begin
-   AChm := fPendingChm;
-   fPendingChm := nil;
-   Application.QueueAsyncCall(@FillToc, PtrInt(AChm));
- end;
 end;
 
 procedure TChmContentProvider.IpHtmlPanelHotChange(Sender: TObject);
@@ -276,7 +328,7 @@ begin
   begin
     fChm := TChmReader(fContentsTree.Selected.Data);
     if fChm.DefaultPage <> '' then
-      DoLoadUrl(fChm.DefaultPage, fChm);
+      DoLoadUri(MakeURI(fChm.DefaultPage, fChm));
     Exit;
   end;
   ATreeNode := TContentTreeNode(fContentsTree.Selected);
@@ -288,7 +340,7 @@ begin
 
   fChm := TChmReader(ARootNode.Data);
   if ATreeNode.Url <> '' then begin
-    DoLoadUrl(ATreeNode.Url, fChm);
+    DoLoadUri(MakeURI(ATreeNode.Url, fChm));
   end;
 end;
 
@@ -304,7 +356,7 @@ begin
   if not fIndexEdit.Focused then
     fIndexEdit.Text := Trim(RealItem.Caption);
   if RealItem.Url <> '' then begin
-    DoLoadUrl(RealItem.Url);
+    DoLoadUri(MakeURI(RealItem.Url, TChmReader(RealItem.Data)));
   end;
 end;
 
@@ -505,7 +557,7 @@ begin
   if (Item = nil) or (Item.Data = nil) then
     Exit;
 
-  DoLoadUrl(Item.SubItems[2], TChmReader(Item.Data));
+  DoLoadUri(MakeURI(Item.SubItems[2], TChmReader(Item.Data)));
 end;
 
 
@@ -529,6 +581,7 @@ var
   fFile: String;
   fURL: String = '';
   fPos: Integer;
+  FileIndex: Integer;
 begin
   Result := False;
   fFile := Copy(AUrl,8, Length(AURL));
@@ -538,36 +591,49 @@ begin
     fFile := Copy(fFIle, 1, fPos-1);
   end;
   //writeln(fURL);
-  //if fChms = nil then
+  if fChms <> nil then
+    fChms.OnOpenNewFile := nil;
   DoOpenChm(fFile);
+  FileIndex := fChms.IndexOf(fFile);
   if fURL <> '' then
-    DoLoadUrl(fUrl)
+    DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
     GoHome;
   Result := True;
+
+  Application.ProcessMessages;
+  Application.QueueAsyncCall(@FillToc, PtrInt(fChms.Chm[FileIndex]));
+  fChms.OnOpenNewFile := @NewChmOpened;
 end;
 
 procedure TChmContentProvider.GoHome;
 begin
   if (fChms <> nil) and (fChms.Chm[0].DefaultPage <> '') then begin
-    DoLoadUrl(fChms.Chm[0].DefaultPage);
+    DoLoadUri(MakeURI(fChms.Chm[0].DefaultPage, fChms.Chm[0]));
   end;
 end;
 
 procedure TChmContentProvider.GoBack;
+var
+  HistoryChm: TChmReader;
 begin
   if CanGoBack then begin
     Dec(fHistoryIndex);
     fIsUsingHistory:=True;
-  fHtml.OpenURL(fHistory.Strings[fHistoryIndex]);
+    HistoryChm := TChmReader(fHistory.Objects[fHistoryIndex]);
+    fHtml.OpenURL(fHistory.Strings[fHistoryIndex]);
   end;
 end;
 
 procedure TChmContentProvider.GoForward;
+var
+  HistoryChm: TChmReader;
 begin
   if CanGoForward then begin
     Inc(fHistoryIndex);
     fIsUsingHistory:=True;
+    HistoryChm := TChmReader(fHistory.Objects[fHistoryIndex]);
+    fChms.ObjectExists(fHistory.Strings[fHistoryIndex], HistoryChm); // this ensures that the correct chm will be found
     fHtml.OpenURL(fHistory.Strings[fHistoryIndex]);
   end;
 end;

@@ -49,6 +49,7 @@ type
     fCurrentPage: String;
     fCurrentPath: String;
     fOnHelpPopup: THelpPopupEvent;
+    function StripInPageLink(AURL: String): String;
   protected
     function DoGetHtmlStream(const URL: string;
       PostData: TIpFormDataEntity) : TStream; override;
@@ -76,10 +77,20 @@ implementation
 
 { TIpChmDataProvider }
 
+function TIpChmDataProvider.StripInPageLink ( AURL: String ) : String;
+var
+  i: LongInt;
+begin
+  Result := AURL;
+  i := Pos('#', Result);
+  if i > 0 then
+    Result := Copy(Result, 1, i-1);
+end;
+
 function TIpChmDataProvider.DoGetHtmlStream(const URL: string;
   PostData: TIpFormDataEntity): TStream;
 begin
-  Result := fChm.GetObject(URL);
+  Result := fChm.GetObject(StripInPageLink(URL));
   // If for some reason we were not able to get the page return something so that
   // we don't cause an AV
   if Result = nil then begin
@@ -94,14 +105,10 @@ var
 X: Integer;
 begin
   //DebugLn('RequestedUrl: ',URL);
-  Result := fChm.ObjectExists(Url) > 0;
+  Result := fChm.ObjectExists(StripInPageLink(Url)) > 0;
   if Result then begin
     ContentType := 'text/html';
     fCurrentPath := ExtractFilePath(Url);
-    if Pos('ms-its:', fCurrentPath) > 0 then begin
-      X := Pos('::', fCurrentPath);
-      fCurrentPath := Copy(fCurrentPath, X+2, Length(fCurrentPAth)-(X+1));
-    end;
     Result := True;
     fCurrentPage := URL;
   end;
@@ -149,8 +156,8 @@ var
 begin
   Result := True;
   if Pos('Java', URL) =1  then Result := False;
-  if  (fChm.ObjectExists(url)= 0)
-  and (fChm.ObjectExists(BuildUrl(fCurrentPath,Url)) = 0) then Result := False;
+  if  (fChm.ObjectExists(StripInPageLink(url))= 0)
+  and (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url))) = 0) then Result := False;
   //DebugLn('CanHandle ',Url,' = ', Result);
   //if not Result then if fChm.ObjectExists(BuildURL('', URL)) > 0 Then result := true;
   if Pos('javascript:helppopup(''', LowerCase(URL)) = 1 then begin
@@ -166,66 +173,64 @@ var
   tmp: String;
   X: LongInt;
   fOldUrl: String;
+  fNewURL: String;
+  ParentDirs: TStringList;
+  RemoveDirCount: Integer;
 begin
+  Result := NewURL;
 
-   if Pos('ms-its:', OldURL) > 0 then begin
-    X := Pos('::', OldUrl);
-    fOldUrl := Copy(OldUrl, X+2, Length(OldUrl)-(X+2));
-  end
-  else fOldUrl := OldURL;
+  fOldUrl := OldURL;
+  fNewURL := NewURL;
 
-  if Length(NewURL) < 1 then Exit(NewURL);
-  if fChm.ObjectExists(NewURL) > 0 then begin
-    Result := NewUrl;
+  if Pos('ms-its:', NewURL) = 1 then
     Exit;
-  end;
-  Result:=iputils.BuildURL(fOldurl,NewUrl);
 
-  if NewURL[1] <> '/' then
-  begin
-    if fChm.ObjectExists(Result) > 0 then Tmp := Result
-    else if fChm.ObjectExists('/'+Result) > 0 then begin
-      Tmp := '/'+Result;
-    end
-    else if fChm.ObjectExists(fCurrentPath+Result) > 0 then begin
-      Tmp := fCurrentPath+Result;
-    end
-    else if fChm.ObjectExists(fCurrentPath+NewUrl) > 0 then begin
-      Tmp := fCurrentPath+NewURL;
-    end
-    else if fChm.ObjectExists('/'+fCurrentPath+NewUrl) > 0 then begin
-      Tmp := '/'+fCurrentPath+NewURL;
+  ParentDirs := GetDirsParents(OldURL);
+  RemoveDirCount := 0;
+  repeat
+    X := Pos('../', fNewURL);
+    if X > 0 then
+    begin
+      Delete(fNewURL, X, 3);
+      Inc(RemoveDirCount);
     end;
-    Result := Tmp;
-  end;
-  X := Pos('//', Result);
-  while X > 0 do begin
-    Delete(Result, X ,1);
+  until X = 0;
+
+  repeat
+    X := Pos('./', fNewURL);
+    if X > 0 then
+      Delete(fNewURL, X, 2);
+  until X = 0;
+
+  Result := '';
+  for X := 0 to ParentDirs.Count-RemoveDirCount-1 do
+    Result := Result + ParentDirs[X] + '/';
+
+  Result := Result+fNewURL;
+
+  repeat
     X := Pos('//', Result);
-  end;
+    if X > 0 then
+      Delete(Result, X, 1);
+  until X = 0;
 
-  X := Pos('\', Result);
-  while X > 0 do begin
-    Result[X] := '/';
-    X := Pos('\', Result);
-  end;
-
+  ParentDirs.Free;
+  //WriteLn('res = ', Result);
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;
 var
- X: Integer;
- Tmp: String;
+  LastName: String;
 begin
   Result := TStringList.Create;
-  //Result.Add(ADir);
-  for X := Length(ADir) downto 1 do begin
-    if ADir[X] = '/' then begin
-      Tmp := Copy(ADir, 1, X);
-      Result.Add(Tmp);
-    end;
-  end;
+  Result.Delimiter := '/';
+  Result.DelimitedText := ADir;
 
+  LastName := ExtractFileName(ADir);
+  if LastName <> '' then
+    Result.Delete(Result.Count-1);
+  if Result[Result.Count-1] = '' then
+    Result.Delete(Result.Count-1);
 end;
 
 function TIpChmDataProvider.DoGetStream(const URL: string): TStream;
