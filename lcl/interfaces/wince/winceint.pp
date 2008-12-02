@@ -261,7 +261,7 @@ Uses
 // WinCEWSActnList,
  WinCEWSArrow,
  WinCEWSButtons,
-// WinCEWSCalendar,
+ WinCEWSCalendar,
  WinCEWSCheckLst,
  WinCEWSComCtrls,
  WinCEWSControls,
