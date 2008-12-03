@@ -259,6 +259,8 @@ var
  Stream: TMemoryStream;
  fChm: TChmReader;
  ParentNode: TTreeNode;
+ i: Integer;
+ HasSearchIndex: Boolean = False;
 begin
   if fFillingToc = True then begin
     Application.QueueAsyncCall(@FillToc, Data);
@@ -283,8 +285,10 @@ begin
         DoFill(ParentNode);
         Free;
       end;
+      Stream.Free;
     end;
-    Stream.Free;
+    fContentsTab.TabVisible := fContentsTree.Items.Count > 1;
+
     // we fill the index here too but only for the main file
     if fChms.IndexOfObject(fChm) < 1 then
     begin
@@ -299,15 +303,24 @@ begin
       end;
     end;
   end;
+  fIndexTab.TabVisible := fIndexView.Items.Count > 0;
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
-
-
 
   fContentsTree.Visible := True;
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
   fFillingToc := False;
+
+  i := 0;
+  while (HasSearchIndex = False) and (i < fChms.Count) do
+  begin
+    HasSearchIndex := fChms.Chm[i].ObjectExists('/$FIftiMain') > 0;
+    inc(i);
+  end;
+
+  fSearchTab.TabVisible := HasSearchIndex;
+
 end;
 
 procedure TChmContentProvider.IpHtmlPanelDocumentOpen(Sender: TObject);
