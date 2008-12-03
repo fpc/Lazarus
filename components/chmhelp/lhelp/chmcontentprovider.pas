@@ -10,7 +10,7 @@ uses
   Classes, SysUtils,
   FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
-  
+
 type
 
   { TChmContentProvider }
@@ -52,7 +52,7 @@ type
     procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
     procedure DoError(Error: Integer);
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
-    
+
     procedure FillTOC(Data: PtrInt);
     procedure IpHtmlPanelDocumentOpen(Sender: TObject);
     procedure IpHtmlPanelHotChange(Sender: TObject);
@@ -73,11 +73,11 @@ type
     procedure GoBack; override;
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
-    
+
     constructor Create(AParent: TWinControl); override;
     destructor Destroy; override;
   end;
-  
+
 implementation
 
 uses ChmSpecialParser, chmFIftiMain;
@@ -680,7 +680,6 @@ begin
   with fContentsTab do begin
     Caption := 'Contents';
     Parent := fTabsControl;
-    Visible := True;
     //BorderSpacing.Around := 6;
   end;
   fContentsPanel := TPanel.Create(fContentsTab);
@@ -702,7 +701,6 @@ begin
   with fIndexTab do begin
     Caption := 'Index';
     Parent := fTabsControl;
-    Visible := True;
     //BorderSpacing.Around := 6;
   end;
 
@@ -733,13 +731,13 @@ begin
     Visible := True;
     OnDblClick := @IndexViewDblClick;
     Anchors := [akTop, akLeft, akRight, akBottom];
+    ReadOnly := True;
   end;
 
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do begin
     Caption := 'Search';
     Parent := fTabsControl;
-    Visible := True;
 
   end;
   fKeywordLabel := TLabel.Create(fSearchTab);
@@ -786,12 +784,22 @@ begin
     Anchors := [akTop];
     Align := alBottom;
     BorderSpacing.Around := 6;
+    ReadOnly := True;
     ShowColumnHeaders := False;
+    {$IFDEF MSWINDOWS}
     ViewStyle := vsReport;
-    Columns.Add.AutoSize := True;                  // title
+    with Columns.Add do
+    begin
+      Width := 400;
+      AutoSize := True;
+    end;
+    {$ELSE}
+    ViewStyle := vsReport;
+    Columns.Add.AutoSize := True; // title
     Columns.Add.Visible := False; // topic hits
     Columns.Add.Visible := False; // title hits
     Columns.Add.Visible := False; // url
+    {$ENDIF}
     OnDblClick := @SearchResultsDblClick;
   end;
 
@@ -800,7 +808,7 @@ begin
     Align  := alLeft;
     Parent := AParent
   end;
-  
+
   fHtml := TIpHtmlPanel.Create(Parent);
   with fHtml do begin
     DataProvider := TIpChmDataProvider.Create(fHtml, fChms);
@@ -809,7 +817,7 @@ begin
     Parent := AParent;
     Align := alClient;
   end;
-  
+
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do begin

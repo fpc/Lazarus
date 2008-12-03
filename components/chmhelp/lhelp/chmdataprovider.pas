@@ -35,7 +35,7 @@ uses
   FPReadpng,
   FPWritebmp,
   IntFGraphics;
-  
+
 
 type
 
@@ -102,10 +102,10 @@ end;
 function TIpChmDataProvider.DoCheckURL(const URL: string;
   var ContentType: string): Boolean;
 var
-X: Integer;
+Reader: TChmReader = nil;
 begin
   //DebugLn('RequestedUrl: ',URL);
-  Result := fChm.ObjectExists(StripInPageLink(Url)) > 0;
+  Result := fChm.ObjectExists(StripInPageLink(Url), Reader) > 0;
   if Result then begin
     ContentType := 'text/html';
     fCurrentPath := ExtractFilePath(Url);
@@ -153,11 +153,12 @@ end;
 function TIpChmDataProvider.CanHandle(const URL: string): Boolean;
 var
   HelpFile: String;
+  Reader: TChmReader = nil;
 begin
   Result := True;
   if Pos('Java', URL) =1  then Result := False;
-  if  (fChm.ObjectExists(StripInPageLink(url))= 0)
-  and (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url))) = 0) then Result := False;
+  if  (fChm.ObjectExists(StripInPageLink(url), Reader)= 0)
+  and (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url)), Reader) = 0) then Result := False;
   //DebugLn('CanHandle ',Url,' = ', Result);
   //if not Result then if fChm.ObjectExists(BuildURL('', URL)) > 0 Then result := true;
   if Pos('javascript:helppopup(''', LowerCase(URL)) = 1 then begin
