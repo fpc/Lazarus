@@ -3056,6 +3056,8 @@ images/icons/brown.ico -text svneol=unset#image/ico
 images/icons/lazarus.icns -text
 images/icons/lazarus.ico -text
 images/icons/lazarus_old.ico -text svneol=unset#image/x-icon
+images/icons/lazarus_orange.icns -text
+images/icons/lazarus_orange.ico -text
 images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
