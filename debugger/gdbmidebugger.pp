@@ -381,6 +381,11 @@ type
     Tag: Integer;
   end;
 
+  TGDBMIExceptionInfo = record
+    ObjAddr: String;
+    Name: String;
+  end;
+
 { TGDBMINameValueList }
 
 constructor TGDBMINameValueList.Create(const AResultValues: String);
@@ -2007,39 +2012,33 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     end;
   end;
   
-
-  procedure ProcessException;
-  var
-    ObjAddr, ExceptionName, ExceptionMessage: String;
+  function GetExceptionInfo: TGDBMIExceptionInfo;
   begin
     if tfRTLUsesRegCall in FTargetFlags
-    then  ObjAddr := FTargetRegisters[0]
+    then  Result.ObjAddr := FTargetRegisters[0]
     else begin
       if dfImplicidTypes in FDebuggerFlags
-      then ObjAddr := Format('^pointer($fp+%d)^', [FTargetPtrSize * 2])
-      else Str(GetData('$fp+%d', [FTargetPtrSize * 2]), ObjAddr);
+      then Result.ObjAddr := Format('^pointer($fp+%d)^', [FTargetPtrSize * 2])
+      else Str(GetData('$fp+%d', [FTargetPtrSize * 2]), Result.ObjAddr);
     end;
-    
-    ExceptionName := GetInstanceClassName(ObjAddr, []);
-    if ExceptionName = ''
-    then ExceptionName := 'Unknown';
+    Result.Name := GetInstanceClassName(Result.ObjAddr, []);
+    if Result.Name = ''
+    then Result.Name := 'Unknown';
+  end;
 
-    // check if we should ignore this exception
-    if Exceptions.Find(ExceptionName) <> nil
-    then begin
-      ExecuteCommand('-exec-continue', []);
-      Exit;
-    end;
-
+  procedure ProcessException(AInfo: TGDBMIExceptionInfo);
+  var
+    ExceptionMessage: String;
+  begin   
     if dfImplicidTypes in FDebuggerFlags
     then begin
-      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ObjAddr]);
+      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
       ExceptionMessage := DeleteEscapeChars(ExceptionMessage);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
-    DoException(ExceptionName, ExceptionMessage);
+    DoException(AInfo.Name, ExceptionMessage);
     DoCurrent(GetLocation);
   end;
   
@@ -2100,6 +2099,7 @@ var
   BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
   CanContinue: Boolean;
+  ExceptionInfo: TGDBMIExceptionInfo;
 begin
   Result := True;
   FCurrentStackFrame :=  0;
@@ -2160,8 +2160,15 @@ begin
       
       if BreakID = FExceptionBreakID
       then begin
-        SetState(dsPause);
-        ProcessException;
+        ExceptionInfo := GetExceptionInfo;
+
+        // check if we should ignore this exception
+        if Exceptions.Find(ExceptionInfo.Name) <> nil
+        then ExecuteCommand('-exec-continue', [])
+        else begin
+          SetState(dsPause);
+          ProcessException(ExceptionInfo);
+        end;
         Exit;
       end;
       
