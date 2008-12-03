@@ -310,6 +310,8 @@ begin
  fNewPage := TContentTab.Create(PageControl);
  fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage);
  fNewPage.Parent := PageControl;
+
+ ShowOnTop;
  
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
    PageControl.ActivePage := fNewPage;

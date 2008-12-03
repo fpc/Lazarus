@@ -46,7 +46,7 @@ type
     function  MakeURI(AUrl: String; AChm: TChmReader): String;
 
     procedure AddHistory(URL: String);
-    procedure DoOpenChm(AFile: String);
+    procedure DoOpenChm(AFile: String; ACloseCurrent: Boolean = True);
     procedure DoCloseChm;
     procedure DoLoadContext(Context: THelpContext);
     procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
@@ -135,27 +135,40 @@ begin
   Inc(fHistoryIndex);
 end;
 
-procedure TChmContentProvider.DoOpenChm(AFile: String);
+type
+  TCHMHack = class(TChmFileList)
+  end;
+
+procedure TChmContentProvider.DoOpenChm(AFile: String; ACloseCurrent: Boolean = True);
 begin
   if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
-  DoCloseChm;
+  if ACloseCurrent then DoCloseChm;
   if not FileExistsUTF8(AFile) or DirectoryExistsUTF8(AFile) then
   begin
     Exit;
   end;
-  try
-    fChms := TChmFileList.Create(AFile);
-    if Not(fChms.Chm[0].IsValidFile) then begin
+  if fChms = nil then
+  begin
+    try
+      fChms := TChmFileList.Create(AFile);
+      if Not(fChms.Chm[0].IsValidFile) then begin
+        FreeAndNil(fChms);
+        //DoError(INVALID_FILE_TYPE);
+        Exit;
+      end;
+      TIpChmDataProvider(fHtml.DataProvider).Chm := fChms;
+    except
       FreeAndNil(fChms);
       //DoError(INVALID_FILE_TYPE);
       Exit;
     end;
-    TIpChmDataProvider(fHtml.DataProvider).Chm := fChms;
-  except
-    FreeAndNil(fChms);
-    //DoError(INVALID_FILE_TYPE);
-    Exit;
+  end
+  else
+  begin
+    TCHMHack(fChms).OpenNewFile(AFile);
+    WriteLn('Loading new chm: ', AFile);
   end;
+
   if fChms = nil then Exit;
 
   fHistoryIndex := -1;
@@ -582,6 +595,7 @@ var
   fURL: String = '';
   fPos: Integer;
   FileIndex: Integer;
+  LoadTOC: Boolean;
 begin
   Result := False;
   fFile := Copy(AUrl,8, Length(AURL));
@@ -591,9 +605,8 @@ begin
     fFile := Copy(fFIle, 1, fPos-1);
   end;
   //writeln(fURL);
-  if fChms <> nil then
-    fChms.OnOpenNewFile := nil;
-  DoOpenChm(fFile);
+  LoadTOC := (fChms = nil) or (fChms.IndexOf(fFile) < 0);
+  DoOpenChm(fFile, False);
   FileIndex := fChms.IndexOf(fFile);
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
@@ -601,8 +614,11 @@ begin
     GoHome;
   Result := True;
 
-  Application.ProcessMessages;
-  Application.QueueAsyncCall(@FillToc, PtrInt(fChms.Chm[FileIndex]));
+  if LoadTOC and (FileIndex = 0) then
+  begin
+    Application.ProcessMessages;
+    Application.QueueAsyncCall(@FillToc, PtrInt(fChms.Chm[FileIndex]));
+  end;
   fChms.OnOpenNewFile := @NewChmOpened;
 end;
 
