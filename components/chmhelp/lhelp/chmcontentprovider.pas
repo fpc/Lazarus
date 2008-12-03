@@ -3,6 +3,7 @@ unit chmcontentprovider;
 {$mode objfpc}{$H+}
 
 {off $DEFINE CHM_DEBUG_TIME}
+{off $DEFINE CHM_SEARCH}
 
 interface
 
@@ -62,8 +63,10 @@ type
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure SetTitle(const ATitle: String);
     procedure SearchEditChange(Sender: TObject);
+    {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
+    {$ENDIF}
   public
     function CanGoBack: Boolean; override;
     function CanGoForward: Boolean; override;
@@ -80,7 +83,7 @@ type
 
 implementation
 
-uses ChmSpecialParser, chmFIftiMain;
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF};
 
 function GetURIFileName(AURI: String): String;
 var
@@ -312,6 +315,7 @@ begin
   {$ENDIF}
   fFillingToc := False;
 
+  {$IFDEF CHM_SEARCH}
   i := 0;
   while (HasSearchIndex = False) and (i < fChms.Count) do
   begin
@@ -320,6 +324,7 @@ begin
   end;
 
   fSearchTab.TabVisible := HasSearchIndex;
+  {$ENDIF}
 
 end;
 
@@ -419,6 +424,7 @@ begin
   end;
 end;
 
+{$IFDEF CHM_SEARCH}
 procedure TChmContentProvider.SearchButtonClick ( Sender: TObject ) ;
 type
   TTopicEntry = record
@@ -585,6 +591,7 @@ begin
 
   DoLoadUri(MakeURI(Item.SubItems[2], TChmReader(Item.Data)));
 end;
+{$ENDIF}
 
 
 function TChmContentProvider.CanGoBack: Boolean;
@@ -747,6 +754,7 @@ begin
     ReadOnly := True;
   end;
 
+  {$IFDEF CHM_SEARCH}
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do begin
     Caption := 'Search';
@@ -815,6 +823,7 @@ begin
     {$ENDIF}
     OnDblClick := @SearchResultsDblClick;
   end;
+  {$ENDIF}
 
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin
