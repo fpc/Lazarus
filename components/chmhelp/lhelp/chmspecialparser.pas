@@ -56,6 +56,7 @@ type
   private
     fTreeView: TTreeView;
     fStream: TStream;
+    fChm: TObject;
     fText: TStringList;
     fBranchCount: DWord;
     fStop: PBoolean;
@@ -67,7 +68,7 @@ type
     function GetLIData(StartLine: Integer): TContentNode;
     procedure FillULIndices;
   public
-    constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean);
+    constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
     procedure DoFill(ParentNode: TTreeNode);
     
 
@@ -79,6 +80,7 @@ type
   private
     fListView: TListView;
     fStream: TStream;
+    fChm: Tobject;
     fText: TStringList;
     function GetLIEnd(StartLine: Integer): Integer;
     function GetNextLI(StartLine: Integer): Integer;
@@ -88,7 +90,7 @@ type
     function LineEndsUL(ALine: Integer): Boolean;
     
   public
-    constructor Create(AListView: TListView; AStream: TStream);
+    constructor Create(AListView: TListView; AStream: TStream; AChm: TObject);
     procedure DoFill;
 
   end;
@@ -137,6 +139,7 @@ begin
         NodeInfo := GetLIData(X);
         TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
         TreeNode.Url := NodeInfo.Url;
+        TreeNode.Data := fChm;
         Inc(X, NodeInfo.LineCount);
       except
         // an exception can occur if we have closed the file while the toc is still being read
@@ -220,12 +223,13 @@ begin
 end;
 
 
-constructor TContentsFiller.Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean);
+constructor TContentsFiller.Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
 begin
   inherited Create;
   fTreeView := ATreeView;
   fStream := AStream;
   fStop := StopBoolean;
+  fChm := AChm;
 end;
 
 procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
@@ -306,6 +310,7 @@ begin
         fListView.Items.AddItem(Item);
         Item.Caption := ItemName;
         Item.Url := ItemUrl;
+        Item.Data := fChm;
         ItemName := '';
         ItemUrl := '';
       end;
@@ -333,11 +338,12 @@ begin
   Result := Pos('</UL>', UpperCase(fText.Strings[ALine])) > 0;
 end;
 
-constructor TIndexFiller.Create(AListView: TListView; AStream: TStream);
+constructor TIndexFiller.Create(AListView: TListView; AStream: TStream; AChm: TObject);
 begin
  inherited Create;
  fListView := AListView;
  fStream := AStream;
+ fChm := AChm;
 end;
 
 procedure TIndexFiller.DoFill;

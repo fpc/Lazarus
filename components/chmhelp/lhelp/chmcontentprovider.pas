@@ -279,7 +279,7 @@ begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-      with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer) do begin
+      with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer, fChm) do begin
         DoFill(ParentNode);
         Free;
       end;
@@ -291,7 +291,7 @@ begin
       Stream := fchms.GetObject(fChm.IndexFile);
       if Stream <> nil then begin
         Stream.position := 0;
-        with TIndexFiller.Create(fIndexView, Stream) do begin;
+        with TIndexFiller.Create(fIndexView, Stream, fChm) do begin;
           DoFill;
           Free;
         end;
