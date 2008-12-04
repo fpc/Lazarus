@@ -4,7 +4,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -351,7 +351,7 @@ begin
   po:=nil;
   try
     po:=TPOFile.Create(AFilename);
-    result:=TranslateUnitResourceStrings(ResUnitName,TPOFile.Create(AFilename));
+    result:=TranslateUnitResourceStrings(ResUnitName,po);
   finally
     po.free;
   end;
