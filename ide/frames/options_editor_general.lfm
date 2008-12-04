@@ -4,8 +4,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientHeight = 516
   ClientWidth = 459
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 348
+  DesignTop = 237
   object BlockIndentLabel: TLabel[0]
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -17,13 +17,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 82
     HelpContext = 0
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'BlockIndentLabel'
     ParentColor = False
   end
@@ -38,13 +32,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 77
     HelpContext = 0
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'TabWidthsLabel'
     ParentColor = False
   end
@@ -54,19 +42,13 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 120
+    Left = 180
     Height = 3
     Top = 6
-    Width = 339
+    Width = 279
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 120
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
+    BorderSpacing.Left = 180
   end
   object UndoGroupLabel: TLabel[3]
     AnchorSideLeft.Control = Owner
@@ -76,13 +58,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 0
     Width = 80
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'UndoGroupLabel'
     ParentColor = False
   end
@@ -96,13 +71,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 23
     Width = 72
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'UndoLimitLabel'
     ParentColor = False
   end
@@ -115,13 +84,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 64
     Width = 80
     HelpContext = 0
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ScrollGroupLabel'
     ParentColor = False
   end
@@ -131,19 +94,13 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 120
+    Left = 180
     Height = 3
     Top = 70
-    Width = 339
+    Width = 279
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 120
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
+    BorderSpacing.Left = 180
   end
   object IndentsTabsGroupLabel: TLabel[7]
     AnchorSideLeft.Control = Owner
@@ -154,13 +111,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 128
     Width = 115
     HelpContext = 0
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'IndentsTabsGroupLabel'
     ParentColor = False
   end
@@ -170,19 +121,13 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 120
+    Left = 180
     Height = 3
     Top = 134
-    Width = 339
+    Width = 279
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 120
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
+    BorderSpacing.Left = 180
   end
   object MouseGroupLabel: TLabel[9]
     AnchorSideLeft.Control = Owner
@@ -193,13 +138,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 216
     Width = 86
     HelpContext = 0
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'MouseGroupLabel'
     ParentColor = False
   end
@@ -209,19 +148,13 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 120
+    Left = 180
     Height = 3
     Top = 222
-    Width = 339
+    Width = 279
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 120
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
+    BorderSpacing.Left = 180
   end
   object CursorGroupLabel: TLabel[11]
     AnchorSideLeft.Control = Owner
@@ -232,13 +165,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 280
     Width = 87
     HelpContext = 0
-    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'CursorGroupLabel'
     ParentColor = False
   end
@@ -248,19 +175,13 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 120
+    Left = 180
     Height = 3
     Top = 286
-    Width = 339
+    Width = 279
     HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 120
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
+    BorderSpacing.Left = 180
   end
   object BlockIndentComboBox: TComboBox[13]
     AnchorSideLeft.Control = Owner
@@ -275,11 +196,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AutoComplete = False
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Ctl3D = False
     ItemHeight = 13
     Items.Strings = (
@@ -305,13 +221,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 100
     HelpContext = 0
     AutoComplete = False
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Ctl3D = False
     ItemHeight = 13
     Items.Strings = (
@@ -337,12 +246,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     AutoComplete = False
     BorderSpacing.Left = 230
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Ctl3D = False
     ItemHeight = 13
     Items.Strings = (
@@ -366,12 +270,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 127
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'GroupUndoCheckBox'
     OnChange = GroupUndoCheckBoxChange
     TabOrder = 3
@@ -388,11 +286,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'UndoAfterSaveCheckBox'
     TabOrder = 4
     UseOnChange = False
@@ -408,11 +301,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ScrollPastEndFileCheckBox'
     OnChange = ScrollPastEndFileCheckBoxChange
     TabOrder = 5
@@ -428,12 +316,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 156
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ScrollPastEndLineCheckBox'
     OnChange = ScrollPastEndLineCheckBoxChange
     TabOrder = 6
@@ -449,12 +331,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 151
     HelpContext = 0
     BorderSpacing.Left = 230
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ScrollByOneLessCheckBox'
     OnChange = ScrollByOneLessCheckBoxChange
     TabOrder = 7
@@ -468,13 +345,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 103
     Width = 141
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'HalfPageScrollCheckBox'
     OnChange = HalfPageScrollCheckBoxChange
     TabOrder = 8
@@ -491,11 +361,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'AutoIndentCheckBox'
     OnChange = AutoIndentCheckBoxChange
     TabOrder = 9
@@ -511,12 +376,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 152
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'TabIndentBlocksCheckBox'
     OnChange = TabIndentBlocksCheckBoxChange
     TabOrder = 10
@@ -532,12 +391,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 124
     HelpContext = 0
     BorderSpacing.Left = 230
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'SmartTabsCheckBox'
     OnChange = SmartTabsCheckBoxChange
     TabOrder = 11
@@ -551,13 +405,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 167
     Width = 142
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'TabsToSpacesCheckBox'
     OnChange = TabsToSpacesCheckBoxChange
     TabOrder = 12
@@ -574,11 +421,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'DoubleClickLineCheckBox'
     OnChange = DoubleClickLineCheckBoxChange
     TabOrder = 13
@@ -594,12 +436,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 127
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'MouseLinksCheckBox'
     OnChange = MouseLinksCheckBoxChange
     TabOrder = 14
@@ -615,12 +451,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 131
     HelpContext = 0
     BorderSpacing.Left = 230
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'DragDropEdCheckBox'
     OnChange = DragDropEdCheckBoxChange
     TabOrder = 15
@@ -634,13 +465,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 255
     Width = 117
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'DropFilesCheckBox'
     OnChange = DropFilesCheckBoxChange
     TabOrder = 16
@@ -657,11 +481,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'KeepCursorXCheckBox'
     OnChange = KeepCursorXCheckBoxChange
     TabOrder = 17
@@ -677,12 +496,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 153
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'PersistentCursorCheckBox'
     OnChange = PersistentCursorCheckBoxChange
     TabOrder = 18
@@ -698,12 +511,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 168
     HelpContext = 0
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'AlwaysVisibleCursorCheckBox'
     OnChange = AlwaysVisibleCursorCheckBoxChange
     TabOrder = 19
@@ -719,12 +526,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 172
     HelpContext = 0
     BorderSpacing.Left = 230
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'CursorSkipsSelectionCheckBox'
     OnChange = CursorSkipsSelectionCheckBoxChange
     TabOrder = 20
@@ -738,13 +540,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 319
     Width = 192
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'RightMouseMovesCursorCheckBox'
     OnChange = RightMouseMovesCursorCheckBoxChange
     TabOrder = 21
@@ -758,13 +553,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 338
     Width = 222
     HelpContext = 0
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'HomeKeyJumpsToNearestStartCheckBox'
     OnChange = HomeKeyJumpsToNearestStartCheckBoxChange
     TabOrder = 22
