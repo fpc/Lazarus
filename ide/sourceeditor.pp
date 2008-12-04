@@ -6124,6 +6124,8 @@ begin
   if (snWarnedFont in States) then exit;
   Include(States,snWarnedFont);
   SrcEdit:=GetActiveSE;
+  if SrcEdit = nil then
+    Exit;
   CurFont:=SrcEdit.EditorComponent.Font;
   if (not CurFont.CanUTF8) and SystemCharSetIsUTF8
   and ((EditorOpts.DoNotWarnForFont='')
