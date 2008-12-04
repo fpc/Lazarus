@@ -19,11 +19,18 @@ procedure TScrollingWinControl.SetAutoScroll(Value: Boolean);
 begin
   if FAutoScroll = Value then exit;
   FAutoScroll := Value;
-  if Value then begin
+  if Value then
+  begin
     HorzScrollBar.AutoCalcRange;
     VertScrollBar.AutoCalcRange;
+    UpdateScrollBars;
+  end
+  else
+  begin
+    // If AutoScroll is false, then the scrollbars are always invisible
+    ShowScrollBar(Handle, SB_HORZ, False);
+    ShowScrollBar(Handle, SB_VERT, False);
   end;
-  UpdateScrollBars;
 end;
 
 procedure TScrollingWinControl.CreateWnd;
@@ -58,21 +65,28 @@ end;
 procedure TScrollingWinControl.AlignControls(AControl: TControl;
   var ARect: TRect);
 begin
-  if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
-  inherited AlignControls(AControl, ARect);
-  HorzScrollBar.AutoCalcRange;
-  VertScrollBar.AutoCalcRange;
-  if not AutoScroll then
+  if AutoScroll then
+  begin
+    if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
+    inherited AlignControls(AControl, ARect);
+
+    HorzScrollBar.AutoCalcRange;
+    VertScrollBar.AutoCalcRange;
     UpdateScrollBars;
+  end
+  else
+    inherited AlignControls(AControl, ARect);
 end;
 
 procedure TScrollingWinControl.DoOnResize;
 begin
   inherited DoOnResize;
-  if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
-  if AutoScroll or HorzScrollBar.Visible or VertScrollBar.Visible
-  then
-    UpdateScrollBars;
+
+  if AutoScroll then
+  begin
+    if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
+    if HorzScrollBar.Visible or VertScrollBar.Visible then UpdateScrollBars;
+  end;
 end;
 
 class function TScrollingWinControl.GetControlClassDefaultSize: TPoint;
@@ -177,6 +191,9 @@ begin
   if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
 
   if FIsUpdating then exit;
+
+  if not FAutoScroll then Exit;
+
   FIsUpdating := True;
   try
     ComputeScrollbars; // page, autorange, visible
