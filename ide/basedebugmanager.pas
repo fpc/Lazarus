@@ -41,7 +41,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Project, SourceMarks, Debugger, ProjectDefs,
-  Laz_XMLCfg;
+  Laz_XMLCfg, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
   { TBaseDebugManager }
@@ -165,6 +165,7 @@ begin
 end;
 
 initialization
+  RegisterIDEOptionsGroup(GroupDebugger, dlgGroupDebugger);
   DebugBoss := nil;
   MDebuggerClasses := TStringList.Create;
   MDebuggerClasses.Sorted := True;

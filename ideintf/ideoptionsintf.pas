@@ -145,6 +145,10 @@ const
     CdtOptionsIdentCompletion = 600;
 
   GroupDebugger    = 400;
+    DbgOptionsGeneral            = 100;
+    DbgOptionsEventLog           = 200;
+    DbgOptionsLanguageExceptions = 300;
+    DbgOptionsOsExceptions       = 400;
 
 implementation
 var

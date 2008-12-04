@@ -856,6 +856,7 @@ resourcestring
   dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
   dlgGroupCodetools = 'Codetools';
+  dlgGroupDebugger = 'Debugger';
 
   // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';

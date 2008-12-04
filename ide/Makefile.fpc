@@ -25,6 +25,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../designer ../designer/jitform/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../debugger \
+        ../debugger/frames \
         ../converter \
         ../packager \
         ../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
