@@ -28,8 +28,11 @@ begin
   else
   begin
     // If AutoScroll is false, then the scrollbars are always invisible
-    ShowScrollBar(Handle, SB_HORZ, False);
-    ShowScrollBar(Handle, SB_VERT, False);
+    if HandleAllocated then
+    begin
+      ShowScrollBar(Handle, SB_HORZ, False);
+      ShowScrollBar(Handle, SB_VERT, False);
+    end;
   end;
 end;
 
