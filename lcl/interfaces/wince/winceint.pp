@@ -215,10 +215,10 @@ type
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
 
   public
-  
     { Variables to be set by the user }
+
     WinCETitlePolicy: TWinCETitlePolicy;
-  
+    MaximizedWindowHeightCorrection: Integer;
   end;
 
 {$I wincelistslh.inc}
