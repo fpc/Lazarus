@@ -96,7 +96,7 @@ var
   MenuItemsList : TStringList;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+procedure CeSetMenu(AOwner: TCustomForm; Wnd: HWND; Menu: HMENU);
 
 implementation
 
@@ -186,7 +186,7 @@ begin
   end;
 end;
 
-procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+procedure CeSetMenu(AOwner: TCustomForm; Wnd: HWND; Menu: HMENU);
 {$ifndef Win32}
 var
   mbi: SHMENUBARINFO;
@@ -195,7 +195,7 @@ var
   tbbi : TBBUTTONINFO;
   i: integer;
   buf: array[0..255] of WideChar;
-  R, BR: TRect;
+  R, BR, WR: TRect;
   hasLMenu,hasRMenu : boolean;
   MenuBarRLID : integer;
 {$endif}
@@ -300,9 +300,17 @@ begin
     end;
   end;
 
-  GetWindowRect(mbi.hwndMB, R);
-//  if BR.Bottom > R.Top then
-//    SetWindowPos(wnd, 0, 0, 0, BR.Right - BR.Left, R.Top - BR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
+  // Correction for the position of the window
+  // Avoids overlapping the menu, when it doesn't belong to the work area
+{  if (Application.ApplicationType in [atPDA, atDefault]) and
+    (AOwner.BorderStyle <> bsDialog) and (AOwner.BorderStyle <> bsNone) then
+  begin
+    GetWindowRect(mbi.hwndMB, R);
+    Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+
+    if WR.Bottom > R.Top then
+      SetWindowPos(wnd, 0, 0, 0, WR.Right - WR.Left, R.Top - WR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
+  end;}
 
 //DrawMenuBar(wnd);
 {$endif}

@@ -285,6 +285,7 @@ begin
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
     AdjustFormBounds(lForm, Bounds);
 
+    // Gets the work area
     Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
 
     if Application.ApplicationType in [atPDA, atSmartphone, atDefault] then
