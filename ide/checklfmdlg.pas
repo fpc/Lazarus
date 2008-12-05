@@ -561,7 +561,7 @@ begin
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  RemoveAllButton.LoadGlyphFromLazarusResource('delete');
+  RemoveAllButton.LoadGlyphFromLazarusResource('laz_delete');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;
