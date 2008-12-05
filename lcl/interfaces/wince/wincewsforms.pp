@@ -306,9 +306,7 @@ begin
       begin
         Left := WR.Left;
         Top := WR.Top;
-        Height := WR.Bottom - WR.Top - WinCEWidgetset.MaximizedWindowHeightCorrection;
-          // - GetSystemMetrics(SM_CYMENU)
-          //- GetSystemMetrics(SM_CXBORDER) * 2;
+        Height := WR.Bottom - WR.Top;
         Width := WR.Right - WR.Left;
       end
       else if (BorderStyle = bsDialog) then

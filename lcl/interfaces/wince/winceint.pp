@@ -218,7 +218,6 @@ type
     { Variables to be set by the user }
 
     WinCETitlePolicy: TWinCETitlePolicy;
-    MaximizedWindowHeightCorrection: Integer;
   end;
 
 {$I wincelistslh.inc}

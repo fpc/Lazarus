@@ -302,7 +302,7 @@ begin
 
   // Correction for the position of the window
   // Avoids overlapping the menu, when it doesn't belong to the work area
-{  if (Application.ApplicationType in [atPDA, atDefault]) and
+  if (Application.ApplicationType in [atPDA, atDefault]) and
     (AOwner.BorderStyle <> bsDialog) and (AOwner.BorderStyle <> bsNone) then
   begin
     GetWindowRect(mbi.hwndMB, R);
@@ -310,7 +310,7 @@ begin
 
     if WR.Bottom > R.Top then
       SetWindowPos(wnd, 0, 0, 0, WR.Right - WR.Left, R.Top - WR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
-  end;}
+  end;
 
 //DrawMenuBar(wnd);
 {$endif}
