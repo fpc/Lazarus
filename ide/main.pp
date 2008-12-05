@@ -135,7 +135,8 @@ uses
   options_codetools_general, options_codetools_codecreation,
   options_codetools_wordpolicy, options_codetools_linesplitting,
   options_codetools_space, options_codetools_identifiercompletion,
-  options_debugger_general;
+  options_debugger_general, options_debugger_eventlog,
+  options_debugger_language_exceptions, options_debugger_signals;
 
 type
   TIDEProjectItem =
@@ -4048,6 +4049,8 @@ begin
       ReadSettings(EditorOpts);
       // load settings from CodetoolsOption to IDEOptionsDialog
       ReadSettings(CodeToolsOpts);
+      // load other settings that does not belong to any group
+      ReadSettings(nil);
     end;
     if IDEOptionsDialog.ShowModal = mrOk then
     begin
@@ -4060,6 +4063,7 @@ begin
       IDEOptionsDialog.WriteSettings(EnvironmentOptions);
       IDEOptionsDialog.WriteSettings(EditorOpts);
       IDEOptionsDialog.WriteSettings(CodeToolsOpts);
+      IDEOptionsDialog.WriteSettings(nil);
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;

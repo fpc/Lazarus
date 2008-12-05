@@ -148,7 +148,7 @@ const
     DbgOptionsGeneral            = 100;
     DbgOptionsEventLog           = 200;
     DbgOptionsLanguageExceptions = 300;
-    DbgOptionsOsExceptions       = 400;
+    DbgOptionsSignals            = 400;
 
 implementation
 var
