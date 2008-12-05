@@ -134,7 +134,8 @@ uses
   options_editor_general_misc,
   options_codetools_general, options_codetools_codecreation,
   options_codetools_wordpolicy, options_codetools_linesplitting,
-  options_codetools_space, options_codetools_identifiercompletion;
+  options_codetools_space, options_codetools_identifiercompletion,
+  options_debugger_general;
 
 type
   TIDEProjectItem =
