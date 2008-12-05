@@ -8330,12 +8330,18 @@ begin
                             QEventMouseButtonPress,
                             QEventMouseButtonRelease,
                             QEventMouseButtonDblClick,
-                            QEventWheel,
                             QEventContextMenu
                            ]) and
      (ClassType = TQtAbstractScrollArea) then
     Result := False
   else
+  if QEvent_type(Event) = QEventWheel then
+  begin
+    if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
+      Result := inherited EventFilter(Sender, Event)
+    else
+      Result := False;  
+  end else
     Result := inherited EventFilter(Sender, Event);
 end;
 
