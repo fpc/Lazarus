@@ -494,6 +494,7 @@ var
   DeleteNode: TLFMTreeNode;
   StartPos, EndPos: integer;
   Replacements: TList;
+  i: integer;
 begin
   Replacements:=TList.Create;
   try
@@ -511,6 +512,8 @@ begin
     if ApplyReplacements(Replacements) then
       ModalResult:=mrOk;
   finally
+    for i := 0 to Replacements.Count - 1 do
+      TObject(Replacements[i]).Free;
     Replacements.Free;
   end;
 end;
