@@ -267,7 +267,7 @@ begin
   // todo: further split by classes
   with AConfig do
   begin
-    SetDeleteValue(Path+'General/Icon/Value', ProjectIcon.IconText, '');
+    SetDeleteValue(Path+'General/Icon/Value', BoolToStr(ProjectIcon.IsEmpty), '-1');
     SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
     SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
     SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
@@ -294,7 +294,8 @@ begin
   // todo: further split by classes
   with AConfig do
   begin
-    ProjectIcon.IconText := GetValue(Path+'General/Icon/Value', '');
+    ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
+    ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
     XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
     VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
     VersionInfo.AutoIncrementBuild := GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);

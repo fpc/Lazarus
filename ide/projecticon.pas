@@ -35,18 +35,22 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, base64,
+  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources,
   ProjectResourcesIntf;
    
 type
+  TIconData = array of byte;
+
   { TProjectIcon }
 
   TProjectIcon = class(TAbstractProjectResource)
   private
-    FIconText: String;
-    icoFileName: string;
-    procedure SetIconText(const AValue: String);
+    FData: TIconData;
+    FicoFileName: string;
+    function GetIsEmpry: Boolean;
+    procedure SetIconData(const AValue: TIconData);
     procedure SetFileNames(const MainFilename: string);
+    procedure SetIsEmpty(const AValue: Boolean);
   protected
     function GetAsHex: String;
   public
@@ -58,7 +62,9 @@ type
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
     function CreateIconFile: Boolean;
 
-    property IconText: String read FIconText write SetIconText;
+    property IconData: TIconData read FData write SetIconData;
+    property IsEmpty: Boolean read GetIsEmpry write SetIsEmpty;
+    property IcoFileName: String read FIcoFileName write FIcoFileName;
   end;
 
 implementation
@@ -69,24 +75,12 @@ const
 
 
 function TProjectIcon.GetStream: TStream;
-var
-  S: TStringStream;
-  BS: TBase64DecodingStream;
 begin
-  if IconText <> '' then
+  if FData <> nil then
   begin
-    S := TStringStream.Create(IconText);
-    S.Position := 0;
-    BS := TBase64DecodingStream.Create(S);
     Result := TMemoryStream.Create;
-    try
-      Result.CopyFrom(BS, BS.Size);
-      Result.Position := 0;
-    except
-      FreeAndNil(Result);
-    end;
-    BS.Free;
-    S.Free;
+    Result.WriteBuffer(FData[0], Length(FData));
+    Result.Position := 0;
   end
   else
     Result := nil;
@@ -94,21 +88,15 @@ end;
 
 procedure TProjectIcon.SetStream(AStream: TStream);
 var
-  S: TStringStream;
-  BS: TBase64EncodingStream;
-  NewIconText: String;
+  NewIconData: TIconData;
 begin
-  NewIconText := '';
+  NewIconData := nil;
   if (AStream <> nil) then
   begin
-    S := TStringStream.Create('');
-    BS := TBase64EncodingStream.Create(S);
-    BS.CopyFrom(AStream, AStream.Size);
-    BS.Free;
-    NewIconText := S.DataString;
-    S.Free;
+    SetLength(NewIconData, AStream.Size);
+    AStream.ReadBuffer(NewIconData[0], AStream.Size);
   end;
-  IconText := NewIconText;
+  IconData := NewIconData;
 end;
 
 function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
@@ -119,8 +107,7 @@ var
 begin
   Result := True;
 
-  //debugln(['TProjectIcon.UpdateResources ',IconText = '']);
-  if IconText = '' then
+  if FData = nil then
     Exit;
 
   SetFileNames(MainFilename);
@@ -136,9 +123,9 @@ begin
   // RCIcon := sIcon + #$D#$A + GetAsHex;
   // but it does not work
 
-  if not FilenameIsAbsolute(icoFileName) or CreateIconFile then
+  if not FilenameIsAbsolute(FicoFileName) or CreateIconFile then
   begin
-    IconName := ExtractFileName(icoFileName);
+    IconName := ExtractFileName(FicoFileName);
     AResources.AddSystemResource(sIcon + ' "' + IconName + '"');
   end
   else
@@ -153,7 +140,7 @@ begin
   AStream := GetStream;
   FileStream := nil;
   try
-    FileStream := TFileStream.Create(UTF8ToSys(icoFileName), fmCreate);
+    FileStream := TFileStream.Create(UTF8ToSys(FicoFileName), fmCreate);
     FileStream.CopyFrom(AStream, AStream.Size);
     Result := True;
   finally
@@ -167,7 +154,33 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  icoFileName := ExtractFilePath(MainFilename) + ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
+  FicoFileName := ExtractFilePath(MainFilename) + ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
+end;
+
+procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
+var
+  AStream: TStream;
+  NewData: TIconData;
+begin
+  if AValue then
+    IconData := nil
+  else
+  begin
+    // We need to restore data from the .ico file
+    if FileExistsUTF8(FicoFileName) then
+    begin
+      AStream := TFileStream.Create(UTF8ToSys(FicoFileName), fmOpenRead);
+      try
+        SetLength(NewData, AStream.Size);
+        AStream.ReadBuffer(NewData[0], AStream.Size);
+        IconData := NewData;
+      finally
+        AStream.Free;
+      end;
+    end
+    else
+      IconData := nil;
+  end;
 end;
 
 constructor TProjectIcon.Create;
@@ -177,7 +190,7 @@ var
 begin
   inherited Create;
 
-  FIconText := '';
+  FData := nil;
 
   // Load default icon
   DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
@@ -189,11 +202,19 @@ begin
   end;
 end;
 
-procedure TProjectIcon.SetIconText(const AValue: String);
+procedure TProjectIcon.SetIconData(const AValue: TIconData);
 begin
-  if FIconText = AValue then Exit;
-  FIconText := AValue;
+  if (Length(AValue) = Length(FData)) and
+     (FData <> nil) and
+     (CompareByte(AValue[0], FData[0], Length(FData)) = 0) then
+  Exit;
+  FData := AValue;
   Modified := True;
+end;
+
+function TProjectIcon.GetIsEmpry: Boolean;
+begin
+  Result := FData = nil;
 end;
 
 function TProjectIcon.GetAsHex: String;

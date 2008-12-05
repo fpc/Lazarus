@@ -416,8 +416,6 @@ begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    //DebugLn(['TProjectOptionsDialog.SetProject AAA1 ',dbgsname(AProject),' ',dbgsname(Resources)]);
-    //DebugLn(['TProjectOptionsDialog.SetProject AAA2 ',dbgsname(Resources.XPManifest)]);
     UseXPManifestCheckBox.Checked := Resources.XPManifest.UseManifest;
     UseVersionInfoCheckBox.Checked := Resources.VersionInfo.UseVersionInfo;
     AStream := Resources.ProjectIcon.GetStream;
