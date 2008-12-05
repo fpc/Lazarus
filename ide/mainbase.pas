@@ -738,8 +738,6 @@ begin
                    lisMenuGeneralOptions,'menu_environment_options');
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
                    lisMenuEditCodeTemplates,'');
-    CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',
-                   lisMenDebuggerOptions,'debugger_options');
     CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,
                    'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,
                    'menu_codetoolsdefineseditor');

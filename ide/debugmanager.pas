@@ -45,7 +45,7 @@ uses
   LCLType, LCLIntf,   
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  LazConf, DebugOptionsFrm,
+  LazConf, 
   CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
@@ -74,7 +74,6 @@ type
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
-    procedure mnuDebuggerOptionsClick(Sender: TObject);
 
     // SrcNotebook events
     function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
@@ -1137,18 +1136,6 @@ begin
   ResetDebugger;
 end;
 
-procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
-var
-  DebuggerOptionsForm: TDebuggerOptionsForm;
-begin
-  DebuggerOptionsForm := TDebuggerOptionsForm.Create(nil);
-  if DebuggerOptionsForm.ShowModal=mrOk then begin
-    // save to disk
-    EnvironmentOptions.Save(false);
-  end;
-  DebuggerOptionsForm.Free;
-end;
-
 
 //-----------------------------------------------------------------------------
 // ScrNoteBook events
@@ -1583,8 +1570,6 @@ begin
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
 //    itmRunMenuAddWatch.OnClick := @;
 //    itmRunMenuAddBpSource.OnClick := @;
-
-    itmEnvDebuggerOptions.OnClick := @mnuDebuggerOptionsClick;
   end;
 end;
 

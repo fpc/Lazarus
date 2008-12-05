@@ -306,7 +306,7 @@ type
         itmEnvGeneralOptions: TIDEMenuCommand;
       //itmEnvEditorOptions: TIDEMenuCommand;
         itmEnvCodeTemplates: TIDEMenuCommand;
-        itmEnvDebuggerOptions: TIDEMenuCommand;
+      //itmEnvDebuggerOptions: TIDEMenuCommand;
       //itmEnvCodeToolsOptions: TIDEMenuCommand;
         itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
       //itmIDECacheSection: TIDEMenuSection;
