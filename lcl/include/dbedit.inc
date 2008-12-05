@@ -148,6 +148,10 @@ begin
   if Key=VK_DELETE then begin
     if not IsReadOnly then
       FDatalink.Edit;
+  end else
+  if Key=VK_TAB then begin
+    if FDataLink.CanModify and FDatalink.Editing then
+      FDataLink.UpdateRecord;
   end;
 end;
 
@@ -173,7 +177,7 @@ begin
         FDatalink.Edit
       else
         Key:=#0;
-        
+
     #32..#255: //standard keys
       if CanAcceptKey and not IsReadOnly then
         FDatalink.Edit
@@ -237,29 +241,18 @@ begin
   inherited Reset;
 end;
 
-procedure TDBEdit.EditingDone;
-begin
-  inherited EditingDone;
-  if FDataLink.CanModify and FDatalink.Editing then begin
-    FUpdatingRecord := True;
-    FDataLink.UpdateRecord;
-    FUpdatingRecord := False;
-  end;
-end;
-
 procedure TDBEdit.WMSetFocus(var Message: TLMSetFocus);
 begin
   inherited WMSetFocus(Message);
-  FDatalink.Reset;
+  if not FDatalink.Editing then
+    FDatalink.Reset;
 end;
 
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
-  if not FUpdatingRecord then begin
-    inherited WMKillFocus(Message);
+  inherited WMKillFocus(Message);
+  if not FDatalink.Editing then
     FDatalink.Reset;
-  end else
-    FUpdatingRecord := False;
 end;
 
 procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);

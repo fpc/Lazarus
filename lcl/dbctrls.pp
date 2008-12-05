@@ -118,7 +118,6 @@ Type
   TDBEdit = class(TCustomMaskEdit)
   private
     FDataLink: TFieldDataLink;
-    FUpdatingRecord: boolean;
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -158,7 +157,6 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EditingDone; override;
     property Field: TField read GetField;
   published
     property DataField: string read GetDataField write SetDataField;
