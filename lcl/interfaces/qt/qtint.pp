@@ -67,6 +67,8 @@ type
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
+    FCachedColors: Array[0..MAX_SYS_COLORS + 1] of PLongWord;
+    procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
   protected
     FStockNullBrush: HBRUSH;

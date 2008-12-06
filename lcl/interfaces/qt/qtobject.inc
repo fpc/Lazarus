@@ -29,6 +29,7 @@ begin
   App := QApplication_Create(@argc, argv);
   InitStockItems;
   QtWidgetSet := Self;
+  ClearCachedColors;
   FDockImage := nil;
 end;
 
@@ -54,6 +55,8 @@ begin
     
   QtDefaultContext.Free;
   QtScreenContext.Free;
+
+  ClearCachedColors;
 
   inherited Destroy;
 end;
@@ -290,6 +293,7 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+    QEventStyleChange: ClearCachedColors;
     LCLQt_Destroy:
       begin
         AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
@@ -639,6 +643,18 @@ begin
   FStockSystemFont := 0; // styles aren't initialized yet
   
   FStockDefaultDC := 0; // app must be initialized
+end;
+
+procedure TQtWidgetSet.ClearCachedColors;
+var
+  i: Integer;
+begin
+  for i := 0 to High(FCachedColors) do
+  begin
+    if FCachedColors[i] <> nil then
+      FreeMem(FCachedColors[i]);
+    FCachedColors[i] := nil;
+  end;
 end;
 
 //------------------------------------------------------------------------
