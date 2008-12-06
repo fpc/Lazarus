@@ -1308,12 +1308,12 @@ type
     property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
-    property Hint: TTranslateString read FHint write SetHint;
+    property Hint: TTranslateString read FHint write SetHint stored IsHintStored;
     property Top: Integer read FTop write SetTop;
     property Width: Integer read FWidth write SetWidth;
     property HelpType: THelpType read FHelpType write FHelpType default htContext;
     property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
-    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
   end;
 
 
