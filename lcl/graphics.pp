@@ -490,6 +490,7 @@ type
     procedure GetData(var FontData: TFontData);
     function GetIsMonoSpace: boolean;
     function GetReference: TWSFontReference;
+    function IsHeightStored: boolean;
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
     procedure SetHandle(const Value: HFONT);
@@ -535,12 +536,12 @@ type
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;
-    property Height: Integer read GetHeight write SetHeight;
+    property Height: Integer read GetHeight write SetHeight stored IsHeightStored;
     property Name: string read GetName write SetName stored IsNameStored;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Quality: TFontQuality read FQuality write SetQuality default fqDefault;
     property Size: Integer read GetSize write SetSize stored false;
-    property Style: TFontStyles read GetStyle write SetStyle;
+    property Style: TFontStyles read GetStyle write SetStyle default [];
   end;
 
   { TPen }

@@ -1184,6 +1184,11 @@ begin
   Result := FReference;
 end;
 
+function TFont.IsHeightStored: boolean;
+begin
+  Result := DefFontData.Height <> Height;
+end;
+
 function TFont.IsNameStored: boolean;
 begin
   Result := DefFontData.Name <> Name;
