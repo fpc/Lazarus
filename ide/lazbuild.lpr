@@ -621,11 +621,15 @@ begin
     end;
   end;
   
+  WorkingDir:=Project1.ProjectDirectory;
+  SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+
   // update all lrs files
   MainBuildBoss.UpdateProjectAutomaticFiles;
 
-  WorkingDir:=Project1.ProjectDirectory;
-  SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+  // regenerate resources
+  if not Project1.Resources.Regenerate(SrcFileName, False, True) then
+    DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
 
   if CompilerOverride <> '' then
     CompilerFilename := CompilerOverride
