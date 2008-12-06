@@ -1171,6 +1171,8 @@ resourcestring
   dlgColor = 'Color';
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
+  dlgUnsavedLineColor = 'Unsaved line';
+  dlgSavedLineColor = 'Saved line';
   dlgEdUseDefColor = 'Use default color';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';

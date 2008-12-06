@@ -5,8 +5,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 531
   TabOrder = 0
   Visible = False
-  DesignLeft = 22
-  DesignTop = 29
+  DesignLeft = 176
+  DesignTop = 232
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -16,7 +16,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 14
     Top = 51
     Width = 94
-    HelpContext = 0
     BorderSpacing.Left = 6
     Caption = 'FileExtensionsLabel'
     ParentColor = False
@@ -30,7 +29,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 14
     Top = 27
     Width = 88
-    HelpContext = 0
     BorderSpacing.Left = 6
     Caption = 'ColorSchemeLabel'
     ParentColor = False
@@ -44,7 +42,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 14
     Top = 3
     Width = 73
-    HelpContext = 0
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'LanguageLabel'
@@ -59,7 +56,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 14
     Top = 27
     Width = 62
-    HelpContext = 0
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BracketLabel'
@@ -73,7 +69,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 21
     Top = 0
     Width = 200
-    HelpContext = 0
     AutoComplete = False
     Ctl3D = False
     ItemHeight = 13
@@ -92,7 +87,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 21
     Top = 24
     Width = 200
-    HelpContext = 0
     AutoComplete = False
     BorderSpacing.Top = 3
     Ctl3D = False
@@ -112,7 +106,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 21
     Top = 48
     Width = 200
-    HelpContext = 0
     AutoComplete = False
     BorderSpacing.Top = 3
     Ctl3D = False
@@ -138,7 +131,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 25
     Top = 48
     Width = 211
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 20
     Caption = 'SetAllAttributesToDefaultButton'
@@ -157,7 +149,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 244
     Top = 75
     Width = 531
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -177,7 +168,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 14
       Top = 37
       Width = 83
-      HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'ForeGroundLabel'
@@ -192,7 +182,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 14
       Top = 78
       Width = 83
-      HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'BackGroundLabel'
@@ -207,7 +196,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 14
       Top = 119
       Width = 81
-      HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'FrameColorLabel'
@@ -222,7 +210,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 214
       Top = 6
       Width = 200
-      HelpContext = 0
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -243,7 +230,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 55
       Width = 183
-      HelpContext = 0
       BorderSpacing.Left = 6
       Caption = 'ForeGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -259,7 +245,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 96
       Width = 183
-      HelpContext = 0
       BorderSpacing.Left = 6
       Caption = 'BackGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -274,7 +259,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 22
       Top = 53
       Width = 100
-      HelpContext = 0
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       AutoComplete = False
       BorderSpacing.Top = 2
@@ -292,7 +276,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 22
       Top = 94
       Width = 100
-      HelpContext = 0
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       AutoComplete = False
@@ -312,7 +295,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 163
       Width = 140
-      HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'TextUnderlineCheckBox'
@@ -329,7 +311,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 182
       Width = 115
-      HelpContext = 0
       BorderSpacing.Left = 6
       Caption = 'TextBoldCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -345,7 +326,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 201
       Width = 118
-      HelpContext = 0
       BorderSpacing.Bottom = 6
       Caption = 'TextItalicCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -360,7 +340,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 163
       Width = 144
-      HelpContext = 0
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -376,7 +355,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 40
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'On'
@@ -394,7 +372,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 42
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'Off'
@@ -411,7 +388,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 56
-        HelpContext = 0
         Anchors = [akTop, akRight]
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
@@ -427,7 +403,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 182
       Width = 144
-      HelpContext = 0
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -444,7 +419,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 56
-        HelpContext = 0
         Anchors = [akTop, akRight]
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
@@ -459,7 +433,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 40
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'On'
@@ -477,7 +450,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 42
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'Off'
@@ -494,7 +466,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 201
       Width = 144
-      HelpContext = 0
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -511,7 +482,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 56
-        HelpContext = 0
         Anchors = [akTop, akRight]
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
@@ -526,7 +496,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 40
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'On'
@@ -544,7 +513,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Height = 19
         Top = 0
         Width = 42
-        HelpContext = 0
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'Off'
@@ -563,7 +531,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 25
       Top = 6
       Width = 164
-      HelpContext = 0
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'SetAttributeToDefaultButton'
@@ -580,7 +547,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 22
       Top = 135
       Width = 100
-      HelpContext = 0
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       AutoComplete = False
@@ -600,7 +566,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Height = 19
       Top = 137
       Width = 181
-      HelpContext = 0
       BorderSpacing.Left = 6
       Caption = 'FrameColorUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -620,7 +585,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 252
     Top = 325
     Width = 531
-    HelpContext = 0
     BorderSpacing.Top = 6
     Anchors = [akTop, akLeft, akRight, akBottom]
     CFDividerDrawLevel = 0
@@ -629,16 +593,15 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Font.Name = 'courier'
     Font.Pitch = fpFixed
     Font.Quality = fqNonAntialiased
-    Font.Style = []
     ParentColor = False
     ParentFont = False
     TabOrder = 5
     BookMarkOptions.Xoffset = 30
+    BookMarkOptions.OnChange = nil
     Gutter.ShowCodeFolding = True
     Gutter.ShowChanges = True
     Gutter.ShowLineNumbers = True
     Gutter.ZeroStart = False
-    Gutter.DigitCount = 2
     Keystrokes = <    
       item
         Command = 3
@@ -963,7 +926,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Lines.Strings = (
       'ColorPreview'
     )
-    SelectedColor.OnChange = nil
     BracketHighlightStyle = sbhsBoth
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[10]
@@ -975,7 +937,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 19
     Top = 0
     Width = 166
-    HelpContext = 0
     Caption = 'UseSyntaxHighlightCheckBox'
     OnChange = GeneralCheckBoxOnChange
     TabOrder = 6
@@ -990,7 +951,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Height = 21
     Top = 24
     Width = 100
-    HelpContext = 0
     AutoComplete = False
     Ctl3D = False
     ItemHeight = 13

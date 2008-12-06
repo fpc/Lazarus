@@ -89,6 +89,7 @@ type
     CurHighlightElement: TSynHighlightElement;
     CurHighlightElementIsExtra: Boolean;
     CurHighlightElementIsSingle: Boolean;
+    CurExtraElement: TAdditionalHilightAttribute;
     CurSingleElement: TSingleColorAttribute;
 
     UpdatingColor: Boolean;
@@ -529,10 +530,18 @@ begin
   TextItalicCheckBox.Enabled := not CurHighlightElementIsSingle;
   TextUnderlineCheckBox.Enabled := not CurHighlightElementIsSingle;
 
+  ForeGroundLabel.Caption := dlgForecolor;
+  BackGroundLabel.Caption := dlgBackColor;
+  FrameColorLabel.Caption := dlgFrameColor;
+
   if CurHighlightElementIsSingle then
     ForeGroundLabel.Caption := dlgColor
   else
-    ForeGroundLabel.Caption := dlgForecolor;
+  if CurHighlightElementIsExtra and (CurExtraElement = ahaModifiedLine) then
+  begin
+    ForeGroundLabel.Caption := dlgSavedLineColor;
+    FrameColorLabel.Caption := dlgUnsavedLineColor;
+  end;
 
   if CurHighlightElementIsExtra then
   begin
@@ -633,6 +642,7 @@ begin
   Old := CurHighlightElement;
   CurHighlightElement := nil;
   CurSingleElement := Low(TSingleColorAttribute);
+  CurExtraElement := Low(TAdditionalHilightAttribute);
   a := ColorElementListBox.ItemIndex;
   if (a >= 0) then
   begin
@@ -659,6 +669,7 @@ begin
         if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h] then
         begin
           CurHighlightElementIsExtra := True;
+          CurExtraElement := h;
           break;
         end;
     end
@@ -699,6 +710,7 @@ begin
 
   CurHighlightElement := nil;
   CurSingleElement := Low(TSingleColorAttribute);
+  CurExtraElement := Low(TAdditionalHilightAttribute);
   CurHighlightElementIsExtra := False;
   CurHighlightElementIsSingle := False;
   if ColorElementListBox.Items.Count > 0 then
@@ -888,6 +900,7 @@ begin
   UpdatingColor := False;
   CurHighlightElement := nil;
   CurSingleElement := Low(TSingleColorAttribute);
+  CurExtraElement := Low(TAdditionalHilightAttribute);
   CurHighlightElementIsExtra := False;
   CurHighlightElementIsSingle := False;
 
