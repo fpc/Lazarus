@@ -70,8 +70,7 @@ implementation
 
 function TQtThemeServices.GetStyle: QStyleH;
 begin
-  if FStyle = nil then
-    FStyle := QApplication_style();
+  FStyle := QApplication_style();
   Result := FStyle;
 end;
 
