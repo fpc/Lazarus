@@ -476,7 +476,7 @@ type
 
   { TQtPrinter }
   
-  TQtPrinter = class(TQtObject)
+  TQtPrinter = class(TObject)
   protected
     FHandle: QPrinterH;
     FPrinterContext: TQtDeviceContext;
@@ -522,7 +522,7 @@ type
     procedure setNumCopies(const AValue: Integer);
     function getPrinterState: QPrinterPrinterState;
   public
-    constructor Create; override;
+    constructor Create; virtual;
     destructor Destroy; override;
     
     procedure beginDoc;
@@ -1462,11 +1462,7 @@ end;
 
 function TQtPen.getDashPattern: TQRealArray;
 begin
-{$ifdef USE_QT_44}
   QPen_dashPattern(Widget, @Result);
-{$else}
-  Result := nil;
-{$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1501,18 +1497,14 @@ begin
 end;
 
 procedure TQtPen.setDashPattern(APattern: PDWord; ALength: DWord);
-{$ifdef USE_QT_44}
 var
   QtPattern: TQRealArray;
   i: integer;
-{$endif}
 begin
-{$ifdef USE_QT_44}
   SetLength(QtPattern, ALength);
   for i := 0 to ALength - 1 do
     QtPattern[i] := APattern[i];
   QPen_setDashPattern(Widget, @QtPattern);
-{$endif}
 end;
 
 procedure TQtPen.setJoinStyle(pcs: QtPenJoinStyle);
@@ -2503,7 +2495,6 @@ var
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
-  W, H: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawImage() ');
@@ -2990,7 +2981,6 @@ end;
 
 constructor TQtPrinter.Create;
 begin
-  inherited Create;
   FPrinterActive := False;
   FHandle := QPrinter_create();
 end;

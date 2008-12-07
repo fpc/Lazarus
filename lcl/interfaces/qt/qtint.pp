@@ -41,7 +41,8 @@ uses
   // FPC
   Classes, SysUtils, Math, Types,
   // LCL
-  InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, Controls, ExtCtrls, Forms,
+  InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
+  Controls, ExtCtrls, Forms,
   Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes,
   Arrow, CheckLst,
   // WS

@@ -4325,6 +4325,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
+var
+  QtEdit: IQtEdit;
 begin
   if hwnd<>0 then
   begin
@@ -4338,7 +4340,8 @@ begin
     {$IFDEF UNIX}
     if (Result <> 0) and (Result <> hWnd) and not
       ((TQtWidget(Hwnd) is TQtMainWindow) or
-      (TQtWidget(Result) is TQtMainWindow))
+      (TQtWidget(Result) is TQtMainWindow) and
+      Supports(TQtWidget(Result), IQtEdit, QtEdit))
     then
       QWidget_clearFocus(TQtWidget(Result).Widget);
     {$ENDIF}
