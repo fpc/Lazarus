@@ -101,7 +101,7 @@ type
         const CallAncestorMethod: string = ''): boolean;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
-        Params: TFindDeclarationParams): TExprTypeList;
+        Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
         const UpperMethodName: string;
         ExceptionOnNotFound: boolean): TFindContext;
@@ -257,6 +257,7 @@ begin
   or (Proc=nil) or (fGatheredCompatibleMethods<>nil) then exit;
   Params:=nil;
   ActivateGlobalWriteLock;
+  FreeAndNil(SearchedExprList);
   try
     BuildSubTreeForClass(ClassNode);
     fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
@@ -267,7 +268,8 @@ begin
     // 1. convert the TypeData to an expression type list
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=ClassNode.Parent;
-    SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+    if not CreateExprListFromMethodTypeData(TypeData,Params,SearchedExprList) then
+      exit(false);
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
     if CompListSize>0 then begin
@@ -293,14 +295,13 @@ begin
         Node:=fGatheredCompatibleMethods.FindSuccessor(Node);
       end;
     finally
-      SearchedExprList.Free;
-      SearchedExprList:=nil;
       if SearchedCompatibilityList<>nil then
         FreeMem(SearchedCompatibilityList);
       SearchedCompatibilityList:=nil;
     end;
     Result:=true;
   finally
+    FreeAndNil(SearchedExprList);
     DeactivateGlobalWriteLock;
     Params.Free;
     FreeAndNil(fGatheredCompatibleMethods);
@@ -475,6 +476,7 @@ begin
   IdentIsmethod:=false;
   MethodIsPublished:=false;
   ActivateGlobalWriteLock;
+  FreeAndNil(SearchedExprList);
   try
     Params:=TFindDeclarationParams.Create;
     try
@@ -492,7 +494,9 @@ begin
 
           // convert the TypeData to an expression type list
           Params.ContextNode:=Params.NewNode;
-          SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+          if not CreateExprListFromMethodTypeData(TypeData,Params,SearchedExprList)
+          then
+            exit(false);
           // create compatibility list
           CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
           if CompListSize>0 then begin
@@ -513,8 +517,6 @@ begin
               MethodIsCompatible:=true;
             end;
           finally
-            SearchedExprList.Free;
-            SearchedExprList:=nil;
             if SearchedCompatibilityList<>nil then
               FreeMem(SearchedCompatibilityList);
             SearchedCompatibilityList:=nil;
@@ -523,6 +525,7 @@ begin
         end;
       end;
     finally
+      FreeAndNil(SearchedExprList);
       Params.Free;
     end;
   finally
@@ -846,7 +849,8 @@ begin
 end;
 
 function TEventsCodeTool.CreateExprListFromMethodTypeData(
-  TypeData: PTypeData; Params: TFindDeclarationParams): TExprTypeList;
+  TypeData: PTypeData; Params: TFindDeclarationParams;
+  out List: TExprTypeList): boolean;
 var i, ParamCount, Len, Offset: integer;
   CurTypeIdentifier: string;
   OldInput: TFindDeclarationInput;
@@ -858,8 +862,9 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
   {$ENDIF}
-  Result:=TExprTypeList.Create;
-  if TypeData=nil then exit;
+  Result:=false;
+  List:=TExprTypeList.Create;
+  if TypeData=nil then exit(true);
   ParamCount:=TypeData^.ParamCount;
   if ParamCount>0 then begin
     Offset:=0;
@@ -912,14 +917,14 @@ begin
       );
       {$ENDIF}
 
-      Result.Add(CurExprType);
+      List.Add(CurExprType);
       Params.Load(OldInput,true);
-
     end;
   end;
   {$IFDEF CTDEBUG}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] END');
   {$ENDIF}
+  Result:=true;
 end;
 
 function TEventsCodeTool.CollectPublishedMethods(
