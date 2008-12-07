@@ -121,6 +121,8 @@ begin
     ARect := R;
     Element := GetDrawElement(Details);
     case Element.DrawVariant of
+      qdvNone:
+        inherited DrawElement(DC, Details, R, ClipRect);
       qdvControl:
       begin
         if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
@@ -166,6 +168,12 @@ begin
             // but we need a way to draw it at our position
             Context.translate(ARect.Left, ARect.Top);
             OffsetRect(ARect, -ARect.Left, -ARect.Top);
+          end;
+          QStyleCC_Slider, QStyleCC_ScrollBar:
+          begin
+            opt := QStyleOptionSlider_create();
+            QStyleOptionSlider_setMinimum(QStyleOptionSliderH(opt), 0);
+            QStyleOptionSlider_setMaximum(QStyleOptionSliderH(opt), 100);
           end;
         else
           opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
@@ -279,8 +287,16 @@ begin
 
   // define orientations
   if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
-     ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) then
+     ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) or
+     ((Details.Element = teScrollBar) and (Details.Part in [SBP_UPPERTRACKHORZ, SBP_LOWERTRACKHORZ, SBP_THUMBBTNHORZ, SBP_GRIPPERHORZ])) then
     Result := Result or QStyleState_Horizontal;
+
+  if (Details.Element = teTreeview) and (Details.Part = TVP_GLYPH) then
+  begin
+    Result := Result or QStyleState_Children;
+    if Details.State = GLPS_OPENED then
+      Result := Result or QStyleState_Open;
+  end;
 end;
 
 function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
@@ -420,6 +436,32 @@ begin
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_FrameTabWidget;
+        end;
+      end;
+    teScrollBar:
+      begin
+        Result.DrawVariant := qdvComplexControl;
+        Result.ComplexControl := QStyleCC_ScrollBar;
+        case Details.Part of
+          SBP_ARROWBTN: Result.SubControls := QStyleSC_ScrollBarAddLine;
+          SBP_THUMBBTNHORZ,
+          SBP_THUMBBTNVERT,
+          SBP_GRIPPERHORZ,
+          SBP_GRIPPERVERT: Result.SubControls := QStyleSC_ScrollBarSlider;
+          SBP_LOWERTRACKHORZ,
+          SBP_LOWERTRACKVERT: Result.SubControls := QStyleSC_ScrollBarAddPage;
+          SBP_UPPERTRACKHORZ,
+          SBP_UPPERTRACKVERT: Result.SubControls := QStyleSC_ScrollBarSubPage;
+        else
+          Result.SubControls := QStyleSC_None;
+        end;
+      end;
+    teTreeView:
+      begin
+        if Details.Part = TVP_GLYPH then
+        begin
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_IndicatorBranch
         end;
       end;
   end;

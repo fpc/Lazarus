@@ -58,6 +58,7 @@ type
     GapWidth   : gint;
 {$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
+    ExpanderSize: Integer;
     Edge       : TGdkWindowEdge;
 {$endif}
     IsHot      : Boolean;
@@ -448,12 +449,34 @@ begin
       // move to origin
       inc(Area.x, StyleParams.Origin.x);
       inc(Area.y, StyleParams.Origin.y);
-      
+
       with StyleParams do
       begin
+        {$ifndef gtk1}
+        if Painter = gptExpander then
+        begin
+          // Better to draw expander with the ExpanderSize, but sometimes it
+          // will not look very well. The best can we do is to use the same odd/even
+          // amount of pixels => expand/shrink area.width and area.height a bit
+
+          // Area.width := ExpanderSize;
+          if Odd(Area.width) <> Odd(ExpanderSize) then
+            if Area.width < ExpanderSize then
+              inc(Area.width)
+            else
+              dec(Area.width);
+          // Area.height := ExpanderSize;
+          if Odd(Area.height) <> Odd(ExpanderSize) then
+            if Area.height < ExpanderSize then
+              inc(Area.height)
+            else
+              dec(Area.height);
+        end;
+        {$endif}
         case Painter of
-          gptBox,
-          gptDefault: gtk_paint_box(
+          gptDefault: inherited DrawElement(DC, Details, R, ClipRect);
+          gptBox:
+            gtk_paint_box(
               Style, Window,
               State, Shadow,
               @Area, Widget, PChar(Detail),
@@ -525,7 +548,7 @@ begin
           gptExpander: gtk_paint_expander(
               Style, Window, State,
               @Area, Widget, PChar(Detail),
-              Area.x, Area.y,
+              Area.x + Area.width shr 1, Area.y + Area.height shr 1,
               Expander);
           gptResizeGrip: gtk_paint_resize_grip(
               Style, Window, State,

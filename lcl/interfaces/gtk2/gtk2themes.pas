@@ -96,12 +96,39 @@ begin
               end;
           end;
         end;
+      teTreeview:
+        begin
+          if Details.Part = TVP_GLYPH then
+          begin
+            Result.Painter := gptExpander;
+            Result.Shadow := GTK_SHADOW_NONE;
+            Result.State := GTK_STATE_NORMAL;
+            Result.Widget := GetStyleWidget(lgsTreeView);
+            Result.Detail := 'treeview';
+            if Details.State = GLPS_CLOSED then
+              Result.Expander := GTK_EXPANDER_COLLAPSED
+            else
+              Result.Expander := GTK_EXPANDER_EXPANDED;
+
+            Result.ExpanderSize := GetDetailSize(Details);
+          end;
+        end;
     end;
 end;
 
 function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+var
+  AValue: TGValue;
 begin
-  Result := GetBaseDetailsSize(Details);
+  if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
+  begin
+    FillChar(AValue, SizeOf(AValue), 0);
+    g_value_init(@AValue, G_TYPE_INT);
+    gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
+    Result := AValue.data[0].v_int;
+  end
+  else
+    Result := GetBaseDetailsSize(Details);
 end;
 
 end.

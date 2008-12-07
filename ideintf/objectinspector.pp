@@ -2,7 +2,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -37,7 +37,7 @@ interface
 uses
   InterfaceBase, Forms, SysUtils, Buttons, Types, Classes, Graphics, GraphType,
   StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo,
-  LMessages, LResources, LazConfigStorage, Menus, Dialogs,
+  LMessages, LResources, LazConfigStorage, Menus, Dialogs, Themes,
   ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors, IDEImagesIntf;
@@ -2314,19 +2314,18 @@ var
   Platform: TLCLPlatform;
   X, Y: Integer;
 
-  procedure DrawTreeIcon(x,y:integer;Plus:boolean);
+  procedure DrawTreeIcon(X, Y: Integer; Minus: Boolean);
+  const
+    PlusMinusDetail: array[Boolean] of TThemedTreeview =
+    (
+      ttGlyphClosed,
+      ttGlyphOpened
+    );
+  var
+    Details: TThemedElementDetails;
   begin
-    with Canvas do begin
-      Brush.Color:=clWhite;
-      Pen.Color:=clBlack;
-      Rectangle(x,y,x+9,y+9);
-      MoveTo(x+2,y+4);
-      LineTo(x+7,y+4);
-      if Plus then begin
-        MoveTo(x+4,y+2);
-        LineTo(x+4,y+7);
-      end;
-    end;
+    Details := ThemeServices.GetElementDetails(PlusMinusDetail[Minus]);
+    ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + 9, Y + 9), nil);
   end;
 
 // PaintRow
@@ -2381,7 +2380,7 @@ begin
 
     // draw icon
     if CanExpandRow(CurRow) then
-      DrawTreeIcon(IconX,IconY,not CurRow.Expanded);
+      DrawTreeIcon(IconX, IconY, CurRow.Expanded);
 
     // draw name
     OldFont:=Font;

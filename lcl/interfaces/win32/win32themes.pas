@@ -115,17 +115,17 @@ begin
   FreeThemeLibrary;
 end;
 
-function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails
-  ): Integer;
+function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
 begin
+  // GetThemeInt(Theme[Details.Element], Details.Part, Details.State, TMT_HEIGHT, Result);
+  // does not work for some reason
   if ThemesEnabled then
-    case Details.Element of
-      teToolBar:
-        if Details.Part = TP_SPLITBUTTONDROPDOWN then
-          Result := 12;
+  begin
+    if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
+       Result := 12
     else
       Result:=inherited GetDetailSize(Details);
-    end
+  end
   else
     Result:=inherited GetDetailSize(Details);
 end;
