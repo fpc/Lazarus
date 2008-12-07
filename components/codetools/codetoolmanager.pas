@@ -918,7 +918,7 @@ begin
       Options.FPCSrcDir:=ExpandFileNameUTF8('~/freepascal/fpc');
     if Options.LazarusSrcDir='' then
       Options.LazarusSrcDir:=ExpandFileNameUTF8('~/pascal/lazarus');
-    DebugLn(['TCodeToolManager.SimpleInit PP=',Options.FPCPath,' FPCDIR=',Options.FPCSrcDir,' LAZARUSDIR=',Options.LazarusSrcDir]);
+    DebugLn(['TCodeToolManager.SimpleInit PP=',Options.FPCPath,' FPCDIR=',Options.FPCSrcDir,' LAZARUSDIR=',Options.LazarusSrcDir,' FPCTARGET=',Options.TargetOS]);
     // init the codetools
     if not Options.UnitLinkListValid then
       debugln('Scanning FPC sources may take a while ...');

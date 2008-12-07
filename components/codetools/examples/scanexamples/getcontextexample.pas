@@ -5,7 +5,7 @@ unit GetContextExample;
 interface
 
 uses
-  Classes, SysUtils; 
+  {$IFDEF MSWindows}Windows,{$ENDIF} Classes, SysUtils;
 
 implementation
 
