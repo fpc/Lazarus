@@ -17,7 +17,6 @@ var
 begin
   // setup the Options
   CodeToolBoss.SimpleInit(ConfigFilename);
-  writeln('AAA ',CodeToolBoss.GetIncludePathForDirectory('/home/mattias/pascal/fpc_sources/23/fpc/rtl/win32'));
 
   // Example: find declaration of 'TObject'
 
