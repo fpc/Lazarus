@@ -2274,6 +2274,7 @@ ide/progressdlg.lrs svneol=native#text/plain
 ide/progressdlg.pas svneol=native#text/plain
 ide/project.pp svneol=native#text/pascal
 ide/projectdefs.pas svneol=native#text/pascal
+ide/projecticon.pas svneol=native#text/pascal
 ide/projectinspector.lfm svneol=native#text/plain
 ide/projectinspector.lrs svneol=native#text/pascal
 ide/projectinspector.pas svneol=native#text/pascal
@@ -2283,6 +2284,7 @@ ide/projectopts.pp svneol=native#text/pascal
 ide/projectopts_new.lfm svneol=native#text/plain
 ide/projectopts_new.lrs svneol=native#text/pascal
 ide/projectopts_new.pp svneol=native#text/pascal
+ide/projectresources.pas svneol=native#text/pascal
 ide/projectwizarddlg.lfm svneol=native#text/plain
 ide/projectwizarddlg.lrs svneol=native#text/plain
 ide/projectwizarddlg.pas svneol=native#text/plain
@@ -2437,6 +2439,7 @@ ideintf/objectinspector.pp svneol=native#text/pascal
 ideintf/objinspstrconsts.pas svneol=native#text/pascal
 ideintf/packageintf.pas svneol=native#text/pascal
 ideintf/projectintf.pas svneol=native#text/pascal
+ideintf/projectresourcesintf.pas svneol=native#text/pascal
 ideintf/propedits.pp svneol=native#text/pascal
 ideintf/srceditorintf.pas svneol=native#text/pascal
 ideintf/statusbarpropedit.pp svneol=native#text/pascal
@@ -2648,6 +2651,11 @@ images/designer/scale.png -text
 images/designer/size.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
+images/icons/aqua.ico -text
+images/icons/blue.ico -text svneol=unset#image/ico
+images/icons/blue_roundrect.ico -text svneol=unset#image/ico
+images/icons/brown.ico -text svneol=unset#image/ico
+images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
 images/items/item_character.png -text svneol=unset#image/png

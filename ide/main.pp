@@ -95,7 +95,7 @@ uses
   IDEProtocol,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
-  ApplicationBundle, W32VersionInfo, ImExportCompilerOpts, InfoBuild,
+  ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,
@@ -6679,12 +6679,14 @@ begin
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
-      if Project1.MainUnitID>=0 then begin
+      if Project1.MainUnitID >= 0 then
+      begin
         // check mainunit filename
         Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
         if Ext='' then Ext:='.pas';
         NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
-        if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
+        if CompareFilenames(NewFilename,NewProgramFilename)=0 then
+        begin
           ACaption:=lisChooseADifferentName;
           AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
             '"', NewFilename, '"', #13]);
@@ -6716,14 +6718,17 @@ begin
   end;
 
   // check if info file or source file already exists
-  if FileExistsUTF8(NewFilename) then begin
+  if FileExistsUTF8(NewFilename) then
+  begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
   end
-  else begin
-    if FileExistsUTF8(NewProgramFilename) then begin
+  else
+  begin
+    if FileExistsUTF8(NewProgramFilename) then
+    begin
       ACaption:=lisOverwriteFile;
       AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
         '"', #13]);
@@ -6732,7 +6737,7 @@ begin
     end;
   end;
   
-  TitleWasDefault:=Project1.TitleIsDefault(true);
+  TitleWasDefault := Project1.TitleIsDefault(true);
 
   // set new project filename
   Project1.ProjectInfoFile:=NewFilename;
@@ -6740,15 +6745,22 @@ begin
   SetRecentProjectFilesMenu;
 
   // change main source
-  if (Project1.MainUnitID>=0) then begin
-    GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
+  if (Project1.MainUnitID >= 0) then
+  begin
+    GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
     
+    if not Project1.Resources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
+    then begin
+      DebugLn(['TMainIDE.DoShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFilename,'"']);
+      // silently ignore
+    end;
+
     // Save old source code, to prevent overwriting it,
     // if the file name didn't actually change.
-    OldSource:=MainUnitInfo.Source.Source;
+    OldSource := MainUnitInfo.Source.Source;
     
     // switch MainUnitInfo.Source to new code
-    NewBuf:=CodeToolBoss.CreateFile(NewProgramFilename);
+    NewBuf := CodeToolBoss.CreateFile(NewProgramFilename);
     if NewBuf=nil then begin
       Result:=MessageDlg(lisErrorCreatingFile, Format(lisUnableToCreateFile3, [
         #13, '"', NewProgramFilename, '"']), mtError, [mbCancel], 0);
@@ -6766,8 +6778,6 @@ begin
     // change program name
     MainUnitInfo.UnitName:=NewProgramName;
     MainUnitInfo.Modified:=true;
-
-    // TODO: rename resource include directive
 
     // update source notebook page names
     UpdateSourceNames;
@@ -8332,6 +8342,10 @@ begin
 
       // rebuild codetools defines
       MainBuildBoss.RescanCompilerDefines(true,true);
+
+      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False) then
+        DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
+
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
       Project1.DefineTemplates.AllChanged;
@@ -8372,6 +8386,7 @@ begin
     Result:=mrAbort;
     exit;
   end;
+
   SaveSourceEditorChangesToCodeCache(-1);
   SkipSavingMainSource:=false;
 
@@ -8442,27 +8457,40 @@ begin
   end;
 
   // save main source
-  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then begin
-    if MainUnitInfo.Loaded then begin
+  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then 
+  begin
+    if not (sfSaveToTestDir in Flags) then 
+      DestFilename := MainUnitInfo.Filename
+    else
+      DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
+
+    // if we are saving a project to a temporary folder then we also need to save resources
+    // or compilation will be broken   
+    if sfSaveToTestDir in Flags then
+      if not Project1.Resources.Regenerate(DestFileName, False, True) then
+        DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
+
+    if MainUnitInfo.Loaded then
+    begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
                [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
       if Result=mrAbort then exit;
-    end else begin
+    end else 
+    begin
       // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) then begin
-        DestFilename:=MainUnitInfo.Filename;
-        if not MainUnitInfo.NeedsSaveToDisk then
-          SkipSavingMainSource:=true;
-      end else
-        DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
-      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then begin
+      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then 
+        SkipSavingMainSource := true;
+      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then 
+      begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
         if Result=mrAbort then exit;
       end;
     end;
+    
     // clear modified flags
-    if not (sfSaveToTestDir in Flags) then begin
+    if not (sfSaveToTestDir in Flags) then 
+    begin
       if (Result=mrOk) then begin
         if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
         if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
@@ -9103,6 +9131,7 @@ begin
   {$IFDEF VerboseSaveForBuild}
   DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
   {$ENDIF}
+
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
@@ -9289,8 +9318,6 @@ var
   CompilerFilename: String;
   WorkingDir: String;
   CompilerParams: String;
-  i: integer;
-  VersionInfo: TProjectVersionInfo;
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
@@ -9319,35 +9346,17 @@ begin
     PutInfoBuilderProject(Project1.MainFilename);
     PutInfoBuilderStatus(lisInfoBuildComplile);
 
-    // handle versioninfo
-    if not (pbfSkipLinking in Flags) then begin
-      VersionInfo := Project1.VersionInfo;
-      Result := VersionInfo.CreateRCFile(Project1.MainFilename,
-        MainBuildBoss.GetTargetOS(true));
+    // clear old error lines
+    SourceNotebook.ClearErrorLines;
+    DoArrangeSourceEditorAndMessageView(false);
 
-      for i := 1 to VersionInfo.VersionInfoMessages.Count do
-        MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
-    end else
-      VersionInfo:=nil;
-
-    // handle manifest
-    if not (pbfSkipLinking in Flags) then begin
-      Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
-        MainBuildBoss.GetTargetOS(true));
-      for i := 1 to Project1.XPManifest.Messages.Count do
-        MessagesView.AddMsg(Format(Project1.XPManifest.Messages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
+    // get main source filename
+    if not Project1.IsVirtual then begin
+      WorkingDir:=Project1.ProjectDirectory;
+      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+    end else begin
+      WorkingDir:=GetTestBuildDirectory;
+      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
     end;
 
     // compile required packages
@@ -9363,22 +9372,8 @@ begin
       end;
     end;
 
-    // clear old error lines
-    SourceNotebook.ClearErrorLines;
-
-    DoArrangeSourceEditorAndMessageView(false);
-
-    // get main source filename
-    if not Project1.IsVirtual then begin
-      WorkingDir:=Project1.ProjectDirectory;
-      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-    end else begin
-      WorkingDir:=GetTestBuildDirectory;
-      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
-    end;
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-    
     CompilerParams :=
       Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[]) + ' ' +
       PrepareCmdLineOption(SrcFilename);

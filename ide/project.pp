@@ -52,8 +52,7 @@ uses
   Controls, Dialogs, Laz_XMLCfg, LazConf, FileUtil,
   // IDEIntf
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
-  // for .res files
-  W32VersionInfo, W32Manifest,
+  ProjectResources,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
@@ -576,7 +575,6 @@ type
     fFirst: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
-    fIconPath: String;
     FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
@@ -608,8 +606,7 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
-    FVersionInfo: TProjectVersionInfo;
-    FXPManifest: TProjectXPManifest;
+    FResources: TProjectResources;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -638,7 +635,7 @@ type
     procedure UpdateSourceDirectories;
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
-    procedure VersionInfoModified(Sender: TObject);
+    procedure EmbeddedObjectModified(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -836,7 +833,6 @@ type
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
-    property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
                                            read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
@@ -875,9 +871,8 @@ type
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
     
-    property VersionInfo: TProjectVersionInfo read FVersionInfo;
-    property XPManifest: TProjectXPManifest read FXPManifest;
-    
+    property Resources: TProjectResources read FResources;
+
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property POOutputDirectory: string read FPOOutputDirectory
                                        write SetPOOutputDirectory;
@@ -906,7 +901,8 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 
 implementation
 
-uses frmcustomapplicationoptions;
+uses
+  frmcustomapplicationoptions;
 
 const
   ProjectInfoFileVersion = 6;
@@ -1303,23 +1299,26 @@ begin
 end;
 
 procedure TUnitInfo.SetUnitName(const NewUnitName:string);
-var Allowed:boolean;
+var
+  Allowed: boolean;
   OldUnitName: String;
 begin
-  if (fUnitName<>NewUnitName) and (NewUnitName<>'') then begin
-    Allowed:=true;
-    OldUnitName:=fUnitName;
-    if OldUnitName='' then
-      OldUnitName:=ExtractFileNameOnly(Filename);
+  if (fUnitName <> NewUnitName) and (NewUnitName <> '') then
+  begin
+    Allowed := true;
+    OldUnitName := fUnitName;
+    if OldUnitName = '' then
+      OldUnitName := ExtractFileNameOnly(Filename);
     if Assigned(FOnUnitNameChange) then
-      FOnUnitNameChange(Self,OldUnitName,NewUnitName,false,Allowed);
+      FOnUnitNameChange(Self, OldUnitName, NewUnitName, false, Allowed);
     // (ignore Allowed)
-    if (fSource<>nil) then begin
+    if (fSource <> nil) then
+    begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
-    fUnitName:=NewUnitName;
-    Modified:=true;
-    if (Project<>nil) then Project.UnitModified(Self);
+    fUnitName := NewUnitName;
+    Modified := true;
+    if (Project <> nil) then Project.UnitModified(Self);
   end;
 end;
 
@@ -1867,7 +1866,6 @@ begin
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
-  fIconPath := '';
   FJumpHistory:=TProjectJumpHistory.Create;
   FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
   FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
@@ -1885,11 +1883,8 @@ begin
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
-  FVersionInfo := TProjectVersionInfo.Create;
-  FVersionInfo.OnModified:=@VersionInfoModified;
-  
-  FXPManifest := TProjectXPManifest.Create;
-  FXPManifest.UseManifest := False;
+  FResources := TProjectResources.Create;
+  FResources.OnModified := @EmbeddedObjectModified;
 end;
 
 {------------------------------------------------------------------------------
@@ -1897,11 +1892,10 @@ end;
  ------------------------------------------------------------------------------}
 destructor TProject.Destroy;
 begin
-  FDefineTemplates.Active:=false;
-  fDestroying:=true;
+  FDefineTemplates.Active := False;
+  FDestroying := True;
   Clear;
-  FreeThenNil(FVersionInfo);
-  FreeThenNil(FXPManifest);
+  FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
@@ -2068,11 +2062,9 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                AutoCreateForms,true);
-      xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',IconPath,'');
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
-      xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
@@ -2083,24 +2075,8 @@ begin
       xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
                    CreateRelativePath(POOutputDirectory,ProjectDirectory) , '');
 
-      // VersionInfo
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr,0);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr,0);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,'0409');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,'04E4');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
-      xmlconfig.SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
+      // Resources
+      Resources.WriteToProjectFile(xmlconfig, Path);
 
       // save custom data
       SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
@@ -2468,14 +2444,10 @@ begin
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
-      IconPath := SwitchPathDelims(
-                        xmlconfig.GetValue(Path+'General/IconPath/Value', './'),
-                        fPathDelimChanged);
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
-      XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
       // Lazdoc
       LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
@@ -2496,24 +2468,8 @@ begin
       // Load the compiler options
       LoadCompilerOptions(XMLConfig,Path);
 
-      // VersionInfo
-      VersionInfo.UseVersionInfo := xmlconfig.GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
-      VersionInfo.AutoIncrementBuild := xmlconfig.GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
-      VersionInfo.VersionNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentVersionNr/Value', 0);
-      VersionInfo.MajorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
-      VersionInfo.MinorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
-      VersionInfo.BuildNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
-      VersionInfo.ProductVersionString := xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
-      VersionInfo.HexLang := xmlconfig.GetValue(Path+'VersionInfo/Language/Value', '0409');
-      VersionInfo.HexCharSet := xmlconfig.GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
-      VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', ''));
-      VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/CompanyName/Value', ''));
-      VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/FileDescription/Value', ''));
-      VersionInfo.InternalNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/InternalName/Value', ''));
-      VersionInfo.CopyrightString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalCopyright/Value', ''));
-      VersionInfo.TrademarksString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalTrademarks/Value', ''));
-      VersionInfo.OriginalFilenameString := xmlconfig.GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
-      VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', ''));
+      // Resources
+      Resources.ReadFromProjectFile(xmlconfig, Path);
 
       // load custom data
       LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
@@ -2747,7 +2703,6 @@ begin
   FBookmarks.Clear;
   FCompilerOptions.Clear;
   FDefineTemplates.Clear;
-  fIconPath := '';
   FJumpHistory.Clear;
   fMainUnitID := -1;
   Modified := false;
@@ -2864,14 +2819,14 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  if AValue=Modified then exit;
+  if AValue = Modified then exit;
   inherited SetModified(AValue);
-  if not Modified then begin
-    PublishOptions.Modified:=false;
-    CompilerOptions.Modified:=false;
-    SessionModified:=false;
-    VersionInfo.Modified:=false;
-    XPManifest.Modified:=false;
+  if not Modified then 
+  begin
+    PublishOptions.Modified := False;
+    CompilerOptions.Modified := False;
+    Resources.Modified := False;
+    SessionModified := False;
   end;
 end;
 
@@ -3346,10 +3301,10 @@ begin
   Result:=fFirst[uilLoaded];
 end;
 
-procedure TProject.VersionInfoModified(Sender: TObject);
+procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
-  if VersionInfo.Modified then
-    Modified:=true;
+  if Resources.Modified then
+    Modified := True;
 end;
 
 function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;
@@ -4130,11 +4085,13 @@ begin
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;
-  const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
+  const OldUnitName, NewUnitName: string; CheckIfAllowed: boolean;
   var Allowed: boolean);
-var i:integer;
+var
+  i:integer;
 begin
-  if AnUnitInfo.IsPartOfProject then begin
+  if AnUnitInfo.IsPartOfProject then
+  begin
     if CheckIfAllowed then begin
       // check if no other project unit has this name
       for i:=0 to UnitCount-1 do begin
@@ -4146,11 +4103,19 @@ begin
         end;
       end;
     end;
-    if (OldUnitName<>'') and (pfMainUnitHasUsesSectionForAllUnits in Flags) then
+    if (OldUnitName<>'') then
     begin
-      // rename unit in program uses section
-      CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
-        ,OldUnitName,NewUnitName,'');
+      if (pfMainUnitHasUsesSectionForAllUnits in Flags) then
+      begin
+        // rename unit in program uses section
+        CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source, OldUnitName,
+          NewUnitName, '');
+      end;
+      if MainUnitInfo = AnUnitInfo then
+      begin
+        // we are renaming a project => update resource directives
+        Resources.RenameDirectives(OldUnitName, NewUnitName);
+      end;
     end;
   end;
 end;

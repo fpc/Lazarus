@@ -785,7 +785,7 @@ var
 begin
   if (SrcGraph is TRasterImage) then
   begin
-    SrcIntfImg:=TLazIntfImage.Create(0,0);
+    SrcIntfImg:=TLazIntfImage.Create(0,0,[]);
     Lst.BeginUpdate;
     Try
       SrcIntfImg.LoadFromBitmap(TRasterImage(SrcGraph).BitmapHandle,

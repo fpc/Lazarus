@@ -117,7 +117,7 @@ begin
   then begin
     // todo: base on rawimage
   
-    IntfImage := TLazIntfImage.Create(0,0);
+    IntfImage := TLazIntfImage.Create(0,0,[]);
     try
       if BitmapHandleAllocated
       then IntfImage.DataDescription := GetDescriptionFromBitmap(BitmapHandle, 0, 0)
@@ -345,7 +345,7 @@ begin
   IntfImg:=nil;
   try
     // create the interface image
-    IntfImg:=TLazIntfImage.Create(0,0);
+    IntfImg:=TLazIntfImage.Create(0,0,[]);
     // get a snapshot
     IntfImg.LoadFromDevice(DC);
     // create HBitmap
@@ -682,7 +682,7 @@ end;
 function TRasterImage.CreateIntfImage: TLazIntfImage;
 begin
   {$IFDEF VerboseLCLTodos}{$note todo: create based on rawimage}{$ENDIF}
-  Result := TLazIntfImage.Create(0,0);
+  Result := TLazIntfImage.Create(0,0,[]);
   Result.LoadFromBitmap(BitmapHandle, MaskHandle);
 end;
 
@@ -707,7 +707,7 @@ begin
   end;
   
   {$IFDEF VerboseLCLTodos}{$note todo: move to IntfImage}{$ENDIF}
-  IntfImage := TLazIntfImage.Create(0, 0);
+  IntfImage := TLazIntfImage.Create(0,0,[]);
   try
     // force handle creation here, since at next step we will check for mask handle
     ImgHandle := BitmapHandle;

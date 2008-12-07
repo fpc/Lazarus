@@ -51,6 +51,7 @@ uses
   ObjInspStrConsts,
   PackageIntf,
   ProjectIntf,
+  ProjectResourcesIntf,
   PropEdits,
   SrcEditorIntf,
   StatusBarPropEdit,

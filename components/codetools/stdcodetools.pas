@@ -60,7 +60,6 @@ type
     LFMNode: TLFMTreeNode;
     const IdentName: string; var IsDefined: boolean) of object;
 
-
   { TStandardCodeTool }
 
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -217,6 +216,14 @@ type
           out NewPos: TCodeXYPosition; out NewTopLine: integer;
           const Filename: string = ''): boolean;
     function AddResourceDirective(const Filename: string;
+          SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
+          ): boolean;
+    function FindIncludeDirective(DoBuildTree: boolean;
+          var ACleanPos: integer; const Filename: string = ''): boolean;
+    function FindIncludeDirective(const CursorPos: TCodeXYPosition;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer;
+          const Filename: string = ''): boolean;
+    function AddIncludeDirective(const Filename: string;
           SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
           ): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
@@ -4805,6 +4812,96 @@ begin
   else
     AddSrc:=GetIndentStr(Indent)+'{$R '+Filename+'}';
   if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+    AddSrc) then exit;
+  if not SourceChangeCache.Apply then exit;
+
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindIncludeDirective(DoBuildTree: boolean;
+  var ACleanPos: integer; const Filename: string): boolean;
+var
+  FilenameStartPos: Integer;
+  FilenameEndPos: LongInt;
+  CommentStart: integer;
+  CommentEnd: integer;
+begin
+  Result:=false;
+  if DoBuildTree then BuildTree(true);
+  ACleanPos:=1;
+  repeat
+    ACleanPos:=FindNextIncludeDirective(Src,ACleanPos,Scanner.NestedComments,
+                       FilenameStartPos,FilenameEndPos,CommentStart,CommentEnd);
+    if (ACleanPos<1) or (ACleanPos>SrcLen) then
+      exit(false);
+    if Filename='' then begin
+      // searching any filename -> found
+      exit(true);
+    end;
+    if CompareText(PChar(Pointer(Filename)),length(Filename),
+                   @Src[FilenameStartPos],FilenameEndPos-FilenameStartPos,
+                   true,false)=0
+    then begin
+      // filename found
+      exit(true);
+    end;
+    ACleanPos:=FilenameEndPos+1;
+  until ACleanPos>SrcLen;
+end;
+
+function TStandardCodeTool.FindIncludeDirective(
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer; const Filename: string): boolean;
+var
+  CleanCursorPos: integer;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  if not FindIncludeDirective(false,CleanCursorPos,Filename) then begin
+    //DebugLn('TStandardCodeTool.FindIncludeDirective resource directive not found');
+    exit;
+  end;
+  Result:=CleanPosToCaretAndTopLine(CleanCursorPos,NewPos,NewTopLine);
+end;
+
+function TStandardCodeTool.AddIncludeDirective(const Filename: string;
+  SourceChangeCache: TSourceChangeCache; const NewSrc: string): boolean;
+var
+  ANode: TCodeTreeNode;
+  Indent: LongInt;
+  InsertPos: Integer;
+  AddSrc: String;
+begin
+  Result:=false;
+  BuildTree(true);
+  // find an insert position
+  ANode:=FindInitializationNode;
+  if ANode<>nil then begin
+    Indent:=GetLineIndent(Src,ANode.StartPos)
+            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    InsertPos:=ANode.StartPos+length('initialization');
+  end else begin
+    ANode:=FindMainBeginEndNode;
+    if ANode<>nil then begin
+      MoveCursorToNodeStart(ANode);
+      ReadNextAtom;
+      //debugln(['TStandardCodeTool.AddIncludeDirective ',GetAtom]);
+      Indent:=GetLineIndent(Src,CurPos.StartPos)
+              +SourceChangeCache.BeautifyCodeOptions.Indent;
+      InsertPos:=CurPos.EndPos;
+    end else begin
+      debugln(['TStandardCodeTool.AddIncludeDirective ToDo: add initialization / begin..end']);
+      exit;
+    end;
+  end;
+
+  // insert directive
+  SourceChangeCache.MainScanner:=Scanner;
+  if NewSrc<>'' then
+    AddSrc:=NewSrc
+  else
+    AddSrc:=GetIndentStr(Indent)+'{$I '+Filename+'}';
+  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
     AddSrc) then exit;
   if not SourceChangeCache.Apply then exit;
 

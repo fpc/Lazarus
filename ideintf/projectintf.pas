@@ -533,7 +533,7 @@ type
     fModified: boolean;
     FProjectSessionFile: string;
     FSessionModified: boolean;
-    fTitle: String;
+    FTitle: String;
     FSessionStorage: TProjectSessionStorage;
     FLazDocPaths: string;
     procedure SetLazDocPaths(const AValue: string);
@@ -576,7 +576,7 @@ type
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFile: TLazProjectFile read GetMainFile;
-    property Title: String read fTitle write SetTitle;
+    property Title: String read FTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
@@ -1135,8 +1135,8 @@ end;
 
 procedure TLazProject.SetTitle(const AValue: String);
 begin
-  if fTitle=AValue then exit;
-  fTitle:=AValue;
+  if FTitle=AValue then exit;
+  FTitle:=AValue;
   Modified:=true;
 end;
 

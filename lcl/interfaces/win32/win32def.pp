@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -23,16 +23,16 @@
  *****************************************************************************
 }
 
-Unit Win32Def;
+unit Win32Def;
 
 {$mode objfpc}{$H+}
 
-Interface
+interface
 
-Uses
+uses
   Windows, Classes, LCLType;
 
-Const
+const
   // Used by TCalendar
   MCM_FIRST = $1000;
   MCM_GETCURSEL = MCM_FIRST + 1;
@@ -43,85 +43,6 @@ Const
   WM_LCL_SOCK_ASYNC = WM_USER + $500;
 
 type
-  TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
-  TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
-
-  PGDIRGB = ^TGDIRGB;
-  TGDIRGB = Record
-    Red,
-    Green,
-    Blue: Byte;
-  End;
-
-  PGDIRawImage = ^TGDIRawImage;
-  TGDIRawImage = Record
-    Height,
-    Width: Integer;
-    Depth: Byte;
-    Data: Array[0..0] Of TGDIRGB;
-  End;
-
-  PGDIObject = ^TGDIObject;
-  TGDIObject = Record
-    Case GDIType: TGDIType Of
-      gdiBitmap:
-      (
-        GDIBitmapMaskObject: HICON;
-        Case GDIBitmapType: TGDIBitmapType Of
-          gbBitmap: (GDIBitmapObject: HBITMAP);
-          gbPixmap: (GDIPixmapObject: HICON);
-          gbImage : (GDIRawImageObject: PGDIRawImage);
-      );
-      gdiBrush:
-      (
-        GDIBrushColor: COLORREF;
-        GDIBrushFill: COLORREF;
-        GDIBrushPixMap: HICON;
-      );
-      gdiFont:
-      (
-        GDIFontObject: HFONT;
-        LogFont: TLogFont;
-      );
-      gdiPen:
-      (
-        GDIPenColor: COLORREF;
-        GDIPenWidth: Integer;
-        GDIPenStyle: Word;
-      );
-      gdiRegion:
-      (
-      );
-  End;
-
-  // move to class ??
-  PDeviceContext = ^TDeviceContext;
-  { Stored record of Device contexts and related GDI information }
-  TDeviceContext = Record
-    hWnd: HWND;
-    GC: HDC;
-    Drawable: PHANDLE;
-    PenPos: TPoint;
-    CurrentBitmap: PGdiObject;
-    CurrentFont: PGdiObject;
-    CurrentPen: PGdiObject;
-    CurrentBrush: PGdiObject;
-    CurrentTextColor: COLORREF;
-    CurrentBackColor: COLORREF;
-    SavedContext: PDeviceContext; // linked list of saved DCs
-  End;
-
-  PWinControlInfo = ^TWinControlInfo;
-  { Info needed by the API of a HWND }
-  TWinControlInfo = Record
-    ImplementationControl: HWND; // used to be "fixed" or "core-child"
-    UpdateRect: TRect; // used by LM_Paint, beginpaint etc
-    WndProc: Integer; // window data
-    Style: Integer;
-    ExStyle: Integer;
-    UserData: Integer;
-  End;
-
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
   PWin32TimerInfo = ^TWin32Timerinfo;
   TWin32TimerInfo = record
@@ -133,6 +54,6 @@ var
   // FTimerData contains the currently running timers
   FTimerData : TList;   // list of PWin32Timerinfo
 
-Implementation
+implementation
 
-End.
+end.

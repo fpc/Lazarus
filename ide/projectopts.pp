@@ -41,7 +41,8 @@ uses
   FileUtil, IDEContextHelpEdit, EnvironmentOpts,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle;
+  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
+  ButtonPanel;
 
 type
 
@@ -49,11 +50,20 @@ type
 
   TProjectOptionsDialog = class(TForm)
     AdditionalInfoButton: TBitBtn;
+    Bevel1: TBevel;
+    ButtonPanel: TButtonPanel;
+    ClearIconButton: TBitBtn;
+    SaveIconButton: TBitBtn;
+    LoadIconButton: TBitBtn;
+    CopyrightLabel: TLabel;
     CreateAppBundleButton: TBitBtn;
+    DescriptionLabel: TLabel;
     FormsAddToAutoCreatedFormsBtn: TSpeedButton;
     FormsMoveAutoCreatedFormsDownBtn: TSpeedButton;
     FormsMoveAutoCreatedFormUpBtn: TSpeedButton;
     FormsRemoveFromAutoCreatedFormsBtn: TSpeedButton;
+    IconLabel: TLabel;
+    IconImage: TImage;
     LazDocAddPathButton: TBitBtn;
     LazDocDeletePathButton: TBitBtn;
     Notebook: TNotebook;
@@ -61,7 +71,11 @@ type
     FormsPage: TPage;
     MiscPage: TPage;
     LazDocPage: TPage;
+    IconPanel: TPanel;
+    OpenPictureDialog1: TOpenPictureDialog;
     SavePage: TPage;
+    SavePictureDialog1: TSavePictureDialog;
+    TitleLabel: TLabel;
     VersionInfoPage: TPage;
     i18nPage: TPage;
 
@@ -69,11 +83,9 @@ type
     AppSettingsGroupBox: TGroupBox;
     OutputSettingsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
-    TitleLabel: TLabel;
     TitleEdit: TEdit;
     TargetFileLabel: TLabel;
     TargetFileEdit: TEdit;
-    PanelOtherLabels: TPanel;
     UseAppBundleCheckBox: TCheckBox;
     UseXPManifestCheckBox: TCheckBox;
 
@@ -124,8 +136,6 @@ type
     OtherInfoGroupBox: TGroupBox;
     DescriptionEdit: TEdit;
     CopyrightEdit: TEdit;
-    DescriptionLabel: TLabel;
-    CopyrightLabel: TLabel;
     AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
 
     // i18n
@@ -133,15 +143,11 @@ type
     POOutDirEdit: TEdit;
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
-    PODBtnPanel: TPanel;
     PoOutDirLabel: TLabel;
 
-    // buttons at bottom
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
-    OKButton: TBitBtn;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
+    procedure ClearIconButtonClick(Sender: TObject);
     procedure CreateAppBundleButtonClick(Sender: TObject);
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -150,6 +156,7 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure LoadIconButtonClick(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
                                   var CloseAction: TCloseAction);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
@@ -157,6 +164,7 @@ type
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
+    procedure SaveIconButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -180,6 +188,9 @@ type
     function GetProjectTitle: String;
     function SetAutoCreateForms: Boolean;
     function SetProjectTitle: Boolean;
+
+    procedure SetIconFromStream(Value: TStream);
+    function GetIconAsStream: TStream;
   public
     constructor Create(TheOwner: TComponent); override;
     property Project: TProject read FProject write SetProject;
@@ -194,7 +205,6 @@ function LocalizedNameToProjectSessionStorage(
                                        const s: string): TProjectSessionStorage;
 
 implementation
-
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 begin
@@ -252,13 +262,8 @@ begin
   inherited Create(TheOwner);
 
   Caption := dlgProjectOptions;
-  OKButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=lisMenuHelp;
 
-  OKButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   NoteBook.PageIndex := 0;
 
@@ -289,6 +294,15 @@ begin
   UseXPManifestCheckBox.Checked := False;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
+
+  // icon
+  IconLabel.Caption := dlgPOIcon;
+  LoadIconButton.Caption := dlgPOLoadIcon;
+  SaveIconButton.Caption := dlgPOSaveIcon;
+  ClearIconButton.Caption := dlgPOClearIcon;
+  LoadIconButton.LoadGlyphFromLazarusResource('open');
+  SaveIconButton.LoadGlyphFromLazarusResource('menu_save');
+  ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -387,6 +401,7 @@ end;
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 var
   AFilename: String;
+  AStream: TStream;
 begin
   FProject := AProject;
   if AProject = Nil then
@@ -397,8 +412,14 @@ begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    UseXPManifestCheckBox.Checked := XPManifest.UseManifest;
-    UseVersionInfoCheckBox.Checked := VersionInfo.UseVersionInfo;
+    UseXPManifestCheckBox.Checked := Resources.XPManifest.UseManifest;
+    UseVersionInfoCheckBox.Checked := Resources.VersionInfo.UseVersionInfo;
+    AStream := Resources.ProjectIcon.GetStream;
+    try
+      SetIconFromStream(AStream);
+    finally
+      AStream.Free;
+    end;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -433,25 +454,25 @@ begin
 
   
   // VersionInfo
-  VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
-  MajorRevisionSpinEdit.Value := Project.VersionInfo.MajorRevNr;
-  MinorRevisionSpinEdit.Value := Project.VersionInfo.MinorRevNr;
-  BuildEdit.Text := IntToStr(Project.VersionInfo.BuildNr);
+  VersionSpinEdit.Value := Project.Resources.VersionInfo.VersionNr;
+  MajorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MajorRevNr;
+  MinorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MinorRevNr;
+  BuildEdit.Text := IntToStr(Project.Resources.VersionInfo.BuildNr);
   
-  EnableVersionInfo(Project.VersionInfo.UseVersionInfo);
+  EnableVersionInfo(Project.Resources.VersionInfo.UseVersionInfo);
 
-  if Project.VersionInfo.AutoIncrementBuild then
+  if Project.Resources.VersionInfo.AutoIncrementBuild then
     AutomaticallyIncreaseBuildCheckBox.Checked := true;
   LanguageSelectionComboBox.Items.Assign(MSLanguages);
   LanguageSelectionComboBox.ItemIndex :=
-                            MSHexLanguages.IndexOf(Project.VersionInfo.HexLang);
+                            MSHexLanguages.IndexOf(Project.Resources.VersionInfo.HexLang);
   LanguageSelectionComboBox.Sorted := True;
   CharacterSetComboBox.Items.Assign(MSCharacterSets);
   CharacterSetComboBox.ItemIndex :=
-                     MSHexCharacterSets.IndexOf(Project.VersionInfo.HexCharSet);
+                     MSHexCharacterSets.IndexOf(Project.Resources.VersionInfo.HexCharSet);
   CharacterSetComboBox.Sorted := True;
-  DescriptionEdit.Text := Project.VersionInfo.DescriptionString;
-  CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
+  DescriptionEdit.Text := Project.Resources.VersionInfo.DescriptionString;
+  CopyrightEdit.Text := Project.Resources.VersionInfo.CopyrightString;
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
@@ -459,6 +480,7 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
 var
   NewFlags: TProjectFlags;
   AFilename: String;
+  AStream: TStream;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -471,13 +493,16 @@ var
 begin
   if ModalResult = mrOk then
   begin
-
     Project.Title := TitleEdit.Text;
+    AStream := GetIconAsStream;
+    try
+      Project.Resources.ProjectIcon.SetStream(AStream);
+    finally
+      AStream.Free;
+    end;
     Project.TargetFilename := TargetFileEdit.Text;
     Project.UseAppBundle := UseAppBundleCheckBox.Checked;
-    Project.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
-    if Project.XPManifest.Modified then
-      Project.XPManifest.UpdateMainSourceFile(Project.MainFilename);
+    Project.Resources.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
 
     // flags
     NewFlags := Project.Flags;
@@ -516,18 +541,22 @@ begin
     Project.EnableI18N := EnableI18NCheckBox.Checked;
 
     // VersionInfo
-    Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
-    Project.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
-    Project.VersionInfo.VersionNr:=VersionSpinEdit.Value;
-    Project.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
-    Project.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
-    Project.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.VersionInfo.BuildNr);
-    Project.VersionInfo.DescriptionString:=DescriptionEdit.Text;
-    Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
-    Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
-    Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
-    if Project.VersionInfo.Modified then
-      Project.VersionInfo.UpdateMainSourceFile(Project.MainFilename);
+    Project.Resources.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
+    Project.Resources.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
+    Project.Resources.VersionInfo.VersionNr:=VersionSpinEdit.Value;
+    Project.Resources.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
+    Project.Resources.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
+    Project.Resources.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.Resources.VersionInfo.BuildNr);
+    Project.Resources.VersionInfo.DescriptionString:=DescriptionEdit.Text;
+    Project.Resources.VersionInfo.CopyrightString:=CopyrightEdit.Text;
+    Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
+    Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
+    //debugln(['TProjectOptionsDialog.ProjectOptionsClose Project.Resources.Modified=',Project.Resources.Modified]);
+    if Project.Resources.Modified and (Project.MainUnitID >= 0) then
+    begin
+      if not Project.Resources.Regenerate(Project.MainFilename, True, False) then
+        MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
+    end;
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);
@@ -560,9 +589,14 @@ var
   InfoModified: Boolean;
 begin
   InfoModified:=false;
-  ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
+  ShowVersionInfoAdditionailInfoForm(Project.Resources.VersionInfo,InfoModified);
   if InfoModified then
     Project.Modified:=true;
+end;
+
+procedure TProjectOptionsDialog.ClearIconButtonClick(Sender: TObject);
+begin
+  IconImage.Picture.Clear;
 end;
 
 procedure TProjectOptionsDialog.CreateAppBundleButtonClick(Sender: TObject);
@@ -585,6 +619,12 @@ procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
   if (LazDocListBox.ItemIndex >= 0) then
     LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+end;
+
+procedure TProjectOptionsDialog.LoadIconButtonClick(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then
+    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
@@ -816,6 +856,12 @@ begin
   POOutDirEdit.Text:=NewDirectory;
 end;
 
+procedure TProjectOptionsDialog.SaveIconButtonClick(Sender: TObject);
+begin
+  if SavePictureDialog1.Execute then
+    IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+end;
+
 procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);
 begin
   EnableVersionInfo(UseVersionInfoCheckBox.Checked);
@@ -904,6 +950,29 @@ begin
       Result := False;
       exit;
     end;// delete title
+end;
+
+procedure TProjectOptionsDialog.SetIconFromStream(Value: TStream);
+begin
+  IconImage.Picture.Clear;
+  if Value <> nil then
+    try
+      IconImage.Picture.Icon.LoadFromStream(Value);
+    except
+      on E: Exception do
+        MessageDlg(E.Message, mtError, [mbOk], 0);
+    end;
+end;
+
+function TProjectOptionsDialog.GetIconAsStream: TStream;
+begin
+  Result := nil;
+  if not ((IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty) then
+  begin
+    Result := TMemoryStream.Create;
+    IconImage.Picture.Icon.SaveToStream(Result);
+    Result.Position := 0;
+  end;
 end;
 
 initialization

@@ -51,10 +51,8 @@ type
       begin
         // create a bitmap (or use an existing one)
         Bitmap1:=TBitmap.Create;
-        // create the raw image
-        IntfImg1:=TLazIntfImage.Create(0,0);
-        // get the description for the current screen (bitsperpixel, depth, ...)
-        IntfImg1.GetDescriptionFromDevice(0);
+        // create the raw image for the screenformat you want
+        IntfImg1:=TLazIntfImage.Create(0,0,[riqfRGB, riqfAlpha, riqfMask]);
         // create the XPM reader
         Reader:=TLazReaderXPM.Create;
         // load the image
@@ -82,7 +80,7 @@ type
       begin
         ...
         // create the raw image
-        IntfImg1:=TLazIntfImage.Create(0,0);
+        IntfImg1:=TLazIntfImage.Create(0,0,[]);
         // load the raw image from the bitmap handles
         IntfImg1.LoadFromBitmap(Bitmap1.Handle,Bitmap1.MaskHandle);
         // create the XPM writer
@@ -238,6 +236,7 @@ type
     procedure SetMask_Generic(x, y: integer; const AValue: Boolean);
   public
     constructor Create(AWidth, AHeight: integer); override;
+    constructor Create(AWidth, AHeight: integer; AFlags: TRawImageQueryFlags);
     constructor Create(ARawImage: TRawImage; ADataOwner: Boolean);
     destructor Destroy; override;
     procedure BeginUpdate;
@@ -2866,7 +2865,7 @@ end;
 
 procedure TLazIntfImage.SetUsePalette(Value: boolean);
 begin
-  inherited SetUsePalette(False);  // Can't handle palettes at the moment
+  inherited // we can SetUsePalette(False);  // Can't handle palettes at the moment
 end;
 
 procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
@@ -2889,7 +2888,15 @@ end;
 
 procedure TLazIntfImage.SetInternalPixel(x, y: integer; Value: integer);
 begin
-
+  if Palette = nil then Exit;
+  if FRawImage.Description.PaletteColorCount = 0
+  then begin
+    // Non palettebased image so set the color
+    SetInternalColor(x, y, Palette.Color[Value]);
+  end
+  else begin
+    // TODO: Setting of palette colors
+  end;
 end;
 
 procedure TLazIntfImage.SetMasked(x, y: integer; const AValue: Boolean);
@@ -2901,7 +2908,17 @@ end;
 
 function TLazIntfImage.GetInternalPixel(x, y: integer): integer;
 begin
-  Result:=0;
+  if Palette = nil then Exit(0);
+
+  if FRawImage.Description.PaletteColorCount = 0
+  then begin
+    // Non palettebased image so lookup the color
+    Result := Palette.IndexOf(GetInternalColor(x, y));
+  end
+  else begin
+    // TODO: Setting of palette colors
+    Result := 0;
+  end;
 end;
 
 function TLazIntfImage.GetMasked(x, y: integer): Boolean;
@@ -2988,12 +3005,22 @@ end;
 
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
+  Create(AWidth, AHeight, []);
+end;
+
+constructor TLazIntfImage.Create(AWidth, AHeight: integer; AFlags: TRawImageQueryFlags);
+begin
   FDataOwner := True;
   FGetInternalColorProc := @GetColor_NULL;
   FSetInternalColorProc := @SetColor_NULL;
   inherited Create(AWidth, AHeight);
-end;
 
+  if AFlags <> []
+  then begin
+    QueryDescription(FRawImage.Description, AFlags, AWidth, AHeight);
+    ChooseGetSetColorFunctions;
+  end;
+end;
 
 constructor TLazIntfImage.Create(ARawImage: TRawImage; ADataOwner: Boolean);
 var
@@ -3001,7 +3028,7 @@ var
 begin
   BeginUpdate;
   FRawimage := ARawImage;
-  Create(Desc.Width, Desc.Height);
+  Create(Desc.Width, Desc.Height, []);
   FDataOwner := ADataOwner;
   FCreateAllDataNeeded := False;
   EndUpdate;

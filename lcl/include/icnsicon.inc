@@ -129,9 +129,12 @@ begin
 
   for i := 0 to FImageList.Count - 1 do
   begin
-    // todo: we have no jpeg 2000 reader to decompress their data => skip for now
     if FImageList[i]^.IconType in icnsWithAlpha then
+    begin
+      // todo: we have no jpeg 2000 reader to decompress their data => skip for now
+      FImageList[i]^.RawImage.FreeData;
       Continue;
+    end;
 
     // Add image
     with TSharedIcon(FSharedImage) do
@@ -207,7 +210,7 @@ begin
   while AStream.Position < ASize do
   begin
     if IntfImage = nil
-    then IntfImage := TLazIntfImage.Create(0,0)
+    then IntfImage := TLazIntfImage.Create(0,0,[])
     else IntfImage.SetSize(0,0);
 
     if ImgReader = nil

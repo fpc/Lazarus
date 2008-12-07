@@ -35,30 +35,19 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources;
+  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, projectresourcesintf;
    
 type
   { TProjectXPManifest }
 
-  TProjectXPManifest = class(TObject)
+  TProjectXPManifest = class(TAbstractProjectResource)
   private
-    FMessages: TStrings;
-    FModified: boolean;
     FUseManifest: boolean;
-    rcFilename: string;
     procedure SetUseManifest(const AValue: boolean);
-    procedure SetFileNames(const MainFilename: string);
   public
-    constructor Create;
-    destructor Destroy; override;
-    
-    function CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
-    function CreateManifest: Boolean;
-    function UpdateMainSourceFile(const AFilename: string): TModalResult;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
-    property Messages: TStrings read FMessages;
     property UseManifest: boolean read FUseManifest write SetUseManifest;
-    property Modified: boolean read FModified write FModified;
   end;
 
 implementation
@@ -90,101 +79,19 @@ const
     ' "</assembly>"'#$D#$A+
     '}';
 
-{-----------------------------------------------------------------------------
- TProjectXPManifest CreateRCFile
------------------------------------------------------------------------------}
-function TProjectXPManifest.CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
-begin
-  // in future we will compile manifest from rc, but now we just add our template
-  Result := mrOk;
-  SetFileNames(MainFilename);
-  if (TargetOS = 'win32') and UseManifest then
-  begin
-    if not CreateManifest then
-      Result := mrCancel;
-  end;
-end;
-
-function TProjectXPManifest.CreateManifest: Boolean;
-var
-  Stream: TStream;
-begin
-  Result := False;
-  try
-    Stream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
-    Stream.Write(sManifest[1], length(sManifest));
-    Result := True;
-  finally
-    Stream.Free;
-  end;
-end;
-
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
 begin
   if FUseManifest = AValue then exit;
   FUseManifest := AValue;
-  Modified:=true;
+  Modified := True;
 end;
 
-{-----------------------------------------------------------------------------
- TProjectXPManifest UpdateMainSourceFile
------------------------------------------------------------------------------}
-function TProjectXPManifest.UpdateMainSourceFile(const AFilename: string): TModalResult;
-var
-  NewX, NewY, NewTopLine: integer;
-  ManifestCodeBuf, NewCode: TCodeBuffer;
-  Filename: String;
+function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
+  const MainFilename: string): Boolean;
 begin
-  Result := mrCancel;
-  ManifestCodeBuf := CodeToolBoss.LoadFile(AFilename,false,false);
-  if ManifestCodeBuf <> nil then
-  begin
-    SetFileNames(AFilename);
-    Filename:=ExtractFileName(rcFileName);
-    DebugLn(['TProjectXPManifest.UpdateMainSourceFile ',Filename]);
-    if CodeToolBoss.FindResourceDirective(ManifestCodeBuf, 1, 1,
-                               NewCode, NewX, NewY,
-                               NewTopLine, Filename, false) then
-    begin
-      // there is a resource directive in the source
-      if not UseManifest then begin
-        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
-        begin
-          Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
-          exit;
-        end;
-      end;
-    end else if UseManifest then
-    begin
-      if not CodeToolBoss.AddResourceDirective(ManifestCodeBuf,
-        Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
-      begin
-        Messages.Add('Could not add "{$R'+ Filename +'"} to main source!');
-        exit;
-      end;
-    end;
-  end;
-  DebugLn(['TProjectXPManifest.UpdateMainSourceFile END ',ManifestCodeBuf.Source]);
-  Result := mrOk;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectXPManifest SetFileNames
------------------------------------------------------------------------------}
-procedure TProjectXPManifest.SetFileNames(const MainFilename: string);
-begin
-  rcFilename := ExtractFilePath(MainFilename) + 'manifest.rc';
-end;
-
-constructor TProjectXPManifest.Create;
-begin
-  FMessages := TStringList.Create;
-end;
-
-destructor TProjectXPManifest.Destroy;
-begin
-  FMessages.Free;
-  inherited Destroy;
+  Result := True;
+  if UseManifest then
+    AResources.AddSystemResource(sManifest);
 end;
 
 end.

@@ -52,6 +52,7 @@ const
   cdnRoot     =  1+cdnBase;
 
   cdnDefine   = 11+cdnBase;
+  cdnInclude  = 12+cdnBase;
 
   cdnIf       = 21+cdnBase;
   cdnElseIf   = 22+cdnBase;
@@ -203,6 +204,11 @@ type
                                    StartPos: integer = 1): TCodeTreeNode;
     function IsResourceDirective(Node: TCodeTreeNode;
                                  const Filename: string = ''): boolean;
+
+    function FindIncludeDirective(const Filename: string = '';
+                                  StartPos: integer = 1): TCodeTreeNode;
+    function IsIncludeDirective(Node: TCodeTreeNode;
+                                const Filename: string = ''): boolean;
 
     function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
@@ -518,6 +524,9 @@ end;
 function TCompilerDirectivesTree.IncludeDirective: boolean;
 begin
   Result:=true;
+  CreateChildNode(cdnInclude,cdnsInclude);
+  AtomStart:=SrcPos;
+  EndChildNode;
 end;
 
 function TCompilerDirectivesTree.IncludePathDirective: boolean;
@@ -532,8 +541,12 @@ begin
   Result:=true;
   if Src[AtomStart+3] in ['+','-'] then
     CreateChildNode(cdnDefine,cdnsShortSwitch)
-  else
-    CreateChildNode(cdnDefine,cdnsOther);
+  else begin
+    if (Src[AtomStart+2] in ['I','i']) then
+      CreateChildNode(cdnInclude,cdnsInclude)
+    else
+      CreateChildNode(cdnDefine,cdnsOther);
+  end;
   AtomStart:=SrcPos;
   EndChildNode;
 end;
@@ -1305,7 +1318,7 @@ procedure TCompilerDirectivesTree.DisableNode(Node: TCodeTreeNode;
 begin
   if Node=nil then exit;
   case Node.Desc of
-  cdnDefine: DisableDefineNode(Node,Changed);
+  cdnDefine, cdnInclude: DisableDefineNode(Node,Changed);
   cdnIf, cdnElseIf, cdnElse: DisableIfNode(Node,WithContent,Changed);
   end;
 end;
@@ -2283,7 +2296,50 @@ begin
     if (Filename='') then exit(true);
     inc(p,4);
     while (p<Node.EndPos) and IsSpaceChar[Src[p]] do inc(p);
-    if CompareFilenames(Filename,copy(Src,p,Node.EndPos-p-1))=0 then exit(true);
+    if CompareFilenamesIgnoreCase(Filename,copy(Src,p,Node.EndPos-p-1))=0 then
+      exit(true);
+  end;
+end;
+
+function TCompilerDirectivesTree.FindIncludeDirective(const Filename: string;
+  StartPos: integer): TCodeTreeNode;
+begin
+  if Tree=nil then exit(nil);
+  Result:=Tree.Root;
+  while Result<>nil do begin
+    if (Result.StartPos>=StartPos)
+    and IsIncludeDirective(Result,Filename) then exit;
+    Result:=Result.Next;
+  end;
+end;
+
+function TCompilerDirectivesTree.IsIncludeDirective(Node: TCodeTreeNode;
+  const Filename: string): boolean;
+// search for {$I filename}
+// if filename='' then search for any {$I } directive
+// Beware: do not find {$I+}
+var
+  p: LongInt;
+  FilenameStartPos: integer;
+  FilenameEndPos: integer;
+  CommentStart: integer;
+  CommentEnd: integer;
+begin
+  Result:=false;
+  //debugln(['TCompilerDirectivesTree.IsIncludeDirective ',CDNodeDescAsString(Node.Desc)]);
+  if (Node=nil) or (Node.Desc<>cdnInclude) then exit;
+  p:=Node.StartPos;
+  if (Node.EndPos-p>=5) and (Src[p]='{') and (Src[p+1]='$') and (Src[p+2]='I')
+  then begin
+    if (Filename='') then exit(true);
+    if FindNextIncludeDirective(Src,p,NestedComments,
+      FilenameStartPos,FilenameEndPos,CommentStart,CommentEnd)=p then
+    begin;
+      if CompareFilenamesIgnoreCase(Filename,
+        copy(Src,FilenameStartPos,FilenameEndPos-FilenameStartPos))=0
+      then
+        exit(true);
+    end;
   end;
 end;
 
@@ -2583,7 +2639,7 @@ var
   Node: TCodeTreeNode;
   DiffPos: Integer;
 begin
-  DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  //DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
   IncreaseChangeStep;
   Code.Replace(FromPos,ToPos-FromPos,NewSrc);
   Src:=Code.Source;
