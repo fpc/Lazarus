@@ -849,6 +849,16 @@ var
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
   ATestPascalFile: String;
+  CurFPCOptions: String;
+
+  procedure AddFPCOption(s: string);
+  begin
+    if s='' then exit;
+    if CurFPCOptions<>'' then
+      CurFPCOptions:=CurFPCOptions+' ';
+    CurFPCOptions:=CurFPCOptions+s;
+  end;
+
 begin
   // set global values
   with GlobalValues do begin
@@ -866,10 +876,17 @@ begin
     ATestPascalFile:=Config.TestPascalFile;
     if ATestPascalFile='' then
       ATestPascalFile:=GetTempFilename('fpctest.pas','');
-    FPCDefines:=CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
+    CurFPCOptions:=Config.FPCOptions;
+    if TargetOS<>'' then AddFPCOption('-T'+TargetOS);
+    if TargetProcessor<>'' then AddFPCOption('-Op'+TargetProcessor);
+    FPCDefines:=CreateFPCTemplate(Config.FPCPath, CurFPCOptions,
                           ATestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
                           nil);
+    if Config.TargetOS='' then
+      Config.TargetOS:=TargetOS;
+    if Config.TargetProcessor='' then
+      Config.TargetProcessor:=TargetProcessor;
     if FPCDefines=nil then begin
       raise Exception.Create('TCodeToolManager.Init: Unable to execute '+Config.FPCPath+' to get compiler values');
     end;

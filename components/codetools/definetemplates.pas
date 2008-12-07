@@ -2971,7 +2971,7 @@ var CmdLine: string;
   Step: String;
 begin
   Result:=nil;
-  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" PPCOptions="',CompilerOptions,'"');
+  DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
   if TestPascalFile='' then begin
     DebugLn(['WARNING: TDefinePool.CreateFPCTemplate TestPascalFile empty']);
   end;
