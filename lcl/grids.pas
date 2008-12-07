@@ -918,7 +918,7 @@ type
     property AlternateColor: TColor read FAlternateColor write SetAlternateColor stored IsAltColorStored;
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoEdit: boolean read FAutoEdit write FAutoEdit default true;
-    property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
+    property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns default false;
     property BorderStyle:TBorderStyle read FGridBorderStyle write SetBorderStyle default bsSingle;
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property Col: Integer read FCol write SetCol;
@@ -938,13 +938,13 @@ type
     property EditorShowing: boolean read FEditorShowing write FEditorShowing;
     property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
     property ExtendedRowSizing: boolean read FExtendedRowSizing write FExtendedRowSizing;
-    property ExtendedSelect: boolean read FExtendedSelect write FExtendedSelect;
+    property ExtendedSelect: boolean read FExtendedSelect write FExtendedSelect default true;
     property FastEditing: boolean read FFastEditing write FFastEditing;
     property AltColorStartNormal: boolean read FAltColorStartNormal write SetAltColorStartNormal;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
-    property FixedColor: TColor read GetFixedColor write SetFixedcolor;
-    property FixedHotColor: TColor read FFixedHotColor write FFixedHotColor;
+    property FixedColor: TColor read GetFixedColor write SetFixedcolor default clBtnFace;
+    property FixedHotColor: TColor read FFixedHotColor write FFixedHotColor default cl3DLight;
     property Flat: Boolean read FFlat write SetFlat default false;
     property FocusColor: TColor read FFocusColor write SetFocusColor;
     property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
@@ -961,9 +961,11 @@ type
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
-    property Options: TGridOptions read FOptions write SetOptions;
+    property Options: TGridOptions read FOptions write SetOptions default
+      [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
+       goSmoothScroll ];
     property Row: Integer read FRow write SetRow;
-    property RowCount: Integer read GetRowCount write SetRowCount;
+    property RowCount: Integer read GetRowCount write SetRowCount default 5;
     property RowHeights[aRow: Integer]: Integer read GetRowHeights write SetRowHeights;
     property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
     property SelectActive: Boolean read FSelectActive write SetSelectActive;
@@ -973,9 +975,9 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
     property StrictSort: boolean read FStrictSort write FStrictSort;
     property TitleFont: TFont read FTitleFont write SetTitleFont;
-    property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle;
+    property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle default tsLazarus;
     property TopRow: Integer read GetTopRow write SetTopRow;
-    property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures;
+    property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures default false;
     property VisibleColCount: Integer read GetVisibleColCount stored false;
     property VisibleRowCount: Integer read GetVisibleRowCount stored false;
 
@@ -1229,7 +1231,7 @@ type
     property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
-    property ParentColor;
+    property ParentColor default false;
     //property ParentCtl3D; // Deprecated
     property ParentFont;
     property ParentShowHint;
@@ -1419,7 +1421,7 @@ type
     property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
-    property ParentColor;
+    property ParentColor default false;
     //property ParentCtl3D; // Deprecated
     property ParentFont;
     property ParentShowHint;

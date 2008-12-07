@@ -437,8 +437,12 @@ type
 
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property Options: TDBGridOptions read FOptions write SetOptions;
-    property OptionsExtra: TDBGridExtraOptions read FExtraOptions write SetExtraOptions;
+    property Options: TDBGridOptions read FOptions write SetOptions default
+              [dgColumnResize, dgColumnMove, dgTitles, dgIndicator, dgRowLines,
+               dgColLines, dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing,
+               dgAlwaysShowSelection];
+    property OptionsExtra: TDBGridExtraOptions read FExtraOptions
+              write SetExtraOptions default [dgeAutoColumns, dgeCheckboxColumn];
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
     property SelectedRows: TBookmarkList read FSelectedRows;
 
@@ -512,7 +516,7 @@ type
     property Options;
     property OptionsExtra;
     //property ParentBiDiMode;
-    property ParentColor;
+    property ParentColor default false;
     //property ParentCtl3D;
     property ParentFont;
     //property ParentShowHint;
