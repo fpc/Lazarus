@@ -26,14 +26,20 @@ unit SynEditTextBase;
 interface
 
 uses
-  Classes, SysUtils, SynEditTypes;
-  
+  Classes, SysUtils, LCLProc, SynEditTypes;
+
 type
 
   { TSynEditStrings }
 
   TSynEditStrings = class(TStrings)
   protected
+    FTabWidth: integer;
+    FIsUtf8: Boolean;
+    function  GetIsUtf8 : Boolean; virtual;
+    procedure SetIsUtf8(const AValue : Boolean); virtual;
+    function  GetTabWidth : integer; virtual;
+    procedure SetTabWidth(const AValue : integer); virtual;
     function GetFoldEndLevel(Index: integer): integer; virtual; abstract;
     function GetFoldMinLevel(Index: integer): integer; virtual; abstract;
     procedure SetFoldEndLevel(Index: integer; const AValue: integer); virtual; abstract;
@@ -44,13 +50,29 @@ type
     function GetLengthOfLongestLine: integer; virtual; abstract;
     procedure SetTextStr(const Value: string); override;
   public
+    constructor Create;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
     procedure ClearRanges(ARange: TSynEditRange); virtual; abstract;
   public
+    // Byte to Char
+    function LogicalToPhysicalPos(const p: TPoint): TPoint;
+    function LogicalToPhysicalCol(const Line: string;
+                                  LogicalPos: integer): integer;
+    function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
+                  LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    // Char to Byte
+    function PhysicalToLogicalPos(const p: TPoint): TPoint;
+    function PhysicalToLogicalCol(const Line: string;
+                                  PhysicalPos: integer): integer;
+    function PhysicalToLogicalCol(const Line: string;
+                 PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+  public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
+    property TabWidth: integer read GetTabWidth write SetTabWidth;
+    property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
     property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
     property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
                                                    write SetFoldMinLevel;
@@ -63,6 +85,33 @@ implementation
 
 
 { TSynEditStrings }
+
+constructor TSynEditStrings.Create;
+begin
+  inherited Create;
+  TabWidth := 8;
+  IsUtf8 := True;
+end;
+
+function TSynEditStrings.GetIsUtf8 : Boolean;
+begin
+  Result := FIsUtf8;
+end;
+
+function TSynEditStrings.GetTabWidth : integer;
+begin
+  Result := FTabWidth;
+end;
+
+procedure TSynEditStrings.SetIsUtf8(const AValue : Boolean);
+begin
+  FIsUtf8 := AValue;
+end;
+
+procedure TSynEditStrings.SetTabWidth(const AValue : integer);
+begin
+  FTabWidth := AValue;
+end;
 
 procedure TSynEditStrings.SetTextStr(const Value : string);
 var
@@ -96,6 +145,97 @@ begin
     sl.Free;
     EndUpdate;
   end;
+end;
+
+function TSynEditStrings.LogicalToPhysicalPos(const p : TPoint) : TPoint;
+begin
+  Result := p;
+  if Result.Y - 1 < Count then
+    Result.X:=LogicalToPhysicalCol(self[Result.Y - 1],Result.X);
+end;
+
+function TSynEditStrings.LogicalToPhysicalCol(const Line : string; LogicalPos : integer) : integer;
+begin
+  Result := LogicalToPhysicalCol(PChar(Pointer(Line)),length(Line),LogicalPos,1,1);
+end;
+
+function TSynEditStrings.LogicalToPhysicalCol(Line : PChar; LineLen : integer; LogicalPos, StartBytePos, StartPhysicalPos : integer) : integer;
+var
+  BytePos, ByteLen: integer;
+  ScreenPos: integer;
+begin
+  ByteLen := LineLen;
+  // map UTF8 and Tab chars
+  ScreenPos := StartPhysicalPos;
+  BytePos:= StartBytePos;
+  while BytePos<LogicalPos do begin
+    if (BytePos <= ByteLen) then begin
+      if Line[BytePos-1] = #9 then begin
+        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+        inc(BytePos);
+      end else begin
+        inc(ScreenPos);
+        if IsUTF8 then
+          inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
+        else
+          inc(BytePos);
+      end;
+    end else begin
+      // beyond end of line
+      inc(ScreenPos,LogicalPos-BytePos);
+      break;
+    end;
+  end;
+  if (BytePos>LogicalPos) and (ScreenPos>StartPhysicalPos) then
+    dec(ScreenPos);
+  Result := ScreenPos;
+end;
+
+function TSynEditStrings.PhysicalToLogicalPos(const p : TPoint) : TPoint;
+begin
+  Result := p;
+  if (Result.Y>=1) and (Result.Y <= Count) then
+    Result.X:=PhysicalToLogicalCol(self[Result.Y - 1],Result.X,1,1);
+end;
+
+function TSynEditStrings.PhysicalToLogicalCol(const Line : string; PhysicalPos : integer) : integer;
+begin
+  Result:=PhysicalToLogicalCol(Line,PhysicalPos,1,1);
+end;
+
+function TSynEditStrings.PhysicalToLogicalCol(const Line : string; PhysicalPos, StartBytePos, StartPhysicalPos : integer) : integer;
+var
+  BytePos, ByteLen: integer;
+  ScreenPos: integer;
+  PLine: PChar;
+begin
+  ByteLen := Length(Line);
+  ScreenPos := StartPhysicalPos;
+  BytePos := StartBytePos;
+  PLine := PChar(Line);
+  // map utf and tab chars
+  while ScreenPos < PhysicalPos do begin
+    if (BytePos <= ByteLen) then begin
+      if (PLine[BytePos-1] <> #9) then begin
+        inc(ScreenPos);
+        if IsUTF8 then
+          inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
+        else
+          inc(BytePos);
+      end else begin
+        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+        inc(BytePos);
+      end;
+    end else begin
+      // beyond end of line
+      inc(BytePos,PhysicalPos-ScreenPos);
+      break;
+    end;
+  end;
+  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos-2<ByteLen)
+  and (PLine[BytePos-2]=#9) then
+    dec(BytePos);
+  Result := BytePos;
 end;
 
 end.

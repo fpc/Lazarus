@@ -1406,6 +1406,7 @@ components/synedit/syneditmarkupspecialline.pp svneol=native#text/plain
 components/synedit/syneditmiscclasses.pp svneol=native#text/pascal
 components/synedit/syneditmiscprocs.pp svneol=native#text/pascal
 components/synedit/syneditplugins.pas svneol=native#text/pascal
+components/synedit/syneditpointclasses.pas svneol=native#text/plain
 components/synedit/syneditregexsearch.pas svneol=native#text/pascal
 components/synedit/syneditsearch.pp svneol=native#text/pascal
 components/synedit/syneditstrconst.pp svneol=native#text/pascal

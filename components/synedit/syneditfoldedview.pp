@@ -30,7 +30,8 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase, SynEditMiscClasses;
+  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase,
+  SynEditMiscClasses, SynEditPointClasses;
 
 type
 

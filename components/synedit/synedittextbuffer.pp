@@ -109,7 +109,6 @@ type
     fSimulateConvertTabsProc: TSimulateConvertTabsProcEx;
     {$ENDIF}
     fIndexOfLongestLine: integer;
-    fTabWidth: integer;
 {end}                                                                           //mh 2000-10-19
     fOnChange: TNotifyEvent;
     fOnChanging: TNotifyEvent;
@@ -151,7 +150,7 @@ type
     procedure PutObject(Index: integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: integer);
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
-    procedure SetTabWidth(Value: integer);                                      //mh 2000-10-19
+    procedure SetTabWidth(const Value: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create;
@@ -180,7 +179,6 @@ type
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
 {end}                                                                           //mh 2000-10-19
     property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
-    property TabWidth: integer read fTabWidth write SetTabWidth;                //mh 2000-10-19
     property OnAdded: TStringListIndexEvent read fOnAdded write fOnAdded;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
@@ -501,7 +499,6 @@ begin
   fDosFileFormat := TRUE;
 {begin}                                                                         //mh 2000-10-19
   fIndexOfLongestLine := -1;
-  TabWidth := 8;
 {end}                                                                           //mh 2000-10-19
 end;
 
@@ -1052,12 +1049,12 @@ begin
 end;
 
 {begin}                                                                         //mh 2000-10-19
-procedure TSynEditStringList.SetTabWidth(Value: integer);
+procedure TSynEditStringList.SetTabWidth(const Value: integer);
 var
   i: integer;
 begin
-  if Value <> fTabWidth then begin
-    fTabWidth := Value;
+  if Value <> FTabWidth then begin
+    Inherited SetTabWidth(Value);
     fConvertTabsProc := GetBestConvertTabsProcEx(fTabWidth);
     {$IFDEF SYN_LAZARUS}
     fSimulateConvertTabsProc := GetBestSimulateConvertTabsProcEx(fTabWidth);

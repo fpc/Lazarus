@@ -28,7 +28,8 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTypes, SynEditTextBase, SynEditTextBuffer, SynEditMiscClasses;
+  Classes, SysUtils, SynEditTypes, SynEditTextBase, SynEditTextBuffer,
+  SynEditMiscClasses, SynEditPointClasses;
 
 type
 
@@ -52,6 +53,10 @@ type
     procedure DoLinesChanged(Index, N: integer);
     procedure TrimAfterLock;
   protected
+    function  GetIsUtf8 : Boolean; override;
+    procedure SetIsUtf8(const AValue : Boolean); override;
+    function  GetTabWidth : integer; override;
+    procedure SetTabWidth(const AValue : integer); override;
     function  GetFoldEndLevel(Index: integer): integer; override;
     function  GetFoldMinLevel(Index: integer): integer; override;
     procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
@@ -104,7 +109,6 @@ implementation
 
 constructor TSynEditStringTrimmingList.Create(ASynStringSource : TSynEditStrings; ACaret: TSynEditCaret);
 begin
-  Inherited Create;
   fSynStrings := ASynStringSource;
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
@@ -112,6 +116,7 @@ begin
   fLineIndex:= -1;
   fSpaces := '';
   fEnabled:=false;
+  Inherited Create;
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
@@ -262,6 +267,26 @@ begin
     end;
   end;
   fLockList.Clear;
+end;
+
+function TSynEditStringTrimmingList.GetIsUtf8 : Boolean;
+begin
+  Result := FSynStrings.IsUtf8;
+end;
+
+procedure TSynEditStringTrimmingList.SetIsUtf8(const AValue : Boolean);
+begin
+  FSynStrings.IsUtf8 := AValue;
+end;
+
+function TSynEditStringTrimmingList.GetTabWidth : integer;
+begin
+  Result := FSynStrings.TabWidth;
+end;
+
+procedure TSynEditStringTrimmingList.SetTabWidth(const AValue : integer);
+begin
+  FSynStrings.TabWidth := AValue;
 end;
 
 procedure TSynEditStringTrimmingList.ForceTrim;
