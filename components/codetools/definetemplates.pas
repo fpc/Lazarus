@@ -2971,7 +2971,7 @@ var CmdLine: string;
   Step: String;
 begin
   Result:=nil;
-  DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
+  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
   if TestPascalFile='' then begin
     DebugLn(['WARNING: TDefinePool.CreateFPCTemplate TestPascalFile empty']);
   end;
@@ -3224,8 +3224,7 @@ var
       
     begin
       MacroCount:=0;
-      Result:=copy(AFilename,length(FPCSrcDir)+1,
-                   length(AFilename)-length(FPCSrcDir));
+      Result:=copy(AFilename,length(Dir)+1,length(AFilename)-length(Dir));
       DirStart:=1;
       while (DirStart<=length(Result)) do begin
         while (DirStart<=length(Result)) and (Result[DirStart]=PathDelim)
@@ -3268,7 +3267,7 @@ var
         end;
         DirStart:=DirEnd;
       end;
-      Result:=FPCSrcDir+Result;
+      Result:=Dir+Result;
     end;
     
     procedure BrowseDirectory(ADirPath: string; Priority: integer);
@@ -3309,7 +3308,7 @@ var
       end;
 
       // set directory priority
-      if System.Pos(AppendPathDelim(FPCSrcDir)+'rtl'+PathDelim,ADirPath)>0 then
+      if System.Pos(Dir+'rtl'+PathDelim,ADirPath)>0 then
         inc(Priority);
       // search sources .pp,.pas
       if FindFirstUTF8(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
@@ -3328,7 +3327,7 @@ var
             // directory -> recursively
             // ToDo: prevent cycling in links
             SubPriority:=0;
-            if CompareFilenames(AFilename,AppendPathDelim(FPCSrcDir)+'rtl')=0
+            if CompareFilenames(AFilename,Dir+'rtl')=0
             then begin
               // units in 'rtl' have higher priority than other directories
               inc(SubPriority);
@@ -3473,7 +3472,7 @@ var
       UnitTree:=TAVLTree.Create(@CompareUnitLinkNodes)
     else
       UnitTree.FreeAndClear;
-    BrowseDirectory(FPCSrcDir,0);
+    BrowseDirectory(Dir,0);
   end;
   
 
@@ -3718,7 +3717,7 @@ begin
   RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                    TargetOS,da_Directory);
   s:=IncPathMacro
-    +';'+Dir+'rtl'+DS+TargetOS+DS+SrcOS+'inc' // e.g. rtl/win32/wininc/
+    +';'+Dir+'rtl'+DS+TargetOS+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
     +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS
     ;
   RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
@@ -3739,8 +3738,8 @@ begin
       Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
       ExternalMacroStart+'IncPath',
       IncPathMacro
-      +';'+FPCSrcDir+'rtl'+DS+'win'+DS+'wininc'
-      +';'+FPCSrcDir+'rtl'+DS+'win',
+      +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
+      +';'+Dir+'rtl'+DS+'win',
       da_DefineRecurse));
   RTLDir.AddChild(IFTempl);
 
@@ -3751,7 +3750,7 @@ begin
       Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
       ExternalMacroStart+'IncPath',
       IncPathMacro
-      +';'+FPCSrcDir+'rtl'+DS+'freebsd',
+      +';'+Dir+'rtl'+DS+'freebsd',
       da_DefineRecurse));
   RTLDir.AddChild(IFTempl);
 

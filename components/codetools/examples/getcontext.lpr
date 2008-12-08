@@ -17,6 +17,7 @@ var
 begin
   // setup the Options
   CodeToolBoss.SimpleInit(ConfigFilename);
+  writeln(CodeToolBoss.GetIncludePathForDirectory());
 
   // Example: find declaration of 'TObject'
 

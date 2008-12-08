@@ -2898,7 +2898,7 @@ var
   Driver: TAbstractObjectReader;
 begin
   Result:=TReader.Create(s,4096);
-  //If included Default translator LRSTranslator will be set	
+  //If included Default translator LRSTranslator will be set
   if Assigned(LRSTranslator) then
     Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
 
