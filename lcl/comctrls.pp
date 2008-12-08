@@ -197,7 +197,6 @@ type
     property OnStartDrag;
   end;
 
-
   { TTabSheet }
 
   TPageControl = class;
@@ -1742,9 +1741,6 @@ type
     property Visible;
   end;
   
-  
-
-
 { TTreeNode }
 
 type

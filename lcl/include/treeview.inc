@@ -2835,10 +2835,12 @@ end;
 
 procedure TCustomTreeView.DestroyWnd;
 begin
-  Include(FStates,tvsStateChanging);
+  Include(FStates, tvsStateChanging);
   inherited DestroyWnd;
-  if Canvas<>nil then
+  if Canvas <> nil then
     TControlCanvas(Canvas).FreeHandle;
+  FLastHorzScrollInfo.cbSize := 0;
+  FLastVertScrollInfo.cbSize := 0;
 end;
 
 procedure TCustomTreeView.BeginAutoDrag;
