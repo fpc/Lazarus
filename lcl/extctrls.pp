@@ -217,7 +217,7 @@ type
     property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
                                                 write FOnGetImageIndex;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
-    property Options: TNoteBookOptions read FOptions write SetOptions;
+    property Options: TNoteBookOptions read FOptions write SetOptions default [];
     property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
