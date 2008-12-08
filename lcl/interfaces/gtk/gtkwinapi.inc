@@ -7165,6 +7165,7 @@ begin
   if NumPts <= 0 then Exit(True);
   
   DCOrigin := DevCtx.Offset;
+  OldNumPts:=NumPts;
 
   // create the PointsArray, which is a copy of Points moved by the DCOrigin
   // only if needed
@@ -7179,8 +7180,6 @@ begin
       PointArray[i].x := Points[i].x + DCOrigin.X;
       PointArray[i].y := Points[i].y + DCOrigin.Y;
     end;
-
-    OldNumPts:=NumPts;
 
     if (Points[NumPts-1].X <> Points[0].X)
     or (Points[NumPts-1].Y <> Points[0].Y)
