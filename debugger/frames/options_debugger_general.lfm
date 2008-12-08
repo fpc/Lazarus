@@ -4,8 +4,8 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   ClientHeight = 427
   ClientWidth = 519
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 451
+  DesignTop = 213
   object gbDebuggerType: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -15,7 +15,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Height = 78
     Top = 0
     Width = 519
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'Debugger type and path'
@@ -34,12 +33,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 21
       Top = 33
       Width = 23
-      HelpContext = 0
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
       Color = clBtnFace
       NumGlyphs = 0
+      OnClick = cmdOpenDebuggerPathClick
     end
     object cmbDebuggerType: TComboBox
       AnchorSideLeft.Control = gbDebuggerType
@@ -50,7 +49,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 21
       Top = 6
       Width = 503
-      HelpContext = 0
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
@@ -70,7 +68,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 21
       Top = 33
       Width = 474
-      HelpContext = 0
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
@@ -91,7 +88,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Height = 51
     Top = 84
     Width = 519
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -111,12 +107,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 21
       Top = 6
       Width = 23
-      HelpContext = 0
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
       Color = clBtnFace
       NumGlyphs = 0
+      OnClick = cmdOpenAdditionalPathClick
     end
     object txtAdditionalPath: TEdit
       AnchorSideLeft.Control = gbAdditionalSearchPath
@@ -125,7 +121,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 21
       Top = 6
       Width = 474
-      HelpContext = 0
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 0
@@ -141,7 +136,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Height = 56
     Top = 141
     Width = 519
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     BorderSpacing.Top = 6
@@ -169,7 +163,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Height = 224
     Top = 203
     Width = 519
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'Debugger specific options (depends on type of debugger)'
@@ -183,7 +176,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Height = 194
       Top = 6
       Width = 503
-      HelpContext = 0
       Align = alClient
       BorderSpacing.Around = 6
       BevelOuter = bvNone

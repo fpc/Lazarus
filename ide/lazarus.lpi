@@ -274,7 +274,7 @@
       <Filename Value="..\lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames\"/>
+      <OtherUnitFiles Value="frames\;..\debugger\;..\debugger\frames\"/>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
