@@ -49,6 +49,8 @@ components/chmhelp/lhelp/filecontentprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/httpcontentprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/images/lhelp16.png -text
 components/chmhelp/lhelp/images/lhelp32.png -text
+components/chmhelp/lhelp/images/table_close.png -text
+components/chmhelp/lhelp/images/table_open.png -text
 components/chmhelp/lhelp/lhelp.lpi svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
