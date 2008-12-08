@@ -123,8 +123,6 @@ uses
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
-  // main ide
-  MainBar, MainIntf, MainBase,
   // options frames
   IDEOptionsIntf, IDEOptionsDlg,
   options_files, options_desktop, options_window, options_formed, options_oi,
@@ -136,7 +134,9 @@ uses
   options_codetools_wordpolicy, options_codetools_linesplitting,
   options_codetools_space, options_codetools_identifiercompletion,
   options_debugger_general, options_debugger_eventlog,
-  options_debugger_language_exceptions, options_debugger_signals;
+  options_debugger_language_exceptions, options_debugger_signals,
+  // main ide
+  MainBar, MainIntf, MainBase;
 
 type
   TIDEProjectItem =

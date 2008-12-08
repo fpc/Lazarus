@@ -4034,6 +4034,7 @@ begin
        +LazarusSrcDir+'/designer;'
        +LazarusSrcDir+'/designer/jitform;'
        +LazarusSrcDir+'/debugger;'
+       +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/converter;'
        +LazarusSrcDir+'/packager;'
        +LazarusSrcDir+'/packager/registration;'
