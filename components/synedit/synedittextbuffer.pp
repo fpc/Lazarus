@@ -56,10 +56,23 @@ type
   TSynEditRange = pointer;
   {$ENDIF}
 
-{begin}                                                                         //mh 2000-10-19
-  TSynEditStringFlag = (sfHasTabs, sfHasNoTabs, sfExpandedLengthUnknown);
+  TSynEditStringFlag = (
+    sfHasTabs,               //
+    sfHasNoTabs,             //
+    sfExpandedLengthUnknown, //
+    sfModified,              // a line is modified and not saved after
+    sfSaved                  // a line is modified and saved after
+  );
   TSynEditStringFlags = set of TSynEditStringFlag;
-{end}                                                                           //mh 2000-10-19
+
+  TSynChangeReason = (crInsert, crPaste, crDragDropInsert,
+    // Note: crSelDelete and crDragDropDelete have been deleted, because
+    //   several undo entries can be chained together now via the ChangeNumber
+    //   see also TCustomSynEdit.[Begin|End]UndoBlock methods
+    crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
+    crLineBreak, crIndent, crUnindent,
+    crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
+    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace {$ENDIF});
 
   PSynEditStringRec = ^TSynEditStringRec;
   TSynEditStringRec = record
@@ -116,6 +129,7 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
+    function GetFlags(Index: Integer): TSynEditStringFlags;
     {$ENDIF}
     {$IFNDEF SYN_LAZARUS}                                                       // protected in SynLazarus
     function GetExpandedString(Index: integer): string;
@@ -171,6 +185,8 @@ type
     procedure SaveToFile(const FileName: string); override;
     {$IFDEF SYN_LAZARUS}
     procedure ClearRanges(ARange: TSynEditRange); override;
+    procedure MarkModified(AFirst, ALast: Integer; AUndo: Boolean; AReason: TSynChangeReason);
+    procedure MarkSaved;
     {$ENDIF}
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
@@ -194,20 +210,12 @@ type
                                                    write SetFoldMinLevel;
     property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
                                                    write SetFoldEndLevel;
+    property Flags[Index: Integer]: TSynEditStringFlags read GetFlags;
     {$ENDIF}
   end;
 
   ESynEditStringList = class(Exception);
 {end}                                                                           //mh 2000-10-10
-
-  TSynChangeReason = (crInsert, crPaste, crDragDropInsert,
-    // Note: crSelDelete and crDragDropDelete have been deleted, because
-    //   several undo entries can be chained together now via the ChangeNumber
-    //   see also TCustomSynEdit.[Begin|End]UndoBlock methods
-    crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
-    crLineBreak, crIndent, crUnindent,
-    crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
-    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace {$ENDIF});
 
   { TSynEditUndoItem }
 
@@ -224,6 +232,8 @@ type
     function ChangeEndPos: TPoint; // logical position (byte)
     {$ENDIF}
   end;
+
+  { TSynEditUndoList }
 
   TSynEditUndoList = class(TObject)
   private
@@ -259,7 +269,6 @@ type
     procedure MarkTopAsUnmodified;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
-    function IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
     {$ENDIF}
   public
     property BlockChangeNumber: integer read fBlockChangeNumber                 //sbs 2000-11-19
@@ -730,6 +739,14 @@ begin
     end;
 end;
 
+function TSynEditStringList.GetFlags(Index: Integer): TSynEditStringFlags;
+begin
+  if (Index >= 0) and (Index < fCount) then
+    Result := fList^[Index].fFlags
+  else
+    Result := [];
+end;
+
 function TSynEditStringList.GetFoldEndLevel(Index: integer): integer;
 begin
   if (Index >= 0) and (Index < fCount) then
@@ -1040,6 +1057,27 @@ begin
     fList^[Index].fRange := ARange;
 end;
 
+procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer;
+  AUndo: Boolean; AReason: TSynChangeReason);
+var
+  Index: Integer;
+begin
+  // AUndo = True => this change is also pushed to the undo list, False => to the redo list
+  // AReason - a reason of change
+
+  for Index := AFirst to ALast do
+    if (Index >= 0) and (Index < Count) then
+      fList^[Index].fFlags := fList^[Index].fFlags + [sfModified] - [sfSaved];
+end;
+
+procedure TSynEditStringList.MarkSaved;
+var
+  Index: Integer;
+begin
+  for Index := 0 to fCount - 1 do
+    if sfModified in fList^[Index].fFlags then
+      include(fList^[Index].fFlags, sfSaved);
+end;
 {$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
@@ -1271,38 +1309,6 @@ end;
 function TSynEditUndoList.UnModifiedMarkerExists: boolean;
 begin
   Result:=fUnModifiedItem>=0;
-end;
-
-function TSynEditUndoList.IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
-var
-  I, Start, Stop: Integer;
-  Item: TSynEditUndoItem;
-begin
-  Result := False;
-  if InUnmodified then
-  begin
-    Start := 0;
-    Stop := fUnModifiedItem - 1;
-  end
-  else
-  begin
-    Start := fUnModifiedItem;
-    Stop := fItems.Count - 1;
-    if Stop < 0 then
-      Exit;
-    if Start < 0 then
-      Start := 0;
-  end;
-
-  for I := Start to Stop do
-  begin
-    Item := TSynEditUndoItem(FItems[I]);
-    if (ALine >= Item.ChangeStartPos.y) and (ALine <= Item.ChangeEndPos.y) then
-    begin
-      Result := True;
-      Exit;
-    end;
-  end;
 end;
 
 {$ENDIF}

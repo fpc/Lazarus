@@ -103,7 +103,7 @@ begin
   rcLine.Bottom := FirstLine * LineHeight;
   for i := FirstLine to LastLine do
   begin
-    iLine := FFoldView.DisplayNumber[i];
+    iLine := FFoldView.TextIndex[i];
     // next line rect
     rcLine.Top := rcLine.Bottom;
     Inc(rcLine.Bottom, LineHeight);

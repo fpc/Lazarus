@@ -5824,13 +5824,14 @@ end;
 
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
 begin
-  if fUndoList.IsLineExists(ALine, False) then
-    Result := slsUnsaved
-  else
-  if fUndoList.IsLineExists(ALine, True) then
-    Result := slsSaved
-  else
-    Result := slsNone;
+  with TSynEditStringList(fLines) do
+    if [sfModified, sfSaved] * Flags[ALine] = [sfModified] then
+      Result := slsUnsaved
+    else
+    if [sfModified, sfSaved] * Flags[ALine] = [sfModified, sfSaved] then
+      Result := slsSaved
+    else
+      Result := slsNone;
 end;
 
 procedure TCustomSynEdit.UndoItem;
@@ -9429,6 +9430,7 @@ begin
       // the current state should be the unmodified state.
       fUndoList.MarkTopAsUnmodified;
       fRedoList.MarkTopAsUnmodified;
+      TSynEditStringList(fLines).MarkSaved;
       if fGutter.Visible and fGutter.ShowChanges then
         InvalidateGutter;
     end;
@@ -10037,9 +10039,15 @@ begin
 end;
 
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
+var
+  Item: TSynEditUndoItem;
 begin
 //  Modified := TRUE;
   {$IFDEF SYN_LAZARUS}
+  Item := TSynEditUndoList(Sender).PeekItem;
+  if Item <> nil then
+    TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,
+      Item.ChangeEndPos.y - 1, Sender = fUndoList, Item.fChangeReason);
   if fUndoList.UnModifiedMarkerExists then
     Modified:=not fUndoList.IsTopMarkedAsUnmodified
   else if fRedoList.UnModifiedMarkerExists then
