@@ -17,8 +17,6 @@ var
 begin
   // setup the Options
   CodeToolBoss.SimpleInit(ConfigFilename);
-  writeln('UnitPath: ',CodeToolBoss.GetUnitPathForDirectory('/home/mattias/pascal/fpc_sources/23/fpc/rtl/'));
-  writeln('IncPath: ',CodeToolBoss.GetIncludePathForDirectory('/home/mattias/pascal/fpc_sources/23/fpc/rtl/'));
 
   // Example: find declaration of 'TObject'
 
