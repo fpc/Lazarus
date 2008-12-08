@@ -80,6 +80,8 @@ const
   CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
   UnitLinksMacroName       = ExternalMacroStart+'UnitLinks';
   FPCUnitPathMacroName     = ExternalMacroStart+'FPCUnitPath';
+  TargetOSMacroName        = ExternalMacroStart+'TargetOS';
+  TargetCPUMacroName       = ExternalMacroStart+'TargetCPU';
 
   DefinePathMacro          = '$('+DefinePathMacroName+')';
   UnitPathMacro            = '$('+UnitPathMacroName+')';
@@ -91,6 +93,8 @@ const
   CompiledSrcPathMacro     = '$('+CompiledSrcPathMacroName+')';
   UnitLinksMacro           = '$('+UnitLinksMacroName+')';
   FPCUnitPathMacro         = '$('+FPCUnitPathMacroName+')';
+  TargetOSMacro            = '$('+TargetOSMacroName+')';
+  TargetCPUMacro           = '$('+TargetCPUMacroName+')';
 
 
   // virtual directories
@@ -3142,7 +3146,7 @@ function TDefinePool.CreateFPCSrcTemplate(
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
-  Dir, TargetOS, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
+  Dir, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
   IncPathMacro: string;
   DS: char; // dir separator
   UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
@@ -3239,7 +3243,7 @@ var
           // replace operating system
           for i:=Low(FPCOperatingSystemNames) to High(FPCOperatingSystemNames)
           do
-            if ReplaceDir(FPCOperatingSystemNames[i],DefaultTargetOS,TargetOS)
+            if ReplaceDir(FPCOperatingSystemNames[i],DefaultTargetOS,TargetOSMacro)
             then
               break;
           // replace operating system class
@@ -3584,7 +3588,7 @@ var
     // if TargetOS<>SrcOS
     IfTargetOSIsNotSrcOS:=TDefineTemplate.Create(
       'IF TargetOS<>SrcOS',
-      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOS+'''<>'''+SrcOS+'''',da_If);
+      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOSMacro+'''<>'''+SrcOS+'''',da_If);
     // rtl/$(#SrcOS)
     RTLSrcOSDir:=TDefineTemplate.Create('SrcOS',SrcOS,'',
       SrcOS,da_Directory);
@@ -3602,7 +3606,7 @@ var
     // if TargetOS<>SrcOS2
     IfTargetOSIsNotSrcOS2:=TDefineTemplate.Create(
       'IF TargetOS is not SrcOS2',
-      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOS+'''<>'''+SrcOS2+'''',da_If);
+      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOSMacro+'''<>'''+SrcOS2+'''',da_If);
     // rtl/$(#SrcOS2)
     RTLSrcOS2Dir:=TDefineTemplate.Create('SrcOS2',SrcOS2,'',
       SrcOS2,da_Directory);
@@ -3645,7 +3649,6 @@ begin
   end;
   DS:=PathDelim;
   Dir:=AppendPathDelim(FPCSrcDir);
-  TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
@@ -3698,16 +3701,12 @@ begin
     +';'+Dir+'rtl'+DS+'objpas'+DS+'classes'
     +';'+Dir+'rtl'+DS+'inc'+DS
     +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS
-    +';'+Dir+'rtl'+DS+SrcOS+DS;
-  if (TargetOS<>SrcOS) then
-    s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
-  if (SrcOS2<>'') and (SrcOS2<>SrcOS) then begin
-    s:=s+';'+Dir+'rtl'+DS+SrcOS2+DS
-        +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor;
-  end;
-  s:=s
+    +';'+Dir+'rtl'+DS+SrcOS+DS
+    +';'+Dir+'rtl'+DS+TargetOSMacro+DS
+    +';'+Dir+'rtl'+DS+SrcOS2+DS
+    +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
-    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
+    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
@@ -3715,10 +3714,10 @@ begin
 
   // rtl/$(#TargetOS)
   RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
-                                   TargetOS,da_Directory);
+                                   TargetOSMacro,da_Directory);
   s:=IncPathMacro
-    +';'+Dir+'rtl'+DS+TargetOS+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
-    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS
+    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
+    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS
     ;
   RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
@@ -3733,7 +3732,7 @@ begin
 
   // rtl: IF SrcOS=win then add include path rtl/win/wininc
   IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
-    '',SrcOS+'=''win''',da_If);
+    '',''''+SrcOS+'''=''win''',da_If);
   IFTempl.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
       ExternalMacroStart+'IncPath',
@@ -3745,7 +3744,7 @@ begin
 
   // rtl: IF TargetOS=darwin then add include path rtl/freebsd
   IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
-    '',TargetOS+'=''darwin''',da_If);
+    '',''''+TargetOSMacro+'''=''darwin''',da_If);
   IFTempl.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
       ExternalMacroStart+'IncPath',
@@ -3768,7 +3767,7 @@ begin
     ExternalMacroStart+'IncPath',
     d(   DefinePathMacro+'/inc/'
     +';'+DefinePathMacro+'/classes/'
-    +';'+DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
     +';'+DefinePathMacro+'/'+SrcOS+DS
     +';'+IncPathMacro)
     ,da_DefineRecurse));
@@ -3804,7 +3803,7 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
     ExternalMacroStart+'IncPath',
     d(   DefinePathMacro+'/inc/'
-    +';'+DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
     +';'+DefinePathMacro+'/'+SrcOS+DS
     +';'+IncPathMacro)
     ,da_DefineRecurse));
@@ -3822,7 +3821,7 @@ begin
   FCLSubSrcDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
     ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    d(   DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
     +';'+DefinePathMacro+'/'+SrcOS+DS
     +';'+IncPathMacro)
     ,da_DefineRecurse));

@@ -878,7 +878,7 @@ begin
       ATestPascalFile:=GetTempFilename('fpctest.pas','');
     CurFPCOptions:=Config.FPCOptions;
     if TargetOS<>'' then AddFPCOption('-T'+TargetOS);
-    if TargetProcessor<>'' then AddFPCOption('-Op'+TargetProcessor);
+    if TargetProcessor<>'' then AddFPCOption('-P'+TargetProcessor);
     FPCDefines:=CreateFPCTemplate(Config.FPCPath, CurFPCOptions,
                           ATestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
