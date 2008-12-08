@@ -3733,7 +3733,7 @@ begin
 
   // rtl: IF SrcOS=win then add include path rtl/win/wininc
   IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
-    '',SrcOS+'=win',da_If);
+    '',SrcOS+'=''win''',da_If);
   IFTempl.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
       ExternalMacroStart+'IncPath',
@@ -3745,7 +3745,7 @@ begin
 
   // rtl: IF TargetOS=darwin then add include path rtl/freebsd
   IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
-    '',TargetOS+'=darwin',da_If);
+    '',TargetOS+'=''darwin''',da_If);
   IFTempl.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
       ExternalMacroStart+'IncPath',
