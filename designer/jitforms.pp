@@ -1626,9 +1626,10 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
 begin
-  DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
   if Assigned(OnPropertyNotFound) then
-    OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip);
+    OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip)
+  else
+    DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
 end;
 
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
