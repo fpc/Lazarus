@@ -130,7 +130,7 @@ type
   
   { TfrDesignerPage }
 
-  TfrDesignerPage = class(TPanel)
+  TfrDesignerPage = class(TCustomControl)
   private
     Down,                          // mouse button was pressed
     Moved,                         // mouse was moved (with pressed btn)
@@ -170,6 +170,7 @@ type
     procedure MoveResize(Kx,Ky:Integer; UseFrames,AResize: boolean);
   protected
     procedure Paint; override;
+    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -623,11 +624,7 @@ constructor TfrDesignerPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Parent      := AOwner as TWinControl;
-  BevelInner  := bvNone;
-  BevelOuter  := bvNone;
-  color       := clWhite;
-  FullRepaint := False;
-  BorderStyle := bsNone;
+  Color       := clWhite;
   OnMouseDown := @MDown;
   OnMouseUp   := @MUp;
   OnMouseMove := @MMove;
@@ -671,6 +668,11 @@ end;
 procedure TfrDesignerPage.Paint;
 begin
   Draw(10000, 0);
+end;
+
+procedure TfrDesignerPage.WMEraseBkgnd(var Message: TLMEraseBkgnd);
+begin
+  //do nothing to avoid flicker
 end;
 
 procedure TfrDesignerPage.NormalizeCoord(t: TfrView);
