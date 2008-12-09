@@ -90,6 +90,7 @@ type
     nmiwCallStack,
     nmiwEvaluate,
     nmiwRegisters,
+    nmiwAssembler,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -131,6 +132,7 @@ const
     'CallStack',
     'EvaluateModify',
     'Registers',
+    'Assembler',
     // extra
     'SearchResults',
     'AnchorEditor',

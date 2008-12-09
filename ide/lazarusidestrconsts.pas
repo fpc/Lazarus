@@ -284,6 +284,7 @@ resourcestring
   lisMenuViewLocalVariables = 'Local Variables';
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
+  lisMenuViewAssembler = 'Assembler';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';

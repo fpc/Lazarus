@@ -2014,6 +2014,8 @@ begin
       ;//itmViewRegisters.OnClick(Self);
     nmiwCallStack:
       ;//itmViewCallStack.OnClick(Self);
+    nmiwAssembler:
+      ;//itmAssembler.OnClick(Self);
     end;
   end;
 end;

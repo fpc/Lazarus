@@ -208,6 +208,7 @@ type
           itmViewLocals: TIDEMenuCommand;
           itmViewRegisters: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
+          itmViewAssembler: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;

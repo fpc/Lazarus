@@ -64,7 +64,8 @@ type
     dcEvaluate,
     dcModify,
     dcEnvironment,
-    dcSetStackFrame
+    dcSetStackFrame,
+    dcDisassemble
     );
   TDBGCommands = set of TDBGCommand;
   
@@ -1087,6 +1088,7 @@ type
     function  GetCommands: TDBGCommands;
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  GetTargetWidth: Byte; virtual;
+    function  GetWaiting: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean;
                              virtual; abstract; // True if succesful
@@ -1118,6 +1120,8 @@ type
 
     function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
+    function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
+                          out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
 
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
@@ -1138,6 +1142,7 @@ type
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
+    property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
     property Watches: TDBGWatches read FWatches;                                 // list of all watches etc
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
     // Events
@@ -1164,7 +1169,8 @@ const
     'Evaluate',
     'Modify',
     'Environment',
-    'SetStackFrame'
+    'SetStackFrame',
+    'Disassemble'
     );
     
   DBGStateNames: array[TDBGState] of string = (
@@ -1203,7 +1209,8 @@ const
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch,
              dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
-             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame],
+             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame,
+             dcDisassemble],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
@@ -1394,6 +1401,11 @@ begin
   inherited;
 end;
 
+function TDebugger.Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+begin
+  Result := ReqCmd(dcDisassemble, [AAddr, ABackward, @ANextAddr, @ADump, @AStatement]);
+end;
+
 procedure TDebugger.Done;
 begin
   SetState(dsNone);
@@ -1471,8 +1483,7 @@ begin
   FCurEnvironment.Assign(FEnvironment);
 end;
 
-function TDebugger.Evaluate(const AExpression: String;
-  var AResult: String): Boolean;
+function TDebugger.Evaluate(const AExpression: String; var AResult: String): Boolean;
 begin
   Result := ReqCmd(dcEvaluate, [AExpression, @AResult]);
 end;
@@ -1522,6 +1533,11 @@ end;
 function TDebugger.GetTargetWidth: Byte;
 begin
   Result := SizeOf(PtrInt)*8;
+end;
+
+function TDebugger.GetWaiting: Boolean;
+begin
+  Result := False;
 end;
 
 procedure TDebugger.Init;

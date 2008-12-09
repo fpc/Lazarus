@@ -42,6 +42,9 @@ uses
   Classes, Process, FileUtil, Debugger, LCLProc, Forms, LazConf, DBGUtils;
 
 type
+
+  { TCmdLineDebugger }
+
   TCmdLineDebugger = class(TDebugger)
   private
     FDbgProcess: TProcess;   // The process used to call the debugger
@@ -54,6 +57,7 @@ type
   protected
     function  CreateDebugProcess(const AOptions: String): Boolean;
     procedure Flush;                                   // Flushes output buffer
+    function  GetWaiting: Boolean; override;
     function  ReadLine: String; overload;
     function  ReadLine(const APeek: Boolean): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
@@ -253,6 +257,11 @@ end;
 function TCmdLineDebugger.GetDebugProcessRunning: Boolean;
 begin
   Result := (FDbgProcess <> nil) and FDbgProcess.Running;
+end;
+
+function TCmdLineDebugger.GetWaiting: Boolean;
+begin
+  Result := FReading;
 end;
 
 function TCmdLineDebugger.ReadLine: String;
