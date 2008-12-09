@@ -6027,30 +6027,15 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <element name="TCustomTrayIcon.Create" link="#rtl.Classes.TComponent.Create">
         <descr>
-          <var>Create</var> creates a new instance of a 
-          
-          <var>TCustomTrayIcon</var> class.
-If 
-          
-          <var>AOwner</var> is not 
-          
-          <var>Nil</var>, the new component attempts to 
-insert itself in the list of owned components of the owner.
-</descr>
+          <var>Create</var> creates a new instance of a <var>TCustomTrayIcon</var> class.
+          If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to insert itself in the list of owned components of the owner.
+        </descr>
       </element>
       <element name="TCustomTrayIcon.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <descr>
-          <var>Destroy</var> sends a 
-          
-          <var>opRemove</var> notification to all components 
-in the free-notification list. After that, all owned components are
-destroyed by calling 
-          
-          <link id="TComponent.DestroyComponents">DestroyComponents</link> 
-(and hence removed from the list of owned components). When this
-is done, the component removes itself from its owner's child component list.
+          <var>Destroy</var> sends a <var>opRemove</var> notification to all components in the free-notification list. After that, all owned components are destroyed by calling <link id="TComponent.DestroyComponents">DestroyComponents</link> (and hence removed from the list of owned components). When this is done, the component removes itself from its owner's child component list.
 After that, the parent's destroy method is called.
-</descr>
+        </descr>
       </element>
       <element name="TCustomTrayIcon.Hide">
         <short>Hide - Removes the icon from the System Tray</short>
@@ -6060,9 +6045,7 @@ After that, the parent's destroy method is called.
       </element>
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
-          <var>ShowBalloonHint</var> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after 
-          
-          <var>BallonHintTimeout</var> milliseconds of when the user clicks it or it's close button.</short>
+          <var>ShowBalloonHint</var> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after <var>BallonHintTimeout</var> milliseconds or when the user clicks it or it's close button.</short>
       </element>
       <element name="TCustomTrayIcon.GetPosition">
         <short>Find the position of the Tray Icon and thus a position suitable to display the hinting BalloonHint. Under Windows an approximate location is detected.</short>
@@ -6083,7 +6066,7 @@ After that, the parent's destroy method is called.
         <short>The canvas of the Tray Icon</short>
       </element>
       <element name="TCustomTrayIcon.PopUpMenu">
-        <short>PopUpMenu - a small menu popup that is displayed when right mouse button is clicked over icon - separate from hint balloon</short>
+        <short>PopUpMenu - a popup menu which is displayed when right mouse button is clicked over icon - separate from hint balloon</short>
       </element>
       <element name="TCustomTrayIcon.Icon">
         <short>The Icon or picture that is to be displayed</short>
