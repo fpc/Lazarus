@@ -1447,7 +1447,6 @@ begin
     Name:='CallRegisterProcCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:=lisPckEditRegisterUnit;
-    UseOnChange:=true;
     OnChange:=@CallRegisterProcCheckBoxChange;
     Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
     ShowHint:=true;
@@ -1457,7 +1456,6 @@ begin
   with AddToUsesPkgSectionCheckBox do begin
     Name:='AddToUsesPkgSectionCheckBox';
     Caption:=lisPkgMangUseUnit;
-    UseOnChange:=true;
     OnChange:=@AddToUsesPkgSectionCheckBoxChange;
     Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
     ShowHint:=true;
@@ -1486,7 +1484,6 @@ begin
   with UseMinVersionCheckBox do begin
     Name:='UseMinVersionCheckBox';
     Caption:=lisPckEditMinimumVersion;
-    UseOnChange:=true;
     OnChange:=@UseMinVersionCheckBoxChange;
     Parent:=FilePropsGroupBox;
   end;
@@ -1503,7 +1500,6 @@ begin
   with UseMaxVersionCheckBox do begin
     Name:='UseMaxVersionCheckBox';
     Caption:=lisPckEditMaximumVersion;
-    UseOnChange:=true;
     OnChange:=@UseMaxVersionCheckBoxChange;
     Parent:=FilePropsGroupBox;
   end;

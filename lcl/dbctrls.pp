@@ -472,7 +472,6 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property UseOnChange;
     property ValueChecked: string read FValueCheck write SetValueCheck;
     property ValueUnchecked: string read FValueUncheck write SetValueUncheck;
     property Visible;

@@ -835,7 +835,6 @@ Type
     property State;
     property TabOrder;
     property TabStop;
-    property UseOnChange;
     property Visible;
   end;
 
