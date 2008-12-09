@@ -8893,7 +8893,12 @@ end;
 
 function TIpHtml.BuildPath(const Ext: string): string;
 begin
-  Result := BuildURL(CurURL, Ext);
+  {$IFDEF IP_LAZARUS}
+  if FDataProvider <> nil then
+    Result := FDataProvider.BuildURL(CurURL,Ext)
+  else
+  {$ENDIF}
+  Result :=  BuildURL(CurURL, Ext);
 end;
 
 function TIpHtml.NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
