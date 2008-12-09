@@ -130,7 +130,6 @@ end;
 procedure TAssemblerDlg.FormResize(Sender: TObject);
 var
   R: TRect;
-  n: Integer;
 begin
   R := ClientRect;
   Dec(R.Right, sbVertical.Width);
@@ -176,8 +175,6 @@ var
   R: TRect;
   n, X, Y, Line, idx: Integer;
   S: String;
-  Addr: TDbgPtr;
-  State: TAsmDlgLineMapState;
 begin
 
   R := pbAsm.ClientRect;
