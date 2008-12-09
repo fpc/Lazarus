@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-27 04:24+0300\n"
+"PO-Revision-Date: 2008-12-02 04:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -354,6 +354,10 @@ msgstr "Связывание"
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
 msgstr "Загрузка/сохранение"
+
+#: lazarusidestrconsts.dlgcolor
+msgid "Color"
+msgstr "Цвет"
 
 #: lazarusidestrconsts.dlgcomessages
 msgctxt "lazarusidestrconsts.dlgcomessages"
@@ -821,6 +825,10 @@ msgstr "Групповая отмена"
 #: lazarusidestrconsts.dlgguidelines
 msgid "Show Guide Lines"
 msgstr "Показывать линии позиционирования"
+
+#: lazarusidestrconsts.dlggutter
+msgid "Gutter"
+msgstr "Поле (лев)"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
@@ -1305,10 +1313,6 @@ msgstr "Выбор правым щелчком"
 #: lazarusidestrconsts.dlgrightmargin
 msgid "Right margin"
 msgstr "Правая граница"
-
-#: lazarusidestrconsts.dlgrightmargincolor
-msgid "Right margin color"
-msgstr "Цвет правой границы"
 
 #: lazarusidestrconsts.dlgrightmousemovescursor
 msgid "Right mouse moves cursor"

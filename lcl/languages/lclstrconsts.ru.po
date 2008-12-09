@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-27 04:26+0300\n"
+"PO-Revision-Date: 2008-12-02 04:42+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -47,7 +47,7 @@ msgstr "Ctrl"
 
 #: lclstrconsts.ifsvk_accept
 msgid "Accept"
-msgstr "Принять"
+msgstr "Accept"
 
 #: lclstrconsts.ifsvk_apps
 msgid "application key"
@@ -264,6 +264,10 @@ msgstr "Все файлы (%s)|%s|%s"
 msgid "Application Workspace"
 msgstr "Рабочая область приложения"
 
+#: lclstrconsts.rsaquacolorcaption
+msgid "Aqua"
+msgstr "Морской волны"
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Рабочий стол"
@@ -276,9 +280,17 @@ msgstr "Назад"
 msgid "Bitmaps"
 msgstr "Точечные рисунки"
 
+#: lclstrconsts.rsblackcolorcaption
+msgid "Black"
+msgstr "Чёрный"
+
 #: lclstrconsts.rsblank
 msgid "Blank"
 msgstr "Пустой"
+
+#: lclstrconsts.rsbluecolorcaption
+msgid "Blue"
+msgstr "Синий"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
@@ -321,6 +333,10 @@ msgstr "Текст заголовка"
 msgid "Case sensitive"
 msgstr "С учётом регистра"
 
+#: lclstrconsts.rscreamcolorcaption
+msgid "Cream"
+msgstr "Кремовый"
+
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
 msgstr "Создание ошибки, захватываемой GDB:"
@@ -332,6 +348,10 @@ msgstr "Курсор"
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
 msgstr "Пользовательский ..."
+
+#: lclstrconsts.rsdefaultcolorcaption
+msgid "Default"
+msgstr "По умолчанию"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -487,6 +507,10 @@ msgstr "Ошибка потоков \"%s\" форм: %s"
 msgid "Forward"
 msgstr "Вперёд"
 
+#: lclstrconsts.rsfuchsiacolorcaption
+msgid "Fuchsia"
+msgstr "Розовый"
+
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
 msgstr "--gdk-debug flags     Включить указанные отладочные сообщения GDK."
@@ -507,9 +531,17 @@ msgstr "Градиент активного заголовка"
 msgid "Gradient Inactive Caption"
 msgstr "Градиент неактивного заголовка"
 
+#: lclstrconsts.rsgraycolorcaption
+msgid "Gray"
+msgstr "Тёмно-серый"
+
 #: lclstrconsts.rsgraytextcolorcaption
 msgid "Gray Text"
 msgstr "Серый текст"
+
+#: lclstrconsts.rsgreencolorcaption
+msgid "Green"
+msgstr "Тёмно-зелёный"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -754,6 +786,10 @@ msgstr "Joint Picture Expert Group"
 msgid "Last"
 msgstr "Последняя"
 
+#: lclstrconsts.rslimecolorcaption
+msgid "Lime"
+msgstr "Зелёный"
+
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
 msgstr "Индекс списка вне диапазона (%d)"
@@ -761,6 +797,10 @@ msgstr "Индекс списка вне диапазона (%d)"
 #: lclstrconsts.rslistmustbeempty
 msgid "List must be empty"
 msgstr "Список должен быть пуст"
+
+#: lclstrconsts.rsmarooncolorcaption
+msgid "Maroon"
+msgstr "Малиновый"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -811,6 +851,10 @@ msgstr "&Да"
 msgid "Yes to &All"
 msgstr "Да для &всех"
 
+#: lclstrconsts.rsmedgraycolorcaption
+msgid "Medium Gray"
+msgstr "Серый"
+
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
 msgstr "Панель меню"
@@ -831,6 +875,10 @@ msgstr "Текст меню"
 #: lclstrconsts.rsmodified
 msgid "  modified "
 msgstr "  изменён "
+
+#: lclstrconsts.rsmoneygreencolorcaption
+msgid "Money Green"
+msgstr "Светло-зелёный"
 
 #: lclstrconsts.rsmtconfirmation
 msgid "Confirmation"
@@ -853,10 +901,18 @@ msgstr "Сведения"
 msgid "Warning"
 msgstr "Предупреждение"
 
+#: lclstrconsts.rsnavycolorcaption
+msgid "Navy"
+msgstr "Тёмно-синий"
+
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
 msgid "Next"
 msgstr "Следующая"
+
+#: lclstrconsts.rsnonecolorcaption
+msgid "None"
+msgstr "Нет"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -865,6 +921,10 @@ msgstr "Неверный файл сетки"
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Отсутствует объект библиотеки виджетов. Проверьте, что модуль \"interfaces\" был добавлен в выражение uses программы."
+
+#: lclstrconsts.rsolivecolorcaption
+msgid "Olive"
+msgstr "Оливковый"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
@@ -907,6 +967,10 @@ msgstr "Предыдущая"
 msgid "Property %s does not exist"
 msgstr "Свойство %s не существует"
 
+#: lclstrconsts.rspurplecolorcaption
+msgid "Purple"
+msgstr "Лиловый"
+
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
 msgstr "Команда Endupdate, хотя обновления не производилось"
@@ -918,6 +982,10 @@ msgstr "Невозможно сохранить изображение во вр
 #: lclstrconsts.rsrasterimageupdateall
 msgid "Cannot begin update all when canvas only update in progress"
 msgstr "Невозможно начать обновление всех во время обновления канвы"
+
+#: lclstrconsts.rsredcolorcaption
+msgid "Red"
+msgstr "Красный"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
@@ -952,9 +1020,21 @@ msgstr "Выбрать цвет"
 msgid "Select a font"
 msgstr "Выбрать шрифт"
 
+#: lclstrconsts.rssilvercolorcaption
+msgid "Silver"
+msgstr "Серебристый"
+
 #: lclstrconsts.rssize
 msgid "  size "
 msgstr "  размер "
+
+#: lclstrconsts.rsskybluecolorcaption
+msgid "Sky Blue"
+msgstr "Голубой"
+
+#: lclstrconsts.rstealcolorcaption
+msgid "Teal"
+msgstr "Бирюзовый"
 
 #: lclstrconsts.rstext
 msgid "Text"
@@ -1000,6 +1080,10 @@ msgstr " ВНИМАНИЕ: Осталось %d структур TimerInfo, он�
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " ВНИМАНИЕ: Найдено %s неудалённых ссылок на сообщение LM_PAINT/LM_GtkPAINT."
 
+#: lclstrconsts.rswhitecolorcaption
+msgid "White"
+msgstr "Белый"
+
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
 msgstr "Только целые слова"
@@ -1023,6 +1107,10 @@ msgstr "Граница окна"
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
 msgstr "Текст окна"
+
+#: lclstrconsts.rsyellowcolorcaption
+msgid "Yellow"
+msgstr "Жёлтый"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
