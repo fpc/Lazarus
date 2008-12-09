@@ -119,6 +119,8 @@ type
   protected
   public
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWin32WSColorButton }
@@ -294,45 +296,64 @@ end;
 { TWin32WSColorDialog }
 
 class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-const
-  { 16 basic RGB colors; names listed in comments for debugging }
-  CustomColors: array[1..16] of dword = (
-  0, //Black
-  $C0C0C0, //Silver
-  $808080, //Gray
-  $FFFFFF, //White
-  $000080, //Maroon
-  $0000FF, //Red
-  $800080, //Purple
-  $FF00FF, //Fuchsia
-  $008000, //Green
-  $00FF00, //Lime
-  $008080, //Olive
-  $00FFFF, //Yellow
-  $800000, //Navy
-  $FF0000, //Blue
-  $808000, //Teal
-  $FFFF00 //Aqua
-  );
 var
-  CC: TChooseColor;
-  UserResult: WINBOOL;
+  CC: PChooseColor;
+  ColorDialog: TColorDialog absolute ACommonDialog;
+
+  procedure FillCustomColors;
+  var
+    i, AIndex: integer;
+    AColor: TColor;
+  begin
+    for i := 0 to ColorDialog.CustomColors.Count - 1 do
+      if ExtractColorIndexAndColor(ColorDialog.CustomColors, i, AIndex, AColor) then
+      begin
+        if AIndex < 16 then
+          CC^.lpCustColors[AIndex] := AColor;
+      end;
+  end;
+
 begin
-  ZeroMemory(@CC, sizeof(TChooseColor));
-  with CC Do
+  CC := AllocMem(SizeOf(TChooseColor));
+  with CC^ Do
   begin
     LStructSize := sizeof(TChooseColor);
     HWndOwner := GetOwnerHandle(ACommonDialog);
-    RGBResult := ColorToRGB(TColorDialog(ACommonDialog).Color);
-    LPCustColors := @CustomColors[1];
+    RGBResult := ColorToRGB(ColorDialog.Color);
+    LPCustColors := AllocMem(16 * SizeOf(DWord));
+    FillCustomColors;
     Flags := CC_FULLOPEN or CC_RGBINIT;
   end;
-  UserResult := ChooseColor(@CC);
-  SetDialogResult(ACommonDialog, UserResult);
-  if UserResult then
-    TColorDialog(ACommonDialog).Color := CC.RGBResult;
+  Result := THandle(CC);
+end;
 
-  Result := 0;
+class procedure TWin32WSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  CC: PChooseColor;
+  UserResult: WINBOOL;
+begin
+  if ACommonDialog.Handle <> 0 then
+  begin
+    CC := PChooseColor(ACommonDialog.Handle);
+
+    UserResult := ChooseColor(CC);
+    SetDialogResult(ACommonDialog, UserResult);
+    if UserResult then
+      TColorDialog(ACommonDialog).Color := CC^.RGBResult;
+  end;
+end;
+
+class procedure TWin32WSColorDialog.DestroyHandle(
+  const ACommonDialog: TCommonDialog);
+var
+  CC: PChooseColor;
+begin
+  if ACommonDialog.Handle <> 0 then
+  begin
+    CC := PChooseColor(ACommonDialog.Handle);
+    FreeMem(CC^.lpCustColors);
+    FreeMem(CC);
+  end;
 end;
 
 procedure UpdateStorage(Wnd: HWND; OpenFile: LPOPENFILENAME);

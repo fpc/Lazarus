@@ -457,14 +457,29 @@ var
   AQtColor: QColorH;
   ARgb: QRgb;
   ReturnBool: Boolean;
+  ColorDialog: TColorDialog absolute ACommonDialog;
+
+  procedure FillCustomColors;
+  var
+    i, AIndex, CustomColorCount: integer;
+    AColor: TColor;
+  begin
+    CustomColorCount := QColorDialog_customCount();
+    for i := 0 to ColorDialog.CustomColors.Count - 1 do
+      if ExtractColorIndexAndColor(ColorDialog.CustomColors, i, AIndex, AColor) then
+        if AIndex < CustomColorCount then
+          QColorDialog_setCustomColor(AIndex, AColor);
+  end;
+
 begin
-  AColor := ColorToRgb(TColorDialog(ACommonDialog).Color);
+  AColor := ColorToRgb(ColorDialog.Color);
   AQColor.Alpha := $FFFF;
   AQColor.ColorSpec := 1;
   AQColor.Pad := 0;
   ColorRefToTQColor(AColor, AQColor);
   AQtColor := QColor_create(PQColor(@AQColor));
   ARgb := QColor_rgba(AQtColor);
+  FillCustomColors;
 
   ARgb := QColorDialog_getRgba(ARgb, @ReturnBool,
     TQtWSCommonDialog.GetDialogParent(ACommonDialog));
@@ -473,7 +488,7 @@ begin
   try
     QColor_toRgb(AQtColor, @AQColor);
     TQColorToColorRef(AQColor, AColor);
-    TColorDialog(ACommonDialog).Color := AColor;
+    ColorDialog.Color := AColor;
   finally
     QColor_destroy(AQtColor);
   end;

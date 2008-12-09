@@ -675,6 +675,7 @@ type
     function GetDropList: TQtListWidget;
     function GetLineEdit: TQtLineEdit;
     procedure SetOwnerDrawn(const AValue: Boolean);
+    procedure slotPaintCombo(Sender: QObjectH; Event: QEventH); cdecl;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
@@ -6080,6 +6081,103 @@ begin
   inherited DetachEvents;
 end;
 
+procedure TQtComboBox.slotPaintCombo(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+  MsgItem: TLMDrawListItem;
+  DrawStruct: TDrawListItemStruct;
+  P: TPoint;
+  Opt: QStyleOptionComboBoxH;
+  R: TRect;
+  State: QStyleState;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtComboBox.SlotPaintCombo ', dbgsName(LCLObject));
+  {$endif}
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_PAINT;
+  New(AStruct);
+  FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+  Msg.PaintStruct := AStruct;
+
+  with PaintData do
+  begin
+    PaintWidget := Widget;
+    ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
+    if ClipRect = nil then
+      New(ClipRect);
+    QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
+  end;
+
+  Msg.DC := BeginPaint(THandle(Self), AStruct^);
+  FContext := Msg.DC;
+
+  Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+  Msg.PaintStruct^.hdc := FContext;
+
+  P := getClientOffset;
+  inc(P.X, FScrollX);
+  inc(P.Y, FScrollY);
+  TQtDeviceContext(Msg.DC).translate(P.X, P.Y);
+
+  TQtDeviceContext(Msg.DC).save;
+  try
+    Opt := QStyleOptionComboBox_create();
+    QStyleOption_initFrom(Opt, Widget);
+    State := QStyleOption_state(opt);
+    QStyleOption_rect(Opt, @R);
+    QPainter_setClipRect(TQtDeviceContext(Msg.DC).Widget, @R);
+
+    QStyle_drawComplexControl(QApplication_style(), QStyleCC_ComboBox, Opt,
+      TQtDeviceContext(Msg.DC).Widget, Widget);
+    QStyle_subControlRect(QApplication_style(), @R, QStyleCC_ComboBox, Opt,
+      QStyleSC_ComboBoxEditField , Widget);
+
+  finally
+    QStyleOptionComboBox_destroy(Opt);
+    TQtDeviceContext(Msg.DC).restore;
+  end;
+
+  inc(R.Top);
+  dec(R.Bottom);
+  QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
+
+  DrawStruct.ItemID := currentIndex;
+  DrawStruct.Area := R;
+  DrawStruct.DC := Msg.DC;
+
+  DrawStruct.ItemState := [];
+
+  // selected
+  if (State and QStyleState_Selected) <> 0 then
+    Include(DrawStruct.ItemState, odSelected);
+  // disabled
+  if (State and QStyleState_Enabled) = 0 then
+    Include(DrawStruct.ItemState, odDisabled);
+  // focused (QStyleState_FocusAtBorder?)
+  if ((State and QStyleState_HasFocus) <> 0) or
+    ((State and QStyleState_FocusAtBorder) <> 0) then
+    Include(DrawStruct.ItemState, odFocused);
+  // hotlight
+  if (State and QStyleState_MouseOver) <> 0 then
+    Include(DrawStruct.ItemState, odHotLight);
+
+  MsgItem.Msg := LM_DRAWLISTITEM;
+  MsgItem.DrawListItemStruct := @DrawStruct;
+
+  try
+    DeliverMessage(MsgItem);
+  finally
+    Dispose(PaintData.ClipRect);
+    Fillchar(FPaintData, SizeOf(FPaintData), 0);
+    FContext := 0;
+    EndPaint(THandle(Self), AStruct^);
+    Dispose(AStruct);
+  end;
+end;
+
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   ev: QEventH;
@@ -6108,6 +6206,15 @@ begin
   end else
   begin
     case QEvent_type(Event) of
+      QEventPaint:
+      begin
+        if FOwnerDrawn and not getEditable then
+        begin
+          SlotPaintCombo(Widget, Event);
+          Result := True;
+          QEvent_accept(Event);
+        end;
+      end;
       QEventFocusIn:
       begin
         if not (csDesigning in LCLObject.ComponentState) then

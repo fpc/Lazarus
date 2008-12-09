@@ -585,6 +585,7 @@ type
     property OnSelectionChange: TSelectionChangeEvent read FOnSelectionChange
                                                       write FOnSelectionChange;
     property OnUTF8KeyPress;
+    property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -651,6 +652,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
+    property ParentColor;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
