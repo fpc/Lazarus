@@ -612,7 +612,7 @@ type
         PageIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
         var LFMCode, ResourceCode: TCodeBuffer;
-        IgnoreSourceErrors: boolean): TModalResult;
+        IgnoreSourceErrors, AutoCreateResourceCode: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
@@ -4263,38 +4263,34 @@ end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, ResourceCode: TCodeBuffer;
-  IgnoreSourceErrors: boolean): TModalResult;
-var LinkIndex: integer;
-  LFMFilename, MsgTxt: string;
+  IgnoreSourceErrors, AutoCreateResourceCode: boolean): TModalResult;
+var
+  LFMFilename: string;
+  LRSFilename: String;
 begin
   LFMCode:=nil;
   ResourceCode:=nil;
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
-    // first try to find the resource file (.lrs) via the unit source
-    LinkIndex:=-1;
-    ResourceCode:=CodeToolBoss.FindNextResourceFile(
-                                                   AnUnitInfo.Source,LinkIndex);
-    // if unit source has errors, then show the error and try the last resource
-    // file (.lrs)
-    if (ResourceCode=nil) and (CodeToolBoss.ErrorMessage<>'') then begin
-      if not IgnoreSourceErrors then
-        DoJumpToCodeToolBossError;
-      if (AnUnitInfo.ResourceFileName<>'') then begin
-        Result:=LoadCodeBuffer(ResourceCode,AnUnitInfo.ResourceFileName,
-                               [lbfCheckIfText]);
-        if Result=mrAbort then exit;
+    LRSFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
+    LRSFilename:=FileUtil.SearchFileInPath(LRSFilename,'',
+        CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
+        ';',[sffDontSearchInBasePath,sffSearchLoUpCase]);
+    if LRSFilename<>'' then begin
+      Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk]);
+      if Result<>mrOk then exit;
+    end else begin
+      LRSFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
+      if AutoCreateResourceCode then begin
+        ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
+      end else begin
+        DebugLn(['TMainIDE.DoLoadResourceFile .lrs file not found of unit ',AnUnitInfo.Filename]);
+        exit(mrCancel);
       end;
     end;
+
     // if no resource file found (i.e. normally the .lrs file)
-    // then tell the user
-    if (ResourceCode=nil) and (not IgnoreSourceErrors) then begin
-      MsgTxt:=Format(lisUnableToLoadOldResourceFileTheResourceFileIs, [#13,
-        #13, #13, AnUnitInfo.UnitName, #13]);
-      Result:=QuestionDlg(lisResourceLoadError, MsgTxt, mtWarning,
-                         [mrIgnore, lisIgnoreMissingFile, mrAbort], 0);
-      if Result=mrAbort then exit;
-    end;
+    // don't bother the user, because it is created automatically anyway
 
     // then load the lfm file (without parsing)
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
@@ -7136,7 +7132,7 @@ begin
 
   // load old resource file
   Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
-                             not (sfSaveAs in Flags));
+                             not (sfSaveAs in Flags),true);
   if Result in [mrIgnore,mrOk] then
     Result:=mrCancel
   else
