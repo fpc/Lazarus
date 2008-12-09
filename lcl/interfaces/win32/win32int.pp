@@ -295,6 +295,7 @@ type
   end;
 
 var
+  MouseDownCount: Integer;
   MouseDownTime: dword;
   MouseDownPos: TPoint;
   MouseDownWindow: HWND = 0;

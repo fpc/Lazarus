@@ -1673,9 +1673,18 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
+      // always within the time-window
+      if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
+      inc(MouseDownCount);
+      MouseDownTime := GetTickCount;
       with LMMouse Do
       begin
-        Msg := LM_LBUTTONDBLCLK;
+        case MouseDownCount of
+          2: Msg := LM_LBUTTONDBLCLK;
+          3: Msg := LM_LBUTTONTRIPLECLK;
+          4: Msg := LM_LBUTTONQUADCLK;
+          else Msg := LM_LBUTTONDOWN;
+        end;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
@@ -1687,14 +1696,22 @@ begin
     end;
     WM_LBUTTONDOWN:
     begin
+      if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
       // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
       // simulate double click, assume focus change due to first mouse-click
       if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
           and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
           and CheckMouseMovement then
       begin
+        inc(MouseDownCount);
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
-      end;
+      end
+      else if (MouseDownWindow = Window)
+          and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
+          and CheckMouseMovement then
+        inc(MouseDownCount)
+      else
+        MouseDownCount := 1;
 
       MouseDownTime := GetTickCount;
       MouseDownWindow := Window;
@@ -1705,7 +1722,12 @@ begin
       PLMsg:=@LMMouse;
       with LMMouse Do
       begin
-        Msg := LM_LBUTTONDOWN;
+        case MouseDownCount of
+          2: Msg := LM_LBUTTONDBLCLK;
+          3: Msg := LM_LBUTTONTRIPLECLK;
+          4: Msg := LM_LBUTTONQUADCLK;
+          else Msg := LM_LBUTTONDOWN;
+        end;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
