@@ -50,6 +50,7 @@ type
     FileMenuItem: TMenuItem;
     FileMenuOpenItem: TMenuItem;
     FileSeperater: TMenuItem;
+    ImageList1: TImageList;
     MainMenu1: TMainMenu;
     FileMenuOpenURLItem: TMenuItem;
     PageControl: TPageControl;
@@ -308,7 +309,7 @@ begin
  
  //no page was found already to handle this content so create one
  fNewPage := TContentTab.Create(PageControl);
- fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage);
+ fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage, ImageList1);
  fNewPage.Parent := PageControl;
 
  ShowOnTop;

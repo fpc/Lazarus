@@ -34,6 +34,7 @@ uses
   FPReadJPEg,
   FPReadpng,
   FPWritebmp,
+  FPWritePNG,
   IntFGraphics;
 
 
@@ -139,8 +140,8 @@ begin
 
   Picture := TPicture.Create;
   try
-    Stream := fChm.GetObject('/'+URL);
-    if Assigned(Stream) then
+     Stream := fChm.GetObject('/'+URL);
+     if Assigned(Stream) then
     begin
       Stream.Position := 0;
       Picture.LoadFromStreamWithFileExt(Stream, FileExt);
@@ -182,7 +183,6 @@ begin
 
   fOldUrl := OldURL;
   fNewURL := NewURL;
-
   if Pos('ms-its:', NewURL) = 1 then
     Exit;
 

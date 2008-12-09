@@ -22,11 +22,16 @@ program lhelp;
 uses
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
+  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore,
+  LResources;
 
 var
  X: Integer;
+
+{$IFDEF WINDOWS}{$R lhelp.rc}{$ENDIF}
+
 begin
+  {$I lhelp.lrs}
   Application.Initialize;
   for X := 1 to ParamCount do
     if LowerCase(ParamStr(X)) = '--help' then begin

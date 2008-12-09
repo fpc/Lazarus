@@ -138,6 +138,11 @@ begin
       try
         NodeInfo := GetLIData(X);
         TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
+        if (ParentNode.ImageIndex < 0) or (ParentNode.ImageIndex > 2) then
+        begin
+          ParentNode.ImageIndex := 1;
+          ParentNode.SelectedIndex := 1;
+        end;
         TreeNode.Url := NodeInfo.Url;
         TreeNode.Data := fChm;
         Inc(X, NodeInfo.LineCount);

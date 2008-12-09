@@ -24,7 +24,7 @@ type
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
 
-    constructor Create(AParent: TWinControl); override;
+    constructor Create(AParent: TWinControl; AImageList: TImageList); override;
   end;
   function RegisterFileType(const FileType: String; ContentProvider: TBaseContentProviderClass): Boolean;
   
@@ -98,9 +98,9 @@ begin
   Result := TBaseContentProviderClass(FileContentProviders.Objects[fIndex]);
 end;
 
-constructor TFileContentProvider.Create(AParent: TWinControl);
+constructor TFileContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
 begin
-  inherited Create(AParent);
+  inherited Create(AParent, AImageList);
 end;
 
 initialization

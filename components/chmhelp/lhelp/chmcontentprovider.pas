@@ -63,6 +63,8 @@ type
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure SetTitle(const ATitle: String);
     procedure SearchEditChange(Sender: TObject);
+    procedure TOCExpand(Sender: TObject; Node: TTreeNode);
+    procedure TOCCollapse(Sender: TObject; Node: TTreeNode);
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
@@ -77,7 +79,7 @@ type
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
 
-    constructor Create(AParent: TWinControl); override;
+    constructor Create(AParent: TWinControl; AImageList: TImageList); override;
     destructor Destroy; override;
   end;
 
@@ -227,6 +229,9 @@ begin
   fHtml.OpenURL(Uri);
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
   AddHistory(Uri);
+  {WriteLn(iphtml.Aspect);
+  iphtml.ScaleFonts := True;
+  iphtml.Aspect := 2;}
 end;
 
 
@@ -278,6 +283,8 @@ begin
   {$ENDIF}
   if fChm <> nil then begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
+    ParentNode.ImageIndex := 0;
+    ParentNode.SelectedIndex := 0;
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
@@ -421,6 +428,24 @@ begin
       fIndexView.Items.Item[I].Selected := True;
       Exit;
     end;
+  end;
+end;
+
+procedure TChmContentProvider.TOCExpand(Sender: TObject; Node: TTreeNode);
+begin
+  if Node.Parent <> nil then
+  begin
+    Node.ImageIndex := 2;
+    Node.SelectedIndex := 2;
+  end;
+end;
+
+procedure TChmContentProvider.TOCCollapse(Sender: TObject; Node: TTreeNode) ;
+begin
+  if Node.Parent <> nil then
+  begin
+    Node.ImageIndex := 1;
+    Node.SelectedIndex := 1;
   end;
 end;
 
@@ -680,11 +705,11 @@ begin
   Result:=TChmContentProvider;
 end;
 
-constructor TChmContentProvider.Create(AParent: TWinControl);
+constructor TChmContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
 const
   TAB_WIDTH = 215;
 begin
-  inherited Create(AParent);
+  inherited Create(AParent, AImageList);
 
   fHistory := TStringList.Create;
 
@@ -715,6 +740,11 @@ begin
     Align := alClient;
     Visible := True;
     OnSelectionChanged := @ContentsTreeSelectionChanged;
+    OnExpanded := @TOCExpand;
+    OnCollapsed := @TOCCollapse;
+    Images := fImageList;
+
+    //StateImages := fImageList;
   end;
 
   fIndexTab := TTabSheet.Create(fTabsControl);
