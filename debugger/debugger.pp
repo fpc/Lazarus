@@ -884,6 +884,7 @@ type
   protected
   public
     constructor Create(const AItemClass: TBaseSignalClass);
+    procedure Reset; virtual;
   end;
 
   { TDBGSignals }
@@ -974,6 +975,7 @@ type
   public
     constructor Create(const AItemClass: TBaseExceptionClass);
     destructor Destroy; override;
+    procedure Reset; virtual;
   end;
 
   { TDBGExceptions }
@@ -3670,6 +3672,11 @@ begin
   inherited Create(AItemClass);
 end;
 
+procedure TBaseSignals.Reset;
+begin
+  Clear;
+end;
+
 function TBaseSignals.Find(const AName: String): TBaseSignal;
 var
   n: Integer;
@@ -3841,6 +3848,11 @@ destructor TBaseExceptions.Destroy;
 begin
   ClearExceptions;
   inherited Destroy;
+end;
+
+procedure TBaseExceptions.Reset;
+begin
+  ClearExceptions;
 end;
 
 function TBaseExceptions.Find(const AName: String): TBaseException;

@@ -8268,6 +8268,7 @@ begin
       IncreaseCompilerParseStamp;
       Project1.DefineTemplates.AllChanged;
       Project1.DefineTemplates.Active:=true;
+      DebugBoss.Reset;
     finally
       Project1.EndUpdate;
     end;

@@ -34,6 +34,7 @@ unit DebugManager;
 interface
 
 {$I ide.inc}
+{off $define VerboseDebugger}
 
 uses
 {$IFDEF IDE_MEM_CHECK}
@@ -130,6 +131,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Reset; override;
+
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
@@ -319,14 +322,18 @@ type
     procedure ResetMaster;
   end;
 
+  { TManagedSignals }
+
   TManagedSignals = class(TIDESignals)
   private
     FMaster: TDBGSignals;
     FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGSignals);
   protected
+    procedure AddDefault;
   public
     constructor Create(const AManager: TDebugManager);
+    procedure Reset; override;
     property Master: TDBGSignals read FMaster write SetMaster;
   end;
 
@@ -339,14 +346,18 @@ type
     procedure ResetMaster;
   end;
 
+  { TManagedExceptions }
+
   TManagedExceptions = class(TIDEExceptions)
   private
     FMaster: TDBGExceptions;
     FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGExceptions);
   protected
+    procedure AddDefault;
   public
     constructor Create(const AManager: TDebugManager);
+    procedure Reset; override;
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
 
@@ -703,10 +714,13 @@ begin
   FMaster := nil;
   FManager := AManager;
   inherited Create(TManagedException);
+  AddDefault;
+end;
 
-  Add('EAbort');
-  Add('ECodetoolError');
-  Add('EFOpenError');
+procedure TManagedExceptions.Reset;
+begin
+  inherited Reset;
+  AddDefault;
 end;
 
 procedure TManagedExceptions.SetMaster(const AValue: TDBGExceptions);
@@ -730,6 +744,13 @@ begin
       then FMaster.Add(Item.Name);
     end;
   end;
+end;
+
+procedure TManagedExceptions.AddDefault;
+begin
+  Add('EAbort');
+  Add('ECodetoolError');
+  Add('EFOpenError');
 end;
 
 { TManagedSignal }
@@ -756,6 +777,13 @@ begin
   FMaster := nil;
   FManager := AManager;
   inherited Create(TManagedSignal);
+  AddDefault;
+end;
+
+procedure TManagedSignals.Reset;
+begin
+  inherited Reset;
+  AddDefault;
 end;
 
 procedure TManagedSignals.SetMaster(const AValue: TDBGSignals);
@@ -772,6 +800,11 @@ begin
   else begin
     FMaster.Assign(Self);
   end;
+end;
+
+procedure TManagedSignals.AddDefault;
+begin
+  // todo: add default signals
 end;
 
 { TManagedBreakPoints }
@@ -804,7 +837,9 @@ procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
 var
   BP: TBaseBreakPoint;
 begin
+{$ifdef VerboseDebugger}
   debugln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line));
+{$endif}
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
 
@@ -821,7 +856,9 @@ end;
 
 procedure TManagedBreakPoints.NotifyRemove(const ABreakPoint: TIDEBreakPoint);
 begin
+{$ifdef VerboseDebugger}
   debugln(['TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark <> nil]);
+{$endif}
 
   inherited;
 
@@ -1270,7 +1307,9 @@ begin
 
   case FDebugger.State of
     dsError: begin
+    {$ifdef VerboseDebugger}
       DebugLn('Ooops, the debugger entered the error state');
+    {$endif}
       MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
@@ -1577,6 +1616,16 @@ begin
   inherited Destroy;
 end;
 
+procedure TDebugManager.Reset;
+begin
+  FBreakPoints.Clear;
+  FBreakPointGroups.Clear;
+  FWatches.Clear;
+  FExceptions.Reset;
+  FSignals.Reset;
+  FUserSourceFiles.Clear;
+end;
+
 procedure TDebugManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
@@ -1802,7 +1851,9 @@ var
   NewWorkingDir: String;
   DebuggerClass: TDebuggerClass;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
+{$endif}
 
   Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
@@ -1937,7 +1988,9 @@ begin
   end;
 
   Result := True;
+{$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] END');
+{$endif}
 end;
 
 // still part of main, should go here when processdebugger is finished
@@ -2026,11 +2079,16 @@ end;
 
 function TDebugManager.RunDebugger: TModalResult;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.RunDebugger A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
+{$endif}
   Result:=mrCancel;
   if Destroying then exit;
-  if (FDebugger <> nil) then begin
+  if (FDebugger <> nil) then
+  begin
+  {$ifdef VerboseDebugger}
     DebugLn('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+  {$endif}
     // check if debugging needs restart
     if (dmsDebuggerObjectBroken in FManagerStates)
     and (MainIDE.ToolStatus=itDebugger) then begin
@@ -2102,11 +2160,15 @@ begin
   or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
     RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
 
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,
     ' ',IntToStr(ASourceMark.Line));
+{$endif}
   OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
     ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
+{$endif}
   OldBreakPoint.Free;
   Project1.Modified:=true;
   Result := mrOK
@@ -2118,7 +2180,9 @@ var
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor A');
+{$endif}
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -2126,7 +2190,9 @@ begin
     Result := mrAbort;
     Exit;
   end;
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor B');
+{$endif}
 
   Result := mrCancel;
 
@@ -2143,11 +2209,15 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor C');
+{$endif}
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   ActiveSrcEdit.EditorComponent.CaretY);
 
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor D');
+{$endif}
   Result := mrOK;
 end;
 
