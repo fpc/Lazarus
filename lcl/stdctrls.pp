@@ -1004,7 +1004,6 @@ type
     FClicksDisabled: Boolean;
     FUseOnChange: boolean;
     function IsCheckedStored: boolean;
-    function UseOnChangeIsStored: boolean;
   protected
     fLastCheckedOnChange: boolean;
     function GetChecked: Boolean; virtual;
@@ -1016,7 +1015,7 @@ type
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
-    property UseOnChange: boolean read FUseOnChange write FUseOnChange stored UseOnChangeIsStored;
+    property UseOnChange: boolean read FUseOnChange write FUseOnChange stored False default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1427,9 +1426,6 @@ type
     property OptimalFill;
   end;
 
-var
-  DefaultButtonControlUseOnChange: boolean;
-
 procedure Register;
 
 implementation
@@ -1485,9 +1481,6 @@ end;
 {$I togglebox.inc}
 
 {$I customstatictext.inc}
-
-initialization
-  DefaultButtonControlUseOnChange:=false;
 
 end.
 

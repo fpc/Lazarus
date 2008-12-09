@@ -21,11 +21,6 @@ begin
   //  or not TButtonActionLink(ActionLink).IsCheckedLinked;
 end;
 
-function TButtonControl.UseOnChangeIsStored: boolean;
-begin
-  Result:=true;
-end;
-
 function TButtonControl.GetChecked: Boolean;
 begin
   GetChecked := False;
@@ -67,8 +62,8 @@ end;
 constructor TButtonControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FUseOnChange:=DefaultButtonControlUseOnChange;
-  ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls,csCaptureMouse];
+  FUseOnChange := False;
+  ControlStyle := ControlStyle-csMultiClicks-[csAcceptsControls,csCaptureMouse];
 end;
 
 { TButtonActionLink }

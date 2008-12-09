@@ -148,7 +148,7 @@ begin
       TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
     DoOnChange;
-    if (not UseOnChange) and (not ClicksDisabled) then
+    if (not ClicksDisabled) then
       inherited Click;
   end;
 end;
