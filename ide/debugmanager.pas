@@ -52,7 +52,7 @@ uses
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, {AssemblerDlg,} DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -1285,9 +1285,10 @@ begin
           mtInformation, [mbOK],0);
         end;
         FDebugger.FileName := '';
-
+{
         if FDialogs[ddtAssembler] <> nil
         then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
+}
       end;
     end;
 
@@ -1344,11 +1345,12 @@ begin
     end;
   end;
 
-  if FDialogs[ddtAssembler] <> nil
+{  if FDialogs[ddtAssembler] <> nil
   then begin
     TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
     if SrcLine < 1 then Exit;
   end;
+}
 
   if not GetFullFilename(SrcFile, true) then exit;
 
@@ -1411,7 +1413,7 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
-    TEvaluateDlg, TRegistersDlg, TAssemblerDlg
+    TEvaluateDlg, TRegistersDlg, nil{TAssemblerDlg}
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1507,11 +1509,11 @@ begin
 end;
 
 procedure TDebugManager.InitAssemblerDlg;
-var
-  TheDialog: TAssemblerDlg;
+{var
+  TheDialog: TAssemblerDlg;}
 begin
-  TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
-  TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
+{  TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
+  TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);}
 end;
 
 procedure TDebugManager.InitCallStackDlg;
