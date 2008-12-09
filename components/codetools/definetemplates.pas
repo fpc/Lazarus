@@ -774,8 +774,8 @@ end;
 
 function GetDefaultCompilerFilename: string;
 begin
-  Result:='fpc';
-
+  Result:='fpc'+ExeExt;
+  (*
   {$IFDEF CPUi386}
   Result:='ppc386'+ExeExt;
   {$ENDIF}
@@ -797,6 +797,7 @@ begin
   {$IFDEF CPUARM}
   Result:='ppcarm'+ExeExt;
   {$ENDIF}
+  *)
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
