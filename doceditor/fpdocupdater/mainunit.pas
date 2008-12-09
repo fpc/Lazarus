@@ -97,7 +97,6 @@ uses
 function FindFiles(const Path, Mask: String; OnlyFileName: Boolean = False): TStringList;
 var
   I: Integer;
-  S: String;
 begin
   Result := FindAllFiles(Path, Mask, False);
   if OnlyFileName then

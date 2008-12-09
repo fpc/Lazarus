@@ -27,7 +27,7 @@ unit FPDocFiles;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, DOM, XMLWrite, XMLRead;
+  Classes, SysUtils, Contnrs, FileUtil, DOM, XMLWrite, XMLRead;
   
 type
   TFPDocInfo = record
@@ -145,6 +145,12 @@ type
     function AddExample(const AFileName: String): Integer; virtual;
     function InsertExample(Index: Integer; const AFileName: String): Integer; virtual;
     procedure DeleteExample(Index: Integer); virtual;
+
+    function AddNode(const AName: String): TFPDocNode; override;
+    procedure DeleteNode(ANode: TFPDocNode); override;
+    function InsertNode(Index: Integer; const AName: String): TFPDocNode;
+      override;
+    procedure RenameNode(ANode: TFPDocNode; const AName: String); override;
   public
     property Errors: String read GetErrors write SetErrors;
     property SeeAlso: String read GetSeeAlso write SetSeeAlso;
@@ -175,6 +181,9 @@ type
     procedure DeleteNode(ANode: TFPDocNode); override;
     procedure RenameNode(ANode: TFPDocNode; const AName: String); override;
   public
+    function AddNode(const AName: String): TFPDocNode; override;
+    function InsertNode(Index: Integer; const AName: String): TFPDocNode;
+      override;
     property Topics[Index: Integer]: TFPDocTopic read GetTopic;
     property TopicsCount: Integer read GetTopicsCount;
   end;
@@ -619,6 +628,29 @@ begin
   FExamples.Delete(Index);
 end;
 
+function TFPDocElement.AddNode(const AName: String): TFPDocNode;
+begin
+  raise Exception.Create('');
+  Result:=nil;
+end;
+
+procedure TFPDocElement.DeleteNode(ANode: TFPDocNode);
+begin
+  raise Exception.Create('');
+end;
+
+function TFPDocElement.InsertNode(Index: Integer; const AName: String
+  ): TFPDocNode;
+begin
+  raise Exception.Create('');
+  Result:=nil;
+end;
+
+procedure TFPDocElement.RenameNode(ANode: TFPDocNode; const AName: String);
+begin
+  raise Exception.Create('');
+end;
+
 { TFPDocTopic }
 
 function TFPDocTopic.GetTopicsCount: Integer;
@@ -748,6 +780,19 @@ begin
   (ANode.FDOMNode as TDOMElement).SetAttribute(SFPDocName, AName);
   ANode.FName := AName;
   ANode.Modify;
+end;
+
+function TFPDocTopic.AddNode(const AName: String): TFPDocNode;
+begin
+  raise Exception.Create('');
+  Result:=nil;
+end;
+
+function TFPDocTopic.InsertNode(Index: Integer; const AName: String
+  ): TFPDocNode;
+begin
+  raise Exception.Create('');
+  Result:=nil;
 end;
 
 { TFPDocNodeWithList }
