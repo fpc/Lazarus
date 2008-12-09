@@ -43,7 +43,7 @@ var
   fTrayParent: TWindow;
 {$endif}
 
-  GtkForm: PGtkWidget = nil;
+  GtkForm: PGtkWidget;
   Tips: PGtkTooltips;
 
 {$ifdef HasX}
@@ -434,71 +434,5 @@ begin
   if not Assigned(WindowHandle) then Exit;
 
   gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
-end;
-
-
-function TrayMessageTimeOut(data:gpointer):gboolean;cdecl;
-var
-  MsgNum: Integer absolute data;
-begin
-  SendMessage(fWindow, SYSTEM_TRAY_CANCEL_MESSAGE, MsgNum, 0,0);
-  Result := False;
-end;
-
-var
-  TrayMsgNumber: Integer;// random data is ok for this value
-
-{*******************************************************************
-*  TGtk2WSCustomTrayIcon.ShowBalloonHint ()
-*
-*  DESCRIPTION:    Shows a hint next to out icon in the tray
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-class function TGtk2WSCustomTrayIcon.ShowBalloonHint (
-  const ATrayIcon: TCustomTrayIcon ) : Boolean;
-var
-  Ev: TXEvent;
-  WholeString: String;
-  StrChunk: String;
-begin
-  Result := False;
-
-  if GtkForm = nil then
-    exit;
-
-  // Title
-  WholeString := ATrayIcon.BalloonTitle;
-  if WholeString <> '' then
-    WholeString := '<b>'+WholeString+'</b>'+LineEnding;
-
-  // Text
-  WholeString := WholeString + ATrayIcon.BalloonHint;
-
-  SendMessage(fWindow, SYSTEM_TRAY_BEGIN_MESSAGE, ATrayIcon.BalloonTimeout, Length(WholeString), TrayMsgNumber);
-
-
-  FillChar(Ev, SizeOf(TXEvent), $0);
-  ev.xclient._type := ClientMessage;
-  ev.xclient.window := fWindow;
-  ev.xclient.message_type := XInternAtom (fDisplay, '_NET_SYSTEM_TRAY_MESSAGE_DATA', False );
-  ev.xclient.format := 8;
-
-  repeat
-    StrChunk := Copy(WholeString,1,20);
-    Delete(WholeString,1,Length(StrChunk));
-    Move(StrChunk[1], ev.xclient.data.b[0], Length(StrChunk));
-    XSendEvent(fDisplay, fTrayParent, False, NoEventMask, @ev);
-  until Length(WholeString) = 0;
-
-  // in case the systray chooses not to hide the message
-  if ATrayIcon.BalloonTimeout > 0 then
-    g_timeout_add(ATrayIcon.BalloonTimeout*2, @TrayMessageTimeOut, Pointer(PtrUInt(TrayMsgNumber)));
-
-  Inc(TrayMsgNumber);
-
 end;
 
