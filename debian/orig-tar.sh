@@ -1,18 +1,24 @@
 #!/bin/sh -e
 
-# called by uscan with '--upstream-version' <version> <file>
-DIR=lazarus
+VERSION=$1
+SEDSCRIPT="s/Last Changed Rev: \([0-9]\+\)/const RevisionStr = '\1';/p"
 
-# clean up the upstream tarball
-tar xzf $3
-rm -f $DIR/debian/*.ex $DIR/debian/*.EX $DIR/debian/files
-tar czf $3 $DIR
+SVNVER=$(echo $VERSION | tr . _)
+SVNURL=http://svn.freepascal.org/svn/lazarus/tags/lazarus_$SVNVER
+
+DIR=lazarus-$VERSION
+TAR=../lazarus_$VERSION.orig.tar.gz
+
+svn export $SVNURL $DIR
+# Add revision.inc
+svn info $SVNURL | sed -ne "$SEDSCRIPT" > $DIR/ide/revision.inc
+tar czf $TAR $DIR
 rm -rf $DIR
 
 # move to directory 'tarballs'
 if [ -r .svn/deb-layout ]; then
     . .svn/deb-layout
-    mv $3 $origDir
-    echo "moved $3 to $origDir"
+    mv $TAR $origDir
+    echo "moved $TAR to $origDir"
 fi
 

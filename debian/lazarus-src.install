@@ -1,10 +1,5 @@
-/usr/lib/lazarus/COPYING.GPL.txt
-/usr/lib/lazarus/COPYING.LGPL.txt
-/usr/lib/lazarus/COPYING.modifiedLGPL.txt
-/usr/lib/lazarus/COPYING.txt
 /usr/lib/lazarus/Makefile
 /usr/lib/lazarus/Makefile.fpc
-/usr/lib/lazarus/README.txt
 /usr/lib/lazarus/components
 /usr/lib/lazarus/debugger
 /usr/lib/lazarus/examples

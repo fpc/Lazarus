@@ -2,10 +2,10 @@ Source: lazarus
 Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
-Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freeapscal.org>
-Standards-Version: 3.7.3
+Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freepascal.org>
+Standards-Version: 3.8.0
 Build-Depends: debhelper (>= 5), dpatch, fpc (>= 2.2.2-3), fpc-source (>= 2.2.2-3), 
- fp-units-i386 [i386], imagemagick, libgdk-pixbuf-dev
+ fp-units-i386 [i386], fp-utils, imagemagick, libgdk-pixbuf-dev
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
@@ -16,9 +16,10 @@ Pre-Depends: dpkg (>= 1.10.24)
 Depends: lazarus-ide, lazarus-src, lazarus-doc
 Recommends: fpc, fpc-source
 Suggests: fp-utils, fp-docs
-Description: Lazarus is an IDE to create (graphical and console) applications
- with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
- that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+Description: IDE for Free Pascal to create (graphical and console) applications
+ Lazarus is an IDE to create (graphical and console) applications with Free
+ Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
+ on Windows, Linux, Mac OS X, FreeBSD and more.
  .
  Lazarus is the missing part of the puzzle that will allow you to develop
  programs for all of the above platforms in a Delphi like environment.
@@ -32,7 +33,7 @@ Description: Lazarus is an IDE to create (graphical and console) applications
  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus 
  Component Library (LCL).
  .
- This is a meta-package depending on all packages need to have a typical
+ This is a metapackage depending on all packages need to have a typical
  Lazarus installation.
  .
  Official: http://sourceforge.net/projects/lazarus/
@@ -44,9 +45,9 @@ Package: lazarus-src
 Section: devel
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Description: Lazarus is an IDE to create (graphical and console) applications
- with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
- that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+Description: IDE to create (graphical and console) applications with Free
+ Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
+ on Windows, Linux, Mac OS X, FreeBSD and more.
  .
  Lazarus is the missing part of the puzzle that will allow you to develop
  programs for all of the above platforms in a Delphi like environment.
@@ -72,9 +73,9 @@ Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-3), fp-units-base, fp-units-rt
 Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
  fp-units-net, fpc-source, gdb
 Suggests: fp-utils
-Description: Lazarus is an IDE to create (graphical and console) applications
- with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
- that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+Description: IDE to create (graphical and console) applications  with Free
+ Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
+ on Windows, Linux, Mac OS X, FreeBSD and more.
  .
  Lazarus is the missing part of the puzzle that will allow you to develop
  programs for all of the above platforms in a Delphi like environment.
@@ -93,9 +94,9 @@ Description: Lazarus is an IDE to create (graphical and console) applications
 Package: lazarus-doc
 Section: doc
 Architecture: all
-Description: Lazarus is an IDE to create (graphical and console) applications
- with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
- that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+Description: IDE to create (graphical and console) applications with Free
+ Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
+ on Windows, Linux, Mac OS X, FreeBSD and more.
  .
  Lazarus is the missing part of the puzzle that will allow you to develop
  programs for all of the above platforms in a Delphi like environment.
