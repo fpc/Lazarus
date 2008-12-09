@@ -369,8 +369,8 @@ begin
 end;
 
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
-{var
-  Color: QColorH;}
+var
+  Color: QColorH;
 begin
   Result := clNone;
 
@@ -378,14 +378,14 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
+// This code results in ARGB values, but TColor uses ABGR
+//    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
-
-{    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
+    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
 
-    QColor_destroy(Color);}
+    QColor_destroy(Color);
   end;
 end;
 
