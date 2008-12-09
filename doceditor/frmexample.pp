@@ -27,8 +27,8 @@ unit FrmExample;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  EditBtn, StdCtrls;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, EditBtn, StdCtrls;
 
 type
 

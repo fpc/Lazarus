@@ -6,7 +6,6 @@
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <UseXPManifest Value="True"/>
     </General>
@@ -154,7 +153,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Other>
       <ConfigFile>
         <StopAfterErrCount Value="10"/>

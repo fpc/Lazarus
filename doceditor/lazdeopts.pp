@@ -26,7 +26,7 @@ unit LazDEOpts;
 
 Interface
 
-uses SysUtils,IniFiles;
+uses SysUtils, IniFiles, FileUtil;
 
 Var
   SkipEmptyNodes   : Boolean;  

@@ -51,8 +51,8 @@ unit pgEditor;
 
 interface
 
-uses SysUtils,Classes,dom,xmlread,xmlwrite,Forms,Controls,extctrls,comctrls,
-     stdctrls,Dialogs,menus,pkeditor,eleditor,fpdeutil;
+uses SysUtils,Classes,dom,xmlread,xmlwrite,Forms,Controls,FileUtil,extctrls,
+     comctrls,stdctrls,Dialogs,menus,pkeditor,eleditor,fpdeutil;
 
 Type
 
