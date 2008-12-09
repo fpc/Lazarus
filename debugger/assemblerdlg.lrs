@@ -1,0 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TAssemblerDlg','FORMDATA',[
+  'TPF0'#241#13'TAssemblerDlg'#12'AssemblerDlg'#4'Left'#3#232#1#6'Height'#3'-'#1
+  +#3'Top'#3#143#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#19'HorzScrol'
+  +'lBar.Range'#3#143#1#18'VertScrollBar.Page'#3','#1#19'VertScrollBar.Range'#3
+  +','#1#10'AutoScroll'#8#7'Caption'#6#9'Assembler'#12'ClientHeight'#3'-'#1#11
+  +'ClientWidth'#3#144#1#10'KeyPreview'#9#9'OnKeyDown'#7#11'FormKeyDown'#8'OnRe'
+  +'size'#7#10'FormResize'#0#242#2#0#9'TPaintBox'#5'pbAsm'#6'Height'#3#16#1#5'W'
+  +'idth'#3'x'#1#11'OnMouseDown'#7#14'pbAsmMouseDown'#12'OnMouseWheel'#7#15'pbA'
+  +'smMouseWheel'#7'OnPaint'#7#10'pbAsmPaint'#0#0#242#2#1#10'TScrollBar'#12'sbH'
+  +'orizontal'#6'Height'#2#15#3'Top'#3#29#1#5'Width'#3#128#1#3'Max'#3#232#3#8'P'
+  +'ageSize'#3#200#0#8'TabOrder'#2#0#8'OnChange'#7#18'sbHorizontalChange'#0#0
+  +#242#2#2#10'TScrollBar'#10'sbVertical'#4'Left'#3#128#1#6'Height'#3#24#1#5'Wi'
+  +'dth'#2#15#4'Kind'#7#10'sbVertical'#11'LargeChange'#2#10#3'Max'#3#232#3#8'Pa'
+  +'geSize'#2'2'#8'Position'#3#219#1#8'TabOrder'#2#1#8'OnChange'#7#16'sbVertica'
+  +'lChange'#8'OnScroll'#7#16'sbVerticalScroll'#0#0#0
+]);
