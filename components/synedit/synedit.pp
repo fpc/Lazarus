@@ -5803,6 +5803,7 @@ begin
     OldChangeNumber := fRedoList.BlockChangeNumber;
     fRedoList.BlockChangeNumber := Item.fChangeNumber;
     {$ENDIF}
+    fUndoList.Lock;
     try
       repeat
         UndoItem;
@@ -5813,6 +5814,9 @@ begin
       until (Item = nil) or (Item.fChangeNumber <> fRedoList.BlockChangeNumber);
       {$ENDIF}
     finally
+      // Todo: Decide what do to, If there are any trimable spaces.
+      TSynEditStringTrimmingList(fTrimLines).ForceTrim;
+      fUndoList.UnLock;
       {$IFDEF SYN_LAZARUS}
       fRedoList.EndBlock;
       {$ELSE}
