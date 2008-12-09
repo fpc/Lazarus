@@ -123,7 +123,6 @@ type
     procedure OnSpecialLineMarkup(Sender: TObject; Line: Integer;
       var Special: boolean; aMarkup: TSynSelectedColor);
 
-
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
   public
     destructor Destroy; override;
@@ -152,7 +151,6 @@ begin
   else
     Result := AColor;
 end;
-
 
 { TEditorColorOptionsFrame }
 
@@ -957,10 +955,7 @@ begin
   BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
 
   with GeneralPage do
-  begin
-    SetLength(PreviewEdits, Length(PreviewEdits) + 1);
-    PreviewEdits[Length(PreviewEdits)-1] := ColorPreview;
-  end;
+    AddPreviewEdit(ColorPreview);
 end;
 
 procedure TEditorColorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

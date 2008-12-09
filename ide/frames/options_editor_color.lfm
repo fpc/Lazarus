@@ -3,10 +3,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   Width = 531
   ClientHeight = 577
   ClientWidth = 531
-  TabOrder = 0
   Visible = False
-  DesignLeft = 176
-  DesignTop = 232
+  DesignLeft = 88
+  DesignTop = 116
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -597,7 +596,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ParentFont = False
     TabOrder = 5
     BookMarkOptions.Xoffset = 30
-    BookMarkOptions.OnChange = nil
     Gutter.ShowCodeFolding = True
     Gutter.ShowChanges = True
     Gutter.ShowLineNumbers = True
@@ -926,6 +924,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Lines.Strings = (
       'ColorPreview'
     )
+    SelectedColor.OnChange = nil
     BracketHighlightStyle = sbhsBoth
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[10]
