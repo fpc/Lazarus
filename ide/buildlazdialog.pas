@@ -260,7 +260,7 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string): TModalResult;
+  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean): TModalResult;
 function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
@@ -328,6 +328,7 @@ var
   i: Integer;
   CurItem: TBuildLazarusItem;
   ExtraOptions, LinkerAddition: String;
+  DisableSvn2RevisionInc: boolean;
   CurMakeMode: TMakeMode;
 
   {$IFDEF win32}
@@ -420,9 +421,7 @@ begin
         // even if that build node is disabled in configure build lazarus dialog
         else if (blfOnlyIDE in Flags) then
             CurMakeMode := mmBuild;
-     end;
-
-
+      end;
 
       if CurMakeMode=mmNone then continue;
       
@@ -436,7 +435,7 @@ begin
       // append extra options
       ExtraOptions:='';
       Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,
-                                        ExtraOptions);
+                                        ExtraOptions,DisableSvn2RevisionInc);
       if Result<>mrOk then exit;
       
       // add Linker options for wigdet set
@@ -449,6 +448,8 @@ begin
       
       if ExtraOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
+      if DisableSvn2RevisionInc then
+        Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       // add -w option to print leaving/entering messages
       Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
       // append target OS
@@ -470,7 +471,7 @@ end;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string): TModalResult;
+  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean): TModalResult;
 
   function RemoveProfilerOption(const ExtraOptions: string): string;
   var
@@ -521,6 +522,8 @@ var
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
+  DisableSvn2RevisionInc:=false;
+
 
   // create extra options
   ExtraOptions:=Options.ExtraOptions;
@@ -632,6 +635,7 @@ begin
           if not DirectoryIsWritableCached(NewTargetDirectory) then begin
             // Case 3. the lazarus directory is not writable
             // create directory <primary config dir>/bin/
+            DisableSvn2RevisionInc:=true;
             NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
             NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                             +PathDelim+NewTargetCPU+'-'+NewTargetOS;
@@ -770,11 +774,12 @@ var
   Filename: String;
   fs: TFileStream;
   OptionsAsText: String;
+  DisableSvn2RevisionInc: boolean;
 begin
   ExtraOptions:='';
   Result:=CreateBuildLazarusOptions(Options,Options.IndexOf(Options.ItemIDE),
                                     Macros,PackageOptions,Flags,
-                                    ExtraOptions);
+                                    ExtraOptions,DisableSvn2RevisionInc);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try

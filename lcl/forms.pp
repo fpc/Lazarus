@@ -40,7 +40,8 @@ uses
   Classes, SysUtils, Types, TypInfo, Math,
   AvgLvlTree, Maps, LCLVersion, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   FileUtil, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
-  CustomTimer, ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
+  CustomTimer, ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls,
+  gettext;
 
 type
   TProcedure = procedure;
@@ -1016,6 +1017,7 @@ type
     FLastMousePos: TPoint;
     FLastMouseControl: TControl;
     FLastMouseControlValid: Boolean;
+    FBidiMode: TBiDiMode;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
@@ -1025,6 +1027,7 @@ type
     procedure IconChanged(Sender: TObject);
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
+    procedure SetBidiMode ( const AValue : TBiDiMode ) ;
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure UpdateMouseControl(NewMouseControl: TControl);
@@ -1159,6 +1162,7 @@ type
                           Shift: TShiftState);
     procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
     property Active: boolean read GetActive;
+    property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
@@ -1197,7 +1201,6 @@ type
     property Title: String read GetTitle write SetTitle;
     property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
   end;
-
 
   { TApplicationProperties }
 
