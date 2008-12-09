@@ -51,7 +51,7 @@ uses
   {$ifdef DebugBitmaps}
     CarbonDebug,
   {$endif}
-  glgrab,
+  glgrab, agl,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType, IntfGraphics,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;

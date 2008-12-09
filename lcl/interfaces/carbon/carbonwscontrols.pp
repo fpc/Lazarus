@@ -306,12 +306,9 @@ end;
 class function TCarbonWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  raise
-    Exception.CreateFmt(ClassName + '.CreateHandle Error:' +
-      'Not implemented - unable to create Carbon win control for %s: %s!',
-    [AWinControl.Name, AWinControl.ClassName]);
+  DebugLn('Warning: Using Carbon custom control instead of not implemented win control!');
     
-  Result := TLCLIntfHandle(nil);
+  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
 end;
 
 class function TCarbonWSWinControl.CanFocus(const AWincontrol: TWinControl): Boolean;
@@ -325,7 +322,6 @@ begin
   Bit := CFPreferencesGetAppIntegerValue(CFSTR('AppleKeyboardUIMode'),
     kCFPreferencesCurrentApplication, Valid);
 
-  DebugLn(DbgS(Bit));
   if Valid then
   begin
     if (Bit <> 0) then

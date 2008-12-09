@@ -770,8 +770,8 @@ begin
   else
     FMulY := (C.Bottom - C.Top) / FScrollPageSize.Y;
   
-  AOrigin := GetHIPoint(FScrollOrigin.X * FMulX, FScrollOrigin.Y * FMulY);
-  AImageSize := GetHISize(FScrollSize.X * FMulX, FScrollSize.Y * FMulY);
+  AOrigin := GetHIPoint(Round(FScrollOrigin.X * FMulX), Round(FScrollOrigin.Y * FMulY));
+  AImageSize := GetHISize(Round(FScrollSize.X * FMulX), Round(FScrollSize.Y * FMulY));
   AViewSize := GetHISize(C.Right - C.Left, C.Bottom - C.Top);
   
   if FMulX > 1 then
@@ -809,10 +809,10 @@ begin
   
   if FMulX = 0 then FScrollOrigin.X := 0
   else
-    FScrollOrigin.X := ANewOrigin.X / FMulX;
+    FScrollOrigin.X := Round(ANewOrigin.X / FMulX);
   if FMulY = 0 then FScrollOrigin.Y := 0
   else
-    FScrollOrigin.Y := ANewOrigin.Y / FMulY;
+    FScrollOrigin.Y := Round(ANewOrigin.Y / FMulY);
   
   // send vertical scroll
   FillChar(ScrollMsg, SizeOf(TLMScroll), 0);

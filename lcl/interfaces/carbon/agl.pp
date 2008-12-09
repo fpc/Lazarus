@@ -1,6 +1,11 @@
 unit agl;
 
-{$MODE objfpc}
+{$ifdef fpc}
+  {$mode objfpc}
+  {$Packrecords C}
+  {$calling cdecl}
+  {$linkframework AGL}
+{$endif}
 
 interface
 
@@ -17,10 +22,6 @@ PGLenum  = ^GLenum;
 PGLint  = ^GLint;
 PGLubyte  = ^GLubyte;
 PGLvoid  = ^GLvoid;}
-{$IFDEF FPC}
-{$PACKRECORDS C}
-{$ENDIF}
-
 
 {
 ** AGL API version.

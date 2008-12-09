@@ -16,18 +16,13 @@
 unit GLCarbonAGLContext;
 
 {$mode objfpc}{$H+}
-{$linkframework AGL}
 
 interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
-  CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
+  AGL, CarbonProc, CarbonDef, CarbonPrivate,
   WSLCLClasses, CarbonWSControls, CarbonUtils,
   Controls;
 

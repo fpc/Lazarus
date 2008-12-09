@@ -1249,6 +1249,8 @@ end;
   TODO: implement screen context
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDC(HWnd: HWND): HDC;
+var
+  DC: TCarbonControlContext;
 begin
   Result := 0;
 
@@ -1261,10 +1263,15 @@ begin
   begin
     if not CheckWidget(HWnd, 'GetDC') then Exit;
     
-    // use default context if we are outside paint event
+    // use dummy context if we are outside paint event
     if TCarbonWidget(HWnd).Context <> nil then Result := HDC(TCarbonWidget(HWnd).Context)
     else
-      Result := HDC(DefaultContext);
+    begin
+      DC := TCarbonControlContext.Create(TCarbonWidget(HWnd));
+      DC.CGContext := DefaultContext.CGContext;
+      DC.Reset;
+      Result := HDC(DC);
+    end;
   end;
   
   {$IFDEF VerboseWinAPI}
@@ -2607,6 +2614,8 @@ end;
   Releases a device context (DC), freeing it for use by other applications
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
+var
+  Context: TCarbonDeviceContext;
 begin
   Result := 0;
 
@@ -2615,6 +2624,10 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'ReleaseDC') then Exit;
+  Context := TCarbonDeviceContext(DC);
+  if (Context <> DefaultContext) and (Context is TCarbonControlContext) and
+    (Context.CGContext = DefaultContext.CGContext) then Context.Free;
+
   Result := 1;
 end;
 

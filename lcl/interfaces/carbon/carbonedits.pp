@@ -187,6 +187,7 @@ type
     procedure SetPasswordChar(AChar: Char); override;
     procedure SetReadOnly(AReadOnly: Boolean); override;
     procedure SetWordWrap(AWordWrap: Boolean); virtual;
+    function SetText(const S: String): Boolean; override;
   public
     function GetLineCount: Integer;
     function GetLine(AIndex: Integer): String;
@@ -1677,6 +1678,12 @@ begin
 
   SetTXNControl(kTXNWordWrapStateTag, Data);
 
+  Invalidate;
+end;
+
+function TCarbonMemo.SetText(const S: String): Boolean;
+begin
+  Result:=inherited SetText(S);
   Invalidate;
 end;
 
