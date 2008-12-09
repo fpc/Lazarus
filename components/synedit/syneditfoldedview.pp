@@ -512,6 +512,7 @@ begin
   Clear;
   if fNestedNodesTree <> nil then begin
     fNestedNodesTree.fRoot := nil; //was freed in self.Clear
+    fNestedNodesTree.fNestParent := nil; // Or Destroy will access invalid memory
     fNestedNodesTree.Free;
   end;
   inherited Destroy;
@@ -1372,7 +1373,7 @@ begin
   if fNestedNodesTree = nil then fNestedNodesTree := TSynTextFoldAVLTree.Create;
   Result := fNestedNodesTree;
   Result.fRoot := ANode.Nested;
-  Result.fNestParent := ANode;
+  Result.fNestParent := ANode; // TODO: this is dangerous, this is never cleaned up, even if ANode is Destroyed
   Result.fRootOffset := aOffset;
 end;
 
