@@ -14766,6 +14766,7 @@ var
   BarBottom: Integer;
   DockingAllowed: Boolean;
   NewHeight: Integer;
+  NewBounds: TRect;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
@@ -14791,8 +14792,25 @@ begin
 
       if (ALayout.CustomCoordinatesAreValid) then begin
         // explicit position
+        NewBounds:=Bounds(ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+        // set minimum size
+        if NewBounds.Right-NewBounds.Left<20 then
+          NewBounds.Right:=NewBounds.Left+20;
+        if NewBounds.Bottom-NewBounds.Top<20 then
+          NewBounds.Bottom:=NewBounds.Top+20;
+        // move to visible area
+        if NewBounds.Right<20 then
+          OffsetRect(NewBounds,20-NewBounds.Right,0);
+        if NewBounds.Bottom<20 then
+          OffsetRect(NewBounds,0,20-NewBounds.Bottom);
+        if NewBounds.Left>Screen.DesktopWidth-20 then
+          OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
+        if NewBounds.Top>Screen.DesktopHeight-20 then
+          OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
+        // set (restored) bounds
         ALayout.Form.SetRestoredBounds(
-          ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+          NewBounds.Left,NewBounds.Top,
+          NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
         exit;
       end;
 
