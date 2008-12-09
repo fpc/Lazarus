@@ -2266,7 +2266,7 @@ procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
 var
   Index: Integer;
 begin
-  Index := RemovedProperties.IndexOf(TPersistentClass(Instance.ClassType), PropName);
+  Index := RemovedProperties.IndexOf(Instance, PropName);
   if Index >= 0 then
   begin
     Skip := True;

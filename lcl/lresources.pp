@@ -368,7 +368,8 @@ type
     procedure DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
       var PropName: string; IsPath: boolean; var Handled, Skip: Boolean);
   public
-    function IndexOf(AClass: TPersistentClass; APropertyName: String): Integer;
+    function IndexOf(AInstance: TPersistent; APropertyName: String): Integer; overload;
+    function IndexOf(AClass: TPersistentClass; APropertyName: String): Integer; overload;
     function Add(APersistentClass: TPersistentClass; APropertyName, ANote,
       AHelpKeyWord: string): Integer; reintroduce;
     property Items[AIndex: Integer]: PRemovedProperty read GetItem write SetItem;
@@ -569,8 +570,17 @@ end;
 procedure TRemovedPropertyList.DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
   var PropName: string; IsPath: boolean; var Handled, Skip: Boolean);
 begin
-  Skip := IndexOf(TPersistentClass(Instance.ClassType), PropName) >= 0;
+  Skip := IndexOf(Instance, PropName) >= 0;
   Handled := Skip;
+end;
+
+function TRemovedPropertyList.IndexOf(AInstance: TPersistent;
+  APropertyName: String): Integer;
+begin
+  if AInstance <> nil then
+    Result := IndexOf(TPersistentClass(AInstance.ClassType), APropertyName)
+  else
+    Result := -1;
 end;
 
 function TRemovedPropertyList.IndexOf(AClass: TPersistentClass;
