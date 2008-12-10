@@ -271,10 +271,10 @@ type
 implementation
 
 uses
-  gui_combobox,
-  gui_edit,
-  gui_checkbox,
-  gui_radiobutton;
+  fpg_combobox,
+  fpg_edit,
+  fpg_checkbox,
+  fpg_radiobutton;
 
 { TFpGuiWSCustomComboBox }
 

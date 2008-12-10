@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  fpgfx, gfxbase, fpguiwsprivate,
+  fpg_base, fpg_main, fpguiwsprivate,
   // LCL
   Classes, Forms, LCLType, Controls,
   // Widgetset

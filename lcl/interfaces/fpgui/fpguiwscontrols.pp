@@ -112,7 +112,7 @@ type
 implementation
 
 uses
-  gfx_widget;
+  fpg_widget;
 
 { TFpGuiWSWinControl }
 
