@@ -763,6 +763,7 @@ type
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
+    procedure MarkTextAsSaved;
     {$IFDEF SYN_LAZARUS}
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
@@ -8126,6 +8127,13 @@ begin
   Result := GetBookMark(BookMark, x, y);
 end;
 
+procedure TCustomSynEdit.MarkTextAsSaved;
+begin
+  TSynEditStringList(fLines).MarkSaved;
+  if fGutter.Visible and fGutter.ShowChanges then
+    InvalidateGutter;
+end;
+
 procedure TCustomSynEdit.ClearUndo;
 begin
   fUndoList.Clear;
@@ -9434,9 +9442,6 @@ begin
       // the current state should be the unmodified state.
       fUndoList.MarkTopAsUnmodified;
       fRedoList.MarkTopAsUnmodified;
-      TSynEditStringList(fLines).MarkSaved;
-      if fGutter.Visible and fGutter.ShowChanges then
-        InvalidateGutter;
     end;
     {$ENDIF}
     StatusChanged([scModified]);
