@@ -9163,6 +9163,7 @@ begin
       inc(BB.x, fBlockIndent);
       BE.x := x;
     end;
+    TSynEditStringTrimmingList(fTrimLines).ForceTrim; // Otherwise it may reset the block
     SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
     {$ELSE}
     SetCaretAndSelection(OrgCaretPos,
@@ -9318,6 +9319,7 @@ begin
         dec(BB.x, FirstIndent);
         dec(BE.x, LastIndent);
       end;
+      TSynEditStringTrimmingList(fTrimLines).ForceTrim; // Otherwise it may reset the block
       SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
       {$ELSE}
       if FirstIndent = -1 then
