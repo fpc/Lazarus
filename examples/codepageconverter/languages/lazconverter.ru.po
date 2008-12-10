@@ -1,11 +1,47 @@
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-02 18:02+0300\n"
+"PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: TLAZCONVERTERFORM.BUTTON1.CAPTION
+msgid "Path"
+msgstr "Путь"
+
+#: TLAZCONVERTERFORM.BUTTON2.CAPTION
+msgid "Search"
+msgstr "Найти"
+
+#: TLAZCONVERTERFORM.BUTTON3.CAPTION
+msgid "Convert"
+msgstr "Преобразовать"
+
+#: TLAZCONVERTERFORM.CAPTION
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "Перекодировщик LazConverter для файлов PAS, LFM, LRS, LRT и INC v0.0.6"
+
+#: TLAZCONVERTERFORM.LABEL1.CAPTION
+msgid "Path to your project:"
+msgstr "Путь к вашему проекту:"
+
+#: TLAZCONVERTERFORM.LABEL2.CAPTION
+msgid "Convert From:"
+msgstr "Преобразовать из:"
+
+#: TLAZCONVERTERFORM.LABEL3.CAPTION
+msgid "Convert To:"
+msgstr "Преобразовать в:"
+
+#: TLAZCONVERTERFORM.LABEL6.CAPTION
+msgid "Ready..."
+msgstr "Готов..."
+
+#: TLAZCONVERTERFORM.MENUITEM1.CAPTION
+msgid "Remove from conversion"
+msgstr "Исключить из преобразования"
 
