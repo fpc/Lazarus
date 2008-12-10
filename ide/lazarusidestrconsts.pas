@@ -2223,7 +2223,8 @@ resourcestring
   lisCodeToolsOptsNewLine     = 'Newline';
   lisCodeToolsOptsSpace       = 'Space';
   lisCodeToolsOptsSymbol      = 'Symbol';
-  
+  lisCodeToolsOptsBracket     = 'Bracket';
+
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
