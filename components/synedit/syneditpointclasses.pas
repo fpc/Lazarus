@@ -19,6 +19,14 @@ If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
 -------------------------------------------------------------------------------}
+
+(* Naming Conventions:
+  Byte = Logical: Refers to the location any TextToken has in the String.
+         In Utf8String some TextToken can have more than one byte
+  Char = Physical: Refers to the (x-)location on the screen matrix.
+         Some TextToken (like tab) can spawn multiply char locations
+*)
+
 unit SynEditPointClasses;
 
 {$I synedit.inc}
@@ -86,7 +94,7 @@ type
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
-      ATag: PInteger);
+      ATag: PInteger; AddToUndoList: Boolean = false);
     function  SelAvail: Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     property  Enabled: Boolean read FEnabled write SetEnabled;
@@ -94,6 +102,8 @@ type
     property  SelectionMode: TSynSelectionMode
                 read FSelectionMode write SetSelectionMode;
     property  SelText: String read GetSelText write SetSelText;
+    // Start and End positions are in the order they where defined
+    // This may mean Startpos is behind EndPos in the text
     property  StartLineBytePos: TPoint
                 read GetStartLineBytePos write SetStartLineBytePos;
     property  EndLineBytePos: TPoint
@@ -102,7 +112,7 @@ type
     property  EndLinePos: Integer read FEndLinePos;
     property  StartBytePos: Integer read FStartBytePos;
     property  EndBytePos: Integer read FEndBytePos;
-    // Bounds ordered
+    // First and Last Pos are ordered according to the text flow (LTR)
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
@@ -118,17 +128,23 @@ type
     fLinePos: Integer; // 1 based
     fCharPos: Integer; // 1 based
   private
-    function  GetLineCharPos: TPoint;
-    function GetLineText : string;
-    procedure SetLineCharPos(const AValue: TPoint);
     procedure setCharPos(const AValue: Integer);
     procedure setLinePos(const AValue: Integer);
+    function  GetLineCharPos: TPoint;
+    procedure SetLineCharPos(const AValue: TPoint);
+    function  GetBytePos: Integer;
+    procedure SetBytePos(const AValue: Integer);
+    function  GetLineBytePos: TPoint;
+    procedure SetLineBytePos(const AValue: TPoint);
+    function  GetLineText: string;
     procedure SetLineText(const AValue : string);
   public
     constructor Create;
-    property LinePos : Integer read fLinePos write setLinePos;
-    property CharPos : Integer read fCharPos write setCharPos;
-    property LineCharPos : TPoint read GetLineCharPos write SetLineCharPos;
+    property LinePos: Integer read fLinePos write setLinePos;
+    property CharPos: Integer read fCharPos write setCharPos;
+    property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
+    property BytePos: Integer read GetBytePos write SetBytePos;
+    property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
   end;
 
@@ -165,6 +181,27 @@ end;
 
 { TSynEditCaret }
 
+constructor TSynEditCaret.Create;
+begin
+  inherited Create;
+  fLinePos:= 1;
+  fCharPos:= 1;
+end;
+
+procedure TSynEditCaret.setLinePos(const AValue : Integer);
+begin
+  if fLinePos = AValue then exit;
+  fLinePos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.setCharPos(const AValue : Integer);
+begin
+  if fCharPos = AValue then exit;
+  fCharPos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
 function TSynEditCaret.GetLineCharPos : TPoint;
 begin
   Result := Point(fCharPos, fLinePos);
@@ -178,18 +215,24 @@ begin
   fOnChangeList.CallNotifyEvents(self);
 end;
 
-procedure TSynEditCaret.setCharPos(const AValue : Integer);
+function TSynEditCaret.GetBytePos: Integer;
 begin
-  if fCharPos = AValue then exit;
-  fCharPos:= AValue;
-  fOnChangeList.CallNotifyEvents(self);
+  Result := LineBytePos.X;
 end;
 
-procedure TSynEditCaret.setLinePos(const AValue : Integer);
+procedure TSynEditCaret.SetBytePos(const AValue: Integer);
 begin
-  if fLinePos = AValue then exit;
-  fLinePos:= AValue;
-  fOnChangeList.CallNotifyEvents(self);
+  CharPos :=  FLines.LogicalToPhysicalPos(Point(AValue, LinePos)).X;
+end;
+
+function TSynEditCaret.GetLineBytePos: TPoint;
+begin
+  Result := FLines.PhysicalToLogicalPos(LineCharPos);
+end;
+
+procedure TSynEditCaret.SetLineBytePos(const AValue: TPoint);
+begin
+  LineCharPos := FLines.LogicalToPhysicalPos(AValue);
 end;
 
 function TSynEditCaret.GetLineText : string;
@@ -204,13 +247,6 @@ procedure TSynEditCaret.SetLineText(const AValue : string);
 begin
   if (LinePos >= 1) and (LinePos <= Max(1, FLines.Count)) then
     FLines[LinePos - 1] := AValue;
-end;
-
-constructor TSynEditCaret.Create;
-begin
-  inherited Create;
-  fLinePos:= 1;
-  fCharPos:= 1;
 end;
 
 { TSynEditSelection }
@@ -385,7 +421,7 @@ begin
           // step1: calclate total length of result string
           for i := First to Last do
             Inc(TotalLen, Length(FLines[i]) + Length(sLineBreak));
-          if Last = FLines.Count then
+          if Last = FLines.Count - 1 then
             Dec(TotalLen, Length(sLineBreak));
           // step2: build up result string
           SetLength(Result, TotalLen);
@@ -395,7 +431,7 @@ begin
             CopyAndForward(sLineBreak, 1, MaxInt, P);
           end;
           CopyAndForward(FLines[Last], 1, MaxInt, P);
-          if (Last + 1) < FLines.Count then
+          if Last < FLines.Count - 1 then
             CopyAndForward(sLineBreak, 1, MaxInt, P);
         end;
     end;
@@ -403,32 +439,12 @@ begin
 end;
 
 procedure TSynEditSelection.SetSelText(const Value : string);
-var
-  StartOfBlock, EndOfBlock: TPoint;
 begin
-  if SelAvail then begin
-    if IsBackwardSel then
-      fUndoList.AddChange(crDelete, StartLineBytePos, EndLineBytePos,
-        GetSelText, SelectionMode)
-    else
-      fUndoList.AddChange(crDeleteAfterCursor, EndLineBytePos, StartLineBytePos,
-        GetSelText,  SelectionMode);
-    StartOfBlock := FirstLineBytePos;
-    EndOfBlock := LastLineBytePos;
-  end else begin
-    StartOfBlock := FCaret.LineCharPos;
-    EndOfBlock := FCaret.LineCharPos;
-  end;
-  StartLineBytePos := StartOfBlock;
-  EndLineBytePos := EndOfBlock;
-  SetSelTextPrimitive(smNormal, PChar(Value), nil);
-  if SelectionMode = smLine then
-    StartOfBlock.X := 1;
-  if length(Value) > 0 then
-    fUndoList.AddChange(crInsert, StartOfBlock, EndLineBytePos, '', smNormal);
+  SetSelTextPrimitive(smNormal, PChar(Value), nil, true);
 end;
 
-procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode; Value : PChar; ATag : PInteger);
+procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
+  Value : PChar; ATag : PInteger; AddToUndoList: Boolean = false);
 var
   BB, BE: TPoint;
   TempString: string;
@@ -729,16 +745,36 @@ var
 //    CaretXY := CaretXY;
   end;
 
+var
+  StartInsert: TPoint;
 begin
   FLines.BeginUpdate;
   try
     // BB is lower than BE
     BB := FirstLineBytePos;
     BE := LastLineBytePos;
-    if SelAvail then
+    if SelAvail then begin
+      if AddToUndoList then begin
+        if IsBackwardSel then
+          fUndoList.AddChange(crDelete, StartLineBytePos, EndLineBytePos,
+                              GetSelText, SelectionMode)
+        else
+          fUndoList.AddChange(crDeleteAfterCursor, EndLineBytePos, StartLineBytePos,
+                              GetSelText,  SelectionMode);
+      end;
       DeleteSelection;
-    if (Value <> nil) and (Value[0] <> #0) then
+    end;
+    if (Value <> nil) and (Value[0] <> #0) then begin
+      if AddToUndoList then
+        StartInsert := FCaret.LineBytePos;
       InsertText;
+      if AddToUndoList then begin
+        if SelectionMode = smLine then
+          StartInsert.X := 1;
+        if length(Value) > 0 then
+          fUndoList.AddChange(crInsert, StartInsert, FCaret.LineBytePos, '', smNormal);
+      end;
+    end;
   finally
     FLines.EndUpdate; // May reset Block Begin
   end;
