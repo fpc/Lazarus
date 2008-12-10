@@ -152,7 +152,9 @@ begin
     // copy items (text+objects) from the interface items list
     NewStrings.Assign(Lines);
 
-    FLines.Free;
+    // Delete the interface item list
+    TWSCustomMemoClass(WidgetSetClass).FreeStrings(Lines);
+
     // new item list is the internal item list
     FLines:= NewStrings;
   end;

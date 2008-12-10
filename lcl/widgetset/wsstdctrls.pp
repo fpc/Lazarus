@@ -89,6 +89,7 @@ type
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); virtual;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
+    class procedure FreeItems(var AItems: TStrings); virtual;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); virtual;
     
     class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; virtual;
@@ -112,6 +113,7 @@ type
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
+    class procedure FreeStrings(var AStrings: TStrings); virtual;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
@@ -161,6 +163,7 @@ type
   published
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
+    class procedure FreeStrings(var AStrings: TStrings); virtual;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); virtual;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); virtual;
@@ -285,6 +288,12 @@ begin
   Result := nil;
 end;
 
+class procedure TWSCustomListBox.FreeStrings(var AStrings: TStrings);
+begin
+  AStrings.Free;
+  AStrings := nil;
+end;
+
 class function  TWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
@@ -398,6 +407,12 @@ begin
   Result := nil;
 end;
 
+class procedure TWSCustomComboBox.FreeItems(var AItems: TStrings);
+begin
+  AItems.Free;
+  AItems := nil;
+end;
+
 class procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
   AList: TStrings; IsSorted: boolean);
 begin
@@ -482,6 +497,12 @@ end;
 class function TWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 begin
   Result := ACustomMemo.Lines; //use default if the WS has not defined any
+end;
+
+class procedure TWSCustomMemo.FreeStrings(var AStrings: TStrings);
+begin
+  AStrings.Free;
+  AStrings := nil;
 end;
 
 class procedure TWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;

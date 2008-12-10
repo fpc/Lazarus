@@ -78,7 +78,7 @@ begin
   if FItems<>nil then begin
     NewStrings.Assign(FItems);
     // delete interface based list
-    FItems.Free;
+    TWSCustomComboBoxClass(WidgetSetClass).FreeItems(FItems);
   end;
   // and use the internal list
   FItems:= NewStrings;
