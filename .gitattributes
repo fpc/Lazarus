@@ -4025,6 +4025,7 @@ lcl/postscriptunicode.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/propertystorage.pas svneol=native#text/pascal
 lcl/rubberband.pas svneol=native#text/pascal
+lcl/shellctrls.pas svneol=native#text/plain
 lcl/spin.pp svneol=native#text/pascal
 lcl/stdactns.pas svneol=native#text/pascal
 lcl/stdctrls.pp svneol=native#text/pascal
