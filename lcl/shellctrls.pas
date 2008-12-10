@@ -201,8 +201,11 @@ var
   FindResult: Integer;
   IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
   ObjectData: TObject;
+  SearchStr: string;
 begin
-  FindResult := FindFirst(ABaseDir + '\*.*', FaDirectory, DirInfo);
+  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + '*.*';
+
+  FindResult := FindFirst(SearchStr, FaDirectory, DirInfo);
 
   while FindResult = 0 do
   begin
@@ -254,7 +257,7 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
-      NewNode.HasChildren := Files.Objects[i] <> nil;
+      NewNode.HasChildren := Files.Objects[i] <> nil; // This marks if the node is a directory
     end;
   finally
     Files.Free;
