@@ -169,6 +169,7 @@ begin
   {$ifdef windows}
   if (PMSG(xevent)^.message = WM_NCLBUTTONDOWN) and
      (PMSG(xevent)^.wParam = HTCAPTION) and
+     not (csDesigning in AForm.ComponentState) and
      (TWinControlAccess(TWinControl(AForm)).DragKind = dkDock) and
      (TWinControlAccess(TWinControl(AForm)).DragMode = dmAutomatic) then
   begin

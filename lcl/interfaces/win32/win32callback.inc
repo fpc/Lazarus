@@ -1911,7 +1911,7 @@ begin
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
 
       //Drag&Dock support TCustomForm => Start BeginDrag()
-      if lWinControl <> nil then
+      if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
       begin
         if WParam = HTCAPTION  then
         begin

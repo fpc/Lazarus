@@ -2217,6 +2217,7 @@ var
 begin
   //Drag&Dock support TCustomForm => Start BeginDrag()
   if (LCLObject is TCustomForm) and 
+     not (csDesigning in LCLObject.ComponentState) and
      (TWinControlAccess(LCLObject).DragKind = dkDock) and
      (TWinControlAccess(LCLObject).DragMode = dmAutomatic) and
      (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
