@@ -2,6 +2,11 @@ unit chmcontentprovider;
 
 {$mode objfpc}{$H+}
 
+{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
+{$Note Compiling lhelp with search support}
+{$DEFINE CHM_SEARCH}
+{$endif}
+
 {off $DEFINE CHM_DEBUG_TIME}
 {off $DEFINE CHM_SEARCH}
 
