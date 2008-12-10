@@ -190,7 +190,7 @@ type
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
-    procedure SetModified(const NewValue:boolean); override;
+    procedure SetModified(const NewValue: Boolean); override;
     procedure SetSyntaxHighlighterType(
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
@@ -2533,14 +2533,18 @@ Begin
   Result := FEditor.Modified or FModified;
 end;
 
-procedure TSourceEditor.SetModified(const NewValue:boolean);
+procedure TSourceEditor.SetModified(const NewValue: Boolean);
 var
   OldModified: Boolean;
 begin
-  OldModified:=Modified;
-  FModified:=NewValue;
-  if not FModified then FEditor.Modified:=false;
-  if OldModified<>Modified then
+  OldModified := Modified;
+  FModified := NewValue;
+  if not FModified then
+  begin
+    FEditor.Modified := False;
+    FEditor.MarkTextAsSaved;
+  end;
+  if OldModified <> Modified then
     UpdatePageName;
 end;
 
