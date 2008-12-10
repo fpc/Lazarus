@@ -933,13 +933,22 @@ type
   EInvalidGraphicOperation = class(EGraphicException);
 
 type
-  TGradientDirection = (gdVertical,     // Fill vertical
-                        gdHorizontal);  // Fill Horizontal
+  TGradientDirection = (
+    gdVertical,   // Fill vertical
+    gdHorizontal  // Fill Horizontal
+  );
+
+  TAntialiasingMode = (
+    amDontCare, // default antialiasing
+    amOn,       // enabled
+    amOff       // disabled
+  );
 
   { TCanvas }
 
   TCanvas = class(TFPCustomCanvas)
   private
+    FAntialiasingMode: TAntialiasingMode;
     FAutoRedraw: Boolean;
     FState: TCanvasState;
     FSavedFontHandle: HFont;
@@ -962,6 +971,7 @@ type
     procedure PenChanged(APen: TObject);
     procedure RegionChanged(ARegion: TObject);
     function GetHandle: HDC;
+    procedure SetAntialiasingMode(const AValue: TAntialiasingMode);
     procedure SetAutoRedraw(Value: Boolean); virtual;
     procedure SetLazFont(value: TFont);
     procedure SetLazPen(value: TPen);
@@ -1016,6 +1026,7 @@ type
     procedure BrushChanging(APen: TObject); virtual;
     procedure RegionChanging(APen: TObject); virtual;
     procedure RealizeAutoRedraw; virtual;
+    procedure RealizeAntialiasing; virtual;
     procedure RequiredState(ReqState: TCanvasState); virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
     procedure SetInternalPenPos(const Value: TPoint); virtual;
@@ -1103,14 +1114,15 @@ type
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
   published
+    property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
     property Brush: TBrush read FBrush write SetLazBrush;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetLazFont;
-    property Height : integer read GetHeight;
+    property Height: integer read GetHeight;
     property Pen: TPen read FPen write SetLazPen;
     property Region: TRegion read FRegion write SetRegion;
-    property Width : integer read GetWidth;
+    property Width: integer read GetWidth;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;

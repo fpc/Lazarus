@@ -417,6 +417,14 @@ begin
   // TODO: implement me
 end;
 
+procedure TQtWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
+var
+  DC: TQtDeviceContext absolute CanvasHandle;
+begin
+  if IsValidDC(CanvasHandle) then
+    DC.setRenderHint(QPainterAntialiasing, AEnabled);
+end;
+
 procedure TQtWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 

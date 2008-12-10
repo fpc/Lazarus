@@ -1151,8 +1151,16 @@ begin
   {$ENDIF}
   
   if not CheckDC(CanvasHandle, 'DCRedraw') then Exit;
-  
+
   CGContextFlush(TCarbonContext(CanvasHandle).CGContext);
+end;
+
+procedure TCarbonWidgetSet.DCSetAntialiasing(CanvasHandle: HDC;
+  AEnabled: Boolean);
+begin
+  if not CheckDC(CanvasHandle, 'DCSetAntialiasing') then Exit;
+
+  TCarbonDeviceContext(CanvasHandle).SetAntialiasing(AEnabled);
 end;
 
 {------------------------------------------------------------------------------

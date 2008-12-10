@@ -106,6 +106,7 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
 
     procedure SetDesigning(AComponent: TComponent); override;
 

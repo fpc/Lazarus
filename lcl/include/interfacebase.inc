@@ -71,3 +71,7 @@ begin
   end;
 end;
 
+procedure TWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
+begin
+end;
+
