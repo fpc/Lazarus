@@ -917,7 +917,11 @@ begin
     Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
   if GetSelStart(ACustomEdit) = NewStart then exit;
-  NewPos := Min(NewStart, Entry^.text_max_length);
+
+  if Entry^.text_max_length>0 then
+    NewPos := Min(NewStart, Entry^.text_max_length)
+  else
+    NewPos := Min(NewStart, Entry^.text_length);
   gtk_entry_set_position(Entry, NewPos);
 end;
 
