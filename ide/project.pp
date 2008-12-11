@@ -54,6 +54,7 @@ uses
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
   ProjectResources,
   // IDE
+  frmcustomapplicationoptions,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs,
@@ -900,9 +901,6 @@ function dbgs(Flag: TUnitInfoFlag): string; overload;
 function dbgs(Flags: TUnitInfoFlags): string; overload;
 
 implementation
-
-uses
-  frmcustomapplicationoptions;
 
 const
   ProjectInfoFileVersion = 6;
