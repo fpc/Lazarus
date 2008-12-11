@@ -64,6 +64,7 @@ type
     procedure SetupColumns;
     function FindBand(APage: TFrPage; AType: TfrBandType): TFrBandView;
     procedure ReplaceTemplate(APage:TFrPage; ABand: TFrBandView; ATemplate,AReplace:String);
+    procedure FindFreeSpace(APage: TfrPage; out XPos,YPos:Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -174,6 +175,43 @@ begin
   end;
 end;
 
+procedure TfrPrintGrid.FindFreeSpace(APage: TfrPage; out XPos, YPos: Integer);
+var
+  i: Integer;
+  Ydone,Xdone: boolean;
+begin
+
+  YPos := 0;
+  XPos := 20;
+
+  YDone:= false;
+  XDone:= false;
+
+  for i:=0 to APage.Objects.Count-1 do begin
+    if not (TObject(APage.Objects[i]) is TFrBandView) then
+      continue;
+
+    with TfrBandView(APage.Objects[i]) do begin
+      if BandType in [btCrossHeader, btCrossData, btCrossFooter] then begin
+        if not XDone then begin
+          if x - XPos > 20 then
+            XDone := true
+          else
+            XPos := x + dx + 1;
+        end;
+      end else begin
+        if not YDone then begin
+          if y - YPos > 40 then
+            YDone := true
+          else
+            YPos := x + dy + 1;
+        end;
+      end;
+    end;
+
+  end;
+end;
+
 procedure TfrPrintGrid.SetDBGrid(const AValue: TDBGrid);
 begin
   fDBGrid:=aValue;
@@ -190,7 +228,7 @@ var
   b,h: TfrBandView;
   Page: TfrPage;
   BM  : TBookMark;
-  yPos: Integer;
+  XPos,YPos: Integer;
 begin
   if (FDBGrid = nil) or (DBGrid.Datasource = nil) or
      (DBGrid.Datasource.Dataset = nil) then Exit;
@@ -228,19 +266,16 @@ begin
     with Page do
       ChangePaper(pgSize, Width, Height, FOrientation);
 
-    YPos := -1;
     b := FindBand(Page, btReportTitle);
     if b<>nil then begin
       if FShowCaption then
         ReplaceTemplate(Page, b, '<title>', FCaption);
-      YPos := b.y + b.dy + 10;
     end;
 
     h := FindBand(Page, btPageHeader);
     if h<>nil then begin
       if FShowCaption then
         ReplaceTemplate(Page, h, '<title>', FCaption);
-      YPos := h.y + h.dy + 10;
     end;
 
     if FShowCaption and (b=nil) and (h=nil) then begin
@@ -254,21 +289,22 @@ begin
       TfrMemoView(v).Font.Assign(FTitleFont);
       v.Memo.Add(FCaption);
       Page.Objects.Add(v);
-      YPos := b.y + b.dy + 10;
     end;
 
-    if YPos<0 then
-      YPos := 60;
+    // if we have a template we need to be sure that bands on template
+    // do not overlap with bands we are about to add, we need exactly
+    // 40 pixels of free height space and 20 pixels width for cross band
+    FindFreeSpace(Page, XPos, YPos);
 
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btMasterHeader;
     if self.fShowHdOnAllPage then
       b.Flags:=b.Flags+flBandRepeatHeader;
-    b.SetBounds(20, YPos, 1000, 20);
+    b.SetBounds(XPos, YPos, 1000, 20);
     Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '');
-    v.SetBounds(20, YPos, 20, 20);
+    v.SetBounds(XPos, YPos, 20, 20);
     TfrMemoView(v).Alignment:=taCenter;
     TfrMemoView(v).FillColor := clSilver;
     TfrMemoView(v).Font.Assign(FTitleFont);
@@ -277,7 +313,7 @@ begin
     v.Memo.Add('[Header]');
     Page.Objects.Add(v);
 
-    YPos := YPos + 40;
+    YPos := YPos + 22;
 
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btMasterData;
@@ -288,11 +324,11 @@ begin
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btCrossData;
     b.Dataset := FColumnDataSet.Name;
-    b.SetBounds(20, 0, 20, 1000);
+    b.SetBounds(XPos, 0, 20, 1000);
     Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '');
-    v.SetBounds(20, YPos, 20, 18);
+    v.SetBounds(XPos, YPos, 20, 18);
     v.Memo.Add('[Cell]');
     TfrMemoView(v).Font.Assign(FFont);
     TfrMemoView(v).Frames:=frAllFrames;
