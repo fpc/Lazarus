@@ -4028,9 +4028,6 @@ begin
             else
               fUndoList.AddChange(crPaste, Point(1, StartOfBlock.y),
                 EndOfBlock, SelText, smNormal);
-          if PasteMode = smColumn then
-            CaretXY := Point(Min(StartOfBlock.X, EndOfBlock.X),
-              Max(StartOfBlock.Y, EndOfBlock.Y) + 1);
         end else
           raise ESynEditError.Create('Clipboard paste operation failed.');
       finally
@@ -5578,7 +5575,6 @@ var
   ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
   {$IFDEF SYN_LAZARUS}
   PhysStartPos: TPoint;
-  PhysEndPos: TPoint;
   {$ELSE}
   e: integer;
   {$ENDIF}
@@ -5593,7 +5589,6 @@ begin
     Include(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
     {$IFDEF SYN_LAZARUS}
     PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
-    PhysEndPos:=LogicalToPhysicalPos(Item.fChangeEndPos);
     {$ENDIF}
     case Item.fChangeReason of
       crInsert, crPaste, crDragDropInsert:
@@ -5604,7 +5599,7 @@ begin
             );
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
           {$IFDEF SYN_LAZARUS}
-          CaretXY := PhysEndPos;
+          CaretXY := LogicalToPhysicalPos(Item.fChangeEndPos);
           {$ELSE}
           CaretXY := Item.fChangeEndPos;                                        //mh 2000-10-30
           {$ENDIF}
