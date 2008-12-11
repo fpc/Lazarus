@@ -7181,7 +7181,7 @@ begin
     begin
       // save source to file
       Result := ActiveUnitInfo.WriteUnitSource;
-      if Result = mrAbort then
+      if Result <> mrOK then
         Exit;
       DestFilename := ActiveUnitInfo.Filename;
     end;
