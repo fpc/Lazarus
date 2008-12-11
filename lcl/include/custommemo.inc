@@ -153,7 +153,7 @@ begin
     NewStrings.Assign(Lines);
 
     // Delete the interface item list
-    TWSCustomMemoClass(WidgetSetClass).FreeStrings(Lines);
+    TWSCustomMemoClass(WidgetSetClass).FreeStrings(FLines);
 
     // new item list is the internal item list
     FLines:= NewStrings;
