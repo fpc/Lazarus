@@ -1,82 +1,50 @@
 object Form1: TForm1
-  Left = 470
+  Left = 341
   Height = 499
-  Top = 248
+  Top = 225
   Width = 585
-  HelpContext = 0
-  ActiveControl = Panel1
   Caption = 'Form1'
-  ChildSizing.LeftRightSpacing = 0
-  ChildSizing.TopBottomSpacing = 0
-  ChildSizing.HorizontalSpacing = 0
-  ChildSizing.VerticalSpacing = 0
-  ChildSizing.ControlsPerLine = 0
   ClientHeight = 499
   ClientWidth = 585
-  Font.Height = 0
-  Font.Style = []
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
-    Left = 0
     Height = 408
-    Top = 0
     Width = 585
-    HelpContext = 0
-    XGraphMin = 0
-    YGraphMin = 0
-    XGraphMax = 0
-    YGraphMax = 0
-    MirrorX = False
-    ShowVerticalReticule = False
-    ShowReticule = False
-    Legend.Visible = False
     Legend.Alignment = laRight
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
-    Legend.Font.Style = []
     Legend.Frame.Cosmetic = True
-    Legend.Frame.Visible = False
     Title.Visible = True
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
-    Title.Font.Style = []
     Title.Frame.Cosmetic = True
-    Title.Frame.Visible = False
     Title.Alignment = taCenter
     Title.Text.Strings = (
       'Centered Chart Title'
     )
-    Foot.Visible = False
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
     Foot.Font.Height = -13
     Foot.Font.Name = 'MS Sans Serif'
     Foot.Font.Style = [fsBold]
     Foot.Frame.Cosmetic = True
-    Foot.Frame.Visible = False
-    Foot.Alignment = taLeftJustify
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
     LeftAxis.Visible = True
-    LeftAxis.Inverted = False
     LeftAxis.Title.Angle = 90
     LeftAxis.Title.Font.Height = -11
     LeftAxis.Title.Font.Name = 'MS Sans Serif'
-    LeftAxis.Title.Font.Style = []
     LeftAxis.Grid.Color = clGray
     LeftAxis.Grid.Cosmetic = True
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
     BottomAxis.Visible = True
-    BottomAxis.Inverted = False
-    BottomAxis.Title.Angle = 0
     BottomAxis.Title.Font.Height = -11
     BottomAxis.Title.Font.Name = 'MS Sans Serif'
-    BottomAxis.Title.Font.Style = []
     BottomAxis.Grid.Color = clGray
     BottomAxis.Grid.Cosmetic = True
     BottomAxis.Grid.Style = psDot
@@ -89,72 +57,34 @@ object Form1: TForm1
     ParentColor = False
   end
   object Panel1: TPanel
-    Left = 0
     Height = 91
     Top = 408
     Width = 585
-    HelpContext = 0
     Align = alBottom
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
     ClientHeight = 91
     ClientWidth = 585
     TabOrder = 0
     object lblAdd: TLabel
       Left = 13
-      Height = 18
+      Height = 14
       Top = 10
-      Width = 30
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 24
       Caption = 'Add:'
       ParentColor = False
     end
-    object lblAdd1: TLabel
+    object lblClear: TLabel
       Left = 13
-      Height = 18
+      Height = 14
       Top = 40
-      Width = 38
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 30
       Caption = 'Clear:'
       ParentColor = False
     end
-    object Label1: TLabel
+    object lblAddCount: TLabel
       Left = 288
-      Height = 18
+      Height = 14
       Top = 16
-      Width = 78
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 58
       Caption = 'Multiple add'
       ParentColor = False
     end
@@ -163,15 +93,7 @@ object Form1: TForm1
       Height = 24
       Top = 8
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Pie'
       OnClick = btnAddPieClick
       TabOrder = 0
@@ -181,15 +103,7 @@ object Form1: TForm1
       Height = 24
       Top = 8
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Line'
       OnClick = btnAddLineClick
       TabOrder = 1
@@ -199,15 +113,7 @@ object Form1: TForm1
       Height = 24
       Top = 8
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Area'
       OnClick = btnAddAreaClick
       TabOrder = 2
@@ -217,150 +123,77 @@ object Form1: TForm1
       Height = 24
       Top = 8
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Bar'
       OnClick = btnAddBarClick
       TabOrder = 3
     end
     object cbLegend: TCheckBox
       Left = 384
-      Height = 22
+      Height = 19
       Top = 8
-      Width = 71
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 61
       Caption = 'Legend'
       OnChange = cbLegendChange
-      State = cbUnchecked
       TabOrder = 4
-      UseOnChange = False
     end
     object cbBottomAxis: TCheckBox
       Left = 384
-      Height = 22
+      Height = 19
       Top = 24
-      Width = 102
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 83
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
       State = cbChecked
       TabOrder = 5
-      UseOnChange = False
     end
     object cbLeftAxis: TCheckBox
       Left = 384
-      Height = 22
+      Height = 19
       Top = 40
-      Width = 78
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 68
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
       State = cbChecked
       TabOrder = 6
-      UseOnChange = False
     end
     object cbTitle: TCheckBox
       Left = 496
-      Height = 22
+      Height = 19
       Top = 8
-      Width = 50
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 46
       Caption = 'Title'
       Checked = True
       OnChange = cbTitleChange
       State = cbChecked
       TabOrder = 7
-      UseOnChange = False
     end
     object cbFooter: TCheckBox
       Left = 496
-      Height = 22
+      Height = 19
       Top = 24
-      Width = 65
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 58
       Caption = 'Footer'
       OnChange = cbFooterChange
-      State = cbUnchecked
       TabOrder = 8
-      UseOnChange = False
     end
     object cbInverted: TCheckBox
       Left = 496
-      Height = 22
+      Height = 19
       Top = 40
-      Width = 76
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Width = 68
       Caption = 'Inverted'
       OnChange = cbInvertedChange
-      State = cbUnchecked
       TabOrder = 9
-      UseOnChange = False
     end
     object btnClearBar: TButton
       Left = 160
       Height = 24
       Top = 38
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Bar'
       OnClick = btnClearBarClick
       TabOrder = 10
@@ -370,15 +203,7 @@ object Form1: TForm1
       Height = 24
       Top = 38
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Area'
       OnClick = btnClearAreaClick
       TabOrder = 11
@@ -388,15 +213,7 @@ object Form1: TForm1
       Height = 24
       Top = 38
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Line'
       OnClick = btnClearLineClick
       TabOrder = 12
@@ -406,15 +223,7 @@ object Form1: TForm1
       Height = 24
       Top = 38
       Width = 52
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
       BorderSpacing.InnerBorder = 4
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'Pie'
       OnClick = btnClearPieClick
       TabOrder = 13
@@ -424,41 +233,33 @@ object Form1: TForm1
       Height = 21
       Top = 41
       Width = 90
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       MaxValue = 1000000
       MinValue = 1
       TabOrder = 14
       Value = 1
     end
-    object ShowGridCheckBox: TCheckBox
+    object edShowGridCheckBox: TCheckBox
       AnchorSideLeft.Control = cbLeftAxis
       AnchorSideTop.Control = cbLeftAxis
       AnchorSideTop.Side = asrBottom
-      Left = -360
-      Height = 23
-      Top = 56
-      Width = 90
-      HelpContext = 0
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
+      Left = 384
+      Height = 19
+      Top = 59
+      Width = 76
       Caption = 'Show grid '
       Checked = True
-      OnChange = ShowGridCheckBoxChange
+      OnChange = edShowGridCheckBoxChange
       State = cbChecked
       TabOrder = 15
-      UseOnChange = False
+    end
+    object cbShowAxisTitles: TCheckBox
+      Left = 496
+      Height = 19
+      Top = 59
+      Width = 72
+      Caption = 'Axis titles'
+      OnChange = cbShowAxisTitlesChange
+      TabOrder = 16
     end
   end
 end

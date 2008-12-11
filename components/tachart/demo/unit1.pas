@@ -20,6 +20,7 @@ type
     btnAddPie: TButton;
     btnAddLine: TButton;
     btnAddArea: TButton;
+    cbShowAxisTitles: TCheckBox;
     Chart1: TChart;
     cbBottomAxis: TCheckBox;
     cbLeftAxis: TCheckBox;
@@ -27,10 +28,10 @@ type
     cbFooter: TCheckBox;
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
-    ShowGridCheckBox: TCheckBox;
-    Label1: TLabel;
+    edShowGridCheckBox: TCheckBox;
+    lblAddCount: TLabel;
     lblAdd: TLabel;
-    lblAdd1: TLabel;
+    lblClear: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
     procedure btnClearAreaClick(Sender: TObject);
@@ -44,10 +45,11 @@ type
     procedure btnAddPieClick(Sender: TObject);
     procedure cbBottomAxisChange(Sender: TObject);
     procedure cbLeftAxisChange(Sender: TObject);
+    procedure cbShowAxisTitlesChange(Sender: TObject);
     procedure cbTitleChange(Sender: TObject);
     procedure cbFooterChange(Sender: TObject);
     procedure cbLegendChange(Sender: TObject);
-    procedure ShowGridCheckBoxChange(Sender: TObject);
+    procedure edShowGridCheckBoxChange(Sender: TObject);
   private
     FArea: TAreaSeries;
     FBar: TBarSeries;
@@ -163,10 +165,12 @@ begin
   Chart1.Legend.Visible := cbLegend.Checked;
 end;
 
-procedure TForm1.ShowGridCheckBoxChange(Sender: TObject);
+procedure TForm1.cbShowAxisTitlesChange(Sender: TObject);
 begin
-  Chart1.LeftAxis.Grid.Visible := ShowGridCheckBox.Checked;
-  Chart1.BottomAxis.Grid.Visible := ShowGridCheckBox.Checked;
+  with Chart1.BottomAxis.Title do
+    if cbShowAxisTitles.Checked then Caption := 'X axis' else Caption := '';
+  with Chart1.LeftAxis.Title do
+    if cbShowAxisTitles.Checked then Caption := 'Y axis' else Caption := '';
 end;
 
 procedure TForm1.cbLeftAxisChange(Sender: TObject);
@@ -177,6 +181,12 @@ end;
 procedure TForm1.cbTitleChange(Sender: TObject);
 begin
   Chart1.Title.Visible := cbTitle.Checked;
+end;
+
+procedure TForm1.edShowGridCheckBoxChange(Sender: TObject);
+begin
+  Chart1.LeftAxis.Grid.Visible := edShowGridCheckBox.Checked;
+  Chart1.BottomAxis.Grid.Visible := edShowGridCheckBox.Checked;
 end;
 
 procedure TForm1.InitArea;
