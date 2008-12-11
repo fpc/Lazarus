@@ -57,8 +57,7 @@ uses
   frmcustomapplicationoptions,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs,
-  CodeToolsStructs, CodeTree, CodeAtom, PascalParserTool;
+  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs;
 
 type
   TUnitInfo = class;
