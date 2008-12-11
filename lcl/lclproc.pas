@@ -314,6 +314,8 @@ function UTF8LowerCaseNew(const s: String): String;
 {$endif}
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
+function ValidUTF8String(const s: String): String;
+
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 function UTF16CharacterLength(p: PWideChar): integer;
@@ -3621,6 +3623,45 @@ begin
   end;
   // ok
   Result:=-1;
+end;
+
+function ValidUTF8String(const s: String): String;
+var
+  p, cur: PChar;
+  l, lr: integer;
+  NeedFree: Boolean;
+begin
+  if FindInvalidUTF8Character(PChar(s), Length(s)) <> -1 then
+  begin
+    NeedFree := True;
+    GetMem(p, Length(s) + 1);
+    StrPCopy(p, s);
+    UTF8FixBroken(p);
+  end
+  else
+  begin
+    p := PChar(s);
+    NeedFree := False;
+  end;
+
+  Result := '';
+  cur := p;
+  while cur^ <> #0 do
+  begin
+    l := UTF8CharacterLength(cur);
+    if (l = 1) and (cur^ < #32) then
+      Result := Result + '#' + IntToStr(Ord(cur^))
+    else
+    begin
+      lr := Length(Result);
+      SetLength(Result, lr + l);
+      Move(cur^, Result[lr + 1], l);
+    end;
+    inc(cur, l)
+  end;
+
+  if NeedFree then
+    FreeMem(p);
 end;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);

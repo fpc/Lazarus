@@ -1313,16 +1313,20 @@ begin
       exit;
     end;
   end;
-  if (OldCaretXY.X=EditorComponent.CaretX)
-  and (OldCaretXY.Y=EditorComponent.CaretY)
-  and not (ssoReplaceAll in LazFindReplaceDialog.Options) then begin
-    ACaption:=lisUENotFound;
-    AText:=Format(lisUESearchStringNotFound, [dbgstr(LazFindReplaceDialog.FindText)]);
-    MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
+
+  if (OldCaretXY.X = EditorComponent.CaretX) and
+     (OldCaretXY.Y = EditorComponent.CaretY) and
+     not (ssoReplaceAll in LazFindReplaceDialog.Options) then
+  begin
+    ACaption := lisUENotFound;
+    AText := Format(lisUESearchStringNotFound, [ValidUTF8String(LazFindReplaceDialog.FindText)]);
+    MessageDlg(ACaption, AText, mtInformation, [mbOk], 0);
     TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
-  end else begin
+  end else
+  begin
     NewTopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
-    if NewTopLine < 1 then NewTopLine:=1;
+    if NewTopLine < 1 then
+      NewTopLine := 1;
     EditorComponent.TopLine := NewTopLine;
   end;
 end;
