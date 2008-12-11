@@ -7149,21 +7149,35 @@ begin
   end;
 
   // save source
-  if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then begin
+
+  // a) do before save events
+
+  if EditorOpts.AutoRemoveEmptyMethods then
+    ActiveUnitInfo.RemoveEmptyMethods;
+
+  // b) do actual save
+  if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then
+  begin
     // save source to test directory
-    TestFilename:=MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
-    if TestFilename<>'' then begin
-      Result:=ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
-      if Result<>mrOk then exit;
-      DestFilename:=TestFilename;
-    end else
+    TestFilename := MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
+    if TestFilename <> '' then
+    begin
+      Result := ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
+      if Result <> mrOk then
+        Exit;
+      DestFilename := TestFilename;
+    end
+    else
       exit;
-  end else begin
-    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then begin
+  end else
+  begin
+    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then
+    begin
       // save source to file
-      Result:=ActiveUnitInfo.WriteUnitSource;
-      if Result=mrAbort then exit;
-      DestFilename:=ActiveUnitInfo.Filename;
+      Result := ActiveUnitInfo.WriteUnitSource;
+      if Result = mrAbort then
+        Exit;
+      DestFilename := ActiveUnitInfo.Filename;
     end;
   end;
 

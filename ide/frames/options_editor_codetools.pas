@@ -41,6 +41,7 @@ type
     AutomaticFeaturesGroupBox: TGroupBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
+    AutoRemoveEmptyMethodsOnSave: TCheckBox;
   private
     { private declarations }
   public
@@ -68,6 +69,7 @@ begin
   AutoCodeParametersCheckBox.Caption := dlgEdCodeParams;
   AutoToolTipExprEvalCheckBox.Caption := dlgTooltipEval;
   AutoToolTipSymbToolsCheckBox.Caption := dlgTooltipTools;
+  AutoRemoveEmptyMethodsOnSave.Caption := dlgAutoRemoveEmptyMethods;
 
   AutoDelayLabel.Caption := dlgEdDelay;
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
@@ -83,6 +85,7 @@ begin
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
+    AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
   end;
 end;
 
@@ -95,6 +98,7 @@ begin
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
+    AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
   end;
 end;
 

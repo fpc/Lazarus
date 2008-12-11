@@ -1,44 +1,50 @@
-object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
+inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   Height = 440
   Width = 496
   ClientHeight = 440
   ClientWidth = 496
-  TabOrder = 0
   Visible = False
-  DesignLeft = 436
-  DesignTop = 200
-  object AutomaticFeaturesGroupBox: TGroupBox
+  DesignLeft = 520
+  DesignTop = 289
+  object AutomaticFeaturesGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Left = 0
     Height = 440
+    Top = 0
     Width = 496
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'AutomaticFeaturesGroupBox'
     ClientHeight = 422
     ClientWidth = 492
+    Ctl3D = False
     TabOrder = 0
     object AutoDelayLabel: TLabel
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoDelayTrackBar
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 14
-      Top = 176
-      Width = 480
-      Align = alTop
+      Top = 201
+      Width = 76
       BorderSpacing.Top = 24
       BorderSpacing.Around = 6
       Caption = 'AutoDelayLabel'
       ParentColor = False
     end
     object AutoDelayMinLabel: TLabel
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
       AnchorSideTop.Control = AutoDelayTrackBar
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 14
-      Top = 148
+      Top = 177
       Width = 92
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 2
       Caption = 'AutoDelayMinLabel'
       ParentColor = False
@@ -46,72 +52,96 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     object AutoDelayMaxLabel: TLabel
       AnchorSideTop.Control = AutoDelayTrackBar
       AnchorSideTop.Side = asrBottom
-      Left = 358
+      AnchorSideRight.Control = AutomaticFeaturesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 390
       Height = 14
-      Top = 148
+      Top = 177
       Width = 96
       Alignment = taRightJustify
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 2
+      BorderSpacing.Right = 6
       Caption = 'AutoDelayMaxLabel'
       ParentColor = False
     end
     object AutoIdentifierCompletionCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutomaticFeaturesGroupBox
       Left = 6
       Height = 19
       Top = 6
-      Width = 480
-      Align = alTop
+      Width = 193
       BorderSpacing.Around = 6
       Caption = 'AutoIdentifierCompletionCheckBox'
       TabOrder = 0
     end
     object AutoCodeParametersCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoToolTipSymbToolsCheckBox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 56
-      Width = 480
-      Align = alTop
+      Top = 81
+      Width = 176
       BorderSpacing.Around = 6
       Caption = 'AutoCodeParametersCheckBox'
       Enabled = False
       TabOrder = 1
     end
     object AutoToolTipExprEvalCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoCodeParametersCheckBox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 81
-      Width = 480
-      Align = alTop
+      Top = 106
+      Width = 172
       BorderSpacing.Around = 6
       Caption = 'AutoToolTipExprEvalCheckBox'
       TabOrder = 2
     end
     object AutoToolTipSymbToolsCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoRemoveEmptyMethodsOnSave
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 31
-      Width = 480
-      Align = alTop
+      Top = 56
+      Width = 181
       BorderSpacing.Around = 6
       Caption = 'AutoToolTipSymbToolsCheckBox'
       TabOrder = 3
     end
     object AutoDelayTrackBar: TTrackBar
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoToolTipExprEvalCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = AutomaticFeaturesGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 40
-      Top = 106
+      Top = 131
       Width = 480
       Frequency = 250
       Max = 4000
       Min = 500
       Position = 500
-      ScalePos = trTop
-      Align = alTop
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
+      BorderSpacing.Around = 6
+      Ctl3D = False
       TabOrder = 4
+    end
+    object AutoRemoveEmptyMethodsOnSave: TCheckBox
+      AnchorSideLeft.Control = AutomaticFeaturesGroupBox
+      AnchorSideTop.Control = AutoIdentifierCompletionCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 197
+      BorderSpacing.Around = 6
+      Caption = 'AutoRemoveEmptyMethodsOnSave'
+      TabOrder = 5
     end
   end
 end

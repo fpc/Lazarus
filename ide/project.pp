@@ -56,8 +56,8 @@ uses
   // IDE
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs
-  ;
+  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs,
+  CodeToolsStructs, CodeTree, CodeAtom, PascalParserTool;
 
 type
   TUnitInfo = class;
@@ -299,6 +299,7 @@ type
     function FindAncestorUnit: TUnitInfo;
     procedure ClearUnitComponentDependencies(
                      ClearTypes: TUnitCompDependencyTypes);
+    procedure RemoveEmptyMethods;
   public
     { Properties }
     // Unit lists
@@ -1609,6 +1610,134 @@ begin
     if Dep.Types=[] then
       Dep.Free;
     Dep:=NextDep;
+  end;
+end;
+
+procedure TUnitInfo.RemoveEmptyMethods;
+var
+  RemovedProcHeads: TStringList;
+  PropChanged: boolean;
+
+  procedure CheckEvents(LookupRoot, AComponent: TComponent);
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+    CurCount: Word;
+    AMethod: TMethod;
+    AMethodName: String;
+    i: Integer;
+  begin
+    // read all properties and remove doubles
+    TypeInfo:=PTypeInfo(AComponent.ClassInfo);
+    repeat
+      // read all property infos of current class
+      TypeData:=GetTypeData(TypeInfo);
+      // skip unitname
+      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+      // read property count
+      CurCount:=PWord(PropInfo)^;
+      inc(PtrUInt(PropInfo),SizeOf(Word));
+      // read properties
+      while CurCount>0 do
+      begin
+        // point PropInfo to next propinfo record.
+        // Located at Name[Length(Name)+1] !
+        if (PropInfo^.PropType^.Kind=tkMethod) then
+        begin
+          // event
+          AMethod:=GetMethodProp(AComponent,PropInfo);
+          AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
+          if AMethodName<>'' then
+          begin
+            i:=RemovedProcHeads.Count-1;
+            while (i>=0)
+            and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
+              dec(i);
+            if i>=0 then
+            begin
+              FillByte(AMethod,SizeOf(AMethod),0);
+              SetMethodProp(AComponent,PropInfo,AMethod);
+              PropChanged:=true;
+            end;
+          end;
+        end;
+        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+        dec(CurCount);
+      end;
+      TypeInfo:=TypeData^.ParentInfo;
+    until TypeInfo=nil;
+  end;
+
+  function ExtractClassName: string;
+  var
+    ProcName: string;
+    p: LongInt;
+    i: Integer;
+  begin
+    Result := '';
+    if (RemovedProcHeads = nil) or (RemovedProcHeads.Count = 0) then
+      Exit;
+    for i := RemovedProcHeads.Count - 1 downto 0 do
+    begin
+      ProcName := RemovedProcHeads[i];
+      p := System.Pos('.',ProcName);
+      if p < 1 then
+        RemovedProcHeads.Delete(i)
+      else
+      begin
+        Result := copy(ProcName,1,p-1);
+        RemovedProcHeads[i] := copy(ProcName, p + 1, length(ProcName));
+      end;
+    end;
+  end;
+
+var
+  Node: TCodeTreeNode;
+  Caret: TCodeXYPosition;
+  AllEmpty: Boolean;
+  i: Integer;
+  CurClassName: String;
+begin
+  if (Component = nil) or not LazarusIDE.BeginCodeTools then
+    Exit;
+
+  Node := CodeToolBoss.CurCodeTool.FindClassNodeInInterface(Component.ClassName,
+    True, False, False);
+  if (Node = nil) or
+     not CodeToolBoss.CurCodeTool.CleanPosToCaret(Node.StartPos, Caret) then
+    Exit;
+
+  RemovedProcHeads := nil;
+  try
+    if not CodeToolBoss.RemoveEmptyMethods(Source, Caret.X, Caret.Y,
+      [pcsPublished], AllEmpty,
+      [phpAddClassName,phpDoNotAddSemicolon,phpWithoutParamList,
+       phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon],
+      RemovedProcHeads) then
+    begin
+      DebugLn(['TUnitInfo.RemoveEmptyMethods failed']);
+      exit;
+    end;
+
+    if (RemovedProcHeads <> nil) and (RemovedProcHeads.Count > 0) then
+    begin
+      // RemovedProcHeads contains a list of classname.procname
+      // remove the classname from the list
+      CurClassName := ExtractClassName;
+      if CurClassName = Component.ClassName then
+      begin;
+        PropChanged := False;
+        CheckEvents(Component, Component);
+        for i := 0 to Component.ComponentCount - 1 do
+          CheckEvents(Component, Component.Components[i]);
+        // update objectinspector
+        if PropChanged and (GlobalDesignHook.LookupRoot = Component) then
+          GlobalDesignHook.RefreshPropertyValues;
+      end;
+    end;
+  finally
+    RemovedProcHeads.Free;
   end;
 end;
 
