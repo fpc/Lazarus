@@ -453,7 +453,6 @@ var
   var
     x, MarkOffset: Integer;
     UpdateMarks: boolean;
-    NewCaretXY: TPoint;
     {$IFDEF SYN_MBCSSUPPORT}
     l, r: Integer;
     {$ENDIF}
@@ -463,7 +462,6 @@ var
     case SelectionMode of
       smNormal:
         begin
-          NewCaretXY := FLines.LogicalToPhysicalPos(BB);
           if FLines.Count > 0 then begin
               // Create a string that contains everything on the first line up
               // to the selection mark, and everything on the last line after
@@ -475,7 +473,7 @@ var
             FLines[BB.Y - 1] := TempString;
           end;
           UpdateMarks := TRUE;
-          FCaret.LineCharPos := NewCaretXY;
+          FCaret.LineBytePos := BB;
         end;
       smColumn:
         begin
@@ -490,7 +488,6 @@ var
             BE.X := x;
           end;
           {$ENDIF}
-          NewCaretXY := FLines.LogicalToPhysicalPos(Point(BB.X, FEndLinePos));
           for x := BB.Y - 1 to BE.Y - 1 do begin
             TempString := FLines[x];
             {$IFNDEF SYN_MBCSSUPPORT}
@@ -508,7 +505,7 @@ var
             FLines[x] := TempString;
           end;
           // FLines never get deleted completely, so keep caret at end.
-          FCaret.LineCharPos := NewCaretXY;
+          FCaret.LineBytePos := Point(BB.X, FEndLinePos);
           // Column deletion never removes a line entirely, so no mark
           // updating is needed here.
         end;
@@ -558,7 +555,7 @@ var
       PhysicalLineEndPos: LongInt;
     begin
       Result := 0;
-      LogCaretXY := FLines.PhysicalToLogicalPos(FCaret.LineCharPos);
+      LogCaretXY := FCaret.LineBytePos;
       sLeftSide := Copy(FCaret.LineText, 1, LogCaretXY.X - 1);
       if LogCaretXY.X - 1 > Length(sLeftSide) then begin
         PhysicalLineEndPos:= FLines.LogicalToPhysicalPos
@@ -580,9 +577,7 @@ var
         FLines[FCaret.LinePos - 1] := sLeftSide + Str;
       end else begin
         FLines[FCaret.LinePos - 1] := sLeftSide + Value + sRightSide;
-        FCaret.CharPos := FLines.LogicalToPhysicalPos(
-                     Point(1 + Length(sLeftSide + Value),
-                     FCaret.LinePos)).X;
+        FCaret.BytePos := 1 + Length(sLeftSide + Value);
       end;
       // step2: insert left lines of Value
       while P^ <> #0 do begin
@@ -606,9 +601,7 @@ var
             FLines[FCaret.LinePos - 1] := Str + sRightSide
         end;
         if p^=#0 then
-          FCaret.CharPos := FLines.LogicalToPhysicalPos(
-                         Point(1 + Length(FLines[FCaret.LinePos - 1]) - Length(sRightSide),
-                               FCaret.LinePos)).X;
+          FCaret.BytePos := 1 + Length(FLines[FCaret.LinePos - 1]) - Length(sRightSide);
         Inc(Result);
       end;
 //      StatusChanged([scCaretX]);
@@ -664,7 +657,7 @@ var
         end;
         Start := P;
       until P^ = #0;
-      FCaret.CharPos:= FCaret.CharPos + Length(Str);
+      FCaret.BytePos:= FCaret.BytePos + Length(Str);
       Result := 0;
     end;
 
