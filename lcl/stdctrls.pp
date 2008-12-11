@@ -1477,7 +1477,7 @@ end;
 {$I customstatictext.inc}
 
 initialization
-  RegisterRemovedProperty(TButtonControl, 'UseOnChange',
+  RegisterPropertyToSkip(TButtonControl, 'UseOnChange',
     'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
     '');
 

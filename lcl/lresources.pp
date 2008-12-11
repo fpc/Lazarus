@@ -349,17 +349,17 @@ type
     property OnFindComponentClass;
   end;
 
-  TRemovedProperty = record
+  TPropertyToSkip = record
     PersistentClass: TPersistentClass;
     PropertyName: String;
     Note: String;
     HelpKeyword: String;
   end;
-  PRemovedProperty = ^TRemovedProperty;
+  PRemovedProperty = ^TPropertyToSkip;
 
-  { TRemovedPropertyList }
+  { TPropertyToSkipList }
 
-  TRemovedPropertyList = class(TList)
+  TPropertiesToSkip = class(TList)
   private
     function GetItem(AIndex: Integer): PRemovedProperty;
     procedure SetItem(AIndex: Integer; const AValue: PRemovedProperty);
@@ -382,7 +382,7 @@ const
 
 var
   LazarusResources: TLResourceList;
-  RemovedProperties: TRemovedPropertyList = nil;
+  PropertiesToSkip: TPropertiesToSkip = nil;
 
   LRSObjectReaderClass: TLRSObjectReaderClass=TLRSObjectReader;
   LRSObjectWriterClass: TLRSObjectWriterClass=TLRSObjectWriter;
@@ -510,7 +510,7 @@ function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
 function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
 
-procedure RegisterRemovedProperty(PersistentClass: TPersistentClass;
+procedure RegisterPropertyToSkip(PersistentClass: TPersistentClass;
   PropertyName, Note, HelpKeyWord: string);
 
 procedure Register;
@@ -546,20 +546,20 @@ type
                         var Name: string);
   end;
 
-{ TRemovedPropertyList }
+{ TPropertiesToSkip }
 
-function TRemovedPropertyList.GetItem(AIndex: Integer): PRemovedProperty;
+function TPropertiesToSkip.GetItem(AIndex: Integer): PRemovedProperty;
 begin
   Result := inherited Get(AIndex);
 end;
 
-procedure TRemovedPropertyList.SetItem(AIndex: Integer;
+procedure TPropertiesToSkip.SetItem(AIndex: Integer;
   const AValue: PRemovedProperty);
 begin
   inherited Put(AIndex, AValue);
 end;
 
-procedure TRemovedPropertyList.Notify(Ptr: Pointer; Action: TListNotification);
+procedure TPropertiesToSkip.Notify(Ptr: Pointer; Action: TListNotification);
 begin
   if Action = lnDeleted then
     Dispose(PRemovedProperty(Ptr))
@@ -567,14 +567,14 @@ begin
     inherited Notify(Ptr, Action);
 end;
 
-procedure TRemovedPropertyList.DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
+procedure TPropertiesToSkip.DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
   var PropName: string; IsPath: boolean; var Handled, Skip: Boolean);
 begin
   Skip := IndexOf(Instance, PropName) >= 0;
   Handled := Skip;
 end;
 
-function TRemovedPropertyList.IndexOf(AInstance: TPersistent;
+function TPropertiesToSkip.IndexOf(AInstance: TPersistent;
   APropertyName: String): Integer;
 begin
   if AInstance <> nil then
@@ -583,7 +583,7 @@ begin
     Result := -1;
 end;
 
-function TRemovedPropertyList.IndexOf(AClass: TPersistentClass;
+function TPropertiesToSkip.IndexOf(AClass: TPersistentClass;
   APropertyName: String): Integer;
 var
   i: integer;
@@ -599,7 +599,7 @@ begin
     end;
 end;
 
-function TRemovedPropertyList.Add(APersistentClass: TPersistentClass;
+function TPropertiesToSkip.Add(APersistentClass: TPersistentClass;
   APropertyName, ANote, AHelpKeyWord: string): Integer;
 var
   Item: PRemovedProperty;
@@ -3000,7 +3000,7 @@ begin
   if Assigned(LRSTranslator) then
     Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
 
-  Result.OnPropertyNotFound := @(RemovedProperties.DoPropertyNotFound);
+  Result.OnPropertyNotFound := @(PropertiesToSkip.DoPropertyNotFound);
 
   DestroyDriver:=false;
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
@@ -3458,10 +3458,10 @@ begin
     Result:=0;
 end;
 
-procedure RegisterRemovedProperty(PersistentClass: TPersistentClass;
+procedure RegisterPropertyToSkip(PersistentClass: TPersistentClass;
   PropertyName, Note, HelpKeyWord: string);
 begin
-  RemovedProperties.Add(PersistentClass, PropertyName, Note, HelpKeyWord);
+  PropertiesToSkip.Add(PersistentClass, PropertyName, Note, HelpKeyWord);
 end;
 
 procedure Register;
@@ -5308,7 +5308,7 @@ procedure InternalInit;
 begin
   LazarusResources := TLResourceList.Create;
   RegisterInitComponentHandler(TComponent, @InitResourceComponent);
-  RemovedProperties := TRemovedPropertyList.Create;
+  PropertiesToSkip := TPropertiesToSkip.Create;
 end;
 
 initialization
@@ -5316,7 +5316,7 @@ initialization
 
 finalization
   FreeAndNil(LazarusResources);
-  FreeAndNil(RemovedProperties);
+  FreeAndNil(PropertiesToSkip);
 
 end.
 
