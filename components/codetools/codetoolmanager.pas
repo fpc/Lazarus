@@ -477,11 +477,13 @@ type
                                       TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceAllTypeCastFunctions(Code: TCodeBuffer): boolean;
     function FixForwardDefinitions(Code: TCodeBuffer): boolean;
-    function FindEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+    function FindEmptyMethods(Code: TCodeBuffer;
+                              const AClassName: string; X,Y: integer;
                               const Sections: TPascalClassSections;
                               ListOfPCodeXYPosition: TFPList;
                               out AllEmpty: boolean): boolean;
-    function RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+    function RemoveEmptyMethods(Code: TCodeBuffer;
+                                const AClassName: string; X,Y: integer;
                                 const Sections: TPascalClassSections;
                                 out AllRemoved: boolean;
                                 const Attr: TProcHeadAttributes;
@@ -3430,7 +3432,8 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindEmptyMethods(Code: TCodeBuffer; X, Y: integer;
+function TCodeToolManager.FindEmptyMethods(Code: TCodeBuffer;
+  const AClassName: string; X, Y: integer;
   const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList;
   out AllEmpty: boolean): boolean;
 var
@@ -3445,14 +3448,15 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.FindEmptyMethods(CursorPos,Sections,
+    Result:=FCurCodeTool.FindEmptyMethods(CursorPos,AClassName,Sections,
                                           ListOfPCodeXYPosition,AllEmpty);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
-function TCodeToolManager.RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+function TCodeToolManager.RemoveEmptyMethods(Code: TCodeBuffer;
+  const AClassName: string; X,Y: integer;
   const Sections: TPascalClassSections; out AllRemoved: boolean;
   const Attr: TProcHeadAttributes; out RemovedProcHeads: TStrings): boolean;
 var
@@ -3467,7 +3471,7 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,Sections,
+    Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,AClassName,Sections,
                             SourceChangeCache,AllRemoved,Attr,RemovedProcHeads);
   except
     on e: Exception do Result:=HandleException(e);

@@ -7151,9 +7151,15 @@ begin
   // save source
 
   // a) do before save events
-
-  if EditorOpts.AutoRemoveEmptyMethods then
-    ActiveUnitInfo.RemoveEmptyMethods;
+  if EditorOpts.AutoRemoveEmptyMethods
+  and (ActiveUnitInfo.Component<>nil) then begin
+    // Note: When removing published methods, the source, the lfm, the lrs
+    //       and the form must be changed. At the moment editing the lfm without
+    //       the component is not yet implemented.
+    Result:=RemoveEmptyMethods(ActiveUnitInfo.Source,
+                   ActiveUnitInfo.Component.ClassName,0,0,false,[pcsPublished]);
+    if Result<>mrOk then exit;
+  end;
 
   // b) do actual save
   if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then
