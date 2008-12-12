@@ -9672,7 +9672,7 @@ begin
   PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value', True); // TODO chk
   ColCount := XML.GetValue(Path+'ColCount/Value', 1); // TODO chk
   ColGap := XML.GetValue(Path+'ColGap/Value', 0);
-  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value',''));
+  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value','loColumns'));
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
