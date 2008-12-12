@@ -3005,6 +3005,7 @@ images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tshape.png -text svneol=unset#image/png
+images/components/tshelltreeview.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
 images/components/tsimpleipcserver.png -text svneol=unset#image/png
 images/components/tspeedbutton.png -text svneol=unset#image/png
