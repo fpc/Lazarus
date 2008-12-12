@@ -35,53 +35,11 @@ const
 
 var
   DefaultDrive: String;
-  PrimaryConfigPath,
-  SecondaryConfigPath: string;
   DefaultFPCTarget,
   DefaultFPCVersion : string;
 
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
-end;
-
-{---------------------------------------------------------------------------
-  getPrimaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetPrimaryConfigPath: String;
-begin
-  Result := PrimaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  getSecondaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetSecondaryConfigPath: String;
-begin
-  Result := SecondaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  createPrimaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure CreatePrimaryConfigPath;
-begin
-  CreateDirUTF8(GetPrimaryConfigPath);
-end;
-
-{---------------------------------------------------------------------------
-  SetPrimaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetPrimaryConfigPath(const NewValue: String);
-begin
-  PrimaryConfigPath := NewValue;
-end;
-
-{---------------------------------------------------------------------------
-  SetSecondaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetSecondaryConfigPath(const NewValue: String);
-begin
-  SecondaryConfigPath := NewValue;
 end;
 
 type

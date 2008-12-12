@@ -137,6 +137,10 @@ const
 
 implementation
 
+var
+  PrimaryConfigPath,
+  SecondaryConfigPath: string;
+
 {$I lazconf.inc}
 
 procedure AddFilenameToList(List: TStrings; const Filename: string;
@@ -231,6 +235,48 @@ begin
     Result:=Result+Prefix+List[i]+PostFix;
   end;
   List.Free;
+end;
+
+{---------------------------------------------------------------------------
+  getPrimaryConfigPath function
+ ---------------------------------------------------------------------------}
+function GetPrimaryConfigPath: String;
+begin
+  Result := PrimaryConfigPath;
+end;
+
+{---------------------------------------------------------------------------
+  getSecondaryConfigPath function
+ ---------------------------------------------------------------------------}
+function GetSecondaryConfigPath: String;
+begin
+  Result := SecondaryConfigPath;
+end;
+
+{---------------------------------------------------------------------------
+  createPrimaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure CreatePrimaryConfigPath;
+begin
+  CreateDirUTF8(GetPrimaryConfigPath);
+end;
+
+{---------------------------------------------------------------------------
+  SetPrimaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetPrimaryConfigPath(const NewValue: String);
+begin
+  debugln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileNameUTF8(NewValue),'"');
+  PrimaryConfigPath := ExpandFileNameUTF8(NewValue);
+end;
+
+{---------------------------------------------------------------------------
+  SetSecondaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetSecondaryConfigPath(const NewValue: String);
+begin
+  debugln('SetSecondaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileNameUTF8(NewValue),'"');
+  SecondaryConfigPath := ExpandFileNameUTF8(NewValue);
 end;
 
 {---------------------------------------------------------------------------
