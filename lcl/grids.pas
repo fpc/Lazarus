@@ -466,7 +466,7 @@ type
     function  GetDefaultSizePriority: Integer;
     function  GetDefaultVisible: boolean; virtual;
     function  GetDefaultWidth: Integer; virtual;
-    function GetPickList: TStrings; virtual;
+    function  GetPickList: TStrings; virtual;
     procedure ColumnChanged; virtual;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;

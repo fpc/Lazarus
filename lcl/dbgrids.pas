@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -85,26 +85,26 @@ type
 
   TDBGridClickEvent =
     procedure(Column: TColumn) of object;
-    
+
   TMovedEvent =
     procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
-    
+
   TDrawColumnCellEvent =
     procedure(Sender: TObject; const Rect: TRect; DataCol: Integer;
               Column: TColumn; State: TGridDrawState) of object;
-              
+
   TGetDbEditMaskEvent =
     procedure (Sender: TObject; const Field: TField;
                var Value: string) of object;
-               
+
   TUserCheckBoxBitmapEvent =
     procedure(Sender: TObject; const CheckedState: TDbGridCheckboxState;
               ABitmap: TBitmap) of object;
-              
+
   TDbGridSelEditorEvent =
     procedure(Sender: TObject; Column: TColumn;
               var Editor: TWinControl) of object;
-              
+
   TPrepareDbGridCanvasEvent =
     procedure(sender: TObject; DataCol: Integer;
               Column: TColumn; AState: TGridDrawState) of object;
@@ -132,7 +132,7 @@ type
   public
     constructor Create(AGrid: TCustomDbGrid);
     destructor Destroy; override;
-    
+
     procedure Clear;
     procedure Delete;
     function  Find(const Item: TBookmarkStr; var AIndex: Integer): boolean;
@@ -240,6 +240,7 @@ type
     function  GetDisplayName: string; override;
     function  GetDefaultReadOnly: boolean; override;
     function  GetDefaultWidth: Integer; override;
+    function GetPickList: TStrings; override;
     property  IsAutomaticColumn: boolean read FIsAutomaticColumn;
     property  IsDesignColumn: boolean read GetIsDesignColumn;
     procedure LinkField;
@@ -564,6 +565,12 @@ procedure Register;
 
 implementation
 
+type
+  TLookupListCracker = class(TObject)
+  private
+    FList: TList;
+  end;
+
 procedure Register;
 begin
   RegisterComponents('Data Controls',[TDBGrid]);
@@ -645,7 +652,7 @@ begin
   if (Field=nil) or (Field.DisplayWidth=0) then
     Result := DEFCOLWIDTH
   else begin
-  
+
     aCharWidth := CalcCanvasCharWidth(Canvas);
     if Field.DisplayWidth>Length(aTitle) then
       result := aCharWidth * Field.DisplayWidth
@@ -674,7 +681,7 @@ begin
         end;
       end;
     end; // if HasTitle ...
-    
+
   end; // if (Field=nil) or (Field.DisplayWidth=0) ...
 end;
 
@@ -950,7 +957,7 @@ begin
       Include(OldOptions, goColSizing)
     else
       Exclude(OldOptions, goColSizing);
-      
+
     if dgColumnMove in fOptions then
       Include(OldOptions, goColMoving)
     else
@@ -975,7 +982,7 @@ begin
       Include(OldOptions, goTabs)
     else
       Exclude(OldOptions, goTabs);
-      
+
     if dgHeaderHotTracking in FOptions then
       Include(OldOptions, goHeaderHotTracking)
     else
@@ -987,7 +994,7 @@ begin
       Exclude(OldOptions, goHeaderPushedLook);
 
     inherited Options := OldOptions;
-    
+
     if MultiSel and not (dgMultiSelect in FOptions) then begin
       FSelectedRows.Clear;
       FKeyBookmark:='';
@@ -1025,6 +1032,8 @@ end;
 procedure TCustomDBGrid.UpdateData;
 var
   selField,edField: TField;
+  i: Integer;
+  lst: TList;
 begin
   // get Editor text and update field content
   if not UpdatingData and (FEditingColumn>-1) and FDatalink.Editing then begin
@@ -1038,6 +1047,18 @@ begin
 
       StartUpdating;
       edField.Text := FTempText;
+      if edField.Lookup and edField.LookupCache then begin
+        {$WARNINGS OFF}
+        lst := TLookupListCracker(edField.LookupList).FList;
+        {$WARNINGS ON}
+        for i := 0 to lst.Count - 1 do begin
+          with PLookupListRec(lst[i])^ do
+            if Value = FTempText then begin
+              edField.DataSet.FieldValues[edField.KeyFields] := Key;
+              break;
+             end;
+        end;
+      end;
       EndUpdating;
 
       EditingColumn(FEditingColumn, False);
@@ -1155,7 +1176,7 @@ begin
 
   ScrollBarPosition(SB_VERT, aPos);
   FOldPosition:=aPos;
-  
+
   if EditorMode then
     RestoreEditor;
   {$ifdef dbgDBGrid}
@@ -1301,7 +1322,7 @@ begin
 
   FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  
+
   {TODO: try to move this out}
   {$ifdef WINDOWS}
   ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
@@ -1444,7 +1465,7 @@ begin
   finally
     Exclude(FGridStatus, gsAddingAutoColumns);
   end;
-  
+
 end;
 
 procedure TCustomDBGrid.SwapCheckBox;
@@ -1588,7 +1609,7 @@ end;
 
 procedure TCustomDBGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
-  
+
 var
   S: string;
   F: TField;
@@ -1671,7 +1692,7 @@ end;
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   DeltaCol,DeltaRow: Integer;
-  
+
   procedure DoOnKeyDown;
   begin
     {$ifdef dbgGrid}DebugLn('DoOnKeyDown INIT');{$endif}
@@ -1724,7 +1745,7 @@ var
       CurBookmark := FDatalink.DataSet.Bookmark;
       if FKeyBookmark='' then
         FKeyBookmark:=CurBookmark;
-        
+
       if (FKeyBookmark=CurBookmark) then begin
         if AStart then begin
           SelectRecord(true);
@@ -1736,7 +1757,7 @@ var
         end;
         FKeySign := 0;
       end;
-      
+
       n := 4*Ord(FKeySign>=0) + 2*Ord(ADown) + 1*Ord(AStart);
       case n of
         0,6,8..11:
@@ -1949,7 +1970,7 @@ begin
           end;
         end;
       end;
-      
+
     VK_MULTIPLY:
       begin
         if ssCtrl in Shift then
@@ -2026,18 +2047,18 @@ begin
 
         FKeyBookmark:=''; // force new keyboard selection start
         SetFocus;
-        
+
         P:=MouseToCell(Point(X,Y));
         if P.Y=Row then begin
           //doAcceptValue;
-          
+
           if ssCtrl in Shift then
             ToggleSelectedRow
           else begin
             ClearSelection(true);
             doInherited;
           end;
-          
+
         end else begin
           doMouseDown;
           if ValidDataSet then begin
@@ -2408,7 +2429,7 @@ var
   DataCol: Integer;
 begin
   PrepareCanvas(aCol, aRow, aState);
-  
+
   if (gdFixed in aState) or DefaultDrawing then
     Canvas.FillRect(aRect);
 
@@ -2421,10 +2442,10 @@ begin
 
   if (gdFixed in aState) or DefaultDrawing then
     DefaultDrawCell(aCol, aRow, aRect, aState);
-  
+
   if (ARow>=FixedRows) and Assigned(OnDrawColumnCell) and
      not (csDesigning in ComponentState) then begin
-     
+
     DataCol := ColumnIndexFromGridColumn(aCol);
     if DataCol>=0 then
       OnDrawColumnCell(Self, aRect, DataCol, TColumn(Columns[DataCol]), aState);
@@ -2478,7 +2499,7 @@ begin
         AState := gcbpGrayed
   else
     AState := gcbpGrayed;
-    
+
   if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize:= ThemeServices.GetDetailSize(Details);
@@ -2569,7 +2590,7 @@ begin
     // problem: AField should validate a unicode char, but AField has no
     //          such facility, ask the user, if user is not interested
     //          do ansi convertion and try with field.
-    
+
     { TODO: is this really necessary?
     if Assigned(FOnValidateUTF8Char) then begin
       result := true;
@@ -2581,7 +2602,7 @@ begin
   end else
   if Length(AChar)=0 then
     exit;
-  
+
   Result := AField.IsValidChar(AChar[1])
 end;
 
@@ -2621,7 +2642,7 @@ begin
       if dgTitles in Options then FRCount := 1 else FRCount := 0;
       if dgIndicator in Options then FCCount := 1 else FCCount := 0;
       InternalSetColCount(Result + FCCount);
-      
+
       if FDataLink.Active then begin
         UpdateBufferCount;
         RecCount := FDataLink.RecordCount;
@@ -2636,11 +2657,11 @@ begin
       end;
 
       Inc(RecCount, FRCount);
-      
+
       RowCount := RecCount;
       FixedRows := FRCount;
       FixedCols := FCCount;
-      
+
       UpdateGridColumnSizes;
 
       if FDatalink.Active and (FDatalink.ActiveRecord>=0) then
@@ -2671,7 +2692,7 @@ begin
   FDataLink.OnEditingChanged:=@OnEditingChanged;
   FDataLink.OnUpdateData:=@OnUpdateData;
   FDataLink.VisualControl:= True;
-  
+
   FSelectedRows := TBookmarkList.Create(Self);
 
   FDefaultColWidths := True;
@@ -2722,7 +2743,7 @@ var
 begin
 
   F := Column.Field;
-  
+
   DataCol := GridColumnFromColumnIndex(DataCol);
 
   if DataCol>=FixedCols then
@@ -3136,6 +3157,25 @@ begin
   result := (DesignIndex>=0) and (DesignIndex<10000);
 end;
 
+function TColumn.GetPickList: TStrings;
+var
+  i: Integer;
+  lst: TList;
+  p: PLookupListRec;
+begin
+  Result := inherited GetPickList;
+  if Field.Lookup and Field.LookupCache then begin
+    Result.Clear;
+    {$WARNINGS OFF}
+    lst := TLookupListCracker(Field.LookupList).FList;
+    {$WARNINGS ON}
+    for i := 0 to lst.Count - 1 do begin
+      p := PLookupListRec(lst.Items[i]);
+      Result.AddObject(p^.Value, TObject(p));
+    end;
+  end;
+end;
+
 function TColumn.GetValueChecked: string;
 begin
   if FValueChecked = nil then
@@ -3296,12 +3336,12 @@ begin
       aGrid.InvalidateSizes;
       result := DEFCOLWIDTH;
     end;
-    
+
     if not WasAllocated then begin
       aGrid.Canvas.Handle := 0;
       ReleaseDC(0, aDC);
     end;
-      
+
   end else
     result := DEFCOLWIDTH;
 end;
@@ -3447,11 +3487,11 @@ var
   aIndex: Integer;
 begin
   CheckActive;
-  
+
   aBookStr := FGrid.Datasource.Dataset.Bookmark;
   if ABookStr='' then
     exit;
-    
+
   if Find(ABookStr, aIndex) then begin
     if not AValue then begin
       FList.Delete(aIndex);
