@@ -289,6 +289,10 @@ msgstr "FORMATTEXT(<Kaukė>, <Tekstas>)/Grąžina pagal duotą <Kaukė> kaukę f
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [,Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus „Tinka“, grąžina įvesties langelyje esantį tekstą."
 
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr "LOWERCASE(<Tekstas>)/Verčia visas <Tekstas> raides mažosiomis."
@@ -344,6 +348,10 @@ msgstr "TRIM(<Tekstas>)/Grąžina <Tekstas> tekstą be pražioje ir gale buvusi�
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr "UPPERCASE(<Tekstas>)/Visas <Tekstas> raides verčia didžiosiomis."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr ""
 
 #: lr_const.sdesignreport
 msgid "Design report"

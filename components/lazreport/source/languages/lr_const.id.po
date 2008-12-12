@@ -288,6 +288,10 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Menerapkan <Mask> ke <String> dan mengembal
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Menampilkan jendela dialog dengan headstring <Caption> dan kotak edit. Jika parameter [Default] disetel, menaruh string ini dalam kotak edit. Setelah pengguna mengklik OK, mengembalikan string input."
 
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr "LOWERCASE(<String>)/Mengubah Simbol <String> ke huruf kecil."
@@ -343,6 +347,10 @@ msgstr "TRIM(<String>)/Membuang semua heading dan spasi tersisa dalam <String> d
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr "UPPERCASE(<String>)/Mengubah simbol <String> ke huruf besar."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr ""
 
 #: lr_const.sdesignreport
 msgid "Design report"

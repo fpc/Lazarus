@@ -299,6 +299,10 @@ msgstr "FORMATTEXT(<Maske>, <String>)/Wendet <Maske>auf den angegebenen <String>
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr "LOWERCASE(<String>)/Konvertiert die Zeichen in <String> in Kleinbuchstaben."
@@ -354,6 +358,10 @@ msgstr "TRIM(<String>)/Schneidet alle führenden und anhängenden Leerzeichen au
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr "UPPERCASE(<String>)/Wandert die Zeichen in <String> in Großbuchstaben um."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr ""
 
 #: lr_const.sdesignreport
 msgid "Design report"
