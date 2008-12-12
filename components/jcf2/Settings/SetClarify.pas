@@ -71,8 +71,10 @@ type
 implementation
 
 uses
+  { Delphi }
   SysUtils,
-  JcfUtils;
+  { local }
+  JcfStringUtils;
 
 const
   REG_ONCE_OFFS = 'OnceOffs';
@@ -109,8 +111,8 @@ function TSetClarify.ExtensionIsFormatted(psExt: string): boolean;
 begin
   psExt := Trim(psExt);
 
-  if JcfUtils.StrLeft(psExt, 1) = '.' then
-    psExt := JcfUtils.StrRestof(psExt, 2);
+  if StrLeft(psExt, 1) = '.' then
+    psExt := StrRestof(psExt, 2);
 
   Result := (FileExtensions.IndexOf(psExt) >= 0);
 end;

@@ -71,12 +71,9 @@ const
 
 implementation
 
-{$ifndef fpc}
 uses
   SysUtils, FileUtils, Forms, Windows;
-{$endif}
 
-{$ifndef fpc}
 function GetHelpFilePath: string;
 var
   HelpFilePath: string;
@@ -127,11 +124,5 @@ begin
   end;
   Result := HelpFilePath;
 end;
-{$else}
-function GetHelpFilePath: string;
-begin
-  Result := '';
-end;
-{$endif}
 
 end.

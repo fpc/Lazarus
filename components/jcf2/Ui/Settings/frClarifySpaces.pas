@@ -74,6 +74,10 @@ type
     cbInsertSpaceAfterOpen: TCheckBox;
     eSpacesBeforeColonGeneric: TJvValidateEdit;
     lblSpacesBeforeColonGeneric: TLabel;
+    eSpaceBeforeColonConst: TJvValidateEdit;
+    lblSpaceBeforeColonConst: TLabel;
+    eSpacesBeforeColonRecordField: TJvValidateEdit;
+    lblSpacesBeforeColonRecordField: TLabel;
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
@@ -119,10 +123,12 @@ begin
     cbSpaceClassHeritage.Checked := SpaceBeforeClassHeritage;
 
     eSpaceBeforeColonVar.Value   := SpacesBeforeColonVar;
+    eSpaceBeforeColonConst.Value :=  SpacesBeforeColonConst;
     eSpaceBeforeColonParam.Value := SpacesBeforeColonParam;
     eSpaceBeforeColonFn.Value    := SpacesBeforeColonFn;
     eSpacesBeforeColonClassVar.Value := SpacesBeforeColonClassVar;
 
+    eSpacesBeforeColonRecordField.Value := SpacesBeforeColonRecordField;
     eSpacesBeforeCaseLabel.Value := SpacesBeforeColonCaseLabel;
     eSpacesBeforeLabel.Value     := SpacesBeforeColonLabel;
     eSpacesBeforeColonGeneric.Value := SpacesBeforeColonInGeneric;
@@ -160,9 +166,14 @@ begin
     SpaceBeforeClassHeritage := cbSpaceClassHeritage.Checked;
 
     SpacesBeforeColonVar   := eSpaceBeforeColonVar.Value;
+    SpacesBeforeColonConst := eSpaceBeforeColonConst.Value;
+
+
     SpacesBeforeColonParam := eSpaceBeforeColonParam.Value;
     SpacesBeforeColonFn    := eSpaceBeforeColonFn.Value;
     SpacesBeforeColonClassVar := eSpacesBeforeColonClassVar.Value;
+
+    SpacesBeforeColonRecordField := eSpacesBeforeColonRecordField.Value;
     SpacesBeforeColonCaseLabel := eSpacesBeforeCaseLabel.Value;
     SpacesBeforeColonLabel := eSpacesBeforeLabel.Value;
     SpacesBeforeColonInGeneric := eSpacesBeforeColonGeneric.Value;

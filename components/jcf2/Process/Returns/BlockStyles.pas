@@ -1,6 +1,35 @@
 unit BlockStyles;
 
-{ AFS 22 April
+{(*}
+(*------------------------------------------------------------------------------
+ Delphi Code formatter source code 
+
+The Original Code is BlockStyles, released May 2003.
+The Initial Developer of the Original Code is Anthony Steele. 
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
+All Rights Reserved. 
+Contributor(s): Anthony Steele. 
+
+The contents of this file are subject to the Mozilla Public License Version 1.1
+(the "License"). you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.mozilla.org/NPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied.
+See the License for the specific language governing rights and limitations 
+under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
+------------------------------------------------------------------------------*)
+{*)}
+
+{$I JcfGlobal.inc}
+
+interface
+
+{ AFS 22 April 2003
   This unit handles the different styles of line breaking & spacing after the constructs
   if <expression> then
     statement;
@@ -36,36 +65,6 @@ unit BlockStyles;
  end;
 }
 
-
-{(*}
-(*------------------------------------------------------------------------------
- Delphi Code formatter source code 
-
-The Original Code is BlockStyles, released May 2003.
-The Initial Developer of the Original Code is Anthony Steele. 
-Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
-All Rights Reserved. 
-Contributor(s): Anthony Steele. 
-
-The contents of this file are subject to the Mozilla Public License Version 1.1
-(the "License"). you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.mozilla.org/NPL/
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either express or implied.
-See the License for the specific language governing rights and limitations 
-under the License.
-
-Alternatively, the contents of this file may be used under the terms of
-the GNU General Public License Version 2 or later (the "GPL") 
-See http://www.gnu.org/licenses/gpl.html
-------------------------------------------------------------------------------*)
-{*)}
-
-{$I JcfGlobal.inc}
-
-interface
-
 uses SwitchableVisitor, ParseTreeNodeType;
 
 type
@@ -83,7 +82,8 @@ type
 implementation
 
 uses
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   Tokens, SourceToken, TokenUtils, JCFSettings,
   FormatFlags, SettingsTypes;
 
@@ -208,7 +208,7 @@ begin
           if lcNextSpace.TokenType = ttWhiteSpace then
           begin
             lcNextSpace.TokenType := ttReturn;
-            lcNextSpace.SourceCode := AnsiLineBreak;
+            lcNextSpace.SourceCode := NativeLineBreak;
           end
           else
             InsertTokenAfter(lcSourceToken, NewReturn);
@@ -230,6 +230,14 @@ begin
             begin
               // null space as it's next to space already
               lcNextReturn.SourceCode := '';
+
+              // make the folling space into a single space
+              lcNextSpace := lcNextReturn.NextToken;
+              if (lcNextSpace <> nil) and (lcNextSpace.TokenType = ttWhiteSpace) then
+              begin
+                lcNextSpace.SourceCode := ' ';
+              end;
+
             end
             else
               // keep a single space

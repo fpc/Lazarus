@@ -57,7 +57,8 @@ type
 implementation
 
 uses
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   SourceToken, Tokens, ParseTreeNodeType, JcfSettings,
   FormatFlags, TokenUtils, SettingsTypes;
 
@@ -280,7 +281,7 @@ begin
     if (lcSourceToken.TokenType = ttWhiteSpace) then
     begin
       { one space }
-      lcSourceToken.SourceCode := AnsiSpace;
+      lcSourceToken.SourceCode := NativeSpace;
 
       { empty any preceeding whitespace }
       repeat
@@ -293,7 +294,7 @@ begin
     begin
       lcNew := TSourceToken.Create;
       lcNew.TokenType := ttWhiteSpace;
-      lcNew.SourceCode := AnsiSpace;
+      lcNew.SourceCode := NativeSpace;
 
       InsertTokenAfter(lcSourceToken, lcNew);
     end;

@@ -54,7 +54,7 @@ type
     procedure PostVisitParseTreeNode(const pcNode: TObject); override;
     function VisitSourceToken(const pcToken: TObject): Boolean; override;
 
-    function FinalSummary(var psMessage: string): boolean; override;
+    function FinalSummary(out psMessage: string): boolean; override;
   end;
 
 
@@ -84,7 +84,7 @@ begin
   inherited;
 end;
 
-function TVisitSetNestings.FinalSummary(var psMessage: string): boolean;
+function TVisitSetNestings.FinalSummary(out psMessage: string): boolean;
 begin
   psMessage := fcRunningTotals.FinalTest;
   Result    := (psMessage <> '');

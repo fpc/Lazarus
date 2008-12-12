@@ -35,7 +35,7 @@ interface
 
 uses
   { delphi }
-  Windows, SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes, Controls, Forms,
   StdCtrls, Buttons, ExtCtrls, ComCtrls, ShellAPI, Dialogs,
   { local }
   JCFSettings, frmBaseSettingsFrame;
@@ -83,6 +83,7 @@ implementation
 {$endif}
 
 uses
+  Windows,
   JcfRegistrySettings, JcfFontSetFunctions, JCFHelp,
   { contained frames }
   frFiles, frObfuscateSettings,

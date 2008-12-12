@@ -96,7 +96,7 @@ implementation
 
 uses
   { delphi }
-  Math, SysUtils,
+  {$IFNDEF FPC}Windows,{$ENDIF} Math, SysUtils,
   {local }
   ParseTreeNodeType, Tokens, TokenUtils;
 

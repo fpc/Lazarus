@@ -46,9 +46,8 @@ procedure WriteTextFile(const psFileName: string; const psContents: WideString;
 implementation
 
 uses
-  Classes, SysUtils, Dialogs,
-  JcfUtils,
-  JcfUnicode;
+  { delphi }
+  Classes, SysUtils, Dialogs;
 
 const
   // byte order markers (BOM)
@@ -112,7 +111,7 @@ begin
   end
   else if (word1 = Utf16BigEndianMarker) then
   begin
-      Result := eUtf16BigEndian;
+    Result := eUtf16BigEndian;
   end
   else
   begin
@@ -125,7 +124,6 @@ function TypeOfTextFile(const psFileName: string): TFileContentType;
 var
   fs: TFileStream;
 begin
-
   {open file}
   fs := TFileStream.Create(psFileName, fmOpenRead);
   try
@@ -136,12 +134,10 @@ begin
   end;
 end;
 
-procedure ReadPastFileHeader(const pcFileStream: TFileStream;
-  const peContentType: TFileContentType);
+procedure ReadPastFileHeader(const pcFileStream: TFileStream; const peContentType: TFileContentType);
 var
   liOffsetBytes: integer;
 begin
-
   case peContentType of
     e8Bit:
       liOffsetBytes := 0;
@@ -153,27 +149,27 @@ begin
       liOffsetBytes := 4;
     else
       raise Exception.Create('Unknown file content type: ' + IntToStr(Ord(peContentType)));
-
   end;
 
   pcFileStream.Seek(liOffsetBytes, soFromBeginning);
 end;
 
+{ this is one of the few cases where 'AnsiString' must be used }
 function Read8BitFile(const pcFileStream: TFileStream): WideString;
 var
   liBytesRemaining: integer;
-  lsContents8bit: string;
+  lsContents8bit: AnsiString;
 begin
   liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
   // read the bytes into a string
   SetLength(lsContents8bit, liBytesRemaining);
   if pcFileStream.Size > 0 then
   begin
-     pcFileStream.ReadBuffer(lsContents8bit[1], liBytesRemaining);
+    pcFileStream.ReadBuffer(lsContents8bit[1], liBytesRemaining);
   end;
 
-  // convert to wide char
-  Result := lsContents8bit;
+  // convert to wide string
+  Result := WideString(lsContents8bit);
 end;
 
 function Read16BitFile(const pcFileStream: TFileStream; const pbBigEndian: boolean): WideString;
@@ -238,8 +234,6 @@ begin
   Result := UCS4StringToWideString(ucs4Chars);
 end;
 
-
-
 { read in a text file,
   the file can contain 8-bit or 16-bit chars
   code is much adapted from a sample by Mike Shkolnik
@@ -266,13 +260,10 @@ begin
     case peContentType of
       e8Bit, eUtf8:
         psContents := Read8BitFile(fs);
-
       eUtf16LittleEndian, eUtf16BigEndian:
         psContents := Read16BitFile(fs, peContentType = eUtf16BigEndian);
-
       eUtf32LittleEndian, eUtf32BigEndian:
         psContents := Read32BitFile(fs, peContentType = eUtf32BigEndian);
-
       else
         raise Exception.Create('Unknown file content type: ' + IntToStr(Ord(peContentType)));
 
@@ -283,31 +274,31 @@ begin
   end;
 end;
 
+{ this is one of the few cases when "AnsiString" must be used }
 procedure Write8BitFile(const pcFileStream: TFileStream;
   const psContents: WideString; const pbUtf8Header: boolean);
 var
   Len:    integer;
-  lsContents: string;
+  lsContents: AnsiString;
   utf8Header: array [0..2] of byte;
 begin
-    lsContents := psContents;
-    Len := Length(lsContents);
+  lsContents := AnsiString(psContents);
+  Len := Length(lsContents);
 
-    if pbUtf8Header then
-    begin
-      // write the BOM
-      utf8Header[0] := Utf8Marker1;
-      utf8Header[1] := Utf8Marker2;
-      utf8Header[2] := Utf8Marker3;
-      pcFileStream.WriteBuffer(utf8Header[0], 3);
-    end;
+  if pbUtf8Header then
+  begin
+    // write the BOM
+    utf8Header[0] := Utf8Marker1;
+    utf8Header[1] := Utf8Marker2;
+    utf8Header[2] := Utf8Marker3;
+    pcFileStream.WriteBuffer(utf8Header[0], 3);
+  end;
 
-    if Len > 0 then
-    begin
-      pcFileStream.WriteBuffer(lsContents[1], Len);
-    end;
+  if Len > 0 then
+  begin
+    pcFileStream.WriteBuffer(lsContents[1], Len);
+  end;
 end;
-
 
 procedure Write16BitFile(const pcFileStream: TFileStream;
   const psContents: WideString; const pbBigEndian: boolean);
@@ -316,7 +307,6 @@ var
   liLoop: integer;
   wChar:  word;
 begin
-
   Len := Length(psContents);
 
   if Len > 0 then
@@ -342,7 +332,6 @@ begin
       pcFileStream.WriteBuffer(psContents[1], Len * 2);
     end;
   end;
-
 end;
 
 procedure Write32BitFile(const pcFileStream: TFileStream;
@@ -387,7 +376,6 @@ begin
     end;
   end;
 end;
-
 
 procedure WriteTextFile(const psFileName: string; const psContents: WideString;
   const peContentType: TFileContentType);

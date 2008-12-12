@@ -34,7 +34,8 @@ unit JCFSettings;
 interface
 
 uses
-  { local }SetObfuscate, SetClarify,
+  { local }
+  SetObfuscate, SetClarify,
   SetIndent, SetSpaces, SetReturns,
   SetComments, SetCaps, SetWordList,
   SetAlign, SetReplace, SetUses, SetPreProcessor,
@@ -134,9 +135,9 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Dialogs,
+  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, Dialogs,
   { local }
-  JcfUtils,
+  JcfStringUtils,
   JCFSetBase,
   JcfRegistrySettings;
 
@@ -244,7 +245,7 @@ begin
   begin
     if pbMustExist then
     begin
-      MessageDlg('The settings file "' + psFileName + '" does not exist.' + AnsiLineBreak +
+      MessageDlg('The settings file "' + psFileName + '" does not exist.' + NativeLineBreak +
         'The formatter will work better if it is configured to use a valid settings file',
         mtError, [mbOK], 0);
       end;
@@ -307,7 +308,7 @@ begin
       if lcReg.FormatFileWriteOption = eAlwaysWrite then
       begin
         MessageDlg('Error writing settings file ' +
-          GetRegSettings.FormatConfigFileName + AnsiLineBreak + ' :' +
+          GetRegSettings.FormatConfigFileName + NativeLineBreak + ' :' +
           E.Message, mtError, [mbOK], 0);
       end;
     end;

@@ -42,6 +42,7 @@ type
     fiReturnsBefore, fiNextReturnsBefore: integer;
 
     fiReturnsBeforeProcedure: integer;
+
   protected
     procedure InspectSourceToken(const pcToken: TObject); override;
 
@@ -130,10 +131,15 @@ begin
         exit;
       end;
     end;
-
   end;
-
 end;
+
+function StartsAnonymousMethod(const pt: TSourceToken): Boolean;
+begin
+  Result := (pt.TokenType in [ttProcedure, ttFunction]) and
+     pt.HasParentNode(nAnonymousMethod, 3)
+end;
+
 
 function NeedsBlankLine(const pt, ptNext: TSourceToken): boolean;
 var
@@ -152,10 +158,12 @@ begin
 
    IMHO should also have blank line before contained procs
    }
+  if StartsAnonymousMethod(pt) then
+    exit;
 
   if (pt.TokenType in ProcedureWords) and
     (not pt.IsOnRightOf(nTypeDecl, ttEquals)) and
-    (not pt.HasParentNode(nProcedureType, 2)) and 
+    (not pt.HasParentNode(nProcedureType, 2)) and
     (not IsClassFunctionOrProperty(pt)) and
     (ProcedureHasBody(pt)) and
     (not IsIdentifier(pt, idAny)) then
@@ -244,6 +252,9 @@ begin
     exit;
 
   if pt.HasParentNode(nAsm) then
+    exit;
+
+  if StartsAnonymousMethod(pt) then
     exit;
 
   if (pt.TokenType in WordsReturnBefore) then
@@ -361,7 +372,7 @@ begin
 
 end;
 
-function StartsProcedure(pcSourceToken: TSourceToken): boolean;
+function StartsProcedure(const pcSourceToken: TSourceToken): boolean;
 var
   lcPrev: TSourceToken;
 begin
@@ -373,7 +384,8 @@ begin
     lcPrev := pcSourceToken.PriorSolidToken;
 
     // check that it's not "procedure" in "class procedure foo;"
-    if (lcPrev <> nil) and (lcPrev.TokenType = ttClass) then
+    // or "reference to procedure
+    if (lcPrev <> nil) and (lcPrev.TokenType in [ttClass, ttTo]) then
       result := False;
   end;
 
@@ -381,6 +393,11 @@ begin
   if Result then
   begin
     Result := ProcedureHasBody(pcSourceToken);
+  end;
+
+  if Result then
+  begin
+    Result := not StartsAnonymousMethod(pcSourceToken);
   end;
 end;
 

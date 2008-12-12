@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  Windows, Classes, Forms, Graphics, Controls, StdCtrls,
+  Classes, Forms, Graphics, Controls, StdCtrls,
   Buttons, ExtCtrls, ShellAPI, SysUtils,
   { JVCL }
   JvLabel, JvExControls, JvComponent;
@@ -64,9 +64,12 @@ implementation
 {$endif}
 
 uses
-  { delphi }URLMon,
-  { jcl }JclAnsiStrings,
-  { local }VersionConsts, JCFHelp, JcfFontSetFunctions;
+  { delphi }
+  Windows, URLMon,
+  { jcl }
+  JclStrings,
+  { local }
+  VersionConsts, JCFHelp, JcfFontSetFunctions;
 
 procedure ShowURL(const ps: string);
 var
@@ -89,14 +92,14 @@ end;
 
 procedure TfrmAboutBox.FormCreate(Sender: TObject);
 var
-  ls: AnsiString;
+  ls: string;
 begin
   inherited;
 
   SetObjectFontToSystemFont(Self);
 
   // show the version from the program constant
-  ls := AnsiString(mWhat.Text);
+  ls := mWhat.Text;
   StrReplace(ls, '%VERSION%', PROGRAM_VERSION);
   StrReplace(ls, '%DATE%', PROGRAM_DATE);
   mWhat.Text := string(ls);

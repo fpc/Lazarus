@@ -42,12 +42,11 @@ implementation
 uses
   { delphi }
   StdCtrls, ComCtrls, Graphics, TypInfo,
-  { jcf }
-  JcfUtils;
+  { local }
+  JcfStringUtils;
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
-{$IFNDEF FPC}
   if IsWinVista then
   //if IsWinVista or IsWinServer2008 then
   begin
@@ -66,12 +65,10 @@ begin
     AObjectFont.Name := 'MS Sans Serif';
     AObjectFont.Size := 8;
   end;
-{$ENDIF}
 end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
-{$IFNDEF FPC}
   //if IsWinVista or IsWinServer2008 then
   if IsWinVista then
   begin
@@ -90,7 +87,6 @@ begin
     AObjectFont.Name := 'Courrier New';
     AObjectFont.Size := 8;
   end;
-{$ENDIF}
 end;
 
 

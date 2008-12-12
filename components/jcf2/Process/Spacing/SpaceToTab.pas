@@ -51,20 +51,21 @@ implementation
 
 uses
   SysUtils,
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   JcfSettings, SourceToken, Tokens, FormatFlags;
 
 constructor TSpaceToTab.Create;
 begin
   inherited;
-  fsSpaces    := string(StrRepeat(AnsiSpace, FormatSettings.Spaces.SpacesForTab));
+  fsSpaces    := string(StrRepeat(NativeSpace, FormatSettings.Spaces.SpacesForTab));
   FormatFlags := FormatFlags + [eAddSpace, eRemoveSpace];
 end;
 
 function TSpaceToTab.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
 var
   lcSourceToken, lcNextToken: TSourceToken;
-  ls, lsTab: AnsiString;
+  ls, lsTab: string;
 begin
   Result := False;
   lcSourceToken := TSourceToken(pcNode);
@@ -77,18 +78,18 @@ begin
   { Merge following space tokens
     can't pass property as var parameter so ls local var is used }
 
-	ls := AnsiString(lcSourceToken.SourceCode);
+	ls := lcSourceToken.SourceCode;
 	lcNextToken := lcSourceToken.NextToken;
 	while (lcNextToken <> nil) and (lcNextToken.TokenType = ttWhiteSpace) do
 	begin
-		ls := ls + AnsiString(lcNextToken.SourceCode);
+		ls := ls + lcNextToken.SourceCode;
 		lcNextToken.SourceCode := '';
 		lcNextToken := lcNextToken.NextToken;
 	end;
 
-  lsTab := AnsiTab;
-  StrReplace(ls, AnsiString(fsSpaces), lsTab, [rfReplaceAll]);
-  lcSourceToken.SourceCode := WideString(ls);
+  lsTab := NativeTab;
+  StrReplace(ls, fsSpaces, lsTab, [rfReplaceAll]);
+  lcSourceToken.SourceCode := ls;
 end;
 
 function TSpaceToTab.IsIncludedInSettings: boolean;

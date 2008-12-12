@@ -79,14 +79,17 @@ type
 implementation
 
 uses
-  { delphi }Menus, Dialogs, Controls,
-  { jcl }JclAnsiStrings,
-  { local }fAllSettings, fAbout, JcfRegistrySettings, fRegistrySettings;
+  { delphi }
+  Menus, Dialogs, Controls,
+  { jcl }
+  JclStrings,
+  { local }
+  fAllSettings, fAbout, JcfRegistrySettings, fRegistrySettings;
 
 
-function FileIsAllowedType(const psFileName: AnsiString): boolean;
+function FileIsAllowedType(const psFileName: string): boolean;
 const
-  ALLOWED_FILE_TYPES: array[1..3] of AnsiString = ('.pas', '.dpr', '.dpk');
+  ALLOWED_FILE_TYPES: array[1..3] of string = ('.pas', '.dpr', '.dpk');
 begin
   Result := StrIsOneOf(StrRight(psFileName, 4), ALLOWED_FILE_TYPES);
 end;
@@ -197,7 +200,7 @@ begin
   if lciProject = nil then
     exit;
 
-  lsMsg := 'JEDI Code Format of ' + lciProject.FileName + AnsiLineBreak +
+  lsMsg := 'JEDI Code Format of ' + lciProject.FileName + NativeLineBreak +
     'Are you sure that you want to format all ' + IntToStr(lciProject.GetModuleCount) +
     ' files in the project.';
 
@@ -247,7 +250,7 @@ begin
 
     // check that it's open, and a .pas or .dpr
     if (lciEditor <> nil) and (lciEditor.EditViewCount > 0) and
-      (FileIsAllowedType(AnsiString(lciEditor.FileName))) then
+      (FileIsAllowedType(lciEditor.FileName)) then
     begin
       fcEditorConverter.Convert(lciEditor);
     end;
@@ -263,7 +266,7 @@ begin
     exit;
 
   // check that it's a .pas or .dpr
-  if not FileIsAllowedType(AnsiString(psFileName)) then
+  if not FileIsAllowedType(psFileName) then
     exit;
 
   if fcFileConverter = nil then

@@ -56,9 +56,12 @@ type
 implementation
 
 uses
-  { delphi }SysUtils,
-  JclAnsiStrings,
-  { local }Tokens, TokenUtils, JcfSettings,
+  { delphi }
+  SysUtils,
+  { Jcl }
+  JclStrings,
+  { local }
+  Tokens, TokenUtils, JcfSettings,
   SettingsTypes, ParseTreeNodeType, SetClarify;
 
 
@@ -67,29 +70,29 @@ const
   MozURL = 'http://www.mozilla.org/NPL/';
 
   MozCommentString: string =
-    NOFORMAT_ON + AnsiLineBreak + // so this program can't easily obfuscate it out
+    NOFORMAT_ON + NativeLineBreak + // so this program can't easily obfuscate it out
     '(*------------------------------------------------------------------------------' +
-    AnsiLineBreak +
-    ' Delphi Code formatter source code ' + AnsiLineBreak + AnsiLineBreak +
-    'The Original Code is <FileName>, released <Date>.' + AnsiLineBreak +
-    'The Initial Developer of the Original Code is Anthony Steele. ' + AnsiLineBreak +
+    NativeLineBreak +
+    ' Delphi Code formatter source code ' + NativeLineBreak + NativeLineBreak +
+    'The Original Code is <FileName>, released <Date>.' + NativeLineBreak +
+    'The Initial Developer of the Original Code is Anthony Steele. ' + NativeLineBreak +
     'Portions created by Anthony Steele are Copyright (C) 1999-2000 Anthony Steele.' +
-    AnsiLineBreak +
-    'All Rights Reserved. ' + AnsiLineBreak +
-    'Contributor(s): Anthony Steele. ' + AnsiLineBreak + AnsiLineBreak +
+    NativeLineBreak +
+    'All Rights Reserved. ' + NativeLineBreak +
+    'Contributor(s): Anthony Steele. ' + NativeLineBreak + NativeLineBreak +
     'The contents of this file are subject to the Mozilla Public License Version 1.1' +
-    AnsiLineBreak +
+    NativeLineBreak +
     '(the "License"). you may not use this file except in compliance with the License.' +
-    AnsiLineBreak +
-    'You may obtain a copy of the License at ' + MozURL + AnsiLineBreak + AnsiLineBreak +
+    NativeLineBreak +
+    'You may obtain a copy of the License at ' + MozURL + NativeLineBreak + NativeLineBreak +
     'Software distributed under the License is distributed on an "AS IS" basis,' +
-    AnsiLineBreak +
-    'WITHOUT WARRANTY OF ANY KIND, either express or implied.' + AnsiLineBreak +
+    NativeLineBreak +
+    'WITHOUT WARRANTY OF ANY KIND, either express or implied.' + NativeLineBreak +
     'See the License for the specific language governing rights and limitations ' +
-    AnsiLineBreak +
-    'under the License.' + AnsiLineBreak +
+    NativeLineBreak +
+    'under the License.' + NativeLineBreak +
     '------------------------------------------------------------------------------*)' +
-    AnsiLineBreak + NOFORMAT_OFF + AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NOFORMAT_OFF + NativeLineBreak + NativeLineBreak;
 
 function FirstOpportunityForMozInsert(const pt: TSourceToken): boolean;
 begin

@@ -31,7 +31,6 @@ uses
   SysUtils,
   Windows,
   FileCtrl,
-  JclAnsiStrings,
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
   ConvertTypes in '..\..\ReadWrite\ConvertTypes.pas',
@@ -154,7 +153,8 @@ uses
   JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas',
   CommandLineReturnCode in '..\CommandLineReturnCode.pas',
   CommandLineConstants in '..\CommandLineConstants.pas',
-  StatusMessageReceiver in '..\StatusMessageReceiver.pas';
+  StatusMessageReceiver in '..\StatusMessageReceiver.pas',
+  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas';
 
 var
   feReturnCode: TJcfCommandLineReturnCode;
@@ -162,7 +162,6 @@ var
   fbQuietFail: boolean;
 
   fbCmdLineObfuscate: boolean;
-  fbCmdLineClarify:   boolean;
 
   fbHasSourceMode:     boolean;
   feCmdLineSourceMode: TSourceMode;
@@ -198,7 +197,6 @@ var
     fbCmdLineShowHelp := (ParamCount = 0);
     fbQuietFail := False;
     fbCmdLineObfuscate := False;
-    fbCmdLineClarify := False;
     fbHasSourceMode := False;
     fbHasBackupMode := False;
     fbYesAll := False;
@@ -228,12 +226,10 @@ var
       else if AnsiSameText(lsOpt, 'obfuscate') then
       begin
         fbCmdLineObfuscate := True;
-        fbCmdLineClarify   := False;
       end
       else if AnsiSameText(lsOpt, 'clarify') then
       begin
         fbCmdLineObfuscate := False;
-        fbCmdLineClarify   := True;
       end
 
       else if AnsiSameText(lsOpt, 'inplace') then

@@ -33,7 +33,7 @@ interface
 
 uses
   { delphi }
-  Windows, SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ShellAPI,
   { JVCL }
   JvMemo, JvEdit, JvExStdCtrls, JvValidateEdit, JvBaseDlg, JvBrowseFolder;
@@ -110,7 +110,7 @@ implementation
 {$WARN UNIT_PLATFORM OFF}
 uses
   { delphi }
-  FileCtrl,
+  Windows, FileCtrl,
   { jcl }
   JclSysInfo,
   { local }

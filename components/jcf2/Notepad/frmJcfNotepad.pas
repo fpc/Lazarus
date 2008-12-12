@@ -156,7 +156,6 @@ uses
   ClipBrd,
   { jcl }
   JclStrings,
-  JclAnsiStrings,
   { local }
   JCFHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;
 
@@ -197,7 +196,7 @@ begin
     exit;
 
   GetRegSettings.InputDir := ExtractFilePath(psFileName);
-  mInput.Text := string(JclStrings.FileToString(psFileName));
+  mInput.Text := string(FileToString(psFileName));
   sb1.Panels[1].Text := psFileName;
   AddCheckMRU(psFileName);
 
@@ -514,12 +513,12 @@ begin
   Inc(liY);
 
   if liX > 0 then
-    lsX := JclStrings.StrPadLeft(IntToStr(liX), POS_NUM_LEN, ' ')
+    lsX := StrPadLeft(IntToStr(liX), POS_NUM_LEN, ' ')
   else
     lsX := '?';
 
   if liY > 0 then
-    lsY := JclStrings.StrPadLeft(IntToStr(liY), POS_NUM_LEN, ' ')
+    lsY := StrPadLeft(IntToStr(liY), POS_NUM_LEN, ' ')
   else
     lsY := '?';
 

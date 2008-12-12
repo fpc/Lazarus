@@ -35,8 +35,8 @@ interface
 
 uses
   {delphi }
-  Classes, Controls,
-  Forms, Windows, ShellAPI, SysUtils,
+  Windows, Classes, Controls,
+  Forms, ShellAPI, SysUtils,
   { local }
   frDrop;
 

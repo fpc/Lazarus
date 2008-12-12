@@ -202,11 +202,15 @@ object frmMain: TfrmMain
       Left = 548
       Top = 116
     end
+    inherited JvBrowseForFolderDialog1: TJvBrowseForFolderDialog
+      Left = 464
+      Top = 120
+    end
   end
   object mnuMain: TMainMenu
     Images = ilStandardImages
-    Left = 304
-    Top = 2
+    Left = 160
+    Top = 242
     object mnuFile: TMenuItem
       Caption = '&File'
       object mnuGo: TMenuItem
@@ -256,8 +260,8 @@ object frmMain: TfrmMain
   end
   object ilStandardImages: TImageList
     AllocBy = 128
-    Left = 273
-    Top = 5
+    Left = 81
+    Top = 237
     Bitmap = {
       494C010106008000800010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
@@ -532,8 +536,8 @@ object frmMain: TfrmMain
   end
   object ActionList: TActionList
     Images = ilStandardImages
-    Left = 337
-    Top = 1
+    Left = 209
+    Top = 241
     object aOpenFiles: TAction
       Caption = '&Open File'
       Hint = 'Open Files'
@@ -582,8 +586,8 @@ object frmMain: TfrmMain
     end
   end
   object dlgSaveConfig: TSaveDialog
-    Left = 412
-    Top = 4
+    Left = 324
+    Top = 244
   end
   object mruFiles: TJvMRUManager
     Duplicates = dupIgnore
@@ -591,8 +595,8 @@ object frmMain: TfrmMain
     Capacity = 9
     RecentMenu = mnuFile
     OnClick = mruFilesClick
-    Left = 373
-    Top = 4
+    Left = 269
+    Top = 244
   end
   object dlgOpen: TOpenDialog
     DefaultExt = '*.pas'
@@ -601,13 +605,13 @@ object frmMain: TfrmMain
       'All files|*.*'
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Title = 'Select a Delphi source file'
-    Left = 212
-    Top = 4
+    Left = 20
+    Top = 236
   end
   object JvFormStorage1: TJvFormStorage
     AppStoragePath = 'frmMain\'
     StoredValues = <>
-    Left = 460
-    Top = 12
+    Left = 396
+    Top = 244
   end
 end

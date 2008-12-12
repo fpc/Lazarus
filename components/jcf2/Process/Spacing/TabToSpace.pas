@@ -51,21 +51,26 @@ type
 implementation
 
 uses
+  { Delphi }
   SysUtils,
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   JcfSettings, SourceToken, Tokens, FormatFlags;
 
 constructor TTabToSpace.Create;
 begin
   inherited;
-  fsSpaces    := JcfUtils.StrRepeat(AnsiSpace, FormatSettings.Spaces.SpacesPerTab);
+  fsSpaces    := StrRepeat(NativeSpace, FormatSettings.Spaces.SpacesPerTab);
   FormatFlags := FormatFlags + [eAddSpace, eRemoveSpace];
 end;
 
 function TTabToSpace.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
+const
+  // this is needed in Delphi 2007
+  TabChar: WideChar = WideChar(NativeTab);
 var
   lcSourceToken, lcNextToken: TSourceToken;
-  ls: AnsiString;
+  ls: WideString;
 begin
   Result := False;
   lcSourceToken := TSourceToken(pcNode);
@@ -73,8 +78,9 @@ begin
   if not (lcSourceToken.TokenType in [ttWhiteSpace, ttComment]) then
     exit;
 
-  { can't pass property as var parameter so ls local var is used }
-  ls := AnsiString(lcSourceToken.SourceCode);
+  { can't pass property as var parameter so ls local var is used
+    Must keep it wide to preserve unicode chars in comments }
+  ls := lcSourceToken.SourceCode;
 
   { merge any following whitespace tokens with a whitespace }
   if (lcSourceToken.TokenType = ttWhiteSpace) then
@@ -82,14 +88,14 @@ begin
     lcNextToken := lcSourceToken.NextToken;
     while (lcNextToken <> nil) and (lcNextToken.TokenType = ttWhiteSpace) do
     begin
-      ls := ls + AnsiString(lcNextToken.SourceCode);
+      ls := ls + lcNextToken.SourceCode;
       lcNextToken.SourceCode := '';
       lcNextToken := lcNextToken.NextToken;
     end;
   end;
 
-  StrReplace(ls, AnsiTab, AnsiString(fsSpaces), [rfReplaceAll]);
-  lcSourceToken.SourceCode := WideSTring(ls);
+  ls := WideStringReplace(ls, TabChar, fsSpaces, [rfReplaceAll]);
+  lcSourceToken.SourceCode := ls;
 end;
 
 function TTabToSpace.IsIncludedInSettings: boolean;

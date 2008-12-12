@@ -1,20 +1,14 @@
 unit RemoveUnneededWhiteSpace;
 
-{ AFS 29 December 2002
-  Obfuscation visitor
-  This is to completely remove white space
-  when it is not needed, e.g. turn "a := a + 1 ;" to "a:=a+1;"
-}
-
 {(*}
 (*------------------------------------------------------------------------------
- Delphi Code formatter source code 
+ Delphi Code formatter source code
 
 The Original Code is RemoveUnneededWhiteSpace, released May 2003.
-The Initial Developer of the Original Code is Anthony Steele. 
+The Initial Developer of the Original Code is Anthony Steele.
 Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
-All Rights Reserved. 
-Contributor(s): Anthony Steele. 
+All Rights Reserved.
+Contributor(s): Anthony Steele.
 
 The contents of this file are subject to the Mozilla Public License Version 1.1
 (the "License"). you may not use this file except in compliance with the License.
@@ -22,11 +16,11 @@ You may obtain a copy of the License at http://www.mozilla.org/NPL/
 
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
-See the License for the specific language governing rights and limitations 
+See the License for the specific language governing rights and limitations
 under the License.
 
 Alternatively, the contents of this file may be used under the terms of
-the GNU General Public License Version 2 or later (the "GPL") 
+the GNU General Public License Version 2 or later (the "GPL")
 See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
@@ -34,6 +28,12 @@ See http://www.gnu.org/licenses/gpl.html
 {$I JcfGlobal.inc}
 
 interface
+
+{ AFS 29 December 2002
+  Obfuscation visitor
+  This is to completely remove white space
+  when it is not needed, e.g. turn "a := a + 1 ;" to "a:=a+1;"
+}
 
 uses SwitchableVisitor;
 
@@ -48,7 +48,6 @@ type
 implementation
 
 uses
-  JcfUtils,
   { local }
   SourceToken, Tokens, ParseTreeNodeType,
   JcfUnicode,

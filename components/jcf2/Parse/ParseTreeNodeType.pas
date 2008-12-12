@@ -153,7 +153,9 @@ type
     nHatLiteralChar,
     nAttribute,
     nClassVars,
-    nGeneric
+    nGeneric,
+    nAnonymousMethod,
+    nMethodReferenceType
     );
 
   TParseTreeNodeTypeSet = set of TParseTreeNodeType;
@@ -426,6 +428,10 @@ begin
       Result := 'Attribute';
     nGeneric:
       Result := 'Generic';
+    nAnonymousMethod:
+      Result := 'Anonymous method';
+    nMethodReferenceType:
+      Result := 'Method reference type';
     else
       Result := 'Bad node type ' + IntToStr(Ord(pe));
 

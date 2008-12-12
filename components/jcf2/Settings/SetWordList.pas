@@ -71,7 +71,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils;
+  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils;
 
 const
   REG_ENABLED = 'Enabled';

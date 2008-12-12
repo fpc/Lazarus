@@ -177,7 +177,8 @@ uses
   IndentAsmParam in '..\..\Process\Indent\IndentAsmParam.pas',
   AsmKeywords in '..\..\Parse\AsmKeywords.pas',
   JcfUnicode in '..\..\Utils\JcfUnicode.pas',
-  JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas';
+  JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas',
+  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas';
 
 {$R *.res}
 

@@ -4,6 +4,8 @@
   {$MODE delphi}
   {$ASMMODE Intel}
 {$ELSE}
+  {$DEFINE USEJCL}
+
   // define the appropriate DelphiXX constants
 
   {$IFDEF VER200}

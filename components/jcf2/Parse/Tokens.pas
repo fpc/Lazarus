@@ -206,6 +206,9 @@ type
     ttUnsafe,
     ttVarArgs,
 
+    { delphi 2009 }
+    ttReference,
+
     { built-in constants }
     ttNil,
     ttTrue,
@@ -413,8 +416,8 @@ const
   AsmOffsets: TTokenTypeSet = [ttVmtOffset, ttDmtOffset];
 
 { interpret a string as a token }
-procedure TypeOfToken(const psWord: string; var peWordType: TWordType;
-  var peToken: TTokenType); overload;
+procedure TypeOfToken(const psWord: string; out peWordType: TWordType;
+  out peToken: TTokenType); overload;
 function TypeOfToken(const psWord: string): TTokenType; overload;
 function WordTypeOfToken(const peTokenType: TTokenType): TWordType; overload;
 
@@ -458,8 +461,13 @@ function PreProcSymbolTypeSetToString(
 implementation
 
 uses
+  { system }
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
   SysUtils,
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   JcfUnicode;
 
 { the majority of these tokens have a fixed textual representation
@@ -669,6 +677,10 @@ begin
   AddKeyword('unsafe', wtReservedWordDirective, ttUnsafe);
   AddKeyword('varargs', wtReservedWordDirective, ttVarArgs);
 
+  { delphi 2009 }
+    AddKeyword('reference', wtReservedWordDirective, ttReference);
+
+
   { operators that are words not symbols }
   AddKeyword('and', wtOperator, ttAnd);
   AddKeyword('as', wtOperator, ttAs);
@@ -819,8 +831,8 @@ end;
 
 
 { turn text to enum. Assumes data is sorted out and sorted }
-procedure TypeOfToken(const psWord: string; var peWordType: TWordType;
-  var peToken: TTokenType);
+procedure TypeOfToken(const psWord: string; out peWordType: TWordType;
+  out peToken: TTokenType);
 var
   liMapItemLoop:  integer;
   liCharIndex:    integer;

@@ -1,5 +1,33 @@
 unit BasicStats;
 
+(*------------------------------------------------------------------------------
+ Delphi Code formatter source code
+
+The Original Code is BasicStats, released May 2003.
+The Initial Developer of the Original Code is Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
+All Rights Reserved.
+Contributor(s): Anthony Steele.
+
+The contents of this file are subject to the Mozilla Public License Version 1.1
+(the "License"). you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.mozilla.org/NPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied.
+See the License for the specific language governing rights and limitations
+under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL")
+See http://www.gnu.org/licenses/gpl.html
+------------------------------------------------------------------------------*)
+{*)}
+
+{$I JcfGlobal.inc}
+
+interface
+
 {
   AFS 25 March 03
   Basic stats on the unit
@@ -9,33 +37,6 @@ unit BasicStats;
   it is not a switchable visitor }
 
 {(*}
-(*------------------------------------------------------------------------------
- Delphi Code formatter source code 
-
-The Original Code is BasicStats, released May 2003.
-The Initial Developer of the Original Code is Anthony Steele. 
-Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
-All Rights Reserved. 
-Contributor(s): Anthony Steele. 
-
-The contents of this file are subject to the Mozilla Public License Version 1.1
-(the "License"). you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.mozilla.org/NPL/
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either express or implied.
-See the License for the specific language governing rights and limitations 
-under the License.
-
-Alternatively, the contents of this file may be used under the terms of
-the GNU General Public License Version 2 or later (the "GPL") 
-See http://www.gnu.org/licenses/gpl.html
-------------------------------------------------------------------------------*)
-{*)}
-
-{$I JcfGlobal.inc}
-
-interface
 
 uses BaseVisitor;
 
@@ -60,7 +61,7 @@ type
 
     procedure PreVisitParseTreeNode(const pcNode: TObject); override;
     function VisitSourceToken(const pcNode: TObject): Boolean; override;
-    function FinalSummary(var psMessage: string): boolean; override;
+    function FinalSummary(out psMessage: string): boolean; override;
 
     function IsIncludedInSettings: boolean; override;
   end;
@@ -70,8 +71,8 @@ implementation
 uses
   { delphi }
   SysUtils,
-  JcfUtils,
   { JCF  }
+  JcfStringUtils,
   SourceToken, Tokens, ParseTreeNode, ParseTreeNodeType, TokenUtils,
   JcfRegistrySettings;
 
@@ -173,7 +174,7 @@ begin
       Inc(fiCommentTokens);
       fiCommentChars := fiCommentChars + liLen;
 
-      fiLines := fiLines + JcfUtils.StrStrCount(lcSourceToken.SourceCode, AnsiLineBreak);
+      fiLines := fiLines + StrStrCount(lcSourceToken.SourceCode, NativeLineBreak);
     end;
     ttReturn:
     begin
@@ -194,54 +195,54 @@ begin
   end;
 end;
 
-function TBasicStats.FinalSummary(var psMessage: string): boolean;
+function TBasicStats.FinalSummary(out psMessage: string): boolean;
 begin
   Result := True;
 
-  psMessage := AnsiLineBreak + 'Basic numbers and averages: ' + AnsiLineBreak +
-    'Unit is ' + IntToStr(fiLines) + ' lines long' + AnsiLineBreak +
+  psMessage := NativeLineBreak + 'Basic numbers and averages: ' + NativeLineBreak +
+    'Unit is ' + IntToStr(fiLines) + ' lines long' + NativeLineBreak +
     'Unit has ' + IntToStr(fiTotalTokens) + ' tokens in ' +
-    IntToStr(fiTotalChars) + ' characters: ' + AnsiLineBreak +
-    DisplayRatio(fiTotalChars, fiTotalTokens) + ' chars per token' + AnsiLineBreak +
-    DisplayRatio(fiTotalChars, fiLines) + ' chars per line ' + AnsiLineBreak +
+    IntToStr(fiTotalChars) + ' characters: ' + NativeLineBreak +
+    DisplayRatio(fiTotalChars, fiTotalTokens) + ' chars per token' + NativeLineBreak +
+    DisplayRatio(fiTotalChars, fiLines) + ' chars per line ' + NativeLineBreak +
     DisplayRatio(fiTotalTokens, fiLines) + ' tokens per line ' +
-    AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
     IntToStr(fiCommentTokens) + ' comments in ' + IntToStr(fiCommentChars) +
-    ' characters ' + AnsiLineBreak +
+    ' characters ' + NativeLineBreak +
     DisplayRatio(fiCommentChars, fiCommentTokens) + ' chars per comment' +
-    AnsiLineBreak +
+    NativeLineBreak +
     DisplayPercent(fiCommentChars, fiTotalChars) + ' of chars are comments ' +
-    AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
     IntToStr(fiSpaceTokens) + ' spacing and return tokens in ' +
-    IntToStr(fiSpaceChars) + ' characters ' + AnsiLineBreak +
-    DisplayRatio(fiSpaceChars, fiSpaceTokens) + ' chars per token' + AnsiLineBreak +
+    IntToStr(fiSpaceChars) + ' characters ' + NativeLineBreak +
+    DisplayRatio(fiSpaceChars, fiSpaceTokens) + ' chars per token' + NativeLineBreak +
     DisplayPercent(fiSpaceChars, fiTotalChars) + ' of chars are spacing ' +
-    AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
     IntToStr(fiSolidTokens) + ' solid tokens in ' + IntToStr(fiSolidChars) +
-    ' characters ' + AnsiLineBreak +
-    DisplayRatio(fiSolidChars, fiSolidTokens) + ' chars per token' + AnsiLineBreak +
-    DisplayPercent(fiSolidChars, fiTotalChars) + ' of chars are solid' + AnsiLineBreak +
+    ' characters ' + NativeLineBreak +
+    DisplayRatio(fiSolidChars, fiSolidTokens) + ' chars per token' + NativeLineBreak +
+    DisplayPercent(fiSolidChars, fiTotalChars) + ' of chars are solid' + NativeLineBreak +
     DisplayPercent(fiSolidTokens, fiTotalTokens) + ' of tokens are solid' +
-    AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(fiConsts) + ' constants ' + AnsiLineBreak +
-    IntToStr(fiTypes) + ' types ' + AnsiLineBreak +
-    IntToStr(fiClasses) + ' classes ' + AnsiLineBreak +
-    IntToStr(fiInterfaces) + ' interfaces ' + AnsiLineBreak +
-    IntToStr(fiAllProcs) + ' procedures ' + AnsiLineBreak + AnsiLineBreak;
+    IntToStr(fiConsts) + ' constants ' + NativeLineBreak +
+    IntToStr(fiTypes) + ' types ' + NativeLineBreak +
+    IntToStr(fiClasses) + ' classes ' + NativeLineBreak +
+    IntToStr(fiInterfaces) + ' interfaces ' + NativeLineBreak +
+    IntToStr(fiAllProcs) + ' procedures ' + NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(liInterfaceGlobalVars) + ' global vars in interface ' + AnsiLineBreak +
-    IntToStr(liGlobalVars) + ' global vars in rest of unit ' + AnsiLineBreak +
+    IntToStr(liInterfaceGlobalVars) + ' global vars in interface ' + NativeLineBreak +
+    IntToStr(liGlobalVars) + ' global vars in rest of unit ' + NativeLineBreak +
     IntToStr(fiInterfaceProcs) + ' procedures in interface ' +
-    AnsiLineBreak + AnsiLineBreak;
+    NativeLineBreak + NativeLineBreak;
 
 end;
 

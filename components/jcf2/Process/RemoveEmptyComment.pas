@@ -50,8 +50,10 @@ type
 implementation
 
 uses
+  { system }
   SysUtils,
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings;
 
 
@@ -74,7 +76,7 @@ begin
     begin
       if FormatSettings.Comments.RemoveEmptyDoubleSlashComments then
       begin
-        lsCommentText := JcfUtils.StrAfter('//', lcSourceToken.SourceCode);
+        lsCommentText := StrAfter('//', lcSourceToken.SourceCode);
         lsCommentText := Trim(lsCommentText);
         if lsCommentText = '' then
           BlankToken(lcSourceToken);
@@ -84,8 +86,8 @@ begin
     begin
       if FormatSettings.Comments.RemoveEmptyCurlyBraceComments then
       begin
-        lsCommentText := JcfUtils.StrAfter('{', lcSourceToken.SourceCode);
-        lsCommentText := JcfUtils.StrBefore('}', lsCommentText);
+        lsCommentText := StrAfter('{', lcSourceToken.SourceCode);
+        lsCommentText := StrBefore('}', lsCommentText);
         lsCommentText := Trim(lsCommentText);
         if lsCommentText = '' then
           BlankToken(lcSourceToken);

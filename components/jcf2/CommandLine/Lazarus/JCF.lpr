@@ -35,7 +35,7 @@ uses
   Forms,
   SysUtils,
   FileCtrl,
-  JcfUtils in '..\..\Utils\JcfUtils.pas',
+  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
   ConvertTypes in '..\..\ReadWrite\ConvertTypes.pas',

@@ -39,9 +39,6 @@ type
     fiFirstLevelIndent: integer;
     fbHasFirstLevelIndent: boolean;
 
-    fbIndentGlobals: boolean;
-    fbIndentClasses: boolean;
-    fbIndentProcedures: boolean;
     fbIndentBeginEnd: boolean;
     fbIndentLibraryProcs: boolean;
 
@@ -68,10 +65,6 @@ type
     property FirstLevelIndent: integer Read fiFirstLevelIndent Write fiFirstLevelIndent;
     property HasFirstLevelIndent: boolean Read fbHasFirstLevelIndent
       Write fbHasFirstLevelIndent;
-
-    property IndentGlobals: boolean Read fbIndentGlobals Write fbIndentGlobals;
-    property IndentClasses: boolean Read fbIndentClasses Write fbIndentClasses;
-    property IndentProcedures: boolean Read fbIndentProcedures Write fbIndentProcedures;
 
     property IndentBeginEnd: boolean Read fbIndentBeginEnd Write fbIndentBeginEnd;
     property IndentBeginEndSpaces: integer Read fiIndentBeginEndSpaces
@@ -101,10 +94,6 @@ const
   REG_FIRST_LEVEL_INDENT     = 'FirstLevelIndent';
   REG_HAS_FIRST_LEVEL_INDENT = 'HasFirstLevelIndent';
 
-  REG_INDENT_GLOBALS    = 'IndentGlobals';
-  REG_INDENT_CLASSES    = 'IndentClasses';
-  REG_INDENT_PROCEDURES = 'IndentProcedures';
-
   REG_INDENT_BEGIN_END = 'IndentBeginEnd';
   REG_INDENT_BEGIN_END_SPACES = 'IndentbeginEndSpaces';
 
@@ -133,10 +122,6 @@ begin
   fiFirstLevelIndent    := pcStream.Read(REG_FIRST_LEVEL_INDENT, 2);
   fbHasFirstLevelIndent := pcStream.Read(REG_HAS_FIRST_LEVEL_INDENT, False);
 
-  fbIndentGlobals    := pcStream.Read(REG_INDENT_GLOBALS, True);
-  fbIndentClasses    := pcStream.Read(REG_INDENT_CLASSES, True);
-  fbIndentProcedures := pcStream.Read(REG_INDENT_PROCEDURES, True);
-
   fbIndentBeginEnd := pcStream.Read(REG_INDENT_BEGIN_END, False);
   fiIndentBeginEndSpaces := pcStream.Read(REG_INDENT_BEGIN_END_SPACES, 1);
 
@@ -163,10 +148,6 @@ begin
 
   pcOut.Write(REG_FIRST_LEVEL_INDENT, fiFirstLevelIndent);
   pcOut.Write(REG_HAS_FIRST_LEVEL_INDENT, fbHasFirstLevelIndent);
-
-  pcOut.Write(REG_INDENT_GLOBALS, fbIndentGlobals);
-  pcOut.Write(REG_INDENT_CLASSES, fbIndentClasses);
-  pcOut.Write(REG_INDENT_PROCEDURES, fbIndentProcedures);
 
   pcOut.Write(REG_INDENT_BEGIN_END, fbIndentBeginEnd);
   pcOut.Write(REG_INDENT_BEGIN_END_SPACES, fiIndentBeginEndSpaces);

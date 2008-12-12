@@ -247,30 +247,26 @@ end;
 function TSourceToken.SourceLine: string;
 var
   lcLineToken: TSourceToken;
-  lcPriorToken: TSourceToken;
 begin
   // find the return at the start of the line
   // or nil for start of first line
   lcLineToken := self;
-  lcPriorToken := lcLineToken.PriorToken;
 
-  while (lcPriorToken <> nil) and (lcPriorToken.TokenType <> ttReturn) do
+  while lcLineToken.PriorToken <> nil do
   begin
-    lcLineToken := lcPriorToken;
-    lcPriorToken := lcPriorToken.PriorToken;
+    if lcLineToken.PriorToken.TokenType = ttReturn then
+      break
+    else
+      lcLineToken := lcLineToken.PriorToken;
   end;
 
   // walk to the end of the line
   Result := '';
-  repeat
-    if (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) then
-    begin
-      Result := Result + lcLineToken.SourceCode;
-      lcLineToken :=  lcLineToken.NextToken;
-    end;
-
-  until (lcLineToken = nil) or (lcLineToken.TokenType = ttReturn);
-
+  while (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) do
+  begin
+    Result := Result + lcLineToken.SourceCode;
+    lcLineToken :=  lcLineToken.NextToken;
+  end;
 end;
 
 function TSourceToken.FirstSolidLeaf: TParseTreeNode;

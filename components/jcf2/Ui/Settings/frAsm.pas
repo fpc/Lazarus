@@ -30,7 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
+  Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, 
   { local}
   frmBaseSettingsFrame, JvExStdCtrls, JvEdit, JvValidateEdit;

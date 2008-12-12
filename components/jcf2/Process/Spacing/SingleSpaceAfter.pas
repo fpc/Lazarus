@@ -49,9 +49,8 @@ type
 implementation
 
 uses
-  { jcf }
-  JcfUtils,
   { local }
+  JcfStringUtils,
   SourceToken, Tokens, ParseTreeNodeType, JcfSettings,
   FormatFlags, TokenUtils, SettingsTypes;
 
@@ -81,7 +80,14 @@ begin
     exit;
 
   if pt.HasParentNode(nGeneric, 1) then
+  begin
+    if pt.TokenType in [ttComma, ttColon] then
+    begin
+      Result := true;
+    end;
+
     exit;
+  end;
 
   // if the next token is a comment, leave it where it is, do not adjust spacing
   if ptNext.TokenType = ttComment then
@@ -308,7 +314,7 @@ begin
     lcNext := lcSourceToken.NextToken;
     if lcNext.TokenType = ttWhiteSpace then
     begin
-      lcNext.SourceCode := AnsiSpace;
+      lcNext.SourceCode := NativeSpace;
 
       { empty any preceeding whitespace }
       repeat
@@ -323,7 +329,7 @@ begin
       // insert a space
       lcNew := TSourceToken.Create;
       lcNew.TokenType := ttWhiteSpace;
-      lcNew.SourceCode := AnsiSpace;
+      lcNew.SourceCode := NativeSpace;
 
       InsertTokenAfter(lcSourceToken, lcNew);
     end;

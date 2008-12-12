@@ -51,8 +51,8 @@ uses Classes;
 
 function GetApplicationFolder: string;
 
-function PadNumber(const pi: integer): AnsiString;
-function StrHasAlpha(const str: AnsiString): boolean;
+function PadNumber(const pi: integer): string;
+function StrHasAlpha(const str: String): boolean;
 function GetLastDir(psPath: string): string;
 
 function Str2Float(s: string): double;
@@ -83,8 +83,8 @@ implementation
 uses
   { delphi }
   SysUtils, Forms,
-  { jcl }
-  JcfUtils;
+  { local }
+  JcfStringUtils;
 
 function GetApplicationFolder: string;
 begin
@@ -108,7 +108,7 @@ begin
   // de-localise the string if need be
   if (DecimalSeparator <> '.') and (Pos(DecimalSeparator, s) > 0) then
   begin
-    JcfUtils.StrReplace(s, DecimalSeparator, '.');
+    StrReplace(s, DecimalSeparator, '.');
   end;
 
   Val(s, Result, Code);
@@ -128,12 +128,12 @@ begin
   DecimalSeparator := OrgSep;
 end;
 
-function PadNumber(const pi: integer): AnsiString;
+function PadNumber(const pi: integer): string;
 begin
-  Result := AnsiString(IntToStrZeroPad(pi, 3));
+  Result := IntToStrZeroPad(pi, 3);
 end;
 
-function StrHasAlpha(const str: AnsiString): boolean;
+function StrHasAlpha(const str: String): boolean;
 var
   liLoop: integer;
 begin
@@ -161,14 +161,14 @@ begin
   if not (DirectoryExists(psPath)) and FileExists(psPath) then
   begin
     // must be a file - remove the last bit
-    liPos := JcfUtils.StrLastPos(DirDelimiter, psPath);
+    liPos := StrLastPos(DirDelimiter, psPath);
     if liPos > 0 then
-      psPath := JcfUtils.StrLeft(psPath, liPos - 1);
+      psPath := StrLeft(psPath, liPos - 1);
   end;
 
-  liPos := JcfUtils.StrLastPos(DirDelimiter, psPath);
+  liPos := StrLastPos(DirDelimiter, psPath);
   if liPos > 0 then
-    Result := JcfUtils.StrRestOf(psPath, liPos + 1);
+    Result := StrRestOf(psPath, liPos + 1);
 end;
 
 function SetFileNameExtension(const psFileName, psExt: string): string;
@@ -184,16 +184,16 @@ begin
 
   lsOldExt := ExtractFileExt(psFileName);
   liMainFileNameLength := Length(psFileName) - Length(lsOldExt);
-  Result   := JcfUtils.StrLeft(psFileName, liMainFileNameLength);
+  Result   := StrLeft(psFileName, liMainFileNameLength);
 
   Result := Result + '.' + psExt;
 end;
 
-function PosLast(const ASubString, AString: ansistring;
+function PosLast(const ASubString, AString: string;
   const ALastPos: integer = 0): integer; {AdemBaba}
 var
   {This is at least two or three times faster than Jedi's StrLastPos. I tested it}
-  LastChar1: AnsiChar;
+  LastChar1: Char;
   Index1:    integer;
   Index2:    integer;
   Index3:    integer;
@@ -236,11 +236,11 @@ begin
   end;
 end;
 
-procedure PosLastAndCount(const ASubString, AString: AnsiString;
-  var ALastPos: integer; var ACount: integer);
+procedure PosLastAndCount(const ASubString, AString: String;
+  out ALastPos: integer; out ACount: integer);
 var
   {This gets the last occurance and count in one go. It saves time}
-  LastChar1: AnsiChar;
+  LastChar1: Char;
   Index1:    integer;
   Index2:    integer;
   Index3:    integer;
@@ -305,7 +305,7 @@ begin
     1:
     begin
       case AText[1] of
-        AnsiCarriageReturn, AnsiLineFeed:
+        NativeCarriageReturn, NativeLineFeed:
         begin {#13 or #10}
           Inc(ACol);
           ARow := 1; // XPos is indexed from 1
@@ -316,7 +316,7 @@ begin
     end;
     2:
     begin
-      if (AText[1] = AnsiCarriageReturn) and (AText[2] = AnsiLineFeed) then
+      if (AText[1] = NativeCarriageReturn) and (AText[2] = NativeLineFeed) then
       begin
         Inc(ACol);
         ARow := 1; // XPos is indexed from 1
@@ -325,7 +325,7 @@ begin
         Inc(ARow, Length1);
     end;
     else
-      PosLastAndCount(AnsiLineBreak, AnsiString(AText), Pos1, Count1);
+      PosLastAndCount(NativeLineBreak, AText, Pos1, Count1);
       if Pos1 <= 0 then
         Inc(ARow, Length1)
       else
@@ -343,11 +343,11 @@ function LastLineLength(const AString: string): integer;
 var { in a multiline sting, how many chars on last line (after last return) }
   Pos1: integer;
 begin
-  Pos1 := PosLast(AnsiLineBreak, AnsiString(AString)); {AdemBaba}
+  Pos1 := PosLast(NativeLineBreak, AString); {AdemBaba}
   if Pos1 <= 0 then
     Result := Length(AString)
   else
-    Result := Length(AString) - (Pos1 + Length(AnsiLineBreak));
+    Result := Length(AString) - (Pos1 + Length(NativeLineBreak));
 end;
 
 function SplitIntoLines(s: string): TStrings;
@@ -361,13 +361,12 @@ begin
   if (s = '') then
     exit;
 
-
   liIndex := 1;
   while True do
   begin
-    liPos := StrSearch(AnsiCrLf, AnsiString(s), liIndex);
+    liPos := StrSearch(NativeCrLf, s, liIndex);
 
-    liPosLf := StrSearch(AnsiLineFeed, AnsiString(s), liIndex);
+    liPosLf := StrSearch(NativeLineFeed, s, liIndex);
 
     if ((liPosLf > 0) and
       ((liPos = 0) or (liPosLf < (liPos + 1)))) then

@@ -48,7 +48,8 @@ type
 implementation
 
 uses
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   JcfSettings, SetSpaces, SourceToken, Tokens, ParseTreeNodeType,
   FormatFlags, TokenUtils;
 
@@ -167,7 +168,7 @@ begin
     { modify the existing previous space, or make a new one? }
     if (lcPrev.TokenType = ttWhiteSpace) then
     begin
-      lcPrev.SourceCode := JcfUtils.StrRepeat(AnsiSpace, liSpaces);
+      lcPrev.SourceCode := StrRepeat(NativeSpace, liSpaces);
     end
     else
     begin

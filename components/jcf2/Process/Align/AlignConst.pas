@@ -56,7 +56,8 @@ type
 implementation
 
 uses
-    { local}FormatFlags, JcfSettings,
+  { local}
+  FormatFlags, JcfSettings,
   Tokens, ParseTreeNodeType, TokenUtils;
 
 

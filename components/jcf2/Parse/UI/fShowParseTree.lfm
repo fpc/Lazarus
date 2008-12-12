@@ -15,17 +15,19 @@ object frmShowParseTree: TfrmShowParseTree
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  ParentFont = False
   Position = poOwnerFormCenter
   LCLVersion = '0.9.27'
   object StatusBar1: TStatusBar
+    Left = 0
     Height = 23
     Top = 532
     Width = 581
     Panels = <>
   end
   object pnlTop: TPanel
+    Left = 0
     Height = 85
+    Top = 0
     Width = 581
     Align = alTop
     BevelOuter = bvNone
@@ -61,6 +63,7 @@ object frmShowParseTree: TfrmShowParseTree
     end
   end
   object pnlBottom: TPanel
+    Left = 0
     Height = 50
     Top = 482
     Width = 581
@@ -103,6 +106,7 @@ object frmShowParseTree: TfrmShowParseTree
     end
   end
   object pcPages: TPageControl
+    Left = 0
     Height = 397
     Top = 85
     Width = 581
@@ -115,24 +119,31 @@ object frmShowParseTree: TfrmShowParseTree
       ClientHeight = 367
       ClientWidth = 573
       object lvTokens: TListView
+        Left = 0
         Height = 367
+        Top = 0
         Width = 573
         Align = alClient
         Columns = <        
           item
+            AutoSize = False
             Caption = 'Index'
             Width = 63
           end        
           item
+            AutoSize = False
             Caption = 'Type'
             Width = 185
           end        
           item
+            AutoSize = False
             Caption = 'Text'
             Width = 271
           end>
         ReadOnly = True
         RowSelect = True
+        SortColumn = 0
+        SortType = stNone
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = lvTokensDblClick
@@ -145,9 +156,12 @@ object frmShowParseTree: TfrmShowParseTree
       ClientWidth = 573
       ImageIndex = 1
       object tvParseTree: TTreeView
+        Left = 0
         Height = 371
+        Top = 0
         Width = 573
         Align = alClient
+        Ctl3D = False
         DefaultItemHeight = 15
         HideSelection = False
         Indent = 22

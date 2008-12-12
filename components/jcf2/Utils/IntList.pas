@@ -84,6 +84,14 @@ type
 
 implementation
 
+{$ifndef fpc}
+// Delphi is a 32bit compiler only, thus pointer is always uses 4 bytes and can be
+// converted to integer and back. FPC uses PtrInt as a signed integer type wich
+// equal to pointer in length. For 32bit PtrInt = integer
+type
+  PtrInt = Integer;
+{$endif}
+
 { TIntList }
 
 constructor TIntList.Create;
@@ -100,7 +108,7 @@ end;
 
 function TIntList.Add(const piValue: integer): integer;
 begin
-  Result := fcList.Add(Pointer(piValue));
+  Result := fcList.Add(Pointer(PtrInt(piValue)));
 end;
 
 procedure TIntList.Clear;
@@ -116,12 +124,12 @@ end;
 
 function TIntList.GetItem(const piIndex: integer): integer;
 begin
-  Result := integer(fcList.Items[piIndex]);
+  Result := integer(PtrInt(fcList.Items[piIndex]));
 end;
 
 procedure TIntList.SetItem(const piIndex, piValue: integer);
 begin
-  fcList.Items[piIndex] := Pointer(piValue);
+  fcList.Items[piIndex] := Pointer(PtrInt(piValue));
 end;
 
 procedure TIntList.ChangeValue(const liIndex, liDelta: integer);

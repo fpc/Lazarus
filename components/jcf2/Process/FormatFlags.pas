@@ -75,9 +75,9 @@ implementation
 
 uses
   { delphi }
-  SysUtils,
-  { Jcl}
-  JcfUtils;
+  {$ifndef fpc}Windows,{$endif} SysUtils,
+  { local }
+  JcfStringUtils;
 
 type
   TRFlagNameData = record
@@ -183,24 +183,24 @@ begin
 
   { all comments without the required prefix are of no import to this code
     if it's not one, then exit without error }
-  lsPrefix := JcfUtils.StrLeft(psComment, 6);
+  lsPrefix := StrLeft(psComment, 6);
   if not (AnsiSameText(lsPrefix, FORMAT_COMMENT_PREFIX)) then
     exit;
 
   // should be a valid jcf flag directive after here
   Result := True;
-  lsRest := Trim(JcfUtils.StrRestOf(psComment, 7));
+  lsRest := Trim(StrRestOf(psComment, 7));
 
   { rest should read <setting>=<state>
     where the setting is one of the format flags, and the state is 'on' or 'off'
   }
-  lsSetting := Trim(JcfUtils.StrBefore('=', lsRest));
-  lsState   := Trim(JcfUtils.StrAfter('=', lsRest));
+  lsSetting := Trim(StrBefore('=', lsRest));
+  lsState   := Trim(StrAfter('=', lsRest));
 
   { is the comment well formed? }
   if (lsSetting = '') or (lsState = '') then
   begin
-    psError := 'Comment ' + JcfUtils.StrDoubleQuote(psComment) +
+    psError := 'Comment ' + StrDoubleQuote(psComment) +
       ' has prefix but cannot be parsed';
     exit;
   end;
@@ -211,8 +211,8 @@ begin
   except
     On EJcfConversionError do
     begin
-      psError := 'In comment ' + JcfUtils.StrDoubleQuote(psComment) + ' , ' +
-        ' state ' + JcfUtils.StrDoubleQuote(lsState) + ' cannot be parsed to either on or off';
+      psError := 'In comment ' + StrDoubleQuote(psComment) + ' , ' +
+        ' state ' + StrDoubleQuote(lsState) + ' cannot be parsed to either on or off';
       exit;
     end
     else
@@ -244,8 +244,8 @@ begin
   if not lbFlagFound then
   begin
     // unknown setting - nothing to do except log a message
-    psError := 'In comment ' + JcfUtils.StrDoubleQuote(psComment) + ' , ' +
-      ' setting ' + JcfUtils.StrDoubleQuote(lsSetting) + ' is not known';
+    psError := 'In comment ' + StrDoubleQuote(psComment) + ' , ' +
+      ' setting ' + StrDoubleQuote(lsSetting) + ' is not known';
     exit;
   end;
 end;

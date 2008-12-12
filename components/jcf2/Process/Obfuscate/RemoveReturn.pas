@@ -43,11 +43,7 @@ type
 
 implementation
 
-uses
-  SourceToken,
-  Tokens,
-  ParseTreeNodeType,
-  FormatFlags;
+uses ParseTreeNode, SourceToken, Tokens, ParseTreeNodeType, FormatFlags;
 
 constructor TRemoveReturn.Create;
 begin

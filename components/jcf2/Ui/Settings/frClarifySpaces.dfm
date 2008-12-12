@@ -1,12 +1,12 @@
 inherited fClarifySpaces: TfClarifySpaces
   Width = 472
-  Height = 388
+  Height = 463
   Font.Charset = ANSI_CHARSET
   Font.Height = -15
   Font.Name = 'Segoe UI'
   ParentFont = False
   ExplicitWidth = 472
-  ExplicitHeight = 388
+  ExplicitHeight = 463
   object cbFixSpacing: TCheckBox
     Left = 8
     Top = 6
@@ -27,20 +27,20 @@ inherited fClarifySpaces: TfClarifySpaces
     Left = 8
     Top = 50
     Width = 246
-    Height = 216
+    Height = 292
     Caption = 'Spaces &before colon in'
     TabOrder = 2
     object lblSpaceBeforeColonVar: TLabel
       Left = 8
-      Top = 24
-      Width = 175
+      Top = 22
+      Width = 107
       Height = 20
-      Caption = '&Var and const declarations'
+      Caption = '&Var declarations'
       FocusControl = eSpaceBeforeColonVar
     end
     object lblSpacesBeforeColonClassVar: TLabel
       Left = 8
-      Top = 108
+      Top = 142
       Width = 96
       Height = 20
       Caption = '&Class variables'
@@ -48,7 +48,7 @@ inherited fClarifySpaces: TfClarifySpaces
     end
     object lblSpaceBeforeColonFn: TLabel
       Left = 8
-      Top = 80
+      Top = 112
       Width = 138
       Height = 20
       Caption = '&Function return types'
@@ -56,39 +56,55 @@ inherited fClarifySpaces: TfClarifySpaces
     end
     object lblSpaceBeforeColonParam: TLabel
       Left = 8
-      Top = 52
+      Top = 82
       Width = 146
       Height = 20
       Caption = '&Procedure parameters'
       FocusControl = eSpaceBeforeColonParam
     end
     object lblSpacesBeforeCaseLabel: TLabel
-      Left = 8
-      Top = 136
+      Left = 5
+      Top = 202
       Width = 68
       Height = 20
       Caption = 'Case l&abel'
       FocusControl = eSpacesBeforeCaseLabel
     end
     object lbSpacesBeforeLabel: TLabel
-      Left = 8
-      Top = 164
+      Left = 5
+      Top = 232
       Width = 36
       Height = 20
       Caption = '&Label'
       FocusControl = eSpacesBeforeLabel
     end
     object lblSpacesBeforeColonGeneric: TLabel
-      Left = 8
-      Top = 189
+      Left = 5
+      Top = 262
       Width = 65
       Height = 20
       Caption = 'In &generic'
       FocusControl = eSpacesBeforeColonGeneric
     end
+    object lblSpaceBeforeColonConst: TLabel
+      Left = 7
+      Top = 52
+      Width = 122
+      Height = 20
+      Caption = 'C&onst declarations'
+      FocusControl = eSpaceBeforeColonConst
+    end
+    object lblSpacesBeforeColonRecordField: TLabel
+      Left = 8
+      Top = 172
+      Width = 87
+      Height = 20
+      Caption = '&Record fields'
+      FocusControl = eSpacesBeforeColonRecordField
+    end
     object eSpaceBeforeColonVar: TJvValidateEdit
-      Left = 187
-      Top = 21
+      Left = 180
+      Top = 20
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -98,8 +114,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 0
     end
     object eSpaceBeforeColonParam: TJvValidateEdit
-      Left = 187
-      Top = 49
+      Left = 180
+      Top = 80
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -109,8 +125,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 1
     end
     object eSpaceBeforeColonFn: TJvValidateEdit
-      Left = 187
-      Top = 73
+      Left = 180
+      Top = 110
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -120,8 +136,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 2
     end
     object eSpacesBeforeColonClassVar: TJvValidateEdit
-      Left = 187
-      Top = 101
+      Left = 180
+      Top = 140
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -131,8 +147,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 3
     end
     object eSpacesBeforeCaseLabel: TJvValidateEdit
-      Left = 187
-      Top = 129
+      Left = 180
+      Top = 200
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -142,8 +158,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 4
     end
     object eSpacesBeforeLabel: TJvValidateEdit
-      Left = 187
-      Top = 157
+      Left = 180
+      Top = 230
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -153,8 +169,8 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 5
     end
     object eSpacesBeforeColonGeneric: TJvValidateEdit
-      Left = 187
-      Top = 184
+      Left = 180
+      Top = 260
       Width = 50
       Height = 28
       CriticalPoints.MaxValueIncluded = False
@@ -163,10 +179,32 @@ inherited fClarifySpaces: TfClarifySpaces
       MaxLength = 2
       TabOrder = 6
     end
+    object eSpaceBeforeColonConst: TJvValidateEdit
+      Left = 180
+      Top = 50
+      Width = 50
+      Height = 28
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      EditText = '0'
+      MaxLength = 2
+      TabOrder = 7
+    end
+    object eSpacesBeforeColonRecordField: TJvValidateEdit
+      Left = 180
+      Top = 170
+      Width = 50
+      Height = 28
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      EditText = '0'
+      MaxLength = 2
+      TabOrder = 8
+    end
   end
   object gbTabs: TGroupBox
-    Left = 3
-    Top = 268
+    Left = 8
+    Top = 344
     Width = 457
     Height = 78
     Caption = '&Tab characters'
@@ -233,8 +271,8 @@ inherited fClarifySpaces: TfClarifySpaces
     end
   end
   object cbMaxSpaces: TCheckBox
-    Left = 12
-    Top = 356
+    Left = 8
+    Top = 426
     Width = 179
     Height = 17
     Caption = '&Max spaces in code'
@@ -243,7 +281,7 @@ inherited fClarifySpaces: TfClarifySpaces
   end
   object edtMaxSpacesInCode: TJvValidateEdit
     Left = 193
-    Top = 352
+    Top = 424
     Width = 50
     Height = 28
     CriticalPoints.MaxValueIncluded = False

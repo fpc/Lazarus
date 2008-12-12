@@ -34,8 +34,10 @@ unit SetReplace;
 interface
 
 uses
-    { delphi }Classes,
-    { local }JCFSetBase, SettingsStream;
+  { delphi }
+  Classes,
+  { local }
+  JCFSetBase, SettingsStream;
 
 type
 
@@ -46,7 +48,7 @@ type
 
     fcLeftWords, fcRightWords: TStringList;
 
-    procedure SplitWord(const ps: string; var psOut1, psOut2: string);
+    procedure SplitWord(const ps: string; out psOut1, psOut2: string);
 
   protected
   public
@@ -68,8 +70,10 @@ type
 implementation
 
 uses
-    { delphi }SysUtils,
-    { jcf }JcfUtils;
+  { delphi }
+  SysUtils,
+  { locals }
+  JcfStringUtils;
 
 const
   REG_ENABLED = 'Enabled';
@@ -114,7 +118,7 @@ begin
   pcOut.Write(REG_WORDS, fcWords);
 end;
 
-procedure TSetReplace.SplitWord(const ps: string; var psOut1, psOut2: string);
+procedure TSetReplace.SplitWord(const ps: string; out psOut1, psOut2: string);
 var
   liPos: integer;
 begin
@@ -124,8 +128,8 @@ begin
   liPos := Pos(';', ps);
   if liPos > 0 then
   begin
-    psOut1 := Trim(JcfUtils.StrLeft(ps, liPos - 1));
-    psOut2 := Trim(JcfUtils.StrRestOf(ps, liPos + 1));
+    psOut1 := Trim(StrLeft(ps, liPos - 1));
+    psOut2 := Trim(StrRestOf(ps, liPos + 1));
   end;
 end;
 

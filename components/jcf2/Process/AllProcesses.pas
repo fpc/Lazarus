@@ -32,7 +32,6 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
   ParseTreeNode, BaseVisitor, ConvertTypes, TreeWalker;
 
 type

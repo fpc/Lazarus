@@ -40,8 +40,10 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }Registry, Classes,
-  { local }ConvertTypes;
+  { delphi }
+  Registry, Classes,
+  { local }
+  ConvertTypes;
 
 type
   TLogLevel = (eLogErrorsOnly, eLogFiles, eLogTokens);
@@ -186,11 +188,9 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Dialogs,
-  { jcl }
-  JcfUtils,
+  SysUtils, Dialogs, Windows,
   { jcf }
-  JcfMiscFunctions;
+  JcfStringUtils, JcfMiscFunctions;
 
 const
   REG_GENERAL_SECTION = 'General';
@@ -538,10 +538,10 @@ begin
 
   if not Result then
   begin
-    liPos := JcfUtils.StrLastPos('/', psDir);
+    liPos := StrLastPos('/', psDir);
     if liPos > 0 then
     begin
-      lsBareDir := JcfUtils.StrRestOf(psDir, liPos + 1);
+      lsBareDir := StrRestOf(psDir, liPos + 1);
       Result := (fcExclusionsDirs.IndexOf(lsBareDir) >= 0);
     end;
   end;
@@ -582,7 +582,7 @@ begin
   begin
     lsExt  := ExtractFileExt(psIn);
     liMainFileNameLength := Length(psIn) - Length(lsExt);
-    Result := JcfUtils.StrLeft(psIn, liMainFileNameLength);
+    Result := StrLeft(psIn, liMainFileNameLength);
 
     if peMode = cmInPlaceWithBackup then
       Result := Result + '.' + BackupExtension

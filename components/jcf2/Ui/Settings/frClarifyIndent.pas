@@ -42,9 +42,6 @@ type
   TfClarifyIndent = class(TfrSettingsFrame)
     Label2: TLabel;
     edtIndentSpaces: TJvValidateEdit;
-    cbIndentGlobals: TCheckBox;
-    cbIndentProcedures: TCheckBox;
-    cbIndentClasses: TCheckBox;
     gbOptions: TGroupBox;
     cbIndentBeginEnd: TCheckBox;
     eIndentBeginEndSpaces: TJvValidateEdit;
@@ -91,10 +88,6 @@ procedure TfClarifyIndent.Read;
 begin
   with FormatSettings.Indent do
   begin
-    cbIndentGlobals.Checked    := IndentGlobals;
-    cbIndentProcedures.Checked := IndentProcedures;
-    cbIndentClasses.Checked    := IndentClasses;
-
     edtIndentSpaces.Value    := IndentSpaces;
     cbIndentBeginEnd.Checked := IndentBeginEnd;
     eIndentBeginEndSpaces.Value := IndentBeginEndSpaces;
@@ -121,10 +114,6 @@ begin
 
   with FormatSettings.Indent do
   begin
-    IndentGlobals    := cbIndentGlobals.Checked;
-    IndentProcedures := cbIndentProcedures.Checked;
-    IndentClasses    := cbIndentClasses.Checked;
-
     IndentSpaces   := edtIndentSpaces.Value;
     IndentBeginEnd := cbIndentBeginEnd.Checked;
     IndentBeginEndSpaces := eIndentBeginEndSpaces.Value;

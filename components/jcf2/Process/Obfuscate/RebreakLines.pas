@@ -1,11 +1,5 @@
 unit RebreakLines;
 
-{ AFS 29 December 2002
-
-  Obfuscate process
-  break lines at regular intervals
-}
-
 {(*}
 (*------------------------------------------------------------------------------
  Delphi Code formatter source code 
@@ -35,6 +29,12 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
+{ AFS 29 December 2002
+
+  Obfuscate process
+  break lines at regular intervals
+}
+
 uses SwitchableVisitor;
 
 type
@@ -50,7 +50,6 @@ type
 implementation
 
 uses
-  JcfUtils,
   JcfUnicode,
   SourceToken, Tokens, FormatFlags, TokenUtils, ParseTreeNodeType;
 

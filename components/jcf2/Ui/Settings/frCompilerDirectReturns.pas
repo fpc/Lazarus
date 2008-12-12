@@ -30,7 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Windows, Classes, Graphics, Controls, Forms,
+  Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
   frmBaseSettingsFrame;
 

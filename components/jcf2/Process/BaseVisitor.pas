@@ -56,7 +56,7 @@ type
     { this is called when visiting a leaf node (ie a source token) }
     function VisitSourceToken(const pcToken: TObject): Boolean; virtual;
 
-    function FinalSummary(var psMessage: string): boolean; virtual;
+    function FinalSummary(out psMessage: string): boolean; virtual;
     function IsIncludedInSettings: boolean; virtual;
 
     property HasPreVisit: boolean read fbHasPreVisit write fbHasPreVisit;
@@ -81,7 +81,7 @@ begin
   fbHasSourceTokenVisit := True;
 end;
 
-function TBaseTreeNodeVisitor.FinalSummary(var psMessage: string): boolean;
+function TBaseTreeNodeVisitor.FinalSummary(out psMessage: string): boolean;
 begin
   // no message
   Result    := False;

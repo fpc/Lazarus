@@ -45,9 +45,8 @@ type
 implementation
 
 uses
-  { jcf }
-  JcfUtils,
   { local }
+  JcfStringUtils,
   Tokens, SettingsTypes,
   JcfSettings;
 
@@ -77,16 +76,16 @@ begin
     rcLinefeed:
     begin
       // easy case - CrLf with Lf
-      lcSourceToken.SourceCode := AnsiLineFeed;
+      lcSourceToken.SourceCode := NativeLineFeed;
     end;
     rcCrLf:
     begin
-      lcSourceToken.SourceCode := AnsiCrLf;
+      lcSourceToken.SourceCode := NativeCrLf;
     end;
     rcPlatform:
     begin
       // AnsiLineBreak is set to the right value at compile time
-      lcSourceToken.SourceCode := AnsiLineBreak;
+      lcSourceToken.SourceCode := NativeLineBreak;
     end;
 
   end;

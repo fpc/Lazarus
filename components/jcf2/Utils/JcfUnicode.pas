@@ -71,9 +71,10 @@ const
 implementation
 
 uses
-  Classes,
-  SysUtils,
-  JcfUtils;
+  { Delphi }
+  Classes, SysUtils,
+  { local }
+  JcfStringUtils;
 
 const
   MaxAnsiChar = 127;
@@ -95,7 +96,7 @@ end;
 
 function WideCharIsDigit(const wc: WideChar): Boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
 
   if WideCharIsHigh(wc) then
@@ -104,13 +105,13 @@ begin
     exit;
   end;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
   Result := CharIsDigit(ch);
 end;
 
 function WideCharIsAlpha(const wc: WideChar): Boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
   if WideCharIsHigh(wc) then
   begin
@@ -118,13 +119,13 @@ begin
     exit;
   end;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
   Result := CharIsAlpha(ch);
 end;
 
 function WideCharIsAlphaNum(const wc: WideChar): Boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
   if WideCharIsHigh(wc) then
   begin
@@ -132,11 +133,15 @@ begin
     exit;
   end;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
   Result := CharIsAlpha(ch) or CharIsDigit(ch);
 end;
 
 function WideCharIsHexDigitDot(const wc: WideChar): Boolean;
+const
+  HexDigits: set of AnsiChar = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'A', 'B', 'C', 'D', 'E', 'F'];
 var
   ch: AnsiChar;
 begin
@@ -147,13 +152,13 @@ begin
   end;
 
   ch := AnsiChar(wc);
-  Result := (ch in AnsiHexDigits) or (ch = '.');
+  Result := (ch in HexDigits) or (ch = '.');
 end;
 
 
 function WideCharIsWordChar(const wc: WideChar): Boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
   if WideCharIsHigh(wc) then
   begin
@@ -161,13 +166,13 @@ begin
     exit;
   end;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
   Result := CharIsAlpha(ch) or (ch = '_');
 end;
 
 function WideCharIsPuncChar(const wc: WideChar): boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
   Result := False;
 
@@ -176,7 +181,7 @@ begin
     exit;
   end;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
 
   if CharIsWhiteSpace(ch) then
     exit;
@@ -193,7 +198,7 @@ end;
 
 function WideCharIsWhiteSpaceNoReturn(const wc: WideChar): boolean;
 var
-  ch: AnsiChar;
+  ch: char;
 begin
   Result := False;
 
@@ -210,14 +215,14 @@ begin
   if WideCharIsReturn(wc) then
     exit;
 
-  ch := AnsiChar(wc);
+  ch := char(wc);
 
   { 7 April 2004 following sf snag 928460 and discussion in newsgroups
     must accept all other chars < 32 as white space }
 
   // Result := CharIsWhiteSpace(ch) and (ch <> AnsiLineFeed) and (ch <> AnsiCarriageReturn);
 
-  Result := (ord(ch) <= Ord(AnsiSpace));
+  Result := (ord(ch) <= Ord(NativeSpace));
 end;
 
 {

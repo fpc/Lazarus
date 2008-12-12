@@ -53,8 +53,8 @@ implementation
 uses
   { delphi }
   SysUtils,
-  { jcf }
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   SourceToken, Nesting, FormatFlags, JcfSettings, TokenUtils,
   Tokens, ParseTreeNode, ParseTreeNodeType, SetIndent, SetAsm;
 
@@ -644,7 +644,7 @@ begin
       if (lcPrev <> nil) and (lcPrev.TokenType = ttWhiteSpace) then
       begin
         lcPrev.SourceCode :=
-          JcfUtils.StrRepeat(AnsiSpace, liDesiredIndent - lcPrev.XPosition + 1);
+          StrRepeat(NativeSpace, liDesiredIndent - lcPrev.XPosition + 1);
       end;
       {
       else if liDesiredIndent > 0 then

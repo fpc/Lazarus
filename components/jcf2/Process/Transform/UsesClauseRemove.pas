@@ -54,7 +54,7 @@ type
     constructor Create; override;
 
     function IsIncludedInSettings: boolean; override;
-    function FinalSummary(var psMessage: string): boolean; override;
+    function FinalSummary(out psMessage: string): boolean; override;
 
   end;
 
@@ -146,11 +146,17 @@ begin
   end;
 end;
 
-function TUsesClauseRemove.FinalSummary(var psMessage: string): boolean;
+function TUsesClauseRemove.FinalSummary(out psMessage: string): boolean;
 begin
   Result := (fiCount > 0);
   if Result then
+  begin
     psMessage := 'Uses clause removal: ' + IntToStr(fiCount) + ' removals were made';
+  end
+  else
+  begin
+    psMessage := '';
+  end;
 end;
 
 function TUsesClauseRemove.MatchesSearch(const ps: string): boolean;

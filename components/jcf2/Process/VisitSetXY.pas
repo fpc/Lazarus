@@ -49,7 +49,8 @@ type
 implementation
 
 uses
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   JcfMiscFunctions, SourceToken, Tokens;
 
 constructor TVisitSetXY.Create;
@@ -92,7 +93,7 @@ begin
   if lcToken.TokenType = ttReturn then
     fiSolidTokenOnLineIndex := 0
   else if (lcToken.TokenType = ttComment) and
-    (Pos(AnsiLineBreak, lcToken.SourceCode) > 0) then
+    (Pos(NativeLineBreak, string(lcToken.SourceCode)) > 0) then
     fiSolidTokenOnLineIndex := 0
   else if lcToken.IsSolid then
     Inc(fiSolidTokenOnLineIndex);

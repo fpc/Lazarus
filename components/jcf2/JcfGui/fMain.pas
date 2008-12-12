@@ -36,7 +36,7 @@ interface
 
 uses
   { delphi }
-  Windows, SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, Menus,
+  SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, Menus,
   ActnList, StdActns, ToolWin, ImgList, ShellAPI,
   { local }
   FileConverter, JCFSettings,  ConvertTypes,
@@ -133,6 +133,8 @@ implementation
 {$endif}
 
 uses
+  { deplhi }
+  Windows,
   { jcl }
   JclFileUtils,
   { local }

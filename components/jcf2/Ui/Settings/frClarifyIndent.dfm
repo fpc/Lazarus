@@ -1,22 +1,22 @@
 inherited fClarifyIndent: TfClarifyIndent
   Width = 430
-  Height = 363
+  Height = 295
   Font.Charset = ANSI_CHARSET
   Font.Height = -15
   Font.Name = 'Segoe UI'
   ParentFont = False
   ExplicitWidth = 430
-  ExplicitHeight = 363
+  ExplicitHeight = 295
   object Label2: TLabel
-    Left = 8
-    Top = 80
+    Left = 4
+    Top = 6
     Width = 164
     Height = 20
     Caption = 'Block indentation spaces'
   end
   object edtIndentSpaces: TJvValidateEdit
     Left = 180
-    Top = 77
+    Top = 4
     Width = 50
     Height = 28
     CriticalPoints.MaxValueIncluded = False
@@ -26,39 +26,15 @@ inherited fClarifyIndent: TfClarifyIndent
     HasMinValue = True
     MaxLength = 3
     MaxValue = 12.000000000000000000
-    TabOrder = 3
-  end
-  object cbIndentGlobals: TCheckBox
-    Left = 8
-    Top = 6
-    Width = 201
-    Height = 17
-    Caption = 'Indent globals'
     TabOrder = 0
   end
-  object cbIndentProcedures: TCheckBox
-    Left = 8
-    Top = 30
-    Width = 201
-    Height = 17
-    Caption = 'Indent procedures'
-    TabOrder = 1
-  end
-  object cbIndentClasses: TCheckBox
-    Left = 8
-    Top = 54
-    Width = 201
-    Height = 17
-    Caption = 'Indent classes'
-    TabOrder = 2
-  end
   object gbOptions: TGroupBox
-    Left = 8
-    Top = 105
+    Left = 4
+    Top = 36
     Width = 417
     Height = 240
     Caption = 'Options'
-    TabOrder = 4
+    TabOrder = 1
     object cbIndentBeginEnd: TCheckBox
       Left = 12
       Top = 28

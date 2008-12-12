@@ -82,6 +82,7 @@ function InRoundBrackets(const pt: TSourceToken): boolean;
 
 function SemicolonNext(const pt: TSourceToken): boolean;
 
+
 { true if the token is in code, ie in procedure/fn body,
   init section, finalization section, etc
 
@@ -173,12 +174,12 @@ implementation
 
 uses
   { delphi }
-  SysUtils,
-  { jcf }
-  JcfUtils,
+  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, 
   { local }
+  JcfSettings,
+  JcfUnicode,
+  JcfStringUtils,
   ParseTreeNodeType, Tokens, Nesting,
-  JcfSettings, JcfUnicode,
   SetReturns, AsmKeywords;
 
 
@@ -746,7 +747,7 @@ begin
       Result := (pt.TokenType in DIRECTIVE_IDENTIFIER_NAMES);
     idAny:
       // accept any textual token
-      Result := JcfUtils.StrIsAlpha(pt.SourceCode);
+      Result := StrIsAlpha(pt.SourceCode);
     else
     begin
       Result := False;
@@ -766,7 +767,7 @@ end;
 
 function IsSymbolOperator(const pt: TSourceToken): boolean;
 begin
-  Result := (pt.TokenType in Operators) and (not JcfUtils.StrIsAlpha(pt.SourceCode));
+  Result := (pt.TokenType in Operators) and (not StrIsAlpha(pt.SourceCode));
 end;
 
 function IsClassDirective(const pt: TSourceToken): boolean;

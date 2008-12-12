@@ -49,12 +49,12 @@ type
 implementation
 
 uses
+  { system }
   SysUtils,
-  JcfUtils,
+  { local }
+  JcfStringUtils,
   SourceToken, SettingsTypes, Tokens, ParseTreeNodeType,
   JcfSettings, FormatFlags, TokenUtils;
-
-{ TCapitalisation }
 
 procedure FixCaps(const pct: TSourceToken; const caps: TCapitalisationType);
 begin
@@ -77,7 +77,7 @@ begin
     ctLower:
       pct.SourceCode := AnsiLowerCase(pct.SourceCode);
     ctMixed:
-      pct.SourceCode := JcfUtils.StrSmartCase(AnsiLowerCase(pct.SourceCode), []);
+      pct.SourceCode := StrSmartCase(AnsiLowerCase(pct.SourceCode), []);
     ctLeaveAlone: ;
   end;
 end;

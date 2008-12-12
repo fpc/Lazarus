@@ -50,16 +50,15 @@ type
 implementation
 
 uses
-  { jcl }
-  JcfUtils,
   { local }
+  JcfStringUtils,
   JcfSettings, SourceToken, Tokens,
   FormatFlags, ParseTreeNodeType;
 
 constructor TMaxSpaces.Create;
 begin
   inherited;
-  fsSpaces    := JcfUtils.StrRepeat(AnsiSpace, FormatSettings.Spaces.MaxSpacesInCode);
+  fsSpaces    := StrRepeat(NativeSpace, FormatSettings.Spaces.MaxSpacesInCode);
   FormatFlags := FormatFlags + [eRemoveSpace];
 end;
 

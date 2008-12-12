@@ -35,6 +35,8 @@ unit BuildTokenList;
 interface
 
 uses
+  { delphi }
+  Windows,
   { local }
   Tokens, SourceToken, SourceTokenList;
 
@@ -102,18 +104,19 @@ implementation
 uses
  { delphi }
  Forms, SysUtils,
- { jcf }
- JcfUtils, JcfUnicode,
  { local }
+ JcfStringUtils,
+ JcfUnicode,
  JcfRegistrySettings;
-
 
 function CheckMultiByte(const pcChar: WideChar): Boolean;
 begin
   Result := False;
 
   if GetRegSettings.CheckMultiByteChars then
-    Result := IsMultiByte(pcChar);
+  begin
+    Result := IsDBCSLeadByte(Byte(pcChar));
+  end;
 end;
 
 { TBuildTokenList }
@@ -155,9 +158,9 @@ var
     { the rest }
     if TryWhiteSpace(lcNewToken) then
       exit;
-    if TryLiteralString(lcNewToken, AnsiSingleQuote) then
+    if TryLiteralString(lcNewToken, NativeSingleQuote) then
       exit;
-    if TryLiteralString(lcNewToken, AnsiDoubleQuote) then
+    if TryLiteralString(lcNewToken, NativeDoubleQuote) then
       exit;
 
     if TryWord(lcNewToken) then
@@ -645,7 +648,7 @@ function TBuildTokenList.TryPunctuation(const pcToken: TSourceToken): boolean;
      e.g '=(' is not a punctation symbol, but 2 of them ( for e.g. in const a=(3);
      simlarly ');' is 2 puncs }
     UnitaryPunctuation: set of AnsiChar = [
-      AnsiSingleQuote, '"', '(', ')', '[', ']', '{',
+      NativeSingleQuote, '"', '(', ')', '[', ']', '{',
       '#', '$', '_', ';', '@', '^', ','];
 
    { these can't have anything following them:

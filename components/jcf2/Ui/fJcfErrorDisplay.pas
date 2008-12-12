@@ -34,11 +34,7 @@ interface
   that allows the exception text to be copied out }
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls
-{$IFDEF FPC}
-  ,LResources
-{$ENDIF}
-  ;
+  SysUtils, Classes, Controls, Forms, StdCtrls;
 
 type
   TExceptionDialog = class(TForm)
@@ -60,7 +56,10 @@ procedure ShowErrorMessageDialog(const psMessage: string; const psCaption: strin
 
 implementation
 
-uses JcfUtils, ParseError, JcfFontSetFunctions;
+uses
+  { local }
+  ParseError, JcfStringUtils, JcfFontSetFunctions
+  {$ifdef fpc}, LResources{$endif};
 
 {$ifndef FPC}
   {$R *.dfm}
@@ -111,7 +110,7 @@ begin
 
     if (lcParseError.XPosition > 0) or (lcParseError.YPosition > 0) then
     begin
-      mExceptionMessage.Text := mExceptionMessage.Text + AnsiLineBreak +
+      mExceptionMessage.Text := mExceptionMessage.Text + NativeLineBreak +
         'At line ' + IntToStr(lcParseError.YPosition) + ' col ' +
         IntToStr(lcParseError.XPosition);
 
@@ -123,7 +122,7 @@ begin
   else
   begin
     Caption := 'Exception ' + pE.ClassName;
-    mExceptionMessage.Text := 'Type: ' + pE.ClassName + AnsiLineBreak;
+    mExceptionMessage.Text := 'Type: ' + pE.ClassName + NativeLineBreak;
     mExceptionMessage.Text := mExceptionMessage.Text + pE.Message;
   end;
 
@@ -142,7 +141,7 @@ begin
   mExceptionMessage.Text := sMessage;
   if (piY > 0) or (piX > 0) then
   begin
-    mExceptionMessage.Text := mExceptionMessage.Text + AnsiLineBreak +
+    mExceptionMessage.Text := mExceptionMessage.Text + NativeLineBreak +
       ' at line ' + IntToStr(piY) + ' col ' + IntToStr(piX);
   end;
 
@@ -168,7 +167,8 @@ begin
 end;
 
 initialization
-{$IFDEF FPC}
+{$ifdef FPC}
   {$I fJcfErrorDisplay.lrs}
-{$ENDIF}
+{$endif}
+
 end.
