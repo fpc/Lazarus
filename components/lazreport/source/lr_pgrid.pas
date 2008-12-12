@@ -31,7 +31,7 @@ type
     Column: Integer;
     ColumnWidth: Integer;
   end;
-  
+
   TSetupColumnEvent=procedure(Sender:TFrPrintGrid; const Column: TColumn;
     var PrintColumn:boolean; var ColumnWidth:Integer) of object;
 
@@ -54,7 +54,7 @@ type
     FDataSet              : TDataset;
     FColumnsInfo          : array of TColumnInfo;
     FTemplate             : string;
-    
+
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
     procedure OnPrintColumn(ColNo: Integer; var Width: Integer);
     procedure SetDBGrid(const AValue: TDBGrid);
@@ -68,7 +68,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    
+
     procedure PreviewReport;
   published
     property DBGrid: TDBGrid read FDBGrid write SetDBGrid;
@@ -129,17 +129,17 @@ begin
 
     PrintColumn := DbGrid.Columns[i].Visible;
     ColumnWidth := DbGrid.Columns[i].Width;
-    
+
     if Assigned(FOnSetupColumn) then
       FOnSetupColumn(Self, TColumn(DbGrid.Columns[i]), PrintColumn, ColumnWidth);
-      
+
     if PrintColumn then begin
       j:=Length(FColumnsInfo);
       SetLength(FColumnsInfo, j+1);
       FColumnsInfo[j].Column := i;
       FColumnsInfo[j].ColumnWidth := ColumnWidth;
     end;
-    
+
   end;
 end;
 
@@ -204,7 +204,7 @@ begin
           if y - YPos > 40 then
             YDone := true
           else
-            YPos := x + dy + 1;
+            YPos := y + dy + 1;
         end;
       end;
     end;
@@ -245,13 +245,13 @@ begin
   FReport.OnEnterRect  :=@OnEnterRect;
   FReport.OnPrintColumn:=@OnPrintColumn;
   FReport.ShowProgress :=fShowProgress;
-  
+
   FReportDataSet := TfrDBDataSet.Create(Self);
   FReportDataSet.Name := 'frGridDBDataSet1';
   FReportDataSet.DataSet := FDataSet;
 
   SetupColumns;
-  
+
   FColumnDataSet := TfrUserDataSet.Create(Self);
   FColumnDataSet.Name := 'frGridUserDataSet1';
   FColumnDataSet.RangeEnd := reCount;
@@ -360,7 +360,7 @@ begin
 
   if (i<0) or (i>Length(FColumnsInfo)-1) then
     exit;
-    
+
   C := TColumn(DbGrid.Columns[FColumnsInfo[i].Column]);
   if (C<>nil)and(Memo.Count>0) then
   begin
