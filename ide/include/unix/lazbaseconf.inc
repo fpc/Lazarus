@@ -56,6 +56,10 @@ const
     '~/lazarus'
     );
 
+var
+  PrimaryConfigPath,
+  SecondaryConfigPath: string;
+
 {---------------------------------------------------------------------------
   function FindDefaultCompilerPath: string;
  ---------------------------------------------------------------------------}

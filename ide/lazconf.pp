@@ -137,10 +137,6 @@ const
 
 implementation
 
-var
-  PrimaryConfigPath,
-  SecondaryConfigPath: string;
-
 {$I lazconf.inc}
 
 procedure AddFilenameToList(List: TStrings; const Filename: string;

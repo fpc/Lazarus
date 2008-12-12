@@ -35,6 +35,8 @@ const
 
 var
   DefaultDrive: String;
+  PrimaryConfigPath,
+  SecondaryConfigPath: string;
   DefaultFPCTarget,
   DefaultFPCVersion : string;
 
