@@ -94,7 +94,8 @@ type
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
-      ATag: PInteger; AddToUndoList: Boolean = false);
+      ATag: PInteger; AddToUndoList: Boolean = false;
+      ChangeReason: TSynChangeReason = crInsert);
     function  SelAvail: Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     property  Enabled: Boolean read FEnabled write SetEnabled;
@@ -444,7 +445,8 @@ begin
 end;
 
 procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
-  Value : PChar; ATag : PInteger; AddToUndoList: Boolean = false);
+  Value : PChar; ATag : PInteger; AddToUndoList: Boolean = false;
+  ChangeReason: TSynChangeReason = crInsert);
 var
   BB, BE: TPoint;
   TempString: string;
@@ -739,7 +741,7 @@ var
   end;
 
 var
-  StartInsert: TPoint;
+  StartInsert, EndInsert: TPoint;
 begin
   FLines.BeginUpdate;
   try
@@ -762,10 +764,16 @@ begin
         StartInsert := FCaret.LineBytePos;
       InsertText;
       if AddToUndoList then begin
-        if SelectionMode = smLine then
-          StartInsert.X := 1;
+        EndInsert := FCaret.LineBytePos;
+        if SelectionMode = smLine then begin // The SelectionMode of the deleted block
+          StartInsert.x := 1;
+          if EndInsert.x = 1 then begin
+            dec(EndInsert.y);
+            EndInsert.x := Length(FLines[EndInsert.y - 1]);
+          end;
+        end;
         if length(Value) > 0 then
-          fUndoList.AddChange(crInsert, StartInsert, FCaret.LineBytePos, '', smNormal);
+          fUndoList.AddChange(ChangeReason, StartInsert, EndInsert, '', PasteMode);
       end;
     end;
   finally

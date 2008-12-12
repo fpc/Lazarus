@@ -568,7 +568,9 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     function  GetSelectionMode : TSynSelectionMode;
     procedure SetSelectionMode(const Value: TSynSelectionMode);
+    {$IFNDEF SYN_LAZARUS}
     procedure SetSelText(const Value: string);
+    {$ENDIF}
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
@@ -660,7 +662,8 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetReadOnly(Value: boolean); virtual;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
-      ATag: PInteger);
+      ATag: PInteger; AddToUndoList: Boolean = false;
+      ChangeReason: TSynChangeReason = crInsert);
     procedure ShowCaret;
     // If the translations requires Data, memory will be allocated for it via a
     // GetMem call.  The client must call FreeMem on Data if it is not NIL.
@@ -3959,8 +3962,6 @@ end;
 
 procedure TCustomSynEdit.PasteFromClipboard;
 var
-  StartOfBlock: TPoint;
-  EndOfBlock: TPoint;
 {$IFDEF SYN_LAZARUS}
   MemStream: TMemoryStream;
   Buf: Pointer;
@@ -3995,39 +3996,12 @@ begin
         P := GlobalLock(Mem);
         if P <> nil then begin
       {$ENDIF}
-          if SelAvail then begin
-            fUndoList.AddChange(crDelete, FBlockSelection.StartLineBytePos,
-              FBlockSelection.EndLineBytePos, SelText,
-              SelectionMode);
-          end;
           // Our format: SelectionMode value followed by text.
           // See CopyToClipboard
           PasteMode := PSynSelectionMode(P)^;
           inc(P, SizeOf(TSynSelectionMode));
-          if SelAvail then begin
-            StartOfBlock := FBlockSelection.FirstLineBytePos;
-            EndOfBlock := FBlockSelection.LastLineBytePos;
-            FBlockSelection.StartLineBytePos := StartOfBlock;
-            FBlockSelection.EndLineBytePos := EndOfBlock;
-            if SelectionMode = smLine then
-              // Pasting always occurs at column 0 when current selection is
-              // smLine type
-              StartOfBlock.X := 1;
-          end else
-            StartOfBlock := PhysicalToLogicalPos(CaretXY);
           DummyTag := 0;
-          SetSelTextPrimitive(PasteMode, P, @DummyTag);
-          EndOfBlock := BlockEnd;
-          if PasteMode <> smLine then
-            fUndoList.AddChange(crPaste, StartOfBlock, EndOfBlock, SelText,
-              PasteMode)
-          else
-            if CaretX = 1 then
-              fUndoList.AddChange(crPaste, Point(1, StartOfBlock.y),
-                Point(CharsInWindow, EndOfBlock.y - 1), SelText, smLine)
-            else
-              fUndoList.AddChange(crPaste, Point(1, StartOfBlock.y),
-                EndOfBlock, SelText, smNormal);
+          SetSelTextPrimitive(PasteMode, P, @DummyTag, true, crPaste);
         end else
           raise ESynEditError.Create('Clipboard paste operation failed.');
       finally
@@ -4041,21 +4015,7 @@ begin
     // If our special format isn't there, check for regular text format.
     end else if Clipboard.HasFormat(CF_TEXT) then begin
       // Normal text is much easier...
-      if SelAvail then begin
-//        fUndoList.AddChange(crSelDelete, fBlockBegin, fBlockEnd, SelText,
-//          SelectionMode);
-        fUndoList.AddChange(crDelete, FBlockSelection.StartLineBytePos,
-          FBlockSelection.EndLineBytePos, SelText,          //mh 2000-11-20
-          SelectionMode);
-      end;
-      StartOfBlock := FBlockSelection.FirstLineBytePos;
-      EndOfBlock := FBlockSelection.LastLineBytePos;
-      FBlockSelection.StartLineBytePos := StartOfBlock;
-      FBlockSelection.EndLineBytePos := EndOfBlock;
-      LockUndo;
       SelText := Clipboard.AsText;
-      UnlockUndo;
-      fUndoList.AddChange(crPaste, StartOfBlock, BlockEnd, SelText, smNormal);
     end;
   finally
     EndUndoBlock;                                                               //mh 2000-11-20
@@ -4354,20 +4314,24 @@ begin
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetSelText(const Value: string);
 begin
   // No undo entry added
   SetSelTextPrimitive(smNormal, PChar(Value), nil);
 end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
-  Value: PChar; ATag: PInteger);
+  Value: PChar; ATag: PInteger; AddToUndoList: Boolean = false;
+  ChangeReason: TSynChangeReason = crInsert);
 Begin
   // No undo entry added
   IncPaintLock;
   TSynEditStringTrimmingList(fTrimLines).Lock;
   try
-    FBlockSelection.SetSelTextPrimitive(PasteMode, Value, ATag);
+    FBlockSelection.SetSelTextPrimitive(PasteMode, Value, ATag,
+      AddToUndoList, ChangeReason);
     // Force caret reset
     CaretXY := CaretXY;
     fLastCaretX := CaretX;
@@ -6218,7 +6182,6 @@ begin
             if Source <> Self then
               TCustomSynEdit(Source).SelText := ''
             else begin
-//              fUndoList.AddChange(crDragDropDelete, fBlockBegin, fBlockEnd,
               SetSelTextExternal('');
               // adjust horizontal drop position
               if DropAfter and (NewCaret.Y = BE.Y) then begin
@@ -6240,33 +6203,13 @@ begin
               Include(fOptions, eoScrollPastEol);
             CaretXY := NewCaret;
             BlockBegin := NewCaret;
-            LockUndo;
-            try
-              SelText := DragDropText;
-            finally
-              UnlockUndo;
-            end;
+            if Source = Self then
+              SetSelTextPrimitive(smNormal, PChar(DragDropText), nil, true, crDragDropInsert)
+            else
+              SetSelTextPrimitive(smNormal, PChar(DragDropText), nil, true, crInsert);
           finally
             if ChangeScrollPastEOL then
               Exclude(fOptions, eoScrollPastEol);
-          end;
-          // save undo information
-          if Source = Self then begin
-            fUndoList.AddChange(crDragDropInsert,
-              {$IFDEF SYN_LAZARUS}
-              PhysicalToLogicalPos(NewCaret),
-              {$ELSE}
-              NewCaret,
-              {$ENDIF}
-              BlockEnd, SelText, SelectionMode);
-          end else begin
-            fUndoList.AddChange(crInsert,
-              {$IFDEF SYN_LAZARUS}
-              PhysicalToLogicalPos(NewCaret),
-              {$ELSE}
-              NewCaret,
-              {$ENDIF}
-              BlockEnd, SelText, SelectionMode);
           end;
           BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
                         {$ELSE}NewCaret{$ENDIF};
@@ -7111,18 +7054,9 @@ begin
             OldSelMode := FBlockSelection.SelectionMode;
             try
               FBlockSelection.SelectionMode := smNormal;
-              SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                            {$ELSE}CaretXY{$ENDIF});
-              SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(WP)
-                            {$ELSE}WP{$ENDIF});
-              fUndoList.AddChange(crSilentDeleteAfterCursor,
-                {$IFDEF SYN_LAZARUS}
-                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(WP),
-                {$ELSE}
-                CaretXY, WP,
-                {$ENDIF}
-                SelText, smNormal);
-              SetSelText('');
+              SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+              SetBlockEnd(PhysicalToLogicalPos(WP));
+              SetSelTextPrimitive(smNormal, nil, nil, true, crSilentDeleteAfterCursor)
             finally
               FBlockSelection.SelectionMode := OldSelMode;
             end;
@@ -7139,21 +7073,9 @@ begin
             OldSelMode := FBlockSelection.SelectionMode;
             try
               FBlockSelection.SelectionMode := smNormal;
-              {$IFDEF SYN_LAZARUS}
-              SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-              SetBlockEnd(PhysicalToLogicalPos(WP));
-              {$ELSE}
-              SetBlockBegin(CaretXY);
-              SetBlockEnd(WP);
-              {$ENDIF}
-              fUndoList.AddChange(crSilentDelete,
-                {$IFDEF SYN_LAZARUS}
-                PhysicalToLogicalPos(WP), PhysicalToLogicalPos(CaretXY),
-                {$ELSE}
-                WP, CaretXY,
-                {$ENDIF}
-                SelText, smNormal);
-              SetSelText('');
+              SetBlockBegin(PhysicalToLogicalPos(WP));
+              SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+              SetSelTextPrimitive(smNormal, nil, nil, true, crSilentDelete)
             finally
               FBlockSelection.SelectionMode := OldSelMode;
             end;
