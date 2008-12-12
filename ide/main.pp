@@ -353,6 +353,8 @@ type
       APageIndex: integer; DeleteForwardHistory: boolean);
     procedure OnSrcNoteBookClickLink(Sender: TObject;
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
+    procedure OnSrcNoteBookMouseLink(
+      Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
@@ -1776,6 +1778,7 @@ begin
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
+  SourceNotebook.OnMouseLink := @OnSrcNoteBookMouseLink;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
@@ -13673,6 +13676,19 @@ begin
   JumpHistory.WriteDebugReport;
   writeln('');
   {$ENDIF}
+end;
+
+procedure TMainIDE.OnSrcNoteBookMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  AllowMouseLink := CodeToolBoss.FindDeclaration(
+    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,

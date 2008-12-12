@@ -137,6 +137,7 @@ type
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnClickLink: TMouseEvent;
+    FOnMouseLink: TSynMouseLinkEvent;
     FOnMouseWheel : tMouseWheelEvent;
     FOnKeyDown: TKeyEvent;
 
@@ -147,6 +148,8 @@ type
           Shift: TShiftState; X,Y: Integer);
     procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure EditorMouseLink(
+      Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -361,6 +364,7 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property Owner: TComponent read FAOwner;
@@ -475,6 +479,7 @@ type
     FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnClickLink: TMouseEvent;
+    FOnMouseLink: TSynMouseLinkEvent;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
@@ -571,6 +576,8 @@ type
                               Shift: TShiftstate; X,Y: Integer);
     procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftstate; X,Y: Integer);
+    procedure EditorMouseLink(
+      Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -750,6 +757,7 @@ type
     property OnCloseClicked: TOnCloseSrcEditor
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -2257,6 +2265,7 @@ Begin
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
       OnClickLink := @EditorClickLink;
+      OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
     end;
     if FCodeTemplates<>nil then
@@ -2669,10 +2678,18 @@ begin
     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
+procedure TSourceEditor.EditorMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+begin
+  //DebugLn(['TSourceEditor.EditorMouseLink ',X,',',Y]);
+  if Assigned(OnMouseLink) then
+    OnMouseLink(Sender, X, Y, AllowMouseLink);
+end;
+
 procedure TSourceEditor.EditorClickLink(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn(['TSourceEditor.EditorClickLink ',X,',',Y]);
+  //DebugLn(['TSourceEditor.EditorClickLink ',X,',',Y]);
   if Assigned(OnClickLink) then
     OnClickLink(Sender, Button, Shift, X,Y);
 end;
@@ -4409,6 +4426,7 @@ Begin
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnMouseWheel := @EditorMouseWheel;
   Result.OnClickLink := @EditorClickLink;
+  Result.OnMouseLink := @EditorMouseLink;
   Result.OnKeyDown :=@EditorKeyDown;
 
   Result.EditorComponent.EndUpdate;
@@ -6230,6 +6248,13 @@ procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
 begin
 
+end;
+
+procedure TSourceNotebook.EditorMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+begin
+  if Assigned(OnMouseLink) then
+    OnMouseLink(Sender, X, Y, AllowMouseLink);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);

@@ -306,6 +306,9 @@ type
   end;
   {$ENDIF}
 
+  TSynMouseLinkEvent = procedure (
+    Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
+
   { TCustomSynEdit }
 
   TCustomSynEdit = class(TSynEditBase)
@@ -437,6 +440,7 @@ type
     {$IFDEF SYN_LAZARUS}
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 11926
     FOnClickLink: TMouseEvent;
+    FOnMouseLink: TSynMouseLinkEvent;
     {$ENDIF}
 
     {$IFDEF SYN_LAZARUS}
@@ -753,6 +757,7 @@ type
       var Attri: TSynHighlighterAttributes): boolean;                           //L505
 
     {$IFDEF SYN_LAZARUS}
+    function IsLinkable(Y, X1, X2: Integer): Boolean;
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
     function GetLineIndentProposal(Line: integer;
                                    IgnoreCurrentLineText: boolean): integer;
@@ -1039,6 +1044,7 @@ type
     property OnMouseUp;
     {$IFDEF SYN_LAZARUS}
     property OnClickLink : TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseEnter;
     property OnMouseLeave;
     {$ENDIF}
@@ -3270,7 +3276,10 @@ var
       exit;
     GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),
                           fLastCtrlMouseLinkX1,fLastCtrlMouseLinkX2);
-    if fLastCtrlMouseLinkX1=fLastCtrlMouseLinkX2 then
+    if
+      not IsLinkable(
+        fLastMouseCaret.Y, fLastCtrlMouseLinkX1, fLastCtrlMouseLinkX2)
+    then
       exit;
     fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
     with fMarkupCtrlMouse do begin
@@ -5998,7 +6007,7 @@ procedure TCustomSynEdit.UpdateCtrlMouse;
   end;
 
 var
-  NewY, NewX1, NewX2: integer;
+  NewY, NewX1, NewX2: Integer;
 begin
   fLastControlIsPressed:=(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]);
   if (eoShowCtrlMouseLinks in Options) and fLastControlIsPressed
@@ -6006,7 +6015,7 @@ begin
     // show link
     NewY:=fLastMouseCaret.Y;
     GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),NewX1,NewX2);
-    if NewX1<>NewX2 then begin
+    if IsLinkable(NewY, NewX1, NewX2) then begin
       // there is a word to underline as link
       if (NewY<>fLastCtrlMouseLinkY)
       or (NewX1<>fLastCtrlMouseLinkX1)
@@ -6075,6 +6084,14 @@ function TCustomSynEdit.IsIdentChar(const c: TUTF8Char): boolean;
 begin
   Result:=(length(c)=1) and (c[1] in IdentChars);
 end;
+
+function TCustomSynEdit.IsLinkable(Y, X1, X2: Integer): Boolean;
+begin
+  Result := X1 <> X2;
+  if Result and Assigned(FOnMouseLink) then
+    FOnMouseLink(Self, X1, Y, Result);
+end;
+
 {$ENDIF}
 
 procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
