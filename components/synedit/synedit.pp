@@ -8873,116 +8873,64 @@ end;
 
 procedure TCustomSynEdit.DoTabKey;
 var
-  {$IFNDEF SYN_LAZARUS}
-  StartOfBlock: TPoint;
-  {$ENDIF}
-  i, MinLen, iLine: integer;
+  i, iLine: integer;
   PrevLine,
   Spaces: string;
   p: PChar;
-  NewCaretX: integer;                                                           //mh 2000-10-01
-  ChangeScroll: boolean;                                                        //mh 2000-10-01
+  OldCaretX: integer;
 begin
-  {$IFDEF SYN_LAZARUS}
   if (eoTabIndent in Options) and SelAvail then begin
     DoBlockIndent;
     exit;
   end;
-  {$ENDIF}
-  i := 0;
-  if eoSmartTabs in fOptions then begin
-    iLine := CaretY - 1;
-    if (iLine > 0) and (iLine < Lines.Count) then begin
-      Dec(iLine);
-      {$IFNDEF SYN_LAZARUS  ! NOT}
-      MinLen := CaretX;
-      {$ENDIF}
-      repeat
-        // NOTE mh: after throwing in real tabs we have to use:
-        //      PrevLine := pConvert(Lines[iLine], TabWidth);
-        PrevLine := Lines[iLine];
-        {$IFDEF SYN_LAZARUS}
-        MinLen := PhysicalToLogicalCol(PrevLine,CaretX);
-        {$ENDIF}
-        if (Length(PrevLine) >= MinLen) then begin
-          p := @PrevLine[MinLen];
-          // scan over non-whitespaces
-          repeat
-            if p^ = #32 then break;
-            Inc(i);
-            Inc(p);
-          until p^ = #0;
-          // scan over whitespaces
-          if p^ <> #0 then
-            repeat
-              if p^ <> #32 then break;
-              Inc(i);
-              Inc(p);
-            until p^ = #0;
-          break;
-        end;
-        Dec(iLine);
-      until iLine < 0;
-    end;
-  end;
-  if i = 0 then begin
-    i := TabWidth - (CaretX - 1) mod TabWidth;
-    if i = 0 then i := TabWidth;
-  end;
-  {$IFDEF SYN_LAZARUS}
-  // i now contains the needed spaces
-  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
-                                not (eoTabsToSpaces in Options));
-  //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
 
   BeginUndoBlock;
   try
-    NewCaretX := CaretX + i;
+    i := 0;
+    OldCaretX := CaretX;
+    SelText := '';
+    // With a multi-line block the caret may have advanced, avoid negative spaces
+    if CaretX > OldCaretX then
+      OldCaretX := CaretX;
+    if eoSmartTabs in fOptions then begin
+      iLine := CaretY - 1;
+      if (iLine > 0) and (iLine < Lines.Count) then begin
+        repeat
+          Dec(iLine);
+          if iLine < 0 then break;
+          PrevLine := Lines[iLine];
+        until PhysicalLineLength(PChar(PrevLine),length(PrevLine),true) > OldCaretX - 1;
+
+        if iLine >= 0 then begin
+          p := @PrevLine[PhysicalToLogicalCol(PrevLine,OldCaretX)];
+          // scan over non-whitespaces
+          while not (p^ in [#0, #9, #32]) do
+            inc(p);
+          // scan over whitespaces
+          while (p^ in [#9, #32]) do
+            inc(p);
+          i := LogicalToPhysicalCol(PrevLine, p-@PrevLine[1]+1) - CaretX;
+        end;
+      end;
+    end;
+    if i <= 0 then begin
+      i := TabWidth - (CaretX - 1) mod TabWidth;
+      if i = 0 then i := TabWidth;
+    end;
+    // i now contains the needed spaces
+    Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
+                                  not (eoTabsToSpaces in Options));
+    //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
+    OldCaretX := CaretX;
     //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
     SetSelTextExternal(Spaces);
     //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
-    ChangeScroll := not (eoScrollPastEol in fOptions);
-    try
-      Include(fOptions, eoScrollPastEol);
-      CaretX := NewCaretX;
-    finally
-      if ChangeScroll then
-        Exclude(fOptions, eoScrollPastEol);
-    end;
+    CaretX := OldCaretX + i;
     //debugln('TCustomSynEdit.DoTabKey StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd),' Spaces="',Spaces,'"');
   finally
     EndUndoBlock;
   end;
   EnsureCursorPosVisible;
-  {$ELSE}
-  Spaces := StringOfChar(' ', i);
-  //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
-
-  if SelAvail then begin
-    fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-      SelectionMode);
-  end;
-{begin}                                                                         //mh 2000-10-01
-  StartOfBlock := CaretXY;
-  NewCaretX := StartOfBlock.X + i;
-  SetSelText(Spaces);
-  ChangeScroll := not (eoScrollPastEol in fOptions);
-  try
-    Include(fOptions, eoScrollPastEol);
-    CaretX := NewCaretX;
-  finally
-    if ChangeScroll then
-      Exclude(fOptions, eoScrollPastEol);
-  end;
-//  i := CaretY - 1;
-//  if eoTrimTrailingSpaces in Options then                                       //JGF 2000-09-23
-//    Lines[i] := TrimRight(Lines[i]);
-//  EnsureCursorPosVisible;
-//  if Length(Lines[i]) >= StartOfBlock.X then
-  fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, Spaces, SelectionMode);
-  EnsureCursorPosVisible;
-{end}                                                                           //mh 2000-10-01
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.CreateWnd;
