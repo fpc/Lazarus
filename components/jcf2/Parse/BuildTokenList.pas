@@ -35,8 +35,6 @@ unit BuildTokenList;
 interface
 
 uses
-  { delphi }
-  Windows,
   { local }
   Tokens, SourceToken, SourceTokenList;
 
@@ -114,9 +112,7 @@ begin
   Result := False;
 
   if GetRegSettings.CheckMultiByteChars then
-  begin
-    Result := IsDBCSLeadByte(Byte(pcChar));
-  end;
+    Result := IsMultiByte(pcChar);
 end;
 
 { TBuildTokenList }
