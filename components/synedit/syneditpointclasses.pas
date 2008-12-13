@@ -94,8 +94,7 @@ type
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
-      ATag: PInteger; AddToUndoList: Boolean = false;
-      ChangeReason: TSynChangeReason = crInsert);
+      AddToUndoList: Boolean = false; ChangeReason: TSynChangeReason = crInsert);
     function  SelAvail: Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     property  Enabled: Boolean read FEnabled write SetEnabled;
@@ -441,11 +440,11 @@ end;
 
 procedure TSynEditSelection.SetSelText(const Value : string);
 begin
-  SetSelTextPrimitive(smNormal, PChar(Value), nil, true);
+  SetSelTextPrimitive(smNormal, PChar(Value), true);
 end;
 
 procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
-  Value : PChar; ATag : PInteger; AddToUndoList: Boolean = false;
+  Value : PChar; AddToUndoList: Boolean = false;
   ChangeReason: TSynChangeReason = crInsert);
 var
   BB, BE: TPoint;
@@ -648,8 +647,6 @@ var
             FLines[FCaret.LinePos - 1] := TempString;
           end;
         end;
-        if ATag <> nil then
-          ATag^ := P - Start;
         if p^ in [#10,#13] then begin
           if (p[1] in [#10,#13]) and (p[1]<>p^) then
             inc(p,2)
@@ -758,6 +755,7 @@ begin
                               GetSelText,  SelectionMode);
       end;
       DeleteSelection;
+      EndLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
       if AddToUndoList then
@@ -900,6 +898,7 @@ begin
     if (Result <= length(s)) and FLines.IsUtf8 then
       Result:=UTF8FindNearestCharStart(PChar(Pointer(s)),length(s),Result);
   end;
+  if Result <> BytePos then debugln(['Selection needed byte adjustment  Line=', Line, ' BytePos=', BytePos, ' Result=', Result]);
 end;
 
 function TSynEditSelection.GetFirstLineBytePos: TPoint;
