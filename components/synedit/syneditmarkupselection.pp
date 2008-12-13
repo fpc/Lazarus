@@ -104,9 +104,9 @@ begin
     p1 := TSynEdit(SynEdit).BlockBegin;  // always ordered
     p2 := TSynEdit(SynEdit).BlockEnd;
 
-    if (p1.y > aRow) or (p2.y < aRow)
-    then exit;
-    
+    if (p1.y > aRow) or (p2.y < aRow) or not (TSynEdit(SynEdit).SelAvail) then
+      exit;
+
     p1 := LogicalToPhysicalPos(p1);
     p2 := LogicalToPhysicalPos(p2);
     nSelStart := 1;
