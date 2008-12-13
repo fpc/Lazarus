@@ -700,7 +700,7 @@ begin
 end;
 
 
-{ elements ina dotted name are usually just identifiers
+{ elements in a dotted name are usually just identifiers
   but occasionally are reserved words - e.g. "object" and "type"
   as in "var MyType: System.Type; " or "var pElement: System.Object; "
   }
@@ -2269,7 +2269,17 @@ begin
     Recognise(ttAbsolute);
 
     if (fcTokenList.FirstSolidWordType in IdentifierTypes) then
-      RecogniseIdentifier(False, idAllowDirectives)
+    begin
+      // can be a dotted name
+      RecogniseIdentifier(True, idAllowDirectives);
+
+      while fcTokenList.FirstSolidTokenType = ttDot do
+      begin
+        Recognise(ttDot);
+        RecogniseIdentifier(false, idAllowDirectives);
+      end;
+      
+    end
     else
       RecogniseConstantExpression;
 

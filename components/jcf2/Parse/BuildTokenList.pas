@@ -55,7 +55,7 @@ type
     function CurrentChars(const piCount: integer): WideString;
     function ForwardChar(const piOffset: integer): WideChar;
     function ForwardChars(const piOffset, piCount: integer): WideString;
-    function Consume(const piCount: integer = 1): WideString;
+    procedure Consume(const piCount: integer = 1);
     function EndOfFile: boolean;
     function EndOfFileAfter(const piChars: integer): boolean;
 
@@ -779,7 +779,7 @@ begin
 end;
 
 
-function TBuildTokenList.Consume(const piCount: integer): WideString;
+procedure TBuildTokenList.Consume(const piCount: integer);
 begin
   inc(fiCurrentIndex, piCount);
 end;
