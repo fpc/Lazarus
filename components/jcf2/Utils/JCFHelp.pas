@@ -72,7 +72,7 @@ const
 implementation
 
 uses
-  SysUtils, FileUtils, Forms, Windows;
+  {$ifndef fpc}Windows, {$endif}SysUtils, FileUtils, Forms;
 
 function GetHelpFilePath: string;
 var
@@ -80,6 +80,7 @@ var
 begin
   HelpFilePath := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
     HELP_FILE_NAME;
+{$ifndef fpc}
   if not FileExists(HelpFilePath) then
   begin
     HelpFilePath := IncludeTrailingPathDelimiter(
@@ -122,6 +123,7 @@ begin
       end;
     end;
   end;
+{$endif}
   Result := HelpFilePath;
 end;
 
