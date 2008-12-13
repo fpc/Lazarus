@@ -188,7 +188,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Dialogs, Windows,
+  {$ifndef fpc}Windows,{$endif} SysUtils, Dialogs,
   { jcf }
   JcfStringUtils, JcfMiscFunctions;
 
