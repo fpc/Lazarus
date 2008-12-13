@@ -80,7 +80,7 @@ const
   PathSeparator    = '\';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  NativeLineBreak = AnsiLineFeed;
+  NativeLineBreak = NativeLineFeed;
   PathSeparator    = '/';
   {$ENDIF UNIX}
   DirDelimiter = PathSeparator;
