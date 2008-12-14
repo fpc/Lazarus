@@ -1262,7 +1262,7 @@ begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
   {$IFDEF SYN_LAZARUS}
-  Result.Y := RowToScreenRow(CaretY) * fTextHeight + 1;
+  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight + 1;
   {$ELSE}
   Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
   {$ENDIF}
