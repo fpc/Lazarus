@@ -1468,7 +1468,7 @@ begin
   fMarkupBracket := TSynEditMarkupBracket.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
   fMarkupSpecialLine := TSynEditMarkupSpecialLine.Create(self);
-  fMarkupSelection := TSynEditMarkupSelection.Create(self);
+  fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
@@ -2284,15 +2284,8 @@ begin
       else begin
         SetBlockBegin({$IFDEF SYN_LAZARUS}LogCaretXY
                       {$ELSE}CaretXY{$ENDIF});
-{begin}                                                                         //mh 2000-11-20
-        if (eoAltSetsColumnMode in Options) and (SelectionMode <> smLine) then
-        begin
-          if ssAlt in Shift then
-            SelectionMode := smColumn
-          else
-            SelectionMode := smNormal;
-        end;
-{end}                                                                           //mh 2000-11-20
+        if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
+          FBlockSelection.ActiveSelectionMode := smColumn
       end;
     end;
     {$IFDEF SYN_LAZARUS}
@@ -5351,6 +5344,7 @@ begin
   end;
   if Runner.X > fMaxLeftChar then Runner.X := fMaxLeftChar;
   FBlockSelection.EndLineBytePos := Runner;
+  FBlockSelection.ActiveSelectionMode := smNormal;
 // set caret to the end of selected block
   CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(Runner);
 end;
@@ -5377,6 +5371,7 @@ begin
       dec(x2);
     FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, Lines.Count));
   end;
+  FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
@@ -5394,6 +5389,7 @@ begin
     inc(ParagraphEndLine);
   FBlockSelection.StartLineBytePos := Point(1,ParagraphStartLine);
   FBlockSelection.EndLineBytePos := Point(1,ParagraphEndLine);
+  FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY:=FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
@@ -5532,7 +5528,7 @@ var
   e: integer;
   {$ENDIF}
 begin
-  OldSelMode := SelectionMode;
+  OldSelMode := FBlockSelection.SelectionMode;
   ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
   Item := fRedoList.PopItem;
   if Assigned(Item) then try
@@ -5631,7 +5627,7 @@ begin
             Item.fChangeStartPos, Item.fChangeEndPos);
           x := fBlockIndent;
           fBlockIndent := ord(Item.fChangeStr[1]);
-          SelectionMode := smNormal;
+          SelectionMode := Item.fChangeSelMode;
           DoBlockIndent;
           fBlockIndent := x;
         end;
@@ -5639,7 +5635,7 @@ begin
         begin // re-delete the (raggered) column
           // add to undo list
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, Item.fChangeStr, smColumn);
+            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
           // Delete string
           StrToDelete := PChar(Item.fChangeStr);
           {$IFDEF SYN_LAZARUS}
@@ -5703,7 +5699,8 @@ begin
         end;
     end;
   finally
-    SelectionMode := OldSelMode;
+    FBlockSelection.SelectionMode       := OldSelMode;
+    FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
     Exclude(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
     if ChangeScrollPastEol then                                                 //mh 2000-10-30
       Exclude(fOptions, eoScrollPastEol);
@@ -5778,11 +5775,11 @@ var
   PhysStartPos: TPoint;
   {$ENDIF}
 begin
-  OldSelMode := SelectionMode;
+  OldSelMode := FBlockSelection.SelectionMode;
   ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
   Item := fUndoList.PopItem;
   if Assigned(Item) then try
-    SelectionMode := Item.fChangeSelMode;
+    FBlockSelection.SelectionMode := Item.fChangeSelMode; // Default and Active SelectionMode
     IncPaintLock;
     Include(fOptions, eoScrollPastEol);                                         //mh 2000-10-30
     {$IFDEF SYN_LAZARUS}
@@ -5799,19 +5796,6 @@ begin
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
           CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
                      {$ELSE}Item.fChangeStartPos{$ENDIF};
-{begin}                                                                         //mh 2000-11-20
-(*
-          // process next entry? This is awkward, and should be replaced by
-          // undoitems maintaining a single linked list of connected items...
-          ItemNext := fUndoList.PeekItem;
-          if Assigned(ItemNext) and
-            ((ItemNext.fChangeReason = crSelDelete) or
-            ((ItemNext.fChangeReason = crDragDropDelete)
-               and (Item.fChangeReason = crDragDropInsert)))
-          then
-            Undo;
-*)
-{end}                                                                           //mh 2000-11-20
         end;
       crDeleteAfterCursor, crDelete, {crDragDropDelete, crSelDelete, }          //mh 2000-11-20
       {$IFDEF SYN_LAZARUS}crTrimSpace,{$ENDIF}
@@ -5831,37 +5815,16 @@ begin
             // this stinks!!!
             CommandProcessor(ecLineBreak, #13, nil);
           end;
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}
-            LogicalToPhysicalPos(TmpPos),
-            {$ELSE}
-            TmpPos,
-            {$ENDIF}
-            TmpPos, TmpPos);
-          //debugln('AAA1 Item.fChangeStr="',DbgStr(Item.fChangeStr),'"');
+          SetCaretAndSelection(LogicalToPhysicalPos(TmpPos), TmpPos, TmpPos);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-{begin}                                                                         //mh 2000-10-30
-          if Item.fChangeReason in [crDeleteAfterCursor,
-            crSilentDeleteAfterCursor]
-          then
-            TmpPos := Item.fChangeStartPos
-          else
-            TmpPos := Item.fChangeEndPos;
           if Item.fChangeReason in [crSilentDelete, crSilentDeleteAfterCursor
                                     {$IFDEF SYN_LAZARUS}, crTrimSpace{$ENDIF} ]
           then
-            CaretXY :={$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(TmpPos)
-                      {$ELSE}TmpPos{$ENDIF}
+            CaretXY := LogicalToPhysicalPos(Item.fChangeEndPos)
           else begin
-            SetCaretAndSelection(
-              {$IFDEF SYN_LAZARUS}
-              LogicalToPhysicalPos(TmpPos),
-              {$ELSE}
-              TmpPos,
-              {$ENDIF}
+            SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
               Item.fChangeStartPos, Item.fChangeEndPos);
           end;
-{end}                                                                           //mh 2000-10-30
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
           EnsureCursorPosVisible;
@@ -5909,6 +5872,7 @@ begin
           TmpPos.x := fTabWidth+1;
           BlockEnd := TmpPos;
           {$ENDIF}
+          FBlockSelection.ActiveSelectionMode := smColumn;
           // add to redo list
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, {$IFDEF SYN_LAZARUS}Item.fChangeStr{$ELSE}GetSelText{$ENDIF}, Item.fChangeSelMode);
@@ -5934,7 +5898,8 @@ begin
         end;
     end;
   finally
-    SelectionMode := OldSelMode;
+    FBlockSelection.SelectionMode       := OldSelMode;
+    FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
     if ChangeScrollPastEol then                                                 //mh 2000-10-30
       Exclude(fOptions, eoScrollPastEol);
     Item.Free;
@@ -6411,7 +6376,8 @@ begin
       PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
       if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
       or (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then begin
-        if (SelectionMode<>smColumn) and (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then
+        if (FBlockSelection.ActiveSelectionMode <> smColumn) and
+           (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then
           PhysBlockBeginXY.X:=1;
         if MinX>PhysBlockBeginXY.X then
           MinX:=Max(PhysBlockBeginXY.X,PhysCaretXY.X-CharsInWindow+1);
@@ -6996,11 +6962,7 @@ begin
             end;
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
               fUndoList.AddChange(crSilentDeleteAfterCursor,
-                {$IFDEF SYN_LAZARUS}
-                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(Caret),
-                {$ELSE}
-                CaretXY, Caret,
-                {$ENDIF}
+                PhysicalToLogicalPos(Caret), PhysicalToLogicalPos(CaretXY),
                 Helper, smNormal);
             end;
           end;
@@ -7019,14 +6981,14 @@ begin
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := FBlockSelection.SelectionMode;
+            OldSelMode := FBlockSelection.ActiveSelectionMode;
             try
-              FBlockSelection.SelectionMode := smNormal;
-              SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-              SetBlockEnd(PhysicalToLogicalPos(WP));
+              SetBlockBegin(PhysicalToLogicalPos(WP));
+              SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+              FBlockSelection.ActiveSelectionMode := smNormal;
               SetSelTextPrimitive(smNormal, nil, true, crSilentDeleteAfterCursor)
             finally
-              FBlockSelection.SelectionMode := OldSelMode;
+              FBlockSelection.ActiveSelectionMode := OldSelMode;
             end;
             CaretXY := CaretXY;
           end;
@@ -7038,14 +7000,14 @@ begin
           else
             WP := Point(1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := FBlockSelection.SelectionMode;
+            OldSelMode := FBlockSelection.ActiveSelectionMode;
             try
-              FBlockSelection.SelectionMode := smNormal;
               SetBlockBegin(PhysicalToLogicalPos(WP));
               SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+              FBlockSelection.ActiveSelectionMode := smNormal;
               SetSelTextPrimitive(smNormal, nil, true, crSilentDelete)
             finally
-              FBlockSelection.SelectionMode := OldSelMode;
+              FBlockSelection.ActiveSelectionMode := OldSelMode;
             end;
             CaretXY := WP;
           end;
@@ -7790,12 +7752,12 @@ end;
 
 function TCustomSynEdit.GetSelectionMode : TSynSelectionMode;
 begin
-  Result := fBlockSelection.SelectionMode;
+  Result := fBlockSelection.ActiveSelectionMode;
 end;
 
 procedure TCustomSynEdit.SetSelectionMode(const Value: TSynSelectionMode);
 begin
-  fBlockSelection.SelectionMode := Value;
+  fBlockSelection.SelectionMode := Value; // Set both: SelectionMode and ActiveSelectionMode
 end;
 
 {begin}                                                                         //sbs 2000-11-19
@@ -8152,7 +8114,7 @@ var
   function InValidSearchRange(First, Last: integer): boolean;
   begin
     Result := TRUE;
-    case FBlockSelection.SelectionMode of
+    case FBlockSelection.ActiveSelectionMode of
       smNormal:
         if ((ptCurrent.Y = ptStart.Y) and (First < ptStart.X)) or
           ((ptCurrent.Y = ptEnd.Y) and (Last > ptEnd.X)) then Result := FALSE;
@@ -8177,10 +8139,10 @@ begin
     ptStart := BlockBegin;
     ptEnd := BlockEnd;
     // search the whole line in the line selection mode
-    if (FBlockSelection.SelectionMode = smLine) then begin
+    if (FBlockSelection.ActiveSelectionMode = smLine) then begin
       ptStart.X := 1;
       ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
-    end else if (FBlockSelection.SelectionMode = smColumn) then
+    end else if (FBlockSelection.ActiveSelectionMode = smColumn) then
       // make sure the start column is smaller than the end column
       if (ptStart.X > ptEnd.X) then begin
         nFound := ptStart.X;
@@ -8222,7 +8184,7 @@ begin
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
-      if (FBlockSelection.SelectionMode<>smColumn)
+      if (FBlockSelection.ActiveSelectionMode <> smColumn)
       or ((ptFoundStart.Y=ptFoundEnd.Y)
           and (ptFoundStart.X >= ptStart.X) and (ptFoundEnd.X <= ptEnd.X)) then
       begin
@@ -8378,9 +8340,9 @@ begin
   if (Value.Y >= ptBegin.Y) and (Value.Y <= ptEnd.Y) and
     ((ptBegin.Y <> ptEnd.Y) or (ptBegin.X <> ptEnd.X))
     then begin
-    if SelectionMode = smLine then
+    if FBlockSelection.SelectionMode = smLine then
       Result := TRUE
-    else if (SelectionMode = smColumn) then begin
+    else if (FBlockSelection.ActiveSelectionMode = smColumn) then begin
       if (ptBegin.X > ptEnd.X) then
         Result := (Value.X >= ptEnd.X) and (Value.X < ptBegin.X)
       else if (ptBegin.X < ptEnd.X) then
@@ -8935,7 +8897,7 @@ var
   {$ENDIF}
 begin
   if not SelAvail then exit;
-  OrgSelectionMode := FBlockSelection.SelectionMode;
+  OrgSelectionMode := FBlockSelection.ActiveSelectionMode;
   {$IFDEF SYN_LAZARUS}
   BlockBackward:= FBlockSelection.IsBackwardSel;
   {$ELSE}
@@ -8943,7 +8905,6 @@ begin
   {$ENDIF}
   x := 1;
   StrToInsert := nil;
-  FBlockSelection.SelectionMode := smColumn;
   try
     // keep current selection detail
     BB := BlockBegin;
@@ -8982,12 +8943,13 @@ begin
       if BlockBackward then
         SwapPoint(BB, BE);
       {$ENDIF}
-      fUndoList.AddChange(crIndent, BB, BE, {$IFDEF SYN_LAZARUS}chr(fBlockIndent){$ELSE}''{$ENDIF}, smColumn);
+      fUndoList.AddChange(crIndent, BB, BE,
+                          {$IFDEF SYN_LAZARUS}chr(fBlockIndent){$ELSE}''{$ENDIF},
+                          FBlockSelection.ActiveSelectionMode);
     finally
       StrDispose(StrToInsert);
     end;
   finally
-    FBlockSelection.SelectionMode := OrgSelectionMode;
     {$IFDEF SYN_LAZARUS}
     if BlockBackward then Begin
       inc(BE.x, fBlockIndent);
@@ -9002,6 +8964,7 @@ begin
     SetCaretAndSelection(OrgCaretPos,
       Point(BB.x + fTabWidth, BB.y), Point(x, BE.y));
     {$ENDIF}
+    FBlockSelection.ActiveSelectionMode := OrgSelectionMode;
   end;
 end;
 
@@ -9041,7 +9004,7 @@ var
   end;
 
 begin
-  OrgSelectionMode := FBlockSelection.SelectionMode;
+  OrgSelectionMode := FBlockSelection.ActiveSelectionMode;
   Len := 0;
   LastIndent := 0;
   if SelAvail then
@@ -9139,10 +9102,10 @@ begin
           SwapInt(FirstIndent, LastIndent);
         end;
         {$ENDIF}
-        fUndoList.AddChange(crUnindent, BB, BE, {$IFDEF SYN_LAZARUS}FullStrToDelete{$ELSE}StrToDelete{$ENDIF}, smColumn);
+        fUndoList.AddChange(crUnindent, BB, BE,
+                            {$IFDEF SYN_LAZARUS}FullStrToDelete{$ELSE}StrToDelete{$ENDIF},
+                            FBlockSelection.ActiveSelectionMode);
       end;
-      // restore selection
-      FBlockSelection.SelectionMode := OrgSelectionMode;
       {$IFDEF SYN_LAZARUS}
       if FirstIndent = -1 then begin
         // Nothing changed; ensure correct restore
@@ -9160,6 +9123,8 @@ begin
       SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
         Point(BE.x - LastIndent, BE.y));
       {$ENDIF}
+      // restore selection
+      FBlockSelection.ActiveSelectionMode := OrgSelectionMode;
     finally
       StrDispose(FullStrToDelete);
     end;

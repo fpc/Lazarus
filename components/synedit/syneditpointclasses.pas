@@ -72,17 +72,19 @@ type
     FLinesInsertedMethod: TLinesCountChanged;
     FEnabled: Boolean;
     FSpacesToTabs: Boolean;
-    FSelectionMode: TSynSelectionMode;
+    FActiveSelectionMode: TSynSelectionMode;
+    FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
     FStartBytePos: Integer; // 1 based
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
   private
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
-    function GetFirstLineBytePos: TPoint;
-    function GetLastLineBytePos: TPoint;
+    function  GetFirstLineBytePos: TPoint;
+    function  GetLastLineBytePos: TPoint;
     procedure SetEnabled(const Value : Boolean);
-    procedure SetSelectionMode(const Value: TSynSelectionMode);
+    procedure SetActiveSelectionMode(const Value: TSynSelectionMode);
+    procedure SetSelectionMode      (const AValue: TSynSelectionMode);
     function  GetStartLineBytePos: TPoint;
     procedure SetStartLineBytePos(Value: TPoint);
     function  GetEndLineBytePos: TPoint;
@@ -99,6 +101,8 @@ type
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     property  Enabled: Boolean read FEnabled write SetEnabled;
     property  SpacesToTabs: Boolean read FSpacesToTabs write FSpacesToTabs;
+    property  ActiveSelectionMode: TSynSelectionMode
+                read FActiveSelectionMode write SetActiveSelectionMode;
     property  SelectionMode: TSynSelectionMode
                 read FSelectionMode write SetSelectionMode;
     property  SelText: String read GetSelText write SetSelText;
@@ -255,7 +259,7 @@ constructor TSynEditSelection.Create(ALines : TSynEditStrings);
 begin
   Inherited Create(ALines);
   fMaxLeftChar := 1024;
-  FSelectionMode := smNormal;
+  FActiveSelectionMode := smNormal;
   FStartLinePos := 1;
   FStartBytePos := 1;
   FEndLinePos := 1;
@@ -345,7 +349,7 @@ begin
       Last := FEndLinePos - 1;
     end;
     TotalLen := 0;
-    case SelectionMode of
+    case ActiveSelectionMode of
       smNormal:
         if (First = Last) then
           Result := Copy(FLines[First], ColFrom, ColTo - ColFrom)
@@ -392,7 +396,7 @@ begin
             s := FLines[i];
             l := ColFrom;
             r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
+            MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
             Inc(TotalLen, r - l);
           end;
           Inc(TotalLen, Length(sLineBreak) * (Last - First));
@@ -403,14 +407,14 @@ begin
             s := FLines[i];
             l := ColFrom;
             r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
+            MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
             CopyPaddedAndForward(s, l, r - l, P);
             CopyAndForward(sLineBreak, 1, MaxInt, P);
           end;
           s := FLines[Last];
           l := ColFrom;
           r := ColTo;
-          MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
+          MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
           CopyPaddedAndForward(FLines[Last], l, r - l, P);
 {$ENDIF}
         end;
@@ -460,7 +464,7 @@ var
   begin
     UpdateMarks := FALSE;
     MarkOffset := 0;
-    case SelectionMode of
+    case ActiveSelectionMode of
       smNormal:
         begin
           if FLines.Count > 0 then begin
@@ -496,7 +500,7 @@ var
             {$ELSE}
             l := BB.X;
             r := BE.X;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(TempString, l, r);
+            MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(TempString, l, r);
             {$IFDEF USE_UTF8BIDI_LCL}
             VDelete(TempString, l, r - 1);
             {$ELSE USE_UTF8BIDI_LCL}
@@ -743,12 +747,21 @@ begin
     BE := LastLineBytePos;
     if SelAvail then begin
       if AddToUndoList then begin
-        if IsBackwardSel then
-          fUndoList.AddChange(crDelete, StartLineBytePos, EndLineBytePos,
-                              GetSelText, SelectionMode)
-        else
-          fUndoList.AddChange(crDeleteAfterCursor, EndLineBytePos, StartLineBytePos,
-                              GetSelText,  SelectionMode);
+        if ChangeReason in [crSilentDelete, crSilentDeleteAfterCursor] then begin
+          if IsBackwardSel then
+            fUndoList.AddChange(crSilentDeleteAfterCursor, StartLineBytePos, EndLineBytePos,
+                                GetSelText, ActiveSelectionMode)
+          else
+            fUndoList.AddChange(crSilentDelete, StartLineBytePos, EndLineBytePos,
+                                GetSelText,  ActiveSelectionMode);
+        end else begin
+          if IsBackwardSel then
+            fUndoList.AddChange(crDeleteAfterCursor, StartLineBytePos, EndLineBytePos,
+                                GetSelText, ActiveSelectionMode)
+          else
+            fUndoList.AddChange(crDelete, StartLineBytePos, EndLineBytePos,
+                                GetSelText,  ActiveSelectionMode);
+        end;
       end;
       DeleteSelection;
       EndLineBytePos := BB; // deletes selection // calls selection changed
@@ -758,7 +771,7 @@ begin
       InsertText;
       if AddToUndoList then begin
         EndInsert := FCaret.LineBytePos;
-        if SelectionMode = smLine then begin // The SelectionMode of the deleted block
+        if ActiveSelectionMode = smLine then begin // The ActiveSelectionMode of the deleted block
           StartInsert.x := 1;
           if EndInsert.x = 1 then begin
             dec(EndInsert.y);
@@ -795,7 +808,7 @@ var
 begin
   Value.x := MinMax(Value.x, 1, fMaxLeftChar);
   Value.y := MinMax(Value.y, 1, fLines.Count);
-  if (SelectionMode = smNormal) then
+  if (ActiveSelectionMode = smNormal) then
     if (Value.y >= 1) and (Value.y <= FLines.Count) then
       Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
     else
@@ -814,6 +827,7 @@ begin
     SelChanged := (FStartBytePos <> Value.X) or (FStartLinePos <> Value.Y) or
                   (FEndBytePos <> Value.X) or (FEndLinePos <> Value.Y);
   end;
+  FActiveSelectionMode := FSelectionMode;
   FStartLinePos := Value.Y;
   FStartBytePos := Value.X;
   FEndLinePos := Value.Y;
@@ -838,7 +852,7 @@ begin
   if FEnabled then begin
     Value.x := MinMax(Value.x, 1, fMaxLeftChar);
     Value.y := MinMax(Value.y, 1, fLines.Count);
-    if (SelectionMode = smNormal) then
+    if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then
         Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
       else
@@ -852,7 +866,7 @@ begin
       end;
       {$ENDIF}
       if (Value.X <> FEndBytePos) or (Value.Y <> FEndLinePos) then begin
-        if (SelectionMode = smColumn) and (Value.X <> FEndBytePos) then begin
+        if (ActiveSelectionMode = smColumn) and (Value.X <> FEndBytePos) then begin
           FInvalidateLinesMethod(
             Min(FStartLinePos, Min(FEndLinePos, Value.Y)),
             Max(FStartLinePos, Max(FEndLinePos, Value.Y)));
@@ -862,7 +876,7 @@ begin
           nLine := FEndLinePos;
           FEndLinePos := Value.Y;
           FEndBytePos := Value.X;
-          if (SelectionMode <> smColumn) or (FStartBytePos <> FEndBytePos) then
+          if (ActiveSelectionMode <> smColumn) or (FStartBytePos <> FEndBytePos) then
             FInvalidateLinesMethod(nLine, FEndLinePos);
         end;
         FOnChangeList.CallNotifyEvents(self);
@@ -871,10 +885,16 @@ begin
   end;
 end;
 
-procedure TSynEditSelection.SetSelectionMode(const Value: TSynSelectionMode);
+procedure TSynEditSelection.SetSelectionMode(const AValue: TSynSelectionMode);
 begin
-  if FSelectionMode <> Value then begin
-    FSelectionMode := Value;
+  FSelectionMode := AValue;
+  SetActiveSelectionMode(AValue);
+end;
+
+procedure TSynEditSelection.SetActiveSelectionMode(const Value: TSynSelectionMode);
+begin
+  if FActiveSelectionMode <> Value then begin
+    FActiveSelectionMode := Value;
     if SelAvail then
       FInvalidateLinesMethod(-1, -1);
     FOnChangeList.CallNotifyEvents(self);
@@ -915,7 +935,7 @@ end;
 function TSynEditSelection.SelAvail : Boolean;
 begin
   Result := (FStartBytePos <> FEndBytePos) or
-    ((FStartLinePos <> FEndLinePos) and (FSelectionMode <> smColumn));
+    ((FStartLinePos <> FEndLinePos) and (FActiveSelectionMode <> smColumn));
 end;
 
 function TSynEditSelection.IsBackwardSel: Boolean;
