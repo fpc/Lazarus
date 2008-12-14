@@ -605,7 +605,6 @@ var
           FCaret.BytePos := 1 + Length(FLines[FCaret.LinePos - 1]) - Length(sRightSide);
         Inc(Result);
       end;
-//      StatusChanged([scCaretX]);
     end;
 
     function InsertColumn: Integer;
@@ -696,7 +695,6 @@ var
           Start := P;
         end;
       until P^ = #0;
-//      StatusChanged([scCaretX]);
     end;
 
   var
@@ -733,8 +731,6 @@ var
     // Update marks
     if InsertedLines > 0 then
       FLinesInsertedMethod(StartLine, InsertedLines);
-    // Force caret reset
-//    CaretXY := CaretXY;
   end;
 
 var
@@ -758,8 +754,7 @@ begin
       EndLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
-      if AddToUndoList then
-        StartInsert := FCaret.LineBytePos;
+      StartInsert := FCaret.LineBytePos;
       InsertText;
       if AddToUndoList then begin
         EndInsert := FCaret.LineBytePos;
@@ -770,9 +765,9 @@ begin
             EndInsert.x := Length(FLines[EndInsert.y - 1]);
           end;
         end;
-        if length(Value) > 0 then
-          fUndoList.AddChange(ChangeReason, StartInsert, EndInsert, '', PasteMode);
+        fUndoList.AddChange(ChangeReason, StartInsert, EndInsert, '', PasteMode);
       end;
+      StartLineBytePos := FCaret.LineBytePos; // reset selection
     end;
   finally
     FLines.EndUpdate; // May reset Block Begin
