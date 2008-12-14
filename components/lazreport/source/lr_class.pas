@@ -7344,7 +7344,10 @@ begin
     case f1 of
       fmtText:
         begin
-          Result := v;
+          if VarIsType(v, varDate) and (trunc(v)=0) then
+            Result := TimeToStr(v)
+          else
+            Result := v;
         end;
       fmtNumber:
         begin
