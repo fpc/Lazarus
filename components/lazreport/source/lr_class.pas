@@ -7344,7 +7344,7 @@ begin
     case f1 of
       fmtText:
         begin
-          if VarIsType(v, varDate) and (trunc(v)=0) then
+          if VarIsType(v, varDate) and (trunc(Extended(v))=0) then
             Result := TimeToStr(v)
           else
             Result := v;
