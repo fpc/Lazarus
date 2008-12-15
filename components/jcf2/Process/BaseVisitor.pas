@@ -49,7 +49,7 @@ type
 
     { these are called when visiting interior nodes before and after thier children
       Must return true if the visited node is deleted, or if nodes are inserted before it
-      ie if the cuurent node's index is not correct and the same after the visit}
+      ie if the curent node's index is not correct and the same after the visit}
     procedure PreVisitParseTreeNode(const pcNode: TObject); virtual;
     procedure PostVisitParseTreeNode(const pcNode: TObject); virtual;
 

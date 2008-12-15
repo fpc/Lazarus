@@ -361,4 +361,12 @@ inherited fClarifySpaces: TfClarifySpaces
       TabOrder = 1
     end
   end
+  object cbMoveSpacesToBeforeColon: TCheckBox
+    Left = 260
+    Top = 270
+    Width = 202
+    Height = 17
+    Caption = 'Move spaces to before colon'
+    TabOrder = 9
+  end
 end

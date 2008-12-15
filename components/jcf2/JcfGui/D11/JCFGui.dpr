@@ -179,7 +179,8 @@ uses
   AsmKeywords in '..\..\Parse\AsmKeywords.pas',
   JcfUnicode in '..\..\Utils\JcfUnicode.pas',
   JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas',
-  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas';
+  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
+  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
 
 {$R *.res}
 

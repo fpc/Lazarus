@@ -158,7 +158,8 @@ uses
   JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas',
   CommandLineReturnCode in '..\CommandLineReturnCode.pas',
   CommandLineConstants in '..\CommandLineConstants.pas',
-  StatusMessageReceiver in '..\StatusMessageReceiver.pas';
+  StatusMessageReceiver in '..\StatusMessageReceiver.pas',
+  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
 
 var
   feReturnCode: TJcfCommandLineReturnCode;

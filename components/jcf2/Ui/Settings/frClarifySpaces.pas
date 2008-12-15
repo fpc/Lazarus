@@ -78,6 +78,7 @@ type
     lblSpaceBeforeColonConst: TLabel;
     eSpacesBeforeColonRecordField: TJvValidateEdit;
     lblSpacesBeforeColonRecordField: TLabel;
+    cbMoveSpacesToBeforeColon: TCheckBox;
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
@@ -144,6 +145,8 @@ begin
 
     cbInsertSpaceAfterOpen.Checked := SpaceAfterOpenBrackets;
     CheckBoxInsertSpaceBeforeEnd.Checked := SpaceBeforeCloseBrackets;
+
+    cbMoveSpacesToBeforeColon.Checked := MoveSpaceToBeforeColon;
   end;
 
   cbTabsToSpacesClick(nil);
@@ -190,6 +193,7 @@ begin
     SpaceAfterOpenBrackets := cbInsertSpaceAfterOpen.Checked;
     SpaceBeforeCloseBrackets := CheckBoxInsertSpaceBeforeEnd.Checked;
 
+    MoveSpaceToBeforeColon := cbMoveSpacesToBeforeColon.Checked;
   end;
 end;
 

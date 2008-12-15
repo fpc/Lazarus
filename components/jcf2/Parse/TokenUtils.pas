@@ -106,7 +106,6 @@ function InFormalParams(const pt: TSourceToken): boolean;
 function IsActualParamOpenBracket(const pt: TSourceToken): boolean;
 function IsFormalParamOpenBracket(const pt: TSourceToken): boolean;
 
-function IsLineBreaker(const pcToken: TSourceToken): boolean;
 function IsMultiLineComment(const pcToken: TSourceToken): boolean;
 function IsSingleLineComment(const pcToken: TSourceToken): boolean;
 
@@ -577,12 +576,6 @@ begin
     lcPrev := pcToken.PriorToken;
     Result := (lcPrev <> nil) and (lcPrev.TokenType = ttReturn);
   end;
-end;
-
-function IsLineBreaker(const pcToken: TSourceToken): boolean;
-begin
-  Result := (pcToken.TokenType = ttReturn) or IsMultiLineComment(pcToken) or
-   (pcToken.TokenType = ttConditionalCompilationRemoved);
 end;
 
 { count the number of identifiers in the var decl

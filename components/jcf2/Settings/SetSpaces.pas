@@ -65,6 +65,7 @@ type
 
     fbSpaceAfterOpenBrackets: boolean;
     fbSpaceBeforeCloseBrackets: boolean;
+    fbMoveSpaceToBeforeColon: boolean;
 
     feSpaceForOperator: TTriOptionStyle;
 
@@ -119,6 +120,7 @@ type
 
     property SpaceAfterOpenBrackets: boolean read fbSpaceAfterOpenBrackets write fbSpaceAfterOpenBrackets;
     property SpaceBeforeCloseBrackets: boolean read fbSpaceBeforeCloseBrackets write fbSpaceBeforeCloseBrackets;
+    property MoveSpaceToBeforeColon: boolean read fbMoveSpaceToBeforeColon write fbMoveSpaceToBeforeColon;
 
   end;
 
@@ -155,6 +157,7 @@ const
 
   SET_SPACE_AFTER_OPEN_BRACKETS = 'SpaceAfterOpenBrackets';
   SET_SPACE_BEFORE_CLOSE_BRACKETS = 'SpaceBeforeCloseBrackets';
+  SET_MOVE_SPACE_TO_BEFORE_COLON = 'MoveSpaceToBeforeColon';
 
 
 constructor TSetSpaces.Create;
@@ -199,6 +202,7 @@ begin
 
   fbSpaceAfterOpenBrackets := pcStream.Read(SET_SPACE_AFTER_OPEN_BRACKETS, False);
   fbSpaceBeforeCloseBrackets := pcStream.Read(SET_SPACE_BEFORE_CLOSE_BRACKETS, False);
+  fbMoveSpaceToBeforeColon := pcStream.Read(SET_MOVE_SPACE_TO_BEFORE_COLON, False);
 end;
 
 procedure TSetSpaces.WriteToStream(const pcOut: TSettingsOutput);
@@ -236,6 +240,8 @@ begin
 
   pcOut.Write(SET_SPACE_AFTER_OPEN_BRACKETS, fbSpaceAfterOpenBrackets);
   pcOut.Write(SET_SPACE_BEFORE_CLOSE_BRACKETS, fbSpaceBeforeCloseBrackets);
+
+  pcOut.Write(SET_MOVE_SPACE_TO_BEFORE_COLON, fbMoveSpaceToBeforeColon);
 end;
 
 

@@ -69,6 +69,11 @@ uses
   SourceToken, FormatFlags, JcfSettings, SetReturns,
   TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNode, ParseTreeNodeType;
 
+function IsLineBreaker(const pcToken: TSourceToken): boolean;
+begin
+  Result := (pcToken.TokenType in [ttReturn, ttConditionalCompilationRemoved]) or
+    IsMultiLineComment(pcToken);
+end;
 
 function EndsFunctionReturnType(const pt: TSourceToken): boolean;
 var
@@ -218,7 +223,9 @@ begin
   if piSpacesToEnd < 0 then
   begin
     lsMessage := 'Spaces to end is ' + IntToStr(piSpacesToEnd) +
-      ' on ' + pcNext.Describe + ' at ' + pcNext.DescribePosition;
+      ' on ' + pcNext.Describe + ' at ' + pcNext.DescribePosition +
+      ' line is ' + NativeLineBreak + pcNext.SourceLine;
+
     Raise Exception.Create(lsMessage);
   end;
 
@@ -568,7 +575,7 @@ begin
     exit;
 
   { line can start with a return or with a multiline comment }
-  if not IsLineBreaker(lcSourceToken) then
+  if not IsLineBreaker(lcSourceToken) or (lcSourceToken.TokenType = ttConditionalCompilationRemoved) then
     exit;
 
   // read until the next return
@@ -596,6 +603,14 @@ begin
 
     lcNext := lcNext.NextToken;
   end;
+
+  // check for trailing conditional compilation removed
+  while (lcNext <> nil) and (not IsLineBreaker(lcNext) or (lcNext.TokenType = ttConditionalCompilationRemoved)) do
+  begin
+    liTotalWidth := liTotalWidth + Length(lcNext.SourceCode);
+    lcNext := lcNext.NextToken;
+  end;
+
 
   // EOF or blank line means no linebreaking to do 
   if (lcNext = nil) or (lcNext = lcSourceToken) then

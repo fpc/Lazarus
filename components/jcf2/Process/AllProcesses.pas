@@ -101,6 +101,7 @@ uses
   TabToSpace, SpaceToTab, MaxSpaces,
   NoSpaceAfter, NoSpaceBefore, SingleSpaceBefore, SingleSpaceAfter,
   SpaceBeforeColon, RemoveSpaceAtLineEnd, VisitStripEmptySpace,
+  MoveSpaceToBeforeColon,
   {indent}
   VisitSetNesting, Indenter, LongLineBreaker,
   { stats }
@@ -350,6 +351,8 @@ begin
   ApplyVisitorType(TAlignComment, [TVisitSetXY]);
 
   ApplyVisitorType(TIndentAsmParam, [TVisitSetXY]);
+
+  ApplyVisitorType(TMoveSpaceToBeforeColon);
 end;
 
 procedure TAllProcesses.OnceOffs;
