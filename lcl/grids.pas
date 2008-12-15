@@ -305,6 +305,10 @@ type
     procedure(sender: TObject; aCol, aRow: Integer;
               aState: TGridDrawState) of object;
 
+  TUserCheckBoxBitmapEvent =
+    procedure(Sender: TObject; const CheckedState: TCheckboxState;
+              ABitmap: TBitmap) of object;
+
   { TVirtualGrid }
 
   TVirtualGrid=class
@@ -417,6 +421,7 @@ type
     FisDefaultFont: Boolean;
     FPickList: TStrings;
     FMinSize, FMaxSize, FSizePriority: ^Integer;
+    FValueChecked,FValueUnchecked: PChar;
 
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
@@ -439,6 +444,8 @@ type
     function IsMaxSizeStored: boolean;
     function IsReadOnlyStored: boolean;
     function IsSizePriorityStored: boolean;
+    function IsValueCheckedStored: boolean;
+    function IsValueUncheckedStored: boolean;
     function IsVisibleStored: boolean;
     function IsWidthStored: boolean;
     procedure SetAlignment(const AValue: TAlignment);
@@ -453,6 +460,8 @@ type
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetSizePriority(const AValue: Integer);
     procedure SetTitle(const AValue: TGridColumnTitle);
+    procedure SetValueChecked(const AValue: string);
+    procedure SetValueUnchecked(const AValue: string);
     procedure SetVisible(const AValue: Boolean);
     procedure SetWidth(const AValue: Integer);
   protected
@@ -465,8 +474,12 @@ type
     function  GetDefaultReadOnly: boolean; virtual;
     function  GetDefaultSizePriority: Integer;
     function  GetDefaultVisible: boolean; virtual;
+    function  GetDefaultValueChecked: string; virtual;
+    function  GetDefaultValueUnchecked: string; virtual;
     function  GetDefaultWidth: Integer; virtual;
     function  GetPickList: TStrings; virtual;
+    function  GetValueChecked: string;
+    function  GetValueUnchecked: string;
     procedure ColumnChanged; virtual;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;
@@ -497,6 +510,11 @@ type
     property Title: TGridColumnTitle read FTitle write SetTitle;
     property Width: Integer read GetWidth write SetWidth stored IsWidthStored default DEFCOLWIDTH;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
+    property ValueChecked: string read GetValueChecked write SetValueChecked
+      stored IsValueCheckedStored;
+    property ValueUnchecked: string read GetValueUnchecked write SetValueUnchecked
+      stored IsValueUncheckedStored;
+
   end;
 
   TGridPropertyBackup=record
@@ -591,6 +609,7 @@ type
     FFastEditing: boolean;
     FAltColorStartNormal: boolean;
     FFlat: Boolean;
+    FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
     FSortOrder: TSortOrder;
     FTitleImageList: TImageList;
     FTitleStyle: TTitleStyle;
@@ -647,6 +666,7 @@ type
     FAllowOutboundEvents: boolean;
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
+    FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -691,6 +711,7 @@ type
     function  GetColumns: TGridColumns;
     function  GetEditorBorderStyle: TBorderStyle;
     function  GetBorderWidth: Integer;
+    function  GetImageForCheckBox(CheckBoxView: TCheckBoxState): TBitmap;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
@@ -707,6 +728,7 @@ type
     function  IsAltColorStored: boolean;
     function  IsColumnsStored: boolean;
     function  IsPushCellActive: boolean;
+    function  LoadResBitmapImage(const ResName: string): TBitmap;
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
     procedure ReadColWidths(Reader: TReader);
@@ -803,6 +825,7 @@ type
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
+    procedure DrawGridCheckboxBitmaps(const aRect: TRect; const aState: TCheckboxState); virtual;
     procedure DrawColRowMoving;
     procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawColumnTitleImage(var ARect: TRect; AColumnIndex: Integer);
@@ -990,6 +1013,7 @@ type
     property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
+    property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -1030,6 +1054,9 @@ type
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
+  TGetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: TCheckboxState) of object;
+  TSetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: TCheckboxState) of object;
+
 
   { TCustomDrawGrid }
 
@@ -1039,11 +1066,15 @@ type
     FOnColRowExchanged: TgridOperationEvent;
     FOnColRowInserted: TGridOperationEvent;
     FOnColRowMoved: TgridOperationEvent;
+    FOnGetCheckboxState: TGetCheckboxStateEvent;
     FOnGetEditMask: TGetEditEvent;
     FOnGetEditText: TGetEditEvent;
     FOnHeaderClick, FOnHeaderSized: THdrEvent;
     FOnSelectCell: TOnSelectcellEvent;
+    FOnSetCheckboxState: TSetCheckboxStateEvent;
     FOnSetEditText: TSetEditEvent;
+    function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
+    procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
@@ -1055,6 +1086,7 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
+    procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); virtual;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
@@ -1064,6 +1096,11 @@ type
     procedure SetColor(Value: TColor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+
+    property OnGetCheckboxState: TGetCheckboxStateEvent
+                              read FOnGetCheckboxState write FOnGetCheckboxState;
+    property OnSetCheckboxState: TSetCheckboxStateEvent
+                              read FOnSetCheckboxState write FOnSetCheckboxState;
 
   public
 
@@ -1351,6 +1388,7 @@ type
       procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
+      procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); override;
       function  GetEditText(aCol, aRow: Integer): string; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
       procedure Loaded; override;
@@ -1982,6 +2020,19 @@ function TCustomGrid.IsPushCellActive: boolean;
 begin
   with FGCache do
     result := (PushedCell.X<>-1) and (PushedCell.Y<>-1);
+end;
+
+function TCustomGrid.LoadResBitmapImage(const ResName: string): TBitmap;
+var
+  C: TCustomBitmap;
+begin
+  C := CreateBitmapFromLazarusResource(ResName);
+  if C<>nil then begin
+    Result := TBitmap.Create;
+    Result.Assign(C);
+    C.Free;
+  end else
+    Result:=nil;
 end;
 
 function TCustomGrid.IsTitleImageListStored: boolean;
@@ -3408,6 +3459,36 @@ begin
   end;
 end;
 
+procedure TCustomGrid.DrawGridCheckboxBitmaps(const aRect: TRect;
+  const aState: TCheckboxState);
+const
+  arrtb:array[TCheckboxState] of TThemedButton =
+    (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal, tbCheckBoxMixedNormal);
+var
+  ChkBitmap: TBitmap;
+  XPos,YPos,CSize: Integer;
+  details: TThemedElementDetails;
+  PaintRect: TRect;
+begin
+  if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
+    Details := ThemeServices.GetElementDetails(arrtb[AState]);
+    CSize:= ThemeServices.GetDetailSize(Details);
+    with PaintRect do begin
+      Left := Trunc((aRect.Left + aRect.Right - CSize)/2);
+      Top  := Trunc((aRect.Top + aRect.Bottom - CSize)/2);
+      PaintRect := Bounds(Left, Top, CSize, CSize);
+    end;
+    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
+  end else begin
+    ChkBitmap := GetImageForCheckBox(AState);
+    if ChkBitmap<>nil then begin
+      XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
+      YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
+      Canvas.Draw(XPos, YPos, ChkBitmap);
+    end;
+  end;
+end;
+
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
 begin
   FTitleFontIsDefault := False;
@@ -4042,6 +4123,21 @@ begin
   else
     Result := 0
 end;
+
+function TCustomGrid.GetImageForCheckBox(CheckBoxView: TCheckBoxState
+  ): TBitmap;
+begin
+  if CheckboxView=cbUnchecked then
+    Result := FUncheckedBitmap
+  else if CheckboxView=cbChecked then
+    Result := FCheckedBitmap
+  else
+    Result := FGrayedBitmap;
+
+  if Assigned(OnUserCheckboxBitmap) then
+    OnUserCheckboxBitmap(Self, CheckBoxView, Result);
+end;
+
 
 function TCustomGrid.GetColumns: TGridColumns;
 begin
@@ -7043,11 +7139,19 @@ begin
   ResetHotCell;
   ResetPushedCell;
   FSortOrder := soAscending;
+
+  // Default bitmaps for cbsCheckedColumn
+  FUnCheckedBitmap := LoadResBitmapImage('dbgriduncheckedcb');
+  FCheckedBitmap := LoadResBitmapImage('dbgridcheckedcb');
+  FGrayedBitmap := LoadResBitmapImage('dbgridgrayedcb');
 end;
 
 destructor TCustomGrid.Destroy;
 begin
   {$Ifdef DbgGrid}DebugLn('TCustomGrid.Destroy');{$Endif}
+  FUncheckedBitmap.Free;
+  FCheckedBitmap.Free;
+  FGrayedBitmap.Free;
   FreeThenNil(FButtonStringEditor);
   FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
@@ -7724,6 +7828,26 @@ end;
 
 { TCustomDrawGrid }
 
+function TCustomDrawGrid.CellNeedsCheckboxBitmaps(const aCol, aRow: Integer): boolean;
+var
+  C: TGridColumn;
+begin
+  Result := false;
+  if (aRow>=FixedRows) and Columns.Enabled then begin
+    C := ColumnFromGridColumn(aCol);
+    result := (C<>nil) and (C.ButtonStyle=cbsCheckboxColumn)
+  end;
+end;
+
+procedure TCustomDrawGrid.DrawCellCheckboxBitmaps(const aCol, aRow: Integer;
+  const aRect: TRect);
+var
+  AState: TCheckboxState;
+begin
+  AState := cbUnchecked;
+  GetCheckBoxState(aCol, aRow, aState);
+  DrawGridCheckboxBitmaps(aRect, aState);
+end;
 
 procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
@@ -7779,6 +7903,13 @@ begin
       FFocusColor := FOldFocusColor;
     end;
   end;
+end;
+
+procedure TCustomDrawGrid.GetCheckBoxState(const aCol, aRow: Integer;
+  var aState: TCheckboxState);
+begin
+  if assigned(FOnGetCheckboxState) then
+    OnGetCheckboxState(self, aCol, aRow, aState);
 end;
 
 procedure TCustomDrawGrid.ColRowExchanged(IsColumn:Boolean; index, WithIndex: Integer);
@@ -7952,6 +8083,9 @@ begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
 
   Canvas.FillRect(aRect);
+
+  if CellNeedsCheckboxBitmaps(aCol,aRow) then
+    DrawCellCheckboxBitmaps(aCol,aRow,aRect);
 
   if FTitleStyle<>tsNative then
     DrawColumnText(aCol,aRow,aRect,aState);
@@ -8270,6 +8404,7 @@ begin
       (aCol>=FixedCols) and (aRow=0) then
       //inherited already did
     else
+    if not CellNeedsCheckboxBitmaps(aCol, aRow) then
       DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
   end;
 end;
@@ -8279,6 +8414,25 @@ procedure TCustomStringGrid.DrawCellAutonumbering(aCol, aRow: Integer;
 begin
   if Cells[aCol,aRow]='' then
     inherited DrawCellAutoNumbering(aCol,aRow,aRect,aValue);
+end;
+
+procedure TCustomStringGrid.GetCheckBoxState(const aCol, aRow: Integer;
+  var aState: TCheckboxState);
+var
+  s:string;
+begin
+  if Assigned(OnGetCheckboxState) then
+    inherited GetCheckBoxState(aCol, aRow, aState)
+  else begin
+    s := Cells[ACol, ARow];
+    if s=ColumnFromGridColumn(aCol).ValueChecked then
+      aState := cbChecked
+    else
+    if s=ColumnFromGridColumn(aCol).ValueUnChecked then
+      aState := cbUnChecked
+    else
+      aState := cbGrayed;
+  end;
 end;
 
 function TCustomStringGrid.GetEditText(aCol, aRow: Integer): string;
@@ -8775,6 +8929,22 @@ begin
     result := FReadOnly^;
 end;
 
+function TGridColumn.GetValueChecked: string;
+begin
+  if FValueChecked = nil then
+    Result := GetDefaultValueChecked
+  else
+    Result := FValueChecked;
+end;
+
+function TGridColumn.GetValueUnchecked: string;
+begin
+  if FValueUnChecked = nil then
+    Result := GetDefaultValueUnChecked
+  else
+    Result := FValueUnChecked;
+end;
+
 function TGridColumn.GetVisible: Boolean;
 begin
   if FVisible=nil then begin
@@ -8829,6 +8999,16 @@ end;
 function TGridColumn.IsSizePriorityStored: boolean;
 begin
   result := FSizePriority <> nil;
+end;
+
+function TGridColumn.IsValueCheckedStored: boolean;
+begin
+  result := FValueChecked <> nil;
+end;
+
+function TGridColumn.IsValueUncheckedStored: boolean;
+begin
+  Result := FValueUnchecked <> nil;
 end;
 
 function TGridColumn.IsVisibleStored: boolean;
@@ -8956,6 +9136,32 @@ begin
   FTitle.Assign(AValue);
 end;
 
+procedure TGridColumn.SetValueChecked(const AValue: string);
+begin
+  if (FValueChecked=nil)or(CompareText(AValue, FValueChecked)<>0) then begin
+    if FValueChecked<>nil then
+      StrDispose(FValueChecked)
+    else
+    if CompareText(AValue, GetDefaultValueChecked)=0 then
+      exit;
+    FValueChecked := StrNew(PChar(AValue));
+    Changed(False);
+  end;
+end;
+
+procedure TGridColumn.SetValueUnchecked(const AValue: string);
+begin
+  if (FValueUnchecked=nil)or(CompareText(AValue, FValueUnchecked)<>0) then begin
+    if FValueUnchecked<>nil then
+      StrDispose(FValueUnchecked)
+    else
+      if CompareText(AValue, GetDefaultValueUnchecked)=0 then
+        exit;
+    FValueUnchecked := StrNew(PChar(AValue));
+    Changed(False);
+  end;
+end;
+
 procedure TGridColumn.SetVisible(const AValue: Boolean);
 begin
   if FVisible = nil then begin
@@ -8994,6 +9200,16 @@ end;
 function TGridColumn.GetDefaultVisible: boolean;
 begin
   Result := True;
+end;
+
+function TGridColumn.GetDefaultValueChecked: string;
+begin
+  result := '1';
+end;
+
+function TGridColumn.GetDefaultValueUnchecked: string;
+begin
+  result := '0';
 end;
 
 function TGridColumn.GetDefaultWidth: Integer;
@@ -9119,6 +9335,9 @@ begin
   if FMaxSize<>nil then Dispose(FMaxSize);
   if FMinSize<>nil then Dispose(FMinSize);
   if FSizePriority<>nil then Dispose(FSizePriority);
+  if FValueChecked<>nil then StrDispose(FValueChecked);
+  if FValueUnchecked<>nil then StrDispose(FValueUnchecked);
+
   FreeThenNil(FPickList);
   FreeThenNil(FFont);
   FreeThenNil(FTitle);
@@ -9717,5 +9936,8 @@ begin
   FEditors[i].Align := aAlign;
   FEditors[i].ActiveControl:=ActiveCtrl;
 end;
+
+initialization
+{$I lcl_dbgrid_images.lrs}
 
 end.
