@@ -9906,7 +9906,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
 begin
-  Result := TSynEditStrings(fLines).LogicalToPhysicalPos(p);
+  Result := TSynEditStrings(Lines).LogicalToPhysicalPos(p);
 end;
 {$ELSE}
 function TCustomSynEdit.LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -9940,7 +9940,7 @@ end;
 function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
   LogicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(fLines).LogicalToPhysicalCol(PChar(Pointer(Line)),
+  Result := TSynEditStrings(Lines).LogicalToPhysicalCol(PChar(Pointer(Line)),
     length(Line),LogicalPos,1,1);
 end;
 
@@ -9948,7 +9948,7 @@ function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
 // Note: LogicalPos, StartBytePos, StartPhysicalPos start at 1
 begin
-  Result := TSynEditStrings(fLines).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
+  Result := TSynEditStrings(Lines).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
                                         StartBytePos, StartPhysicalPos);
 end;
 
@@ -9963,19 +9963,19 @@ end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
 begin
-  Result := TSynEditStrings(fLines).PhysicalToLogicalPos(p);
+  Result := TSynEditStrings(Lines).PhysicalToLogicalPos(p);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(fLines).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
+  Result := TSynEditStrings(Lines).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(fLines).PhysicalToLogicalCol(Line, PhysicalPos,
+  Result := TSynEditStrings(Lines).PhysicalToLogicalCol(Line, PhysicalPos,
     StartBytePos, StartPhysicalPos);
 end;
 
