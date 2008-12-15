@@ -3076,7 +3076,7 @@ var
   p: PLookupListRec;
 begin
   Result := inherited GetPickList;
-  if Field.Lookup and Field.LookupCache then begin
+  if (Field<>nil) and Field.Lookup and Field.LookupCache then begin
     Result.Clear;
     {$WARNINGS OFF}
     lst := TLookupListCracker(Field.LookupList).FList;
