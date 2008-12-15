@@ -5,6 +5,8 @@ unit chmcontentprovider;
 {$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
+{$else}
+{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
 {$endif}
 
 {off $DEFINE CHM_DEBUG_TIME}
@@ -341,8 +343,6 @@ begin
 end;
 
 procedure TChmContentProvider.IpHtmlPanelDocumentOpen(Sender: TObject);
-var
-  AChm: TChmReader;
 begin
    // StatusBar1.Panels.Items[1] := fHtml.DataProvider.;
  if fIsUsingHistory = False then
@@ -521,7 +521,6 @@ var
   SearchReader: TChmSearchReader;
   DocTitle: String;
   DocURL: String;
-  TitleIndex: Integer = -1;
   i: Integer;
   j: Integer;
   k: Integer;
@@ -680,13 +679,10 @@ begin
 end;
 
 procedure TChmContentProvider.GoBack;
-var
-  HistoryChm: TChmReader;
 begin
   if CanGoBack then begin
     Dec(fHistoryIndex);
     fIsUsingHistory:=True;
-    HistoryChm := TChmReader(fHistory.Objects[fHistoryIndex]);
     fHtml.OpenURL(fHistory.Strings[fHistoryIndex]);
   end;
 end;

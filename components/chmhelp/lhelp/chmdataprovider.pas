@@ -172,16 +172,13 @@ end;
 
 function TIpChmDataProvider.BuildURL(const OldURL, NewURL: string): string;
 var
-  tmp: String;
   X: LongInt;
-  fOldUrl: String;
   fNewURL: String;
   ParentDirs: TStringList;
   RemoveDirCount: Integer;
 begin
   Result := NewURL;
 
-  fOldUrl := OldURL;
   fNewURL := NewURL;
   if Pos('ms-its:', NewURL) = 1 then
     Exit;

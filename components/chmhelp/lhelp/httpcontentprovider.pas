@@ -31,7 +31,7 @@ type
     procedure GoBack; override;
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
-    constructor Create(AParent: TWinControl); override;
+    constructor Create(AParent: TWinControl; AImageList: TImageList); override;
 
   end;
 
@@ -107,9 +107,9 @@ begin
   Result := THTTPContentProvider;
 end;
 
-constructor THTTPContentProvider.Create(AParent: TWinControl);
+constructor THTTPContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
 begin
-  inherited Create(AParent);
+  inherited Create(AParent, AImageList);
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do begin

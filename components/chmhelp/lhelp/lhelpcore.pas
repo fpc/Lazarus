@@ -17,6 +17,12 @@
 }
 unit lhelpcore;
 
+{$IFDEF LNET_VISUAL}
+{$DEFINE USE_LNET} // you must manually add the lnetvisual.lpk package to the dependancy list
+{$ELSE}
+{$NOTE You can add http capability to lhelp by adding the lnetvisual package v0.6.3 or greater requirement to lhelp.}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface
@@ -25,7 +31,7 @@ uses
   Classes, SysUtils, SimpleIPC,
   FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus,
-  BaseContentProvider, FileContentProvider, ChmContentProvider;
+  BaseContentProvider, FileContentProvider, ChmContentProvider{$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
 
 type
 
@@ -75,8 +81,6 @@ type
 
   private
     { private declarations }
-
-
     fServerName: String;
     fServer: TSimpleIPCServer;
     fServerTimer: TTimer;
@@ -86,6 +90,7 @@ type
     procedure StartServer(ServerName: String);
     procedure StopServer;
     procedure OpenURL(const AURL: String; AContext: THelpContext=-1);
+    procedure LateOpenURL(Url: PStringItem);
     function ActivePage: TContentTab;
     procedure RefreshState;
     procedure ShowError(AError: String);
@@ -213,6 +218,8 @@ procedure THelpForm.ReadCommandLineOptions;
 var
   X: Integer;
   IsHandled: array[0..50] of boolean;
+  URL: String;
+  StrItem: PStringItem;
 begin
   FillChar(IsHandled, 51, 0);
   for  X := 1 to ParamCount do begin
@@ -235,9 +242,12 @@ begin
     if not IsHandled[X] then begin
       //DoOpenChm(ParamStrUTF8(X));
       if Pos('://', ParamStrUTF8(X)) = 0 then
-        OpenURL('file://'+ParamStrUTF8(X), fContext)
+        URL := 'file://'+ParamStrUTF8(X)
       else
-        OpenURL(ParamStrUTF8(X), fContext);
+        URL := ParamStrUTF8(X);
+      StrItem := New(PStringItem);
+      StrItem^.FString := URL;
+      Application.QueueAsyncCall(TDataEvent(@LateOpenURL), PtrUInt(StrItem));
       Break;
     end;
   //we reset the context because at this point the file has been loaded and the
@@ -250,7 +260,7 @@ end;
 procedure THelpForm.StartServer(ServerName: String);
 begin
   fServer := TSimpleIPCServer.Create(nil);
-  fServer.ServerID := fServerName;
+  fServer.ServerID := ServerName;
   fServer.Global := True;
   fServer.Active := True;
   fServerTimer := TTimer.Create(nil);
@@ -284,6 +294,7 @@ var
  fNewPage: TContentTab;
  I: Integer;
 begin
+
  fURLPrefix := GetURLPrefix;
  fContentProvider := GetContentProvider(fURLPrefix);
  
@@ -317,6 +328,12 @@ begin
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
    PageControl.ActivePage := fNewPage;
  RefreshState;
+end;
+
+procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
+begin
+  OpenURL(URL^.FString, fContext);
+  Dispose(Url);
 end;
 
 function THelpForm.ActivePage: TContentTab;

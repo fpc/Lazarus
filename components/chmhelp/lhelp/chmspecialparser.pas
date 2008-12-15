@@ -145,6 +145,8 @@ begin
         end;
         TreeNode.Url := NodeInfo.Url;
         TreeNode.Data := fChm;
+        TreeNode.ImageIndex := 3;
+        TreeNode.SelectedIndex := 3;
         Inc(X, NodeInfo.LineCount);
       except
         // an exception can occur if we have closed the file while the toc is still being read
@@ -180,7 +182,6 @@ end;
 function TContentsFiller.GetLIData(StartLine: Integer): TContentNode;
 var
  X: Integer;
- NameCount: Integer = 0;
  fLength: Integer;
  fPos: Integer;
  Line: String;
@@ -270,11 +271,12 @@ end;
 function TIndexFiller.GetLIEnd(StartLine: Integer): Integer;
 begin
 //  for X := StartLine to
+  Result := -1;
 end;
 
 function TIndexFiller.GetNextLI(StartLine: Integer): Integer;
 begin
-
+  Result := -1;
 end;
 
 function TIndexFiller.AddLIObjects(StartLine: Integer; SubItem: Boolean): Integer;
@@ -287,7 +289,7 @@ var
   fPos: Integer;
   fLength: Integer;
   Item: TIndexItem;
-  X, I: LongInt;
+  X: LongInt;
 begin
   for X:= StartLine to fText.Count-1 do begin
     Line := fText.Strings[X];
