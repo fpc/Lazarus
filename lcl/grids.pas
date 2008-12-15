@@ -1078,6 +1078,7 @@ type
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
+    procedure CellClick(const aCol,aRow: Integer); override;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); override;
     procedure ColRowInserted(IsColumn: boolean; index: integer); override;
@@ -1091,11 +1092,14 @@ type
     function  GetEditText(aCol, aRow: Longint): string; override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure NotifyColRowChange(WasInsert,IsColumn:boolean; FromIndex,ToIndex:Integer);
     function  SelectCell(aCol,aRow: Integer): boolean; override;
     procedure SetColor(Value: TColor); override;
+    procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); virtual;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+    procedure ToggleCheckbox; virtual;
 
     property OnGetCheckboxState: TGetCheckboxStateEvent
                               read FOnGetCheckboxState write FOnGetCheckboxState;
@@ -1396,6 +1400,7 @@ type
       //procedure DrawInteriorCells; override;
       //procedure SelectEditor; override;
       procedure SelectionSetText(TheText: String);
+      procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
       property Modified: boolean read FModified write FModified;
@@ -7854,6 +7859,12 @@ begin
   //
 end;
 
+procedure TCustomDrawGrid.CellClick(const ACol, ARow: Integer);
+begin
+  if CellNeedsCheckboxBitmaps(ACol, ARow) then
+    ToggleCheckbox;
+end;
+
 procedure TCustomDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
 var
@@ -7959,6 +7970,16 @@ begin
   if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
 end;
 
+procedure TCustomDrawGrid.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+
+  if (Key=VK_SPACE) and CellNeedsCheckboxBitmaps(col, row) then begin
+    ToggleCheckbox;
+    Key:=0;
+  end;
+end;
+
 function TCustomDrawGrid.GetEditMask(aCol, aRow: Longint): string;
 begin
   result:='';
@@ -8007,6 +8028,30 @@ begin
   end;
 end;
 
+procedure TCustomDrawGrid.ToggleCheckbox;
+var
+  TempColumn: TGridColumn;
+  AState: TCheckboxState;
+begin
+  if not EditingAllowed(Col) then
+    exit;
+
+  TempColumn := ColumnFromGridColumn(Col);
+  if (TempColumn<>nil) and not TempColumn.ReadOnly then
+  begin
+
+    AState := cbGrayed;
+    GetCheckboxState(Col, Row, AState);
+
+    if AState=cbChecked then
+      AState := cbUnchecked
+    else
+      AState := cbChecked;
+
+    SetCheckboxState(Col, Row, AState);
+  end;
+end;
+
 procedure TCustomDrawGrid.DrawCellAutonumbering(aCol, aRow: Integer;
   aRect: TRect; const aValue: string);
 begin
@@ -8023,6 +8068,13 @@ procedure TCustomDrawGrid.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
   Invalidate;
+end;
+
+procedure TCustomDrawGrid.SetCheckboxState(const aCol, aRow: Integer;
+  const aState: TCheckboxState);
+begin
+  if assigned(FOnSetCheckboxState) then
+    OnSetCheckboxState(self, aCol, aRow, aState);
 end;
 
 function TCustomDrawGrid.CreateVirtualGrid: TVirtualGrid;
@@ -8503,6 +8555,19 @@ begin
   finally
     SubL.Free;
     L.Free;
+  end;
+end;
+
+procedure TCustomStringGrid.SetCheckboxState(const aCol, aRow: Integer;
+  const aState: TCheckboxState);
+begin
+  if Assigned(OnSetCheckboxState) then
+    inherited SetCheckBoxState(aCol, aRow, aState)
+  else begin
+    if aState=cbChecked then
+      Cells[ACol, ARow] := ColumnFromGridColumn(aCol).ValueChecked
+    else
+      Cells[ACol, ARow] := ColumnFromGridColumn(aCol).ValueUnChecked;
   end;
 end;
 
