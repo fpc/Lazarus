@@ -59,7 +59,7 @@ implementation
 uses
   TokenUtils,
   SourceToken, Tokens, ParseTreeNode,
-  Nesting, ParseTreeNodeType, JcfSettings,
+  ParseTreeNodeType, JcfSettings,
   FormatFlags, SettingsTypes;
 
 const

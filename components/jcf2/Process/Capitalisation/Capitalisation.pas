@@ -53,7 +53,7 @@ uses
   SysUtils,
   { local }
   JcfStringUtils,
-  SourceToken, SettingsTypes, Tokens, ParseTreeNodeType,
+  SourceToken, SettingsTypes, Tokens,
   JcfSettings, FormatFlags, TokenUtils;
 
 procedure FixCaps(const pct: TSourceToken; const caps: TCapitalisationType);

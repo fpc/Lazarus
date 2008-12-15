@@ -75,7 +75,7 @@ implementation
 uses
   { delphi }SysUtils, Math,
   { jcl }
-  { jcf } JcfSettings, TokenUtils, SetAlign, ParseTreeNodeType;
+  { jcf } JcfSettings, TokenUtils, ParseTreeNodeType;
 
 { TAlignBase }
 

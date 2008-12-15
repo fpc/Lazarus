@@ -62,8 +62,8 @@ type
   TFormatFlags = set of TFormatFlag;
 
 { read a comment for comment enabled flag data }
-function ReadCommentJcfFlags(psComment: string; var psError: string;
-  var peFlags: TFormatFlags; var pbOn: boolean): boolean;
+function ReadCommentJcfFlags(psComment: string; out psError: string;
+  out peFlags: TFormatFlags; out pbOn: boolean): boolean;
 
 const
   FORMAT_COMMENT_PREFIX     = '//jcf:';
@@ -164,8 +164,8 @@ end;
   psFlags returns the set of flags referenced
   pbOn tells if they were turned on or off
 }
-function ReadCommentJcfFlags(psComment: string; var psError: string;
-  var peFlags: TFormatFlags; var pbOn: boolean): boolean;
+function ReadCommentJcfFlags(psComment: string; out psError: string;
+  out peFlags: TFormatFlags; out pbOn: boolean): boolean;
 var
   lsPrefix, lsRest: string;
   lsSetting, lsState: string;

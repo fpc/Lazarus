@@ -67,8 +67,7 @@ uses
   { delphi }
   {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
-  ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils,
-  BaseVisitor;
+  ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils;
 
 
 

@@ -67,7 +67,7 @@ uses
   { local }
   JcfStringUtils,
   SourceToken, FormatFlags, JcfSettings, SetReturns,
-  TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNode, ParseTreeNodeType;
+  TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNodeType;
 
 function IsLineBreaker(const pcToken: TSourceToken): boolean;
 begin
@@ -242,7 +242,7 @@ end;
 { scoring - based on the current token,
   score how aestetically pleasing a line break after this token would be }
 procedure ScoreToken(const pcToken: TSourceToken;
-  var piScoreBefore, piScoreAfter: integer);
+  out piScoreBefore, piScoreAfter: integer);
 const
   BAD4 = -40;
   BAD3 = -30;

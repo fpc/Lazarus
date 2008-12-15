@@ -179,7 +179,7 @@ uses
   JcfUnicode,
   JcfStringUtils,
   ParseTreeNodeType, Tokens, Nesting,
-  SetReturns, AsmKeywords;
+  AsmKeywords;
 
 
 function NewReturn: TSourceToken;

@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  ParseTreeNode, ParseTreeNodeType, BaseVisitor;
+  ParseTreeNode, ParseTreeNodeType;
 
 
 

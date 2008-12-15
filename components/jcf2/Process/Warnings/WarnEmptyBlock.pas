@@ -48,7 +48,7 @@ type
 
 implementation
 
-uses ParseTreeNode, ParseTreeNodeType, BaseVisitor;
+uses ParseTreeNode, ParseTreeNodeType;
 
 constructor TWarnEmptyBlock.Create;
 begin

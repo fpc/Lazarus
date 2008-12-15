@@ -30,7 +30,7 @@ interface
 
 uses
   JCFSetBase,
-  SettingsTypes, SettingsStream, IntList;
+  SettingsTypes, SettingsStream;
 
 type
 
