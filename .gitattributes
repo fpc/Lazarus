@@ -52,8 +52,10 @@ components/chmhelp/lhelp/images/lhelp32.png -text
 components/chmhelp/lhelp/images/table_close.png -text
 components/chmhelp/lhelp/images/table_item.png -text
 components/chmhelp/lhelp/images/table_open.png -text
+components/chmhelp/lhelp/lhelp.ico -text svneol=unset#image/icon
 components/chmhelp/lhelp/lhelp.lpi svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
+components/chmhelp/lhelp/lhelp.rc svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.lrs svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.pas svneol=native#text/plain

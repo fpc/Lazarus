@@ -21,12 +21,17 @@ program lhelp;
 
 uses
   Interfaces, // this includes the LCL widgetset
+  SysUtils,
+  Classes,
+  Controls,
+  Dialogs,
   Forms
   { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore,
   LResources;
 
 var
  X: Integer;
+ S: TStringList;
 
 {$IFDEF WINDOWS}{$R lhelp.rc}{$ENDIF}
 
@@ -34,18 +39,25 @@ begin
   {$I lhelp.lrs}
   Application.Initialize;
   for X := 1 to ParamCount do
-    if LowerCase(ParamStr(X)) = '--help' then begin
-      WriteLn();
-      WriteLn('  LHelp Options:');
-      WriteLn;
-      WriteLn('    Usage: lhelp [[filename] [--context id] [--ipcname lhelp-myapp]]');
-      WriteLn;
-      WriteLn('    --help     :  Show this information');
-      WriteLn('    --context  :  Show the help information related');
-      WriteLn('                  to this context');
-      WriteLn('    --ipcname  :  The name of the ipc server to listen on for');
-      WriteLn('                  programs who wish to control the viewer');
-      WriteLn;
+    if LowerCase(ParamStr(X)) = '--help' then 
+    begin
+      S := TStringList.Create;
+      S.Add('  LHelp Options:');
+      S.Add('');
+      S.Add('    Usage: lhelp [[filename] [--context id] [--ipcname lhelp-myapp]]');
+      S.Add('');
+      S.Add('    --help     :  Show this information');
+      S.Add('    --context  :  Show the help information related');
+      S.Add('                  to this context');
+      S.Add('    --ipcname  :  The name of the ipc server to listen on for');
+      S.Add('                  programs who wish to control the viewer');
+
+      if TextRec(Output).Mode = fmClosed then
+        MessageDlg(S.Text, mtInformation, [mbOk], 0)
+      else
+        WriteLn(S.Text);
+
+      S.Free;
       Exit;
     end;
   Application.CreateForm(THelpForm, HelpForm);
