@@ -65,7 +65,7 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure DoGetColors; dynamic;
-    procedure Select; override;
+    procedure Change; override;
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -272,6 +272,28 @@ function GetPrettyColorName(ColorName: String): String;
         NewColorName := rsScrollBarColorCaption
       else
         case Color of
+          clBlack                   : NewColorName := rsBlackColorCaption;
+          clMaroon                  : NewColorName := rsMaroonColorCaption;
+          clGreen                   : NewColorName := rsGreenColorCaption;
+          clOlive                   : NewColorName := rsOliveColorCaption;
+          clNavy                    : NewColorName := rsNavyColorCaption;
+          clPurple                  : NewColorName := rsPurpleColorCaption;
+          clTeal                    : NewColorName := rsTealColorCaption;
+          clGray                    : NewColorName := rsGrayColorCaption;
+          clSilver                  : NewColorName := rsSilverColorCaption;
+          clRed                     : NewColorName := rsRedColorCaption;
+          clLime                    : NewColorName := rsLimeColorCaption;
+          clYellow                  : NewColorName := rsYellowColorCaption;
+          clBlue                    : NewColorName := rsBlueColorCaption;
+          clFuchsia                 : NewColorName := rsFuchsiaColorCaption;
+          clAqua                    : NewColorName := rsAquaColorCaption;
+          clWhite                   : NewColorName := rsWhiteColorCaption;
+          clMoneyGreen              : NewColorName := rsMoneyGreenColorCaption;
+          clSkyBlue                 : NewColorName := rsSkyBlueColorCaption;
+          clCream                   : NewColorName := rsCreamColorCaption;
+          clMedGray                 : NewColorName := rsMedGrayColorCaption;
+          clNone                    : NewColorName := rsNoneColorCaption;
+          clDefault                 : NewColorName := rsDefaultColorCaption;
           clBackground              : NewColorName := rsBackgroundColorCaption;
           clActiveCaption           : NewColorName := rsActiveCaptionColorCaption;
           clInactiveCaption         : NewColorName := rsInactiveCaptionColorCaption;
@@ -424,7 +446,7 @@ begin
     end;
     if cbCustomColor in Style then
     begin
-      Items.Objects[0] := TObject(Value);
+      Items.Objects[0] := TObject(PtrInt(Value));
       ItemIndex := 0;
       invalidate;
     end
@@ -478,7 +500,7 @@ begin
     else
       ColorCaption := s;
 
-    Items.AddObject(ColorCaption, TObject(AColor));
+    Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
   end;
 end;
 
@@ -557,7 +579,7 @@ begin
   begin
     Clear;
     if cbCustomColor in Style then
-      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+      Items.AddObject(rsCustomColorCaption, TObject(PtrInt(clBlack)));
     GetColorValues(@ColorProc);
     if (cbCustomColors in Style) then
       DoGetColors;
@@ -583,13 +605,13 @@ begin
     OnGetColors(Self, Items)
 end;
 
-procedure TCustomColorBox.Select;
+procedure TCustomColorBox.Change;
 begin
   if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
     PickCustomColor;
   if ItemIndex <> -1 then
     FSelected := Colors[ItemIndex];
-  inherited Select;
+  inherited Change;
 end;
 
 function TCustomColorBox.PickCustomColor: Boolean;
@@ -606,7 +628,7 @@ begin
     Result := Execute;
     if Result then
     begin
-      Items.Objects[0] := TObject(Color);
+      Items.Objects[0] := TObject(PtrInt(Color));
       invalidate;
     end;
     Free;
@@ -718,7 +740,7 @@ begin
     end;
     if cbCustomColor in Style then
     begin
-      Items.Objects[0] := TObject(Value);
+      Items.Objects[0] := TObject(PtrInt(Value));
       ItemIndex := 0;
       invalidate;
     end
@@ -770,7 +792,7 @@ begin
     else
       ColorCaption := s;
 
-    Items.AddObject(ColorCaption, TObject(AColor));
+    Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
   end;
 end;
 
@@ -848,7 +870,7 @@ begin
   begin
     Clear;
     if cbCustomColor in Style then
-      Items.AddObject(rsCustomColorCaption, TObject(clBlack));
+      Items.AddObject(rsCustomColorCaption, TObject(PtrInt(clBlack)));
     GetColorValues(@ColorProc);
     if (cbCustomColors in Style) then
       DoGetColors;
@@ -900,7 +922,7 @@ begin
     Result := Execute;
     if Result then
     begin
-      Items.Objects[0] := TObject(Color);
+      Items.Objects[0] := TObject(PtrInt(Color));
       invalidate;
     end;
     Free;
