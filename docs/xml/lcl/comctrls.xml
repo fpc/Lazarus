@@ -57,7 +57,8 @@
       <element name="Buttons"/>
       <!-- enumeration type Visibility: default -->
       <element name="THitTest">
-        <short/>
+        <short>
+          <var>THitTest</var> - enumerated type giving permissable results of a hit test (position of a mouse click etc relative to objects on a form)</short>
         <descr/>
         <seealso/>
       </element>
@@ -111,13 +112,16 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="THitTests">
-        <short/>
+        <short>
+          <var>THitTests</var> - set of <var>THitTest</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TStatusPanelStyle">
-        <short/>
+        <short>
+          <var>TStatusPanelStyle</var> - enumerated type for panel style</short>
         <descr/>
         <seealso/>
       </element>
@@ -131,7 +135,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TStatusPanelBevel">
-        <short/>
+        <short>
+          <var>TStatusPanelBevel</var> - enumerated type for panel bevel style</short>
         <descr/>
         <seealso/>
       </element>
@@ -149,7 +154,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPanelPart">
-        <short/>
+        <short>
+          <var>TPanelPart</var> - enumerated type listing the possible parts that comprise a Panel</short>
         <descr/>
         <seealso/>
       </element>
@@ -167,7 +173,9 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TPanelParts">
-        <short/>
+        <short>
+          <var>TPanelParts</var> - set ot <var>TPanelPart</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -284,7 +292,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TStatusPanel.PanelChanged">
-        <short/>
+        <short>
+          <var>PanelChanged</var> - method for dealing with a status panel, one or more of whose parts has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -605,7 +614,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TStatusBar.UpdateHandleObject">
-        <short/>
+        <short>
+          <var>UpdateHandleObject</var> - updates all panel parts that have been changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1011,13 +1021,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.PopupMenu">
+      <element name="TTabSheet.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ShowHint">
+      <element name="TTabSheet.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1187,7 +1197,6 @@
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
         <descr>
-         
           <p>If GoForward is True, goes to next (higher index) page;</p>
           <p>if False, goes to previous (lower index)</p>
           <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>
@@ -1492,7 +1501,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetHotTrack">
-        <short/>
+        <short>
+          <var>SetHotTrack</var> - specifies the status of HotTrack</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1503,7 +1513,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetImages">
-        <short/>
+        <short>
+          <var>SetImages</var> - specifies the list of images to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1514,7 +1525,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetMultiLine">
-        <short/>
+        <short>
+          <var>SetMultiLine</var> - specifies whether multiline captions are to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1525,7 +1537,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetMultiSelect">
-        <short/>
+        <short>
+          <var>SetMultiSelect</var> - specifies whether MultiSelection is available</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1536,7 +1549,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetOwnerDraw">
-        <short/>
+        <short>
+          <var>SetOwnerDraw</var> - specifies whether an owner-derived drawing can be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1547,7 +1561,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetRaggedRight">
-        <short/>
+        <short>
+          <var>SetRaggedRight</var> - specifies whether ragged-right (as opposed to right-justified) alignment is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1558,7 +1573,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetScrollOpposite">
-        <short/>
+        <short>
+          <var>SetScrollOpposite</var> - specifies whether scrollbars are to operate in the opposite sense to normal</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1569,7 +1585,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetTabHeight">
-        <short/>
+        <short>
+          <var>SetTabHeight</var> - specifies the height of tabs</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1580,7 +1597,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetTabIndex">
-        <short/>
+        <short>
+          <var>SetTabIndex</var> - specfies an index value for a tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1591,7 +1609,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetTabWidth">
-        <short/>
+        <short>
+          <var>SetTabWidth</var> - specifies the width of a tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1693,7 +1712,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTabControlStrings.ImageListChange">
-        <short/>
+        <short>
+          <var>ImageListChange</var> - method for changing the image list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1704,7 +1724,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTabControlStrings.ScrollTabs">
-        <short/>
+        <short>
+          <var>ScrollTabs</var> - scrolls the tabs by an amount specified by <var>Delta</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1715,14 +1737,16 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTabControlStrings.TabControlBoundsChange">
-        <short/>
+        <short>
+          <var>TabControlBoundsChange</var> - method for dealing with a change in the bounds of a Tab Control</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTabControlStrings.UpdateTabImages">
-        <short/>
+        <short>
+          <var>UpdateTabImages</var> - bring the tab images up to date</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1743,7 +1767,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.IsUpdating">
-        <short/>
+        <short>
+          <var>IsUpdating</var> - returns True if in the process of updating</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1767,7 +1792,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.HotTrack">
-        <short/>
+        <short>
+          <var>HotTrack</var> - if True, the current Tab is a hot track, ie selected, focused and currently executing its functions</short>
         <descr/>
         <seealso/>
       </element>
@@ -1895,7 +1921,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlNoteBookStrings.NBChanging">
-        <short/>
+        <short>
+          <var>NBChanging</var> - method for dealing with the process fo change in a NoteBook</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1910,7 +1937,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlNoteBookStrings.NBGetImageIndex">
-        <short/>
+        <short>
+          <var>NBGetImageIndex</var> - obtains the Image Index associated with a given Tab Index in the NoteBook</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1929,7 +1957,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTabControlNoteBookStrings.NBPageChanged">
-        <short/>
+        <short>
+          <var>NBPageChanged</var> - Method for dealing with a NoteBook page that has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1969,8 +1998,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetImages">
-        <short/>
+      <element name="TTabControlNoteBookStrings.SetImages" link="#LCL.ComCtrls.TTabControlStrings.SetImages">
         <descr/>
         <errors/>
         <seealso/>
@@ -1980,8 +2008,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetTabIndex">
-        <short/>
+      <element name="TTabControlNoteBookStrings.SetTabIndex" link="#LCL.ComCtrls.TTabControlStrings.SetTabIndex">
         <descr/>
         <errors/>
         <seealso/>
@@ -2002,7 +2029,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetTabHeight">
+      <element name="TTabControlNoteBookStrings.SetTabHeight" link="#LCL.ComCtrls.TTabControlStrings.SetTabHeight">
         <short/>
         <descr/>
         <errors/>
@@ -2013,7 +2040,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetTabWidth">
+      <element name="TTabControlNoteBookStrings.SetTabWidth" link="#LCL.ComCtrls.TTabControlStrings.SetTabWidth">
         <short/>
         <descr/>
         <errors/>
@@ -2085,7 +2112,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.TabControlBoundsChange">
+      <element name="TTabControlNoteBookStrings.TabControlBoundsChange" link="#LCL.ComCtrls.TTabControlStrings.TabControlBoundsChange">
         <short/>
         <descr/>
         <errors/>
@@ -2118,7 +2145,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDrawTabEvent">
-        <short/>
+        <short>
+          <var>TDrawTabEvent</var> - generic event handling procedure for drawing a tab, with given index at the specified rectangle</short>
         <descr/>
         <seealso/>
       </element>
@@ -2329,7 +2357,9 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomTabControl.SetHotTrack">
-        <short/>
+        <short>
+          <var>SetHotTrack</var> - specifies the status of <var>HotTrack</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2662,9 +2692,12 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.HotTrack">
-        <short/>
+        <short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ConCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.Images">
@@ -2996,7 +3029,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.HotTrack">
+      <element name="TTabControl.HotTrack" link="#LCL.ComCtrls.TCustomTabControl.HotTrack">
         <short/>
         <descr/>
         <seealso/>
@@ -3250,7 +3283,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawTarget">
-        <short>Set</short>
+        <short>
+          <var>TCustomDrawTarget</var> - enumerated type controlling how a target object is to be drawn</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawTarget.dtControl">
@@ -3266,8 +3300,10 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawStage">
-        <short>Set of constants to define the drawing stages.</short>
-        <descr>So far I've only seen cdPrePaint used in this unit.</descr>
+        <short>
+          <var>TCustomDrawStage</var>  a series of constants to define the drawing stages.</short>
+        <descr>So far I've only seen cdPrePaint used in this unit.
+</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawStage.cdPrePaint">
@@ -3287,7 +3323,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawStateFlag">
-        <short>Set to define the DrawState</short>
+        <short>
+          <var>TCustomDrawStateFlag</var> - series of flags to define the DrawState</short>
         <descr>TCustomDrawStateFlag consists of the following constants:<br/>
 cdsSelected,<br/>
  
@@ -3345,12 +3382,16 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TCustomDrawState">
-        <short>A subset of TCustomDrawStateFlag</short>
-        <descr>TCustomDrawState determines how a item will be drawn.</descr>
+        <short>
+          <var>TCustomDrawState</var>  - set of <var>TCustomDrawStateFlag</var>
+        </short>
+        <descr>TCustomDrawState determines how a item will be drawn.
+</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSortType">
-        <short/>
+        <short>
+          <var>TSortType</var> - enumerated type, a series of constants signifying that there is no sorting, or that sorting is according to data, test or both</short>
         <descr/>
         <seealso/>
       </element>
@@ -3372,7 +3413,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListItemState">
-        <short/>
+        <short>
+          <var>TListItemState</var> - enumerated type denoting the state of a list item</short>
         <descr/>
         <seealso/>
       </element>
@@ -3394,13 +3436,16 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TListItemStates">
-        <short/>
+        <short>
+          <var>TListItemStates</var> - set of <var>TListItemState</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListItemFlag">
-        <short/>
+        <short>
+          <var>TListItemFlag</var> - enumerated type, a flag denoting a list item is being destroyed or created</short>
         <descr/>
         <seealso/>
       </element>
@@ -3414,7 +3459,9 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TListItemFlags">
-        <short/>
+        <short>
+          <var>TListItemFlags</var> - set of <var>TListItemFlag</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3749,10 +3796,11 @@ cdsIndeterminate
       </element>
       <!-- object Visibility: default -->
       <element name="TListItems">
-        <short>A list of items with a cache of the last accessed item</short>
+        <short>TListItems - a list of items with a cache of the last accessed item</short>
         <descr>
           <var>TListitems</var>
- has a built-in cache of the last accessed item. This will speed up interface updates since <var>Item.Index</var> is   often used for the same item updating more properties.  If <var>FCacheIndex</var> = -1 then the cache is not valid.</descr>
+ has a built-in cache of the last accessed item. This will speed up interface updates since <var>Item.Index</var> is   often used for the same item updating more properties.  If <var>FCacheIndex</var> = -1 then the cache is not valid.
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TListItems.FOwner">
@@ -4632,7 +4680,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListViewProperty">
-        <short/>
+        <short>
+          <var>TListViewProperty</var> - enumerated type: a series of constants denoting the properties of a listview</short>
         <descr/>
         <seealso/>
       </element>
@@ -5366,7 +5415,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Delete">
-        <short>Delete an Item from the List</short>
+        <short>
+          <var>Delete</var> an Item from the List</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5377,7 +5427,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.DoDeletion">
-        <short>Performs the actual deletion</short>
+        <short>
+          <var>DoDeletion</var> - performs the actual deletion</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5481,7 +5532,10 @@ cdsIndeterminate
         <short/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomListView.AllocBy"/>
+      <element name="TCustomListView.AllocBy">
+        <short>
+          <var>AllocBy</var> - allocate the list by a value</short>
+      </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <!-- property Visibility: protected -->
@@ -5740,7 +5794,8 @@ cdsIndeterminate
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
-        <short/>
+        <short>
+          <var>FullDrag</var> - if True, the full object is dragged</short>
         <descr/>
         <seealso/>
       </element>
@@ -5752,13 +5807,27 @@ cdsIndeterminate
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.HotTrack">
-        <short/>
-        <descr/>
+        <short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
+        <descr>
+          <p>
+            <var>HotTrack</var> is the name given to the feature whereby, as the mouse pointer moves over some graphic item (eg a tab, an entry in a list, a button or other control in a form), that item becomes emphasized in some way. </p>
+          <p>The default list of emphasis possibilities is given by the definition</p>
+          <pre>TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot)
+</pre>
+          <p>in other words</p>
+          <ul>
+            <li>it may be indicated by a hand pointer</li>
+            <li>it may be underlined even when Cold (ie the pointer has covered it and moved on, but the underlining remains)</li>
+            <li>it may be underlined when Hot (ie when the pointer is directly on the item)</li>
+          </ul>
+          <p>This feature can be used in List Views and in TabControls</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.HotTrackStyles">
-        <short/>
+        <short>The <var>HotTrackStyles</var> available for this control</short>
         <descr/>
         <seealso/>
       </element>
@@ -6042,7 +6111,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TProgressBarOrientation">
-        <short/>
+        <short>
+          <var>TProgressBarOrientation</var> - enumerated type with a series of constants denoting the orientation of the progress bar</short>
         <descr/>
         <seealso/>
       </element>
@@ -6244,7 +6314,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomProgressBar.ApplyChanges">
-        <short/>
+        <short>
+          <var>ApplyChanges</var> - apply any changes that have occurred</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6552,7 +6623,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TUDAlignButton">
-        <short/>
+        <short>
+          <var>TUDAlignButton</var> - enumerated type contains constants for alignment of an UpDown button</short>
         <descr/>
         <seealso/>
       </element>
@@ -6574,7 +6646,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TUDOrientation">
-        <short/>
+        <short>
+          <var>TUDOrientation</var> - enumerated type with constants for orientation of UpDown button (Horizontal or Vertical)</short>
         <descr/>
         <seealso/>
       </element>
@@ -6588,7 +6661,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TUDBtnType">
-        <short/>
+        <short>
+          <var>TUDBtnType</var> - enumerated type with constants describing the buttons of an UpDown control: Next or Previous</short>
         <descr/>
         <seealso/>
       </element>
@@ -6602,7 +6676,8 @@ cdsIndeterminate
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TUDClickEvent">
-        <short/>
+        <short>
+          <var>TUDClickEvent</var> - generic event handling procedure for clicking on an UpDown button</short>
         <descr/>
         <seealso/>
       </element>
@@ -6616,7 +6691,8 @@ cdsIndeterminate
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TUDChangingEvent">
-        <short/>
+        <short>
+          <var>TUDChangingEvent</var> - generic event handling procedure for changes in UpDown button</short>
         <descr/>
         <seealso/>
       </element>
@@ -6921,7 +6997,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomUpDown.OnAssociateChangeBounds">
-        <short/>
+        <short>
+          <var>OnAssociateChangeBounds</var> - event handler for a change in bounds of the associate control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6977,7 +7054,8 @@ cdsIndeterminate
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.AlignButton">
-        <short/>
+        <short>
+          <var>AlignButton</var> - how to align the button: left or right</short>
         <descr/>
         <seealso/>
       </element>
@@ -7090,7 +7168,7 @@ cdsIndeterminate
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.AlignButton">
+      <element name="TUpDown.AlignButton" link="#LCL.ComCtrls.TCustomUpDown.AlignButton">
         <short/>
         <descr/>
         <seealso/>
@@ -7263,7 +7341,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonStyle">
-        <short>Determines the style of the tool buttons.</short>
+        <short>
+          <var>TToolButtonStyle</var> - enumerated type that determines the style of the tool buttons.</short>
         <descr>
           <p>These are the possible values of Style:</p>
           <ul>
@@ -7311,8 +7390,12 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonFlag">
-        <short/>
-        <descr/>
+        <short>
+          <var>TToolButtonFlag</var> - a series of flags that can be set by pressing the mouse on the control</short>
+        <descr>
+          <p>tbfPressed,     // set while mouse is pressed on button</p>
+          <p>tbfArrowPressed // set while mouse is pressed on arrow button</p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -7321,7 +7404,9 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TToolButtonFlags">
-        <short/>
+        <short>
+          <var>TToolButtonFlags</var> - set of <var>TToolButtonFlag</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7392,7 +7477,9 @@ cdsIndeterminate
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TToolButtonActionLinkClass">
-        <short/>
+        <short>
+          <var>TToolButtonActionLinkClass</var> - class of <var>TToolButtonActionLink</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -8200,7 +8287,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolBarFlag">
-        <short/>
+        <short>
+          <var>TToolBarFlag</var> - enumerated type for flags denoting atatus of ToolBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -8214,7 +8302,9 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TToolBarFlags">
-        <short/>
+        <short>
+          <var>TToolBarFlags</var> - set of <var>TToolBarFlag</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -8819,7 +8909,7 @@ cdsIndeterminate
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TToolBar.FlipChildren">
+      <element name="TToolBar.FlipChildren" link="#LCL.Controls.TWinControl.FlipChildren">
         <short/>
         <descr/>
         <errors/>
@@ -8895,8 +8985,7 @@ cdsIndeterminate
       <!-- property Visibility: public -->
       <element name="TToolBar.ButtonList">
         <short>
-          <var>ButtonList</var> - the list of Buttons (as a <var>TList)</var>
-        </short>
+          <var>ButtonList</var> - the list of Buttons (as a <var>TList</var>)</short>
         <descr/>
         <seealso/>
       </element>
@@ -9221,7 +9310,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTrackBarOrientation">
-        <short/>
+        <short>
+          <var>TTrackBarOrientation</var> - enumerated type denoting horizontal or vertical orientation for TrackBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -9235,7 +9325,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTickMark">
-        <short/>
+        <short>
+          <var>TTickMark</var> - enumerated type denoting position of tick marks relative to the TrackBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -9253,7 +9344,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTickStyle">
-        <short/>
+        <short>
+          <var>TTickStyle</var> - enumerated type denoting style of tick marks</short>
         <descr/>
         <seealso/>
       </element>
@@ -9271,7 +9363,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTrackBarScalePos">
-        <short/>
+        <short>
+          <var>TTrackBarScalePos</var> - enumerated type denoting position of the scale for a TrackBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -9937,8 +10030,11 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TNodeState">
-        <short/>
-        <descr/>
+        <short>
+          <var>TNodeState</var> - enumerated type denoting the status of a TreeNode</short>
+        <descr>
+          <p>Cut, DropHilited, Focused, Selected, MultiSelected, Expanded, HasChildren, InTree, Deleting, Bound</p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -9971,14 +10067,27 @@ cdsIndeterminate
       </element>
       <!-- set type Visibility: default -->
       <element name="TNodeStates">
-        <short/>
+        <short>
+          <var>TNodeStates</var> - set of <var>TNodeState</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TNodeAttachMode">
-        <short/>
-        <descr/>
+        <short>
+          <var>TNodeAttachMode</var> - enumerated type denoting mode of attachment of TreeNodes</short>
+        <descr>
+          <p>
+            <var>TNodeAttachMode</var> - enumerated type denoting mode of attachment of TreeNodes</p>
+          <pre>naAdd,           // add as last sibling of Destination
+    naAddFirst,      // add as first sibling of Destination
+    naAddChild,      // add as last child of Destination
+    naAddChildFirst, // add as first child of Destination
+    naInsert,        // insert in front of Destination
+    naInsertBehind   // insert behind Destination
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -10007,7 +10116,8 @@ cdsIndeterminate
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TAddMode">
-        <short>A set to determine the place where a node should be placed in a tree.</short>
+        <short>
+          <var>TAddMode</var> - enumerated type containing a series of constants to determine the place where a node should be placed in a tree.</short>
         <descr>
           <p>This sets consist of three values:</p>
           <p>
@@ -10035,17 +10145,23 @@ cdsIndeterminate
       </element>
       <!-- pointer type Visibility: default -->
       <element name="TTreeNodeArray">
-        <short/>
+        <short>
+          <var>TTreeNodeArray</var> - pointer to a <var>TTreeNode</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeNodeError">
-        <short>Definition of an exception type for errors arising from the code of TTreeView</short>
+        <short>
+          <var>ETreeNodeError</var> - exception type for errors arising from the code of <var>TTreeNode</var>
+        </short>
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeViewError">
-        <short>Definition of an exception type for errors arising from the code of TTreeView</short>
+        <short>
+          <var>ETreeViewError</var> - exception type for errors arising from the code of <var>TTreeView</var>
+        </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="NodeAttachModeNames">
@@ -11338,7 +11454,8 @@ the comparision is case sensitive.
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayStateIconLeft">
-        <short>DisplayRect</short>
+        <short>
+          <var>DisplayStateIconLeft</var> - returns the position of the State Icon </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12015,11 +12132,14 @@ the comparision is case sensitive.
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PNodeCache">
-        <short>Unit used by ComCtrls.</short>
+        <short>
+          <var>PNodeCache</var> - pointer to <var>TNodeCache</var>
+        </short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TNodeCache">
-        <short/>
+        <short>
+          <var>TNodeCache</var> - a cache (temporary storage record) for a <var>TTreeNode</var> and its index</short>
         <descr/>
         <seealso/>
       </element>
@@ -12838,8 +12958,34 @@ the comparision is case sensitive.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTreeViewState">
-        <short/>
-        <descr/>
+        <short>
+          <var>TTreeViewState</var> - enumerated type containing the permissible values for state of a <var>TTreeView</var>
+        </short>
+        <descr>
+          <p>
+            <var>TTreeViewState</var> - enumerated type containing the permissible values for state of a <var>TTreeView</var>
+          </p>
+          <pre>tvsScrollbarChanged,
+    tvsMaxRightNeedsUpdate,
+    tvsTopsNeedsUpdate,
+    tvsMaxLvlNeedsUpdate,
+    tvsTopItemNeedsUpdate,
+    tvsBottomItemNeedsUpdate,
+    tvsCanvasChanged,
+    tvsDragged,
+    tvsIsEditing,
+    tvsStateChanging,
+    tvsManualNotify,
+    tvsUpdating,
+    tvsPainting,
+    tvsMouseCapture,
+    tvsWaitForDragging,
+    tvsDblClicked,
+    tvsTripleClicked,
+    tvsQuadClicked,
+    tvsSelectionChanged
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -12920,14 +13066,37 @@ the comparision is case sensitive.
       </element>
       <!-- set type Visibility: default -->
       <element name="TTreeViewStates">
-        <short/>
+        <short>
+          <var>TTreeViewStates</var> - set of <var>TTreeViewState</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTreeViewOption">
-        <short/>
-        <descr/>
+        <short>
+          <var>TTreeViewOption</var> - enumerated type containing the permissible values for Options in TreeViews</short>
+        <descr>
+          <p>
+            <var>TTreeViewOption</var> - enumerated type containing the permissible values for Options in TreeViews</p>
+          <pre>tvoAllowMultiselect,
+    tvoAutoExpand,
+    tvoAutoInsertMark,
+    tvoAutoItemHeight,
+    tvoHideSelection,
+    tvoHotTrack,
+    tvoKeepCollapsedNodes,
+    tvoReadOnly,
+    tvoRightClickSelect,
+    tvoRowSelect,
+    tvoShowButtons,
+    tvoShowLines,
+    tvoShowRoot,
+    tvoShowSeparators,
+    tvoToolTips,
+    tvoNoDoubleClickExpand
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -12992,7 +13161,9 @@ the comparision is case sensitive.
       </element>
       <!-- set type Visibility: default -->
       <element name="TTreeViewOptions">
-        <short/>
+        <short>
+          <var>TTreeViewOptions</var> - set of <var>TTreeViewOption</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -13688,7 +13859,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomTreeView.SetHotTrack">
-        <short/>
+        <short>
+          <var>SetHotTrack</var> - specifies the status of HotTrack</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14012,7 +14184,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomTreeView.FChangeTimer">
-        <short/>
+        <short>
+          <var>FChangeTimer</var> - local variable to act as timer for changes</short>
         <descr/>
         <seealso/>
       </element>
@@ -14176,7 +14349,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetMaxScrollLeft">
-        <short/>
+        <short>
+          <var>GetMaxScrollLeft</var> - returns maximal extent of scrolling to the left</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14187,7 +14361,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetMaxScrollTop">
-        <short/>
+        <short>
+          <var>GetMaxScrollTop</var> - returns the maximal extent of scrolling upwards</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14198,7 +14373,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetNodeAtInternalY">
-        <short/>
+        <short>
+          <var>GetNodeAtInternalY</var> - returns the node at the specified internal (ie relative) Y coordinate</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14213,7 +14389,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetNodeAtY">
-        <short/>
+        <short>
+          <var>GetNodeAtY</var> - returns the node at the specified (absolute) Y coordinate</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14228,7 +14405,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetNodeDrawAreaHeight">
-        <short/>
+        <short>
+          <var>GetNodeDrawAreaHeight</var> - returns the height for the area in which node is drawn</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14239,7 +14417,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetNodeDrawAreaWidth">
-        <short/>
+        <short>
+          <var>GetNodeDrawAreaWidth</var> - returns the width for the area in which node is drawn</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14250,7 +14429,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.IsCustomDrawn">
-        <short/>
+        <short>
+          <var>IsCustomDrawn</var> - returns True if the specified target node is custom drawn</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14269,7 +14449,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.IsNodeVisible">
-        <short/>
+        <short>
+          <var>IsNodeVisible</var> - returns True if the specified node is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14284,7 +14465,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.IsNodeHeightFullVisible">
-        <short/>
+        <short>
+          <var>IsNodeHeightFullVisible</var> - returns True if the full height of the specified node is visible in the current view</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14299,7 +14481,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.IsInsertMarkVisible">
-        <short/>
+        <short>
+          <var>IsInsertMarkVisible</var> - returns True if an Insert mark is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14436,7 +14619,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.DoStartDrag">
+      <element name="TCustomTreeView.DoStartDrag" link="#LCL.Controls.TControl.DoStartDrag">
         <short/>
         <descr/>
         <errors/>
@@ -14448,14 +14631,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.EndEditing">
-        <short/>
+        <short>
+          <var>EndEditing</var> - finish editing</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.EnsureNodeIsVisible">
-        <short/>
+        <short>
+          <var>EnsureNodeIsVisible</var> - method to make sure specified node is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14466,7 +14651,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.Expand">
-        <short/>
+        <short>
+          <var>Expand</var> the specified node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14477,7 +14663,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.GetImageIndex">
-        <short/>
+        <short>
+          <var>GetImageIndex</var> - returns the index of the image associated with the specified node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14488,7 +14675,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.GetSelectedIndex">
-        <short/>
+        <short>
+          <var>GetSelectedIndex</var> - returns the index of the selected node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14632,7 +14820,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.SetDragMode">
+      <element name="TCustomTreeView.SetDragMode" link="#LCL.Controls.TControl.SetDragMode">
         <short/>
         <descr/>
         <errors/>
@@ -14644,7 +14832,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.SetOptions">
-        <short/>
+        <short>
+          <var>SetOptions</var> - specifies the options for the TreeView</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14655,7 +14844,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.UpdateDefaultItemHeight">
-        <short/>
+        <short>
+          <var>UpdateDefaultItemHeight</var> - brings the value of the default item height up-to-date</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14673,7 +14863,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.UpdateInsertMark">
-        <short/>
+        <short>
+          <var>UpdateInsertMark</var> - see if there is an insert mark at X,Y and put one in if necessary</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14688,14 +14879,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.DoSelectionChanged">
-        <short/>
+        <short>
+          <var>DoSelectionChanged</var> - perform the code required for a change in selection</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.WMHScroll">
-        <short/>
+        <short>
+          <var>WMHScroll</var> - LCL Message for horizontal scroll</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14706,7 +14899,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.WMVScroll">
-        <short/>
+        <short>
+          <var>WMVScroll</var> - LCL Message for Vertical scroll</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14716,7 +14910,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.WMLButtonDown">
+      <element name="TCustomTreeView.WMLButtonDown" link="#LCL.Controls.TControl.WMLButtonDown">
         <short/>
         <descr/>
         <errors/>
@@ -14727,7 +14921,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.WMNotify">
+      <element name="TCustomTreeView.WMNotify" link="#LCL.Controls.TWinControl.WMNotify">
         <short/>
         <descr/>
         <errors/>
@@ -14766,9 +14960,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.HotTrack">
-        <short/>
+        <short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ComCtrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Images">
@@ -14793,13 +14990,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnAdvancedCustomDraw">
-        <short/>
+        <short>
+          <var>OnAdvancedCustomDraw</var> - event handler for advanced custom drawing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnAdvancedCustomDrawItem">
-        <short/>
+        <short>
+          <var>OnAdvancedCustomDrawItem</var> - event handleer for advanced custom drawing item</short>
         <descr/>
         <seealso/>
       </element>
@@ -14840,19 +15039,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCustomCreateItem">
-        <short/>
+        <short>
+          <var>OnCustomCreateItem</var> - event handler for custom item creation</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCustomDraw">
-        <short/>
+        <short>
+          <var>OnCustomDraw</var> - event handler for custom drawing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCustomDrawItem">
-        <short/>
+        <short>
+          <var>OnCustomDrawItem</var> - event handler for custom drawing item</short>
         <descr/>
         <seealso/>
       </element>
@@ -14893,19 +15095,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnGetImageIndex">
-        <short/>
+        <short>
+          <var>OnGetImageIndex</var> - event handler for finding the index of an image</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnGetSelectedIndex">
-        <short/>
+        <short>
+          <var>OnGetSelectedIndex</var> - event handler for finding index of selected item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnSelectionChanged">
-        <short/>
+        <short>
+          <var>OnSelectionChanged</var> - event handler for a change in the selection</short>
         <descr/>
         <seealso/>
       </element>
@@ -14925,43 +15130,50 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.RowSelect">
-        <short/>
+        <short>
+          <var>RowSelect</var> - if True, a row is selected</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ScrolledLeft">
-        <short/>
+        <short>
+          <var>ScrolledLeft</var> - the position of the tree when fully scrolled to the left</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ScrolledTop">
-        <short/>
+        <short>
+          <var>ScrolledTop</var> - th eposition of th etree when fully scrolled to the top</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowButtons">
-        <short/>
+        <short>
+          <var>ShowButtons</var> - if True, buttons are displayed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomTreeView.ShowLines">
-        <short/>
+      <element name="TCustomTreeView.ShowLines" link="#LCL.ComCtrls.TCustomTreeView.ShowLines">
+        <short>
+          <var>ShowLines</var> - show the connecting lines of the tree structure</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowRoot">
-        <short/>
+        <short>
+          <var>ShowRoot</var> - if True, the root of the tree structure is displayed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowSeparators">
-        <short/>
+        <short>
+          <var>ShowSeparators</var> - if True, separators are shown between items</short>
         <descr/>
         <seealso/>
       </element>
@@ -14974,7 +15186,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.StateImages">
-        <short/>
+        <short>
+          <var>StateImages</var> - the list of images to denote state of the tree (expanded, contracted etc)</short>
         <descr/>
         <seealso/>
       </element>
@@ -15016,7 +15229,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.ConsistencyCheck">
-        <short/>
+        <short>
+          <var>ConsistencyCheck</var> - check that indexes of treenodes match those of images etc</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15079,7 +15293,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.GetInsertMarkAt">
-        <short/>
+        <short>
+          <var>GetInsertMarkAt</var> - find if there is an insert mark at the specified coordinates</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15102,7 +15317,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.SetInsertMark">
-        <short/>
+        <short>
+          <var>SetInsertMark</var> - place an Insert mark at the specified node in the tree</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15117,7 +15333,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.SetInsertMarkAt">
-        <short/>
+        <short>
+          <var>SetInsertMarkAt</var> - place an insert mark at the specified coordinates</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15315,7 +15532,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.DropTarget">
-        <short/>
+        <short>
+          <var>DropTarget</var> - the target node for dropping a dragged item</short>
         <descr/>
         <seealso/>
       </element>
@@ -15550,9 +15768,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.HotTrack">
-        <short/>
+        <short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Images">
@@ -15596,23 +15817,17 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ReadOnly">
-        <short>
-          <var>ReadOnly</var> - the view can only be viewed, not written or modified</short>
+      <element name="TTreeView.ReadOnly" link="#LCL.ComCtrls.TCustomTreeView.ReadOnly">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.RightClickSelect">
-        <short>
-          <var>RightClickSelect</var> - a right-click with the mouse automatically selects the item</short>
+      <element name="TTreeView.RightClickSelect" link="#LCL.ComCtrls.TCustomTreeView.RightClickSelect">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.RowSelect">
-        <short>
-          <var>RowSelect</var> - select a row</short>
+      <element name="TTreeView.RowSelect" link="#LCL.ComCtrls.TCustomTreeView.RowSelect">
         <descr/>
         <seealso/>
       </element>
@@ -15629,9 +15844,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ShowButtons">
-        <short>
-          <var>ShowButtons</var> - show the toolbuttons on the treeview</short>
+      <element name="TTreeView.ShowButtons" link="#LCL.ComCtrls.TCustomTreeView.ShowButtons">
         <descr/>
         <seealso/>
       </element>
@@ -15642,30 +15855,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ShowLines">
-        <short>
-          <var>ShowLines</var> - show the connecting lines of the tree structure</short>
+      <element name="TTreeView.ShowLines" link="#LCL.ComCtrls.TCustomTreeView.ShowLines">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ShowRoot">
-        <short>
-          <var>ShowRoot</var> - show the root element of the tree</short>
+      <element name="TTreeView.ShowRoot" link="#LCL.ComCtrls.TCustomTreeView.ShowRoot">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.SortType">
-        <short>
-          <var>SortType</var> - the type of sorting to be performed</short>
+      <element name="TTreeView.SortType" link="#LCL.ComCtrls.TCustomTreeView.SortType">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.StateImages">
-        <short>
-          <var>StateImages</var> - the images used to depict the state of the tree (expanded or collapsed?)</short>
+      <element name="TTreeView.StateImages" link="#LCL.ComCtrls.TCustomTreeView.StateImages">
         <descr/>
         <seealso/>
       </element>
@@ -15688,9 +15893,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ToolTips">
-        <short>
-          <var>ToolTips</var> - the popup hints that appear as the mouse hovers over an item</short>
+      <element name="TTreeView.ToolTips" link="#LCL.ComCtrls.TCustomTreeView.ToolTips">
         <descr/>
         <seealso/>
       </element>
@@ -15701,28 +15904,24 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnAdvancedCustomDraw">
+      <element name="TTreeView.OnAdvancedCustomDraw" link="#LCL.ComCtrls.TCustomTreeView.OnAdvancedCustomDraw">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnAdvancedCustomDrawItem">
+      <element name="TTreeView.OnAdvancedCustomDrawItem" link="#LCL.ComCtrls.TCustomTreeView.OnAdvancedCustomDrawItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnChange">
-        <short>
-          <var>OnChange</var> - event handler for a change in the data</short>
+      <element name="TTreeView.OnChange" link="#LCL.ComCtrls.TCustomTreeView.OnChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnChanging">
-        <short>
-          <var>OnChanging</var> - event handler for use during a change in the data</short>
+      <element name="TTreeView.OnChanging" link="#LCL.ComCtrls.TCustomTreeView.OnChanging">
         <descr/>
         <seealso/>
       </element>
@@ -15733,23 +15932,17 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCollapsed">
-        <short>
-          <var>OnCollapsed</var> - event handler when the tree is collapsed</short>
+      <element name="TTreeView.OnCollapsed" link="#LCL.ComCtrls.TCustomTreeView.OnCollapsed">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCollapsing">
-        <short>
-          <var>OnCollapsing</var> - event handler for use during the collapsing process</short>
+      <element name="TTreeView.OnCollapsing" link="#LCL.ComCtrls.TCustomTreeView.OnCollapsing">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCompare">
-        <short>
-          <var>OnCompare</var> - event handler for comparing entries</short>
+      <element name="TTreeView.OnCompare" link="#LCL.ComCtrls.TCustomTreeView.OnCompare">
         <descr/>
         <seealso/>
       </element>
@@ -15760,19 +15953,19 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCustomCreateItem">
+      <element name="TTreeView.OnCustomCreateItem" link="#LCL.ComCtrls.TCustomTreeView.OnCustomCreateItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCustomDraw">
+      <element name="TTreeView.OnCustomDraw" link="#LCL.ComCtrls.TCustomTreeView.OnCustomDraw">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnCustomDrawItem">
+      <element name="TTreeView.OnCustomDrawItem" link="#LCL.ComCtrls.TCustomTreeView.OnCustomDrawItem">
         <short/>
         <descr/>
         <seealso/>
@@ -15784,9 +15977,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnDeletion">
-        <short>
-          <var>OnDeletion</var> - event handler for deletion of an item</short>
+      <element name="TTreeView.OnDeletion" link="#LCL.ComCtrls.TCustomTreeView.OnDeletion">
         <descr/>
         <seealso/>
       </element>
@@ -15803,9 +15994,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnEdited">
-        <short>
-          <var>OnEdited</var> - event handler when an item has been edited</short>
+      <element name="TTreeView.OnEdited" link="#LCL.ComCtrls.TCustomTreeView.OnEdited">
         <descr/>
         <seealso/>
       </element>
@@ -15835,30 +16024,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnExpanded">
-        <short>
-          <var>OnExpanded</var> - event handler when the tree has been expanded</short>
+      <element name="TTreeView.OnExpanded" link="#LCL.ComCtrls.TCustomTreeView.OnExpanded">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnExpanding">
-        <short>
-          <var>OnExpanding</var> - event handler while the tree is expanding</short>
+      <element name="TTreeView.OnExpanding" link="#LCL.ComCtrls.TCustomTreeView.OnExpanding">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnGetImageIndex">
-        <short>
-          <var>OnGetImageIndex</var> - event handler for finding the index of an image</short>
+      <element name="TTreeView.OnGetImageIndex" link="#LCL.ComCtrls.TCustomTreeView.OnGetImageIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnGetSelectedIndex">
-        <short>
-          <var>OnGetSelectedIndex</var> - event handler for finding the index of a selected item</short>
+      <element name="TTreeView.OnGetSelectedIndex" link="#LCL.ComCtrls.TCustomTreeView.OnGetSelectedIndex">
         <descr/>
         <seealso/>
       </element>
@@ -15899,9 +16080,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnSelectionChanged">
-        <short>
-          <var>OnSelectionChanged</var> - event handler for a change in the items selected</short>
+      <element name="TTreeView.OnSelectionChanged" link="#LCL.ComCtrls.TCustomTreeView.OnSelectionChanged">
         <descr/>
         <seealso/>
       </element>
@@ -15918,9 +16097,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Items">
-        <short>The Items to be displayed in the tree view - ie the actual data</short>
-      </element>
+      <element name="TTreeView.Items" link="#LCL.ComCtrls.TCustomTreeView.Items"/>
       <!-- property Visibility: published -->
       <element name="TTreeView.TreeLineColor" link="#LCL.ComCtrls.TCustomTreeView.TreeLineColor">
         <short/>
@@ -15953,20 +16130,20 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TTreeNodeExpandedState.NodeText">
-        <short/>
+        <short>
+          <var>NodeText</var> - the text in the current node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TTreeNodeExpandedState.Childs">
-        <short/>
+        <short>
+          <var>Childs</var> - the children of the current node, as an AvgLvlTree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: default -->
-      <element name="TTreeNodeExpandedState.Create">
-        <short>
-          <var>Create</var> - constructor for the First Node</short>
+      <element name="TTreeNodeExpandedState.Create" link="#rtl.System.TObject.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -16029,7 +16206,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TTreeNodeExpandedState.Apply">
-        <short><var>Apply</var> - continue reconstructing the tree structure by adding the remaining nodes in succession</short>
+        <short>
+          <var>Apply</var> - continue reconstructing the tree structure by adding the remaining nodes in succession</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16040,11 +16218,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareExpandedNodes">
-        <short>Function to compare the nodetext two nodes.</short>
+        <short>Function to compare the node text two nodes.</short>
         <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
 -1: The nodetext from the first node is lower then the nodetext from the second.<br/>
 0: The nodetext-s from both nodes are equal.<br/>
-1: The nodetext from the first node is higher then the nodetext from the second.</descr>
+1: The nodetext from the first node is higher then the nodetext from the second.
+</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareExpandedNodes.Result">
@@ -16060,11 +16239,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareTextWithExpandedNode">
-        <short>Function to compare the give text with the nodetextof the given node.</short>
+        <short>Function to compare the given text with the nodetextof the specified node.</short>
         <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
 -1: The given text is lower then the nodetext from the given node.<br/>
 0: The given text is equal to the nodetext from the given node.<br/>
-1: The given text is higher then the nodetext from the given node.</descr>
+1: The given text is higher then the nodetext from the given node.
+</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareTextWithExpandedNode.Result">
@@ -16365,9 +16545,9 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TListView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TListView.ToolTips" link="#LCL.ComCtrls.TCustomListView.ToolTips"/>
       <element name="TListView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TListView.OnCustomDraw"/>
-      <element name="TListView.OnCustomDrawItem"/>
-      <element name="TListView.OnCustomDrawSubItem"/>
+      <element name="TListView.OnCustomDraw" link="#LCL.ComCtrls.TCustomListView.OnCustomDraw"/>
+      <element name="TListView.OnCustomDrawItem" link="#LCL.ComCtrls.TCustomListView.OnCustomDrawItem"/>
+      <element name="TListView.OnCustomDrawSubItem" link="#LCL.ComCtrls.TCustomListView.OnCustomDrawSubItem"/>
       <element name="TListView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TListView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
       <element name="TListView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
@@ -16377,13 +16557,31 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TStatusBar.BoundsChanged" link="#LCL.Controls.TControl.BoundsChanged"/>
       <element name="TStatusBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
       <element name="TStatusBar.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored"/>
-      <element name="TStatusBar.CreatePanel"/>
-      <element name="TStatusBar.CreatePanels"/>
-      <element name="TStatusBar.GetPanelClass"/>
-      <element name="TStatusBar.DoSetApplicationHint"/>
-      <element name="TStatusBar.DoHint"/>
+      <element name="TStatusBar.CreatePanel">
+        <short>
+          <var>CreatePanel</var> - returns a created Status Panel</short>
+      </element>
+      <element name="TStatusBar.CreatePanels">
+        <short>
+          <var>CreatePanels</var> - returns a set of created panels</short>
+      </element>
+      <element name="TStatusBar.GetPanelClass">
+        <short>
+          <var>GetPanelClass</var> - returns a class of status panel</short>
+      </element>
+      <element name="TStatusBar.DoSetApplicationHint">
+        <short>
+          <var>DoSetApplicationHint</var> - specifies a hint string and returns True if successful</short>
+      </element>
+      <element name="TStatusBar.DoHint">
+        <short>
+          <var>DoHint</var> - shows the hint and returns True if successful</short>
+      </element>
       <element name="TStatusBar.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction"/>
-      <element name="TStatusBar.SizeGripEnabled"/>
+      <element name="TStatusBar.SizeGripEnabled">
+        <short>
+          <var>SizeGripEnabled</var> - returns True if the size-grip (an area at the bottom of the statusbar where a mouse can grip to change the size) is enabled</short>
+      </element>
       <element name="TStatusBar.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TStatusBar.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TStatusBar.AutoHint">
@@ -16397,7 +16595,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TStatusBar.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TStatusBar.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TStatusBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TStatusBar.SizeGrip"/>
+      <element name="TStatusBar.SizeGrip">
+        <short>
+          <var>SizeGrip</var> - an area at the bottom of the statusbar where a mouse can grip to change the size: True if this is working</short>
+      </element>
       <element name="TStatusBar.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TStatusBar.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TStatusBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
@@ -16419,10 +16620,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TTabSheet.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TTrackBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TUpDown.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TPageControl.DoAddDockClient"/>
-      <element name="TPageControl.DoRemoveDockClient"/>
-      <element name="TPageControl.DoUndockClientMsg"/>
-      <element name="TPageControl.PositionDockRect"/>
+      <element name="TPageControl.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient"/>
+      <element name="TPageControl.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient"/>
+      <element name="TPageControl.DoUndockClientMsg" link="#LCL.Controls.TWinControl.DoUndockClientMsg"/>
+      <element name="TPageControl.PositionDockRect" link="#LCL.Controls.TControl.PositionDockRect"/>
       <element name="TListItem.DisplayRect">
         <short>
           <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item</short>
@@ -16563,6 +16764,119 @@ the comparision is case sensitive.
       <element name="TTreeNodes.Item">
         <short>
           <var>Item</var> - finds the node corresponding to the given index </short>
+      </element>
+      <element name="TStatusPanelClass">
+        <short>
+          <var>TStatusPanelClass</var> - set of <var>TStatusPanel</var>
+        </short>
+      </element>
+      <element name="TSBCreatePanelClassEvent">
+        <short>
+          <var>TSBCreatePanelClassEvent</var> - generic event handling procedure for creating a Status Bar panel class</short>
+      </element>
+      <element name="TCustomDrawResultFlag">
+        <short>
+          <var>TCustomDrawResultFlag</var> - enumerated type, a series of flags to signify the result of a drawing process</short>
+      </element>
+      <element name="TCustomDrawResult">
+        <short>
+          <var>TCustomDrawResult</var> - set of <var>TCustomDrawResultFlag</var>
+        </short>
+      </element>
+      <element name="TDisplayCode">
+        <short>
+          <var>TDisplayCode</var> - enumerated type denoting how items are displayed</short>
+      </element>
+      <element name="TListItem.GetCheckedInternal">
+        <short>
+          <var>GetCheckedInternal</var> - returns True if item is internally checked</short>
+      </element>
+      <element name="TListItems.BeginUpdate">
+        <short>
+          <var>BeginUpdate</var> - start the update process</short>
+      </element>
+      <element name="TListItems.EndUpdate">
+        <short>
+          <var>EndUpdate</var> - finish the update process</short>
+      </element>
+      <element name="TCustomListView.IsCustomDrawn">
+        <short>
+          <var>IsCustomDrawn</var> - returns True if a target has been custom drawn</short>
+      </element>
+      <element name="TCustomListView.CustomDraw">
+        <short>
+          <var>CustomDraw</var> - performs custom drawing in the given rectangle, and returns True if successful</short>
+      </element>
+      <element name="TCustomListView.CustomDrawItem">
+        <short>
+          <var>CustomDrawItem</var> - custom draws the specified item, and returns True if successful</short>
+      </element>
+      <element name="TCustomListView.CustomDrawSubItem">
+        <short>
+          <var>CustomDrawSubItem</var> - custom draws the specified subitem, returning True if successful</short>
+      </element>
+      <element name="TCustomListView.IntfCustomDraw">
+        <short>
+          <var>IntfCustomDraw</var> - uses the interface to perform custom drawing and returns a result of drawing</short>
+      </element>
+      <element name="TCustomListView.OnCustomDraw">
+        <short>
+          <var>OnCustomDraw</var> - event handler for custom drawing</short>
+      </element>
+      <element name="TCustomListView.OnCustomDrawItem">
+        <short>
+          <var>OnCustomDrawItem</var> - event handler for custom drawing an item</short>
+      </element>
+      <element name="TCustomListView.OnCustomDrawSubItem">
+        <short>
+          <var>OnCustomDrawSubItem</var> - event handler for custom drawing a subitem</short>
+      </element>
+      <element name="TCustomListView.OnAdvancedCustomDraw">
+        <short>
+          <var>OnAdvancedCustomDraw</var> - event handler for advanced custom drawing</short>
+      </element>
+      <element name="TCustomListView.OnAdvancedCustomDrawItem">
+        <short>
+          <var>OnAdvancedCustomDrawItem</var> - event handler for advanced custom drawing item</short>
+      </element>
+      <element name="TCustomListView.OnAdvancedCustomDrawSubItem">
+        <short>
+          <var>OnAdvancedCustomDrawSubItem</var> - event handler for advanced custom drawing subitem</short>
+      </element>
+      <element name="TListView.OnAdvancedCustomDraw" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDraw"/>
+      <element name="TListView.OnAdvancedCustomDrawItem" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDrawItem"/>
+      <element name="TListView.OnAdvancedCustomDrawSubItem" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDrawSubItem"/>
+      <element name="TListView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TTrackBar.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TTrackBar.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TTrackBar.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TTrackBar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TTreeNodes.SelectOnlyThis">
+        <short>
+          <var>SelectOnlyThis</var> - method for selecting only the indicated node</short>
+      </element>
+      <element name="TCustomTreeView.TreeLinePenStyle">
+        <short>
+          <var>TreeLinePenStyle</var> - the pen style for drawing lines on the tree</short>
+      </element>
+      <element name="TTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TTreeView.TreeLinePenStyle" link="#LCL.ComCtrls.TCustomTreeView.TreeLinePenStyle"/>
+      <element name="THeaderSectionState">
+        <short>
+          <var>THeaderSectionState</var> - enumerated type containing possible selection states for header</short>
+      </element>
+      <element name="THeaderSection.Visible">
+        <short>
+          <var>Visible</var> if True</short>
+      </element>
+      <element name="THeaderSectionClass">
+        <short>
+          <var>THeaderSectionClass</var> - class of <var>THeaderSection</var>
+        </short>
+      </element>
+      <element name="TCustomHeaderControl.SectionFromOriginalIndex">
+        <short>
+          <var>SectionFromOriginalIndex</var> - the section as defined by the original (unchanged) index</short>
       </element>
     </module>
     <!-- ComCtrls -->
