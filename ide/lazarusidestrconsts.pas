@@ -1195,7 +1195,7 @@ resourcestring
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
-  dlgCodeToolsTab = 'Code Tools';
+  //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
   dlgCFDividerDrawLevel = 'Divider Draw Level';
   
