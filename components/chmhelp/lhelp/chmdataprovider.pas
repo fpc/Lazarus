@@ -139,16 +139,18 @@ begin
   FileExt := ExtractFileExt(URL);
 
   Picture := TPicture.Create;
+  Stream := fChm.GetObject('/'+URL);
   try
-     Stream := fChm.GetObject('/'+URL);
-     if Assigned(Stream) then
+    if Assigned(Stream) then
     begin
       Stream.Position := 0;
       Picture.LoadFromStreamWithFileExt(Stream, FileExt);
     end;
-  finally
-    Stream.Free;
+  except
+    // only happens if it's an image type we can't handle
   end;
+  if Stream <> nil then
+    Stream.Free;
 end;
 
 function TIpChmDataProvider.CanHandle(const URL: string): Boolean;
