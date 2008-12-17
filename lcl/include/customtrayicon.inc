@@ -93,9 +93,10 @@ begin
 
   FVisible := False;
 
-  if not(csDesigning in ComponentState) then
-    Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self)
-  else
+  if not(csDesigning in ComponentState) then begin
+    Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self);
+    FVisible := not Result;
+  end else
     Result := false;
 end;
 
@@ -115,9 +116,10 @@ begin
 
   FVisible := True;
 
-  if not(csDesigning in ComponentState) then
-    Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self)
-  else
+  if not(csDesigning in ComponentState) then begin
+    Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self);
+    FVisible := Result;
+  end else
     Result := false;
 end;
 
