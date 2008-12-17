@@ -23,11 +23,24 @@
 { TGtk2WSCustomTrayIcon }
 
 type
-  TGtk2WSTrayIconHandle = record
-    AImage: PGtkWidget;
+  TGtk2TrayIconHandle = class
+  private
+    plug: PGtkWidget;
+    DrawingArea: PGtkWidget;
+    fDisplay: PDisplay;
+    fWindow: TWindow;
+    fScreen: PScreen;
+    fScreenID: longint;
+    fTrayParent: TWindow;
+    Tips: PGtkTooltips;
+    fEmbedded: Boolean;
+    fTrayIcon: TCustomTrayIcon;
+    function SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): Boolean;
+  public
+  	constructor Create(const wsTrayIcon: TCustomTrayIcon);
+	  destructor Destroy; override;
+    procedure SetEmbedded;
   end;
-
-  PGtk2WSTrayIconHandle = ^TGtk2WSTrayIconHandle;
 
 const
   SYSTEM_TRAY_REQUEST_DOCK   = 0;
@@ -35,18 +48,7 @@ const
   SYSTEM_TRAY_CANCEL_MESSAGE = 2;
 
 var
-{$ifdef HasX}
-  fDisplay: PDisplay;
-  fWindow: TWindow;
-  fScreen: PScreen;
-  fScreenID: longint;
-  fTrayParent: TWindow;
-{$endif}
-
-  GtkForm: PGtkWidget;
-  Tips: PGtkTooltips;
-
-{$ifdef HasX}
+  XError: Integer;
 {*******************************************************************
 *  TempX11ErrorHandler ()
 *
@@ -59,12 +61,13 @@ var
 *******************************************************************}
 function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
 begin
-  WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
+  XError := ErrorEv^.error_code;
+  WriteLn('Error: ' + IntToStr(XError));
   Result:=0;
 end;
 
 {*******************************************************************
-*  Send_Message ()
+*  TGtk2TrayIconHandle.Send_Message ()
 *
 *  DESCRIPTION:    Sends a message to the X client
 *
@@ -73,15 +76,15 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
+function TGtk2TrayIconHandle.SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): Boolean;
 var
   Ev: TXEvent;
 begin
-  FillChar(Ev, SizeOf(TXEvent), $0);
+  FillChar(Ev, SizeOf(TXEvent), 0);
 
   ev.xclient._type := ClientMessage;
   ev.xclient.window := window;
-  ev.xclient.message_type := XInternAtom (fDisplay, '_NET_SYSTEM_TRAY_OPCODE', False );
+  ev.xclient.message_type := XInternAtom (fDisplay, '_NET_SYSTEM_TRAY_OPCODE', False);
   ev.xclient.format := 32;
   ev.xclient.data.l[0] := CurrentTime;
   ev.xclient.data.l[1] := msg;
@@ -89,13 +92,15 @@ begin
   ev.xclient.data.l[3] := data2;
   ev.xclient.data.l[4] := data3;
 
+  XError := 0;
   XSendEvent(fDisplay, fTrayParent, False, NoEventMask, @ev);
   XSync(fDisplay, False);
-  Result := false;//(untrap_errors() = 0);
+  Result := XError = 0;
+  XError := 0;
 end;
 
 {*******************************************************************
-*  SetEmbedded ()
+*  TGtk2TrayIconHandle.SetEmbedded ()
 *
 *  DESCRIPTION:    Docks the GtkPlug into the system tray
 *
@@ -104,12 +109,14 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-procedure SetEmbedded;
+procedure TGtk2TrayIconHandle.SetEmbedded;
 var
   old_error: TXErrorHandler;
   buf: array [0..32] of char;
   selection_atom : TAtom;
 begin
+  if fEmbedded then
+    Exit;
   old_error := XSetErrorHandler(@TempX11ErrorHandler);
 
   xsync(fdisplay,true);
@@ -125,13 +132,11 @@ begin
 
   XUngrabServer(fDisplay);
   XFlush(fDisplay);
-
   if fTrayParent <> None then
-    SendMessage(fTrayParent, SYSTEM_TRAY_REQUEST_DOCK, fWindow, 0, 0);
+    fEmbedded := SendMessage(fTrayParent, SYSTEM_TRAY_REQUEST_DOCK, fWindow, 0, 0);
 
   XSetErrorHandler(old_error);
 end;
-{$endif}
 
 {*******************************************************************
 *  realize_cb ()
@@ -145,21 +150,23 @@ end;
 *
 *******************************************************************}
 procedure realize_cb(widget: PGtkWidget; user_data: gpointer); cdecl;
+var
+  wsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
 {$ifdef HasGdk2X}
-
-  fDisplay := GDK_WINDOW_XDISPLAY(GtkForm^.window);
-  fWindow := GDK_WINDOW_XWINDOW(GtkForm^.window);
+  with TGtk2TrayIconHandle(wsTrayIcon.Handle) do begin
+    fDisplay := GDK_WINDOW_XDISPLAY(plug^.window);
+    fWindow := GDK_WINDOW_XWINDOW(plug^.window);
 
 {  Doesn´t work
 
-  gdk_screen := gtk_widget_get_screen(GtkForm);
-  fScreen := GDK_SCREEN_XSCREEN(gdk_screen); // get the real screen}
+    gdk_screen := gtk_widget_get_screen(plug);
+    fScreen := GDK_SCREEN_XSCREEN(gdk_screen); // get the real screen}
 
-  fScreen := XDefaultScreenOfDisplay(fDisplay);
-  fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
-  
-  SetEmbedded;
+    fScreen := XDefaultScreenOfDisplay(fDisplay);
+    fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
+  	SetEmbedded;
+  end;
 {$endif}
 end;
 
@@ -283,6 +290,61 @@ begin
    vwsTrayIcon.OnMouseMove(vwsTrayIcon, [], Round(event^.X), Round(event^.Y));
 end;
 
+constructor TGtk2TrayIconHandle.Create(const wsTrayIcon: TCustomTrayIcon);
+begin
+  fTrayIcon := wsTrayIcon;
+  {*******************************************************************
+  *  Creates the GtkPlug
+  *******************************************************************}
+
+  plug := gtk_plug_new(0);
+
+  Tips := gtk_tooltips_new;
+
+  g_object_ref(Tips);
+
+  gtk_object_sink(GTK_OBJECT(Tips));
+
+  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(wsTrayIcon.Hint), '');
+
+  {*******************************************************************
+  *  Connects the signals
+  *******************************************************************}
+
+  gtk_widget_add_events(plug, GDK_ALL_EVENTS_MASK);
+
+  g_signal_connect(plug, 'realize', TGCallback(@realize_cb), wsTrayIcon);
+
+  g_signal_connect(plug, 'popup-menu', TGCallback(@popup_cb), wsTrayIcon);
+
+  g_signal_connect(plug, 'motion-notify-event', TGCallback(@motion_cb), wsTrayIcon);
+
+  g_signal_connect(plug, 'button-press-event', TGCallback(@button_press_cb), wsTrayIcon);
+
+  g_signal_connect(plug, 'button-release-event', TGCallback(@button_release_cb), wsTrayIcon);
+
+  {*******************************************************************
+  *  Draws the icon
+  *******************************************************************}
+
+  with wsTrayIcon do begin
+    DrawingArea := gtk_image_new_from_pixbuf(PGdkPixbuf(Icon.Handle));
+    gtk_widget_show(DrawingArea);
+    gtk_container_add(GTK_CONTAINER(plug), DrawingArea);
+  end;
+end;
+
+destructor TGtk2TrayIconHandle.Destroy;
+begin
+  gtk_widget_destroy(plug);
+
+  plug := nil;
+
+  g_object_unref(Tips);
+
+  Tips := nil;
+end;
+
 {*******************************************************************
 *  TGtk2WSCustomTrayIcon.Hide ()
 *
@@ -295,23 +357,13 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
+  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
 begin
   Result := False;
 
-  gtk_widget_destroy(GtkForm);
-
-  GtkForm := nil;
-
-  g_object_unref(Tips);
-
-  Tips := nil;
-
   { Free and nil the handle }
-
-  FreeMem(TrayHandle);
-
-  TrayHandle := nil;
+  TrayIconHandle.Free;
+  TrayIconHandle := nil;
 
   Result := True;
 end;
@@ -328,59 +380,21 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
+  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
 begin
   Result := False;
 
-  ATrayIcon.Handle := PtrInt(GetMem(SizeOf(TGtk2WSTrayIconHandle)));
-
-  {*******************************************************************
-  *  Creates the GtkPlug
-  *******************************************************************}
-
-  GtkForm := gtk_plug_new(0);
-
-  Tips := gtk_tooltips_new;
-
-  g_object_ref(Tips);
-
-  gtk_object_sink(GTK_OBJECT(Tips));
-
-  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(ATrayIcon.Hint), '');
-
-  {*******************************************************************
-  *  Connects the signals
-  *******************************************************************}
-
-  gtk_widget_add_events(GtkForm, GDK_ALL_EVENTS_MASK);
-
-  g_signal_connect(GtkForm, 'realize', TGCallback(@realize_cb), ATrayIcon);
-
-  g_signal_connect(GtkForm, 'popup-menu', TGCallback(@popup_cb), ATrayIcon);
-
-  g_signal_connect(GtkForm, 'motion-notify-event', TGCallback(@motion_cb), ATrayIcon);
-
-  g_signal_connect(GtkForm, 'button-press-event', TGCallback(@button_press_cb), ATrayIcon);
-
-  g_signal_connect(GtkForm, 'button-release-event', TGCallback(@button_release_cb), ATrayIcon);
-
-  {*******************************************************************
-  *  Draws the icon
-  *******************************************************************}
-
-  TrayHandle^.AImage := gtk_image_new_from_pixbuf(PGdkPixbuf(ATrayIcon.Icon.Handle));
-
-  gtk_widget_show(TrayHandle^.AImage);
-
-  gtk_container_add(GTK_CONTAINER(GtkForm), TrayHandle^.AImage);
-
+  TrayIconHandle := TGtk2TrayIconHandle.Create(ATrayIcon);
   {*******************************************************************
   *  Now shows the GtkPlug
   *******************************************************************}
-
-  gtk_widget_show(GtkForm);
-
-  Result := True;
+  with TrayIconHandle do begin
+    gtk_widget_show(plug);
+    if fEmbedded then begin
+      Result := True;
+    end else
+      Hide(ATrayIcon);
+  end;
 end;
 
 {*******************************************************************
@@ -396,16 +410,16 @@ end;
 *******************************************************************}
 class procedure TGtk2WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
-  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
+  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
 begin
-  // Updates the tooltips
-  if Assigned(Tips) then gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(ATrayIcon.Hint), '');
-
-  // Updates the icon
-  
-  if (TrayHandle <> nil) and (TrayHandle^.AImage <> nil) then
-  begin
-    gtk_image_set_from_pixbuf(GTK_IMAGE(TrayHandle^.AImage), PGdkPixbuf(ATrayIcon.Icon.Handle));
+  if Assigned(TrayIconHandle) then with TrayIconHandle do begin
+    // Updates the tooltips
+    if Assigned(Tips) then
+	  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(ATrayIcon.Hint), '');
+    // Updates the icon
+    if Assigned(DrawingArea) then begin
+      gtk_image_set_from_pixbuf(GTK_IMAGE(DrawingArea), PGdkPixbuf(ATrayIcon.Icon.Handle));
+    end;
   end;
 end;
 
@@ -423,16 +437,16 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 var
+  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
   WindowHandle: PGDKWindow;
 begin
   Result := Point(0, 0);
-
-  if not Assigned(GtkForm) then Exit;
-
-  WindowHandle := GtkForm^.window;
-
-  if not Assigned(WindowHandle) then Exit;
-
-  gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
+  if Assigned(TrayIconHandle) then with TrayIconHandle do begin
+    if not Assigned(plug) then begin
+      WindowHandle := plug^.window;
+      if Assigned(WindowHandle) then
+        gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
+    end;
+  end;
 end;
 
