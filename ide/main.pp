@@ -11758,7 +11758,6 @@ procedure TMainIDE.InitCodeToolBoss;
 
 var CompilerUnitSearchPath, CompilerUnitLinks: string;
   ADefTempl: TDefineTemplate;
-  c: integer;
   AFilename: string;
   UnitLinksChanged: boolean;
   TargetOS, TargetProcessor: string;
@@ -11890,10 +11889,7 @@ begin
   CompilerParseStampIncreased:=@OnCompilerParseStampIncreased;
 
   // codetools consistency check
-  c:=CodeToolBoss.ConsistencyCheck;
-  if c<>0 then begin
-    RaiseException('CodeToolBoss.ConsistencyCheck='+IntToStr(c));
-  end;
+  CodeToolBoss.ConsistencyCheck;
 end;
 
 procedure TMainIDE.UpdateEnglishErrorMsgFilename;

@@ -43,7 +43,11 @@ interface
 uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms, Controls,
   Laz_XMLCfg, ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
-  IDEProcs, LazConf, TransferMacros;
+  IDEProcs, LazConf, TransferMacros
+  {$IFDEF EnableBuildModes}
+  ,CompOptsModes
+  {$ENDIF}
+  ;
 
 type
 

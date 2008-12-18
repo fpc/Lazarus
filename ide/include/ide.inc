@@ -38,5 +38,7 @@
 
 {off $define UseTurbopowerInHelp}
 
+{$inline on}
+
 // end.
 

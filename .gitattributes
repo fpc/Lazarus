@@ -2472,6 +2472,7 @@ ide/componentlist.lfm svneol=native#text/pascal
 ide/componentlist.lrs svneol=native#text/pascal
 ide/componentlist.pas svneol=native#text/pascal
 ide/componentpalette.pas svneol=native#text/pascal
+ide/compoptsmodes.pas svneol=native#text/plain
 ide/condef.lfm svneol=native#text/plain
 ide/condef.lrs svneol=native#text/pascal
 ide/condef.pas svneol=native#text/pascal
