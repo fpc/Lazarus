@@ -1,0 +1,40 @@
+object Form1: TForm1
+  Left = 290
+  Height = 302
+  Top = 175
+  Width = 449
+  AutoSize = True
+  Caption = 'Form1'
+  DockSite = True
+  Menu = MainMenu1
+  OnDockOver = FormDockOver
+  UseDockManager = True
+  LCLVersion = '0.9.27'
+  object MainMenu1: TMainMenu
+    left = 421
+    top = 48
+    object MenuItem1: TMenuItem
+      Caption = 'Create New Form'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Dump Layout'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+      OnClick = MenuItem2Click
+    end
+  end
+  object HTMLHelpDatabase1: THTMLHelpDatabase
+    AutoRegister = True
+    left = 421
+    top = 77
+  end
+  object HTMLBrowserHelpViewer1: THTMLBrowserHelpViewer
+    BrowserParams = '%s'
+    AutoRegister = True
+    left = 421
+    top = 106
+  end
+end

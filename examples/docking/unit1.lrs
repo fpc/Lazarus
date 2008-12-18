@@ -1,0 +1,15 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3'.'#1#3'Top'#3#175#0#5'Wi'
+  +'dth'#3#193#1#8'AutoSize'#9#7'Caption'#6#5'Form1'#8'DockSite'#9#4'Menu'#7#9
+  +'MainMenu1'#10'OnDockOver'#7#12'FormDockOver'#14'UseDockManager'#9#10'LCLVer'
+  +'sion'#6#6'0.9.27'#0#9'TMainMenu'#9'MainMenu1'#4'left'#3#165#1#3'top'#2'0'#0
+  +#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#15'Create New Form'#12'RightJustify'
+  +#8#19'ShowAlwaysCheckable'#8#7'OnClick'#7#14'MenuItem1Click'#0#0#9'TMenuItem'
+  +#9'MenuItem2'#7'Caption'#6#11'Dump Layout'#12'RightJustify'#8#19'ShowAlwaysC'
+  +'heckable'#8#7'OnClick'#7#14'MenuItem2Click'#0#0#0#17'THTMLHelpDatabase'#17
+  +'HTMLHelpDatabase1'#12'AutoRegister'#9#4'left'#3#165#1#3'top'#2'M'#0#0#22'TH'
+  +'TMLBrowserHelpViewer'#22'HTMLBrowserHelpViewer1'#13'BrowserParams'#6#2'%s'
+  +#12'AutoRegister'#9#4'left'#3#165#1#3'top'#2'j'#0#0#0
+]);
