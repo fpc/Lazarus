@@ -2067,6 +2067,7 @@ type
     procedure SetReplacingControl(AControl: TControl); override;
     procedure ResetBounds(Force: Boolean); override;
     procedure PaintSite(DC: HDC); override;
+    procedure DumpLayout(FileName: String); virtual;
   public
     property DockZoneClass: TDockZoneClass read FDockZoneClass;
     property DockSite: TWinControl read FDockSite write SetDockSite;

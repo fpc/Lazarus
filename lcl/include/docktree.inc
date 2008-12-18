@@ -167,4 +167,9 @@ begin
   // TODO
 end;
 
+procedure TDockTree.DumpLayout(FileName: String);
+begin
+
+end;
+
 // included by controls.pp

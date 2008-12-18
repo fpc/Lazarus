@@ -32,7 +32,7 @@ interface
 uses
   Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
   Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
-  LMessages, LResources;
+  LMessages, LResources, typinfo;
   
 type
   TLazDockPages = class;
@@ -100,6 +100,7 @@ type
                               OutSide: boolean): TControl;
     procedure PaintSite(DC: HDC); override;
     procedure MouseMessage(var Message: TLMessage); override;
+    procedure DumpLayout(FileName: String); override;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
@@ -274,13 +275,13 @@ type
 const
   DockAlignOrientations: array[TAlign] of TDockOrientation =
   (
-    doPages,     //alNone,
-    doVertical,  //alTop,
-    doVertical,  //alBottom,
-    doHorizontal,//alLeft,
-    doHorizontal,//alRight,
-    doPages,     //alClient,
-    doPages      //alCustom
+ { alNone   } doPages,
+ { alTop    } doHorizontal,
+ { alBottom } doHorizontal,
+ { alLeft   } doVertical,
+ { alRight  } doVertical,
+ { alClient } doPages,
+ { alCustom } doPages
   );
 
 type
@@ -925,50 +926,65 @@ var
   ParentPages: TLazDockPages;
   ZoneIndex: LongInt;
 begin
-  if Zone=nil then exit;
+  if Zone = nil then
+    Exit;
 
   // create needed TLazDockSplitter
-  if (Zone.Parent<>nil)
-  and (Zone.Parent.Orientation in [doVertical,doHorizontal])
-  and (Zone.PrevSibling<>nil) then begin
+  if (Zone.Parent <> nil) and
+     (Zone.Parent.Orientation in [doVertical,doHorizontal]) and
+     (Zone.PrevSibling <> nil) then
+  begin
     // a zone with a side sibling -> needs a TLazDockSplitter
-    if Zone.Splitter=nil then begin
-      Zone.Splitter:=TLazDockSplitter.Create(nil);
+    if Zone.Splitter = nil then
+    begin
+      Zone.Splitter := TLazDockSplitter.Create(nil);
+      Zone.Splitter.Align := alNone;
     end;
-  end else if Zone.Splitter<>nil then begin
+  end
+  else
+  if Zone.Splitter <> nil then
+  begin
     // zone no longer needs the splitter
     Zone.Splitter.Free;
-    Zone.Splitter:=nil;
+    Zone.Splitter := nil;
   end;
 
   // create needed TLazDockPages
-  if (Zone.Orientation=doPages) then begin
+  if (Zone.Orientation = doPages) then
+  begin
     // a zone of pages -> needs a TLazDockPages
-    if Zone.FirstChild=nil then
+    if Zone.FirstChild = nil then
       RaiseGDBException('TLazDockTree.CreateDockLayoutHelperControls Inconsistency: doPages without childs');
-    if (Zone.Pages=nil) then begin
+    if (Zone.Pages = nil) then
       Zone.Pages:=TLazDockPages.Create(nil);
-    end;
-  end else if Zone.Pages<>nil then begin
+  end
+  else
+  if Zone.Pages<>nil then
+  begin
     // zone no longer needs the pages
     Zone.Pages.Free;
-    Zone.Pages:=nil;
+    Zone.Pages := nil;
   end;
 
   // create needed TLazDockPage
-  if (Zone.Parent<>nil)
-  and (Zone.Parent.Orientation=doPages) then begin
+  if (Zone.Parent<>nil) and
+     (Zone.Parent.Orientation = doPages) then
+  begin
     // a zone as page -> needs a TLazDockPage
-    if (Zone.Page=nil) then begin
-      ParentPages:=TLazDockZone(Zone.Parent).Pages;
-      ZoneIndex:=Zone.GetIndex;
+    if (Zone.Page = nil) then
+    begin
+      ParentPages := TLazDockZone(Zone.Parent).Pages;
+      ZoneIndex := Zone.GetIndex;
       ParentPages.Pages.Insert(ZoneIndex,Zone.GetCaption);
-      Zone.Page:=ParentPages.Page[ZoneIndex];
+      Zone.Page := ParentPages.Page[ZoneIndex];
     end;
-  end else if Zone.Page<>nil then begin
+  end
+  else
+  if Zone.Page <> nil then
+  begin
     // zone no longer needs the page
     Zone.Page.Free;
-    Zone.Page:=nil;
+    Zone.Page := nil;
   end;
 
   // create controls for childs and siblings
@@ -997,34 +1013,55 @@ var
   NewSplitterAnchors: TAnchors;
   NewAnchors: TAnchors;
 begin
-  if Zone=nil then exit;
+  if Zone = nil then
+    Exit;
 
-  if Zone.Pages<>nil then
-    CurControl:=Zone.Pages
+  if Zone.Pages <> nil then
+    CurControl := Zone.Pages
   else
-    CurControl:=Zone.ChildControl;
+    CurControl := Zone.ChildControl;
   //DebugLn(['TLazDockTree.AnchorDockLayout CurControl=',DbgSName(CurControl),' DockSite=',DbgSName(DockSite)]);
-  if (CurControl<>nil) and (CurControl<>DockSite) then begin
+  if (CurControl <> nil) and (CurControl <> DockSite) then
+  begin
     // get outside anchor controls
-    NewAnchors:=[akLeft,akRight,akTop,akBottom];
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      AnchorControls[a]:=GetAnchorControl(Zone,a,true);
+    NewAnchors := [akLeft, akRight, akTop, akBottom];
+    for a := Low(TAnchorKind) to High(TAnchorKind) do
+      AnchorControls[a] := GetAnchorControl(Zone, a, true);
 
     // anchor splitter
-    if (Zone.Splitter<>nil) then begin
-      if Zone.Parent.Orientation=doHorizontal then
-        SplitterSide:=akLeft
+    if (Zone.Splitter <> nil) then
+    begin
+      if Zone.Parent.Orientation = doHorizontal then
+      begin
+        SplitterSide := akTop;
+        NewSplitterAnchors := [akLeft, akRight];
+        Zone.Splitter.AnchorSide[akLeft].Side := asrTop;
+        Zone.Splitter.AnchorSide[akRight].Side := asrBottom;
+        Zone.Splitter.Height := 5;
+        Zone.Splitter.Top := CurControl.Top - DefaultDockGrabberSize;
+        Zone.Splitter.ResizeAnchor := akBottom;
+      end
       else
-        SplitterSide:=akTop;
+      begin
+        SplitterSide := akLeft;
+        NewSplitterAnchors := [akTop, akBottom];
+        Zone.Splitter.AnchorSide[akTop].Side := asrTop;
+        Zone.Splitter.AnchorSide[akBottom].Side := asrBottom;
+        Zone.Splitter.Width := 5;
+        Zone.Splitter.Left :=  CurControl.Left - DefaultDockGrabberSize;
+        Zone.Splitter.ResizeAnchor := akRight;
+      end;
       // IMPORTANT: first set the AnchorSide, then set the Anchors
-      NewSplitterAnchors:=[akLeft,akRight,akTop,akBottom]-[SplitterSide];
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      for a := Low(TAnchorKind) to High(TAnchorKind) do
+      begin
         if a in NewSplitterAnchors then
-          Zone.Splitter.AnchorSide[a].Control:=AnchorControls[a]
+          Zone.Splitter.AnchorSide[a].Control := AnchorControls[a]
         else
-          Zone.Splitter.AnchorSide[a].Control:=nil;
-      Zone.Splitter.Anchors:=NewSplitterAnchors;
-      AnchorControls[SplitterSide]:=Zone.Splitter;
+          Zone.Splitter.AnchorSide[a].Control := nil;
+      end;
+      Zone.Splitter.Anchors := NewSplitterAnchors;
+      Zone.Splitter.Parent := Zone.GetParentControl;
+      AnchorControls[SplitterSide] := Zone.Splitter;
     end;
 
     // anchor pages
@@ -1145,7 +1182,6 @@ var
   NewParentZone: TDockZone;
   OldParentZone: TDockZone;
   NewBounds: TRect;
-  ASibling: TDockZone;
 begin
   if DropControl=nil then
     DropControl:=DockSite;
@@ -1163,108 +1199,84 @@ begin
   NewZone:=DockZoneClass.Create(Self,AControl) as TLazDockZone;
   
   // insert new zone into tree
-  if (DropZone=RootZone) and (RootZone.FirstChild=nil) then begin
+  if (DropZone=RootZone) and (RootZone.FirstChild=nil) then
+  begin
     // this is the first child
     debugln('TLazDockTree.InsertControl First Child');
-    RootZone.Orientation := NewOrientation;
+    //RootZone.Orientation := NewOrientation;
     RootZone.AddAsFirstChild(NewZone);
     AControl.DockOrientation := NewOrientation;
     if not AControl.Visible then
       DockSite.Visible := False;
 
-    NewBounds := AControl.BoundsRect;
+    NewBounds := DockSite.ClientRect;
     AdjustDockRect(AControl, NewBounds);
-    DockSite.BoundsRect := NewBounds;
-    
     PrepareControlForResize(AControl);
+
     AControl.BoundsRect := NewBounds;
     AControl.Parent := DockSite;
     
     if AControl.Visible then
       DockSite.Visible := True;
-  end else begin
+  end else
+  begin
     // there are already other childs
 
     // optimize DropZone
-    if (DropZone.ChildCount>0)
-    and (NewOrientation in [doHorizontal,doVertical])
-    and ((DropZone.Orientation=NewOrientation)
-         or (DropZone.Orientation=doNoOrient))
-    then begin
+    if (DropZone.ChildCount>0) and
+       (NewOrientation in [doHorizontal,doVertical]) and
+       (DropZone.Orientation in [NewOrientation, doNoOrient]) then
+    begin
       // docking on a side of an inner node is the same as docking to a side of
       // a child
       if InsertAt in [alLeft,alTop] then
-        DropZone:=DropZone.FirstChild
+        DropZone := DropZone.FirstChild
       else
-        DropZone:=DropZone.GetLastChild;
+        DropZone := DropZone.GetLastChild;
     end;
     
     // insert a new Parent Zone if needed
-    NeedNewParentZone:=true;
-    if (DropZone.Parent<>nil) then begin
-      if (DropZone.Orientation=doNoOrient) then
-        NeedNewParentZone:=false;
-      if (DropZone.Orientation=NewOrientation) then
-        NeedNewParentZone:=false;
+    NeedNewParentZone := True;
+    if (DropZone.Parent <> nil) then
+    begin
+      if (DropZone.Parent.Orientation = doNoOrient) then
+        NeedNewParentZone := False;
+      if (DropZone.Parent.Orientation = NewOrientation) then
+        NeedNewParentZone := False;
     end;
-    if NeedNewParentZone then begin
+    if NeedNewParentZone then
+    begin
       // insert a new zone between current DropZone.Parent and DropZone
       // this new zone will become the new DropZone.Parent
-      OldParentZone:=DropZone.Parent;
-      NewParentZone:=DockZoneClass.Create(Self,nil);
-      if OldParentZone<>nil then
-        OldParentZone.ReplaceChild(DropZone,NewParentZone);
+      OldParentZone := DropZone.Parent;
+      NewParentZone := DockZoneClass.Create(Self, nil);
+      if OldParentZone <> nil then
+        OldParentZone.ReplaceChild(DropZone, NewParentZone);
       NewParentZone.AddAsFirstChild(DropZone);
     end;
     
+    if DropZone.Parent = nil then
+      RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
     // adjust Orientation in tree
-    if DropZone.Parent.Orientation=doNoOrient then
-      DropZone.Parent.Orientation:=NewOrientation;
-    if DropZone.Parent.Orientation<>NewOrientation then
+    if DropZone.Parent.Orientation = doNoOrient then
+      DropZone.Parent.Orientation := NewOrientation;
+    if DropZone.Parent.Orientation <> NewOrientation then
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Orientation<>NewOrientation');
 
     // insert new node
-    if DropZone.Parent=nil then
-      RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
-    if InsertAt in [alLeft,alTop] then
+    if InsertAt in [alLeft, alTop] then
       DropZone.Parent.AddAsFirstChild(NewZone)
     else
       DropZone.Parent.AddAsLastChild(NewZone);
       
-    // break anchors and resize DockSite
-    BreakAnchors(RootZone);
-    NewBounds := DockSite.BoundsRect;
-    case InsertAt of
-      alLeft:  dec(NewBounds.Left,SplitterWidth+AControl.Width);
-      alRight: inc(NewBounds.Right,SplitterWidth+AControl.Width);
-      alTop:   dec(NewBounds.Top,SplitterHeight+AControl.Height);
-      alBottom:inc(NewBounds.Bottom,SplitterHeight+AControl.Height);
-    else     // no change
-    end;
-    DockSite.BoundsRect := NewBounds;
-    
     // add AControl to DockSite
-    AControl.Visible := False;
-    AControl.Parent := nil;
     PrepareControlForResize(AControl);
-    // resize control
-    DebugLn('TLazDockTree.InsertControl TODO resize control');
-    if NewOrientation in [doHorizontal,doVertical] then begin
-      ASibling:=NewZone.PrevSibling;
-      if ASibling=nil then ASibling:=NewZone.NextSibling;
-      if ASibling<>nil then begin
-        if NewOrientation=doHorizontal then
-          AControl.Height:=ASibling.Height
-        else
-          AControl.Width:=ASibling.Width;
-      end;
-    end;
     AControl.DockOrientation := NewOrientation;
     AControl.Parent := NewZone.GetParentControl;
   end;
   
   // Build dock layout (anchors, splitters, pages)
-  BuildDockLayout(RootZone as TLazDockZone);
+  BuildDockLayout(RootZone{NewZone.Parent} as TLazDockZone);
 end;
 
 procedure TLazDockTree.RemoveControl(AControl: TControl);
@@ -1284,20 +1296,22 @@ begin
 
   // Build dock layout (anchors, splitters, pages)
   BuildDockLayout(RootZone as TLazDockZone);
-  DockSite.Invalidate; // to redraw dock headers
 end;
 
 procedure TLazDockTree.BuildDockLayout(Zone: TLazDockZone);
 begin
-  if DockSite<>nil then
+  if DockSite <> nil then
     DockSite.DisableAlign;
   try
     BreakAnchors(Zone);
     CreateDockLayoutHelperControls(Zone);
     AnchorDockLayout(Zone);
   finally
-    if DockSite<>nil then
+    if DockSite <> nil then
+    begin
       DockSite.EnableAlign;
+      DockSite.Invalidate;
+    end;
   end;
 end;
 
@@ -1369,51 +1383,56 @@ function TLazDockTree.GetAnchorControl(Zone: TLazDockZone; Side: TAnchorKind;
   OutSide: boolean): TControl;
 // find a control to anchor the Zone's Side
 begin
-  if Zone=nil then begin
-    Result:=DockSite;
+  if Zone = nil then
+  begin
+    Result := DockSite;
     exit;
   end;
 
-  if not OutSide then begin
+  if not OutSide then
+  begin
     // also check the Splitter and the Page
-    if (Side=akLeft)
-    and (Zone.Parent<>nil) and (Zone.Parent.Orientation=doHorizontal)
-    and (Zone.Splitter<>nil) then begin
-      Result:=Zone.Splitter;
+    if (Side = akLeft) and (Zone.Parent <> nil) and
+       (Zone.Parent.Orientation = doVertical) and (Zone.Splitter<>nil) then
+    begin
+      Result := Zone.Splitter;
       exit;
     end;
-    if (Side=akTop)
-    and (Zone.Parent<>nil) and (Zone.Parent.Orientation=doVertical)
-    and (Zone.Splitter<>nil) then begin
-      Result:=Zone.Splitter;
+    if (Side = akTop) and (Zone.Parent<>nil) and
+       (Zone.Parent.Orientation=doHorizontal) and (Zone.Splitter<>nil) then
+    begin
+      Result := Zone.Splitter;
       exit;
     end;
-    if (Zone.Page<>nil) then begin
-      Result:=Zone.Page;
+    if (Zone.Page <> nil) then
+    begin
+      Result := Zone.Page;
       exit;
     end;
   end;
 
   // search the neighbour zones:
-  Result:=DockSite;
-  if (Zone.Parent=nil) then exit;
+  Result := DockSite;
+  if (Zone.Parent = nil) then
+    Exit;
+
   case Zone.Parent.Orientation of
-  doHorizontal:
-    if (Side=akLeft) and (Zone.PrevSibling<>nil) then
-      Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akRight)
-    else if (Side=akRight) and (Zone.NextSibling<>nil) then
-      Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akLeft)
-    else
+    doHorizontal:
+      if (Side=akTop) and (Zone.PrevSibling<>nil) then
+        Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akBottom)
+      else if (Side=akBottom) and (Zone.NextSibling<>nil) then
+        Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akTop)
+      else
+        Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
+    doVertical:
+      if (Side=akLeft) and (Zone.PrevSibling<>nil) then
+        Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akRight)
+      else if (Side=akRight) and (Zone.NextSibling<>nil) then
+        Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akLeft)
+      else
+        Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
+    doPages:
       Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
-  doVertical:
-    if (Side=akTop) and (Zone.PrevSibling<>nil) then
-      Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akBottom)
-    else if (Side=akBottom) and (Zone.NextSibling<>nil) then
-      Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akTop)
-    else
-      Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
-  doPages:
-    Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
   end;
 end;
 
@@ -1541,6 +1560,109 @@ begin
     CM_MOUSELEAVE:
       CheckNeedRedraw(nil, Rect(0,0,0,0), ldhpAll);
   end
+end;
+
+procedure TLazDockTree.DumpLayout(FileName: String);
+var
+  Stream: TStream;
+
+  procedure WriteLn(S: String);
+  begin
+    S := S + #$D#$A;
+    Stream.Write(S[1], Length(S));
+  end;
+
+  procedure WriteHeader;
+  begin
+    WriteLn('<HTML>');
+    WriteLn('<HEAD>');
+    WriteLn('<TITLE>Dock Layout</TITLE>');
+    WriteLn('<META content="text/html; charset=utf-8" http-equiv=Content-Type>');
+    WriteLn('</HEAD>');
+    WriteLn('<BODY>');
+  end;
+
+  procedure WriteFooter;
+  begin
+    WriteLn('</BODY>');
+    WriteLn('</HTML>');
+  end;
+
+  procedure DumpAnchors(Title: String; AControl: TControl);
+  var
+    a: TAnchorKind;
+    S: String;
+  begin
+    S := Title;
+    if AControl.Anchors <> [] then
+    begin
+      S := S + '<UL>';
+      for a := Low(TAnchorKind) to High(TAnchorKind) do
+        if a in AControl.Anchors then
+        begin
+          S := S + '<LI><b>' + GetEnumName(TypeInfo(TAnchorKind), Ord(a)) + '</b> = ' +
+            DbgsName(AControl.AnchorSide[a].Control) + '</LI>';
+        end;
+      S := S + '</UL>';
+    end
+    else
+      S := S + '[]';
+    WriteLn(S);
+  end;
+
+  procedure DumpZone(Zone: TDockZone);
+  const
+    DumpStr = 'Zone: Orientation = <b>%s</b>, ChildCount = <b>%d</b>, ChildControl = <b>%s</b>, %s, HasSplitter = <b>%s</b>';
+    StrOrientation: array[TDockOrientation] of String =
+    (
+      'doNoOrient',
+      'doHorizontal',
+      'doVertical',
+      'doPages'
+    );
+  begin
+    WriteLn(Format(DumpStr, [StrOrientation[Zone.Orientation], Zone.ChildCount,
+      DbgSName(Zone.ChildControl), DbgS(Bounds(Zone.Left, Zone.Top, Zone.Width, Zone.Height)),
+      BoolToStr(TLazDockZone(Zone).Splitter <> nil, True)]));
+    if TLazDockZone(Zone).Splitter <> nil then
+      DumpAnchors('<br>Splitter anchors: ', TLazDockZone(Zone).Splitter);
+    if Zone.ChildControl <> nil then
+      DumpAnchors('<br>ChildControl anchors: ', Zone.ChildControl);
+  end;
+
+  procedure WriteZone(Zone: TDockZone);
+  begin
+    if Zone <> nil then
+    begin
+      WriteLn('<LI>');
+      DumpZone(Zone);
+      if Zone.ChildCount > 0 then
+      begin
+        WriteLn('<OL>');
+        WriteZone(Zone.FirstChild);
+        WriteLn('</OL>');
+      end;
+      WriteLn('</LI>');
+      WriteZone(Zone.NextSibling);
+    end;
+  end;
+
+  procedure WriteLayout;
+  begin
+    WriteLn('<OL>');
+    WriteZone(RootZone);
+    WriteLn('</OL>');
+  end;
+
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    WriteHeader;
+    WriteLayout;
+    WriteFooter;
+  finally
+    Stream.Free;
+  end;
 end;
 
 { TLazDockZone }
