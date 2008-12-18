@@ -106,6 +106,7 @@ type
     MainUnitHasTitleStatementCheckBox: TCheckBox;
     RunnableCheckBox: TCheckBox;
     AlwaysBuildCheckBox: TCheckBox;
+    LRSInOutputDirCheckBox: TCheckBox;
 
     // Lazdoc settings
     LazDocBrowseButton: TButton;
@@ -227,11 +228,13 @@ begin
   Result := False;
   if AProject.MainUnitInfo = nil then Exit;
   if AProject.IsVirtual then
-    TargetExeName := EnvironmentOptions.GetTestBuildDirectory + ExtractFilename(AProject.MainUnitInfo.Filename)
+    TargetExeName := EnvironmentOptions.GetTestBuildDirectory
+                   + ExtractFilename(AProject.MainUnitInfo.Filename)
   else
     TargetExeName := AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename);
 
-  if not (CreateApplicationBundle(TargetExeName, AProject.Title,true) in [mrOk,mrIgnore]) then exit;
+  if not (CreateApplicationBundle(TargetExeName, AProject.Title,true) in [mrOk,mrIgnore])
+  then exit;
   if not (CreateAppBundleSymbolicLink(TargetExeName,true) in [mrOk,mrIgnore]) then exit;
   Result := True;
 end;
@@ -359,6 +362,7 @@ begin
   MainUnitHasTitleStatementCheckBox.Caption := lisMainUnitHasApplicationTitleStatements;
   RunnableCheckBox.Caption := lisProjectIsRunnable;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
+  LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
 end;
 
 procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
@@ -445,6 +449,7 @@ begin
     (pfMainUnitHasTitleStatement in AProject.Flags);
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
   AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
+  LRSInOutputDirCheckBox.Checked := (pfLRSFilesInOutputDirectory in AProject.Flags);
 
   // lazdoc
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
@@ -523,6 +528,7 @@ begin
                    MainUnitHasTitleStatementCheckBox.Checked);
     SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
     SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
+    SetProjectFlag(pfLRSFilesInOutputDirectory, LRSInOutputDirCheckBox.Checked);
     Project.Flags := NewFlags;
     
     if SaveSessionLocationRadioGroup.ItemIndex>=0 then
@@ -556,6 +562,10 @@ begin
     Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
     //debugln(['TProjectOptionsDialog.ProjectOptionsClose Project.Resources.Modified=',Project.Resources.Modified]);
+
+    // extend include path
+    Project.AutoAddOutputDirToIncPath;
+
     if Project.Resources.Modified and (Project.MainUnitID >= 0) then
     begin
       if not Project.Resources.Regenerate(Project.MainFilename, True, False) then

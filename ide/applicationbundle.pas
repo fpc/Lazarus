@@ -66,6 +66,7 @@ resourcestring
   rsCreatingDirFailed = 'Creating directory "%s" failed!';
   rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
   rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
+  lisPutLrsFilesInOutputDirectory = 'Put .lrs files in output directory';
   
 implementation
 

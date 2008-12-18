@@ -197,7 +197,6 @@ type
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
-    FResourceFilename: string;
     FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
     FRunFileIfActive: boolean;
     FSessionModified: boolean;
@@ -350,8 +349,6 @@ type
     property OnUnitNameChange: TOnUnitNameChange
                                  read FOnUnitNameChange write FOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
-    property ResourceFileName: string
-                                 read FResourceFilename write FResourceFilename;
     property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
@@ -798,6 +795,7 @@ type
     function GetStateFilename: string;
     function GetTestDirectory: string;
     function GetCompileSourceFilename: string;
+    procedure AutoAddOutputDirToIncPath;
     
     // state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
@@ -902,7 +900,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 6;
+  ProjectInfoFileVersion = 7;
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
@@ -1184,10 +1182,6 @@ begin
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
-    AFilename:=FResourceFilename;
-    if Assigned(fOnLoadSaveFilename) then
-      fOnLoadSaveFilename(AFilename,false);
-    XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
     XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
     // save custom data
     SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
@@ -1240,10 +1234,6 @@ begin
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
-    FResourceFilename:=AFilename;
-    if (FResourceFilename<>'')
-    and (FResourceFilename[length(FResourceFilename)]=PathDelim) then
-      FResourceFilename:='';
     if FilenameIsPascalSource(Filename) then
       fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
 
@@ -2302,13 +2292,16 @@ var
   var
     f: TProjectFlag;
     OldProjectType: TOldProjectType;
+    DefFlags: TProjectFlags;
   begin
     OldProjectType:=ReadOldProjectType(XMLConfig,Path);
+    DefFlags:=DefaultProjectFlags;
+    if FileVersion<7 then
+      Exclude(DefFlags,pfLRSFilesInOutputDirectory);
     FFlags:=[];
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
       SetFlag(f,xmlconfig.GetValue(
-                             Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',
-                             f in DefaultProjectFlags));
+             Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',f in DefFlags));
     end;
     if FileVersion<=3 then begin
       // set new flags
@@ -2364,7 +2357,6 @@ var
         NewMainUnitID:=-1;
       end;
     end;
-
 
     // load editor info
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
@@ -3960,6 +3952,19 @@ begin
     Result:=''
   else
     Result:=ExtractFilename(MainUnitInfo.Filename);
+end;
+
+procedure TProject.AutoAddOutputDirToIncPath;
+var
+  IncPath: String;
+begin
+  if pfLRSFilesInOutputDirectory in Flags then begin
+    // the .lrs files are auto created in the output directory
+    // => make sure the project output directory is in the include path
+    IncPath:=CompilerOptions.IncludePath;
+    if SearchDirectoryInSearchPath(IncPath,'$(ProjOutDir)')<1 then
+      CompilerOptions.IncludePath:=MergeSearchPaths(IncPath,';$(ProjOutDir)');
+  end;
 end;
 
 function TProject.LoadStateFile(IgnoreErrors: boolean): TModalResult;

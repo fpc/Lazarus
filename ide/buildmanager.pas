@@ -91,6 +91,8 @@ type
                                   var Abort: boolean): string;
     function MacroFuncProjSrcPath(const Param: string; const Data: PtrInt;
                                   var Abort: boolean): string;
+    function MacroFuncProjOutDir(const Param: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -139,7 +141,10 @@ type
                                     ): TModalResult; override;
     function BackupFile(const Filename: string): TModalResult; override;
 
-    function UpdateLRSFromLFM(const LRSFilename: string): TModalResult;
+    function FindLRSFilename(AnUnitInfo: TUnitInfo;
+                             UseDefaultIfNotFound: boolean): string;
+    function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
+    function UpdateLRSFromLFM(AnUnitInfo: TUnitInfo): TModalResult;
     function UpdateProjectAutomaticFiles: TModalResult; override;
 
     // methods for building
@@ -257,6 +262,8 @@ begin
                     lisProjectIncPath,@MacroFuncProjIncPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
                     lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjOutDir','',
+                    lisProjectOutDir,@MacroFuncProjOutDir,[]));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -994,21 +1001,49 @@ begin
   until Result<>mrRetry;
 end;
 
-function TBuildManager.UpdateLRSFromLFM(const LRSFilename: string
-  ): TModalResult;
+function TBuildManager.FindLRSFilename(AnUnitInfo: TUnitInfo;
+  UseDefaultIfNotFound: boolean): string;
+begin
+  Result:=ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
+  Result:=FileUtil.SearchFileInPath(Result,'',
+        CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
+        ';',[sffDontSearchInBasePath,sffSearchLoUpCase]);
+  if (Result='') and UseDefaultIfNotFound then
+    Result:=GetDefaultLRSFilename(AnUnitInfo);
+end;
+
+function TBuildManager.GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
+var
+  OutputDir: String;
+begin
+  if AnUnitInfo.IsPartOfProject
+  and (not Project1.IsVirtual)
+  and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
+    OutputDir:=Project1.GetOutputDirectory;
+    if OutputDir<>'' then begin
+      Result:=AppendPathDelim(OutputDir)
+              +ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
+      exit;
+    end;
+  end;
+  Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
+end;
+
+function TBuildManager.UpdateLRSFromLFM(AnUnitInfo: TUnitInfo): TModalResult;
 var
   LFMFilename: String;
+  LRSFilename: String;
 begin
   Result:=mrOk;
-  // check if there is a .lrs file
-  if LRSFilename='' then exit;
-  if not FilenameIsAbsolute(LRSFilename) then exit;
-  LFMFilename:=ChangeFileExt(LRSFilename,'.lfm');
-  if LRSFilename=LFMFilename then exit;
   // check if there is a .lfm file
-  if not FileExistsUTF8(LFMFilename) then exit;
+  LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+  if not FileExistsCached(LFMFilename) then exit(mrOk);
+  // check if there is a .lrs file
+  LRSFilename:=FindLRSFilename(AnUnitInfo,true);
+  if LRSFilename=LFMFilename then exit;
   // check if .lrs file is newer than .lfm file
-  if FileExistsUTF8(LRSFilename) and (FileAgeUTF8(LFMFilename)<=FileAgeUTF8(LRSFilename))
+  if FileExistsUTF8(LRSFilename)
+  and (FileAgeUTF8(LFMFilename)<=FileAgeUTF8(LRSFilename))
   then exit;
   debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAgeUTF8(LFMFilename)),' LRSAge=',dbgs(FileAgeUTF8(LRSFilename)));
   // the .lrs file does not exist, or is older than the .lfm file
@@ -1027,7 +1062,7 @@ begin
   begin
     if AnUnitInfo.HasResources then 
     begin      
-      Result := UpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
+      Result := UpdateLRSFromLFM(AnUnitInfo);
       if Result = mrIgnore then Result:=mrOk;
       if Result <> mrOk then exit;
     end;
@@ -1061,6 +1096,8 @@ begin
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else if SysUtils.CompareText(Param,'InfoFile')=0 then
       Result:=Project1.ProjectInfoFile
+    else if SysUtils.CompareText(Param,'OutputDir')=0 then
+      Result:=Project1.CompilerOptions.GetUnitOutPath(false)
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';
       debugln('WARNING: TMainIDE.MacroFuncProject: ',Result);
@@ -1210,6 +1247,15 @@ function TBuildManager.MacroFuncProjSrcPath(const Param: string;
 begin
   if Project1<>nil then
     Result:=Project1.CompilerOptions.GetSrcPath(false)
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjOutDir(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.GetUnitOutPath(false)
   else
     Result:='';
 end;

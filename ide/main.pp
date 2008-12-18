@@ -4275,15 +4275,12 @@ begin
   ResourceCode:=nil;
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
-    LRSFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
-    LRSFilename:=FileUtil.SearchFileInPath(LRSFilename,'',
-        CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
-        ';',[sffDontSearchInBasePath,sffSearchLoUpCase]);
+    LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
     if LRSFilename<>'' then begin
       Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk]);
       if Result<>mrOk then exit;
     end else begin
-      LRSFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
+      LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
       if AutoCreateResourceCode then begin
         ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
       end else begin
@@ -4736,7 +4733,6 @@ begin
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
               if Result<>mrIgnore then exit;
             end else begin
-              AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
               AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
             end;
           end else begin
@@ -4981,27 +4977,32 @@ begin
   if (ResourceCode<>nil) then begin
     // the resource include line in the code will be changed later after
     // changing the unitname
-    OldResFilePath:=ExtractFilePath(ResourceCode.Filename);
-    NewResFilePath:=OldResFilePath;
-    if FilenameIsAbsolute(OldFilePath)
-    and FileIsInPath(OldResFilePath,OldFilePath) then begin
-      // resource code was in the same or in a sub directory of source
-      // -> try to keep this relationship
-      NewResFilePath:=NewFilePath
-                       +copy(ResourceCode.Filename,length(OldFilePath)+1,
-                         length(ResourceCode.Filename));
-      if not DirPathExists(NewResFilePath) then
-        NewResFilePath:=NewFilePath;
+    if AnUnitInfo.IsPartOfProject
+    and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
+      NewResFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+      NewResFilename:=AppendPathDelim(ExtractFilePath(NewResFilename))
+        +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end else begin
-      // resource code was not in the same or in a sub dircetoy of source
-      // copy resource into the same directory as the source
-      NewResFilePath:=NewFilePath;
+      OldResFilePath:=ExtractFilePath(ResourceCode.Filename);
+      NewResFilePath:=OldResFilePath;
+      if FilenameIsAbsolute(OldFilePath)
+      and FileIsInPath(OldResFilePath,OldFilePath) then begin
+        // resource code was in the same or in a sub directory of source
+        // -> try to keep this relationship
+        NewResFilePath:=NewFilePath
+                         +copy(ResourceCode.Filename,length(OldFilePath)+1,
+                           length(ResourceCode.Filename));
+        if not DirPathExists(NewResFilePath) then
+          NewResFilePath:=NewFilePath;
+      end else begin
+        // resource code was not in the same or in a sub dircetoy of source
+        // copy resource into the same directory as the source
+        NewResFilePath:=NewFilePath;
+      end;
+      NewResFilename:=NewResFilePath
+                      +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end;
-    NewResFilename:=NewResFilePath
-                    +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
-    if ResourceCode<>nil then
-      AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
     if (AnUnitInfo.Component<>nil) then
       FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
@@ -5043,7 +5044,7 @@ begin
   if ResourceCode<>nil then begin
     // change resource filename in the source include directive
     CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
-      ExtractRelativePath(NewFilePath,NewResFilename),false);
+      ExtractFilename(ResourceCode.Filename),false);
   end;
 
   // change unitname on SourceNotebook
@@ -5158,7 +5159,7 @@ begin
         // the new file has a lrs, so it is safe to delete the old
         // (if the new lrs does not exist, it didn't belong to the unit
         //  or there was an error during delete. Never delete files in doubt.)
-        OldLRSFilename:=ChangeFileExt(OldFilename,'.lrs');
+        OldLRSFilename:=ChangeFileExt(OldFilename,ResourceFileExt);
         if FileExistsUTF8(OldLRSFilename) then begin
           Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
           if Result=mrAbort then exit;
@@ -5181,10 +5182,10 @@ begin
           for i:=0 to Owners.Count-1 do begin
             OutDir:='';
             if TObject(Owners[i]) is TProject then begin
-              // delete ppu in project output directory
+              // delete old files in project output directory
               OutDir:=TProject(Owners[i]).CompilerOptions.GetUnitOutPath(false);
             end else if TObject(Owners[i]) is TLazPackage then begin
-              // delete ppu in package output directory
+              // delete old files in package output directory
               OutDir:=TLazPackage(Owners[i]).CompilerOptions.GetUnitOutPath(false);
             end;
             if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
@@ -5196,6 +5197,11 @@ begin
               OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
               if FileExistsUTF8(OldPPUFilename) then begin
                 Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
+                if Result=mrAbort then exit;
+              end;
+              OldLRSFilename:=ChangeFileExt(OldPPUFilename,ResourceFileExt);
+              if FileExistsUTF8(OldLRSFilename) then begin
+                Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
                 if Result=mrAbort then exit;
               end;
             end;
@@ -7031,7 +7037,6 @@ begin
       Include(SearchFlags,pfsfOnlyVirtualFiles);
     if (AProject.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
       //debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
-      NewUnitInfo.ResourceFileName:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
       NewUnitInfo.HasResources:=true;
     end;
   end;
@@ -8267,6 +8272,7 @@ begin
     Project1.BeginUpdate(true);
     try
       Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+      Project1.AutoAddOutputDirToIncPath;
       UpdateCaption;
       if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
@@ -9035,15 +9041,8 @@ begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if FileExistsUTF8(LFMFilename) then begin
         AnUnitInfo.HasResources:=true;
-        AnUnitInfo.ResourceFileName:=ChangeFileExt(LFMFilename,'.lrs');
       end else begin
         AnUnitInfo.HasResources:=false;
-      end;
-    end;
-    if AnUnitInfo.HasResources and (not AnUnitInfo.IsVirtual) then begin
-      if (AnUnitInfo.ResourceFileName='')
-      or (not FilenameIsAbsolute(AnUnitInfo.ResourceFileName)) then begin
-        AnUnitInfo.ResourceFileName:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
       end;
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
