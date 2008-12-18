@@ -134,7 +134,7 @@ type
     function BeautifyWord(const AWord: string; WordPolicy: TWordPolicy): string;
     function BeautifyKeyWord(const AWord: string): string;
     function BeautifyIdentifier(const AWord: string): string;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
     constructor Create;
   end;
@@ -217,7 +217,7 @@ type
     property OnAfterApplyChanges: TOnAfterApplyChanges
                            read FOnAfterApplyChanges write FOnAfterApplyChanges;
     procedure Clear;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
@@ -600,25 +600,22 @@ begin
   FBuffersToModifyNeedsUpdate:=true;
 end;
 
-function TSourceChangeCache.ConsistencyCheck: integer;
+procedure TSourceChangeCache.ConsistencyCheck;
+var
+  CurResult: LongInt;
 begin
-  Result:=FEntries.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,100); exit;
-  end;
-  Result:=BeautifyCodeOptions.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,200); exit;
-  end;
-  Result:=0;
+  CurResult:=FEntries.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
+  BeautifyCodeOptions.ConsistencyCheck;
 end;
 
 procedure TSourceChangeCache.WriteDebugReport;
 begin
-  DebugLn('[TSourceChangeCache.WriteDebugReport] Consistency=',
-    dbgs(ConsistencyCheck));
+  DebugLn('[TSourceChangeCache.WriteDebugReport]');
   DebugLn(FEntries.ReportAsString);
   BeautifyCodeOptions.WriteDebugReport;
+  ConsistencyCheck;
 end;
 
 function TSourceChangeCache.Apply: boolean;
@@ -1459,15 +1456,14 @@ begin
   Result:=BeautifyWord(AWord,IdentifierPolicy);
 end;
 
-function TBeautifyCodeOptions.ConsistencyCheck: integer;
+procedure TBeautifyCodeOptions.ConsistencyCheck;
 begin
-  Result:=0;
 end;
 
 procedure TBeautifyCodeOptions.WriteDebugReport;
 begin
-  DebugLn('TBeautifyCodeOptions.WriteDebugReport Consistency=',
-    dbgs(ConsistencyCheck));
+  DebugLn('TBeautifyCodeOptions.WriteDebugReport');
+  ConsistencyCheck;
 end;
 
 { ESourceChangeCacheError }

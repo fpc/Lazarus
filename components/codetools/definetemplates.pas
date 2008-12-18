@@ -242,7 +242,7 @@ type
                        AnAction: TDefineAction);
     constructor Create;
     destructor Destroy; override;
-    function  ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     function  CreateCopy(OnlyMarked: boolean = false;
                          WithSiblings: boolean = true;
                          WithChilds: boolean = true): TDefineTemplate;
@@ -392,7 +392,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function  ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     function  ExtractNonAutoCreated: TDefineTemplate;
     function  ExtractTemplatesOwnedBy(TheOwner: TObject; const MustFlags,
                                NotFlags: TDefineTemplateFlags): TDefineTemplate;
@@ -500,7 +500,7 @@ type
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
   end;
   
@@ -1246,17 +1246,6 @@ begin
   until false;
 end;
 
-procedure RaiseCatchableException(const Msg: string);
-begin
-  { Raises an exception.
-    gdb does not catch fpc Exception objects, therefore this procedure raises
-    a standard AV which is catched by gdb. }
-  DebugLn('ERROR in CodeTools: ',Msg);
-  // creates an exception, that gdb catches:
-  DebugLn('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
-end;
-
 destructor TDefineTemplate.Destroy;
 begin
   Clear(false);
@@ -1521,7 +1510,7 @@ begin
   end;
 end;
 
-function TDefineTemplate.ConsistencyCheck: integer;
+procedure TDefineTemplate.ConsistencyCheck;
 var RealChildCount: integer;
   DefTempl: TDefineTemplate;
 begin
@@ -1530,39 +1519,30 @@ begin
   if DefTempl<>nil then begin
     if DefTempl.Prior<>nil then begin
       // not first child
-      Result:=-2;  exit;
+      RaiseCatchableException('');
     end;
     while DefTempl<>nil do begin
       if DefTempl.Parent<>Self then begin
         DebugLn('  C: DefTempl.Parent<>Self: ',Name,',',DefTempl.Name);
-        Result:=-3;  exit;
+        RaiseCatchableException('');
       end;
-      if (DefTempl.Next<>nil) and (DefTempl.Next.Prior<>DefTempl) then begin
-        Result:=-4;  exit;
-      end;
-      if (DefTempl.Prior<>nil) and (DefTempl.Prior.Next<>DefTempl) then begin
-        Result:=-5;  exit;
-      end;
-      Result:=DefTempl.ConsistencyCheck;
-      if Result<>0 then begin
-        dec(Result,100);  exit;
-      end;
+      if (DefTempl.Next<>nil) and (DefTempl.Next.Prior<>DefTempl) then
+        RaiseCatchableException('');
+      if (DefTempl.Prior<>nil) and (DefTempl.Prior.Next<>DefTempl) then
+        RaiseCatchableException('');
+      DefTempl.ConsistencyCheck;
       DefTempl:=DefTempl.Next;
       inc(RealChildCount);
     end;
   end;
   if (Parent<>nil) then begin
-    if (Prior=nil) and (Parent.FirstChild<>Self) then begin
-      Result:=-6;  exit;
-    end;
-    if (Next=nil) and (Parent.LastChild<>Self) then begin
-      Result:=-7;  exit;
-    end;
+    if (Prior=nil) and (Parent.FirstChild<>Self) then
+      RaiseCatchableException('');
+    if (Next=nil) and (Parent.LastChild<>Self) then
+      RaiseCatchableException('');
   end;
-  if RealChildCount<>FChildCount then begin
-    Result:=-1;  exit;
-  end;
-  Result:=0;
+  if RealChildCount<>FChildCount then
+    RaiseCatchableException('');
 end;
 
 procedure TDefineTemplate.SetDefineOwner(NewOwner: TObject;
@@ -1605,7 +1585,6 @@ procedure TDefineTemplate.WriteDebugReport(OnlyMarked: boolean);
       ActionStr:=DefineActionNames[ANode.Action];
       DebugLn(Prefix+'Self='+DbgS(ANode),
         ' Name="'+ANode.Name,'"',
-        ' Consistency='+dbgs(ANode.ConsistencyCheck),
         ' Next='+DbgS(ANode.Next),
         ' Prior='+DbgS(ANode.Prior),
         ' Action='+ActionStr,
@@ -2752,30 +2731,27 @@ begin
   ClearCache;
 end;
 
-function TDefineTree.ConsistencyCheck: integer;
+procedure TDefineTree.ConsistencyCheck;
+var
+  CurResult: LongInt;
 begin
-  if FFirstDefineTemplate<>nil then begin
-    Result:=FFirstDefineTemplate.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,1000);  exit;
-    end;
-  end;
-  Result:=FCache.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,2000);  exit;
-  end;
-  Result:=0;
+  if FFirstDefineTemplate<>nil then
+    FFirstDefineTemplate.ConsistencyCheck;
+  CurResult:=FCache.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
 end;
 
 procedure TDefineTree.WriteDebugReport;
 begin
-  DebugLn('TDefineTree.WriteDebugReport  Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('TDefineTree.WriteDebugReport');
   if FFirstDefineTemplate<>nil then
     FFirstDefineTemplate.WriteDebugReport(false)
   else
     DebugLn('  No templates defined');
   DebugLn(FCache.ReportAsString);
   DebugLn('');
+  ConsistencyCheck;
 end;
 
     
@@ -4889,25 +4865,20 @@ begin
   Result.SetDefineOwner(Owner,true);
 end;
 
-function TDefinePool.ConsistencyCheck: integer;
+procedure TDefinePool.ConsistencyCheck;
 var i: integer;
 begin
-  for i:=0 to Count-1 do begin
-    Result:=Items[i].ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);  exit;
-    end;
-  end;
-  Result:=0;
+  for i:=0 to Count-1 do
+    Items[i].ConsistencyCheck;
 end;
 
 procedure TDefinePool.WriteDebugReport;
 var i: integer;
 begin
-  DebugLn('TDefinePool.WriteDebugReport Consistency=',dbgs(ConsistencyCheck));
-  for i:=0 to Count-1 do begin
+  DebugLn('TDefinePool.WriteDebugReport');
+  for i:=0 to Count-1 do
     Items[i].WriteDebugReport(false);
-  end;
+  ConsistencyCheck;
 end;
 
 

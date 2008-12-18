@@ -195,10 +195,6 @@ function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
                                         UnitFileInfo: Pointer): integer;
 
-// other useful stuff
-procedure RaiseCatchableException(const Msg: string);
-
-
 //-----------------------------------------------------------------------------
 // functions / procedures
 
@@ -4060,17 +4056,6 @@ function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
 begin
   Result:=CompareIdentifiers(PChar(UnitnamePAnsiString),
                              PChar(TUnitFileInfo(UnitFileInfo).UnitName));
-end;
-
-procedure RaiseCatchableException(const Msg: string);
-begin
-  { Raises an exception.
-    gdb does not catch fpc Exception objects, therefore this procedure raises
-    a standard AV which is catched by gdb. }
-  DebugLn('ERROR in CodeTools: ',Msg);
-  // creates an exception, that gdb catches:
-  DebugLn('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 function CountNeededLineEndsToAddForward(const Src: string;

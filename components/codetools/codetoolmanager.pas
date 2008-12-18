@@ -682,7 +682,7 @@ type
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport(WriteTool,
           WriteDefPool, WriteDefTree, WriteCache, WriteGlobalValues: boolean);
   end;
@@ -4903,53 +4903,30 @@ begin
   if Lock then ActivateWriteLock else DeactivateWriteLock;
 end;
 
-function TCodeToolManager.ConsistencyCheck: integer;
-// 0 = ok
+procedure TCodeToolManager.ConsistencyCheck;
+var
+  CurResult: LongInt;
 begin
-  try
-    Result:=0;
-    if FCurCodeTool<>nil then begin
-      FCurCodeTool.ConsistencyCheck;
-    end;
-    Result:=DefinePool.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,20000);  exit;
-    end;
-    Result:=DefineTree.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,30000);  exit;
-    end;
-    Result:=SourceCache.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,40000);  exit;
-    end;
-    Result:=GlobalValues.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,50000);  exit;
-    end;
-    Result:=SourceChangeCache.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,60000);  exit;
-    end;
-    Result:=FPascalTools.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,70000);  exit;
-    end;
-    Result:=FDirectivesTools.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,80000);  exit;
-    end;
-  finally
-    if (Result<>0) and (FCatchExceptions=false) then
-      raise Exception.CreateFmt(ctsTCodeToolManagerConsistencyCheck, [Result]);
+  if FCurCodeTool<>nil then begin
+    FCurCodeTool.ConsistencyCheck;
   end;
-  Result:=0;
+  DefinePool.ConsistencyCheck;
+  DefineTree.ConsistencyCheck;
+  SourceCache.ConsistencyCheck;
+  GlobalValues.ConsistencyCheck;
+  SourceChangeCache.ConsistencyCheck;
+  CurResult:=FPascalTools.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
+  CurResult:=FDirectivesTools.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
 end;
 
 procedure TCodeToolManager.WriteDebugReport(WriteTool,
   WriteDefPool, WriteDefTree, WriteCache, WriteGlobalValues: boolean);
 begin
-  DebugLn('[TCodeToolManager.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('[TCodeToolManager.WriteDebugReport]');
   if FCurCodeTool<>nil then begin
     if WriteTool then
       FCurCodeTool.WriteDebugTreeReport;
@@ -4957,19 +4934,20 @@ begin
   if WriteDefPool then
     DefinePool.WriteDebugReport
   else
-    DebugLn('  DefinePool.ConsistencyCheck=',dbgs(DefinePool.ConsistencyCheck));
+    DefinePool.ConsistencyCheck;
   if WriteDefTree then
     DefineTree.WriteDebugReport
   else
-    DebugLn('  DefineTree.ConsistencyCheck=',dbgs(DefineTree.ConsistencyCheck));
+    DefineTree.ConsistencyCheck;
   if WriteCache then
     SourceCache.WriteDebugReport
   else
-    DebugLn('  SourceCache.ConsistencyCheck=',dbgs(SourceCache.ConsistencyCheck));
+    SourceCache.ConsistencyCheck;
   if WriteGlobalValues then
     GlobalValues.WriteDebugReport
   else
-    DebugLn('  GlobalValues.ConsistencyCheck=',dbgs(GlobalValues.ConsistencyCheck));
+    GlobalValues.ConsistencyCheck;
+  ConsistencyCheck;
 end;
 
 //-----------------------------------------------------------------------------

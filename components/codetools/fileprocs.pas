@@ -351,6 +351,11 @@ function ParamStrUTF8(Param: Integer): string;
 function GetEnvironmentStringUTF8(Index : Integer): String;
 function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 
+
+// other useful stuff
+procedure RaiseCatchableException(const Msg: string);
+
+
 implementation
 
 // to get more detailed error messages consider the os
@@ -363,6 +368,17 @@ uses
   {$ENDIF}
   Unix, BaseUnix;
 {$ENDIF}
+
+procedure RaiseCatchableException(const Msg: string);
+begin
+  { Raises an exception.
+    gdb does not catch fpc Exception objects, therefore this procedure raises
+    a standard AV which is catched by gdb. }
+  DebugLn('ERROR in CodeTools: ',Msg);
+  // creates an exception, that gdb catches:
+  DebugLn('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
 
 var
   LineInfoCache: TAVLTree = nil;

@@ -41,11 +41,14 @@ const
 type
   TOnValuesChanged = procedure of object;
   
-  ArrayOfAnsiString = {$IFDEF FPC}^{$ELSE}array of {$ENDIF}AnsiString;
+  ArrayOfAnsiString = ^AnsiString;
   
+
+  { TExpressionEvaluator }
 
   TExpressionEvaluator = class
   private
+    FChangeStamp: integer;
     FNames, FValues: ArrayOfAnsiString; // always sorted in FNames and FNames uppercase
     FCount: integer;
     FCapacity: integer;
@@ -59,7 +62,7 @@ type
     function CompareValues(const v1, v2: string): integer;
     function GetVariables(const Name: string): string;
     procedure SetVariables(const Name: string; const Value: string);
-    function IndexOfName(const VarName: string): integer;
+    function IndexOfName(const VarName: string; InsertPos: boolean): integer;
     procedure Expand;
   public
     property Variables[const Name: string]: string
@@ -82,8 +85,10 @@ type
     function AsString: string;
     constructor Create;
     destructor Destroy; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    property ChangeStamp: integer read FChangeStamp;
+    procedure IncreaseChangeStamp; inline;
   end;
 
   { TExpressionSolver
@@ -125,10 +130,12 @@ end;
 procedure TExpressionEvaluator.Clear;
 var i: integer;
 begin
+  if FCount=0 then exit;
   for i:=0 to FCount-1 do begin
     FNames[i]:='';
     FValues[i]:='';
   end;
+  FCount:=0;
   if FNames<>nil then begin
     FreeMem(FNames);
     FNames:=nil;
@@ -137,8 +144,8 @@ begin
     FreeMem(FValues);
     FValues:=nil;
   end;
-  FCount:=0;
   FCapacity:=0;
+  IncreaseChangeStamp;
 end;
 
 function TExpressionEvaluator.CompareValues(const v1, v2: string): integer;
@@ -454,30 +461,17 @@ begin
 end;
 
 procedure TExpressionEvaluator.Expand;
-var i, NewCapacity, NewSize: integer;
-  NewValues, NewNames: ArrayOfAnsiString;
+var
+  NewSize: integer;
 begin
-  NewCapacity:=(FCapacity shl 1)+10;
-  NewSize:=SizeOf(AnsiString)*NewCapacity;
-  GetMem(NewValues,NewSize);
-  GetMem(NewNames,NewSize);
-  FillChar(Pointer(NewValues)^,NewSize,0);
-  FillChar(Pointer(NewNames)^,NewSize,0);
-  for i:=0 to FCount-1 do begin
-    NewValues[i]:=FValues[i];
-    FValues[i]:='';
-    NewNames[i]:=FNames[i];
-    FNames[i]:='';
-  end;
-  if FValues<>nil then FreeMem(FValues);
-  if FNames<>nil then FreeMem(FNames);
-  FValues:=NewValues;
-  FNames:=NewNames;
-  FCapacity:=NewCapacity;
+  FCapacity:=(FCapacity shl 1)+10;
+  NewSize:=SizeOf(AnsiString)*FCapacity;
+  ReAllocMem(FValues,NewSize);
+  ReAllocMem(FNames,NewSize);
 end;
 
 function TExpressionEvaluator.IndexOfName(
-  const VarName: string): integer;
+  const VarName: string; InsertPos: boolean): integer;
 var l,r,m, cmp: integer;
 begin
   if FCount=0 then begin
@@ -494,18 +488,24 @@ begin
       l:=m+1
     else if cmp<0 then
       r:=m-1
-    else
-      break;
+    else begin
+      Result:=m;
+      exit;
+    end;
   end;
-  if CompareText(VarName,FNames[m])>0 then inc(m);
-  Result:=m;
+  if InsertPos then begin
+    if CompareText(VarName,FNames[m])>0 then inc(m);
+    Result:=m;
+  end else begin
+    Result:=-1;
+  end;
 end;
 
 function TExpressionEvaluator.GetVariables(const Name: string): string;
 var i: integer;
 begin
-  i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then
+  i:=IndexOfName(Name,false);
+  if (i>=0) then
     Result:=FValues[i]
   else 
     Result:='';
@@ -514,8 +514,8 @@ end;
 function TExpressionEvaluator.IsDefined(const Name: string): boolean;
 var i: integer;
 begin
-  i:=IndexOfName(Name);
-  Result:=(i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0);
+  i:=IndexOfName(Name,false);
+  Result:=(i>=0);
 end;
 
 function TExpressionEvaluator.ReadNextAtom: boolean;
@@ -619,44 +619,55 @@ begin
       FNames[i]:=SourceExpressionEvaluator.FNames[i];
       FValues[i]:=SourceExpressionEvaluator.FValues[i];
     end;
+    IncreaseChangeStamp;
   end;
   if Assigned(FOnChange) then FOnChange;
 end;
 
 procedure TExpressionEvaluator.SetVariables(const Name: string;
   const Value: string);
-var i, j: integer;
+var i: integer;
+  Size: Integer;
 begin
-  i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then
+  i:=IndexOfName(Name,true);
+  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then begin
     // variable already exists -> replace value
-    FValues[i]:=Value
-  else begin
+    if FValues[i]<>Value then begin
+      FValues[i]:=Value;
+      IncreaseChangeStamp;
+    end;
+  end else begin
     // new variable
     if FCount=FCapacity then Expand;
     if i<0 then i:=0;
-    for j:=FCount downto i+1 do begin
-      FNames[j]:=FNames[j-1];
-      FValues[j]:=FValues[j-1];
+    if i<FCount then begin
+      Size:=SizeOf(AnsiString)*(FCount-i);
+      System.Move(PPointer(FNames)[i],PPointer(FNames)[i+1],Size);
+      System.Move(PPointer(FValues)[i],PPointer(FValues)[i+1],Size);
     end;
+    PPointer(FNames)[i]:=nil;
+    PPointer(FValues)[i]:=nil;
     FNames[i]:=UpperCaseStr(Name);
     FValues[i]:=Value;
     inc(FCount);
+    IncreaseChangeStamp;
   end;
 end;
 
 procedure TExpressionEvaluator.Undefine(const Name: string);
-var i, j: integer;
+var i: integer;
+  Size: Integer;
 begin
-  i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then begin
-    for j:=i to FCount-2 do begin
-      FNames[j]:=FNames[j+1];
-      FValues[j]:=FValues[j+1];
-    end;
+  i:=IndexOfName(Name,false);
+  if (i>=0) then begin
+    FNames[i]:='';
+    FValues[i]:='';
     dec(FCount);
-    FNames[FCount]:='';
-    FValues[FCount]:='';
+    if FCount>i then begin
+      Size:=SizeOf(AnsiString)*(FCount-i);
+      System.Move(PPointer(FNames)[i+1],PPointer(FNames)[i],Size);
+      System.Move(PPointer(FValues)[i+1],PPointer(FValues)[i],Size);
+    end;
   end;
 end;
 
@@ -712,51 +723,42 @@ begin
   end;
 end;
 
-function TExpressionEvaluator.ConsistencyCheck: integer;
+procedure TExpressionEvaluator.ConsistencyCheck;
 // 0 = ok
 var i: integer;
 begin
-  if FCapacity<0 then begin
-    Result:=-1;  exit;
-  end;
-  if FCapacity<FCount then begin
-    Result:=-2;  exit;
-  end;
-  if FCount<0 then begin
-    Result:=-3;  exit;
-  end;
-  if (FCapacity=0) and (FNames<>nil) then begin
-    Result:=-4;  exit;
-  end;
-  if (FNames=nil) xor (FValues=nil) then begin
-    Result:=-5;  exit;
-  end;
+  if FCapacity<0 then
+    RaiseCatchableException('');
+  if FCapacity<FCount then
+    RaiseCatchableException('');
+  if FCount<0 then
+    RaiseCatchableException('');
+  if (FCapacity=0) and (FNames<>nil) then
+    RaiseCatchableException('');
+  if (FNames=nil) xor (FValues=nil) then
+    RaiseCatchableException('');
   for i:=0 to FCount-1 do begin
-    if not IsUpperCaseStr(FNames[i]) then begin
-      Result:=-6;  exit;
-    end;
-    if (i>0) and (FNames[i-1]=FNames[i]) then begin
-      Result:=-7;  exit;
-    end;
-    if (i>0) and (AnsiCompareStr(FNames[i-1],FNames[i])>0) then begin
-      Result:=-8;  exit;
-    end;
+    if not IsUpperCaseStr(FNames[i]) then
+      RaiseCatchableException('');
+    if (i>0) and (FNames[i-1]=FNames[i]) then
+      RaiseCatchableException('');
+    if (i>0) and (CompareText(FNames[i-1],FNames[i])>0) then
+      RaiseCatchableException('');
   end;
-  for i:=FCount to FCapacity-1 do begin
-    if (FNames[i]<>'') then begin
-      Result:=-9;  exit;
-    end;
-    if (FValues[i]<>'') then begin
-      Result:=-10;  exit;
-    end;
-  end;
-  Result:=0;
 end;
 
 procedure TExpressionEvaluator.WriteDebugReport;
 begin
-  DebugLn('[TExpressionEvaluator.WriteDebugReport] Consistency=',
-    dbgs(ConsistencyCheck));
+  DebugLn('[TExpressionEvaluator.WriteDebugReport] ');
+  ConsistencyCheck;
+end;
+
+procedure TExpressionEvaluator.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(Integer) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(Integer);
 end;
 
 

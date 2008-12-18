@@ -74,7 +74,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
     function LoadFromFile(const AFilename: string): boolean; override;
     function Reload: boolean; // = LoadFromFile(Filename)
@@ -163,7 +163,7 @@ type
   public
     constructor Create;
     destructor Destroy;  override;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     function Count: integer;
     function CreateFile(const AFilename: string): TCodeBuffer;
     function FindFile(AFilename: string): TCodeBuffer;
@@ -746,46 +746,38 @@ begin
   end;
 end;
 
-function TCodeCache.ConsistencyCheck: integer;
+procedure TCodeCache.ConsistencyCheck;
 // 0 = ok
 var ANode: TAVLTreeNode;
+  CurResult: LongInt;
 begin
-  Result:=FItems.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,100);  exit;
-  end;
-  Result:=FIncludeLinks.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,200);  exit;
-  end;
+  CurResult:=FItems.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
+  CurResult:=FIncludeLinks.ConsistencyCheck;
+  if CurResult<>0 then
+    RaiseCatchableException(IntToStr(CurResult));
   ANode:=FItems.FindLowest;
   while ANode<>nil do begin
-    if ANode.Data=nil then begin
-      Result:=-1;
-      exit;
-    end;
-    Result:=TCodeBuffer(ANode.Data).ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,300);  exit;
-    end;
+    if ANode.Data=nil then
+      RaiseCatchableException('');
+    TCodeBuffer(ANode.Data).ConsistencyCheck;
     ANode:=FItems.FindSuccessor(ANode);
   end;
   ANode:=FIncludeLinks.FindLowest;
   while ANode<>nil do begin
-    if ANode.Data=nil then begin
-      Result:=-2;
-      exit;
-    end;
+    if ANode.Data=nil then
+      RaiseCatchableException('');
     ANode:=FIncludeLinks.FindSuccessor(ANode);
   end;
-  Result:=0;
 end;
 
 procedure TCodeCache.WriteDebugReport;
 begin
-  DebugLn('[TCodeCache.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('[TCodeCache.WriteDebugReport]');
   DebugLn(FItems.ReportAsString);
   DebugLn(FIncludeLinks.ReportAsString);
+  ConsistencyCheck;
 end;
 
 procedure TCodeCache.WriteAllFileNames;
@@ -1034,17 +1026,16 @@ begin
   dec(FReferenceCount);
 end;
 
-function TCodeBuffer.ConsistencyCheck: integer; // 0 = ok
+procedure TCodeBuffer.ConsistencyCheck;
 begin
-  if FScanner<>nil then begin
-    Result:=FScanner.ConsistencyCheck;
-  end;
-  Result:=0;
+  if FScanner<>nil then
+    FScanner.ConsistencyCheck;
 end;
 
 procedure TCodeBuffer.WriteDebugReport;
 begin
-  DebugLn('[TCodeBuffer.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('[TCodeBuffer.WriteDebugReport] ');
+  ConsistencyCheck;
 end;
 
 { TIncludedByLink }

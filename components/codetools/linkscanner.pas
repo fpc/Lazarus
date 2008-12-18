@@ -408,7 +408,7 @@ type
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
         
     procedure Clear;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
@@ -1357,32 +1357,23 @@ begin
   end;
 end;
 
-function TLinkScanner.ConsistencyCheck: integer;
+procedure TLinkScanner.ConsistencyCheck;
 var i: integer;
 begin
-  if (FLinks=nil) xor (FLinkCapacity=0) then begin
-    Result:=-1; exit;
-  end;
+  if (FLinks=nil) xor (FLinkCapacity=0) then
+    RaiseCatchableException('');
   if FLinks<>nil then begin
     for i:=0 to FLinkCount-1 do begin
-      if FLinks[i].Code=nil then begin
-        Result:=-2;  exit;
-      end;
-      if (FLinks[i].CleanedPos<1) or (FLinks[i].CleanedPos>SrcLen) then begin
-        Result:=-3;  exit;
-      end;
+      if FLinks[i].Code=nil then
+        RaiseCatchableException('');
+      if (FLinks[i].CleanedPos<1) or (FLinks[i].CleanedPos>SrcLen) then
+        RaiseCatchableException('');
     end;
   end;
-  if SrcLen<>length(Src) then begin // length of current source
-    Result:=-4;  exit;
-  end;
-  if Values<>nil then begin
-    Result:=Values.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,10);  exit;
-    end;
-  end;
-  Result:=0;
+  if SrcLen<>length(Src) then
+    RaiseCatchableException('');
+  if Values<>nil then
+    Values.ConsistencyCheck;
 end;
 
 procedure TLinkScanner.WriteDebugReport;

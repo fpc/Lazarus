@@ -29,4 +29,6 @@
 
 {off $DEFINE CTDEBUG}
 
+{$inline on}
+
 // end.
