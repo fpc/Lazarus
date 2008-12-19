@@ -1220,12 +1220,16 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
   end;
 
 var
-  DropZone, OldParentZone, NewParentZone: TDockZone;
+  CtlZone, DropZone, OldParentZone, NewParentZone: TDockZone;
   NewZone: TLazDockZone;
   NewOrientation: TDockOrientation;
   NeedNewParentZone: Boolean;
   NewBounds: TRect;
 begin
+  CtlZone := RootZone.FindZone(AControl);
+  if CtlZone <> nil then
+    RemoveControl(AControl);
+
   if (DropControl = nil) or (DropControl = AControl) then
     DropControl := DockSite;
 
@@ -1358,6 +1362,10 @@ begin
     // try with ParentZone now
     RemoveZone := ParentZone;
   end;
+
+  // reset orientation
+  if (RemoveZone.ChildCount = 1) and (RemoveZone.Orientation in [doHorizontal, doVertical]) then
+    RemoveZone.Orientation := doNoOrient;
 
   // Build dock layout (anchors, splitters, pages)
   if (RemoveZone.Parent <> nil) then
