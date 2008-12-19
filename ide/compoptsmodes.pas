@@ -135,6 +135,9 @@ type
     FChangeStamp: integer;
     FEvaluator: TExpressionEvaluator;
     FRoot: TCompOptCondNode;
+    FEvaluatorStamp: integer;
+    FValuesValid: boolean;
+    FValues: array[TCOCValueType] of string;
     function GetValues(const ValueType: TCOCValueType): string;
     procedure SetEvaluator(const AValue: TExpressionEvaluator);
   public
@@ -312,7 +315,13 @@ end;
 
 function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
 begin
-
+  if (not FValuesValid)
+  or (FEvaluator.ChangeStamp<>FEvaluatorStamp) then begin
+    // ToDo
+    FValuesValid:=true;
+    FEvaluatorStamp:=FEvaluator.ChangeStamp;
+  end;
+  Result:=FValues[ValueType];
 end;
 
 procedure TCompOptConditionals.SetEvaluator(const AValue: TExpressionEvaluator
@@ -320,6 +329,7 @@ procedure TCompOptConditionals.SetEvaluator(const AValue: TExpressionEvaluator
 begin
   if FEvaluator=AValue then exit;
   FEvaluator:=AValue;
+  FValuesValid:=false;
 end;
 
 constructor TCompOptConditionals.Create;
