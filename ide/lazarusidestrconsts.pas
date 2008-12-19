@@ -3994,6 +3994,11 @@ resourcestring
   lisSelectedTopNeighbour = '(selected top neighbour)';
   lisSelectedBottomNeighbour = '(selected bottom neighbour)';
 
+  rsCreatingDirFailed = 'Creating directory "%s" failed!';
+  rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
+  rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
+  lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
+
 implementation
 
 end.
