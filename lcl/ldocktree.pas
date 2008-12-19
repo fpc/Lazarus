@@ -1297,19 +1297,19 @@ begin
       if OldParentZone <> nil then
         OldParentZone.ReplaceChild(DropZone, NewParentZone);
       NewParentZone.AddAsFirstChild(DropZone);
-
-      // child control already had orientation but now we moved it to another parent
-      // which can take another orientation => change child control orientation
-      NewParentZone.Orientation := NewOrientation;
-      if DropZone.ChildControl <> nil then
-        DropZone.ChildControl.DockOrientation := NewOrientation;
     end;
     
     if DropZone.Parent = nil then
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
     // adjust Orientation in tree
     if DropZone.Parent.Orientation = doNoOrient then
+    begin
+      // child control already had orientation but now we moved it to parent
+      // which can take another orientation => change child control orientation
       DropZone.Parent.Orientation := NewOrientation;
+      if (DropZone.Parent.ChildCount = 1) and (DropZone.Parent.FirstChild.ChildControl <> nil) then
+        DropZone.Parent.FirstChild.ChildControl.DockOrientation := NewOrientation;
+    end;
     if DropZone.Parent.Orientation <> NewOrientation then
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Orientation<>NewOrientation');
 
