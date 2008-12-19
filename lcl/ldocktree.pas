@@ -81,6 +81,7 @@ type
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure AnchorDockLayout(Zone: TLazDockZone);
     procedure CreateDockLayoutHelperControls(Zone: TLazDockZone);
+    procedure ResetSizes(Zone: TLazDockZone);
     procedure BreakAnchors(Zone: TDockZone);
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); override;
@@ -992,6 +993,45 @@ begin
   CreateDockLayoutHelperControls(Zone.NextSibling as TLazDockZone);
 end;
 
+procedure TLazDockTree.ResetSizes(Zone: TLazDockZone);
+var
+  NewSize, NewPos: Integer;
+  Child: TLazDockZone;
+begin
+  if Zone = nil then
+    Exit;
+
+  // split available size between children
+  if (Zone.Orientation in [doHorizontal, doVertical]) and
+     (Zone.VisibleChildCount > 0) then
+  begin
+    NewSize := Zone.LimitSize div Zone.VisibleChildCount;
+    NewPos := Zone.LimitBegin;
+    Child := Zone.FirstChild as TLazDockZone;
+    while Child <> nil do
+    begin
+      if Child.Visible then
+      begin
+        case Zone.Orientation of
+          doHorizontal:
+            begin
+              Child.Top := NewPos;
+              Child.Height := NewSize;
+            end;
+          doVertical:
+            begin
+              Child.Left := NewPos;
+              Child.Width := NewSize;
+            end;
+        end;
+        ResetSizes(Child);
+        inc(NewPos, NewSize);
+      end;
+      Child := Child.NextSibling as TLazDockZone;
+    end;
+  end;
+end;
+
 procedure TLazDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
 begin
   // offset one of the borders of control rect in order to get space for frame
@@ -1305,6 +1345,7 @@ begin
   try
     BreakAnchors(Zone);
     CreateDockLayoutHelperControls(Zone);
+    ResetSizes(Zone);
     AnchorDockLayout(Zone);
   finally
     if DockSite <> nil then

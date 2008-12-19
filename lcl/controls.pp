@@ -1893,6 +1893,7 @@ type
     FOrientation: TDockOrientation;
     FNextSibling: TDockZone;
     FPrevSibling: TDockZone;
+    FBounds: TRect;
   protected
     function GetHeight: Integer; virtual;
     function GetLeft: Integer; virtual;
@@ -1902,6 +1903,12 @@ type
     function GetVisible: Boolean; virtual;
     function GetVisibleChildCount: Integer; virtual;
     function GetWidth: Integer; virtual;
+    procedure SetLimitBegin(const AValue: Integer); virtual;
+    procedure SetLimitSize(const AValue: Integer); virtual;
+    procedure SetHeight(const AValue: Integer); virtual;
+    procedure SetLeft(const AValue: Integer); virtual;
+    procedure SetTop(const AValue: Integer); virtual;
+    procedure SetWidth(const AValue: Integer); virtual;
   public
     constructor Create(TheTree: TDockTree; TheChildControl: TControl);
     function FindZone(AControl: TControl): TDockZone;
@@ -1919,17 +1926,17 @@ type
     property ChildControl: TControl read FChildControl;
     property ChildCount: Integer read FChildCount;
     property FirstChild: TDockZone read FFirstChildZone;
-    property Height: Integer read GetHeight;
-    property Left: Integer read GetLeft;
-    property LimitBegin: Integer read GetLimitBegin; // returns Left or Top
-    property LimitSize: Integer read GetLimitSize;   // returns Width or Height
+    property Height: Integer read GetHeight write SetHeight;
+    property Left: Integer read GetLeft write SetLeft;
+    property LimitBegin: Integer read GetLimitBegin write SetLimitBegin; // returns Left or Top
+    property LimitSize: Integer read GetLimitSize write SetLimitSize;    // returns Width or Height
     property Orientation: TDockOrientation read FOrientation write FOrientation;
     property Parent: TDockZone read FParentZone;
-    property Top: Integer read GetTop;
+    property Top: Integer read GetTop write SetTop;
     property Tree: TDockTree read FTree;
     property Visible: Boolean read GetVisible;
     property VisibleChildCount: Integer read GetVisibleChildCount;
-    property Width: Integer read GetWidth;
+    property Width: Integer read GetWidth write SetWidth;
     property NextSibling: TDockZone read FNextSibling;
     property PrevSibling: TDockZone read FPrevSibling;
   end;

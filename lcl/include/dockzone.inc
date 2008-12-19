@@ -18,105 +18,155 @@
  *****************************************************************************
 }
 
-function TDockZone.GetHeight: Integer;
-//var
-  //Zone: TDockZone;
-  //R: TRect;
+procedure TDockZone.SetLimitBegin(const AValue: Integer);
+// sets the left/top coord of zone.
+begin
+  case FOrientation of
+    doHorizontal: Top := AValue;
+    doVertical: Left := AValue;
+  else
+    raise Exception.Create('TDockZone.SetLimitBegin');
+  end;
+end;
+
+procedure TDockZone.SetLimitSize(const AValue: Integer);
+// sets the zone width/height.
+begin
+  case FOrientation of
+    doHorizontal: Height := AValue;
+    doVertical: Width := AValue;
+  else
+    raise Exception.Create('TDockZone.SetLimitSize');
+  end;
+end;
+
+procedure TDockZone.SetHeight(const AValue: Integer);
 begin
   if not Visible then
-    Result:=0
-  else if (FChildControl<>nil) then
-    Result:=FChildControl.Height
-  else if FParentZone<>nil then
-    Result:=FParentZone.Height
-  else
-    Result:=0;
+    Exit;
 
-  {if (Self = FTree.FTopZone)
-  or ((FParentZone = FTree.FTopZone)
-      and (FChildControl <> nil) and (FTree.FTopZone.VisibleChildCount = 1))
-  then begin
-    R := FTree.FDockSite.ClientRect;
-    FTree.FDockSite.AdjustClientRect(R);
-    Result := R.Bottom - R.Top;
-  end
-  else begin
-    Zone := Self;
-    while Zone.FParentZone<>nil do begin
-      if Zone.FParentZone.FOrientation = doHorizontal then begin
-        Result := Zone.ZoneLimit - Zone.LimitBegin;
-        Exit;
-      end else
-        Zone := Zone.FParentZone;
-    end;
-    if FTree.FTopZone.FOrientation = doHorizontal then
-      Result := FTree.FTopXYLimit
+  if (FChildControl <> nil) then
+    FChildControl.Height := AValue
+  else
+    FBounds.Bottom := AValue;
+end;
+
+procedure TDockZone.SetLeft(const AValue: Integer);
+begin
+  if not Visible then
+    Exit;
+
+  if (FChildControl <> nil) then
+    FChildControl.Left := AValue
+  else
+    FBounds.Left := AValue;
+end;
+
+procedure TDockZone.SetTop(const AValue: Integer);
+begin
+  if not Visible then
+    Exit;
+
+  if (FChildControl <> nil) then
+    FChildControl.Top := AValue
+  else
+    FBounds.Top := AValue;
+end;
+
+procedure TDockZone.SetWidth(const AValue: Integer);
+begin
+  if not Visible then
+    Exit;
+
+  if (FChildControl <> nil) then
+    FChildControl.Width := AValue
+  else
+    FBounds.Right := AValue;
+end;
+
+function TDockZone.GetHeight: Integer;
+begin
+  if not Visible then
+    Result := 0
+  else
+  if (FChildControl <> nil) then
+  begin
+    if FTree.RootZone = Self then
+      Result := FChildControl.ClientHeight
     else
-      Result := FTree.FTopZone.ZoneLimit;
-  end;}
+      Result := FChildControl.Height
+  end
+  else
+  begin
+    if FParentZone.Orientation = doHorizontal then
+      Result := FBounds.Bottom
+    else
+      Result := FParentZone.Height;
+  end;
 end;
 
 function TDockZone.GetLeft: Integer;
-//var
-  //Zone: TDockZone;
-  //R: TRect;
 begin
-  Result:=0;
-
-  {Zone := Self;
-  while Zone.FParentZone<>nil do begin
-    if (Zone.FParentZone.FOrientation = doVertical)
-    and (Zone.FPrevSibling <> nil) then begin
-      Result := Zone.FPrevSibling.ZoneLimit;
-      Exit;
-    end else
-      Zone := Zone.FParentZone;
+  if not Visible then
+    Result := 0
+  else
+  if (FChildControl <> nil) then
+  begin
+    if FTree.RootZone = Self then
+      Result := 0
+    else
+      Result := FChildControl.Left
+  end
+  else
+  begin
+    if FParentZone.Orientation = doVertical then
+      Result := FBounds.Left
+    else
+      Result := FParentZone.Left;
   end;
-  R := FTree.FDockSite.ClientRect;
-  FTree.FDockSite.AdjustClientRect(R);
-  Result:=R.Left;}
 end;
 
 function TDockZone.GetLimitBegin: Integer;
-// returns the zone limit.
+// returns the left/top coord of zone.
 begin
-  if FOrientation = doHorizontal then
-    Result := Top
-  else if FOrientation = doVertical then
-    Result := Left
+  case FOrientation of
+    doHorizontal: Result := Top;
+    doVertical: Result := Left;
   else
     raise Exception.Create('TDockZone.GetLimitBegin');
+  end;
 end;
 
 function TDockZone.GetLimitSize: Integer;
-// returns the zone size.
+// returns the zone width/height.
 begin
-  if FOrientation = doHorizontal then
-    Result := Height
-  else if FOrientation = doVertical then
-    Result := Width
+  case FOrientation of
+    doHorizontal: Result := Height;
+    doVertical: Result := Width;
   else
     raise Exception.Create('TDockZone.GetLimitSize');
+  end;
 end;
 
 function TDockZone.GetTop: Integer;
-//var
-  //Zone: TDockZone;
-  //R: TRect;
 begin
-  Result:=0
-  {Zone := Self;
-  while Zone.FParentZone<>nil do begin
-    if (Zone.FParentZone.FOrientation = doHorizontal)
-    and (Zone.FPrevSibling <> nil) then begin
-      Result := Zone.FPrevSibling.ZoneLimit;
-      Exit;
-    end else
-      Zone := Zone.FParentZone;
+  if not Visible then
+    Exit(0);
+
+  if (FChildControl <> nil) then
+  begin
+    if FTree.RootZone = Self then
+      Result := 0
+    else
+      Result := FChildControl.Top
+  end
+  else
+  begin
+    if FParentZone.Orientation = doHorizontal then
+      Result := FBounds.Top
+    else
+      Result := FParentZone.Top;
   end;
-  R := FTree.FDockSite.ClientRect;
-  FTree.FDockSite.AdjustClientRect(R);
-  Result:=R.Top;}
 end;
 
 function TDockZone.GetVisible: Boolean;
@@ -143,13 +193,22 @@ end;
 function TDockZone.GetWidth: Integer;
 begin
   if not Visible then
-    Result:=0
-  else if (FChildControl<>nil) then
-    Result:=FChildControl.Width
-  else if FParentZone<>nil then
-    Result:=FParentZone.Width
+    Exit(0);
+
+  if (FChildControl <> nil) then
+  begin
+    if FTree.RootZone = Self then
+      Result := FChildControl.ClientWidth
+    else
+      Result := FChildControl.Width
+  end
   else
-    Result:=0;
+  begin
+    if FParentZone.Orientation = doVertical then
+      Result := FBounds.Right
+    else
+      Result := FParentZone.Width;
+  end;
 end;
 
 function TDockZone.GetNextVisibleZone: TDockZone;
@@ -161,8 +220,9 @@ end;
 
 constructor TDockZone.Create(TheTree: TDockTree; TheChildControl: TControl);
 begin
-  FTree:=TheTree;
-  FChildControl:=TheChildControl;
+  FTree := TheTree;
+  FChildControl := TheChildControl;
+  FBounds := Rect(0, 0, 0, 0);
 end;
 
 function TDockZone.FindZone(AControl: TControl): TDockZone;
