@@ -1327,26 +1327,40 @@ begin
   end;
   
   // Build dock layout (anchors, splitters, pages)
-  BuildDockLayout(RootZone{NewZone.Parent} as TLazDockZone);
+  if NewZone.Parent <> nil then
+    BuildDockLayout(NewZone.Parent as TLazDockZone)
+  else
+    BuildDockLayout(RootZone as TLazDockZone);
 end;
 
 procedure TLazDockTree.RemoveControl(AControl: TControl);
 var
-  RemoveZone: TLazDockZone;
+  RemoveZone, ParentZone: TLazDockZone;
 begin
   RemoveZone := RootZone.FindZone(AControl) as TLazDockZone;
-  if RemoveZone <> nil then
+
+  if (RemoveZone <> nil) and (RemoveZone.ChildCount > 0) then
+    raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount > 0');
+
+  // destroy child zone and all parents if they does not contain anything else
+  while (RemoveZone <> RootZone) and
+        (RemoveZone <> nil) and
+        (RemoveZone.ChildCount = 0) do
   begin
-    if RemoveZone.ChildCount>0 then
-      raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount>0');
+    ParentZone := RemoveZone.Parent as TLazDockZone;
     RemoveZone.FreeSubComponents;
-    if RemoveZone.Parent<>nil then
-      RemoveZone.Parent.Remove(RemoveZone);
+    if ParentZone <> nil then
+      ParentZone.Remove(RemoveZone);
     RemoveZone.Free;
+    // try with ParentZone now
+    RemoveZone := ParentZone;
   end;
 
   // Build dock layout (anchors, splitters, pages)
-  BuildDockLayout(RootZone as TLazDockZone);
+  if (RemoveZone <> nil) and (RemoveZone <> RootZone) then
+    BuildDockLayout(RemoveZone.Parent as TLazDockZone)
+  else
+    BuildDockLayout(RootZone as TLazDockZone);
 end;
 
 procedure TLazDockTree.BuildDockLayout(Zone: TLazDockZone);
