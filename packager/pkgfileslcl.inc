@@ -72,6 +72,7 @@ AddFile('postscriptcanvas.pas','PostscriptCanvas',pftUnit,[],cpBase);
 AddFile('postscriptprinter.pas','PostScriptPrinter',pftUnit,[],cpBase);
 AddFile('printers.pas','Printers',pftUnit,[],cpBase);
 AddFile('propertystorage.pas','PropertyStorage',pftUnit,[],cpBase);
+AddFile('shellctrls.pas','ShellCtrls',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('stdactns.pas','StdActns',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpBase);
