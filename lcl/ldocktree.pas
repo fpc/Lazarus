@@ -1045,6 +1045,9 @@ end;
 
 procedure TLazDockTree.AnchorDockLayout(Zone: TLazDockZone);
 // setup all anchors between all docked controls and helper controls
+const
+  SplitterWidth = 5;
+  SplitterHeight = 5;
 var
   AnchorControls: array[TAnchorKind] of TControl;
   a: TAnchorKind;
@@ -1077,7 +1080,7 @@ begin
         NewSplitterAnchors := [akLeft, akRight];
         Zone.Splitter.AnchorSide[akLeft].Side := asrTop;
         Zone.Splitter.AnchorSide[akRight].Side := asrBottom;
-        Zone.Splitter.Height := 5;
+        Zone.Splitter.Height := SplitterHeight;
         if Zone.PrevSibling <> nil then
           Zone.Splitter.Top := (Zone.PrevSibling.Top + Zone.PrevSibling.Height) - DefaultDockGrabberSize;
         Zone.Splitter.ResizeAnchor := akBottom;
@@ -1088,7 +1091,7 @@ begin
         NewSplitterAnchors := [akTop, akBottom];
         Zone.Splitter.AnchorSide[akTop].Side := asrTop;
         Zone.Splitter.AnchorSide[akBottom].Side := asrBottom;
-        Zone.Splitter.Width := 5;
+        Zone.Splitter.Width := SplitterWidth;
         if Zone.PrevSibling <> nil then
           Zone.Splitter.Left := (Zone.PrevSibling.Left + Zone.PrevSibling.Width) - DefaultDockGrabberSize;
         Zone.Splitter.ResizeAnchor := akRight;
@@ -1216,25 +1219,21 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
     AControl.AutoSize := False;
   end;
 
-const
-  SplitterWidth = 5;
-  SplitterHeight = 5;
 var
-  DropZone: TDockZone;
+  DropZone, OldParentZone, NewParentZone: TDockZone;
   NewZone: TLazDockZone;
   NewOrientation: TDockOrientation;
   NeedNewParentZone: Boolean;
-  NewParentZone: TDockZone;
-  OldParentZone: TDockZone;
   NewBounds: TRect;
 begin
-  if DropControl=nil then
-    DropControl:=DockSite;
-  DropZone:=RootZone.FindZone(DropControl);
-  if DropZone=nil then
+  if (DropControl = nil) or (DropControl = AControl) then
+    DropControl := DockSite;
+
+  DropZone := RootZone.FindZone(DropControl);
+  if DropZone = nil then
     raise Exception.Create('TLazDockTree.InsertControl DropControl is not part of this TDockTree');
 
-  NewOrientation:=DockAlignOrientations[InsertAt];
+  NewOrientation := DockAlignOrientations[InsertAt];
 
   // undock
   UndockControlForDocking(AControl);
@@ -1339,12 +1338,16 @@ var
 begin
   RemoveZone := RootZone.FindZone(AControl) as TLazDockZone;
 
-  if (RemoveZone <> nil) and (RemoveZone.ChildCount > 0) then
+  // no such control => exit
+  if RemoveZone = nil then
+    Exit;
+
+  // has children
+  if (RemoveZone.ChildCount > 0) then
     raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount > 0');
 
   // destroy child zone and all parents if they does not contain anything else
   while (RemoveZone <> RootZone) and
-        (RemoveZone <> nil) and
         (RemoveZone.ChildCount = 0) do
   begin
     ParentZone := RemoveZone.Parent as TLazDockZone;
@@ -1357,7 +1360,7 @@ begin
   end;
 
   // Build dock layout (anchors, splitters, pages)
-  if (RemoveZone <> nil) and (RemoveZone <> RootZone) then
+  if (RemoveZone.Parent <> nil) then
     BuildDockLayout(RemoveZone.Parent as TLazDockZone)
   else
     BuildDockLayout(RootZone as TLazDockZone);
