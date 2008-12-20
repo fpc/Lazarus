@@ -104,7 +104,6 @@ type
     FPrevSibling: TCompOptCondNode;
     FValue: string;
     FValueType: TCOCValueType;
-    function GetChilds(Index: integer): TCompOptCondNode;
     procedure SetNodeType(const AValue: TCOCNodeType);
     procedure SetParent(const AValue: TCompOptCondNode);
     procedure SetValue(const AValue: string);
@@ -180,11 +179,6 @@ end;
 
 { TCompOptCondNode }
 
-function TCompOptCondNode.GetChilds(Index: integer): TCompOptCondNode;
-begin
-  Result:=TCompOptCondNode(fChilds[Index]);
-end;
-
 procedure TCompOptCondNode.SetNodeType(const AValue: TCOCNodeType);
 begin
   if FNodeType=AValue then exit;
@@ -196,12 +190,12 @@ procedure TCompOptCondNode.SetParent(const AValue: TCompOptCondNode);
 begin
   if FParent=AValue then exit;
   if FParent<>nil then begin
-    FParent.InternalRemoveChild(Self);
+    // ToDo
     FParent.Changed;
   end;
   FParent:=AValue;
   if FParent<>nil then begin
-    FParent.InternalAddChild(Self,Count);
+    // ToDo
     FParent.Changed;
   end;
 end;
@@ -238,8 +232,6 @@ begin
 end;
 
 procedure TCompOptCondNode.Clear;
-var
-  i: Integer;
 begin
   fClearing:=true;
   while FFirstChild<>nil do
@@ -280,8 +272,6 @@ end;
 
 procedure TCompOptCondNode.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
-var
-  i: Integer;
 begin
   XMLConfig.SetDeleteValue(Path+'NodeType',COCNodeTypeNames[NodeType],
                            COCNodeTypeNames[cocntNone]);
@@ -289,8 +279,7 @@ begin
                            COCValueTypeNames[cocvtNone]);
   XMLConfig.SetDeleteValue(Path+'Value',Value,'');
   XMLConfig.SetDeleteValue(Path+'ChildCount',Count,0);
-  for i:=0 to Count-1 do
-    Childs[i].SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
+  // ToDo
 end;
 
 { TCompOptConditionals }
@@ -299,6 +288,8 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
 
   function ComputeIfNode(Node: TCompOptCondNode;
     out ExprResult: boolean): boolean;
+  var
+    ResultStr: String;
   begin
     case Node.NodeType of
     cocntIf,cocntElseIf:
@@ -330,8 +321,8 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
       begin
         if not ComputeIfNode(Node,ExprResult) then exit;
         if ExprResult then begin
-          if Node.Count>0 then
-            if not ComputeNode(Node.Childs[0]) then exit;
+          if Node.FirstChild<>nil then
+            if not ComputeNode(Node.FirstChild) then exit;
           // skip till EndIf
 
         end else begin
