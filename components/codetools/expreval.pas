@@ -475,7 +475,10 @@ function TExpressionEvaluator.IndexOfName(
 var l,r,m, cmp: integer;
 begin
   if FCount=0 then begin
-    Result:=0;
+    if InsertPos then
+      Result:=-1
+    else
+      Result:=0;
     exit;
   end;
   l:=0;

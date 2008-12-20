@@ -1244,7 +1244,6 @@ begin
   IncCommentLevel;
   inc(SrcPos,2);
   CommentInnerStartPos:=SrcPos;
-  // ToDo: nested comments
   while (SrcPos<SrcLen) do begin
     if ((Src[SrcPos]<>'*') or (Src[SrcPos+1]<>')')) then
       inc(SrcPos)

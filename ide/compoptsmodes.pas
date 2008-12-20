@@ -94,18 +94,19 @@ type
   TCompOptCondNode = class
   private
     FCount: integer;
-    fChilds: TFPList;// list of TCompOptCondNode
     fClearing: Boolean;
+    FFirstChild: TCompOptCondNode;
+    FLastChild: TCompOptCondNode;
+    FNextSibling: TCompOptCondNode;
     FNodeType: TCOCNodeType;
     FOwner: TCompOptConditionals;
     FParent: TCompOptCondNode;
+    FPrevSibling: TCompOptCondNode;
     FValue: string;
     FValueType: TCOCValueType;
     function GetChilds(Index: integer): TCompOptCondNode;
     procedure SetNodeType(const AValue: TCOCNodeType);
     procedure SetParent(const AValue: TCompOptCondNode);
-    procedure InternalAddChild(Child: TCompOptCondNode; Index: integer);
-    procedure InternalRemoveChild(Child: TCompOptCondNode);
     procedure SetValue(const AValue: string);
     procedure SetValueType(const AValue: TCOCValueType);
     procedure Changed;
@@ -114,18 +115,19 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure AddLast(Child: TCompOptCondNode);
-    procedure Insert(Child: TCompOptCondNode; Index: integer);
-    procedure Move(CurIndex, NewIndex: integer);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
     property NodeType: TCOCNodeType read FNodeType write SetNodeType;
     property ValueType: TCOCValueType read FValueType write SetValueType;
     property Value: string read FValue write SetValue;
-    property Parent: TCompOptCondNode read FParent write SetParent;
-    property Childs[Index: integer]: TCompOptCondNode read GetChilds; default;
-    property Count: integer read FCount;
     property Owner: TCompOptConditionals read FOwner;
+    property Parent: TCompOptCondNode read FParent write SetParent;
+    property Count: integer read FCount;
+    property FirstChild: TCompOptCondNode read FFirstChild;
+    property LastChild: TCompOptCondNode read FLastChild;
+    property NextSibling: TCompOptCondNode read FNextSibling;
+    property PrevSibling: TCompOptCondNode read FPrevSibling;
   end;
 
   { TCompOptConditionals }
@@ -133,6 +135,7 @@ type
   TCompOptConditionals = class
   private
     FChangeStamp: integer;
+    FErrorNode: TCompOptCondNode;
     FEvaluator: TExpressionEvaluator;
     FRoot: TCompOptCondNode;
     FEvaluatorStamp: integer;
@@ -153,6 +156,7 @@ type
     property ChangeStamp: integer read FChangeStamp;
     property Root: TCompOptCondNode read FRoot;
     procedure IncreaseChangeStamp; inline;
+    property ErrorNode: TCompOptCondNode read FErrorNode write FErrorNode;
   end;
 
 function COCNodeTypeNameToType(const s: string): TCOCNodeType;
@@ -202,17 +206,6 @@ begin
   end;
 end;
 
-procedure TCompOptCondNode.InternalAddChild(Child: TCompOptCondNode;
-  Index: integer);
-begin
-  fChilds.Insert(Index,Child);
-end;
-
-procedure TCompOptCondNode.InternalRemoveChild(Child: TCompOptCondNode);
-begin
-  fChilds.Remove(Child);
-end;
-
 procedure TCompOptCondNode.SetValue(const AValue: string);
 begin
   if FValue=AValue then exit;
@@ -235,14 +228,12 @@ end;
 constructor TCompOptCondNode.Create(TheOwner: TCompOptConditionals);
 begin
   FOwner:=TheOwner;
-  fChilds:=TFPList.Create;
 end;
 
 destructor TCompOptCondNode.Destroy;
 begin
   Parent:=nil;
   Clear;
-  FreeAndNil(FChilds);
   inherited Destroy;
 end;
 
@@ -251,29 +242,20 @@ var
   i: Integer;
 begin
   fClearing:=true;
-  for i:=0 to FChilds.Count-1 do
-    TObject(fChilds[i]).Free;
-  fChilds.Clear;
+  while FFirstChild<>nil do
+    FFirstChild.Free;
   fClearing:=false;
 end;
 
 procedure TCompOptCondNode.AddLast(Child: TCompOptCondNode);
 begin
   Child.Parent:=nil;
-  InternalAddChild(Child,Count);
+  Child.fPrevSibling:=FLastChild;
+  FLastChild.FNextSibling:=Child;
+  if FFirstChild=nil then
+    FFirstChild:=Child;
+  FLastChild:=Child;
   Child.FParent:=Self;
-end;
-
-procedure TCompOptCondNode.Insert(Child: TCompOptCondNode; Index: integer);
-begin
-  Child.Parent:=nil;
-  InternalAddChild(Child,Index);
-  Child.FParent:=Self;
-end;
-
-procedure TCompOptCondNode.Move(CurIndex, NewIndex: integer);
-begin
-  fChilds.Move(CurIndex,NewIndex);
 end;
 
 procedure TCompOptCondNode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -314,10 +296,61 @@ end;
 { TCompOptConditionals }
 
 function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
+
+  function ComputeIfNode(Node: TCompOptCondNode;
+    out ExprResult: boolean): boolean;
+  begin
+    case Node.NodeType of
+    cocntIf,cocntElseIf:
+      begin
+        ResultStr:=FEvaluator.Eval(Node.Value);
+        if FEvaluator.ErrorPosition>=0 then begin
+          FErrorNode:=Node;
+          exit(false);
+        end;
+        ExprResult:=ResultStr<>'0';
+      end;
+    cocntIfdef:
+      ExprResult:=FEvaluator.IsDefined(Node.Value);
+    cocntIfNdef:
+      ExprResult:=not FEvaluator.IsDefined(Node.Value);
+    else
+      exit(false);
+    end;
+    Result:=true;
+  end;
+
+  function ComputeNode(Node: TCompOptCondNode): boolean;
+  var
+    ExprResult: boolean;
+  begin
+    Result:=false;
+    case Node.NodeType of
+    cocntIf,cocntIfdef,cocntIfNdef:
+      begin
+        if not ComputeIfNode(Node,ExprResult) then exit;
+        if ExprResult then begin
+          if Node.Count>0 then
+            if not ComputeNode(Node.Childs[0]) then exit;
+          // skip till EndIf
+
+        end else begin
+
+        end;
+      end;
+
+    end;
+    Result:=true;
+  end;
+
+var
+  v: TCOCValueType;
 begin
   if (not FValuesValid)
   or (FEvaluator.ChangeStamp<>FEvaluatorStamp) then begin
-    // ToDo
+    for v:=Low(FValues) to High(FValues) do
+      FValues[v]:='';
+    ComputeNode(Root);
     FValuesValid:=true;
     FEvaluatorStamp:=FEvaluator.ChangeStamp;
   end;
@@ -329,7 +362,7 @@ procedure TCompOptConditionals.SetEvaluator(const AValue: TExpressionEvaluator
 begin
   if FEvaluator=AValue then exit;
   FEvaluator:=AValue;
-  FValuesValid:=false;
+  InvalidateValues;
 end;
 
 constructor TCompOptConditionals.Create;
@@ -339,20 +372,20 @@ end;
 
 destructor TCompOptConditionals.Destroy;
 begin
+  Clear;
   inherited Destroy;
 end;
 
 procedure TCompOptConditionals.Clear;
 begin
-
+  FErrorNode:=nil;
+  FreeAndNil(FRoot);
 end;
 
 procedure TCompOptConditionals.InvalidateValues;
 begin
-  if FChangeStamp<High(Integer) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(Integer);
+  FValuesValid:=false;
+  FErrorNode:=nil;
 end;
 
 procedure TCompOptConditionals.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -369,7 +402,10 @@ end;
 
 procedure TCompOptConditionals.IncreaseChangeStamp; inline;
 begin
-
+  if FChangeStamp<High(Integer) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(Integer);
 end;
 
 end.
