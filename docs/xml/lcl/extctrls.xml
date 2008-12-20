@@ -101,8 +101,18 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPageFlag">
-        <short/>
-        <descr/>
+        <short>
+          <var>TPageFlag</var> - enumerated type containing possible values for page flags for notebook pages</short>
+        <descr>
+          <p>
+            <var>TPageFlag</var> - enumerated type containing possible values for page flags for notebook pages</p>
+          <pre/>
+
+    pfAdded,  // handle of page added to notebook handle
+    pfAdding, // currently handle of page adding to notebook handle
+    pfRemoving, // currently removing page handle from notebook handle
+    pfInserting // currently inserting page into notebook
+</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -115,7 +125,9 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TPageFlags">
-        <short/>
+        <short>
+          <var>TPageFlags</var> - set of <var>TPageFlag</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -178,7 +190,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.WMPaint">
+      <element name="TCustomPage.WMPaint" link="#LCL.Controls.TWinControl.WMPaint">
         <short/>
         <descr/>
         <errors/>
@@ -189,7 +201,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.SetParent">
+      <element name="TCustomPage.SetParent" link="#LCL.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -206,7 +218,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.CMHitTest">
+      <element name="TCustomPage.CMHitTest" link="#LCL.Controls.TControl.CMHitTest">
         <short/>
         <descr/>
         <errors/>
@@ -225,7 +237,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomPage.GetPageIndex">
-        <short/>
+        <short>
+          <var>GetPageIndex</var> - returns the index of the current page</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -236,7 +249,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.SetPageIndex">
-        <short/>
+        <short>
+          <var>SetPageIndex</var> - specifies an index for the current page</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -287,14 +301,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.DoHide">
-        <short/>
+        <short>
+          <var>DoHide</var> - perform the code for the <var>OnHide</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.DoShow">
-        <short/>
+        <short>
+          <var>DoShow</var> - perform the code for the <var>OnShow</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -409,7 +425,9 @@
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TCustomPageClass">
-        <short/>
+        <short>
+          <var>TCustomPageClass</var> - class of <var>TCustomPage</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -487,8 +505,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TNBPages.Create">
-        <short>Create a new instance of this control with specified page list and notebook</short>
+      <element name="TNBPages.Create" link="#rtl.System.TObject.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -551,7 +568,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTabChangingEvent">
-        <short/>
+        <short>
+          <var>TTabChangingEvent</var> - generic event handling method for a change in a notebook Tab</short>
         <descr/>
         <seealso/>
       </element>
@@ -566,7 +584,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TTabPosition">
         <short>
-          <var>TTabPosition</var> - position of tab relative to page: top, bottom, left or right</short>
+          <var>TTabPosition</var> - enumerated type for position of tab relative to page: top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
@@ -589,7 +607,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TTabStyle">
         <short>
-          <var>TTabStyle</var> - normal tab style, buttons or flat buttons</short>
+          <var>TTabStyle</var> - enumerated type for tab style: normal, buttons or flat buttons</short>
         <descr/>
         <seealso/>
       </element>
@@ -607,7 +625,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTabGetImageEvent">
-        <short/>
+        <short>
+          <var>TTabGetImageEvent</var> - generic event handling method for getting an image for a Tab</short>
         <descr/>
         <seealso/>
       </element>
@@ -640,7 +659,9 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TNoteBookOptions">
-        <short/>
+        <short>
+          <var>TNoteBookOptions</var> - set of <var>TNoteBookOption</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1013,7 +1034,8 @@
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomNotebook.PageClass">
-        <short/>
+        <short>
+          <var>PageClass</var> - the class of page that is included in this NoteBook</short>
         <descr/>
         <seealso/>
       </element>
@@ -1026,14 +1048,18 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomNotebook.DoCreateWnd">
-        <short/>
+        <short>
+          <var>DoCreateWnd</var> - perform th ecode for method <var>CreateWnd</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomNotebook.Change">
-        <short/>
+        <short>
+          <var>Change</var> - perform the code for <var>OnChanging</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1057,7 +1083,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.ShowControl">
+      <element name="TCustomNotebook.ShowControl" link="#LCL.Controls.TWinControl.ShowControl">
         <short/>
         <descr/>
         <errors/>
@@ -1069,7 +1095,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomNotebook.UpdateTabProperties">
-        <short/>
+        <short>
+          <var>UpdateTabProperties</var> - apply all pending changes to the Tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1725,8 +1752,16 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TIdleTimerAutoEvent">
-        <short/>
-        <descr/>
+        <short>
+          <var>TIdleTimerAutoEvent</var> - enumerated class containing events relevant to a timer</short>
+        <descr>
+          <p>
+            <var>TIdleTimerAutoEvent</var> - enumerated class containing events relevant to a timer</p>
+          <pre>itaOnIdle,
+    itaOnIdleEnd,
+    itaOnUserInput
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1743,7 +1778,9 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TIdleTimerAutoEvents">
-        <short/>
+        <short>
+          <var>TIdleTimerAutoEvents</var> - set of <var>TIdleTimerAutoEvent</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1813,7 +1850,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.SetAutoEnabled">
-        <short/>
+        <short>
+          <var>SetAutoEnabled</var> - specifies whether AutoEnable is allowed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1824,7 +1862,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnIdle">
-        <short/>
+        <short>
+          <var>DoOnIdle</var> - performs the code for timer idling</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1835,7 +1874,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnIdleEnd">
-        <short/>
+        <short>
+          <var>DoOnIdleEnd</var> - performs the code for the end of idling</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1846,7 +1886,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnUserInput">
-        <short/>
+        <short>
+          <var>DoOnUserInput</var> - performs the code for responding to user input</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1907,8 +1948,21 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TShapeType">
-        <short/>
-        <descr/>
+        <short>
+          <var>TShapeType</var> - enumerated type containing several standard geometric shapes</short>
+        <descr>
+          <p>
+            <var>TShapeType</var> - enumerated type containing several standard geometric shapes:</p>
+          <pre>stRectangle
+  stSquare
+  stRoundRect
+  stRoundSquare
+  stEllipse
+  stCircle
+  stSquaredDiamond
+  stDiamond
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2165,7 +2219,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TResizeStyle">
-        <short/>
+        <short>
+          <var>TResizeStyle</var> - enumerated type for style of resizing using splitters</short>
         <descr/>
         <seealso/>
       </element>
@@ -2187,7 +2242,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TCanResizeEvent">
-        <short/>
+        <short>
+          <var>TCanResizeEvent</var> - generic event handling method for resizing using splitter</short>
         <descr/>
         <seealso/>
       </element>
@@ -2276,7 +2332,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSplitter.FindAlignOtherControl">
-        <short/>
+        <short>
+          <var>FindAlignOtherControl</var> - returns another alignment control (the splitter may have to align two controls)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2505,7 +2562,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSplitter.FindAlignControl">
-        <short/>
+        <short>
+          <var>FindAlignControl</var> - returns the main alignment control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2538,14 +2596,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.CheckAlignment">
-        <short/>
+        <short>
+          <var>CheckAlignment</var> - ensure control is correctly aligned</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSplitter.CheckNewSize">
-        <short/>
+        <short>
+          <var>CheckNewSize</var> - ensure new size is appropriate: returns True if sucessful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3082,7 +3142,8 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.PictureChanged">
-        <short/>
+        <short>
+          <var>PictureChanged</var> - software emulaton of the <var>OnPictureChanged</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3093,7 +3154,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomImage.DestRect">
-        <short/>
+        <short>
+          <var>DestRect</var> - returns the location of the destination rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3194,7 +3256,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomImage.OnMouseUp">
+      <element name="TCustomImage.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
@@ -3357,7 +3419,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBevelStyle">
-        <short/>
+        <short>
+          <var>TBevelStyle</var> - enumerated type for bevel style: lowered or raised</short>
         <descr/>
         <seealso/>
       </element>
@@ -3371,8 +3434,19 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBevelShape">
-        <short/>
-        <descr/>
+        <short>
+          <var>TBevelShape</var> - enumerated type for shape of bevel</short>
+        <descr>
+          <p>
+            <var>TBevelShape</var> - enumerated type for shape of bevel</p>
+          <pre>bsBox
+  bsFrame
+  bsTopLine
+  bsBottomLine
+  bsLeftLine
+  bsRightLine
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -3638,7 +3712,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TColumnLayout">
-        <short/>
+        <short>
+          <var>TColumnLayout</var> - enumerated type for layout where data are arranged in columns</short>
         <descr/>
         <seealso/>
       </element>
@@ -3762,7 +3837,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.UpdateRadioButtonStates">
-        <short/>
+        <short>
+          <var>UpdateRadioButtonStates</var> including implementing any pending changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3791,7 +3867,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetColumns">
-        <short/>
+        <short>
+          <var>SetColumns</var> - specifies the number of columns for displaying the items</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3802,7 +3879,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetItemIndex">
-        <short/>
+        <short>
+          <var>SetItemIndex</var> - specifies an index for an item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3813,7 +3891,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomRadioGroup.GetItemIndex">
-        <short/>
+        <short>
+          <var>GetItemIndex</var> - returns an index for an item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4075,7 +4154,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.OnMouseMove">
+      <element name="TRadioGroup.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
@@ -4130,7 +4209,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TCheckGroupClicked">
-        <short/>
+        <short>
+          <var>TCheckGroupClicked</var> - generic event handler method for a click in a check group</short>
         <descr/>
         <seealso/>
       </element>
@@ -4317,7 +4397,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.SetItems">
-        <short/>
+        <short>
+          <var>SetItems</var> - specify the strings that form the Items of the group</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4328,7 +4409,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.SetColumns">
-        <short/>
+        <short>
+          <var>SetColumns</var> - specifies the nuber of coulmns in which the Items are arranged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4892,7 +4974,8 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TLabelPosition">
-        <short/>
+        <short>
+          <var>TLabelPosition</var> - enumerated type for position of a label relative to an edit box: above, below, left, right</short>
         <descr/>
         <seealso/>
       </element>
@@ -5021,7 +5104,8 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.DoPositionLabel">
-        <short/>
+        <short>
+          <var>DoPositionLabel</var> - perform the code for positioning the label</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5042,7 +5126,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabeledEdit.CMVisibleChanged">
+      <element name="TCustomLabeledEdit.CMVisibleChanged" link="#LCL.Controls.TWinControl.CMVisibleChanged">
         <short/>
         <descr/>
         <errors/>
@@ -5053,7 +5137,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabeledEdit.CMEnabledChanged">
+      <element name="TCustomLabeledEdit.CMEnabledChanged" link="#LCL.Controls.TWinControl.CMEnabledChanged">
         <short/>
         <descr/>
         <errors/>
@@ -5065,7 +5149,8 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.CreateInternalLabel">
-        <short/>
+        <short>
+          <var>CreateInternalLabel</var> - method for internally creating label</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5585,7 +5670,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomPanel.GetDefaultDockCaption">
+      <element name="TCustomPanel.GetDefaultDockCaption" link="#LCL.Controls.TControl.GetDefaultDockCaption">
         <short/>
         <descr/>
         <errors/>
@@ -5604,7 +5689,8 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPanel.UpdateParentColorChange">
-        <short/>
+        <short>
+          <var>UpdateParentColorChange</var> - update any pending changes in parent colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6051,7 +6137,7 @@ After that, the parent's destroy method is called.
         <short>Find the position of the Tray Icon and thus a position suitable to display the hinting BalloonHint. Under Windows an approximate location is detected.</short>
       </element>
       <element name="TCustomTrayIcon.BalloonFlags">
-        <short>the set of kinds of ballon flag that can be displayed (may be None, Info, Warning or Error)</short>
+        <short>the set of kinds of balloon flag that can be displayed (may be None, Info, Warning or Error)</short>
       </element>
       <element name="TCustomTrayIcon.BalloonHint">
         <short>The text to be shown in the hinting balloon</short>
@@ -6419,7 +6505,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnChanging">
+      <element name="TNotebook.OnChanging" link="#LCL.ExtCtrls.TCustomNotebook.OnChanging">
         <short/>
         <descr/>
         <seealso/>
@@ -6840,7 +6926,8 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetItems">
-        <short/>
+        <short>
+          <var>SetItems</var> - specifies the strings that form the Items of the group</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6851,7 +6938,8 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.CheckItemIndexChanged">
-        <short/>
+        <short>
+          <var>CheckItemIndexChanged</var> - find out if the index for an item has changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6953,28 +7041,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TBallonFlags">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TBallonFlags.bfNone">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TBallonFlags.bfInfo">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TBallonFlags.bfWarning">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TBallonFlags.bfError">
-        <short/>
-      </element>
+
       <!-- variable Visibility: private -->
       <element name="TCustomTrayIcon.FBalloonFlags">
         <short/>
@@ -7160,7 +7227,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element>
       <!-- variable Visibility: public -->
       <element name="TCustomTrayIcon.Handle">
-        <short/>
+        <short>Operating system <var>Handle</var> for the Tray Icon</short>
         <descr/>
         <seealso/>
       </element>
@@ -7178,7 +7245,8 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTrayIcon.InternalUpdate">
-        <short/>
+        <short>
+          <var>InternalUpdate</var> - updates any pending changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7187,7 +7255,37 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomTrayIcon.GetPosition.Result">
         <short/>
       </element>
-      <element name="TCustomNotebook.GetCapabilities"/>
+      <element name="TCustomNotebook.GetCapabilities">
+        <short>
+          <var>GetCapabilities</var> - returns the set of capabilities</short>
+      </element>
+      <element name="TNoteBookCapability">
+        <short>
+          <var>TNoteBookCapability</var> - enumerated type containing possible capabilities of a notebook</short>
+        <descr>nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup</descr>
+      </element>
+      <element name="TNoteBookCapabilities">
+        <short>
+          <var>TNoteBookCapabilities</var> - set of <var>TNoteBookCapability</var>
+        </short>
+      </element>
+      <element name="TShape.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TShape.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TCustomImage.OnPictureChanged">
+        <short>
+          <var>OnPictureChanged</var> - event handler for a change in the picture</short>
+      </element>
+      <element name="TImage.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TImage.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TImage.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TImage.OnPictureChanged" link="#LCL.ExtCtrls.TCustomImage.OnPictureChanged"/>
+      <element name="TRadioGroup.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCheckGroup.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TLabeledEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TBalloonFlags">
+        <short>
+          <var>TBalloonFlags</var> enumerated type for flags on Tray Icon balloons</short>
+      </element>
     </module>
     <!-- ExtCtrls -->
   </package>
