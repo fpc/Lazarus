@@ -2275,6 +2275,12 @@ begin
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     RecogniseFormalParameters;
 
+  // lazarus can give a name to "result" here
+  if fcTokenList.FirstSolidTokenType <> ttColon then
+  begin
+    RecogniseIdentifier(false, idAny);
+  end;
+
   Recognise(ttColon);
   PushNode(nFunctionReturnType);
   RecogniseType;
@@ -2296,7 +2302,7 @@ end;
 
 procedure TBuildParseTree.RecogniseOperatorSymbol;
 const
-  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv,
+  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
     ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
     ttAssign];
 begin

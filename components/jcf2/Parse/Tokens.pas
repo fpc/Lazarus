@@ -263,6 +263,7 @@ type
     ttHat,
     ttTimes,
     ttFloatDiv,
+    ttExponent,
     ttPlus,
     ttMinus,
     ttEquals,
@@ -387,14 +388,14 @@ const
 
   AddOperators: TTokenTypeSet = [ttPlus, ttMinus, ttOr, ttXor];
 
-  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr];
+  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr, ttExponent];
 
   SingleSpaceOperators = [
     // some unary operators
     ttNot,
     // all operators that are always binary
     ttAnd, ttAs, ttDiv, ttIn, ttIs, ttMod, ttOr, ttShl, ttShr, ttXor,
-    ttTimes, ttFloatDiv, ttEquals, ttGreaterThan, ttLessThan,
+    ttTimes, ttFloatDiv, ttExponent, ttEquals, ttGreaterThan, ttLessThan,
     ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual];
 
   StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString];
@@ -737,6 +738,7 @@ begin
   AddKeyword('@', wtOperator, ttAtSign);
   AddKeyword('^', wtOperator, ttHat);
   AddKeyword('*', wtOperator, ttTimes);
+  AddKeyword('**', wtOperator, ttExponent); // in Lazarus
   AddKeyword('/', wtOperator, ttFloatDiv);
   AddKeyword('+', wtOperator, ttPlus);
   AddKeyword('-', wtOperator, ttMinus);

@@ -640,21 +640,21 @@ function TBuildTokenList.TryPunctuation(const pcToken: TSourceToken): boolean;
 
   function FollowsPunctuation(const chLast, ch: WideChar): boolean;
   const
-    { these have meanings on thier own and should not be recognised as part of the punc.
+    { These have meanings on thier own and should not be recognised as part of the punc.
      e.g '=(' is not a punctation symbol, but 2 of them ( for e.g. in const a=(3);
      simlarly ');' is 2 puncs }
     UnitaryPunctuation: set of AnsiChar = [
       NativeSingleQuote, '"', '(', ')', '[', ']', '{',
       '#', '$', '_', ';', '@', '^', ','];
 
-   { these can't have anything following them:
+   { These can't have anything following them:
     for e.g, catch the case if a=-1 then ...
       where '=-1' should be read as '=' '-1' not '=-' '1'
       Nothing legitimately comes after '=' AFAIK
       also a:=a*-1;
       q:=q--1; // q equals q minus minus-one. It sucks but it compiles so it must be parsed
       etc }
-    SingleChars: set of AnsiChar = ['=', '+', '-', '*', '/', '\'];
+    SingleChars: set of AnsiChar = ['=', '+', '-', '/', '\'];
 
   begin
     Result := False;
@@ -674,6 +674,11 @@ function TBuildTokenList.TryPunctuation(const pcToken: TSourceToken): boolean;
     // ':' can be followed by '=' only
     if (chLast = ':') and (ch <> '=') then
       exit;
+
+    // * can be followed by another *
+    if (chLast = '*') and (ch <> '*') then
+      exit;
+
 
     // "<<" is the start of two nested generics,
     // likewise '>>' is not an operator, it is two "end-of-generic" signs in sucession
@@ -734,7 +739,7 @@ end;
 
 function TBuildTokenList.BuildTokenList: TSourceTokenList;
 const
-  UPDATE_INTERVAL = 4096; // big incre,ents here, this is fatser than parsing
+  UPDATE_INTERVAL = 4096; // big increments here, this goes faster than parsing
 var
   lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
