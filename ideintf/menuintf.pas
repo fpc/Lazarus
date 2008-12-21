@@ -72,6 +72,8 @@ type
     procedure SetImageIndex(const AValue: Integer); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); virtual;
     procedure SetName(const AValue: string); virtual;
+    procedure SetOnClickMethod(const AValue: TNotifyEvent); virtual;
+    procedure SetOnClickProc(const AValue: TNotifyProcedure); virtual;
     procedure SetSection(const AValue: TIDEMenuSection); virtual;
     procedure SetVisible(const AValue: Boolean); virtual;
     procedure ClearMenuItems; virtual;
@@ -95,8 +97,8 @@ type
     property Hint: String read GetHint write SetHint;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
-    property OnClick: TNotifyEvent read FOnClickMethod write FOnClickMethod;
-    property OnClickProc: TNotifyProcedure read FOnClickProc write FOnClickProc;
+    property OnClick: TNotifyEvent read FOnClickMethod write SetOnClickMethod;
+    property OnClickProc: TNotifyProcedure read FOnClickProc write SetOnClickProc;
     property Caption: string read GetCaption write SetCaption;
     property Section: TIDEMenuSection read FSection write SetSection;
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -231,6 +233,8 @@ type
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
     procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
+    procedure SetOnClickMethod(const AValue: TNotifyEvent); override;
+    procedure SetOnClickProc(const AValue: TNotifyProcedure); override;
     procedure SetResourceName(const AValue: String);
     procedure CommandChanged(Sender: TObject);
   public
@@ -535,6 +539,16 @@ end;
 procedure TIDEMenuItem.BitmapChange(Sender: TObject);
 begin
   if MenuItem<>nil then MenuItem.Bitmap:=Bitmap;
+end;
+
+procedure TIDEMenuItem.SetOnClickProc(const AValue: TNotifyProcedure);
+begin
+  FOnClickProc := AValue;
+end;
+
+procedure TIDEMenuItem.SetOnClickMethod(const AValue: TNotifyEvent);
+begin
+  FOnClickMethod := AValue;
 end;
 
 procedure TIDEMenuItem.SetEnabled(const AValue: Boolean);
@@ -1557,14 +1571,25 @@ end;
 
 procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommand);
 begin
-  if FCommand=AValue then exit;
-  if FCommand<>nil then begin
+  if FCommand = AValue then
+    Exit;
+  if FCommand <> nil then
+  begin
     //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-    FCommand.OnChange:=nil;
+    FCommand.OnChange := nil;
+    if FCommand.OnExecute=OnClick then
+      FCommand.OnExecute:=nil;
+    if FCommand.OnExecuteProc=OnClickProc then
+      FCommand.OnExecuteProc:=nil;
   end;
-  FCommand:=AValue;
-  if FCommand<>nil then begin
-    FCommand.OnChange:=@CommandChanged;
+  FCommand := AValue;
+  if FCommand <> nil then
+  begin
+    if FCommand.OnExecute = nil then
+      FCommand.OnExecute := OnClick;
+    if FCommand.OnExecuteProc = nil then
+      FCommand.OnExecuteProc := OnClickProc;
+    FCommand.OnChange := @CommandChanged;
     //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
   end;
   CommandChanged(nil);
@@ -1588,6 +1613,26 @@ begin
     if ResourceName <> '' then
       MenuItem.ImageIndex := IDEImages.LoadImage(16, ResourceName);
   end;
+end;
+
+procedure TIDEMenuCommand.SetOnClickMethod(const AValue: TNotifyEvent);
+var
+  OldClick: TNotifyEvent;
+begin
+  OldClick:=OnClick;
+  inherited SetOnClickMethod(AValue);
+  if Assigned(Command) and (Command.OnExecute = OldClick) then
+    Command.OnExecute := OnClick;
+end;
+
+procedure TIDEMenuCommand.SetOnClickProc(const AValue: TNotifyProcedure);
+var
+  OldClick: TNotifyProcedure;
+begin
+  OldClick:=OnClickProc;
+  inherited SetOnClickProc(AValue);
+  if Assigned(Command) and (Command.OnExecuteProc = OldClick) then
+    Command.OnExecuteProc := OnClickProc;
 end;
 
 { TIDEMenuRoots }
