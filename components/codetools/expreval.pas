@@ -476,9 +476,9 @@ var l,r,m, cmp: integer;
 begin
   if FCount=0 then begin
     if InsertPos then
-      Result:=-1
+      Result:=0
     else
-      Result:=0;
+      Result:=-1;
     exit;
   end;
   l:=0;
