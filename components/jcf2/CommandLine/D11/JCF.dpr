@@ -154,7 +154,8 @@ uses
   CommandLineReturnCode in '..\CommandLineReturnCode.pas',
   CommandLineConstants in '..\CommandLineConstants.pas',
   StatusMessageReceiver in '..\StatusMessageReceiver.pas',
-  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas';
+  JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
+  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
 
 var
   feReturnCode: TJcfCommandLineReturnCode;

@@ -107,7 +107,8 @@ type
     procedure RecogniseClassVars;
     procedure RecogniseProcedureDeclSection;
     procedure RecogniseClassOperator(const pbHasBody: boolean);
-
+    procedure RecogniseOperator(const pbHasBody: boolean);
+    procedure RecogniseOperatorSymbol;
 
     // set pbAnon = true if the proc has no name
     procedure RecogniseProcedureHeading(const pbAnon, pbCanInterfaceMap: boolean);
@@ -797,7 +798,7 @@ begin
       RecogniseTypeSection(false);
     ttVar, ttThreadvar:
       RecogniseVarSection(false);
-    ttProcedure, ttFunction:
+    ttProcedure, ttFunction, ttOperator:
       RecogniseExportedHeading;
     ttOpenSquareBracket:
       RecogniseAttributes;
@@ -833,6 +834,10 @@ begin
     begin
       RecogniseFunctionHeading(False, False);
     end;
+    ttOperator:
+    begin
+      RecogniseOperator(false);
+    end
     else
       raise TEParseError.Create('Expected function or procedure', lc);
   end;
@@ -935,7 +940,7 @@ begin
       RecogniseTypeSection(false);
     ttVar, ttThreadvar:
       RecogniseVarSection(false);
-    ttProcedure, ttFunction, ttConstructor, ttDestructor, ttClass:
+    ttProcedure, ttFunction, ttConstructor, ttDestructor, ttClass, ttOperator:
       RecogniseProcedureDeclSection;
     ttExports:
       RecogniseExportsSection;
@@ -2249,6 +2254,43 @@ begin
   PopNode;
 end;
 
+procedure TBuildParseTree.RecogniseOperator(const pbHasBody: boolean);
+begin
+  PushNode(nFunctionDecl);
+  PushNode(nFunctionHeading);
+  Recognise(ttOperator);
+
+  RecogniseOperatorSymbol();
+
+  if fcTokenList.FirstSolidTokenType = ttOpenBracket then
+    RecogniseFormalParameters;
+
+  Recognise(ttColon);
+  PushNode(nFunctionReturnType);
+  RecogniseType;
+  PopNode;
+
+  RecogniseProcedureDirectives;
+
+  PopNode;
+
+  if pbHasBody then
+  begin
+    Recognise(ttSemiColon);
+    RecogniseBlock;
+    Recognise(ttSemiColon);
+  end;
+
+  PopNode;
+end;
+
+procedure TBuildParseTree.RecogniseOperatorSymbol;
+const
+  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttEquals, ttAssign];
+begin
+  Recognise(OperatorTokens);
+end;
+
 procedure TBuildParseTree.RecogniseVarDecl;
 var
   lc: TSourceToken;
@@ -3495,6 +3537,8 @@ begin
       RecogniseConstructorDecl;
     ttDestructor:
       RecogniseDestructorDecl;
+    ttOperator:
+      RecogniseOperator(True);
 
     ttClass:
     begin

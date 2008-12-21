@@ -405,7 +405,7 @@ begin
   if (LowerS = 'false') or (LowerS = 'no') or (LowerS = '0') then
     Result := False
   else
-  if (LowerS = 'true') or (LowerS = 'yes') or (LowerS = '1') then
+  if (LowerS = 'true') or (LowerS = 'yes') or (LowerS = '1') or (LowerS = '-1') then
     Result := True
   else
     raise EJcfConversionError.Create('Cannot convert string [' + S + '] to boolean');

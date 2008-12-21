@@ -51,7 +51,7 @@ type
     fcRootNode: TObject;
 
     procedure CheckFormalParamUsage(const pcParam, pcBlock: TParseTreeNode);
-    procedure CheckIndentifierUsage(const psIdentName: string;
+    procedure CheckIdentifierUsage(const psIdentName: string;
       const pcBlock: TParseTreeNode);
     function IsIdentifierUsedInParseTree(const psIdentName: string;
       const pcRoot: TParseTreeNode): boolean;
@@ -134,12 +134,12 @@ begin
     begin
       lcIdentLeaf := TSourceToken(lcIdent.FirstSolidLeaf);
       psIdentName := lcIdentLeaf.SourceCode;
-      CheckIndentifierUsage(psIdentName, pcBlock);
+      CheckIdentifierUsage(psIdentName, pcBlock);
     end;
   end;
 end;
 
-procedure TWarnUnusedParam.CheckIndentifierUsage(const psIdentName: string; const pcBlock: TParseTreeNode);
+procedure TWarnUnusedParam.CheckIdentifierUsage(const psIdentName: string; const pcBlock: TParseTreeNode);
 var
   lbFound: boolean;
 begin

@@ -63,6 +63,7 @@ function TMoveSpaceToBeforeColon.EnabledVisitSourceToken(const pcNode: TObject):
 var
   lcSourceToken: TSourceToken;
   lcNext: TSourceToken;
+  lcAfter: TSourceToken;
   lcNew: TSourceToken;
 begin
   Result := False;
@@ -80,9 +81,19 @@ begin
       lcNew.TokenType := ttWhiteSpace;
       lcNew.SourceCode := lcNext.SourceCode;
 
+      BlankToken(lcNext);
+
+      // and any following space
+      lcAfter := lcNext.NextToken;
+      while (lcAfter <> nil) and (lcAfter.TokenType = ttWhiteSpace) do
+      begin
+        lcNew.SourceCode := lcNew.SourceCode + lcAfter.SourceCode;
+        BlankToken(lcAfter);
+        lcAfter := lcAfter.NextToken;
+      end;
+
       InsertTokenBefore(lcSourceToken, lcNew);
 
-      BlankToken(lcNext);
       Result := True;
     end;
 
