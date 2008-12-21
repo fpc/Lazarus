@@ -105,10 +105,10 @@ type
     FValue: string;
     FValueType: TCOCValueType;
     procedure SetNodeType(const AValue: TCOCNodeType);
-    procedure SetParent(const AValue: TCompOptCondNode);
     procedure SetValue(const AValue: string);
     procedure SetValueType(const AValue: TCOCValueType);
     procedure Changed;
+    procedure Unbind;
   public
     constructor Create(TheOwner: TCompOptConditionals);
     destructor Destroy; override;
@@ -121,7 +121,7 @@ type
     property ValueType: TCOCValueType read FValueType write SetValueType;
     property Value: string read FValue write SetValue;
     property Owner: TCompOptConditionals read FOwner;
-    property Parent: TCompOptCondNode read FParent write SetParent;
+    property Parent: TCompOptCondNode read FParent;
     property Count: integer read FCount;
     property FirstChild: TCompOptCondNode read FFirstChild;
     property LastChild: TCompOptCondNode read FLastChild;
@@ -186,20 +186,6 @@ begin
   Changed;
 end;
 
-procedure TCompOptCondNode.SetParent(const AValue: TCompOptCondNode);
-begin
-  if FParent=AValue then exit;
-  if FParent<>nil then begin
-    // ToDo
-    FParent.Changed;
-  end;
-  FParent:=AValue;
-  if FParent<>nil then begin
-    // ToDo
-    FParent.Changed;
-  end;
-end;
-
 procedure TCompOptCondNode.SetValue(const AValue: string);
 begin
   if FValue=AValue then exit;
@@ -219,6 +205,20 @@ begin
   if FOwner<>nil then FOwner.InvalidateValues;
 end;
 
+procedure TCompOptCondNode.Unbind;
+begin
+  if FParent<>nil then begin
+    if FParent.FFirstChild=Self then FParent.FFirstChild:=FNextSibling;
+    if FParent.FLastChild=Self then FParent.FLastChild:=FPrevSibling;
+    dec(FParent.FCount);
+    FParent:=nil;
+  end;
+  if FNextSibling<>nil then FNextSibling.FPrevSibling:=FPrevSibling;
+  if FPrevSibling<>nil then FPrevSibling.FNextSibling:=FNextSibling;
+  FNextSibling:=nil;
+  FPrevSibling:=nil;
+end;
+
 constructor TCompOptCondNode.Create(TheOwner: TCompOptConditionals);
 begin
   FOwner:=TheOwner;
@@ -226,8 +226,8 @@ end;
 
 destructor TCompOptCondNode.Destroy;
 begin
-  Parent:=nil;
   Clear;
+  Unbind;
   inherited Destroy;
 end;
 
@@ -241,12 +241,13 @@ end;
 
 procedure TCompOptCondNode.AddLast(Child: TCompOptCondNode);
 begin
-  Child.Parent:=nil;
+  Child.Unbind;
   Child.fPrevSibling:=FLastChild;
   FLastChild.FNextSibling:=Child;
   if FFirstChild=nil then
     FFirstChild:=Child;
   FLastChild:=Child;
+  inc(FCount);
   Child.FParent:=Self;
 end;
 
