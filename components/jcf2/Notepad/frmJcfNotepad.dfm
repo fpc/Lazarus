@@ -19,7 +19,7 @@ object fmJCFNotepad: TfmJCFNotepad
   OnKeyUp = FormKeyUp
   OnResize = FormResize
   OnShow = FormShow
-  PixelsPerInch = 120
+  PixelsPerInch = 96
   TextHeight = 20
   object sb1: TStatusBar
     Left = 0
@@ -112,10 +112,6 @@ object fmJCFNotepad: TfmJCFNotepad
     object tsOutput: TTabSheet
       Caption = 'Output'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 504
       object lblMessages: TLabel
         Left = 15
         Top = 207

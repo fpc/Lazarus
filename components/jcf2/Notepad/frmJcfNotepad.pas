@@ -157,6 +157,7 @@ uses
   { jcl }
   JclStrings,
   { local }
+  JcfUnicodeFiles, JcfStringUtils,
   JCFHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;
 
 {$ifdef FPC}
@@ -189,6 +190,9 @@ begin
 end;
 
 procedure TfmJCFNotepad.DoFileOpen(const psFileName: string);
+var
+  lsFileContents: WideString;
+  leContentType: TFileContentType;
 begin
   if psFileName = '' then
     exit;
@@ -196,7 +200,13 @@ begin
     exit;
 
   GetRegSettings.InputDir := ExtractFilePath(psFileName);
-  mInput.Text := string(FileToString(psFileName));
+
+  ReadTextFile(psFileName, lsFileContents, leContentType);
+
+  // use standard line breaks - temp
+  //lsFileContents := WideStringReplace(lsFileContents, NativeLineFeed, NativeCrLf, [rfReplaceAll]);
+
+  mInput.Text := lsFileContents;
   sb1.Panels[1].Text := psFileName;
   AddCheckMRU(psFileName);
 

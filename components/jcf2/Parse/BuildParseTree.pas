@@ -770,7 +770,7 @@ begin
 
   }
   while fcTokenList.FirstSolidTokenType in [ttConst, ttResourceString,
-      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports] + ProcedureWords do
+      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports, ttOperator] + ProcedureWords do
     RecogniseInterfaceDecl;
 end;
 
@@ -997,6 +997,8 @@ begin
 end;
 
 procedure TBuildParseTree.RecogniseConstSection(const pbNestedInClass: Boolean);
+var
+  leFirstTokenType: TTokenType;
 begin
   {
     ConstSection -> CONST (ConstantDecl ';')...
@@ -1012,8 +1014,13 @@ begin
     // #Trident# If const is nested inside a class, a visibility designator
     // ("private" for exemple) can be written after.
     // So, inside a class, no wtReservedWordDirective allowed
-    if pbNestedInClass and (fcTokenList.FirstSolidTokenType in ClassVisibility) then
-    break;
+    leFirstTokenType := fcTokenList.FirstSolidTokenType;
+    if pbNestedInClass and (leFirstTokenType in ClassVisibility) then
+      break;
+
+    // can be followed by an operator decl in Lazarus
+    if leFirstTokenType = ttOperator then
+      break;
   end;
 
   PopNode;
@@ -2254,6 +2261,9 @@ begin
   PopNode;
 end;
 
+{
+This is a free-pascal style operator
+}
 procedure TBuildParseTree.RecogniseOperator(const pbHasBody: boolean);
 begin
   PushNode(nFunctionDecl);
@@ -2286,7 +2296,9 @@ end;
 
 procedure TBuildParseTree.RecogniseOperatorSymbol;
 const
-  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttEquals, ttAssign];
+  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv,
+    ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
+    ttAssign];
 begin
   Recognise(OperatorTokens);
 end;
