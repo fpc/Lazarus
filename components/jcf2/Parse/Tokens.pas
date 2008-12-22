@@ -738,7 +738,7 @@ begin
   AddKeyword('@', wtOperator, ttAtSign);
   AddKeyword('^', wtOperator, ttHat);
   AddKeyword('*', wtOperator, ttTimes);
-  AddKeyword('**', wtOperator, ttExponent); // in Lazarus
+  AddKeyword('**', wtOperator, ttExponent); // in FreePascal
   AddKeyword('/', wtOperator, ttFloatDiv);
   AddKeyword('+', wtOperator, ttPlus);
   AddKeyword('-', wtOperator, ttMinus);

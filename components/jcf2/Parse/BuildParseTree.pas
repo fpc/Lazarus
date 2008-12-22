@@ -1018,7 +1018,7 @@ begin
     if pbNestedInClass and (leFirstTokenType in ClassVisibility) then
       break;
 
-    // can be followed by an operator decl in Lazarus
+    // can be followed by an operator decl in FreePascal
     if leFirstTokenType = ttOperator then
       break;
   end;
@@ -2275,7 +2275,7 @@ begin
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     RecogniseFormalParameters;
 
-  // lazarus can give a name to "result" here
+  // FreePascal can give a name to "result" here
   if fcTokenList.FirstSolidTokenType <> ttColon then
   begin
     RecogniseIdentifier(false, idAny);

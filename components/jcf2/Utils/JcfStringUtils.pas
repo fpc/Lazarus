@@ -516,7 +516,7 @@ function PathRemoveExtension(const Path: string): string;
 var
   p: Integer;
 begin
-  // from lazarus FileUtil
+  // from Lazarus FileUtil
   Result := Path;
   p := Length(Result);
   while (p>0) do
