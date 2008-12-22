@@ -46,7 +46,8 @@ type
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); virtual; abstract;
-    procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); virtual; abstract;
+    procedure AddLazarusResource(AResource: TStream;
+                   const ResourceName, ResourceType: String); virtual; abstract;
 
     property Messages: TStringList read FMessages;
   end;

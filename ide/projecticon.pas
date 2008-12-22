@@ -59,7 +59,8 @@ type
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
 
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
+    function UpdateResources(AResources: TAbstractProjectResources;
+                             const MainFilename: string): Boolean; override;
     function CreateIconFile: Boolean;
 
     property IconData: TIconData read FData write SetIconData;
@@ -76,7 +77,7 @@ const
 
 function TProjectIcon.GetStream: TStream;
 begin
-  if FData <> nil then
+  if length(FData)>0 then
   begin
     Result := TMemoryStream.Create;
     Result.WriteBuffer(FData[0], Length(FData));
@@ -206,8 +207,9 @@ procedure TProjectIcon.SetIconData(const AValue: TIconData);
 begin
   if (Length(AValue) = Length(FData)) and
      (FData <> nil) and
-     (CompareByte(AValue[0], FData[0], Length(FData)) = 0) then
-  Exit;
+     (CompareByte(AValue[0], FData[0], Length(FData)) = 0)
+  then
+    Exit;
   FData := AValue;
   Modified := True;
 end;

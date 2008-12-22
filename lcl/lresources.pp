@@ -1140,64 +1140,68 @@ begin
   RangeString:=false;
   CurLine:=1;
   RightMargin:=80;
-  while ReadChar(c) do begin
-    NewRangeString:=(ord(c)>=32) and (ord(c)<=127);
-    // check if new char fits into line or if a new line must be started
-    if NewRangeString then begin
-      if RangeString then
-        MinCharCount:=2 // char plus '
-      else
-        MinCharCount:=3; // ' plus char plus '
-      if c='''' then inc(MinCharCount);
-    end else begin
-      MinCharCount:=1+length(ByteToStr[c]); // # plus number
-      if RangeString then
-        inc(MinCharCount); // plus ' for ending last string constant
-    end;
-    if x+MinCharCount>RightMargin then begin
-      // break line
-      if RangeString then begin
-        // end string constant
-        WriteChar('''');
+  if ReadBufLen>0 then begin
+    while ReadChar(c) do begin
+      NewRangeString:=(ord(c)>=32) and (ord(c)<=127);
+      // check if new char fits into line or if a new line must be started
+      if NewRangeString then begin
+        if RangeString then
+          MinCharCount:=2 // char plus '
+        else
+          MinCharCount:=3; // ' plus char plus '
+        if c='''' then inc(MinCharCount);
+      end else begin
+        MinCharCount:=1+length(ByteToStr[c]); // # plus number
+        if RangeString then
+          inc(MinCharCount); // plus ' for ending last string constant
       end;
-      // write line ending
-      WriteShortString(LineEnd);
-      x:=0;
-      inc(CurLine);
-      // write indention
-      WriteString(Indent);
-      inc(x,length(Indent));
-      // write operator
-      if (CurLine and 63)<>1 then
-        WriteChar('+')
-      else
-        WriteChar(',');
-      inc(x);
-      RangeString:=false;
-    end;
-    // write converted byte
-    if RangeString<>NewRangeString then begin
-      WriteChar('''');
-      inc(x);
-    end;
-    if NewRangeString then begin
-      WriteChar(c);
-      inc(x);
-      if c='''' then begin
-        WriteChar(c);
+      if x+MinCharCount>RightMargin then begin
+        // break line
+        if RangeString then begin
+          // end string constant
+          WriteChar('''');
+        end;
+        // write line ending
+        WriteShortString(LineEnd);
+        x:=0;
+        inc(CurLine);
+        // write indention
+        WriteString(Indent);
+        inc(x,length(Indent));
+        // write operator
+        if (CurLine and 63)<>1 then
+          WriteChar('+')
+        else
+          WriteChar(',');
+        inc(x);
+        RangeString:=false;
+      end;
+      // write converted byte
+      if RangeString<>NewRangeString then begin
+        WriteChar('''');
         inc(x);
       end;
-    end else begin
-      WriteChar('#');
-      inc(x);
-      WriteShortString(ByteToStr[c]);
-      inc(x,length(ByteToStr[c]));
+      if NewRangeString then begin
+        WriteChar(c);
+        inc(x);
+        if c='''' then begin
+          WriteChar(c);
+          inc(x);
+        end;
+      end else begin
+        WriteChar('#');
+        inc(x);
+        WriteShortString(ByteToStr[c]);
+        inc(x,length(ByteToStr[c]));
+      end;
+      // next
+      RangeString:=NewRangeString;
     end;
-    // next
-    RangeString:=NewRangeString;
-  end;
-  if RangeString then begin
-    WriteChar('''');
+    if RangeString then begin
+      WriteChar('''');
+    end;
+  end else begin
+    WriteShortString('''''');
   end;
   Indent:=copy(Indent,3,length(Indent)-2);
   s:=LineEnd+Indent+']);'+LineEnd;

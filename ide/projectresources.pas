@@ -203,9 +203,12 @@ var
   OutStream: TStringStream;
 begin
   OutStream := TStringStream.Create('');
-  BinaryToLazarusResourceCode(AResource, OutStream, ResourceName, ResourceType);
-  FLazarusResources.Add(OutStream.DataString);
-  OutStream.Free;
+  try
+    BinaryToLazarusResourceCode(AResource, OutStream, ResourceName, ResourceType);
+    FLazarusResources.Add(OutStream.DataString);
+  finally
+    OutStream.Free;
+  end;
 end;
 
 procedure TProjectResources.Clear;
