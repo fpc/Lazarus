@@ -1,0 +1,26 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCompOptsConditionalsFrame','FORMDATA',[
+  'TPF0'#26'TCompOptsConditionalsFrame'#25'CompOptsConditionalsFrame'#4'Left'#2
+  +#0#6'Height'#3#170#0#3'Top'#2#0#5'Width'#3#129#1#12'ClientHeight'#3#166#0#11
+  +'ClientWidth'#3'}'#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3
+  +#173#1#9'DesignTop'#3'1'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Heig'
+  +'ht'#3#166#0#3'Top'#2#0#5'Width'#3'}'#1#5'Align'#7#8'alClient'#5'Ctl3D'#8#17
+  +'DefaultItemHeight'#2#19#9'PopupMenu'#7#12'COCPopupMenu'#8'TabOrder'#2#0#0#0
+  +#10'TPopupMenu'#12'COCPopupMenu'#4'left'#2'0'#3'top'#2'0'#0#9'TMenuItem'#19
+  +'InsertAboveMenuItem'#7'Caption'#6#19'InsertAboveMenuItem'#12'RightJustify'#8
+  +#19'ShowAlwaysCheckable'#8#0#0#9'TMenuItem'#19'InsertBelowMenuItem'#7'Captio'
+  +'n'#6#19'InsertBelowMenuItem'#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#0
+  +#0#9'TMenuItem'#19'InsertChildMenuItem'#7'Caption'#6#19'InsertChildMenuItem'
+  +#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#0#0#9'TMenuItem'#14'DeleteMenu'
+  +'Item'#7'Caption'#6#14'DeleteMenuItem'#12'RightJustify'#8#19'ShowAlwaysCheck'
+  +'able'#8#0#0#9'TMenuItem'#14'MoveUpMenuItem'#7'Caption'#6#14'MoveUpMenuItem'
+  +#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#0#0#9'TMenuItem'#16'MoveDownMe'
+  +'nuItem'#7'Caption'#6#16'MoveDownMenuItem'#12'RightJustify'#8#19'ShowAlwaysC'
+  +'heckable'#8#0#0#9'TMenuItem'#17'MoveLvlUpMenuItem'#7'Caption'#6#17'MoveLvlU'
+  +'pMenuItem'#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#0#0#9'TMenuItem'#19
+  +'MoveLvlDownMenuItem'#7'Caption'#6#19'MoveLvlDownMenuItem'#12'RightJustify'#8
+  +#19'ShowAlwaysCheckable'#8#0#0#9'TMenuItem'#18'PropertiesMenuItem'#7'Caption'
+  +#6#18'PropertiesMenuItem'#12'RightJustify'#8#19'ShowAlwaysCheckable'#8#0#0#0
+  +#0
+]);

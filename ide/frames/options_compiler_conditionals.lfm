@@ -1,0 +1,73 @@
+object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
+  Left = 0
+  Height = 170
+  Top = 0
+  Width = 385
+  ClientHeight = 166
+  ClientWidth = 381
+  Ctl3D = False
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 429
+  DesignTop = 305
+  object COCTreeView: TTreeView
+    Left = 0
+    Height = 166
+    Top = 0
+    Width = 381
+    Align = alClient
+    Ctl3D = False
+    DefaultItemHeight = 19
+    PopupMenu = COCPopupMenu
+    TabOrder = 0
+  end
+  object COCPopupMenu: TPopupMenu
+    left = 48
+    top = 48
+    object InsertAboveMenuItem: TMenuItem
+      Caption = 'InsertAboveMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object InsertBelowMenuItem: TMenuItem
+      Caption = 'InsertBelowMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object InsertChildMenuItem: TMenuItem
+      Caption = 'InsertChildMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object DeleteMenuItem: TMenuItem
+      Caption = 'DeleteMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object MoveUpMenuItem: TMenuItem
+      Caption = 'MoveUpMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object MoveDownMenuItem: TMenuItem
+      Caption = 'MoveDownMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object MoveLvlUpMenuItem: TMenuItem
+      Caption = 'MoveLvlUpMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object MoveLvlDownMenuItem: TMenuItem
+      Caption = 'MoveLvlDownMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+    object PropertiesMenuItem: TMenuItem
+      Caption = 'PropertiesMenuItem'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+    end
+  end
+end
