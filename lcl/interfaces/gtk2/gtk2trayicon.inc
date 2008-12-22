@@ -27,19 +27,23 @@ type
   private
     plug: PGtkWidget;
     DrawingArea: PGtkWidget;
+{$ifdef HasGdk2X}
     fDisplay: PDisplay;
     fWindow: TWindow;
     fScreen: PScreen;
     fScreenID: longint;
     fTrayParent: TWindow;
+{$endif HasGdk2X}
     Tips: PGtkTooltips;
     fEmbedded: Boolean;
     fTrayIcon: TCustomTrayIcon;
+{$ifdef HasGdk2X}
     function SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): Boolean;
+    procedure SetEmbedded;
+{$endif HasGdk2X}
   public
   	constructor Create(const wsTrayIcon: TCustomTrayIcon);
 	  destructor Destroy; override;
-    procedure SetEmbedded;
   end;
 
 const
@@ -47,6 +51,7 @@ const
   SYSTEM_TRAY_BEGIN_MESSAGE  = 1;
   SYSTEM_TRAY_CANCEL_MESSAGE = 2;
 
+{$ifdef HasGdk2X}
 var
   XError: Integer;
 {*******************************************************************
@@ -137,6 +142,7 @@ begin
 
   XSetErrorHandler(old_error);
 end;
+{$endif HasGdk2X}
 
 {*******************************************************************
 *  realize_cb ()
