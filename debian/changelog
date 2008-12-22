@@ -2,13 +2,34 @@ lazarus (0.9.27-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Mazen Neifer <mazen@freepascal.org>  Thu, 06 Nov 2008 13:45:00 +0100
+ -- Mazen Neifer <mazen@freepascal.org>  Mon, 22 Dec 2008 10:22:00 +0100
+
+lazarus (0.9.26-4) unstable; urgency=low
+
+  * Removed .pc directory in clean target to avoid a lintian warning.
+  * Fixed bugs in tray icon.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Sun, 14 Dec 2008 14:40:00 +0100
+
+lazarus (0.9.26-3) unstable; urgency=low
+
+  * Added man files for all provided binaries. (Closes: #500858)
+  * Remove auto-generated make files in clean target to avoid lintian warning.
+    (Closes: Bug#508025)
+  * Removed non standard entry from desktop file.
+  * Used quilt as patch system instead of dpatch.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Tue, 09 Dec 2008 13:09:00 +0100
 
 lazarus (0.9.26-2) unstable; urgency=low
 
+  * Removed taborder binary from lazarus-src which removes a lintian warning.
+  * Fixed build of arch independent packages as debian/files was removed before
+    they were created.
+  * replaced depreciated dh_clean -k by dh_prep.
+  * Fixed syntax error in script file.
+  * Fixed minor issues in man pages from upstream.
   * Removed leading "Lazarus is a" from Description field. (Closes: #502786)
-  * Put system wide configuration file in conffiles to avoid loosing user's
-    customizations.
   * Added svn2revision to packaged binaries needed by Lazarus when rebuilding
     itself after installation of new components. (Closes: #501049)
   * Added contributers list to lazarus-ide packages as they are needed by the
