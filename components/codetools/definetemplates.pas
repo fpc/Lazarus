@@ -4007,7 +4007,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('IDE path addition',
     Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
     ExternalMacroStart+'SrcPath',
-      d(LazarusSrcDir+'/ide/frames;'
+      d(LazarusSrcDir+'/ide;'
+       +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
        +LazarusSrcDir+'/designer/jitform;'
        +LazarusSrcDir+'/debugger;'

@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, ComCtrls, Menus,
-  compop;
+  CompOptsModes;
 
 type
 
