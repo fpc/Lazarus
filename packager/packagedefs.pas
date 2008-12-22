@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
   AVL_Tree,
   DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
-  EditDefineTree, CompilerOptions,
+  EditDefineTree, CompilerOptions, CompOptsModes,
   PropEdits, LazIDEIntf, MacroIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;

@@ -239,32 +239,6 @@ type
   
 type
 
-  { TCompilerDiffTool
-    A tool to create the difference between two option sets }
-
-  TCompilerDiffTool = class
-  private
-    FDiff: TStrings;
-    FDiffer: boolean;
-    FPath: string;
-    procedure SetDiff(const AValue: TStrings);
-    procedure SetDiffer(const AValue: boolean);
-    procedure SetPath(const AValue: string);
-  public
-    constructor Create(DiffList: TStrings);
-    procedure AddDiffItem(const PropertyName, Value: string);
-    procedure AddDiff(const PropertyName: string; const Old, New: string);
-    procedure AddDiff(const PropertyName: string; const Old, New: integer);
-    procedure AddDiff(const PropertyName: string; const Old, New: boolean);
-    procedure AddPathsDiff(const PropertyName: string; const Old, New: string);
-    procedure AddSetDiff(const PropertyName: string; const Old, New: integer;
-                         const EnumNames: PString);
-    property Diff: TStrings read FDiff write SetDiff;
-    property Path: string read FPath write SetPath;
-    property Differ: boolean read FDiffer write SetDiffer;
-  end;
-
-
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class
@@ -2558,10 +2532,13 @@ begin
   Libraries := CompOpts.fLibraryPaths;
   OtherUnitFiles := CompOpts.fUnitPaths;
   UnitOutputDirectory := CompOpts.fUnitOutputDir;
-  fLCLWidgetType := CompOpts.fLCLWidgetType;
   ObjectPath := CompOpts.FObjectPath;
   SrcPath := CompOpts.SrcPath;
   DebugPath := CompOpts.DebugPath;
+
+  // conditionals
+  fLCLWidgetType := CompOpts.fLCLWidgetType;
+  Conditionals.Assign(CompOpts.Conditionals);
 
   // Parsing
   FSyntaxMode := CompOpts.FSyntaxMode;
@@ -2647,7 +2624,7 @@ var
 begin
   Tool:=TCompilerDiffTool.Create(nil);
   CreateDiff(CompOpts,Tool);
-  Result:= not Tool.Differ;
+  Result:=not Tool.Differ;
   Tool.Free;
 end;
 
@@ -2682,6 +2659,8 @@ begin
   Tool.AddPathsDiff('SrcPath',FSrcPath,CompOpts.FSrcPath);
   Tool.AddPathsDiff('DebugPath',fDebugPath,CompOpts.fDebugPath);
 
+  // conditionals
+  TCompOptConditionals(Conditionals).CreateDiff(CompOpts.Conditionals,Tool);
   Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
 
   // parsing
@@ -3207,94 +3186,6 @@ procedure TGlobalCompilerOptions.SetTargetOS(const AValue: string);
 begin
   if FTargetOS=AValue then exit;
   FTargetOS:=AValue;
-end;
-
-{ TCompilerDiffTool }
-
-procedure TCompilerDiffTool.SetDiff(const AValue: TStrings);
-begin
-  if FDiff=AValue then exit;
-  FDiff:=AValue;
-end;
-
-procedure TCompilerDiffTool.SetDiffer(const AValue: boolean);
-begin
-  if FDiffer=AValue then exit;
-  FDiffer:=AValue;
-end;
-
-procedure TCompilerDiffTool.SetPath(const AValue: string);
-begin
-  if FPath=AValue then exit;
-  FPath:=AValue;
-  // ! config path, not file path. Always /, not PathDelim
-  if (FPath<>'') and (Path[length(Path)]<>'/') then FPath:=FPath+'/';
-end;
-
-constructor TCompilerDiffTool.Create(DiffList: TStrings);
-begin
-  FDiff:=DiffList;
-  if Diff<>nil then
-    Diff.Clear;
-end;
-
-procedure TCompilerDiffTool.AddDiffItem(const PropertyName, Value: string);
-begin
-  Differ:=true;
-  if Diff<>nil then
-    Diff.Add(Path+PropertyName+'='+Value);
-end;
-
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: string);
-begin
-  if Old=New then exit;
-  AddDiffItem(PropertyName,New);
-end;
-
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: integer);
-begin
-  if Old=New then exit;
-  AddDiffItem(PropertyName,IntToStr(New));
-end;
-
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: boolean);
-begin
-  if Old=New then exit;
-  AddDiffItem(PropertyName,dbgs(New));
-end;
-
-procedure TCompilerDiffTool.AddPathsDiff(const PropertyName: string; const Old,
-  New: string);
-begin
-  if Old=New then exit;
-  AddDiff(PropertyName,Old,New);
-end;
-
-procedure TCompilerDiffTool.AddSetDiff(const PropertyName: string; const Old,
-  New: integer; const EnumNames: PString);
-var
-  i: Integer;
-  Mask: LongInt;
-  s: String;
-begin
-  if Old=New then exit;
-  Mask := 1;
-  s:='';
-  for i := 0 to 31 do begin
-    if (New and Mask) <> (Old and Mask) then begin
-      if s<>'' then s:=s+',';
-      if (New and Mask) <> 0 then
-        s:=s+'+'
-      else
-        s:=s+'-';
-      s:=s+EnumNames[i];
-    end;
-    Mask := Mask shl 1;
-  end;
-  AddDiffItem(PropertyName,s);
 end;
 
 { TBuildModes }

@@ -118,6 +118,7 @@ type
     procedure Insert(Index: integer; Child: TCompOptCondNode);
     procedure Move(OldIndex, NewIndex: integer);
     procedure Delete(Index: integer);
+    procedure Assign(Source: TCompOptCondNode);
     property NodeType: TCOCNodeType read FNodeType write SetNodeType;
     property ValueType: TCOCValueType read FValueType write SetValueType;
     property Value: string read FValue write SetValue;
@@ -136,6 +137,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure InvalidateValues; virtual; abstract;
+    procedure Assign(Source: TLazCompOptConditionals); virtual; abstract;
     property Root: TCompOptCondNode read FRoot write FRoot;
   end;
 
@@ -1019,6 +1021,22 @@ end;
 procedure TCompOptCondNode.Delete(Index: integer);
 begin
   Childs[Index].Free;
+end;
+
+procedure TCompOptCondNode.Assign(Source: TCompOptCondNode);
+var
+  i: Integer;
+  Child: TCompOptCondNode;
+begin
+  ClearNodes;
+  NodeType:=Source.NodeType;
+  ValueType:=Source.ValueType;
+  Value:=Source.Value;
+  for i:=0 to Source.Count-1 do begin
+    Child:=TCompOptCondNode.Create(Owner);
+    AddLast(Child);
+    Child.Assign(Source.Childs[i]);
+  end;
 end;
 
 { TProjectFileDescriptor }
