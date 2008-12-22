@@ -37,7 +37,7 @@ uses
   // LCL
   InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
-  BasicCodeTools, CodeToolManager, DefineTemplates,
+  ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   LazIDEIntf,
@@ -205,6 +205,7 @@ begin
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
+  BuildModes:=TBuildModes.Create;
 end;
 
 destructor TBuildManager.Destroy;
@@ -212,6 +213,7 @@ begin
   LazConfMacroFunc:=nil;
   OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
+  FreeAndNil(BuildModes);
 
   inherited Destroy;
   MainBuildBoss:=nil;

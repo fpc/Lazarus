@@ -41,15 +41,25 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms, Controls,
-  Laz_XMLCfg, ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
-  IDEProcs, LazConf, TransferMacros
-  {$IFDEF EnableBuildModes}
-  ,CompOptsModes
-  {$ENDIF}
-  ;
+  Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
+  Controls, Laz_XMLCfg, ExprEval,
+  // IDEIntf
+  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
+  // IDE
+  IDEProcs, LazConf, TransferMacros, CompOptsModes;
 
 type
+
+  { TBuildModes }
+
+  TBuildModes = class
+  private
+    FEvaluator: TExpressionEvaluator;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Evaluator: TExpressionEvaluator read FEvaluator;
+  end;
 
   { TGlobalCompilerOptions - compiler options overrides }
 
@@ -102,7 +112,7 @@ type
     pcosDebugPath     // additional debug search path
     );
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
-  
+
 
 const
   ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,pcosObjectPath,
@@ -126,6 +136,20 @@ const
     'pcosOutputDir',
     'pcosCompilerPath',
     'pcosDebugPath'
+    );
+  ParsedCompOptToConditional: array[TParsedCompilerOptString] of TCOCValueType = (
+    cocvtNone,        // pcosNone
+    cocvtNone,        // pcosBaseDir
+    cocvtUnitPath,    // pcosUnitPath
+    cocvtIncludePath, // pcosIncludePath
+    cocvtObjectPath,  // pcosObjectPath
+    cocvtLibraryPath, // pcosLibraryPath
+    cocvtSrcPath,     // pcosSrcPath
+    cocvtLinkerOptions, // pcosLinkerOptions
+    cocvtCustomOptions, // pcosCustomOptions
+    cocvtNone,        // pcosOutputDir
+    cocvtNone,        // pcosCompilerPath
+    cocvtDebugPath    // pcosDebugPath
     );
     
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
@@ -161,6 +185,7 @@ type
 
   TParsedCompilerOptions = class
   private
+    FConditionals: TCompOptConditionals;
     FGetWritableOutputDirectory: TGetWritableOutputDirectory;
     FInvalidateParseOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
@@ -174,7 +199,7 @@ type
     ParsedPIValues: array[TParsedCompilerOptString] of string;
     ParsedPIStamp: array[TParsedCompilerOptString] of integer;
     ParsingPI: array[TParsedCompilerOptString] of boolean;
-    constructor Create;
+    constructor Create(TheConditionals: TCompOptConditionals);
     function GetParsedValue(Option: TParsedCompilerOptString): string;
     function GetParsedPIValue(Option: TParsedCompilerOptString): string;
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
@@ -193,6 +218,7 @@ type
                                               write FInvalidateParseOnChange;
     property GetWritableOutputDirectory: TGetWritableOutputDirectory
              read FGetWritableOutputDirectory write FGetWritableOutputDirectory;
+    property Conditionals: TCompOptConditionals read FConditionals;
   end;
 
   TParseStringEvent =
@@ -306,7 +332,8 @@ type
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
     constructor Create(const AOwner: TObject); override;
-    constructor Create(const AOwner: TObject; const AToolClass: TCompilationToolClass);
+    constructor Create(const AOwner: TObject;
+                  const AToolClass: TCompilationToolClass);
     destructor Destroy; override;
     procedure Clear; virtual;
 
@@ -410,6 +437,7 @@ type
   TAdditionalCompilerOptions = class
   private
     FBaseDirectory: string;
+    FConditionals: TCompOptConditionals;
     FCustomOptions: string;
     FIncludePath: string;
     FLibraryPath: string;
@@ -448,6 +476,7 @@ type
     property CustomOptions: string read FCustomOptions write SetCustomOptions;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
+    property Conditionals: TCompOptConditionals read FConditionals;
   end;
 
 
@@ -455,7 +484,9 @@ type
 
   TCompilerOptions = TBaseCompilerOptions;
 
-  
+var
+  BuildModes: TBuildModes;
+
 const
   CompileReasonNames: array[TCompileReason] of string = (
     'Compile',
@@ -781,7 +812,8 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
   const AToolClass: TCompilationToolClass);
 begin
   inherited Create(AOwner);
-  FParsedOpts := TParsedCompilerOptions.Create;
+  FConditionals := TCompOptConditionals.Create(BuildModes.Evaluator);
+  FParsedOpts := TParsedCompilerOptions.Create(TCompOptConditionals(FConditionals));
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
   FTargets := TFPList.Create;
@@ -801,6 +833,7 @@ begin
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
+  FreeThenNil(FConditionals); // free FConditionals before FParsedOpts
   FreeThenNil(FTargets);
   inherited Destroy;
 end;
@@ -1058,6 +1091,10 @@ begin
   ObjectPath := sp(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
   SrcPath := sp(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
+  { Conditionals }
+  TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
+                                         Path+'Conditionals/',PathDelimChanged);
+
   { Parsing }
   p:=Path+'Parsing/';
   AssemblerStyle := XMLConfigFile.GetValue(p+'Style/Value', 0);
@@ -1229,6 +1266,10 @@ begin
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
   XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', ObjectPath,'');
   XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', SrcPath,'');
+
+  { Conditionals }
+  TCompOptConditionals(FConditionals).SaveToXMLConfig(XMLConfigFile,
+                                                      Path+'Conditionals/');
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -2789,13 +2830,15 @@ end;
 constructor TAdditionalCompilerOptions.Create(TheOwner: TObject);
 begin
   fOwner:=TheOwner;
-  FParsedOpts:=TParsedCompilerOptions.Create;
+  FConditionals:=TCompOptConditionals.Create(BuildModes.Evaluator);
+  FParsedOpts:=TParsedCompilerOptions.Create(FConditionals);
   Clear;
 end;
 
 destructor TAdditionalCompilerOptions.Destroy;
 begin
   FreeThenNil(FParsedOpts);
+  FreeThenNil(FConditionals);// free conditionals before FParsedOpts
   inherited Destroy;
 end;
 
@@ -2825,6 +2868,7 @@ begin
   LinkerOptions:=f(XMLConfig.GetValue(Path+'LinkerOptions/Value',''));
   ObjectPath:=f(XMLConfig.GetValue(Path+'ObjectPath/Value',''));
   UnitPath:=f(XMLConfig.GetValue(Path+'UnitPath/Value',''));
+  FConditionals.LoadFromXMLConfig(XMLConfig,Path+'Conditionals/',AdjustPathDelims);
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -2836,6 +2880,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',fLinkerOptions,'');
   XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',FObjectPath,'');
   XMLConfig.SetDeleteValue(Path+'UnitPath/Value',FUnitPath,'');
+  FConditionals.SaveToXMLConfig(XMLConfig,Path+'Conditionals/');
 end;
 
 function TAdditionalCompilerOptions.GetOwnerName: string;
@@ -2865,8 +2910,9 @@ end;
 
 { TParsedCompilerOptions }
 
-constructor TParsedCompilerOptions.Create;
+constructor TParsedCompilerOptions.Create(TheConditionals: TCompOptConditionals);
 begin
+  FConditionals:=TheConditionals;
   Clear;
 end;
 
@@ -2940,8 +2986,29 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
 var
   s: String;
   BaseDirectory: String;
+  cocOption: TCOCValueType;
+  h: string;
 begin
   s:=OptionText;
+  // add conditional additions
+  if Conditionals<>nil then begin
+    cocOption:=ParsedCompOptToConditional[Option];
+    case Option of
+    pcosUnitPath,pcosSrcPath,pcosIncludePath,pcosObjectPath,pcosLibraryPath,
+    pcosDebugPath:
+      // add search path
+      s:=MergeSearchPaths(s,FConditionals.Values[cocOption]);
+    pcosLinkerOptions,pcosCustomOptions:
+      begin
+        // add command line option
+        h:=FConditionals.Values[cocOption];
+        if (h<>'') then begin
+          if s<>'' then s:=s+' ';
+          s:=s+h;
+        end;
+      end;
+    end;
+  end;
   // parse locally
   if Assigned(OnLocalSubstitute) then
     s:=OnLocalSubstitute(s,PlatformIndependent);
@@ -3228,6 +3295,19 @@ begin
     Mask := Mask shl 1;
   end;
   AddDiffItem(PropertyName,s);
+end;
+
+{ TBuildModes }
+
+constructor TBuildModes.Create;
+begin
+  FEvaluator:=TExpressionEvaluator.Create;
+end;
+
+destructor TBuildModes.Destroy;
+begin
+  FreeAndNil(FEvaluator);
+  inherited Destroy;
 end;
 
 initialization

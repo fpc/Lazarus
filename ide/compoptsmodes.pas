@@ -38,250 +38,42 @@ unit CompOptsModes;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, ExprEval;
+  Classes, SysUtils, Laz_XMLCfg, ExprEval,
+  IDEProcs, ProjectIntf;
 
 type
-  TCOCNodeType = (
-    cocntNone,
-    cocntIf,
-    cocntIfdef,
-    cocntIfNdef,
-    cocntElseIf,
-    cocntElse,
-    cocntEndIf,
-    cocntAddValue
-  );
-  TCOCNodeTypes = set of TCOCNodeType;
-  TCOCValueType = (
-    cocvtNone,
-    cocvtUnitPath,
-    cocvtSrcPath,
-    cocvtIncPath,
-    cocvtObjectPath,
-    cocvtLibraryPath,
-    cocvtLinkerOptions,
-    cocvtCustomOptions
-    );
-  TCOCValueTypes = set of TCOCValueType;
-
-const
-  COCNodeTypeNames: array[TCOCNodeType] of string = (
-    'None',
-    'If',
-    'Ifdef',
-    'IfNdef',
-    'ElseIf',
-    'Else',
-    'EndIf',
-    'AddValue'
-    );
-  COCValueTypeNames: array[TCOCValueType] of string = (
-    'None',
-    'UnitPath',
-    'SrcPath',
-    'IncPath',
-    'ObjectPath',
-    'LibraryPath',
-    'LinkerOptions',
-    'CustomOptions'
-    );
-
-type
-  TCompOptConditionals = class;
-
-  { TCompOptCondNode }
-
-  TCompOptCondNode = class
-  private
-    FCount: integer;
-    fClearing: Boolean;
-    FFirstChild: TCompOptCondNode;
-    FLastChild: TCompOptCondNode;
-    FNextSibling: TCompOptCondNode;
-    FNodeType: TCOCNodeType;
-    FOwner: TCompOptConditionals;
-    FParent: TCompOptCondNode;
-    FPrevSibling: TCompOptCondNode;
-    FValue: string;
-    FValueType: TCOCValueType;
-    procedure SetNodeType(const AValue: TCOCNodeType);
-    procedure SetValue(const AValue: string);
-    procedure SetValueType(const AValue: TCOCValueType);
-    procedure Changed;
-    procedure Unbind;
-  public
-    constructor Create(TheOwner: TCompOptConditionals);
-    destructor Destroy; override;
-    procedure Clear;
-    procedure AddLast(Child: TCompOptCondNode);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                DoSwitchPathDelims: boolean); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
-    property NodeType: TCOCNodeType read FNodeType write SetNodeType;
-    property ValueType: TCOCValueType read FValueType write SetValueType;
-    property Value: string read FValue write SetValue;
-    property Owner: TCompOptConditionals read FOwner;
-    property Parent: TCompOptCondNode read FParent;
-    property Count: integer read FCount;
-    property FirstChild: TCompOptCondNode read FFirstChild;
-    property LastChild: TCompOptCondNode read FLastChild;
-    property NextSibling: TCompOptCondNode read FNextSibling;
-    property PrevSibling: TCompOptCondNode read FPrevSibling;
-  end;
-
   { TCompOptConditionals }
 
-  TCompOptConditionals = class
+  TCompOptConditionals = class(TLazCompOptConditionals)
   private
     FChangeStamp: integer;
+    FErrorMsg: string;
     FErrorNode: TCompOptCondNode;
     FEvaluator: TExpressionEvaluator;
-    FRoot: TCompOptCondNode;
     FEvaluatorStamp: integer;
     FValuesValid: boolean;
     FValues: array[TCOCValueType] of string;
     function GetValues(const ValueType: TCOCValueType): string;
     procedure SetEvaluator(const AValue: TExpressionEvaluator);
+    procedure AddValue(const ValueType: TCOCValueType; Value: string);
   public
-    constructor Create;
+    constructor Create(TheEvaluator: TExpressionEvaluator);
     destructor Destroy; override;
     procedure Clear;
-    procedure InvalidateValues;
+    procedure ClearNodes;
+    procedure InvalidateValues; override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
     property Values[ValueType: TCOCValueType]: string read GetValues;
     property Evaluator: TExpressionEvaluator read FEvaluator write SetEvaluator;
     property ChangeStamp: integer read FChangeStamp;
-    property Root: TCompOptCondNode read FRoot;
     procedure IncreaseChangeStamp; inline;
     property ErrorNode: TCompOptCondNode read FErrorNode write FErrorNode;
+    property ErrorMsg: string read FErrorMsg write FErrorMsg;
   end;
-
-function COCNodeTypeNameToType(const s: string): TCOCNodeType;
-function COCValueTypeNameToType(const s: string): TCOCValueType;
 
 implementation
-
-function COCNodeTypeNameToType(const s: string): TCOCNodeType;
-begin
-  for Result:=Low(TCOCNodeType) to High(TCOCNodeType) do
-    if SysUtils.CompareText(s,COCNodeTypeNames[Result])=0 then exit;
-  Result:=cocntNone;
-end;
-
-function COCValueTypeNameToType(const s: string): TCOCValueType;
-begin
-  for Result:=Low(TCOCValueType) to High(TCOCValueType) do
-    if SysUtils.CompareText(s,COCValueTypeNames[Result])=0 then exit;
-  Result:=cocvtNone;
-end;
-
-{ TCompOptCondNode }
-
-procedure TCompOptCondNode.SetNodeType(const AValue: TCOCNodeType);
-begin
-  if FNodeType=AValue then exit;
-  FNodeType:=AValue;
-  Changed;
-end;
-
-procedure TCompOptCondNode.SetValue(const AValue: string);
-begin
-  if FValue=AValue then exit;
-  FValue:=AValue;
-  Changed;
-end;
-
-procedure TCompOptCondNode.SetValueType(const AValue: TCOCValueType);
-begin
-  if FValueType=AValue then exit;
-  FValueType:=AValue;
-  Changed;
-end;
-
-procedure TCompOptCondNode.Changed;
-begin
-  if FOwner<>nil then FOwner.InvalidateValues;
-end;
-
-procedure TCompOptCondNode.Unbind;
-begin
-  if FParent<>nil then begin
-    if FParent.FFirstChild=Self then FParent.FFirstChild:=FNextSibling;
-    if FParent.FLastChild=Self then FParent.FLastChild:=FPrevSibling;
-    dec(FParent.FCount);
-    FParent:=nil;
-  end;
-  if FNextSibling<>nil then FNextSibling.FPrevSibling:=FPrevSibling;
-  if FPrevSibling<>nil then FPrevSibling.FNextSibling:=FNextSibling;
-  FNextSibling:=nil;
-  FPrevSibling:=nil;
-end;
-
-constructor TCompOptCondNode.Create(TheOwner: TCompOptConditionals);
-begin
-  FOwner:=TheOwner;
-end;
-
-destructor TCompOptCondNode.Destroy;
-begin
-  Clear;
-  Unbind;
-  inherited Destroy;
-end;
-
-procedure TCompOptCondNode.Clear;
-begin
-  fClearing:=true;
-  while FFirstChild<>nil do
-    FFirstChild.Free;
-  fClearing:=false;
-end;
-
-procedure TCompOptCondNode.AddLast(Child: TCompOptCondNode);
-begin
-  Child.Unbind;
-  Child.fPrevSibling:=FLastChild;
-  FLastChild.FNextSibling:=Child;
-  if FFirstChild=nil then
-    FFirstChild:=Child;
-  FLastChild:=Child;
-  inc(FCount);
-  Child.FParent:=Self;
-end;
-
-procedure TCompOptCondNode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; DoSwitchPathDelims: boolean);
-var
-  NewCount: LongInt;
-  i: Integer;
-  NewChild: TCompOptCondNode;
-begin
-  Clear;
-  FNodeType:=COCNodeTypeNameToType(XMLConfig.GetValue(Path+'NodeType',''));
-  FValueType:=COCValueTypeNameToType(XMLConfig.GetValue(Path+'ValueType',''));
-  FValue:=XMLConfig.GetValue(Path+'Value','');
-  NewCount:=XMLConfig.GetValue(Path+'ChildCount',0);
-  for i:=0 to NewCount-1 do begin
-    NewChild:=TCompOptCondNode.Create(Owner);
-    AddLast(NewChild);
-    NewChild.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/',
-                               DoSwitchPathDelims);
-  end;
-end;
-
-procedure TCompOptCondNode.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfig.SetDeleteValue(Path+'NodeType',COCNodeTypeNames[NodeType],
-                           COCNodeTypeNames[cocntNone]);
-  XMLConfig.SetDeleteValue(Path+'ValueType',COCValueTypeNames[ValueType],
-                           COCValueTypeNames[cocvtNone]);
-  XMLConfig.SetDeleteValue(Path+'Value',Value,'');
-  XMLConfig.SetDeleteValue(Path+'ChildCount',Count,0);
-  // ToDo
-end;
 
 { TCompOptConditionals }
 
@@ -298,6 +90,7 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
         ResultStr:=FEvaluator.Eval(Node.Value);
         if FEvaluator.ErrorPosition>=0 then begin
           FErrorNode:=Node;
+          FErrorMsg:='error in expression at column '+IntToStr(FEvaluator.ErrorPosition);
           exit(false);
         end;
         ExprResult:=ResultStr<>'0';
@@ -307,30 +100,65 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
     cocntIfNdef:
       ExprResult:=not FEvaluator.IsDefined(Node.Value);
     else
+      FErrorNode:=Node;
+      FErrorMsg:='unexpected node of type '+COCNodeTypeNames[Node.NodeType];
       exit(false);
     end;
     Result:=true;
   end;
 
-  function ComputeNode(Node: TCompOptCondNode): boolean;
+  function ComputeNode(ParentNode: TCompOptCondNode; Index: integer): boolean;
   var
     ExprResult: boolean;
+    Node: TCompOptCondNode;
   begin
     Result:=false;
-    case Node.NodeType of
-    cocntIf,cocntIfdef,cocntIfNdef:
-      begin
-        if not ComputeIfNode(Node,ExprResult) then exit;
-        if ExprResult then begin
-          if Node.FirstChild<>nil then
-            if not ComputeNode(Node.FirstChild) then exit;
-          // skip till EndIf
+    while Index<ParentNode.Count do begin
+      Node:=ParentNode.Childs[Index];
+      case Node.NodeType of
 
-        end else begin
-
+      cocntIf,cocntIfdef,cocntIfNdef:
+        while true do begin
+          if (Node.NodeType=cocntElse) then
+            ExprResult:=true
+          else if (not ComputeIfNode(Node,ExprResult)) then
+            exit;
+          if ExprResult then begin
+            // execute childs
+            if Node.Count>0 then
+              if not ComputeNode(Node,0) then exit;
+            // skip all else
+            inc(Index);
+            while (Index<ParentNode.Count) do begin
+              Node:=ParentNode.Childs[Index];
+              if not (Node.NodeType in [cocntElseIf,cocntElse]) then break;
+              if ParentNode.Childs[Index-1].NodeType=cocntElse then begin
+                FErrorNode:=Node;
+                FErrorMsg:='ElseIf not allowed after Else';
+                exit(false);
+              end;
+              inc(Index);
+            end;
+            break;
+          end else begin
+            // skip childs
+            inc(Index);
+          end;
+          if Index>=ParentNode.Count then break;
+          Node:=ParentNode.Childs[Index];
         end;
-      end;
 
+      cocntAddValue:
+        begin
+          AddValue(Node.ValueType,Node.Value);
+          inc(Index);
+        end;
+
+      else
+        fErrorNode:=Node;
+        FErrorMsg:='unexpected node of type '+COCNodeTypeNames[Node.NodeType];
+        exit(false);
+      end;
     end;
     Result:=true;
   end;
@@ -338,11 +166,15 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
 var
   v: TCOCValueType;
 begin
+  if FEvaluator=nil then begin
+    Result:='';
+    exit;
+  end;
   if (not FValuesValid)
   or (FEvaluator.ChangeStamp<>FEvaluatorStamp) then begin
     for v:=Low(FValues) to High(FValues) do
       FValues[v]:='';
-    ComputeNode(Root);
+    ComputeNode(Root,0);
     FValuesValid:=true;
     FEvaluatorStamp:=FEvaluator.ChangeStamp;
   end;
@@ -357,9 +189,31 @@ begin
   InvalidateValues;
 end;
 
-constructor TCompOptConditionals.Create;
+procedure TCompOptConditionals.AddValue(const ValueType: TCOCValueType;
+  Value: string);
 begin
+  Value:=Trim(Value);
+  if Value='' then exit;
+  case ValueType of
+  cocvtNone: ; // ignore
+  cocvtUnitPath,cocvtSrcPath,cocvtIncludePath,cocvtObjectPath,cocvtLibraryPath,
+  cocvtDebugPath:
+    begin
+      FValues[ValueType]:=MergeSearchPaths(FValues[ValueType],Value);
+    end;
+  cocvtLinkerOptions,cocvtCustomOptions:
+    begin
+      if FValues[ValueType]<>'' then
+        FValues[ValueType]:=FValues[ValueType]+' ';
+      FValues[ValueType]:=FValues[ValueType]+Value;
+    end;
+  end;
+end;
 
+constructor TCompOptConditionals.Create(TheEvaluator: TExpressionEvaluator);
+begin
+  FEvaluator:=TheEvaluator;
+  inherited Create;
 end;
 
 destructor TCompOptConditionals.Destroy;
@@ -370,26 +224,73 @@ end;
 
 procedure TCompOptConditionals.Clear;
 begin
+  ClearNodes;
+end;
+
+procedure TCompOptConditionals.ClearNodes;
+begin
+  FValuesValid:=false;
   FErrorNode:=nil;
-  FreeAndNil(FRoot);
+  FErrorMsg:='';
+  Root.ClearNodes;
 end;
 
 procedure TCompOptConditionals.InvalidateValues;
 begin
   FValuesValid:=false;
   FErrorNode:=nil;
+  FErrorMsg:='';
 end;
 
 procedure TCompOptConditionals.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
-begin
 
+  procedure LoadNode(Node: TCompOptCondNode; const SubPath: string);
+  var
+    NewCount: LongInt;
+    i: Integer;
+    NewChild: TCompOptCondNode;
+  begin
+    Node.ClearNodes;
+    Node.NodeType:=COCNodeTypeNameToType(XMLConfig.GetValue(SubPath+'NodeType',''));
+    Node.ValueType:=COCValueTypeNameToType(XMLConfig.GetValue(SubPath+'ValueType',''));
+    Node.Value:=XMLConfig.GetValue(SubPath+'Value','');
+    // load childs
+    NewCount:=XMLConfig.GetValue(SubPath+'ChildCount',0);
+    for i:=1 to NewCount do begin
+      NewChild:=TCompOptCondNode.Create(Node.Owner);
+      Node.AddLast(NewChild);
+      LoadNode(NewChild,SubPath+'Item'+IntToStr(i)+'/');
+    end;
+  end;
+
+begin
+  LoadNode(Root,Path);
+  Root.NodeType:=cocntNone;
+  Root.ValueType:=cocvtNone;
+  Root.Value:='';
 end;
 
 procedure TCompOptConditionals.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
-begin
 
+  procedure SaveNode(Node: TCompOptCondNode; const SubPath: string);
+  var
+    i: Integer;
+  begin
+    XMLConfig.SetDeleteValue(SubPath+'NodeType',COCNodeTypeNames[Node.NodeType],
+                             COCNodeTypeNames[cocntNone]);
+    XMLConfig.SetDeleteValue(SubPath+'ValueType',COCValueTypeNames[Node.ValueType],
+                             COCValueTypeNames[cocvtNone]);
+    XMLConfig.SetDeleteValue(SubPath+'Value',Node.Value,'');
+    // save childs
+    XMLConfig.SetDeleteValue(SubPath+'ChildCount',Node.Count,0);
+    for i:=0 to Node.Count-1 do
+      SaveNode(Node.Childs[i],SubPath+'Item'+IntToStr(i+1)+'/');
+  end;
+
+begin
+  SaveNode(Root,Path);
 end;
 
 procedure TCompOptConditionals.IncreaseChangeStamp; inline;

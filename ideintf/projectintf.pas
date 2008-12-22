@@ -45,6 +45,100 @@ const
   ProjDescNameEmpty = 'Empty';
 
 type
+  TCOCNodeType = (
+    cocntNone,
+    cocntIf,
+    cocntIfdef,
+    cocntIfNdef,
+    cocntElseIf,
+    cocntElse,
+    cocntAddValue
+  );
+  TCOCNodeTypes = set of TCOCNodeType;
+  TCOCValueType = (
+    cocvtNone,
+    cocvtUnitPath,
+    cocvtSrcPath,
+    cocvtIncludePath,
+    cocvtObjectPath,
+    cocvtLibraryPath,
+    cocvtDebugPath,
+    cocvtLinkerOptions,
+    cocvtCustomOptions
+    );
+  TCOCValueTypes = set of TCOCValueType;
+
+const
+  COCNodeTypeNames: array[TCOCNodeType] of string = (
+    'None',
+    'If',
+    'Ifdef',
+    'IfNdef',
+    'ElseIf',
+    'Else',
+    'AddValue'
+    );
+  COCValueTypeNames: array[TCOCValueType] of string = (
+    'None',
+    'UnitPath',
+    'SrcPath',
+    'IncludePath',
+    'ObjectPath',
+    'LibraryPath',
+    'DebugPath',
+    'LinkerOptions',
+    'CustomOptions'
+    );
+
+type
+  TLazCompOptConditionals = class;
+
+  { TCompOptCondNode }
+
+  TCompOptCondNode = class
+  private
+    fChilds: TFPList; // list of TCompOptCondNode
+    fClearing: boolean;
+    FNodeType: TCOCNodeType;
+    FOwner: TLazCompOptConditionals;
+    FParent: TCompOptCondNode;
+    FValue: string;
+    FValueType: TCOCValueType;
+    function GetChilds(Index: integer): TCompOptCondNode;
+    function GetCount: integer;
+    procedure SetNodeType(const AValue: TCOCNodeType);
+    procedure SetValue(const AValue: string);
+    procedure SetValueType(const AValue: TCOCValueType);
+    procedure Changed;
+  public
+    constructor Create(TheOwner: TLazCompOptConditionals);
+    destructor Destroy; override;
+    procedure ClearNodes;
+    procedure AddLast(Child: TCompOptCondNode);
+    procedure Insert(Index: integer; Child: TCompOptCondNode);
+    procedure Move(OldIndex, NewIndex: integer);
+    procedure Delete(Index: integer);
+    property NodeType: TCOCNodeType read FNodeType write SetNodeType;
+    property ValueType: TCOCValueType read FValueType write SetValueType;
+    property Value: string read FValue write SetValue;
+    property Owner: TLazCompOptConditionals read FOwner;
+    property Parent: TCompOptCondNode read FParent;
+    property Count: integer read GetCount;
+    property Childs[Index: integer]: TCompOptCondNode read GetChilds;
+  end;
+
+  { TLazCompOptConditionals }
+
+  TLazCompOptConditionals = class
+  private
+    FRoot: TCompOptCondNode;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure InvalidateValues; virtual; abstract;
+    property Root: TCompOptCondNode read FRoot write FRoot;
+  end;
+
   { TLazCompilerOptions }
   
   TCompilationExecutableType = (
@@ -79,6 +173,9 @@ type
     FSrcPath: string;
     fUnitOutputDir: string;
     fDebugPath: string;
+
+    // conditionals / build modes
+    FConditionals: TLazCompOptConditionals;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -184,8 +281,12 @@ type
     property OtherUnitFiles: String read fUnitPaths write SetUnitPaths;
     property ObjectPath: string read FObjectPath write SetObjectPath;
     property SrcPath: string read FSrcPath write SetSrcPath;
-    property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
     property DebugPath: string read FDebugPath write SetDebugPath;
+    property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
+
+    // conditional / build modes
+    property Conditionals: TLazCompOptConditionals read FConditionals;
+    // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
     // parsing:
@@ -676,6 +777,8 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
 function CompilationExecutableTypeNameToType(const s: string
                                              ): TCompilationExecutableType;
+function COCNodeTypeNameToType(const s: string): TCOCNodeType;
+function COCValueTypeNameToType(const s: string): TCOCValueType;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
@@ -691,6 +794,19 @@ procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor;
 
 implementation
 
+function COCNodeTypeNameToType(const s: string): TCOCNodeType;
+begin
+  for Result:=Low(TCOCNodeType) to High(TCOCNodeType) do
+    if SysUtils.CompareText(s,COCNodeTypeNames[Result])=0 then exit;
+  Result:=cocntNone;
+end;
+
+function COCValueTypeNameToType(const s: string): TCOCValueType;
+begin
+  for Result:=Low(TCOCValueType) to High(TCOCValueType) do
+    if SysUtils.CompareText(s,COCValueTypeNames[Result])=0 then exit;
+  Result:=cocvtNone;
+end;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 begin
@@ -807,6 +923,102 @@ begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
   Result:=cetProgram;
+end;
+
+{ TCompOptCondNode }
+
+procedure TCompOptCondNode.SetNodeType(const AValue: TCOCNodeType);
+begin
+  if FNodeType=AValue then exit;
+  FNodeType:=AValue;
+  Changed;
+end;
+
+function TCompOptCondNode.GetChilds(Index: integer): TCompOptCondNode;
+begin
+  Result:=TCompOptCondNode(fChilds[Index]);
+end;
+
+function TCompOptCondNode.GetCount: integer;
+begin
+  Result:=fChilds.Count;
+end;
+
+procedure TCompOptCondNode.SetValue(const AValue: string);
+begin
+  if FValue=AValue then exit;
+  FValue:=AValue;
+  Changed;
+end;
+
+procedure TCompOptCondNode.SetValueType(const AValue: TCOCValueType);
+begin
+  if FValueType=AValue then exit;
+  FValueType:=AValue;
+  Changed;
+end;
+
+procedure TCompOptCondNode.Changed;
+begin
+  if (FOwner<>nil) and (not fClearing) then FOwner.InvalidateValues;
+end;
+
+constructor TCompOptCondNode.Create(TheOwner: TLazCompOptConditionals);
+begin
+  FOwner:=TheOwner;
+  fChilds:=TFPList.Create;
+end;
+
+destructor TCompOptCondNode.Destroy;
+begin
+  fClearing:=true;
+  ClearNodes;
+  if FParent<>nil then begin
+    FParent.fChilds.Remove(Self);
+    FParent.Changed;
+    FParent:=nil;
+  end;
+  FreeAndNil(fChilds);
+  inherited Destroy;
+end;
+
+procedure TCompOptCondNode.ClearNodes;
+var
+  i: Integer;
+  OldClearing: Boolean;
+begin
+  if fChilds.Count=0 then exit;
+  OldClearing:=fClearing;
+  fClearing:=true;
+  for i:=fChilds.Count-1 downto 0 do
+    TObject(fChilds[i]).Free;
+  fChilds.Clear;
+  fClearing:=OldClearing;
+  Changed;
+end;
+
+procedure TCompOptCondNode.AddLast(Child: TCompOptCondNode);
+begin
+  Insert(Count,Child);
+end;
+
+procedure TCompOptCondNode.Insert(Index: integer; Child: TCompOptCondNode);
+begin
+  fChilds.Insert(Index,Child);
+  Child.FParent:=Self;
+  Changed;
+end;
+
+procedure TCompOptCondNode.Move(OldIndex, NewIndex: integer);
+begin
+  if OldIndex=NewIndex then exit;
+  fChilds.Move(OldIndex,NewIndex);
+  Changed;
+end;
+
+procedure TCompOptCondNode.Delete(Index: integer);
+begin
+  Childs[Index].Free;
 end;
 
 { TProjectFileDescriptor }
@@ -1256,6 +1468,19 @@ begin
   inherited Assign(Source);
   if Source is TNewItemProject then
     FDescriptor:=TNewItemProject(Source).Descriptor;
+end;
+
+{ TLazCompOptConditionals }
+
+constructor TLazCompOptConditionals.Create;
+begin
+  FRoot:=TCompOptCondNode.Create(Self);
+end;
+
+destructor TLazCompOptConditionals.Destroy;
+begin
+  FreeAndNil(FRoot);
+  inherited Destroy;
 end;
 
 initialization

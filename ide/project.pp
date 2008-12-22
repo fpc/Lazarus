@@ -49,15 +49,15 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  Controls, Dialogs, Laz_XMLCfg, LazConf, FileUtil,
+  Controls, Dialogs,
+  Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
-  ProjectResources,
   // IDE
-  frmcustomapplicationoptions,
-  LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
+  CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
+  LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs;
+  FileReferenceList, EditDefineTree, PackageDefs;
 
 type
   TUnitInfo = class;
@@ -4773,7 +4773,7 @@ end;
 destructor TProjectCompilerOptions.Destroy;
 begin
   inherited Destroy;
-  FGlobals.Free;
+  FreeAndNil(FGlobals);
 end;
 
 function TProjectCompilerOptions.GetOwnerName: string;
