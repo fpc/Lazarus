@@ -1,49 +1,52 @@
 object frmAboutBox: TfrmAboutBox
   Left = 326
+  Height = 445
   Top = 235
+  Width = 483
   BorderStyle = bsDialog
   Caption = 'About JEDI Code Format'
   ClientHeight = 445
   ClientWidth = 483
-  Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
+  Font.CharSet = ANSI_CHARSET
   Font.Height = -15
   Font.Name = 'Segoe UI'
-  Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
-  Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnResize = FormResize
-  PixelsPerInch = 96
-  TextHeight = 17
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object bbOK: TBitBtn
     Left = 191
+    Height = 37
     Top = 399
     Width = 100
-    Height = 37
-    TabOrder = 1
+    Caption = '&OK'
+    Default = True
     Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 1
   end
   object pnlClient: TPanel
     Left = 0
+    Height = 393
     Top = 0
     Width = 483
-    Height = 393
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
+    ClientHeight = 393
+    ClientWidth = 483
     TabOrder = 0
     object imgOpenSource: TImage
+      Cursor = crHandPoint
       Left = 11
+      Height = 139
       Top = 21
       Width = 133
-      Height = 139
-      Cursor = crHandPoint
       Center = True
+      OnClick = imgOpenSourceClick
       Picture.Data = {
         07544269746D6170762E0000424D762E00000000000036040000280000006700
         0000680000000100080000000000402A00000000000000000000000100000001
@@ -417,62 +420,58 @@ object frmAboutBox: TfrmAboutBox
         0808080808080808080808080808080808080808080808080808080808080808
         0808080808080808080808080808080808080808080808080808080808080808
         08080808080B0B04080808080808080808080808080808080808080808080808
-        0800}
-      OnClick = imgOpenSourceClick
+        0800
+      }
     end
     object hlHomePage: TLabel
+      Cursor = crHandPoint
       Left = 11
+      Height = 17
       Top = 307
       Width = 84
-      Height = 17
-      Cursor = crHandPoint
       Caption = 'hlHomePage'
-      Font.Charset = ANSI_CHARSET
+      Font.CharSet = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -15
       Font.Name = 'Segoe UI'
-      Font.Style = []
+      ParentColor = False
       ParentFont = False
-      Transparent = True
       WordWrap = True
       OnClick = hlHomePageClick
       OnMouseEnter = lblMPLMouseEnter
       OnMouseLeave = lblMPLMouseLeave
     end
     object lblMPL: TLabel
+      Cursor = crHandPoint
       Left = 11
+      Height = 34
       Top = 259
       Width = 454
-      Height = 34
-      Cursor = crHandPoint
-      Caption = 
-        'This program is open source software. It is released under the M' +
-        'ozilla '#13#10'Public licence (MPL).  http://www.mozilla.org/MPL'
-      Transparent = True
+      Caption = 'This program is open source software. It is released under the Mozilla '#13#10'Public licence (MPL).  http://www.mozilla.org/MPL'
+      ParentColor = False
       OnClick = lblMPLClick
       OnMouseEnter = lblMPLMouseEnter
       OnMouseLeave = lblMPLMouseLeave
     end
     object mWarning: TMemo
       Left = 11
+      Height = 70
       Top = 183
       Width = 462
-      Height = 70
-      BorderStyle = bsNone
       Color = clBtnFace
       Lines.Strings = (
         'This program is still under development.  In spite of thorough '
         'testing and removal of reported bugs, no guarantees are given.'
-        'Please make backups, or better yet use a source control system.')
+        'Please make backups, or better yet use a source control system.'
+      )
       ReadOnly = True
       TabOrder = 0
     end
     object mWhat: TMemo
       Left = 151
+      Height = 166
       Top = 11
       Width = 329
-      Height = 166
-      BorderStyle = bsNone
       Lines.Strings = (
         'Version %VERSION%'
         '%DATE%'
@@ -481,8 +480,8 @@ object frmAboutBox: TfrmAboutBox
         'make readable the layout of any Delphi '
         'Object-Pascal source code.'
         ''
-        'Copyright Anthony Steele 1999-2008')
-      ParentColor = True
+        'Copyright Anthony Steele 1999-2008'
+      )
       ReadOnly = True
       TabOrder = 1
     end

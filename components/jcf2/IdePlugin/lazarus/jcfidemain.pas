@@ -79,9 +79,9 @@ uses
   { lazarus }
   Menus, Dialogs, Controls,
   { jcf }
-  JcfStringUtils{,}
+  JcfStringUtils,
   { local }
-  {fAllSettings, fAbout, JcfRegistrySettings, fRegistrySettings};
+  fAbout{, fAllSettings, JcfRegistrySettings, fRegistrySettings};
 
 
 function FileIsAllowedType(const psFileName: string): boolean;
@@ -205,18 +205,15 @@ begin
 end;
 
 procedure TJcfIdeMain.DoAbout(Sender: TObject);
-{var
+var
   lcAbout: TfrmAboutBox;
-}
 begin
-{ TODO: convert JCF about box (it contains some TJvXXX components atm)
   lcAbout := TfrmAboutBox.Create(nil);
   try
     lcAbout.ShowModal;
   finally
     lcAbout.Free;
   end;
-}
 end;
 
 procedure TJcfIdeMain.DoRegistrySettings(Sender: TObject);

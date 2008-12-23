@@ -102,8 +102,9 @@ begin
   AddMenuItem(FORMAT_SETTINGS_MENU_NAME, lcJCFIDE.DoFormatSettings);
 
   AddMenuItem('-', nil);
-  AddMenuItem(FORMAT_ABOUT_MENU_NAME, lcJCFIDE.DoAbout);
 }
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_ABOUT_MENU_NAME, FORMAT_ABOUT_MENU,
+    lcJCFIDE.DoAbout);
 end;
 
 

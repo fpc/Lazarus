@@ -32,9 +32,7 @@ interface
 uses
   { delphi }
   Classes, Forms, Graphics, Controls, StdCtrls,
-  Buttons, ExtCtrls, ShellAPI, SysUtils,
-  { JVCL }
-  JvLabel, JvExControls, JvComponent;
+  Buttons, ExtCtrls, SysUtils;
 
 type
   TfrmAboutBox = class(TForm)
@@ -43,34 +41,46 @@ type
     imgOpenSource: TImage;
     mWarning:      TMemo;
     mWhat:         TMemo;
-    lblMPL:        TJvLabel;
-    hlHomePage:    TJvLabel;
+    lblMPL:        TLabel;
+    hlHomePage:    TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure imgOpenSourceClick(Sender: TObject);
     procedure lblMPLClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure hlHomePageClick(Sender: TObject);
+    procedure lblMPLMouseEnter(Sender: TObject);
+    procedure lblMPLMouseLeave(Sender: TObject);
   private
   public
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
+{$ifndef FPC}
   {$R *.dfm}
 {$endif}
 
 uses
   { delphi }
-  Windows, URLMon,
-  { jcl }
-  JclStrings,
+  {$ifndef fpc}
+    Windows, ShellAPI, URLMon,
+  {$else}
+    LResources, HelpIntfs,
+  {$endif}
   { local }
-  VersionConsts, JCFHelp, JcfFontSetFunctions;
+  VersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
 
+{$ifdef fpc}
+procedure ShowURL(const ps: string);
+var
+  err: String;
+begin
+  // do it silent
+  HelpIntfs.ShowHelp(ps, 'JCF', 'text/html', err);
+end;
+{$else}
 procedure ShowURL(const ps: string);
 var
   lws: WideString;
@@ -78,7 +88,7 @@ begin
   lws := ps;
   HLinkNavigateString(nil, pWideChar(lws));
 end;
-
+{$endif}
 
 procedure TfrmAboutBox.imgOpenSourceClick(Sender: TObject);
 begin
@@ -87,7 +97,7 @@ end;
 
 procedure TfrmAboutBox.lblMPLClick(Sender: TObject);
 begin
-  ShowURL(lblMPL.Caption);
+  ShowURL('http://www.mozilla.org/MPL');
 end;
 
 procedure TfrmAboutBox.FormCreate(Sender: TObject);
@@ -105,9 +115,7 @@ begin
   mWhat.Text := string(ls);
 
   hlHomePage.Caption := 'Find more information on the web at : ' + PROGRAM_HOME_PAGE;
-  hlHomePage.Url := PROGRAM_HOME_PAGE;
 end;
-
 
 procedure TfrmAboutBox.FormResize(Sender: TObject);
 const
@@ -125,6 +133,7 @@ end;
 
 procedure TfrmAboutBox.FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
 begin
+{$ifndef fpc}
   if Key = VK_F1 then
     try
       Application.HelpContext(HELP_MAIN);
@@ -132,6 +141,29 @@ begin
       if FileExists(Application.HelpFile) then
         ShellExecute(Handle, 'open', PChar(Application.HelpFile), nil, nil, SW_SHOWNORMAL);
     end;
+{$endif}
 end;
+
+procedure TfrmAboutBox.hlHomePageClick(Sender: TObject);
+begin
+  ShowURL(PROGRAM_HOME_PAGE);
+end;
+
+procedure TfrmAboutBox.lblMPLMouseEnter(Sender: TObject);
+begin
+  TLabel(Sender).Font.Color := clBlue;
+  TLabel(Sender).Font.Style := [fsUnderline];
+end;
+
+procedure TfrmAboutBox.lblMPLMouseLeave(Sender: TObject);
+begin
+  TLabel(Sender).Font.Color := clWindowText;
+  TLabel(Sender).Font.Style := [];
+end;
+
+{$ifdef fpc}
+initialization
+  {$I fAbout.lrs}
+{$endif}
 
 end.

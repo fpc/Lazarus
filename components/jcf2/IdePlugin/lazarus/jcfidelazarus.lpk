@@ -22,7 +22,7 @@
     </CompilerOptions>
     <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
     <Version Major="2"/>
-    <Files Count="121">
+    <Files Count="123">
       <Item1>
         <Filename Value="jcfidemain.pas"/>
         <UnitName Value="JcfIdeMain"/>
@@ -508,6 +508,14 @@
         <Filename Value="..\..\VersionConsts.pas"/>
         <UnitName Value="VersionConsts"/>
       </Item121>
+      <Item122>
+        <Filename Value="..\..\Ui\fAbout.lfm"/>
+        <Type Value="LFM"/>
+      </Item122>
+      <Item123>
+        <Filename Value="..\..\Ui\fAbout.pas"/>
+        <UnitName Value="fAbout"/>
+      </Item123>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
