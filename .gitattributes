@@ -416,6 +416,10 @@ components/jcf2/Contributions/StyleEditor/JCFStyle.res -text
 components/jcf2/Contributions/StyleEditor/Readme.txt svneol=native#text/plain
 components/jcf2/IdePlugin/JcfIdeMain.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/JcfIdeRegister.pas svneol=native#text/pascal
+components/jcf2/IdePlugin/lazarus/jcfidelazarus.lpk svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/jcfidelazarus.pas svneol=native#text/pascal
+components/jcf2/IdePlugin/lazarus/jcfidemain.pas svneol=native#text/pascal
+components/jcf2/IdePlugin/lazarus/jcfideregister.pas svneol=native#text/pascal
 components/jcf2/Include/JcfGlobal.inc svneol=native#text/plain
 components/jcf2/JCF.ico -text svneol=unset#image/ico
 components/jcf2/JCFAllD11.bpg svneol=native#text/plain
