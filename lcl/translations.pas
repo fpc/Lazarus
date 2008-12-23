@@ -715,8 +715,17 @@ var
   i,j,n: integer;
   p: LongInt;
   Identifier, Value,Line,UStr: string;
-  Multi: boolean;
-  
+
+  procedure NextLine;
+  begin
+    inc(i);
+    if i<InputLines.Count then begin
+      Line := InputLines[i];
+      n := Length(Line);
+      p := 1;
+    end;
+  end;
+
 begin
   ClearModuleList;
   UntagAll;
@@ -724,85 +733,84 @@ begin
   // in PO if not add it
   Value := '';
   Identifier := '';
-  Multi := false;
-  for i:=0 to InputLines.Count-1 do begin
-    Line:=InputLines[i];
-    n := Length(Line);
-    if n=0 then begin
-      if Multi and (Value<>'') then begin
-        // process pending multiline values (bug in fpc?)
-        UpdateItem(Identifier, Value);
-      end;
-      continue;
-    end;
+  i := 0;
+  while i < InputLines.Count do begin
 
+    Line := InputLines[i];
+    n := Length(Line);
+
+    if n=0 then
+      // empty line
+    else
     if SType=stLrt then begin
+
       p:=Pos('=',Line);
       Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
       Identifier:=copy(Line,1,p-1);
       UpdateItem(Identifier, Value);
-      continue;
-    end;
 
-    if (Line[1]='#') then begin
+    end else
+    if Line[1]='#' then begin
+
       Value := '';
       Identifier := '';
-      continue;
-    end;
 
-    if Identifier='' then begin
+    end else begin
+
       p:=Pos('=',Line);
-      if P=0 then
-        continue;
-      Identifier := copy(Line,1,p-1);
-      inc(p); // points to ' after =
-    end else
-      p:=1;   // first char in line
+      if P>0 then begin
 
-    // this will assume rst file is well formed and
-    // do similar to rstconv but recognize utf-8 strings
-    Multi := Line[n]='+';
-    while p<=n do begin
-      if Line[p]='''' then begin
-        inc(p);
-        j:=p;
-        while (p<=n)and(Line[p]<>'''') do
-          inc(p);
-        Value := Value + copy(Line, j, P-j);
-        inc(p);
-        continue;
-      end else
-      if Line[p] = '#' then begin
-        // collect a string with special chars
-        UStr:='';
-        repeat
-          inc(p);
-          j:=p;
-          while (p<=n)and(Line[p] in ['0'..'9']) do
+        Identifier := copy(Line,1,p-1);
+        inc(p); // points to ' after =
+
+        while p<=n do begin
+
+          if Line[p]='''' then begin
             inc(p);
-          UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
-        until (p>n) or (Line[p]<>'#');
-        // transfer valid UTF-8 segments to result string
-        // and re-encode back the rest
-        while Ustr<>'' do begin
-          j := UTF8CharacterLength(pchar(Ustr));
-          if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
-            Value := Value + '#'+IntToStr(ord(Ustr[1]))
+            j:=p;
+            while (p<=n)and(Line[p]<>'''') do
+              inc(p);
+            Value := Value + copy(Line, j, P-j);
+            inc(p);
+            continue;
+          end else
+          if Line[p] = '#' then begin
+            // collect all valid UTF-8 segments in string
+            UStr:='';
+            repeat
+              inc(p);
+              j:=p;
+              while (p<=n)and(Line[p] in ['0'..'9']) do
+                inc(p);
+              UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
+
+              if (p=n) and (Line[p]='+') then
+                NextLine;
+
+            until (p>n) or (Line[p]<>'#');
+            while Ustr<>'' do begin
+              j := UTF8CharacterLength(pchar(Ustr));
+              if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
+                Value := Value + '#'+IntToStr(ord(Ustr[1]))
+              else
+                Value := Value + copy(Ustr, 1, j);
+              Delete(UStr, 1, j);
+            end;
+          end else
+          if Line[p]='+' then
+            NextLine
           else
-            Value := Value + copy(Ustr, 1, j);
-          Delete(UStr, 1, j);
+            inc(p); // this is an unexpected string
         end;
-      end else
-      if Line[p]='+' then
-        break
-      else
-        inc(p); // this is an unexpected string
-        
+
+        if Value<>'' then
+          UpdateItem(Identifier, Value);
+
+      end; // if p>0 then begin
+
     end;
-    if not Multi then begin
-      if Value<>'' then
-        UpdateItem(Identifier, Value);
-    end;
+
+    inc(i);
   end;
   
   RemoveUntaggedModules;
