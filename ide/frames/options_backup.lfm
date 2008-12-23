@@ -5,8 +5,8 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
   ClientWidth = 562
   TabOrder = 0
   Visible = False
-  DesignLeft = 22
-  DesignTop = 29
+  DesignLeft = 66
+  DesignTop = 87
   object BackupHelpLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -115,7 +115,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AutoSelect = True
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 1
       Text = 'BakProjAddExtComboBox'
     end
@@ -129,7 +128,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AutoSelect = True
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 2
       Text = 'BakProjMaxCounterComboBox'
     end
@@ -143,7 +141,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AutoSelect = True
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 3
       Text = 'BakProjSubDirComboBox'
     end
@@ -246,7 +243,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       Width = 100
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 1
       Text = 'BakOtherAddExtComboBox'
     end
@@ -259,7 +255,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       Width = 100
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 2
       Text = 'BakOtherMaxCounterComboBox'
     end
@@ -272,7 +267,6 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       Width = 100
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       TabOrder = 3
       Text = 'BakOtherSubDirComboBox'
     end

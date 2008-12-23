@@ -1,11 +1,13 @@
-object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
+object IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
-  Width = 659
-  Caption = 'EnvironmentOptionsDialog'
+  Width = 700
+  Caption = 'IDEOptionsDialog'
   ClientHeight = 500
-  ClientWidth = 659
+  ClientWidth = 700
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 300
   ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
@@ -13,7 +15,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Left = 6
     Height = 40
     Top = 460
-    Width = 647
+    Width = 688
     Align = alBottom
     AutoSize = True
     TabOrder = 0

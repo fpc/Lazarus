@@ -1,13 +1,13 @@
-object OIOptionsFrame: TOIOptionsFrame
+inherited OIOptionsFrame: TOIOptionsFrame
   Height = 395
   Width = 598
   ClientHeight = 395
   ClientWidth = 598
   TabOrder = 0
   Visible = False
-  DesignLeft = 154
-  DesignTop = 203
-  object ObjectInspectorColorsGroupBox: TGroupBox
+  DesignLeft = 44
+  DesignTop = 58
+  object ObjectInspectorColorsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -133,7 +133,7 @@ object OIOptionsFrame: TOIOptionsFrame
       ParentColor = False
     end
   end
-  object OIMiscGroupBox: TGroupBox
+  object OIMiscGroupBox: TGroupBox[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ObjectInspectorColorsGroupBox
     AnchorSideTop.Side = asrBottom

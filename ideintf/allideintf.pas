@@ -37,6 +37,7 @@ uses
   IDEHelpIntf,
   IDEImagesIntf,
   IDEMsgIntf,
+  IDEOptionsIntf,
   IDETextConverter,
   IDEWindowIntf,
   ImageListEditor,

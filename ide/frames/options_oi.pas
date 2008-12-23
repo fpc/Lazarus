@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin, LCLProc,
-  ObjectInspector, LazarusIDEStrConsts, EnvironmentOpts;
+  ObjectInspector, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionsIntf;
 
 type
 
   { TOIOptionsFrame }
 
-  TOIOptionsFrame = class(TAbstractOptionsFrame)
+  TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
     ObjectInspectorColorsGroupBox: TGroupBox;
     OIAutoShowCheckBox: TCheckBox;
     OIBackgroundColorButton: TColorButton;
@@ -55,18 +55,18 @@ type
     OIValueColorLabel: TLabel;
   private
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end; 
 
 implementation
 
 { TOIOptionsFrame }
 
-procedure TOIOptionsFrame.Setup;
+procedure TOIOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ObjectInspectorColorsGroupBox.Caption := dlgEnvColors;
   OIBackgroundColorLabel.Caption := dlgBackColor;
@@ -83,19 +83,14 @@ begin
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
 end;
 
-function TOIOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TOIOptionsFrame.GetTitle: String;
 begin
   Result := dlgObjInsp;
 end;
 
-procedure TOIOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TOIOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     OIBackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
@@ -118,9 +113,9 @@ begin
   end;
 end;
 
-procedure TOIOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TOIOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
@@ -144,9 +139,13 @@ begin
   end;
 end;
 
+class function TOIOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_oi.lrs}
-  RegisterEnvironmentOptionsEditor(TOIOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TOIOptionsFrame, EnvOptionsOI);
 end.
 

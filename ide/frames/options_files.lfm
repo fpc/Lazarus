@@ -1,13 +1,13 @@
-object FilesOptionsFrame: TFilesOptionsFrame
+inherited FilesOptionsFrame: TFilesOptionsFrame
   Height = 403
   Width = 534
   ClientHeight = 403
   ClientWidth = 534
   TabOrder = 0
   Visible = False
-  DesignLeft = 390
-  DesignTop = 197
-  object MaxRecentOpenFilesLabel: TLabel
+  DesignLeft = 110
+  DesignTop = 145
+  object MaxRecentOpenFilesLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Height = 14
@@ -15,7 +15,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Caption = 'MaxRecentOpenFilesLabel'
     ParentColor = False
   end
-  object MaxRecentProjectFilesLabel: TLabel
+  object MaxRecentProjectFilesLabel: TLabel[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MaxRecentOpenFilesComboBox
     AnchorSideTop.Side = asrBottom
@@ -26,7 +26,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Caption = 'MaxRecentProjectFilesLabel'
     ParentColor = False
   end
-  object MaxRecentOpenFilesComboBox: TComboBox
+  object MaxRecentOpenFilesComboBox: TComboBox[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MaxRecentOpenFilesLabel
     AnchorSideTop.Side = asrBottom
@@ -45,9 +45,10 @@ object FilesOptionsFrame: TFilesOptionsFrame
       '25'
       '30'
     )
+    MaxLength = -1
     TabOrder = 0
   end
-  object MaxRecentProjectFilesComboBox: TComboBox
+  object MaxRecentProjectFilesComboBox: TComboBox[3]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MaxRecentProjectFilesLabel
     AnchorSideTop.Side = asrBottom
@@ -66,9 +67,10 @@ object FilesOptionsFrame: TFilesOptionsFrame
       '25'
       '30'
     )
+    MaxLength = -1
     TabOrder = 1
   end
-  object OpenLastProjectAtStartCheckBox: TCheckBox
+  object OpenLastProjectAtStartCheckBox: TCheckBox[4]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MaxRecentProjectFilesComboBox
     AnchorSideTop.Side = asrBottom
@@ -80,7 +82,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Caption = 'OpenLastProjectAtStartCheckBox'
     TabOrder = 2
   end
-  object ShowCompileDialogCheckBox: TCheckBox
+  object ShowCompileDialogCheckBox: TCheckBox[5]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
     AnchorSideTop.Side = asrBottom
@@ -91,7 +93,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Caption = 'ShowCompileDialogCheckBox'
     TabOrder = 3
   end
-  object LazarusDirGroupBox: TGroupBox
+  object LazarusDirGroupBox: TGroupBox[6]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ShowCompileDialogCheckBox
     AnchorSideTop.Side = asrBottom
@@ -116,6 +118,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'LazarusDirComboBox'
     end
@@ -138,7 +141,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       TabOrder = 1
     end
   end
-  object CompilerPathGroupBox: TGroupBox
+  object CompilerPathGroupBox: TGroupBox[7]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LazarusDirGroupBox
     AnchorSideTop.Side = asrBottom
@@ -162,6 +165,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'CompilerPathComboBox'
     end
@@ -182,7 +186,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       TabOrder = 1
     end
   end
-  object FPCSourceDirGroupBox: TGroupBox
+  object FPCSourceDirGroupBox: TGroupBox[8]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CompilerPathGroupBox
     AnchorSideTop.Side = asrBottom
@@ -206,6 +210,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'FPCSourceDirComboBox'
     end
@@ -226,7 +231,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       TabOrder = 1
     end
   end
-  object MakePathGroupBox: TGroupBox
+  object MakePathGroupBox: TGroupBox[9]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FPCSourceDirGroupBox
     AnchorSideTop.Side = asrBottom
@@ -250,6 +255,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'MakePathComboBox'
     end
@@ -270,7 +276,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       TabOrder = 1
     end
   end
-  object TestBuildDirGroupBox: TGroupBox
+  object TestBuildDirGroupBox: TGroupBox[10]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MakePathGroupBox
     AnchorSideTop.Side = asrBottom
@@ -294,6 +300,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'TestBuildDirComboBox'
     end

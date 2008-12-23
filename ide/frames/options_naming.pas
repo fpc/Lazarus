@@ -26,40 +26,35 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
 
   { TNamingOptionsFrame }
 
-  TNamingOptionsFrame = class(TAbstractOptionsFrame)
+  TNamingOptionsFrame = class(TAbstractIDEOptionsEditor)
     AmbiguousFileActionRadioGroup: TRadioGroup;
     CharcaseFileActionRadioGroup: TRadioGroup;
     PascalFileExtRadiogroup: TRadioGroup;
   private
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 { TNamingOptionsFrame }
 
-function TNamingOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TNamingOptionsFrame.GetTitle: String;
 begin
   Result := dlgNaming;
 end;
 
-procedure TNamingOptionsFrame.Setup;
+procedure TNamingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   pe: TPascalExtType;
 begin
@@ -106,11 +101,11 @@ begin
   end;
 end;
 
-procedure TNamingOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TNamingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     for i := 0 to PascalFileExtRadiogroup.Items.Count-1 do
       if PascalFileExtRadiogroup.Items[i] = PascalExtension[PascalFileExtension] then
@@ -121,9 +116,9 @@ begin
   end;
 end;
 
-procedure TNamingOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TNamingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     if PascalFileExtRadiogroup.ItemIndex >= 0 then
       PascalFileExtension := PascalExtToType(PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
@@ -134,9 +129,13 @@ begin
   end;
 end;
 
+class function TNamingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_naming.lrs}
-  RegisterEnvironmentOptionsEditor(TNamingOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TNamingOptionsFrame, EnvOptionsNaming);
 end.
 

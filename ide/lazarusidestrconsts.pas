@@ -370,7 +370,7 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
-  lisMenuGeneralOptions = 'Environment options ...';
+  lisMenuGeneralOptions = 'Options ...';
   lisMenuEditorOptions = 'Editor options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   lisMenDebuggerOptions = 'Debugger Options ...';
@@ -853,7 +853,10 @@ resourcestring
    +'along with this library; if not, write to the Free Software '
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
-  // Environment dialog
+  // Options dialog groups
+  dlgGroupEnvironment = 'Environment';
+  dlgGroupEditor = 'Editor';
+  // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   

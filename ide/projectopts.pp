@@ -42,7 +42,7 @@ uses
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
-  ButtonPanel, ComCtrls;
+  ButtonPanel, ComCtrls, Math;
 
 type
 
@@ -599,7 +599,7 @@ end;
 
 procedure TProjectOptionsDialog.IconTrackChange(Sender: TObject);
 begin
-  IconImage.Picture.Icon.Current := IconTrack.Position;
+  IconImage.Picture.Icon.Current := Max(0, Min(IconImage.Picture.Icon.Count - 1, IconTrack.Position));
 end;
 
 procedure TProjectOptionsDialog.FormsPageResize(Sender: TObject);

@@ -1,13 +1,13 @@
-object FpDocOptionsFrame: TFpDocOptionsFrame
+inherited FpDocOptionsFrame: TFpDocOptionsFrame
   Height = 380
   Width = 476
   ClientHeight = 380
   ClientWidth = 476
   TabOrder = 0
   Visible = False
-  DesignLeft = 535
-  DesignTop = 389
-  object LazDocPathsGroupBox: TGroupBox
+  DesignLeft = 176
+  DesignTop = 232
+  object LazDocPathsGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -91,7 +91,7 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       Text = 'LazDocPathEdit'
     end
   end
-  object SelectDirectoryDialog: TSelectDirectoryDialog
+  object SelectDirectoryDialog: TSelectDirectoryDialog[1]
     FilterIndex = 0
     left = 372
     top = 8

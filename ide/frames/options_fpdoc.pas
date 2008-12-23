@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Dialogs, StdCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
 
   { TFpDocOptionsFrame }
 
-  TFpDocOptionsFrame = class(TAbstractOptionsFrame)
+  TFpDocOptionsFrame = class(TAbstractIDEOptionsEditor)
     LazDocAddPathButton: TButton;
     LazDocBrowseButton: TButton;
     LazDocDeletePathButton: TButton;
@@ -45,28 +45,23 @@ type
     procedure LazDocBrowseButtonClick(Sender: TObject);
   private
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 { TFpDocOptionsFrame }
 
-function TFpDocOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TFpDocOptionsFrame.GetTitle: String;
 begin
   Result := lisFPDocEditor;
 end;
 
-procedure TFpDocOptionsFrame.Setup;
+procedure TFpDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
   LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
@@ -75,15 +70,15 @@ begin
   LazDocPathEdit.Clear;
 end;
 
-procedure TFpDocOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TFpDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
     SplitString(LazDocPaths, ';', LazDocListBox.Items);
 end;
 
-procedure TFpDocOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TFpDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
     LazDocPaths := StringListToText(LazDocListBox.Items, ';', true);
 end;
 
@@ -104,9 +99,13 @@ begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
+class function TFpDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_fpdoc.lrs}
-  RegisterEnvironmentOptionsEditor(TFpDocOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TFpDocOptionsFrame, EnvOptionsFpDoc);
 end.
 

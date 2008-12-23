@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
 
   { TBackupOptionsFrame }
 
-  TBackupOptionsFrame = class(TAbstractOptionsFrame)
+  TBackupOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackupHelpLabel: TLabel;
     BackupOtherGroupBox: TGroupBox;
     BackupProjectGroupBox: TGroupBox;
@@ -53,11 +53,11 @@ type
     procedure BakTypeRadioGroupClick(Sender: TObject);
   private
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -84,17 +84,12 @@ begin
   end;
 end;
 
-function TBackupOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TBackupOptionsFrame.GetTitle: String;
 begin
   Result := dlgEnvBckup;
 end;
 
-procedure TBackupOptionsFrame.Setup;
+procedure TBackupOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   BackupHelpLabel.Caption := dlgEnvBackupHelpNote;
   BackupProjectGroupBox.Caption := dlgProjFiles;
@@ -201,9 +196,9 @@ begin
   end;
 end;
 
-procedure TBackupOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TBackupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     with BackupInfoProjectFiles do
     begin
@@ -250,9 +245,9 @@ begin
   end;
 end;
 
-procedure TBackupOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TBackupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do 
   begin
     with BackupInfoProjectFiles do
     begin
@@ -296,9 +291,13 @@ begin
   end;
 end;
 
+class function TBackupOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_backup.lrs}
-  RegisterEnvironmentOptionsEditor(TBackupOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TBackupOptionsFrame, EnvOptionsBackup);
 end.
 

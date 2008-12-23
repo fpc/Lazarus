@@ -115,7 +115,7 @@ uses
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser,
-  PublishModule, EnvironmentOpts, EnvironmentOpts_Dlg, TransferMacros, KeyMapping, 
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, 
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
@@ -126,8 +126,11 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
+  IDEOptionsIntf, IDEOptionsDlg, EditorOptionsDlg {temporary},
   options_files, options_desktop, options_window, options_formed, options_oi,
-  options_backup, options_naming, options_fpdoc;
+  options_backup, options_naming, options_fpdoc,
+  options_editor_general, options_editor_display, options_editor_keymapping,
+  options_editor_color, options_editor_codetools, options_editor_codefolding;
 
 type
   TIDEProjectItem =
@@ -335,11 +338,9 @@ type
                                  const HelpKeyword: string): Integer;
 
     // Environment options dialog events
-    procedure OnLoadEnvironmentSettings(Sender: TObject;
-      TheEnvironmentOptions: TEnvironmentOptions);
-    procedure OnSaveEnvironmentSettings(Sender: TObject;
-      TheEnvironmentOptions: TEnvironmentOptions);
-    procedure DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
+    procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -1037,36 +1038,39 @@ end;
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
 begin
-  EnvironmentOptions:=TEnvironmentOptions.Create;
-  with EnvironmentOptions do begin
+  EnvironmentOptions := TEnvironmentOptions.Create;
+  with EnvironmentOptions do
+  begin
     SetLazarusDefaultFilename;
     Load(false);
-    if Application.HasOption('language') then begin
+    if Application.HasOption('language') then
+    begin
       debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
         Application.GetOptionValue('language'));
-      EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
+      EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
     end;
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
 
-    ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
-    ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
-    OnApplyWindowLayout:=@Self.OnApplyWindowLayout;
+    ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
+    ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
+    OnApplyWindowLayout := @Self.OnApplyWindowLayout;
   end;
   UpdateDefaultPascalFileExtensions;
 
-  EditorOpts:=TEditorOptions.Create;
+  EditorOpts := TEditorOptions.Create;
   SetupIDECommands;
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
 
   EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
-  MiscellaneousOptions:=TMiscellaneousOptions.Create;
+  MiscellaneousOptions := TMiscellaneousOptions.Create;
   MiscellaneousOptions.Load;
 
-  CodeToolsOpts:=TCodeToolsOptions.Create;
-  with CodeToolsOpts do begin
+  CodeToolsOpts := TCodeToolsOptions.Create;
+  with CodeToolsOpts do
+  begin
     SetLazarusDefaultFilename;
     Load;
   end;
@@ -3851,21 +3855,21 @@ begin
   Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
 end;
 
-procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject;
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  LoadDesktopSettings(TheEnvironmentOptions);
+  if AOptions is TEnvironmentOptions then
+    LoadDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.OnSaveEnvironmentSettings(Sender: TObject;
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  SaveDesktopSettings(TheEnvironmentOptions);
+  if AOptions is TEnvironmentOptions then
+    SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
+procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
 var
-  EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
+  IDEOptionsDialog: TIDEOptionsDialog;
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
   LazarusSrcDirChanged: boolean;
@@ -3917,30 +3921,42 @@ var
     EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
 
-Begin
-  EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(nil);
+  procedure UpdateEditorOptions;
+  begin
+    Project1.UpdateAllSyntaxHighlighter;
+    SourceNotebook.ReloadEditorOptions;
+    ReloadMenuShortCuts;
+  end;
+
+begin
+  IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
   try
-    EnvironmentOptionsDialog.OpenEditor(AEditor);
+    IDEOptionsDialog.OpenEditor(AEditor);
     // update EnvironmentOptions (save current window positions)
     SaveDesktopSettings(EnvironmentOptions);
-    with EnvironmentOptionsDialog do 
-    begin
-      OnLoadEnvironmentSettings:=@Self.OnLoadEnvironmentSettings;
-      OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
-      // load settings from EnvironmentOptions to EnvironmentOptionsDialog
-      ReadSettings(EnvironmentOptions);
-    end;
-    if EnvironmentOptionsDialog.ShowModal = mrOk then 
-    begin
+    // update editor options?
+    Project1.UpdateAllCustomHighlighter;
 
+    with IDEOptionsDialog do
+    begin
+      OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
+      OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
+      // load settings from EnvironmentOptions to IDEOptionsDialog
+      ReadSettings(EnvironmentOptions);
+      // load settings from EditorOptions to IDEOptionsDialog
+      ReadSettings(EditorOpts);
+    end;
+    if IDEOptionsDialog.ShowModal = mrOk then 
+    begin
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
-      // load settings from EnvironmentOptionsDialog to EnvironmentOptions
+      // load settings from IDEOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       OldLanguage:=EnvironmentOptions.LanguageID;
-      EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
-      ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
+      IDEOptionsDialog.WriteSettings(EnvironmentOptions);
+      IDEOptionsDialog.WriteSettings(EditorOpts);
+      ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;
 
@@ -3963,10 +3979,13 @@ Begin
 
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then
-        MainBuildBoss.RescanCompilerDefines(true,false);
+        MainBuildBoss.RescanCompilerDefines(true, false);
+
+      UpdateEditorOptions;
 
       // save to disk
-      EnvironmentOptions.Save(false);
+      EnvironmentOptions.Save(False);
+      EditorOpts.Save;
 
       // update environment
       UpdateDesigners;
@@ -3978,17 +3997,19 @@ Begin
         PkgBoss.LazarusSrcDirChanged;
     end;
   finally
-    EnvironmentOptionsDialog.Free;
+    IDEOptionsDialog.Free;
   end;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
-var EditorOptionsForm: TEditorOptionsForm;
+var
+  EditorOptionsForm: TEditorOptionsForm;
 Begin
   EditorOptionsForm:=TEditorOptionsForm.Create(nil);
   try
     Project1.UpdateAllCustomHighlighter;
-    if EditorOptionsForm.ShowModal=mrOk then begin
+    if EditorOptionsForm.ShowModal = mrOk then
+    begin
       Project1.UpdateAllSyntaxHighlighter;
       SourceNotebook.ReloadEditorOptions;
       ReloadMenuShortCuts;

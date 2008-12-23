@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="17">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -117,6 +117,64 @@
         <ResourceFilename Value="frames\options_fpdoc.lrs"/>
         <UnitName Value="options_fpdoc"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\ideintf\ideoptionsintf.pas"/>
+        <ComponentName Value="AbstractIDEOptionsEditor"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="..\ideintf\ideoptionsintf.lrs"/>
+        <UnitName Value="IDEOptionsIntf"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="frames\options_editor_general.pas"/>
+        <ComponentName Value="EditorGeneralOptionsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_general.lrs"/>
+        <UnitName Value="options_editor_general"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="frames\options_editor_display.pas"/>
+        <ComponentName Value="EditorDisplayOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_display.lrs"/>
+        <UnitName Value="options_editor_display"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="frames\options_editor_keymapping.pas"/>
+        <ComponentName Value="EditorKeymappingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_keymapping.lrs"/>
+        <UnitName Value="options_editor_keymapping"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="frames\options_editor_color.pas"/>
+        <ComponentName Value="EditorColorOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_color.lrs"/>
+        <UnitName Value="options_editor_color"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="frames\options_editor_codetools.pas"/>
+        <ComponentName Value="EditorCodetoolsOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_codetools.lrs"/>
+        <UnitName Value="options_editor_codetools"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="frames\options_editor_codefolding.pas"/>
+        <ComponentName Value="EditorCodefoldingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_codefolding.lrs"/>
+        <UnitName Value="options_editor_codefolding"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

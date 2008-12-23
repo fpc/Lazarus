@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, LCLProc,
-  EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory, IDEProcs, IDEOptionsIntf;
 
 type
 
   { TDesktopOptionsFrame }
 
-  TDesktopOptionsFrame = class(TAbstractOptionsFrame)
+  TDesktopOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoSaveEditorFilesCheckBox: TCheckBox;
     AutoSaveGroupBox: TGroupBox;
     AutoSaveIntervalInSecsComboBox: TComboBox;
@@ -54,31 +54,26 @@ type
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
 
-    procedure DoLoadSettings(AOptions: TEnvironmentOptions);
-    procedure DoSaveSettings(AOptions: TEnvironmentOptions);
+    procedure DoLoadSettings(AOptions: TAbstractIDEOptions);
+    procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 { TDesktopOptionsFrame }
 
-function TDesktopOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TDesktopOptionsFrame.GetTitle: String;
 begin
   Result := dlgDesktop;
 end;
 
-procedure TDesktopOptionsFrame.Setup;
+procedure TDesktopOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   i: Integer;
   LangID: String;
@@ -121,9 +116,9 @@ begin
   MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
 end;
 
-procedure TDesktopOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     // language
     LanguageComboBox.Text:=LangIDToCaption(LanguageID);
@@ -149,9 +144,9 @@ begin
   end;
 end;
 
-procedure TDesktopOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TDesktopOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     // language
     LanguageID:=CaptionToLangID(LanguageComboBox.Text);
@@ -270,21 +265,25 @@ begin
   Result := '';
 end;
 
-procedure TDesktopOptionsFrame.DoLoadSettings(AOptions: TEnvironmentOptions);
+procedure TDesktopOptionsFrame.DoLoadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if Assigned(OnLoadEnvironmentSettings) then
-    OnLoadEnvironmentSettings(Self, AOptions);
+  if Assigned(OnLoadIDEOptions) then
+    OnLoadIDEOptions(Self, AOptions);
 end;
 
-procedure TDesktopOptionsFrame.DoSaveSettings(AOptions: TEnvironmentOptions);
+procedure TDesktopOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
 begin
-  if Assigned(OnSaveEnvironmentSettings) then
-    OnSaveEnvironmentSettings(Self, AOptions);
+  if Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, AOptions);
+end;
+
+class function TDesktopOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
 end;
 
 initialization
   {$I options_desktop.lrs}
-  RegisterEnvironmentOptionsEditor(TDesktopOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TDesktopOptionsFrame, EnvOptionsDesktop);
 end.
 

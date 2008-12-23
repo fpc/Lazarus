@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
 
   { TFormEditorOptionsFrame }
 
-  TFormEditorOptionsFrame = class(TAbstractOptionsFrame)
+  TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCreateFormsOnOpenCheckBox: TCheckBox;
     DesignerPaintLazyCheckBox: TCheckBox;
     FormEditMiscGroupBox: TGroupBox;
@@ -69,28 +69,23 @@ type
     procedure FrameResize(Sender: TObject);
   private
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 { TFormEditorOptionsFrame }
 
-function TFormEditorOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TFormEditorOptionsFrame.GetTitle: String;
 begin
   Result := dlgFrmEditor;
 end;
 
-procedure TFormEditorOptionsFrame.Setup;
+procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   procedure SetupGridGroupBox;
   begin
     ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
@@ -143,9 +138,9 @@ begin
   SetupMiscGroupBox;
 end;
 
-procedure TFormEditorOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TFormEditorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
     ShowGridCheckBox.Checked:=ShowGrid;
@@ -170,9 +165,9 @@ begin
   end;
 end;
 
-procedure TFormEditorOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TFormEditorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
     ShowGrid:=ShowGridCheckBox.Checked;
@@ -206,9 +201,13 @@ begin
   FormEditMiscGroupBox.Width := GridGroupBox.Width;
 end;
 
+class function TFormEditorOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_formed.lrs}
-  RegisterEnvironmentOptionsEditor(TFormEditorOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TFormEditorOptionsFrame, EnvOptionsFormEd);
 end.
 

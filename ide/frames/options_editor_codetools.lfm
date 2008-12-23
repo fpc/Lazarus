@@ -1,0 +1,117 @@
+object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
+  Height = 440
+  Width = 496
+  ClientHeight = 440
+  ClientWidth = 496
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 436
+  DesignTop = 200
+  object AutomaticFeaturesGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Height = 440
+    Width = 496
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'AutomaticFeaturesGroupBox'
+    ClientHeight = 422
+    ClientWidth = 492
+    TabOrder = 0
+    object AutoDelayLabel: TLabel
+      Left = 6
+      Height = 14
+      Top = 176
+      Width = 480
+      Align = alTop
+      BorderSpacing.Top = 24
+      BorderSpacing.Around = 6
+      Caption = 'AutoDelayLabel'
+      ParentColor = False
+    end
+    object AutoDelayMinLabel: TLabel
+      AnchorSideTop.Control = AutoDelayTrackBar
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 14
+      Top = 148
+      Width = 92
+      BorderSpacing.Top = 2
+      Caption = 'AutoDelayMinLabel'
+      ParentColor = False
+    end
+    object AutoDelayMaxLabel: TLabel
+      AnchorSideTop.Control = AutoDelayTrackBar
+      AnchorSideTop.Side = asrBottom
+      Left = 358
+      Height = 14
+      Top = 148
+      Width = 96
+      Alignment = taRightJustify
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 2
+      Caption = 'AutoDelayMaxLabel'
+      ParentColor = False
+    end
+    object AutoIdentifierCompletionCheckBox: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 480
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'AutoIdentifierCompletionCheckBox'
+      TabOrder = 0
+    end
+    object AutoCodeParametersCheckBox: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 56
+      Width = 480
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'AutoCodeParametersCheckBox'
+      Enabled = False
+      TabOrder = 1
+    end
+    object AutoToolTipExprEvalCheckBox: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 81
+      Width = 480
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'AutoToolTipExprEvalCheckBox'
+      TabOrder = 2
+    end
+    object AutoToolTipSymbToolsCheckBox: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 480
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'AutoToolTipSymbToolsCheckBox'
+      TabOrder = 3
+    end
+    object AutoDelayTrackBar: TTrackBar
+      Left = 6
+      Height = 40
+      Top = 106
+      Width = 480
+      Frequency = 250
+      Max = 4000
+      Min = 500
+      Position = 500
+      ScalePos = trTop
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 4
+    end
+  end
+end

@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector, IDEOptionsIntf;
 
 type
 
   { TWindowOptionsFrame }
 
-  TWindowOptionsFrame = class(TAbstractOptionsFrame)
+  TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     HideIDEOnRunCheckBox: TCheckBox;
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
     WindowPositionsGroupBox: TGroupBox;
@@ -43,28 +43,23 @@ type
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
     procedure SetWindowPositionsItem(Index: integer);
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 { TWindowOptionsFrame }
 
-function TWindowOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
-
 function TWindowOptionsFrame.GetTitle: String;
 begin
   Result := dlgWindow;
 end;
 
-procedure TWindowOptionsFrame.Setup;
+procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
@@ -97,9 +92,9 @@ begin
   end;
 end;
 
-procedure TWindowOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     FLayouts := IDEWindowLayoutList;
     SetWindowPositionsItem(0);
@@ -110,9 +105,9 @@ begin
   end;
 end;
 
-procedure TWindowOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     WindowPositionsBox.Save;
     // window minimizing
@@ -148,9 +143,13 @@ begin
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
-initialization
-  {$I options_window.lrs}
-  RegisterEnvironmentOptionsEditor(TWindowOptionsFrame);
+class function TWindowOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
 
+initialization
+  {$I options_window.lrs}                                                              
+  RegisterIDEOptionsEditor(GroupEnvironment, TWindowOptionsFrame, EnvOptionsWindow);
 end.
 
