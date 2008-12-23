@@ -26,7 +26,7 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTextBuffer, SynEditMiscClasses, Controls, SynEditHighlighter;
+  Classes, SysUtils, Graphics, SynEditTextBase, SynEditTextBuffer, SynEditMiscClasses, Controls, SynEditHighlighter;
 
 type
 
@@ -38,7 +38,7 @@ type
   TSynEditMarkup = class(TObject)
   private
     fMarkupInfo : TSynSelectedColor;
-    fLines : TSynEditStringList;
+    fLines : TSynEditStrings;
     fCaret : TPoint;
     fTopLine, FLinesInWindow : Integer;
     fSynEdit : TCustomControl;
@@ -54,7 +54,7 @@ type
     procedure MarkupChanged(AMarkup: TObject);
   protected
     procedure SetInvalidateLinesMethod(const AValue : TInvalidateLines); virtual;
-    procedure SetLines(const AValue : TSynEditStringList); virtual;
+    procedure SetLines(const AValue : TSynEditStrings); virtual;
     procedure SetTopLine(const AValue : Integer); virtual;
     procedure SetLinesInWindow(const AValue : Integer); virtual;
     procedure SetCaret(const AValue : TPoint); virtual;
@@ -84,7 +84,7 @@ type
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property Style : TFontStyles read GetStyle;
-    property Lines : TSynEditStringList read fLines write SetLines;
+    property Lines : TSynEditStrings read fLines write SetLines;
     property Caret : TPoint read fCaret write SetCaret;
     property TopLine : Integer read fTopLine write SetTopLine;
     property LinesInWindow : Integer read fLinesInWindow write SetLinesInWindow;
@@ -99,7 +99,7 @@ type
 
   protected
     procedure SetInvalidateLinesMethod(const AValue : TInvalidateLines); override;
-    procedure SetLines(const AValue : TSynEditStringList); override;
+    procedure SetLines(const AValue : TSynEditStrings); override;
     procedure SetTopLine(const AValue : Integer); override;
     procedure SetLinesInWindow(const AValue : Integer); override;
     procedure SetCaret(const AValue : TPoint); override;
@@ -161,7 +161,7 @@ begin
   DoMarkupChanged(AMarkup as TSynSelectedColor);
 end;
 
-procedure TSynEditMarkup.SetLines(const AValue : TSynEditStringList);
+procedure TSynEditMarkup.SetLines(const AValue : TSynEditStrings);
 begin
   if fLines = AValue then exit;
   fLines := AValue;
@@ -365,7 +365,7 @@ begin
     TSynEditMarkup(fMarkUpList[i]).SetInvalidateLinesMethod(AValue);
 end;
 
-procedure TSynEditMarkupManager.SetLines(const AValue : TSynEditStringList);
+procedure TSynEditMarkupManager.SetLines(const AValue : TSynEditStrings);
 var
   i : integer;
 begin

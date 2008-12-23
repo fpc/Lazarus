@@ -43,7 +43,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  LCLIntf, LCLType, LCLProc,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -95,6 +95,7 @@ type
     FCodeFoldingWidth: integer;
     fShowCodeFolding: boolean;
     FShowOnlyLineNumbersMultiplesOf: integer;
+    FMarkupInfoLineNumber: TSynSelectedColor;
     {$ENDIF}
     fColor: TColor;
     fWidth: integer;
@@ -107,7 +108,6 @@ type
     fOnChange: TNotifyEvent;
     fCursor: TCursor;
     fVisible: boolean;
-    fUseFontStyle: boolean;
     fAutoSize: boolean;
     fAutoSizeDigitCount: integer;
     procedure SetAutoSize(const Value: boolean);
@@ -122,12 +122,13 @@ type
     procedure SetLeftOffset(Value: integer);
     procedure SetRightOffset(Value: integer);
     procedure SetShowLineNumbers(const Value: boolean);
-    procedure SetUseFontStyle(Value: boolean);
     procedure SetVisible(Value: boolean);
     procedure SetWidth(Value: integer);
     procedure SetZeroStart(const Value: boolean);
+    procedure DoChange(Sender: TObject);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure AutoSizeDigitCount(LinesCount: integer);
     function FormatLineNumber(Line: integer; IsDot: boolean): string;
@@ -149,8 +150,6 @@ type
       default 2;
     property ShowLineNumbers: boolean read fShowLineNumbers
       write SetShowLineNumbers default FALSE;
-    property UseFontStyle: boolean read fUseFontStyle write SetUseFontStyle
-      default FALSE;
     property Visible: boolean read fVisible write SetVisible default TRUE;
     property Width: integer read fWidth write SetWidth default 30;
     property ZeroStart: boolean read fZeroStart write SetZeroStart default FALSE;
@@ -164,6 +163,7 @@ type
       default 14;
     property ShowOnlyLineNumbersMultiplesOf: integer read FShowOnlyLineNumbersMultiplesOf
       write SetShowOnlyLineNumbersMultiplesOf default 1;
+    property MarkupInfoLineNumber: TSynSelectedColor read FMarkupInfoLineNumber;
     {$ENDIF}
   end;
 
@@ -239,7 +239,7 @@ type
   end;
 
   { TSynInternalImage }
-  
+
   TSynInternalImage = class(TObject)
   public
     constructor Create(const AName: string; Count: integer);
@@ -250,8 +250,8 @@ type
       LineHeight: integer; TransparentColor: TColor);
     {$ENDIF}
   end;
-  
-  
+
+
   { TSynEditSearchCustom }
 
   TSynEditSearchCustom = class(TComponent)
@@ -271,6 +271,29 @@ type
     property Options: TSynSearchOptions write SetOptions;
   end;
 
+  {$IFDEF SYN_LAZARUS}
+
+  { TSynEditCaret }
+
+  TSynEditCaret = class
+    fLinePos : Integer; // 1 based
+    fCharPos : Integer; // 1 based
+    fOnChangeList : TMethodList;
+  private
+    function  GetLineCharPos : TPoint;
+    procedure SetLineCharPos(const AValue : TPoint);
+    procedure setCharPos(const AValue : Integer);
+    procedure setLinePos(const AValue : Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddChangeHandler(AHandler: TNotifyEvent);
+    procedure RemoveChangeHandler(AHandler: TNotifyEvent);
+    property LinePos : Integer read fLinePos write setLinePos;
+    property CharPos : Integer read fCharPos write setCharPos;
+    property LineCharPos : TPoint read GetLineCharPos write SetLineCharPos;
+  end;
+  {$ENDIF}
 
 implementation
 
@@ -364,13 +387,24 @@ begin
   fRightOffset := 2;
   fShowOnlyLineNumbersMultiplesOf := 1;
   fCodeFoldingWidth := 14;
+  FMarkupInfoLineNumber := TSynSelectedColor.Create;
+  FMarkupInfoLineNumber.Background := clNone;
+  FMarkupInfoLineNumber.Foreground := clNone;
+  FMarkupInfoLineNumber.OnChange := @DoChange;
+end;
+
+destructor TSynGutter.Destroy;
+begin
+  FMarkupInfoLineNumber.Free;
+  inherited Destroy;
 end;
 
 procedure TSynGutter.Assign(Source: TPersistent);
 var
   Src: TSynGutter;
 begin
-  if Assigned(Source) and (Source is TSynGutter) then begin
+  if Assigned(Source) and (Source is TSynGutter) then
+  begin
     Src := TSynGutter(Source);
     fColor := Src.fColor;
     fVisible := Src.fVisible;
@@ -387,8 +421,9 @@ begin
     FCodeFoldingWidth := Src.FCodeFoldingWidth;
     fShowCodeFolding := Src.fShowCodeFolding;
     FShowOnlyLineNumbersMultiplesOf := Src.FShowOnlyLineNumbersMultiplesOf;
+    FMarkupInfoLineNumber.Assign(Src.MarkupInfoLineNumber);
     {$ENDIF}
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end else
     inherited;
 end;
@@ -397,12 +432,14 @@ procedure TSynGutter.AutoSizeDigitCount(LinesCount: integer);
 var
   nDigits: integer;
 begin
-  if fVisible and fAutoSize and fShowLineNumbers then begin            
+  if fVisible and fAutoSize and fShowLineNumbers then
+  begin
     if fZeroStart then Dec(LinesCount);
     nDigits := Max(Length(IntToStr(LinesCount)), fDigitCount);
-    if fAutoSizeDigitCount <> nDigits then begin
+    if fAutoSizeDigitCount <> nDigits then
+    begin
       fAutoSizeDigitCount := nDigits;
-      if Assigned(fOnChange) then fOnChange(Self);
+      DoChange(Self);
     end;
   end else
     fAutoSizeDigitCount := fDigitCount;
@@ -415,7 +452,10 @@ begin
   Result := '';
   // if a dot must be showed
   if IsDot then
-    Result :=  StringOfChar(' ', fAutoSizeDigitCount-1) + '.'
+    if Line mod 5 = 0 then // every 5 lines show '-' instead of '.'
+      Result := StringOfChar(' ', fAutoSizeDigitCount-1) + '-'
+    else
+      Result := StringOfChar(' ', fAutoSizeDigitCount-1) + '.'
   // else format the line number
   else begin
     if fZeroStart then Dec(Line);
@@ -435,7 +475,7 @@ begin
     Result := 0;
     Exit;
   end;
-  
+
   if fShowLineNumbers then
     Result := fLeftOffset + fRightOffset + fAutoSizeDigitCount * CharWidth + 2
   else
@@ -447,9 +487,10 @@ end;
 
 procedure TSynGutter.SetAutoSize(const Value: boolean);
 begin
-  if fAutoSize <> Value then begin
+  if fAutoSize <> Value then
+  begin
     fAutoSize := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
@@ -458,109 +499,118 @@ procedure TSynGutter.SetCodeFoldingWidth(const AValue: integer);
 begin
   if FCodeFoldingWidth=AValue then exit;
   FCodeFoldingWidth:=AValue;
-  if Assigned(fOnChange) then fOnChange(Self);
+  DoChange(Self);
 end;
 {$ENDIF}
 
 procedure TSynGutter.SetColor(const Value: TColor);
 begin
-  if fColor <> Value then begin
+  if fColor <> Value then
+  begin
     fColor := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetDigitCount(Value: integer);
 begin
   Value := MinMax(Value, 2, 12);
-  if fDigitCount <> Value then begin
+  if fDigitCount <> Value then
+  begin
     fDigitCount := Value;
     fAutoSizeDigitCount := fDigitCount;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetLeadingZeros(const Value: boolean);
 begin
-  if fLeadingZeros <> Value then begin
+  if fLeadingZeros <> Value then
+  begin
     fLeadingZeros := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetLeftOffset(Value: integer);
 begin
   Value := Max(0, Value);
-  if fLeftOffset <> Value then begin
+  if fLeftOffset <> Value then
+  begin
     fLeftOffset := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetRightOffset(Value: integer);
 begin
   Value := Max(0, Value);
-  if fRightOffset <> Value then begin
+  if fRightOffset <> Value then
+  begin
     fRightOffset := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
 begin
-  if FShowOnlyLineNumbersMultiplesOf <> AValue then begin
+  if FShowOnlyLineNumbersMultiplesOf <> AValue then
+  begin
     FShowOnlyLineNumbersMultiplesOf := AValue;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetShowLineNumbers(const Value: boolean);
 begin
-  if fShowLineNumbers <> Value then begin
+  if fShowLineNumbers <> Value then
+  begin
     fShowLineNumbers := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetShowCodeFolding(const Value: boolean);
 begin
-  if fShowCodeFolding <> Value then begin
+  if fShowCodeFolding <> Value then
+  begin
     fShowCodeFolding := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
-  end;
-end;
-
-procedure TSynGutter.SetUseFontStyle(Value: boolean);
-begin
-  if fUseFontStyle <> Value then begin
-    fUseFontStyle := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetVisible(Value: boolean);
 begin
-  if fVisible <> Value then begin
+  if fVisible <> Value then
+  begin
     fVisible := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetWidth(Value: integer);
 begin
   Value := Max(0, Value);
-  if fWidth <> Value then begin
+  if fWidth <> Value then
+  begin
     fWidth := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
 end;
 
 procedure TSynGutter.SetZeroStart(const Value: boolean);
 begin
-  if fZeroStart <> Value then begin
+  if fZeroStart <> Value then
+  begin
     fZeroStart := Value;
-    if Assigned(fOnChange) then fOnChange(Self);
+    DoChange(Self);
   end;
+end;
+
+procedure TSynGutter.DoChange(Sender: TObject);
+begin
+  if Assigned(fOnChange) then
+    fOnChange(Self);
 end;
 
 { TSynBookMarkOpt }
@@ -803,6 +853,61 @@ begin
     end;
     ACanvas.BrushCopy(rcDest, InternalImages, rcSrc, TransparentColor);
   end;
+end;
+{$ENDIF}
+
+{ TSynEditCaret }
+
+{$IFDEF SYN_LAZARUS}
+
+function TSynEditCaret.GetLineCharPos : TPoint;
+begin
+  Result := Point(fCharPos, fLinePos);
+end;
+
+procedure TSynEditCaret.SetLineCharPos(const AValue : TPoint);
+begin
+  if (fCharPos = AValue.X) and (fLinePos = AValue.Y) then exit;
+  fCharPos:= AValue.X;
+  fLinePos:= AValue.Y;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.setCharPos(const AValue : Integer);
+begin
+  if fCharPos = AValue then exit;
+  fCharPos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.setLinePos(const AValue : Integer);
+begin
+  if fLinePos = AValue then exit;
+  fLinePos:= AValue;
+  fOnChangeList.CallNotifyEvents(self);
+end;
+
+constructor TSynEditCaret.Create;
+begin
+  fOnChangeList := TMethodList.Create;
+  fLinePos:= 1;
+  fCharPos:= 1;
+end;
+
+destructor TSynEditCaret.Destroy;
+begin
+  FreeAndNil(fOnChangeList);
+  inherited Destroy;
+end;
+
+procedure TSynEditCaret.AddChangeHandler(AHandler : TNotifyEvent);
+begin
+  fOnChangeList.Add(TMethod(AHandler));
+end;
+
+procedure TSynEditCaret.RemoveChangeHandler(AHandler : TNotifyEvent);
+begin
+  fOnChangeList.Remove(TMethod(AHandler));
 end;
 {$ENDIF}
 
