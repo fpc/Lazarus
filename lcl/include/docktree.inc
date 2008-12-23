@@ -112,8 +112,53 @@ end;
 
 procedure TDockTree.PositionDockRect(AClient, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
+var
+  DropZone: TDockZone;
+  R: TRect;
 begin
-  // ToDo
+  //determine drop zone
+  if DropCtl = nil then
+    DropZone := RootZone
+  else
+    DropZone := RootZone.FindZone(DropCtl);
+
+  //get the zone extent.
+  //r := dzone.FBounds; //todo: doesn't work
+  with DropZone do
+    R := Rect(Left, Top, Width, Height);
+
+  // if there are no zones then use the whole rect
+  // else split drop zone
+  if RootZone.FirstChild <> nil then
+  begin
+    //shrink rect
+    case DropAlign of
+      alTop:
+        R.Bottom := R.Bottom div 2;
+      alBottom:
+        begin
+          R.Bottom := R.Bottom div 2;
+          inc(R.Top, R.Bottom);
+        end;
+      alLeft:
+        R.Right := R.Right div 2;
+      alRight:
+        begin
+          R.Right := R.Right div 2;
+          inc(R.Left, R.Right);
+        end;
+    end;
+  end;
+
+  //client to screen
+  R.TopLeft := DockSite.ClientToScreen(R.TopLeft);
+
+  //width/height to right/bottom
+  inc(R.Bottom, R.Top);
+  inc(R.Right, R.Left);
+
+  //store result
+  DockRect := r;
 end;
 
 procedure TDockTree.RemoveControl(AControl: TControl);
