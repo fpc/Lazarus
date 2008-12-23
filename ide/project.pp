@@ -3812,7 +3812,7 @@ begin
       end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
-    {$IFDEF EnableTFrame}
+    {$IFDEF VerboseTFrame}
     WriteDebugReportUnitComponentDependencies('UUCD ');
     {$ENDIF}
   end;

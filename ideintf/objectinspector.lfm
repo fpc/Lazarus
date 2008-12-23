@@ -8,8 +8,9 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   ClientWidth = 275
   KeyPreview = True
   OnResize = ObjectInspectorResize
+  ParentFont = False
   PopupMenu = MainPopupMenu
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object StatusBar: TStatusBar
     Height = 23
     Top = 646
@@ -27,7 +28,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Height = 21
     Width = 275
     Align = alTop
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList

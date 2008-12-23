@@ -4032,7 +4032,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('IDE path addition',
     Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
     ExternalMacroStart+'SrcPath',
-      d('..;'
+      d('frames;'
+       +'..;'       
        +'../designer;'
        +'../designer/jitform;'
        +'../debugger;'

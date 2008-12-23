@@ -96,19 +96,15 @@ end;
 class procedure TSetDesigningComponent.SetDesignInstanceOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
-{$IFDEF EnableTFrame}
   // requires fpc >= 2.2.1
   TSetDesigningComponent(AComponent).SetDesignInstance(Value);
-{$ENDIF}
 end;
 
 class procedure TSetDesigningComponent.SetInlineOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
-{$IFDEF EnableTFrame}
   // requires fpc >= 2.2.1
   TSetDesigningComponent(AComponent).SetInline(Value);
-{$ENDIF}
 end;
 
 { TPersistentWithTemplates }

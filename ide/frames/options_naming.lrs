@@ -1,0 +1,39 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TNamingOptionsFrame','FORMDATA',[
+  'TPF0'#19'TNamingOptionsFrame'#18'NamingOptionsFrame'#6'Height'#3'o'#1#5'Widt'
+  +'h'#3#251#1#12'ClientHeight'#3'o'#1#11'ClientWidth'#3#251#1#8'TabOrder'#2#0#7
+  +'Visible'#8#10'DesignLeft'#3'q'#1#9'DesignTop'#3'<'#1#0#11'TRadioGroup'#23'P'
+  +'ascalFileExtRadiogroup'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSide'
+  +'Top.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSid'
+  +'eRight.Side'#7#9'asrBottom'#6'Height'#2'/'#5'Width'#3#251#1#5'Align'#7#5'al'
+  +'Top'#8'AutoFill'#9#7'Caption'#6#23'PascalFileExtRadiogroup'#28'ChildSizing.'
+  +'LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.E'
+  +'nlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVert'
+  +'ical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14
+  +'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'Chil'
+  +'dSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.Controls'
+  +'PerLine'#2#2#7'Columns'#2#2#8'TabOrder'#2#0#0#0#11'TRadioGroup'#29'Ambiguou'
+  +'sFileActionRadioGroup'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideT'
+  +'op.Control'#7#28'CharcaseFileActionRadioGroup'#23'AnchorSideRight.Control'#7
+  +#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#6'Height'#2'd'#3'Top'#2'5'
+  +#5'Width'#3#251#1#5'Align'#7#5'alTop'#8'AutoFill'#9#17'BorderSpacing.Top'#2#6
+  +#7'Caption'#6#29'AmbiguousFileActionRadioGroup'#28'ChildSizing.LeftRightSpac'
+  +'ing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizon'
+  +'tal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'cr'
+  +'sHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChild'
+  +'s'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layou'
+  +'t'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#2#7
+  +'Columns'#2#2#8'TabOrder'#2#1#0#0#11'TRadioGroup'#28'CharcaseFileActionRadio'
+  +'Group'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#29
+  +'AmbiguousFileActionRadioGroup'#23'AnchorSideRight.Control'#7#5'Owner'#20'An'
+  +'chorSideRight.Side'#7#9'asrBottom'#6'Height'#2'U'#3'Top'#3#159#0#5'Width'#3
+  +#251#1#5'Align'#7#5'alTop'#8'AutoFill'#9#17'BorderSpacing.Top'#2#6#7'Caption'
+  +#6#28'CharcaseFileActionRadioGroup'#28'ChildSizing.LeftRightSpacing'#2#6#28
+  +'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'cr'
+  +'sHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousC'
+  +'hildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildS'
+  +'izing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclL'
+  +'eftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#2#7'Columns'#2
+  +#2#8'TabOrder'#2#2#0#0#0
+]);

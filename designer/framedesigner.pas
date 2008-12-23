@@ -59,6 +59,8 @@ constructor TFrameDesignerForm.Create(AOwner: TComponent);
 begin
   Position := poDefaultPosOnly; // let it be at default position since frame TopLeft is always (0,0)
   inherited Create(AOwner);
+  // workaround problem with out assumption that Width = ClientWidth, Height = ClientHeight
+  AutoScroll := False; 
 end;
 
 destructor TFrameDesignerForm.Destroy;

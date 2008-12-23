@@ -1,0 +1,39 @@
+object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
+  Left = 317
+  Height = 500
+  Top = 304
+  Width = 659
+  Caption = 'EnvironmentOptionsDialog'
+  ClientHeight = 500
+  ClientWidth = 659
+  ParentFont = False
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 460
+    Width = 647
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object CategoryTree: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 6
+    Height = 448
+    Top = 6
+    Width = 206
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    Constraints.MinWidth = 206
+    DefaultItemHeight = 15
+    TabOrder = 1
+    OnChange = CategoryTreeChange
+  end
+end

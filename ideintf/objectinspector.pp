@@ -172,6 +172,8 @@ type
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
     FAutoShow: Boolean;
+    FBoldNonDefaultValues: Boolean;
+    FDrawGridLines: Boolean;
     function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
     procedure FPropertyGridSplitterX(Page: TObjectInspectorPage;
       const AValue: integer);
@@ -213,6 +215,8 @@ type
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
     property AutoShow: boolean read FAutoShow write FAutoShow;
+    property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
+    property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
   end;
 
   TOICustomPropertyGrid = class;
@@ -330,12 +334,13 @@ type
     FSplitterX: integer; // current splitter position
     FStates: TOIPropertyGridStates;
     FTopY: integer;
+    FDrawHorzGridLines: Boolean;
 
     // hint stuff
     FHintTimer: TTimer;
     FHintWindow: THintWindow;
-    Procedure HintTimer(Sender: TObject);
-    Procedure ResetHintTimer;
+    procedure HintTimer(Sender: TObject);
+    procedure ResetHintTimer;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
 
     procedure IncreaseChangeStep;
@@ -482,6 +487,7 @@ type
     property DefaultItemHeight:integer read FDefaultItemHeight
                                        write FDefaultItemHeight default 25;
     property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
+    property DrawHorzGridLines: Boolean read FDrawHorzGridLines write FDrawHorzGridLines;
     property ExpandedProperties: TStringList read FExpandedProperties
                                             write FExpandedProperties;
     property Indent: integer read FIndent write FIndent default 9;
@@ -504,7 +510,7 @@ type
     property ValueFont: TFont read FValueFont write FValueFont;
     property Favourites: TOIFavouriteProperties read FFavourites
                                                 write SetFavourites;
-    Property Filter : TTypeKinds Read FFilter Write SetFilter;
+    property Filter : TTypeKinds read FFilter write SetFilter;
   end;
 
 
@@ -820,6 +826,7 @@ begin
   FValueFont.Color:=clMaroon;
   FDefaultValueFont:=TFont.Create;
   FDefaultValueFont.Color:=clWindowText;
+  FDrawHorzGridLines := True;
 
   SetInitialBounds(0,0,200,130);
   ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
@@ -2370,7 +2377,8 @@ begin
 
   DrawState:=[];
   if ARow=FItemIndex then Include(DrawState,pedsSelected);
-  with Canvas do begin
+  with Canvas do
+  begin
     // clear background in one go
     if FBackgroundColor <> clNone
     then begin
@@ -2445,11 +2453,13 @@ begin
         MoveTo(NameRect.Left,NameRect.Bottom-1);
         LineTo(ValueRect.Right,NameRect.Bottom-1);
       end
-      else begin
+      else
+      if DrawHorzGridLines then
+      begin
         Pen.Style := psDot;
         Pen.Color:=cl3DShadow;
-        if FRowSpacing <> 0
-        then begin
+        if FRowSpacing <> 0 then
+        begin
           MoveTo(NameRect.Left,NameRect.Top-1);
           LineTo(ValueRect.Right,NameRect.Top-1);
         end;
@@ -2492,10 +2502,13 @@ var a:integer;
   SpaceRect:TRect;
 begin
   BuildPropertyList(true);
-  if not PaintOnlyChangedValues then begin
-    with Canvas do begin
+  if not PaintOnlyChangedValues then
+  begin
+    with Canvas do
+    begin
       // draw properties
-      for a:=0 to FRows.Count-1 do begin
+      for a:=0 to FRows.Count-1 do
+      begin
         PaintRow(a);
       end;
       // draw unused space below rows
@@ -2504,14 +2517,17 @@ begin
       if FRows.Count>0 then
         SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
 // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if FBackgroundColor<>clNone then begin
+      if FBackgroundColor<>clNone then
+      begin
         Brush.Color:=FBackgroundColor;
         FillRect(SpaceRect);
       end;
       // don't draw border: borderstyle=bsSingle
     end;
-  end else begin
-    for a:=0 to FRows.Count-1 do begin
+  end else
+  begin
+    for a:=0 to FRows.Count-1 do
+    begin
       if Rows[a].Editor.GetVisualValue<>Rows[a].LastPaintedValue then
         PaintRow(a);
     end;
@@ -3209,6 +3225,8 @@ begin
   FValueColor:=clMaroon;
   FReferencesColor:= clMaroon;
   FPropertyNameColor:=clWindowText;
+  FBoldNonDefaultValues := True;
+  FDrawGridLines := True;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3270,6 +3288,10 @@ begin
          Path+'ShowHints',false);
     FAutoShow := ConfigStore.GetValue(
          Path+'AutoShow',true);
+    FBoldNonDefaultValues := ConfigStore.GetValue(
+         Path+'BoldNonDefaultValues',true);
+    FDrawGridLines := ConfigStore.GetValue(
+         Path+'DrawGridLines',true);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3328,6 +3350,8 @@ begin
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              false);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
+    ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
+    ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3359,8 +3383,10 @@ begin
   FDefaultValueColor:=AnObjInspector.PropertyGrid.DefaultValueFont.Color;
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
 
-  FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
-  FAutoShow:=AnObjInspector.AutoShow;
+  FShowHints := AnObjInspector.PropertyGrid.ShowHint;
+  FAutoShow := AnObjInspector.AutoShow;
+  FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
+  FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3368,26 +3394,35 @@ var
   Page: TObjectInspectorPage;
   Grid: TOICustomPropertyGrid;
 begin
-  if FSaveBounds then begin
+  if FSaveBounds then
+  begin
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
   end;
-  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do begin
+
+  for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+  begin
     Grid:=AnObjInspector.GridControl[Page];
-    if Grid=nil then continue;
-    Grid.PrefferedSplitterX:=FGridSplitterX[Page];
-    Grid.SplitterX:=FGridSplitterX[Page];
-    Grid.BackgroundColor:=FGridBackgroundColor;
-    Grid.SubPropertiesColor:=FSubPropertiesColor;
-    Grid.ReferencesColor:=FReferencesColor;
-    Grid.ValueFont.Color:=FValueColor;
-    Grid.DefaultValueFont.Color:=FDefaultValueColor;
-    Grid.NameFont.Color:=FPropertyNameColor;
-    Grid.ShowHint:=FShowHints;
+    if Grid=nil then
+      Continue;
+    Grid.PrefferedSplitterX := FGridSplitterX[Page];
+    Grid.SplitterX := FGridSplitterX[Page];
+    Grid.BackgroundColor := FGridBackgroundColor;
+    Grid.SubPropertiesColor := FSubPropertiesColor;
+    Grid.ReferencesColor := FReferencesColor;
+    Grid.ValueFont.Color := FValueColor;
+    if FBoldNonDefaultValues then
+      Grid.ValueFont.Style := [fsBold]
+    else
+      Grid.ValueFont.Style := [];
+    Grid.DefaultValueFont.Color := FDefaultValueColor;
+    Grid.NameFont.Color := FPropertyNameColor;
+    Grid.ShowHint := FShowHints;
+    Grid.DrawHorzGridLines := FDrawGridLines;
   end;
-  AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
-  AnObjInspector.ShowComponentTree:=FShowComponentTree;
-  AnObjInspector.ComponentTreeHeight:=FComponentTreeHeight;
-  AnObjInspector.AutoShow:=AutoShow;
+  AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
+  AnObjInspector.ShowComponentTree := FShowComponentTree;
+  AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
+  AnObjInspector.AutoShow := AutoShow;
 end;
 
 
