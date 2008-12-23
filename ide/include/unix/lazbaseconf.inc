@@ -61,48 +61,6 @@ var
   SecondaryConfigPath: string;
 
 {---------------------------------------------------------------------------
-  getPrimaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetPrimaryConfigPath: String;
-begin
-  Result := PrimaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  getSecondaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetSecondaryConfigPath: String;
-begin
-  Result := SecondaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  createPrimaryConfigPath function
- ---------------------------------------------------------------------------}
-procedure CreatePrimaryConfigPath;
-begin
-  CreateDirUTF8(GetPrimaryConfigPath);
-end;
-
-{---------------------------------------------------------------------------
-  SetPrimaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetPrimaryConfigPath(const NewValue: String);
-begin
-  debugln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileNameUTF8(NewValue),'"');
-  PrimaryConfigPath:=ExpandFileNameUTF8(NewValue);
-end;
-
-{---------------------------------------------------------------------------
-  SetSecondaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetSecondaryConfigPath(const NewValue: String);
-begin
-  debugln('SetSecondaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileNameUTF8(NewValue),'"');
-  SecondaryConfigPath:=ExpandFileNameUTF8(NewValue);
-end;
-
-{---------------------------------------------------------------------------
   function FindDefaultCompilerPath: string;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
