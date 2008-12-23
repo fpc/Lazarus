@@ -1,12 +1,13 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2008.
 msgid ""
 msgstr ""
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-08-20 20:21+0300\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2008-12-22 20:32+0200\n"
 "Project-Id-Version: lr_const\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.2\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -291,7 +292,7 @@ msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antr
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<Tekstas>)/Grąžina <Tekstas> ilgį."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -351,7 +352,7 @@ msgstr "UPPERCASE(<Tekstas>)/Visas <Tekstas> raides verčia didžiosiomis."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Data>)/Grąžina <Data>metus."
 
 #: lr_const.sdesignreport
 msgid "Design report"

@@ -1,11 +1,13 @@
+# Valdas Jankūnas <zmogas@hotmail.com>, 2008.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2008.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-09-21 21:56+0300\n"
+"PO-Revision-Date: 2008-12-22 20:24+0200\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.2\n"
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -160,7 +162,7 @@ msgstr "Numatytas ppc386 paskirties procesorius"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "numatytoji reikšmė nerasta"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -412,7 +414,7 @@ msgstr "Aptiktas įdėjimų žiedas"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "įtraukti poaplankius: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""
