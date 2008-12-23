@@ -127,6 +127,7 @@ function BooleanToStr(B: Boolean): string;
 function StrToBoolean(const S: string): Boolean;
 
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrIsOneOf(const S: string; const List: array of string): Boolean;
 
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 
@@ -416,6 +417,19 @@ function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 begin
   // Paul: original code used comparision by char case table
   Result := StrSearch(LowerCase(SubStr), LowerCase(S), Index);
+end;
+
+function StrIsOneOf(const S: string; const List: array of string): Boolean;
+var
+  i: integer;
+begin
+  for i := Low(List) to High(List) do
+    if CompareStr(List[i], S) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+  Result := False;
 end;
 
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
