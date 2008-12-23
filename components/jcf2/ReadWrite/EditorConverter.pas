@@ -35,8 +35,13 @@ interface
 
 uses
   Classes,
-  { delphi design time }
-  ToolsAPI,
+  {$ifdef fpc}
+    { lazarus design time }
+    SrcEditorIntf,
+  {$else}
+    { delphi design time }
+    ToolsAPI,
+  {$endif}
   { local }
   Converter, ConvertTypes;
 
@@ -59,8 +64,13 @@ type
     function GetOnStatusMessage: TStatusMessageProc;
     procedure SetOnStatusMessage(const Value: TStatusMessageProc);
 
+    {$ifdef fpc}
+    function ReadFromIDE(const pcUnit: TSourceEditorInterface): string;
+    procedure WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
+    {$else}
     function ReadFromIDE(const pcUnit: IOTASourceEditor): string;
     procedure WriteToIDE(const pcUnit: IOTASourceEditor; const psText: string);
+    {$endif}
 
     procedure FinalSummary;
     function OriginalFileName: string;
@@ -71,7 +81,11 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    {$ifdef fpc}
+    procedure Convert(const pciUnit: TSourceEditorInterface);
+    {$else}
     procedure Convert(const pciUnit: IOTASourceEditor);
+    {$endif}
 
     procedure Clear;
 
@@ -106,6 +120,56 @@ begin
   FreeAndNil(fcConverter);
   inherited;
 end;
+
+{$ifdef fpc}
+
+procedure TEditorConverter.Convert(const pciUnit: TSourceEditorInterface);
+begin
+  Assert(pciUnit <> nil);
+
+  if not GetRegSettings.HasRead then
+    GetRegSettings.ReadAll;
+
+  { check for read-only  }
+  if pciUnit <> nil then
+  begin
+    if pciUnit.ReadOnly then
+    begin
+      SendStatusMessage(pciUnit.FileName, 'Unit is read only. Cannot format ',
+        mtInputError, -1, -1);
+      exit;
+    end;
+  end;
+
+  fsCurrentUnitName := pciUnit.FileName;
+  fcConverter.InputCode := ReadFromIDE(pciUnit);
+
+  // now convert
+  fcConverter.Convert;
+
+  fsCurrentUnitName := '';
+
+  if not ConvertError then
+  begin
+    WriteToIDE(pciUnit, fcConverter.OutputCode);
+    SendStatusMessage(pciUnit.FileName, 'Formatted unit', mtProgress, -1, -1);
+    Inc(fiConvertCount);
+  end;
+end;
+
+function TEditorConverter.ReadFromIDE(const pcUnit: TSourceEditorInterface): string;
+begin
+  Result := pcUnit.Lines.Text;
+end;
+
+procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
+begin
+  if pcUnit = nil then
+    exit;
+  pcUnit.ReplaceLines(0, pcUnit.LineCount, psText);
+end;
+
+{$else}
 
 procedure TEditorConverter.Convert(const pciUnit: IOTASourceEditor);
 var
@@ -298,6 +362,8 @@ begin
    end;
 
 end;
+
+{$endif}
 
 procedure TEditorConverter.AfterConvert;
 begin
