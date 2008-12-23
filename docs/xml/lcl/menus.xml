@@ -83,8 +83,13 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMenu">
-        <short/>
-        <descr/>
+        <short>
+          <var>TMenu</var> - a menu appearing in a form. Ancestor class for TMainMenu or TPopupMeny</short>
+        <descr>
+          <p>
+            <var>TMenu</var> : The base class for all menus</p>
+          <p>The class definition contains very few public or published properties or methods accessible to the application programmer, but contains the entry Items which points to the Menu Items that appear in the menu displays</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -112,7 +117,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
-        <short/>
+        <short>
+          <var>TMenuChangeEvent</var> - generic event handling procedure for a change in  a menu</short>
         <descr/>
         <seealso/>
       </element>
@@ -145,7 +151,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TMenuActionLink.AssignClient" link="Classes.TBasicActionLink.AssignClient">
+      <element name="TMenuActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
         <short/>
         <descr/>
         <errors/>
@@ -1702,7 +1708,8 @@ Descendent classes can override this method to provide a different result.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFindItemKind">
-        <short/>
+        <short>
+          <var>TFindItemKind</var> - enumerated type for kind of item in search operation: a command, a handle or a shortcut</short>
         <descr/>
         <seealso/>
       </element>
@@ -2422,6 +2429,12 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
       <element name="TMenu.ParentBidiMode">
         <short>
           <var>ParentBidiMode</var> - the BidiMode of the parent</short>
+      </element>
+      <element name="TMenuItemHandlerType">
+        <short>
+          <var>TMenuItemHandlerType</var> - enumerated type for menu item handlers</short>
+        <descr>Currently has only one member - <var>mihtDestroy</var>
+        </descr>
       </element>
     </module>
     <!-- Menus -->
