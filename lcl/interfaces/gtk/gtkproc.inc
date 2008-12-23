@@ -6558,9 +6558,14 @@ begin
   gtk_widget_get_size_request(MainWidget, @GtkWidth, @GtkHeight);
 
   if GtkWidth < 0 then
-    GtkWidth:=MainWidget^.Allocation.Width;
+    GtkWidth:=MainWidget^.Allocation.Width
+  else
+    MainWidget^.Allocation.Width:=GtkWidth;
   if GtkHeight < 0 then
-    GtkHeight:=MainWidget^.Allocation.Height;
+    GtkHeight:=MainWidget^.Allocation.Height
+  else
+    MainWidget^.Allocation.Height:=GtkHeight;
+  //DebugLn(['SendSizeNotificationToLCL ',DbgSName(LCLControl),' gtk=',GtkLeft,',',GtkTop,',',GtkWidth,'x',GtkHeight,' Allocation=',MainWidget^.Allocation.Width,'x',MainWidget^.Allocation.Height]);
   {$else}
   GtkWidth:=MainWidget^.Allocation.Width;
   GtkHeight:=MainWidget^.Allocation.Height;

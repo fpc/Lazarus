@@ -90,7 +90,7 @@ type
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
-    ahaMouseLink);
+    ahaMouseLink, ahaLineNumber);
 
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
@@ -106,7 +106,8 @@ const
     'Incremental search match',
     'Highlight all',
     'Matching Brackets',
-    'Mouse Link'
+    'Mouse Link',
+    'Line Number'
     );
     
 type
@@ -148,7 +149,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -176,7 +178,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -204,7 +207,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
   
@@ -232,7 +236,8 @@ const
       { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
       { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: [])
     )
   );
 
@@ -241,37 +246,36 @@ const
     Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
     Attributes: (
       { phaAssembler    } (BG: clNone;  FG: clBlack;   Styles: [];         StylesMask: []),
-      { phaComment      } (BG: clNone;  FG: clNavy;    Styles: [fsItalic]; StylesMask: []),
-      { phaDirective    } (BG: clNone;  FG: clGreen;   Styles: [];         StylesMask: []),
-      { phaReservedWord } (BG: clNone;  FG: clBlack;   Styles: [fsBold];   StylesMask: []),
-      { phaNumber       } (BG: clNone;  FG: clNavy;    Styles: [];         StylesMask: []),
-      { phaString       } (BG: clNone;  FG: clNavy;    Styles: [];         StylesMask: []),
-      { phaSymbol       } (BG: clNone;  FG: clBlack;   Styles: [];         StylesMask: [])
+      { phaComment      } (BG: clNone;  FG: clGreen;   Styles: [fsItalic]; StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clTeal;    Styles: [];         StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clNavy;    Styles: [fsBold];   StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clBlue;    Styles: [];         StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clBlue;    Styles: [];         StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clNone;    Styles: [];         StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clNone;      FG: clNone;          Styles: []; StylesMask: []),
-      { ahaTextBlock          } (BG: clHighlight; FG: clHighlightText; Styles: []; StylesMask: []),
-      { ahaExecutionPoint     } (BG: clNavy;      FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;           Styles: []; StylesMask: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;          Styles: []; StylesMask: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;         Styles: []; StylesMask: []),
-      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;         Styles: []; StylesMask: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: $A56D53;     FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: $9999CC;     FG: clBlack;         Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: $FFC7C7;     FG: clBlack;         Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: $FFC7C7;     FG: clGray;          Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clGreen;     FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: $FFC7C7;     FG: clBlack;         Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: clBlack;     FG: $FCFDCD;         Styles: []; StylesMask: []),
       { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
-      { ahaBracketMatch       } (BG: clNone;      FG: clNone;          Styles: [fsBold]; StylesMask: []),
-      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: [])
+      { ahaBracketMatch       } (BG: clAqua;      FG: clNone;{ $CCCCD6; }Styles: []; StylesMask: []), // delphi uses FG color as a frame for box
+      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: []),
+      { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;         Styles: []; StylesMask: [])
     )
   );
-
-
 
 const
   EditorOptsFormatVersion = 4;
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
-    (Nil, Nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
+    (nil, nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn);
 
@@ -2068,6 +2072,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;

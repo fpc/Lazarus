@@ -3,20 +3,20 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 501
   ClientHeight = 441
   ClientWidth = 501
-  TabOrder = 0
   Visible = False
-  DesignLeft = 176
-  DesignTop = 232
+  DesignLeft = 537
+  DesignTop = 199
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 128
+    Height = 134
     Width = 501
     Align = alTop
+    AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 110
+    ClientHeight = 116
     ClientWidth = 497
     TabOrder = 0
     object RightMarginLabel: TLabel
@@ -157,6 +157,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '78'
         '76'
       )
+      MaxLength = -1
       OnChange = ComboboxOnChange
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
@@ -171,8 +172,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 23
       Top = 81
       Width = 54
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
+      BorderSpacing.Around = 6
       MinValue = 1
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 4
@@ -185,7 +185,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Height = 157
-    Top = 134
+    Top = 140
     Width = 501
     Align = alTop
     AutoSize = True
@@ -246,6 +246,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 2
       ItemHeight = 13
+      MaxLength = -1
       OnEditingDone = EditorFontComboBoxEditingDone
       TabOrder = 0
       Text = 'EditorFontComboBox'
@@ -287,6 +288,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '17'
         '18'
       )
+      MaxLength = -1
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 2
@@ -306,6 +308,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '1'
         '2'
       )
+      MaxLength = -1
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 4
@@ -325,6 +328,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '1'
         '2'
       )
+      MaxLength = -1
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 3
@@ -351,8 +355,8 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Height = 144
-    Top = 297
+    Height = 138
+    Top = 303
     Width = 501
     Align = alClient
     BorderSpacing.Top = 6
@@ -363,7 +367,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     ParentColor = False
     ParentFont = False
     TabOrder = 2
-    BookMarkOptions.OnChange = nil
     Keystrokes = <    
       item
         Command = 3
@@ -689,5 +692,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       'DisplayPreview'
     )
     ReadOnly = True
+    SelectedColor.OnChange = nil
   end
 end

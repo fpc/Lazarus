@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="23">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -59,7 +59,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <ResourceFilename Value="frames\options_oi.lrs"/>
-        <UnitName Value="Options_OI"/>
+        <UnitName Value="options_OI"/>
       </Unit2>
       <Unit3>
         <Filename Value="frames\options_files.pas"/>
@@ -175,6 +175,54 @@
         <ResourceFilename Value="frames\options_editor_codefolding.lrs"/>
         <UnitName Value="options_editor_codefolding"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="frames\options_codetools_general.pas"/>
+        <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_general.lrs"/>
+        <UnitName Value="options_codetools_general"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="frames\options_codetools_codecreation.pas"/>
+        <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_codecreation.lrs"/>
+        <UnitName Value="options_codetools_codecreation"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="frames\options_codetools_wordpolicy.pas"/>
+        <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_wordpolicy.lrs"/>
+        <UnitName Value="options_codetools_wordpolicy"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="frames\options_codetools_linesplitting.pas"/>
+        <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_linesplitting.lrs"/>
+        <UnitName Value="options_codetools_linesplitting"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="frames\options_codetools_space.pas"/>
+        <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_space.lrs"/>
+        <UnitName Value="options_codetools_space"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="frames\options_codetools_identifiercompletion.pas"/>
+        <ComponentName Value="CodetoolsIndentifierComplietionOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_identifiercompletion.lrs"/>
+        <UnitName Value="options_codetools_identifiercompletion"/>
+      </Unit22>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -219,9 +219,28 @@ begin
 end;
 
 procedure TIDEOptionsDialog.CreateEditors;
+
+  function SearchNode(Node: TTreeNode; Index: Integer): TTreeNode;
+  begin
+    Result := nil;
+    if Node =  nil then
+      Exit;
+
+    if (Node.Data <> nil) and (TAbstractIDEOptionsEditor(Node.Data).Tag = Index) then
+      Result := Node;
+
+    if Result <> nil then
+      Exit;
+
+    Result := SearchNode(Node.GetFirstChild, Index);
+    if Result <> nil then
+      Exit;
+    Result := SearchNode(Node.GetNextSibling, Index);
+  end;
+
 var
   Instance: TAbstractIDEOptionsEditor;
-  GroupNode, ItemNode: TTreeNode;
+  GroupNode, ItemNode, ItemParent: TTreeNode;
   i, j: integer;
   Rec: PIDEOptionsGroupRec;
 begin
@@ -239,9 +258,21 @@ begin
         Instance.OnLoadIDEOptions := @LoadIDEOptions;
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
         Instance.Setup(Self);
+        Instance.Tag := Rec^.Items[j]^.Index;
 
-        ItemNode := CategoryTree.Items.AddChild(GroupNode, Instance.GetTitle);
+        if Rec^.Items[j]^.Parent = NoParent then
+          ItemParent := GroupNode
+        else
+        begin
+          ItemParent := SearchNode(GroupNode.GetFirstChild, Rec^.Items[j]^.Parent);
+          if ItemParent = nil then
+            ItemParent := GroupNode;
+        end;
+
+        ItemNode := CategoryTree.Items.AddChild(ItemParent, Instance.GetTitle);
         ItemNode.Data := Instance;
+
+        ItemParent.Expanded := True;
       end;
       GroupNode.Expanded := True;
     end;

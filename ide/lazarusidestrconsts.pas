@@ -856,6 +856,8 @@ resourcestring
   // Options dialog groups
   dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
+  dlgGroupCodetools = 'Codetools';
+
   // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
@@ -888,7 +890,7 @@ resourcestring
   lisIncludeFilter = 'Include Filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
-  lisFPDocEditor = 'FPDoc editor';
+  lisFPDocEditor = 'FPDoc Editor';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
@@ -1015,10 +1017,17 @@ resourcestring
   dlgnoAutomaticRenaming = 'no automatic renaming';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
+  // OI colors
   dlgBackColor = 'Background';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
+  dlgHighlightColor = 'Highlight Color';
+  dlgHighlightFontColor = 'Highlight Font Color';
+  dlgDefValueColor = 'Default Value';
+  dlgPropNameColor = 'Property Name';
+  dlgGutterEdgeColor = 'Gutter Edge Color';
+
   liswlAdd = '&Add';
   liswlProperties = '&Properties';
   liswlEnabled = '&Enabled';
@@ -1026,15 +1035,20 @@ resourcestring
   liswlDIsableAll = 'D&isable All';
   liswlENableAll = 'E&nable All';
   liswlDeLeteAll = 'De&lete All';
-  dlgDefValueColor = 'Default value';
-  dlgPropNameColor = 'Property name';
 
   dlgOIMiscellaneous = 'Miscellaneous';
+  dlgOISpeedSettings = 'Speed settings';
+  dlgOIOptions = 'Options';
   dlgOIItemHeight = 'Item height';
-  lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
-  lisAutoShowObjectInspector = 'Auto show Object Inspector';
+  dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
+  dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
+  lisShowHintsInObjectInspector = 'Show hints';
+  lisAutoShowObjectInspector = 'Auto show';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
   lisDrawGridLinesObjectInspector = 'Draw grid lines';
+  lisShowGutterInObjectInspector = 'Show gutter';
+  lisShowStatusBarInObjectInspector = 'Show status bar';
+  lisShowInfoBoxInObjectInspector = 'Show information box';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';
@@ -1127,7 +1141,7 @@ resourcestring
   dlgRightMargin = 'Right margin';
   dlgRightMarginColor = 'Right margin color';
   dlgGutterWidth = 'Gutter width';
-  dlgGutterColor = 'Gutter color';
+  dlgGutterColor = 'Gutter Color';
   dlgEditorFont = 'Editor font';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontHeight = 'Editor font height';
@@ -1144,7 +1158,7 @@ resourcestring
   dlgEdElement = 'Element';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
-  dlgForecolor = 'Foreground color';
+  dlgForecolor = 'Foreground';
   dlgEdUseDefColor = 'Use default color';
   dlgTextAttributes = 'Text attributes';
   dlgEdBold = 'Bold';
@@ -3928,6 +3942,7 @@ resourcestring
   lisOriginalFileName = 'Original File Name:';
   lisProductName = 'Product Name:';
   lisProductVersion = 'Product Version:';
+  lisSetDefault = 'Set default';
 
 implementation
 

@@ -433,7 +433,6 @@ begin
     BoundsOutOfBounds;
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
-  if csDesigning in ComponentState then
     DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
       ' Old=',DbgS(Left,Top,Width,Height),
       ' New=',DbgS(aLeft,aTop,aWidth,aHeight),

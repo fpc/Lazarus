@@ -126,11 +126,14 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
-  IDEOptionsIntf, IDEOptionsDlg, EditorOptionsDlg {temporary},
+  IDEOptionsIntf, IDEOptionsDlg, 
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
-  options_editor_color, options_editor_codetools, options_editor_codefolding;
+  options_editor_color, options_editor_codetools, options_editor_codefolding,
+  options_codetools_general, options_codetools_codecreation,
+  options_codetools_wordpolicy, options_codetools_linesplitting,
+  options_codetools_space, options_codetools_identifiercompletion;
 
 type
   TIDEProjectItem =
@@ -308,7 +311,6 @@ type
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
     procedure mnuEnvEditorOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
-    procedure mnuEnvCodeToolsOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 
@@ -389,6 +391,7 @@ type
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OIOnUpdateRestricted(Sender: TObject);
+    procedure OIOnSelectionChange(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
@@ -1144,6 +1147,7 @@ begin
 
   // create main IDE register items
   NewIDEItems:=TNewLazIDEItemCategories.Create;
+
   SetupStandardProjectTypes;
 
   // initialize the other IDE managers
@@ -1383,6 +1387,26 @@ begin
   end;
 end;
 
+procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
+var
+  OI: TObjectInspectorDlg absolute Sender;
+  Row: TOIPropertyGridRow;
+begin
+  if (Sender is TObjectInspectorDlg) then
+  begin
+    if OI.ShowInfoBox then
+    begin
+      // Just a test for now. Later we will show property description here
+      // TODO: use similar way as CodeHelpBoss.GetHTMLHint use
+      Row := OI.GetActivePropertyRow;
+      if Row <> nil then
+        OI.InfoPanel.Caption := 'TODO: show property description for [' + Row.Name + ']'
+      else
+        OI.InfoPanel.Caption := '';
+    end;
+  end;
+end;
+
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
   PropOwner: TObject): String;
 var
@@ -1570,10 +1594,7 @@ begin
 
   MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
 
-  // create the popupmenu for the OpenFileArrowSpeedBtn
-  MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(OwningComponent);
-  MainIDEBar.OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-  MainIDEBar.OpenFilePopupMenu.AutoPopup := False;
+  MainIDEBar.CreatePopupMenus(OwningComponent);
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -1646,6 +1667,7 @@ begin
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
+  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';
@@ -2239,11 +2261,10 @@ end;
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
   inherited SetupEnvironmentMenu;
-  with MainIDEBar do begin
+  with MainIDEBar do 
+  begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
-    itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
-    itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
     itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
   end;
@@ -2318,13 +2339,33 @@ begin
 end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender: TObject);
+var
+  Category: TNewIDEItemCategory;
+  Template: TNewIDEItemTemplate;
+  Desc: TProjectFileDescriptor;
 begin
-  DoNewEditorFile(FileDescriptorUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Category:=NewIDEItems.FindByName(FileDescGroupName);
+  Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
+  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
+    Desc:=TNewItemProjectFile(Template).Descriptor
+  else
+    Desc:=FileDescriptorUnit;
+  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
+var
+  Category: TNewIDEItemCategory;
+  Template: TNewIDEItemTemplate;
+  Desc: TProjectFileDescriptor;
 begin
-  DoNewEditorFile(FileDescriptorForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Category:=NewIDEItems.FindByName(FileDescGroupName);
+  Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
+  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
+    Desc:=TNewItemProjectFile(Template).Descriptor
+  else
+    Desc:=FileDescriptorForm;
+  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
@@ -3945,6 +3986,8 @@ begin
       ReadSettings(EnvironmentOptions);
       // load settings from EditorOptions to IDEOptionsDialog
       ReadSettings(EditorOpts);
+      // load settings from CodetoolsOption to IDEOptionsDialog
+      ReadSettings(CodeToolsOpts);
     end;
     if IDEOptionsDialog.ShowModal = mrOk then 
     begin
@@ -3956,6 +3999,7 @@ begin
       OldLanguage:=EnvironmentOptions.LanguageID;
       IDEOptionsDialog.WriteSettings(EnvironmentOptions);
       IDEOptionsDialog.WriteSettings(EditorOpts);
+      IDEOptionsDialog.WriteSettings(CodeToolsOpts);
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;
@@ -3986,6 +4030,8 @@ begin
       // save to disk
       EnvironmentOptions.Save(False);
       EditorOpts.Save;
+      CodeToolsOpts.AssignTo(CodeToolBoss);
+      CodeToolsOpts.Save;
 
       // update environment
       UpdateDesigners;
@@ -4002,32 +4048,14 @@ begin
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
-var
-  EditorOptionsForm: TEditorOptionsForm;
-Begin
-  EditorOptionsForm:=TEditorOptionsForm.Create(nil);
-  try
-    Project1.UpdateAllCustomHighlighter;
-    if EditorOptionsForm.ShowModal = mrOk then
-    begin
-      Project1.UpdateAllSyntaxHighlighter;
-      SourceNotebook.ReloadEditorOptions;
-      ReloadMenuShortCuts;
-    end;
-  finally
-    EditorOptionsForm.Free;
-  end;
-End;
+begin
+  DoShowEnvGeneralOptions(TEditorGeneralOptionsFrame);
+end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin
   if ShowCodeTemplateDialog=mrOk then
     SourceNotebook.ReloadEditorOptions;
-end;
-
-procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender: TObject);
-begin
-  ShowCodeToolsOptions(CodeToolsOpts,@SourceNoteBook.GetSynEditPreviewSettings);
 end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
@@ -6104,7 +6132,7 @@ begin
   DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
   {$ENDIF}
 
-  Project1.LockUnitComponentDependencies;
+  Project1.LockUnitComponentDependencies; // avoid circles
   try
     // save
     if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0)
@@ -6263,6 +6291,7 @@ begin
   Project1.UpdateUnitComponentDependencies;
   if Project1.UnitComponentIsUsed(AnUnitInfo,CheckHasDesigner) then
     exit(true);
+  //DebugLn(['TMainIDE.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
 end;
 
 function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;

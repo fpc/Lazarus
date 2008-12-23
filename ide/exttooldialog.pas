@@ -409,14 +409,17 @@ begin
     on e: Exception do begin
       DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
       DumpExceptionBackTrace;
+      DebugLn(['TExternalToolList.Run AAA1']);
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
           ),
         mtError,[mbIgnore,mbAbort],0);
+      DebugLn(['TExternalToolList.Run AAA2']);
       if Result=mrIgnore then Result:=mrCancel;
+      DebugLn(['TExternalToolList.Run AAA3']);
       PutExitInfoBuilder(Format(lisExtToolUnableToRunTheTool,
                                 ['"', Title, '"', #13, e.Message]));
-      exit;
+      DebugLn(['TExternalToolList.Run AAA4']);
     end;
   end;
 end;

@@ -51,6 +51,8 @@ type
     procedure Add(ATemplate: TNewIDEItemTemplate); virtual; abstract;
     function LocalizedName: string;  virtual; abstract;
     function Description: string;  virtual; abstract;
+    function IndexOfTemplate(const TemplateName: string): integer; virtual; abstract;
+    function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; virtual; abstract;
     function IndexOfCategory(const CategoryName: string): integer; virtual; abstract;
     function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; virtual; abstract;
   public

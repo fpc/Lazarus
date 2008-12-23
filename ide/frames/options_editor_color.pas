@@ -28,16 +28,32 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
   Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, options_editor_general,
-  IDEProcs;
+  IDEProcs, ColorBox;
 
 type
 
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
-    BackGroundColorButton: TColorButton;
+    BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
     BackGroundUseDefaultCheckBox: TCheckBox;
+    ForegroundColorBox: TColorBox;
+    TextBoldCheckBox: TCheckBox;
+    TextBoldRadioInvert: TRadioButton;
+    TextBoldRadioOff: TRadioButton;
+    TextBoldRadioOn: TRadioButton;
+    TextBoldRadioPanel: TPanel;
+    TextItalicCheckBox: TCheckBox;
+    TextItalicRadioInvert: TRadioButton;
+    TextItalicRadioOff: TRadioButton;
+    TextItalicRadioOn: TRadioButton;
+    TextItalicRadioPanel: TPanel;
+    TextUnderlineCheckBox: TCheckBox;
+    TextUnderlineRadioInvert: TRadioButton;
+    TextUnderlineRadioOff: TRadioButton;
+    TextUnderlineRadioOn: TRadioButton;
+    TextUnderlineRadioPanel: TPanel;
     UseSyntaxHighlightCheckBox: TCheckBox;
     ColorElementLabel: TLabel;
     ColorElementListBox: TListBox;
@@ -46,7 +62,6 @@ type
     ColorSchemeLabel: TLabel;
     FileExtensionsComboBox: TComboBox;
     FileExtensionsLabel: TLabel;
-    ForegroundColorButton: TColorButton;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
     LanguageComboBox: TComboBox;
@@ -54,27 +69,9 @@ type
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
     TextAttributesGroupBox: TGroupBox;
-    TextBoldCheckBox: TCheckBox;
-    TextBoldPanel: TPanel;
-    TextBoldRadioInvert: TRadioButton;
-    TextBoldRadioOff: TRadioButton;
-    TextBoldRadioOn: TRadioButton;
-    TextBoldRadioPanel: TPanel;
-    TextItalicCheckBox: TCheckBox;
-    TextItalicPanel: TPanel;
-    TextItalicRadioInvert: TRadioButton;
-    TextItalicRadioOff: TRadioButton;
-    TextItalicRadioOn: TRadioButton;
-    TextItalicRadioPanel: TPanel;
-    TextUnderlineCheckBox: TCheckBox;
-    TextUnderlinePanel: TPanel;
-    TextUnderlineRadioInvert: TRadioButton;
-    TextUnderlineRadioOff: TRadioButton;
-    TextUnderlineRadioOn: TRadioButton;
-    TextUnderlineRadioPanel: TPanel;
     procedure ColorElementListBoxClick(Sender: TObject);
     procedure ColorElementListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure ForegroundColorButtonColorChanged(Sender: TObject);
+    procedure ForegroundColorBoxChange(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
@@ -127,6 +124,23 @@ type
 
 implementation
 
+function DefaultToNone(AColor: TColor): TColor;
+begin
+  if AColor = clDefault then
+    Result := clNone
+  else
+    Result := AColor;
+end;
+
+function NoneToDefault(AColor: TColor): TColor;
+begin
+  if AColor = clNone then
+    Result := clDefault
+  else
+    Result := AColor;
+end;
+
+
 { TEditorColorOptionsFrame }
 
 procedure TEditorColorOptionsFrame.ColorElementListBoxClick(Sender: TObject);
@@ -140,34 +154,27 @@ begin
   FindCurHighlightElement;
 end;
 
-procedure TEditorColorOptionsFrame.ForegroundColorButtonColorChanged(
-  Sender: TObject);
+procedure TEditorColorOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
 begin
-  if Sender = ForeGroundColorButton then
+  if Sender = ForegroundColorBox then
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
       exit;
-    if not ForeGroundUseDefaultCheckBox.Checked then
-    begin
-      CurHighlightElement.Foreground := ForeGroundColorButton.ButtonColor;
-      InvalidatePreviews;
-    end;
+    CurHighlightElement.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
+    ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected = clDefault;
+    InvalidatePreviews;
   end;
-  if Sender = BackGroundColorButton then
+  if Sender = BackGroundColorBox then
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
       exit;
-    if not BackGroundUseDefaultCheckBox.Checked then
-    begin
-      CurHighlightElement.Background := BackGroundColorButton.ButtonColor;
-      InvalidatePreviews;
-    end;
+    CurHighlightElement.Background := DefaultToNone(BackGroundColorBox.Selected);
+    BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
+    InvalidatePreviews;
   end;
 end;
 
 procedure TEditorColorOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
-var
-  NewColor: TColor;
 begin
   if Sender = UseSyntaxHighlightCheckBox then
   begin
@@ -181,15 +188,16 @@ begin
       if UpdatingColor = False then
       begin
         UpdatingColor := True;
-        if not ForeGroundUseDefaultCheckBox.Checked then
-          NewColor := ForeGroundColorButton.ButtonColor
-        else
-          NewColor := clNone;
-        ForeGroundColorButton.Visible := not
-          ForeGroundUseDefaultCheckBox.Checked;
-        if NewColor <> CurHighlightElement.Foreground then
+        if ForeGroundUseDefaultCheckBox.Checked then
         begin
-          CurHighlightElement.Foreground := NewColor;
+          ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+          ForegroundColorBox.Selected := clDefault;
+        end
+        else
+          ForegroundColorBox.Selected := ForegroundColorBox.Tag;
+        if DefaultToNone(ForegroundColorBox.Selected) <> CurHighlightElement.Foreground then
+        begin
+          CurHighlightElement.Foreground := DefaultToNone(ForegroundColorBox.Selected);
           InvalidatePreviews;
         end;
         UpdatingColor := False;
@@ -197,15 +205,16 @@ begin
     if Sender = BackGroundUseDefaultCheckBox then
       if UpdatingColor = False then
       begin
-        if not BackGroundUseDefaultCheckBox.Checked then
-          NewColor := BackGroundColorButton.ButtonColor
-        else
-          NewColor := clNone;
-        BackGroundColorButton.Visible := not
-          BackGroundUseDefaultCheckBox.Checked;
-        if NewColor <> CurHighlightElement.Background then
+        if BackGroundUseDefaultCheckBox.Checked then
         begin
-          CurHighlightElement.Background := NewColor;
+          BackGroundColorBox.Tag := BackGroundColorBox.Selected;
+          BackGroundColorBox.Selected := clDefault;
+        end
+        else
+          BackGroundColorBox.Selected := BackGroundColorBox.Tag;
+        if DefaultToNone(BackGroundColorBox.Selected) <> CurHighlightElement.Background then
+        begin
+          CurHighlightElement.Background := DefaultToNone(BackGroundColorBox.Selected);
           InvalidatePreviews;
         end;
       end;
@@ -463,23 +472,20 @@ begin
     TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
   end;
 
+  ForegroundColorBox.Selected := NoneToDefault(CurHighlightElement.Foreground);
+  if ForegroundColorBox.Selected = clDefault then
+    ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
+  else
+    ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+  ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected = clDefault;
 
-  if CurHighlightElement.Foreground = clNone then
-    ForeGroundUseDefaultCheckBox.Checked := True
+  BackGroundColorBox.Selected := NoneToDefault(CurHighlightElement.Background);
+  if BackGroundColorBox.Selected = clDefault then
+    BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
   else
-  begin
-    ForeGroundUseDefaultCheckBox.Checked := False;
-    ForeGroundColorButton.ButtonColor    := CurHighlightElement.Foreground;
-  end;
-  ForeGroundColorButton.Visible := not ForeGroundUseDefaultCheckBox.Checked;
-  if CurHighlightElement.Background = clNone then
-    BackGroundUseDefaultCheckBox.Checked := True
-  else
-  begin
-    BackGroundUseDefaultCheckBox.Checked := False;
-    BackGroundColorButton.ButtonColor    := CurHighlightElement.Background;
-  end;
-  BackGroundColorButton.Visible := not BackGroundUseDefaultCheckBox.Checked;
+    BackGroundColorBox.Tag := BackGroundColorBox.Selected;
+  BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
+
   UpdatingColor := False;
 end;
 
@@ -707,7 +713,6 @@ begin
   ForeGroundLabel.Caption := dlgForecolor;
   ForeGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   BackGroundLabel.Caption := dlgBackColor;
-  BackgroundColorButton.Color := clBlue;
   BackGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   TextAttributesGroupBox.Caption := dlgTextAttributes;
 
@@ -930,6 +935,6 @@ end;
 
 initialization
   {$I options_editor_color.lrs}
-  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors);
+  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors, EdtOptionsDisplay);
 end.
 

@@ -1,4 +1,4 @@
-{ $Id$}
+{ $Id: objectinspector.pp 17395 2008-11-15 03:53:22Z paul $}
 {
  *****************************************************************************
  *                                                                           *
@@ -43,7 +43,18 @@ uses
   ComponentTreeView, ComponentEditors, IDEImagesIntf;
 
 const
-  OIOptionsFileVersion = 2;
+  OIOptionsFileVersion = 3;
+
+  DefBackgroundColor = clBtnFace;
+  DefReferencesColor = clMaroon;
+  DefSubPropertiesColor = clGreen;
+  DefNameColor = clWindowText;
+  DefDefaultValueColor = clWindowText;
+  DefValueColor = clMaroon;
+  DefHighlightColor = clHighlight;
+  DefHighlightFontColor = clHighlightText;
+  DefGutterColor = DefBackgroundColor;
+  DefGutterEdgeColor = cl3DShadow;
 
 type
   EObjectInspectorException = class(Exception);
@@ -155,10 +166,15 @@ type
     FComponentTreeHeight: integer;
     FConfigStore: TConfigStorage;
     FDefaultItemHeight: integer;
+    FGutterColor: TColor;
+    FGutterEdgeColor: TColor;
     FShowComponentTree: boolean;
 
     FSaveBounds: boolean;
     FLeft: integer;
+    FShowGutter: boolean;
+    FShowInfoBox: boolean;
+    FShowStatusBar: boolean;
     FTop: integer;
     FWidth: integer;
     FHeight: integer;
@@ -170,6 +186,9 @@ type
     FValueColor: TColor;
     FReferencesColor: TColor;
     FGridBackgroundColor: TColor;
+    FHighlightColor: TColor;
+    FHighlightFontColor: TColor;
+
     FShowHints: boolean;
     FAutoShow: Boolean;
     FBoldNonDefaultValues: Boolean;
@@ -200,23 +219,25 @@ type
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write FComponentTreeHeight;
 
-    property GridBackgroundColor: TColor read FGridBackgroundColor
-                                         write FGridBackgroundColor;
-    property SubPropertiesColor: TColor read FSubPropertiesColor
-                                         write FSubPropertiesColor;
-    property ReferencesColor: TColor read FReferencesColor
-                                         write FReferencesColor;
-    property ValueColor: TColor read FValueColor
-                                         write FValueColor;
-    property DefaultValueColor: TColor read FDefaultValueColor
-                                         write FDefaultValueColor;
-    property PropertyNameColor: TColor read FPropertyNameColor
-                                         write FPropertyNameColor;
+    property GridBackgroundColor: TColor read FGridBackgroundColor write FGridBackgroundColor;
+    property SubPropertiesColor: TColor read FSubPropertiesColor write FSubPropertiesColor;
+    property ReferencesColor: TColor read FReferencesColor write FReferencesColor;
+    property ValueColor: TColor read FValueColor write FValueColor;
+    property DefaultValueColor: TColor read FDefaultValueColor write FDefaultValueColor;
+    property PropertyNameColor: TColor read FPropertyNameColor write FPropertyNameColor;
+    property HighlightColor: TColor read FHighlightColor write FHighlightColor;
+    property HighlightFontColor: TColor read FHighlightFontColor write FHighlightFontColor;
+    property GutterColor: TColor read FGutterColor write FGutterColor;
+    property GutterEdgeColor: TColor read FGutterEdgeColor write FGutterEdgeColor;
+
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
     property AutoShow: boolean read FAutoShow write FAutoShow;
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
+    property ShowGutter: boolean read FShowGutter write FShowGutter;
+    property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
+    property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
   end;
 
   TOICustomPropertyGrid = class;
@@ -306,10 +327,15 @@ type
   private
     FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
+    FGutterColor: TColor;
+    FGutterEdgeColor: TColor;
+    FHighlightColor: TColor;
     FLayout: TOILayout;
     FOnOIKeyDown: TKeyEvent;
+    FOnSelectionChange: TNotifyEvent;
     FReferencesColor: TColor;
     FRowSpacing: integer;
+    FShowGutter: Boolean;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TControl; // nil or ValueButton
@@ -323,7 +349,7 @@ type
     FFilter: TTypeKinds;
     FIndent: integer;
     FItemIndex: integer;
-    FNameFont, FDefaultValueFont, FValueFont: TFont;
+    FNameFont, FDefaultValueFont, FValueFont, FHighlightFont: TFont;
     FNewComboBoxItems: TStringList;
     FOnModified: TNotifyEvent;
     FPreferredSplitterX: integer; // best splitter position
@@ -335,6 +361,7 @@ type
     FStates: TOIPropertyGridStates;
     FTopY: integer;
     FDrawHorzGridLines: Boolean;
+    FActiveRowBmp: TCustomBitmap;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -352,8 +379,12 @@ type
     function GetCurrentEditValue: string;
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
+    procedure SetDrawHorzGridLines(const AValue: Boolean);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetFilter(const AValue: TTypeKinds);
+    procedure SetGutterColor(const AValue: TColor);
+    procedure SetGutterEdgeColor(const AValue: TColor);
+    procedure SetHighlightColor(const AValue: TColor);
     procedure SetItemIndex(NewIndex:integer);
 
     function GetNameRowHeight: Integer; // temp solution untill TFont.height returns its actual value
@@ -362,14 +393,15 @@ type
     procedure AlignEditComponents;
     procedure EndDragSplitter;
     procedure SetRowSpacing(const AValue: integer);
+    procedure SetShowGutter(const AValue: Boolean);
     procedure SetSplitterX(const NewValue:integer);
     procedure SetTopY(const NewValue:integer);
 
-    function GetPropNameColor(ARow:TOIPropertyGridRow):TColor;
-    function GetTreeIconX(Index:integer):integer;
-    function RowRect(ARow:integer):TRect;
-    procedure PaintRow(ARow:integer);
-    procedure DoPaint(PaintOnlyChangedValues:boolean);
+    function GetPropNameColor(ARow: TOIPropertyGridRow):TColor;
+    function GetTreeIconX(Index: integer):integer;
+    function RowRect(ARow: integer):TRect;
+    procedure PaintRow(ARow: integer);
+    procedure DoPaint(PaintOnlyChangedValues: boolean);
 
     procedure SetSelection(const ASelection:TPersistentSelectionList);
     procedure SetPropertyEditorHook(NewPropertyEditorHook:TPropertyEditorHook);
@@ -438,6 +470,7 @@ type
     procedure EraseBackground(DC: HDC); override;
 
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure DoSelectionChange;
   public
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
@@ -475,27 +508,35 @@ type
     procedure SetItemIndexAndFocus(NewItemIndex: integer);
   public
     property BackgroundColor: TColor read FBackgroundColor
-                                     write SetBackgroundColor default clBtnFace;
+                                     write SetBackgroundColor default DefBackgroundColor;
+    property GutterColor: TColor read FGutterColor write SetGutterColor default DefGutterColor;
+    property GutterEdgeColor: TColor read FGutterEdgeColor write SetGutterEdgeColor default DefGutterEdgeColor;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefHighlightColor;
     property ReferencesColor: TColor read FReferencesColor
-                                     write SetReferences default clMaroon;
+                                     write SetReferences default DefReferencesColor;
     property SubPropertiesColor: TColor read FSubPropertiesColor
-                                     write SetSubPropertiesColor default clGreen;
+                                     write SetSubPropertiesColor default DefSubPropertiesColor;
+    property NameFont: TFont read FNameFont write FNameFont;
+    property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
+    property ValueFont: TFont read FValueFont write FValueFont;
+    property HighlightFont: TFont read FHighlightFont write FHighlightFont;
+
     property BorderStyle default bsSingle;
     property Column: TOICustomPropertyGridColumn read FColumn write SetColumn;
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
     property DefaultItemHeight:integer read FDefaultItemHeight
                                        write FDefaultItemHeight default 25;
-    property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
-    property DrawHorzGridLines: Boolean read FDrawHorzGridLines write FDrawHorzGridLines;
+    property DrawHorzGridLines: Boolean read FDrawHorzGridLines write
+      SetDrawHorzGridLines default True;
     property ExpandedProperties: TStringList read FExpandedProperties
                                             write FExpandedProperties;
     property Indent: integer read FIndent write FIndent default 9;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
-    property NameFont: TFont read FNameFont write FNameFont;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property PrefferedSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
@@ -505,9 +546,9 @@ type
     property RowSpacing: integer read FRowSpacing write SetRowSpacing;
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
+    property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
     property TopY: integer read FTopY write SetTopY default 0;
-    property ValueFont: TFont read FValueFont write FValueFont;
     property Favourites: TOIFavouriteProperties read FFavourites
                                                 write SetFavourites;
     property Filter : TTypeKinds read FFilter write SetFilter;
@@ -542,6 +583,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnSelectionChange;
     property PopupMenu;
     property PrefferedSplitterX;
     property SplitterX;
@@ -591,6 +633,7 @@ type
     ViewRestrictedPropertiesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
     ComponentTree: TComponentTreeView;
+    InfoPanel: TPanel;
     CopyPopupmenuItem: TMenuItem;
     CutPopupmenuItem: TMenuItem;
     DeletePopupmenuItem: TMenuItem;
@@ -615,6 +658,7 @@ type
     ShowHintsPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
     Splitter1: TSplitter;
+    Splitter2: TSplitter;
     StatusBar: TStatusBar;
     UndoPropertyPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
@@ -645,6 +689,8 @@ type
   private
     FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
+    FInfoBoxHeight: integer;
+    FOnSelectionChange: TNotifyEvent;
     FRestricted: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
@@ -665,30 +711,36 @@ type
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
     FShowFavorites: Boolean;
+    FShowInfoBox: Boolean;
     FShowRestricted: Boolean;
+    FShowStatusBar: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
+    procedure SetInfoBoxHeight(const AValue: integer);
     procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
+    procedure SetShowInfoBox(const AValue: Boolean);
     procedure SetShowRestricted(const AValue: Boolean);
+    procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
+    procedure OnGridSelectionChange(Sender: TObject);
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure CreateSplitter;
+    procedure CreateSplitter(TopSplitter: Boolean);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -719,6 +771,7 @@ type
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property OnShowOptions: TNotifyEvent read FOnShowOptions
                                          write SetOnShowOptions;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
@@ -733,6 +786,9 @@ type
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
+    property InfoBoxHeight: integer read FInfoBoxHeight write SetInfoBoxHeight;
+    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
+    property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
@@ -817,16 +873,25 @@ begin
   FSplitterX:=100;
   FPreferredSplitterX:=FSplitterX;
   FIndent:=9;
-  FBackgroundColor:=clBtnFace;
-  FReferencesColor:=clMaroon;
-  FSubPropertiesColor:=clGreen;
+
+  FBackgroundColor:=DefBackgroundColor;
+  FReferencesColor:=DefReferencesColor;
+  FSubPropertiesColor:=DefSubPropertiesColor;
+  FHighlightColor:=DefHighlightColor;
+  FGutterColor:=DefGutterColor;
+  FGutterEdgeColor:=DefGutterEdgeColor;
+
   FNameFont:=TFont.Create;
-  FNameFont.Color:=clWindowText;
+  FNameFont.Color:=DefNameColor;
   FValueFont:=TFont.Create;
-  FValueFont.Color:=clMaroon;
+  FValueFont.Color:=DefValueColor;
   FDefaultValueFont:=TFont.Create;
-  FDefaultValueFont.Color:=clWindowText;
+  FDefaultValueFont.Color:=DefDefaultValueColor;
+  FHighlightFont:=TFont.Create;
+  FHighlightFont.Color:=DefHighlightFontColor;
+
   FDrawHorzGridLines := True;
+  FShowGutter := True;
 
   SetInitialBounds(0,0,200,130);
   ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
@@ -908,6 +973,8 @@ begin
     SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
   end;
+
+  FActiveRowBmp := CreateBitmapFromLazarusResource('pg_active_row');
 
   if DefItemHeight<3 then
     FDefaultItemHeight:=ValueComboBox.Height-3
@@ -1040,21 +1107,25 @@ begin
 end;
 
 destructor TOICustomPropertyGrid.Destroy;
-var a:integer;
+var
+  a: integer;
 begin
   Application.RemoveOnUserInputHandler(@OnUserInput);
-  FItemIndex:=-1;
-  for a:=0 to FRows.Count-1 do Rows[a].Free;
+  FItemIndex := -1;
+  for a := 0 to FRows.Count - 1 do
+    Rows[a].Free;
   FreeAndNil(FRows);
   FreeAndNil(FSelection);
   FreeAndNil(FNotificationComponents);
   FreeAndNil(FValueFont);
   FreeAndNil(FDefaultValueFont);
   FreeAndNil(FNameFont);
+  FreeAndNil(FHighlightFont);
   FreeAndNil(FExpandedProperties);
   FreeAndNil(FHintTimer);
   FreeAndNil(FHintWindow);
   FreeAndNil(FNewComboBoxItems);
+  FreeAndNil(FActiveRowBmp);
   inherited Destroy;
 end;
 
@@ -1441,35 +1512,39 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
-var NewRow:TOIPropertyGridRow;
-  NewValue:string;
+var
+  NewRow: TOIPropertyGridRow;
+  NewValue: string;
   EditorAttributes: TPropertyAttributes;
 begin
-  if GridIsUpdating or (FItemIndex=NewIndex) then
+  if GridIsUpdating or (FItemIndex = NewIndex) then
     exit;
 
   // save old edit value
   SetRowValue;
 
-  Include(FStates,pgsChangingItemIndex);
-  if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
+  Include(FStates, pgsChangingItemIndex);
+  if (FItemIndex >= 0) and (FItemIndex < FRows.Count) then
     Rows[FItemIndex].Editor.Deactivate;
   if CanFocus then
     SetCaptureControl(nil);
 
-  FItemIndex:=NewIndex;
-  if FCurrentEdit<>nil then begin
+  FItemIndex := NewIndex;
+  if FCurrentEdit <> nil then
+  begin
     FCurrentEdit.Visible:=false;
     FCurrentEdit.Enabled:=false;
     FCurrentEdit:=nil;
   end;
-  if FCurrentButton<>nil then begin
+  if FCurrentButton<>nil then
+  begin
     FCurrentButton.Visible:=false;
     FCurrentButton.Enabled:=false;
     FCurrentButton:=nil;
   end;
   FCurrentEditorLookupRoot:=nil;
-  if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
+  if (NewIndex>=0) and (NewIndex<FRows.Count) then
+  begin
     NewRow:=Rows[NewIndex];
 
     ScrollToItem(NewIndex);
@@ -1536,7 +1611,8 @@ begin
     if FCurrentButton<>nil then
       FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
-  Exclude(FStates,pgsChangingItemIndex);
+  Exclude(FStates, pgsChangingItemIndex);
+  DoSelectionChange;
   Invalidate;
 end;
 
@@ -1554,7 +1630,8 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: boolean);
-var a: integer;
+var
+  a: integer;
   CurRow: TOIPropertyGridRow;
   OldSelectedRowPath: string;
 begin
@@ -2133,6 +2210,12 @@ begin
   UpdateScrollBar;
 end;
 
+procedure TOICustomPropertyGrid.DoSelectionChange;
+begin
+  if Assigned(FOnSelectionChange) then
+    OnSelectionChange(Self);
+end;
+
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
 begin
   CreateWithParams(TheOwner,nil,AllTypeKinds,25);
@@ -2164,6 +2247,13 @@ begin
   if FRowSpacing = AValue then exit;
   FRowSpacing := AValue;
   SetItemsTops;
+end;
+
+procedure TOICustomPropertyGrid.SetShowGutter(const AValue: Boolean);
+begin
+  if FShowGutter=AValue then exit;
+  FShowGutter:=AValue;
+  invalidate;
 end;
 
 procedure TOICustomPropertyGrid.SetSplitterX(const NewValue:integer);
@@ -2212,7 +2302,9 @@ begin
     ParentRow:=ParentRow.Parent;
   end;
 
-  if IsObjectSubProperty then
+  if (ItemIndex <> -1) and (Rows[ItemIndex] = ARow) then
+    Result := FHighlightFont.Color
+  else if IsObjectSubProperty then
     Result := FSubPropertiesColor
   else if ARow.Editor is TPersistentPropertyEditor then
     Result := FReferencesColor
@@ -2311,15 +2403,16 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.PaintRow(ARow:integer);
+procedure TOICustomPropertyGrid.PaintRow(ARow: integer);
 var
-  FullRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
+  FullRect,NameRect,NameIconRect,NameTextRect,ValueRect, ParentRect:TRect;
   IconX,IconY:integer;
   CurRow:TOIPropertyGridRow;
   DrawState:TPropEditDrawState;
   OldFont:TFont;
   Platform: TLCLPlatform;
   X, Y: Integer;
+  NameBgColor: TColor;
 
   procedure DrawTreeIcon(X, Y: Integer; Minus: Boolean);
   const
@@ -2333,6 +2426,11 @@ var
   begin
     Details := ThemeServices.GetElementDetails(PlusMinusDetail[Minus]);
     ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + 9, Y + 9), nil);
+  end;
+
+  procedure DrawActiveRow(X, Y: Integer);
+  begin
+    Canvas.Draw(X, Y, FActiveRowBmp);
   end;
 
 // PaintRow
@@ -2367,35 +2465,67 @@ begin
 
   IconX:=GetTreeIconX(ARow);
   IconY:=((NameRect.Bottom-NameRect.Top-9) div 2)+NameRect.Top;
-  NameIconRect:=NameRect;
-  NameIconRect.Right:=IconX+Indent;
-  NameTextRect:=NameRect;
-  NameTextRect.Left:=NameIconRect.Right;
+  NameIconRect := NameRect;
+  NameIconRect.Right := IconX + Indent;
+  NameTextRect := NameRect;
+  NameTextRect.Left := NameIconRect.Right;
 
-  if Layout = oilVertical
-  then ValueRect.Left := NameTextRect.Left;
+  if Layout = oilVertical then
+    ValueRect.Left := NameTextRect.Left
+  else
+  begin
+    inc(NameIconRect.Right, 2 + Ord(ShowGutter));
+    inc(NameTextRect.Left, 3 +  + Ord(ShowGutter));
+  end;
 
   DrawState:=[];
-  if ARow=FItemIndex then Include(DrawState,pedsSelected);
+  if ARow = FItemIndex then
+    Include(DrawState, pedsSelected);
+
   with Canvas do
   begin
     // clear background in one go
-    if FBackgroundColor <> clNone
-    then begin
+
+    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
+      NameBgColor := FHighlightColor
+    else
+      NameBgColor := FBackgroundColor;
+
+    if FBackgroundColor <> clNone then
+    begin
       Brush.Color := FBackgroundColor;
       FillRect(FullRect);
     end;
 
+    if ShowGutter and (Layout = oilHorizontal) and
+       (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
+    begin
+      Brush.Color := FGutterColor;
+      FillRect(NameIconRect);
+    end;
+
     // draw icon
     if CanExpandRow(CurRow) then
-      DrawTreeIcon(IconX, IconY, CurRow.Expanded);
+      DrawTreeIcon(IconX, IconY, CurRow.Expanded)
+    else
+    if (ARow = FItemIndex) then
+      DrawActiveRow(IconX, IconY);
 
     // draw name
     OldFont:=Font;
     Font:=FNameFont;
     Font.Color := GetPropNameColor(CurRow);
-    CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
-    Font:=OldFont;
+    // set bg color to highlight if needed
+    if (NameBgColor <> FBackgroundColor) and (NameBgColor <> clNone) then
+    begin
+      Brush.Color := NameBgColor;
+      FillRect(NameTextRect);
+    end;
+    CurRow.Editor.PropDrawName(Canvas, NameTextRect, DrawState);
+    Font := OldFont;
+
+    if (FBackgroundColor <> clNone) then // return color back to background
+      Brush.Color := FBackgroundColor;
     
     // draw widgetsets
     X := NameRect.Right - 2;
@@ -2432,50 +2562,68 @@ begin
     // frames
     // -----------------
 
-    if Layout = oilHorizontal
-    then begin
-      // Divider
-      if ARow = FItemIndex
-      then begin
-        Pen.Style := psSolid;
-        if FBackgroundColor <> clNone
-        then begin
-          Pen.Color := FBackgroundColor;
-          MoveTo(NameRect.Left,NameRect.Top-1);
-          LineTo(ValueRect.Right,NameRect.Top-1)
-        end;
-        //Top
-        Pen.Color:=cl3DShadow;
-        MoveTo(NameRect.Left,NameRect.Top-1);
-        LineTo(ValueRect.Right,NameRect.Top-1);
-        //Bottom
-        Pen.Color:=cl3DHiLight;
-        MoveTo(NameRect.Left,NameRect.Bottom-1);
-        LineTo(ValueRect.Right,NameRect.Bottom-1);
-      end
-      else
+    if Layout = oilHorizontal then
+    begin
+      // Row Divider
+
       if DrawHorzGridLines then
       begin
         Pen.Style := psDot;
-        Pen.Color:=cl3DShadow;
+        Pen.EndCap := pecFlat;
+        Pen.Cosmetic := False;
+        Pen.Color := cl3DShadow;
         if FRowSpacing <> 0 then
         begin
-          MoveTo(NameRect.Left,NameRect.Top-1);
-          LineTo(ValueRect.Right,NameRect.Top-1);
+          MoveTo(NameTextRect.Left, NameRect.Top - 1);
+          LineTo(ValueRect.Right, NameRect.Top - 1);
         end;
-        MoveTo(NameRect.Left,NameRect.Bottom-1);
-        LineTo(ValueRect.Right,NameRect.Bottom-1);
+        MoveTo(NameTextRect.Left, NameRect.Bottom - 1);
+        LineTo(ValueRect.Right, NameRect.Bottom - 1);
       end;
 
-      // Splitter
+      // Split lines between: icon and name, name and value
       Pen.Style := psSolid;
-      Pen.Color:=cl3DHiLight;
-      MoveTo(NameRect.Right-1,NameRect.Bottom-1);
-      LineTo(NameRect.Right-1,NameRect.Top-1-FRowSpacing);
-      Pen.Color:=cl3DShadow;
-      MoveTo(NameRect.Right-2,NameRect.Bottom-1);
-      LineTo(NameRect.Right-2,NameRect.Top-1-FRowSpacing);
+      Pen.Cosmetic := True;
+      Pen.Color := cl3DHiLight;
+      MoveTo(NameRect.Right - 1, NameRect.Bottom - 1);
+      LineTo(NameRect.Right - 1, NameRect.Top - 1 - FRowSpacing);
+      Pen.Color := cl3DShadow;
+      MoveTo(NameRect.Right - 2, NameRect.Bottom - 1);
+      LineTo(NameRect.Right - 2, NameRect.Top - 1 - FRowSpacing);
 
+      // draw gutter line
+      if ShowGutter then
+      begin
+        Pen.Color := GutterEdgeColor;
+        MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+        LineTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+
+        if CurRow.Lvl > 0 then
+        begin
+          // draw to parent
+          if ARow > 0 then
+          begin
+            ParentRect := RowRect(ARow - 1);
+            X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
+            if X <> NameIconRect.Right then
+            begin
+              MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+              LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
+            end;
+          end;
+          // to to parent next sibling
+          if ARow < FRows.Count - 1 then
+          begin
+            ParentRect := RowRect(ARow + 1);
+            X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
+            if X <> NameIconRect.Right then
+            begin
+              MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+              LineTo(X - 1, NameRect.Bottom - 1);
+            end;
+          end;
+        end;
+      end;
     end
     else begin
       Pen.Style := psSolid;
@@ -2497,9 +2645,11 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
-var a:integer;
-  SpaceRect:TRect;
+procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues: boolean);
+var
+  a: integer;
+  SpaceRect: TRect;
+  GutterX: Integer;
 begin
   BuildPropertyList(true);
   if not PaintOnlyChangedValues then
@@ -2507,28 +2657,43 @@ begin
     with Canvas do
     begin
       // draw properties
-      for a:=0 to FRows.Count-1 do
-      begin
+      for a := 0 to FRows.Count - 1 do
         PaintRow(a);
-      end;
       // draw unused space below rows
-      SpaceRect:=Rect(BorderWidth,BorderWidth,
-                      ClientWidth-BorderWidth+1,ClientHeight-BorderWidth+1);
-      if FRows.Count>0 then
-        SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
-// TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if FBackgroundColor<>clNone then
+      SpaceRect := Rect(BorderWidth, BorderWidth,
+                        ClientWidth - BorderWidth + 1, ClientHeight - BorderWidth + 1);
+      if FRows.Count > 0 then
+        SpaceRect.Top := Rows[FRows.Count - 1].Bottom - FTopY + BorderWidth;
+      if FBackgroundColor <> clNone then
       begin
-        Brush.Color:=FBackgroundColor;
+        Brush.Color := FBackgroundColor;
         FillRect(SpaceRect);
+      end;
+
+      // draw gutter if needed
+      if ShowGutter and (Layout = oilHorizontal) then
+      begin
+        if FRows.Count > 0 then
+          GutterX := RowRect(FRows.Count - 1).Left + GetTreeIconX(FRows.Count - 1)
+        else
+          GutterX := BorderWidth + 2;
+        inc(GutterX, Indent + 3);
+        SpaceRect.Right := GutterX;
+        if GutterColor <> clNone then
+        begin
+          Brush.Color := GutterColor;
+          FillRect(SpaceRect);
+        end;
+        MoveTo(GutterX, SpaceRect.Top);
+        LineTo(GutterX, SpaceRect.Bottom);
       end;
       // don't draw border: borderstyle=bsSingle
     end;
   end else
   begin
-    for a:=0 to FRows.Count-1 do
+    for a := 0 to FRows.Count-1 do
     begin
-      if Rows[a].Editor.GetVisualValue<>Rows[a].LastPaintedValue then
+      if Rows[a].Editor.GetVisualValue <> Rows[a].LastPaintedValue then
         PaintRow(a);
     end;
   end;
@@ -2639,6 +2804,13 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.SetDrawHorzGridLines(const AValue: Boolean);
+begin
+  if FDrawHorzGridLines = AValue then Exit;
+  FDrawHorzGridLines := AValue;
+  Invalidate;
+end;
+
 procedure TOICustomPropertyGrid.SetFavourites(
   const AValue: TOIFavouriteProperties);
 begin
@@ -2650,11 +2822,32 @@ end;
 
 procedure TOICustomPropertyGrid.SetFilter(const AValue: TTypeKinds);
 begin
-  If (AValue<>FFilter) then
-    begin
+  if (AValue<>FFilter) then
+  begin
     FFilter:=AValue;
     BuildPropertyList;
-    end;
+  end;
+end;
+
+procedure TOICustomPropertyGrid.SetGutterColor(const AValue: TColor);
+begin
+  if FGutterColor=AValue then exit;
+  FGutterColor:=AValue;
+  invalidate;
+end;
+
+procedure TOICustomPropertyGrid.SetGutterEdgeColor(const AValue: TColor);
+begin
+  if FGutterEdgeColor=AValue then exit;
+  FGutterEdgeColor:=AValue;
+  invalidate;
+end;
+
+procedure TOICustomPropertyGrid.SetHighlightColor(const AValue: TColor);
+begin
+  if FHighlightColor=AValue then exit;
+  FHighlightColor:=AValue;
+  Invalidate;
 end;
 
 procedure TOICustomPropertyGrid.Clear;
@@ -3219,14 +3412,22 @@ begin
   FShowComponentTree:=true;
   FComponentTreeHeight:=100;
 
-  FGridBackgroundColor:=clBtnFace;
-  FDefaultValueColor:=clWindowText;
-  FSubPropertiesColor:= clGreen;
-  FValueColor:=clMaroon;
-  FReferencesColor:= clMaroon;
-  FPropertyNameColor:=clWindowText;
+  FGridBackgroundColor := DefBackgroundColor;
+  FDefaultValueColor := DefDefaultValueColor;
+  FSubPropertiesColor := DefSubPropertiesColor;
+  FValueColor := DefValueColor;
+  FReferencesColor := DefReferencesColor;
+  FPropertyNameColor := DefNameColor;
+  FHighlightColor := DefHighlightColor;
+  FHighlightFontColor := DefHighlightFontColor;
+  FGutterColor := DefGutterColor;
+  FGutterEdgeColor := DefGutterEdgeColor;
+
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
+  FShowGutter := True;
+  FShowStatusBar := True;
+  FShowInfoBox := False;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3272,26 +3473,40 @@ begin
        Path+'ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=ConfigStore.GetValue(
-         Path+'Color/GridBackground',clBtnFace);
+         Path+'Color/GridBackground',DefBackgroundColor);
     FDefaultValueColor:=ConfigStore.GetValue(
-         Path+'Color/DefaultValue', clWindowText);
+         Path+'Color/DefaultValue', DefDefaultValueColor);
     FSubPropertiesColor:=ConfigStore.GetValue(
-         Path+'Color/SubProperties', clGreen);
+         Path+'Color/SubProperties', DefSubPropertiesColor);
     FValueColor:=ConfigStore.GetValue(
-         Path+'Color/Value', clMaroon);
+         Path+'Color/Value', DefValueColor);
     FReferencesColor:=ConfigStore.GetValue(
-         Path+'Color/References',clMaroon);
+         Path+'Color/References',DefReferencesColor);
     FPropertyNameColor:=ConfigStore.GetValue(
-         Path+'Color/PropertyName',clWindowText);
+         Path+'Color/PropertyName',DefNameColor);
+    FHighlightColor:=ConfigStore.GetValue(
+         Path+'Color/Highlight',DefHighlightColor);
+    FHighlightFontColor:=ConfigStore.GetValue(
+         Path+'Color/HighlightFont',DefHighlightFontColor);
+    FGutterColor:=ConfigStore.GetValue(
+         Path+'Color/Gutter',DefGutterColor);
+    FGutterEdgeColor:=ConfigStore.GetValue(
+         Path+'Color/GutterEdge',DefGutterEdgeColor);
 
     FShowHints:=ConfigStore.GetValue(
-         Path+'ShowHints',false);
+         Path+'ShowHints',FileVersion>=3);
     FAutoShow := ConfigStore.GetValue(
          Path+'AutoShow',true);
     FBoldNonDefaultValues := ConfigStore.GetValue(
          Path+'BoldNonDefaultValues',true);
     FDrawGridLines := ConfigStore.GetValue(
          Path+'DrawGridLines',true);
+    FShowGutter := ConfigStore.GetValue(
+         Path+'ShowGutter',true);
+    FShowStatusBar := ConfigStore.GetValue(
+         Path+'ShowStatusBar',true);
+    FShowInfoBox := ConfigStore.GetValue(
+         Path+'ShowInfoBox',false);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3335,23 +3550,33 @@ begin
                              FComponentTreeHeight,100);
 
     ConfigStore.SetDeleteValue(Path+'Color/GridBackground',
-                             FGridBackgroundColor,clBackground);
+                             FGridBackgroundColor,DefBackgroundColor);
     ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',
-                             FDefaultValueColor,clBackground);
+                             FDefaultValueColor,DefDefaultValueColor);
     ConfigStore.SetDeleteValue(Path+'Color/SubProperties',
-                             FSubPropertiesColor,clBackground);
+                             FSubPropertiesColor,DefSubPropertiesColor);
     ConfigStore.SetDeleteValue(Path+'Color/Value',
-                             FValueColor,clBackground);
+                             FValueColor,DefValueColor);
     ConfigStore.SetDeleteValue(Path+'Color/References',
-                             FReferencesColor,clBackground);
+                             FReferencesColor,DefReferencesColor);
     ConfigStore.SetDeleteValue(Path+'Color/PropertyName',
-                              FPropertyNameColor,clWindowText);
+                              FPropertyNameColor,DefNameColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Highlight',
+                              FHighlightColor,DefHighlightColor);
+    ConfigStore.SetDeleteValue(Path+'Color/HighlightFont',
+                              FHighlightFontColor,DefHighlightFontColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Gutter',
+                              FGutterColor,DefGutterColor);
+    ConfigStore.SetDeleteValue(Path+'Color/GutterEdge',
+                              FGutterEdgeColor,DefGutterEdgeColor);
 
-    ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
-                             false);
+    ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints, True);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
+    ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
+    ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
+    ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, False);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3382,11 +3607,18 @@ begin
   FValueColor:=AnObjInspector.PropertyGrid.ValueFont.Color;
   FDefaultValueColor:=AnObjInspector.PropertyGrid.DefaultValueFont.Color;
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
+  FHighlightColor:=AnObjInspector.PropertyGrid.HighlightColor;
+  FHighlightFontColor:=AnObjInspector.PropertyGrid.HighlightFont.Color;
+  FGutterColor:=AnObjInspector.PropertyGrid.GutterColor;
+  FGutterEdgeColor:=AnObjInspector.PropertyGrid.GutterEdgeColor;
 
   FShowHints := AnObjInspector.PropertyGrid.ShowHint;
   FAutoShow := AnObjInspector.AutoShow;
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
+  FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
+  FShowStatusBar := AnObjInspector.ShowStatusBar;
+  FShowInfoBox := AnObjInspector.ShowInfoBox;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3416,13 +3648,20 @@ begin
       Grid.ValueFont.Style := [];
     Grid.DefaultValueFont.Color := FDefaultValueColor;
     Grid.NameFont.Color := FPropertyNameColor;
+    Grid.HighlightColor := FHighlightColor;
+    Grid.HighlightFont.Color := FHighlightFontColor;
+    Grid.GutterColor := FGutterColor;
+    Grid.GutterEdgeColor := FGutterEdgeColor;
     Grid.ShowHint := FShowHints;
     Grid.DrawHorzGridLines := FDrawGridLines;
+    Grid.ShowGutter := FShowGutter;
   end;
   AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
   AnObjInspector.ShowComponentTree := FShowComponentTree;
+  AnObjInspector.ShowInfoBox := FShowInfoBox;
   AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
   AnObjInspector.AutoShow := AutoShow;
+  AnObjInspector.ShowStatusBar := ShowStatusBar;
 end;
 
 
@@ -3481,12 +3720,15 @@ begin
   FUpdatingAvailComboBox:=false;
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
-  FShowComponentTree:=true;
+  FShowComponentTree := True;
   FShowFavorites := False;
   FShowRestricted := False;
+  FShowStatusBar := True;
+  FInfoBoxHeight := 40;
+  FShowInfoBox := False;
 
   Caption := oisObjectInspector;
-  StatusBar.SimpleText:=oisAll;
+  StatusBar.SimpleText := oisAll;
 
   MainPopupMenu.Images := IDEImages.Images_16;
 
@@ -3547,19 +3789,36 @@ begin
   end;
 
   // Component Tree at top (filled with available components)
-  ComponentTree:=TComponentTreeView.Create(Self);
-  with ComponentTree do begin
+  ComponentTree := TComponentTreeView.Create(Self);
+  with ComponentTree do
+  begin
     Name:='ComponentTree';
     Constraints.MinHeight:=16;
     Height:=ComponentTreeHeight;
     Parent:=Self;
     Align:=alTop;
-    OnSelectionChanged:=@ComponentTreeSelectionChanged;
-    Visible:=FShowComponentTree;
+    OnSelectionChanged := @ComponentTreeSelectionChanged;
+    Visible := FShowComponentTree;
     Scrollbars := ssAutoBoth;
   end;
+
+  InfoPanel := TPanel.Create(Self);
+  with InfoPanel do
+  begin
+    Name := 'InfoPanel';
+    Caption := '';
+    Height := InfoBoxHeight;
+    Parent := Self;
+    BevelOuter := bvLowered;
+    Align := alBottom;
+    Visible := FShowInfoBox;
+  end;
+
   if ShowComponentTree then
-    CreateSplitter;
+    CreateSplitter(True);
+
+  if ShowInfoBox then
+    CreateSplitter(False);
 
   CreateNoteBook;
 end;
@@ -3633,6 +3892,12 @@ begin
     if GridControl[Page]<>nil then
       GridControl[Page].DefaultItemHeight:=FDefaultItemHeight;
   RebuildPropertyLists;
+end;
+
+procedure TObjectInspectorDlg.SetInfoBoxHeight(const AValue: integer);
+begin
+  if FInfoBoxHeight=AValue then exit;
+  FInfoBoxHeight:=AValue;
 end;
 
 procedure TObjectInspectorDlg.SetRestricted(const AValue: TOIRestrictedProperties);
@@ -4051,6 +4316,11 @@ begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
+procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
+begin
+  if Assigned(FOnSelectionChange) then OnSelectionChange(Self);
+end;
+
 procedure TObjectInspectorDlg.SetAvailComboBoxText;
 begin
   case FSelection.Count of
@@ -4098,7 +4368,7 @@ begin
     ComponentTree.Parent:=Self;
     ComponentTree.Align:=alTop;
     if FShowComponentTree then
-      CreateSplitter
+      CreateSplitter(True)
     else begin
       ComponentTree.Height:=ComponentTreeHeight;
       FreeAndNil(Splitter1);
@@ -4118,11 +4388,31 @@ begin
   NoteBook.Page[2].TabVisible := AValue;
 end;
 
+procedure TObjectInspectorDlg.SetShowInfoBox(const AValue: Boolean);
+begin
+  if FShowInfoBox = AValue then exit;
+  FShowInfoBox := AValue;
+
+  InfoPanel.Visible := AValue;
+
+  if AValue then
+    CreateSplitter(False)
+  else
+    FreeAndNil(Splitter2);
+end;
+
 procedure TObjectInspectorDlg.SetShowRestricted(const AValue: Boolean);
 begin
   if FShowRestricted = AValue then exit;
   FShowRestricted := AValue;
   NoteBook.Page[3].TabVisible := AValue;
+end;
+
+procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
+begin
+  if FShowStatusBar = AValue then exit;
+  FShowStatusBar := AValue;
+  StatusBar.Visible := AValue;
 end;
 
 procedure TObjectInspectorDlg.ShowNextPage(Delta: integer);
@@ -4247,16 +4537,32 @@ begin
   ComponentRestrictedBox.Canvas.Brush.Style := OldStyle;
 end;
 
-procedure TObjectInspectorDlg.CreateSplitter;
+procedure TObjectInspectorDlg.CreateSplitter(TopSplitter: Boolean);
 begin
   // vertical splitter between component tree and notebook
-  Splitter1:=TSplitter.Create(Self);
-  with Splitter1 do begin
-    Name:='Splitter1';
-    Parent:=Self;
-    Align:=alTop;
-    Top:=ComponentTreeHeight;
-    Height:=5;
+  if TopSplitter then
+  begin
+    Splitter1 := TSplitter.Create(Self);
+    with Splitter1 do
+    begin
+      Name := 'Splitter1';
+      Parent := Self;
+      Align := alTop;
+      Top := ComponentTreeHeight;
+      Height := 5;
+    end;
+  end
+  else
+  begin
+    Splitter2 := TSplitter.Create(Self);
+    with Splitter2 do
+    begin
+      Name := 'Splitter2';
+      Parent := Self;
+      Align := alBottom;
+      Top := InfoPanel.Top - 1;
+      Height := 5;
+    end;
   end;
 end;
 
@@ -4304,7 +4610,7 @@ begin
   end;
 
   // property grid
-  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self, PropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -4316,6 +4622,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4332,6 +4639,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4352,6 +4660,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4372,6 +4681,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnSelectionChange:=@OnGridSelectionChange;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -5129,11 +5439,9 @@ begin
   end;
 end;
 
-
-
 initialization
   {$I objectinspector.lrs}
-  
+  {$I objectinspector_img.lrs}
   
 finalization
 

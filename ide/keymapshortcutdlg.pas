@@ -341,7 +341,7 @@ begin
       end
       else if ((Key.Key1=ShortcutB.Key1) and (Key.Shift1=ShortcutB.Shift1))
       and (((Key.Key2=ShortcutB.Key2) and (Key.Shift2=ShortcutB.Shift2))
-           or (Key.Key2<>VK_UNKNOWN) or (ShortcutB.Key2=VK_UNKNOWN))
+           or (Key.Key2=VK_UNKNOWN) or (ShortcutB.Key2=VK_UNKNOWN))
       then begin
         conflictType:=ctConflictKeyB; // ShortcutB bites
       end;

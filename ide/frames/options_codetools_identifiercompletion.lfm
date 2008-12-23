@@ -1,0 +1,29 @@
+object CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComplietionOptionsFrame
+  Height = 300
+  Width = 400
+  ClientHeight = 300
+  ClientWidth = 400
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 991
+  DesignTop = 321
+  object ICAddSemicolonCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Height = 19
+    Width = 150
+    Caption = 'ICAddSemicolonCheckBox'
+    TabOrder = 0
+  end
+  object ICAddAssignOperatorCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddSemicolonCheckBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 25
+    Width = 178
+    BorderSpacing.Top = 6
+    Caption = 'ICAddAssignOperatorCheckBox'
+    TabOrder = 1
+  end
+end

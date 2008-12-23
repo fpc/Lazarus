@@ -23,6 +23,8 @@ unit OutputFilter;
 {$mode objfpc}
 {$H+}
 
+{off $DEFINE VerboseOFExecute}
+
 interface
 
 uses
@@ -259,6 +261,7 @@ var
   TheAsyncProcess: TAsyncProcess;
   LastProcessMessages: TDateTime;
   EndUpdateNeeded: Boolean;
+  ExceptionMsg: String;
 begin
   Result:=true;
   Clear;
@@ -278,6 +281,7 @@ begin
   Aborted:=false;
   TheAsyncProcess:=nil;
   EndUpdateNeeded:=false;
+  ExceptionMsg:='';
   try
     BeginBufferingOutput;
 
@@ -287,7 +291,7 @@ begin
     and (not CreateScanners(Tool.Scanners)) then
       exit;
 
-    debugln(['TOutputFilter.Execute ',dbgsname(fProcess)]);
+    //debugln(['TOutputFilter.Execute ',dbgsname(fProcess)]);
     if fProcess is TAsyncProcess then begin
       TheAsyncProcess:=TAsyncProcess(fProcess);
       TheAsyncProcess.OnReadData:=@OnAsyncReadData;
@@ -296,6 +300,7 @@ begin
     end;
 
     fProcess.Execute;
+
     LastProcessMessages:=Now-1;// force one update at start
     repeat
       if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
@@ -369,15 +374,16 @@ begin
     if not fProcess.WaitOnExit then begin
       // process was terminated by signal or OS
       if ErrorExists and (ofoExceptionOnError in Options) then
-        raise EOutputFilterError.Create('process terminated with errors');
+        ExceptionMsg:='process terminated with errors';
     end else begin
       //DebugLn('TOutputFilter.Execute fProcess.ExitStatus=',dbgs(fProcess.ExitStatus));
       if fProcess.ExitStatus=0 then
         ErrorExists:=false;
       if ErrorExists and (ofoExceptionOnError in Options) then
-        raise EOutputFilterError.Create('there was an error');
+        ExceptionMsg:='the process exited with error code '+dbgs(fProcess.ExitStatus);
     end;
   finally
+    // workaround for missing TProcess error handling
     {$IFDEF VerboseOFExecute}
     WriteLn('TOutputFilter.Execute W1');
     {$ENDIF}
@@ -410,6 +416,8 @@ begin
     WriteLn('TOutputFilter.Execute W7');
     {$ENDIF}
   end;
+  if ExceptionMsg<>'' then
+    raise EOutputFilterError.Create(ExceptionMsg);
 end;
 
 procedure TOutputFilter.ReadLine(var s: string; DontFilterLine: boolean);

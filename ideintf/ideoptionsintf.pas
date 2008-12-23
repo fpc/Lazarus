@@ -27,6 +27,9 @@ interface
 uses
   Classes, SysUtils, Forms;
 
+const
+  NoParent = -1;
+
 type
   // forward
   TAbstractOptionsEditorDialog = class;
@@ -60,6 +63,7 @@ type
 
   TIDEOptionsEditorRec = record
     Index: Integer;
+    Parent: Integer;
     EditorClass: TAbstractIDEOptionsEditorClass;
   end;
   PIDEOptionsEditorRec = ^TIDEOptionsEditorRec;
@@ -75,7 +79,7 @@ type
     function GetByIndex(AIndex: Integer): PIDEOptionsEditorRec;
   public
     procedure Resort;
-    procedure Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer); reintroduce;
+    procedure Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex, AParent: Integer); reintroduce;
     property Items[AIndex: Integer]: PIDEOptionsEditorRec read GetItem write SetItem; default;
   end;
 
@@ -107,21 +111,21 @@ type
   end;
 
 procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; ACaption: String);
-procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer);
+procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
 
 function IDEEditorGroups: TIDEOptionsGroupList;
 
 const
   // options groups
   GroupEnvironment = 100;
-    EnvOptionsFiles      = 100;
-    EnvOptionsDesktop    = 200;
-    EnvOptionsWindow     = 300;
-    EnvOptionsFormEd     = 400;
-    EnvOptionsOI         = 500;
-    EnvOptionsBackup     = 600;
-    EnvOptionsNaming     = 700;
-    EnvOptionsFpDoc      = 800;
+    EnvOptionsFiles   = 100;
+    EnvOptionsDesktop = 200;
+    EnvOptionsWindow  = 300;
+    EnvOptionsFormEd  = 400;
+    EnvOptionsOI      = 500;
+    EnvOptionsBackup  = 600;
+    EnvOptionsNaming  = 700;
+    EnvOptionsFpDoc   = 800;
 
   GroupEditor      = 200;
     EdtOptionsGeneral     = 100;
@@ -130,6 +134,16 @@ const
     EdtOptionsColors      = 400;
     EdtOptionsCodetools   = 500;
     EdtOptionsCodeFolding = 600;
+
+  GroupCodetools   = 300;
+    CdtOptionsGeneral         = 100;
+    CdtOptionsCodeCreation    = 200;
+    CdtOptionsWords           = 300;
+    CdtOptionsLineSplitting   = 400;
+    CdtOptionsSpace           = 500;
+    CdtOptionsIdentCompletion = 600;
+
+  GroupDebugger    = 400;
 
 implementation
 var
@@ -147,7 +161,7 @@ begin
   IDEEditorGroups.Add(AGroupIndex, ACaption);
 end;
 
-procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer);
+procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
 var
   Rec: PIDEOptionsGroupRec;
 begin
@@ -162,7 +176,7 @@ begin
   begin
     if Rec^.Items = nil then
       Rec^.Items := TIDEOptionsEditorList.Create;
-    Rec^.Items.Add(AEditorClass, AIndex);
+    Rec^.Items.Add(AEditorClass, AIndex, AParent);
   end;
 end;
 
@@ -238,7 +252,7 @@ begin
   Sort(@OptionsListCompare);
 end;
 
-procedure TIDEOptionsEditorList.Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer);
+procedure TIDEOptionsEditorList.Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex, AParent: Integer);
 var
   Rec: PIDEOptionsEditorRec;
 begin
@@ -247,6 +261,7 @@ begin
   begin
     New(Rec);
     Rec^.Index := AIndex;
+    Rec^.Parent := AParent;
     inherited Add(Rec);
   end;
 

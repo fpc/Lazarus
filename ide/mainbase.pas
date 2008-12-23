@@ -734,14 +734,10 @@ begin
 
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environment_options');
-    CreateMenuItem(ParentMI,itmEnvEditorOptions,'itmEnvEditorOptions',
-                   lisMenuEditorOptions,'menu_editor_options');
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
                    lisMenuEditCodeTemplates,'');
     CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',
                    lisMenDebuggerOptions,'debugger_options');
-    CreateMenuItem(ParentMI,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',
-                   lisMenuCodeToolsOptions,'menu_codetoolsoptions');
     CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,
                    'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,
                    'menu_codetoolsdefineseditor');
@@ -960,9 +956,7 @@ begin
 
     // environment menu
     itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);
-    itmEnvEditorOptions.Command:=GetCommand(ecEditorOptions);
     itmEnvCodeTemplates.Command:=GetCommand(ecEditCodeTemplates);
-    itmEnvCodeToolsOptions.Command:=GetCommand(ecCodeToolsOptions);
     itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
     itmEnvRescanFPCSrcDir.Command:=GetCommand(ecRescanFPCSrcDir);
 

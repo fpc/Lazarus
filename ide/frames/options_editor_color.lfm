@@ -5,8 +5,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 531
   TabOrder = 0
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 674
+  DesignTop = 208
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -14,9 +14,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 82
+    Top = 51
     Width = 94
+    HelpContext = 0
+    Alignment = taLeftJustify
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'FileExtensionsLabel'
     ParentColor = False
   end
@@ -27,9 +35,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 55
+    Top = 27
     Width = 88
+    HelpContext = 0
+    Alignment = taLeftJustify
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ColorSchemeLabel'
     ParentColor = False
   end
@@ -40,9 +56,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 28
+    Top = 3
     Width = 73
+    HelpContext = 0
+    Alignment = taLeftJustify
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'LanguageLabel'
     ParentColor = False
   end
@@ -50,25 +74,47 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FileExtensionsComboBox
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 14
-    Top = 106
+    Top = 75
     Width = 89
+    HelpContext = 0
+    Alignment = taLeftJustify
+    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'ColorElementLabel'
     ParentColor = False
   end
   object LanguageComboBox: TComboBox[4]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = UseSyntaxHighlightCheckBox
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 0
     Height = 21
-    Top = 25
+    Top = 0
     Width = 200
-    BorderSpacing.Top = 6
+    HelpContext = 0
+    AutoComplete = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    CharCase = ecNormal
+    Ctl3D = False
     ItemHeight = 13
+    ItemWidth = 0
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
+    Sorted = False
+    Style = csDropDown
     TabOrder = 0
     Text = 'LanguageComboBox'
   end
@@ -76,14 +122,28 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 21
-    Top = 52
+    Top = 24
     Width = 200
-    BorderSpacing.Top = 6
+    HelpContext = 0
+    AutoComplete = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    CharCase = ecNormal
+    Ctl3D = False
     ItemHeight = 13
+    ItemWidth = 0
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
+    Sorted = False
+    Style = csDropDown
     TabOrder = 1
     Text = 'ColorSchemeComboBox'
   end
@@ -91,33 +151,64 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ColorSchemeComboBox
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 21
-    Top = 79
+    Top = 48
     Width = 200
-    BorderSpacing.Top = 6
+    HelpContext = 0
+    AutoComplete = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    CharCase = ecNormal
+    Ctl3D = False
     ItemHeight = 13
     Items.Strings = (
       'pp;pas;inc;lpr;lrs;dpr;dpk'
       'pp;pas;inc;lpr;lrs'
       'pp;pas;inc'
     )
+    ItemWidth = 0
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
+    Sorted = False
+    Style = csDropDown
     TabOrder = 2
   end
   object ColorElementListBox: TListBox[7]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ColorElementLabel
     AnchorSideTop.Side = asrBottom
-    Height = 264
-    Top = 126
+    AnchorSideBottom.Control = TextAttributesGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 246
+    Top = 95
     Width = 200
+    HelpContext = 0
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     ClickOnSelChange = False
+    IntegralHeight = False
+    ItemHeight = 0
+    MultiSelect = False
     OnClick = ColorElementListBoxClick
     OnSelectionChange = ColorElementListBoxSelectionChange
+    Sorted = False
+    Style = lbStandard
     TabOrder = 3
+    TopIndex = 0
   end
   object SetAttributeToDefaultButton: TButton[8]
     AnchorSideLeft.Control = ColorElementListBox
@@ -127,10 +218,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 206
     Height = 25
-    Top = 126
+    Top = 95
     Width = 325
+    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'SetAttributeToDefaultButton'
     OnClick = SetAttributeToDefaultButtonClick
     TabOrder = 4
@@ -143,11 +241,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 206
     Height = 25
-    Top = 157
+    Top = 126
     Width = 325
+    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'SetAllAttributesToDefaultButton'
     OnClick = SetAllAttributesToDefaultButtonClick
     TabOrder = 5
@@ -157,285 +261,529 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SetAllAttributesToDefaultButton
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ColorElementListBox
     AnchorSideBottom.Side = asrBottom
     Left = 206
-    Height = 202
-    Top = 188
+    Height = 184
+    Top = 157
     Width = 325
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    HelpContext = 0
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'Attributes'
-    ClientHeight = 184
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
+    ClientHeight = 166
     ClientWidth = 321
+    Ctl3D = False
     TabOrder = 6
     object ForeGroundLabel: TLabel
-      Left = 8
+      AnchorSideLeft.Control = TextAttributesGroupBox
+      AnchorSideTop.Control = TextAttributesGroupBox
+      Left = 6
       Height = 14
+      Top = 6
       Width = 83
+      HelpContext = 0
+      Alignment = taLeftJustify
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ForeGroundLabel'
       ParentColor = False
     end
-    object ForegroundColorButton: TColorButton
-      AnchorSideTop.Control = ForeGroundLabel
-      AnchorSideTop.Side = asrBottom
-      Left = 8
-      Height = 21
-      Top = 16
-      Width = 75
-      BorderSpacing.Top = 2
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-      OnColorChanged = ForegroundColorButtonColorChanged
-    end
-    object BackGroundColorButton: TColorButton
-      AnchorSideTop.Control = BackGroundLabel
-      AnchorSideTop.Side = asrBottom
-      Left = 8
-      Height = 21
-      Top = 58
-      Width = 75
-      BorderSpacing.Top = 2
-      BorderWidth = 2
-      ButtonColorSize = 16
-      Color = clBtnFace
-    end
     object BackGroundLabel: TLabel
-      AnchorSideTop.Control = ForeGroundLabel
+      AnchorSideLeft.Control = TextAttributesGroupBox
+      AnchorSideTop.Control = ForegroundColorBox
       AnchorSideTop.Side = asrBottom
-      Left = 8
+      Left = 6
       Height = 14
-      Top = 42
+      Top = 47
       Width = 83
-      BorderSpacing.Top = 28
+      HelpContext = 0
+      Alignment = taLeftJustify
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'BackGroundLabel'
       ParentColor = False
     end
     object ForeGroundUseDefaultCheckBox: TCheckBox
-      AnchorSideTop.Control = ForeGroundLabel
-      AnchorSideTop.Side = asrBottom
-      Left = 94
+      AnchorSideLeft.Control = BackGroundColorBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ForegroundColorBox
+      AnchorSideTop.Side = asrCenter
+      Left = 112
       Height = 19
-      Top = 16
-      Width = 178
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 2
+      Top = 24
+      Width = 183
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'ForeGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
+      State = cbUnchecked
       TabOrder = 0
+      UseOnChange = False
     end
     object BackGroundUseDefaultCheckBox: TCheckBox
-      AnchorSideTop.Control = BackGroundLabel
-      AnchorSideTop.Side = asrBottom
-      Left = 94
+      AnchorSideLeft.Control = BackGroundColorBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BackGroundColorBox
+      AnchorSideTop.Side = asrCenter
+      Left = 112
       Height = 19
-      Top = 56
-      Width = 178
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Right = 2
+      Top = 65
+      Width = 183
+      HelpContext = 0
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
       Caption = 'BackGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
+      State = cbUnchecked
       TabOrder = 1
+      UseOnChange = False
     end
-    object TextUnderlinePanel: TPanel
+    object ForegroundColorBox: TColorBox
+      AnchorSideLeft.Control = ForeGroundLabel
+      AnchorSideTop.Control = ForeGroundLabel
+      AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 109
-      Width = 309
-      Align = alBottom
-      AutoSize = True
-      BorderSpacing.Around = 6
-      BevelOuter = bvNone
-      ClientHeight = 19
-      ClientWidth = 309
+      Height = 22
+      Top = 22
+      Width = 100
+      HelpContext = 0
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+      AutoComplete = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Ctl3D = False
+      ItemHeight = 16
+      ItemWidth = 0
+      OnChange = ForegroundColorBoxChange
       TabOrder = 2
-      object TextUnderlineCheckBox: TCheckBox
-        Height = 19
-        Width = 165
-        Align = alClient
-        Caption = 'TextUnderlineCheckBox'
-        OnChange = GeneralCheckBoxOnChange
-        TabOrder = 0
-      end
-      object TextUnderlineRadioPanel: TPanel
-        Left = 165
-        Height = 19
-        Width = 144
-        Align = alRight
-        AutoSize = True
-        BevelOuter = bvNone
-        ChildSizing.HorizontalSpacing = 3
-        ChildSizing.EnlargeHorizontal = crsScaleChilds
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 3
-        ClientHeight = 19
-        ClientWidth = 144
-        TabOrder = 1
-        Visible = False
-        object TextUnderlineRadioOn: TRadioButton
-          Tag = 3
-          Height = 19
-          Width = 40
-          Caption = 'On'
-          Checked = True
-          OnChange = TextStyleRadioOnChange
-          State = cbChecked
-          TabOrder = 0
-        end
-        object TextUnderlineRadioOff: TRadioButton
-          Tag = 3
-          Left = 43
-          Height = 19
-          Width = 42
-          Caption = 'Off'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 1
-        end
-        object TextUnderlineRadioInvert: TRadioButton
-          Tag = 3
-          Left = 88
-          Height = 19
-          Width = 56
-          Caption = 'Invert'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 2
-        end
-      end
     end
-    object TextBoldPanel: TPanel
+    object BackGroundColorBox: TColorBox
+      AnchorSideLeft.Control = BackGroundLabel
+      AnchorSideTop.Control = BackGroundLabel
+      AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 134
-      Width = 309
-      Align = alBottom
-      AutoSize = True
-      BorderSpacing.Around = 6
-      BevelOuter = bvNone
-      ClientHeight = 19
-      ClientWidth = 309
+      Height = 22
+      Top = 63
+      Width = 100
+      HelpContext = 0
+      DefaultColorColor = clWhite
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+      AutoComplete = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Ctl3D = False
+      ItemHeight = 16
+      ItemWidth = 0
+      OnChange = ForegroundColorBoxChange
       TabOrder = 3
-      object TextBoldCheckBox: TCheckBox
-        Height = 19
-        Width = 165
-        Align = alClient
-        Caption = 'TextBoldCheckBox'
-        OnChange = GeneralCheckBoxOnChange
-        TabOrder = 0
-      end
-      object TextBoldRadioPanel: TPanel
-        Left = 165
-        Height = 19
-        Width = 144
-        Align = alRight
-        AutoSize = True
-        BevelOuter = bvNone
-        ChildSizing.HorizontalSpacing = 3
-        ChildSizing.EnlargeHorizontal = crsScaleChilds
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 3
-        ClientHeight = 19
-        ClientWidth = 144
-        TabOrder = 1
-        Visible = False
-        object TextBoldRadioOn: TRadioButton
-          Tag = 1
-          Height = 19
-          Width = 40
-          Caption = 'On'
-          Checked = True
-          OnChange = TextStyleRadioOnChange
-          State = cbChecked
-          TabOrder = 0
-        end
-        object TextBoldRadioOff: TRadioButton
-          Tag = 1
-          Left = 43
-          Height = 19
-          Width = 42
-          Caption = 'Off'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 1
-        end
-        object TextBoldRadioInvert: TRadioButton
-          Tag = 1
-          Left = 88
-          Height = 19
-          Width = 56
-          Caption = 'Invert'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 2
-        end
-      end
     end
-    object TextItalicPanel: TPanel
+    object TextUnderlineCheckBox: TCheckBox
+      AnchorSideLeft.Control = TextAttributesGroupBox
+      AnchorSideTop.Control = BackGroundColorBox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 159
-      Width = 309
-      Align = alBottom
-      AutoSize = True
+      Top = 91
+      Width = 140
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BevelOuter = bvNone
-      ClientHeight = 19
-      ClientWidth = 309
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'TextUnderlineCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      State = cbUnchecked
       TabOrder = 4
-      object TextItalicCheckBox: TCheckBox
+      UseOnChange = False
+    end
+    object TextBoldCheckBox: TCheckBox
+      AnchorSideLeft.Control = TextAttributesGroupBox
+      AnchorSideTop.Control = TextUnderlineCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 116
+      Width = 115
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'TextBoldCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      State = cbUnchecked
+      TabOrder = 5
+      UseOnChange = False
+    end
+    object TextItalicCheckBox: TCheckBox
+      AnchorSideLeft.Control = TextAttributesGroupBox
+      AnchorSideTop.Control = TextBoldCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 141
+      Width = 118
+      HelpContext = 0
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Caption = 'TextItalicCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      State = cbUnchecked
+      TabOrder = 6
+      UseOnChange = False
+    end
+    object TextUnderlineRadioPanel: TPanel
+      AnchorSideTop.Control = TextUnderlineCheckBox
+      AnchorSideRight.Control = TextAttributesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 171
+      Height = 19
+      Top = 91
+      Width = 144
+      HelpContext = 0
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelOuter = bvNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
+      ClientHeight = 19
+      ClientWidth = 144
+      TabOrder = 7
+      object TextUnderlineRadioOn: TRadioButton
+        Tag = 3
+        AnchorSideTop.Control = TextUnderlineRadioPanel
+        AnchorSideRight.Control = TextUnderlineRadioOff
+        Left = 0
         Height = 19
-        Width = 165
-        Align = alClient
-        Caption = 'TextItalicCheckBox'
-        OnChange = GeneralCheckBoxOnChange
+        Top = 0
+        Width = 40
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'On'
+        Checked = True
+        OnChange = TextStyleRadioOnChange
+        State = cbChecked
         TabOrder = 0
+        UseOnChange = False
       end
-      object TextItalicRadioPanel: TPanel
-        Left = 165
+      object TextUnderlineRadioOff: TRadioButton
+        Tag = 3
+        AnchorSideTop.Control = TextUnderlineRadioOn
+        AnchorSideRight.Control = TextUnderlineRadioInvert
+        Left = 43
         Height = 19
-        Width = 144
-        Align = alRight
-        AutoSize = True
-        BevelOuter = bvNone
-        ChildSizing.HorizontalSpacing = 3
-        ChildSizing.EnlargeHorizontal = crsScaleChilds
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 3
-        ClientHeight = 19
-        ClientWidth = 144
+        Top = 0
+        Width = 42
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Off'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
         TabOrder = 1
-        Visible = False
-        object TextItalicRadioOn: TRadioButton
-          Tag = 2
-          Height = 19
-          Width = 40
-          Caption = 'On'
-          Checked = True
-          OnChange = TextStyleRadioOnChange
-          State = cbChecked
-          TabOrder = 0
-        end
-        object TextItalicRadioOff: TRadioButton
-          Tag = 2
-          Left = 43
-          Height = 19
-          Width = 42
-          Caption = 'Off'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 1
-        end
-        object TextItalicRadioInvert: TRadioButton
-          Tag = 2
-          Left = 88
-          Height = 19
-          Width = 56
-          Caption = 'Invert'
-          OnChange = TextStyleRadioOnChange
-          TabOrder = 2
-        end
+        UseOnChange = False
+      end
+      object TextUnderlineRadioInvert: TRadioButton
+        Tag = 3
+        AnchorSideTop.Control = TextUnderlineRadioPanel
+        AnchorSideRight.Control = TextUnderlineRadioPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 88
+        Height = 19
+        Top = 0
+        Width = 56
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Invert'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
+        TabOrder = 2
+        UseOnChange = False
+      end
+    end
+    object TextBoldRadioPanel: TPanel
+      AnchorSideTop.Control = TextBoldCheckBox
+      AnchorSideRight.Control = TextAttributesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 171
+      Height = 19
+      Top = 116
+      Width = 144
+      HelpContext = 0
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelOuter = bvNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
+      ClientHeight = 19
+      ClientWidth = 144
+      TabOrder = 8
+      object TextBoldRadioInvert: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextBoldRadioPanel
+        AnchorSideRight.Control = TextBoldRadioPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 88
+        Height = 19
+        Top = 0
+        Width = 56
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Invert'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
+        TabOrder = 0
+        UseOnChange = False
+      end
+      object TextBoldRadioOn: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextBoldRadioPanel
+        AnchorSideRight.Control = TextBoldRadioOff
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 40
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'On'
+        Checked = True
+        OnChange = TextStyleRadioOnChange
+        State = cbChecked
+        TabOrder = 1
+        UseOnChange = False
+      end
+      object TextBoldRadioOff: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextBoldRadioPanel
+        AnchorSideRight.Control = TextBoldRadioInvert
+        Left = 43
+        Height = 19
+        Top = 0
+        Width = 42
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Off'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
+        TabOrder = 2
+        UseOnChange = False
+      end
+    end
+    object TextItalicRadioPanel: TPanel
+      AnchorSideTop.Control = TextItalicCheckBox
+      AnchorSideRight.Control = TextAttributesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 171
+      Height = 19
+      Top = 141
+      Width = 144
+      HelpContext = 0
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelOuter = bvNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
+      ClientHeight = 19
+      ClientWidth = 144
+      TabOrder = 9
+      object TextItalicRadioInvert: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextItalicRadioPanel
+        AnchorSideRight.Control = TextItalicRadioPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 88
+        Height = 19
+        Top = 0
+        Width = 56
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Invert'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
+        TabOrder = 0
+        UseOnChange = False
+      end
+      object TextItalicRadioOn: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextItalicRadioPanel
+        AnchorSideRight.Control = TextItalicRadioOff
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 40
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'On'
+        Checked = True
+        OnChange = TextStyleRadioOnChange
+        State = cbChecked
+        TabOrder = 1
+        UseOnChange = False
+      end
+      object TextItalicRadioOff: TRadioButton
+        Tag = 2
+        AnchorSideTop.Control = TextItalicRadioPanel
+        AnchorSideRight.Control = TextItalicRadioInvert
+        Left = 43
+        Height = 19
+        Top = 0
+        Width = 42
+        HelpContext = 0
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 3
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Caption = 'Off'
+        OnChange = TextStyleRadioOnChange
+        State = cbUnchecked
+        TabOrder = 2
+        UseOnChange = False
       end
     end
   end
@@ -447,19 +795,29 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Height = 181
-    Top = 396
+    Left = 0
+    Height = 230
+    Top = 347
     Width = 531
+    HelpContext = 0
+    BorderSpacing.Left = 0
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Anchors = [akTop, akLeft, akRight, akBottom]
+    CFDividerDrawLevel = 0
+    Ctl3D = False
     Font.Height = -16
     Font.Name = 'courier'
     Font.Pitch = fpFixed
     Font.Quality = fqNonAntialiased
+    Font.Style = []
     ParentColor = False
     ParentFont = False
     TabOrder = 7
-    BookMarkOptions.OnChange = nil
     Keystrokes = <    
       item
         Command = 3
@@ -785,14 +1143,30 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       'ColorPreview'
     )
     ReadOnly = True
+    SelectedColor.OnChange = nil
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[12]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 365
     Height = 19
+    Top = 0
     Width = 166
+    HelpContext = 0
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     Caption = 'UseSyntaxHighlightCheckBox'
     OnChange = GeneralCheckBoxOnChange
+    State = cbUnchecked
     TabOrder = 8
+    UseOnChange = False
   end
 end

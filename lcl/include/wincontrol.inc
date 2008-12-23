@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'ComponentNotebook';
+const CheckPostionName = 'OIMiscGroupBox';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -7033,7 +7033,7 @@ begin
   ' Lock=',BoundsLockCount,
   ' Realized=',dbgs(FBoundsRealized)
   ]);
-  if CheckPosition(Self) and (AWidth=1) then
+  if CheckPosition(Self) and (AWidth=37) then
     DumpStack;
   {$ENDIF}
   if BoundsLockCount<>0 then begin

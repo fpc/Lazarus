@@ -1,0 +1,29 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCodetoolsWordPolicyOptionsFrame','FORMDATA',[
+  'TPF0'#241' TCodetoolsWordPolicyOptionsFrame'#31'CodetoolsWordPolicyOptionsFr'
+  +'ame'#6'Height'#3#229#0#5'Width'#3#227#1#12'ClientHeight'#3#229#0#11'ClientW'
+  +'idth'#3#227#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#141#1#9'DesignT'
+  +'op'#3#132#0#0#242#2#0#11'TRadioGroup'#23'KeyWordPolicyRadioGroup'#22'Anchor'
+  +'SideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#23'Anchor'
+  +'SideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#6'Hei'
+  +'ght'#2'd'#5'Width'#3#227#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
+  +'AutoFill'#9#7'Caption'#6#23'KeyWordPolicyRadioGroup'#28'ChildSizing.LeftRig'
+  +'htSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeH'
+  +'orizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7
+  +#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScale'
+  +'Childs'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.'
+  +'Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'
+  +#2#1#8'TabOrder'#2#0#0#0#242#2#1#11'TRadioGroup'#26'IdentifierPolicyRadioGro'
+  +'up'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#23'Ke'
+  +'yWordPolicyRadioGroup'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideR'
+  +'ight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#6'Height'#2
+  +'d'#3'Top'#2'j'#5'Width'#3#227#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'
+  +#0#8'AutoFill'#9#17'BorderSpacing.Top'#2#6#7'Caption'#6#26'IdentifierPolicyR'
+  +'adioGroup'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpa'
+  +'cing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'
+  +#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizi'
+  +'ng.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7
+  +#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBotto'
+  +'m'#27'ChildSizing.ControlsPerLine'#2#1#8'TabOrder'#2#1#0#0#0
+]);
