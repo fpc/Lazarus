@@ -1104,11 +1104,11 @@ type
 
   { TCustomTrayIcon }
 
-  TBallonFlags = (bfNone, bfInfo, bfWarning, bfError);
+  TBalloonFlags = (bfNone, bfInfo, bfWarning, bfError);
 
   TCustomTrayIcon = class(TLCLComponent)
   private
-    FBalloonFlags: TBallonFlags;
+    FBalloonFlags: TBalloonFlags;
     FBalloonHint: string;
     FBalloonTimeout: Integer;
     FBalloonTitle: string;
@@ -1138,7 +1138,7 @@ type
     procedure ShowBalloonHint;
     function GetPosition: TPoint;
     { Properties }
-    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags default bfNone;
+    property BalloonFlags: TBalloonFlags read FBalloonFlags write FBalloonFlags default bfNone;
     property BalloonHint: string read FBalloonHint write FBalloonHint;
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
