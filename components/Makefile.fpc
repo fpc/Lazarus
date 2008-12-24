@@ -34,6 +34,7 @@ bigidecomponents: all
         $(MAKE) -C memds
         $(MAKE) -C sdf
         $(MAKE) -C tachart
+        $(MAKE) -C jcf2/IdePlugin/lazarus
 ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C tdbf
         $(MAKE) -C sqldb
@@ -57,6 +58,7 @@ bigideclean:
         $(MAKE) -C memds clean
         $(MAKE) -C sdf clean
         $(MAKE) -C tachart clean
+        $(MAKE) -C jcf2/IdePlugin/lazarus clean
 ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C tdbf clean
         $(MAKE) -C sqldb clean

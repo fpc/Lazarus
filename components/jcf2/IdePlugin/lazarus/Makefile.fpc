@@ -1,0 +1,51 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for jcfidelazarus 2.0
+#
+#   This file was generated on 24.12.2008
+
+[package]
+name=jcfidelazarus
+version=2.0
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../ ../../Parse/ ../../Parse/PreProcessor/ ../../Parse/UI/ ../../Process/ ../../Process/Align/ ../../Process/Capitalisation/ ../../Process/Indent/ ../../Process/Info/ ../../Process/Obfuscate/ ../../Process/Onceoffs/ ../../Process/Returns/ ../../Process/Spacing/ ../../Process/Transform/ ../../Process/Warnings/ ../../ReadWrite/ ../../Settings/ ../../Settings/Streams/ ../../Ui/ ../../UI/Settings/ ../../Utils/ ../../Utils/DragDrop/ ../../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=../../Include/ ./
+options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Sgi
+
+[target]
+units=jcfidelazarus.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/jcfidelazarus$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) jcfidelazarus$(PPUEXT)

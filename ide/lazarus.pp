@@ -65,7 +65,9 @@ uses
   {$IFDEF BigIDE}
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
     CGILaz, CGILazIDE,
-    MemDSLaz, SDFLaz, TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
+    MemDSLaz, SDFLaz, 
+    TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
+    {$ifdef UseJCF}jcfidelazarus,{$endif}
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     {$IFDEF windows}
       SQLDBLaz, DBFLaz,
