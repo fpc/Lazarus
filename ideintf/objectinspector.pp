@@ -2170,6 +2170,11 @@ begin
             if (FCurrentEdit is TCustomEdit) then
               TCustomEdit(FCurrentEdit).SelectAll;
           end;
+
+        VK_ESCAPE:
+          begin
+            RefreshValueEdit;
+          end;
         else
           Handled := false;
       end;
