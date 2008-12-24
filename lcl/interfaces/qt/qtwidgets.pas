@@ -116,7 +116,7 @@ type
   public
     LCLObject: TWinControl;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; overload;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
     procedure InitializeWidget; virtual;
     procedure DeInitializeWidget;
@@ -523,8 +523,6 @@ type
   { TQtTrackBar }
   
   TQtTrackBar = class(TQtAbstractSlider)
-  private
-    FInUpdate: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -536,9 +534,6 @@ type
     
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function InUpdate: Boolean;
   end;
 
   { TQtLineEdit }
@@ -627,7 +622,9 @@ type
     FTabBarEventHook: QWidget_hookH;
     FTabBarChangedHook: QTabBar_hookH;
     FTabBar: QTabBarH;
+    FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
+    function getStackWidget: QWidgetH;
     function getTabBar: QTabBarH;
     procedure setShowTabs(const AValue: Boolean);
   protected
@@ -657,6 +654,7 @@ type
 
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
     property TabBar: QTabBarH read getTabBar;
+    property StackWidget: QWidgetH read getStackWidget;
   end;
 
   { TQtComboBox }
@@ -889,6 +887,7 @@ type
     procedure setItemText(AIndex: Integer; AText: String);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
+    procedure exchangeItems(AIndex1, AIndex2: Integer);
   end;
   
   { TQtHeaderView }
@@ -930,6 +929,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure setAllColumnsShowFocus(AValue: Boolean);
+    procedure setWordWrap(AValue: Boolean);
+    procedure setRootIsDecorated(AValue: Boolean);
     property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
     property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
   end;
@@ -939,6 +941,8 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     FHeader: TQtHeaderView;
+    FSectionClicked: QHeaderView_hookH;
+    FHeaderEventFilterHook: QObject_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
@@ -976,11 +980,13 @@ type
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     function selCount: Integer;
     function selectedItems: TPtrIntArray;
+    procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function headerViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 
     procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -1032,11 +1038,11 @@ type
     FMenuItem: TMenuItem;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
-    procedure InitializeWidget; override;
     procedure DoPopupClose;
   public
     constructor Create(const AMenuItem: TMenuItem); overload;
     destructor Destroy; override;
+    procedure InitializeWidget; override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -1152,6 +1158,7 @@ type
     procedure setAcceptMode(const AMode: QFileDialogAcceptMode);
     procedure setConfirmOverwrite(const AValue: Boolean);
     procedure setDirectory(const ADirectory: WideString);
+    procedure setHistory(AList: TStrings);
     procedure setFileMode(const AMode: QFileDialogFileMode);
     procedure setFilter(const AFilter: WideString);
     procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
@@ -2912,7 +2919,7 @@ end;
 
 procedure TQtWidget.scroll(dx, dy: integer);
 begin
-  QWidget_scroll(Widget, dx, dy);
+  QWidget_scroll(getContainerWidget, dx, dy);
   FScrollX := FScrollX + dx;
   FScrollY := FScrollY + dy;
 end;
@@ -4914,7 +4921,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  FInUpdate := False;
   Result := QSlider_create();
 end;
 
@@ -4992,22 +4998,6 @@ begin
     DeliverMessage(Msg);
   end;
 end;
-
-procedure TQtTrackBar.BeginUpdate;
-begin
-  FInUpdate := True;
-end;
-
-procedure TQtTrackBar.EndUpdate;
-begin
-  FInUpdate := False;
-end;
-
-function TQtTrackBar.InUpdate: Boolean;
-begin
-  Result := FInUpdate;
-end;
-
 
 { TQtLineEdit }
 
@@ -5516,6 +5506,8 @@ function TQtTabWidget.getTabBar: QTabBarH;
 begin
   if FTabBar = nil then
   begin
+    {$note we can remove QLCLTabWidget, and get it like StackWidget,
+     objectName is qt_tabwidget_tabbar.}
     FTabBar := QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget));
     QWidget_setFocusPolicy(FTabBar, QtNoFocus);
   end;
@@ -5525,6 +5517,32 @@ end;
 function TQtTabWidget.getShowTabs: Boolean;
 begin
   Result := QWidget_isVisible(TabBar);
+end;
+
+function TQtTabWidget.getStackWidget: QWidgetH;
+var
+  List: TPtrIntArray;
+  Obj: QObjectH;
+  i: Integer;
+  WStr: WideString;
+begin
+  if FStackWidget = nil then
+  begin
+    QObject_children(Widget, @List);
+    for i := 0 to High(List) do
+    begin
+      Obj := QObjectH(List[i]);
+      QObject_objectName(Obj, @WStr);
+      {do not localize !}
+      if WStr = 'qt_tabwidget_stackedwidget' then
+      begin
+        FStackWidget := QWidgetH(List[i]);
+        break;
+      end;
+    end;
+    FCentralWidget := FStackWidget;
+  end;
+  Result := FStackWidget;
 end;
 
 procedure TQtTabWidget.setShowTabs(const AValue: Boolean);
@@ -5625,23 +5643,8 @@ begin
 end;
 
 function TQtTabWidget.getClientBounds: TRect;
-var
-  ATabSize: TSize;
-  option: QStyleOptionTabWidgetFrameH;
 begin
-  option := QStyleOptionTabWidgetFrame_create();
-  QStyleOption_initFrom(QStyleOptionH(option), Widget);
-  QStyle_subElementRect(QWidget_style(Widget), @Result, QStyleSE_TabWidgetTabContents, option, Widget);
-  QStyleOptionTabWidgetFrame_destroy(option);
-
-  QWidget_size(TabBar, @ATabSize);
-  case getTabPosition of
-    QTabWidgetNorth: inc(Result.Top, ATabSize.cy);
-    QTabWidgetSouth: dec(Result.Bottom, ATabSize.cy);
-    QTabWidgetWest : inc(Result.Left, ATabSize.cx);
-    QTabWidgetEast : dec(Result.Right, ATabSize.cx);
-  end;
-  //WriteLn(dbgs(Result));
+  QWidget_contentsRect(StackWidget, @Result)
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
@@ -5958,6 +5961,9 @@ end;
 function TQtComboBox.getText: WideString;
 begin
   QComboBox_currentText(QComboBoxH(Widget), @Result);
+  if FOwnerDrawn and (FLineEdit = nil) and
+    (Result = '') and (Result <> FText) then
+    Result := FText;
 end;
 
 function TQtComboBox.getTextStatic: Boolean;
@@ -5985,7 +5991,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
+  // don't fire any events when we are changing it from the LCL side
+  BeginUpdate;
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+  EndUpdate;
 end;
 
 procedure TQtComboBox.setMaxVisibleItems(ACount: Integer);
@@ -6091,10 +6100,12 @@ var
   Opt: QStyleOptionComboBoxH;
   R: TRect;
   State: QStyleState;
+  CurrIndex: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.SlotPaintCombo ', dbgsName(LCLObject));
   {$endif}
+  CurrIndex := currentIndex;
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_PAINT;
@@ -6134,6 +6145,12 @@ begin
       TQtDeviceContext(Msg.DC).Widget, Widget);
     QStyle_subControlRect(QApplication_style(), @R, QStyleCC_ComboBox, Opt,
       QStyleSC_ComboBoxEditField , Widget);
+    if CurrIndex < 0 then
+    begin
+      QStyleOptionComboBox_setCurrentText(Opt, @FText);
+      QStyle_drawControl(QApplication_style(), QStyleCE_ComboBoxLabel, opt,
+        TQtDeviceContext(Msg.DC).Widget, Widget);
+    end;
 
   finally
     QStyleOptionComboBox_destroy(Opt);
@@ -6144,7 +6161,7 @@ begin
   dec(R.Bottom);
   QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
 
-  DrawStruct.ItemID := currentIndex;
+  DrawStruct.ItemID := CurrIndex;
   DrawStruct.Area := R;
   DrawStruct.DC := Msg.DC;
 
@@ -6168,7 +6185,8 @@ begin
   MsgItem.DrawListItemStruct := @DrawStruct;
 
   try
-    DeliverMessage(MsgItem);
+    if CurrIndex >= 0 then
+      DeliverMessage(MsgItem);
   finally
     Dispose(PaintData.ClipRect);
     Fillchar(FPaintData, SizeOf(FPaintData), 0);
@@ -6941,6 +6959,40 @@ begin
   QListWidgetItem_destroy(Item);
 end;
 
+procedure TQtListWidget.exchangeItems(AIndex1, AIndex2: Integer);
+var
+  Item1, Item2: QListWidgetItemH;
+  R: TRect;
+begin
+  if AIndex1 = AIndex2 then
+    exit;
+
+  if (currentRow = AIndex1) or (currentRow = AIndex2) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
+
+  if AIndex1 < AIndex2 then
+  begin
+    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1);
+    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2 - 1);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item2);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item1);
+  end else
+  begin
+    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
+    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1 - 1);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item2);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item1);
+  end;
+  if OwnerDrawn then
+  begin
+    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item1);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item2);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+  end;
+end;
+
   { TQtHeaderView }
 
 function TQtHeaderView.getClickable: Boolean;
@@ -7004,6 +7056,9 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  {$ifdef VerboseQt}
+  writeln('TQtHeaderView.signalSectionClicked index ',logicalIndex);
+  {$endif}
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
   
@@ -7087,6 +7142,21 @@ begin
   QTreeView_setColumnWidth(QTreeViewH(Widget), AIndex, AValue);
 end;
 
+procedure TQtTreeView.setWordWrap(AValue: Boolean);
+begin
+  QTreeView_setWordWrap(QTreeViewH(Widget), AValue);
+end;
+
+procedure TQtTreeView.setRootIsDecorated(AValue: Boolean);
+begin
+  QTreeView_setRootIsDecorated(QTreeViewH(Widget), AValue);
+end;
+
+procedure TQtTreeView.setAllColumnsShowFocus(AValue: Boolean);
+begin
+  QTreeView_setAllColumnsShowFocus(QTreeViewH(Widget), AValue);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtTreeView.CreateWidget
   Params:  None
@@ -7137,13 +7207,20 @@ begin
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
+var
+  Method: TMethod;
 begin
   {while designing TQtHeaderView is a no-no}
   if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
   begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
-    FHeader.AttachEvents;
-    QTreeView_setHeader(QTreeViewH(Widget), QHeaderViewH(FHeader.Widget));
+    FHeaderEventFilterHook := QObject_hook_create(FHeader.Widget);
+    TEventFilterMethod(Method) := @headerViewEventFilter;
+    QObject_hook_hook_events(FHeaderEventFilterHook, Method);
+
+    FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
+    QHeaderView_sectionClicked_Event(Method) := @FHeader.SignalSectionClicked;
+    QHeaderView_hook_hook_sectionClicked(FSectionClicked, Method);
   end;
   Result := FHeader;
 end;
@@ -7301,6 +7378,18 @@ begin
   QTreeWidget_selectedItems(QTreeWidgetH(Widget), @Result);
 end;
 
+procedure TQtTreeWidget.setHeaderVisible(AVisible: Boolean);
+begin
+  if (csDesigning in LCLObject.ComponentState) then
+    {$IFDEF USE_QT_44}
+    QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
+    {$ELSE}
+    QWidget_setVisible(QTreeView_header(QTreeViewH(Widget)), AVisible)
+    {$ENDIF}
+  else
+    Header.setVisible(AVisible);
+end;
+
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
   ASelect: Boolean);
 begin
@@ -7363,8 +7452,27 @@ begin
   QTreeWidget_hook_destroy(FItemSelectionChangedHook);
   QTreeWidget_hook_destroy(FItemPressedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
+  if FHeaderEventFilterHook <> nil then
+    QObject_hook_destroy(FHeaderEventFilterHook);
+  if FSectionClicked <> nil then
+    QHeaderView_hook_destroy(FSectionClicked);
 
   inherited DetachEvents;
+end;
+
+function TQtTreeWidget.headerViewEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  {TQtTreeWidget header event filter hook}
+  Result := False;
+  case QEvent_type(Event) of
+    QEventFocusIn:
+    begin
+      Result := True;
+      QEvent_ignore(Event);
+      QWidget_setFocus(Widget);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8079,6 +8187,7 @@ function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   SetLength(Panels, 0);
   Result := QStatusBar_create();
+  QWidget_setAutoFillBackground(Result, True);
   Widget := Result;
 end;
 
@@ -9206,6 +9315,25 @@ end;
 procedure TQtFileDialog.setDirectory(const ADirectory: WideString);
 begin
   QFileDialog_setDirectory(QFileDialogH(Widget), @ADirectory);
+end;
+
+procedure TQtFileDialog.setHistory(AList: TStrings);
+var
+  List: QStringListH;
+  i: Integer;
+  WStr: WideString;
+begin
+  List := QStringList_create();
+  try
+    for i := 0 to AList.Count - 1 do
+    begin
+      WStr := GetUTF8String(AList.Strings[i]);
+      QStringList_append(List, @WStr);
+    end;
+    QFileDialog_setHistory(QFileDialogH(Widget), List);
+  finally
+    QStringList_destroy(List);
+  end;
 end;
 
 procedure TQtFileDialog.setFileMode(const AMode: QFileDialogFileMode);

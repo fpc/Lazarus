@@ -18,7 +18,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    * 
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -81,9 +81,9 @@ begin
     DC := TQtDeviceContext.Create(Widget.PaintData.PaintWidget, True)
   else
     DC := TQtDeviceContext.Create(nil, True);
-    
+
   PS.hdc := HDC(DC);
-  
+
   if Handle<>0 then
   begin
     // if current handle has paintdata information,
@@ -102,7 +102,7 @@ begin
       DC.vClipRect^ := Widget.PaintData.ClipRect^;
     end;
   end;
-  
+
   Result := PS.hdc;
 
   {$ifdef VerboseQtWinAPI}
@@ -115,10 +115,10 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [TQtWidgetSet.BitBlt]');
   {$endif}
-  
+
   Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
                        Height, ROP);
-                       
+
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [TQtWidgetSet.BitBlt]');
   {$endif}
@@ -153,7 +153,7 @@ begin
   if Result then
   begin
     APoint := QtPoint(P.X, P.Y);
-    
+
     QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
     P := Point(APoint.x, APoint.y);
   end;
@@ -232,12 +232,12 @@ begin
     RDest := TQtRegion(Dest).Widget;
     RSrc1 := TQtRegion(Src1).Widget;
   end;
-  
+
   if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then
     exit
   else
     RSrc2 := TQtRegion(Src2).Widget;
-  
+
   case fnCombineMode of
     RGN_AND:
       QRegion_Intersect(RSrc1, RDest, RSrc2);
@@ -255,7 +255,7 @@ begin
     RGN_XOR:
       QRegion_eor(RSrc1, RDest, RSrc2);
   end;
-  
+
   if QRegion_isEmpty(RDest) then
     result := NULLREGION
   else begin
@@ -343,7 +343,7 @@ begin
   else
     Format := QImageFormat_ARGB32;
   end;
-  
+
   RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
   if BitmapBits <> nil then
   begin
@@ -445,7 +445,7 @@ begin
         QtRadialGradientPattern,
         QtConicalGradientPattern
     }
-    
+
     // set brush color
     Color := QBrush_Color(QtBrush.Widget)^;
     ColorRefToTQColor(ColorToRGB(logBrush.lbColor), Color);
@@ -624,7 +624,7 @@ var
 begin
   Result := 0;
   QtPen := TQtPen.Create(True);
-  
+
   with LogPen do
   begin
     case lopnStyle and PS_STYLE_MASK of
@@ -704,7 +704,7 @@ var
   QtRegion: TQtRegion;
 begin
   QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
-  Result := HRGN(QtRegion); 
+  Result := HRGN(QtRegion);
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
      ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
@@ -737,10 +737,10 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));
   {$endif}
-  
+
   Result := False;
   if not IsValidDC(hDC) then exit;
-  
+
   TQtDeviceContext(hDC).Free;
 end;
 
@@ -776,7 +776,7 @@ begin
 
     Exit;
   end;
-  
+
   if not IsValidGDIObject(GDIObject) then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -796,8 +796,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
     {$endif}
-    
-//    TQtFont(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Brush
@@ -807,8 +805,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
-
-//    TQtBrush(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Image
@@ -818,11 +814,11 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
     {$endif}
-    
+
     // we must stop paintdevice before destroying
 
     APaintEngine := QImage_paintEngine(TQtImage(AObject).Handle);
-    
+
     if (APaintEngine <> nil) and QPaintEngine_isActive(APaintEngine) then
     begin
       APainter := QPaintEngine_painter(APaintEngine);
@@ -838,10 +834,8 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Region';
     {$endif}
-    
-//    TQtRegion(aObject).Free;
   end
-  
+
   {------------------------------------------------------------------------------
     Pen
    ------------------------------------------------------------------------------}
@@ -850,8 +844,6 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Pen';
     {$endif}
-
-//    TQtRegion(aObject).Free;
   end;
 
   if AObject is TQtResource then
@@ -861,13 +853,15 @@ begin
       DebugLn('WARNING: Trying to Free a default resource');
       AObject := nil;
     end;
-  
+
   if AObject <> nil then
   begin
     //WriteLn('Delete object: ', PtrUInt(AObject));
     AObject.Free;
   end;
-  
+
+  Result := True;
+
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
@@ -914,12 +908,16 @@ begin
 
   QtDC := TQtDeviceContext(DC);
   StyleOption := QStyleOptionFocusRect_create;
+  QtDC.save;
   try
     QStyleOption_setRect(StyleOption, @Rect);
+    if not QtDC.getClipping then
+      QtDC.setClipRect(Rect);
     QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
     Result := True;
   finally
     QStyleOptionFocusRect_destroy(StyleOption);
+    QtDC.restore;
   end;
 
 end;
@@ -950,9 +948,6 @@ var
 
     ColorLeftTop := clNone;
     ColorRightBottom := clNone;
-    EdgeQtColor.ColorSpec := 1; // rgb
-    EdgeQtColor.Alpha := $FFFF;
-    EdgeQtColor.Pad := 0;
 
     if Outer then
     begin
@@ -983,8 +978,6 @@ var
 
     if grfFlags and BF_DIAGONAL = 0 then
     begin
-      if grfFlags and BF_MONO = 0 then
-        ColorLeftTop := ColorToRgb(ColorLeftTop);
 
       APen := TQtPen.Create(True);
       ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
@@ -1000,9 +993,6 @@ var
       APen.Free;
       APen := TQtPen.Create(True);
 
-      if grfFlags and BF_MONO = 0 then
-        ColorRightBottom := ColorToRgb(ColorRightBottom);
-
       ColorRefToTQColor(ColorRightBottom, EdgeQtColor);
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.SetPen(APen);
@@ -1016,8 +1006,6 @@ var
     end
     else
     begin
-      if grfFlags and BF_MONO = 0 then
-        ColorRightBottom := ColorToRgb(ColorRightBottom);
 
       APen := TQtPen.Create(True);
       ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
@@ -1033,24 +1021,24 @@ var
       APen.Free;
     end;
   end;
-  
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DrawEdge] ');
   {$endif}
 
   Result := False;
-  if not IsValidDC(DC) then exit;
-  
+  if not IsValidDC(DC) or IsRectEmpty(Rect) then exit;
+
   QtDC := TQtDeviceContext(DC);
-  
+
   ClientRect := Rect;
   Dec(ClientRect.Right, 1);
   Dec(ClientRect.Bottom, 1);
-  QPainter_save(QtDC.Widget);
+  QtDC.save;
   try
-    ColorDark := ColorToRGB(clBtnShadow);
-    ColorLight := ColorToRGB(clBtnHighlight);
+    ColorDark := ColorToRGB(cl3DDkShadow);
+    ColorLight := ColorToRGB(cl3DLight);
     if grfFlags and BF_FLAT <> 0 then
       ColorLight := clSilver;
     if grfFlags and BF_MONO <> 0 then
@@ -1060,10 +1048,13 @@ begin
     end;
     try
       if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
-        InternalDrawEdge(True, Rect);
+        InternalDrawEdge(True, ClientRect);
       InflateRect(ClientRect, -1, -1);
       if grfFlags and BF_MONO = 0 then
-        ColorDark := ColorToRGB(clBtnFace);
+      begin
+        ColorLight := ColorToRGB(clBtnHiLight);
+        ColorDark := ColorToRGB(clBtnShadow);
+      end;
       if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
       begin
         InternalDrawEdge(False, ClientRect);
@@ -1071,6 +1062,9 @@ begin
       end;
     finally
     end;
+
+    inc(ClientRect.Right);
+    inc(ClientRect.Bottom);
 
     if grfFlags and BF_MIDDLE <> 0 then
     begin
@@ -1087,7 +1081,7 @@ begin
 
     Result := True;
   finally
-    QPainter_restore(QtDC.Widget);
+    QtDC.Restore;
   end;
 
 end;
@@ -1111,11 +1105,11 @@ begin
   {$endif}
 
   Result := False;
-  
+
   if not IsValidDC(DC)
   then
     exit;
-    
+
   QtDC := TQtDeviceContext(DC);
 
   Matrix := QMatrix_create;
@@ -1135,7 +1129,7 @@ begin
       P^.Y := QtPoint.Y;
       Inc(P);
     end;
-    
+
     Result := True;
   finally
     QMatrix_destroy(MatrixInv);
@@ -1184,7 +1178,7 @@ begin
 
   if not IsValidDC(DC) then
     Exit;
-    
+
   QtDC :=TQtDeviceContext(DC);
 
   if Count >= 0 then
@@ -1226,10 +1220,10 @@ begin
 
   if Flags and DT_EXPANDTABS <> 0 then
     F := F or QtTextExpandTabs;
-  
+
   QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
-  
-  
+
+
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
   Result := R.Bottom - R.Top;
 
@@ -1339,7 +1333,7 @@ end;
                     in each available typeface name. If set to a valid typeface
                     name, the function enumerates all fonts with the
                     specified name.
-                    
+
         lfPitchAndFamily 	Must be set to zero for all language versions of
                           the operating system.
 
@@ -1390,13 +1384,13 @@ var
       QStringList_destroy(StrLst);
     end;
   end;
-  
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI EnumFontFamiliesEx]');
   {$endif}
   Result := 0;
-  
+
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
      (lpLogFont^.lfFaceName= '') and
      (lpLogFont^.lfPitchAndFamily = 0) then
@@ -1439,9 +1433,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
   {$endif}
-  
+
   Result := ERROR;
-  
+
   if not IsValidDC(DC) then Exit;
 
   ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
@@ -1451,7 +1445,7 @@ begin
     QRegion_subtract(Region, Region, ExRegion);
     QtDC.setClipRegion(Region);
     QtDC.setClipping(True);
-    
+
     if QRegion_isEmpty(Region)
     then
       Result := NULLREGION
@@ -1536,12 +1530,12 @@ begin
     exit;
   end else
     Result := SIMPLEREGION;
-  
+
   QtDC := TQtDeviceContext(DC);
 
-  
+
   QtWidget := QtObjectFromWidgetH(TQtDeviceContext(DC).Parent);
-  
+
   if Assigned(QtWidget) and (QtWidget.PaintData.ClipRegion = nil) then
   begin
     // there is no clipping region in the DC
@@ -1568,7 +1562,7 @@ begin
           // GDK_Window_Get_Size(Drawable, @X, @Y);
           // DCOrigin := GetDCOffset(TQtDeviceContext(DC));
           GetDeviceSize(DC, DCOrigin);
-          
+
           if (X = -1) and (Y = -1) then
             Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,DCOrigin.X,DCOrigin.Y)
           else
@@ -1626,7 +1620,7 @@ begin
 
     QtDC.drawText(X, Y, @WideStr);
   end;
-  
+
   Result := True;
 end;
 
@@ -1640,7 +1634,7 @@ end;
 function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   result:=false;
-  
+
   {$ifdef VerboseQtWinAPI}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
@@ -1673,11 +1667,11 @@ begin
   {$endif}
 
   Result := False;
-  
+
   if not IsValidDC(DC) then exit;
-  
+
   QtDC := TQtDeviceContext(DC);
-  
+
   QtDC.save;
   OldRgn := TQtRegion.Create(True);
   try
@@ -1735,7 +1729,7 @@ begin
   {$endif}
 
   Result := False;
-  
+
   if not IsValidDC(DC) then exit;
 
   QtDC := TQtDeviceContext(DC);
@@ -1789,7 +1783,7 @@ end;
   Method:  TQtWidgetSet.GetBitmapBits
   Params:  none
   Returns:
-  
+
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 var
@@ -1798,9 +1792,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetBitmapBits]',' Bitmap=', dbghex(Bitmap),' Count=',Count);
   {$endif}
-  
+
   Result := 0;
-  
+
   if (Bitmap = 0) or (Count <= 0) then
     Exit;
 
@@ -1922,10 +1916,10 @@ begin
       Write('TQtWidgetSet.GetClipBox FastClip=',
        ((vClipRect <> nil) and not vClipRectDirty) );
     {$endif}
-    
+
     // the most correct way to get a clipbox if through
     // region.boundingrect, but it's slower.
-    
+
     // TODO: remove "and false" below when vClipRectDirty is implemented
     //       it should be "true" when user set a custom clip rect
     //       and "false" on beginpaint
@@ -2022,31 +2016,44 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
-  
+
   Widget := TQtWidget(hWnd);
-  
+
   if Widget <> nil then
   begin
     Result := Widget.Context;
     if Result = 0 then
       Result := HDC(QtDefaultContext);
-  end 
+  end
   else
   begin
     Result := HDC(QtScreenContext);
   end;
-  
+
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
 
-function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  QtDC: TQtDeviceContext absolute PaintDC;
+  Matrix: QMatrixH;
 begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetDCOriginRelativeToWindow] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetDCOriginRelativeToWindow] PaintDC ' + dbghex(PaintDC));
   {$endif}
+  Result := IsValidDC(PaintDC);
+  if not Result then
+    exit;
+  Matrix := QPainter_Matrix(QtDC.Widget);
+  OriginDiff := Point(0, 0);
+  if Matrix <> nil then
+  begin
+    OriginDiff.X := Round(QMatrix_Dx(Matrix));
+    OriginDiff.Y := Round(QMatrix_Dy(Matrix));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2067,17 +2074,17 @@ begin
 
   Result := 0;
   if not IsValidDC(DC) then exit;
-  
+
   QtDC := TQtDeviceContext(DC);
-  
+
   if QtDC.Parent <> nil
   then
     w := QtDC.Parent
   else
     w := QApplication_desktop;
-    
+
   PaintDevice := QWidget_to_QPaintDevice(w);
-  
+
   case Index of
     HORZSIZE:
       Result := QPaintDevice_widthMM(PaintDevice);
@@ -2146,15 +2153,15 @@ const
   StateToggled = SmallInt($0001);
 begin
   Result := 0;
-  
+
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
-  
+
   // where to track toggle state?
-  
+
   case nVirtKey of
     VK_LBUTTON:
       if (QApplication_mouseButtons and QtLeftButton) > 0 then
@@ -2206,7 +2213,7 @@ begin
   P.Y := 0;
 
   if not IsValidDC(DC) then Exit;
-  
+
   if (TObject(DC) is TQtDeviceContext) then
     P := TQtDeviceContext(DC).getDeviceSize;
 
@@ -2250,9 +2257,9 @@ begin
     WriteLn('Trace:> [WinAPI GetObject] GDIObj: ' + dbghex(GDIObj));
     ObjType := '';
   {$endif}
-  
+
   Result := 0;
-  
+
   if not IsValidGDIObject(GDIObj) then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -2427,7 +2434,7 @@ begin
         BitmapSection.dsBmih.biBitCount := BitmapSection.dsBm.bmBitsPixel;
 
         BitmapSection.dsBmih.biCompression := 0;
-      
+
         BitmapSection.dsBmih.biSizeImage := numBytes;
         BitmapSection.dsBmih.biXPelsPerMeter := dotsPerMeterX;
         BitmapSection.dsBmih.biYPelsPerMeter := dotsPerMeterY;
@@ -2462,13 +2469,13 @@ begin
 	{$ifdef VerboseQtWinAPI}
   writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
   {$endif}
-  
+
   QtWidget := TQtWidget(Handle);
-  
+
   w := QWidget_parentWidget(QtWidget.Widget);
-  
+
   Result := HWND(QtObjectFromWidgetH(w));
-  
+
 	{$ifdef VerboseQtWinAPI}
   writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
   {$endif}
@@ -2500,7 +2507,7 @@ begin
     If lpRect <> nil then
     begin
       QRegion_boundingRect(TQtRegion(RGN).Widget, @R);
-      
+
       with lpRect^ do
       begin
         Left   := R.Left;
@@ -2530,9 +2537,9 @@ begin
   {$endif}
   Result := 0;
   if Handle = 0 then exit;
-  
+
   w := TQtWidget(Handle);
-  
+
   {TODO: find out what to do with TCustomForm descendants }
   if w is TQtAbstractScrollArea then
   begin
@@ -2579,7 +2586,7 @@ begin
     ScrollBar := TQtScrollBar(w)
   else
     ScrollBar := nil;
-    
+
   if ScrollBar <> nil then
     Result := ScrollBar.getVisible;
 end;
@@ -2593,9 +2600,9 @@ end;
            scroll bar.
            SB_VERT Retrieves the parameters for the window's standard vertical
            scroll bar.
-           
+
           ScrollInfo returns TScrollInfo structure.
-          
+
   Returns: boolean
 
  ------------------------------------------------------------------------------}
@@ -2606,7 +2613,7 @@ begin
   Result := False;
 
   if Handle = 0 then exit;
-  
+
   if (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) or
    (csFreeNotification in TQtWidget(Handle).LCLObject.ComponentState) then
     exit;
@@ -2632,7 +2639,7 @@ begin
     // POS
     if (ScrollInfo.fMask and SIF_POS) <> 0 then
       ScrollInfo.nPos := QtScrollBar.getValue;
-      
+
     // RANGE
     if (ScrollInfo.fMask and SIF_RANGE) <> 0
     then begin
@@ -2642,7 +2649,7 @@ begin
     // PAGE
     if (ScrollInfo.fMask and SIF_PAGE) <> 0 then
       ScrollInfo.nPage := QtScrollBar.getPageStep;
-      
+
     // TRACKPOS
     if (ScrollInfo.fMask and SIF_TRACKPOS) <> 0 then
       ScrollInfo.nTrackPos := QtScrollBar.getSliderPosition;
@@ -2658,7 +2665,7 @@ begin
   {$endif}
 
   Result := 0;
-  
+
   case Value of
     BLACK_BRUSH:         // Black brush.
       Result := FStockBlackBrush;
@@ -2697,7 +2704,7 @@ begin
           FStockSystemFont := CreateDefaultFont;
         Result := FStockSystemFont;
       end;
-      
+
   {$ifdef VerboseQtWinAPI}
     else
     WriteLn('[WinAPI GetStockObject] UNHANDLED Value: ', Value);
@@ -2723,7 +2730,7 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     QColor:=QPalette_color(Palette, Group, Role);
     Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
   end;
-  
+
   function GetClInfo(Bk: Boolean): TColor;
   var
     APalette: QPaletteH;
@@ -2743,12 +2750,15 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     Returns:  TColor
 
   ------------------------------------------------------------------------------}
-  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
+  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): TColor;
   var
     Handle : QPaletteH;
   begin
     Handle := QPalette_create;
-    QApplication_palette(Handle);
+    if ClassName = nil then
+      QApplication_palette(Handle)
+    else
+      QApplication_palette(Handle, ClassName);
 
     Result := GetPaletteColor(Handle, Group, Role);
 
@@ -2763,7 +2773,7 @@ begin
     {$endif}
     exit;
   end;
-    
+
   case nIndex of
     {$IFDEF USE_QT_44}
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
@@ -2771,14 +2781,9 @@ begin
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
     {$ENDIF}
     COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-    COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteBase);
-    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
     COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
-    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
     COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
     COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
@@ -2788,7 +2793,6 @@ begin
     COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
     COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
     COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
-    COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteText);
     COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
     COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
@@ -2799,12 +2803,28 @@ begin
     COLOR_INFOTEXT                : Result:=GetClInfo(False);
     COLOR_INFOBK                  : Result:=GetClInfo(True);
     {$ENDIF}
-    // PBD: 25 is unassigned in all the docs I can find
-    //      if someone finds what this is supposed to be then fill it in
-    //      note defaults below, and cl[ColorConst] in graphics
     COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
-    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+
+    // qt does not provide any methods to retrieve titlebar colors
+  {$IFNDEF MSWINDOWS}
+    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+    COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteHighlight);
+    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+    COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteHighlightedText);
+    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteBase);
     COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
+  {$ELSE}
+    COLOR_ACTIVECAPTION           : Result:=Windows.GetSysColor(COLOR_ACTIVECAPTION);
+    COLOR_INACTIVECAPTION         : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTION);
+    COLOR_CAPTIONTEXT             : Result:=Windows.GetSysColor(COLOR_CAPTIONTEXT);
+    COLOR_INACTIVECAPTIONTEXT     : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT);
+    COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
+    COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
+  {$ENDIF}
+    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
+    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
+    COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
+    COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
     COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
   else
     Result:=0;
@@ -3121,7 +3141,7 @@ begin
   {$endif}
 
   Result := 0;
-  
+
   if IsValidDC(DC) then
   begin
     QtDC := TQtDeviceContext(DC);
@@ -3167,6 +3187,7 @@ var
   QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
+  FontWeight: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
@@ -3180,9 +3201,8 @@ begin
     TM.tmHeight := QtFontMetrics.height;
     TM.tmAscent := QtFontMetrics.ascent;
     TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := QtFontMetrics.leading;
-    TM.tmExternalLeading := 0;
-
+    TM.tmInternalLeading := 0;
+    TM.tmExternalLeading := QtFontMetrics.leading;
     {this is due qt bug in fontmetrics::averageCharWidth() under Mac
      http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
     {$IFDEF DARWIN}
@@ -3192,7 +3212,16 @@ begin
     {$ENDIF}
 
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    TM.tmWeight := QtDC.font.getWeight;
+    FontWeight := QtDC.font.getWeight;
+    case FontWeight of
+      25: TM.tmWeight := FW_LIGHT;
+      50: TM.tmWeight := FW_NORMAL;
+      63: TM.tmWeight := FW_SEMIBOLD;
+      75: TM.tmWeight := FW_BOLD;
+      87: TM.tmWeight := FW_HEAVY;
+      else
+        TM.tmWeight := Round(FontWeight * 9.5);
+    end;
     TM.tmOverhang := 0;
     TM.tmDigitizedAspectX := 0;
     TM.tmDigitizedAspectY := 0;
@@ -3200,12 +3229,12 @@ begin
     TM.tmLastChar := 'z';
     TM.tmDefaultChar := 'x';
     TM.tmBreakChar := '?';
-    TM.tmItalic := 0;
-    TM.tmUnderlined := 0;
-    TM.tmStruckOut := 0;
-    
+    TM.tmItalic := Ord(QtDC.Font.getItalic);
+    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
+    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
+
     QtDC.font.family(@FontFamily);
-    
+
     { Defaults to a TrueType font.
       Note that the meaning of the FIXED_PITCH constant is the opposite of
       the name implies, according to MSDN docs. Just a small inconsistency
@@ -3215,7 +3244,7 @@ begin
     else
       TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
-    TM.tmCharSet := EASTEUROPE_CHARSET;
+    TM.tmCharSet := DEFAULT_CHARSET;
   end;
 end;
 
@@ -3247,7 +3276,7 @@ begin
     {$endif}
     exit;
   end;
-    
+
   Matrix := QPainter_Matrix(TQtDeviceContext(DC).Widget);
   if Matrix <> nil then
   begin
@@ -3285,7 +3314,7 @@ begin
 { // this code doesnot work sometimes - why? Maybe qt bug?
   // to test bug one can create 4 pannels with 0 sizes and aligned to differnt sides
   // then aligned to left and to right panel will return same value
-  
+
   APos.x := 0;
   APos.y := 0;
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
@@ -3629,7 +3658,7 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
-  
+
   if Rect <> nil then
   begin
     with TQtWidget(aHandle).getClientOffset do
@@ -3676,10 +3705,11 @@ begin
 
   TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
-  LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
+  if TQtDeviceContext(DC).pen.getCosmetic then
+    LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
   MoveToEx(DC, X, Y, nil);
-  
+
   Result := True;
 end;
 
@@ -3719,7 +3749,7 @@ begin
   if (OldPoint <> nil) then TQtDeviceContext(DC).getPenPos(OldPoint);
 
   TQtDeviceContext(DC).setPenPos(X, Y);
-  
+
   Result := True;
 end;
 
@@ -3798,6 +3828,17 @@ begin
     Result := True;
   end;
 end;
+
+function TQtWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := False;
+
+  if not IsValidGDIObject(RGN) then
+    exit;
+
+  Result := TQtRegion(RGN).containsPoint(X, Y);
+end;
+
 {------------------------------------------------------------------------------
   Function: Rectangle
   Params:  DC: HDC; X1, Y1, X2, Y2: Integer
@@ -3817,7 +3858,7 @@ begin
   if not IsValidDC(DC) then Exit;
 
   TQtDeviceContext(DC).drawRect(X1, Y1, X2 - X1 - 1, Y2 - Y1 - 1);
-  
+
   Result := True;
 end;
 
@@ -3877,7 +3918,7 @@ begin
   Result := 0;
 
   if IsValidDC(DC) then Exit;
-  
+
   Result := 1;
 end;
 
@@ -3956,7 +3997,7 @@ begin
   {$Endif}
 
   result:=0;
-  
+
   if not IsValidDC(DC) then
   begin
     {$ifdef VerboseQTWinAPI}
@@ -3970,11 +4011,11 @@ begin
     SavedDCList := TList.Create;
     SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
   end;
-  
+
   DCData := TQtDeviceContext(DC).CreateDCData;
   Result := 1;
   SavedDCList.Insert(Result, DCData);
-  
+
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
   {$Endif}
@@ -4029,12 +4070,17 @@ begin
       QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
     else
     begin
+      {$IFDEF UNIX}
+      {looks like a qt bug, this helps to mac & linux}
+      QPainter_setClipping(Painter, False);
+      {$ELSE}
       EmptyRegion := QRegion_create;
       try
         QPainter_setClipRegion(Painter, EmptyRegion, QtNoClip);
       finally
         QRegion_destroy(EmptyRegion);
       end;
+      {$ENDIF}
     end;
     if QPainter_hasClipping(Painter) then
     begin
@@ -4080,7 +4126,7 @@ begin
   {$endif}
 
   Result := 0;
-  
+
   if not IsValidDC(DC) then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -4089,7 +4135,7 @@ begin
 
     Exit;
   end;
-  
+
   if not IsValidGDIObject(GDIObj) then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -4100,15 +4146,15 @@ begin
   end;
 
   aObject := TObject(GDIObj);
-  
+
   if aObject is TQtFont then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
     {$endif}
-    
+
     Result := HGDIOBJ(TQtDeviceContext(DC).font);
-    
+
     TQtDeviceContext(DC).setFont(TQtFont(aObject));
   end
   else if aObject is TQtPen then
@@ -4117,7 +4163,7 @@ begin
       ObjType := 'Pen'      ;
     {$endif}
     result := HGDIOBJ(TQtDeviceContext(DC).pen);
-    
+
     TQtDeviceContext(DC).setPen(TQtPen(aObject));
   end
   else if aObject is TQtBrush then
@@ -4125,9 +4171,9 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
-    
+
     Result := HGDIOBJ(TQtDeviceContext(DC).brush);
-    
+
     TQtDeviceContext(DC).setBrush(TQtBrush(aObject));
   end
   else if aObject is TQtImage then
@@ -4137,7 +4183,7 @@ begin
     {$endif}
 
     Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
-    
+
     // TODO: is this also saved in qpainter_save?
     TQtDeviceContext(DC).setImage(TQtImage(aObject));
   end;
@@ -4169,7 +4215,7 @@ end;
 function TQtWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   Result := GetActiveWindow;
-  
+
   if Handle <> 0 then
     TQtWidget(Handle).Activate
   else
@@ -4201,7 +4247,7 @@ begin
 
     Exit;
   end;
-  
+
   result := TQtDeviceContext(DC).SetBkColor(Color);
 end;
 
@@ -4284,7 +4330,7 @@ begin
 
   if Result = ACursor then
     Exit;
-  
+
   if Screen.Cursors[crDefault] = ACursor then
     OverrideCursor := nil
   else
@@ -4305,7 +4351,7 @@ begin
   {$endif}
 
   QCursor_setPos(X, Y);
-  
+
   Result := True;
 end;
 
@@ -4349,7 +4395,7 @@ end;
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
   TQtWidget(HWnd).Activate;
-  
+
   Result := True;
 end;
 
@@ -4474,11 +4520,11 @@ var
 
 begin
   // bRedraw is useles with qt
-  
+
   Result := 0;
-  
+
   if (Handle = 0) then exit;
-  
+
   ScrollBar := nil;
   case SBStyle of
     SB_BOTH:
@@ -4486,7 +4532,7 @@ begin
       {TODO: SB_BOTH fixme }
       //writeln('TODO: ############## SB_BOTH CALLED HERE .... #################');
     end; {SB_BOTH}
-    
+
     SB_CTL:
     begin
       {HWND is always TScrollBar, but seem that Create ScrollBar should be called here }
@@ -4494,10 +4540,10 @@ begin
       (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then exit;
 
       ScrollBar := TQtScrollBar(Handle);
-      
+
       if not Assigned(ScrollBar) then exit;
     end; {SB_CTL}
-    
+
     SB_HORZ:
     begin
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
@@ -4516,7 +4562,7 @@ begin
           ScrollBar := TQtScrollBar(Control.Handle)
       end;
     end; {SB_HORZ}
-    
+
     SB_VERT:
     begin
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
@@ -4535,9 +4581,9 @@ begin
           ScrollBar := TQtScrollBar(Control.Handle)
       end;
     end; {SB_VERT}
-    
+
   end;
-  
+
   if Assigned(ScrollBar) then
     Result := UpdateScrollInfo;
 end;
@@ -4576,11 +4622,11 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ShowScrollBar] Handle: ', dbghex(Handle),' wBar: ',wBar);
   {$endif}
-  
+
   Result := (Handle <> 0);
- 
+
   if not Result then exit;
-  
+
   w := TQtWidget(Handle);
 
   if w is TQtAbstractScrollArea then
@@ -4594,7 +4640,7 @@ begin
         else
           ScrollArea.setScrollStyle(ssNone);
       end;
-      
+
       SB_HORZ:
       begin
         if bShow then
@@ -4602,7 +4648,7 @@ begin
         else
           QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
       end;
-      
+
       SB_VERT:
       begin
         if bShow then
@@ -4610,7 +4656,7 @@ begin
         else
           QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
       end;
-      
+
       SB_CTL:
       begin
         if bShow then
@@ -4639,7 +4685,7 @@ begin
   {$endif}
 
   Result := False;
-  
+
   Widget := TQTWidget(hWnd);
 
   if Widget <> nil then
@@ -4770,7 +4816,7 @@ begin
     dec(Height, dy);
     dec(SrcHeight, dy);
   end;
-  
+
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
   MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
@@ -4833,7 +4879,7 @@ begin
     WideStr := GetUtf8String(Str);
 
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
-  
+
   Result := True;
 end;
 

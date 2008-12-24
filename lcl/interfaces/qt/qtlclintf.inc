@@ -147,6 +147,26 @@ begin
   end;
 end;
 
+procedure TQtWidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+var
+  QtDC: TQtDeviceContext absolute DC;
+  X, Y: Integer;
+  W, H: Integer;
+begin
+  if not IsValidDC(DC) then
+    exit;
+  QtDC.save;
+  try
+    W := (R.Right - R.Left - 1) div DX;
+    H := (R.Bottom - R.Top - 1) div DY;
+
+    for X := 0 to W do
+      for Y := 0 to H do
+        QtDC.drawPoint(R.Left + X * DX, R.Top + Y * DY + 1);
+  finally
+    QtDC.restore;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: FontCanUTF8

@@ -252,6 +252,7 @@ begin
   ATitle := GetUtf8String(AFileDialog.Title);
   QtFileDialog.setWindowTitle(@ATitle);
   QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  QtFileDialog.setHistory(AFileDialog.HistoryList);
   QtFileDialog.setFilter(GetQtFilterString(AFileDialog));
   QtFileDialog.setConfirmOverwrite(ofOverwritePrompt in TOpenDialog(AFileDialog).Options);
   QtFileDialog.setReadOnly(ofReadOnly in TOpenDialog(AFileDialog).Options);

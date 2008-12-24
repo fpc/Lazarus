@@ -18,6 +18,7 @@
  }
 Uses InterfaceBase, LCLIntf;
 
+{$IFNDEF USE_QT_44}
 {$IFDEF WINDOWS}
 const
   LibWinSpool = 'winspool.drv';
@@ -101,6 +102,7 @@ function EnumPrinters(Flags: DWORD;  //Printer objet type
                       pcReturned: DWORD //Number of printers enumerated
                       ): BOOL; stdcall; external LibWinSpool name 'EnumPrintersA';
 {$ENDIF}
+{$ENDIF}
 
 { TQtPrinters }
 procedure TQtPrinters.CreatePrintSettings;
@@ -162,6 +164,40 @@ begin
   QtDefaultPrinter.endDoc;
 end;
 
+{$IFDEF USE_QT_44}
+procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
+var
+  i: Integer;
+  PrnInfo: QPrinterInfoH;
+  Prntr: QPrinterInfoH;
+  PrnList: TPtrIntArray;
+  PrnName: WideString;
+begin
+
+  inherited DoEnumPrinters(Lst);
+
+  PrnInfo := QPrinterInfo_create();
+  try
+    Lst.Clear;
+    QPrinterInfo_availablePrinters(PrnInfo, @PrnList);
+    for i := Low(PrnList) to High(PrnList) do
+    begin
+      Prntr := QPrinterInfoH(PrnList[i]);
+      if Assigned(Prntr) and not QPrinterInfo_isNull(Prntr) then
+      begin
+        QPrinterInfo_printerName(Prntr, @PrnName);
+        PrnName := UTF8Encode(PrnName);
+        if QPrinterInfo_isDefault(Prntr) then
+          Lst.Insert(0, PrnName)
+        else
+          Lst.Add(PrnName);
+      end;
+    end;
+  finally
+    QPrinterInfo_destroy(PrnInfo);
+  end;
+end;
+{$ELSE}
 {$IFDEF WINDOWS}
 procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
   function getPrnStr(var Str: PChar): PChar;
@@ -267,6 +303,7 @@ begin
   end;
 end;
 {$ENDIF}
+{$ENDIF} // use_qt_44
 
 procedure TQtPrinters.EnumQPapers(Lst: TStrings);
 const

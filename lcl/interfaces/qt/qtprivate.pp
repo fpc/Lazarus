@@ -55,6 +55,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Sort; override;
+    procedure Exchange(AIndex1, AIndex2: Integer); override;
   public
     property Owner: TQtComboBox read FOwner;
   end;
@@ -75,6 +76,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Sort; override;
+    procedure Exchange(AIndex1, AIndex2: Integer); override;
   public
     property Owner: TQtListWidget read FOwner;
   end;
@@ -458,6 +460,15 @@ begin
     FOwner.setItemText(I, Strings[I]);
 end;
 
+procedure TQtComboStrings.Exchange(AIndex1, AIndex2: Integer);
+var
+  i: Integer;
+begin
+  inherited Exchange(AIndex1, AIndex2);
+  for I := 0 to Count - 1 do
+    FOwner.setItemText(I, Strings[I]);
+end;
+
 { TQtListStrings }
 
 procedure TQtListStrings.Put(Index: Integer; const S: string);
@@ -518,6 +529,12 @@ begin
 
   for I := 0 to Count - 1 do
     FOwner.setItemText(I, Strings[I]);
+end;
+
+procedure TQtListStrings.Exchange(AIndex1, AIndex2: Integer);
+begin
+  inherited Exchange(AIndex1, AIndex2);
+  FOwner.exchangeItems(AIndex1, AIndex2);
 end;
 
 end.
