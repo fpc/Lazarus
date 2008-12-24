@@ -170,7 +170,6 @@ type
     procedure SetMode(AMode: TCodeExplorerMode);
     procedure UpdateMode;
   protected
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
@@ -179,6 +178,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure CheckOnIdle;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Refresh(OnlyVisible: boolean);
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);

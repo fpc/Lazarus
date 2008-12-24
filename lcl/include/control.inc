@@ -2581,7 +2581,7 @@ end;
 
 function TControl.IsFontStored: Boolean;
 begin
-  Result := not ParentFont {and not DesktopFont};
+  Result := not ParentFont;
 end;
 
 function TControl.IsHintStored: Boolean;

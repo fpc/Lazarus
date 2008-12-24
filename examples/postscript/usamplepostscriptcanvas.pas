@@ -120,7 +120,7 @@ var
       PsCanvas.Font.Style:=[fsItalic];
       FontSample('Italic Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
       PsCanvas.Font.Style:=[];
-      FontSample('Normal Пример AQUIтESекста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
+      FontSample('Normal Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
       PsCanvas.Font.Style:=[fsUnderline,fsBold,fsItalic];
       FontSample('all Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
       PsCanvas.Font.Style:=[];
@@ -161,7 +161,7 @@ begin
     Brush.Color:=clGreen;
     Ellipse(10,260,60,310);
 
-    // ??
+    // pie
     Brush.Color:=clTeal;
     Brush.Style:=bsSolid;
     RadialPie(10,360,90,440,0,60*16);

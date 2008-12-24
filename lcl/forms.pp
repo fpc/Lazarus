@@ -161,7 +161,6 @@ type
     function  GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
     procedure DoOnResize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
@@ -174,6 +173,7 @@ type
     destructor Destroy; override;
     procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
+    class function GetControlClassDefaultSize: TPoint; override;
   published
     property HorzScrollBar: TControlScrollBar
               read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
@@ -258,10 +258,10 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
-    class function GetControlClassDefaultSize: TPoint; override;
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
+    class function GetControlClassDefaultSize: TPoint; override;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
@@ -463,7 +463,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Deactivate; dynamic;
-    procedure DestroyWnd; override;
     procedure DoClose(var CloseAction: TCloseAction); dynamic;
     procedure DoCreate; virtual;
     procedure DoDestroy; virtual;
@@ -484,13 +483,10 @@ type
     procedure UpdateWindowState;
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
-    function FormIsUpdating: boolean; override;
     function VisibleIsStored: boolean;
-    function ColorIsStored: boolean; override;
     procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
     procedure SetAutoSize(const Value: Boolean); override;
-    class function GetControlClassDefaultSize: TPoint; override;
   protected
     // drag and dock
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
@@ -509,6 +505,7 @@ type
     procedure BeforeDestruction; override;
     function BigIconHandle: HICON;
     function SmallIconHandle: HICON;
+    procedure DestroyWnd; override;
     destructor Destroy; override;
     procedure Close;
     function CloseQuery: boolean; virtual;
@@ -517,6 +514,8 @@ type
     procedure Show;
     procedure ShowOnTop;
     procedure EnsureVisible(AMoveToTop: boolean = true);
+    function FormIsUpdating: boolean; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     function NeedParentForAutoSize: Boolean; override;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
@@ -536,6 +535,7 @@ type
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
     function IsShortcut(var Message: TLMKey): boolean; virtual;
+    function ColorIsStored: boolean; override;
     procedure IntfDropFiles(const FileNames: Array of String);
     procedure IntfHelp(AComponent: TComponent);
     function GetFormImage: TBitmap;
@@ -721,9 +721,6 @@ type
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
-  protected
-    procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -733,6 +730,8 @@ type
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: Pointer): TRect; virtual;
     procedure ReleaseHandle;
+    procedure Paint; override;
+    class function GetControlClassDefaultSize: TPoint; override;
   public
     property AutoHide : Boolean read FAutoHide write SetAutoHide;
     property HideInterval : Integer read FHideInterval write SetHideInterval;

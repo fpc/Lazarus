@@ -201,8 +201,6 @@ type
     procedure SetRootFilename(const AValue: string);
     procedure SetRootShortFilename(const AValue: string);
     procedure CommitUnitHistoryListSelection;
-  protected
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -211,6 +209,7 @@ type
     procedure Refresh;
     procedure RefreshHistoryList;
     function RootValid: boolean;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     property OnAccessingSources: TNotifyEvent
       read FOnAccessingSources write FOnAccessingSources;
     property OnGetProjectMainFilename: TOnGetProjectMainFilename

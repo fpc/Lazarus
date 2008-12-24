@@ -84,9 +84,9 @@ type
     property HelpButton: TPanelBitBtn read FHelpButton stored False;
     property CloseButton: TPanelBitBtn read FCloseButton stored False;
     property CancelButton: TPanelBitBtn read FCancelButton stored False;
-    property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder;
+    property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder default boDefault;
 
-    property DefaultButton: TPanelButton read FDefaultButton write SetDefaultButton;
+    property DefaultButton: TPanelButton read FDefaultButton write SetDefaultButton default pbOK;
     property ShowButtons: TPanelButtons read FShowButtons write SetShowButtons default DefShowButtons;
     property ShowGlyphs: TPanelButtons read FShowGlyphs write SetShowGlyphs default DefShowGlyphs;
   published

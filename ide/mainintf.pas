@@ -117,6 +117,9 @@ type
   protected
     function GetToolStatus: TIDEToolStatus; virtual; abstract;
     function GetActiveProject: TLazProject; override;
+
+    function CreateProjectObject(ProjectDesc,
+                             FallbackProjectDesc: TProjectDescriptor): TProject; virtual; abstract;
   public
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
@@ -150,8 +153,6 @@ type
     function DoShowProjectInspector: TModalResult; virtual; abstract;
     function DoImExportCompilerOptions(Sender: TObject): TModalResult; virtual; abstract;
 
-    function CreateProjectObject(ProjectDesc,
-                             FallbackProjectDesc: TProjectDescriptor): TProject; virtual; abstract;
     function PrepareForCompile: TModalResult; virtual; abstract;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;

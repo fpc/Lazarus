@@ -528,7 +528,6 @@ type
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
-    function DoResetToolStatus(Interactive: boolean): boolean; override;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
 
@@ -671,6 +670,7 @@ type
     procedure CreateOftenUsedForms; override;
     procedure CreateSearchResultWindow;
     procedure UpdateDefaultPascalFileExtensions;
+    function DoResetToolStatus(Interactive: boolean): boolean; override;
 
     // files/units
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;

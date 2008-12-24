@@ -2951,7 +2951,7 @@ begin
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
-  With ScrollInfo Do
+  with ScrollInfo Do
     Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
 end;
 
@@ -3109,7 +3109,7 @@ function TWin32WidgetSet.ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boole
 begin
   Assert(False, 'Trace:[TWin32WidgetSet.ShowScrollBar]');
   Result := Boolean(Windows.ShowScrollBar(Handle, WBar, BShow));
-  if BShow and Result and ThemeServices.ThemesEnabled then
+  if BShow and Result and ThemeServices.ThemesAvailable then
   begin
     // sometimes on xp scrollbars does not invalidate themself and look as they are unthemed
     // force window frame (scrollbars are not in the client area) to redraw

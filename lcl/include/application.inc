@@ -990,12 +990,14 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
-
 var
   i: LongInt;
+  Skip: Boolean;
 begin
-  if Self=nil then exit;
-  if AppHandlingException in FFlags then begin
+  if Self = nil then
+    Exit;
+  if AppHandlingException in FFlags then
+  begin
     // there was an exception during showing the exception -> break the circle
     DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
@@ -1007,29 +1009,44 @@ begin
   
   if StopOnException then
     inherited Terminate;
-  if not (AppNoExceptionMessages in FFlags) then begin
+
+  Skip := ExceptObject is EAbort;
+
+  if not (AppNoExceptionMessages in FFlags) then
+  begin
     // before we do anything, write it down
-    if ExceptObject is Exception then begin
-      DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
-    end else begin
+    if ExceptObject is Exception then
+    begin
+      if not Skip then
+      begin
+        DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
+        DumpExceptionBackTrace;
+      end;
+    end else
+    begin
       DebugLn('TApplication.HandleException Strange Exception ');
+      DumpExceptionBackTrace;
     end;
-    DumpExceptionBackTrace;
   end;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
-  HideAllFormsWithStayOnTop;
+  if not Skip then
+    HideAllFormsWithStayOnTop;
   // handle the exception
-  if ExceptObject is Exception then begin
-    if not (ExceptObject is EAbort) then begin
+  if ExceptObject is Exception then
+  begin
+    if not Skip then
+    begin
       i:=FApplicationHandlers[ahtException].Count;
-      if Assigned(OnException) or (i>0) then begin
+      if Assigned(OnException) or (i>0) then
+      begin
         if Assigned(OnException) then
           OnException(Sender, Exception(ExceptObject));
         while FApplicationHandlers[ahtException].NextDownIndex(i) do
           TExceptionEvent(FApplicationHandlers[ahtException][i])(Self,Exception(ExceptObject));
-      end else
+      end
+      else
         ShowException(Exception(ExceptObject));
     end;
   end else

@@ -79,7 +79,6 @@ type
     FToolStatus: TIDEToolStatus;
   protected
     FNeedUpdateHighlighters: boolean;
-    function GetMainBar: TComponent; override;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -118,6 +117,7 @@ type
     procedure OnMainBarDestroy(Sender: TObject); virtual;
     
     procedure ConnectOutputFilter;
+
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     function DoResetToolStatus(Interactive: boolean): boolean; virtual; abstract;
@@ -126,6 +126,7 @@ type
     procedure StartIDE; virtual; abstract;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
+    function GetMainBar: TComponent; override;
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
                               var ActiveSourceEditor: TSourceEditorInterface;

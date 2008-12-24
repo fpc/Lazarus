@@ -201,7 +201,6 @@ type
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
-    procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure SetSourceMark(const AValue: TSourceMark);
     procedure UpdateSourceMark;
     procedure UpdateSourceMarkImage;
@@ -211,6 +210,7 @@ type
     procedure ResetMaster;
     function GetSourceLine: integer; override;
     procedure CopySourcePositionToBreakPoint;
+    procedure SetLocation(const ASource: String; const ALine: Integer); override;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
   

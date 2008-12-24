@@ -88,7 +88,7 @@ type
     procedure Assign(Source: TPersistent); override;
     function StatusBar: TStatusBar;
   published
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Bevel: TStatusPanelBevel read FBevel write SetBevel default pbLowered;
     property Style: TStatusPanelStyle read FStyle write SetStyle default psText;
     property Text: string read FText write SetText;
@@ -196,7 +196,6 @@ type
     property OnStartDock;
     property OnStartDrag;
   end;
-
 
   { TTabSheet }
 
@@ -1742,9 +1741,6 @@ type
     property Visible;
   end;
   
-  
-
-
 { TTreeNode }
 
 type
