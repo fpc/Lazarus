@@ -50,7 +50,7 @@ fi
 
 FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT"
 if [ "$HTMLFMT" == "chm" ]; then
-  FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --output=lcl.chm"
+  FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --make-searchable --output=lcl.chm"
 fi
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"

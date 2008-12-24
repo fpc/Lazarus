@@ -2360,7 +2360,7 @@ var
   Desc: TProjectFileDescriptor;
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
-  Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
+  Template:=Category.FindTemplateByName(EnvironmentOptions.NewFormTemplate);
   if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
     Desc:=TNewItemProjectFile(Template).Descriptor
   else

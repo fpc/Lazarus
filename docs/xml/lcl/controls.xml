@@ -9257,7 +9257,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAddDockClient">
-        <short/>
+        <short>
+          <var>DoAddDockClient</var> - add the specified control as a client for docking in the specified location (Arect)</short>
         <descr/>
         <errors/>
         <seealso/>

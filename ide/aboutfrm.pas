@@ -354,7 +354,7 @@ begin
   //start showing the list from the start
   if FStartLine > FLines.Count - 1 then
     FOffset := FBuffer.Height;
-  Repaint;
+  Invalidate;
 end;
 
 function TScrollingText.ActiveLineIsURL: boolean;

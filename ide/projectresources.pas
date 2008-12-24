@@ -171,7 +171,7 @@ begin
   FVersionInfo.OnModified := @EmbeddedObjectModified;
 
   FXPManifest := TProjectXPManifest.Create;
-  FXPManifest.UseManifest := False;
+  FXPManifest.UseManifest := True;
   FXPManifest.OnModified := @EmbeddedObjectModified;
 
   FProjectIcon := TProjectIcon.Create;

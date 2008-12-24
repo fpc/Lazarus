@@ -37,79 +37,31 @@ program UpdatePoFiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileUtil, AvL_Tree;
+  Classes, SysUtils, FileUtil, Translations;
   
-type
-  TMsgItem = record
-    Comment: string;
-    ID: string;
-    Str: string;
-  end;
-  PMsgItem = ^TMsgItem;
-  
-function CompareMsgItems(Data1, Data2: pointer): integer;
-var
-  MsgItem1: PMsgItem;
-  MsgItem2: PMsgItem;
-begin
-  MsgItem1:=PMsgItem(Data1);
-  MsgItem2:=PMsgItem(Data2);
-  Result:=CompareStr(MsgItem1^.ID,MsgItem2^.ID);
-end;
-
-procedure DisposeMsgTree(var Tree: TAVLTree);
-var
-  Node: TAVLTreeNode;
-  MsgItem: PMsgItem;
-begin
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    MsgItem:=PMsgItem(Node.Data);
-    Dispose(MsgItem);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-  Tree.Free;
-  Tree:=nil;
-end;
-
-type
-  TPoFile = class
-  public
-    Tree: TAVLTree;
-    Header: TStringList;
-    UTF8Header: string;
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
-{ TPoFile }
-
-constructor TPoFile.Create;
-begin
-  Tree:=TAVLTree.Create(@CompareMsgItems);
-  Header:=TStringList.Create;
-end;
-
-destructor TPoFile.Destroy;
-begin
-  DisposeMsgTree(Tree);
-  Header.Free;
-  inherited Destroy;
-end;
-
-//==============================================================================
 var
   Files: TStringList;
   Prefix: string;
+  ResFiles: array of TStringList;
 
-procedure IncPrefix;
+procedure AddResFile(const PoIndex:Integer; const AResFile:string);
 begin
-  Prefix:=Prefix+'  ';
+  if PoIndex>(Length(ResFiles)-1) then
+    SetLength(ResFiles, PoIndex+1);
+
+  if ResFiles[PoIndex]=nil then
+    ResFiles[PoIndex] := TStringList.Create;
+
+  ResFiles[PoIndex].Add(AResFile);
 end;
 
-procedure DecPrefix;
+procedure ClearResFiles;
+var
+  i: Integer;
 begin
-  Prefix:=LeftStr(Prefix,length(Prefix)-2);
+  for i:=0 to Length(ResFiles)-1 do
+    if ResFiles[i]<>nil then
+      ResFiles[i].Free;
 end;
 
 function ParamsValid: boolean;
@@ -118,300 +70,74 @@ var
   Filename: String;
   Ext: String;
   Name: string;
+  PoIndex: Integer;
 begin
   Result:=false;
-  if ParamCount<1 then exit;
+  PoIndex:=0;
+
+  if ParamCount<1 then
+    exit;
+
   for i:=1 to ParamCount do begin
-    Filename:=ParamStrUTF8(1);
+
+    Filename:=ParamStrUTF8(i);
+
+    Ext:=ExtractFileExt(Filename);
+
     if not FileExistsUTF8(Filename) then begin
+
+      if (Ext='.rst') or (Ext='.lrt') then
+        continue; // ignore resource files
+
       writeln('ERROR: file not found: ',FileName);
       exit;
     end;
-    Ext:=ExtractFileExt(Filename);
-    if (Ext<>'.po') then begin
+
+    if (Ext<>'.po') and  (Ext<>'.rst') and (Ext<>'.lrt') then begin
       writeln('ERROR: invalid extension: ',Filename);
       exit;
     end;
+
     Name:=ExtractFileName(Filename);
     Name:=LeftStr(Name,length(Name)-length(Ext));
     if Pos('.',Name)>0 then begin
       writeln('ERROR: invalid unitname: ',Name);
       exit;
     end;
-    if Files=nil then Files:=TStringList.Create;
-    Files.Add(Filename);
+
+    if Ext='.po' then begin
+      if Files=nil then
+        Files:=TStringList.Create;
+      Files.Add(Filename);
+      inc(PoIndex);
+      SetLength(ResFiles, Files.Count); // make sure Files and ResFiles are in sync
+    end else
+      AddResFile(PoIndex, FileName);
   end;
   Result:=true;
-end;
-
-function ReadMessageItem(SrcFile: TStringList; var Line: integer): PMsgItem;
-var
-  s: string;
-begin
-  New(Result);
-  while Line<SrcFile.Count do begin
-    s:=SrcFile[Line];
-    if (s<>'') and (s[1]='#') then begin
-      Result^.Comment:=Result^.Comment+copy(s,2,length(s));
-    end
-    else if (LeftStr(s,7)='msgid "') then begin
-      // read ID
-      Result^.ID:=copy(s,8,length(s)-8);
-      inc(Line);
-      while Line<SrcFile.Count do begin
-        s:=SrcFile[Line];
-        if (s<>'') and (s[1]='"') then begin
-          Result^.ID:=Result^.ID+#10+copy(s,2,length(s)-2);
-          inc(Line);
-        end else
-          break;
-      end;
-      // read Str
-      if Line<SrcFile.Count then begin
-        s:=SrcFile[Line];
-        if LeftStr(s,8)='msgstr "' then begin
-          Result^.Str:=copy(s,9,length(s)-9);
-          inc(Line);
-          while Line<SrcFile.Count do begin
-            s:=SrcFile[Line];
-            if (s<>'') and (s[1]='"') then begin
-              Result^.Str:=Result^.Str+#10+copy(s,2,length(s)-2);
-              inc(Line);
-            end else
-              break;
-          end;
-        end;
-      end;
-      exit;
-    end;
-    inc(Line);
-  end;
-end;
-
-procedure WriteMessageItem(MsgItem: PMsgItem; DestFile: TStringList);
-
-  procedure WriteItem(const Prefix: string; Str: string);
-  var
-    s: String;
-    p: Integer;
-  begin
-    s:=Prefix+' "';
-    p:=1;
-    while (p<=length(Str)) do begin
-      if Str[p]=#10 then begin
-        // a new line
-        s:=s+copy(Str,1,p-1)+'"';
-        DestFile.Add(s);
-        Str:=copy(Str,p+1,length(Str));
-        p:=1;
-        // start new line
-        s:='"';
-      end else
-        inc(p);
-    end;
-    if (Str<>'') or (s<>'"') then begin
-      s:=s+Str+'"';
-      DestFile.Add(s);
-    end;
-  end;
-
-begin
-  if MsgItem^.Comment<>'' then
-    DestFile.Add('#'+MsgItem^.Comment);
-  WriteItem('msgid',MsgItem^.ID);
-  WriteItem('msgstr',MsgItem^.Str);
-  DestFile.Add('');
-end;
-
-function ReadPoFile(const Filename: string): TPoFile;
-var
-  SrcFile: TStringList;
-  MsgItem: PMsgItem;
-  Line: Integer;
-begin
-  Result:=TPoFile.Create;
-
-  // read source .po file
-  //writeln(Prefix,'Loading ',Filename,' ...');
-  SrcFile:=TStringList.Create;
-  SrcFile.LoadFromFile(UTF8ToSys(Filename));
-  
-  if (SrcFile.Count>0) and (copy(SrcFile[0],1,3)=UTF8FileHeader) then begin
-    Result.UTF8Header:=copy(SrcFile[0],1,3);
-    SrcFile[0]:=copy(SrcFile[0],4,length(SrcFile[0]));
-  end;
-  
-  Line:=0;
-  while Line<SrcFile.Count do begin
-    if (SrcFile[Line]='') then begin
-      // empty line
-      inc(Line);
-    end
-    else begin
-      // message
-      MsgItem:=ReadMessageItem(SrcFile,Line);
-      // ignore doubles
-      if (Result.Tree.FindKey(MsgItem,@CompareMsgItems)<>nil) then begin
-        Dispose(MsgItem);
-        continue;
-      end;
-      // add message
-      Result.Tree.Add(MsgItem);
-    end;
-  end;
-
-  SrcFile.Free;
-end;
-
-procedure WritePoFile(PoFile: TPoFile; const Filename: string);
-var
-  DestFile: TStringList;
-  Node: TAVLTreeNode;
-  MsgItem: PMsgItem;
-  Save: Boolean;
-  OldDestFile: TStringList;
-begin
-  //writeln(Prefix,'Saving ',Filename,' ...');
-  DestFile:=TStringList.Create;
-  if (PoFile.Header.Count>0) then begin
-    DestFile.Add('msgid ""');
-    DestFile.Add('msgstr ""');
-    DestFile.AddStrings(PoFile.Header);
-    DestFile.Add('');
-  end;
-  Node:=PoFile.Tree.FindLowest;
-  while Node<>nil do begin
-    MsgItem:=PMsgItem(Node.Data);
-    WriteMessageItem(MsgItem,DestFile);
-    Node:=PoFile.Tree.FindSuccessor(Node);
-  end;
-  if (PoFile.UTF8Header<>'') and (DestFile.Count>0) then
-    DestFile[0]:=PoFile.UTF8Header+DestFile[0];
-  Save:=true;
-  if FileExistsUTF8(Filename) then begin
-    OldDestFile:=TStringList.Create;
-    OldDestFile.LoadFromFile(UTF8ToSys(Filename));
-    if OldDestFile.Text=DestFile.Text then Save:=false;
-    OldDestFile.Free;
-  end;
-  if Save then
-    DestFile.SaveToFile(UTF8ToSys(Filename));
-  DestFile.Free;
-end;
-
-function FindAllTranslatedPoFiles(const Filename: string): TStringList;
-var
-  Path: String;
-  Name: String;
-  NameOnly: String;
-  Ext: String;
-  FileInfo: TSearchRec;
-  CurExt: String;
-begin
-  Result:=TStringList.Create;
-  Path:=ExtractFilePath(Filename);
-  Name:=ExtractFilename(Filename);
-  Ext:=ExtractFileExt(Filename);
-  NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
-    repeat
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
-      CurExt:=ExtractFileExt(FileInfo.Name);
-      if (CompareFilenames(CurExt,'.po')<>0)
-      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)),NameOnly)<>0)
-      then
-        continue;
-      Result.Add(Path+FileInfo.Name);
-    until FindNextUTF8(FileInfo)<>0;
-  end;
-  FindCloseUTF8(FileInfo);
-end;
-
-procedure MergePoTrees(SrcTree, DestTree: TAVLTree);
-var
-  SrcNode, DestNode: TAVLTreeNode;
-  SrcMsgItem, DestMsgItem: PMsgItem;
-  OldNode: TAVLTreeNode;
-begin
-  // add all message items from SrcTree into DestTree
-  SrcNode:=SrcTree.FindLowest;
-  while SrcNode<>nil do begin
-    SrcMsgItem:=PMsgItem(SrcNode.Data);
-    DestNode:=DestTree.FindKey(SrcMsgItem,@CompareMsgItems);
-    if DestNode<>nil then begin
-      // ID already exists -> update comment
-      DestMsgItem:=PMsgItem(DestNode.Data);
-      DestMsgItem^.Comment:=SrcMsgItem^.Comment;
-    end else begin
-      // new ID -> add new message item to DestTree
-      New(DestMsgItem);
-      DestMsgItem^.Comment:=SrcMsgItem^.Comment;
-      DestMsgItem^.ID:=SrcMsgItem^.ID;
-      DestMsgItem^.Str:=SrcMsgItem^.Str;
-      DestTree.Add(DestMsgItem);
-    end;
-    SrcNode:=SrcTree.FindSuccessor(SrcNode);
-  end;
-  // remove all old messages in DestTree
-  DestNode:=DestTree.FindLowest;
-  while DestNode<>nil do begin
-    DestMsgItem:=PMsgItem(DestNode.Data);
-    OldNode:=DestNode;
-    DestNode:=DestTree.FindSuccessor(DestNode);
-    if (DestMsgItem^.ID<>'')
-    and (SrcTree.FindKey(DestMsgItem,@CompareMsgItems)=nil) then begin
-      // unused message -> delete it
-      writeln('Deleting unused message "',DestMsgItem^.ID,'"');
-      Dispose(DestMsgItem);
-      DestTree.Delete(OldNode);
-    end;
-  end;
-end;
-
-procedure UpdatePoFile(const Filename: string);
-var
-  SrcFile, DestFile: TPoFile;
-  DestFiles: TStringList;
-  i: Integer;
-begin
-  writeln('Loading ',Filename,' ...');
-  SrcFile:=ReadPoFile(Filename);
-  DestFiles:=FindAllTranslatedPoFiles(Filename);
-  IncPrefix;
-  for i:=0 to DestFiles.Count-1 do begin
-    writeln(Prefix,'Updating ',DestFiles[i]);
-    IncPrefix;
-    DestFile:=ReadPoFile(DestFiles[i]);
-    MergePoTrees(SrcFile.Tree,DestFile.Tree);
-    WritePoFile(DestFile,DestFiles[i]);
-    DestFile.Free;
-    DecPrefix;
-  end;
-  DecPrefix;
-  DestFiles.Free;
-  SrcFile.Free;
 end;
 
 procedure UpdateAllPoFiles;
 var
   i: Integer;
 begin
-  for i:=0 to Files.Count-1 do begin
-    UpdatePoFile(Files[i]);
-  end;
+  for i:=0 to Files.Count-1 do
+    UpdatePoFile(ResFiles[i], Files[i]);
 end;
 
 begin
   Prefix:='';
   Files:=nil;
-  if not ParamsValid then begin
+
+  if not ParamsValid then
     writeln('Usage: ',ExtractFileName(ParamStrUTF8(0))
-       ,' filename1.po [filename2.po ... filenameN.po]');
-    exit;
-  end else begin
+       ,' filename1.po [filename2.po ... filenameN.po]')
+  else
     UpdateAllPoFiles;
-  end;
-  Files.Free;
+
+  if Files<>nil then
+    Files.Free;
+
+  ClearResFiles;
 end.
 

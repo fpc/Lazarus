@@ -30,8 +30,21 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   "ideintf objinspstrconsts"
+  "components/codetools codetoolsstrconsts"
   "components/synedit syneditstrconst synedit"
   "components/synedit synmacrorecorder"
+  "components/synedit synhighlighterunixshellscript"
+  "components/tdbf registerdbf"
+  "components/turbopower_ipro ipconst"
+  "components/turbopower_ipro iputils"
+  "components/cgi cgimodules"
+  "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
+  "components/memds frmselectdataset"
+  "components/messagecomposer messagecomposer"  
+  "components/printers/design ideprinting"
+  "components/projecttemplates projecttemplates"
+  "components/projecttemplates frmtemplatevariables"
+  "components/projecttemplates idetemplateproject"
   "lcl lclstrconsts"
 )  
 
@@ -49,19 +62,9 @@ for idx in ${!RSTFILES[@]}; do
   
     if [ -n "$RST" ]; then
       POFileFull=$RSTDIR/languages/$POFILE.po
-      echo $POFileFull
-
-      echo 'msgid ""
-msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-' > $POFileFull
-
-      rstconv -i $RST -o $POFileFull.tmp
-      cat $POFileFull.tmp >> $POFileFull
-      rm $POFileFull.tmp
-      ./tools/updatepofiles $POFileFull
+      
+      ./tools/updatepofiles $RST $POFileFull
+      
     fi
   fi
 done

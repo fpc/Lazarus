@@ -14355,6 +14355,17 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>
           <var>JoinStyle</var> - the style of joint where two lines meet or cross</short>
       </element>
+      <element name="TPenHandleCacheDescriptor">
+        <short>
+          <var>TPenHandleCacheDescriptor</var> - a cache descriptor for Pen Handles</short>
+      </element>
+      <element name="TPenHandleCacheDescriptor.ExtPen">
+        <short>
+          <var>ExtPen</var> - an external pen</short>
+      </element>
+      <element name="TPenHandleCacheDescriptor.Pattern">
+        <short>The <var>Pattern</var> for this pen</short>
+      </element>
     </module>
     <!-- Graphics -->
   </package>
