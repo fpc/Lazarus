@@ -72,7 +72,7 @@ const
 implementation
 
 uses
-  {$ifndef fpc}Windows, {$endif}SysUtils, FileUtils, Forms;
+  {$ifndef fpc}Windows, FileUtils,{$endif}SysUtils, Forms;
 
 function GetHelpFilePath: string;
 var
