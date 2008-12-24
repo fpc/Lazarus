@@ -29,6 +29,7 @@ begin
   App := QApplication_Create(@argc, argv);
   InitStockItems;
   QtWidgetSet := Self;
+  ClearCachedColors;
   FDockImage := nil;
 end;
 
@@ -54,6 +55,8 @@ begin
     
   QtDefaultContext.Free;
   QtScreenContext.Free;
+
+  ClearCachedColors;
 
   inherited Destroy;
 end;
@@ -290,6 +293,7 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+    QEventStyleChange: ClearCachedColors;
     LCLQt_Destroy:
       begin
         AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
@@ -365,8 +369,8 @@ begin
 end;
 
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
-{var
-  Color: QColorH;}
+var
+  Color: QColorH;
 begin
   Result := clNone;
 
@@ -374,14 +378,14 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
+// This code results in ARGB values, but TColor uses ABGR
+//    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
-
-{    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
+    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
 
-    QColor_destroy(Color);}
+    QColor_destroy(Color);
   end;
 end;
 
@@ -639,6 +643,18 @@ begin
   FStockSystemFont := 0; // styles aren't initialized yet
   
   FStockDefaultDC := 0; // app must be initialized
+end;
+
+procedure TQtWidgetSet.ClearCachedColors;
+var
+  i: Integer;
+begin
+  for i := 0 to High(FCachedColors) do
+  begin
+    if FCachedColors[i] <> nil then
+      FreeMem(FCachedColors[i]);
+    FCachedColors[i] := nil;
+  end;
 end;
 
 //------------------------------------------------------------------------

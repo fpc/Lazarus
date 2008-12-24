@@ -215,10 +215,9 @@ type
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
 
   public
-  
     { Variables to be set by the user }
+
     WinCETitlePolicy: TWinCETitlePolicy;
-  
   end;
 
 {$I wincelistslh.inc}
@@ -261,7 +260,7 @@ Uses
 // WinCEWSActnList,
  WinCEWSArrow,
  WinCEWSButtons,
-// WinCEWSCalendar,
+ WinCEWSCalendar,
  WinCEWSCheckLst,
  WinCEWSComCtrls,
  WinCEWSControls,

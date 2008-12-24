@@ -444,10 +444,10 @@ procedure TCarbonWidget.UpdateLCLClientRect;
 var
   R: TRect;
 begin
-  //GetBounds(R);
+  GetBounds(R);
 
-  //LCLObject.InvalidateClientRectCache(False);
-  //LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
+  LCLObject.InvalidateClientRectCache(False);
+  LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
 end;
 
 {------------------------------------------------------------------------------

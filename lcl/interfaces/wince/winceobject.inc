@@ -513,7 +513,7 @@ begin
   if AMenu is TMainMenu then
   begin
     AWinControl := TWinControl(AMenu.Owner);
-    CeSetMenu(AWinControl.Handle, AMenu.Handle);
+    CeSetMenu(TCustomForm(AWinControl), AWinControl.Handle, AMenu.Handle);
     AddToChangedMenus(AWinControl.Handle);
   end;
 end;

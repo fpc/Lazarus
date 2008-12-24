@@ -3623,6 +3623,7 @@ lcl/interfaces/wince/wincewinapi.inc svneol=native#text/plain
 lcl/interfaces/wince/wincewinapih.inc svneol=native#text/plain
 lcl/interfaces/wince/wincewsarrow.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsbuttons.pp svneol=native#text/plain
+lcl/interfaces/wince/wincewscalendar.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewschecklst.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscomctrls.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscontrols.pp svneol=native#text/plain

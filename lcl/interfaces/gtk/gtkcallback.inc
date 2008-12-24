@@ -2380,6 +2380,8 @@ var
   Scroll: PGtkRange;
   ScrollType: TGtkScrollType;
 begin
+  //TODO: implement SB_THUMBPOSITION message after track is finished
+
   Result := CallBackDefaultReturn;
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));

@@ -285,6 +285,7 @@ begin
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
     AdjustFormBounds(lForm, Bounds);
 
+    // Gets the work area
     Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
 
     if Application.ApplicationType in [atPDA, atSmartphone, atDefault] then
@@ -305,8 +306,7 @@ begin
       begin
         Left := WR.Left;
         Top := WR.Top;
-        Height := WR.Bottom - WR.Top;// - GetSystemMetrics(SM_CYMENU)
-         //- GetSystemMetrics(SM_CXBORDER) * 2;
+        Height := WR.Bottom - WR.Top;
         Width := WR.Right - WR.Left;
       end
       else if (BorderStyle = bsDialog) then

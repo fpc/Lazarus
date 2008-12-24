@@ -2040,6 +2040,7 @@ function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
   Matrix: QMatrixH;
+  P: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetDCOriginRelativeToWindow] PaintDC ' + dbghex(PaintDC));
@@ -2049,10 +2050,13 @@ begin
     exit;
   Matrix := QPainter_Matrix(QtDC.Widget);
   OriginDiff := Point(0, 0);
+  P := Point(0, 0);
+  if WindowHandle <> 0 then
+    P := TQtWidget(WindowHandle).getClientOffset;
   if Matrix <> nil then
   begin
-    OriginDiff.X := Round(QMatrix_Dx(Matrix));
-    OriginDiff.Y := Round(QMatrix_Dy(Matrix));
+    OriginDiff.X := Round(QMatrix_Dx(Matrix)) - P.X;
+    OriginDiff.Y := Round(QMatrix_Dy(Matrix)) - P.Y;
   end;
 end;
 
@@ -2774,61 +2778,67 @@ begin
     exit;
   end;
 
-  case nIndex of
-    {$IFDEF USE_QT_44}
-    COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
-    {$ELSE}
-    COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
-    {$ENDIF}
-    COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
-    COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-    COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
-    COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
-    COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-    COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-    COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
-    COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
-    COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
-    COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
-    COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
-    COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-    {$IFDEF USE_QT_44}
-    COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
-    COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
-    {$ELSE}
-    COLOR_INFOTEXT                : Result:=GetClInfo(False);
-    COLOR_INFOBK                  : Result:=GetClInfo(True);
-    {$ENDIF}
-    COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
+  if FCachedColors[nIndex] = nil then
+  begin
+    case nIndex of
+      {$IFDEF USE_QT_44}
+      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
+      {$ELSE}
+      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
+      {$ENDIF}
+      COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+      COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
+      COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
+      COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
+      COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+      COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
+      COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+      COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+      COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+      COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
+      COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
+      COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
+      COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
+      COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
+      COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
+      COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
+      {$IFDEF USE_QT_44}
+      COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
+      COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
+      {$ELSE}
+      COLOR_INFOTEXT                : Result:=GetClInfo(False);
+      COLOR_INFOBK                  : Result:=GetClInfo(True);
+      {$ENDIF}
+      COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
 
-    // qt does not provide any methods to retrieve titlebar colors
-  {$IFNDEF MSWINDOWS}
-    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-    COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteHighlight);
-    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-    COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteHighlightedText);
-    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteBase);
-    COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
-  {$ELSE}
-    COLOR_ACTIVECAPTION           : Result:=Windows.GetSysColor(COLOR_ACTIVECAPTION);
-    COLOR_INACTIVECAPTION         : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTION);
-    COLOR_CAPTIONTEXT             : Result:=Windows.GetSysColor(COLOR_CAPTIONTEXT);
-    COLOR_INACTIVECAPTIONTEXT     : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT);
-    COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
-    COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
-  {$ENDIF}
-    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
-    COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
-    COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-    COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-  else
-    Result:=0;
-  end;
+      // qt does not provide any methods to retrieve titlebar colors
+    {$IFNDEF MSWINDOWS}
+      COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+      COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteHighlight);
+      COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+      COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteHighlightedText);
+      COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteBase);
+      COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
+    {$ELSE}
+      COLOR_ACTIVECAPTION           : Result:=Windows.GetSysColor(COLOR_ACTIVECAPTION);
+      COLOR_INACTIVECAPTION         : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTION);
+      COLOR_CAPTIONTEXT             : Result:=Windows.GetSysColor(COLOR_CAPTIONTEXT);
+      COLOR_INACTIVECAPTIONTEXT     : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT);
+      COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
+      COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
+    {$ENDIF}
+      COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
+      COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
+      COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
+      COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
+      COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    else
+      Result:=0;
+    end;
+    FCachedColors[nIndex] := getMem(SizeOf(LongWord));
+    FCachedColors[nIndex]^ := Result;
+  end else
+    Result := FCachedColors[nIndex]^;
 end;
 
 {------------------------------------------------------------------------------

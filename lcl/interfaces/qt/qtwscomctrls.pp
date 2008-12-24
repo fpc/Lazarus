@@ -871,9 +871,9 @@ begin
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QtTreeWidget.topLevelItem(AIndex);
+
   AState := QTreeWidgetItem_checkState(TWI, 0);
-  if AState = QtChecked then
-  	Result := True
+  Result := AState = QtChecked;
 end;
 
 {------------------------------------------------------------------------------
