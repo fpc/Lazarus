@@ -1,4 +1,4 @@
-unit JCFRegistrySettings;
+unit JcfRegistrySettings;
 
 { AFS 2 Jan 2002
   Store Gui state in registry

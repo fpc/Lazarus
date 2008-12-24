@@ -23,7 +23,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-unit JCFLog;
+unit JcfLog;
 
 { Created AFS 2 Dec 1999
 

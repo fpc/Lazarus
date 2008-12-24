@@ -116,7 +116,7 @@ uses
   {$ifndef fpc}Windows, {$endif} SysUtils, Dialogs, Controls, Forms,
   { local }
   JcfStringUtils,
-  FileUtils, JcfMiscFunctions, JCFLog,
+  FileUtils, JcfMiscFunctions, JcfLog,
   JcfRegistrySettings, JcfSettings, JcfUnicodeFiles;
 
 constructor TFileConverter.Create;
