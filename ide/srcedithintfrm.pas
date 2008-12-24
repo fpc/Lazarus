@@ -73,11 +73,10 @@ type
     procedure SetProvider(const AValue: TCodeHintProvider);
     procedure SetSrcEditCaret(const AValue: TPoint);
     procedure UpdatePosition;
-  protected
-    procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Paint; override;
     procedure UpdateHints;// update content
     function NeedVisible: boolean;
     property AnchorForm: TCustomForm read FAnchorForm write SetAnchorForm;

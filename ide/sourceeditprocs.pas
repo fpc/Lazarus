@@ -46,7 +46,7 @@ type
   { TLazTextConverterToolClasses }
 
   TLazTextConverterToolClasses = class(TTextConverterToolClasses)
-  protected
+  public
     function GetTempFilename: string; override;
     function SupportsType(aTextType: TTextConverterType): boolean; override;
     function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;

@@ -46,9 +46,11 @@ type
 
     function GetBGColor : TColor;
     function GetFGColor : TColor;
+    function GetFrameColor: TColor;
     function GetStyle : TFontStyles;
     procedure SetBGColor(const AValue : TColor);
     procedure SetFGColor(const AValue : TColor);
+    procedure SetFrameColor(const AValue : TColor);
     procedure SetStyle(const AValue : TFontStyles);
 
     procedure MarkupChanged(AMarkup: TObject);
@@ -83,6 +85,7 @@ type
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
+    property FrameColor: TColor read GetFrameColor;
     property Style : TFontStyles read GetStyle;
     property Lines : TSynEditStrings read fLines write SetLines;
     property Caret : TPoint read fCaret write SetCaret;
@@ -133,9 +136,14 @@ begin
   result := fMarkupInfo.Foreground;
 end;
 
+function TSynEditMarkup.GetFrameColor: TColor;
+begin
+  Result := fMarkupInfo.FrameColor;
+end;
+
 function TSynEditMarkup.GetStyle : TFontStyles;
 begin
-  result := fMarkupInfo.Style;
+  Result := fMarkupInfo.Style;
 end;
 
 procedure TSynEditMarkup.SetBGColor(const AValue : TColor);
@@ -148,6 +156,12 @@ procedure TSynEditMarkup.SetFGColor(const AValue : TColor);
 begin
   if fMarkupInfo.Foreground = AValue then exit;
   fMarkupInfo.Foreground := AValue;
+end;
+
+procedure TSynEditMarkup.SetFrameColor(const AValue: TColor);
+begin
+  if fMarkupInfo.FrameColor = AValue then exit;
+  fMarkupInfo.FrameColor := AValue;
 end;
 
 procedure TSynEditMarkup.SetStyle(const AValue : TFontStyles);
@@ -335,6 +349,7 @@ begin
       end else begin
         if c.Background <> clNone then Result.Background := c.Background;
         if c.Foreground <> clNone then Result.Foreground := c.Foreground;
+        if c.FrameColor <> clNone then Result.FrameColor := c.FrameColor;
         sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
         Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
         Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);

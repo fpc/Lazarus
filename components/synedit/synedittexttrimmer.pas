@@ -233,9 +233,6 @@ begin
 end;
 
 procedure TSynEditStringTrimmingList.UnLock;
-var
-  i, index, llen, slen: Integer;
-  ltext: String;
 begin
   dec(fLockCount);
   if (fLockCount = 0) then TrimAfterLock;

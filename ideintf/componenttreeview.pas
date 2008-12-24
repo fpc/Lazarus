@@ -45,12 +45,12 @@ type
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(AComponent: TComponent):integer;
-    procedure DragDrop(Source: TObject; X,Y: Integer); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DragDrop(Source: TObject; X,Y: Integer); override;
     procedure RebuildComponentNodes; virtual;
     procedure UpdateComponentNodesValues; virtual;
     function CreateNodeCaption(APersistent: TPersistent): string; virtual;

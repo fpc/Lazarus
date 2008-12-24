@@ -70,6 +70,8 @@ type
     fBackgroundDefault: TColor;                                                 //mh 2000-10-08
     fForeground: TColor;
     fForegroundDefault: TColor;                                                 //mh 2000-10-08
+    FFrameColor: TColor;
+    FFrameColorDefault: TColor;
     fName: string;
     fStyle: TFontStyles;
     fStyleDefault: TFontStyles;                                                 //mh 2000-10-08
@@ -83,9 +85,11 @@ type
     function GetBackgroundColorStored: boolean;
     function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
+    function GetFrameColorStored: boolean;
 {end}                                                                           //mh 2000-10-08
     procedure SetBackground(Value: TColor);
     procedure SetForeground(Value: TColor);
+    procedure SetFrameColor(const AValue: TColor);
     procedure SetStyle(Value: TFontStyles);
     function GetStyleFromInt: integer;
     procedure SetStyleFromInt(const Value: integer);
@@ -117,6 +121,8 @@ type
       stored GetBackgroundColorStored;                                          //mh 2000-10-08
     property Foreground: TColor read fForeground write SetForeground
       stored GetForegroundColorStored;                                          //mh 2000-10-08
+    property FrameColor: TColor read FFrameColor write SetFrameColor
+      stored GetFrameColorStored;
     property Style: TFontStyles read fStyle write SetStyle //default [];
       stored GetFontStyleStored;                                                //mh 2000-10-08
     {$IFDEF SYN_LAZARUS}
@@ -521,6 +527,10 @@ begin
       fForeground := src.fForeground;
       bChanged := TRUE;
     end;
+    if FFrameColor <> src.FFrameColor then begin
+      FFrameColor := src.FFrameColor;
+      bChanged := True;
+    end;
     if fStyle <> src.fStyle then begin
       fStyle := src.fStyle;
       bChanged := TRUE;
@@ -548,6 +558,7 @@ begin
   inherited Create;
   Background := clNone;
   Foreground := clNone;
+  FFrameColor := clNone;
   fName := attribName;
 end;
 
@@ -564,6 +575,11 @@ end;
 function TSynHighlighterAttributes.GetForegroundColorStored: boolean;
 begin
   Result := fForeground <> fForegroundDefault;
+end;
+
+function TSynHighlighterAttributes.GetFrameColorStored: boolean;
+begin
+  Result := FFrameColor <> FFrameColorDefault;
 end;
 
 function TSynHighlighterAttributes.GetFontStyleStored: boolean;
@@ -767,6 +783,15 @@ procedure TSynHighlighterAttributes.SetForeground(Value: TColor);
 begin
   if fForeGround <> Value then begin
     fForeGround := Value;
+    Changed;
+  end;
+end;
+
+procedure TSynHighlighterAttributes.SetFrameColor(const AValue: TColor);
+begin
+  if FFrameColor <> AValue then
+  begin
+    FFrameColor := AValue;
     Changed;
   end;
 end;

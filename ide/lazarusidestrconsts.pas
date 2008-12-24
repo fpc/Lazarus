@@ -1075,10 +1075,11 @@ resourcestring
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
+  dlgEdMisc = 'Misc';
   dlgEdDisplay = 'Display';
   lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
-  dlgEdColor = 'Color';
+  dlgEdColor = 'Syntax highlight';
   dlgKeyMappingErrors = 'Key mapping errors';
   dlgEdBack = 'Back';
   dlgReport = 'Report';
@@ -1100,9 +1101,14 @@ resourcestring
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
   dlgAltSetClMode = 'Alt-Key sets column mode';
+
+  dlgUndoGroupOptions = 'Undo options:';
+  dlgScrollGroupOptions = 'Scroll options:';
+  dlgIndentsTabsGroupOptions = 'Indents/Tabs options:';
+  dlgMouseGroupOptions = 'Mouse options:';
+  dlgCursorGroupOptions = 'Cursor options:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
-  dlgAutoIdent = 'Auto indent';
-  dlgBracHighlight = 'Bracket highlighting';
+  dlgAutoIndent = 'Auto indent';
   dlgDragDropEd = 'Drag Drop editing';
   dlgDropFiles = 'Drop files';
   dlgGroupUndo = 'Group Undo';
@@ -1130,6 +1136,11 @@ resourcestring
   dlgUseCodeFolding = 'Code folding';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
+  dlgBracketHighlight = 'Bracket highlight';
+  dlgNoBracketHighlight = 'No Highlight';
+  dlgHighlightLeftOfCursor = 'Left Of Cursor';
+  dlgHighlightRightOfCursor = 'Right Of Cursor';
+  gldHighlightBothSidesOfCursor = 'On Both Sides';
   dlgBlockIndent = 'Block indent';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
@@ -1139,7 +1150,7 @@ resourcestring
   dlgShowLineNumbers = 'Show line numbers';
   dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';
-  dlgRightMarginColor = 'Right margin color';
+  dlgGutter = 'Gutter';
   dlgGutterWidth = 'Gutter width';
   dlgGutterColor = 'Gutter Color';
   dlgEditorFont = 'Editor font';
@@ -1155,12 +1166,13 @@ resourcestring
   dlgLang = 'Language';
   dlgClrScheme = 'Color Scheme';
   dlgFileExts = 'File extensions';
-  dlgEdElement = 'Element';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
+  dlgColor = 'Color';
   dlgForecolor = 'Foreground';
+  dlgFrameColor = 'Frame color';
   dlgEdUseDefColor = 'Use default color';
-  dlgTextAttributes = 'Text attributes';
+  dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
   dlgEdUnder = 'Underline';
@@ -1661,6 +1673,7 @@ resourcestring
     +'ns to %s%s%s%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
   uemSetBookmark = '&Set Bookmark';
+  uemToggleBookmark = '&Toggle Bookmark';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
   uemShowUnitInfo = 'Unit Info';
@@ -1859,8 +1872,19 @@ resourcestring
   lisKMSetMarker7 = 'Set marker 7';
   lisKMSetMarker8 = 'Set marker 8';
   lisKMSetMarker9 = 'Set marker 9';
+  lisKMToggleMarker0 = 'Toggle marker 0';
+  lisKMToggleMarker1 = 'Toggle marker 1';
+  lisKMToggleMarker2 = 'Toggle marker 2';
+  lisKMToggleMarker3 = 'Toggle marker 3';
+  lisKMToggleMarker4 = 'Toggle marker 4';
+  lisKMToggleMarker5 = 'Toggle marker 5';
+  lisKMToggleMarker6 = 'Toggle marker 6';
+  lisKMToggleMarker7 = 'Toggle marker 7';
+  lisKMToggleMarker8 = 'Toggle marker 8';
+  lisKMToggleMarker9 = 'Toggle marker 9';
   srkmecGotoMarker            = 'Go to Marker %d';
   srkmecSetMarker             = 'Set Marker %d';
+  srkmecToggleMarker          = 'Toggle Marker %d';
 
   // sourcenotebook
   srkmecJumpToEditor          = 'Focus to source editor';
@@ -3943,6 +3967,10 @@ resourcestring
   lisProductName = 'Product Name:';
   lisProductVersion = 'Product Version:';
   lisSetDefault = 'Set default';
+  lisSelectedLeftNeighbour = '(selected left neighbour)';
+  lisSelectedRightNeighbour = '(selected right neighbour)';
+  lisSelectedTopNeighbour = '(selected top neighbour)';
+  lisSelectedBottomNeighbour = '(selected bottom neighbour)';
 
 implementation
 

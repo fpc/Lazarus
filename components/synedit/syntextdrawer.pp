@@ -71,7 +71,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLType, LCLIntf, GraphType,
+  LCLProc, LCLType, LCLIntf, GraphType, SynEditMiscProcs,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -210,6 +210,7 @@ type
     // current font attributes
     FColor: TColor;
     FBkColor: TColor;
+    FFrameColor: TColor;
     FCharExtra: Integer;
 
     // Begin/EndDrawing calling count
@@ -224,6 +225,7 @@ type
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
     {$ENDIF}
+    function CreateColorPen(AColor: TColor): HPen;
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
     property FontStock: TheFontStock read FFontStock;
@@ -244,6 +246,7 @@ type
     procedure SetStyle(Value: TFontStyles); virtual;
     procedure SetForeColor(Value: TColor); virtual;
     procedure SetBackColor(Value: TColor); virtual;
+    procedure SetFrameColor(AValue: TColor); virtual;
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
     property CharWidth: Integer read GetCharWidth;
@@ -252,6 +255,7 @@ type
     property BaseStyle: TFontStyles write SetBaseStyle;
     property ForeColor: TColor write SetForeColor;
     property BackColor: TColor write SetBackColor;
+    property FrameColor: TColor write SetFrameColor;
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
     {$IFDEF SYN_LAZARUS}
@@ -663,6 +667,12 @@ begin
   // Result(CharWidth)
   with ABC do
     Result := abcA + Integer(abcB) + abcC + TM.tmOverhang;
+  {$IFDEF SYN_LAZARUS}
+  // SynEdit would crash if a (defect) font returns 0.
+  if Result <= 0 then result := TM.tmAveCharWidth + Max(TM.tmOverhang,0);
+  if Result <= 0 then result := 1 + CharHeight * 8 div 10;
+  {$ENDIF}
+
   // pCharHeight
   if Assigned(pCharHeight) then
     pCharHeight^ := Abs(TM.tmHeight) {+ TM.tmInternalLeading};
@@ -956,6 +966,7 @@ begin
   SetBaseFont(ABaseFont);
   FColor := clWindowText;
   FBkColor := clWindow;
+  FFrameColor := clNone;
 end;
 
 destructor TheTextDrawer.Destroy;
@@ -980,6 +991,18 @@ begin
   Result:=FFontStock.BaseFont.IsMonoSpace;
   //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
+
+function TheTextDrawer.CreateColorPen(AColor: TColor): HPen;
+var
+  lp: TLogPen;
+begin
+  lp.lopnColor := ColorToRGB(AColor);
+  lp.lopnWidth := Point(1, 0);
+  lp.lopnStyle := PS_SOLID;
+
+  Result := CreatePenIndirect(lp);
+end;
+
 {$ENDIF}
 
 procedure TheTextDrawer.ReleaseETODist;
@@ -1021,10 +1044,11 @@ begin
   Dec(FDrawingCount);
   if FDrawingCount <= 0 then
   begin
-    if FDC <> 0 then begin
+    if FDC <> 0 then
+    begin
       {$IFDEF SYN_LAZARUS}
       if FSavedFont <> 0 then
-        SelectObject(FDC,FSavedFont);
+        SelectObject(FDC, FSavedFont);
       {$ENDIF}
       RestoreDC(FDC, FSaveDC);
     end;
@@ -1122,6 +1146,14 @@ begin
   end;
 end;
 
+procedure TheTextDrawer.SetFrameColor(AValue: TColor);
+begin
+  if FFrameColor <> AValue then
+  begin
+    FFrameColor := AValue;
+  end;
+end;
+
 procedure TheTextDrawer.SetCharExtra(Value: Integer);
 begin
   if FCharExtra <> Value then
@@ -1184,6 +1216,8 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
 var
   NeedDistArray: Boolean;
   DistArray: PInteger;
+  Pen, OldPen: HPen;
+  Points: array[0..4] of TPoint;
 begin
   {$IFDEF SYN_LAZARUS}
   NeedDistArray:= (FCharExtra > 0) or not MonoSpace;
@@ -1198,13 +1232,29 @@ begin
   if UseUTF8 then
     LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
   else
-    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
+    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
   {$ELSE}
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
   {$ENDIF}
+  if FFrameColor <> clNone then
+  begin
+    with ARect do
+    begin
+      Points[0] := TopLeft;
+      Points[1] := Point(Right - 1, Top);
+      Points[2] := Point(Right - 1, Bottom - 1);
+      Points[3] := Point(Left, Bottom - 1);
+      Points[4] := TopLeft;
+    end;
+
+    Pen := CreateColorPen(FFrameColor);
+    OldPen := SelectObject(FDC, Pen);
+    Polyline(FDC, @Points, 5);
+    DeleteObject(SelectObject(FDC, OldPen));
+  end;
 end;
 
 procedure TheTextDrawer.ReleaseTemporaryResources;

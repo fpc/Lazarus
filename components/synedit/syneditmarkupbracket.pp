@@ -29,78 +29,104 @@ uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls, LCLProc;
 
 type
-
+  TSynEditBracketHighlightStyle = (
+    sbhsLeftOfCursor,
+    sbhsRightOfCursor,
+    sbhsBoth
+  );
   { TSynEditMarkupBracket }
 
   TSynEditMarkupBracket = class(TSynEditMarkup)
   private
     // Physical Position
-    fBracketHighlightPos: TPoint;
-    fBracketHighlightAntiPos: TPoint;
+    FBracketHighlightPos: TPoint;
+    FBracketHighlightAntiPos: TPoint;
+    FHighlightStyle: TSynEditBracketHighlightStyle;
+    procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
   protected
     procedure FindMatchingBracketPair(PhysCaret: TPoint;
       var StartBracket, EndBracket: TPoint);
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit: TCustomControl);
 
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
 
     procedure InvalidateBracketHighlight;
+    property HighlightStyle: TSynEditBracketHighlightStyle read FHighlightStyle write SetHighlightStyle;
   end;
 
 implementation
-uses SynEdit;
-
+uses
+  SynEdit;
 
 { TSynEditMarkupBracket }
 
 constructor TSynEditMarkupBracket.Create(ASynEdit : TCustomControl);
 begin
   inherited Create(ASynEdit);
-  fBracketHighlightPos.Y := -1;
-  fBracketHighlightAntiPos.Y := -1;
+  FBracketHighlightPos.Y := -1;
+  FBracketHighlightAntiPos.Y := -1;
+  FHighlightStyle := sbhsBoth;
   MarkupInfo.Foreground := clNone;
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [fsBold];
   MarkupInfo.StyleMask := [];
 end;
 
-procedure TSynEditMarkupBracket.FindMatchingBracketPair(PhysCaret : TPoint;
-  var StartBracket, EndBracket : TPoint);
+procedure TSynEditMarkupBracket.SetHighlightStyle(
+  const AValue: TSynEditBracketHighlightStyle);
+begin
+  if FHighlightStyle <> AValue then
+  begin
+    FHighlightStyle := AValue;
+    InvalidateBracketHighlight;
+  end;
+end;
+
+procedure TSynEditMarkupBracket.FindMatchingBracketPair(PhysCaret: TPoint;
+  var StartBracket, EndBracket: TPoint);
+const
+  Brackets: set of Char = ['(',')','{','}','[',']'];
 var
   StartLine: string;
   LogCaretXY: TPoint;
   x: Integer;
 begin
-  StartBracket.Y:=-1;
-  EndBracket.Y:=-1;
-  if (PhysCaret.Y<1) or (PhysCaret.Y>Lines.Count) or (PhysCaret.X<1) then exit;
+  StartBracket.Y := -1;
+  EndBracket.Y := -1;
+  if (PhysCaret.Y < 1) or (PhysCaret.Y > Lines.Count) or (PhysCaret.X < 1) then
+    Exit;
+
   StartLine := Lines[PhysCaret.Y - 1];
 
-  // check for bracket, before cursur
-  if PhysCaret.x > 1 then begin
+  // check for bracket, left of cursor
+  if (HighlightStyle in [sbhsLeftOfCursor, sbhsBoth]) and (PhysCaret.x > 1) then
+  begin
     // need to dec PhysCaret, in case we are in the middle of a tab
     dec(PhysCaret.x);
-    LogCaretXY:=TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
     x := LogCaretXY.x;
-    if (x <= length(StartLine))
-    and (StartLine[x] in ['(',')','{','}','[',']']) then begin
-      StartBracket:=PhysCaret;
-      EndBracket:=TSynEdit(SynEdit).FindMatchingBracket(PhysCaret,false,false,false,false);
-      exit;
+    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
+    begin
+      StartBracket := PhysCaret;
+      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      Exit;
     end;
     // check for bracket after caret
     inc(PhysCaret.x);;
   end;
 
-  LogCaretXY:=TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
-  x := LogCaretXY.x;
-  if (length(StartLine) < x)
-  or (not (StartLine[x] in ['(',')','{','}','[',']'])) then exit;
-
-  StartBracket:=PhysCaret;
-  EndBracket:=TSynEdit(SynEdit).FindMatchingBracket(PhysCaret,false,false,false,false);
+  if (HighlightStyle in [sbhsRightOfCursor, sbhsBoth]) then
+  begin
+    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    x := LogCaretXY.x;
+    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
+    begin
+      StartBracket := PhysCaret;
+      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+    end;
+  end;
 end;
 
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
@@ -122,62 +148,60 @@ begin
   end;
 
   // invalidate old bracket highlighting, if changed
-  if (fBracketHighlightPos.Y > 0)
-  and ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
+  if (FBracketHighlightPos.Y > 0)
+  and ((FBracketHighlightPos.Y <> NewPos.Y) or (FBracketHighlightPos.X <> NewPos.X))
   then begin
-    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight A Y=',dbgs(fBracketHighlightPos));
-    InvalidateSynLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
+    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight A Y=',dbgs(FBracketHighlightPos));
+    InvalidateSynLines(FBracketHighlightPos.Y,FBracketHighlightPos.Y);
   end;
 
-  if (fBracketHighlightAntiPos.Y > 0)
-  and (fBracketHighlightPos.Y <> fBracketHighlightAntiPos.Y)
-  and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
+  if (FBracketHighlightAntiPos.Y > 0)
+  and (FBracketHighlightPos.Y <> FBracketHighlightAntiPos.Y)
+  and ((FBracketHighlightAntiPos.Y <> NewAntiPos.Y) or (FBracketHighlightAntiPos.X <> NewAntiPos.X))
   then
-    InvalidateSynLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
+    InvalidateSynLines(FBracketHighlightAntiPos.Y,FBracketHighlightAntiPos.Y);
 
   // invalidate new bracket highlighting, if changed
   if NewPos.Y>0 then begin
     //DebugLn('TCustomSynEdit.InvalidateBracketHighlight C Y=',dbgs(NewPos.Y),' X=',dbgs(NewPos.X),' Y=',dbgs(NewAntiPos.Y),' X=',dbgs(NewAntiPos.X));
-    if ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
+    if ((FBracketHighlightPos.Y <> NewPos.Y) or (FBracketHighlightPos.X <> NewPos.X))
     then InvalidateSynLines(NewPos.Y, NewPos.Y);
 
     if ((NewPos.Y <> NewAntiPos.Y)
-        or ((fBracketHighlightPos.Y = NewPos.Y) and (fBracketHighlightPos.X = NewPos.X))
+        or ((FBracketHighlightPos.Y = NewPos.Y) and (FBracketHighlightPos.X = NewPos.X))
        )
-    and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
+    and ((FBracketHighlightAntiPos.Y <> NewAntiPos.Y) or (FBracketHighlightAntiPos.X <> NewAntiPos.X))
     then InvalidateSynLines(NewAntiPos.Y, NewAntiPos.Y);
   end;
-  fBracketHighlightPos     := NewPos;
-  fBracketHighlightAntiPos := NewAntiPos;
+  FBracketHighlightPos     := NewPos;
+  FBracketHighlightAntiPos := NewAntiPos;
 //  DebugLn('TCustomSynEdit.InvalidateBracketHighlight C P=',dbgs(NewPos),' A=',dbgs(NewAntiPos), ' LP=',dbgs(fLogicalPos),' LA',dbgs(fLogicalAntiPos));
 end;
 
-
-
-function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
 begin
   Result := nil;
-  if ((fBracketHighlightPos.y = aRow) and  (fBracketHighlightPos.x = aCol))
-  or ((fBracketHighlightAntiPos.y = aRow) and  (fBracketHighlightAntiPos.x = aCol))
+  if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aCol))
+  or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aCol))
   then Result := MarkupInfo;
 end;
 
-function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
+function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
 begin
   Result := -1;
-  if (fBracketHighlightPos.y = aRow) then begin
-    if  (fBracketHighlightPos.x > aCol)
-    then Result := fBracketHighlightPos.x
-    else if  (fBracketHighlightPos.x + 1 > aCol)
-    then Result := fBracketHighlightPos.x + 1; // end of bracket
+  if (FBracketHighlightPos.y = aRow) then begin
+    if  (FBracketHighlightPos.x > aCol)
+    then Result := FBracketHighlightPos.x
+    else if  (FBracketHighlightPos.x + 1 > aCol)
+    then Result := FBracketHighlightPos.x + 1; // end of bracket
   end;
-  if (fBracketHighlightAntiPos.y = aRow) then begin
-    if  (fBracketHighlightAntiPos.x > aCol)
-    and ((fBracketHighlightAntiPos.x < Result) or (Result < 0))
-    then Result := fBracketHighlightAntiPos.x
-    else if  (fBracketHighlightAntiPos.x + 1 > aCol)
-    and ((fBracketHighlightAntiPos.x + 1 < Result) or (Result < 0))
-    then Result := fBracketHighlightAntiPos.x + 1;
+  if (FBracketHighlightAntiPos.y = aRow) then begin
+    if  (FBracketHighlightAntiPos.x > aCol)
+    and ((FBracketHighlightAntiPos.x < Result) or (Result < 0))
+    then Result := FBracketHighlightAntiPos.x
+    else if  (FBracketHighlightAntiPos.x + 1 > aCol)
+    and ((FBracketHighlightAntiPos.x + 1 < Result) or (Result < 0))
+    then Result := FBracketHighlightAntiPos.x + 1;
   end
 end;
 

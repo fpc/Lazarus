@@ -2125,7 +2125,8 @@ begin
 
   // inherited Linker options
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true,coptParsed);
+    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,
+      not (cclAbsolutePaths in Flags),coptParsed);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;

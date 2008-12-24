@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
   Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, options_editor_general,
-  IDEProcs, ColorBox;
+  IDEProcs, ColorBox, SynEditMarkupBracket;
 
 type
 
@@ -36,8 +36,13 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
+    BracketCombo: TComboBox;
+    BracketLabel: TLabel;
+    FrameColorBox: TColorBox;
     BackGroundLabel: TLabel;
+    FrameColorLabel: TLabel;
     BackGroundUseDefaultCheckBox: TCheckBox;
+    FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
@@ -55,7 +60,6 @@ type
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
     UseSyntaxHighlightCheckBox: TCheckBox;
-    ColorElementLabel: TLabel;
     ColorElementListBox: TListBox;
     ColorPreview: TSynEdit;
     ColorSchemeComboBox: TComboBox;
@@ -68,7 +72,7 @@ type
     LanguageLabel: TLabel;
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
-    TextAttributesGroupBox: TGroupBox;
+    ElementAttributesGroupBox: TGroupBox;
     procedure ColorElementListBoxClick(Sender: TObject);
     procedure ColorElementListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ForegroundColorBoxChange(Sender: TObject);
@@ -84,6 +88,9 @@ type
     // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
     CurHighlightElementIsExtra: Boolean;
+    CurHighlightElementIsSingle: Boolean;
+    CurSingleElement: TSingleColorAttribute;
+
     UpdatingColor: Boolean;
     FFileExtensions: TStringList;  // list of LanguageName=FileExtensions
     FHighlighterList: TStringList; // list of "ColorScheme" Data=TSrcIDEHighlighter
@@ -105,6 +112,11 @@ type
     procedure ClearHighlighters;
     procedure InvalidatePreviews;
     procedure SetPreviewSynInAllPreviews;
+
+    function GetSingleColor(AElement: TSingleColorAttribute): TColor;
+    procedure SetSingleColor(AEditor: TPreviewEditor;
+      AElement: TSingleColorAttribute; AColor: TColor); overload;
+    procedure SetSingleColor(AElement: TSingleColorAttribute; AColor: TColor); overload;
 
     procedure OnStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure OnSpecialLineMarkup(Sender: TObject; Line: Integer;
@@ -158,19 +170,36 @@ procedure TEditorColorOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
 begin
   if Sender = ForegroundColorBox then
   begin
-    if (CurHighlightElement = nil) or UpdatingColor then
-      exit;
-    CurHighlightElement.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
+    if ((CurHighlightElement = nil) and not CurHighlightElementIsSingle) or UpdatingColor then
+      Exit;
+    UpdatingColor := True;
+    if CurHighlightElementIsSingle then
+      SetSingleColor(CurSingleElement, DefaultToNone(ForeGroundColorBox.Selected))
+    else
+      CurHighlightElement.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
     ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected = clDefault;
     InvalidatePreviews;
+    UpdatingColor := False;
   end;
   if Sender = BackGroundColorBox then
   begin
     if (CurHighlightElement = nil) or UpdatingColor then
-      exit;
+      Exit;
+    UpdatingColor := True;
     CurHighlightElement.Background := DefaultToNone(BackGroundColorBox.Selected);
     BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
     InvalidatePreviews;
+    UpdatingColor := False;
+  end;
+  if Sender = FrameColorBox then
+  begin
+    if (CurHighlightElement = nil) or UpdatingColor then
+      Exit;
+    UpdatingColor := True;
+    CurHighlightElement.FrameColor := DefaultToNone(FrameColorBox.Selected);
+    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
+    InvalidatePreviews;
+    UpdatingColor := False;
   end;
 end;
 
@@ -218,10 +247,27 @@ begin
           InvalidatePreviews;
         end;
       end;
+    if Sender = FrameColorUseDefaultCheckBox then
+      if UpdatingColor = False then
+      begin
+        if FrameColorUseDefaultCheckBox.Checked then
+        begin
+          FrameColorBox.Tag := FrameColorBox.Selected;
+          FrameColorBox.Selected := clDefault;
+        end
+        else
+          FrameColorBox.Selected := FrameColorBox.Tag;
+        if DefaultToNone(FrameColorBox.Selected) <> CurHighlightElement.FrameColor then
+        begin
+          CurHighlightElement.FrameColor := DefaultToNone(FrameColorBox.Selected);
+          InvalidatePreviews;
+        end;
+      end;
     if Sender = TextBoldCheckBox then
-      if CurHighlightElementIsExtra
-      then TextStyleRadioOnChange(Sender)
-      else if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
+      if CurHighlightElementIsExtra then
+        TextStyleRadioOnChange(Sender)
+      else
+      if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
       begin
         if TextBoldCheckBox.Checked then
           CurHighlightElement.Style := CurHighlightElement.Style + [fsBold]
@@ -230,9 +276,10 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextItalicCheckBox then
-      if CurHighlightElementIsExtra
-      then TextStyleRadioOnChange(Sender)
-      else if TextItalicCheckBox.Checked then
+      if CurHighlightElementIsExtra then
+        TextStyleRadioOnChange(Sender)
+      else
+      if TextItalicCheckBox.Checked then
       begin
         if not (fsItalic in CurHighlightElement.Style) then
         begin
@@ -247,9 +294,10 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextUnderlineCheckBox then
-      if CurHighlightElementIsExtra
-      then TextStyleRadioOnChange(Sender)
-      else if TextUnderlineCheckBox.Checked then
+      if CurHighlightElementIsExtra then
+        TextStyleRadioOnChange(Sender)
+      else
+      if TextUnderlineCheckBox.Checked then
       begin
         if not (fsUnderline in CurHighlightElement.Style) then
         begin
@@ -263,10 +311,43 @@ begin
         CurHighlightElement.Style := CurHighlightElement.Style - [fsUnderline];
         InvalidatePreviews;
       end;
+  end
+  else
+  if CurHighlightElementIsSingle then
+  begin
+    if Sender = ForeGroundUseDefaultCheckBox then
+      if UpdatingColor = False then
+      begin
+        UpdatingColor := True;
+        if ForeGroundUseDefaultCheckBox.Checked then
+        begin
+          ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+          ForegroundColorBox.Selected := clDefault;
+        end
+        else
+          ForegroundColorBox.Selected := ForegroundColorBox.Tag;
+        if DefaultToNone(ForegroundColorBox.Selected) <> GetSingleColor(CurSingleElement) then
+        begin
+          SetSingleColor(CurSingleElement, DefaultToNone(ForegroundColorBox.Selected));
+          InvalidatePreviews;
+        end;
+        UpdatingColor := False;
+      end;
   end;
 end;
 
 procedure TEditorColorOptionsFrame.ComboBoxOnExit(Sender: TObject);
+
+  procedure SetSingleColors(AColorScheme: String);
+  var
+    Scheme: TPascalColorScheme;
+    s: TSingleColorAttribute;
+  begin
+    Scheme := EditorOpts.GetColorScheme(AColorScheme);
+    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+      SetSingleColor(s, Scheme.Single[s]);
+  end;
+
 var
   Box: TComboBox absolute Sender;
   NewVal, a: integer;
@@ -283,6 +364,7 @@ begin
         // change the colorscheme
         SetCurColorScheme(PreviewSyn.LanguageName, Box.Text);
         SetComboBoxText(Box, Box.Text);
+        SetSingleColors(Box.Text);
         PreviewSyn := GetHighlighter(TCustomSynClass(PreviewSyn.ClassType),
           Box.Text, True);
         SetPreviewSynInAllPreviews;
@@ -304,6 +386,7 @@ begin
   end
   else
   if Sender = LanguageComboBox then
+  begin
     if Box.Items.IndexOf(Box.Text) < 0 then
       SetComboBoxText(Box, PreviewSyn.LanguageName)// unknown language -> switch back
     else
@@ -338,6 +421,23 @@ begin
         InvalidatePreviews;
       end;
     end;
+  end
+  else
+  if Sender = BracketCombo then
+  begin
+    with GeneralPage do
+      for a := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[a] <> nil then
+        begin
+          if BracketCombo.ItemIndex = 0 then
+            PreviewEdits[a].Options := PreviewEdits[a].Options - [eoBracketHighlight]
+          else
+          begin
+            PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
+            PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+          end;
+        end;
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
@@ -417,13 +517,23 @@ end;
 
 procedure TEditorColorOptionsFrame.ShowCurAttribute;
 begin
-  if (CurHighlightElement = nil) or UpdatingColor then
-    exit;
+  if ((CurHighlightElement = nil) and not CurHighlightElementIsSingle) or UpdatingColor then
+    Exit;
   UpdatingColor := True;
 
   TextBoldRadioPanel.Visible := CurHighlightElementIsExtra;
   TextItalicRadioPanel.Visible := CurHighlightElementIsExtra;
   TextUnderlineRadioPanel.Visible := CurHighlightElementIsExtra;
+
+  TextBoldCheckBox.Enabled := not CurHighlightElementIsSingle;
+  TextItalicCheckBox.Enabled := not CurHighlightElementIsSingle;
+  TextUnderlineCheckBox.Enabled := not CurHighlightElementIsSingle;
+
+  if CurHighlightElementIsSingle then
+    ForeGroundLabel.Caption := dlgColor
+  else
+    ForeGroundLabel.Caption := dlgForecolor;
+
   if CurHighlightElementIsExtra then
   begin
     TextBoldCheckBox.Checked :=
@@ -466,25 +576,49 @@ begin
       TextUnderlineRadioOff.Checked := True;
   end
   else
+  if not CurHighlightElementIsSingle then
   begin
     TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
     TextItalicCheckBox.Checked := fsItalic in CurHighlightElement.Style;
     TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
   end;
 
-  ForegroundColorBox.Selected := NoneToDefault(CurHighlightElement.Foreground);
-  if ForegroundColorBox.Selected = clDefault then
-    ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
-  else
-    ForegroundColorBox.Tag := ForegroundColorBox.Selected;
-  ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected = clDefault;
+  BackGroundColorBox.Enabled := not CurHighlightElementIsSingle;
+  FrameColorBox.Enabled := not CurHighlightElementIsSingle;
+  BackGroundUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
+  FrameColorUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
+  if not CurHighlightElementIsSingle then
+  begin
+    ForegroundColorBox.Selected := NoneToDefault(CurHighlightElement.Foreground);
+    if ForegroundColorBox.Selected = clDefault then
+      ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
+    else
+      ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+    ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected = clDefault;
 
-  BackGroundColorBox.Selected := NoneToDefault(CurHighlightElement.Background);
-  if BackGroundColorBox.Selected = clDefault then
-    BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
+    BackGroundColorBox.Selected := NoneToDefault(CurHighlightElement.Background);
+    if BackGroundColorBox.Selected = clDefault then
+      BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
+    else
+      BackGroundColorBox.Tag := BackGroundColorBox.Selected;
+    BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
+
+    FrameColorBox.Selected := NoneToDefault(CurHighlightElement.FrameColor);
+    if FrameColorBox.Selected = clDefault then
+      FrameColorBox.Tag := FrameColorBox.DefaultColorColor
+    else
+      FrameColorBox.Tag := FrameColorBox.Selected;
+    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
+  end
   else
-    BackGroundColorBox.Tag := BackGroundColorBox.Selected;
-  BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
+  begin
+    ForegroundColorBox.Selected := NoneToDefault(GetSingleColor(CurSingleElement));
+    if ForegroundColorBox.Selected = clDefault then
+      ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
+    else
+      ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+    ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected = clDefault;
+  end;
 
   UpdatingColor := False;
 end;
@@ -493,10 +627,12 @@ procedure TEditorColorOptionsFrame.FindCurHighlightElement;
 var
   a, i: Integer;
   h: TAdditionalHilightAttribute;
+  s: TSingleColorAttribute;
   Old: TSynHighlightElement;
 begin
   Old := CurHighlightElement;
   CurHighlightElement := nil;
+  CurSingleElement := Low(TSingleColorAttribute);
   a := ColorElementListBox.ItemIndex;
   if (a >= 0) then
   begin
@@ -512,12 +648,30 @@ begin
     end;
   end;
 
-  if Old <> CurHighlightElement then
+  if (Old <> CurHighlightElement) or (CurHighlightElement = nil) then
   begin
     CurHighlightElementIsExtra := False;
-    for h := Low(TAdditionalHilightAttribute) to high(TAdditionalHilightAttribute) do
-      if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h] then
-        CurHighlightElementIsExtra := true;
+    CurHighlightElementIsSingle := False;
+
+    if CurHighlightElement <> nil then
+    begin
+      for h := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
+        if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h] then
+        begin
+          CurHighlightElementIsExtra := True;
+          break;
+        end;
+    end
+    else
+    begin
+      for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+        if ColorElementListBox.Items[a] = SingleColorAttributes[s] then
+        begin
+          CurHighlightElementIsSingle := True;
+          CurSingleElement := s;
+          break;
+        end;
+    end;
     ShowCurAttribute;
   end;
 end;
@@ -525,6 +679,7 @@ end;
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
 var
   i: Integer;
+  s: TSingleColorAttribute;
 begin
   with ColorElementListBox.Items do
   begin
@@ -534,11 +689,18 @@ begin
     for i := 0 to PreviewSyn.AttrCount - 1 do
       if PreviewSyn.Attribute[i].Name <> '' then
         Add(PreviewSyn.Attribute[i].Name);
+
+    // add single color attributes there
+    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+      Add(SingleColorAttributes[s]);
+
     EndUpdate;
   end;
 
   CurHighlightElement := nil;
+  CurSingleElement := Low(TSingleColorAttribute);
   CurHighlightElementIsExtra := False;
+  CurHighlightElementIsSingle := False;
   if ColorElementListBox.Items.Count > 0 then
     ColorElementListBox.Selected[0] := True;
   FindCurHighlightElement;
@@ -551,6 +713,8 @@ var
   PascalSyn: TPreviewPasSyn;
   i, j: Integer;
   CurSynClass: TCustomSynClass;
+  Scheme: TPascalColorScheme;
+  s: TSingleColorAttribute;
 begin
   PascalSyn := TPreviewPasSyn(GetHighlighter(TPreviewPasSyn,
     ColorSchemeComboBox.Text, True));
@@ -560,15 +724,15 @@ begin
     EditorOpts.AddSpecialHilightAttribsToHighlighter(DefaultSyn);
     EditorOpts.ReadDefaultsForHighlighterSettings(DefaultSyn,
       ColorSchemeComboBox.Text, PascalSyn);
+    Scheme := EditorOpts.GetColorScheme(ColorSchemeComboBox.Text);
     for i := 0 to DefaultSyn.AttrCount - 1 do
     begin
       if DefaultSyn.Attribute[i].Name = '' then
         continue;
       if OnlySelected then
       begin
-        if (DefaultSyn.Attribute[i].Name = CurHighlightElement.Name) then
-          CopyHiLightAttributeValues(DefaultSyn.Attribute[i],
-            CurHighlightElement);
+        if (CurHighlightElement <> nil) and (DefaultSyn.Attribute[i].Name = CurHighlightElement.Name) then
+          CopyHiLightAttributeValues(DefaultSyn.Attribute[i], CurHighlightElement);
       end
       else
         for j := 0 to PreviewSyn.AttrCount - 1 do
@@ -576,10 +740,16 @@ begin
             CopyHiLightAttributeValues(DefaultSyn.Attribute[i],
               PreviewSyn.Attribute[j]);
     end;
+    if OnlySelected then
+      SetSingleColor(CurSingleElement, Scheme.Single[CurSingleElement])
+    else
+      for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+        SetSingleColor(s, Scheme.Single[s])
   finally
     DefaultSyn.Free;
   end;
   ShowCurAttribute;
+  InvalidatePreviews;
 end;
 
 function TEditorColorOptionsFrame.GetCurColorScheme(const LanguageName: String): String;
@@ -636,6 +806,15 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.InvalidatePreviews;
+
+  procedure SetSingleColors(AEditor: TPreviewEditor);
+  var
+    s: TSingleColorAttribute;
+  begin
+    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+      SetSingleColor(AEditor, s, GetSingleColor(s));
+  end;
+
 var
   a: Integer;
 begin
@@ -644,6 +823,7 @@ begin
       if PreviewEdits[a] <> nil then
       begin
         EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a]);
+        SetSingleColors(PreviewEdits[a]);
         PreviewEdits[a].Invalidate;
       end;
 end;
@@ -659,6 +839,29 @@ begin
           PreviewEdits[a].Highlighter := PreviewSyn
         else
           PreviewEdits[a].Highlighter := nil;
+end;
+
+function TEditorColorOptionsFrame.GetSingleColor(AElement: TSingleColorAttribute): TColor;
+begin
+  case AElement of
+    scaGutter: Result := ColorPreview.Gutter.Color;
+    scaRightMargin: Result := ColorPreview.RightEdgeColor;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.SetSingleColor(
+  AEditor: TPreviewEditor; AElement: TSingleColorAttribute; AColor: TColor);
+begin
+  case AElement of
+    scaGutter: AEditor.Gutter.Color := AColor;
+    scaRightMargin: AEditor.RightEdgeColor := AColor;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.SetSingleColor(
+  AElement: TSingleColorAttribute; AColor: TColor);
+begin
+  SetSingleColor(ColorPreview, AElement, AColor);
 end;
 
 function TEditorColorOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -684,7 +887,9 @@ begin
   FDialog := ADialog;
   UpdatingColor := False;
   CurHighlightElement := nil;
+  CurSingleElement := Low(TSingleColorAttribute);
   CurHighlightElementIsExtra := False;
+  CurHighlightElementIsSingle := False;
 
   UseSyntaxHighlightCheckBox.Caption := dlgUseSyntaxHighlight;
   LanguageLabel.Caption := dlgLang;
@@ -707,14 +912,15 @@ begin
   end;
 
   FileExtensionsLabel.Caption := dlgFileExts;
-  ColorElementLabel.Caption := dlgEdElement;
   SetAttributeToDefaultButton.Caption := dlgSetElementDefault;
   SetAllAttributesToDefaultButton.Caption := dlgSetAllElementDefault;
   ForeGroundLabel.Caption := dlgForecolor;
   ForeGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   BackGroundLabel.Caption := dlgBackColor;
   BackGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
-  TextAttributesGroupBox.Caption := dlgTextAttributes;
+  FrameColorLabel.Caption := dlgFrameColor;
+  FrameColorUseDefaultCheckBox.Caption := dlgEdUseDefColor;
+  ElementAttributesGroupBox.Caption := dlgElementAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;
@@ -730,6 +936,12 @@ begin
   TextUnderlineRadioOn.Caption := dlgEdOn;
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
+
+  BracketLabel.Caption := dlgBracketHighlight;
+  BracketCombo.Items.Add(dlgNoBracketHighlight);
+  BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
+  BracketCombo.Items.Add(dlgHighlightRightOfCursor);
+  BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
 
   with GeneralPage do
   begin
@@ -755,6 +967,10 @@ begin
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlightCheckBox.Checked := UseSyntaxHighlight;
+    if eoBracketHighlight in SynEditOptions then
+      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
+    else
+      BracketCombo.ItemIndex := 0;
 
     with LanguageComboBox do
       with Items do
@@ -792,6 +1008,7 @@ begin
     SetComboBoxText(LanguageComboBox, LanguageComboBox.Text);
     ColorSchemeComboBox.Text := GetCurColorScheme(PreviewSyn.LanguageName);
     SetComboBoxText(ColorSchemeComboBox, ColorSchemeComboBox.Text);
+
     FillColorElementListBox;
     FindCurHighlightElement;
     ShowCurAttribute;
@@ -800,13 +1017,32 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+
+  procedure WriteSingleColor(s: TSingleColorAttribute; AColor: TColor);
+  begin
+    case s of
+      scaGutter: TEditorOptions(AOptions).GutterColor := AColor;
+      scaRightMargin: TEditorOptions(AOptions).RightMarginColor := AColor;
+    end;
+  end;
+
 var
   i, j: Integer;
   Syn: TSrcIDEHighlighter;
+  s: TSingleColorAttribute;
 begin
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Checked;
+
+    if BracketCombo.ItemIndex = 0 then
+      SynEditOptions := SynEditOptions - [eoBracketHighlight]
+    else
+    begin
+      SynEditOptions := SynEditOptions + [eoBracketHighlight];
+      BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
+    end;
+
     if FFileExtensions <> nil then
     begin
       for i := 0 to FFileExtensions.Count - 1 do
@@ -832,6 +1068,10 @@ begin
         WriteHighlighterSettings(Syn, FHighlighterList[i]);
       end;
     end;
+
+    // write single colors
+    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
+      WriteSingleColor(s, GetSingleColor(s));
   end;
 end;
 
@@ -935,6 +1175,5 @@ end;
 
 initialization
   {$I options_editor_color.lrs}
-  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors, EdtOptionsDisplay);
+  RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors);
 end.
-

@@ -711,7 +711,7 @@ var
       for i:=MinY to MaxY do
         inc(NeededLen,length(Lines[i]));
       e:=LineEnding;
-      inc(NeededLen,length(e)*(EndPos.Y-StartPos.Y));
+      inc(NeededLen,length(e)*(MaxY-MinY+1));
       // copy lines
       SetLength(Result,NeededLen);
       p:=1;

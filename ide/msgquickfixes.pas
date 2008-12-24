@@ -190,6 +190,8 @@ var
   MissingUnitname: String;
   NamePos, InPos: Integer;
   Line, Col: Integer;
+  UsedByUnit: String;
+  NewFilename: String;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -200,18 +202,38 @@ begin
     exit;
   end;
   MissingUnitname:=REVar(1);
+  if REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+) used by ([a-z_0-9]+)','I') then begin
+    UsedByUnit:=REVar(2);
+    if SysUtils.CompareText(UsedByUnit,ExtractFileNameOnly(CodeBuf.Filename))<>0 then
+    begin
+      // the message belongs to another unit
+      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+      if NewFilename='' then begin
+        DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
+        exit;
+      end;
+      CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
+      if CodeBuf=nil then begin
+        DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
+        exit;
+      end;
+    end;
+  end;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
   if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,
     NamePos,InPos)
   then begin
-    DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors');
+    DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
     exit;
   end;
   if InPos=0 then ;
   CodeBuf.AbsoluteToLineCol(NamePos,Line,Col);
   if (Line>0) and (Col>0) then begin
     //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
-    Msg.SetSourcePosition('',Line,Col);
+    NewFilename:=CodeBuf.Filename;
+    if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
+      NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
+    Msg.SetSourcePosition(NewFilename,Line,Col);
   end;
 end;
 

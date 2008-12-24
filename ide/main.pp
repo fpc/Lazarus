@@ -131,6 +131,7 @@ uses
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
   options_editor_color, options_editor_codetools, options_editor_codefolding,
+  options_editor_general_misc,
   options_codetools_general, options_codetools_codecreation,
   options_codetools_wordpolicy, options_codetools_linesplitting,
   options_codetools_space, options_codetools_identifiercompletion;
@@ -9226,9 +9227,10 @@ begin
 
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams :=
-      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[]) + ' ' +
-      PrepareCmdLineOption(SrcFilename);
+      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[cclAbsolutePaths])
+             + ' ' + PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
     // warn for ambiguous files
@@ -11155,8 +11157,9 @@ end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
 var
-  SearchPath, ProjectDir: string;
+  ProjectDir: string;
   AnUnitInfo: TUnitInfo;
+  AnUnitName: String;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
@@ -11171,11 +11174,11 @@ begin
     exit;
   end;
   // search in search path
+  AnUnitName:=ExtractFileNameOnly(AFilename);
   if not Project1.IsVirtual then begin
-    // ToDo: use the CodeTools way to find the pascal source
+    // use the CodeTools way to find the pascal source
     ProjectDir:=Project1.ProjectDirectory;
-    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ProjectDir);
-    Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(ProjectDir,AnUnitName,true);
     if Result<>'' then exit;
   end;
 end;

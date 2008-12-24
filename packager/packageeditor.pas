@@ -185,9 +185,7 @@ type
     RemovedFilesNode: TTreeNode;
     RemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
-    procedure SetLazPackage(const AValue: TLazPackage); override;
     procedure SetupComponents;
-    procedure UpdateAll; override;
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateFiles;
@@ -202,6 +200,8 @@ type
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
       AnIncludeFile: string);
     function CanBeAddedToProject: boolean;
+  protected
+    procedure SetLazPackage(const AValue: TLazPackage); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -214,6 +214,7 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
     procedure DoOpenPkgFile(PkgFile: TPkgFile);
+    procedure UpdateAll; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;

@@ -1129,7 +1129,7 @@ type
       // So, don't use it anymore.
   public
     // drag and dock
-    procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
+    procedure DragDrop(Source: TObject; X,Y: Integer); dynamic;
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     function ManualDock(NewDockSite: TWinControl;
                         DropControl: TControl = nil;

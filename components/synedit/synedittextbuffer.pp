@@ -117,22 +117,14 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
-    function GetFoldEndLevel(Index: integer): integer; override;
-    function GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
     {$ENDIF}
     {$IFNDEF SYN_LAZARUS}                                                       // protected in SynLazarus
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
-    function GetRange(Index: integer): TSynEditRange;
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
-    procedure PutRange(Index: integer; ARange: TSynEditRange);
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
   protected
     fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
@@ -143,7 +135,13 @@ type
     fOnLineCountChanged : TStringListLineCountEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
+    function GetFoldEndLevel(Index: integer): integer; override;
+    function GetFoldMinLevel(Index: integer): integer; override;
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
     {$ENDIF}
+    function GetRange(Index: integer): TSynEditRange; {$IFDEF SYN_LAZARUS}override;{$ENDIF}
+    procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
@@ -263,6 +261,7 @@ type
     procedure MarkTopAsUnmodified;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
+    function IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
     {$ENDIF}
   public
     property BlockChangeNumber: integer read fBlockChangeNumber                 //sbs 2000-11-19
@@ -1275,6 +1274,38 @@ end;
 function TSynEditUndoList.UnModifiedMarkerExists: boolean;
 begin
   Result:=fUnModifiedItem>=0;
+end;
+
+function TSynEditUndoList.IsLineExists(ALine: Integer; InUnmodified: Boolean): Boolean;
+var
+  I, Start, Stop: Integer;
+  Item: TSynEditUndoItem;
+begin
+  Result := False;
+  if InUnmodified then
+  begin
+    Start := 0;
+    Stop := fUnModifiedItem - 1;
+  end
+  else
+  begin
+    Start := fUnModifiedItem;
+    Stop := fItems.Count - 1;
+    if Stop < 0 then
+      Exit;
+    if Start < 0 then
+      Start := 0;
+  end;
+
+  for I := Start to Stop do
+  begin
+    Item := TSynEditUndoItem(FItems[I]);
+    if (ALine >= Item.ChangeStartPos.y) and (ALine <= Item.ChangeEndPos.y) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
 end;
 
 {$ENDIF}

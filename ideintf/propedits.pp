@@ -528,6 +528,7 @@ type
     function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
+    function IsNotDefaultValue: boolean; override;
    end;
 
 { TSetPropertyEditor
@@ -1593,8 +1594,10 @@ type
 procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
-implementation
+const
+  NoDefaultValue = Longint($80000000);
 
+implementation
 
 var
   ListPropertyEditors: TList = nil;
@@ -2827,7 +2830,9 @@ end;
 
 function TOrdinalPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)+[paHasDefaultValue];
+  Result:=(inherited GetAttributes);
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TOrdinalPropertyEditor.GetValue: ansistring;
@@ -3197,6 +3202,8 @@ end;
 function TSetElementPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paSortList];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TSetElementPropertyEditor.GetName: shortstring;
@@ -3228,6 +3235,19 @@ begin
   else
     Exclude(S, FElement);
   SetOrdValue(Integer(S));
+end;
+
+function TSetElementPropertyEditor.IsNotDefaultValue: boolean; 
+var
+  S1, S2: TIntegerSet;
+begin
+  Result := (paHasDefaultValue in GetAttributes);
+  if Result then
+  begin
+    Integer(S1) := GetOrdValue;
+    Integer(S2) := GetDefaultOrdValue;
+    Result := (FElement in S1) <> (FElement in S2);
+  end;
 end;
 
 { TSetPropertyEditor }

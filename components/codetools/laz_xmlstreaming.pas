@@ -82,6 +82,9 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+    {$IFDEF FPC_HAS_UNICODESTRING}
+    procedure WriteUnicodeString(const Value: UnicodeString); override;
+    {$ENDIF}
     {$IFDEF HasReadWriteBuf}
     procedure Write(const Buffer; Count: Longint); override;
     {$ENDIF}
@@ -128,6 +131,9 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
+    {$IFDEF FPC_HAS_UNICODESTRING}
+    function ReadUnicodeString: UnicodeString; override;
+    {$ENDIF}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
     {$IFDEF HasReadWriteBuf}
@@ -452,6 +458,14 @@ begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
+{$IFDEF FPC_HAS_UNICODESTRING}
+procedure TXMLObjectWriter.WriteUnicodeString(const Value: UnicodeString);
+// save unicodestrings as utf8
+begin
+  GetPropertyElement('unicodestring')['value'] := System.UTF8Encode(Value);
+end;
+{$ENDIF}
+
 {$IFDEF HasReadWriteBuf}
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
 begin
@@ -659,6 +673,10 @@ begin
           Result:=vaExtended
         else if FElement.NodeName='widestring' then
           Result:=vaWString
+        {$IFDEF FPC_HAS_UNICODESTRING}
+        else if FElement.NodeName='unicodestring' then
+          Result:=vaUString
+        {$ENDIF}
         else if FElement.NodeName='collectionproperty' then
           Result:=vaCollection
         else
@@ -1040,6 +1058,17 @@ begin
   ReadValue;
   //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
+
+{$IFDEF FPC_HAS_UNICODESTRING}
+function TXMLObjectReader.ReadUnicodeString: UnicodeString;
+var
+  ValueAsUTF8: String;
+begin
+  ValueAsUTF8:=FElement['value'];
+  Result:=System.UTF8Decode(ValueAsUTF8);
+  ReadValue;
+end;
+{$ENDIF}
 
 procedure TXMLObjectReader.SkipComponent(SkipComponentInfos: Boolean);
 var

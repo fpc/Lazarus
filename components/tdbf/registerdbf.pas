@@ -36,7 +36,7 @@ type
   { TDbfFileNamePropertyEditor }
 
   TDbfFileNamePropertyEditor=class(TFileNamePropertyEditor)
-  protected
+  public
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;

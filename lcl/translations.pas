@@ -723,6 +723,7 @@ begin
   // for each string in lrt/rst list check if it's already
   // in PO if not add it
   Value := '';
+  Identifier := '';
   Multi := false;
   for i:=0 to InputLines.Count-1 do begin
     Line:=InputLines[i];

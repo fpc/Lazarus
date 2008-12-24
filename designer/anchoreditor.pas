@@ -148,6 +148,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
     function AnchorDesignerNoSiblingText: string;
+    function AnchorDesignerNeighbourText(direction: TAnchorKind): string;
   public
     Values: TAnchorDesignerValues;
     destructor Destroy; override;
@@ -177,6 +178,7 @@ var
 
 implementation
 
+uses math;
 { TAnchorDesigner }
 
 procedure TAnchorDesigner.AnchorDesignerCreate(Sender: TObject);
@@ -364,15 +366,76 @@ begin
   end;
 end;
 
+function compareControlTop(Item1, Item2: pointer): Integer;
+begin
+  if tcontrol(item1).top<tcontrol(item2).top then result:=-1
+  else if tcontrol(item1).top>tcontrol(item2).top then result:=1
+  else result:=0;
+end;
+
+function compareControlLeft(Item1, Item2: pointer): Integer;
+begin
+  if tcontrol(item1).left<tcontrol(item2).left then result:=-1
+  else if tcontrol(item1).left>tcontrol(item2).left then result:=1
+  else result:=0;
+end;
+
+function compareControlRight(Item1, Item2: pointer): Integer;
+begin
+  if tcontrol(item1).left+tcontrol(item1).width>tcontrol(item2).left+tcontrol(item2).width then result:=-1
+  else if tcontrol(item1).left+tcontrol(item1).width<tcontrol(item2).left+tcontrol(item2).width then result:=1
+  else result:=0;
+end;
+
+function compareControlBottom(Item1, Item2: pointer): Integer;
+begin
+  if tcontrol(item1).top+tcontrol(item1).Height>tcontrol(item2).top+tcontrol(item2).Height then result:=-1
+  else if tcontrol(item1).top+tcontrol(item1).Height<tcontrol(item2).top+tcontrol(item2).Height then result:=1
+  else result:=0;
+end;
+
+
 procedure TAnchorDesigner.SiblingComboBoxChange(Sender: TObject);
 var
-  Kind: TAnchorKind;
+  Kind,CurNeighbour: TAnchorKind;
   NewSibling: TControl;
   CurSide: TAnchorDesignerSideValues;
   SelectedControls: TList;
   i: Integer;
   CurControl: TControl;
   NewValue: String;
+  UseNeighbours: boolean;
+  OldPositions,OldPositions2: array of Integer;
+ function NeighbourPosition(c: tcontrol):Integer;
+ begin
+   case CurNeighbour of
+     akTop: result:=c.top;
+     akLeft: result:=c.Left;
+     akRight: result:=c.left+c.Width;
+     akBottom: result:=c.Top+c.Height;
+   end;
+ end;
+
+ function FindNeighbour(i:longint):TControl;
+ var firstNeighbour,lastNeighbour,cur,resultId: Integer;
+ begin
+   if i=0 then exit(nil);
+   firstNeighbour:=i-1;
+   while (firstNeighbour>=0) and (OldPositions[firstNeighbour] = OldPositions[i]) do
+     dec(firstNeighbour);
+   if firstNeighbour=-1 then exit(nil); //there is no real neighbour at this side
+   lastNeighbour:=firstNeighbour;
+   while (lastNeighbour>=0) and (OldPositions[lastNeighbour] = OldPositions[firstNeighbour]) do
+     dec(lastNeighbour);
+   inc(lastNeighbour);
+   //take nearest
+   resultId:=lastNeighbour;
+   for cur:=lastNeighbour+1 to firstNeighbour do
+     if abs(OldPositions2[cur]-OldPositions2[i]) < abs(OldPositions2[resultId]-OldPositions2[i])  then
+        resultid:=cur;
+   result:=tcontrol(SelectedControls[resultId]);
+ end;
+
 begin
   //debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' ',TComboBox(Sender).Text);
   if FUpdating or (Values=nil) then exit;
@@ -390,18 +453,52 @@ begin
   CurSide:=Values.Sides[Kind];
   if CurSide.AmbiguousSibling or (CompareText(CurSide.Sibling,NewValue)<>0) then
   begin
-    if (NewValue<>AnchorDesignerNoSiblingText) then begin
-      NewSibling:=FindSibling(NewValue);
-      if NewSibling=nil then exit;
-    end else begin
-      NewSibling:=nil;
-    end;
     //debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' NewSibling=',DbgSName(NewSibling));
     // user changed a sibling
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
+    UseNeighbours:=false;
+    NewSibling:=nil;
+    if (NewValue<>AnchorDesignerNoSiblingText) then
+    begin
+      CurNeighbour:=akTop;
+      while CurNeighbour <= akBottom do
+      begin
+        if NewValue=AnchorDesignerNeighbourText(CurNeighbour) then
+        begin
+          UseNeighbours:=true;
+          //todo: copy the list if it is needed unsorted somewhere else
+          case CurNeighbour of //todo: use just one sorting function
+             akTop: SelectedControls.Sort(@compareControlTop);
+             akLeft: SelectedControls.Sort(@compareControlLeft);
+             akRight: SelectedControls.Sort(@compareControlRight);
+             akBottom: SelectedControls.Sort(@compareControlBottom);
+          end;
+          setlength(OldPositions,SelectedControls.Count);
+          setlength(OldPositions2,SelectedControls.Count);
+          for i:=0 to SelectedControls.Count-1 do begin
+            OldPositions[i]:=NeighbourPosition(tcontrol(SelectedControls[i]));
+            case CurNeighbour of
+              akLeft,akRight: OldPositions2[i]:=tcontrol(SelectedControls[i]).top;
+              akTop,akBottom: OldPositions2[i]:=tcontrol(SelectedControls[i]).Left;
+            end;
+          end;
+          break;
+        end;
+        inc(CurNeighbour);
+      end;
+      if not UseNeighbours then
+      begin
+        NewSibling:=FindSibling(NewValue);
+        if NewSibling=nil then exit;
+      end;
+    end;
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
+      if UseNeighbours then begin
+        NewSibling:=findNeighbour(i);
+        if (NewSibling=nil) and (i<>0) then continue;
+      end;
       try
         CurControl.AnchorSide[Kind].Control:=NewSibling;
       except
@@ -411,8 +508,10 @@ begin
         end;
       end;
     end;
+
     GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
+    if UseNeighbours then TComboBox(Sender).Caption:=NewValue;
   end;
 end;
 
@@ -507,21 +606,27 @@ var
   Sibling: TControl;
   SelectedControls: TList;
   OldText: String;
-  
-  procedure AddSibling(AControl: TControl);
+  Kind: TAnchorKind;
+  HasSelectedSiblings: Boolean;
+
+  function AddSibling(AControl: TControl): boolean;
   var
     NewControlStr: String;
   begin
+    Result:=false;
     if AControl.Name='' then exit;
+    if SelectedControls.IndexOf(AControl)>=0 then exit;
     NewControlStr:=ControlToStr(AControl);
     if sl.IndexOf(NewControlStr)>=0 then exit;
     //debugln('TAnchorDesigner.FillComboBoxWithSiblings.AddSibling ',NewControlStr);
     sl.Add(NewControlStr);
+    Result:=true;
   end;
   
 begin
   sl:=TStringList.Create;
   sl.Add(AnchorDesignerNoSiblingText);
+  HasSelectedSiblings:=false;
   SelectedControls:=GetSelectedControls;
   if SelectedControls<>nil then begin
     for i:=0 to SelectedControls.Count-1 do begin
@@ -531,8 +636,11 @@ begin
           AddSibling(CurControl.Parent);
           for j:=0 to CurControl.Parent.ControlCount-1 do begin
             Sibling:=CurControl.Parent.Controls[j];
-            if (Sibling<>CurControl) then
+            if (Sibling<>CurControl) then begin
               AddSibling(Sibling);
+              if SelectedControls.IndexOf(Sibling)>=0 then
+                HasSelectedSiblings:=true;
+            end;
           end;
         end;
         break;
@@ -540,6 +648,9 @@ begin
     end;
   end;
   sl.Sort;
+  if HasSelectedSiblings then
+    for Kind:=akTop to akBottom do
+      sl.add(AnchorDesignerNeighbourText(Kind));
   //debugln('TAnchorDesigner.FillComboBoxWithSiblings ',sl.Text);
   OldText:=AComboBox.Text;
   AComboBox.Items.Assign(sl);
@@ -550,6 +661,18 @@ end;
 function TAnchorDesigner.AnchorDesignerNoSiblingText: string;
 begin
   Result:='(nil)';
+end;
+
+function TAnchorDesigner.AnchorDesignerNeighbourText(direction: TAnchorKind
+  ): string;
+begin
+  //todo: add translations
+  case direction of
+    akLeft: result:=lisSelectedLeftNeighbour;
+    akRight: result:=lisSelectedRightNeighbour;
+    akTop: result:=lisSelectedTopNeighbour;
+    akBottom: result:=lisSelectedBottomNeighbour;
+  end;
 end;
 
 destructor TAnchorDesigner.Destroy;

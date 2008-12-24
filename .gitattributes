@@ -402,6 +402,7 @@ components/lazreport/doc/tutorials/stringgrid/en/Tutorial[!!-~]LazReport[!!-~]an
 components/lazreport/doc/tutorials/stringgrid/en/Tutorial_en.odt -text
 components/lazreport/doc/tutorials/stringgrid/es/Tutorial[!!-~]LazReport[!!-~]y[!!-~]StringGrid.pdf -text svneol=unset#application/pdf
 components/lazreport/doc/tutorials/stringgrid/es/Tutorial_es.odt -text
+components/lazreport/images/Package_images.txt svneol=native#text/plain
 components/lazreport/images/bitmaps/fr_bold.bmp -text
 components/lazreport/images/bitmaps/fr_check.bmp -text
 components/lazreport/images/bitmaps/fr_checkbox.bmp -text
@@ -418,6 +419,7 @@ components/lazreport/images/bitmaps/tfrcsvexport.png -text svneol=unset#image/pn
 components/lazreport/images/bitmaps/tfrdatastorage.bmp -text
 components/lazreport/images/bitmaps/tfrdbdataset.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrdesigner.bmp -text
+components/lazreport/images/bitmaps/tfrdesigner.png -text
 components/lazreport/images/bitmaps/tfrdock.bmp -text
 components/lazreport/images/bitmaps/tfrhtmexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfroleobject.bmp -text
@@ -476,6 +478,7 @@ components/lazreport/images/designer/save.png -text
 components/lazreport/images/designer/select_all.png -text
 components/lazreport/images/designer/underline.png -text
 components/lazreport/images/designer/undo.png -text
+components/lazreport/images/package_images.bat svneol=native#text/plain
 components/lazreport/license-lazreport.txt svneol=native#text/plain
 components/lazreport/license-rus.txt svneol=native#text/plain
 components/lazreport/license.txt svneol=native#text/plain
@@ -1113,6 +1116,11 @@ components/synedit/synedittextbuffer.pp svneol=native#text/pascal
 components/synedit/synedittexttrimmer.pas svneol=native#text/plain
 components/synedit/synedittypes.pp svneol=native#text/pascal
 components/synedit/synexporthtml.pas svneol=native#text/pascal
+components/synedit/syngutter.pp svneol=native#text/plain
+components/synedit/syngutterchanges.pas svneol=native#text/pascal
+components/synedit/synguttercodefolding.pp svneol=native#text/plain
+components/synedit/syngutterlinenumber.pp svneol=native#text/plain
+components/synedit/synguttermarks.pp svneol=native#text/plain
 components/synedit/synhighlighterany.pas svneol=native#text/plain
 components/synedit/synhighlightercpp.pp svneol=native#text/pascal
 components/synedit/synhighlightercss.pas svneol=native#text/pascal
@@ -2228,6 +2236,9 @@ ide/frames/options_editor_display.pas svneol=native#text/pascal
 ide/frames/options_editor_general.lfm svneol=native#text/plain
 ide/frames/options_editor_general.lrs svneol=native#text/plain
 ide/frames/options_editor_general.pas svneol=native#text/pascal
+ide/frames/options_editor_general_misc.lfm svneol=native#text/plain
+ide/frames/options_editor_general_misc.lrs svneol=native#text/pascal
+ide/frames/options_editor_general_misc.pas svneol=native#text/pascal
 ide/frames/options_editor_keymapping.lfm svneol=native#text/plain
 ide/frames/options_editor_keymapping.lrs svneol=native#text/pascal
 ide/frames/options_editor_keymapping.pas svneol=native#text/pascal
@@ -2739,6 +2750,7 @@ images/icons/aqua.ico -text
 images/icons/blue.ico -text svneol=unset#image/ico
 images/icons/blue_roundrect.ico -text svneol=unset#image/ico
 images/icons/brown.ico -text svneol=unset#image/ico
+images/icons/lazarus_old.ico -text svneol=unset#image/x-icon
 images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
@@ -2769,7 +2781,7 @@ images/lazdoc/insertcodetag.png -text
 images/lazdoc/insertremark.png -text
 images/lazdoc/insertvartag.png -text
 images/lprfile.ico -text svneol=unset#image/x-icon
-images/mainicon.ico -text svneol=unset#image/x-icon
+images/mainicon.ico -text svneol=unset#image/ico
 images/mainicon.lrs svneol=native#text/pascal
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_build.png -text svneol=unset#image/png
