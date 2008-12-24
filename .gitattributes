@@ -4010,12 +4010,16 @@ tools/lazdatadesktop/bitmaps/btnup.bmp -text
 tools/lazdatadesktop/bitmaps/btnup.xpm -text
 tools/lazdatadesktop/bitmaps/ddconnection.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddatadict.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/dddomain.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/dddomains.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddfield.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddfields.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddforeignkey.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddforeignkeys.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddindex.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddindexes.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddsequence.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddsequences.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddtable.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddtabledata.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddtables.png -text svneol=unset#image/png

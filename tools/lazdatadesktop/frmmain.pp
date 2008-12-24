@@ -18,6 +18,9 @@
  *                                                                         *
  ***************************************************************************
 }
+{$ifdef ver2_2}
+{$define onlyoldobjects}
+{$endif}
 unit frmmain;
 
 {$mode objfpc}{$H+}
@@ -27,8 +30,7 @@ interface
 uses
   Classes, SysUtils, LResources, FileUtil, Forms, Controls, Graphics, Dialogs,
   Menus, ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
-  conneditor, LCLType,
-  RTTICtrls, ExtCtrls, StdCtrls, ddfiles;
+  conneditor, LCLType, RTTICtrls, ExtCtrls, StdCtrls, ddfiles;
 
 type
   TEngineMenuItem = Class(TMenuItem)
@@ -51,14 +53,15 @@ type
     ACloseAll: TAction;
     ACopyConnection: TAction;
     ACreateCode: TAction;
+    AAddSequence: TAction;
+    AAddForeignKey: TAction;
+    AAddDomain: TAction;
     ANewIndex: TAction;
-    ADeleteIndex: TAction;
     ADeleteConnection: TAction;
     ANewConnection: TAction;
     ASaveAs: TAction;
     AGenerateSQL: TAction;
-    ADeleteField: TAction;
-    ADeleteTable: TAction;
+    ADeleteObject: TAction;
     ANewField: TAction;
     ANewTable: TAction;
     AOpen: TAction;
@@ -74,6 +77,10 @@ type
     LVDicts: TListView;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
     MINewConnection: TMenuItem;
     MIConnection: TMenuItem;
     MISaveAs: TMenuItem;
@@ -106,18 +113,18 @@ type
     ODDD: TOpenDialog;
     PCDD: TPageControl;
     SDDD: TSaveDialog;
-    ToolButton4: TToolButton;
     TBAddIndex: TToolButton;
-    TBDeleteIndex: TToolButton;
     TBCreateCode: TToolButton;
+    TBAddSequence: TToolButton;
+    ToolButton4: TToolButton;
     ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
     TSConnections: TTabSheet;
     ToolButton1: TToolButton;
     TBNewTable: TToolButton;
     TBNewField: TToolButton;
     ToolButton2: TToolButton;
     TBDeleteTable: TToolButton;
-    TBDeleteField: TToolButton;
     ToolButton3: TToolButton;
     TBGenerateSQL: TToolButton;
     TSRecent: TTabSheet;
@@ -125,16 +132,18 @@ type
     TBSave: TToolButton;
     TBOPen: TToolButton;
     TBNew: TToolButton;
+    procedure AAddDomainExecute(Sender: TObject);
+    procedure AAddDomainUpdate(Sender: TObject);
+    procedure AAddForeignKeyExecute(Sender: TObject);
+    procedure AAddForeignKeyUpdate(Sender: TObject);
+    procedure AAddSequenceExecute(Sender: TObject);
+    procedure AAddSequenceUpdate(Sender: TObject);
     procedure ACloseAllExecute(Sender: TObject);
     procedure ACloseExecute(Sender: TObject);
     procedure ACreateCodeExecute(Sender: TObject);
     procedure ACreateCodeUpdate(Sender: TObject);
-    procedure ADeleteFieldExecute(Sender: TObject);
-    procedure ADeleteFieldUpdate(Sender: TObject);
-    procedure ADeleteIndexExecute(Sender: TObject);
-    procedure ADeleteIndexUpdate(Sender: TObject);
-    procedure ADeleteTableExecute(Sender: TObject);
-    procedure ADeleteTableUpdate(Sender: TObject);
+    procedure ADeleteObjectExecute(Sender: TObject);
+    procedure ADeleteObjectUpdate(Sender: TObject);
     procedure AExitExecute(Sender: TObject);
     procedure AGenerateSQLExecute(Sender: TObject);
     procedure ANewConnectionExecute(Sender: TObject);
@@ -144,7 +153,7 @@ type
     procedure ANewIndexExecute(Sender: TObject);
     procedure ANewIndexUpdate(Sender: TObject);
     procedure ANewTableExecute(Sender: TObject);
-    procedure ANewTableUpdate(Sender: TObject);
+    procedure HaveDataDict(Sender: TObject);
     procedure AOpenExecute(Sender: TObject);
     procedure ASaveExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -212,12 +221,9 @@ type
     Function NewDataDict : TFPDataDictionary;
     Function NewDataEditor : TDataDictEditor;
     function NewConnectionEditor(AName : String): TConnectionEditor;
-    procedure DeleteCurrentTable;
-    procedure DeleteCurrentField;
-    procedure DeleteCurrentIndex;
-    Procedure DoNewTable;
-    Procedure DoNewField;
-    Procedure DoNewIndex;
+    procedure DeleteCurrentObject;
+    procedure DoNewGlobalObject(AObjectType: TEditObjectType);
+    procedure DoNewTableObject(AObjectType: TEditObjectType);
     procedure ShowGenerateSQL;
     Property CurrentEditor : TDataDictEditor Read GetCurrentEditor;
     Property CurrentConnection : TConnectionEditor Read GetCurrentConnection;
@@ -256,10 +262,16 @@ ResourceString
   SUseNewDict     = 'No, import in a new dictionary';
   SNewTable       = 'Create new table';
   SNewTableName   = 'Enter a name for the new table:';
+  SNewSequence    = 'Create new sequence';
+  SNewSequenceName  = 'Enter a name for the new sequence:';
+  SNewDomain      = 'Create new domain';
+  SNewDomainName  = 'Enter a name for the new domain:';
   SNewField       = 'Create new field in table %s';
   SNewFieldName   = 'Enter a name for the new field:';
   SNewIndex       = 'Create new index on table %s';
   SNewIndexName   = 'Enter a name for the new index:';
+  SNewForeignKey  = 'Create new foreign key in table %s';
+  SNewForeignKeyName   = 'Enter a name for the new foreign key:';
   SSelectDBFDir   = 'Select a directory with DBF files';
   SNewConnection  = 'New connection';
   SConnectionDescription = 'Enter a descriptive name for the connection';
@@ -735,42 +747,62 @@ begin
   (Sender as TAction).Enabled:=B;
 end;
 
-procedure TMainForm.ADeleteFieldExecute(Sender: TObject);
+procedure TMainForm.ADeleteObjectExecute(Sender: TObject);
 begin
-  DeleteCurrentField;
+  DeleteCurrentObject;
 end;
 
-procedure TMainForm.ADeleteFieldUpdate(Sender: TObject);
+procedure TMainForm.ADeleteObjectUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(CurrentEditor) and
-                               Assigned(CurrentEditor.CurrentField);
-end;
-
-procedure TMainForm.ADeleteIndexExecute(Sender: TObject);
-begin
-  DeleteCurrentIndex;
-end;
-
-procedure TMainForm.ADeleteIndexUpdate(Sender: TObject);
-begin
-  (Sender as TAction).Enabled:=Assigned(CurrentEditor) and
-                               Assigned(CurrentEditor.CurrentIndex);
-end;
-
-procedure TMainForm.ADeleteTableExecute(Sender: TObject);
-begin
-  DeleteCurrentTable;
-end;
-
-procedure TMainForm.ADeleteTableUpdate(Sender: TObject);
-begin
-  (Sender as TAction).Enabled:=Assigned(CurrentEditor) and
-                               Assigned(CurrentEditor.CurrentTable);
+                               Assigned(CurrentEditor.CurrentObject);
 end;
 
 procedure TMainForm.ACloseAllExecute(Sender: TObject);
 begin
   CloseAllEditors;
+end;
+
+procedure TMainForm.AAddSequenceUpdate(Sender: TObject);
+begin
+{$ifdef onlyoldobjects}
+  (Sender as TAction).Enabled:=False;
+{$else}
+  (Sender as TAction).Enabled:=(CurrentEditor<>Nil);
+{$endif}
+end;
+
+procedure TMainForm.AAddDomainUpdate(Sender: TObject);
+begin
+{$ifdef onlyoldobjects}
+  (Sender as TAction).Enabled:=False;
+{$else}
+  (Sender as TAction).Enabled:=(CurrentEditor<>Nil);
+{$endif}
+end;
+
+procedure TMainForm.AAddForeignKeyUpdate(Sender: TObject);
+begin
+{$ifdef onlyoldobjects}
+  (Sender as TAction).Enabled:=False
+{$else}
+  (Sender as TAction).Enabled:=(CurrentEditor<>Nil) and (CurrentEditor.CurrentTable<>Nil);
+{$endif}
+end;
+
+procedure TMainForm.AAddDomainExecute(Sender: TObject);
+begin
+  DoNewGlobalObject(eotDomain);
+end;
+
+procedure TMainForm.AAddForeignKeyExecute(Sender: TObject);
+begin
+  DoNewTableObject(eotForeignKey);
+end;
+
+procedure TMainForm.AAddSequenceExecute(Sender: TObject);
+begin
+  DoNewGlobalObject(eotSequence)
 end;
 
 procedure TMainForm.ANewExecute(Sender: TObject);
@@ -780,7 +812,7 @@ end;
 
 procedure TMainForm.ANewFieldExecute(Sender: TObject);
 begin
-  DoNewField;
+  DoNewTableObject(eotField);
 end;
 
 procedure TMainForm.ANewFieldUpdate(Sender: TObject);
@@ -791,21 +823,25 @@ end;
 
 procedure TMainForm.ANewIndexExecute(Sender: TObject);
 begin
-  DoNewIndex;
+  DoNewTableObject(eotIndex);
 end;
 
 procedure TMainForm.ANewIndexUpdate(Sender: TObject);
 begin
+{$ifdef onlyoldobjects}
+  (Sender as TAction).Enabled:=False
+{$else}
   (Sender as TAction).Enabled:=(CurrentEditor<>nil)
                                 and (CurrentEditor.CurrentTable<>Nil);
+{$endif onlyoldobjects}
 end;
 
 procedure TMainForm.ANewTableExecute(Sender: TObject);
 begin
-  DoNewTable;
+  DoNewGlobalObject(eotTable)
 end;
 
-procedure TMainForm.ANewTableUpdate(Sender: TObject);
+procedure TMainForm.HaveDataDict(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=(CurrentEditor<>Nil);
 end;
@@ -1066,89 +1102,79 @@ begin
     end;
 end;
 
-procedure TMainForm.DeleteCurrentTable;
-
-begin
-  if Assigned(CurrentEditor) then
-    With CurrentEditor do
-      If Assigned(CurrentTable) then
-        DeleteTable(CurrentTable);
-end;
-
-procedure TMainForm.DeleteCurrentField;
-
-begin
-  if Assigned(CurrentEditor) then
-    With CurrentEditor do
-      If Assigned(CurrentField) then
-        DeleteField(CurrentField);
-end;
-
-procedure TMainForm.DeleteCurrentIndex;
-begin
-  if Assigned(CurrentEditor) then
-    With CurrentEditor do
-      If Assigned(CurrentIndex) then
-        DeleteIndex(CurrentIndex);
-end;
-
-procedure TMainForm.DoNewField;
+procedure TMainForm.DeleteCurrentObject;
 
 Var
-  TD : TDDTableDef;
-  AFieldName : String;
+  DD : TDataDictEditor;
 
 begin
-  If Assigned(CurrentEditor) then
-    begin
-    TD:=CurrentEditor.CurrentTable;
-    If Assigned(TD) then
+  DD:=CurrentEditor;
+  If Assigned(DD) then
+    DD.DeleteCurrentObject;
+end;
+
+
+procedure TMainForm.DoNewGlobalObject(AObjectType : TEditObjectType);
+
+Var
+  ACaption,ALabel, AObjectName : String;
+
+begin
+  AObjectName:='';
+  Case AObjectType of
+    eotTable :
       begin
-      AFieldName:='';
-      If InputQuery(Format(SNewField,[TD.TableName]),SNEwFieldName,AFieldName) then
-        If (AFieldName<>'') then
-          CurrentEditor.NewField(AFieldName,TD);
+      ACaption:=SNewTable;
+      ALabel:=SNewTableName
       end;
-    end;
-end;
-
-procedure TMainForm.DoNewIndex;
-
-Var
-  TD : TDDTableDef;
-  AIndexName : String;
-
-begin
-  If Assigned(CurrentEditor) then
-    begin
-    TD:=CurrentEditor.CurrentTable;
-    If Assigned(TD) then
+    eotSequence:
       begin
-      AIndexName:='';
-      If InputQuery(Format(SNewIndex,[TD.TableName]),SNewIndexName,AIndexName) then
-        If (AIndexName<>'') then
-          CurrentEditor.NewIndex(AIndexName,TD);
+      ACaption:=SNewSequence;
+      ALabel:=SNewSequenceName
       end;
-    end;
+    eotDomain :
+      begin
+      ACaption:=SNewDomain;
+      ALabel:=SNewDomainName
+      end
+  end;
+  If InputQuery(ACaption,ALabel,AObjectName) then
+    If (AObjectName<>'') then
+      CurrentEditor.NewGlobalObject(AObjectName,AObjectType);
 end;
 
-procedure TMainForm.DoNewTable;
+procedure TMainForm.DoNewTableObject(AObjectType : TEditObjectType);
 
 Var
-  ATableName : String;
+  ACaption,ALabel, AObjectName : String;
+  TD : TDDTableDef;
 
 begin
-  If Assigned(CurrentEditor) then
-    begin
-    ATableName:='';
-    If InputQuery(SNewTable,SNEwTableName,ATableName) then
-      If (ATableName<>'') then
-        CurrentEditor.NewTable(ATableName);
-    end;
+  TD:=CurrentEditor.CurrentTable;
+  If (TD=Nil) then
+    Exit;
+  AObjectName:='';
+  Case AObjectType of
+    eotField :
+      begin
+      ACaption:=SNewField;
+      ALabel:=SNewFieldName
+      end;
+    eotIndex:
+      begin
+      ACaption:=SNewIndex;
+      ALabel:=SNewIndexName
+      end;
+    eotForeignKey :
+      begin
+      ACaption:=SNewForeignKey;
+      ALabel:=SNewForeignKeyName
+      end
+  end;
+  If InputQuery(Format(ACaption,[TD.TableName]),ALabel,AObjectName) then
+    If (AObjectName<>'') then
+      CurrentEditor.NewTableObject(AObjectName,TD,AObjectType);
 end;
-
-
-
 
 procedure TMainForm.DoImport(Const EngineName : String);
 

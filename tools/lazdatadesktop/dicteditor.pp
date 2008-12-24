@@ -18,6 +18,9 @@
  *                                                                         *
  ***************************************************************************
 }
+{$ifdef ver2_2}
+{$define onlyoldobjects}
+{$endif}
 unit dicteditor;
 
 {$mode objfpc}{$H+}
@@ -29,7 +32,20 @@ uses
   ExtCtrls, Graphics, ImgList, RTTIGrids, LResources;
 
 Type
+  TEditObjectType = (eotUnknown,eotDictionary,
+                 eotTables,eotTable,
+                 eotFields,eotField,
+                 eotConnection,eotTableData,
+                 eotIndexes,eotIndex,
+                 eotSequences,eotSequence,
+                 eotForeignKeys,eotForeignKey,
+                 eotDomains,eotDomain);
+Const
+  SingleObjectTypes = [eotTable,eotDomain,eotSequence,
+                       eotField,eotIndex,eotForeignKey];
 
+
+Type
   { TDataDictEditor }
 
   TDataDictEditor = Class(TTabSheet)
@@ -41,69 +57,107 @@ Type
     FTV : TTreeView;
     FEdit : TPanel;
     FSplit : TSplitter;
-    FDDNode,FTablesNode : TTreeNode;
-    function GetCurrentField: TDDFieldDef;
-    function GetCurrentIndex: TDDIndexDef;
-    function GetCurrentObjectType: TObjectType;
-    function GetCurrentTable: TDDTableDef;
+    FAllowDoubleClick : TEditObjectType;
+    FDDNode,
+    FTablesNode : TTreeNode;
+{$ifndef onlyoldobjects}
+    FSequencesNode,
+    FDomainsNode : TTreeNode;
+{$endif}
+    procedure DoDoubleClick(Sender: TObject);
+    function CurrentObjectWithType(AType: TEditObjectType): TObject;
+    function GetCurrentObject: TPersistent;
     Function NewNode (TV : TTreeView;ParentNode : TTreeNode; ACaption : String; AImageIndex : Integer) : TTreeNode;
     Procedure SetCaption;
     Procedure DoSelectNode(Sender : TObject);
     Procedure DoPropertyModified(Sender : TObject);
     Procedure ClearEditor;
-    Procedure SelectTable(TD : TDDTableDef);
-    Procedure SelectField(FD : TDDFieldDef);
-    Procedure SelectIndex(ID : TDDIndexDef);
-    procedure SelectDictionary;
-    procedure SelectTables;
-    procedure SelectFields(TableDef : TDDTableDef);
-    procedure SelectIndexes(TableDef : TDDTableDef);
     procedure SetModified(const AValue: Boolean);
     procedure UpdateSelectedNode;
-    Function GetObjectType(Node : TTreeNode): TObjectType;
+    Function GetObjectType(Node : TTreeNode): TEditObjectType;
     Function CreatePropertyGrid(P : TPersistent) : TTIPropertyGrid;
-    procedure FieldsDblClick(Sender : TObject);
-    procedure IndexesDblClick(Sender : TObject);
-    Function  FindNodeWithData(TV : TTreeView; P : Pointer) : TTreeNode;
-    procedure TablesDblClick(Sender : TObject);
+    Function FindNodeWithData(TV : TTreeView; P : Pointer) : TTreeNode;
+    Function SelectNextNode (ANode : TTreeNode; ADefault: TTreeNode) : TTreeNode;
+    function GetCurrentObjectType: TEditObjectType;
+    function GetCurrentField: TDDFieldDef;
+    function GetCurrentIndex: TDDIndexDef;
+    function GetCurrentTable: TDDTableDef;
+{$ifndef onlyoldobjects}
+    function GetCurrentSequence: TDDSequenceDef;
+    function GetCurrentForeignKey : TDDForeignKeyDef;
+    function GetCurrentDomain : TDDDomainDef;
+{$endif}
+    Procedure DeleteGlobalObject(AObject : TObject);
+    Procedure DeleteTableObject(AObject : TObject);
+    procedure SelectGlobalObjectList(AObjectType: TEditObjectType);
+    procedure SelectTableObjectList(AObjectType: TEditObjectType; ATableDef : TDDTableDef);
+    Procedure SelectSingleObject(AObject : TPersistent);
+    procedure GetTableObjectsList(ATabledef: TDDTableDef; AObjectType: TEditObjectType; List: TStrings);
+    procedure GetGlobalObjectsList(AObjectType: TEditObjectType; List: TStrings);
+    procedure ShowSubLists(TV: TTreeView; ParentNode: TTreeNode; AObject: TObject);
+    procedure ShowTableObjectList(TV: TTreeView; ParentNode: TTreeNode; ATableDef: TDDTableDef; AObjectType: TEditObjectType);
+    procedure ShowGlobalObjectList(TV: TTreeView; ParentNode: TTreeNode; AObjectType: TEditObjectType; AShowSubLists : Boolean = False);
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
+    // General methods.
     Procedure ShowDictionary;
-    Procedure NewTable(ATableName: String);
-    Procedure NewField(AFieldName : String; TD : TDDTableDef);
-    Procedure NewIndex(AIndexName : String; TD : TDDTableDef);
-    Procedure ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode : Boolean; AddIndexesNode : Boolean);
-    Procedure ShowFields(TV : TTreeView;TableNode: TTreeNode; TableDef : TDDTableDef);
-    Procedure ShowIndexes(TV : TTreeView;TableNode: TTreeNode; TableDef : TDDTableDef);
     Procedure LoadFromFile(AFileName : String);
     Procedure SaveToFile(AFileName : String);
+    Procedure CreateCode;
+    // New items.
+    function  NewGlobalObject(AObjectName: String; AObjectType: TEditObjectType): TObject;
+    function  NewTableObject(AObjectName: String; TD: TDDTableDef;AObjectType: TEditObjectType): TObject;
+    Procedure NewField(AFieldName : String; TD : TDDTableDef);
+    Procedure NewIndex(AIndexName : String; TD : TDDTableDef);
+    Procedure NewForeignKey(AKeyName : String; TD : TDDTableDef);
+    // Delete items
+{$ifndef onlyoldobjects}
+    Procedure DeleteSequence(SD : TDDSequenceDef);
+    Procedure DeleteDomain(DD : TDDDomainDef);
+    Procedure DeleteForeignKey(KD : TDDForeignKeyDef);
+{$endif onlyoldobjects}
     Procedure DeleteTable(TD : TDDTableDef);
     Procedure DeleteField(FD : TDDFieldDef);
     Procedure DeleteIndex(ID : TDDIndexDef);
-    Procedure CreateCode;
+    Procedure DeleteCurrentObject;
+    // Properties
     Property DataDictionary : TFPDataDictionary Read FDD;
     Property Modified : Boolean Read FModified Write SetModified;
     Property ImageOffset : Integer Read FImageOffset Write FImageOffset;
-    Property ObjectType : TObjectType Read GetCurrentObjectType;
+    Property CurrentObject : TPersistent Read GetCurrentObject;
+    Property ObjectType : TEditObjectType Read GetCurrentObjectType;
     Property CurrentTable : TDDTableDef Read GetCurrentTable;
     Property CurrentField : TDDFieldDef Read GetCurrentField;
     Property CurrentIndex : TDDIndexDef Read GetCurrentIndex;
+{$ifndef onlyoldobjects}
+    Property CurrentSequence : TDDSequenceDef Read GetCurrentSequence;
+    Property CurrentDomain : TDDDomainDef Read GetCurrentDomain;
+    Property CurrentForeignKey : TDDForeignKeyDef Read GetCurrentForeignKey;
+{$endif onlyoldobjects}
   end;
   
 
 Const
   // Image Index for nodes. Relative to ImageOffset;
   // Must match the TObjectType
-  iiDataDict   = 0;
-  iiTables     = 1;
-  iiTable      = 2;
-  iiFields     = 3;
-  iiField      = 4;
-  iiConnection = 5;
-  iiTableData  = 6;
-  iiIndexes    = 7;
-  iiIndex      = 8;
+  iiDataDict     = 0;
+  iiTables       = 1;
+  iiTable        = 2;
+  iiFields       = 3;
+  iiField        = 4;
+  iiConnection   = 5;
+  iiTableData    = 6;
+  iiIndexes      = 7;
+  iiIndex        = 8;
+  iiSequences    = 9;
+  iiSequence     = 10;
+  iiForeignkeys  = 11;
+  iiForeignKey   = 12;
+  iiDomains      = 13;
+  iiDomain       = 14;
+
+  IIMaxObject    = IIDomain; // Should be last
 
 implementation
 
@@ -113,6 +167,9 @@ ResourceString
   SNodeDataDictionary = 'Datadictionary';
   SNodeTables         = 'Tables';
   SNodeFields         = 'Fields';
+  SNodeDomains        = 'Domains';
+  SNodeSequences      = 'Sequences';
+  SNodeForeignkeys    = 'Foreign keys';
   SNewDictionary      = 'New dictionary';
   SNodeIndexes         = 'Indexes';
 
@@ -157,60 +214,86 @@ begin
     end;
 end;
 
-function TDataDictEditor.GetCurrentObjectType: TObjectType;
+function TDataDictEditor.GetCurrentObjectType: TEditObjectType;
 begin
   Result:=GetObjectType(FTV.Selected);
 end;
 
-function TDataDictEditor.GetCurrentField: TDDFieldDef;
+function TDataDictEditor.CurrentObjectWithType(AType : TEditObjectType) : TObject;
 
 Var
-  N: TTreeNode;
+  N : TTreeNode;
 
 begin
   Result:=Nil;
   N:=FTV.Selected;
-  While (N<>Nil) and (GetObjectType(N)<>otField) do
+  While (N<>Nil) and (GetObjectType(N)<>AType) do
     N:=N.Parent;
   if (N<>Nil) then
-    Result:=TDDFieldDef(N.Data);
+    Result:=TObject(N.Data);
+end;
 
+function TDataDictEditor.GetCurrentObject: TPersistent;
+
+Var
+  N : TTreeNode;
+
+begin
+  Result:=Nil;
+  N:=FTV.Selected;
+  While (N<>Nil) and Not (GetObjectType(N) in SingleObjectTypes) do
+    N:=N.Parent;
+  If Assigned(N) then
+    Result:=TPersistent(N.Data);
+end;
+
+function TDataDictEditor.GetCurrentField: TDDFieldDef;
+
+begin
+  Result:=TDDFieldDef(CurrentObjectWithType(eotField));
 end;
 
 function TDataDictEditor.GetCurrentIndex: TDDIndexDef;
 
-Var
-  N: TTreeNode;
-
 begin
-  Result:=Nil;
-  N:=FTV.Selected;
-  While (N<>Nil) and (GetObjectType(N)<>otIndexDef) do
-    N:=N.Parent;
-  if (N<>Nil) then
-    Result:=TDDIndexDef(N.Data);
+  Result:=TDDIndexDef(CurrentObjectWithType(eotIndex));
 end;
 
 function TDataDictEditor.GetCurrentTable: TDDTableDef;
 
-Var
-  N: TTreeNode;
-  
 begin
-  Result:=Nil;
-  N:=FTV.Selected;
-  While (N<>Nil) and (GetObjectType(N)<>otTable) do
-    N:=N.Parent;
-  if (N<>Nil) then
-    Result:=TDDTableDef(N.Data);
+  Result:=TDDTableDef(CurrentObjectWithType(eotTable));
 end;
+
+{$ifndef onlyoldobjects}
+function TDataDictEditor.GetCurrentSequence: TDDSequenceDef;
+
+begin
+  Result:=TDDSequenceDef(CurrentObjectWithType(eotSequence));
+end;
+
+function TDataDictEditor.GetCurrentDomain: TDDDomainDef;
+
+begin
+  Result:=TDDDomainDef(CurrentObjectWithType(eotDomain));
+end;
+
+function TDataDictEditor.GetCurrentForeignKey: TDDForeignKeyDef;
+
+begin
+  Result:=TDDForeignKeyDef(CurrentObjectWithType(eotForeignKey));
+end;
+{$endif onlyoldobjects}
 
 constructor TDataDictEditor.Create(AOwner: TComponent);
 
 Const
-  ImageNames : Array[0..8] of string =
+  ImageNames : Array[0..IIMaxObject] of string =
         ('dddatadict','ddtables','ddtable','ddfields','ddfield',
-         'ddtables','ddtabledata','ddindexes','ddindex');
+         'ddtables','ddtabledata','ddindexes','ddindex',
+         'ddsequences','ddsequence',
+         'ddforeignkeys','ddforeignkey',
+         'dddomains','dddomain');
 
 
 Var
@@ -236,7 +319,7 @@ begin
   FTV.OnSelectionChanged:=@DoSelectNode;
   FTV.ShowLines:=True;
   FIMgList:=TImageList.Create(Self);
-  For I:=0 to 8 do
+  For I:=0 to 14 do
     begin
     P:=TPortableNetworkGraphic.Create;
     try
@@ -272,7 +355,13 @@ begin
     FDDNode:=NewNode(FTV,Nil,S,iiDataDict);
     FDDNode.Data:=FDD;
     FTablesNode:=NewNode(FTV,FDDNode,SNodeTables,iiTables);
-    ShowTables(FTV,FTablesNode,True,True);
+    ShowGlobalObjectList(FTV,FTablesNode,eotTable,True);
+{$ifndef onlyoldobjects}
+    FSequencesNode:=NewNode(FTV,FDDNode,SNodeSequences,iiSequences);
+    ShowGlobalObjectList(FTV,FSequencesNode,eotSequence,True);
+    FDomainsNode:=NewNode(FTV,FDDNode,SNodeDomains,iiDomains);
+    ShowGlobalObjectList(FTV,FDomainsNode,eotDomain,True);
+{$endif onlyoldobjects}
     SetCaption;
     FTV.Selected:=FDDNode;
   finally
@@ -280,64 +369,107 @@ begin
   end;
 end;
 
-procedure TDataDictEditor.NewTable(ATableName: String);
+Function TDataDictEditor.NewGlobalObject(AObjectName: String; AObjectType : TEditObjectType) : TObject;
 
 Var
-  TD : TDDTableDef;
-  N : TTreeNode;
-  
+  II : Integer;
+  N,PN : TTreeNode;
 begin
-  TD:=FDD.Tables.AddTable(ATableName);
-  With FTV do
-    begin
-    N:=NewNode(FTV,FTablesNode,ATableName,iiTable);
-    N.Data:=TD;
-    Selected:=N;
-    NewNode(FTV,FTV.Selected,SNodeFields,iiFields);
-    Modified:=True;
-    end;
+  Case AObjectType of
+    eotTable :
+      begin
+      Result:=FDD.Tables.AddTable(AObjectName);
+      II:=IITable;
+      PN:=FTablesNode;
+      end;
+{$ifndef onlyoldobjects}
+    eotSequence :
+      begin
+      Result:=FDD.Sequences.AddSequence(AObjectName);
+      II:=IISequence;
+      PN:=FSequencesNode;
+      end;
+    eotDomain :
+      begin
+      Result:=FDD.Domains.AddDomain(AObjectName);
+      II:=IIDomain;
+      PN:=FDomainsNode;
+      end;
+{$endif onlyoldobjects}
+  end;
+  N:=NewNode(FTV,PN,AObjectName,II);
+  N.Data:=Result;
+  FTV.Selected:=N;
+  ShowSubLists(FTV,N,Result);
+  Modified:=True;
 end;
 
-procedure TDataDictEditor.NewField(AFieldName: String; TD: TDDTableDef);
+
+Function TDataDictEditor.NewTableObject(AObjectName: String; TD: TDDTableDef; AObjectType : TEditObjectType) : TObject;
 
 Var
   TN : TTreeNode;
   FD : TDDFieldDef;
-  
+  POT : TEditObjectType;
+  II : Integer;
+
 begin
+  Case AObjectType of
+    eotField         :
+      begin
+      POT:=eotFields;
+      Result:=TD.Fields.AddField(AObjectName);
+      II:=IIfield;
+      end;
+{$ifndef onlyoldobjects}
+    eotIndex:
+      begin
+      POT:=eotIndexes;
+      Result:=TD.Indexes.AddIndex(AObjectName);
+      II:=IIIndex;
+      end;
+    eotForeignKey :
+      begin
+      POT:=eotForeignKeys;
+      Result:=TD.foreignKeys.AddForeignKeyDef(AObjectName);
+      II:=IIForeignkey;
+      end;
+{$endif onlyoldobjects}
+  end;
   TN:=FindNodeWithData(FTV,TD);
   TN:=TN.GetFirstChild;
-  While (TN<>Nil) and (GetObjectType(TN)<>otFields) do
+  While (TN<>Nil) and (GetObjectType(TN)<>POT) do
     TN:=TN.GetNextSibling;
   If (TN<>Nil) then
     begin
-    FD:=TD.Fields.AddField(AFieldName);
-    TN:=NewNode(FTV,TN,AFieldName,iiField);
-    TN.Data:=FD;
+    TN:=NewNode(FTV,TN,AObjectName,II);
+    TN.Data:=Result;
     FTV.Selected:=TN;
     Modified:=True;
-    end;
+    end
+  else
+    FreeAndNil(Result); // Error !!
+end;
+
+
+procedure TDataDictEditor.NewField(AFieldName: String; TD: TDDTableDef);
+
+
+begin
+  NewTableObject(AFieldName,TD,eotField);
 end;
 
 procedure TDataDictEditor.NewIndex(AIndexName: String; TD: TDDTableDef);
 
-Var
-  TN : TTreeNode;
-  ID : TDDIndexDef;
-  
 begin
-  TN:=FindNodeWithData(FTV,TD);
-  TN:=TN.GetFirstChild;
-  While (TN<>Nil) and (GetObjectType(TN)<>otIndexDefs) do
-    TN:=TN.GetNextSibling;
-  If (TN<>Nil) then
-    begin
-    ID:=TD.Indexes.AddDDIndexDef(AIndexName);
-    TN:=NewNode(FTV,TN,AIndexName,iiIndex);
-    TN.Data:=ID;
-    FTV.Selected:=TN;
-    Modified:=True;
-    end;
+  NewTableObject(AIndexName,TD,eotIndex);
+end;
+
+procedure TDataDictEditor.NewForeignKey(AKeyName: String; TD: TDDTableDef);
+
+
+begin
+  NewTableObject(AKeyName,TD,eotForeignKey);
 end;
 
 procedure TDataDictEditor.SetCaption;
@@ -371,14 +503,22 @@ begin
   If Assigned(N.Parent) then
     OP:=TObject(N.Parent.Data);
   Case ObjectType of
-    otUnknown    : ;
-    otDictionary : SelectDictionary;
-    otTables     : SelectTables;
-    otTable      : SelectTable(O as TDDTableDef);
-    otFields     : SelectFields(OP as TDDTableDef);
-    otField      : SelectField(TDDFieldDef(O));
-    otIndexDefs  : SelectIndexes(OP as TDDTableDef);
-    otIndexDef   : SelectIndex(TDDIndexDef(O));
+    eotUnknown    : ;
+    eotDictionary : SelectSingleObject(FDD);
+    eotTables     : SelectGlobalObjectList(eotTable);
+    eotTable      : SelectSingleObject(O as TPersistent);
+    eotFields     : SelectTableObjectList(eotField,OP as TDDTableDef);
+    eotField      : SelectSingleObject(O as TPersistent);
+{$ifndef onlyoldobjects}
+    eotIndexes    : SelectTableObjectList(eotIndex,OP as TDDTableDef);
+    eotIndex      : SelectSingleObject(O as TPersistent);
+    eotDomains      : SelectGlobalObjectList(eotDomain);
+    eotDomain       : SelectSingleObject(O as TPersistent);
+    eotSequences    : SelectGlobalObjectList(eotSequence);
+    eotSequence     : SelectSingleObject(O as TPersistent);
+    eotForeignKeys  : SelectTableObjectList(eotForeignKey,OP as TDDTableDef);
+    eotForeignKey   : SelectSingleObject(O as TPersistent);
+{$endif onlyoldobjects}
   end;
 end;
 
@@ -399,20 +539,18 @@ begin
     Exit;
   With N do
     Case ObjectType of
-      otField : Text:=TDDFieldDef(N.Data).FieldName;
-      otDictionary : Text:=TFPDataDictionary(N.Data).Name;
-      otTable : Text:=TDDTableDef(N.Data).TableName;
+      eotField         : Text:=TDDFieldDef(N.Data).FieldName;
+      eotDictionary    : Text:=TFPDataDictionary(N.Data).Name;
+      eotTable         : Text:=TDDTableDef(N.Data).TableName;
+{$ifndef onlyoldobjects}
+      eotSequence   : Text:=TDDSequenceDef(N.Data).SequenceName;
+      eotDomain     : Text:=TDDDomainDef(N.Data).DomainName;
+      eotForeignKey : Text:=TDDForeignkeyDef(N.Data).KeyName;
+{$endif onlyoldobjects}
     end;
 end;
 
-procedure TDataDictEditor.SelectDictionary;
-
-begin
-  ClearEditor;
-  CreatePropertyGrid(FDD);
-end;
-
-procedure TDataDictEditor.SelectTables;
+procedure TDataDictEditor.SelectGlobalObjectList(AObjectType : TEditObjectType);
 
 Var
   TV : TTreeView;
@@ -423,11 +561,28 @@ begin
   TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
-  ShowTables(TV,Nil,False,false);
-  TV.OnDblClick:=@TablesDblClick;
+  ShowGlobalObjectList(TV,Nil,AObjectType,False);
+  TV.OnDblClick:=@DoDoubleClick;
+  FAllowDoubleClick:=AObjectType;
 end;
 
-procedure TDataDictEditor.TablesDblClick(Sender : TObject);
+procedure TDataDictEditor.SelectTableObjectList(AObjectType: TEditObjectType; ATableDef : TDDTableDef);
+
+Var
+  TV : TTreeView;
+
+begin
+  ClearEditor;
+  TV:=TTreeView.Create(Self);
+  TV.ShowLines:=True;
+  TV.Parent:=FEdit;
+  TV.Align:=alClient;
+  ShowTableObjectList(TV,Nil,ATableDef,AObjectType);
+  TV.OnDblClick:=@DoDoubleClick;
+  FAllowDoubleClick:=AObjectType;
+end;
+
+procedure TDataDictEditor.DoDoubleClick(Sender : TObject);
 
 Var
   TV : TTreeView;
@@ -436,38 +591,35 @@ Var
 begin
   TV:=Sender As TTreeView;
   N:=TV.Selected;
-  If (GetObjectType(N)=otTable) and (N.Data<>Nil) then
+  If (GetObjectType(N)=FAllowDoubleClick) and (N.Data<>Nil) then
     FTV.Selected:=FindNodeWithData(FTV,N.Data);
 end;
 
-procedure TDataDictEditor.SelectFields(TableDef : TDDTableDef);
+
+
+function TDataDictEditor.SelectNextNode(ANode: TTreeNode; ADefault : TTreeNode): TTreeNode;
 
 Var
-  TV : TTreeView;
+  NN : TTreeNode;
 
 begin
-  ClearEditor;
-  TV:=TTreeView.Create(Self);
-  TV.ShowLines:=True;
-  TV.Parent:=FEdit;
-  TV.Align:=alClient;
-  ShowFields(TV,Nil,TableDef);
-  TV.OnDblClick:=@FieldsDblClick;
-end;
-
-procedure TDataDictEditor.SelectIndexes(TableDef: TDDTableDef);
-
-Var
-  TV : TTreeView;
-
-begin
-  ClearEditor;
-  TV:=TTreeView.Create(Self);
-  TV.ShowLines:=True;
-  TV.Parent:=FEdit;
-  TV.Align:=alClient;
-  ShowIndexes(TV,Nil,TableDef);
-  TV.OnDblClick:=@IndexesDblClick;
+  NN:=ANode.GetNextSibling;
+  If (NN=Nil) then
+    begin
+    NN:=ANode.GetPrevSibling;
+    If (NN=Nil) then
+      if Assigned(ADefault) then
+        NN:=ADefault
+      else
+        begin
+        NN:=Anode.Parent;
+        If Assigned(NN) then
+          NN:=NN.Parent;
+        end;
+    end;
+  ANode.Free;
+  FTV.Selected:=NN;
+  Result:=NN;
 end;
 
 procedure TDataDictEditor.SetModified(const AValue: Boolean);
@@ -492,38 +644,18 @@ begin
     end;
 end;
 
-procedure TDataDictEditor.FieldsDblClick(Sender : TObject);
-
-Var
-  TV : TTreeView;
-  N : TTreeNode;
-
-begin
-  TV:=Sender As TTreeView;
-  N:=TV.Selected;
-  If (GetObjectType(N)=otField) and (N.Data<>Nil) then
-    FTV.Selected:=FindNodeWithData(FTV,N.Data);
-end;
-
-procedure TDataDictEditor.IndexesDblClick(Sender: TObject);
-
-Var
-  TV : TTreeView;
-  N : TTreeNode;
-
-begin
-  TV:=Sender As TTreeView;
-  N:=TV.Selected;
-  If (GetObjectType(N)=otIndexDef) and (N.Data<>Nil) then
-    FTV.Selected:=FindNodeWithData(FTV,N.Data);
-end;
-
 procedure TDataDictEditor.ClearEditor;
 
 begin
   With FEdit do
     While (ControlCount>0) do
       Controls[ControlCount-1].Free;
+end;
+
+procedure TDataDictEditor.SelectSingleObject(AObject: TPersistent);
+begin
+  ClearEditor;
+  CreatePropertyGrid(AObject);
 end;
 
 Function TDataDictEditor.CreatePropertyGrid(P : TPersistent) : TTIPropertyGrid;
@@ -539,71 +671,64 @@ begin
     end;
 end;
 
-Procedure TDataDictEditor.SelectTable(TD : TDDTableDef);
-
-begin
-  ClearEditor;
-  CreatePropertyGrid(TD);
-end;
-
-Procedure TDataDictEditor.SelectField(FD : TDDFieldDef);
-
-begin
-  ClearEditor;
-  CreatePropertyGrid(FD);
-end;
-
-procedure TDataDictEditor.SelectIndex(ID: TDDIndexDef);
-begin
-  ClearEditor;
-  CreatePropertyGrid(ID);
-end;
-
-function TDataDictEditor.GetObjectType(Node: TTreeNode): TObjectType;
+function TDataDictEditor.GetObjectType(Node: TTreeNode): TEditObjectType;
 
 Var
   I : Integer;
   
 begin
-  Result:=otUnknown;
+  Result:=eotUnknown;
   If Node<>Nil then
     begin
     I:=Node.ImageIndex;
     I:=I-ImageOffset+1;
-    If (I>=0) and (I<=Ord(High(TObjectType))) then
-      Result:=TObjectType(I);
+    If (I>=0) and (I<=Ord(High(TEditObjectType))) then
+      Result:=TEditObjectType(I);
     end;
 end;
 
-procedure TDataDictEditor.ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode: Boolean; AddIndexesNode : Boolean);
+procedure TDataDictEditor.GetTableObjectsList(ATabledef :TDDTableDef; AObjectType : TEditObjectType; List : TStrings);
 
 Var
-  TN,FN : TTreeNode;
+  I : Integer;
+
+begin
+  Case AObjectType of
+    eotField :  For I:=0 to ATableDef.Fields.Count-1 do
+                 List.AddObject(ATableDef.Fields[i].FieldName,ATableDef.Fields[i]);
+{$ifndef onlyoldobjects}
+    eotIndex :  For I:=0 to ATableDef.Indexes.Count-1 do
+                 List.AddObject(ATableDef.Indexes[i].IndexName,ATableDef.Indexes[i]);
+    eotForeignKey :  For I:=0 to ATableDef.ForeignKeys.Count-1 do
+                 List.AddObject(ATableDef.ForeignKeys[i].KeyName,ATableDef.ForeignKeys[i]);
+{$endif onlyoldobjects}
+  end;
+  If List is TStringList then
+    TStringList(List).Sorted:=True;
+end;
+
+procedure TDataDictEditor.ShowTableObjectList(TV : TTreeView; ParentNode: TTreeNode; ATableDef: TDDTableDef;AObjectType : TEditObjectType);
+
+Var
+  TN : TTreeNode;
   TL : TStringList;
-  TD : TDDTableDef;
-  I  : Integer;
-  
+  II, I : Integer;
+
 begin
   TL:=TStringList.Create;
   Try
-    TL.Sorted:=true;
-    For I:=0 to FDD.Tables.Count-1 do
-      TL.AddObject(FDD.Tables[i].TableName,FDD.Tables[i]);
+    Case AObjectType of
+      eotField : II:=iiField;
+{$ifndef onlyoldobjects}
+      eotIndex : II:=iiIndex;
+      eotForeignKey : II:=iiForeignKey;
+{$endif}
+    end;
+    GetTableObjectsList(ATableDef,AObjectType,TL);
     For I:=0 to TL.Count-1 do
       begin
-      TD:=TL.Objects[i] as TDDTableDef;
-      TN:=NewNode(TV,ParentNode,TD.TableName,iiTable);
-      TN.Data:=TD;
-      If AddFieldsNode then
-        begin
-        FN:=NewNode(TV,TN,SNodeFields,iiFields);
-        ShowFields(TV,FN,TD);
-        end;
-      If AddIndexesNode then
-        begin
-        FN:=NewNode(TV,TN,SNodeIndexes,iiIndexes);
-        ShowIndexes(TV,FN,TD);
-        end;
+      TN:=NewNode(TV,ParentNode,TL[i],II);
+      TN.Data:=TL.Objects[i];
       end;
     If Assigned(ParentNode) then
       ParentNode.Expand(False);
@@ -612,59 +737,106 @@ begin
   end;
 end;
 
-procedure TDataDictEditor.ShowFields(TV : TTreeView;TableNode: TTreeNode; TableDef: TDDTableDef);
+procedure TDataDictEditor.GetGlobalObjectsList(AObjectType: TEditObjectType;
+  List: TStrings);
+
+Var
+  I : Integer;
+
+begin
+  Case AObjectType of
+    eotTable:
+      For I:=0 to FDD.Tables.Count-1 do
+        List.AddObject(FDD.Tables[i].TableName,FDD.Tables[i]);
+{$ifndef onlyoldobjects}
+    eotSequence:
+      For I:=0 to FDD.Sequences.Count-1 do
+        List.AddObject(FDD.Sequences[i].SequenceName,FDD.Sequences[i]);
+
+    eotDomain:
+      For I:=0 to FDD.Domains.Count-1 do
+        List.AddObject(FDD.Domains[i].DomainName,FDD.Domains[i]);
+{$endif onlyoldobjects}
+  end;
+  If List is TStringList then
+    TStringList(List).Sorted:=True;
+end;
+
+procedure TDataDictEditor.ShowSubLists(TV: TTreeView; ParentNode: TTreeNode; AObject : TObject);
+
+Var
+  TD : TDDTableDef;
+  N : TTreeNode;
+begin
+  If AObject is TDDTableDef then
+    begin
+    TD:=AObject as TDDTableDef;
+    N:=NewNode(TV,ParentNode,SNodeFields,iiFields);
+    ShowTableObjectList(TV,N,TD,eotField);
+{$ifndef onlyoldobjects}
+    N:=NewNode(TV,ParentNode,SNodeIndexes,iiIndexes);
+    ShowTableObjectList(TV,N,TD,eotIndex);
+    N:=NewNode(TV,ParentNode,SNodeForeignKeys,iiForeignKeys);
+    ShowTableObjectList(TV,N,TD,eotForeignKey);
+{$endif onlyoldobjects}
+    end;
+end;
+
+procedure TDataDictEditor.ShowGlobalObjectList(TV: TTreeView;
+  ParentNode: TTreeNode; AObjectType: TEditObjectType; AShowSubLists : Boolean = False);
 
 Var
   TN : TTreeNode;
   TL : TStringList;
-  FD : TDDFieldDef;
-  I  : Integer;
+  II, I : Integer;
 
 begin
   TL:=TStringList.Create;
   Try
-    TL.Sorted:=true;
-    For I:=0 to TableDef.Fields.Count-1 do
-      TL.AddObject(TableDef.Fields[i].FieldName,TableDef.Fields[i]);
+    Case AObjectType of
+      eotTable    : II:=iiTable;
+{$ifndef onlyoldobjects}
+      eotSequence : II:=iiSequence;
+      eotDomain   : II:=iiDomain;
+{$endif onlyoldobjects}
+    end;
+    GetGlobalObjectsList(AObjectType,TL);
     For I:=0 to TL.Count-1 do
       begin
-      FD:=TL.Objects[i] as TDDFieldDef;
-      TN:=NewNode(TV,TableNode,FD.FieldName,iiField);
-      TN.Data:=FD;
+      TN:=NewNode(TV,ParentNode,TL[i],II);
+      TN.Data:=TL.Objects[i];
+      If AShowSubLists then
+        ShowSubLists(TV,TN,TL.Objects[i]);
       end;
-    If Assigned(TableNode) then
-      TableNode.Expand(False);
+    If Assigned(ParentNode) then
+      ParentNode.Expand(False);
   Finally
     FreeAndNil(TL);
   end;
 end;
 
-procedure TDataDictEditor.ShowIndexes(TV: TTreeView; TableNode: TTreeNode;
-  TableDef: TDDTableDef);
-  
+procedure TDataDictEditor.DeleteGlobalObject(AObject: TObject);
+
 Var
-  TN : TTreeNode;
-  TL : TStringList;
-  ID : TDDIndexDef;
-  I  : Integer;
+  N,NN : TTreeNode;
 
 begin
-  TL:=TStringList.Create;
-  Try
-    TL.Sorted:=true;
-    For I:=0 to TableDef.Indexes.Count-1 do
-      TL.AddObject(TableDef.Indexes[i].IndexName,TableDef.Indexes[i]);
-    For I:=0 to TL.Count-1 do
-      begin
-      ID:=TL.Objects[i] as TDDIndexDef;
-      TN:=NewNode(TV,TableNode,ID.IndexName,iiindex);
-      TN.Data:=ID;
-      end;
-    If Assigned(TableNode) then
-      TableNode.Expand(False);
-  Finally
-    FreeAndNil(TL);
-  end;
+  N:=FindNodeWithData(FTV,Pointer(AObject));
+  NN:=SelectNextNode(N,FDDNode);
+  AObject.Free;
+  Modified:=True;
+end;
+
+procedure TDataDictEditor.DeleteTableObject(AObject: TObject);
+
+Var
+  N,NN : TTreeNode;
+
+begin
+  N:=FindNodeWithData(FTV,Pointer(AObject));
+  NN:=SelectNextNode(N,Nil);
+  AObject.Free;
+  Modified:=True;
 end;
 
 procedure TDataDictEditor.LoadFromFile(AFileName: String);
@@ -687,71 +859,54 @@ end;
 
 procedure TDataDictEditor.DeleteTable(TD: TDDTableDef);
 
-Var
-  N,NN : TTreeNode;
-  
 begin
-  N:=FindNodeWithData(FTV,Pointer(TD));
-  NN:=N.GetNextSibling;
-  If (NN=Nil) then
-    begin
-    NN:=N.GetPrevSibling;
-    If (NN=Nil) then
-      NN:=FDDNode;
-    end;
-  N.Free;
-  FTV.Selected:=NN;
-  TD.Free;
-  Modified:=True;
+  DeleteGlobalObject(TD);
 end;
 
 procedure TDataDictEditor.DeleteField(FD: TDDFieldDef);
 
-Var
-  N,NN : TTreeNode;
-
 begin
-  N:=FindNodeWithData(FTV,Pointer(FD));
-  NN:=N.GetNextSibling;
-  If (NN=Nil) then
-    begin
-    NN:=N.GetPrevSibling;
-    If (NN=Nil) then
-      begin
-      NN:=N.Parent;
-      If Assigned(NN) then
-        NN:=NN.Parent;
-      end;
-    end;
-  N.Free;
-  FTV.Selected:=NN;
-  FD.Free;
-  Modified:=True;
+  DeleteTableObject(FD);
 end;
 
 procedure TDataDictEditor.DeleteIndex(ID: TDDIndexDef);
 
+begin
+  DeleteTableObject(ID);
+end;
+
+procedure TDataDictEditor.DeleteCurrentObject;
+
 Var
-  N,NN : TTreeNode;
+  N : TTreeNode;
 
 begin
-  N:=FindNodeWithData(FTV,Pointer(ID));
-  NN:=N.GetNextSibling;
-  If (NN=Nil) then
-    begin
-    NN:=N.GetPrevSibling;
-    If (NN=Nil) then
-      begin
-      NN:=N.Parent;
-      If Assigned(NN) then
-        NN:=NN.Parent;
-      end;
-    end;
-  N.Free;
-  FTV.Selected:=NN;
-  ID.Free;
-  Modified:=True;
+  N:=FTV.Selected;
+  If GetCurrentObjectType in [eotField,eotIndex,eotForeignKey] then
+    DeleteTableObject(TObject(N.Data))
+  else
+    DeleteGlobalObject(TObject(N.Data))
 end;
+
+{$ifndef onlyoldobjects}
+procedure TDataDictEditor.DeleteSequence(SD: TDDSequenceDef);
+
+begin
+  DeleteGlobalObject(SD);
+end;
+
+procedure TDataDictEditor.DeleteDomain(DD: TDDDomainDef);
+
+begin
+  DeleteGlobalObject(DD);
+end;
+
+procedure TDataDictEditor.DeleteForeignKey(KD: TDDForeignKeyDef);
+
+begin
+  DeleteTableObject(KD);
+end;
+{$endif onlyoldobjects}
 
 procedure TDataDictEditor.CreateCode;
 
