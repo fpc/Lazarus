@@ -224,13 +224,12 @@ begin
   Value:=Trim(Value);
   if Value='' then exit;
   case ValueType of
-  cocvtNone: ; // ignore
   cocvtUnitPath,cocvtSrcPath,cocvtIncludePath,cocvtObjectPath,cocvtLibraryPath,
   cocvtDebugPath:
     begin
       FValues[ValueType]:=MergeSearchPaths(FValues[ValueType],Value);
     end;
-  cocvtLinkerOptions,cocvtCustomOptions:
+  else
     begin
       if FValues[ValueType]<>'' then
         FValues[ValueType]:=FValues[ValueType]+' ';

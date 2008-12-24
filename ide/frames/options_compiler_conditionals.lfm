@@ -16,10 +16,15 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     Top = 0
     Width = 381
     Align = alClient
+    AutoExpand = True
     Ctl3D = False
     DefaultItemHeight = 19
     PopupMenu = COCPopupMenu
+    ReadOnly = True
+    RowSelect = True
+    ShowRoot = False
     TabOrder = 0
+    Options = [tvoAutoExpand, tvoAutoInsertMark, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowSeparators, tvoToolTips]
   end
   object COCPopupMenu: TPopupMenu
     left = 48
