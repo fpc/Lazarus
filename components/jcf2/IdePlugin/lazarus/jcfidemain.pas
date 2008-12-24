@@ -163,8 +163,30 @@ begin
 end;
 
 procedure TJcfIdeMain.DoFormatOpen(Sender: TObject);
+var
+  lciEditor: TSourceEditorInterface;
+  liLoop: integer;
 begin
-  // todo?
+  MakeEditorConverter;
+
+  if (SourceEditorWindow = nil) then
+    Exit;
+
+  ClearToolMessages;
+  fcEditorConverter.BeforeConvert;
+
+  for liLoop := 0 to SourceEditorWindow.Count - 1 do
+  begin
+    lciEditor := SourceEditorWindow.Items[liLoop];
+
+    // check that it's open, and a .pas or .dpr
+    if (lciEditor <> nil) and (FileIsAllowedType(lciEditor.FileName)) then
+    begin
+      fcEditorConverter.Convert(lciEditor);
+    end;
+  end;
+
+  fcEditorConverter.AfterConvert;
 end;
 
 
@@ -191,6 +213,7 @@ procedure TJcfIdeMain.DoFormatSettings(Sender: TObject);
   lfAllSettings: TFormAllSettings;
 }
 begin
+  ShowMessage('unimplemented');
 { TODO: convert JCF settings form (it contains some TJvXXX components atm)
   if not GetRegSettings.HasRead then
     GetRegSettings.ReadAll;
@@ -221,6 +244,7 @@ procedure TJcfIdeMain.DoRegistrySettings(Sender: TObject);
   lcAbout: TfmRegistrySettings;
 }
 begin
+  ShowMessage('unimplemented');
 { TODO: convert JCF registry settings (it contains some TJvXXX components atm)
   if not GetRegSettings.HasRead then
     GetRegSettings.ReadAll;

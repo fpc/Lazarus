@@ -57,6 +57,8 @@ const
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
   FORMAT_ABOUT_MENU_NAME = 'jcfAbout';
   FORMAT_CATEGORY_NAME = 'jcfFormat';
+  FORMAT_MENU_SECTION1 = 'jcfSection1';
+  FORMAT_MENU_SECTION2 = 'jcfSection2';
 
 resourcestring
   FORMAT_MENU     = 'JEDI Code &Format';
@@ -75,7 +77,7 @@ procedure Register;
 var
   Cat: TIDECommandCategory;
   Key: TIDEShortCut;
-  fcMainMenu: TIDEMenuSection;
+  fcMainMenu, SubSection: TIDEMenuSection;
   CmdFormatFile: TIDECommand;
 begin
   Cat := IDECommandList.CreateCategory(nil, FORMAT_CATEGORY_NAME,
@@ -85,7 +87,7 @@ begin
   CmdFormatFile := RegisterIDECommand(Cat, FORMAT_CURRENT_NAME, FORMAT_CURRENT, Key,
     lcJCFIDE.DoFormatCurrentIDEWindow);
 
-  fcMainMenu := RegisterIDESubMenu(mnuTools, FORMAT_MENU_NAME, FORMAT_MENU);
+  fcMainMenu := RegisterIDESubMenu(itmSecondaryTools, FORMAT_MENU_NAME, FORMAT_MENU);
 
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_CURRENT_NAME, FORMAT_CURRENT,
     lcJCFIDE.DoFormatCurrentIDEWindow, nil, CmdFormatFile);
@@ -93,16 +95,18 @@ begin
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_PROJECT_NAME, FORMAT_PROJECT,
     lcJCFIDE.DoFormatProject);
 
-{ TODO: implement methods first
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_OPEN_NAME, FORMAT_OPEN,
-    @lcJCFIDE.DoFormatOpen);
+    lcJCFIDE.DoFormatOpen);
 
-  AddMenuItem('-', nil);
-  AddMenuItem(FORMAT_REG_SETTINGS_MENU_NAME, lcJCFIDE.DoRegistrySettings);
-  AddMenuItem(FORMAT_SETTINGS_MENU_NAME, lcJCFIDE.DoFormatSettings);
+  // settings
+  SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION1);
+  RegisterIDEMenuCommand(SubSection, FORMAT_REG_SETTINGS_MENU_NAME, FORMAT_REG_SETTINGS_MENU,
+    lcJCFIDE.DoRegistrySettings);
+  RegisterIDEMenuCommand(SubSection, FORMAT_SETTINGS_MENU_NAME, FORMAT_SETTINGS_MENU,
+    lcJCFIDE.DoFormatSettings);
 
-  AddMenuItem('-', nil);
-}
+  // about
+  SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION2);
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_ABOUT_MENU_NAME, FORMAT_ABOUT_MENU,
     lcJCFIDE.DoAbout);
 end;
