@@ -581,7 +581,7 @@ begin
        Char_AllFixedUpCase      : Result := '0';
        Char_AllFixedDownCase    : Result := '0';
        Char_Space               : Result := FSpaceChar;
-       Char_HourSeparator       : Result := DecimalSeparator;
+       Char_HourSeparator       : Result := TimeSeparator;
        Char_DateSeparator       : Result := DateSeparator;
   end;
 end;
