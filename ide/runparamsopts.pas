@@ -358,9 +358,9 @@ begin
 
   SetupLocalPage;
   SetupEnvironmentPage;
-  UserOverridesAddButton.LoadGlyphFromLazarusResource('add');
-  UserOverridesEditButton.LoadGlyphFromLazarusResource('edit');
-  UserOverridesDeleteButton.LoadGlyphFromLazarusResource('delete');
+  UserOverridesAddButton.LoadGlyphFromLazarusResource('laz_add');
+  UserOverridesEditButton.LoadGlyphFromLazarusResource('laz_edit');
+  UserOverridesDeleteButton.LoadGlyphFromLazarusResource('laz_delete');
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;

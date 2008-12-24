@@ -108,7 +108,7 @@ begin
   PreviewButton.Caption:=lisUpdatePreview;
   CloseButton.Caption:=lisMenuClose;
   ApplyButton.Caption:=lisConvert;
-  PreviewButton.LoadGlyphFromLazarusResource('refresh');
+  PreviewButton.LoadGlyphFromLazarusResource('laz_refresh');
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
   ApplyButton.LoadGlyphFromLazarusResource('btn_ok');
   HelpButton.LoadGlyphFromLazarusResource('btn_help');

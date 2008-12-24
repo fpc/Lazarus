@@ -41,7 +41,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Project, SourceMarks, Debugger, ProjectDefs,
-  Laz_XMLCfg;
+  Laz_XMLCfg, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
   { TBaseDebugManager }
@@ -64,11 +64,14 @@ type
     FBreakPoints: TIDEBreakPoints;
     FLocals: TIDELocals;
     FWatches: TIDEWatches;
+    FRegisters: TIDERegisters;
     FManagerStates: TDebugManagerStates;
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
   public
+    procedure Reset; virtual; abstract;
+
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
@@ -98,6 +101,8 @@ type
     function Evaluate(const AExpression: String; var AResult: String
                      ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
     
+    function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
+
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; virtual; abstract;
     function DoDeleteBreakPoint(const AFilename: string; ALine: integer
@@ -118,6 +123,7 @@ type
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TIDECallStack read FCallStack;
     property Locals: TIDELocals read FLocals;
+    property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TIDEWatches read FWatches;
   end;
@@ -161,6 +167,7 @@ begin
 end;
 
 initialization
+  RegisterIDEOptionsGroup(GroupDebugger, dlgGroupDebugger);
   DebugBoss := nil;
   MDebuggerClasses := TStringList.Create;
   MDebuggerClasses.Sorted := True;

@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
-  Forms, Menus;
+  Forms, Menus, LResources;
 
 type
 
@@ -1002,7 +1002,6 @@ type
   private
     FOnChange: TNotifyEvent;
     FClicksDisabled: Boolean;
-    FUseOnChange: boolean;
     function IsCheckedStored: boolean;
   protected
     fLastCheckedOnChange: boolean;
@@ -1015,7 +1014,6 @@ type
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
-    property UseOnChange: boolean read FUseOnChange write FUseOnChange stored False default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1166,7 +1164,6 @@ type
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
     property TabStop default true;
-    property UseOnChange;
     property OnChange;
   end;
 
@@ -1220,7 +1217,6 @@ type
     property State;
     property TabOrder;
     property TabStop;
-    property UseOnChange;
     property Visible;
   end;
 
@@ -1259,7 +1255,6 @@ type
     property State;
     property TabOrder;
     property TabStop;
-    property UseOnChange;
     property Visible;
   end;
 
@@ -1313,7 +1308,6 @@ type
     property State;
     property TabOrder;
     property TabStop;
-    property UseOnChange;
     property Visible;
   end;
 
@@ -1481,6 +1475,11 @@ end;
 {$I togglebox.inc}
 
 {$I customstatictext.inc}
+
+initialization
+  RegisterRemovedProperty(TButtonControl, 'UseOnChange',
+    'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
+    '');
 
 end.
 

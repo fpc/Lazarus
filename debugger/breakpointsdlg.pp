@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType;
+  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, MainBase;
 
 type
   TBreakPointsDlgState = (
@@ -629,7 +629,8 @@ begin
   CurItem:=lvBreakPoints.Selected;
   if CurItem=nil then exit;
   CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
-  DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
+
+  MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, True);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;

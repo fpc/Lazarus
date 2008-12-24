@@ -3,10 +3,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 501
   ClientHeight = 441
   ClientWidth = 501
-  TabOrder = 0
   Visible = False
-  DesignLeft = 176
-  DesignTop = 232
+  DesignLeft = 88
+  DesignTop = 116
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -16,7 +15,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     Height = 128
     Top = 0
     Width = 501
-    HelpContext = 0
     Align = alTop
     AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
@@ -33,7 +31,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 14
       Top = 9
       Width = 83
-      HelpContext = 0
       BorderSpacing.Left = 6
       Caption = 'RightMarginLabel'
       ParentColor = False
@@ -46,7 +43,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 14
       Top = 85
       Width = 110
-      HelpContext = 0
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Every n-th line number'
@@ -59,7 +55,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 19
       Top = 6
       Width = 159
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'VisibleRightMarginCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -74,7 +69,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 19
       Top = 31
       Width = 133
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'VisibleGutterCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -89,7 +83,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 19
       Top = 56
       Width = 160
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'ShowLineNumbersCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -105,7 +98,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 6
       Width = 100
-      HelpContext = 0
       AutoComplete = False
       BorderSpacing.Left = 50
       BorderSpacing.Around = 6
@@ -131,7 +123,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 23
       Top = 81
       Width = 54
-      HelpContext = 0
       BorderSpacing.Around = 6
       MinValue = 1
       OnChange = GeneralCheckBoxOnChange
@@ -148,7 +139,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     Height = 105
     Top = 134
     Width = 501
-    HelpContext = 0
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
@@ -166,7 +156,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 14
       Top = 36
       Width = 107
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'EditorFontHeightLabel'
       ParentColor = False
@@ -180,7 +169,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 14
       Top = 36
       Width = 108
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'ExtraLineSpacingLabel'
       ParentColor = False
@@ -194,7 +182,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 14
       Top = 63
       Width = 112
-      HelpContext = 0
       BorderSpacing.Around = 6
       Caption = 'ExtraCharSpacingLabel'
       ParentColor = False
@@ -207,7 +194,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 6
       Width = 458
-      HelpContext = 0
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Left = 6
@@ -230,7 +216,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 6
       Width = 25
-      HelpContext = 0
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
@@ -245,7 +230,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 33
       Width = 100
-      HelpContext = 0
       AutoComplete = False
       BorderSpacing.Around = 6
       Ctl3D = False
@@ -275,7 +259,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 33
       Width = 100
-      HelpContext = 0
       AutoComplete = False
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
@@ -299,7 +282,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 60
       Width = 100
-      HelpContext = 0
       AutoComplete = False
       BorderSpacing.Bottom = 6
       Ctl3D = False
@@ -322,7 +304,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 21
       Top = 60
       Width = 161
-      HelpContext = 0
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'DisableAntialiasingCheckBox'
@@ -342,7 +323,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     Height = 196
     Top = 245
     Width = 501
-    HelpContext = 0
     Align = alClient
     BorderSpacing.Top = 6
     CFDividerDrawLevel = 0
@@ -351,16 +331,15 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     Font.Name = 'courier'
     Font.Pitch = fpFixed
     Font.Quality = fqNonAntialiased
-    Font.Style = []
     ParentColor = False
     ParentFont = False
     TabOrder = 2
     BookMarkOptions.Xoffset = 30
+    BookMarkOptions.OnChange = nil
     Gutter.ShowCodeFolding = True
     Gutter.ShowChanges = True
     Gutter.ShowLineNumbers = True
     Gutter.ZeroStart = False
-    Gutter.DigitCount = 2
     Keystrokes = <    
       item
         Command = 3
@@ -686,7 +665,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       'DisplayPreview'
     )
     ReadOnly = True
-    SelectedColor.OnChange = nil
     BracketHighlightStyle = sbhsBoth
   end
 end

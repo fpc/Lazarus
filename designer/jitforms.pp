@@ -1626,9 +1626,10 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
 begin
-  DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
   if Assigned(OnPropertyNotFound) then
-    OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip);
+    OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip)
+  else
+    DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
 end;
 
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
@@ -1641,14 +1642,21 @@ var
 {$ENDIF}
 begin
   {$IFNDEF DisableFakeMethods}
-  //debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' ',PropInfo^.Name,':=',TheMethodName);
+  //debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' LookupRoot=',DbgSName(Reader.LookupRoot),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin
     // there is a real method with this name
     Method.Data := FCurReadJITComponent;
   end else begin
-    // create a fake TJITMethod
-    JITMethod:=JITMethods.Add(Reader.LookupRoot.ClassType,TheMethodName);
+    JITMethod:=nil;
+    if FCurReadStreamClass<>nil then begin
+      // search in JIT method of stream class (e.g. ancestor)
+      JITMethod:=JITMethods.Find(FCurReadStreamClass,TheMethodName);
+    end;
+    if JITMethod=nil then begin
+      // create a fake TJITMethod
+      JITMethod:=JITMethods.Add(Reader.LookupRoot.ClassType,TheMethodName);
+    end;
     Method:=JITMethod.Method;
   end;
   SetMethodProp(Instance, PropInfo, Method);

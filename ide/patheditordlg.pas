@@ -156,10 +156,10 @@ begin
   CancelBitBtn.Caption:=dlgCancel;
   OKBitBtn.LoadGlyphFromLazarusResource('btn_ok');
   CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
-  AddTemplateButton.LoadGlyphFromLazarusResource('add');
+  AddTemplateButton.LoadGlyphFromLazarusResource('laz_add');
   MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
   MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');
-  DeleteButton.LoadGlyphFromLazarusResource('delete');
+  DeleteButton.LoadGlyphFromLazarusResource('laz_delete');
 
   PathEdit.Font.BeginUpdate;
   PathEdit.Font.Name:=SynDefaultFontName;

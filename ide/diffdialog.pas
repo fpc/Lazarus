@@ -269,7 +269,7 @@ begin
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
-  OpenInEditorButton.LoadGlyphFromLazarusResource('open');
+  OpenInEditorButton.LoadGlyphFromLazarusResource('laz_open');
   SaveDiffButton.LoadGlyphFromLazarusResource('menu_save');
   HelpButton.LoadGlyphFromLazarusResource('btn_help');
 

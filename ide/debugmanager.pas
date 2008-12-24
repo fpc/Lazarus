@@ -34,25 +34,26 @@ unit DebugManager;
 interface
 
 {$I ide.inc}
+{off $define VerboseDebugger}
 
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
-  Laz_XMLCfg, 
+  Laz_XMLCfg,
   { for Get/SetForegroundWindow }
-  LCLType, LCLIntf,   
+  LCLType, LCLIntf,
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  LazConf, DebugOptionsFrm,
+  LazConf, 
   CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -64,47 +65,44 @@ type
     ddtWatches,
     ddtLocals,
     ddtCallStack,
-    ddtEvaluate
+    ddtEvaluate,
+    ddtRegisters,
+    ddtAssembler
     );
-    
+
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
-    procedure mnuDebuggerOptionsClick(Sender: TObject);
 
     // SrcNotebook events
     function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
 
     // Debugger events
-    procedure OnDebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
-    procedure OnDebuggerCurrentLine(Sender: TObject;
-                                    const ALocation: TDBGLocationRec);
-    procedure OnDebuggerOutput(Sender: TObject; const AText: String);
-    procedure OnDebuggerException(Sender: TObject; const AExceptionClass: String;
-                                  const AExceptionText: String);
+    procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
+    procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+    procedure DebuggerOutput(Sender: TObject; const AText: String);
+    procedure DebuggerException(Sender: TObject; const AExceptionClass, AExceptionText: String);
 
-    // debugger dialog events
-    function DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
-      const Filename: string; Line, Column: integer): TModalresult;
+    // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
-    function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
-      var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
     FDebugger: TDebugger;
     FBreakPointGroups: TIDEBreakPointGroups;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FPrevShownWindow: HWND;
+    // keep track of the last reported location
+    FCurrentLocation: TDBGLocationRec;
 
     // When a source file is not found, the user can choose one
     // here are all choices stored
     FUserSourceFiles: TStringList;
-    
+
     // when the debug output log is not open, store the debug log internally
     FHiddenDebugOutputLog: TStringList;
-    
+
     procedure SetDebugger(const ADebugger: TDebugger);
 
     // Breakpoint routines
@@ -122,6 +120,8 @@ type
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
     procedure InitEvaluateDlg;
+    procedure InitRegistersDlg;
+    procedure InitAssemblerDlg;
 
     procedure FreeDebugger;
     procedure ResetDebugger;
@@ -131,6 +131,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Reset; override;
+
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
@@ -158,6 +160,8 @@ type
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
 
+    function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
+
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
 
@@ -169,7 +173,7 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TIDEWatch): TModalresult; override;
   end;
-  
+
 
 implementation
 
@@ -177,9 +181,9 @@ implementation
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack,
-    nmiwEvaluate
+    nmiwEvaluate, nmiwRegisters, nmiwAssembler
   );
-  
+
 type
   TManagedBreakPoint = class(TIDEBreakPoint)
   private
@@ -213,7 +217,7 @@ type
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
-  
+
   TManagedBreakPoints = class(TIDEBreakPoints)
   private
     FMaster: TDBGBreakPoints;
@@ -226,7 +230,7 @@ type
     constructor Create(const AManager: TDebugManager);
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   end;
-  
+
   TManagedWatch = class(TIDEWatch)
   private
     FMaster: TDBGWatch;
@@ -258,7 +262,9 @@ type
     destructor Destroy; override;
     property Master: TDBGWatches read FMaster write SetMaster;
   end;
-  
+
+  { TManagedLocals }
+
   TManagedLocals = class(TIDELocals)
   private
     FMaster: TDBGLocals;
@@ -270,6 +276,22 @@ type
   public
     function Count: Integer; override;
     property Master: TDBGLocals read FMaster write SetMaster;
+  end;
+
+  { TManagedRegisters }
+
+  TManagedRegisters = class(TIDERegisters)
+  private
+    FMaster: TDBGRegisters;
+    procedure RegistersChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGRegisters);
+  protected
+    function GetModified(const AnIndex: Integer): Boolean; override;
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    function Count: Integer; override;
+    property Master: TDBGRegisters read FMaster write SetMaster;
   end;
 
   { TManagedCallStack }
@@ -300,14 +322,18 @@ type
     procedure ResetMaster;
   end;
 
+  { TManagedSignals }
+
   TManagedSignals = class(TIDESignals)
   private
     FMaster: TDBGSignals;
     FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGSignals);
   protected
+    procedure AddDefault;
   public
     constructor Create(const AManager: TDebugManager);
+    procedure Reset; override;
     property Master: TDBGSignals read FMaster write SetMaster;
   end;
 
@@ -320,14 +346,18 @@ type
     procedure ResetMaster;
   end;
 
+  { TManagedExceptions }
+
   TManagedExceptions = class(TIDEExceptions)
   private
     FMaster: TDBGExceptions;
     FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGExceptions);
   protected
+    procedure AddDefault;
   public
     constructor Create(const AManager: TDebugManager);
+    procedure Reset; override;
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
 
@@ -369,7 +399,7 @@ end;
 function TManagedCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
 begin
   Assert(FMaster <> nil);
-  
+
   Result := FMaster.Entries[AIndex];
 end;
 
@@ -440,7 +470,7 @@ begin
   else DoNotify := False;
 
   FMaster := AMaster;
-  
+
   if FMaster <> nil
   then begin
     FMaster.OnChange := @LocalsChanged;
@@ -466,6 +496,66 @@ begin
 end;
 
 function TManagedLocals.Count: Integer;
+begin
+  if Master = nil
+  then Result := 0
+  else Result := Master.Count;
+end;
+
+{ TManagedRegisters }
+
+procedure TManagedRegisters.RegistersChanged(Sender: TObject);
+begin
+  NotifyChange;
+end;
+
+procedure TManagedRegisters.SetMaster(const AMaster: TDBGRegisters);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @RegistersChanged;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+function TManagedRegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  if Master = nil
+  then Result := inherited GetModified(AnIndex)
+  else Result := Master.Modified[AnIndex];
+end;
+
+function TManagedRegisters.GetName(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetName(AnIndex)
+  else Result := Master.Names[AnIndex];
+end;
+
+function TManagedRegisters.GetValue(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex)
+  else Result := Master.Values[AnIndex];
+end;
+
+function TManagedRegisters.Count: Integer;
 begin
   if Master = nil
   then Result := 0
@@ -624,9 +714,13 @@ begin
   FMaster := nil;
   FManager := AManager;
   inherited Create(TManagedException);
+  AddDefault;
+end;
 
-  Add('ECodetoolError');
-  Add('EFOpenError');
+procedure TManagedExceptions.Reset;
+begin
+  inherited Reset;
+  AddDefault;
 end;
 
 procedure TManagedExceptions.SetMaster(const AValue: TDBGExceptions);
@@ -650,6 +744,13 @@ begin
       then FMaster.Add(Item.Name);
     end;
   end;
+end;
+
+procedure TManagedExceptions.AddDefault;
+begin
+  Add('EAbort');
+  Add('ECodetoolError');
+  Add('EFOpenError');
 end;
 
 { TManagedSignal }
@@ -676,6 +777,13 @@ begin
   FMaster := nil;
   FManager := AManager;
   inherited Create(TManagedSignal);
+  AddDefault;
+end;
+
+procedure TManagedSignals.Reset;
+begin
+  inherited Reset;
+  AddDefault;
 end;
 
 procedure TManagedSignals.SetMaster(const AValue: TDBGSignals);
@@ -694,6 +802,11 @@ begin
   end;
 end;
 
+procedure TManagedSignals.AddDefault;
+begin
+  // todo: add default signals
+end;
+
 { TManagedBreakPoints }
 
 constructor TManagedBreakPoints.Create(const AManager: TDebugManager);
@@ -708,7 +821,7 @@ var
   n: Integer;
 begin
   if FMaster = AValue then Exit;
-  
+
   FMaster := AValue;
   if FMaster = nil
   then begin
@@ -724,7 +837,9 @@ procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
 var
   BP: TBaseBreakPoint;
 begin
+{$ifdef VerboseDebugger}
   debugln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line));
+{$endif}
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
 
@@ -741,7 +856,9 @@ end;
 
 procedure TManagedBreakPoints.NotifyRemove(const ABreakPoint: TIDEBreakPoint);
 begin
+{$ifdef VerboseDebugger}
   debugln(['TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark <> nil]);
+{$endif}
 
   inherited;
 
@@ -968,17 +1085,7 @@ end;
 // Menu events
 //-----------------------------------------------------------------------------
 
-function TDebugManager.DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
-  const Filename: string; Line, Column: integer): TModalresult;
-begin
-  if not Destroying then
-    Result:=MainIDE.DoJumpToSourcePosition(Filename,Column,Line,0,true)
-  else
-    Result:=mrCancel;
-end;
-
-function TDebugManager.DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
-  var Filename: string; AskUserIfNotFound: boolean): TModalresult;
+function TDebugManager.GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean;
 var
   SrcFile: String;
   n: Integer;
@@ -986,7 +1093,7 @@ var
   OpenDialog: TOpenDialog;
   AnUnitInfo: TLazProjectFile;
 begin
-  Result:=mrCancel;
+  Result:=False;
   if Destroying then exit;
 
   SrcFile := Filename;
@@ -1013,7 +1120,7 @@ begin
       end;
     end;
   end;
-  
+
   if (not FilenameIsAbsolute(SrcFile)) then begin
     AnUnitInfo:=Project1.FindFile(SrcFile,[pfsfOnlyEditorFiles]);
     if AnUnitInfo<>nil then begin
@@ -1050,33 +1157,22 @@ begin
 
     FUserSourceFiles.Insert(0, SrcFile);
   end;
-  
-  if SrcFile<>'' then begin
+
+  if SrcFile<>''
+  then begin
     Filename:=SrcFile;
-    Result:=mrOk;
+    Result:=True;
   end;
 end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
-begin                       
+begin
   ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
 begin
   ResetDebugger;
-end;
-
-procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
-var
-  DebuggerOptionsForm: TDebuggerOptionsForm;
-begin
-  DebuggerOptionsForm := TDebuggerOptionsForm.Create(nil);
-  if DebuggerOptionsForm.ShowModal=mrOk then begin
-    // save to disk
-    EnvironmentOptions.Save(false);
-  end;
-  DebuggerOptionsForm.Free;
 end;
 
 
@@ -1101,7 +1197,7 @@ begin
   if (Watches.Find(WatchVar) = nil)
   and (Watches.Add(WatchVar) = nil)
   then Exit;
-  
+
   Result:=true;
 end;
 
@@ -1109,13 +1205,12 @@ end;
 // Debugger events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.OnDebuggerException(Sender: TObject;
-  const AExceptionClass: String; const AExceptionText: String);
+procedure TDebugManager.DebuggerException(Sender: TObject; const AExceptionClass, AExceptionText: String);
 var
   msg: String;
 begin
   if Destroying then exit;
-  
+
   if AExceptionText = ''
   then
     msg := Format('Project %s raised exception class ''%s''.',
@@ -1127,7 +1222,7 @@ begin
   MessageDlg('Error', msg, mtError,[mbOk],0);
 end;
 
-procedure TDebugManager.OnDebuggerOutput(Sender: TObject; const AText: String);
+procedure TDebugManager.DebuggerOutput(Sender: TObject; const AText: String);
 begin
   if Destroying then exit;
   if FDialogs[ddtOutput] <> nil then
@@ -1142,7 +1237,7 @@ begin
   end;
 end;
 
-procedure TDebugManager.OnDebuggerChangeState(ADebugger: TDebugger;
+procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
   OldState: TDBGState);
 const
   // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
@@ -1161,7 +1256,7 @@ begin
 
   if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then
     exit;
-  
+
   if FDebugger.State=dsError
   then begin
     Include(FManagerStates,dmsDebuggerObjectBroken);
@@ -1183,8 +1278,8 @@ begin
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun 
-        and (MainIDE.ToolStatus=itDebugger) then 
+    if EnvironmentOptions.HideIDEOnRun
+        and (MainIDE.ToolStatus=itDebugger) then
       MainIDE.HideIDE;
     if FPrevShownWindow <> 0 then
     begin
@@ -1193,14 +1288,14 @@ begin
     end;
   end
   else begin
-    if (OldState in [dsRun]) then 
+    if (OldState in [dsRun]) then
     begin
       MainIDE.UnhideIDE;
       FPrevShownWindow := GetForegroundWindow;
       Application.BringToFront;
     end;
   end;
-  
+
   // unmark execution line
   if (FDebugger.State <> dsPause)
   and (SourceNotebook <> nil)
@@ -1210,9 +1305,11 @@ begin
     then Editor.ExecutionLine := -1;
   end;
 
-  case FDebugger.State of 
+  case FDebugger.State of
     dsError: begin
+    {$ifdef VerboseDebugger}
       DebugLn('Ooops, the debugger entered the error state');
+    {$endif}
       MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
@@ -1226,15 +1323,17 @@ begin
           Format(lisExecutionStoppedOn, [#13#13]),
           mtInformation, [mbOK],0);
         end;
-        FDebugger.FileName := '';   
+        FDebugger.FileName := '';
+
+        if FDialogs[ddtAssembler] <> nil
+        then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
       end;
     end;
 
   end;
 end;
 
-procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
-  const ALocation: TDBGLocationRec);
+procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
 // if SrcLine < 1 then no source is available
@@ -1249,49 +1348,65 @@ begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
 
-  SrcFile:=ALocation.SrcFile;
-  SrcLine:=ALocation.SrcLine;
+  FCurrentLocation := ALocation;
+  SrcFile := ALocation.SrcFile;
+  SrcLine := ALocation.SrcLine;
 
-  //TODO: Show assembler window if no source can be found.
   if SrcLine < 1
   then begin
-    MessageDlg(lisExecutionPaused,
-      Format(lisExecutionPausedAdress, [#13#13,
-        HexStr(ALocation.Address, FDebugger.TargetWidth div 4), #13,
-        ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
-      mtInformation, [mbOK],0);
+    ViewDebugDialog(ddtAssembler);
 
-    // jump to the deepest stack frame with debugging info
-    i:=0;
-    while (i<FDebugger.CallStack.Count) do begin
-      StackEntry:=FDebugger.CallStack.Entries[i];
-      if StackEntry.Line>0 then begin
-        SrcLine:=StackEntry.Line;
-        SrcFile:=StackEntry.Source;
-        break;
+    if FDialogs[ddtAssembler] = nil
+    then begin
+      // TODO: change into assemblerview failure
+      MessageDlg(lisExecutionPaused,
+        Format(lisExecutionPausedAdress, [#13#13,
+          HexStr(ALocation.Address, FDebugger.TargetWidth div 4), #13,
+          ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
+        mtInformation, [mbOK],0);
+
+      // jump to the deepest stack frame with debugging info
+      i:=0;
+      while (i < FDebugger.CallStack.Count) do
+      begin
+        StackEntry := FDebugger.CallStack.Entries[i];
+        if StackEntry.Line > 0
+        then begin
+          SrcLine := StackEntry.Line;
+          SrcFile := StackEntry.Source;
+          StackEntry.Current := True;
+          Break;
+        end;
+        Inc(i);
       end;
-      inc(i);
+      if SrcLine < 1 then Exit;
     end;
-    if SrcLine<1 then
-      Exit;
   end;
-  
-  if DebuggerDlgGetFullFilename(nil,SrcFile,true)<>mrOk then exit;
 
-  NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
-  if NewSource=nil then begin
+  if FDialogs[ddtAssembler] <> nil
+  then begin
+    TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
+    if SrcLine < 1 then Exit;
+  end;
+
+  if not GetFullFilename(SrcFile, true) then exit;
+
+  NewSource := CodeToolBoss.LoadFile(SrcFile, true, false);
+  if NewSource = nil
+  then begin
     MessageDlg(lisDebugUnableToLoadFile,
       Format(lisDebugUnableToLoadFile2, ['"', SrcFile, '"']),
       mtError,[mbCancel],0);
-    exit;
+    Exit;
   end;
 
   // clear old error and execution lines
-  if SourceNotebook<>nil then begin
+  if SourceNotebook <> nil
+  then begin
     SourceNotebook.ClearExecutionLines;
     SourceNotebook.ClearErrorLines;
   end;
-  
+
   // jump editor to execution line
   if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,SrcLine,-1,true)<>mrOk
   then exit;
@@ -1335,7 +1450,7 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
-    TEvaluateDlg
+    TEvaluateDlg, TRegistersDlg, TAssemblerDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1348,16 +1463,16 @@ begin
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
-    CurDialog.OnJumpToCodePos:=@DebuggerDlgJumpToCodePos;
-    CurDialog.OnGetFullDebugFilename:=@DebuggerDlgGetFullFilename;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
       ddtOutput:      InitDebugOutputDlg;
       ddtBreakpoints: InitBreakPointDlg;
       ddtWatches:     InitWatchesDlg;
       ddtLocals:      InitLocalsDlg;
+      ddtRegisters:   InitRegistersDlg;
       ddtCallStack:   InitCallStackDlg;
       ddtEvaluate:    InitEvaluateDlg;
+      ddtAssembler:   InitAssemblerDlg;
     end;
   end
   else begin
@@ -1422,6 +1537,22 @@ begin
   TheDialog.Locals := FLocals;
 end;
 
+procedure TDebugManager.InitRegistersDlg;
+var
+  TheDialog: TRegistersDlg;
+begin
+  TheDialog := TRegistersDlg(FDialogs[ddtRegisters]);
+  TheDialog.Registers := FRegisters;
+end;
+
+procedure TDebugManager.InitAssemblerDlg;
+var
+  TheDialog: TAssemblerDlg;
+begin
+  TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
+  TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
+end;
+
 procedure TDebugManager.InitCallStackDlg;
 var
   TheDialog: TCallStackDlg;
@@ -1440,32 +1571,32 @@ var
   DialogType: TDebugDialogType;
 begin
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
-    FDialogs[DialogType] := nil; 
+    FDialogs[DialogType] := nil;
 
   FDebugger := nil;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-
   FWatches := TManagedWatches.Create(Self);
   FExceptions := TManagedExceptions.Create(Self);
   FSignals := TManagedSignals.Create(Self);
   FLocals := TManagedLocals.Create;
   FCallStack := TManagedCallStack.Create;
+  FRegisters := TManagedRegisters.Create;
 
   FUserSourceFiles := TStringList.Create;
-  
+
   inherited Create(TheOwner);
 end;
 
 destructor TDebugManager.Destroy;
 var
   DialogType: TDebugDialogType;
-begin                          
+begin
   FDestroying:=true;
-  
-  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
+
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     DestroyDebugDialog(DialogType);
-  
+
   SetDebugger(nil);
 
   FreeAndNil(FWatches);
@@ -1475,11 +1606,22 @@ begin
   FreeAndNil(FExceptions);
   FreeAndNil(FSignals);
   FreeAndNil(FLocals);
+  FreeAndNil(FRegisters);
 
   FreeAndNil(FUserSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);
 
   inherited Destroy;
+end;
+
+procedure TDebugManager.Reset;
+begin
+  FBreakPoints.Clear;
+  FBreakPointGroups.Clear;
+  FWatches.Clear;
+  FExceptions.Reset;
+  FSignals.Reset;
+  FUserSourceFiles.Clear;
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
@@ -1491,8 +1633,12 @@ begin
     itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
     itmViewLocals.OnClick := @mnuViewDebugDialogClick;
     itmViewLocals.Tag := Ord(ddtLocals);
+    itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
+    itmViewRegisters.Tag := Ord(ddtRegisters);
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
     itmViewCallStack.Tag := Ord(ddtCallStack);
+    itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
+    itmViewAssembler.Tag := Ord(ddtAssembler);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
 
@@ -1503,8 +1649,6 @@ begin
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
 //    itmRunMenuAddWatch.OnClick := @;
 //    itmRunMenuAddBpSource.OnClick := @;
-
-    itmEnvDebuggerOptions.OnClick := @mnuDebuggerOptionsClick;
   end;
 end;
 
@@ -1527,7 +1671,10 @@ begin
     itmViewBreakpoints.Command:=GetCommand(ecToggleBreakPoints);
     itmViewDebugOutput.Command:=GetCommand(ecToggleDebuggerOut);
     itmViewLocals.Command:=GetCommand(ecToggleLocals);
+    itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
+    itmViewAssembler.Command:=GetCommand(ecToggleAssembler);
+
 
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
@@ -1541,7 +1688,7 @@ var
 begin
   if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting)
   then exit;
-  
+
   DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
@@ -1679,7 +1826,7 @@ begin
   SetDebugger(nil);
   dbg.Free;
   FManagerStates := [];
-  
+
   if MainIDE.ToolStatus = itDebugger
   then MainIDE.ToolStatus := itNone;
 end;
@@ -1702,7 +1849,9 @@ var
   NewWorkingDir: String;
   DebuggerClass: TDebuggerClass;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
+{$endif}
 
   Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
@@ -1712,13 +1861,13 @@ begin
     DebuggerClass := TProcessDebugger;
 
   LaunchingCmdLine := BuildBoss.GetRunCommandLine;
-    
+
   SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
-  
+
   if BuildBoss.GetProjectUsesAppBundle then
   begin
     // it is Application Bundle (darwin only)
-    
+
     if not DirectoryExistsUTF8(LaunchingApplication) then
     begin
       if MessageDlg(lisLaunchingApplicationInvalid,
@@ -1731,7 +1880,7 @@ begin
       else
         Exit;
     end;
-    
+
     if DebuggerClass = TProcessDebugger then
     begin // use executable path inside Application Bundle (darwin only)
       LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
@@ -1748,7 +1897,7 @@ begin
         mtError, [mbOK],0);
       Exit;
     end;
-  
+
   //todo: this check depends on the debugger class
   if (DebuggerClass <> TProcessDebugger)
   and not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
@@ -1785,10 +1934,10 @@ begin
 
   ClearDebugOutputLog;
 
-  FDebugger.OnState     := @OnDebuggerChangeState;
-  FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
-  FDebugger.OnDbgOutput := @OnDebuggerOutput;
-  FDebugger.OnException := @OnDebuggerException;
+  FDebugger.OnState     := @DebuggerChangeState;
+  FDebugger.OnCurrent   := @DebuggerCurrentLine;
+  FDebugger.OnDbgOutput := @DebuggerOutput;
+  FDebugger.OnException := @DebuggerException;
 
   if FDebugger.State = dsNone
   then begin
@@ -1837,7 +1986,9 @@ begin
   end;
 
   Result := True;
+{$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] END');
+{$endif}
 end;
 
 // still part of main, should go here when processdebugger is finished
@@ -1926,11 +2077,16 @@ end;
 
 function TDebugManager.RunDebugger: TModalResult;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.RunDebugger A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
+{$endif}
   Result:=mrCancel;
   if Destroying then exit;
-  if (FDebugger <> nil) then begin
+  if (FDebugger <> nil) then
+  begin
+  {$ifdef VerboseDebugger}
     DebugLn('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+  {$endif}
     // check if debugging needs restart
     if (dmsDebuggerObjectBroken in FManagerStates)
     and (MainIDE.ToolStatus=itDebugger) then begin
@@ -2001,12 +2157,16 @@ begin
   if (ASourceMark=nil) or (not ASourceMark.IsBreakPoint)
   or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
     RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
-  
+
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,
     ' ',IntToStr(ASourceMark.Line));
+{$endif}
   OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
     ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
+{$endif}
   OldBreakPoint.Free;
   Project1.Modified:=true;
   Result := mrOK
@@ -2018,7 +2178,9 @@ var
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor A');
+{$endif}
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -2026,7 +2188,9 @@ begin
     Result := mrAbort;
     Exit;
   end;
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor B');
+{$endif}
 
   Result := mrCancel;
 
@@ -2043,22 +2207,26 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor C');
+{$endif}
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   ActiveSrcEdit.EditorComponent.CaretY);
 
+{$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor D');
+{$endif}
   Result := mrOK;
 end;
 
-function TDebugManager.GetState: TDBGState;       
+function TDebugManager.GetState: TDBGState;
 begin
   if FDebugger = nil
   then Result := dsNone
   else Result := FDebugger.State;
 end;
 
-function TDebugManager.GetCommands: TDBGCommands; 
+function TDebugManager.GetCommands: TDBGCommands;
 begin
   if FDebugger = nil
   then Result := []
@@ -2092,6 +2260,7 @@ begin
     TManagedCallStack(FCallStack).Master := nil;
     TManagedExceptions(FExceptions).Master := nil;
     TManagedSignals(FSignals).Master := nil;
+    TManagedRegisters(FRegisters).Master := nil;
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
@@ -2100,6 +2269,7 @@ begin
     TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
     TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
     TManagedSignals(FSignals).Master := FDebugger.Signals;
+    TManagedRegisters(FRegisters).Master := FDebugger.Registers;
   end;
 end;
 

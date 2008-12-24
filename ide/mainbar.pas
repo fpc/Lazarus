@@ -206,7 +206,9 @@ type
           itmViewWatches: TIDEMenuCommand;
           itmViewBreakpoints: TIDEMenuCommand;
           itmViewLocals: TIDEMenuCommand;
+          itmViewRegisters: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
+          itmViewAssembler: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;
@@ -305,7 +307,7 @@ type
         itmEnvGeneralOptions: TIDEMenuCommand;
       //itmEnvEditorOptions: TIDEMenuCommand;
         itmEnvCodeTemplates: TIDEMenuCommand;
-        itmEnvDebuggerOptions: TIDEMenuCommand;
+      //itmEnvDebuggerOptions: TIDEMenuCommand;
       //itmEnvCodeToolsOptions: TIDEMenuCommand;
         itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
       //itmIDECacheSection: TIDEMenuSection;

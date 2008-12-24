@@ -38,7 +38,7 @@ interface
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList;
+  ActnList, MainBase;
 
 type
 
@@ -222,6 +222,7 @@ end;
 
 destructor TCallStackDlg.Destroy;
 begin
+  SetCallstack(nil);
   FCallStackNotification.OnChange := nil;
   FCallStackNotification.ReleaseReference;
   inherited Destroy;
@@ -263,9 +264,8 @@ begin
   if Entry = nil then Exit;
 
   Filename := Entry.Source;
-  if DoGetFullDebugFilename(Filename, true) <> mrOk then exit;
-
-  DoJumpToCodePos(Filename, Entry.Line, 0);
+  if DebugBoss.GetFullFilename(Filename, true)
+  then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True);
 end;
 
 procedure TCallStackDlg.CopyToClipBoard;
@@ -340,7 +340,7 @@ begin
   Imagelist1.AddLazarusResource('callstack_top');
   Imagelist1.AddLazarusResource('callstack_bottom');
   Imagelist1.AddLazarusResource('callstack_goto');
-  Imagelist1.AddLazarusResource('copy');
+  Imagelist1.AddLazarusResource('laz_copy');
 end;
 
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);

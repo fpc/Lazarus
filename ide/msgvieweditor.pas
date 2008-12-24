@@ -97,9 +97,9 @@ begin
 
   OkButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  AddNewSetButton.LoadGlyphFromLazarusResource('add');
-  DeleteSetButton.LoadGlyphFromLazarusResource('delete');
-  RenameSetButton.LoadGlyphFromLazarusResource('edit');
+  AddNewSetButton.LoadGlyphFromLazarusResource('laz_add');
+  DeleteSetButton.LoadGlyphFromLazarusResource('laz_delete');
+  RenameSetButton.LoadGlyphFromLazarusResource('laz_edit');
 end;
 
 procedure TMsgViewEditorDlg.DeleteSetButtonClick(Sender: TObject);

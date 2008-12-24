@@ -62,7 +62,6 @@ end;
 constructor TButtonControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FUseOnChange := False;
   ControlStyle := ControlStyle-csMultiClicks-[csAcceptsControls,csCaptureMouse];
 end;
 

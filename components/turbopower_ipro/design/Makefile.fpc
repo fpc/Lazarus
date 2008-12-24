@@ -1,0 +1,51 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for TurboPowerIProDsgn 0.0
+#
+#   This file was generated on 21.11.2008
+
+[package]
+name=turbopoweriprodsgn
+version=0.0
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+unitdir=../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=./
+options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
+
+[target]
+units=turbopoweriprodsgn.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT)

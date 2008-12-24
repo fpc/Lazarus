@@ -35,8 +35,13 @@ unit ObjectInspector;
 interface
 
 uses
-  InterfaceBase, Forms, SysUtils, Buttons, Types, Classes, Graphics, GraphType,
-  StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo,
+  // IMPORTANT: the object inspector is a tool and can be used in other programs
+  //            too. Don't put Lazarus IDE specific things here.
+  // FCL
+  SysUtils, Types, Classes, TypInfo,
+  // LCL
+  InterfaceBase, Forms, Buttons, Graphics, GraphType,
+  StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls,
   LMessages, LResources, LazConfigStorage, Menus, Dialogs, Themes,
   ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
@@ -323,6 +328,11 @@ type
     oiqeShowValue
   );
 
+  TOIPropertyHint = function(Sender: TObject; PointedRow: TOIPropertyGridRow;
+            ScreenPos: TPoint; aHintWindow: THintWindow;
+            out HintWinRect: TRect; out AHint: string
+             ): boolean of object;
+
   TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor: TColor;
@@ -332,6 +342,7 @@ type
     FHighlightColor: TColor;
     FLayout: TOILayout;
     FOnOIKeyDown: TKeyEvent;
+    FOnPropertyHint: TOIPropertyHint;
     FOnSelectionChange: TNotifyEvent;
     FReferencesColor: TColor;
     FRowSpacing: integer;
@@ -535,6 +546,7 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+    property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
     property PrefferedSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
@@ -688,6 +700,7 @@ type
     FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
     FInfoBoxHeight: integer;
+    FOnPropertyHint: TOIPropertyHint;
     FOnSelectionChange: TNotifyEvent;
     FRestricted: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
@@ -735,6 +748,9 @@ type
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure OnGridSelectionChange(Sender: TObject);
+    function OnGridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
+      ScreenPos: TPoint; aHintWindow: THintWindow;
+      out HintWinRect: TRect; out AHint: string): boolean;
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
@@ -770,6 +786,7 @@ type
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+    property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
     property OnShowOptions: TNotifyEvent read FOnShowOptions
                                          write SetOnShowOptions;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
@@ -1948,7 +1965,7 @@ var
 begin
   Result:=pehNone;
   if (RowIndex<0) or (RowIndex>=RowCount) then exit;
-  if SplitterX>=X then begin
+  if SplitterX<=X then begin
     if (FCurrentButton<>nil)
     and (FCurrentButton.Left<=X) then
       Result:=pehEditButton
@@ -2979,10 +2996,18 @@ begin
     Begin
       if Assigned(PointedRow.Editor) then begin
         HintType := GetHintTypeAt(Index,Position.X);
+        if (HintType = pehName) and Assigned(OnPropertyHint) then begin
+          if OnPropertyHint(Self,PointedRow,Position,FHintWindow,Rect,AHint) then
+          begin
+            FHintWindow.ActivateHint(Rect,AHint);
+          end;
+          exit;
+        end;
         AHint := PointedRow.Editor.GetHint(HintType,Position.X,Position.Y);
       end;
     end;
   end;
+
   if AHint = '' then Exit;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
   Position := Mouse.CursorPos;
@@ -3722,7 +3747,7 @@ begin
   FShowFavorites := False;
   FShowRestricted := False;
   FShowStatusBar := True;
-  FInfoBoxHeight := 40;
+  FInfoBoxHeight := 80;
   FShowInfoBox := False;
 
   Caption := oisObjectInspector;
@@ -3752,13 +3777,13 @@ begin
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
-     oisCutComponents,'Cut selected item', 'cut',
+     oisCutComponents,'Cut selected item', 'laz_cut',
      @OnCutPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
-     oisCopyComponents,'Copy selected item', 'copy',
+     oisCopyComponents,'Copy selected item', 'laz_copy',
      @OnCopyPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
-     oisPasteComponents,'Paste selected item', 'paste',
+     oisPasteComponents,'Paste selected item', 'laz_paste',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
      oisDeleteComponents,'Delete selected item', '',
@@ -4319,6 +4344,15 @@ begin
   if Assigned(FOnSelectionChange) then OnSelectionChange(Self);
 end;
 
+function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
+  PointedRow: TOIPropertyGridRow; ScreenPos: TPoint; aHintWindow: THintWindow;
+  out HintWinRect: TRect; out AHint: string): boolean;
+begin
+  Result:=false;
+  if Assigned(FOnPropertyHint) then
+    Result:=FOnPropertyHint(Sender,PointedRow,ScreenPos,aHintWindow,HintWinRect,AHint);
+end;
+
 procedure TObjectInspectorDlg.SetAvailComboBoxText;
 begin
   case FSelection.Count of
@@ -4621,6 +4655,7 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnSelectionChange:=@OnGridSelectionChange;
+    OnPropertyHint:=@OnGridPropertyHint;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4638,6 +4673,7 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnSelectionChange:=@OnGridSelectionChange;
+    OnPropertyHint:=@OnGridPropertyHint;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4659,6 +4695,7 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnSelectionChange:=@OnGridSelectionChange;
+    OnPropertyHint:=@OnGridPropertyHint;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
@@ -4680,6 +4717,7 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnSelectionChange:=@OnGridSelectionChange;
+    OnPropertyHint:=@OnGridPropertyHint;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;

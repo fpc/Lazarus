@@ -284,7 +284,9 @@ resourcestring
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
+  lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
+  lisMenuViewAssembler = 'Assembler';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';
@@ -857,6 +859,7 @@ resourcestring
   dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
   dlgGroupCodetools = 'Codetools';
+  dlgGroupDebugger = 'Debugger';
 
   // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';
@@ -1171,6 +1174,8 @@ resourcestring
   dlgColor = 'Color';
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
+  dlgUnsavedLineColor = 'Unsaved line';
+  dlgSavedLineColor = 'Saved line';
   dlgEdUseDefColor = 'Use default color';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
@@ -3856,6 +3861,13 @@ resourcestring
   lisLocals = 'Locals';
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
+
+  // Registers Dialog
+  lisRegisters = 'Registers';
+  lisRegistersDlgName = 'Name';
+  lisRegistersDlgValue = 'Value';
+
+
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
   
   // ProjectWizard Dialog

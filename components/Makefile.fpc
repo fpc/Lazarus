@@ -27,6 +27,7 @@ bigidecomponents: all
         $(MAKE) -C cgi
         $(MAKE) -C cgi/ide
         $(MAKE) -C turbopower_ipro
+        $(MAKE) -C turbopower_ipro/design
         $(MAKE) -C fpcunit
         $(MAKE) -C fpcunit/ide
         $(MAKE) -C projecttemplates
@@ -49,6 +50,7 @@ bigideclean:
         $(MAKE) -C cgi clean
         $(MAKE) -C cgi/ide clean
         $(MAKE) -C turbopower_ipro clean
+        $(MAKE) -C turbopower_ipro/design clean
         $(MAKE) -C fpcunit clean
         $(MAKE) -C fpcunit/ide clean
         $(MAKE) -C projecttemplates clean

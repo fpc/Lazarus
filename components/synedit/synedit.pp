@@ -73,6 +73,7 @@ uses
   Imm,
 {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
+  SynEditPointClasses,
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
@@ -329,9 +330,8 @@ type
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
     fFirstLine: integer;
-    fBlockBegin: TPoint;   // logical position (byte)
-    fBlockEnd: TPoint;     // logical position (byte)
     fBlockIndent: integer;
+    FBlockSelection: TSynEditSelection;
     {$IFDEF SYN_LAZARUS}
     fCaret: TSynEditCaret;
     fCtrlMouseActive: boolean;
@@ -403,7 +403,6 @@ type
     fModified: Boolean;
     fMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
-    fSelectionMode: TSynSelectionMode;
     FUseUTF8: boolean;
     fWantTabs: boolean;
     fGutter: TSynGutter;
@@ -484,7 +483,6 @@ type
     function GetLineText: string;
     {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
-    function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetCFDividerDrawLevel(const AValue: Integer);
@@ -497,7 +495,6 @@ type
     function GetSelText: string;
     function SynGetText: string;
     {$IFDEF SYN_LAZARUS}
-    function IsBackwardSel: Boolean; // SelStart < SelEnd ?
     procedure SetTabChar(const AValue: Char);
     {$ENDIF}
     procedure GutterChanged(Sender: TObject);
@@ -530,6 +527,7 @@ type
           {$IFDEF SYN_LAZARUS}; AtLeastTilIndex: integer = -1{$ENDIF}): integer;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure SelectedColorsChanged(Sender: TObject);
+    procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
@@ -568,6 +566,7 @@ type
     procedure SetRightEdge(Value: Integer);
     procedure SetRightEdgeColor(Value: TColor);
     procedure SetScrollBars(const Value: TScrollStyle);
+    function  GetSelectionMode : TSynSelectionMode;
     procedure SetSelectionMode(const Value: TSynSelectionMode);
     procedure SetSelText(const Value: string);
     procedure SetSelTextExternal(const Value: string);
@@ -765,18 +764,20 @@ type
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
     {$IFDEF SYN_LAZARUS}
+    // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: string;
                                   LogicalPos: integer): integer;
     function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
                   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-    function PhysicalLineLength(Line: PChar; LineLen: integer;
-                                WithTabs: boolean): integer;
+    // Char to Byte
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
                                   PhysicalPos: integer): integer;
     function PhysicalToLogicalCol(const Line: string;
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    function PhysicalLineLength(Line: PChar; LineLen: integer;
+                                WithTabs: boolean): integer;
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
@@ -938,7 +939,7 @@ type
       read FSelectedColor write FSelectedColor;
     {$ENDIF}
     property SelectionMode: TSynSelectionMode
-      read FSelectionMode write SetSelectionMode default smNormal;
+      read GetSelectionMode write SetSelectionMode default smNormal;
     {$IFDEF SYN_LAZARUS}
     property TabChar: char read FTabChar write SetTabChar;
     property CFDividerDrawLevel: Integer
@@ -1127,34 +1128,6 @@ begin
   if fSynEditClipboardFormat=0 then
     fSynEditClipboardFormat := ClipboardRegisterFormat(SYNEDIT_CLIPBOARD_FORMAT);
   Result:=fSynEditClipboardFormat;
-end;
-
-function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
-  UseTabs: boolean): string;
-var
-  TabCount: Integer;
-  EndPos: Integer;
-  PosPlusOneTab: Integer;
-begin
-  Result:='';
-  if not UseTabs then begin
-    Result:=StringOfChar(' ',SpaceLen);
-    exit;
-  end;
-  TabCount:=0;
-  EndPos:=StartPos+SpaceLen;
-  while StartPos<EndPos do begin
-    PosPlusOneTab:=StartPos+TabWidth-((StartPos-1) mod TabWidth);
-    if PosPlusOneTab<=EndPos then begin
-      inc(TabCount);
-      StartPos:=PosPlusOneTab;
-    end else begin
-      Result:=StringOfChar(' ',EndPos-StartPos);
-      break;
-    end;
-  end;
-  if TabCount>0 then
-    Result:=StringOfChar(#9,TabCount)+Result;
 end;
 {$ENDIF}
 
@@ -1396,26 +1369,17 @@ begin
 end;
 
 procedure TCustomSynEdit.CopyToClipboard;
-var
-  SText: string;
 begin
   if SelAvail then begin
-    SText := SelText;
-    DoCopyToClipboard(SText);
+    DoCopyToClipboard(SelText);
   end;
 end;
 
 procedure TCustomSynEdit.CutToClipboard;
-var
-  SText: string;
 begin
   if SelAvail then begin
-    SText := SelText;
-    DoCopyToClipboard(SText);
-    fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SText, SelectionMode);
-    LockUndo;
-    SelText := '';
-    UnlockUndo;
+    DoCopyToClipboard(SelText);
+    SetSelTextExternal('');
   end;
 end;
 
@@ -1427,7 +1391,10 @@ begin
   fLines := TSynEditStringList.Create;
   {$IFDEF SYN_LAZARUS}
   fCaret := TSynEditCaret.Create;
-  fTrimLines := TSynEditStringTrimmingList.Create(TSynEditStrings(fLines), fCaret);
+
+  fTrimLines := TSynEditStringTrimmingList.Create(TSynEditStrings(fLines),
+                                                  fCaret);
+  fCaret.Lines := TSynEditStrings(fTrimLines);
   fTextView := TSynEditFoldedView.Create(TSynEditStringList(fLines),
                                          TSynEditStrings(fTrimLines),
                                          fCaret);
@@ -1453,6 +1420,15 @@ begin
   {$IFDEF SYN_LAZARUS}
   TSynEditStringTrimmingList(fTrimLines).UndoList := fUndoList;
   {$ENDIF}
+
+  FBlockSelection := TSynEditSelection.Create(TSynEditStrings(FTrimLines));
+  FBlockSelection.Caret := FCaret;
+  FBlockSelection.UndoList := fUndoList;
+  FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  FBlockSelection.LinesDeletedMethod := {$IFDEF FPC}@{$ENDIF}DoLinesDeleted;
+  FBlockSelection.LinesInsertedMethod := {$IFDEF FPC}@{$ENDIF}DoLinesInserted;
+  FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
+
 {$IFDEF SYN_COMPILER_4_UP}
 {$IFNDEF SYN_LAZARUS}
 // ToDo DoubleBuffered
@@ -1529,7 +1505,6 @@ begin
   {$ENDIF}
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
-  FSelectionMode := smNormal;
   fKeystrokes := TSynEditKeyStrokes.Create(Self);
   {$IFDEF SYN_LAZARUS}
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then
@@ -1553,8 +1528,6 @@ begin
   fCaretY := 1;
   {$ENDIF}
   fLastCaretX := 1;                                                             //mh 2000-10-19
-  fBlockBegin := Point(1, 1);
-  fBlockEnd := fBlockBegin;
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
@@ -1671,6 +1644,7 @@ begin
   fGutter.Free;
   fTextDrawer.Free;
   fFontDummy.Free;
+  fBlockSelection.Free;
   Lines.Free;
   {$ELSE}
   fHookedCommandHandlers:=nil;
@@ -1687,6 +1661,7 @@ begin
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   FreeAndNil(fTextView);
+  FreeAndNil(fBlockSelection);
   FreeAndNil(fTrimLines);
   FreeAndNil(fLines);
   FreeAndNil(fCaret);
@@ -1696,22 +1671,12 @@ end;
 
 function TCustomSynEdit.GetBlockBegin: TPoint;
 begin
-  if (fBlockEnd.Y < fBlockBegin.Y)
-    or ((fBlockEnd.Y = fBlockBegin.Y) and (fBlockEnd.X < fBlockBegin.X))
-  then
-    Result := fBlockEnd
-  else
-    Result := fBlockBegin;
+  Result := FBlockSelection.FirstLineBytePos;
 end;
 
 function TCustomSynEdit.GetBlockEnd: TPoint;
 begin
-  if (fBlockEnd.Y < fBlockBegin.Y)
-    or ((fBlockEnd.Y = fBlockBegin.Y) and (fBlockEnd.X < fBlockBegin.X))
-  then
-    Result := fBlockBegin
-  else
-    Result := fBlockEnd;
+  Result := FBlockSelection.LastLineBytePos;
 end;
 
 function TCustomSynEdit.GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
@@ -1745,10 +1710,7 @@ end;
 
 function TCustomSynEdit.GetLineText: string;
 begin
-  if (CaretY >= 1) and (CaretY <= Lines.Count) then
-    Result := Lines[CaretY - 1]
-  else
-    Result := '';
+  Result := FCaret.LineText;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -1845,21 +1807,6 @@ begin
     Result:=1;
 end;
 
-function TCustomSynEdit.AdjustBytePosToCharacterStart(Line: integer;
-  BytePos: integer): integer;
-var
-  s: string;
-begin
-  Result:=BytePos;
-  if Result<1 then
-    Result:=1
-  else if (Line>=1) and (Line<=Lines.Count) then begin
-    s:=Lines[Line-1];
-    if (Result<=length(s)) and UseUTF8 then
-      Result:=UTF8FindNearestCharStart(PChar(Pointer(s)),length(s),Result);
-  end;
-end;
-
 function TCustomSynEdit.AdjustPhysPosToCharacterStart(Line: integer;
   PhysPos: integer): integer;
 var
@@ -1906,180 +1853,12 @@ end;
 
 function TCustomSynEdit.GetSelAvail: Boolean;
 begin
-  Result := (fBlockBegin.X <> fBlockEnd.X) or
-    ((fBlockBegin.Y <> fBlockEnd.Y) and (fSelectionMode <> smColumn));
+  Result := FBlockSelection.SelAvail;
 end;
 
 function TCustomSynEdit.GetSelText: string;
-
-  function CopyPadded(const S: string; Index, Count: integer): string;
-  var
-    SrcLen: Integer;
-    DstLen: integer;
-    P: PChar;
-  begin
-    SrcLen := Length(S);
-    DstLen := Index + Count;
-    if SrcLen >= DstLen then
-      Result := Copy(S, Index, Count)
-    else begin
-      SetLength(Result, DstLen);
-      P := PChar(Pointer(Result));
-      StrPCopy(P, Copy(S, Index, Count));
-      Inc(P, SrcLen);
-      FillChar(P^, DstLen - Srclen, $20);
-    end;
-  end;
-
-  procedure CopyAndForward(const S: string; Index, Count: Integer; var P:
-    PChar);
-  var
-    pSrc: PChar;
-    SrcLen: Integer;
-    DstLen: Integer;
-  begin
-    SrcLen := Length(S);
-    if (Index <= SrcLen) and (Count > 0) then begin
-      Dec(Index);
-      pSrc := PChar(Pointer(S)) + Index;
-      DstLen := Min(SrcLen - Index, Count);
-      Move(pSrc^, P^, DstLen);
-      Inc(P, DstLen);
-      P^ := #0;
-    end;
-  end;
-
-  procedure CopyPaddedAndForward(const S: string; Index, Count: Integer;
-    var P: PChar);
-  var
-    OldP: PChar;
-    Len: Integer;
-  begin
-    OldP := P;
-    CopyAndForward(S, Index, Count, P);
-    Len := Count - (P - OldP);
-    FillChar(P^, Len, #$20);
-    Inc(P, Len);
-  end;
-
-
-const
-  sLineBreak = {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#$0D#$0A{$ENDIF};
-var
-  First, Last, TotalLen: Integer;
-  ColFrom, ColTo: Integer;
-  I: Integer;
-{$IFDEF SYN_MBCSSUPPORT}
-  l, r: Integer;
-  s: string;
-{$ELSE}
-  ColLen: integer;
-{$ENDIF}
-  P: PChar;
 begin
-  if not SelAvail then
-    Result := ''
-  else begin
-    with BlockBegin do begin
-      ColFrom := X;
-      First := Y - 1;
-    end;
-    with BlockEnd do begin
-      ColTo := X;
-      Last := Y - 1;
-    end;
-    TotalLen := 0;
-    case SelectionMode of
-      smNormal:
-        if (First = Last) then
-          Result := Copy(Lines[First], ColFrom, ColTo - ColFrom)
-        else begin
-          // step1: calculate total length of result string
-          TotalLen := Max(0, Length(Lines[First]) - ColFrom + 1);
-          for i := First + 1 to Last - 1 do
-            Inc(TotalLen, Length(Lines[i]));
-          Inc(TotalLen, ColTo - 1);
-          Inc(TotalLen, Length(sLineBreak) * (Last - First));
-          // step2: build up result string
-          SetLength(Result, TotalLen);
-          P := PChar(Pointer(Result));
-          CopyAndForward(Lines[First], ColFrom, MaxInt, P);
-          CopyAndForward(sLineBreak, 1, MaxInt, P);
-          for i := First + 1 to Last - 1 do begin
-            CopyAndForward(Lines[i], 1, MaxInt, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          {$IFDEF SYN_LAZARUS}
-          CopyPaddedAndForward(Lines[Last], 1, ColTo - 1, P);
-          {$ELSE}
-          CopyAndForward(Lines[Last], 1, ColTo - 1, P);
-          {$ENDIF}
-        end;
-      smColumn:
-        begin
-          if ColFrom > ColTo then
-            SwapInt(ColFrom, ColTo);
-          // step1: calclate total length of result string
-{$IFNDEF SYN_MBCSSUPPORT}
-          ColLen := ColTo - ColFrom;
-          TotalLen := ColLen + (ColLen + Length(sLineBreak)) * (Last - First);
-          // step2: build up result string
-          SetLength(Result, TotalLen);
-          P := PChar(Pointer(Result));
-          for i := First to Last - 1 do begin
-            CopyPaddedAndForward(Lines[i], ColFrom, ColLen, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          CopyPaddedAndForward(Lines[Last], ColFrom, ColLen, P);
-{$ELSE} //SYN_MBCSSUPPORT
-          for i := First to Last do begin
-            s := Lines[i];
-            l := ColFrom;
-            r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
-            Inc(TotalLen, r - l);
-          end;
-          Inc(TotalLen, Length(sLineBreak) * (Last - First));
-          // step2: build up result string
-          SetLength(Result, TotalLen);
-          P := PChar(Result);
-          for i := First to Last - 1 do begin
-            s := Lines[i];
-            l := ColFrom;
-            r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
-            CopyPaddedAndForward(s, l, r - l, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          s := Lines[Last];
-          l := ColFrom;
-          r := ColTo;
-          MBCSGetSelRangeInLineWhenColumnSelectionMode(s, l, r);
-          CopyPaddedAndForward(Lines[Last], l, r - l, P);
-{$ENDIF}
-        end;
-      smLine:
-        begin
-          // If block selection includes LastLine,
-          // line break code(s) of the last line will not be added.
-          // step1: calclate total length of result string
-          for i := First to Last do
-            Inc(TotalLen, Length(Lines[i]) + Length(sLineBreak));
-          if Last = Lines.Count then
-            Dec(TotalLen, Length(sLineBreak));
-          // step2: build up result string
-          SetLength(Result, TotalLen);
-          P := PChar(Pointer(Result));
-          for i := First to Last - 1 do begin
-            CopyAndForward(Lines[i], 1, MaxInt, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          CopyAndForward(Lines[Last], 1, MaxInt, P);
-          if (Last + 1) < Lines.Count then
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-        end;
-    end;
-  end;
+  Result := FBlockSelection.SelText;
 end;
 
 function TCustomSynEdit.SynGetText: string;
@@ -2088,12 +1867,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.IsBackwardSel: Boolean;
-begin
-  Result := (fBlockBegin.Y > fBlockEnd.Y)
-    or ((fBlockBegin.Y = fBlockEnd.Y) and (fBlockBegin.X > fBlockEnd.X));
-end;
-
 procedure TCustomSynEdit.SetTabChar(const AValue: Char);
 begin
   if FTabChar=AValue then exit;
@@ -2518,8 +2291,8 @@ begin
     and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
     and ((PrimarySelText<>'') or SelAvail)
     then begin
-      fBlockBegin := LogCaretXY;
-      fBlockEnd := LogCaretXY;
+      FBlockSelection.StartLineBytePos := LogCaretXY;
+      FBlockSelection.EndLineBytePos := LogCaretXY;
       //debugln('TCustomSynEdit.MouseDown Old SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
       SelText:=PrimarySelText;
       //debugln('TCustomSynEdit.MouseDown New SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
@@ -4222,9 +3995,8 @@ begin
         if P <> nil then begin
       {$ENDIF}
           if SelAvail then begin
-//            fUndoList.AddChange(crSelDelete, fBlockBegin, fBlockEnd, SelText,
-//              SelectionMode);
-            fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,      //mh 2000-11-20
+            fUndoList.AddChange(crDelete, FBlockSelection.StartLineBytePos,
+              FBlockSelection.EndLineBytePos, SelText,
               SelectionMode);
           end;
           // Our format: SelectionMode value followed by text.
@@ -4232,20 +4004,16 @@ begin
           PasteMode := PSynSelectionMode(P)^;
           inc(P, SizeOf(TSynSelectionMode));
           if SelAvail then begin
-            StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-            EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-            fBlockBegin := StartOfBlock;
-            fBlockEnd := EndOfBlock;
+            StartOfBlock := FBlockSelection.FirstLineBytePos;
+            EndOfBlock := FBlockSelection.LastLineBytePos;
+            FBlockSelection.StartLineBytePos := StartOfBlock;
+            FBlockSelection.EndLineBytePos := EndOfBlock;
             if SelectionMode = smLine then
               // Pasting always occurs at column 0 when current selection is
               // smLine type
               StartOfBlock.X := 1;
           end else
-            StartOfBlock := {$IFDEF SYN_LAZARUS}
-                            PhysicalToLogicalPos(CaretXY);
-                            {$ELSE}
-                            Point(CaretX, CaretY);
-                            {$ENDIF}
+            StartOfBlock := PhysicalToLogicalPos(CaretXY);
           DummyTag := 0;
           SetSelTextPrimitive(PasteMode, P, @DummyTag);
           EndOfBlock := BlockEnd;
@@ -4278,13 +4046,14 @@ begin
       if SelAvail then begin
 //        fUndoList.AddChange(crSelDelete, fBlockBegin, fBlockEnd, SelText,
 //          SelectionMode);
-        fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,          //mh 2000-11-20
+        fUndoList.AddChange(crDelete, FBlockSelection.StartLineBytePos,
+          FBlockSelection.EndLineBytePos, SelText,          //mh 2000-11-20
           SelectionMode);
       end;
-      StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-      EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-      fBlockBegin := StartOfBlock;
-      fBlockEnd := EndOfBlock;
+      StartOfBlock := FBlockSelection.FirstLineBytePos;
+      EndOfBlock := FBlockSelection.LastLineBytePos;
+      FBlockSelection.StartLineBytePos := StartOfBlock;
+      FBlockSelection.EndLineBytePos := EndOfBlock;
       LockUndo;
       SelText := Clipboard.AsText;
       UnlockUndo;
@@ -4344,89 +4113,19 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.SetBlockBegin(Value: TPoint);
-// logical position (byte)
-var
-  nInval1, nInval2: integer;
-  SelChanged: boolean;
+procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
 begin
-  Value.x := MinMax(Value.x, 1, fMaxLeftChar);
-  Value.y := MinMax(Value.y, 1, Lines.Count);
-  if (SelectionMode = smNormal) then
-    if (Value.y >= 1) and (Value.y <= Lines.Count) then begin
-      {$IFDEF SYN_LAZARUS}
-      Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x);
-      {$ELSE}
-      Value.x := Min(Value.x, Length(Lines[Value.y - 1]) + 1);
-      {$ENDIF}
-    end else
-      Value.x := 1;
-  if SelAvail then begin
-    if fBlockBegin.Y < fBlockEnd.Y then begin
-      nInval1 := Min(Value.Y, fBlockBegin.Y);
-      nInval2 := Max(Value.Y, fBlockEnd.Y);
-    end else begin
-      nInval1 := Min(Value.Y, fBlockEnd.Y);
-      nInval2 := Max(Value.Y, fBlockBegin.Y);
-    end;
-    fBlockBegin := Value;
-    fBlockEnd := Value;
-    InvalidateLines(nInval1, nInval2);
-    SelChanged := TRUE;
-  end else begin
-    SelChanged := (fBlockBegin.X <> Value.X) or (fBlockBegin.Y <> Value.Y) or
-                  (fBlockEnd.X <> Value.X) or (fBlockEnd.Y <> Value.Y);
-    fBlockBegin := Value;
-    fBlockEnd := Value;
-  end;
-  if SelChanged then
-    StatusChanged([scSelection]);
+  StatusChanged([scSelection]);
 end;
 
-procedure TCustomSynEdit.SetBlockEnd(Value: TPoint);
-// logical position (byte)
-var
-  nLine: integer;
-{$IFDEF SYN_MBCSSUPPORT}
-  s: string;
-{$ENDIF}
+procedure TCustomSynEdit.SetBlockBegin(Value: TPoint); // logical position (byte)
 begin
-  if not (eoNoSelection in Options) then begin
-    Value.x := MinMax(Value.x, 1, fMaxLeftChar);
-    Value.y := MinMax(Value.y, 1, Lines.Count);
-    if (SelectionMode = smNormal) then
-      if (Value.y >= 1) and (Value.y <= Lines.Count) then
-        {$IFDEF SYN_LAZARUS}
-        Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
-        {$ELSE}
-        Value.x := Min(Value.x, Length(Lines[Value.y - 1]) + 1)
-        {$ENDIF}
-      else
-        Value.x := 1;
-    if (Value.X <> fBlockEnd.X) or (Value.Y <> fBlockEnd.Y) then begin
-{$IFDEF SYN_MBCSSUPPORT}
-      if Value.Y <= Lines.Count then begin
-        s := Lines[Value.Y - 1];
-        if (Length(s) >= Value.X) and (mbTrailByte = ByteType(s, Value.X)) then
-          Dec(Value.X);
-      end;
-{$ENDIF}
-      if (Value.X <> fBlockEnd.X) or (Value.Y <> fBlockEnd.Y) then begin
-        if (SelectionMode = smColumn) and (Value.X <> fBlockEnd.X) then begin
-          InvalidateLines(
-            Min(fBlockBegin.Y, Min(fBlockEnd.Y, Value.Y)),
-            Max(fBlockBegin.Y, Max(fBlockEnd.Y, Value.Y)));
-          fBlockEnd := Value;
-        end else begin
-          nLine := fBlockEnd.Y;
-          fBlockEnd := Value;
-          if (SelectionMode <> smColumn) or (fBlockBegin.X <> fBlockEnd.X) then
-            InvalidateLines(nLine, fBlockEnd.Y);
-        end;
-        StatusChanged([scSelection]);
-      end;
-    end;
-  end;
+  fBlockSelection.StartLineBytePos := Value;
+end;
+
+procedure TCustomSynEdit.SetBlockEnd(Value: TPoint); // logical position (byte)
+begin
+  fBlockSelection.EndLineBytePos := Value;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -4631,8 +4330,7 @@ end;
 
 procedure TCustomSynEdit.SetLineText(Value: string);
 begin
-  if (CaretY >= 1) and (CaretY <= Max(1, Lines.Count)) then
-    Lines[CaretY - 1] := Value;
+  FCaret.LineText := Value;
 end;
 
 procedure TCustomSynEdit.SetName(const Value: TComponentName);
@@ -4660,429 +4358,46 @@ end;
 
 procedure TCustomSynEdit.SetSelText(const Value: string);
 begin
+  // No undo entry added
   SetSelTextPrimitive(smNormal, PChar(Value), nil);
 end;
 
-// This is really a last minute change and I hope I did it right.
-// Reason for this modification: next two lines will loose the CaretX position
-// if eoScrollPastEol is not set in Options. That is not really a good idea
-// as we would typically want the cursor to stay where it is.
-// To fix this (in the absence of a better idea), I changed the code in
-// DeleteSelection not to trim the string if eoScrollPastEol is not set.
 procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
   Value: PChar; ATag: PInteger);
-var
-  BB, BE: TPoint;
-  TempString: string;
-
-  procedure DeleteSelection;
-  var
-    x, MarkOffset: Integer;
-    UpdateMarks: boolean;
-    {$IFDEF SYN_LAZARUS}
-    NewCaretXY: TPoint;
-    {$ENDIF}
-{$IFDEF SYN_MBCSSUPPORT}
-    l, r: Integer;
-{$ENDIF}
-  begin
-    UpdateMarks := FALSE;
-    MarkOffset := 0;
-    case SelectionMode of
-      smNormal:
-        begin
-          {$IFDEF SYN_LAZARUS}
-          NewCaretXY:=LogicalToPhysicalPos(BB);
-          {$ENDIF}
-          if Lines.Count > 0 then begin
-              // Create a string that contains everything on the first line up
-              // to the selection mark, and everything on the last line after
-              // the selection mark.
-            TempString := Copy(Lines[BB.Y - 1], 1, BB.X - 1) +
-              Copy(Lines[BE.Y - 1], BE.X, MaxInt);
-            // Delete all lines in the selection range.
-            {$IFDEF SYN_LAZARUS}
-            TSynEditStrings(Lines).DeleteLines(BB.Y-1, BE.Y - BB.Y);
-            {$ELSE}
-            TSynEditStringList(Lines).DeleteLines(BB.Y-1, BE.Y - BB.Y);
-              // Put the stuff that was outside of selection back in.
-            if Options * [eoScrollPastEol, eoTrimTrailingSpaces]
-              = [eoScrollPastEol, eoTrimTrailingSpaces]
-            then
-              TempString := TrimRight(TempString);
-            {$ENDIF}
-            Lines[BB.Y - 1] := TempString;
-          end;
-          UpdateMarks := TRUE;
-          CaretXY := {$IFDEF SYN_LAZARUS}NewCaretXY{$ELSE}BB{$ENDIF};
-        end;
-      smColumn:
-        begin
-            // swap X if needed
-          if BB.X > BE.X then
-{$IFDEF SYN_COMPILER_3_UP}
-            SwapInt(BB.X, BE.X);
-{$ELSE}
-          begin
-            x := BB.X;
-            BB.X := BE.X;
-            BE.X := x;
-          end;
-{$ENDIF}
-          {$IFDEF SYN_LAZARUS}
-          NewCaretXY:=LogicalToPhysicalPos(Point(BB.X,fBlockEnd.Y));
-          {$ENDIF}
-          for x := BB.Y - 1 to BE.Y - 1 do begin
-            TempString := Lines[x];
-{$IFNDEF SYN_MBCSSUPPORT}
-            Delete(TempString, BB.X, BE.X - BB.X);
-{$ELSE}
-            l := BB.X;
-            r := BE.X;
-            MBCSGetSelRangeInLineWhenColumnSelectionMode(TempString, l, r);
-{$IFDEF USE_UTF8BIDI_LCL}
-            VDelete(TempString, l, r - 1);
-{$ELSE USE_UTF8BIDI_LCL}
-            Delete(TempString, l, r - l);
-{$ENDIF USE_UTF8BIDI_LCL}
-{$ENDIF}
-            {$IFDEF SYN_LAZARUS}
-            Lines[x] := TempString;
-            {$ELSE}
-            TrimmedSetLine(x, TempString);
-            {$ENDIF}
-          end;
-            // Lines never get deleted completely, so keep caret at end.
-          CaretXY := {$IFDEF SYN_LAZARUS}
-                     NewCaretXY
-                     {$ELSE}
-                     Point(BB.X, fBlockEnd.Y)
-                     {$ENDIF};
-            // Column deletion never removes a line entirely, so no mark
-            // updating is needed here.
-        end;
-      smLine:
-        begin
-          if BE.Y = Lines.Count then begin
-            Lines[BE.Y - 1] := '';
-            for x := BE.Y - 2 downto BB.Y - 1 do
-              Lines.Delete(x);
-          end else
-            for x := BE.Y - 1 downto BB.Y - 1 do
-              Lines.Delete(x);
-            // smLine deletion always resets to first column.
-          CaretXY := Point(1, BB.Y);
-          UpdateMarks := TRUE;
-          MarkOffset := 1;
-        end;
-    end;
-    // Update marks
-    if UpdateMarks then
-      DoLinesDeleted(BB.Y, BE.Y - BB.Y + MarkOffset);
-  end;
-
-  procedure InsertText;
-
-{begin}                                                                         // djlp 2000-09-07
-    function CountLines(p: PChar): integer;
-    begin
-      Result := 0;
-      while p^ <> #0 do begin
-        if p^ = #13 then
-          Inc(p);
-        if p^ = #10 then
-          Inc(p);
-        Inc(Result);
-        p := GetEOL(p);
-      end;
-    end;
-{end}
-
-    function InsertNormal: Integer;
-    var
-      sLeftSide: string;
-      sRightSide: string;
-      Str: string;
-      Start: PChar;
-      P: PChar;
-      {$IFDEF SYN_LAZARUS}
-      LogCaretXY: TPoint;
-      PhysicalLineEndPos: LongInt;
-      {$ENDIF}
-    begin
-      Result := 0;
-      {$IFDEF SYN_LAZARUS}
-      LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-      sLeftSide := Copy(LineText, 1, LogCaretXY.X - 1);
-      if LogCaretXY.X - 1 > Length(sLeftSide) then begin
-        PhysicalLineEndPos:=
-                    LogicalToPhysicalPos(Point(Length(sLeftSide)+1,CaretY)).X-1;
-        sLeftSide := sLeftSide
-                     + CreateTabsAndSpaces(CaretX,
-                                           CaretX-1-PhysicalLineEndPos,TabWidth,
-                                           eoSpacesToTabs in Options);
-      end;
-      sRightSide := Copy(LineText, LogCaretXY.X,
-                         Length(LineText) - (LogCaretXY.X - 1));
-      {$ELSE}
-      sLeftSide := Copy(LineText, 1, CaretX - 1);
-      if CaretX - 1 > Length(sLeftSide) then begin
-        sLeftSide := sLeftSide + StringOfChar(' ', CaretX-1-Length(sLeftSide));
-      end;
-      sRightSide := Copy(LineText, CaretX, Length(LineText) - (CaretX - 1));
-      if eoTrimTrailingSpaces in Options then
-        sRightSide := TrimRight(sRightSide);
-      {$ENDIF}
-      // step1: insert the first line of Value into current line
-      Start := PChar(Value);
-      P := GetEOL(Start);
-      if P^ <> #0 then begin
-        SetString(Str, Value, P - Start);
-        {$IFDEF SYN_LAZARUS}
-        TSynEditStrings(Lines).InsertLines(CaretY - 1, CountLines(P));
-        Lines[CaretY - 1] := sLeftSide + Str;
-        {$ELSE}
-        TrimmedSetLine(CaretY - 1, sLeftSide + Str);
-        TSynEditStringList(Lines).InsertLines(CaretY, CountLines(P));           // djlp 2000-09-07
-        {$ENDIF}
-      end else begin
-        {$IFDEF SYN_LAZARUS}
-        Lines[CaretY - 1] := sLeftSide + Value + sRightSide;
-        {$ELSE}
-        TrimmedSetLine(CaretY - 1, sLeftSide + Value + sRightSide);
-        {$ENDIF}
-        CaretX := LogicalToPhysicalPos(
-                     Point(1 + Length(sLeftSide + Value),CaretY)).X;
-      end;
-      // step2: insert left lines of Value
-      while P^ <> #0 do begin
-        if P^ = #13 then
-          Inc(P);
-        if P^ = #10 then
-          Inc(P);
-        CaretY := CaretY + 1;
-        Start := P;
-        P := GetEOL(Start);
-        if P = Start then begin
-          if p^ <> #0 then
-            Lines[CaretY - 1] := ''                                             // djlp 2000-09-07
-          else
-            Lines[CaretY - 1] := sRightSide;                                    // djlp 2000-09-07
-        end else begin
-          SetString(Str, Start, P - Start);                                     //mh 2000-11-08
-          if p^ <> #0 then
-            Lines[CaretY - 1] := Str                                            // djlp 2000-09-07
-          else
-            Lines[CaretY - 1] := Str + sRightSide                               // djlp 2000-09-07
-        end;
-        {$IFDEF SYN_LAZARUS}
-        if p^=#0 then
-          CaretX := LogicalToPhysicalPos(
-                         Point(1 + Length(Lines[CaretY - 1]) - Length(sRightSide),
-                               CaretY)).X;
-        {$ELSE}
-        if eoTrimTrailingSpaces in Options then                                 //JGF 2000-09-23
-          Lines[CaretY - 1] := TrimRight(Lines[CaretY - 1]);
-        {$ENDIF}
-        Inc(Result);
-      end;
-      {$IFDEF SYN_LAZARUS}
-      //DebugLn(['InsertNormal ',Length(Lines[CaretY - 1]),' ',Length(sRightSide),' ',CaretX]);
-      {$ELSE}
-      fCaretX := 1 + Length(Lines[CaretY - 1]) - Length(sRightSide);
-      {$ENDIF}
-      StatusChanged([scCaretX]);
-    end;
-
-    function InsertColumn: Integer;
-    var
-      Str: string;
-      Start: PChar;
-      P: PChar;
-      Len: Integer;
-      InsertPos: Integer;
-      {$IFDEF SYN_LAZARUS}
-      LogicalInsertPos: Integer;
-      {$ENDIF}
-    begin
-      // Insert string at current position
-      InsertPos := CaretX;
-      Start := PChar(Value);
-      repeat
-        P := GetEOL(Start);
-        if P <> Start then begin
-          SetLength(Str, P - Start);
-          Move(Start^, Str[1], P - Start);
-          if CaretY > Lines.Count then
-            Lines.Add(StringOfChar(' ', InsertPos - 1) + Str)
-          else begin
-            TempString := Lines[CaretY - 1];
-            Len := Length(TempString);
-            {$IFDEF SYN_LAZARUS}
-            LogicalInsertPos:=PhysicalToLogicalCol(TempString,InsertPos);
-            {$ENDIF}
-            if Len<{$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF}
-            then begin
-              TempString :=
-                TempString + StringOfChar(' ',
-                    {$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF}
-                    - Len - 1)
-                    + Str
-            end else begin
-              {$IFDEF SYN_MBCSSUPPORT}
-              if mbTrailByte = ByteType(TempString, InsertPos) then
-                Insert(Str, TempString, InsertPos + 1)
-              else
-              {$ENDIF}
-                System.Insert(Str, TempString,
-                {$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF});
-            end;
-            {$IFDEF SYN_LAZARUS}
-            Lines[CaretY - 1] := TempString;
-            {$ELSE}
-            TrimmedSetLine(CaretY - 1, TempString);                             //JGF 2000-09-23
-            {$ENDIF}
-          end;
-        end;
-        if ATag <> nil then
-          ATag^ := P - Start;
-        {$IFDEF SYN_LAZARUS}
-        if p^ in [#10,#13] then begin
-          if (p[1] in [#10,#13]) and (p[1]<>p^) then
-            inc(p,2)
-          else
-            Inc(P);
-          CaretY := CaretY + 1;
-        end;
-        {$ELSE}
-        if P^ = #13 then begin
-          Inc(P);
-          if P^ = #10 then
-            Inc(P);
-        end;
-        {$ENDIF}
-        Start := P;
-      until P^ = #0;
-      CaretX:= CaretX + Length(Str);
-      Result := 0;
-    end;
-
-    function InsertLine: Integer;
-    var
-      Start: PChar;
-      P: PChar;
-      Str: string;
-      n: Integer;
-    begin
-      Result := 0;
-      CaretX := 1;
-      // Insert string before current line
-      Start := PChar(Value);
-      repeat
-        P := GetEOL(Start);
-        if P <> Start then begin
-          SetLength(Str, P - Start);
-          Move(Start^, Str[1], P - Start);
-        end else
-          Str := '';
-        if (P^ = #0) then begin
-          n := Lines.Count;
-          if (n >= CaretY) then
-            Lines[CaretY - 1] := Str + Lines[CaretY - 1]
-          else
-            Lines.Add(Str);
-          {$IFNDEF SYN_LAZARUS}
-          if eoTrimTrailingSpaces in Options then
-            Lines[CaretY - 1] := TrimRight(Lines[CaretY - 1]);
-          {$ENDIF}
-          CaretX := 1 + Length(Str);
-        end else begin
-          {$IFDEF SYN_LAZARUS}
-          Lines[CaretY - 1] := Str;
-          {$ELSE}
-          TrimmedSetLine(CaretY - 1, Str);
-          {$ENDIF}
-          CaretY := CaretY + 1;
-          Inc(Result);
-          if P^ = #13 then
-            Inc(P);
-          if P^ = #10 then
-            Inc(P);
-          Start := P;
-        end;
-      until P^ = #0;
-      StatusChanged([scCaretX]);
-    end;
-
-  var
-    StartLine: Integer;
-    InsertedLines: Integer;
-  begin
-    if Value = '' then
-      Exit;
-
-    // Using a TStringList to do this would be easier, but if we're dealing
-    // with a large block of text, it would be very inefficient.  Consider:
-    // Assign Value parameter to TStringList.Text: that parses through it and
-    // creates a copy of the string for each line it finds.  That copy is passed
-    // to the Add method, which in turn creates a copy.  Then, when you actually
-    // use an item in the list, that creates a copy to return to you.  That's
-    // 3 copies of every string vs. our one copy below.  I'd prefer no copies,
-    // but we aren't set up to work with PChars that well.
-
-    StartLine := CaretY;
-    case PasteMode of
-      smNormal:
-        InsertedLines := InsertNormal;
-      smColumn:
-        InsertedLines := InsertColumn;
-      smLine:
-        InsertedLines := InsertLine;
-    else
-      InsertedLines := 0;
-    end;
-    // We delete selected based on the current selection mode, but paste
-    // what's on the clipboard according to what it was when copied.
-    // Update marks
-    if InsertedLines > 0 then
-      DoLinesInserted(StartLine, InsertedLines);
-    // Force caret reset
-    CaretXY := CaretXY;
-  end;
-
-var
-  {$IFDEF SYN_LAZARUS}
-  BH: TPoint;
-  {$ENDIF}
-begin
+Begin
+  // No undo entry added
   IncPaintLock;
-  Lines.BeginUpdate;
   TSynEditStringTrimmingList(fTrimLines).Lock;
   try
-    BB := BlockBegin;
-    BE := BlockEnd;
-    {$IFDEF SYN_LAZARUS}
-    // make sure, BB is lower than BE
-    if CompareCarets(BB,BE)<0 then begin
-      BH:=BB;
-      BB:=BE;
-      BE:=BH;
-    end;
-    {$ENDIF}
-    if SelAvail then
-      DeleteSelection;
-    if (Value <> nil) and (Value[0] <> #0) then
-      InsertText;
-    fLastCaretX := CaretX;                                                     //mh 2000-10-19
-    if CaretY < 1 then
-      CaretY := 1;
-    {$IFDEF SYN_LAZARUS}
+    FBlockSelection.SetSelTextPrimitive(PasteMode, Value, ATag);
+    // Force caret reset
+    CaretXY := CaretXY;
+    fLastCaretX := CaretX;
+    Include(fStatusChanges, scCaretY);
+    Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
-    {$ENDIF}
   finally
     TSynEditStringTrimmingList(fTrimLines).UnLock;
-    Lines.EndUpdate;
     DecPaintLock;
+  end;
+end;
+
+procedure TCustomSynEdit.SetSelTextExternal(const Value: string);
+begin
+  // undo entry added
+  BeginUndoBlock;
+  TSynEditStringTrimmingList(fTrimLines).Lock;
+  try
+    FBlockSelection.SelText := Value;
+    // Force caret reset
+    CaretXY := CaretXY;
+    fLastCaretX := CaretX;
+    Include(fStatusChanges, scCaretY);
+    Include(fStatusChanges, scCaretX);
+    EnsureCursorPosVisible;
+  finally
+    TSynEditStringTrimmingList(fTrimLines).UnLock;
+    EndUndoBlock;
   end;
 end;
 
@@ -6066,7 +5381,7 @@ begin
   end;
   Inc(Runner.X);
   if Runner.X < 1 then Runner.X := 1;
-  fBlockBegin := Runner;
+  FBlockSelection.StartLineBytePos := Runner;
   Runner := Value;
   while (Runner.X < fMaxLeftChar)
   {$IFDEF FPC} and (Runner.X <= length(TempString)){$ENDIF} do begin
@@ -6074,15 +5389,9 @@ begin
     Inc(Runner.X);
   end;
   if Runner.X > fMaxLeftChar then Runner.X := fMaxLeftChar;
-  fBlockEnd := Runner;
+  FBlockSelection.EndLineBytePos := Runner;
 // set caret to the end of selected block
-  CaretXY := Runner;
-  {$IFDEF SYN_LAZARUS}
-  if UseUTF8 then begin
-    Delete(TempString, fBlockEnd.X, Length(TempString));
-    CaretX := CaretX - Max(0, (Length(TempString) - UTF8Length(TempString)));
-  end;
-  {$ENDIF}
+  CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(Runner);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
 end;
@@ -6093,21 +5402,23 @@ end;
 procedure TCustomSynEdit.SetLineBlock(Value: TPoint);
 var
   ALine: string;
+  x, x2: Integer;
 begin
-  fBlockBegin:=Point(1,MinMax(Value.y, 1, Lines.Count));
-  fBlockEnd:=Point(1,MinMax(Value.y+1, 1, Lines.Count));
-  if (fBlockBegin.Y>=1) and (fBlockBegin.Y<=Lines.Count) then begin
-    ALine:=Lines[fBlockBegin.Y-1];
-    while (fBlockBegin.X<length(ALine)) and (ALine[fBlockBegin.X] in [' ',#9])
-    do
-      inc(fBlockBegin.X);
-    fBlockEnd:=fBlockBegin;
-    fBlockEnd.X:=length(ALine)+1;
-    while (fBlockEnd.X>fBlockBegin.X) and (ALine[fBlockEnd.X-1] in [' ',#9])
-    do
-      dec(fBlockEnd.X);
+  FBlockSelection.StartLineBytePos := Point(1,MinMax(Value.y, 1, Lines.Count));
+  FBlockSelection.EndLineBytePos := Point(1,MinMax(Value.y+1, 1, Lines.Count));
+  if (FBlockSelection.StartLinePos >= 1)
+  and (FBlockSelection.StartLinePos <= Lines.Count) then begin
+    ALine:=Lines[FBlockSelection.StartLinePos - 1];
+    x := FBlockSelection.StartBytePos;
+    while (x<length(ALine)) and (ALine[x] in [' ',#9]) do
+      inc(x);
+    FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, Lines.Count));
+    x2:=length(ALine)+1;
+    while (x2 > x) and (ALine[X2-1] in [' ',#9]) do
+      dec(x2);
+    FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, Lines.Count));
   end;
-  CaretXY:=fBlockEnd;
+  CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
@@ -6124,9 +5435,9 @@ begin
   while (ParagraphEndLine<Lines.Count)
   and (Trim(Lines[ParagraphEndLine-1])<>'') do
     inc(ParagraphEndLine);
-  fBlockBegin:=Point(1,ParagraphStartLine);
-  fBlockEnd:=Point(1,ParagraphEndLine);
-  CaretXY:=fBlockEnd;
+  FBlockSelection.StartLineBytePos := Point(1,ParagraphStartLine);
+  FBlockSelection.EndLineBytePos := Point(1,ParagraphEndLine);
+  CaretXY:=FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
@@ -6215,7 +5526,7 @@ begin
   SetCaretAndSelection(
     {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(BB){$ELSE}BB{$ENDIF},
     BB, BE);
-  fSelectionMode := smColumn;
+  FBlockSelection.SelectionMode := smColumn;
   SetSelTextPrimitive(smColumn, ChangeStr, nil);
   StatusChanged([scSelection]);
 end;
@@ -6492,6 +5803,7 @@ begin
     OldChangeNumber := fRedoList.BlockChangeNumber;
     fRedoList.BlockChangeNumber := Item.fChangeNumber;
     {$ENDIF}
+    fUndoList.Lock;
     try
       repeat
         UndoItem;
@@ -6502,6 +5814,9 @@ begin
       until (Item = nil) or (Item.fChangeNumber <> fRedoList.BlockChangeNumber);
       {$ENDIF}
     finally
+      // Todo: Decide what do to, If there are any trimable spaces.
+      TSynEditStringTrimmingList(fTrimLines).ForceTrim;
+      fUndoList.UnLock;
       {$IFDEF SYN_LAZARUS}
       fRedoList.EndBlock;
       {$ELSE}
@@ -6513,13 +5828,14 @@ end;
 
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
 begin
-  if fUndoList.IsLineExists(ALine, False) then
-    Result := slsUnsaved
-  else
-  if fUndoList.IsLineExists(ALine, True) then
-    Result := slsSaved
-  else
-    Result := slsNone;
+  with TSynEditStringList(fLines) do
+    if [sfModified, sfSaved] * Flags[ALine] = [sfModified] then
+      Result := slsUnsaved
+    else
+    if [sfModified, sfSaved] * Flags[ALine] = [sfModified, sfSaved] then
+      Result := slsSaved
+    else
+      Result := slsNone;
 end;
 
 procedure TCustomSynEdit.UndoItem;
@@ -6907,14 +6223,7 @@ begin
               TCustomSynEdit(Source).SelText := ''
             else begin
 //              fUndoList.AddChange(crDragDropDelete, fBlockBegin, fBlockEnd,
-              fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd,             //mh 2000-11-20
-                DragDropText, SelectionMode);
-              LockUndo;
-              try
-                SelText := '';
-              finally
-                UnlockUndo;
-              end;
+              SetSelTextExternal('');
               // adjust horizontal drop position
               if DropAfter and (NewCaret.Y = BE.Y) then begin
                 if BB.Y = BE.Y then
@@ -7166,6 +6475,7 @@ begin
   Value := MinMax(Value, 1, MAX_SCROLL); // horz scrolling is only 16 bit
   if fMaxLeftChar <> Value then begin
     fMaxLeftChar := Value;
+    fBlockSelection.FMaxLeftChar := Value;
     Invalidate;
   end;
 end;
@@ -7388,25 +6698,6 @@ var
   CY: Integer;
   {$ENDIF}
 
-{begin}                                                                         //mh 2000-10-30
-  procedure SetSelectedTextEmpty;
-  begin
-    {$IFDEF SYN_LAZARUS}
-    if IsBackwardSel
-    {$ELSE}
-    if (fBlockBegin.Y < fBlockEnd.Y)
-      or ((fBlockBegin.Y = fBlockEnd.Y) and (fBlockBegin.X < fBlockEnd.X))
-    {$ENDIF}
-    then
-      fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-        SelectionMode)
-    else
-      fUndoList.AddChange(crDeleteAfterCursor, fBlockEnd, fBlockBegin, SelText,
-        SelectionMode);
-    SetSelText('');
-  end;
-{end}
-                                                                           //mh 2000-10-30
 begin
   IncPaintLock;
   try
@@ -7602,7 +6893,7 @@ begin
       ecDeleteLastChar:
         if not ReadOnly then begin
           if SelAvail then
-            SetSelectedTextEmpty
+            SetSelTextExternal('')
           else begin
             Temp := LineText;
             Len := Length(Temp);
@@ -7749,7 +7040,7 @@ begin
       ecDeleteChar:
         if not ReadOnly then begin
           if SelAvail then
-            SetSelectedTextEmpty
+            SetSelTextExternal('')
           else begin
             Temp := LineText;
             Len := Length(Temp);
@@ -7821,9 +7112,9 @@ begin
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := fSelectionMode;
+            OldSelMode := FBlockSelection.SelectionMode;
             try
-              fSelectionMode := smNormal;
+              FBlockSelection.SelectionMode := smNormal;
               SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                             {$ELSE}CaretXY{$ENDIF});
               SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(WP)
@@ -7837,7 +7128,7 @@ begin
                 SelText, smNormal);
               SetSelText('');
             finally
-              fSelectionMode := OldSelMode;
+              FBlockSelection.SelectionMode := OldSelMode;
             end;
             CaretXY := CaretXY;
           end;
@@ -7849,9 +7140,9 @@ begin
           else
             WP := Point(1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := fSelectionMode;
+            OldSelMode := FBlockSelection.SelectionMode;
             try
-              fSelectionMode := smNormal;
+              FBlockSelection.SelectionMode := smNormal;
               {$IFDEF SYN_LAZARUS}
               SetBlockBegin(PhysicalToLogicalPos(CaretXY));
               SetBlockEnd(PhysicalToLogicalPos(WP));
@@ -7868,7 +7159,7 @@ begin
                 SelText, smNormal);
               SetSelText('');
             finally
-              fSelectionMode := OldSelMode;
+              FBlockSelection.SelectionMode := OldSelMode;
             end;
             CaretXY := WP;
           end;
@@ -7914,9 +7205,7 @@ begin
       ecLineBreak:
         if not ReadOnly then begin
           if SelAvail then begin
-            fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-              SelectionMode);
-            SetSelText('');
+            SetSelTextExternal('');
           end;
           SpaceCount2 := 0;
           Temp := LineText;
@@ -8063,21 +7352,11 @@ begin
           if SelAvail then begin
             BeginUndoBlock;
             try
-{begin}                                                                         //mh 2000-11-20
-//            fUndoList.AddChange(crSelDelete, fBlockBegin, fBlockEnd, SelText,
-              fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-                SelectionMode);
-              StartOfBlock := BlockBegin;
-              if SelectionMode = smLine then
-                StartOfBlock.X := 1;
-              SetSelText(AChar);
+              SetSelTextExternal(AChar);
               //debugln('ecChar SelAvail StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd));
-              fUndoList.AddChange(crInsert, StartOfBlock, fBlockEnd, '',
-                smNormal);
             finally
               EndUndoBlock;
             end;
-{end}                                                                           //mh 2000-11-20
           end else begin
             Temp := LineText;
             {$IFDEF SYN_LAZARUS}
@@ -8297,12 +7576,7 @@ begin
         if not ReadOnly then begin
           SetString(s, PChar(Data), StrLen(Data));
           if SelAvail then begin
-            fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, Helper,
-              smNormal);
-            StartOfBlock := fBlockBegin;
-            SetSelText(s);
-            fUndoList.AddChange(crInsert, fBlockBegin, fBlockEnd, Helper,
-              smNormal);
+            SetSelTextExternal(s);
           end else begin
             Temp := LineText;
             Len := Length(Temp);
@@ -8628,14 +7902,14 @@ begin
   //DebugLn(['TCustomSynEdit.PrevWordPos END ',dbgs(Result)]);
 end;
 
+function TCustomSynEdit.GetSelectionMode : TSynSelectionMode;
+begin
+  Result := fBlockSelection.SelectionMode;
+end;
+
 procedure TCustomSynEdit.SetSelectionMode(const Value: TSynSelectionMode);
 begin
-  if FSelectionMode <> Value then begin
-    FSelectionMode := Value;
-    if SelAvail then
-      Invalidate;
-    StatusChanged([scSelection]);
-  end;
+  fBlockSelection.SelectionMode := Value;
 end;
 
 {begin}                                                                         //sbs 2000-11-19
@@ -8858,44 +8132,6 @@ begin
   fRedoList.Clear;
 end;
 
-procedure TCustomSynEdit.SetSelTextExternal(const Value: string);
-var
-  StartOfBlock, EndOfBlock: TPoint;
-begin
-{begin}                                                                         //mh 2000-11-20
-  BeginUndoBlock;
-  try
-    {$IFDEF SYN_LAZARUS}
-    if SelAvail then begin
-      fUndoList.AddChange({crSelDelete} crDelete, fBlockBegin, fBlockEnd,
-        GetSelText, SelectionMode);
-      StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-      EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-    end else begin
-      StartOfBlock := CaretXY;
-      EndOfBlock := CaretXY;
-    end;
-    {$ELSE}
-    if SelAvail then begin
-      fUndoList.AddChange({crSelDelete} crDelete, fBlockBegin, fBlockEnd,
-        GetSelText, SelectionMode);
-    end;
-    StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-    EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-    {$ENDIF}
-    fBlockBegin := StartOfBlock;
-    fBlockEnd := EndOfBlock;
-    LockUndo;
-    SetSelText(Value);
-    UnlockUndo;
-    fUndoList.AddChange(crInsert, StartOfBlock, BlockEnd,
-      {$IFDEF SYN_LAZARUS}''{$ELSE}SelText{$ENDIF}, smNormal);
-  finally
-    EndUndoBlock;
-  end;
-{end}                                                                           //mh 2000-11-20
-end;
-
 procedure TCustomSynEdit.SetGutter(const Value: TSynGutter);
 begin
   fGutter.Assign(Value);
@@ -9023,7 +8259,7 @@ var
   function InValidSearchRange(First, Last: integer): boolean;
   begin
     Result := TRUE;
-    case fSelectionMode of
+    case FBlockSelection.SelectionMode of
       smNormal:
         if ((ptCurrent.Y = ptStart.Y) and (First < ptStart.X)) or
           ((ptCurrent.Y = ptEnd.Y) and (Last > ptEnd.X)) then Result := FALSE;
@@ -9048,10 +8284,10 @@ begin
     ptStart := BlockBegin;
     ptEnd := BlockEnd;
     // search the whole line in the line selection mode
-    if (fSelectionMode = smLine) then begin
+    if (FBlockSelection.SelectionMode = smLine) then begin
       ptStart.X := 1;
       ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
-    end else if (fSelectionMode = smColumn) then
+    end else if (FBlockSelection.SelectionMode = smColumn) then
       // make sure the start column is smaller than the end column
       if (ptStart.X > ptEnd.X) then begin
         nFound := ptStart.X;
@@ -9093,7 +8329,7 @@ begin
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
-      if (fSelectionMode<>smColumn)
+      if (FBlockSelection.SelectionMode<>smColumn)
       or ((ptFoundStart.Y=ptFoundEnd.Y)
           and (ptFoundStart.X >= ptStart.X) and (ptFoundEnd.X <= ptEnd.X)) then
       begin
@@ -9334,6 +8570,9 @@ begin
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
     {$ENDIF}
+    if (eoNoSelection in ChangedOptions) then
+      FBlockSelection.Enabled := eoNoSelection in fOptions;
+    FBlockSelection.SpacesToTabs := eoSpacesToTabs in fOptions;
   end;
 end;
 
@@ -9671,6 +8910,7 @@ begin
   end;
   {$IFDEF SYN_LAZARUS}
   FUseUTF8:=fTextDrawer.UseUTF8;
+  TSynEditStrings(fLines).IsUtf8 := FUseUTF8;
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
   {$ENDIF}
 end;
@@ -9691,7 +8931,9 @@ end;
 
 procedure TCustomSynEdit.DoTabKey;
 var
+  {$IFNDEF SYN_LAZARUS}
   StartOfBlock: TPoint;
+  {$ENDIF}
   i, MinLen, iLine: integer;
   PrevLine,
   Spaces: string;
@@ -9753,17 +8995,9 @@ begin
 
   BeginUndoBlock;
   try
-    if SelAvail then begin
-      fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-        SelectionMode);
-    end;
-
-    StartOfBlock := BlockBegin;
-    if SelectionMode = smLine then
-      StartOfBlock.X := 1;
     NewCaretX := CaretX + i;
     //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
-    SetSelText(Spaces);
+    SetSelTextExternal(Spaces);
     //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
     ChangeScroll := not (eoScrollPastEol in fOptions);
     try
@@ -9774,7 +9008,6 @@ begin
         Exclude(fOptions, eoScrollPastEol);
     end;
     //debugln('TCustomSynEdit.DoTabKey StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd),' Spaces="',Spaces,'"');
-    fUndoList.AddChange(crInsert, StartOfBlock, fBlockEnd, '', smNormal);
   finally
     EndUndoBlock;
   end;
@@ -9861,15 +9094,15 @@ var
   {$ENDIF}
 begin
   if not SelAvail then exit;
-  OrgSelectionMode := fSelectionMode;
+  OrgSelectionMode := FBlockSelection.SelectionMode;
   {$IFDEF SYN_LAZARUS}
-  BlockBackward:= IsBackwardSel;
+  BlockBackward:= FBlockSelection.IsBackwardSel;
   {$ELSE}
   OrgCaretPos := CaretXY;
   {$ENDIF}
   x := 1;
   StrToInsert := nil;
-  fSelectionMode := smColumn;
+  FBlockSelection.SelectionMode := smColumn;
   try
     // keep current selection detail
     BB := BlockBegin;
@@ -9913,7 +9146,7 @@ begin
       StrDispose(StrToInsert);
     end;
   finally
-    fSelectionMode := OrgSelectionMode;
+    FBlockSelection.SelectionMode := OrgSelectionMode;
     {$IFDEF SYN_LAZARUS}
     if BlockBackward then Begin
       inc(BE.x, fBlockIndent);
@@ -9966,7 +9199,7 @@ var
   end;
 
 begin
-  OrgSelectionMode := fSelectionMode;
+  OrgSelectionMode := FBlockSelection.SelectionMode;
   Len := 0;
   LastIndent := 0;
   if SelAvail then
@@ -9975,7 +9208,7 @@ begin
     BB := BlockBegin;
     BE := BlockEnd;
     {$IFDEF SYN_LAZARUS}
-    BlockBackward:=  IsBackwardSel;
+    BlockBackward:=  FBlockSelection.IsBackwardSel;
     {$ELSE}
     OrgCaretPos := CaretXY;
     {$ENDIF}
@@ -10067,7 +9300,7 @@ begin
         fUndoList.AddChange(crUnindent, BB, BE, {$IFDEF SYN_LAZARUS}FullStrToDelete{$ELSE}StrToDelete{$ENDIF}, smColumn);
       end;
       // restore selection
-      fSelectionMode := OrgSelectionMode;
+      FBlockSelection.SelectionMode := OrgSelectionMode;
       {$IFDEF SYN_LAZARUS}
       if FirstIndent = -1 then begin
         // Nothing changed; ensure correct restore
@@ -10201,6 +9434,7 @@ begin
       // the current state should be the unmodified state.
       fUndoList.MarkTopAsUnmodified;
       fRedoList.MarkTopAsUnmodified;
+      TSynEditStringList(fLines).MarkSaved;
       if fGutter.Visible and fGutter.ShowChanges then
         InvalidateGutter;
     end;
@@ -10809,9 +10043,15 @@ begin
 end;
 
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
+var
+  Item: TSynEditUndoItem;
 begin
 //  Modified := TRUE;
   {$IFDEF SYN_LAZARUS}
+  Item := TSynEditUndoList(Sender).PeekItem;
+  if Item <> nil then
+    TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,
+      Item.ChangeEndPos.y - 1, Sender = fUndoList, Item.fChangeReason);
   if fUndoList.UnModifiedMarkerExists then
     Modified:=not fUndoList.IsTopMarkedAsUnmodified
   else if fRedoList.UnModifiedMarkerExists then
@@ -10862,12 +10102,8 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
-// LogicalToPhysicalPos takes a position in the text and transforms it into
-// the row and column it appears to be on the screen
 begin
-  Result := p;
-  if Result.Y - 1 < Lines.Count then
-    Result.X:=LogicalToPhysicalCol(Lines[Result.Y - 1],Result.X);
+  Result := TSynEditStrings(fLines).LogicalToPhysicalPos(p);
 end;
 {$ELSE}
 function TCustomSynEdit.LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -10901,41 +10137,16 @@ end;
 function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
   LogicalPos: integer): integer;
 begin
-  Result:=LogicalToPhysicalCol(PChar(Pointer(Line)),length(Line),LogicalPos,1,1);
+  Result := TSynEditStrings(fLines).LogicalToPhysicalCol(PChar(Pointer(Line)),
+    length(Line),LogicalPos,1,1);
 end;
 
 function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
 // Note: LogicalPos, StartBytePos, StartPhysicalPos start at 1
-var
-  BytePos, ByteLen: integer;
-  ScreenPos: integer;
 begin
-  ByteLen := LineLen;
-  // map UTF8 and Tab chars
-  ScreenPos := StartPhysicalPos;
-  BytePos:= StartBytePos;
-  while BytePos<LogicalPos do begin
-    if (BytePos <= ByteLen) then begin
-      if Line[BytePos-1] = #9 then begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
-        inc(BytePos);
-      end else begin
-        inc(ScreenPos);
-        if UseUTF8 then
-          inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
-        else
-          inc(BytePos);
-      end;
-    end else begin
-      // beyond end of line
-      inc(ScreenPos,LogicalPos-BytePos);
-      break;
-    end;
-  end;
-  if (BytePos>LogicalPos) and (ScreenPos>StartPhysicalPos) then
-    dec(ScreenPos);
-  Result := ScreenPos;
+  Result := TSynEditStrings(fLines).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
+                                        StartBytePos, StartPhysicalPos);
 end;
 
 function TCustomSynEdit.PhysicalLineLength(Line: PChar; LineLen: integer;
@@ -10948,54 +10159,21 @@ begin
 end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
-// converts physical (screen) to logical (bytes)
 begin
-  Result := p;
-  if (Result.Y>=1) and (Result.Y <= Lines.Count) then
-    Result.X:=PhysicalToLogicalCol(Lines[Result.Y - 1],Result.X,1,1);
+  Result := TSynEditStrings(fLines).PhysicalToLogicalPos(p);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos: integer): integer;
 begin
-  Result:=PhysicalToLogicalCol(Line,PhysicalPos,1,1);
+  Result := TSynEditStrings(fLines).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-// converts physical (screen) to logical (bytes)
-var
-  BytePos, ByteLen: integer;
-  ScreenPos: integer;
-  PLine: PChar;
 begin
-  ByteLen := Length(Line);
-  ScreenPos := StartPhysicalPos;
-  BytePos := StartBytePos;
-  PLine := PChar(Line);
-  // map utf and tab chars
-  while ScreenPos < PhysicalPos do begin
-    if (BytePos <= ByteLen) then begin
-      if (PLine[BytePos-1] <> #9) then begin
-        inc(ScreenPos);
-        if UseUTF8 then
-          inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
-        else
-          inc(BytePos);
-      end else begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
-        inc(BytePos);
-      end;
-    end else begin
-      // beyond end of line
-      inc(BytePos,PhysicalPos-ScreenPos);
-      break;
-    end;
-  end;
-  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos-2<ByteLen)
-  and (PLine[BytePos-2]=#9) then
-    dec(BytePos);
-  Result := BytePos;
+  Result := TSynEditStrings(fLines).PhysicalToLogicalCol(Line, PhysicalPos,
+    StartBytePos, StartPhysicalPos);
 end;
 
 function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;

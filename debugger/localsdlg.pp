@@ -71,12 +71,13 @@ begin
   FLocalsNotification.AddReference;
   FLocalsNotification.OnChange := @LocalsChanged;
   Caption:= lisLocals;
-  lvLocals.Columns[0].Caption:= lisDebugOptionsFrmName;
-  lvLocals.Columns[1].Caption:= dlgValueColor;
+  lvLocals.Columns[0].Caption:= lisLocalsDlgName;
+  lvLocals.Columns[1].Caption:= lisLocalsDlgValue;
 end;
 
 destructor TLocalsDlg.Destroy;
 begin
+  SetLocals(nil);
   FLocalsNotification.OnChange := nil;
   FLocalsNotification.ReleaseReference;
   inherited Destroy;

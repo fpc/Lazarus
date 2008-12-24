@@ -28,7 +28,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, Process, AsyncProcess;
+  FileUtil, Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, Process,
+  AsyncProcess;
 
 type
   { TBuildForm }

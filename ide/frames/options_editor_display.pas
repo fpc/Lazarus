@@ -249,10 +249,7 @@ begin
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
 
   with GeneralPage do
-  begin
-    SetLength(PreviewEdits, Length(PreviewEdits) + 1);
-    PreviewEdits[Length(PreviewEdits)-1] := DisplayPreview;
-  end;
+    AddPreviewEdit(DisplayPreview);
 end;
 
 procedure TEditorDisplayOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

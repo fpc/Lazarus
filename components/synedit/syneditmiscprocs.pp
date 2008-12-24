@@ -131,6 +131,9 @@ function DecodeString(s: string): string;
 function fsNot (s : TFontStyles) : TFontStyles; inline;
 function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
 
+function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
+  UseTabs: boolean): string;
+
 implementation
 
 uses
@@ -762,6 +765,34 @@ begin
 end; { DecodeString }
 {$IFDEF RestoreRangeChecking}{$R+}{$ENDIF}
 {end}                                                                           //gp 2000-06-24
+
+function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
+  UseTabs: boolean): string;
+var
+  TabCount: Integer;
+  EndPos: Integer;
+  PosPlusOneTab: Integer;
+begin
+  Result:='';
+  if not UseTabs then begin
+    Result:=StringOfChar(' ',SpaceLen);
+    exit;
+  end;
+  TabCount:=0;
+  EndPos:=StartPos+SpaceLen;
+  while StartPos<EndPos do begin
+    PosPlusOneTab:=StartPos+TabWidth-((StartPos-1) mod TabWidth);
+    if PosPlusOneTab<=EndPos then begin
+      inc(TabCount);
+      StartPos:=PosPlusOneTab;
+    end else begin
+      Result:=StringOfChar(' ',EndPos-StartPos);
+      break;
+    end;
+  end;
+  if TabCount>0 then
+    Result:=StringOfChar(#9,TabCount)+Result;
+end;
 
 end.
 

@@ -89,6 +89,8 @@ type
     nmiwLocals,
     nmiwCallStack,
     nmiwEvaluate,
+    nmiwRegisters,
+    nmiwAssembler,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -129,6 +131,8 @@ const
     'Locals',
     'CallStack',
     'EvaluateModify',
+    'Registers',
+    'Assembler',
     // extra
     'SearchResults',
     'AnchorEditor',

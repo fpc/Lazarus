@@ -2263,10 +2263,19 @@ end;
 procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
   Reader: TReader; Instance: TPersistent; var PropName: string;
   IsPath: boolean; var Handled, Skip: Boolean);
+var
+  Index: Integer;
 begin
-  DebugLn(['TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
-    ' Instance=',Instance.ClassName,' PropName="',PropName,
-    '" IsPath=',IsPath]);
+  Index := RemovedProperties.IndexOf(Instance, PropName);
+  if Index >= 0 then
+  begin
+    Skip := True;
+    Handled := True;
+  end
+  else
+    DebugLn(['TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
+      ' Instance=',Instance.ClassName,' PropName="',PropName,
+      '" IsPath=',IsPath]);
 end;
 
 procedure TCustomFormEditor.JITListFindAncestors(Sender: TObject;

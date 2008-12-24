@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="6"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -51,8 +50,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
         <UnitName Value="MainUnit"/>
-        <CursorPos X="77" Y="168"/>
-        <TopLine Value="160"/>
+        <CursorPos X="1" Y="100"/>
+        <TopLine Value="83"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
@@ -60,9 +59,9 @@
       <Unit2>
         <Filename Value="fpdocfiles.pas"/>
         <UnitName Value="FPDocFiles"/>
-        <CursorPos X="26" Y="346"/>
-        <TopLine Value="329"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="15" Y="634"/>
+        <TopLine Value="614"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -78,82 +77,78 @@
         <ResourceFilename Value="unitmove.lrs"/>
         <UnitName Value="UnitMove"/>
         <CursorPos X="50" Y="81"/>
-        <TopLine Value="60"/>
-        <EditorIndex Value="7"/>
+        <TopLine Value="57"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\..\fpc\2.2.1\source\packages\fcl-xml\src\dom.pp"/>
+        <Filename Value="../../fpc/2.2.1/source/packages/fcl-xml/src/dom.pp"/>
         <UnitName Value="DOM"/>
         <CursorPos X="14" Y="223"/>
         <TopLine Value="210"/>
         <UsageCount Value="10"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\..\fpc\2.2.1\source\rtl\objpas\classes\classesh.inc"/>
+        <Filename Value="../../fpc/2.2.1/source/rtl/objpas/classes/classesh.inc"/>
         <CursorPos X="20" Y="580"/>
         <TopLine Value="572"/>
         <UsageCount Value="10"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\..\fpc\2.2.1\source\rtl\objpas\classes\stringl.inc"/>
+        <Filename Value="../../fpc/2.2.1/source/rtl/objpas/classes/stringl.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="292"/>
         <UsageCount Value="10"/>
       </Unit7>
       <Unit8>
-        <Filename Value="..\..\lcl\masks.pas"/>
+        <Filename Value="../../lcl/masks.pas"/>
         <UnitName Value="Masks"/>
         <CursorPos X="1" Y="402"/>
         <TopLine Value="380"/>
         <UsageCount Value="10"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\fpc\2.2.1\source\packages\fcl-xml\src\xmlcfg.pp"/>
+        <Filename Value="../../fpc/2.2.1/source/packages/fcl-xml/src/xmlcfg.pp"/>
         <UnitName Value="XMLCfg"/>
         <CursorPos X="15" Y="69"/>
         <TopLine Value="56"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="..\..\fpc\2.2.1\source\rtl\objpas\classes\lists.inc"/>
+        <Filename Value="../../fpc/2.2.1/source/rtl/objpas/classes/lists.inc"/>
         <CursorPos X="3" Y="180"/>
         <TopLine Value="178"/>
         <UsageCount Value="10"/>
       </Unit10>
       <Unit11>
-        <Filename Value="..\..\fpc\2.2.1\source\rtl\inc\wstringh.inc"/>
+        <Filename Value="../../fpc/2.2.1/source/rtl/inc/wstringh.inc"/>
         <CursorPos X="11" Y="29"/>
         <TopLine Value="16"/>
         <UsageCount Value="10"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\..\fpc\2.2.1\source\rtl\inc\wstrings.inc"/>
+        <Filename Value="../../fpc/2.2.1/source/rtl/inc/wstrings.inc"/>
         <CursorPos X="3" Y="1290"/>
         <TopLine Value="1285"/>
         <UsageCount Value="10"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\fpc\2.2.1\source\packages\fcl-xml\src\xmlread.pp"/>
+        <Filename Value="../../fpc/2.2.1/source/packages/fcl-xml/src/xmlread.pp"/>
         <UnitName Value="XMLRead"/>
         <CursorPos X="43" Y="2766"/>
         <TopLine Value="2750"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
-        <Filename Value="..\..\lcl\stdctrls.pp"/>
+        <Filename Value="../../lcl/stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
         <CursorPos X="3" Y="913"/>
         <TopLine Value="924"/>
         <UsageCount Value="10"/>
       </Unit14>
       <Unit15>
-        <Filename Value="..\..\lcl\lcltype.pp"/>
+        <Filename Value="../../lcl/lcltype.pp"/>
         <UnitName Value="LCLType"/>
         <CursorPos X="3" Y="878"/>
         <TopLine Value="865"/>
@@ -166,38 +161,38 @@
         <ResourceFilename Value="unitsummary.lrs"/>
         <UnitName Value="UnitSummary"/>
         <CursorPos X="33" Y="72"/>
-        <TopLine Value="49"/>
-        <EditorIndex Value="5"/>
+        <TopLine Value="43"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
-        <Filename Value="..\..\ide\helpoptions.pas"/>
+        <Filename Value="../../ide/helpoptions.pas"/>
         <ComponentName Value="HelpOptionsDialog"/>
         <HasResources Value="True"/>
         <UnitName Value="HelpOptions"/>
         <CursorPos X="24" Y="337"/>
         <TopLine Value="324"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit17>
       <Unit18>
-        <Filename Value="..\..\components\codetools\laz_xmlcfg.pas"/>
+        <Filename Value="../../components/codetools/laz_xmlcfg.pas"/>
         <UnitName Value="Laz_XMLCfg"/>
         <CursorPos X="3" Y="48"/>
         <TopLine Value="35"/>
         <UsageCount Value="10"/>
       </Unit18>
       <Unit19>
-        <Filename Value="..\..\fpc\2.2.1\source\packages\fcl-xml\src\xmlwrite.pp"/>
+        <Filename Value="../../fpc/2.2.1/source/packages/fcl-xml/src/xmlwrite.pp"/>
         <UnitName Value="XMLWrite"/>
         <CursorPos X="11" Y="37"/>
         <TopLine Value="24"/>
         <UsageCount Value="10"/>
       </Unit19>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="19" HistoryIndex="18">
       <Position1>
         <Filename Value="fpdocfiles.pas"/>
         <Caret Line="341" Column="9" TopLine="329"/>
@@ -210,17 +205,77 @@
         <Filename Value="fpdocfiles.pas"/>
         <Caret Line="342" Column="10" TopLine="329"/>
       </Position3>
+      <Position4>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="346" Column="26" TopLine="329"/>
+      </Position4>
+      <Position5>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="1054" Column="36" TopLine="1037"/>
+      </Position5>
+      <Position6>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="168" Column="77" TopLine="160"/>
+      </Position6>
+      <Position7>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="30" Column="39" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="943" Column="26" TopLine="926"/>
+      </Position8>
+      <Position9>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="153" Column="76" TopLine="148"/>
+      </Position9>
+      <Position10>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="149" Column="14" TopLine="136"/>
+      </Position10>
+      <Position11>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="161" Column="43" TopLine="136"/>
+      </Position11>
+      <Position12>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="84" Column="14" TopLine="67"/>
+      </Position12>
+      <Position13>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="760" Column="64" TopLine="743"/>
+      </Position13>
+      <Position14>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="84" Column="14" TopLine="67"/>
+      </Position14>
+      <Position15>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="760" Column="15" TopLine="743"/>
+      </Position15>
+      <Position16>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="186" Column="16" TopLine="183"/>
+      </Position16>
+      <Position17>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="792" Column="15" TopLine="771"/>
+      </Position17>
+      <Position18>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="786" Column="15" TopLine="766"/>
+      </Position18>
+      <Position19>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="645" Column="15" TopLine="624"/>
+      </Position19>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
-    <PathDelim Value="\"/>
+    <Version Value="8"/>
     <SearchPaths>
       <UnitOutputDirectory Value="units"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <Win32>
@@ -235,7 +290,7 @@
   <Debugging>
     <BreakPoints Count="1">
       <Item1>
-        <Source Value="..\..\fpc\2.2.1\source\packages\fcl-xml\src\xmlcfg.pp"/>
+        <Source Value="../../fpc/2.2.1/source/packages/fcl-xml/src/xmlcfg.pp"/>
         <Line Value="135"/>
       </Item1>
     </BreakPoints>

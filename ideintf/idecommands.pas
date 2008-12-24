@@ -180,6 +180,9 @@ const
   ecViewComponents          = ecFirstLazarus + 321;
   ecToggleRestrictionBrowser = ecFirstLazarus + 322;
   ecViewTodoList            = ecFirstLazarus + 323;
+  ecToggleRegisters         = ecFirstLazarus + 324;
+  ecToggleAssembler         = ecFirstLazarus + 325;
+
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;

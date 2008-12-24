@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
-  FileUtil, CmdLineDebugger, GDBTypeInfo, 
+  FileUtil, CmdLineDebugger, GDBTypeInfo, Maps,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -112,6 +112,8 @@ type
     FInExecuteCount: Integer;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FCurrentStackFrame: Integer;
+    FAsmCache: TTypedMap;
+    FAsmCacheIter: TTypedMapIterator;
 
     // GDB info (move to ?)
     FGDBVersion: String;
@@ -137,6 +139,8 @@ type
     function  GDBStepInto: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+    function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean;
+                          out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
 
     procedure CallStackSetCurrent(AIndex: Integer);
     // ---
@@ -175,6 +179,7 @@ type
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TDBGLocals; override;
+    function  CreateRegisters: TDBGRegisters; override;
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
@@ -186,6 +191,7 @@ type
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
+    procedure DoState(const OldState: TDBGState); override;
     property  TargetPID: Integer read FTargetPID;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
@@ -212,6 +218,12 @@ type
     NameLen: Integer;
     ValuePtr: PChar;
     ValueLen: Integer;
+  end;
+
+  TGDBMIAsmLine = record
+    Dump: String;
+    Statement: String;
+    Next: TDbgPtr;
   end;
 
   { TGDBMINameValueList }
@@ -277,6 +289,30 @@ type
     procedure Changed; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
+  end;
+
+  { TGDBMIRegisters }
+
+  TGDBMIRegisters = class(TDBGRegisters)
+  private
+    FRegisters: array of record
+      Name: String;
+      Value: String;
+      Modified: Boolean;
+    end;
+    FRegistersValid: Boolean;
+    FValuesValid: Boolean;
+    procedure RegistersNeeded;
+    procedure ValuesNeeded;
+  protected
+    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure Invalidate;
+    function GetCount: Integer; override;
+    function GetModified(const AnIndex: Integer): Boolean; override;
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    procedure Changed; override;
   end;
 
   { TGDBMIWatch }
@@ -354,6 +390,11 @@ type
     Flags: TGDBMICmdFlags;
     CallBack: TGDBMICallback;
     Tag: Integer;
+  end;
+
+  TGDBMIExceptionInfo = record
+    ObjAddr: String;
+    Name: String;
   end;
 
 { TGDBMINameValueList }
@@ -749,6 +790,8 @@ begin
   FTargetPID := 0;
   FTargetFlags := [];
   FDebuggerFlags := [];
+  FAsmCache := TTypedMap.Create(itu8, TypeInfo(TGDBMIAsmLine));
+  FAsmCacheIter := TTypedMapIterator.Create(FAsmCache);
 
 {$IFdef MSWindows}
   InitWin32;
@@ -777,6 +820,11 @@ begin
   Result := TGDBMIDebuggerProperties.Create;
 end;
 
+function TGDBMIDebugger.CreateRegisters: TDBGRegisters;
+begin
+  Result := TGDBMIRegisters.Create(Self);
+end;
+
 function TGDBMIDebugger.CreateWatches: TDBGWatches;
 begin
   Result := TGDBMIWatches.Create(Self, TGDBMIWatch);
@@ -787,6 +835,8 @@ begin
   inherited;
   ClearCommandQueue;
   FreeAndNil(FCommandQueue);
+  FreeAndNil(FAsmCacheIter);
+  FreeAndNil(FAsmCache);
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -794,6 +844,14 @@ begin
   if State = dsRun then GDBPause(True);
   ExecuteCommand('-gdb-exit', []);
   inherited Done;
+end;
+
+procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
+begin
+  if State in [dsStop, dsError]
+  then FAsmCache.Clear;
+
+  inherited DoState(OldState);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -1060,6 +1118,186 @@ begin
     end else
       exit;
   until false;
+end;
+
+function TGDBMIDebugger.GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+var
+  R: TGDBMIExecResult;
+  S: String;
+  n, line, offset: Integer;
+  count: Cardinal;
+  DumpList, AsmList, InstList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  Addr, AddrStop: TDbgPtr;
+  AsmLine: TGDBMIAsmLine;
+begin
+  if FAsmCacheIter.Locate(AAddr)
+  then begin
+    repeat
+      FAsmCacheIter.GetData(AsmLine);
+      if not ABackward then Break;
+
+      if AsmLine.Next > AAddr
+      then FAsmCacheIter.Previous;
+    until FAsmCacheIter.BOM or (AsmLine.Next <= AAddr);
+
+    if not ABackward
+    then begin
+      ANextAddr := AsmLine.Next;
+      ADump := AsmLine.Dump;
+      AStatement := AsmLine.Statement;
+      Exit(True);
+    end;
+
+    if AsmLine.Next = AAddr
+    then begin
+      FAsmCacheIter.GetID(ANextAddr);
+      ADump := AsmLine.Dump;
+      AStatement := AsmLine.Statement;
+      Exit(True);
+    end;
+  end
+  else begin
+    // position before the first address requested
+    if ABackward and not FAsmCacheIter.BOM
+    then FAsmCacheIter.Previous;
+  end;
+
+  InstList := nil;
+  if ABackward
+  then begin
+    // we need to get the line before this one
+    // try if we have some statement nearby
+    if not FAsmCacheIter.BOM
+    then begin
+      FAsmCacheIter.GetId(Addr);
+      // limit amout of retrieved adreses to 128
+      if Addr < AAddr - 128
+      then Addr := 0;
+    end
+    else Addr := 0;
+
+    if Addr = 0
+    then begin
+      // no starting point, see if we have an offset into a function
+      ExecuteCommand('-data-disassemble -s %u -e %u -- 0', [AAddr-1, AAddr], [cfIgnoreError, cfExternal], R);
+      if R.State <> dsError
+      then begin
+        AsmList := TGDBMINameValueList.Create(R, ['asm_insns']);
+        if AsmList.Count > 0
+        then begin
+          Item := AsmList.Items[0];
+          InstList := TGDBMINameValueList.Create('');
+          InstList.Init(Item^.NamePtr, Item^.NameLen);
+          if TryStrToInt(Unquote(InstList.Values['offset']), offset)
+          then Addr := AAddr - Offset - 1;
+        end;
+        FreeAndNil(AsmList);
+      end;
+    end;
+
+    if Addr = 0
+    then begin
+      // no nice startingpoint found, just start to disassemble 64 bytes before it
+      // and hope that  when we started in the middle of an instruction it get
+      // sorted out.
+      Addr := AAddr - 64;
+    end;
+    // always include existing addr since we need this one to calculate the "nextaddr"
+    // of the previos record (the record we requested)
+    AddrStop := AAddr + 1;
+  end
+  else begin
+    // stupid, gdb doesn't support linecount when disassembling from memory
+    // So we guess 32 here, that should give at least 2 lines on a CISC arch.
+    // On RISC we can do with less (future)
+    Addr := AAddr;
+    AddrStop := AAddr + 31;
+  end;
+
+
+  ExecuteCommand('-data-disassemble -s %u -e %u -- 0', [Addr, AddrStop], [cfIgnoreError, cfExternal], R);
+  if R.State = dsError
+  then begin
+    InstList.Free;
+    Exit(False);
+  end;
+
+  AsmList := TGDBMINameValueList.Create(R, ['asm_insns']);
+  if AsmList.Count < 2
+  then begin
+    AsmList.Free;
+    InstList.Free;
+    Exit(False);
+  end;
+  if InstList = nil
+  then InstList := TGDBMINameValueList.Create('');
+
+  Item := AsmList.Items[0];
+  InstList.Init(Item^.NamePtr, Item^.NameLen);
+  AsmLine.Next := StrToIntDef(Unquote(InstList.Values['address']), 0);
+
+  for line := 1 to AsmList.Count - 1 do
+  begin
+    Addr := AsmLine.Next;
+    AsmLine.Statement := Unquote(InstList.Values['inst']);
+
+    Item := AsmList.Items[line];
+    InstList.Init(Item^.NamePtr, Item^.NameLen);
+    AsmLine.Next := StrToIntDef(Unquote(InstList.Values['address']), 0);
+
+
+    AsmLine.Dump := '';
+
+    // check for cornercase when memory cycles
+    Count := AsmLine.Next - Addr;
+    if Count <= 32
+    then begin
+      // retrieve instuction bytes
+      ExecuteCommand('-data-read-memory %u x 1 1 %u', [Addr, Count], [cfIgnoreError, cfExternal], R);
+      if R.State <> dsError
+      then begin
+        S := '';
+        DumpList := TGDBMINameValueList.Create(R, ['memory']);
+        if DumpList.Count > 0
+        then begin
+          // get first (and only) memory part
+          Item := DumpList.Items[0];
+          DumpList.Init(Item^.NamePtr, Item^.NameLen);
+          // get data
+          DumpList.SetPath(['data']);
+          // now loop through elements
+          for n := 0 to DumpList.Count - 1 do
+          begin
+            S := S + Copy(DumpList.GetString(n), 4, 2);
+          end;
+          AsmLine.Dump := S;
+        end;
+      end;
+
+      FreeAndNil(DumpList);
+    end;
+
+    if FAsmCache.HasId(Addr)
+    then FAsmCache.SetData(Addr, AsmLine)
+    else FAsmCache.Add(Addr, AsmLine);
+
+    if (ABackward and (AsmLine.Next = AAddr))
+    or (not ABackward and (Addr = AAddr))
+    then begin
+      if ABackward
+      then ANextAddr := Addr
+      else ANextAddr := AsmLine.Next;
+      ADump := AsmLine.Dump;
+      AStatement := AsmLine.Statement;
+      Result := True;
+    end;
+  end;
+
+
+  FreeAndNil(InstList);
+  FreeAndNil(AsmList);
+
 end;
 
 function TGDBMIDebugger.GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
@@ -1520,7 +1758,7 @@ function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
-             dcSetStackFrame];
+             dcSetStackFrame, dcDisassemble];
 end;
 
 function TGDBMIDebugger.GetTargetWidth: Byte;
@@ -1977,39 +2215,33 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     end;
   end;
   
-
-  procedure ProcessException;
-  var
-    ObjAddr, ExceptionName, ExceptionMessage: String;
+  function GetExceptionInfo: TGDBMIExceptionInfo;
   begin
     if tfRTLUsesRegCall in FTargetFlags
-    then  ObjAddr := FTargetRegisters[0]
+    then  Result.ObjAddr := FTargetRegisters[0]
     else begin
       if dfImplicidTypes in FDebuggerFlags
-      then ObjAddr := Format('^pointer($fp+%d)^', [FTargetPtrSize * 2])
-      else Str(GetData('$fp+%d', [FTargetPtrSize * 2]), ObjAddr);
+      then Result.ObjAddr := Format('^pointer($fp+%d)^', [FTargetPtrSize * 2])
+      else Str(GetData('$fp+%d', [FTargetPtrSize * 2]), Result.ObjAddr);
     end;
-    
-    ExceptionName := GetInstanceClassName(ObjAddr, []);
-    if ExceptionName = ''
-    then ExceptionName := 'Unknown';
+    Result.Name := GetInstanceClassName(Result.ObjAddr, []);
+    if Result.Name = ''
+    then Result.Name := 'Unknown';
+  end;
 
-    // check if we should ignore this exception
-    if Exceptions.Find(ExceptionName) <> nil
-    then begin
-      ExecuteCommand('-exec-continue', []);
-      Exit;
-    end;
-
+  procedure ProcessException(AInfo: TGDBMIExceptionInfo);
+  var
+    ExceptionMessage: String;
+  begin   
     if dfImplicidTypes in FDebuggerFlags
     then begin
-      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ObjAddr]);
+      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
       ExceptionMessage := DeleteEscapeChars(ExceptionMessage);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
-    DoException(ExceptionName, ExceptionMessage);
+    DoException(AInfo.Name, ExceptionMessage);
     DoCurrent(GetLocation);
   end;
   
@@ -2070,6 +2302,7 @@ var
   BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
   CanContinue: Boolean;
+  ExceptionInfo: TGDBMIExceptionInfo;
 begin
   Result := True;
   FCurrentStackFrame :=  0;
@@ -2130,8 +2363,15 @@ begin
       
       if BreakID = FExceptionBreakID
       then begin
-        SetState(dsPause);
-        ProcessException;
+        ExceptionInfo := GetExceptionInfo;
+
+        // check if we should ignore this exception
+        if Exceptions.Find(ExceptionInfo.Name) <> nil
+        then ExecuteCommand('-exec-continue', [])
+        else begin
+          SetState(dsPause);
+          ProcessException(ExceptionInfo);
+        end;
         Exit;
       end;
       
@@ -2183,15 +2423,17 @@ end;
 function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
 begin
   case ACommand of
-    dcRun:      Result := GDBRun;
-    dcPause:    Result := GDBPause(False);
-    dcStop:     Result := GDBStop;
-    dcStepOver: Result := GDBStepOver;
-    dcStepInto: Result := GDBStepInto;
-    dcRunTo:    Result := GDBRunTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
-    dcJumpto:   Result := GDBJumpTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
-    dcEvaluate: Result := GDBEvaluate(String(APArams[0].VAnsiString), String(APArams[1].VPointer^));
-    dcEnvironment:   Result := GDBEnvironment(String(APArams[0].VAnsiString), AParams[1].VBoolean);
+    dcRun:         Result := GDBRun;
+    dcPause:       Result := GDBPause(False);
+    dcStop:        Result := GDBStop;
+    dcStepOver:    Result := GDBStepOver;
+    dcStepInto:    Result := GDBStepInto;
+    dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+    dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+    dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^));
+    dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
+    dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
+                                            String(AParams[3].VPointer^), String(AParams[4].VPointer^));
   end;
 end;
 
@@ -2808,6 +3050,168 @@ begin
     FreeAndNil(List);
   end;
   FLocalsValid := True;
+end;
+
+{ =========================================================================== }
+{ TGDBMIRegisters }
+{ =========================================================================== }
+
+procedure TGDBMIRegisters.Changed;
+begin
+  Invalidate;
+  inherited Changed;
+end;
+
+procedure TGDBMIRegisters.DoStateChange(const AOldState: TDBGState);
+begin
+  if  Debugger <> nil
+  then begin
+    case Debugger.State of
+      dsPause: DoChange;
+      dsStop : FRegistersValid := False;
+    else
+      Invalidate
+    end;
+  end
+  else Invalidate;
+end;
+
+procedure TGDBMIRegisters.Invalidate;
+var
+  n: Integer;
+begin
+  for n := Low(FRegisters) to High(FRegisters) do
+  begin
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+  FValuesValid := False;
+end;
+
+function TGDBMIRegisters.GetCount: Integer;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  Result := Length(FRegisters)
+end;
+
+function TGDBMIRegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then ValuesNeeded;
+
+  if  FValuesValid
+  and FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Modified
+  else Result := False;
+end;
+
+function TGDBMIRegisters.GetName(const AnIndex: Integer): String;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if  FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Name
+  else Result := '';
+end;
+
+function TGDBMIRegisters.GetValue(const AnIndex: Integer): String;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then ValuesNeeded;
+
+  if  FValuesValid
+  and FRegistersValid
+  and (AnIndex >= Low(FRegisters))
+  and (AnIndex <= High(FRegisters))
+  then Result := FRegisters[AnIndex].Value
+  else Result := '';
+end;
+
+procedure TGDBMIRegisters.RegistersNeeded;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  n: Integer;
+begin
+  if Debugger = nil then Exit;
+  if FRegistersValid then Exit;
+
+  FRegistersValid := True;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-names', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['register-names']);
+  SetLength(FRegisters, List.Count);
+  for n := 0 to List.Count - 1 do
+  begin
+    FRegisters[n].Name := UnQuote(List.GetString(n));
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+  FreeAndNil(List);
+end;
+
+procedure TGDBMIRegisters.ValuesNeeded;
+var
+  R: TGDBMIExecResult;
+  List, ValList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  n, idx: Integer;
+begin
+  if Debugger = nil then Exit;
+  if FValuesValid then Exit;
+  RegistersNeeded;
+  FValuesValid := True;
+
+  for n := Low(FRegisters) to High(FRegisters) do
+  begin
+    FRegisters[n].Value := '';
+    FRegisters[n].Modified := False;
+  end;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-values N', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  ValList := TGDBMINameValueList.Create('');
+  List := TGDBMINameValueList.Create(R, ['register-values']);
+  for n := 0 to List.Count - 1 do
+  begin
+    Item := List.Items[n];
+    ValList.Init(Item^.NamePtr, Item^.NameLen);
+    idx := StrToIntDef(Unquote(ValList.Values['number']), -1);
+    if idx < Low(FRegisters) then Continue;
+    if idx > High(FRegisters) then Continue;
+
+    FRegisters[idx].Value := Unquote(ValList.Values['value']);
+  end;
+  FreeAndNil(List);
+  FreeAndNil(ValList);
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['changed-registers']);
+  for n := 0 to List.Count - 1 do
+  begin
+    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
+    if idx < Low(FRegisters) then Continue;
+    if idx > High(FRegisters) then Continue;
+
+    FRegisters[idx].Modified := True;
+  end;
+  FreeAndNil(List);
 end;
 
 { =========================================================================== }

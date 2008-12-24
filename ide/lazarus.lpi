@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="24">
+    <Units Count="28">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -232,6 +232,39 @@
         <ResourceFilename Value="frames\options_editor_general_misc.lrs"/>
         <UnitName Value="options_editor_general_misc"/>
       </Unit23>
+      <Unit24>
+        <Filename Value="..\debugger\frames\options_debugger_general.pas"/>
+        <ComponentName Value="DebuggerGeneralOptionsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="..\debugger\frames\options_debugger_general.lrs"/>
+        <UnitName Value="options_debugger_general"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\debugger\frames\options_debugger_eventlog.pas"/>
+        <ComponentName Value="DebuggerEventLogOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="..\debugger\frames\options_debugger_eventlog.lrs"/>
+        <UnitName Value="options_debugger_eventlog"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\debugger\frames\options_debugger_language_exceptions.pas"/>
+        <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="..\debugger\frames\options_debugger_language_exceptions.lrs"/>
+        <UnitName Value="options_debugger_language_exceptions"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\debugger\frames\options_debugger_signals.pas"/>
+        <ComponentName Value="DebuggerSignalsOptions"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="..\debugger\frames\options_debugger_signals.lrs"/>
+        <UnitName Value="options_debugger_signals"/>
+      </Unit27>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -241,7 +274,7 @@
       <Filename Value="..\lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames\"/>
+      <OtherUnitFiles Value="frames\;..\debugger\;..\debugger\frames\"/>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>

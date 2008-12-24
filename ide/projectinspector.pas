@@ -428,9 +428,9 @@ begin
   ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
 
-  OpenBitBtn.LoadGlyphFromLazarusResource('open');
-  AddBitBtn.LoadGlyphFromLazarusResource('add');
-  RemoveBitBtn.LoadGlyphFromLazarusResource('delete');
+  OpenBitBtn.LoadGlyphFromLazarusResource('laz_open');
+  AddBitBtn.LoadGlyphFromLazarusResource('laz_add');
+  RemoveBitBtn.LoadGlyphFromLazarusResource('laz_delete');
   OptionsBitBtn.LoadGlyphFromLazarusResource('menu_environment_options');
 
   OpenBitBtn.Caption:=lisMenuOpen;

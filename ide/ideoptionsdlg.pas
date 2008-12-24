@@ -144,6 +144,8 @@ begin
 end;
 
 procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  ClassTypeForCompare: TClass;
 
   procedure Traverse(Node: TTreeNode);
   begin
@@ -151,7 +153,7 @@ procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
     begin
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
-          if SupportedOptionsClass = AOptions.ClassType then
+          if SupportedOptionsClass = ClassTypeForCompare then
             ReadSettings(AOptions);
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
@@ -159,10 +161,17 @@ procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
   end;
 
 begin
+  if AOptions <> nil then
+    ClassTypeForCompare := AOptions.ClassType
+  else
+    ClassTypeForCompare := nil;
+
   Traverse(CategoryTree.Items.GetFirstNode);
 end;
 
 procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  ClassTypeForCompare: TClass;
 
   procedure Traverse(Node: TTreeNode);
   begin
@@ -170,7 +179,7 @@ procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
     begin
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
-          if SupportedOptionsClass = AOptions.ClassType then
+          if SupportedOptionsClass = ClassTypeForCompare then
             WriteSettings(AOptions);
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
@@ -178,6 +187,11 @@ procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
   end;
 
 begin
+  if AOptions <> nil then
+    ClassTypeForCompare := AOptions.ClassType
+  else
+    ClassTypeForCompare := nil;
+
   Traverse(CategoryTree.Items.GetFirstNode);
 end;
 

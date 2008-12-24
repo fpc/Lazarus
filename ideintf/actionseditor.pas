@@ -802,8 +802,8 @@ begin
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
-  btnAdd.LoadGlyphFromLazarusResource('add');
-  btnDelete.LoadGlyphFromLazarusResource('delete');
+  btnAdd.LoadGlyphFromLazarusResource('laz_add');
+  btnDelete.LoadGlyphFromLazarusResource('laz_delete');
   btnUp.LoadGlyphFromLazarusResource('arrow_up');
   btnDown.LoadGlyphFromLazarusResource('arrow_down');
 

@@ -41,6 +41,7 @@ type
     procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
                             var Picture: TPicture);
   public
+    constructor Create(AOwner: TComponent); override;
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
@@ -127,6 +128,14 @@ begin
   end;
 end;
 
+constructor TIPLazHtmlControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DefaultFontSize := 8;
+  MarginHeight := 0;
+  MarginWidth := 0; 
+end;
+
 function TIPLazHtmlControl.GetURL: string;
 begin
   Result:=FURL;
@@ -187,8 +196,11 @@ end;
 
 procedure TIPLazHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
 begin
-  AWidth:=500;
-  AHeight:=250;
+  with GetContentSize do
+  begin
+    AWidth := cx;
+    AHeight := cy;
+  end;
 end;
 
 end.

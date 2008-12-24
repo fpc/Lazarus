@@ -1085,7 +1085,13 @@ end;
 
 function TSynPasSyn.Func101: TtkTokenKind;
 begin
-  if KeyComp('Register') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Register') then
+    Result := tkKey
+  else
+    if KeyComp('Platform') then
+      Result := tkKey
+    else
+      Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func102: TtkTokenKind;

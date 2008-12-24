@@ -93,8 +93,12 @@ type
     procedure SmartTabsCheckBoxChange(Sender: TObject);
     procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
+  private
+    FDefaultBookmarkImages: TImageList;
+    function DefaultBookmarkImages: TImageList;
   public
     PreviewEdits: array of TPreviewEditor;
+    procedure AddPreviewEdit(AEditor: TPreviewEditor);
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
 
@@ -454,6 +458,29 @@ procedure TEditorGeneralOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject
   );
 begin
   SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
+end;
+
+function TEditorGeneralOptionsFrame.DefaultBookmarkImages: TImageList;
+var
+  i: integer;
+begin
+  if FDefaultBookmarkImages = nil then
+  begin
+    FDefaultBookmarkImages := TImageList.Create(Self);
+    FDefaultBookmarkImages.Width := 11;
+    FDefaultBookmarkImages.Height := 11;
+    for i := 0 to 9 do
+      FDefaultBookmarkImages.AddLazarusResource('bookmark' + IntToStr(i));
+  end;
+  Result := FDefaultBookmarkImages;
+end;
+
+procedure TEditorGeneralOptionsFrame.AddPreviewEdit(AEditor: TPreviewEditor);
+begin
+  SetLength(PreviewEdits, Length(PreviewEdits) + 1);
+  PreviewEdits[Length(PreviewEdits)-1] := AEditor;
+  if AEditor.BookMarkOptions.BookmarkImages = nil then
+    AEditor.BookMarkOptions.BookmarkImages := DefaultBookmarkImages;
 end;
 
 constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);

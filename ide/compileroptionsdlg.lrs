@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TfrmCompilerOptions','FORMDATA',[
   'TPF0'#19'TfrmCompilerOptions'#18'frmCompilerOptions'#4'Left'#3#133#1#6'Heigh'
   +'t'#3#16#2#3'Top'#3#163#0#5'Width'#3#157#2#13'ActiveControl'#7#12'MainNotebo'

@@ -929,9 +929,9 @@ begin
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                       'Clipboard');
   AParent:=SrcEditMenuSectionClipboard;
-    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'cut');
-    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'copy');
-    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'paste');
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'laz_cut');
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'laz_copy');
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'laz_paste');
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
                                                     uemCopyFilename);
 
@@ -5091,51 +5091,16 @@ procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
   const BaseURL, TheHint: string);
 var
   HintWinRect: TRect;
-  IsHTML: Boolean;
-  Provider: TAbstractIDEHTMLProvider;
-  HTMLControl: TControl;
-  ms: TMemoryStream; 
-  NewWidth, NewHeight: integer;
+  AHint: String;
 begin
   if csDestroying in ComponentState then exit;
   if FHintWindow<>nil then
     FHintWindow.Visible:=false;
   if FHintWindow=nil then
     FHintWindow:=THintWindow.Create(Self);
-  IsHTML:=SysUtils.CompareText(copy(TheHint,1,6),'<HTML>')=0;
-  //DebugLn(['TSourceNotebook.ActivateHint IsHTML=',IsHTML,' TheHint=',TheHint]);
-  if FHintWindow.ControlCount>0 then begin
-    //DebugLn(['TSourceNotebook.ActivateHint ',dbgsName(FHintWindow.Controls[0])]);
-    FHintWindow.Controls[0].Free;
-  end;
-  if IsHTML then begin
-    Provider:=nil;
-    HTMLControl:=CreateIDEHTMLControl(FHintWindow,Provider);
-    Provider.BaseURL:=BaseURL;
-    HTMLControl.Parent:=FHintWindow;
-    HTMLControl.Align:=alClient;
-    ms:=TMemoryStream.Create;
-    try
-      if TheHint<>'' then
-        ms.Write(TheHint[1],length(TheHint));
-      ms.Position:=0;
-      Provider.ControlIntf.SetHTMLContent(ms);
-    finally
-      ms.Free;
-    end;
-    Provider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
-    if NewWidth<=0 then
-      NewWidth:=500;
-    if NewHeight<=0 then
-      NewHeight:=200;
-    HintWinRect := Rect(0,0,NewWidth,NewHeight);
-    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
-    FHintWindow.ActivateHint(HintWinRect,'');
-  end else begin
-    HintWinRect := FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
-    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
-    FHintWindow.ActivateHint(HintWinRect,TheHint);
-  end;
+  AHint:=TheHint;
+  if LazarusHelp.CreateHint(FHintWindow,ScreenPos,BaseURL,AHint,HintWinRect) then
+    FHintWindow.ActivateHint(HintWinRect,aHint);
 end;
 
 procedure TSourceNotebook.HideHint;
@@ -6159,6 +6124,8 @@ begin
   if (snWarnedFont in States) then exit;
   Include(States,snWarnedFont);
   SrcEdit:=GetActiveSE;
+  if SrcEdit = nil then
+    Exit;
   CurFont:=SrcEdit.EditorComponent.Font;
   if (not CurFont.CanUTF8) and SystemCharSetIsUTF8
   and ((EditorOpts.DoNotWarnForFont='')

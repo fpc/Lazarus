@@ -195,7 +195,7 @@ begin
   inherited Create(AOwner);
   ToolBar.Images := IDEImages.Images_16;
   acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
-  acRefresh.ImageIndex := IDEImages.LoadImage(16, 'refresh');
+  acRefresh.ImageIndex := IDEImages.LoadImage(16, 'laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
 end;
 

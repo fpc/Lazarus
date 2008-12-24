@@ -42,7 +42,7 @@ uses
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
-  ButtonPanel, ComCtrls, Math;
+  ButtonPanel, ComCtrls, Math, PackageDefs;
 
 type
 
@@ -303,7 +303,7 @@ begin
   LoadIconButton.Caption := dlgPOLoadIcon;
   SaveIconButton.Caption := dlgPOSaveIcon;
   ClearIconButton.Caption := dlgPOClearIcon;
-  LoadIconButton.LoadGlyphFromLazarusResource('open');
+  LoadIconButton.LoadGlyphFromLazarusResource('laz_open');
   SaveIconButton.LoadGlyphFromLazarusResource('menu_save');
   ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
   IconImagePictureChanged(nil);
@@ -316,8 +316,8 @@ begin
   LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
   LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
   LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
-  LazDocDeletePathButton.LoadGlyphFromLazarusResource('delete');
-  LazDocAddPathButton.LoadGlyphFromLazarusResource('add');
+  LazDocDeletePathButton.LoadGlyphFromLazarusResource('laz_delete');
+  LazDocAddPathButton.LoadGlyphFromLazarusResource('laz_add');
 
   LazDocPathEdit.Clear;
 end;
@@ -378,7 +378,7 @@ begin
   DescriptionLabel.Caption := lisCodeToolsDefsDescription;
   CopyrightLabel.Caption := rsCopyright;
   AdditionalInfoButton.Caption := rsAdditionalInfo;
-  AdditionalInfoButton.LoadGlyphFromLazarusResource('add');
+  AdditionalInfoButton.LoadGlyphFromLazarusResource('laz_add');
 end;
 
 procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
@@ -718,6 +718,7 @@ begin
       for i := 0 to FProject.UnitCount - 1 do
         if (FProject.Units[i].IsPartOfProject) and
           (FProject.Units[i].ComponentName <> '') and
+          (FProject.Units[i].ResourceBaseClass in [pfcbcForm, pfcbcDataModule]) and
           (IndexOfAutoCreateForm(FProject.Units[i].ComponentName) < 0) then
           sl.Add(FProject.Units[i].ComponentName);
       sl.Sort;

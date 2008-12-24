@@ -414,11 +414,11 @@ begin
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                            'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Cut',lisMenuCut, nil, nil, nil, 'cut');
+                                            'Cut',lisMenuCut, nil, nil, nil, 'laz_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Copy',lisMenuCopy, nil, nil, nil, 'copy');
+                                            'Copy',lisMenuCopy, nil, nil, nil, 'laz_copy');
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Paste',lisMenuPaste, nil, nil, nil, 'paste');
+                                            'Paste',lisMenuPaste, nil, nil, nil, 'laz_paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                          'Delete selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
 
@@ -2068,7 +2068,8 @@ Begin
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
+//      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
+      if (ChildControl.Owner=FLookupRoot)
       and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
         //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
         RemovePersistentAndChilds(ChildControl);

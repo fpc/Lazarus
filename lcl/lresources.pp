@@ -349,6 +349,32 @@ type
     property OnFindComponentClass;
   end;
 
+  TRemovedProperty = record
+    PersistentClass: TPersistentClass;
+    PropertyName: String;
+    Note: String;
+    HelpKeyword: String;
+  end;
+  PRemovedProperty = ^TRemovedProperty;
+
+  { TRemovedPropertyList }
+
+  TRemovedPropertyList = class(TList)
+  private
+    function GetItem(AIndex: Integer): PRemovedProperty;
+    procedure SetItem(AIndex: Integer; const AValue: PRemovedProperty);
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    procedure DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
+      var PropName: string; IsPath: boolean; var Handled, Skip: Boolean);
+  public
+    function IndexOf(AInstance: TPersistent; APropertyName: String): Integer; overload;
+    function IndexOf(AClass: TPersistentClass; APropertyName: String): Integer; overload;
+    function Add(APersistentClass: TPersistentClass; APropertyName, ANote,
+      AHelpKeyWord: string): Integer; reintroduce;
+    property Items[AIndex: Integer]: PRemovedProperty read GetItem write SetItem;
+  end;
+
 const
   ObjStreamMaskInherited = 1;
   ObjStreamMaskChildPos  = 2;
@@ -356,6 +382,7 @@ const
 
 var
   LazarusResources: TLResourceList;
+  RemovedProperties: TRemovedPropertyList = nil;
 
   LRSObjectReaderClass: TLRSObjectReaderClass=TLRSObjectReader;
   LRSObjectWriterClass: TLRSObjectWriterClass=TLRSObjectWriter;
@@ -483,11 +510,12 @@ function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
 function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
 
+procedure RegisterRemovedProperty(PersistentClass: TPersistentClass;
+  PropertyName, Note, HelpKeyWord: string);
 
 procedure Register;
 
 implementation
-
 
 const
   LineEnd: ShortString = LineEnding;
@@ -517,6 +545,76 @@ type
     procedure OnSetName(Reader: TReader; Component: TComponent;
                         var Name: string);
   end;
+
+{ TRemovedPropertyList }
+
+function TRemovedPropertyList.GetItem(AIndex: Integer): PRemovedProperty;
+begin
+  Result := inherited Get(AIndex);
+end;
+
+procedure TRemovedPropertyList.SetItem(AIndex: Integer;
+  const AValue: PRemovedProperty);
+begin
+  inherited Put(AIndex, AValue);
+end;
+
+procedure TRemovedPropertyList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  if Action = lnDeleted then
+    Dispose(PRemovedProperty(Ptr))
+  else
+    inherited Notify(Ptr, Action);
+end;
+
+procedure TRemovedPropertyList.DoPropertyNotFound(Reader: TReader; Instance: TPersistent;
+  var PropName: string; IsPath: boolean; var Handled, Skip: Boolean);
+begin
+  Skip := IndexOf(Instance, PropName) >= 0;
+  Handled := Skip;
+end;
+
+function TRemovedPropertyList.IndexOf(AInstance: TPersistent;
+  APropertyName: String): Integer;
+begin
+  if AInstance <> nil then
+    Result := IndexOf(TPersistentClass(AInstance.ClassType), APropertyName)
+  else
+    Result := -1;
+end;
+
+function TRemovedPropertyList.IndexOf(AClass: TPersistentClass;
+  APropertyName: String): Integer;
+var
+  i: integer;
+begin
+  Result := -1;
+  APropertyName := LowerCase(APropertyName);
+  for i := 0 to Count - 1 do
+    if AClass.InheritsFrom(Items[i]^.PersistentClass) and
+       (APropertyName = Items[i]^.PropertyName) then
+    begin
+      Result := i;
+      Exit;
+    end;
+end;
+
+function TRemovedPropertyList.Add(APersistentClass: TPersistentClass;
+  APropertyName, ANote, AHelpKeyWord: string): Integer;
+var
+  Item: PRemovedProperty;
+begin
+  Result := IndexOf(APersistentClass, APropertyName);
+  if Result = -1 then
+  begin
+    New(Item);
+    Item^.PersistentClass := APersistentClass;
+    Item^.PropertyName := LowerCase(APropertyName);
+    Item^.Note := ANote;
+    Item^.HelpKeyword := AHelpKeyWord;
+    Result := inherited Add(Item);
+  end;
+end;
 
 { TReaderUniqueNamer }
 
@@ -2898,9 +2996,11 @@ var
   Driver: TAbstractObjectReader;
 begin
   Result:=TReader.Create(s,4096);
-  //If included Default translator LRSTranslator will be set	
+  //If included Default translator LRSTranslator will be set
   if Assigned(LRSTranslator) then
     Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
+
+  Result.OnPropertyNotFound := @(RemovedProperties.DoPropertyNotFound);
 
   DestroyDriver:=false;
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
@@ -3356,6 +3456,12 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+procedure RegisterRemovedProperty(PersistentClass: TPersistentClass;
+  PropertyName, Note, HelpKeyWord: string);
+begin
+  RemovedProperties.Add(PersistentClass, PropertyName, Note, HelpKeyWord);
 end;
 
 procedure Register;
@@ -5202,14 +5308,15 @@ procedure InternalInit;
 begin
   LazarusResources := TLResourceList.Create;
   RegisterInitComponentHandler(TComponent, @InitResourceComponent);
+  RemovedProperties := TRemovedPropertyList.Create;
 end;
 
 initialization
   InternalInit;
 
 finalization
-  LazarusResources.Free;
-  LazarusResources := nil;
+  FreeAndNil(LazarusResources);
+  FreeAndNil(RemovedProperties);
 
 end.
 
