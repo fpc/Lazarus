@@ -117,7 +117,7 @@ uses
   { local }
   JcfStringUtils,
   FileUtils, JcfMiscFunctions, JCFLog,
-  JcfRegistrySettings, JcfSettings, JCfUnicodeFiles;
+  JcfRegistrySettings, JcfSettings, JcfUnicodeFiles;
 
 constructor TFileConverter.Create;
 begin
