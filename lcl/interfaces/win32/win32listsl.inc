@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -224,7 +224,7 @@ End;
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.GetObject(Index: Integer): TObject;
 Begin
-  HWND(Result) := Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0);
+  Result := TObject(PtrInt(Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0)));
 End;
 
 {------------------------------------------------------------------------------

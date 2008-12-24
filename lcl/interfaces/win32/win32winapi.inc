@@ -3109,6 +3109,12 @@ function TWin32WidgetSet.ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boole
 begin
   Assert(False, 'Trace:[TWin32WidgetSet.ShowScrollBar]');
   Result := Boolean(Windows.ShowScrollBar(Handle, WBar, BShow));
+  if BShow and Result and ThemeServices.ThemesEnabled then
+  begin
+    // sometimes on xp scrollbars does not invalidate themself and look as they are unthemed
+    // force window frame (scrollbars are not in the client area) to redraw
+    Windows.RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_NOCHILDREN);
+  end;
 end;
 
 {------------------------------------------------------------------------------

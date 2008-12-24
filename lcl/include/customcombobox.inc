@@ -149,13 +149,15 @@ end;
 
   Set the maximum length for user input.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.SetMaxLength(Val : integer);
+procedure TCustomComboBox.SetMaxLength(AValue: integer);
 begin
-  if Val < 0 then Val:= 0;
-  if Val<>MaxLength then begin
-    fMaxlength:=Val;
+  if AValue < 0 then
+    AValue := 0;
+  if AValue <> MaxLength then
+  begin
+    FMaxlength := AValue;
     if HandleAllocated then
-      TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, Val);
+      TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, AValue);
   end;
 end;
 
@@ -166,11 +168,11 @@ end;
 
   Get the maximum length for user input.
  ------------------------------------------------------------------------------}
-function TCustomComboBox.GetMaxLength : integer;
+function TCustomComboBox.GetMaxLength: integer;
 begin
   if HandleAllocated then
     FMaxLength := TWSCustomComboBoxClass(WidgetSetClass).GetMaxLength(Self);
-  Result:=FMaxLength;
+  Result := FMaxLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -749,9 +751,9 @@ begin
   ControlStyle := ControlStyle - [csCaptureMouse];
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FItems := TStringlist.Create;
-  FItemIndex:=-1;
-  FMaxLength := -1;
-  FDropDownCount:=8;
+  FItemIndex := -1;
+  FMaxLength := 0;
+  FDropDownCount := 8;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;

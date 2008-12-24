@@ -405,8 +405,10 @@ type
     FUseThemes,
     FThemedControlsEnabled: Boolean;
     FOnThemeChange: TNotifyEvent;      // Called when the current window theme has changed.
+    FDottedBrush: HBrush;
 
     function GetThemesEnabled: Boolean;
+    function GetDottedBrush: HBrush;
   protected
     function InitThemes: Boolean; virtual;
     procedure UnloadThemeData; virtual;
@@ -506,6 +508,8 @@ end;
 
 constructor TThemeServices.Create;
 begin
+  FDottedBrush := 0;
+
   FThemesAvailable := InitThemes;
   UpdateThemes;
 end;
@@ -515,6 +519,10 @@ end;
 destructor TThemeServices.Destroy;
 begin
   UnloadThemeData;
+
+  if FDottedBrush <> 0 then
+    DeleteObject(FDottedBrush);
+
   inherited;
 end;
 
@@ -523,6 +531,21 @@ end;
 function TThemeServices.GetThemesEnabled: Boolean;
 begin
   Result := FThemesAvailable and FUseThemes and FThemedControlsEnabled;
+end;
+
+function TThemeServices.GetDottedBrush: HBrush;
+const
+  LineBitsDotted: array[0..7] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA);
+var
+  DottedBitmap: HBitmap;
+begin
+  if FDottedBrush = 0 then
+  begin
+    DottedBitmap := CreateBitmap(8, 8, 1, 1, @LineBitsDotted);
+    if DottedBitmap <> 0 then
+      FDottedBrush := CreatePatternBrush(DottedBitmap);
+  end;
+  Result := FDottedBrush;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1845,6 +1868,17 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
     FillRect(DC, ARect, Brush);
     DeleteObject(Brush);
   end;
+
+  procedure FillWithDottedBrush(ARect: TRect; Color1, Color2: TColor);
+  var
+    OldColor1, OldColor2: TColor;
+  begin
+    OldColor1 := SetBkColor(DC, ColorToRGB(Color1));
+    OldColor2 := SetTextColor(DC, ColorToRGB(Color2));
+    FillRect(DC, ARect, GetDottedBrush);
+    SetBkColor(DC, OldColor1);
+    SetTextColor(DC, OldColor2);
+  end;
   
 var
   ADrawFlags: DWord;
@@ -1912,8 +1946,8 @@ begin
 
               if IsChecked(Details) and not IsHot(Details) then
               begin
-                InflateRect(ARect, -1, -1);
-                FillWithColor(ARect, clBtnHighlight);
+                InflateRect(ARect, -2, -2);
+                FillWithDottedBrush(ARect, clBtnHighlight, clBtnFace)
               end;
             end;
           TP_SPLITBUTTONDROPDOWN:

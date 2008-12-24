@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -96,6 +96,7 @@ type
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -1318,6 +1319,28 @@ end;
 class procedure TQtWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
   TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
+end;
+
+class procedure TQtWSCustomComboBox.SetMaxLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+  MaxLength: Integer;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetMaxLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+  begin
+    // qt doesn't accept -1
+    MaxLength := QtEdit.getMaxLength;
+    if (NewLength <= 0) or (NewLength > QtMaxEditLength) then
+      NewLength := QtMaxEditLength;
+    if NewLength <> MaxLength then
+      QtEdit.setMaxLength(NewLength);
+  end;
 end;
 
 class procedure TQtWSCustomComboBox.SetStyle(

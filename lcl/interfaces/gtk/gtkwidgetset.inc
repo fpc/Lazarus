@@ -3115,8 +3115,13 @@ begin
     begin
       if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil)
       then begin
+        {$IFDEF GTK2}
+        ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivateAfter);
+        ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
+        {$ELSE}
         ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
+        {$ENDIF}
       end else if ALCLObject is TCustomMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else

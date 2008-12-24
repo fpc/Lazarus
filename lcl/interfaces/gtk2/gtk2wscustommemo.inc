@@ -50,18 +50,19 @@ begin
   { GTK2 does not provide its own max. length for memos
     so we have to do our own. }
 
-  if TControl(WidgetInfo^.LCLObject) is TCustomMemo then begin
-    Memo:= TCustomMemo(WidgetInfo^.LCLObject);
-    if Memo.MaxLength < 0 then Exit;
+  if TControl(WidgetInfo^.LCLObject) is TCustomMemo then
+  begin
+    Memo := TCustomMemo(WidgetInfo^.LCLObject);
+    if Memo.MaxLength <= 0 then Exit;
 
-    CurrLength:= gtk_text_buffer_get_char_count(TextBuffer);
-    if CurrLength + NewTextLength <= Memo.MaxLength then Exit;
+    CurrLength := gtk_text_buffer_get_char_count(TextBuffer);
+    if CurrLength + NewTextLength <= Memo.MaxLength then
+      Exit;
 
-    CutLength:= CurrLength + NewTextLength - Memo.MaxLength;
+    CutLength := CurrLength + NewTextLength - Memo.MaxLength;
 
-    if NewTextLength - CutLength > 0 then begin
+    if NewTextLength - CutLength > 0 then
       gtk_text_buffer_insert(TextBuffer, StartIter, TheText, NewTextLength - CutLength);
-    end;
 
     g_signal_stop_emission_by_name(PGtkObject(Textbuffer), 'insert-text');
   end;

@@ -72,6 +72,7 @@ begin
   inherited Create(TheOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csMenuEvents, csSetCaption];
+  FFlat := True;
   FButtonWidth := 23;
   FButtonHeight := 22;
   FDropDownWidth := 12;
@@ -79,7 +80,7 @@ begin
   FWrapable := True;
   FButtons := TList.Create;
   FIndent := 1;
-  FList:=false;
+  FList := False;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -87,7 +88,7 @@ begin
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := @HotImageListChange;
   EdgeBorders := [ebTop];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   Align := alTop;
 end;
 

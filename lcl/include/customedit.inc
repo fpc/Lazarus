@@ -50,7 +50,7 @@ begin
   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
   ControlStyle := ControlStyle - [csCaptureMouse];
   FCompStyle := csEdit;
-  FMaxLength:= -1;
+  FMaxLength := 0;
   ParentColor := false;
   TabStop := true;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
@@ -294,10 +294,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetMaxLength(Value : Integer);
 begin
-  if Value=MaxLength then exit;
-  FMaxLength := Value;
-  if HandleAllocated then
-    TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, Value);
+  if Value < 0 then
+    Value := 0;
+  if Value <> MaxLength then
+  begin
+    FMaxLength := Value;
+    if HandleAllocated then
+      TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, Value);
+  end;
 end;
 
 {------------------------------------------------------------------------------
