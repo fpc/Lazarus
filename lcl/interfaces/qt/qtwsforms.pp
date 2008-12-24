@@ -378,12 +378,12 @@ end;
 class procedure TQtWSCustomFrame.ScrollBy(
   const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
 var
-  Widget: TQtWidget;
+  Widget: TQtAbstractScrollArea;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
-  Widget := TQtWidget(AWinControl.Handle);
-  Widget.scroll(-DeltaX, -DeltaY);
+  Widget := TQtAbstractScrollArea(AWinControl.Handle);
+  Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 
 initialization
