@@ -2112,12 +2112,6 @@ end;
 procedure TOICustomPropertyGrid.HandleStandardKeys(
   var Key: Word; Shift: TShiftState);
 
-  function IsGoodEdit: Boolean;
-  begin
-    Result :=
-      ((FCurrentEdit = nil) or not FCurrentEdit.Focused) and (ItemIndex >= 0);
-  end;
-
 var
   Handled: Boolean;
 
@@ -2133,19 +2127,6 @@ var
       VK_NEXT : SetItemIndexAndFocus(Min(ItemIndex + Page, FRows.Count - 1));
 
       VK_TAB: DoTabKey;
-
-      VK_LEFT:
-        begin
-          Handled := IsGoodEdit and Rows[ItemIndex].Expanded;
-          if Handled then ShrinkRow(ItemIndex);
-        end;
-
-      VK_RIGHT:
-        begin
-          Handled := IsGoodEdit and not Rows[ItemIndex].Expanded and
-            CanExpandRow(Rows[ItemIndex]);
-          if Handled then ExpandRow(ItemIndex)
-        end;
 
       VK_RETURN:
         begin
@@ -2180,7 +2161,23 @@ begin
           Handled := true;
         end;
     end;
-  end;
+  end
+  else 
+  if Shift = [ssAlt] then
+    case Key of
+      VK_LEFT:
+        begin
+          Handled := (ItemIndex >= 0) and Rows[ItemIndex].Expanded;
+          if Handled then ShrinkRow(ItemIndex);
+        end;
+
+      VK_RIGHT:
+        begin
+          Handled := (ItemIndex >= 0) and not Rows[ItemIndex].Expanded and
+            CanExpandRow(Rows[ItemIndex]);
+          if Handled then ExpandRow(ItemIndex)
+        end;
+    end;  
 
   if not Handled and Assigned(OnOIKeyDown) then
   begin
