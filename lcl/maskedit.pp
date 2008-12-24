@@ -499,6 +499,12 @@ begin
     Exit;
   end;
 
+  // Number on numeric keyboard
+  if (Key >= VK_NUMPAD0) and (Key <= VK_NUMPAD9) and (Shift = []) then
+  begin 
+    Key := (Key - VK_NUMPAD0) + Ord('0'); // Translate Numeric key input to the corresponding numbers
+  end;
+
   // Insert a char
   if (Key In [32..122]) then
   begin
