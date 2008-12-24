@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                               TASeries.pp
-                               ----------
+                               TASeries.pas
+                               ------------
                 Component Library Standard Graph Series
 
 
@@ -69,7 +69,7 @@ type
 
   { TChartSeries }
 
-  TChartSeries = class(TComponent)
+  TChartSeries = class(TBasicChartSeries)
   private
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
@@ -311,25 +311,8 @@ type
 implementation
 
 uses
-  math;
-
-procedure Exchange(var A, B: Integer); overload;
-var
-  t: Integer;
-begin
-  t := A;
-  A := B;
-  B := t;
-end;
-
-procedure Exchange(var A, B: Double); overload;
-var
-  t: Double;
-begin
-  t := A;
-  A := B;
-  B := t;
-end;
+  math,
+  TAChartUtils;
 
 constructor TChartSeries.Create(AOwner: TComponent);
 begin

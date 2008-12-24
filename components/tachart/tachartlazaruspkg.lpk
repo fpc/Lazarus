@@ -32,6 +32,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="TAGraph"/>
       </Item2>
+      <Item3>
+        <Filename Value="tachartutils.pas"/>
+        <UnitName Value="TAChartUtils"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
