@@ -840,6 +840,8 @@ function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
 
 implementation
 
+uses
+  math;
 
 const
   ScrollBarWidth=0;
@@ -1918,6 +1920,7 @@ end;
 
 procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer);
 begin
+  if not InRange(NewItemIndex, 0, FRows.Count - 1) then exit;
   ItemIndex:=NewItemIndex;
   if FCurrentEdit<>nil then
   begin
@@ -2106,100 +2109,88 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word;
-  Shift: TShiftState);
+procedure TOICustomPropertyGrid.HandleStandardKeys(
+  var Key: Word; Shift: TShiftState);
 
-  function IsCurrentEditDroppedDown: Boolean;
+  function IsGoodEdit: Boolean;
   begin
-    Result := (FCurrentEdit is TCustomCombobox) and
-              TCustomCombobox(FCurrentEdit).DroppedDown;
+    Result :=
+      ((FCurrentEdit = nil) or not FCurrentEdit.Focused) and (ItemIndex >= 0);
   end;
 
-const
-  Page=20;
 var
   Handled: Boolean;
+
+  procedure HandleUnshifted;
+  const
+    Page = 20;
+  begin
+    Handled := true;
+    case Key of
+      VK_UP   : SetItemIndexAndFocus(ItemIndex - 1);
+      VK_DOWN : SetItemIndexAndFocus(ItemIndex + 1);
+      VK_PRIOR: SetItemIndexAndFocus(Max(ItemIndex - Page, 0));
+      VK_NEXT : SetItemIndexAndFocus(Min(ItemIndex + Page, FRows.Count - 1));
+
+      VK_TAB: DoTabKey;
+
+      VK_LEFT:
+        begin
+          Handled := IsGoodEdit and Rows[ItemIndex].Expanded;
+          if Handled then ShrinkRow(ItemIndex);
+        end;
+
+      VK_RIGHT:
+        begin
+          Handled := IsGoodEdit and not Rows[ItemIndex].Expanded and
+            CanExpandRow(Rows[ItemIndex]);
+          if Handled then ExpandRow(ItemIndex)
+        end;
+
+      VK_RETURN:
+        begin
+          SetRowValue;
+          if FCurrentEdit is TCustomEdit then
+            TCustomEdit(FCurrentEdit).SelectAll;
+        end;
+
+      VK_ESCAPE: RefreshValueEdit;
+
+      else
+        Handled := false;
+    end;
+  end;
+
 begin
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
+  Handled := false;
   if Shift = [] then
   begin
-    Handled := not IsCurrentEditDroppedDown;
-    if Handled then
-      case Key of
-        VK_UP:
-          if (ItemIndex > 0) then 
-            SetItemIndexAndFocus(ItemIndex - 1);
-
-        VK_DOWN:
-          if (ItemIndex < FRows.Count - 1) then
-            SetItemIndexAndFocus(ItemIndex + 1);
-
-        VK_PRIOR:
-          if (ItemIndex > Page)
-          then SetItemIndexAndFocus(ItemIndex - Page)
-          else if (FRows.Count > 0)
-          then SetItemIndexAndFocus(0);
-
-        VK_NEXT:
-          if (ItemIndex < FRows.Count - Page)
-          then SetItemIndexAndFocus(ItemIndex + Page)
-          else if (FRows.Count > 0)
-          then SetItemIndexAndFocus(FRows.Count - 1);
-
-        VK_TAB:
-          DoTabKey;
-
-        VK_LEFT:
-          if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
-          and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
-            ShrinkRow(ItemIndex)
-          else
-            Handled:=false;
-
-        VK_RIGHT:
-          if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
-          and (ItemIndex >= 0) and (not Rows[ItemIndex].Expanded)
-          and CanExpandRow(Rows[ItemIndex]) then
-            ExpandRow(ItemIndex)
-          else
-            Handled:=false;
-
-        VK_RETURN:
-          begin
-            SetRowValue;
-            if (FCurrentEdit is TCustomEdit) then
-              TCustomEdit(FCurrentEdit).SelectAll;
-          end;
-
-        VK_ESCAPE:
-          begin
-            RefreshValueEdit;
-          end;
-        else
-          Handled := false;
-      end;
+    if not (FCurrentEdit is TCustomCombobox) or
+       not TCustomCombobox(FCurrentEdit).DroppedDown then
+      HandleUnshifted;
   end
   else
   if Shift = [ssCtrl] then
   begin
-    Handled := True;
     case Key of
       VK_RETURN:
-        ToggleRow;
-    else
-      Handled := False;
+        begin
+          ToggleRow;
+          Handled := true;
+        end;
     end;
-  end
-  else
-    Handled := false;
+  end;
+
   if not Handled and Assigned(OnOIKeyDown) then
   begin
-    OnOIKeyDown(Self,Key,Shift);
-    Handled:=Key=VK_UNKNOWN;
+    OnOIKeyDown(Self, Key, Shift);
+    Handled := Key = VK_UNKNOWN;
   end;
 
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key,' Handled=',Handled);
-  if Handled then Key:=VK_UNKNOWN;
+  if Handled then
+    Key := VK_UNKNOWN;
 end;
 
 procedure TOICustomPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
@@ -4239,7 +4230,7 @@ end;
 
 procedure TObjectInspectorDlg.OnGridDblClick(Sender: TObject);
 begin
-
+  //
 end;
 
 procedure TObjectInspectorDlg.OnSetDefaultPopupmenuItemClick(Sender: TObject);

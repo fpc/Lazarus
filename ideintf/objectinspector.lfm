@@ -3,12 +3,9 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   Height = 669
   Top = 175
   Width = 275
-  HelpContext = 0
   Caption = 'ObjectInspectorDlg'
   ClientHeight = 669
   ClientWidth = 275
-  Font.Height = 0
-  Font.Style = []
   KeyPreview = True
   OnResize = ObjectInspectorResize
   PopupMenu = MainPopupMenu
@@ -18,14 +15,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Height = 23
     Top = 646
     Width = 275
-    HelpContext = 0
     Panels = <    
       item
-        Alignment = taLeftJustify
         Width = 100
       end    
       item
-        Alignment = taLeftJustify
         Width = 50
       end>
     SimplePanel = False
@@ -35,7 +29,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Height = 21
     Top = 0
     Width = 275
-    HelpContext = 0
     Align = alTop
     AutoComplete = False
     Ctl3D = False
