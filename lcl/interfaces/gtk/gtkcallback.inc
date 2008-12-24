@@ -692,6 +692,7 @@ function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
+  Info: PWidgetInfo;
 {$IFDEF VerboseFocus}
   LCLObject: TControl;
 {$ENDIF}
@@ -712,8 +713,16 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  Mess.Msg := LM_DEACTIVATE;
-  DeliverMessage(Data, Mess);
+  Info:=GetWidgetInfo(Widget,false);
+  try
+    if (Info<>nil) then
+      Include(Info^.Flags,wwiDeactivating);
+    Mess.Msg := LM_DEACTIVATE;
+    DeliverMessage(Data, Mess);
+  finally
+    if Info<>nil then
+      Exclude(Info^.Flags,wwiDeactivating);
+  end;
 
   Result := CallBackDefaultReturn;
 end;

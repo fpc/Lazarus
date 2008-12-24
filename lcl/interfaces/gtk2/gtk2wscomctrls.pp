@@ -52,6 +52,7 @@ type
     //this is created and destroyed as needed
     //it only holds items which are about to be changed the list is emptied in Gtk2_ItemSelectionChanged
     ItemCache: TStringList;
+    Images: TList;
   end;
 
 type
@@ -90,12 +91,9 @@ type
   TGtk2WSCustomListView = class(TWSCustomListView)
   private
     class function IsIconView(const ALV: TCustomListView): Boolean; virtual;
-    // needed when adding or removing columns to a list store
-    class procedure ReCreateListStore(const ALV: TCustomListView; const TVWidgets: PTVWidgets); virtual;
-    class procedure ReCreateItems(const ALV: TCustomListView); virtual;
     class procedure SetPropertyInternal(const ALV: TCustomListView; const Widgets: PTVWidgets; const AProp: TListViewProperty; const AIsSet: Boolean);
     class procedure SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
-    class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const Widgets: PTVWidgets; const Add: Boolean);
+    class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const WidgetInfo: PWidgetInfo; const Add: Boolean);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   published
@@ -123,6 +121,7 @@ type
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
+    class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
 
     // lv
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
@@ -226,6 +225,8 @@ type
 
 
 implementation
+
+uses Gtk2CellRenderer, GtkExtra;
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;

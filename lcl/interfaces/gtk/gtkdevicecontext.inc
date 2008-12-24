@@ -746,21 +746,30 @@ end;
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
 procedure TGtkDeviceContext.SelectPenProps;
-
-  procedure SetDashes(const ADashes: array of gint8);
-  begin
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    laz_gdk_gc_set_dashes(GC, 0, @ADashes[0], Length(ADashes));
-    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  end;
-
 var
   PenStyle: DWord;
   LineStyle: TGdkLineStyle;
   JoinStyle: TGdkJoinStyle;
   CapStyle: TGdkCapStyle;
   IsGeometric, IsExtPen: Boolean;
-  PenWidth, Multiplier: gint;
+  PenWidth: gint;
+
+  procedure SetDashes(ADashes: array of gint8);
+  var
+    Multiplier: gint;
+    i: integer;
+  begin
+    Multiplier := PenWidth;
+    if Multiplier = 0 then
+      Multiplier := 1;
+
+    // this works very well for geometric pens
+    for i := Low(ADashes) to High(ADashes) do
+      ADashes[i] := ADashes[i] * Multiplier;
+
+    laz_gdk_gc_set_dashes(GC, 0, @ADashes[0], Length(ADashes));
+  end;
+
 begin
 //  if IsNullPen then Exit;
 
@@ -775,12 +784,18 @@ begin
   GetPen;
 
   PenStyle := CurrentPen^.GDIPenStyle and PS_STYLE_MASK;
-  IsGeometric := (CurrentPen^.GDIPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC;
   IsExtPen := CurrentPen^.IsExtPen;
+  PenWidth := CurrentPen^.GDIPenWidth;
+
+  if IsExtPen then
+    IsGeometric := (CurrentPen^.GDIPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC
+  else
+    IsGeometric := PenWidth > 0;
+
+  if not IsGeometric then
+    PenWidth := 0;
 
   CurrentPen^.IsNullPen := PenStyle = PS_NULL;
-
-  PenWidth := CurrentPen^.GDIPenWidth;
 
   if IsExtPen and IsGeometric then
   begin
@@ -800,9 +815,6 @@ begin
   begin
     JoinStyle := GDK_JOIN_MITER;
     CapStyle := GDK_CAP_NOT_LAST;
-
-    if IsExtPen then // if we are using ExtCreatePen and does not set geometric => use cosmetic pen
-      PenWidth := 0;
   end;
 
   if not IsExtPen and (PenStyle = PS_USERSTYLE) then
@@ -817,17 +829,12 @@ begin
   gdk_gc_set_line_attributes(GC, PenWidth, LineStyle, CapStyle, JoinStyle);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
-  // Paul Ishenin: I compared patterns with windows and changed numbers to make them the same
-
-  Multiplier := PenWidth;
-  if Multiplier = 0 then
-    Multiplier := 1;
-
+  // Paul Ishenin: I compared patterns with windows
   case PenStyle of
-    PS_DASH:       SetDashes([6*Multiplier,2*Multiplier]);
-    PS_DOT:        SetDashes([1*Multiplier,1*Multiplier]);
-    PS_DASHDOT:    SetDashes([3*Multiplier,2*Multiplier,1*Multiplier,2*Multiplier]);
-    PS_DASHDOTDOT: SetDashes([3*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier,1*Multiplier]);
+    PS_DASH:       SetDashes([3,1]);
+    PS_DOT:        SetDashes([1,1]);
+    PS_DASHDOT:    SetDashes([3,1,1,1]);
+    PS_DASHDOTDOT: SetDashes([3,1,1,1,1,1]);
     PS_USERSTYLE:  laz_gdk_gc_set_dashes(GC, 0, CurrentPen^.GDIPenDashes, CurrentPen^.GDIPenDashesCount);
   end;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}

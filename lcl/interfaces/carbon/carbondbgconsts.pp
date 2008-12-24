@@ -59,7 +59,7 @@ const
   SViewForMouse = 'HIViewGetViewForMouseEvent';
   SViewVisible  = 'HIViewSetVisible';
   SViewConvert = 'HIViewConvertPoint';
-  SViewRender  = 'HIViewRenderle';
+  SViewRender  = 'HIViewRender';
   SViewFrame = 'HIViewSetFrame';
   SViewNeedsDisplay = 'HiViewSetNeedsDisplay';
   SViewNeedsDisplayRect = 'HiViewSetNeedsDisplayInRect';

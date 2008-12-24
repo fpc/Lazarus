@@ -615,10 +615,22 @@ const
               VKKeyChar:=#13;
               UTF8Character:=VKKeyChar;
             end;
+          MK_TILDE: VKKeyCode := VK_OEM_3;
+          MK_MINUS: VKKeyCode := VK_OEM_MINUS;
+          MK_EQUAL: VKKeyCode := VK_OEM_PLUS;
+          MK_BACKSLASH:    VKKeyCode := VK_OEM_5;
+          MK_LEFTBRACKET:  VKKeyCode := VK_OEM_4;
+          MK_RIGHTBRACKET: VKKeyCode := VK_OEM_6;
+          MK_SEMICOLON:    VKKeyCode := VK_OEM_1;
+          MK_QUOTE:  VKKeyCode := VK_OEM_7;
+          MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
+          MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
+          MK_SLASH:  VKKeyCode := VK_OEM_2;
         end;
       end;
 
-      if VKKeyCode=VK_UNKNOWN then begin
+      if VKKeyCode=VK_UNKNOWN then
+      begin
         // There is no known VK_ code for this characther. Use a dummy keycode
         // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
         // triggered by LCL.
@@ -833,7 +845,7 @@ begin
   Result := EventNotHandledErr;
   
   Control := nil;
-  if OSError(GetKeyboardFocus(AWidget.Widget, Control), SName,
+  if OSError(GetKeyboardFocus( TCarbonWindow(AWidget).fWindowRef, Control), SName,
     SGetKeyboardFocus) then Exit;
   if Control = nil then Control := AWidget.Content;
 
@@ -906,7 +918,7 @@ begin
 
   // force set and kill focus of focused control
   Control := nil;
-  OSError(GetKeyboardFocus(AWidget.Widget, Control), 'CarbonWindow_ActivateProc', SGetKeyboardFocus);
+  OSError(GetKeyboardFocus(TCarbonWindow(AWidget).fWindowRef, Control), 'CarbonWindow_ActivateProc', SGetKeyboardFocus);
   if Control <> nil then
   begin
     FocusWidget := GetCarbonControl(Control);
@@ -944,7 +956,7 @@ begin
   kEventWindowCollapsed: Kind := SIZEICONIC;
   kEventWindowExpanded, kEventWindowZoomed:
     begin
-      if IsWindowInStandardState(WindowRef(AWidget.Widget), nil, nil) then
+      if IsWindowInStandardState(TCarbonWindow(AWidget).fWindowRef, nil, nil) then
         Kind := SIZEFULLSCREEN
       else
         Kind := SIZENORMAL;
@@ -969,12 +981,19 @@ end;
 
 { TCarbonWindow }
 
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.RegisterEvents
+procedure TCarbonWindow.BoundsChanged;
+begin
+  inherited BoundsChanged;
 
-  Registers event handlers for window and its content area
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.RegisterEvents;
+{  if Assigned(fWindowRef) then begin
+    GetClientRect(r);
+    hr.origin := GetHIPoint(0,0);
+    hr.size := GetHISize(r.Right - r.Left, r.Bottom - r.Top);
+    HIViewSetFrame(FScrollView, hr);
+  end;}
+end;
+
+procedure TCarbonWindow.RegisterWindowEvents;
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
@@ -982,13 +1001,15 @@ var
   ActivateSpecs: array[0..1] of EventTypeSpec;
   ShowWindowSpecs: array[0..2] of EventTypeSpec;
 begin
+  // Window Events
+
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonWindow_Close),
     1, @TmpSpec, Pointer(Self), nil);
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonCommon_Dispose),
     1, @TmpSpec, Pointer(Self), nil);
 
@@ -1007,7 +1028,7 @@ begin
   MouseSpec[6].eventClass := kEventClassMouse;
   MouseSpec[6].eventKind := kEventMouseWheelMoved;
 
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonWindow_MouseProc),
     7, @MouseSpec[0], Pointer(Self), nil);
 
@@ -1020,7 +1041,7 @@ begin
   KeySpecs[3].eventClass := kEventClassKeyboard;
   KeySpecs[3].eventKind := kEventRawKeyModifiersChanged;
 
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonWindow_KeyboardProc),
     4, @KeySpecs[0], Pointer(Self), nil);
 
@@ -1029,7 +1050,7 @@ begin
   ActivateSpecs[1].eventClass := kEventClassWindow;
   ActivateSpecs[1].eventKind := kEventWindowDeactivated;
 
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonWindow_ActivateProc),
     2, @ActivateSpecs[0], Pointer(Self), nil);
 
@@ -1040,78 +1061,38 @@ begin
   ShowWindowSpecs[2].eventClass := kEventClassWindow;
   ShowWindowSpecs[2].eventKind := kEventWindowZoomed;
 
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonWindow_ShowWindow),
     3, @ShowWindowSpecs[0], Pointer(Self), nil);
 
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_Draw),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_Track),
-    1, @TmpSpec, Pointer(Self), nil);
-
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonCommon_BoundsChanged),
     1, @TmpSpec, Pointer(Self), nil);
 
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlContextualMenuClick);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_SetFocusPart),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
-    1, @TmpSpec, Pointer(Self), nil);
-    
-  // cursor set
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_SetCursor),
-    1, @TmpSpec, Pointer(Self), nil);
-	
   // cursor change
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowCursorChange);
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonCommon_CursorChange),
-    1, @TmpSpec, Pointer(Self), nil);	
+    1, @TmpSpec, Pointer(Self), nil);
 
   // user messages
   TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindUser);
-  InstallWindowEventHandler(Widget,
+  InstallWindowEventHandler(fWindowRef,
     RegisterEventHandler(@CarbonCommon_User),
     1, @TmpSpec, Pointer(Self), nil);
-  {$IFDEF VerboseWindowEvent}
-    DebugLn('TCarbonWindow.RegisterEvents ', ClassName, ' ',
-      LCLObject.Name, ': ', LCLObject.ClassName);
-  {$ENDIF}
+
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.CreateWidget
-  Params:  AParams - Creation parameters
-
-  Creates Carbon window
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.CreateWidget(const AParams: TCreateParams);
+procedure TCarbonWindow.CreateWindow(const AParams: TCreateParams);
 var
-  Window: WindowRef;
+  AWindow: WindowRef;
   NewWindowClass: Integer;
   MinSize, MaxSize: HISize;
   Attributes: WindowAttributes;
 begin
   // apply appropriate form style and form border style
-  
+
   if csDesigning in LCLObject.ComponentState then
   begin
     NewWindowClass := kDocumentWindowClass;
@@ -1137,20 +1118,25 @@ begin
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
-  
+
   if OSError(
     CreateNewWindow(NewWindowClass,
       Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
-      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), Window),
+      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
-  Widget := Window;
-  
+  fWindowRef := AWindow;
+
+  // creating wrapped views
+  if OSError(
+    HIViewFindByID(HIViewGetRoot(fWindowRef), kHIViewWindowContentID, fWinContent),
+    Self, SCreateWidget, 'HIViewGetRoot') then RaiseCreateWidgetError(LCLObject);
+
   OSError(
-    SetWindowProperty(Window, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetWindowProperty(AWindow, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, 'SetWindowProperty');
   OSError(
-    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetControlProperty(fWinContent, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
 
   SetBounds(LCLObject.BoundsRect);
@@ -1165,8 +1151,66 @@ begin
   if MaxSize.width <= 0 then MaxSize.width := 10000;
   if MaxSize.height <= 0 then MaxSize.height := 10000;
 
-  OSError(SetWindowResizeLimits(Window, @MinSize, @MaxSize), Self, SCreateWidget,
+  OSError(SetWindowResizeLimits(AWindow, @MinSize, @MaxSize), Self, SCreateWidget,
     'SetWindowResizeLimits');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.RegisterEvents
+
+  Registers event handlers for window and its content area
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.RegisterEvents;
+begin
+  inherited;
+end;
+
+procedure SetClientAlign(Child, Parent: HIViewRef; FullAlign: Boolean);
+var
+  Layout: HILayoutInfo;
+begin
+  HIViewGetLayoutInfo(Child, Layout);
+  if FullAlign then
+  begin
+    Layout.binding.left.kind  := kHILayoutBindLeft;
+    Layout.binding.right.kind := kHILayoutBindRight;
+    Layout.binding.top.kind    := kHILayoutBindTop;
+    Layout.binding.bottom.kind := kHILayoutBindBottom;
+  end else
+  begin
+    Layout.binding.left.kind  := kHILayoutBindNone;
+    Layout.binding.right.kind := kHILayoutBindNone;
+    Layout.binding.top.kind    := kHILayoutBindNone;
+    Layout.binding.bottom.kind := kHILayoutBindNone;
+  end;
+  Layout.binding.left.toView := Parent;
+  Layout.binding.right.toView := Parent;
+  Layout.binding.top.toView := Parent;
+  Layout.binding.bottom.toView := Parent;
+  HIViewSetLayoutInfo(Child, Layout);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.CreateWidget(const AParams: TCreateParams);
+var
+  Params  : TCreateParams;
+begin
+  CreateWindow(AParams);
+  RegisterWindowEvents;
+
+  Params := AParams;
+  Params.X := 0;
+  Params.Y := 0;
+  inherited CreateWidget(Params);
+
+  HIViewAddSubview(fWinContent, fScrollView);
+  SetClientAlign(fScrollView, fWinContent, true);
+  HIViewSetVisible(fScrollView, true);
 end;
 
 {------------------------------------------------------------------------------
@@ -1176,19 +1220,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.DestroyWidget;
 begin
-  DisposeWindow(WindowRef(Widget));
-  Widget := nil;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.GetContent
-  Returns: Window content area control
- ------------------------------------------------------------------------------}
-function TCarbonWindow.GetContent: ControlRef;
-begin
-  if OSError(
-    HIViewFindByID(HIViewGetRoot(WindowRef(Widget)), kHIViewWindowContentID,
-      Result), Self, 'GetContent', 'HIViewGetRoot') then Result := nil;
+  if Assigned(fWindowRef) then begin
+    DisposeWindow(fWindowRef);
+    fWindowRef := nil;
+    fWinContent := nil;
+    fHiddenWin := nil;
+  end;
+  inherited;
+  //Widget := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1199,7 +1238,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.AddToWidget(AParent: TCarbonWidget);
 begin
-  DebugLn('TCarbonWindow.AddToWidget failed: Embedding windows is not supported');
+  if Assigned(AParent) then
+  begin
+    fWindowRef := nil;
+    fHiddenWin := fWindowRef;
+    if IsWindowVisible(fHiddenWin) then HideWindow(fHiddenWin);
+    OSError(HIViewAddSubview(AParent.Content, FScrollView), Self, 'AddToWidget', SViewAddView);
+    AParent.ControlAdded;
+    SetClientAlign(fScrollView, fWinContent, false);
+  end else begin
+    if IsVisible then
+    begin
+      ShowWindow(fHiddenWin);
+      OSError(HIViewAddSubview(fWinContent, FScrollView), Self, 'AddToWidget', SViewAddView);
+    end;
+    SetClientAlign(fScrollView, fWinContent, true);
+    fWindowRef := fHiddenWin;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1213,8 +1268,12 @@ var
 begin
   GetGlobalMouse(P);
 
-  OSError(GetWindowBounds(WindowRef(Widget), kWindowContentRgn, R),
-    Self, 'GetMousePos', SGetWindowBounds);
+  if Assigned(fWindowRef) then
+    OSError(GetWindowBounds(fWindowRef, kWindowContentRgn, R),
+      Self, 'GetMousePos', SGetWindowBounds)
+  else
+    Result := inherited GetMousePos;
+
   Result.X := P.h - R.left;
   Result.Y := P.v - R.Top;
 end;
@@ -1225,7 +1284,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetTopParentWindow: WindowRef;
 begin
-  Result := WindowRef(Widget);
+  if Assigned(fWindowRef) then
+    Result := fWindowRef
+  else
+    Result := inherited GetTopParentWindow;
 end;
 
 {------------------------------------------------------------------------------
@@ -1241,21 +1303,23 @@ var
 const
   SName = 'GetClientRect';
 begin
-  Result := False;
+  if Assigned(fWindowRef) then begin
+    Result := False;
+    if OSError(
+      GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect), Self,
+      SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
+    if OSError(
+      GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect), Self,
+      SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
 
-  if OSError(
-    GetWindowBounds(WindowRef(Widget), kWindowStructureRgn, AWndRect), Self,
-    SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
-  if OSError(
-    GetWindowBounds(WindowRef(Widget), kWindowContentRgn, AClientRect), Self,
-    SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
+    ARect.Left := AClientRect.Left - AWndRect.Left;
+    ARect.Top := AClientRect.Top - AWndRect.Top;
+    ARect.Right := AClientRect.Right - AWndRect.Left;
+    ARect.Bottom := AClientRect.Bottom - AWndRect.Top;
 
-  ARect.Left := AClientRect.Left - AWndRect.Left;
-  ARect.Top := AClientRect.Top - AWndRect.Top;
-  ARect.Right := AClientRect.Right - AWndRect.Left;
-  ARect.Bottom := AClientRect.Bottom - AWndRect.Top;
-
-  Result := True;
+    Result := True;
+  end else
+    Result := inherited GetClientRect(ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -1296,7 +1360,11 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.IsVisible: Boolean;
 begin
-  Result := MacOSAll.IsWindowVisible(WindowRef(Widget));
+  if Assigned(fWindowRef) then
+    Result := MacOSAll.IsWindowVisible(fWindowRef)
+  else
+    Result := inherited IsVisible;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1308,24 +1376,28 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.Enable(AEnable: Boolean): boolean;
 begin
-  Result := not MacOSAll.IsControlEnabled(Content);
+  if Assigned(fWindowRef) then begin
+    Result := not MacOSAll.IsControlEnabled(Content);
 
-  // enable/disable window content
-  // add/remove standard handler
-  if AEnable then
-  begin
-    OSError(MacOSAll.EnableControl(Content), Self, SEnable, SEnableControl);
-    OSError(
-      ChangeWindowAttributes(WindowRef(Widget), kWindowStandardHandlerAttribute,
-        kWindowNoAttributes), Self, SEnable, SChangeWindowAttrs);
-  end
-  else
-  begin
-    OSError(MacOSAll.DisableControl(Content), Self, SEnable, SDisableControl);
-    OSError(
-      ChangeWindowAttributes(WindowRef(Widget), kWindowNoAttributes,
-        kWindowStandardHandlerAttribute), Self, SEnable, SChangeWindowAttrs);
-  end;
+    // enable/disable window content
+    // add/remove standard handler
+
+    if AEnable then
+    begin
+      OSError(MacOSAll.EnableControl(Content), Self, SEnable, SEnableControl);
+      OSError(
+        ChangeWindowAttributes(fWindowRef,kWindowStandardHandlerAttribute,
+          kWindowNoAttributes), Self, SEnable, SChangeWindowAttrs);
+    end
+    else
+    begin
+      OSError(MacOSAll.DisableControl(Content), Self, SEnable, SDisableControl);
+      OSError(
+        ChangeWindowAttributes(fWindowRef, kWindowNoAttributes,
+          kWindowStandardHandlerAttribute), Self, SEnable, SChangeWindowAttrs);
+    end;
+  end else
+    Result := inherited Enable(AEnable)
 end;
 
 {------------------------------------------------------------------------------
@@ -1343,21 +1415,24 @@ var
 const
   SName = 'GetBounds';
 begin
-  Result := False;
+  if Assigned(fWindowRef) then begin
+    Result := False;
 
-  if OSError(
-    MacOSAll.GetWindowBounds(WindowRef(Widget), kWindowStructureRgn, AWndRect),
-    Self, SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
-  if OSError(
-    MacOSAll.GetWindowBounds(WindowRef(Widget), kWindowContentRgn, AClientRect),
-    Self, SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
+    if OSError(
+      MacOSAll.GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect),
+      Self, SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
+    if OSError(
+      MacOSAll.GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect),
+      Self, SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
 
-  ARect.Left := AWndRect.Left;
-  ARect.Top := AWndRect.Top;
-  ARect.Right := ARect.Left + (AClientRect.Right - AClientRect.Left);
-  ARect.Bottom := ARect.Top + (AClientRect.Bottom - AClientRect.Top);
+    ARect.Left := AWndRect.Left;
+    ARect.Top := AWndRect.Top;
+    ARect.Right := ARect.Left + (AClientRect.Right - AClientRect.Left);
+    ARect.Bottom := ARect.Top + (AClientRect.Bottom - AClientRect.Top);
 
-  Result := True;
+    Result := True;
+  end else
+    Result := inherited GetBounds(ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -1374,34 +1449,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWindow.GetScrollInfo
-  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
-           ScrollInfo - Record fo scrolling info
-  Returns: If the function suceeds
-
-  Gets the scrolling info of the specified scroll bar
- ------------------------------------------------------------------------------}
-procedure TCarbonWindow.GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);
-begin
-  DebugLn('TCarbonWindow.GetScrollInfo TODO');
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWindow.SetScrollInfo
-  Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
-           ScrollInfo - Scrolling info
-  Returns: The old scroll bar position
-
-  Sets the scrolling info of the specified scroll bar
- ------------------------------------------------------------------------------}
-function TCarbonWindow.SetScrollInfo(SBStyle: Integer;
-  const ScrollInfo: TScrollInfo): Integer;
-begin
-  Result := 0;
-  DebugLn('TCarbonWindow.SetScrollInfo TODO');
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWindow.SetBounds
   Params:  ARect - Record for window coordinates
   Returns: If function succeeds
@@ -1412,23 +1459,24 @@ function TCarbonWindow.SetBounds(const ARect: TRect): Boolean;
 const
   SName = 'SetBounds';
 begin
-  Result := False;
-  
-  BeginUpdate(WindowRef(Widget));
-  Resizing := True;
-  try
-    // set window width, height
-    if OSError(MacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
-      GetCarbonRect(ARect)), Self, SName, 'SetWindowBounds') then Exit;
-    // set window left, top
-    if OSError(MoveWindowStructure(WindowRef(Widget), ARect.Left, ARect.Top),
-      Self, SName, 'MoveWindowStructure') then Exit;
-  finally
-    Resizing := False;
-    EndUpdate(WindowRef(Widget));
-  end;
-  
-  Result := True;
+  if Assigned(fWindowRef) then begin //
+    Result := False;
+    BeginUpdate(fWindowRef);
+    Resizing := True;
+    try
+      // set window width, height
+      if OSError(MacOSAll.SetWindowBounds(fWindowRef, kWindowContentRgn,
+        GetCarbonRect(ARect)), Self, SName, 'SetWindowBounds') then Exit;
+      // set window left, top
+      if OSError(MoveWindowStructure(fWindowRef, ARect.Left, ARect.Top),
+        Self, SName, 'MoveWindowStructure') then Exit;
+    finally
+      Resizing := False;
+      EndUpdate(fWindowRef);
+    end;
+    Result := True;
+  end else
+    Result := inherited SetBounds(ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -1438,8 +1486,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetFocus;
 begin
-  OSError(
-    SetUserFocusWindow(WindowRef(Widget)), Self, SSetFocus, SSetUserFocusWindow);
+  if Assigned(fWindowRef) then
+    OSError(
+      SetUserFocusWindow(fWindowRef), Self, SSetFocus, SSetUserFocusWindow)
+  else
+    inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -1450,8 +1501,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetColor(const AColor: TColor);
 begin
-  OSError(SetWindowContentColor(WindowRef(Widget), ColorToRGBColor(AColor)),
-    Self, SSetColor, 'SetWindowContentColor');
+  if Assigned(fWindowRef) then
+    OSError(SetWindowContentColor(fWindowRef, ColorToRGBColor(AColor)),
+      Self, SSetColor, 'SetWindowContentColor')
+  else
+    inherited SetColor(AColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -1462,7 +1516,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetFont(const AFont: TFont);
 begin
-  // not supported
+  if Assigned(fWindowRef) then // not supported
+  else
+    inherited SetFont(AFont);
 end;
 
 {------------------------------------------------------------------------------
@@ -1475,7 +1531,9 @@ end;
 procedure TCarbonWindow.SetZOrder(AOrder: HIViewZOrderOp;
   ARefWidget: TCarbonWidget);
 begin
-  // not supported
+  if Assigned(fWindowRef) then // not supported
+  else
+    inherited SetZOrder(AOrder, ARefWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1487,13 +1545,15 @@ end;
 procedure TCarbonWindow.ShowHide(AVisible: Boolean);
 begin
   //DebugLn('TCarbonWindow.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
-
-  if AVisible or (csDesigning in LCLobject.ComponentState) then
-  begin
-    MacOSAll.ShowWindow(WindowRef(Widget));
-  end
-  else
-    MacOSAll.HideWindow(WindowRef(Widget));
+  if Assigned(fWindowRef) then begin
+    if AVisible or (csDesigning in LCLobject.ComponentState) then
+    begin
+      MacOSAll.ShowWindow(fWindowRef);
+    end
+    else
+      MacOSAll.HideWindow(fWindowRef);
+  end else
+    inherited ShowHide(AVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -1519,15 +1579,20 @@ function TCarbonWindow.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
 begin
-  Result := False;
-  CreateCFString(S, CFString);
-  try
-    if OSError(SetWindowTitleWithCFString(WindowRef(Widget), CFString), Self,
-      SSetText, 'SetWindowTitleWithCFString') then Exit;
-    Result := True;
-  finally
-    FreeCFString(CFString);
-  end;
+  //todo: S must be stored, to restore the text when switched between Window and Control mode
+
+  if Assigned(fWindowRef) then begin
+    Result := False;
+    CreateCFString(S, CFString);
+    try
+      if OSError(SetWindowTitleWithCFString(fWindowRef, CFString), Self,
+        SSetText, 'SetWindowTitleWithCFString') then Exit;
+      Result := True;
+    finally
+      FreeCFString(CFString);
+    end;
+  end else
+    Result := inherited SetText(S);
 end;
 
 {------------------------------------------------------------------------------
@@ -1539,7 +1604,7 @@ end;
 function TCarbonWindow.Update: Boolean;
 begin
   Result := False;
-  if OSError(HIViewRender(Content), Self, 'Update', SViewRender) then Exit;
+  if OSError(HIViewRender(Widget), Self, 'Update', SViewRender) then Exit;
   Result := True;
 end;
 
@@ -1562,8 +1627,9 @@ end;
 function TCarbonWindow.Activate: Boolean;
 begin
   Result := False;
+  if not Assigned(fWindowRef) then Exit;
   
-  if OSError(ActivateWindow(WindowRef(Widget), True), Self, 'Activate',
+  if OSError(ActivateWindow(fWindowRef, True), Self, 'Activate',
     'ActivateWindow') then Exit;
 
   Result := True;
@@ -1576,10 +1642,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.CloseModal;
 begin
+  if not Assigned(fWindowRef) then Exit; // not possible to show modal if not Window mode
+
   CarbonWidgetSet.SetMainMenuEnabled(True);
 
   OSError(
-    SetWindowModality(WindowRef(Widget), kWindowModalityNone, nil),
+    SetWindowModality(fWindowRef, kWindowModalityNone, nil),
     Self, 'CloseModal', SSetModality);
 end;
 
@@ -1590,11 +1658,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.ShowModal;
 begin
+  if not Assigned(fWindowRef) then Exit; // not possible to show modal if not Window mode
+
   OSError(
-    SetWindowModality(WindowRef(Widget), kWindowModalityAppModal, nil),
+    SetWindowModality(fWindowRef, kWindowModalityAppModal, nil),
     Self, 'ShowModal', SSetModality);
 
-  SelectWindow(WindowRef(Widget));
+  SelectWindow(fWindowRef);
   if CarbonWidgetSet.MainMenu <> (LCLObject as TCustomForm).Menu then
     CarbonWidgetSet.SetMainMenuEnabled(False);
 end;
@@ -1608,7 +1678,9 @@ end;
 function TCarbonWindow.SetForeground: Boolean;
 begin
   Result := False;
-  SelectWindow(WindowRef(Widget)); // activate and move window to front
+  if not Assigned(fWindowRef) then Exit;
+
+  SelectWindow(fWindowRef); // activate and move window to front
   Result := True;
 end;
 
@@ -1629,23 +1701,24 @@ const
   SZoomIdeal = 'ZoomWindowIdeal';
 begin
   Result := False;
-  
+  if not Assigned(fWindowRef) then
+    Exit;
   //DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
 
   case AShow of
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
   begin
-    if IsWindowCollapsed(WindowRef(Widget)) then
-      if OSError(CollapseWindow(WindowRef(Widget), False),
+    if IsWindowCollapsed(fWindowRef) then
+      if OSError(CollapseWindow(fWindowRef, False),
         Self, SName, SCollapse) then Exit;
 
     // for checking if any change is necessary
-    Maximized := IsWindowInStandardState(WindowRef(Widget), nil, nil);
+    Maximized := IsWindowInStandardState(fWindowRef, nil, nil);
 
     if AShow = SW_SHOWNORMAL then
     begin
       if Maximized then
-        if OSError(ZoomWindowIdeal(WindowRef(Widget), inZoomIn, P),
+        if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P),
           Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
     end
     else
@@ -1653,7 +1726,7 @@ begin
       begin
         P.v := $3FFF;
         P.h := $3FFF;
-        if OSError(ZoomWindowIdeal(WindowRef(Widget), inZoomOut, P),
+        if OSError(ZoomWindowIdeal(fWindowRef, inZoomOut, P),
          Self, SName, SZoomIdeal, 'inZoomOut') then Exit;
       end;
 
@@ -1661,7 +1734,7 @@ begin
   end;
   SW_MINIMIZE:
     begin
-      if OSError(CollapseWindow(WindowRef(Widget), True),
+      if OSError(CollapseWindow(fWindowRef, True),
         Self, SName, SCollapse) then Exit;
     end;
   end;
@@ -1679,8 +1752,10 @@ procedure TCarbonWindow.SetBorderIcons(ABorderIcons: TBorderIcons);
 var
   AttrsSet, AttrsRemove: WindowAttributes;
 begin
+  if not Assigned(fWindowRef) then Exit;
+
   if csDesigning in LCLObject.ComponentState then Exit;
-  BeginUpdate(WindowRef(Widget));
+  BeginUpdate(fWindowRef);
   try
     AttrsSet := GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
       ABorderIcons);
@@ -1689,10 +1764,10 @@ begin
       kWindowResizableAttribute) and (not AttrsSet);
 
     if OSError(
-      ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
+      ChangeWindowAttributes(fWindowRef, AttrsSet, AttrsRemove), Self,
         'SetBorderIcons', SChangeWindowAttrs) then Exit;
   finally
-    EndUpdate(WindowRef(Widget));
+    EndUpdate(fWindowRef);
   end;
 end;
 
@@ -1706,8 +1781,9 @@ procedure TCarbonWindow.SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle);
 var
   AttrsSet, AttrsRemove: WindowAttributes;
 begin
-  if csDesigning in LCLObject.ComponentState then Exit;
-  BeginUpdate(WindowRef(Widget));
+
+  if (csDesigning in LCLObject.ComponentState) or not Assigned(fWindowRef) then Exit;
+  BeginUpdate(fWindowRef);
   try
     AttrsSet := GetBorderWindowAttrs(AFormBorderStyle,
       (LCLObject as TCustomForm).BorderIcons);
@@ -1716,9 +1792,9 @@ begin
       kWindowResizableAttribute) and (not AttrsSet);
 
     if OSError(
-      ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
+      ChangeWindowAttributes(fWindowRef, AttrsSet, AttrsRemove), Self,
         'SetFormBorderStyle', SChangeWindowAttrs) then Exit;
   finally
-    EndUpdate(WindowRef(Widget));
+    EndUpdate(fWindowRef);
   end;
 end;

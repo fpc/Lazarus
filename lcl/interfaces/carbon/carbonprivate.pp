@@ -114,82 +114,6 @@ type
     property Frames[Index: Integer]: ControlRef read GetFrame;
   end;
   
-  { TCarbonWindow }
-
-  TCarbonWindow = class(TCarbonWidget)
-  protected
-    procedure RegisterEvents; override;
-    procedure CreateWidget(const AParams: TCreateParams); override;
-    procedure DestroyWidget; override;
-    function GetContent: ControlRef; override;
-  public
-    procedure AddToWidget(AParent: TCarbonWidget); override;
-    function GetMousePos: TPoint; override;
-    function GetTopParentWindow: WindowRef; override;
-    function GetClientRect(var ARect: TRect): Boolean; override;
-    procedure Invalidate(Rect: PRect = nil); override;
-    function IsEnabled: Boolean; override;
-    function IsVisible: Boolean; override;
-    function Enable(AEnable: Boolean): boolean; override;
-    
-    function GetBounds(var ARect: TRect): Boolean; override;
-    function GetScreenBounds(var ARect: TRect): Boolean; override;
-    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
-    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
-    function SetBounds(const ARect: TRect): Boolean; override;
-
-    procedure SetFocus; override;
-    procedure SetColor(const AColor: TColor); override;
-    procedure SetFont(const AFont: TFont); override;
-    procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
-    procedure ShowHide(AVisible: Boolean); override;
-    
-    function GetText(var S: String): Boolean; override;
-    function SetText(const S: String): Boolean; override;
-    
-    function Update: Boolean; override;
-    function WidgetAtPos(const P: TPoint): ControlRef; override;
-  public
-    function Activate: Boolean; virtual;
-
-    procedure CloseModal; virtual;
-    procedure ShowModal; virtual;
-    
-    function SetForeground: Boolean; virtual;
-    function Show(AShow: Integer): Boolean; virtual;
-
-    procedure SetBorderIcons(ABorderIcons: TBorderIcons); virtual;
-    procedure SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle); virtual;
-  end;
-  
-  { TCarbonHintWindow }
-
-  TCarbonHintWindow = class(TCarbonWindow)
-  protected
-    procedure CreateWidget(const AParams: TCreateParams); override;
-  end;
-  
-  { TCarbonDesignWindow }
-
-  TCarbonDesignWindow = class(TCarbonWindow)
-  private
-    FDesignControl: HIViewRef;
-    FDesignContext: TCarbonContext;
-    procedure BringDesignerToFront;
-  protected
-    procedure RegisterEvents; override;
-    procedure CreateWidget(const AParams: TCreateParams); override;
-    procedure DestroyWidget; override;
-  public
-    procedure ControlAdded; override;
-    procedure BoundsChanged; override;
-
-    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
-    
-    function GetDesignContext: TCarbonContext;
-    procedure ReleaseDesignContext;
-  end;
-
   { TCarbonCustomControl }
 
   TCarbonCustomControl = class(TCarbonControl)
@@ -217,6 +141,7 @@ type
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
+    function GetScrollbarVisible(SBStyle: Integer): Boolean; override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
 
     property TextFractional: Boolean read FTextFractional write FTextFractional;
@@ -228,6 +153,91 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     function GetForceEmbedInScrollView: Boolean; override;
+  end;
+
+  { TCarbonWindow }
+
+  TCarbonWindow = class(TCarbonScrollingWinControl)
+  protected
+    fWindowRef  : WindowRef;
+    fHiddenWin  : WindowRef;
+    fWinContent : HIViewRef; // actuall content view
+
+    procedure BoundsChanged; override;
+
+    procedure RegisterWindowEvents; virtual;
+    procedure CreateWindow(const AParams: TCreateParams); virtual;
+
+    procedure RegisterEvents; override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+
+    procedure DestroyWidget; override;
+  public
+    procedure AddToWidget(AParent: TCarbonWidget); override;
+    function GetMousePos: TPoint; override;
+    function GetTopParentWindow: WindowRef; override;
+    function GetClientRect(var ARect: TRect): Boolean; override;
+    procedure Invalidate(Rect: PRect = nil); override;
+    function IsEnabled: Boolean; override;
+    function IsVisible: Boolean; override;
+    function Enable(AEnable: Boolean): boolean; override;
+
+    function GetBounds(var ARect: TRect): Boolean; override;
+    function GetScreenBounds(var ARect: TRect): Boolean; override;
+    function SetBounds(const ARect: TRect): Boolean; override;
+
+    procedure SetFocus; override;
+    procedure SetColor(const AColor: TColor); override;
+    procedure SetFont(const AFont: TFont); override;
+    procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
+    procedure ShowHide(AVisible: Boolean); override;
+
+    function GetText(var S: String): Boolean; override;
+    function SetText(const S: String): Boolean; override;
+
+    function Update: Boolean; override;
+    function WidgetAtPos(const P: TPoint): ControlRef; override;
+  public
+    function Activate: Boolean; virtual;
+
+    procedure CloseModal; virtual;
+    procedure ShowModal; virtual;
+
+    function SetForeground: Boolean; virtual;
+    function Show(AShow: Integer): Boolean; virtual;
+
+    procedure SetBorderIcons(ABorderIcons: TBorderIcons); virtual;
+    procedure SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle); virtual;
+  public
+    property Window: WindowRef read FWindowRef;
+  end;
+
+  { TCarbonHintWindow }
+
+  TCarbonHintWindow = class(TCarbonWindow)
+  protected
+    procedure CreateWindow(const AParams: TCreateParams); override;
+  end;
+
+  { TCarbonDesignWindow }
+
+  TCarbonDesignWindow = class(TCarbonWindow)
+  private
+    FDesignControl: HIViewRef;
+    FDesignContext: TCarbonContext;
+    procedure BringDesignerToFront;
+  protected
+    procedure RegisterEvents; override;
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
+  public
+    procedure ControlAdded; override;
+    procedure BoundsChanged; override;
+
+    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
+
+    function GetDesignContext: TCarbonContext;
+    procedure ReleaseDesignContext;
   end;
   
   { TCarbonGroupBox }
@@ -352,30 +362,34 @@ var LastMousePos: TPoint;
 { TCarbonHintWindow }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonHintWindow.CreateWidget
+  Method:  TCarbonHintWindow.CreateWindow
   Params:  AParams - Creation parameters
 
   Creates Carbon hint window
  ------------------------------------------------------------------------------}
-procedure TCarbonHintWindow.CreateWidget(const AParams: TCreateParams);
+procedure TCarbonHintWindow.CreateWindow(const AParams: TCreateParams);
 var
-  Window: WindowRef;
+  AWindow: WindowRef;
 begin
   if OSError(
     CreateNewWindow(kHelpWindowClass,
       kWindowCompositingAttribute or
       kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
-      ParamsToCarbonRect(AParams), Window),
+      ParamsToCarbonRect(AParams), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
-      
 
-  Widget := Window;
+  fWindowRef := AWindow;
+
+  // creating wrapped views
+  if OSError(
+    HIViewFindByID(HIViewGetRoot(fWindowRef), kHIViewWindowContentID, fWinContent),
+    Self, SCreateWidget, 'HIViewGetRoot') then RaiseCreateWidgetError(LCLObject);
 
   OSError(
-    SetWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetWindowProperty(AWindow, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, 'SetWindowProperty');
   OSError(
-    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    SetControlProperty(fWinContent, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
   
   SetColor(LCLObject.Color);
@@ -493,7 +507,7 @@ begin
     SetControlProperty(FDesignControl, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
     
-  OSError(HIViewAddSubview(Content, FDesignControl), Self, SCreateWidget, SViewAddView);
+  OSError(HIViewAddSubview(fWinContent, FDesignControl), Self, SCreateWidget, SViewAddView);
   BringDesignerToFront;
 end;
 
@@ -773,7 +787,7 @@ begin
   AOrigin := GetHIPoint(Round(FScrollOrigin.X * FMulX), Round(FScrollOrigin.Y * FMulY));
   AImageSize := GetHISize(Round(FScrollSize.X * FMulX), Round(FScrollSize.Y * FMulY));
   AViewSize := GetHISize(C.Right - C.Left, C.Bottom - C.Top);
-  
+
   if FMulX > 1 then
     ALineSize.width := FMulX
   else
@@ -994,6 +1008,18 @@ begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetScrollInfo Result: ' + DbgS(ScrollInfo));
   {$ENDIF}
+end;
+
+function TCarbonCustomControl.GetScrollbarVisible(SBStyle: Integer): Boolean;
+begin
+  case SBStyle of
+    SB_VERT:
+      Result := FScrollPageSize.Y < (FScrollSize.Y - FScrollMin.Y);
+    SB_HORZ:
+      Result := FScrollPageSize.X < (FScrollSize.X - FScrollMin.X);
+  else
+    Result := False;
+  end;
 end;
 
 { TCarbonScrollingWinControl }

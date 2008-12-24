@@ -662,7 +662,6 @@ type
     function GetSubItemImages(const AIndex: Integer): Integer;
     function GetSubItems: TStrings;
     function GetTop: Integer;
-
     function WSUpdateAllowed: Boolean;
     procedure WSUpdateText;
     procedure WSUpdateImages;
@@ -681,6 +680,7 @@ type
     procedure SetTop(Value: Integer);
   protected
     function IsEqual(const AItem: TListItem): Boolean;
+    function GetCheckedInternal: Boolean;
   public
     procedure Assign(ASource: TPersistent); override;
 

@@ -31,7 +31,7 @@ unit Gtk2CellRenderer;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, LMessages,
+  Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
   Gtk2Int, gtk2, gdk2, glib2, GtkProc, GtkDef;
   
 type
@@ -40,6 +40,7 @@ type
     // ! the TextRenderer must be the first attribute of this record !
     TextRenderer: TGtkCellRendererText;
     Index: integer;
+    ColumnIndex: Integer; // for TListView
   end;
 
   PLCLIntfCellRendererClass = ^TLCLIntfCellRendererClass;
@@ -71,6 +72,9 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
 
 implementation
 uses GtkExtra;
+
+type
+  TCustomListViewAccess = class(TCustomListView);
 
 function GetControl(cell: PGtkCellRenderer; Widget: PGtkWidget): TWinControl;
 var
@@ -133,6 +137,15 @@ begin
   height^ := MeasureItemStruct.itemHeight;
 end;
 
+function GtkCellRendererStateToListViewDrawState(CellState: TGtkCellRendererState): TCustomDrawState;
+begin
+  Result := [];
+  if CellState and GTK_CELL_RENDERER_SELECTED > 0 then Result := Result + [cdsSelected];
+  if CellState and GTK_CELL_RENDERER_PRELIT > 0 then Result := Result + [cdsHot];
+  if CellState and GTK_CELL_RENDERER_INSENSITIVE > 0 then Result := Result + [cdsDisabled, cdsGrayed];
+  if CellState and GTK_CELL_RENDERER_FOCUSED > 0 then Result := Result + [cdsFocused];
+end;
+
 procedure LCLIntfCellRenderer_Render(cell: PGtkCellRenderer; Window: PGdkWindow;
   Widget: PGtkWidget; background_area: PGdkRectangle; cell_area: PGdkRectangle;
   expose_area: PGdkRectangle; flags: TGtkCellRendererState); cdecl;
@@ -140,10 +153,18 @@ var
   CellClass: PLCLIntfCellRendererClass;
   AWinControl: TWinControl;
   ItemIndex: Integer;
+  ColumnIndex: Integer;
   AreaRect: TRect;
   State: TBaseOwnerDrawState;
   Msg: TLMDrawListItem;
   DCWidget: PGtkWidget;
+  LVTarget: TCustomDrawTarget;
+  LVStage: TCustomDrawStage;
+  LVState: TCustomDrawState;
+  LVSubItem: Integer;
+  TmpDC1,
+  TmpDC2: HDC;
+  SkipDefaultPaint: Boolean;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
@@ -151,52 +172,100 @@ begin
     ' cell_area=',dbgGRect(cell_area),
     ' expose_area=',dbgGRect(expose_area)]);}
 
+  ColumnIndex := PLCLIntfCellRenderer(cell)^.ColumnIndex;
+
+  if ColumnIndex > -1 then // listview
+  begin
+    AWinControl := GetControl(cell, widget);
+    AreaRect := Bounds(background_area^.x, background_area^.y,
+                     background_area^.Width, background_area^.Height);
+
+    ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
+
+    if ItemIndex < 0 then
+      ItemIndex := 0;
+
+    if ColumnIndex > 0 then
+      LVTarget := dtSubItem
+    else
+      LVTarget := dtItem;
+    LVSubItem := ColumnIndex-1;
+    LVStage := cdPrePaint;
+    LVState := GtkCellRendererStateToListViewDrawState(flags);
+    DCWidget:=Widget;
+    TmpDC1:=GTK2WidgetSet.CreateDCForWidget(DCWidget,Window,false);
+    TmpDC2 := TCustomListViewAccess(AWinControl).Canvas.Handle;
+    TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC1;
+    // paint
+    SkipDefaultPaint := cdrSkipDefault in TCustomListViewAccess(AWinControl).IntfCustomDraw(LVTarget, LVStage, ItemIndex, LVSubItem, LVState, @AreaRect);
+
+    if SkipDefaultPaint then
+    begin
+      GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),TmpDC1);
+      TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
+      Exit;
+    end;
+  end;
+
   // draw default
   CellClass := PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
                               expose_area, flags);
   
-  // send LM_DrawListItem message
-  AWinControl := GetControl(cell, widget);
-  if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
+  if ColumnIndex < 0 then  // is a listbox or combobox
+  begin
+    // send LM_DrawListItem message
+    AWinControl := GetControl(cell, widget);
+    if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
   
-  // check if the LCL object wants item paint messages
-  if AWinControl is TCustomListbox then
-    if TCustomListbox(AWinControl).Style = lbStandard then
-      exit;
-  if AWinControl is TCustomCombobox then
-    if TCustomCombobox(AWinControl).Style < csOwnerDrawFixed then
-      exit;
+    // check if the LCL object wants item paint messages
+    if AWinControl is TCustomListbox then
+      if TCustomListbox(AWinControl).Style = lbStandard then
+        exit;
+    if AWinControl is TCustomCombobox then
+      if TCustomCombobox(AWinControl).Style < csOwnerDrawFixed then
+        exit;
 
-  // get itemindex and area
+    // get itemindex and area
   
-  AreaRect := Bounds(background_area^.x, background_area^.y,
+    AreaRect := Bounds(background_area^.x, background_area^.y,
                      background_area^.Width, background_area^.Height);
 
-  ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
+    ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
 
-  if ItemIndex < 0 then
-    ItemIndex := 0;
+    if ItemIndex < 0 then
+      ItemIndex := 0;
 
   // collect state flags
-  State:=[odPainted];
-  if (flags and GTK_CELL_RENDERER_SELECTED)>0 then
-    Include(State, odSelected);
-  if not GTK_WIDGET_SENSITIVE(Widget) then
-    Include(State, odInactive);
-  if GTK_WIDGET_HAS_DEFAULT(Widget) then
-    Include(State, odDefault);
-  if (flags and GTK_CELL_RENDERER_FOCUSED) <> 0 then
-    Include(State, odFocused);
+    State:=[odPainted];
+    if (flags and GTK_CELL_RENDERER_SELECTED)>0 then
+      Include(State, odSelected);
+    if not GTK_WIDGET_SENSITIVE(Widget) then
+      Include(State, odInactive);
+    if GTK_WIDGET_HAS_DEFAULT(Widget) then
+      Include(State, odDefault);
+    if (flags and GTK_CELL_RENDERER_FOCUSED) <> 0 then
+      Include(State, odFocused);
     
-  if AWinControl is TCustomCombobox then begin
-    if TCustomComboBox(AWinControl).DroppedDown
-    and ((flags and GTK_CELL_RENDERER_PRELIT)>0) then
-    Include(State,odSelected);
+    if AWinControl is TCustomCombobox then begin
+      if TCustomComboBox(AWinControl).DroppedDown
+      and ((flags and GTK_CELL_RENDERER_PRELIT)>0) then
+      Include(State,odSelected);
+    end;
+  end
+  else // is a listview
+  begin
+    LVStage := cdPostPaint;
+    // paint
+    TCustomListViewAccess(AWinControl).IntfCustomDraw(LVTarget, LVStage, ItemIndex, LVSubItem, LVState, @AreaRect);
+
+    TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
+    GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),TmpDC1);
+    Exit;
   end;
 
-  // create message and deliver
-  FillChar(Msg,SizeOf(Msg),0);
+  // ListBox and ComboBox
+  // create message and deliverFillChar(Msg,SizeOf(Msg),0);
   Msg.Msg:=LM_DrawListItem;
   New(Msg.DrawListItemStruct);
   try
@@ -282,15 +351,46 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
   data: gpointer); cdecl;
 var
   LCLCellRenderer: PLCLIntfCellRenderer absolute cell;
+  WidgetInfo: PWidgetInfo;
   APath: PGtkTreePath;
-  Str: Pgchar;
+  Str: String;
+  ListColumn: TListColumn;
+  ListItem: TListItem;
+  Value: TGValue;
 begin
+  if G_IS_OBJECT(cell) = false then
+    exit;
   //DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell)]);
   APath := gtk_tree_model_get_path(tree_model,iter);
-  Str:=gtk_tree_path_to_string(APath);
-  LCLCellRenderer^.Index := StrToInt(Str);
-  g_free(Str);
+  LCLCellRenderer^.Index := gtk_tree_path_get_indices(APath)^;
+  LCLCellRenderer^.ColumnIndex := -1;
   gtk_tree_path_free(APath);
+
+  Value.g_type := G_TYPE_STRING;
+
+
+  WidgetInfo := PWidgetInfo(data);
+  if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
+  begin
+    gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+    if ListItem = nil then
+      exit;
+    ListColumn := TListColumn(g_object_get_data(G_OBJECT(cell_layout), 'TListColumn'));
+    if ListColumn = nil then
+      LCLCellRenderer^.ColumnIndex := -1
+    else
+      LCLCellRenderer^.ColumnIndex := ListColumn.Index;
+
+    if LCLCellRenderer^.ColumnIndex <= 0 then
+      Str := ListItem.Caption
+    else
+      if ListColumn.Index-1 <= ListItem.SubItems.Count-1 then
+        Str := ListItem.SubItems.Strings[LCLCellRenderer^.ColumnIndex-1];
+
+    Value.data[0].v_pointer := PChar(Str);
+    g_object_set_property(PGObject(cell), 'text', @Value);
+  end;
+
   //DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
 end;
 

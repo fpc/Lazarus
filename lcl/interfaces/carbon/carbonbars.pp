@@ -97,6 +97,7 @@ type
     procedure DoAction(AControlPart: ControlPartCode); override;
     procedure SetParams; virtual;
     procedure BoundsChanged; override;
+    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
   end;
 
 implementation
@@ -434,6 +435,28 @@ procedure TCarbonScrollBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   SetControlViewStyle(Widget, StdScrollBarTinySize, StdScrollBarSmallSize, StdScrollBarNormalSize, LCLObject.Height > LCLObject.Width);
+end;
+
+function TCarbonScrollBar.SetScrollInfo(SBStyle: Integer;
+  const ScrollInfo: TScrollInfo): Integer;
+begin
+  if (SIF_RANGE and ScrollInfo.fMask) > 0 then
+  begin
+    SetMinimum(ScrollInfo.nMin);
+    SetMaximum(ScrollInfo.nMax);
+  end;
+
+  if (SIF_POS and ScrollInfo.fMask) > 0 then
+  begin
+    SetValue(ScrollInfo.nPos);
+  end;
+
+  if (SIF_PAGE and ScrollInfo.fMask) > 0 then
+  begin
+    SetViewSize(ScrollInfo.nPage);
+  end;
+
+  Result := GetValue;
 end;
 
 end.

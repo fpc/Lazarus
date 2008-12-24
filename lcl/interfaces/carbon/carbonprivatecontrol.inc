@@ -941,10 +941,16 @@ end;
 function TCarbonControl.Update: Boolean;
 var
   I: Integer;
+const
+  SName = 'Update';
 begin
   Result := True;
+  if Widget <> HIViewRef(Frames[0]) then
+    if OSError(HIViewRender(Widget), Self, SName, SViewRender) then Result := False;
+  if Widget <> Content then
+    if OSError(HIViewRender(Content), Self, SName, SViewRender) then Result := False;
   for I := 0 to GetFrameCount - 1 do
-    if OSError(HIViewRender(HIViewRef(Frames[I])), Self, 'Update', 'HIViewRender') then
+    if OSError(HIViewRender(HIViewRef(Frames[I])), Self, SName, SViewRender) then
       Result := False;
 end;
 
@@ -972,7 +978,7 @@ begin
   Window := LCLObject.GetTopParent;
 
   if Window is TCustomForm then
-    Result := TCarbonWindow((Window as TWinControl).Handle).Widget
+    Result := TCarbonWindow((Window as TWinControl).Handle).GetTopParentWindow
   else Result := nil;
 end;
 

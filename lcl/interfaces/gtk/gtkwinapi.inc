@@ -5210,6 +5210,7 @@ var
   TopList, List: PGList;
   Widget: PGTKWidget;
   Window: PGTKWindow;
+  Info: PWidgetInfo;
 begin
   // Default to 0
   Result := 0;
@@ -5231,14 +5232,16 @@ begin
         Widget := Window^.focus_widget;
         {$IFDEF DebugLCLComponents}
         if DebugGtkWidgets.IsDestroyed(Widget) then begin
-          DebugLn(['TGtkWidgetSet.GetFocus Window^.focus_widget was laready destroyed:']);
+          DebugLn(['TGtkWidgetSet.GetFocus Window^.focus_widget was already destroyed:']);
           DebugLn(DebugGtkWidgets.GetInfo(Widget,true));
         end;
         {$ENDIF}
         
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
-          Result := HWND(PtrUInt(GetMainWidget(Widget)));
+          Info:=GetWidgetInfo(PGtkWidget(Window),false);
+          if (Info=nil) or (not (wwiDeactivating in Info^.Flags)) then
+            Result := HWND(PtrUInt(GetMainWidget(Widget)));
           Break;
         end;
       end;

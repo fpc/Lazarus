@@ -312,6 +312,17 @@ begin
   VK_SHIFT     : Result := MK_SHIFTKEY;
   VK_CONTROL   : Result := MK_COMMAND;
   VK_MENU      : Result := MK_ALT;
+  VK_OEM_3     : Result := MK_TILDE;
+  VK_OEM_MINUS : Result := MK_MINUS;
+  VK_OEM_PLUS  : Result := MK_EQUAL;
+  VK_OEM_5     : Result := MK_BACKSLASH;
+  VK_OEM_4     : Result := MK_LEFTBRACKET;
+  VK_OEM_6     : Result := MK_RIGHTBRACKET;
+  VK_OEM_1     : Result := MK_SEMICOLON;
+  VK_OEM_7     : Result := MK_QUOTE;
+  VK_OEM_COMMA : Result := MK_COMMA;
+  VK_OEM_PERIOD: Result := MK_PERIOD;
+  VK_OEM_2     : Result := MK_SLASH;
   else
     Result := 0;
   end;
@@ -1287,6 +1298,6 @@ finalization
   CGColorSpaceRelease(RGBColorSpace);
   CGColorSpaceRelease(GrayColorSpace);
 
-
-
 end.
+
+
