@@ -45,16 +45,16 @@ type
   TSettingsOutput = class(TObject)
   private
   public
-    procedure WriteXMLHeader; virtual;
+    procedure WriteXMLHeader; virtual; abstract;
 
-    procedure OpenSection(const psName: string); virtual;
-    procedure CloseSection(const psName: string); virtual;
+    procedure OpenSection(const psName: string); virtual; abstract;
+    procedure CloseSection(const psName: string); virtual; abstract;
 
-    procedure Write(const psTagName, psValue: string); overload; virtual;
-    procedure Write(const psTagName: string; const piValue: integer); overload; virtual;
-    procedure Write(const psTagName: string; const pbValue: boolean); overload; virtual;
-    procedure Write(const psTagName: string; const pdValue: double); overload; virtual;
-    procedure Write(const psTagName: string; const pcValue: TStrings); overload; virtual;
+    procedure Write(const psTagName, psValue: string); overload; virtual; abstract;
+    procedure Write(const psTagName: string; const piValue: integer); overload; virtual; abstract;
+    procedure Write(const psTagName: string; const pbValue: boolean); overload; virtual; abstract;
+    procedure Write(const psTagName: string; const pdValue: double); overload; virtual; abstract;
+    procedure Write(const psTagName: string; const pcValue: TStrings); overload; virtual; abstract;
   end;
 
 
@@ -89,20 +89,16 @@ type
   { settings reading interface }
   TSettingsInput = class(TObject)
   public
-    function ExtractSection(const psSection: string): TSettingsInput; virtual;
+    function ExtractSection(const psSection: string): TSettingsInput; virtual; abstract;
 
-    function HasTag(const psTag: string): boolean; virtual;
+    function HasTag(const psTag: string): boolean; virtual; abstract;
 
-    function Read(const psTag: string): string; overload; virtual;
-    function Read(const psTag, psDefault: string): string; overload; virtual;
-    function Read(const psTag: string; const piDefault: integer): integer;
-      overload; virtual;
-    function Read(const psTag: string; const pfDefault: double): double;
-      overload; virtual;
-    function Read(const psTag: string; const pbDefault: boolean): boolean;
-      overload; virtual;
-    function Read(const psTag: string; const pcStrings: TStrings): boolean;
-      overload; virtual;
+    function Read(const psTag: string): string; overload; virtual; abstract;
+    function Read(const psTag, psDefault: string): string; overload; virtual; abstract;
+    function Read(const psTag: string; const piDefault: integer): integer; overload; virtual; abstract;
+    function Read(const psTag: string; const pfDefault: double): double; overload; virtual; abstract;
+    function Read(const psTag: string; const pbDefault: boolean): boolean; overload; virtual; abstract;
+    function Read(const psTag: string; const pcStrings: TStrings): boolean; overload; virtual; abstract;
 
   end;
 
@@ -138,14 +134,19 @@ type
 
 
   { dummy impl that always returns the default }
+
+  { TSettingsInputDummy }
+
   TSettingsInputDummy = class(TSettingsInput)
   private
   public
     function ExtractSection(const psSection: string): TSettingsInput; override;
     function HasTag(const psTag: string): boolean; override;
 
+    function Read(const psTag: string): string; override;
     function Read(const psTag, psDefault: string): string; override;
     function Read(const psTag: string; const piDefault: integer): integer; override;
+    function Read(const psTag: string; const pfDefault: double): double; override;
     function Read(const psTag: string; const pbDefault: boolean): boolean; override;
     function Read(const psTag: string; const pcStrings: TStrings): boolean; override;
   end;
@@ -161,52 +162,6 @@ uses
 const
   XML_HEADER = '<?xml version="1.0" ?>' + NativeLineBreak;
 
-procedure TSettingsOutput.WriteXMLHeader;
-begin
-  Assert(False, 'TSettingsOutput.WriteXMLHeader must be overridden in class ' + ClassName);
-end;
-
-
-procedure TSettingsOutput.OpenSection(const psName: string);
-begin
-  Assert(False, 'TSettingsOutput.OpenSection must be overridden in class ' + ClassName);
-end;
-
-procedure TSettingsOutput.CloseSection(const psName: string);
-begin
-  Assert(False, 'TSettingsOutput.CloseSection must be overridden in class ' + ClassName);
-end;
-
-procedure TSettingsOutput.Write(const psTagName, psValue: string);
-begin
-  Assert(False, 'TSettingsOutput.Write (string) must be overridden in class ' +
-    ClassName);
-end;
-
-procedure TSettingsOutput.Write(const psTagName: string; const piValue: integer);
-begin
-  Assert(False, 'TSettingsOutput.Write (int) must be overridden in class ' + ClassName);
-end;
-
-procedure TSettingsOutput.Write(const psTagName: string; const pbValue: boolean);
-begin
-  Assert(False, 'TSettingsOutput.Write (boolean) must be overridden in class ' +
-    ClassName);
-end;
-
-procedure TSettingsOutput.Write(const psTagName: string; const pdValue: double);
-begin
-  Assert(False, 'TSettingsOutput.Write (double) must be overridden in class ' +
-    ClassName);
-end;
-
-procedure TSettingsOutput.Write(const psTagName: string; const pcValue: TStrings);
-begin
-  Assert(False, 'TSettingsOutput.Write (TStrings) must be overridden in class ' +
-    ClassName);
-end;
-
-{--------------------}
 constructor TSettingsStreamOutput.Create(const psFileName: string);
 begin
   inherited Create();
@@ -295,64 +250,6 @@ end;
 procedure TSettingsStreamOutput.Write(const psTagName: string; const pcValue: TStrings);
 begin
   Write(psTagName, pcValue.CommaText);
-end;
-
-{-----------------------------------------------------------------------------
-  SettingsInput}
-
-function TSettingsInput.ExtractSection(const psSection: string): TSettingsInput;
-begin
-  Assert(False, 'TSettingsInput.ExtractSection must be overridden in class ' +
-    ClassName);
-  Result := nil;
-end;
-
-function TSettingsInput.HasTag(const psTag: string): boolean;
-begin
-  Assert(False, 'TSettingsInput.HasTag must be overridden in class ' + ClassName);
-  Result := False;
-end;
-
-function TSettingsInput.Read(const psTag: string): string;
-begin
-  Assert(False, 'TSettingsInput.GetValue(string) must be overridden in class ' +
-    ClassName);
-  Result := '';
-end;
-
-function TSettingsInput.Read(const psTag, psDefault: string): string;
-begin
-  Assert(False, 'TSettingsInput.GetValue(string) must be overridden in class ' +
-    ClassName);
-  Result := '';
-end;
-
-function TSettingsInput.Read(const psTag: string; const piDefault: integer): integer;
-begin
-  Assert(False, 'TSettingsInput.GetValue(integer) must be overridden in class ' +
-    ClassName);
-  Result := 0;
-end;
-
-function TSettingsInput.Read(const psTag: string; const pfDefault: double): double;
-begin
-  Assert(False, 'TSettingsInput.GetValue(double) must be overridden in class ' +
-    ClassName);
-  Result := 0.0;
-end;
-
-function TSettingsInput.Read(const psTag: string; const pbDefault: boolean): boolean;
-begin
-  Assert(False, 'TSettingsInput.GetValue(boolean) must be overridden in class ' +
-    ClassName);
-  Result := False;
-end;
-
-function TSettingsInput.Read(const psTag: string; const pcStrings: TStrings): boolean;
-begin
-  Assert(False, 'TSettingsInput.GetValue(TStrings) must be overridden in class ' +
-    ClassName);
-  Result := False;
 end;
 
 
@@ -539,6 +436,12 @@ begin
   Result := piDefault;
 end;
 
+function TSettingsInputDummy.Read(const psTag: string;
+  const pfDefault: double): double;
+begin
+  Result := pfDefault;
+end;
+
 function TSettingsInputDummy.Read(const psTag, psDefault: string): string;
 begin
   Result := psDefault;
@@ -552,6 +455,11 @@ end;
 function TSettingsInputDummy.HasTag(const psTag: string): boolean;
 begin
   Result := True;
+end;
+
+function TSettingsInputDummy.Read(const psTag: string): string;
+begin
+  Result := '';
 end;
 
 function TSettingsInputDummy.Read(const psTag: string;

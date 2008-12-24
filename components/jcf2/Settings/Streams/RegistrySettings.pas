@@ -64,6 +64,8 @@ type
     procedure Write(const psTagName: string; const pcValue: TStrings); override;
   end;
 
+  { TSettingsInputRegistry }
+
   TSettingsInputRegistry = class(TSettingsInput)
   private
     fReg: TRegIniFile;
@@ -83,6 +85,7 @@ type
     function Read(const psTag: string): string; override;
     function Read(const psTag, psDefault: string): string; override;
     function Read(const psTag: string; const piDefault: integer): integer; override;
+    function Read(const psTag: string; const pfDefault: double): double; override;
     function Read(const psTag: string; const pbDefault: boolean): boolean; override;
     function Read(const psTag: string; const pcStrings: TStrings): boolean; override;
   end;
@@ -240,6 +243,13 @@ function TSettingsInputRegistry.Read(const psTag: string;
 begin
   Assert(fReg <> nil);
   Result := fReg.ReadInteger(fsSection, psTag, piDefault)
+end;
+
+function TSettingsInputRegistry.Read(const psTag: string;
+  const pfDefault: double): double;
+begin
+  Assert(fReg <> nil);
+  Result := Str2Float(fReg.ReadString(fsSection, psTag, Float2Str(pfDefault)));
 end;
 
 function TSettingsInputRegistry.Read(const psTag: string;

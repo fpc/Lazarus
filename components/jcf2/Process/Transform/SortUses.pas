@@ -213,8 +213,8 @@ var
 
   function IsBreakToken(const pcToken: TSourceToken): Boolean;
   begin
-    Result := (lcToken.TokenType in leBreakTokens) or
-      ((lcToken.TokenType = ttComment) and (lcToken.CommentStyle = eCompilerDirective));
+    Result := (pcToken.TokenType in leBreakTokens) or
+      ((pcToken.TokenType = ttComment) and (pcToken.CommentStyle = eCompilerDirective));
   end;
 
 var
