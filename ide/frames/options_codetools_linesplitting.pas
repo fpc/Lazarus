@@ -25,14 +25,13 @@ unit options_codetools_linesplitting;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  EditorOptions;
+  Classes, SysUtils, LResources, Forms, StdCtrls, SynEdit,
+  SourceChanger, IDEOptionsIntf, EditorOptions, options_atom_checkboxes;
 
 type
   { TCodetoolsLineSplittingOptionsFrame }
 
-  TCodetoolsLineSplittingOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCodetoolsLineSplittingOptionsFrame = class(TCodetoolsAtomCheckboxesOptionsFrame)
     DoNotSplitLineAfterGroupBox: TGroupBox;
     DoNotSplitLineInFrontGroupBox: TGroupBox;
     LineLengthEdit: TEdit;
@@ -43,10 +42,6 @@ type
   private
     BeautifyCodeOptions: TBeautifyCodeOptions;
     FHighlighter: TPreviewPasSyn;
-    procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
-                                   AtomTypes: TAtomTypes; Columns: integer);
-    procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes; ParentGroupBox: TGroupBox);
-    function ReadAtomCheckBoxes(ParentGroupBox: TGroupBox): TAtomTypes;
     procedure UpdateSplitLineExample;
     procedure UpdatePreviewSettings;
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
@@ -64,6 +59,9 @@ type
 
 implementation
 
+uses
+  CodeToolsOptions, LazarusIDEStrConsts;
+
 { TCodetoolsLineSplittingOptionsFrame }
 
 procedure TCodetoolsLineSplittingOptionsFrame.UpdateExample(Sender: TObject);
@@ -72,106 +70,12 @@ begin
   UpdatePreviewSettings;
 end;
 
-procedure TCodetoolsLineSplittingOptionsFrame.CreateAtomCheckBoxes(
-  ParentGroupBox: TGroupBox; AtomTypes: TAtomTypes; Columns: integer);
-var
-  Count, i, yi, MaxYCount: integer;
-  a: TAtomType;
-  X, Y, CurX, CurY, XStep, YStep: integer;
-  NewCheckBox: TCheckBox;
-begin
-  if Columns < 1 then
-    Columns := 1;
-  Count := 0;
-  for a := Low(TAtomTypes) to High(TAtomTypes) do
-    if a in AtomTypes then
-      inc(Count);
-  if Count = 0 then
-    Exit;
-
-  MaxYCount := ((Count+Columns-1) div Columns);
-  X:=6;
-  Y:=1;
-  XStep:=((ParentGroupBox.ClientWidth-10) div Columns);
-  YStep:=((ParentGroupBox.ClientHeight-20) div MaxYCount);
-  CurX:=X;
-  CurY:=Y;
-  i:=0;
-  yi:=0;
-
-  for a := Low(TAtomTypes) to High(TAtomTypes) do
-  begin
-    if a in AtomTypes then
-    begin
-      inc(i);
-      inc(yi);
-      NewCheckBox:=TCheckBox.Create(ParentGroupBox);
-      with NewCheckBox do
-      begin
-        Name:=ParentGroupBox.Name+'CheckBox'+IntToStr(i+1);
-        Parent:=ParentGroupBox;
-        SetBounds(CurX,CurY,XStep-10,Height);
-        Caption:=GetTranslatedAtomTypes(a);
-        OnClick:=@UpdateExample;
-        Visible:=true;
-      end;
-      if yi>=MaxYCount then
-      begin
-        inc(X,XStep);
-        CurX:=X;
-        CurY:=Y;
-        yi:=0;
-      end
-      else
-        inc(CurY,YStep);
-    end;
-  end;
-end;
-
-procedure TCodetoolsLineSplittingOptionsFrame.SetAtomCheckBoxes(
-  AtomTypes: TAtomTypes; ParentGroupBox: TGroupBox);
-var
-  i: integer;
-  ACheckBox: TCheckBox;
-  a: TAtomType;
-begin
-  for i := 0 to ParentGroupBox.ComponentCount - 1 do
-  begin
-    if (ParentGroupBox.Components[i] is TCheckBox) then
-    begin
-      ACheckBox:=TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
-      ACheckBox.Checked := (a <> atNone) and (a in AtomTypes);
-    end;
-  end;
-end;
-
-function TCodetoolsLineSplittingOptionsFrame.ReadAtomCheckBoxes(
-  ParentGroupBox: TGroupBox): TAtomTypes;
-var
-  i: integer;
-  ACheckBox: TCheckBox;
-  a: TAtomType;
-begin
-  Result := [];
-  for i := 0 to ParentGroupBox.ComponentCount - 1 do
-  begin
-    if (ParentGroupBox.Components[i] is TCheckBox) then
-    begin
-      ACheckBox := TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
-      if (a <> atNone) and (ACheckBox.Checked) then
-        Include(Result, a);
-    end;
-  end;
-end;
-
 procedure TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample;
 const
   LineSplitExampleText =
-       'function(Sender: TObject; const Val1, Val2, Val3:char; '
-      +'var Var1, Var2: array of const): integer;'#13
-      +'const i=1+2+3;';
+    'function F(Sender: TObject; const Val1, Val2, Val3:char; ' +
+    'var Var1, Var2: array of const): integer;'#13 +
+    'const i=1+2+3;';
 begin
   if BeautifyCodeOptions = nil then
     Exit;
@@ -243,7 +147,8 @@ begin
   Result := dlgLineSplitting;
 end;
 
-procedure TCodetoolsLineSplittingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TCodetoolsLineSplittingOptionsFrame.Setup(
+  ADialog: TAbstractOptionsEditorDialog);
 const
   DoNotSplitAtoms = [
     atKeyword, atIdentifier, atColon, atSemicolon, atComma,
@@ -253,13 +158,15 @@ begin
     Caption:=dlgMaxLineLength;
 
   with DoNotSplitLineInFrontGroupBox do begin
-    Caption:=dlgNotSplitLineFront ;
-    CreateAtomCheckBoxes(DoNotSplitLineInFrontGroupBox,DoNotSplitAtoms,2);
+    Caption:=dlgNotSplitLineFront;
+    CreateAtomCheckBoxes(
+      DoNotSplitLineInFrontGroupBox, DoNotSplitAtoms, 2, @UpdateExample);
   end;
 
   with DoNotSplitLineAfterGroupBox do begin
-    Caption:=dlgNotSplitLineAfter ;
-    CreateAtomCheckBoxes(DoNotSplitLineAfterGroupBox,DoNotSplitAtoms,2);
+    Caption:=dlgNotSplitLineAfter;
+    CreateAtomCheckBoxes(
+      DoNotSplitLineAfterGroupBox, DoNotSplitAtoms, 2, @UpdateExample);
   end;
 
   with SplitPreviewLabel do

@@ -25,15 +25,14 @@ unit options_codetools_space;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  EditorOptions;
+  Classes, SysUtils, LResources, Forms, StdCtrls, SynEdit,
+  SourceChanger, IDEOptionsIntf, EditorOptions, options_atom_checkboxes;
 
 type
 
   { TCodetoolsSpaceOptionsFrame }
 
-  TCodetoolsSpaceOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCodetoolsSpaceOptionsFrame = class(TCodetoolsAtomCheckboxesOptionsFrame)
     DoInsertSpaceAfterGroupBox: TGroupBox;
     DoInsertSpaceInFrontGroupBox: TGroupBox;
     SpacePreviewLabel: TLabel;
@@ -42,10 +41,6 @@ type
   private
     BeautifyCodeOptions: TBeautifyCodeOptions;
     FHighlighter: TPreviewPasSyn;
-    procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
-                                   AtomTypes: TAtomTypes; Columns: integer);
-    procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes; ParentGroupBox: TGroupBox);
-    function ReadAtomCheckBoxes(ParentGroupBox: TGroupBox): TAtomTypes;
     procedure UpdateSpaceExample;
     procedure UpdatePreviewSettings;
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
@@ -63,6 +58,9 @@ type
 
 implementation
 
+uses
+  CodeToolsOptions, LazarusIDEStrConsts;
+
 { TCodetoolsSpaceOptionsFrame }
 
 procedure TCodetoolsSpaceOptionsFrame.UpdateExample(Sender: TObject);
@@ -71,111 +69,17 @@ begin
   UpdatePreviewSettings;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.CreateAtomCheckBoxes(
-  ParentGroupBox: TGroupBox; AtomTypes: TAtomTypes; Columns: integer);
-var
-  Count, i, yi, MaxYCount: integer;
-  a: TAtomType;
-  X, Y, CurX, CurY, XStep, YStep: integer;
-  NewCheckBox: TCheckBox;
-begin
-  if Columns < 1 then
-    Columns := 1;
-  Count := 0;
-  for a := Low(TAtomTypes) to High(TAtomTypes) do
-    if a in AtomTypes then
-      inc(Count);
-  if Count = 0 then
-    Exit;
-
-  MaxYCount := ((Count+Columns-1) div Columns);
-  X:=6;
-  Y:=1;
-  XStep:=((ParentGroupBox.ClientWidth-10) div Columns);
-  YStep:=((ParentGroupBox.ClientHeight-20) div MaxYCount);
-  CurX:=X;
-  CurY:=Y;
-  i:=0;
-  yi:=0;
-
-  for a := Low(TAtomTypes) to High(TAtomTypes) do
-  begin
-    if a in AtomTypes then
-    begin
-      inc(i);
-      inc(yi);
-      NewCheckBox:=TCheckBox.Create(ParentGroupBox);
-      with NewCheckBox do
-      begin
-        Name:=ParentGroupBox.Name+'CheckBox'+IntToStr(i+1);
-        Parent:=ParentGroupBox;
-        SetBounds(CurX,CurY,XStep-10,Height);
-        Caption:=GetTranslatedAtomTypes(a);
-        OnClick:=@UpdateExample;
-        Visible:=true;
-      end;
-      if yi>=MaxYCount then
-      begin
-        inc(X,XStep);
-        CurX:=X;
-        CurY:=Y;
-        yi:=0;
-      end
-      else
-        inc(CurY,YStep);
-    end;
-  end;
-end;
-
-procedure TCodetoolsSpaceOptionsFrame.SetAtomCheckBoxes(AtomTypes: TAtomTypes;
-  ParentGroupBox: TGroupBox);
-var
-  i: integer;
-  ACheckBox: TCheckBox;
-  a: TAtomType;
-begin
-  for i := 0 to ParentGroupBox.ComponentCount - 1 do
-  begin
-    if (ParentGroupBox.Components[i] is TCheckBox) then
-    begin
-      ACheckBox:=TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
-      ACheckBox.Checked := (a <> atNone) and (a in AtomTypes);
-    end;
-  end;
-end;
-
-function TCodetoolsSpaceOptionsFrame.ReadAtomCheckBoxes(
-  ParentGroupBox: TGroupBox): TAtomTypes;
-var
-  i: integer;
-  ACheckBox: TCheckBox;
-  a: TAtomType;
-begin
-  Result := [];
-  for i := 0 to ParentGroupBox.ComponentCount - 1 do
-  begin
-    if (ParentGroupBox.Components[i] is TCheckBox) then
-    begin
-      ACheckBox := TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
-      if (a <> atNone) and (ACheckBox.Checked) then
-        Include(Result, a);
-    end;
-  end;
-end;
-
 procedure TCodetoolsSpaceOptionsFrame.UpdateSpaceExample;
 const
   SpaceExampleText =
-       'function(Sender:TObject;const Val1,Val2,Val3:char;'
-      +'var Var1,Var2:array of const):integer;'#13
-      +'const i=1+2+3;'#13
-      +'begin'#13
-      +'  A:=@B.C;D:=3;E:=X[5];'#13
-      +'  {$I unit1.lrs}'#13
-      +'  {$R-}{$R+}'#13
-      +'end;';
+    'function F(Sender:TObject;const Val1,Val2,Val3:char;' +
+    'var Var1,Var2:array of const):integer;'#13 +
+    'const i=1+2+3;'#13 +
+    'begin'#13 +
+    '  A:=@B.C;D:=3;E:=X[5];'#13 +
+    '  {$I unit1.lrs}'#13 +
+    '  {$R-}{$R+}'#13 +
+    'end;';
 begin
   if BeautifyCodeOptions = nil then
     Exit;
@@ -256,20 +160,22 @@ const
 begin
   with DoInsertSpaceInFrontGroupBox do begin
     Caption:=dlgInsSpaceFront;
-    CreateAtomCheckBoxes(DoInsertSpaceInFrontGroupBox,DoInsertSpaceAtoms,2);
+    CreateAtomCheckBoxes(
+      DoInsertSpaceInFrontGroupBox, DoInsertSpaceAtoms, 2, @UpdateExample);
   end;
 
   with DoInsertSpaceAfterGroupBox do begin
     Caption:=dlgInsSpaceAfter;
-    CreateAtomCheckBoxes(DoInsertSpaceAfterGroupBox,DoInsertSpaceAtoms,2);
+    CreateAtomCheckBoxes(
+      DoInsertSpaceAfterGroupBox, DoInsertSpaceAtoms, 2, @UpdateExample);
   end;
 
   with SpacePreviewLabel do
     Caption:=dlgWRDPreview;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions
-  );
+procedure TCodetoolsSpaceOptionsFrame.ReadSettings(
+  AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodetoolsOptions do
   begin
