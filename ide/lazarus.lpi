@@ -2,12 +2,13 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
@@ -41,7 +42,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="28">
+    <Units Count="32">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -58,7 +59,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_oi.lrs"/>
         <UnitName Value="options_OI"/>
       </Unit2>
       <Unit3>
@@ -66,7 +66,6 @@
         <ComponentName Value="FilesOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_files.lrs"/>
         <UnitName Value="options_files"/>
       </Unit3>
       <Unit4>
@@ -74,7 +73,6 @@
         <ComponentName Value="DesktopOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_desktop.lrs"/>
         <UnitName Value="options_desktop"/>
       </Unit4>
       <Unit5>
@@ -82,7 +80,6 @@
         <ComponentName Value="WindowOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_window.lrs"/>
         <UnitName Value="options_window"/>
       </Unit5>
       <Unit6>
@@ -90,7 +87,6 @@
         <ComponentName Value="FormEditorOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_formed.lrs"/>
         <UnitName Value="options_formed"/>
       </Unit6>
       <Unit7>
@@ -98,7 +94,6 @@
         <ComponentName Value="BackupOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_backup.lrs"/>
         <UnitName Value="options_backup"/>
       </Unit7>
       <Unit8>
@@ -106,7 +101,6 @@
         <ComponentName Value="NamingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_naming.lrs"/>
         <UnitName Value="options_naming"/>
       </Unit8>
       <Unit9>
@@ -114,7 +108,6 @@
         <ComponentName Value="FpDocOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_fpdoc.lrs"/>
         <UnitName Value="options_fpdoc"/>
       </Unit9>
       <Unit10>
@@ -123,7 +116,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="..\ideintf\ideoptionsintf.lrs"/>
         <UnitName Value="IDEOptionsIntf"/>
       </Unit10>
       <Unit11>
@@ -132,7 +124,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_general.lrs"/>
         <UnitName Value="options_editor_general"/>
       </Unit11>
       <Unit12>
@@ -140,7 +131,6 @@
         <ComponentName Value="EditorDisplayOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_display.lrs"/>
         <UnitName Value="options_editor_display"/>
       </Unit12>
       <Unit13>
@@ -148,7 +138,6 @@
         <ComponentName Value="EditorKeymappingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_keymapping.lrs"/>
         <UnitName Value="options_editor_keymapping"/>
       </Unit13>
       <Unit14>
@@ -156,7 +145,6 @@
         <ComponentName Value="EditorColorOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_color.lrs"/>
         <UnitName Value="options_editor_color"/>
       </Unit14>
       <Unit15>
@@ -164,7 +152,6 @@
         <ComponentName Value="EditorCodetoolsOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_codetools.lrs"/>
         <UnitName Value="options_editor_codetools"/>
       </Unit15>
       <Unit16>
@@ -172,7 +159,6 @@
         <ComponentName Value="EditorCodefoldingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_codefolding.lrs"/>
         <UnitName Value="options_editor_codefolding"/>
       </Unit16>
       <Unit17>
@@ -180,7 +166,6 @@
         <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_general.lrs"/>
         <UnitName Value="options_codetools_general"/>
       </Unit17>
       <Unit18>
@@ -188,7 +173,6 @@
         <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_codecreation.lrs"/>
         <UnitName Value="options_codetools_codecreation"/>
       </Unit18>
       <Unit19>
@@ -196,7 +180,6 @@
         <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_wordpolicy.lrs"/>
         <UnitName Value="options_codetools_wordpolicy"/>
       </Unit19>
       <Unit20>
@@ -204,7 +187,6 @@
         <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_linesplitting.lrs"/>
         <UnitName Value="options_codetools_linesplitting"/>
       </Unit20>
       <Unit21>
@@ -212,7 +194,6 @@
         <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_space.lrs"/>
         <UnitName Value="options_codetools_space"/>
       </Unit21>
       <Unit22>
@@ -220,7 +201,6 @@
         <ComponentName Value="CodetoolsIndentifierComplietionOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_codetools_identifiercompletion.lrs"/>
         <UnitName Value="options_codetools_identifiercompletion"/>
       </Unit22>
       <Unit23>
@@ -229,7 +209,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames\options_editor_general_misc.lrs"/>
         <UnitName Value="options_editor_general_misc"/>
       </Unit23>
       <Unit24>
@@ -238,7 +217,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="..\debugger\frames\options_debugger_general.lrs"/>
         <UnitName Value="options_debugger_general"/>
       </Unit24>
       <Unit25>
@@ -246,7 +224,6 @@
         <ComponentName Value="DebuggerEventLogOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="..\debugger\frames\options_debugger_eventlog.lrs"/>
         <UnitName Value="options_debugger_eventlog"/>
       </Unit25>
       <Unit26>
@@ -254,7 +231,6 @@
         <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="..\debugger\frames\options_debugger_language_exceptions.lrs"/>
         <UnitName Value="options_debugger_language_exceptions"/>
       </Unit26>
       <Unit27>
@@ -262,9 +238,28 @@
         <ComponentName Value="DebuggerSignalsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="..\debugger\frames\options_debugger_signals.lrs"/>
         <UnitName Value="options_debugger_signals"/>
       </Unit27>
+      <Unit28>
+        <Filename Value="projectresources.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectResources"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="w32manifest.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="W32Manifest"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="projecticon.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectIcon"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="w32versioninfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="W32VersionInfo"/>
+      </Unit31>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -155,7 +155,8 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  FicoFileName := ExtractFilePath(MainFilename) + ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
+  FicoFileName := ExtractFilePath(MainFilename) +
+    ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
 end;
 
 procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);

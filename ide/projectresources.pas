@@ -298,6 +298,8 @@ begin
   with AConfig do
   begin
     ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
+    XPManifest.ManifestFileName := ChangeFileExt(FileName, '.manifest');
+
     ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
     XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
     VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
