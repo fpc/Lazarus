@@ -33,6 +33,7 @@ WizardSmallImageFile=lazarus_install_cheetah_small.bmp
 WizardImageStretch=false
 ShowTasksTreeLines=true
 TimeStampRounding=0
+PrivilegesRequired=none
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
