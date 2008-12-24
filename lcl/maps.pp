@@ -30,7 +30,7 @@ unit maps;
 interface
 
 uses
-  Classes, SysUtils, Math, FPCAdds, AvgLvlTree;
+  Classes, SysUtils, Math, FPCAdds, AvgLvlTree, typinfo;
   
 type
   TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,
@@ -94,12 +94,13 @@ type
     procedure IteratorAdd(AIterator: TBaseMapIterator);
     procedure IteratorRemove(AIterator: TBaseMapIterator);
   protected
+    procedure InternalAdd(const AId, AData);
     function InternalGetData(AItem: PMapItem; out AData): Boolean;
     function InternalGetDataPtr(AItem: PMapItem): Pointer;
     function InternalGetId(AItem: PMapItem; out AID): Boolean;
     function InternalSetData(AItem: PMapItem; const AData): Boolean;
+    procedure ReleaseData(ADataPtr: Pointer); virtual;
   public
-    procedure Add(const AId, AData);
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
     procedure Clear;
     function Count: Integer;
@@ -121,12 +122,12 @@ type
     procedure MapCleared;        // Called when our map is cleared
     procedure ItemRemove(AData: Pointer); // Called when an Item is removed from the map
   protected
+    procedure InternalCreate(AMap: TBaseMap);
     function InternalLocate(const AId): Boolean; //True if match found. If not found, current is next and Invalid is set
     procedure Validate;
     procedure ValidateMap;
     property Current: PMapItem read FCurrent;
   public
-    constructor Create(AMap: TBaseMap);
     destructor Destroy; override;
     procedure First;
     procedure Next;
@@ -144,6 +145,7 @@ type
   private
   protected
   public
+    procedure Add(const AId, AData);
     function HasId(const AID): Boolean;
     function GetData(const AId; out AData): Boolean;
     function GetDataPtr(const AId): Pointer;
@@ -156,12 +158,45 @@ type
   private
   protected
   public
+    constructor Create(AMap: TMap);
     function  DataPtr: Pointer;
     procedure GetData(out AData);
     procedure GetID(out AID);
     function  Locate(const AId): Boolean;
     procedure SetData(const AData);
   end;
+
+  { TTypedMap }
+
+  TTypedMap = class(TBaseMap)
+  private
+    FTypeInfo: POinter;
+  protected
+    function InternalSetData(AItem: PMapItem; const AData): Boolean;
+    procedure ReleaseData(ADataPtr: Pointer); override;
+  public
+    procedure Add(const AId, AData);
+    constructor Create(AIdType: TMapIdType; ATypeInfo: PTypeInfo);
+    destructor Destroy; override;
+    function HasId(const AID): Boolean;
+    function GetData(const AId; out AData): Boolean;
+    function GetDataPtr(const AId): Pointer;
+    function SetData(const AId, AData): Boolean;
+  end;
+
+  { TTypedMapIterator }
+
+  TTypedMapIterator = class(TBaseMapIterator)
+  private
+  protected
+  public
+    constructor Create(AMap: TTypedMap);
+    procedure GetData(out AData);
+    procedure GetID(out AID);
+    function  Locate(const AId): Boolean;
+    procedure SetData(const AData);
+  end;
+
   
 function MapReport(AMap: TBaseMap): String;
 
@@ -183,82 +218,6 @@ end;
 
 
 { TBaseMap }
-
-procedure TBaseMap.Add(const AId, AData);
-  procedure Error;
-  const
-    a: PChar =  '0123456789ABCDEF';
-  var
-    n: Integer;
-    S: String;
-    p: PByte;
-  begin
-    SetLength(S, ID_LENGTH[FIdType] * 2);
-    {$IFDEF ENDIAN_BIG}
-    p := @AId;
-    {$ELSE}
-    p := @AId + ID_LENGTH[FIdType] - 1;
-    {$ENDIF}
-    for n := 1 to ID_LENGTH[FIdType] do
-    begin
-      S[2 * n - 1] := a[(p^ shr 4) and $F];
-      S[2 * n] := a[p^ and $F];
-      {$IFDEF ENDIAN_BIG}
-      Inc(p);
-      {$ELSE}
-      Dec(p);
-      {$ENDIF}
-    end;
-
-    raise EListError.CreateFmt(DUPLICATE_ID, [S]);
-  end;
-var
-  item: PMapItem;
-  p: Pointer;
-  Node, NewNode: TAvgLvlTreeNode;
-begin
-  if FindNode(AId) <> nil
-  then begin
-    Error;
-    Exit;
-  end;
-  
-  Item := GetMem(SizeOF(TMapLink) + cardinal(ID_LENGTH[FIdType]) + FDataSize);
-  p := @item^.ID;
-  Move(AId, p^, ID_LENGTH[FIdType]);
-  inc(p, ID_LENGTH[FIdType]);
-  Move(Adata, p^, FDataSize);
-  NewNode := FTree.Add(item);
-
-  // Update linked list
-  Node := FTree.FindPrecessor(NewNode);
-  if Node = nil
-  then begin
-    // no previous node
-    FFirst := Item;
-    Node := FTree.FindSuccessor(NewNode);
-    Item^.Link.Previous := nil;
-    if Node = nil
-    then begin
-      // We're the only one
-      Item^.Link.Next := nil;
-      FLast := Item;
-    end
-    else begin
-      Item^.Link.Next := Node.Data;
-      PMapItem(Node.Data)^.Link.Previous := Item;
-    end;
-  end
-  else begin
-    // there is a prevous node
-    Item^.Link.Previous := Node.Data;
-    Item^.Link.Next := PMapItem(Node.Data)^.Link.Next;
-    PMapItem(Node.Data)^.Link.Next := Item;
-    if Item^.Link.Next = nil // no item after us, so we're last
-    then FLast := Item
-    else Item^.Link.Next^.Link.Previous := Item;
-  end;
-end;
 
 procedure TBaseMap.Clear;
 var
@@ -314,6 +273,7 @@ begin
       TBaseMapIterator(FIterators[n]).ItemRemove(Node.Data);
   end;
 
+  ReleaseData(InternalGetDataPtr(Node.Data));
   FreeMem(Node.Data);
   FTree.Delete(Node);
 end;
@@ -358,7 +318,84 @@ begin
   if ANode = nil then Exit;
   FreeData(ANode.Left);
   FreeData(ANode.Right);
+  ReleaseData(InternalGetDataPtr(ANode.Data));
   FreeMem(ANode.Data);
+end;
+
+procedure TBaseMap.InternalAdd(const AId, AData);
+  procedure Error;
+  const
+    a: PChar =  '0123456789ABCDEF';
+  var
+    n: Integer;
+    S: String;
+    p: PByte;
+  begin
+    SetLength(S, ID_LENGTH[FIdType] * 2);
+    {$IFDEF ENDIAN_BIG}
+    p := @AId;
+    {$ELSE}
+    p := @AId + ID_LENGTH[FIdType] - 1;
+    {$ENDIF}
+    for n := 1 to ID_LENGTH[FIdType] do
+    begin
+      S[2 * n - 1] := a[(p^ shr 4) and $F];
+      S[2 * n] := a[p^ and $F];
+      {$IFDEF ENDIAN_BIG}
+      Inc(p);
+      {$ELSE}
+      Dec(p);
+      {$ENDIF}
+    end;
+
+    raise EListError.CreateFmt(DUPLICATE_ID, [S]);
+  end;
+var
+  item: PMapItem;
+  p: Pointer;
+  Node, NewNode: TAvgLvlTreeNode;
+begin
+  if FindNode(AId) <> nil
+  then begin
+    Error;
+    Exit;
+  end;
+
+  Item := GetMem(SizeOF(TMapLink) + cardinal(ID_LENGTH[FIdType]) + FDataSize);
+  p := @item^.ID;
+  Move(AId, p^, ID_LENGTH[FIdType]);
+  inc(p, ID_LENGTH[FIdType]);
+  Move(Adata, p^, FDataSize);
+  NewNode := FTree.Add(item);
+
+  // Update linked list
+  Node := FTree.FindPrecessor(NewNode);
+  if Node = nil
+  then begin
+    // no previous node
+    FFirst := Item;
+    Node := FTree.FindSuccessor(NewNode);
+    Item^.Link.Previous := nil;
+    if Node = nil
+    then begin
+      // We're the only one
+      Item^.Link.Next := nil;
+      FLast := Item;
+    end
+    else begin
+      Item^.Link.Next := Node.Data;
+      PMapItem(Node.Data)^.Link.Previous := Item;
+    end;
+  end
+  else begin
+    // there is a prevous node
+    Item^.Link.Previous := Node.Data;
+    Item^.Link.Next := PMapItem(Node.Data)^.Link.Next;
+    PMapItem(Node.Data)^.Link.Next := Item;
+    if Item^.Link.Next = nil // no item after us, so we're last
+    then FLast := Item
+    else Item^.Link.Next^.Link.Previous := Item;
+  end;
 end;
 
 function TBaseMap.InternalGetData(AItem: PMapItem; out AData): Boolean;
@@ -418,6 +455,10 @@ begin
   if FIterators.Count = 0 then FreeAndNil(FIterators);
 end;
 
+procedure TBaseMap.ReleaseData(ADataPtr: Pointer);
+begin
+end;
+
 function TBaseMap.TreeCompareID(Sender: TAvgLvlTree; AItem1, AItem2: Pointer): Integer;
 var
   Item1: PMapItem absolute AItem1;
@@ -466,16 +507,6 @@ end;
 { TBaseMapIterator }
 
 
-constructor TBaseMapIterator.Create(AMap: TBaseMap);
-begin
-  inherited Create;
-  FMap := AMap;
-  FMap.IteratorAdd(Self);
-  FCurrent := FMap.FFirst;
-  FBOM := FCurrent = nil;
-  FEOM := FCurrent = nil;
-end;
-
 destructor TBaseMapIterator.Destroy;
 begin
   if FMap <> nil then FMap.IteratorRemove(Self);
@@ -488,6 +519,17 @@ begin
   if FMap = nil then Exit;
   FCurrent := FMap.FFirst;
   FBOM := FCurrent = nil;
+  FEOM := FCurrent = nil;
+end;
+
+procedure TBaseMapIterator.InternalCreate(AMap: TBaseMap);
+begin
+  inherited Create;
+  FMap := AMap;
+  FMap.IteratorAdd(Self);
+  FCurrent := FMap.FFirst;
+  FBOM := FCurrent = nil;
+  FEOM := FCurrent = nil;
 end;
 
 function TBaseMapIterator.InternalLocate(const AId): Boolean;
@@ -499,6 +541,7 @@ begin
   ValidateMap;
   
   FInvalid := True;
+
   Node := FMap.FTree.Root;
   if Node <> nil
   then begin
@@ -532,9 +575,13 @@ begin
   if Node = nil
   then begin
     FEOM := True;
+    FCurrent := FMap.FLast;
+    FBOM := FCurrent = nil;
   end
   else begin
     FCurrent := Node.Data;
+    FBOM := FCurrent = nil;
+    FEOM := FCurrent = nil;
   end;
   Result := not FInvalid;
 end;
@@ -552,6 +599,7 @@ begin
   if FMap = nil then Exit;
   FCurrent := FMap.FLast;
   FEOM := FCurrent = nil;
+  FBOM := FCurrent = nil;
 end;
 
 procedure TBaseMapIterator.MapCleared;
@@ -644,6 +692,11 @@ end;
 
 { TMap }
 
+procedure TMap.Add(const AId, AData);
+begin
+  InternalAdd(AId, AData);
+end;
+
 function TMap.GetData(const AId; out AData): Boolean;
 begin
   Result := InternalGetData(FindItem(AId), AData);
@@ -659,12 +712,136 @@ begin
   Result := FindNode(AId) <> nil;
 end;
 
+
 function TMap.SetData(const AId, AData): Boolean;
 begin
   Result := InternalSetData(FindItem(AId), AData);
 end;
 
+{ TTypedMap }
+
+// some hack to get access to fpc internals
+procedure fpc_AddRef(Data, TypeInfo: Pointer); external name 'FPC_ADDREF';
+procedure fpc_DecRef(Data, TypeInfo: Pointer); external name 'FPC_DECREF';
+
+procedure TTypedMap.Add(const AId, AData);
+begin
+  InternalAdd(AId, AData);
+  fpc_AddRef(@Adata, FtypeInfo);
+end;
+
+constructor TTypedMap.Create(AIdType: TMapIdType; ATypeInfo: PTypeInfo);
+var
+  Size: Integer;
+  TypeData: PTypeData;
+begin
+  TypeData := GetTypedata(ATypeInfo);
+  case ATypeInfo^.Kind of
+    tkLString, tkAString, tkWString, tkInterface, tkDynArray, tkClass: begin
+      Size := SizeOf(Pointer);
+    end;
+
+    tkInteger, tkEnumeration, tkSet, tkWChar, tkChar: begin
+      case TypeData^.OrdType of
+        otSByte, otUByte: Size := SizeOf(Byte);
+        otSWord, otUWord: Size := SizeOf(Word);
+        otSLong, otULong: Size := SizeOf(LongWord);
+      else
+        Size := 0;
+      end;
+    end;
+
+    tkMethod : Size := SizeOf(TMethod);
+    tkVariant: Size := SizeOf(TVarData);
+    tkInt64  : Size := SizeOf(Int64);
+    tkQWord  : Size := SizeOf(QWord);
+    tkBool   : Size := SizeOf(Boolean);
+
+    tkFloat: begin
+      case TypeData^.FloatType of
+        ftSingle   : Size := SizeOf(Single);
+        ftDouble   : Size := SizeOf(Double);
+        ftExtended : Size := SizeOf(Extended);
+        ftComp     : Size := SizeOf(Comp);
+        ftCurr     : Size := SizeOf(Currency);
+      else
+        Size := 0;
+      end;
+    end;
+
+    tkSString: Size := TypeData^.MaxLength;
+    tkArray  : Size := PInteger(TypeData)[0] * PInteger(TypeData)[1];
+    tkRecord,
+    tkObject : Size := PInteger(TypeData)[0];
+  else
+    Size := 0;
+  end;
+
+  if Size = 0 then raise EInvalidOperation.Create('Type must have a size');
+
+  FTypeInfo := ATypeInfo;
+  inherited Create(AIdType, Size);
+end;
+
+destructor TTypedMap.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TTypedMap.GetData(const AId; out AData): Boolean;
+begin
+  Result := InternalGetData(FindItem(AId), AData);
+  if Result
+  then fpc_AddRef(@Adata, FtypeInfo);
+end;
+
+function TTypedMap.GetDataPtr(const AId): Pointer;
+begin
+  Result := InternalGetDataPtr(FindItem(AId));
+end;
+
+function TTypedMap.HasId(const AID): Boolean;
+begin
+  Result := FindNode(AId) <> nil;
+end;
+
+function TTypedMap.InternalSetData(AItem: PMapItem; const AData): Boolean;
+var
+  Data: Pointer;
+begin
+  // copy data first to allow Map[ID] := Map[ID]
+  GetMem(Data, FDataSize);
+  InternalGetData(AItem, Data^);
+
+  Result := inherited InternalSetData(AItem, AData);
+  if not Result then Exit;
+
+  fpc_AddRef(@AData, FtypeInfo);
+  fpc_DecRef(Data, FTypeInfo);
+  FreeMem(Data);
+end;
+
+procedure TTypedMap.ReleaseData(ADataPtr: Pointer);
+begin
+  fpc_DecRef(ADataPtr, FTypeInfo);
+end;
+
+function TTypedMap.SetData(const AId, AData): Boolean;
+var
+  Item: PMapItem;
+begin
+  Item := FindItem(AId);
+  Result := Item <> nil;
+  if not Result then Exit;
+  InternalSetData(Item, AData);
+end;
+
 { TMapIterator }
+
+constructor TMapIterator.Create(AMap: TMap);
+begin
+  InternalCreate(AMap);
+end;
 
 function TMapIterator.DataPtr: Pointer;
 begin
@@ -693,6 +870,37 @@ procedure TMapIterator.SetData(const AData);
 begin
   Validate;
   FMap.InternalSetData(FCurrent, AData);
+end;
+
+{ TTypedMapIterator }
+
+constructor TTypedMapIterator.Create(AMap: TTypedMap);
+begin
+  InternalCreate(AMap);
+end;
+
+procedure TTypedMapIterator.GetData(out AData);
+begin
+  Validate;
+  FMap.InternalGetData(FCurrent, AData);
+  fpc_AddRef(@Adata, TTypedMap(FMap).FTypeInfo);
+end;
+
+procedure TTypedMapIterator.GetID(out AID);
+begin
+  Validate;
+  FMap.InternalGetId(FCurrent, AId);
+end;
+
+function TTypedMapIterator.Locate(const AId): Boolean;
+begin
+  Result := InternalLocate(AID);
+end;
+
+procedure TTypedMapIterator.SetData(const AData);
+begin
+  Validate;
+  TTypedMap(FMap).InternalSetData(FCurrent, AData);
 end;
 
 end.

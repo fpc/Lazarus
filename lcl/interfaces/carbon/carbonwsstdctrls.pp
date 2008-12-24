@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TCarbonWSScrollBar }
 
   TCarbonWSScrollBar = class(TWSScrollBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
@@ -55,26 +53,20 @@ type
   { TCarbonWSCustomGroupBox }
 
   TCarbonWSCustomGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSGroupBox }
 
   TCarbonWSGroupBox = class(TWSGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomComboBox }
 
   TCarbonWSCustomComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -95,17 +87,13 @@ type
   { TCarbonWSComboBox }
 
   TCarbonWSComboBox = class(TWSComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomListBox }
 
   TCarbonWSCustomListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
@@ -128,17 +116,13 @@ type
   { TCarbonWSListBox }
 
   TCarbonWSListBox = class(TWSListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomEdit }
 
   TCarbonWSCustomEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -156,9 +140,7 @@ type
   { TCarbonWSCustomMemo }
 
   TCarbonWSCustomMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
@@ -171,49 +153,37 @@ type
   { TCarbonWSEdit }
 
   TCarbonWSEdit = class(TWSEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSMemo }
 
   TCarbonWSMemo = class(TWSMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomLabel }
 
   {TCarbonWSCustomLabel = class(TWSCustomLabel)
-  private
-  protected
-  public
+  published
   end;}
 
   { TCarbonWSLabel }
 
   {TCarbonWSLabel = class(TWSLabel)
-  private
-  protected
-  public
+  published
   end;}
 
   { TCarbonWSButtonControl }
 
   TCarbonWSButtonControl = class(TWSButtonControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSButton }
 
   TCarbonWSButton = class(TWSButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
@@ -221,9 +191,7 @@ type
   { TCarbonWSCustomCheckBox }
 
   TCarbonWSCustomCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
@@ -232,35 +200,27 @@ type
   { TCarbonWSCheckBox }
 
   TCarbonWSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSToggleBox }
 
   TCarbonWSToggleBox = class(TWSToggleBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSRadioButton }
 
   TCarbonWSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSCustomStaticText }
 
   TCarbonWSCustomStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
@@ -268,9 +228,7 @@ type
   { TCarbonWSStaticText }
 
   TCarbonWSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
+  published
   end;
   
 

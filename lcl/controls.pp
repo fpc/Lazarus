@@ -612,14 +612,14 @@ type
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Left: TSpacingSize read FLeft write SetLeft;
-    property Top: TSpacingSize read FTop write SetTop;
-    property Right: TSpacingSize read FRight write SetRight;
-    property Bottom: TSpacingSize read FBottom write SetBottom;
-    property Around: TSpacingSize read FAround write SetAround;
-    property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default -1;
-    property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal;
-    property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical;
+    property Left: TSpacingSize read FLeft write SetLeft default 0;
+    property Top: TSpacingSize read FTop write SetTop default 0;
+    property Right: TSpacingSize read FRight write SetRight default 0;
+    property Bottom: TSpacingSize read FBottom write SetBottom default 0;
+    property Around: TSpacingSize read FAround write SetAround default 0;
+    property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default 0;
+    property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
+    property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
   end;
   
   
@@ -1070,6 +1070,9 @@ type
     function GetEnabled: Boolean; virtual;
     function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     procedure VisibleChanging; dynamic;
     procedure VisibleChanged; dynamic;
     procedure AddHandler(HandlerType: TControlHandlerType;
@@ -1079,6 +1082,8 @@ type
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
+    class function GetControlClassDefaultSize: TPoint; virtual;
+    function ColorIsStored: boolean; virtual;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
@@ -1163,7 +1168,6 @@ type
                                WithThemeSpace: boolean = true); virtual;
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
-    class function GetControlClassDefaultSize: TPoint; virtual;
     function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
@@ -1185,7 +1189,6 @@ type
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
     procedure BringToFront;
-    function ColorIsStored: boolean; virtual;
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
@@ -1239,7 +1242,7 @@ type
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign default alNone;
-    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
+    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AnchorSide[Kind: TAnchorKind]: TAnchorSide read GetAnchorSide;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
@@ -1265,9 +1268,6 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
@@ -1445,10 +1445,10 @@ type
     property Control: TWinControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
-    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
-    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
-    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
+    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing default 0;
+    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing default 0;
+    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing default 0;
+    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing default 0;
     property EnlargeHorizontal: TChildControlResizeStyle read FEnlargeHorizontal
                            write SetEnlargeHorizontal default crsAnchorAligning;
     property EnlargeVertical: TChildControlResizeStyle read FEnlargeVertical
@@ -1458,7 +1458,7 @@ type
     property ShrinkVertical: TChildControlResizeStyle read FShrinkVertical
                               write SetShrinkVertical default crsAnchorAligning;
     property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
-    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine;
+    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine default 0;
   end;
 
 
@@ -1659,9 +1659,11 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: char); dynamic;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
@@ -1676,7 +1678,6 @@ type
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage: TLMMouse): Boolean;
-    function  ParentHandlesAllocated: boolean; override;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
@@ -1795,11 +1796,10 @@ type
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
+    function ParentHandlesAllocated: boolean; override;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
@@ -1835,14 +1835,14 @@ type
     FOnPaint: TNotifyEvent;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    procedure DestroyWnd; override;
     procedure PaintWindow(DC: HDC); override;
     procedure FontChanged(Sender: TObject); override;
     procedure SetColor(Value: TColor); override;
+    procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DestroyWnd; override;
-    procedure Paint; virtual;
   public
     property Canvas: TCanvas read FCanvas write FCanvas;
     property BorderStyle;
@@ -2756,7 +2756,14 @@ end;
 
 constructor TControlBorderSpacing.Create(OwnerControl: TControl);
 begin
-  FControl:=OwnerControl;
+  FControl := OwnerControl;
+  FLeft := 0;
+  FRight := 0;
+  FTop := 0;
+  FBottom := 0;
+  FAround := 0;
+  FCellAlignHorizontal := ccaFill;
+  FCellAlignVertical := ccaFill;
   inherited Create;
 end;
 
@@ -2905,13 +2912,18 @@ end;
 
 constructor TControlChildSizing.Create(OwnerControl: TWinControl);
 begin
-  FControl:=OwnerControl;
+  FControl := OwnerControl;
   inherited Create;
-  FLayout:=cclNone;
-  FEnlargeHorizontal:=crsAnchorAligning;
-  FEnlargeVertical:=crsAnchorAligning;
-  FShrinkHorizontal:=crsAnchorAligning;
-  FShrinkVertical:=crsAnchorAligning;
+  FLayout := cclNone;
+  FEnlargeHorizontal :=crsAnchorAligning;
+  FEnlargeVertical := crsAnchorAligning;
+  FShrinkHorizontal := crsAnchorAligning;
+  FShrinkVertical := crsAnchorAligning;
+  FLeftRightSpacing := 0;
+  FTopBottomSpacing := 0;
+  FHorizontalSpacing := 0;
+  FVerticalSpacing := 0;
+  FControlsPerLine := 0;
 end;
 
 procedure TControlChildSizing.Assign(Source: TPersistent);

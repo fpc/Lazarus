@@ -224,7 +224,7 @@ type
     property PageList: TList read fPageList;
     property Pages: TStrings read fAccess write SetPages;
     property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
-    property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
+    property TabPosition: TTabPosition read fTabPosition write SetTabPosition default tpTop;
   published
     property TabStop default true;
   end;
@@ -386,16 +386,16 @@ type
     property OnChangeBounds;
     property OnDragDrop;
     property OnDragOver;
-//    property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint;
     property OnResize;
-//    property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
-    property Shape: TShapeType read FShape write SetShape;
+    property Shape: TShapeType read FShape write SetShape default stRectangle;
     property ShowHint;
     property Visible;
   end;
@@ -582,7 +582,7 @@ type
   public
     property Align;
     property AutoSize;
-    property Center: Boolean read FCenter write SetCenter;
+    property Center: Boolean read FCenter write SetCenter default False;
     property Constraints;
     property Picture: TPicture read FPicture write SetPicture;
     property Visible;
@@ -1138,7 +1138,7 @@ type
     procedure ShowBalloonHint;
     function GetPosition: TPoint;
     { Properties }
-    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags;
+    property BalloonFlags: TBallonFlags read FBalloonFlags write FBalloonFlags default bfNone;
     property BalloonHint: string read FBalloonHint write FBalloonHint;
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
@@ -1147,7 +1147,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible: Boolean read FVisible write SetVisible default False;
     { Events }
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;

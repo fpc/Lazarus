@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -59,11 +59,9 @@ type
   { TGtk2WSStatusBar }
 
   TGtk2WSStatusBar = class(TWSStatusBar)
-  private
   protected
-  public
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -78,17 +76,13 @@ type
   { TGtk2WSTabSheet }
 
   TGtk2WSTabSheet = class(TWSTabSheet)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSPageControl }
 
   TGtk2WSPageControl = class(TWSPageControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomListView }
@@ -104,7 +98,7 @@ type
     class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const Widgets: PTVWidgets; const Add: Boolean);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -165,9 +159,7 @@ type
   { TGtk2WSListView }
 
   TGtk2WSListView = class(TWSListView)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSProgressBar }
@@ -175,8 +167,7 @@ type
   TGtk2WSProgressBar = class(TWSProgressBar)
   private
     class procedure UpdateProgressBarText(const AProgressBar: TCustomProgressBar); virtual;
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -185,44 +176,36 @@ type
   { TGtk2WSCustomUpDown }
 
   TGtk2WSCustomUpDown = class(TWSCustomUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSUpDown }
 
   TGtk2WSUpDown = class(TWSUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSToolButton }
 
   TGtk2WSToolButton = class(TWSToolButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSToolBar }
 
   TGtk2WSToolBar = class(TWSToolBar)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSTrackBar }
 
   TGtk2WSTrackBar = class(TWSTrackBar)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
@@ -232,17 +215,13 @@ type
   { TGtk2WSCustomTreeView }
 
   TGtk2WSCustomTreeView = class(TWSCustomTreeView)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSTreeView }
 
   TGtk2WSTreeView = class(TWSTreeView)
-  private
-  protected
-  public
+  published
   end;
 
 

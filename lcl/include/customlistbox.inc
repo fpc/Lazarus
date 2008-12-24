@@ -551,9 +551,12 @@ begin
   if HandleAllocated then 
   begin
     Result := TWSCustomListBoxClass(WidgetSetClass).GetItemIndex(Self);
-    FItemIndex:=Result;
-  end else
-    Result:=FItemIndex;
+    if (Result < 0) or (Result >= Count) then
+      Result := -1;
+    FItemIndex := Result;
+  end
+  else
+    Result := FItemIndex;
 //DebugLn('[TCustomListBox.GetItemIndex] END ');
 end;
 

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -41,67 +41,52 @@ type
   { TGtkWSPreviewFileControl }
 
   TGtkWSPreviewFileControl = class(TWSPreviewFileControl)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSPreviewFileDialog }
 
   TGtkWSPreviewFileDialog = class(TWSPreviewFileDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSOpenPictureDialog }
 
   TGtkWSOpenPictureDialog = class(TWSOpenPictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSSavePictureDialog }
 
   TGtkWSSavePictureDialog = class(TWSSavePictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCalculatorDialog }
 
   TGtkWSCalculatorDialog = class(TWSCalculatorDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCalculatorForm }
 
   TGtkWSCalculatorForm = class(TWSCalculatorForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCalendarDialogForm }
 
   TGtkWSCalendarDialogForm = class(TWSCalendarDialogForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCalendarDialog }
 
   TGtkWSCalendarDialog = class(TWSCalendarDialog)
-  private
-  protected
-  public
+  published
   end;
 
 

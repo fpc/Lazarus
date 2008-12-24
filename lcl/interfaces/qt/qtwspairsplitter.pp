@@ -42,25 +42,19 @@ type
   { TQtWSPairSplitterSide }
 
   TQtWSPairSplitterSide = class(TWSPairSplitterSide)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomPairSplitter }
 
   TQtWSCustomPairSplitter = class(TWSCustomPairSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSPairSplitter }
 
   TQtWSPairSplitter = class(TWSPairSplitter)
-  private
-  protected
-  public
+  published
   end;
 
 

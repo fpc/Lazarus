@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -40,21 +40,18 @@ type
 
   { TGtkWSPairSplitterSide }
   TGtkWSPairSplitterSide = class(TWSPairSplitterSide)
-  private
-  protected
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
   
   { TGtkWSCustomPairSplitter }
 
   TGtkWSCustomPairSplitter = class(TWSCustomPairSplitter)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
@@ -67,9 +64,7 @@ type
   { TGtkWSPairSplitter }
 
   TGtkWSPairSplitter = class(TWSPairSplitter)
-  private
-  protected
-  public
+  published
   end;
 
 

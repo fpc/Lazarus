@@ -1611,7 +1611,6 @@ begin
               end else begin
                 // there are more than one candidate
                 Ambiguous:=true;
-                break;
               end;
             end;
           end;

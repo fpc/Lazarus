@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,26 +45,20 @@ type
   { TCarbonWSDragImageList }
 
   TCarbonWSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSControl }
 
   TCarbonWSControl = class(TWSControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSWinControl }
 
   TCarbonWSWinControlClass = class of TCarbonWSWincontrol;
   TCarbonWSWinControl = class(TWSWinControl)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
@@ -91,26 +85,20 @@ type
   { TCarbonWSGraphicControl }
 
   TCarbonWSGraphicControl = class(TWSGraphicControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomControl }
 
   TCarbonWSCustomControl = class(TWSCustomControl)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSImageList }
 
   TCarbonWSImageList = class(TWSImageList)
-  private
-  protected
-  public
+  published
   end;
 
 

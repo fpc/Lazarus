@@ -344,9 +344,10 @@ end;
 procedure TLazarusManager.ShowSplash;
 begin
   if SplashForm=nil then SplashForm := TSplashForm.Create(Self);
-  with SplashForm do begin
+  with SplashForm do 
+  begin
     Show;
-    Paint;
+    Update;
   end;
   Application.ProcessMessages; // process splash paint message
 end;

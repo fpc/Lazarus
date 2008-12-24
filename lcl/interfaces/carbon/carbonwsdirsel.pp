@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                               CarbonWSDirSel.pp                               * 
+ *                               CarbonWSDirSel.pp                           * 
  *                               -------------                               * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,9 +42,7 @@ type
   { TCarbonWSDirSelDlg }
 
   TCarbonWSDirSelDlg = class(TWSDirSelDlg)
-  private
-  protected
-  public
+  published
   end;
 
 

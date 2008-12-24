@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TCarbonWSScrollingWinControl }
 
   TCarbonWSScrollingWinControl = class(TWSScrollingWinControl)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
   end;
@@ -55,33 +53,25 @@ type
   { TCarbonWSScrollBox }
 
   TCarbonWSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomFrame }
 
   TCarbonWSCustomFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSFrame }
 
   TCarbonWSFrame = class(TWSFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCustomForm }
   TCarbonWSCustomFormClass = class of TCarbonWSCustomForm;
   TCarbonWSCustomForm = class(TWSCustomForm)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
@@ -94,34 +84,26 @@ type
   { TCarbonWSForm }
 
   TCarbonWSForm = class(TWSForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSHintWindow }
 
   TCarbonWSHintWindow = class(TWSHintWindow)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSScreen }
 
   TCarbonWSScreen = class(TWSScreen)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSApplicationProperties }
 
   TCarbonWSApplicationProperties = class(TWSApplicationProperties)
-  private
-  protected
-  public
+  published
   end;
 
 

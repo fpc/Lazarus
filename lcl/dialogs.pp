@@ -261,7 +261,6 @@ type
     procedure SetButtonColorAutoSize(const AValue: Boolean);
     procedure SetButtonColorSize(const AValue: Integer);
   protected
-    procedure Click; override;
     procedure ShowColorDialog; virtual;
     function GetGlyphSize(PaintRect: TRect): TSize; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
@@ -270,6 +269,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; Override;
+    procedure Click; override;
   published
     property Action;
     property Align;

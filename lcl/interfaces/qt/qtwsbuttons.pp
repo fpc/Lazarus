@@ -44,18 +44,14 @@ type
   { TQtWSBitBtn }
 
   TQtWSBitBtn = class(TWSBitBtn)
-  private
-  protected
-  public
+  published
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
   end;
 
   { TQtWSSpeedButton }
 
   TQtWSSpeedButton = class(TWSSpeedButton)
-  private
-  protected
-  public
+  published
   end;
 
 

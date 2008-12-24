@@ -42,65 +42,49 @@ type
   { TQtWSPreviewFileControl }
 
   TQtWSPreviewFileControl = class(TWSPreviewFileControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSPreviewFileDialog }
 
   TQtWSPreviewFileDialog = class(TWSPreviewFileDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSOpenPictureDialog }
 
   TQtWSOpenPictureDialog = class(TWSOpenPictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSSavePictureDialog }
 
   TQtWSSavePictureDialog = class(TWSSavePictureDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCalculatorDialog }
 
   TQtWSCalculatorDialog = class(TWSCalculatorDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCalculatorForm }
 
   TQtWSCalculatorForm = class(TWSCalculatorForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCalendarDialogForm }
 
   TQtWSCalendarDialogForm = class(TWSCalendarDialogForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCalendarDialog }
 
   TQtWSCalendarDialog = class(TWSCalendarDialog)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -42,9 +42,7 @@ type
   { TQtWSCustomImageList }
 
   TQtWSCustomImageList = class(TWSCustomImageList)
-  private
-  protected
-  public
+  published
   end;
 
 

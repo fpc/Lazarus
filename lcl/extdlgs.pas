@@ -78,9 +78,6 @@ type
     function  IsFilterStored: Boolean; virtual;
     procedure PreviewKeyDown(Sender: TObject; var Key: word); virtual;
     procedure PreviewClick(Sender: TObject); virtual;
-    procedure DoClose; override;
-    procedure DoSelectionChange; override;
-    procedure DoShow; override;
     property ImageCtrl: TImage read FImageCtrl;
     property PictureGroupBox: TGroupBox read FPictureGroupBox;
     procedure InitPreviewControl; override;
@@ -88,6 +85,9 @@ type
     procedure UpdatePreview; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure DoClose; override;
+    procedure DoSelectionChange; override;
+    procedure DoShow; override;
     function GetFilterExt: String;
     property DefaultFilter: string read FDefaultFilter;
   published

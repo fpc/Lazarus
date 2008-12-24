@@ -62,10 +62,10 @@ type
     procedure SetEdgeInner(Value: TEdgeStyle);
     procedure SetEdgeOuter(Value: TEdgeStyle);
   protected
+    procedure AdjustClientRect(var ARect: TRect); override;
     procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure AdjustClientRect(var ARect: TRect); override;
   public
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;

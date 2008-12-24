@@ -51,7 +51,6 @@ type
     procedure SendItemState(const AIndex: Integer; const AState: TCheckBoxState);
     procedure SendItemEnabled(const AIndex: Integer; const AEnabled: Boolean);
     procedure DoChange(var Msg: TLMessage); message LM_CHANGED;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetItemEnabled(AIndex: Integer; const AValue: Boolean);
     procedure SetState(AIndex: Integer; const AValue: TCheckBoxState);
   protected
@@ -63,6 +62,7 @@ type
     procedure WriteData(Stream: TStream);
     procedure ClickCheck; dynamic;
     procedure ItemClick(const AIndex: Integer); dynamic;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure FontChanged(Sender: TObject); override;
     procedure ParentFontChanged; override;
   public

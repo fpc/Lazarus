@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -31,7 +31,7 @@ Type
   { TWin32ListStringList }
 
   TWin32ListStringList = Class(TStrings)
-  Private
+  private
     FWin32List: HWND;
     FSorted: Boolean;
     FSender: TWinControl;
@@ -53,8 +53,7 @@ Type
     FFlagGetSelected: cardinal;
     FFlagsetSelected: cardinal;
     FFlagInitStorage: cardinal;
-  Protected
-    function Add(const S: string): Integer; override;
+  protected
     function Get(Index: Integer): String; Override;
     function GetCount: Integer; Override;
     function GetObject(Index: Integer): TObject; Override;
@@ -65,15 +64,16 @@ Type
 
     procedure InitFlags; virtual;
     procedure SetSorted(Val: Boolean); Virtual;
-  Public
-    Constructor Create(List : HWND; TheOwner: TWinControl);
+  public
+    constructor Create(List : HWND; TheOwner: TWinControl);
+    function Add(const S: string): Integer; override;
     procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; Override;
     procedure Delete(Index: Integer); Override;
     procedure Insert(Index: Integer; Const S: String); Override;
     procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
-  End;
+  end;
 
   { TWin32ComboBoxStringList }
 

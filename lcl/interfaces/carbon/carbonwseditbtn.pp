@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSEditBtn.pp                               * 
+ *                              CarbonWSEditBtn.pp                           * 
  *                              --------------                               * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,49 +42,37 @@ type
   { TCarbonWSCustomEditButton }
 
   TCarbonWSCustomEditButton = class(TWSCustomEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSEditButton }
 
   TCarbonWSEditButton = class(TWSEditButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSFileNameEdit }
 
   TCarbonWSFileNameEdit = class(TWSFileNameEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDirectoryEdit }
 
   TCarbonWSDirectoryEdit = class(TWSDirectoryEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSDateEdit }
 
   TCarbonWSDateEdit = class(TWSDateEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSCalcEdit }
 
   TCarbonWSCalcEdit = class(TWSCalcEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

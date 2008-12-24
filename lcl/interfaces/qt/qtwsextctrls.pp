@@ -44,9 +44,7 @@ type
   { TQtWSCustomPage }
 
   TQtWSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
@@ -55,9 +53,7 @@ type
   { TQtWSCustomNotebook }
 
   TQtWSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -78,81 +74,61 @@ type
   { TQtWSPage }
 
   TQtWSPage = class(TWSPage)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSNotebook }
 
   TQtWSNotebook = class(TWSNotebook)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSShape }
 
   TQtWSShape = class(TWSShape)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomSplitter }
 
   TQtWSCustomSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSSplitter }
 
   TQtWSSplitter = class(TWSSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSPaintBox }
 
   TQtWSPaintBox = class(TWSPaintBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomImage }
 
   TQtWSCustomImage = class(TWSCustomImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSImage }
 
   TQtWSImage = class(TWSImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSBevel }
 
   TQtWSBevel = class(TWSBevel)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomRadioGroup }
 
   TQtWSCustomRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
@@ -160,17 +136,13 @@ type
   { TQtWSRadioGroup }
 
   TQtWSRadioGroup = class(TWSRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomCheckGroup }
 
   TQtWSCustomCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
@@ -178,33 +150,25 @@ type
   { TQtWSCheckGroup }
 
   TQtWSCheckGroup = class(TWSCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomLabeledEdit }
 
   TQtWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSLabeledEdit }
 
   TQtWSLabeledEdit = class(TWSLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomPanel }
 
   TQtWSCustomPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
@@ -212,15 +176,13 @@ type
   { TQtWSPanel }
 
   TQtWSPanel = class(TWSPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomTrayIcon }
 
   TQtWSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;

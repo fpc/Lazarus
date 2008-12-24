@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,105 +42,79 @@ type
   { TWin32WSDBEdit }
 
   TWin32WSDBEdit = class(TWSDBEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBText }
 
   TWin32WSDBText = class(TWSDBText)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBListBox }
 
   TWin32WSDBListBox = class(TWSDBListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBRadioGroup }
 
   TWin32WSDBRadioGroup = class(TWSDBRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBCheckBox }
 
   TWin32WSDBCheckBox = class(TWSDBCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBComboBox }
 
   TWin32WSDBComboBox = class(TWSDBComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBMemo }
 
   TWin32WSDBMemo = class(TWSDBMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBGroupBox }
 
   TWin32WSDBGroupBox = class(TWSDBGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBImage }
 
   TWin32WSDBImage = class(TWSDBImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBCalendar }
 
   TWin32WSDBCalendar = class(TWSDBCalendar)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBCustomNavigator }
 
   TWin32WSDBCustomNavigator = class(TWSDBCustomNavigator)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBNavButton }
 
   TWin32WSDBNavButton = class(TWSDBNavButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSDBNavigator }
 
   TWin32WSDBNavigator = class(TWSDBNavigator)
-  private
-  protected
-  public
+  published
   end;
 
 

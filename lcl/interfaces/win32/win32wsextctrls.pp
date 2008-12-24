@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -46,9 +46,7 @@ type
   { TWin32WSCustomPage }
 
   TWin32WSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -59,9 +57,7 @@ type
   { TWin32WSCustomNotebook }
 
   TWin32WSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
@@ -88,129 +84,97 @@ type
   { TWin32WSPage }
 
   TWin32WSPage = class(TWSPage)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSNotebook }
 
   TWin32WSNotebook = class(TWSNotebook)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSShape }
 
   TWin32WSShape = class(TWSShape)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomSplitter }
 
   TWin32WSCustomSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSSplitter }
 
   TWin32WSSplitter = class(TWSSplitter)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSPaintBox }
 
   TWin32WSPaintBox = class(TWSPaintBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomImage }
 
   TWin32WSCustomImage = class(TWSCustomImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSImage }
 
   TWin32WSImage = class(TWSImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSBevel }
 
   TWin32WSBevel = class(TWSBevel)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomRadioGroup }
 
   TWin32WSCustomRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSRadioGroup }
 
   TWin32WSRadioGroup = class(TWSRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomCheckGroup }
 
   TWin32WSCustomCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCheckGroup }
 
   TWin32WSCheckGroup = class(TWSCheckGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomLabeledEdit }
 
   TWin32WSCustomLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSLabeledEdit }
 
   TWin32WSLabeledEdit = class(TWSLabeledEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomPanel }
 
   TWin32WSCustomPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -218,15 +182,13 @@ type
   { TWin32WSPanel }
 
   TWin32WSPanel = class(TWSPanel)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomTrayIcon }
 
   TWin32WSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;

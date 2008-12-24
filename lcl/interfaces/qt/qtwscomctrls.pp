@@ -42,11 +42,10 @@ type
   { TQtWSStatusBar }
 
   TQtWSStatusBar = class(TWSStatusBar)
-  private
   protected
     class procedure ClearPanels(const Widget: TQtStatusBar);
     class procedure RecreatePanels(const AStatusBar: TStatusBar; const Widget: TQtStatusBar);
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -58,28 +57,21 @@ type
   { TQtWSTabSheet }
 
   TQtWSTabSheet = class(TWSTabSheet)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSPageControl }
 
   TQtWSPageControl = class(TWSPageControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomListView }
 
   TQtWSCustomListView = class(TWSCustomListView)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
-  public
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -158,17 +150,13 @@ type
   { TQtWSListView }
 
   TQtWSListView = class(TWSListView)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSProgressBar }
 
   TQtWSProgressBar = class(TWSProgressBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -177,25 +165,19 @@ type
   { TQtWSCustomUpDown }
 
   TQtWSCustomUpDown = class(TWSCustomUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSUpDown }
 
   TQtWSUpDown = class(TWSUpDown)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSToolButton }
 
   TQtWSToolButton = class(TWSToolButton)
-  private
-  protected
-  public
+  published
 {$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -205,9 +187,7 @@ type
   { TQtWSToolBar }
 
   TQtWSToolBar = class(TWSToolBar)
-  private
-  protected
-  public
+  published
 {$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -217,9 +197,7 @@ type
   { TQtWSTrackBar }
 
   TQtWSTrackBar = class(TWSTrackBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
@@ -229,17 +207,13 @@ type
   { TQtWSCustomTreeView }
 
   TQtWSCustomTreeView = class(TWSCustomTreeView)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSTreeView }
 
   TQtWSTreeView = class(TWSTreeView)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -14,7 +14,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -47,10 +47,9 @@ type
   { TGtkWSScrollBar }
 
   TGtkWSScrollBar = class(TWSScrollBar)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
@@ -58,10 +57,9 @@ type
   { TGtkWSCustomGroupBox }
 
   TGtkWSCustomGroupBox = class(TWSCustomGroupBox)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -71,17 +69,13 @@ type
   { TGtkWSGroupBox }
 
   TGtkWSGroupBox = class(TWSGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomComboBox }
 
   TGtkWSCustomComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
+  published
   {$IFDEF GTK1}
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -111,19 +105,15 @@ type
   { TGtkWSComboBox }
 
   TGtkWSComboBox = class(TWSComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomListBox }
 
   TGtkWSCustomListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
+  published
   {$IFDEF GTK1}
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -146,17 +136,13 @@ type
   { TGtkWSListBox }
 
   TGtkWSListBox = class(TWSListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomEdit }
 
   TGtkWSCustomEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
+  published
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -179,9 +165,7 @@ type
   { TGtkWSCustomMemo }
 
   TGtkWSCustomMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
+  published
     {$ifdef GTK1}
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function CreateHandle(const AWinControl: TWinControl;
@@ -209,27 +193,22 @@ type
   { TGtkWSEdit }
 
   TGtkWSEdit = class(TWSEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSMemo }
 
   TGtkWSMemo = class(TWSMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSCustomStaticText }
 
   TGtkWSCustomStaticText = class(TWSCustomStaticText)
-  private
   protected
     class function GetLabelWidget(AFrame: PGtkFrame): PGtkLabel;
     class function GetBoxWidget(AFrame: PGtkFrame): PGtkEventBox;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
@@ -247,30 +226,24 @@ type
   { TGtkWSStaticText }
 
   TGtkWSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSButtonControl }
 
   TGtkWSButtonControl = class(TWSButtonControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSButton }
 
   TGtkWSButton = class(TWSButton)
-  private
-  protected
   public
     {SetCallbacks is made public so that it can be called from
      TGtkWSBitBtn.CreateHandle.
      TODO: move it to TGtkPrivateButton}
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-
+  published
     {$ifdef Gtk1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -289,10 +262,9 @@ type
   { TGtkWSCustomCheckBox }
 
   TGtkWSCustomCheckBox = class(TWSCustomCheckBox)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
   {$IFDEF GTK1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
@@ -311,26 +283,20 @@ type
   { TGtkWSCheckBox }
 
   TGtkWSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtkWSToggleBox }
 
   TGtkWSToggleBox = class(TWSToggleBox)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSRadioButton }
 
   TGtkWSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 

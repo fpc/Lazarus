@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -53,6 +53,7 @@ type
   { TWSMenuItem }
 
   TWSMenuItem = class(TWSLCLComponent)
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; virtual;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
@@ -71,6 +72,7 @@ type
 
   TWSMenuClass = class of TWSMenu;
   TWSMenu = class(TWSLCLComponent)
+  published
     class function CreateHandle(const AMenu: TMenu): HMENU; virtual;
     
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); virtual;
@@ -79,11 +81,13 @@ type
   { TWSMainMenu }
 
   TWSMainMenu = class(TWSMenu)
+  published
   end;
 
   { TWSPopupMenu }
 
   TWSPopupMenu = class(TWSMenu)
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); virtual;
   end;
   TWSPopupMenuClass = class of TWSPopupMenu;

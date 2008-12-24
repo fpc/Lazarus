@@ -42,17 +42,13 @@ type
   { TQtWSScrollingWinControl }
 
   TQtWSScrollingWinControl = class(TWSScrollingWinControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSScrollBox }
 
   TQtWSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
+  published
     class procedure ScrollBy(const AWinControl: TScrollingWinControl;
       const DeltaX, DeltaY: integer); override;
   end;
@@ -60,9 +56,7 @@ type
   { TQtWSCustomFrame }
 
   TQtWSCustomFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
+  published
     class procedure ScrollBy(const AWinControl: TScrollingWinControl;
       const DeltaX, DeltaY: integer); override;
   end;
@@ -70,9 +64,7 @@ type
   { TQtWSFrame }
 
   TQtWSFrame = class(TWSFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSCustomForm }
@@ -84,8 +76,7 @@ type
     class function GetQtFormStyle(const AFormStyle: TFormStyle): QtWindowFlags;
     class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
       ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
@@ -100,34 +91,26 @@ type
   { TQtWSForm }
 
   TQtWSForm = class(TWSForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSHintWindow }
 
   TQtWSHintWindow = class(TWSHintWindow)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TQtWSScreen }
 
   TQtWSScreen = class(TWSScreen)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSApplicationProperties }
 
   TQtWSApplicationProperties = class(TWSApplicationProperties)
-  private
-  protected
-  public
+  published
   end;
 
 

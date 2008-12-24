@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -43,9 +43,7 @@ type
   { TWin32WSScrollingWinControl }
 
   TWin32WSScrollingWinControl = class(TWSScrollingWinControl)
-  private
-  protected
-  public
+  published
     class procedure ScrollBy(const AWinControl: TScrollingWinControl;
       const DeltaX, DeltaY: integer); override;
   end;
@@ -53,9 +51,7 @@ type
   { TWin32WSScrollBox }
 
   TWin32WSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -63,25 +59,19 @@ type
   { TWin32WSCustomFrame }
 
   TWin32WSCustomFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSFrame }
 
   TWin32WSFrame = class(TWSFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCustomForm }
 
   TWin32WSCustomForm = class(TWSCustomForm)
-  private
-  protected
-  public
+  published
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
@@ -100,17 +90,13 @@ type
   { TWin32WSForm }
 
   TWin32WSForm = class(TWSForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSHintWindow }
 
   TWin32WSHintWindow = class(TWSHintWindow)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -118,17 +104,13 @@ type
   { TWin32WSScreen }
 
   TWin32WSScreen = class(TWSScreen)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSApplicationProperties }
 
   TWin32WSApplicationProperties = class(TWSApplicationProperties)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -45,9 +45,7 @@ type
   { TWin32WSCustomFloatSpinEdit }
 
   TWin32WSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
-  private
-  protected
-  public
+  published
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -69,9 +67,7 @@ type
   { TWin32WSFloatSpinEdit }
 
   TWin32WSFloatSpinEdit = class(TWSFloatSpinEdit)
-  private
-  protected
-  public
+  published
   end;
 
 

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -44,9 +44,7 @@ type
   { TWin32WSPreviewFileControl }
 
   TWin32WSPreviewFileControl = class(TWSPreviewFileControl)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -54,59 +52,45 @@ type
   { TWin32WSPreviewFileDialog }
 
   TWin32WSPreviewFileDialog = class(TWSPreviewFileDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSOpenPictureDialog }
 
   TWin32WSOpenPictureDialog = class(TWin32WSOpenDialog)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSSavePictureDialog }
 
   TWin32WSSavePictureDialog = class(TWin32WSSaveDialog)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSCalculatorDialog }
 
   TWin32WSCalculatorDialog = class(TWSCalculatorDialog)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCalculatorForm }
 
   TWin32WSCalculatorForm = class(TWSCalculatorForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCalendarDialogForm }
 
   TWin32WSCalendarDialogForm = class(TWSCalendarDialogForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TWin32WSCalendarDialog }
 
   TWin32WSCalendarDialog = class(TWSCalendarDialog)
-  private
-  protected
-  public
+  published
   end;
 
 

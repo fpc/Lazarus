@@ -224,10 +224,11 @@ type
   TSpeedButtonActionLink = class(TControlActionLink)
   protected
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
-    function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
     procedure SetChecked(Value: Boolean); override;
+  public
+    function IsCheckedLinked: Boolean; override;
+    function IsGroupIndexLinked: Boolean; override;
   end;
 
   { TCustomSpeedButton }

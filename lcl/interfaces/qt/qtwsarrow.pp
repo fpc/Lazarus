@@ -42,9 +42,7 @@ type
   { TQtWSArrow }
 
   TQtWSArrow = class(TWSArrow)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;

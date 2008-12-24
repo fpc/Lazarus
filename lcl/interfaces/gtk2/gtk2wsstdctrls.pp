@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -69,10 +69,9 @@ type
   { TGtk2WSScrollBar }
 
   TGtk2WSScrollBar = class(TWSScrollBar)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
@@ -80,9 +79,7 @@ type
   { TGtk2WSCustomGroupBox }
 
   TGtk2WSCustomGroupBox = class(TGtkWSCustomGroupBox)
-  private
-  protected
-  public
+  published
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -92,9 +89,7 @@ type
   { TGtk2WSGroupBox }
 
   TGtk2WSGroupBox = class(TGtkWSGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomComboBox }
@@ -102,12 +97,11 @@ type
            but not the old TGtkCombo !!! }
 
   TGtk2WSCustomComboBox = class(TGtkWSCustomComboBox)
-  private
   protected
     class procedure ReCreateCombo(const ACustomComboBox: TCustomComboBox; const AWithEntry: Boolean; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetCallbacks(const AWinControl: tWinControl; const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
@@ -139,18 +133,15 @@ type
   { TGtk2WSComboBox }
 
   TGtk2WSComboBox = class(TGtkWSComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomListBox }
 
   TGtk2WSCustomListBox = class(TGtkWSCustomListBox)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
@@ -173,17 +164,13 @@ type
   { TGtk2WSListBox }
 
   TGtk2WSListBox = class(TGtkWSListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomEdit }
 
   TGtk2WSCustomEdit = class(TGtkWSCustomEdit)
-  private
-  protected
-  public
+  published
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -195,10 +182,9 @@ type
   { TGtk2WSCustomMemo }
 
   TGtk2WSCustomMemo = class(TWSCustomMemo)
-  private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -229,17 +215,13 @@ type
   { TGtk2WSEdit }
 
   TGtk2WSEdit = class(TGtkWSEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSMemo }
 
   TGtk2WSMemo = class(TGtkWSMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomLabel }
@@ -264,20 +246,18 @@ type
   { TGtk2WSButtonControl }
 
   TGtk2WSButtonControl = class(TGtkWSButtonControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSButton }
 
   TGtk2WSButton = class(TGtkWSButton)
-  private
   protected
     class function  GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
     class function  GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   public
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -294,9 +274,7 @@ type
   { TGtk2WSCustomCheckBox }
 
   TGtk2WSCustomCheckBox = class(TGtkWSCustomCheckBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
                                  const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -314,41 +292,31 @@ type
   { TGtk2WSCheckBox }
 
   TGtk2WSCheckBox = class(TGtkWSCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSToggleBox }
 
   TGtk2WSToggleBox = class(TGtkWSToggleBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSRadioButton }
 
   TGtk2WSRadioButton = class(TGtkWSRadioButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomStaticText }
 
   TGtk2WSCustomStaticText = class(TGtkWSCustomStaticText)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSStaticText }
 
   TGtk2WSStaticText = class(TGtkWSStaticText)
-  private
-  protected
-  public
+  published
   end;
 
 {$DEFINE MEMOHEADER}

@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -53,6 +53,7 @@ type
 
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
@@ -61,36 +62,43 @@ type
   { TWSFileDialog }
 
   TWSFileDialog = class(TWSCommonDialog)
+  published
   end;
 
   { TWSOpenDialog }
 
   TWSOpenDialog = class(TWSFileDialog)
+  published
   end;
 
   { TWSSaveDialog }
 
   TWSSaveDialog = class(TWSOpenDialog)
+  published
   end;
 
   { TWSSelectDirectoryDialog }
 
   TWSSelectDirectoryDialog = class(TWSOpenDialog)
+  published
   end;
 
   { TWSColorDialog }
 
   TWSColorDialog = class(TWSCommonDialog)
+  published
   end;
 
   { TWSColorButton }
 
   TWSColorButton = class(TWSGraphicControl)
+  published
   end;
 
   { TWSFontDialog }
 
   TWSFontDialog = class(TWSCommonDialog)
+  published
   end;
 
 

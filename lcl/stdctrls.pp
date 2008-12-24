@@ -348,7 +348,7 @@ type
       read FOnMeasureItem write FOnMeasureItem;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property ParentColor default false;
-    property Sorted: boolean read FSorted write SetSorted;
+    property Sorted: boolean read FSorted write SetSorted default False;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -360,7 +360,7 @@ type
                    MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; virtual;
     procedure ClearSelection; //override;
-    property CharCase: TEditCharCase read FCharCase write SetCharCase;
+    property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
@@ -383,7 +383,7 @@ type
     property SelLength: integer read GetSelLength write SetSelLength;// byte length
     property SelStart: integer read GetSelStart write SetSelStart;// byte position
     property SelText: String read GetSelText write SetSelText;
-    property Style: TComboBoxStyle read FStyle write SetStyle;
+    property Style: TComboBoxStyle read FStyle write SetStyle default csDropDown;
     property TabStop default true;
     property Text;
   end;
@@ -556,11 +556,11 @@ type
     property Count: Integer read GetCount; // for Delphi compatability
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;
-    property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
+    property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight default False; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
     property Items: TStrings read FItems write SetItems;
-    property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
+    property MultiSelect: boolean read FMultiSelect write SetMultiSelect default False;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -591,8 +591,8 @@ type
     property SelCount: integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property ShowHint;
-    property Sorted: boolean read FSorted write SetSorted;
-    property Style: TListBoxStyle read FStyle write SetStyle;
+    property Sorted: boolean read FSorted write SetSorted default False;
+    property Style: TListBoxStyle read FStyle write SetStyle default lbStandard;
     property TabOrder;
     property TabStop default true;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
@@ -807,7 +807,7 @@ type
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;
     property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
@@ -966,7 +966,7 @@ type
     property BorderSpacing;
     property BorderStyle;
     property Caption;
-    property Color;
+    property Color nodefault;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -1028,8 +1028,9 @@ type
   protected
     FClientButton: TButtonControl;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
+  public
+    function IsCheckedLinked: Boolean; override;
   end;
 
   TButtonActionLinkClass = class of TButtonActionLink;
@@ -1060,7 +1061,6 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
     property ParentColor default false;
-    function UseRightToLeftAlignment: Boolean; override;
     procedure WSSetDefault;
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
@@ -1070,6 +1070,7 @@ type
     procedure ExecuteCancelAction; override;
     procedure ActiveDefaultControlChanged(NewControl: TControl); override;
     procedure UpdateRolesForForm; override;
+    function UseRightToLeftAlignment: Boolean; override;
   public
     property Active: boolean read FActive stored false;
     property Default: Boolean read FDefault write SetDefault default false;
@@ -1164,7 +1165,7 @@ type
   public
     property AutoSize default true;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
-    property State: TCheckBoxState read GetState write SetState;
+    property State: TCheckBoxState read GetState write SetState default cbUnchecked;
     property TabStop default true;
     property UseOnChange;
     property OnChange;
@@ -1182,7 +1183,7 @@ type
     property BorderSpacing;
     property Caption;
     property Checked;
-    property Color;
+    property Color nodefault;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -1360,7 +1361,7 @@ type
     procedure SetWordWrap(Value: Boolean);
     procedure Loaded; override;
 
-    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;

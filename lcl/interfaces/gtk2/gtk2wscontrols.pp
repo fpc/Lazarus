@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -47,25 +47,19 @@ type
   { TGtk2WSDragImageList }
 
   TGtk2WSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSControl }
 
   TGtk2WSControl = class(TWSControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSWinControl }
 
   TGtk2WSWinControl = class(TGtkWSWinControl)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
@@ -78,33 +72,27 @@ type
   { TGtk2WSGraphicControl }
 
   TGtk2WSGraphicControl = class(TWSGraphicControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomControl }
 
   TGtk2WSCustomControl = class(TWSCustomControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSImageList }
 
   TGtk2WSImageList = class(TWSImageList)
-  private
-  protected
-  public
+  published
   end;
 
 function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
                   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 
-
 implementation
-uses Gtk2Int, LMessages, Math;
+uses
+  Gtk2Int, LMessages, Math;
 
 { TGtk2WSWinControl }
 

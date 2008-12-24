@@ -358,6 +358,8 @@ procedure RegisterStandardDesignerMenuItems;
 
 implementation
 
+type
+  TCustomFormAccess = class(TCustomForm);
 
 const
   mk_lbutton =   1;
@@ -2113,7 +2115,7 @@ begin
   // This is normally done in PaintControls
   if FLookupRoot<>FForm then begin
     // this is a special designer form -> lets draw itself
-    FForm.Paint;
+    TCustomFormAccess(FForm).Paint;
   end;
 end;
 

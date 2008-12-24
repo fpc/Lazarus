@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                               CarbonWSMenus.pp                                * 
+ *                               CarbonWSMenus.pp                            * 
  *                               ------------                                * 
  *                                                                           *
  *                                                                           *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -49,7 +49,7 @@ type
   protected
     class function CheckMenuItem(const AMenuItem: TMenuItem;
       const AMethodName: String; AParamName: String = ''): Boolean;
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -65,26 +65,20 @@ type
   { TCarbonWSMenu }
 
   TCarbonWSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TCarbonWSMainMenu }
 
   TCarbonWSMainMenu = class(TWSMainMenu)
-  private
-  protected
-  public
+  published
   end;
 
   { TCarbonWSPopupMenu }
 
   TCarbonWSPopupMenu = class(TWSPopupMenu)
-  private
-  protected
-  public
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: Integer); override;
   end;
 

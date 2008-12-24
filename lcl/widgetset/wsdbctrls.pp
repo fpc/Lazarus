@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -53,61 +53,73 @@ type
   { TWSDBEdit }
 
   TWSDBEdit = class(TWSCustomMaskEdit)
+  published
   end;
 
   { TWSDBListBox }
 
   TWSDBListBox = class(TWSCustomListBox)
+  published
   end;
 
   { TWSDBRadioGroup }
 
   TWSDBRadioGroup = class(TWSCustomRadioGroup)
+  published
   end;
 
   { TWSDBCheckBox }
 
   TWSDBCheckBox = class(TWSCustomCheckBox)
+  published
   end;
 
   { TWSDBComboBox }
 
   TWSDBComboBox = class(TWSCustomComboBox)
+  published
   end;
 
   { TWSDBMemo }
 
   TWSDBMemo = class(TWSCustomMemo)
+  published
   end;
 
   { TWSDBGroupBox }
 
   TWSDBGroupBox = class(TWSCustomGroupBox)
+  published
   end;
 
   { TWSDBImage }
 
   TWSDBImage = class(TWSCustomImage)
+  published
   end;
 
   { TWSDBCalendar }
 
   TWSDBCalendar = class(TWSCustomCalendar)
+  published
   end;
 
   { TWSDBCustomNavigator }
 
   TWSDBCustomNavigator = class(TWSCustomPanel)
+  published
   end;
 
   { TWSDBNavButton }
 
   TWSDBNavButton = class(TWSSpeedButton)
+  published
   end;
 
   { TWSDBNavigator }
 
   TWSDBNavigator = class(TWSDBCustomNavigator)
+  published
   end;
 
 

@@ -42,105 +42,79 @@ type
   { TQtWSDBEdit }
 
   TQtWSDBEdit = class(TWSDBEdit)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBText }
 
   TQtWSDBText = class(TWSDBText)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBListBox }
 
   TQtWSDBListBox = class(TWSDBListBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBRadioGroup }
 
   TQtWSDBRadioGroup = class(TWSDBRadioGroup)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBCheckBox }
 
   TQtWSDBCheckBox = class(TWSDBCheckBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBComboBox }
 
   TQtWSDBComboBox = class(TWSDBComboBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBMemo }
 
   TQtWSDBMemo = class(TWSDBMemo)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBGroupBox }
 
   TQtWSDBGroupBox = class(TWSDBGroupBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBImage }
 
   TQtWSDBImage = class(TWSDBImage)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBCalendar }
 
   TQtWSDBCalendar = class(TWSDBCalendar)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBCustomNavigator }
 
   TQtWSDBCustomNavigator = class(TWSDBCustomNavigator)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBNavButton }
 
   TQtWSDBNavButton = class(TWSDBNavButton)
-  private
-  protected
-  public
+  published
   end;
 
   { TQtWSDBNavigator }
 
   TQtWSDBNavigator = class(TWSDBNavigator)
-  private
-  protected
-  public
+  published
   end;
 
 

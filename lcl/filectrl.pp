@@ -64,13 +64,13 @@ Type
     procedure UpdateSelectedFileName;
   protected
     procedure DoChangeFile; virtual;
-    procedure Click; override;
     procedure Loaded; override;
     function IndexOfFile(const AFilename: string): integer;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
     procedure UpdateFileList; virtual;
   public
     property Drive: Char Read FDrive Write SetDrive default ' ';

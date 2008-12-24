@@ -7,7 +7,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -38,8 +38,8 @@ type
   { TCarbonClipboard }
 
   TCarbonClipboard = class
-    FOwnerShips: Integer;
   private
+    FOwnerShips: Integer;
     FPasteboards: Array [TClipboardType] of PasteboardRef;
     FFormats: TList; // list of CFStringRef UTIs
     FOnClipboardRequest: Array [TClipboardType] of TClipboardRequestEvent;

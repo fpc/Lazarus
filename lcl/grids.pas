@@ -267,11 +267,11 @@ type
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure VisibleChanging; override;
     function  SendChar(AChar: TUTF8Char): Integer;
-    procedure SetFocus; override;
     procedure WndProc(var TheMessage : TLMessage); override;
   public
     destructor Destroy; override;
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
+    procedure SetFocus; override;
   end;
 
 
@@ -376,7 +376,6 @@ type
     procedure SetLayout(const AValue: TTextLayout);
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
-    procedure Assign(Source: TPersistent); override;
     function  GetDefaultCaption: string; virtual;
     function  GetDefaultAlignment: TAlignment;
     function  GetDefaultColor: TColor;
@@ -385,6 +384,7 @@ type
   public
     constructor Create(TheColumn: TGridColumn); virtual;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure FillTitleDefaultFont;
     function IsDefault: boolean;
     property Column: TGridColumn read FColumn;
@@ -456,7 +456,6 @@ type
     procedure SetVisible(const AValue: Boolean);
     procedure SetWidth(const AValue: Integer);
   protected
-    procedure Assign(Source: TPersistent); override;
     function  GetDisplayName: string; override;
     function  GetDefaultAlignment: TAlignment; virtual;
     function  GetDefaultColor: TColor; virtual;
@@ -476,6 +475,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure FillDefaultFont;
     function  IsDefault: boolean; virtual;
     property Grid: TCustomGrid read GetGrid;
@@ -1302,8 +1302,6 @@ type
     FOwner: TMap;
     function ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
   protected
-    procedure Clear; override;
-    function Add(const S: string): Integer; override;
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
@@ -1312,7 +1310,9 @@ type
   public
     constructor Create(aGrid: TCustomStringGrid; OwnerMap:TMap; aIsCol: Boolean; aIndex: Longint);
     destructor Destroy; override;
+    function Add(const S: string): Integer; override;
     procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
   end;

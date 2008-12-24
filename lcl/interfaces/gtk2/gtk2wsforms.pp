@@ -43,42 +43,33 @@ type
   { TGtk2WSScrollingWinControl }
 
   TGtk2WSScrollingWinControl = class(TGtkWSScrollingWinControl)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSScrollBox }
 
   TGtk2WSScrollBox = class(TGtkWSScrollBox)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomFrame }
 
   TGtk2WSCustomFrame = class(TGtkWSCustomFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSFrame }
 
   TGtk2WSFrame = class(TGtkWSFrame)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSCustomForm }
 
   TGtk2WSCustomForm = class(TGtkWSCustomForm)
-  private
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
 
@@ -92,35 +83,26 @@ type
   { TGtk2WSForm }
 
   TGtk2WSForm = class(TGtkWSForm)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSHintWindow }
 
   TGtk2WSHintWindow = class(TGtkWSHintWindow)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSScreen }
 
   TGtk2WSScreen = class(TGtkWSScreen)
-  private
-  protected
-  public
+  published
   end;
 
   { TGtk2WSApplicationProperties }
 
   TGtk2WSApplicationProperties = class(TGtkWSApplicationProperties)
-  private
-  protected
-  public
+  published
   end;
-
 
 implementation
 
