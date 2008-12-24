@@ -26,7 +26,8 @@ unit SynEditMarkupSelection;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls, LCLProc;
+  Classes, SysUtils, Graphics, Controls, LCLProc,
+  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses;
 
 type
 
@@ -34,6 +35,7 @@ type
 
   TSynEditMarkupSelection = class(TSynEditMarkup)
   private
+    FSelection: TSynEditSelection;
     FMarkupInfoIncr: TSynSelectedColor; // Markup during incremental search
     FMarkupInfoSelection: TSynSelectedColor; // Markup for normal Selection
     FUseIncrementalColor : Boolean;
@@ -41,7 +43,7 @@ type
     procedure SetUseIncrementalColor(const AValue : Boolean);
     procedure MarkupChangedIntern(AMarkup: TObject);
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit : TCustomControl; ASelection: TSynEditSelection);
     destructor Destroy; override;
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
@@ -74,9 +76,10 @@ begin
   else MarkupInfo.Assign(FMarkupInfoSelection);
 end;
 
-constructor TSynEditMarkupSelection.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupSelection.Create(ASynEdit : TCustomControl; ASelection: TSynEditSelection);
 begin
   inherited Create(ASynEdit);
+  FSelection := ASelection;
   FMarkupInfoSelection := TSynSelectedColor.Create;
   FMarkupInfoSelection.OnChange := @MarkupChangedIntern;
   FMarkupInfoIncr := TSynSelectedColor.Create;
@@ -101,17 +104,17 @@ begin
   nSelEnd := 0;
 
   if (not TSynEdit(SynEdit).HideSelection or TSynEdit(SynEdit).Focused) then begin
-    p1 := TSynEdit(SynEdit).BlockBegin;  // always ordered
-    p2 := TSynEdit(SynEdit).BlockEnd;
+    p1 := FSelection.FirstLineBytePos;  // always ordered
+    p2 := FSelection.LastLineBytePos;
 
-    if (p1.y > aRow) or (p2.y < aRow)
-    then exit;
-    
+    if (p1.y > aRow) or (p2.y < aRow) or not (FSelection.SelAvail) then
+      exit;
+
     p1 := LogicalToPhysicalPos(p1);
     p2 := LogicalToPhysicalPos(p2);
     nSelStart := 1;
     nSelEnd := -1; // line end
-    if (TSynEdit(SynEdit).SelectionMode = smColumn) then begin
+    if (FSelection.ActiveSelectionMode = smColumn) then begin
       if (p1.X < p2.X) then begin
         nSelStart := p1.X;
         nSelEnd := p2.X;
@@ -119,7 +122,7 @@ begin
         nSelStart := p2.X;
         nSelEnd := p1.X;
       end;
-    end else if (TSynEdit(SynEdit).SelectionMode = smNormal) then begin
+    end else if (FSelection.ActiveSelectionMode = smNormal) then begin
       if p1.y = aRow
       then nSelStart := p1.x;
       if p2.y = aRow

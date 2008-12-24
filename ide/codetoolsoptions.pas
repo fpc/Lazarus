@@ -198,6 +198,7 @@ begin
   atNewLine: Result:=lisCodeToolsOptsNewLine;
   atSpace: Result:=lisCodeToolsOptsSpace;
   atSymbol: Result:=lisCodeToolsOptsSymbol;
+  atBracket: Result:=lisCodeToolsOptsBracket;
   else
     Result:='???';
   end;

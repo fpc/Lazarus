@@ -450,7 +450,8 @@ type
     fAutoDelayInMSec: Integer;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
-    
+    FAutoRemoveEmptyMethods: Boolean;
+
     // Code Folding
     FUseCodeFolding: Boolean;
     FCFDividerDrawLevel: Integer;
@@ -568,6 +569,8 @@ type
       read fCodeTemplateFileName write fCodeTemplateFileName;
     property CodeTemplateIndentToTokenStart: Boolean
       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
+    property AutoRemoveEmptyMethods: Boolean read FAutoRemoveEmptyMethods
+      write FAutoRemoveEmptyMethods default False;
 
     // Code Folding
     property UseCodeFolding: Boolean
@@ -1526,6 +1529,8 @@ begin
     fCTemplIndentToTokenStart :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
+    fAutoRemoveEmptyMethods :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
 
     // Code Folding
     FUseCodeFolding :=
@@ -1660,6 +1665,9 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
       , fCTemplIndentToTokenStart, False);
+    XMLConfig.SetDeleteValue(
+      'EditorOptions/CodeTools/AutoRemoveEmptyMethods'
+      , fAutoRemoveEmptyMethods, False);
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',

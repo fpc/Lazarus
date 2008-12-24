@@ -243,14 +243,17 @@ type
                         out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
     procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
+                              const AClassName: string;
                               const Sections: TPascalClassSections;
                               ListOfPCodeXYPosition: TFPList;
                               out AllEmpty: boolean): boolean;
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
+                              const AClassName: string;
                               const Sections: TPascalClassSections;
                               CodeTreeNodeExtensions: TAVLTree;
                               out AllEmpty: boolean): boolean;
     function RemoveEmptyMethods(CursorPos: TCodeXYPosition;
+                              const AClassName: string;
                               const Sections: TPascalClassSections;
                               SourceChangeCache: TSourceChangeCache;
                               out AllRemoved: boolean;
@@ -4017,8 +4020,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList;
-  out AllEmpty: boolean): boolean;
+  const AClassName: string; const Sections: TPascalClassSections;
+  ListOfPCodeXYPosition: TFPList; out AllEmpty: boolean): boolean;
 var
   ProcBodyNodes: TAVLTree;
   AVLNode: TAVLTreeNode;
@@ -4029,7 +4032,7 @@ begin
   Result:=false;
   ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
-    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes,AllEmpty);
+    Result:=FindEmptyMethods(CursorPos,AClassName,Sections,ProcBodyNodes,AllEmpty);
     if Result then begin
       AVLNode:=ProcBodyNodes.FindLowest;
       while AVLNode<>nil do begin
@@ -4049,7 +4052,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; CodeTreeNodeExtensions: TAVLTree;
+  const AClassName: string; const Sections: TPascalClassSections;
+  CodeTreeNodeExtensions: TAVLTree;
   out AllEmpty: boolean): boolean;
 // NodeExt.Node is the body node
 // NodeExt.Data is the definition node
@@ -4080,9 +4084,15 @@ var
 begin
   Result:=false;
   AllEmpty:=false;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  CodeCompleteClassNode:=FindClassNode(CursorNode);
+  if (AClassName<>'') and (CursorPos.Y<1) then begin
+    BuildTree(false);
+    CursorNode:=FindClassNodeInInterface(AClassName,true,false,true);
+    CodeCompleteClassNode:=CursorNode;
+  end else begin
+    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    CodeCompleteClassNode:=FindClassNode(CursorNode);
+  end;
   if FCodeCompleteClassNode=nil then begin
     DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods no class at ',DbgsCXY(CursorPos)]);
     exit;
@@ -4141,7 +4151,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.RemoveEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; SourceChangeCache: TSourceChangeCache;
+  const AClassName: string; const Sections: TPascalClassSections;
+  SourceChangeCache: TSourceChangeCache;
   out AllRemoved: boolean;
   const Attr: TProcHeadAttributes; out RemovedProcHeads: TStrings): boolean;
 var
@@ -4166,9 +4177,10 @@ begin
   RemovedProcHeads:=nil;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
   SourceChangeCache.MainScanner:=Scanner;
+  ProcDefNodes:=nil;
   ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
-    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes,AllRemoved);
+    Result:=FindEmptyMethods(CursorPos,AClassName,Sections,ProcBodyNodes,AllRemoved);
     if Result and (ProcBodyNodes<>nil) and (ProcBodyNodes.Count>0) then begin
       // sort the nodes for position
       ProcBodyNodes.OnCompare:=@CompareCodeTreeNodeExtWithPos;

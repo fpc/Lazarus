@@ -38,9 +38,9 @@ type
     AutoDelayMinLabel: TLabel;
     AutoDelayTrackBar: TTrackBar;
     AutoIdentifierCompletionCheckBox: TCheckBox;
-    AutomaticFeaturesGroupBox: TGroupBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
+    AutoRemoveEmptyMethodsOnSave: TCheckBox;
   private
     { private declarations }
   public
@@ -57,17 +57,16 @@ implementation
 
 function TEditorCodetoolsOptionsFrame.GetTitle: String;
 begin
-  Result := dlgCodeToolsTab;
+  Result := lisAutomaticFeatures;
 end;
 
 procedure TEditorCodetoolsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  AutomaticFeaturesGroupBox.Caption := lisAutomaticFeatures;
-
   AutoIdentifierCompletionCheckBox.Caption := dlgEdIdComlet;
   AutoCodeParametersCheckBox.Caption := dlgEdCodeParams;
   AutoToolTipExprEvalCheckBox.Caption := dlgTooltipEval;
   AutoToolTipSymbToolsCheckBox.Caption := dlgTooltipTools;
+  AutoRemoveEmptyMethodsOnSave.Caption := dlgAutoRemoveEmptyMethods;
 
   AutoDelayLabel.Caption := dlgEdDelay;
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
@@ -83,6 +82,7 @@ begin
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
+    AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
   end;
 end;
 
@@ -95,6 +95,7 @@ begin
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
+    AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
   end;
 end;
 

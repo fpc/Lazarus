@@ -538,8 +538,10 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.SmallChange">
-        <short>SmallChange - the size of the step to be taken by the scroller for a small change</short>
-        <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text</descr>
+        <short>
+          <var>SmallChange</var> - the size of the step to be taken by the scroller for a small change</short>
+        <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text
+</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
@@ -548,7 +550,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnChange">
-        <short>Event handler for any change in position of the slider or other mouse movement or keyboard event associated with the scrollbar</short>
+        <short>
+          <var>OnChange</var> - Event handler for any change in position of the slider or other mouse movement or keyboard event associated with the scrollbar</short>
         <descr/>
         <seealso/>
       </element>
@@ -1233,7 +1236,7 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption">
-        <short>Defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
+        <short>Enumerated type that defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
         <descr>
           <p>
             <var>TComboBoxAutoCompleteTextOption</var>
@@ -1276,7 +1279,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- set type Visibility: default -->
       <element name="TComboBoxAutoCompleteText">
-        <short>Set of <var>TComboBoxAutoCompleteTextOption</var>
+        <short>
+          <var>TComboBoxAutoCompleteText </var>- Set of <var>TComboBoxAutoCompleteTextOption</var>
         </short>
         <descr/>
         <seealso>
@@ -1285,8 +1289,10 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxStyle">
-        <short>ComboBox Style</short>
-        <descr>ComboBox Style: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner</descr>
+        <short>
+          <var>ComboBox Style</var> - enumerated type for style of combobox</short>
+        <descr>ComboBox Style: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner
+</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1752,7 +1758,7 @@ False is set when the edit or combobox control loses focus.
         <short>
           <var>DrawItem</var> - perform the action necessary to draw the specified indexed item at the specified position</short>
         <descr>
-		<printshort id="TCustomComboBox.DrawItem"/>
+          <printshort id="TCustomComboBox.DrawItem"/>
           <p>Software emulation of <var>OnDrawItem</var> event</p>
         </descr>
         <errors/>
@@ -1783,7 +1789,8 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.LMChanged">
-        <short/>
+        <short>
+          <var>LMChanged</var> - LCL Message to signify that the control has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2261,7 +2268,8 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.IntfGetItems">
-        <short/>
+        <short>
+          <var>IntfGetItems</var> - gets list of items from the interface</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3000,7 +3008,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListBoxStyle">
-        <short/>
+        <short>
+          <var>TListBoxStyle</var> - enumerated type for style of listbox</short>
         <descr/>
         <seealso/>
       </element>
@@ -3018,7 +3027,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TSelectionChangeEvent">
-        <short/>
+        <short>
+          <var>TSelectionChangeEvent</var> - generic procedure type for selection change event</short>
         <descr/>
         <seealso/>
       </element>
@@ -3295,7 +3305,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.AssignItemDataToCache">
-        <short/>
+        <short>
+          <var>AssignItemDataToCache</var> - assigns data for the item, specified by a pointer <var>AData</var>, to a cache</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3310,7 +3321,9 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.AssignCacheToItemData">
-        <short/>
+        <short>
+          <var>AssignCacheToItemData</var> - assigns the cache to the item data specified by the pointer <var>AData</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3357,7 +3370,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.CheckIndex">
-        <short/>
+        <short>
+          <var>CheckIndex</var> - check that the supplied index refers to valid data</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3368,7 +3382,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetItemHeight">
-        <short/>
+        <short>
+          <var>GetItemHeight</var> - returns a value for the height of an item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3379,7 +3394,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetItemIndex">
-        <short/>
+        <short>
+          <var>GetItemIndex</var> - returns an index value for the current list item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3390,7 +3406,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetSelCount">
-        <short/>
+        <short>
+          <var>GetSelCount</var> - returns the number of selected items</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3401,7 +3418,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetSelected">
-        <short/>
+        <short>
+          <var>GetSelected</var> - returns True if the specified indexed item has been selected</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3416,7 +3434,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetCachedDataSize">
-        <short/>
+        <short>
+          <var>GetCachedDataSize</var> - returns the amount of data needed per item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3427,7 +3446,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomListBox.GetCachedData">
-        <short/>
+        <short>
+          <var>GetCachedData</var> - returns a pointer to the data corresponding to the supplied index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3442,7 +3462,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetExtendedSelect">
-        <short/>
+        <short>
+          <var>SetExtendedSelect</var> - specifies a boolean indicator to show whether Extended Selection is permitted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3453,7 +3474,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItemIndex">
-        <short/>
+        <short>
+          <var>SetItemIndex</var> - specifies an item index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3464,7 +3486,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItems">
-        <short/>
+        <short>
+          <var>SetItems</var> - specifies the string values of the items</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3475,7 +3498,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetItemHeight">
-        <short/>
+        <short>
+          <var>SetItemHeight</var> - specifies the height of an item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3486,7 +3510,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetMultiSelect">
-        <short/>
+        <short>
+          <var>SetMultiSelect</var> - specifies whether multiselect is permissible (ie select multiple entries by holding down Shift or Ctrl keys)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3497,7 +3522,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetSelected">
-        <short/>
+        <short>
+          <var>SetSelected</var> - specifies the <var>Selected</var> property of the indexed item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3512,7 +3538,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetSorted">
-        <short/>
+        <short>
+          <var>SetSorted</var> - specifies whether the list is sorted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3523,7 +3550,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SetStyle">
-        <short/>
+        <short>
+          <var>SetStyle</var> - specifies the style of the listbox</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3534,7 +3562,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.DrawItem">
-        <short/>
+        <short>
+          <var>DrawItem</var> - method to draw the nominated indexed item in the sspecified rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3553,7 +3582,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.DoSelectionChange">
-        <short/>
+        <short>
+          <var>DoSelectionChange</var> - perform a change in the selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3564,7 +3594,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.SendItemIndex">
-        <short/>
+        <short>
+          <var>SendItemIndex</var> - transmit the item index to the system</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3793,7 +3824,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <var>Count</var> - the number of entries in the list of <var>Items</var>
         </short>
         <descr>
-		<printshort id="TCustomListBox.Count"/>
+          <printshort id="TCustomListBox.Count"/>
           <p>For Delphi compatability</p>
         </descr>
       </element>
@@ -4642,7 +4673,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomEdit.SetReadOnly">
-        <short/>
+        <short>
+          <var>SetReadOnly</var> - specifies whether <var>ReadOnly</var> applies</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4724,7 +4756,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelLength">
-        <short/>
+        <short>
+          <var>GetSelLength</var> - returns the length of the selected text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4735,7 +4768,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelStart">
-        <short/>
+        <short>
+          <var>GetSelStart</var> - returns the position of the start of the selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4746,7 +4780,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelText">
-        <short/>
+        <short>
+          <var>GetSelText</var> - returns the selected text string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4757,7 +4792,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetEchoMode">
-        <short/>
+        <short>
+          <var>SetEchoMode</var> - specifies the echo mode</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4768,7 +4804,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelLength">
-        <short/>
+        <short>
+          <var>SetSelLength</var> - specifies the length for the selected text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4779,7 +4816,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelStart">
-        <short/>
+        <short>
+          <var>SetSelStart</var> - specifies the position for the start of selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4790,7 +4828,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetSelText">
-        <short/>
+        <short>
+          <var>SetSelText</var> - specifies the selected text string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4811,7 +4850,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomEdit.ChildClassAllowed">
+      <element name="TCustomEdit.ChildClassAllowed" link="#LCL.Controls.TWinControl.ChildClassAllowed">
         <short/>
         <descr/>
         <errors/>
@@ -4852,7 +4891,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.WMChar">
+      <element name="TCustomEdit.WMChar" link="#LCL.Controls.TWinControl.WMChar">
         <short/>
         <descr/>
         <errors/>
@@ -5017,7 +5056,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.OnChange">
-        <short>OnChange - event handler for any change in text</short>
+        <short>
+          <var>OnChange</var> - event handler for any change in text</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.PasswordChar">
@@ -5279,14 +5319,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.CreateHandle">
+      <element name="TCustomMemo.CreateHandle" link="#LCL.Controls.TWinControl.CreateHandle">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.DestroyHandle">
+      <element name="TCustomMemo.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
         <short/>
         <descr/>
         <errors/>
@@ -5315,7 +5355,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomMemo.GetCachedText">
+      <element name="TCustomMemo.GetCachedText" link="#LCL.Controls.TControl.GetCachedText">
         <short/>
         <descr/>
         <errors/>
@@ -5331,7 +5371,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetAlignment">
-        <short/>
+        <short>
+          <var>SetAlignment</var> - right or left justified, or centered</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5342,7 +5383,9 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetLines">
-        <short/>
+        <short>
+          <var>SetLines</var> - specify the text strings to occupy <var>Lines</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5352,7 +5395,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.SetSelText">
+      <element name="TCustomMemo.SetSelText" link="#LCL.StdCtrls.TCustomEdit.SetSelText">
         <short/>
         <descr/>
         <errors/>
@@ -5364,7 +5407,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetWantReturns">
-        <short/>
+        <short>
+          <var>SetWantReturns</var> - sets a boolean flag showing that Return characters are to be included in the edit strings</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5375,7 +5419,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetWantTabs">
-        <short/>
+        <short>
+          <var>SetWantTabs</var> - sets a boolean flag to show that the use of tabs in the edit string is required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5386,7 +5431,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetWordWrap">
-        <short/>
+        <short>
+          <var>SetWordWrap</var> - speifies the value of the <var>WordWrap</var> property</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5397,7 +5443,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetScrollBars">
-        <short/>
+        <short>
+          <var>SetScrollBars</var> - specifies the style of the scroll bars</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5415,7 +5462,8 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomMemo.WordWrapIsStored">
-        <short/>
+        <short>
+          <var>WordWrapIsStored</var> - returns True if the WordWrap flag is stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5440,7 +5488,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.CNChar">
+      <element name="TCustomMemo.CNChar" link="#LCL.Controls.TWinControl.CNChar">
         <short/>
         <descr/>
         <errors/>
@@ -6166,7 +6214,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TStaticBorderStyle">
-        <short/>
+        <short>
+          <var>TStaticBorderStyle</var> - enumerated type for border of static text: none, single or sunken</short>
         <descr/>
         <seealso/>
       </element>
@@ -6247,7 +6296,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomStaticText.GetLabelText">
-        <short/>
+        <short>
+          <var>GetLabelText</var> - returns text string for label</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6284,7 +6334,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetFocusControl">
-        <short/>
+        <short>
+          <var>SetFocusControl</var> - specifies which control has focus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6295,7 +6346,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomStaticText.SetShowAccelChar">
-        <short/>
+        <short>
+          <var>SetShowAccelChar</var> - sets boolean flag to determine whether accelerator characters are to be shown</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6679,13 +6731,15 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TButtonControl.fLastCheckedOnChange">
-        <short/>
+        <short>
+          <var>fLastCheckedOnChange</var> - local boolean variable to show whether the button was checked at the last <var>OnChange</var> event</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TButtonControl.GetChecked">
-        <short/>
+        <short>
+          <var>GetChecked</var> - returns True if the button is checked</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6696,7 +6750,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonControl.SetChecked">
-        <short/>
+        <short>
+          <var>SetChecked</var> - specifies whether or not the button is checked</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6707,7 +6762,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonControl.DoOnChange">
-        <short/>
+        <short>
+          <var>DoOnChange</var> - perform the code of the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6816,7 +6872,8 @@ is done automatically by the streaming system.
       </element>
       <!-- variable Visibility: protected -->
       <element name="TButtonActionLink.FClientButton">
-        <short/>
+        <short>
+          <var>FClientButton</var> - local variable showing the button to which this action applies</short>
         <descr/>
         <seealso/>
       </element>
@@ -6856,7 +6913,9 @@ is done automatically by the streaming system.
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TButtonActionLinkClass">
-        <short/>
+        <short>
+          <var>TButtonActionLinkClass</var> - class of <var>TButtonActionLink</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7483,8 +7542,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
-        <short>Check Box State</short>
-        <descr>Check Box State: a set of constants defining the possible states of a Check Box - </descr>
+        <short>
+          <var>TCheckBoxState</var> - enumeerated type for state of checkbox</short>
+        <descr>Check Box State: an enumerated list of constants defining the possible states of a Check Box -
+Unchecked, Checked or Greyed
+</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -7590,7 +7652,8 @@ is the ancestor of all check-box components.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomCheckBox.RetrieveState">
-        <short/>
+        <short>
+          <var>RetrieveState</var> - returns the value for check box state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7637,7 +7700,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomCheckBox.GetChecked">
+      <element name="TCustomCheckBox.GetChecked" link="#LCL.StdCtrls.TButtonControl.GetChecked">
         <short/>
         <descr/>
         <errors/>
@@ -7648,7 +7711,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.SetChecked">
+      <element name="TCustomCheckBox.SetChecked" link="#LCL.StdCtrls.TButtonControl.SetChecked">
         <short/>
         <descr/>
         <errors/>
@@ -7671,7 +7734,8 @@ is the ancestor of all check-box components.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.ApplyChanges">
-        <short/>
+        <short>
+          <var>ApplyChanges</var> - method for applying specified changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7980,7 +8044,6 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TToggleBox.Create" link="#rtl.Classes.TComponent.Create">
-        <short>Create a new instance of the Window Control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8242,7 +8305,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TRadioButton.ApplyChanges">
+      <element name="TRadioButton.ApplyChanges" link="#LCL.StdCtrls.TCustomCheckBox.ApplyChanges">
         <short/>
         <descr/>
         <errors/>
@@ -8574,7 +8637,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.DoMeasureTextPosition">
-        <short/>
+        <short>
+          <var>DoMeasureTextPosition</var> - method for measuring position of text; shows position of top and left edges</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8651,7 +8715,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.FontChanged">
+      <element name="TCustomLabel.FontChanged" link="#LCL.Controls.TControl.FontChanged">
         <short/>
         <descr/>
         <errors/>
@@ -8674,7 +8738,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.WMActivate">
-        <short/>
+        <short>
+          <var>WMActivate</var> - LCL message to activate control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8700,7 +8765,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.GetShowAccelChar">
-        <short/>
+        <short>
+          <var>GetShowAccelChar</var> - returns True if accelerator characters aer to be shown</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8711,7 +8777,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.GetAlignment">
-        <short/>
+        <short>
+          <var>GetAlignment</var> - returns the value of alignment required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8722,7 +8789,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.GetLabelText">
-        <short/>
+        <short>
+          <var>GetLabelText</var> - returns the string for text of the label</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8733,7 +8801,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.GetTransparent">
-        <short/>
+        <short>
+          <var>GetTransparent</var> - returns True if the control is to be transparent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8744,7 +8813,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetAlignment">
-        <short/>
+        <short>
+          <var>SetAlignment</var> - specifies the sort of alignment (left or right justified or centered)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8754,7 +8824,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.SetColor">
+      <element name="TCustomLabel.SetColor" link="#LCL.Controls.TControl.SetColor">
         <short/>
         <descr/>
         <errors/>
@@ -8766,7 +8836,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetFocusControl">
-        <short/>
+        <short>
+          <var>SetFocusControl</var> - specifies which control has focus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8777,7 +8848,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetLayout">
-        <short/>
+        <short>
+          <var>SetLayout</var> - specifies text layout</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8788,7 +8860,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetShowAccelChar">
-        <short/>
+        <short>
+          <var>SetShowAccelChar</var> - specifies whether accelerator characters are to be shown</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8799,7 +8872,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetTransparent">
-        <short/>
+        <short>
+          <var>SetTransparent</var> - specifies whether the control is to be transparent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8810,7 +8884,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.SetWordWrap">
-        <short/>
+        <short>
+          <var>SetWordWrap</var> - specifies whether WordWrap is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8821,7 +8896,6 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short>Called when the component has finished loading.</short>
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -8850,11 +8924,7 @@ is done automatically by the streaming system.
       <!-- property Visibility: protected -->
       <element name="TCustomLabel.FocusControl">
         <short>
-          <var>FocusControl</var>
-
-
-
- - whether this control has focus</short>
+          <var>FocusControl</var> - which control has focus</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomLabel.Layout">
@@ -9587,11 +9657,48 @@ Reads or Writes flag if control is re-sized.
       <element name="TRadioButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TLabel.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TScrollBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TCustomListBox.CalculateStandardItemHeight"/>
-      <element name="TCustomEdit.GetCaretPos"/>
-      <element name="TCustomEdit.GetReadOnly"/>
-      <element name="TCustomEdit.SetCaretPos"/>
-      <element name="TCustomMemo.GetCaretPos"/>
+      <element name="TCustomListBox.CalculateStandardItemHeight">
+        <short>
+          <var>CalculateStandardItemHeight</var> - returns a calculated value for the standard height of items in th elistbox</short>
+      </element>
+      <element name="TCustomEdit.GetCaretPos">
+        <short>
+          <var>GetCaretPos</var> - returns the position of the caret or edit cursor</short>
+      </element>
+      <element name="TCustomEdit.GetReadOnly">
+        <short>
+          <var>GetReadOnly</var> - returns the boolean <var>ReadOnly</var> status</short>
+      </element>
+      <element name="TCustomEdit.SetCaretPos">
+        <short>
+          <var>SetCaretPos</var> - specifies the position of the caret or edit cursor</short>
+      </element>
+      <element name="TCustomMemo.GetCaretPos" link="#LCL.StdCtrls.TCustomEdit.GetCaretPos"/>
+      <element name="TScrollBar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TGroupBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomComboBox.GetItems">
+        <short>
+          <var>GetItems</var> - finds the list of items for the dropdown box</short>
+      </element>
+      <element name="TComboBox.OnGetItems">
+        <short>
+          <var>OnGetItems</var> - event handler for getting list of items for dropdown box</short>
+      </element>
+      <element name="TComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomListBox.GetIndexAtXY">
+        <short>
+          <var>GetIndexAtXY</var> - returns the index of an item at the specified coordinates</short>
+      </element>
+      <element name="TCustomListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomListBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TListBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomListBox.OnMeasureItem"/>
+      <element name="TListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TListBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TCustomMemo.SetCaretPos" link="#LCL.StdCtrls.TCustomEdit.SetCaretPos"/>
+      <element name="TEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TMemo.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TButton.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCheckBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
     </module>
     <!-- StdCtrls -->
   </package>

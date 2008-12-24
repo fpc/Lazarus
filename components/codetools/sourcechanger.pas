@@ -72,7 +72,7 @@ type
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
                atSpace, atCommentStart, atDirectiveStart, atCommentEnd,
-               atSymbol);
+               atSymbol, atBracket);
   TAtomTypes = set of TAtomType;
   
   TBeautifyCodeFlag = (
@@ -237,7 +237,7 @@ const
       'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
       'At', 'Number', 'StringConstant', 'NewLine', 'Space',
       'CommentStart', 'DirectiveStart', 'CommentEnd',
-      'Symbol'
+      'Symbol', 'Bracket'
     );
 
   WordPolicyNames: array[TWordPolicy] of shortstring = (
@@ -1185,8 +1185,13 @@ begin
               CurAtomType:=atCommentStart;
             end;
           end else begin
-            CurAtomType:=atSymbol;
+            CurAtomType:=atBracket;
           end;
+        end;
+      '[', ']', ')':
+        begin
+          inc(CurPos);
+          CurAtomType:=atBracket;
         end;
       '*': // *) comment end
         begin
@@ -1233,13 +1238,14 @@ begin
             then
               inc(CurPos);
           end;
-          if AtomStart+1=CurPos then begin
-            if c1='.' then CurAtomType:=atPoint
-            else if c1=',' then CurAtomType:=atComma
-            else if c1=':' then CurAtomType:=atColon
-            else if c1=';' then CurAtomType:=atSemicolon
-            else if c1='@' then CurAtomType:=atAt;
-          end;
+          if AtomStart+1=CurPos then
+            case c1 of
+              '.': CurAtomType:=atPoint;
+              ',': CurAtomType:=atComma;
+              ':': CurAtomType:=atColon;
+              ';': CurAtomType:=atSemicolon;
+              '@': CurAtomType:=atAt;
+            end;
         end;
     end;
   end else

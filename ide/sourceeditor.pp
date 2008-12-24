@@ -48,7 +48,7 @@ uses
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
-  SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, 
+  SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
@@ -137,6 +137,7 @@ type
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnClickLink: TMouseEvent;
+    FOnMouseLink: TSynMouseLinkEvent;
     FOnMouseWheel : tMouseWheelEvent;
     FOnKeyDown: TKeyEvent;
 
@@ -147,6 +148,8 @@ type
           Shift: TShiftState; X,Y: Integer);
     procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure EditorMouseLink(
+      Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -190,7 +193,7 @@ type
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
-    procedure SetModified(const NewValue:boolean); override;
+    procedure SetModified(const NewValue: Boolean); override;
     procedure SetSyntaxHighlighterType(
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
@@ -235,7 +238,7 @@ type
     procedure FindNextWordOccurrence(DirectionForward: boolean);
     procedure InitGotoDialog;
     procedure ShowGotoLineDialog;
-    
+
     // dialogs
     procedure GetDialogPosition(Width, Height:integer; out Left,Top:integer);
     procedure ActivateHint(ClientPos: TPoint;
@@ -361,6 +364,7 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property Owner: TComponent read FAOwner;
@@ -475,6 +479,7 @@ type
     FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnClickLink: TMouseEvent;
+    FOnMouseLink: TSynMouseLinkEvent;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
@@ -571,6 +576,8 @@ type
                               Shift: TShiftstate; X,Y: Integer);
     procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftstate; X,Y: Integer);
+    procedure EditorMouseLink(
+      Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -750,6 +757,7 @@ type
     property OnCloseClicked: TOnCloseSrcEditor
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -876,7 +884,7 @@ var
 begin
   SourceEditorMenuRoot:=RegisterIDEMenuRoot(SourceEditorMenuRootName);
   AParent:=SourceEditorMenuRoot;
-  
+
   // register the first dynamic section for often used context sensitive stuff
   SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(AParent,
                                                        'First dynamic section');
@@ -1166,7 +1174,7 @@ begin
   GetDialogPosition(LazFindReplaceDialog.Width,LazFindReplaceDialog.Height,ALeft,ATop);
   LazFindReplaceDialog.Left:=ALeft;
   LazFindReplaceDialog.Top:=ATop;
-  
+
   try
     bSelectedTextOption := (ssoSelectedOnly in LazFindReplaceDialog.Options);
     //if there are selected text and more than 1 word, automatically enable selected text option
@@ -1313,16 +1321,22 @@ begin
       exit;
     end;
   end;
-  if (OldCaretXY.X=EditorComponent.CaretX)
-  and (OldCaretXY.Y=EditorComponent.CaretY)
-  and not (ssoReplaceAll in LazFindReplaceDialog.Options) then begin
-    ACaption:=lisUENotFound;
-    AText:=Format(lisUESearchStringNotFound, [dbgstr(LazFindReplaceDialog.FindText)]);
-    MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
+
+  if (OldCaretXY.X = EditorComponent.CaretX) and
+     (OldCaretXY.Y = EditorComponent.CaretY) and
+     not (ssoReplaceAll in LazFindReplaceDialog.Options) then
+  begin
+    ACaption := lisUENotFound;
+    AText := Format(lisUESearchStringNotFound, [ValidUTF8String(LazFindReplaceDialog.FindText)]);
+    MessageDlg(ACaption, AText, mtInformation, [mbOk], 0);
     TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
-  end else begin
+  end else
+  if (EditorComponent.CaretY <= EditorComponent.TopLine + 1) or
+     (EditorComponent.CaretY >= EditorComponent.TopLine + EditorComponent.LinesInWindow - 1) then
+  begin
     NewTopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
-    if NewTopLine < 1 then NewTopLine:=1;
+    if NewTopLine < 1 then
+      NewTopLine := 1;
     EditorComponent.TopLine := NewTopLine;
   end;
 end;
@@ -1424,7 +1438,7 @@ begin
         FSourceNoteBook.EndIncrementalFind;
         Command:=ecNone;
       end;
-      
+
     else
       FSourceNoteBook.EndIncrementalFind;
     end;
@@ -1447,7 +1461,7 @@ begin
         end;
       end;
     end;
-    
+
   ecChar:
     begin
       AddChar:=true;
@@ -1467,7 +1481,7 @@ begin
       //DebugLn(['TSourceEditor.ProcessCommand ecChar AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
     end;
-    
+
   ecLineBreak:
     begin
       AddChar:=true;
@@ -2113,7 +2127,7 @@ begin
       FreeMem(CurMarks);
     end;
   end;
-  
+
   if aha <> ahaNone
   then begin
     Special := True;
@@ -2126,7 +2140,7 @@ procedure TSourceEditor.SetSyntaxHighlighterType(
 begin
   if (ASyntaxHighlighterType=fSyntaxHighlighterType)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
-  
+
   if EditorOpts.UseSyntaxHighlight
   then begin
     if Highlighters[ASyntaxHighlighterType]=nil then begin
@@ -2137,7 +2151,7 @@ begin
   end
   else
     FEditor.Highlighter:=nil;
-    
+
   FSyntaxHighlighterType:=ASyntaxHighlighterType;
   SourceNotebook.UpdateActiveEditColors(FEditor);
 end;
@@ -2251,6 +2265,7 @@ Begin
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
       OnClickLink := @EditorClickLink;
+      OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
     end;
     if FCodeTemplates<>nil then
@@ -2533,14 +2548,18 @@ Begin
   Result := FEditor.Modified or FModified;
 end;
 
-procedure TSourceEditor.SetModified(const NewValue:boolean);
+procedure TSourceEditor.SetModified(const NewValue: Boolean);
 var
   OldModified: Boolean;
 begin
-  OldModified:=Modified;
-  FModified:=NewValue;
-  if not FModified then FEditor.Modified:=false;
-  if OldModified<>Modified then
+  OldModified := Modified;
+  FModified := NewValue;
+  if not FModified then
+  begin
+    FEditor.Modified := False;
+    FEditor.MarkTextAsSaved;
+  end;
+  if OldModified <> Modified then
     UpdatePageName;
 end;
 
@@ -2659,10 +2678,18 @@ begin
     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
+procedure TSourceEditor.EditorMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+begin
+  //DebugLn(['TSourceEditor.EditorMouseLink ',X,',',Y]);
+  if Assigned(OnMouseLink) then
+    OnMouseLink(Sender, X, Y, AllowMouseLink);
+end;
+
 procedure TSourceEditor.EditorClickLink(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn(['TSourceEditor.EditorClickLink ',X,',',Y]);
+  //DebugLn(['TSourceEditor.EditorClickLink ',X,',',Y]);
   if Assigned(OnClickLink) then
     OnClickLink(Sender, Button, Shift, X,Y);
 end;
@@ -2997,7 +3024,7 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
-  
+
   SourceEditorWindow:=Self;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
@@ -3041,7 +3068,7 @@ begin
     Interval := EditorOpts.AutoDelayInMSec;
     OnTimer := @OnSourceCompletionTimer;
   end;
-  
+
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
@@ -3249,8 +3276,8 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     p: Integer;
     InStringConstant: Boolean;
     SrcEdit: TSourceEditor;
-    Token: string; 
-    Attri: TSynHighlighterAttributes; 
+    Token: string;
+    Attri: TSynHighlighterAttributes;
   begin
     Result:=false;
     SrcEdit:=GetActiveSE;
@@ -3258,7 +3285,7 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     Line:=SrcEdit.FEditor.LineText;
     LogCaret:=SrcEdit.FEditor.LogicalCaretXY;
     //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
-    
+
     // check if last character is a point
     if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
     or (Line[LogCaret.X-1]<>'.') then
@@ -3277,22 +3304,22 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
       inc(p);
     end;
     if InStringConstant then exit;
-    
+
     // check if in a comment
     Token:='';
     Attri:=nil;
     dec(LogCaret.X);
     if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
-    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then 
+    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then
     begin
-      exit; 
-    end;     
+      exit;
+    end;
 
     // invoke identifier completion
     SrcEdit.StartIdentCompletion(false);
     Result:=true;
   end;
-  
+
   function CheckTemplateCompletion: boolean;
   begin
     Result:=false;
@@ -3348,7 +3375,7 @@ begin
   if SrcEdit=nil then
     SrcEdit:=GetActiveEditor;
   //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
-  
+
   TemplateName:=ASynAutoComplete.Completions[Index];
   TemplateValue:=ASynAutoComplete.CompletionValues[Index];
   TemplateComment:=ASynAutoComplete.CompletionComments[Index];
@@ -3557,15 +3584,15 @@ var
   OldCompletionControl: TSynCompletion;
 begin
   if CurCompletionControl=nil then exit;
-  
+
   // clear the IdentifierList (otherwise it would try to update everytime
   // the codetools are used)
   CodeToolBoss.IdentifierList.Clear;
-  
+
   OldCompletionControl:=CurCompletionControl;
   CurCompletionControl:=nil;
   OldCompletionControl.Deactivate;
-  
+
   CurrentCompletionType:=ctNone;
   ActSE:=GetActiveSE;
   if ActSE<>nil then begin
@@ -3638,7 +3665,7 @@ var
   CursorToLeft: integer;
   NewValue: String;
   Editor: TSynEdit;
-  OldCompletionType: TCompletionType; 
+  OldCompletionType: TCompletionType;
 Begin
   if CurCompletionControl=nil then exit;
   OldCompletionType:=CurrentCompletionType;
@@ -3697,7 +3724,7 @@ Begin
   end;
 
   DeactivateCompletionForm;
-  
+
   //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
   SrcEdit:=GetActiveSE;
   Editor:=SrcEdit.EditorComponent;
@@ -4112,7 +4139,7 @@ begin
     end;
 
     if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
-    
+
     SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
   finally
     SourceEditorMenuRoot.EndUpdate;
@@ -4162,15 +4189,15 @@ var
   i: Integer;
 begin
   //debugln('TSourceNotebook.BuildPopupMenu');
-  
+
   SrcPopupMenu := TPopupMenu.Create(Self);
-  with SrcPopupMenu do 
+  with SrcPopupMenu do
   begin
     AutoPopup := True;
     OnPopup :=@SrcPopupMenuPopup;
     Images := IDEImages.Images_16;
   end;
-  
+
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
   {$IFDEF VerboseMenuIntf}
@@ -4399,6 +4426,7 @@ Begin
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnMouseWheel := @EditorMouseWheel;
   Result.OnClickLink := @EditorClickLink;
+  Result.OnMouseLink := @EditorMouseLink;
   Result.OnKeyDown :=@EditorKeyDown;
 
   Result.EditorComponent.EndUpdate;
@@ -4803,7 +4831,7 @@ procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog)
       i:=0;
     AComboBox.Items.Insert(i,Filename);
   end;
-  
+
 var
   SrcEdit: TSourceEditor;
 begin
@@ -4968,12 +4996,12 @@ var
 Begin
   FindText:='';
   TempEditor := GetActiveSE;
-  if TempEditor <> nil 
-  then with TempEditor, EditorComponent do 
+  if TempEditor <> nil
+  then with TempEditor, EditorComponent do
   begin
-    if EditorOpts.FindTextAtCursor 
+    if EditorOpts.FindTextAtCursor
     then begin
-      if SelAvail and (BlockBegin.Y = BlockEnd.Y) 
+      if SelAvail and (BlockBegin.Y = BlockEnd.Y)
       then FindText := SelText
       else FindText := GetWordAtRowCol(LogicalCaretXY);
     end else begin
@@ -4981,7 +5009,7 @@ Begin
         FindText:=InputHistories.FindHistory[0];
     end;
   end;
-  
+
   FindInFiles(AProject, FindText);
 End;
 
@@ -5599,7 +5627,7 @@ begin
         //  ' y='+dbgs(y),' BestY='+dbgs(BestY),' StartY=',dbgs(StartY),
         //  ' StartPageIndex='+dbgs(StartPageIndex),' CurPageIndex='+dbgs(CurPageIndex),
         //  ' BetterFound='+dbgs(BetterFound));
-        
+
         if BetterFound then begin
           // nearer bookmark found
           BestBookmarkID:=CurBookmarkID;
@@ -5830,7 +5858,7 @@ begin
   TempEditor := GetActiveSE;
   if TempEditor = nil then Exit;
   CurEditor:=TempEditor.EditorComponent;
-  
+
   if (snIncrementalFind in States)
   and (CompareCaret(CurEditor.LogicalCaretXY,FIncrementalSearchPos)<>0) then
   begin
@@ -5881,7 +5909,7 @@ begin
     Statusbar.Panels[3].Text := PanelFilename;
   end;
   Statusbar.EndUpdate;
-  
+
   CheckCurrentCodeBufferChanged;
   UpdateFPDocEditor;
 End;
@@ -5963,7 +5991,7 @@ Begin
     if Assigned(FOnEditorVisibleChanged) then
       FOnEditorVisibleChanged(sender);
   end;
-  
+
   CheckCurrentCodeBufferChanged;
   UpdateFPDocEditor;
 end;
@@ -6025,7 +6053,7 @@ begin
 
   ecToggleObjectInsp:
     ToggleObjectInspClicked(Self);
-    
+
   ecSetFreeBookmark:
     BookMarkSetFree;
 
@@ -6094,9 +6122,9 @@ Begin
     else
       NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
   end;
-  
+
   SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
-  
+
   Exclude(States,snWarnedFont);
   CheckFont;
 end;
@@ -6222,6 +6250,13 @@ begin
 
 end;
 
+procedure TSourceNotebook.EditorMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+begin
+  if Assigned(OnMouseLink) then
+    OnMouseLink(Sender, X, Y, AllowMouseLink);
+end;
+
 Procedure TSourceNotebook.HintTimer(sender: TObject);
 var
   MousePos: TPoint;
@@ -6333,7 +6368,7 @@ begin
     Exit;
   end;
   if FIncrementalSearchEditor = nil then Exit;
-  
+
   // search string
   CurEdit := FIncrementalSearchEditor.EditorComponent;
   CurEdit.BeginUpdate;
@@ -6354,7 +6389,7 @@ begin
     then begin
       FIncrementalSearchStartPos := CurEdit.BlockBegin;
     end;
-    
+
     // cut the not found
     FIncrementalSearchStr := CurEdit.SelText;
 

@@ -5,8 +5,8 @@ inherited CodetoolsLineSplittingOptionsFrame: TCodetoolsLineSplittingOptionsFram
   ClientWidth = 558
   TabOrder = 0
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 66
+  DesignTop = 66
   object LineLengthLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LineLengthEdit
@@ -89,7 +89,11 @@ inherited CodetoolsLineSplittingOptionsFrame: TCodetoolsLineSplittingOptionsFram
     ParentFont = False
     TabOrder = 3
     BookMarkOptions.Xoffset = -18
+    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
+    Gutter.ShowCodeFolding = True
+    Gutter.ShowChanges = True
+    Gutter.ShowLineNumbers = True
     Keystrokes = <    
       item
         Command = 3
@@ -414,5 +418,7 @@ inherited CodetoolsLineSplittingOptionsFrame: TCodetoolsLineSplittingOptionsFram
     Lines.Strings = (
       'SplitPreviewSynEdit'
     )
+    SelectedColor.OnChange = nil
+    BracketHighlightStyle = sbhsBoth
   end
 end

@@ -1,13 +1,13 @@
-object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
+inherited CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
   Height = 383
   Width = 504
   ClientHeight = 383
   ClientWidth = 504
   TabOrder = 0
   Visible = False
-  DesignLeft = 500
-  DesignTop = 316
-  object SpacePreviewLabel: TLabel
+  DesignLeft = 22
+  DesignTop = 22
+  object SpacePreviewLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = DoInsertSpaceInFrontGroupBox
     AnchorSideTop.Side = asrBottom
@@ -19,7 +19,7 @@ object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
     Caption = 'SpacePreviewLabel'
     ParentColor = False
   end
-  object DoInsertSpaceInFrontGroupBox: TGroupBox
+  object DoInsertSpaceInFrontGroupBox: TGroupBox[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Height = 150
@@ -28,7 +28,7 @@ object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
     TabOrder = 0
     OnClick = UpdateExample
   end
-  object DoInsertSpaceAfterGroupBox: TGroupBox
+  object DoInsertSpaceAfterGroupBox: TGroupBox[2]
     AnchorSideLeft.Control = DoInsertSpaceInFrontGroupBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
@@ -43,7 +43,7 @@ object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
     TabOrder = 1
     OnClick = UpdateExample
   end
-  object SpacePreviewSynEdit: TSynEdit
+  object SpacePreviewSynEdit: TSynEdit[3]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = SpacePreviewLabel
     AnchorSideTop.Side = asrBottom
@@ -65,6 +65,9 @@ object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
     BookMarkOptions.Xoffset = -18
     BookMarkOptions.OnChange = nil
     Gutter.Visible = False
+    Gutter.ShowCodeFolding = True
+    Gutter.ShowChanges = True
+    Gutter.ShowLineNumbers = True
     Keystrokes = <    
       item
         Command = 3
@@ -390,5 +393,6 @@ object CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
       'SpacePreviewSynEdit'
     )
     SelectedColor.OnChange = nil
+    BracketHighlightStyle = sbhsBoth
   end
 end

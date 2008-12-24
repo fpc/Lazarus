@@ -242,21 +242,24 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinterCanvas.BeginDoc">
-        <short/>
+        <short>
+          <var>BeginDoc</var> - method to start printing a document</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinterCanvas.NewPage">
-        <short/>
+        <short>
+          <var>NewPage</var> - method to start printing a new page</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinterCanvas.EndDoc">
-        <short/>
+        <short>
+          <var>EndDoc</var> - method to finish printing a document</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -276,7 +279,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPrinterCanvas.Changing">
-        <short/>
+        <short>
+          <var>Changing</var> - method for dealing with changes in printing staus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -328,13 +332,15 @@
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TPrinterCanvasRef">
-        <short/>
+        <short>
+          <var>TPrinterCanvasRef</var> - class of <var>TPrinterCanvas</var>: referenced class</short>
         <descr/>
         <seealso/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TPaperRect">
-        <short/>
+        <short>
+          <var>TPaperRect</var> - a record holding details of physical and working dimensions for paper</short>
         <descr/>
         <seealso/>
       </element>
@@ -451,7 +457,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPaperSize.Create">
+      <element name="TPaperSize.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -462,7 +468,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPaperSize.Destroy">
+      <element name="TPaperSize.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -470,31 +476,36 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPaperSize.PaperName">
-        <short/>
+        <short>
+          <var>PaperName</var> - the name for the paper being used</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPaperSize.DefaultPaperName">
-        <short/>
+        <short>
+          <var>DefaultPaperName</var> - the default name for this size of paper</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPaperSize.PaperRect">
-        <short/>
+        <short>
+          <var>PaperRect</var> - the rectangle dimensions for this paper</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPaperSize.SupportedPapers">
-        <short/>
+        <short>
+          <var>SupportedPapers</var> - the list of supported papers for this pape size</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPaperSize.PaperRectOf">
-        <short/>
+        <short>
+          <var>PaperRectOf</var> - the Paper Rect corresponding to the given name</short>
         <descr/>
         <seealso/>
       </element>
@@ -504,7 +515,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPrinter">
-	<short>
+        <short>
           <var>TPrinter</var> - class defining printer to be used in Lazarus applications</short>
         <descr/>
         <errors/>
@@ -709,7 +720,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.SelectCurrentPrinterOrDefault">
-        <short/>
+        <short>
+          <var>SelectCurrentPrinterOrDefault</var> method for selecting either the current printer or the default</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -727,21 +739,24 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoBeginDoc">
-        <short/>
+        <short>
+          <var>DoBeginDoc</var> - method to begin printing the document</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoNewPage">
-        <short/>
+        <short>
+          <var>DoNewPage</var> - method for beginning a new page</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoEndDoc">
-        <short/>
+        <short>
+          <var>DoEndDoc</var> - method for finishing printing document. aAborded is True if printing has been aborted (eg by operator)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -752,28 +767,32 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoAbort">
-        <short/>
+        <short>
+          <var>DoAbort</var> - method for aborting the printing</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoResetPrintersList">
-        <short/>
+        <short>
+          <var>DoResetPrintersList</var> - method for resetting the list of printers</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoResetFontsList">
-        <short/>
+        <short>
+          <var>DoResetFontsList</var> - method for resetting the list of fonts</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoEnumPrinters">
-        <short/>
+        <short>
+          <var>DoEnumPrinters</var> - method for producing an enumerated list of printers</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -784,7 +803,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoEnumFonts">
-        <short/>
+        <short>
+          <var>DoEnumFonts</var> - method for producing an enumerated list of fonts</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -795,7 +815,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoEnumPapers">
-        <short/>
+        <short>
+          <var>DoEnumPapers</var> - method for producing an enumerated list of papers</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -806,7 +827,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoSetPrinter">
-        <short/>
+        <short>
+          <var>DoSetPrinter</var> - returns integer corresponding to specified named  printer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -821,7 +843,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetCopies">
-        <short/>
+        <short>
+          <var>DoGetCopies</var> - returns the number of copies required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -832,7 +855,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoSetCopies">
-        <short/>
+        <short>
+          <var>DoSetCopies</var> - specifieds the number of copies required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -843,7 +867,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetOrientation">
-        <short/>
+        <short>
+          <var>DoGetOrientation</var> - returns the required orientation for printing (landscape of portrait)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -854,7 +879,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoSetOrientation">
-        <short/>
+        <short>
+          <var>DoSetOrientation</var> - specifies the orientation for printing (landscape or portrait)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -865,7 +891,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetDefaultPaperName">
-        <short/>
+        <short>
+          <var>DoGetDefaultPaperName</var> - returns the default name for the paper</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -876,7 +903,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetPaperName">
-        <short/>
+        <short>
+          <var>DoGetPaperName</var> - returns the name of the current paper</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -887,7 +915,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoSetPaperName">
-        <short/>
+        <short>
+          <var>DoSetPaperName</var> - specifies the name of the paper</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -898,7 +927,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetPaperRect">
-        <short/>
+        <short>
+          <var>DoGetPaperRect</var> - returns the dimensions of the rectangle for the named paper</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -917,7 +947,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetPrinterState">
-        <short/>
+        <short>
+          <var>DoGetPrinterState</var> - retruns the printer state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -928,7 +959,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.GetPrinterType">
-        <short/>
+        <short>
+          <var>GetPrinterType</var> - returns the printer type</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -939,7 +971,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.GetCanPrint">
-        <short/>
+        <short>
+          <var>GetCanPrint</var> - returns True if the printer is able to print</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -949,14 +982,14 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPrinter.Create">
+      <element name="TPrinter.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPrinter.Destroy">
+      <element name="TPrinter.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -996,14 +1029,16 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPrinter.Refresh">
-        <short/>
+        <short>
+          <var>Refresh</var> the data for printing, eg after a change </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPrinter.SetPrinter">
-        <short/>
+        <short>
+          <var>SetPrinter</var> - specify use of the named printer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1036,7 +1071,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPrinter.PrinterIndex">
-        <short/>
+        <short>
+          <var>PrinterIndex</var> - the printer's index in the list of printers</short>
         <descr/>
         <seealso/>
       </element>
@@ -1171,6 +1207,70 @@
             <var>RawMode</var> - true if printer operates in Raw Mode (as opposed to PostScript or some other page description language)</p>
           <p>If Raw Mode is being used, text is sent directly to the printer device without formatting, and the Canvas is not used for setting up the pages</p>
         </descr>
+      </element>
+      <element name="TPrinterCanvas.GetLeftMargin">
+        <short>
+          <var>GetLeftMargin</var> - returns the size of teh left margin</short>
+      </element>
+      <element name="TPrinterCanvas.GetTopMargin">
+        <short>
+          <var>GetTopMargin</var> - returns the size of the top margin</short>
+      </element>
+      <element name="TPrinterCanvas.GetBottomMargin">
+        <short>
+          <var>GetBottomMargin</var> - returns the size of the bottom margin</short>
+      </element>
+      <element name="TPrinterCanvas.GetRightMargin">
+        <short>
+          <var>GetRightMargin</var> - returns the size of the right margin</short>
+      </element>
+      <element name="TPrinterCanvas.TopMargin">
+        <short>The size of the <var>TopMargin</var>
+        </short>
+      </element>
+      <element name="TPrinterCanvas.LeftMargin">
+        <short>The size of the <var>LeftMargin</var>
+        </short>
+      </element>
+      <element name="TPrinterCanvas.BottomMargin">
+        <short>The size of the <var>BottomMargin</var>
+        </short>
+      </element>
+      <element name="TPrinterCanvas.RightMargin">
+        <short>the size of the <var>RightMargin</var>
+        </short>
+      </element>
+      <element name="TPrinter.DoInitialization">
+        <short>
+          <var>DoInitialization</var> - method for performing initialisation</short>
+      </element>
+      <element name="TPrinter.GetCanRenderCopies">
+        <short>
+          <var>GetCanRenderCopies</var> - returns True if the printer is able to render copies</short>
+      </element>
+      <element name="TPrinter.GetXDPI">
+        <short>
+          <var>GetXDPI</var> - returns the number of Dots Per Inch in the X plane</short>
+      </element>
+      <element name="TPrinter.GetYDPI">
+        <short>
+          <var>GetYDPI</var> - returns the number of Dots Per Inch in the Y plane</short>
+      </element>
+      <element name="TPrinter.CheckRawMode">
+        <short>
+          <var>CheckRawMode</var> - check whether the printer operates in Raw mode (as opposed to PostScript etc)</short>
+      </element>
+      <element name="TPrinter.RawModeChanging">
+        <short>
+          <var>RawModeChanging</var> - the raw mode is changing (eg PostScript is being invoked)</short>
+      </element>
+      <element name="TPrinter.PrinterSelected">
+        <short>
+          <var>PrinterSelected</var> - method for dealing with a printer that has been selected</short>
+      </element>
+      <element name="TPrinter.Write">
+        <short>
+          <var>Write</var> to a specified <var>Buffer</var>: <var>Count</var> contains the number of bytes for writing, <var>Written</var> contains the number that have been written. Returns True if successful</short>
       </element>
     </module>
     <!-- Printers -->

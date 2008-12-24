@@ -353,6 +353,8 @@ type
       APageIndex: integer; DeleteForwardHistory: boolean);
     procedure OnSrcNoteBookClickLink(Sender: TObject;
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
+    procedure OnSrcNoteBookMouseLink(
+      Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
@@ -1776,6 +1778,7 @@ begin
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
+  SourceNotebook.OnMouseLink := @OnSrcNoteBookMouseLink;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
@@ -7149,21 +7152,41 @@ begin
   end;
 
   // save source
-  if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then begin
+
+  // a) do before save events
+  if EditorOpts.AutoRemoveEmptyMethods
+  and (ActiveUnitInfo.Component<>nil) then begin
+    // Note: When removing published methods, the source, the lfm, the lrs
+    //       and the form must be changed. At the moment editing the lfm without
+    //       the component is not yet implemented.
+    Result:=RemoveEmptyMethods(ActiveUnitInfo.Source,
+                   ActiveUnitInfo.Component.ClassName,0,0,false,[pcsPublished]);
+    if Result<>mrOk then exit;
+  end;
+
+  // b) do actual save
+  if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then
+  begin
     // save source to test directory
-    TestFilename:=MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
-    if TestFilename<>'' then begin
-      Result:=ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
-      if Result<>mrOk then exit;
-      DestFilename:=TestFilename;
-    end else
+    TestFilename := MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
+    if TestFilename <> '' then
+    begin
+      Result := ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
+      if Result <> mrOk then
+        Exit;
+      DestFilename := TestFilename;
+    end
+    else
       exit;
-  end else begin
-    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then begin
+  end else
+  begin
+    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then
+    begin
       // save source to file
-      Result:=ActiveUnitInfo.WriteUnitSource;
-      if Result=mrAbort then exit;
-      DestFilename:=ActiveUnitInfo.Filename;
+      Result := ActiveUnitInfo.WriteUnitSource;
+      if Result <> mrOK then
+        Exit;
+      DestFilename := ActiveUnitInfo.Filename;
     end;
   end;
 
@@ -13653,6 +13676,19 @@ begin
   JumpHistory.WriteDebugReport;
   writeln('');
   {$ENDIF}
+end;
+
+procedure TMainIDE.OnSrcNoteBookMouseLink(
+  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  AllowMouseLink := CodeToolBoss.FindDeclaration(
+    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,

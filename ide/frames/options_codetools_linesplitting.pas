@@ -245,8 +245,9 @@ end;
 
 procedure TCodetoolsLineSplittingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 const
-  DoNotSplitAtoms = [atKeyword, atIdentifier, atColon, atSemicolon, atComma,
-               atPoint, atAt, atNumber, atStringConstant, atSpace, atSymbol];
+  DoNotSplitAtoms = [
+    atKeyword, atIdentifier, atColon, atSemicolon, atComma,
+    atPoint, atAt, atNumber, atStringConstant, atSpace, atSymbol, atBracket];
 begin
   with LineLengthLabel do
     Caption:=dlgMaxLineLength;

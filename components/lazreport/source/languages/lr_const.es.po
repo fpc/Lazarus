@@ -288,6 +288,10 @@ msgstr "FORMATTEXT(<Máscara>, <Cadena>)/Aplica la <Máscara> a la <Cadena> dada
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Encabezado> [,Default])/Muestra una ventana de diálogo con encabezado <Encabezado> y un control de edición. Si el parámetro [Default] se usa, ésta cadena se pone el en control de edición. Despúes que se hace click en ACEPTAR, se regresa la cadena introducida."
 
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr "LOWERCASE(<Cadena>)/Convierte <Cadena> a minúsculas."
@@ -343,6 +347,10 @@ msgstr "TRIM(<Cadena>)/Elimina todos los espacios antes y despues en la <Cadena>
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr "UPPERCASE(<Cadena>)/Convierte <Cadena> a mayúsculas."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr ""
 
 #: lr_const.sdesignreport
 msgid "Design report"

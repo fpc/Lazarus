@@ -76,6 +76,10 @@ type
 
 function ShowEmptyMethodsDialog: TModalResult;
 
+function RemoveEmptyMethods(Code: TCodeBuffer; AClassName: string;
+  X, Y: integer; CommitSrcEditor: boolean; Sections: TPascalClassSections
+  ): TModalResult;
+
 
 implementation
 
@@ -106,7 +110,7 @@ begin
     ErrMsg:='';
 
     // check cursor is in a class
-    if not CodeToolBoss.FindEmptyMethods(Code,Caret.X,Caret.Y,
+    if not CodeToolBoss.FindEmptyMethods(Code,'',Caret.X,Caret.Y,
       AllPascalClassSections,ListOfPCodeXYPosition,AllEmpty)
     then begin
       DebugLn(['ShowEmptyMethodsDialog CodeToolBoss.FindEmptyMethods failed']);
@@ -141,28 +145,9 @@ begin
   end;
 end;
 
-{ TEmptyMethodsDialog }
-
-procedure TEmptyMethodsDialog.FormCreate(Sender: TObject);
-begin
-  Caption:=lisEMDEmtpyMethods;
-  SectionsGroupBox.Caption:=lisEMDSearchInTheseClassSections;
-  PrivateCheckBox.Caption:=lisPrivate;
-  ProtectedCheckBox.Caption:=lisProtected;
-  PublicCheckBox.Caption:=lisEMDPublic;
-  PublishedCheckBox.Caption:=lisEMDPublished;
-  AllButton.Caption:=lisEMDAll;
-  PublishedButton.Caption:=lisEMDOnlyPublished;
-  MethodsGroupBox.Caption:=lisEMDFoundEmptyMethods;
-  Sections:=AllPascalClassSections;
-  
-  ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
-  ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
-
-  EditorOpts.GetSynEditSettings(MethodsSynEdit);
-end;
-
-procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);
+function RemoveEmptyMethods(Code: TCodeBuffer; AClassName: string;
+  X, Y: integer; CommitSrcEditor: boolean; Sections: TPascalClassSections
+  ): TModalResult;
 var
   RemovedProcHeads: TStrings;
   PropChanged: boolean;
@@ -223,7 +208,7 @@ var
             and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
               dec(i);
             if i>=0 then begin
-              DebugLn(['TEmptyMethodsDialog.OKButtonClick Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
+              DebugLn(['RemoveEmptyMethods Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
               FillByte(AMethod,SizeOf(AMethod),0);
               SetMethodProp(AComponent,PropInfo,AMethod);
               PropChanged:=true;
@@ -244,31 +229,31 @@ var
   LookupRoot: TComponent;
   CurClassName: String;
 begin
+  Result:=mrCancel;
+  if CommitSrcEditor and (not LazarusIDE.BeginCodeTools) then exit;
+
   //DebugLn(['TEmptyMethodsDialog.OKButtonClick ']);
   RemovedProcHeads:=nil;
   try
-    if (not CodeToolBoss.RemoveEmptyMethods(Code,Caret.X,Caret.Y,Sections,
-      AllEmpty,
+    if (not CodeToolBoss.RemoveEmptyMethods(Code,AClassName,X,Y,
+      Sections,AllEmpty,
       [phpAddClassName,phpDoNotAddSemicolon,phpWithoutParamList,
        phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon],
       RemovedProcHeads))
     then begin
-      DebugLn(['TEmptyMethodsDialog.OKButtonClick failed']);
+      DebugLn(['RemoveEmptyMethods failed']);
       exit;
     end;
     if (RemovedProcHeads<>nil) and (RemovedProcHeads.Count>0) then begin
       // RemovedProcHeads contains a list of classname.procname
       // remove the classname from the list
       CurClassName:=ExtractClassName;
-      //DebugLn(['TEmptyMethodsDialog.OKButtonClick CurClassName=',CurClassName]);
       if CurClassName<>'' then begin
         if (Project1<>nil) then begin
           AnUnitInfo:=Project1.UnitInfoWithFilename(Code.Filename);
-          //DebugLn(['TEmptyMethodsDialog.OKButtonClick AnUnitInfo=',AnUnitInfo<>nil]);
           if AnUnitInfo<>nil then begin
             // fix events of designer components
             LookupRoot:=AnUnitInfo.Component;
-            //DebugLn(['TEmptyMethodsDialog.OKButtonClick LookupRoot=',DbgSName(LookupRoot)]);
             if (LookupRoot<>nil)
             and (SysUtils.CompareText(LookupRoot.ClassName,CurClassName)=0) then
             begin
@@ -287,6 +272,33 @@ begin
   finally
     RemovedProcHeads.Free;
   end;
+  Result:=mrOk;
+end;
+
+{ TEmptyMethodsDialog }
+
+procedure TEmptyMethodsDialog.FormCreate(Sender: TObject);
+begin
+  Caption:=lisEMDEmtpyMethods;
+  SectionsGroupBox.Caption:=lisEMDSearchInTheseClassSections;
+  PrivateCheckBox.Caption:=lisPrivate;
+  ProtectedCheckBox.Caption:=lisProtected;
+  PublicCheckBox.Caption:=lisEMDPublic;
+  PublishedCheckBox.Caption:=lisEMDPublished;
+  AllButton.Caption:=lisEMDAll;
+  PublishedButton.Caption:=lisEMDOnlyPublished;
+  MethodsGroupBox.Caption:=lisEMDFoundEmptyMethods;
+  Sections:=AllPascalClassSections;
+  
+  ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
+  ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
+
+  EditorOpts.GetSynEditSettings(MethodsSynEdit);
+end;
+
+procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);
+begin
+  if RemoveEmptyMethods(Code,'',Caret.X,Caret.Y,true,Sections)<>mrOk then exit;
   ModalResult:=mrOk;
 end;
 
@@ -349,7 +361,7 @@ begin
   CurSections:=Sections;
   ListOfPCodeXYPosition:=TFPList.Create;
   try
-    if (not CodeToolBoss.FindEmptyMethods(Code,Caret.X,Caret.Y,
+    if (not CodeToolBoss.FindEmptyMethods(Code,'',Caret.X,Caret.Y,
       CurSections,ListOfPCodeXYPosition,AllEmpty))
     or (not CodeToolBoss.Explore(Code,Tool,false))
     then begin

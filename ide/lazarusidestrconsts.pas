@@ -1188,6 +1188,7 @@ resourcestring
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
+  dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';
   dlgEdCodeTempl = 'Code templates';
@@ -1196,7 +1197,7 @@ resourcestring
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
-  dlgCodeToolsTab = 'Code Tools';
+  //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
   dlgCFDividerDrawLevel = 'Divider Draw Level';
   
@@ -2225,7 +2226,8 @@ resourcestring
   lisCodeToolsOptsNewLine     = 'Newline';
   lisCodeToolsOptsSpace       = 'Space';
   lisCodeToolsOptsSymbol      = 'Symbol';
-  
+  lisCodeToolsOptsBracket     = 'Bracket';
+
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
