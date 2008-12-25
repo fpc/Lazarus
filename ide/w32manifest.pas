@@ -102,9 +102,12 @@ var
 begin
   Result := True;
 
+  if not UseManifest then
+    Exit;
+
   SetFileNames(MainFilename);
 
-  if UseManifest and (not FilenameIsAbsolute(FManifestFileName) or CreateManifestFile) then
+  if not FilenameIsAbsolute(FManifestFileName) or CreateManifestFile then
   begin
     ManifestName := ExtractFileName(FManifestFileName);
     AResources.AddSystemResource(sManifest + ' "' + ManifestName + '"');
