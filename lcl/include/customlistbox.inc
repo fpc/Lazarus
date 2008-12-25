@@ -150,7 +150,7 @@ begin
       AssignItemDataToCache(i, NewStrings.Records[i]);
 
     // free the interface items list
-    FItems.Free;
+    TWSCustomListBoxClass(WidgetSetClass).FreeStrings(FItems);
     // new item list is the internal item list
     NewStrings.Sorted:=FSorted;
     FItems:= NewStrings;

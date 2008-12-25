@@ -1633,9 +1633,11 @@ docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/popupnotifier.xml svneol=native#text/plain
 docs/xml/lcl/postscriptcanvas.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/postscriptprinter.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/postscriptunicode.xml svneol=native#text/plain
 docs/xml/lcl/printers.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/propertystorage.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/rubberband.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/shellctrls.xml svneol=native#text/plain
 docs/xml/lcl/spin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls.xml svneol=LF#text/xml eol=lf
@@ -2702,6 +2704,7 @@ images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tshape.png -text svneol=unset#image/png
+images/components/tshelltreeview.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
 images/components/tsimpleipcserver.png -text svneol=unset#image/png
 images/components/tspeedbutton.png -text svneol=unset#image/png
@@ -3723,6 +3726,7 @@ lcl/postscriptunicode.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/propertystorage.pas svneol=native#text/pascal
 lcl/rubberband.pas svneol=native#text/pascal
+lcl/shellctrls.pas svneol=native#text/plain
 lcl/spin.pp svneol=native#text/pascal
 lcl/stdactns.pas svneol=native#text/pascal
 lcl/stdctrls.pp svneol=native#text/pascal

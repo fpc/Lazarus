@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    postscriptunicode
+  ====================================================================
+-->
+
+<module name="postscriptunicode">
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Math">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Maps">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TUnicodeBlock">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TUnicodeBlock.Ini">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TUnicodeBlock.Fin">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TUnicodeBlock.PSCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PGlyph">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TGlyph">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TGlyph.Code">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TGlyph.Name">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="GLYPHCOUNT">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="GlyphsArr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPsUnicode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FFontSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FFontStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FGlyphs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FBlocks">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FEncodings">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FOutLst">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FBaseFonts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FEncodedFonts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FUsedFonts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FLastFontIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPsUnicode.FFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.CreateGlyphMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.CreateUniCodeBlocks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.CountPSChars">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPsUnicode.FindEncodingIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPsUnicode.FindEncodingIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.FindEncodingIndex.ABlock">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPsUnicode.IndexOfFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPsUnicode.IndexOfFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.IndexOfFont.AFontName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.IndexOfFont.AFontSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.IndexOfFont.AFontStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.IndexOfFont.ABlock">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPsUnicode.SelectFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPsUnicode.SelectFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SelectFont.AFontName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SelectFont.AFontSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SelectFont.AFontStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SelectFont.ABlock">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.ReportBlockEncoding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.ReportBlockEncoding.i">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.SetFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SetFont.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.SetFontSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SetFontSize.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPsUnicode.SetFontStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.SetFontStyle.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPsUnicode.create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TPsUnicode.destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPsUnicode.OutputString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.OutputString.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPsUnicode.BlockFor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPsUnicode.BlockFor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPsUnicode.BlockFor.w">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPsUnicode.Font">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPsUnicode.FontSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPsUnicode.FOntStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPsUnicode.OutLst">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- postscriptunicode -->
+
+</package>
+</fpdoc-descriptions>

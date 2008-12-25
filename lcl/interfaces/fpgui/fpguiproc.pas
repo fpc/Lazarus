@@ -26,7 +26,7 @@ unit fpguiproc;
 interface
 
 uses
-  Classes, SysUtils, gfxbase, Graphics;
+  Classes, SysUtils, fpg_base, Graphics;
 
 function TColorToTfpgColor(AColor: TColor): TfpgColor;
 

@@ -85,6 +85,7 @@ type
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;}
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure FreeItems(var AItems: TStrings); override;
 //    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
@@ -151,6 +152,7 @@ type
 {    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;}
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class procedure FreeStrings(var AStrings: TStrings); override;
 {    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
@@ -271,10 +273,10 @@ type
 implementation
 
 uses
-  gui_combobox,
-  gui_edit,
-  gui_checkbox,
-  gui_radiobutton;
+  fpg_combobox,
+  fpg_edit,
+  fpg_checkbox,
+  fpg_radiobutton;
 
 { TFpGuiWSCustomComboBox }
 
@@ -348,6 +350,11 @@ begin
   FComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
   Result := FComboBox.Items;
+end;
+
+class procedure TFpGuiWSCustomComboBox.FreeItems(var AItems: TStrings);
+begin
+
 end;
 
 class procedure TFpGuiWSCustomComboBox.ShowHide(const AWinControl: TWinControl
@@ -595,6 +602,11 @@ end;
 class function TFpGuiWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 begin
   Result:=inherited GetStrings(ACustomMemo);
+end;
+
+class procedure TFpGuiWSCustomMemo.FreeStrings(var AStrings: TStrings);
+begin
+
 end;
 
 class procedure TFpGuiWSCustomMemo.ShowHide(const AWinControl: TWinControl);

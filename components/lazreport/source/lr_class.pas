@@ -7344,7 +7344,10 @@ begin
     case f1 of
       fmtText:
         begin
-          Result := v;
+          if VarIsType(v, varDate) and (trunc(Extended(v))=0) then
+            Result := TimeToStr(v)
+          else
+            Result := v;
         end;
       fmtNumber:
         begin
@@ -9672,7 +9675,7 @@ begin
   PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value', True); // TODO chk
   ColCount := XML.GetValue(Path+'ColCount/Value', 1); // TODO chk
   ColGap := XML.GetValue(Path+'ColGap/Value', 0);
-  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value',''));
+  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value','loColumns'));
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 

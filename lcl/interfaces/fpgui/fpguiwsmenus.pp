@@ -32,7 +32,7 @@ uses
   // widgetset
   WSMenus, WSLCLClasses, LCLType, fpguiobjects, fpguiwsprivate,
   // interface
-  fpgfx, gui_menu;
+  fpg_main, fpg_menu;
 
 type
 

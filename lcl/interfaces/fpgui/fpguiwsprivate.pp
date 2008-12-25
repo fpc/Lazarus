@@ -38,9 +38,9 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  gfx_widget, gui_form, gui_button, gui_combobox, gui_dialogs,
-  gui_edit, gui_checkbox, gui_radiobutton, gui_tab, gui_memo,
-  gui_menu;
+  fpg_widget, fpg_form, fpg_button, fpg_combobox, fpg_dialogs,
+  fpg_edit, fpg_checkbox, fpg_radiobutton, fpg_tab, fpg_memo,
+  fpg_menu;
 
 
 type
@@ -281,7 +281,7 @@ type
 implementation
 
 uses
-  LCLMessageGlue, GfxBase;
+  LCLMessageGlue, fpg_base;
 
 { TFPGUIPrivate }
 

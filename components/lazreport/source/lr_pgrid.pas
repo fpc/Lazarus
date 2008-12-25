@@ -20,7 +20,7 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, PropEdits,
   DB, DBGrids, Printers, LR_DSet, LR_DBSet, LR_Class;
 
 type
@@ -31,7 +31,7 @@ type
     Column: Integer;
     ColumnWidth: Integer;
   end;
-  
+
   TSetupColumnEvent=procedure(Sender:TFrPrintGrid; const Column: TColumn;
     var PrintColumn:boolean; var ColumnWidth:Integer) of object;
 
@@ -53,7 +53,8 @@ type
     FWidth                : Integer;
     FDataSet              : TDataset;
     FColumnsInfo          : array of TColumnInfo;
-    
+    FTemplate             : string;
+
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
     procedure OnPrintColumn(ColNo: Integer; var Width: Integer);
     procedure SetDBGrid(const AValue: TDBGrid);
@@ -61,10 +62,13 @@ type
     { Protected declarations }
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetupColumns;
+    function FindBand(APage: TFrPage; AType: TfrBandType): TFrBandView;
+    procedure ReplaceTemplate(APage:TFrPage; ABand: TFrBandView; ATemplate,AReplace:String);
+    procedure FindFreeSpace(APage: TfrPage; out XPos,YPos:Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    
+
     procedure PreviewReport;
   published
     property DBGrid: TDBGrid read FDBGrid write SetDBGrid;
@@ -72,6 +76,7 @@ type
     property Font: TFont read FFont write FFont;
     property TitleFont : TFont read FTitleFont write FTitleFont;
     property Caption: String read FCaption write FCaption;
+    property Template: string read FTemplate write FTemplate;
     property ShowCaption: Boolean read FShowCaption write FShowCaption;
     property ShowHeaderOnAllPage : boolean read fShowHdOnAllPage write fShowHdOnAllPage default True;
     property ShowProgress : Boolean read fShowProgress write fShowProgress default false;
@@ -80,10 +85,6 @@ type
 
 
 implementation
-
-type
-  THackDBGrid = class(TDBGrid)
-  end;
 
 { TfrPrintGrid }
 
@@ -128,17 +129,86 @@ begin
 
     PrintColumn := DbGrid.Columns[i].Visible;
     ColumnWidth := DbGrid.Columns[i].Width;
-    
+
     if Assigned(FOnSetupColumn) then
       FOnSetupColumn(Self, TColumn(DbGrid.Columns[i]), PrintColumn, ColumnWidth);
-      
+
     if PrintColumn then begin
       j:=Length(FColumnsInfo);
       SetLength(FColumnsInfo, j+1);
       FColumnsInfo[j].Column := i;
       FColumnsInfo[j].ColumnWidth := ColumnWidth;
     end;
-    
+
+  end;
+end;
+
+function TfrPrintGrid.FindBand(APage: TFrPage; AType:TfrBandType): TFrBandView;
+var
+  i: Integer;
+begin
+  for i:=0 to APage.Objects.Count-1 do begin
+    if not (TObject(APage.Objects[i]) is TFrBandView) then
+      continue;
+    Result := TFrBandView(APage.Objects[i]);
+    if Result.BandType=AType then
+      exit;
+  end;
+  result := nil;
+end;
+
+procedure TfrPrintGrid.ReplaceTemplate(APage: TFrPage; ABand: TFrBandView;
+  ATemplate, AReplace: String);
+var
+  i: Integer;
+  Obj: TfrObject;
+begin
+  for i:=0 to APage.Objects.Count-1 do begin
+    Obj :=  TfrObject(APage.Objects[i]);
+    if Obj is TfrMemoView then begin
+      if (Obj.y>=ABand.y) and (Obj.y<(ABand.Y+ABand.Dy)) then begin
+        // this memo is on ABand
+        TfrMemoView(Obj).Memo.Text := StringReplace(TfrMemoView(Obj).Memo.Text,
+          ATemplate, AReplace, [rfReplaceAll, rfIgnoreCase]);
+      end;
+    end;
+  end;
+end;
+
+procedure TfrPrintGrid.FindFreeSpace(APage: TfrPage; out XPos, YPos: Integer);
+var
+  i: Integer;
+  Ydone,Xdone: boolean;
+begin
+
+  YPos := 0;
+  XPos := 20;
+
+  YDone:= false;
+  XDone:= false;
+
+  for i:=0 to APage.Objects.Count-1 do begin
+    if not (TObject(APage.Objects[i]) is TFrBandView) then
+      continue;
+
+    with TfrBandView(APage.Objects[i]) do begin
+      if BandType in [btCrossHeader, btCrossData, btCrossFooter] then begin
+        if not XDone then begin
+          if x - XPos > 20 then
+            XDone := true
+          else
+            XPos := x + dx + 1;
+        end;
+      end else begin
+        if not YDone then begin
+          if y - YPos > 40 then
+            YDone := true
+          else
+            YPos := y + dy + 1;
+        end;
+      end;
+    end;
+
   end;
 end;
 
@@ -155,26 +225,33 @@ end;
 procedure TfrPrintGrid.PreviewReport;
 var
   v: TfrView;
-  b: TfrBandView;
+  b,h: TfrBandView;
   Page: TfrPage;
   BM  : TBookMark;
+  XPos,YPos: Integer;
 begin
   if (FDBGrid = nil) or (DBGrid.Datasource = nil) or
      (DBGrid.Datasource.Dataset = nil) then Exit;
 
-  FDataSet := DBGrid.Datasource.Dataset;
+  if (FTemplate<>'') and not FileExists(FTemplate) then
+      raise Exception.CreateFmt('Template file %s does not exists',[FTemplate]);
 
   FReport := TfrReport.Create(Self);
+  if FTemplate<>'' then
+    FReport.LoadFromFile(FTemplate);
+
+  FDataSet := DBGrid.Datasource.Dataset;
+
   FReport.OnEnterRect  :=@OnEnterRect;
   FReport.OnPrintColumn:=@OnPrintColumn;
   FReport.ShowProgress :=fShowProgress;
-  
+
   FReportDataSet := TfrDBDataSet.Create(Self);
   FReportDataSet.Name := 'frGridDBDataSet1';
   FReportDataSet.DataSet := FDataSet;
 
   SetupColumns;
-  
+
   FColumnDataSet := TfrUserDataSet.Create(Self);
   FColumnDataSet.Name := 'frGridUserDataSet1';
   FColumnDataSet.RangeEnd := reCount;
@@ -182,13 +259,26 @@ begin
 
   try
     FReportDataSet.DataSource := DBGrid.DataSource;
-    FReport.Pages.Add;
-    Page := FReport.Pages[0];
+    if FReport.Pages.Count=0 then
+      FReport.Pages.add;
+    Page := FReport.Pages[FReport.Pages.Count-1];
+
     with Page do
       ChangePaper(pgSize, Width, Height, FOrientation);
 
-    if FShowCaption then
-    begin
+    b := FindBand(Page, btReportTitle);
+    if b<>nil then begin
+      if FShowCaption then
+        ReplaceTemplate(Page, b, '<title>', FCaption);
+    end;
+
+    h := FindBand(Page, btPageHeader);
+    if h<>nil then begin
+      if FShowCaption then
+        ReplaceTemplate(Page, h, '<title>', FCaption);
+    end;
+
+    if FShowCaption and (b=nil) and (h=nil) then begin
       b := TfrBandView(frCreateObject(gtBand, ''));
       b.SetBounds(10, 20, 1000, 25);
       b.BandType := btReportTitle;
@@ -201,15 +291,20 @@ begin
       Page.Objects.Add(v);
     end;
 
+    // if we have a template we need to be sure that bands on template
+    // do not overlap with bands we are about to add, we need exactly
+    // 40 pixels of free height space and 20 pixels width for cross band
+    FindFreeSpace(Page, XPos, YPos);
+
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btMasterHeader;
     if self.fShowHdOnAllPage then
       b.Flags:=b.Flags+flBandRepeatHeader;
-    b.SetBounds(20, 60, 1000, 20);
+    b.SetBounds(XPos, YPos, 1000, 20);
     Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '');
-    v.SetBounds(20, 60, 20, 20);
+    v.SetBounds(XPos, YPos, 20, 20);
     TfrMemoView(v).Alignment:=taCenter;
     TfrMemoView(v).FillColor := clSilver;
     TfrMemoView(v).Font.Assign(FTitleFont);
@@ -218,20 +313,22 @@ begin
     v.Memo.Add('[Header]');
     Page.Objects.Add(v);
 
+    YPos := YPos + 22;
+
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btMasterData;
     b.Dataset := FReportDataSet.Name;
-    b.SetBounds(0, 100, 1000, 18);
+    b.SetBounds(0, YPos, 1000, 18);
     Page.Objects.Add(b);
 
     b := TfrBandView(frCreateObject(gtBand, ''));
     b.BandType := btCrossData;
     b.Dataset := FColumnDataSet.Name;
-    b.SetBounds(20, 0, 20, 1000);
+    b.SetBounds(XPos, 0, 20, 1000);
     Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '');
-    v.SetBounds(20, 100, 20, 18);
+    v.SetBounds(XPos, YPos, 20, 18);
     v.Memo.Add('[Cell]');
     TfrMemoView(v).Font.Assign(FFont);
     TfrMemoView(v).Frames:=frAllFrames;
@@ -263,9 +360,9 @@ begin
 
   if (i<0) or (i>Length(FColumnsInfo)-1) then
     exit;
-    
+
   C := TColumn(DbGrid.Columns[FColumnsInfo[i].Column]);
-  if C<>nil then
+  if (C<>nil)and(Memo.Count>0) then
   begin
     if (Memo[0]='[Cell]') and (C.Field<>nil) then
     begin
@@ -288,5 +385,7 @@ begin
   Width := FColumnsInfo[ColNo-1].ColumnWidth;
 end;
 
-
+initialization
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TFrPrintGrid,'Template',TFileNamePropertyEditor);
 end.
