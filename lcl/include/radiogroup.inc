@@ -34,7 +34,7 @@ begin
   inherited Create (TheOwner);
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
-  FItems      := TStringList.Create;
+  FItems := TStringList.Create;
   FAutoFill := true;
   //TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
@@ -138,16 +138,19 @@ begin
   FUpdatingItems:=true;
   try
     // destroy radiobuttons, if there are too many
-    while FButtonList.Count>FItems.Count do begin
+    while FButtonList.Count>FItems.Count do
+    begin
       TRadioButton(FButtonList[FButtonList.Count-1]).Free;
       FButtonList.Delete(FButtonList.Count-1);
     end;
 
     // create as many TRadioButton as needed
-    while (FButtonList.Count<FItems.Count) do begin
+    while (FButtonList.Count<FItems.Count) do
+    begin
       ARadioButton := TRadioButton.Create(Self);
-      with ARadioButton do begin
-        Name:='RadioButton'+IntToStr(FButtonList.Count);
+      with ARadioButton do
+      begin
+        Name := 'RadioButton'+IntToStr(FButtonList.Count);
         AutoSize := False;
         OnClick := @Self.Clicked;
         OnChange := @Self.Changed;
@@ -155,7 +158,7 @@ begin
         OnExit :=@Self.ItemExit;
         OnKeyDown :=@Self.ItemKeyDown;
         OnResize := @Self.ItemResize;
-        ParentFont := true;
+        ParentFont := True;
         BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
         BorderSpacing.CellAlignVertical:=ccaCenter;
         ControlStyle := ControlStyle + [csNoDesignSelectable];
@@ -164,25 +167,29 @@ begin
     end;
     if FHiddenButton=nil then begin
       FHiddenButton:=TRadioButton.Create(nil);
-      with FHiddenButton do begin
-        Name:='HiddenRadioButton';
-        Visible:=false;
+      with FHiddenButton do
+      begin
+        Name := 'HiddenRadioButton';
+        Visible := False;
         ControlStyle := ControlStyle + [csNoDesignSelectable];
       end;
     end;
 
     if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
 
-    if FItems.Count>0 then begin
+    if FItems.Count>0 then
+    begin
       // to reduce overhead do it in several steps
 
       // assign Caption and then Parent
-      for i:=0 to FItems.Count-1 do begin
+      for i:=0 to FItems.Count-1 do
+      begin
         ARadioButton := TRadioButton(FButtonList[i]);
         ARadioButton.Caption := FItems[i];
-        ARadioButton.Parent:=Self;
+        ARadioButton.Parent := Self;
       end;
-      with FHiddenButton do begin
+      with FHiddenButton do
+      begin
         FHiddenButton.Visible:=false;
         Parent:=Self;
         if HandleAllocated then
@@ -190,12 +197,13 @@ begin
       end;
 
       // the checked and unchecked states can be applied only after all other
-      for i:=0 to FItems.Count-1 do begin
+      for i := 0 to FItems.Count-1 do
+      begin
         ARadioButton := TRadioButton(FButtonList[i]);
         ARadioButton.Checked := (i = FItemIndex);
         ARadioButton.Visible := true;
       end;
-      FHiddenButton.Checked:=(fItemIndex=-1);
+      FHiddenButton.Checked := (FItemIndex = -1);
       UpdateTabStops;
     end;
   finally
@@ -455,12 +463,13 @@ var
   i: Integer;
   RadioBtn: TRadioButton;
 begin
-  for i := 0 to FButtonList.Count-1 do begin
+  for i := 0 to FButtonList.Count - 1 do
+  begin
     RadioBtn := TRadioButton(FButtonList[i]);
     RadioBtn.TabStop := RadioBtn.Checked;
   end;
   if (FItemIndex=-1) and (Items.Count>0) then
-    TRadioButton(FButtonList[0]).TabStop := true;
+    TRadioButton(FButtonList[0]).TabStop := True;
 end;
 
 procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
