@@ -2,7 +2,6 @@
 {$IFDEF FPC}
   // FreePascal must be in Delphi mode
   {$MODE delphi}
-  {$ASMMODE Intel}
 {$ELSE}
   {$DEFINE USEJCL}
 
