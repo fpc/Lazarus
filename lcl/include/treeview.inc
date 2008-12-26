@@ -3281,11 +3281,6 @@ function TCustomTreeView.GetNodeAtInternalY(Y: Integer): TTreeNode;
 var i: integer;
 begin
   i:=IndexOfNodeAtTop(Items.FTopLvlItems,Items.FTopLvlCount,Y);
-  if (i=0) and (not (tvoShowRoot in Options)) then begin
-    inc(i);
-    if i>=Items.FTopLvlCount then
-      i:=-1;
-  end;
   if i>=0 then begin
     Result:=Items.FTopLvlItems[i];
     while Result.Expanded do begin
@@ -3295,6 +3290,9 @@ begin
       else
         break;
     end;
+    if (not (tvoShowRoot in Options))
+    and (Result=Items.FTopLvlItems[0]) then
+      Result:=nil;
   end else
     Result:=nil;
 end;
