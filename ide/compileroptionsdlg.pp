@@ -44,7 +44,8 @@ uses
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
-  CompilerOptions, CheckCompilerOpts;
+  CompilerOptions, CheckCompilerOpts, CompOptsModes,
+  Options_Compiler_Conditionals;
 
 type
   { Compiler options form }
@@ -60,8 +61,11 @@ type
 
   TfrmCompilerOptions = class(TForm)
     chkUseExternalDbgSyms: TCheckBox;
+    ConditionalOptionsFrame: TCompOptsConditionalsFrame;
+    ConditionalsGroupBox: TGroupBox;
     MainNoteBook: TNoteBook;
     BtnPanel: TPanel;
+    ConditionalPage: TPage;
 
     { Search Paths Controls }
     PathPage: TPage;
@@ -118,6 +122,7 @@ type
 
     grpTargetPlatform: TGroupBox;
     lblTargetOS : TLabel;
+    ConditionalSplitter: TSplitter;
     TargetOSComboBox: TComboBox;
     lblTargetCPU : TLabel;
     TargetCPUComboBox: TComboBox;
@@ -238,6 +243,7 @@ type
     procedure SetupLinkingTab(Page: integer);
     procedure SetupMessagesTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
+    procedure SetupConditionalTab(Page: integer);
     procedure SetupInheritedTab(Page: integer);
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
@@ -385,6 +391,8 @@ begin
     SetupMessagesTab(Page);
     inc(Page);
     SetupOtherTab(Page);
+    inc(Page);
+    SetupConditionalTab(Page);
     inc(Page);
     SetupInheritedTab(Page);
     inc(Page);
@@ -668,6 +676,11 @@ begin
     memCustomOptions.Text := Options.CustomOptions;
 
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
+
+    // conditional
+    {$IFDEF EnableBuildModes}
+    ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
+    {$ENDIF}
 
     // inherited tab
     UpdateInheritedTab;
@@ -1383,6 +1396,15 @@ begin
   edtConfigPath.Text := '';
 
   grpCustomOptions.Caption:=lisCustomOptions2;
+end;
+
+procedure TfrmCompilerOptions.SetupConditionalTab(Page: integer);
+begin
+  {$IFNDEF EnableBuildModes}
+  ConditionalPage.TabVisible:=false;
+  {$ENDIF}
+  MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
+  ConditionalsGroupBox.Caption:=dlgOIOptions;
 end;
 
 {------------------------------------------------------------------------------

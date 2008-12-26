@@ -1351,6 +1351,7 @@ resourcestring
   dlgUseFpcCfg = 'Use standard Compiler Config File (fpc.cfg)';
   dlgUseCustomConfig = 'Use addional Compiler Config File';
   lisCustomOptions2 = 'Custom options';
+  dlgCOConditionals = 'Conditionals';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other Unit Files (-Fu) (Delimiter is semicolon):';
   dlgCOIncFiles = 'Include Files (-Fi):';

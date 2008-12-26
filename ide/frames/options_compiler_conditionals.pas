@@ -24,7 +24,8 @@ unit Options_Compiler_Conditionals;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LResources, Forms, ComCtrls, Menus, Dialogs,
+  Classes, SysUtils, LCLProc, FileProcs, Controls, LResources, Forms, ComCtrls,
+  Menus, Dialogs,
   ProjectIntf, IDEImagesIntf,
   CompOptsModes;
 
@@ -61,7 +62,6 @@ type
     procedure FillTreeView;
     procedure ConsistencyCheck;
     function NodeToCaption(Node: TCompOptCondNode): string;
-    function NodeToImageIndex(Node: TCompOptCondNode): integer;
     function GetSelectedNode(out COCNode: TCompOptCondNode;
                         out TVNode: TTreeNode; RootAsDefault: boolean): boolean;
     procedure CreateNewNode(AttachMode: TNodeAttachMode);
@@ -79,8 +79,9 @@ var
   COCNode: TCompOptCondNode;
   TVNode: TTreeNode;
   HasSelection: Boolean;
+  NormalNodeIsSelectd: Boolean;
 begin
-  GetSelectedNode(COCNode,TVNode);
+  GetSelectedNode(COCNode,TVNode,false);
   HasSelection:=COCNode<>nil;
   NormalNodeIsSelectd:=HasSelection and (COCNode<>Conditionals.Root);
   InsertAboveMenuItem.Enabled:=NormalNodeIsSelectd;
@@ -261,15 +262,15 @@ begin
   cocntAddValue:
     begin
       case Node.ValueType of
-      cocvtNone: Result:='Result:='+Node.Value,
-      cocvtUnitPath: Result:='Add unit path: '+Node.Value,
-      cocvtSrcPath: Result:='Add unit source path: '+Node.Value,
-      cocvtIncludePath: Result:='Add include path: '+Node.Value,
-      cocvtObjectPath: Result:='Add object path: '+Node.Value,
-      cocvtLibraryPath: Result:='Add library path: '+Node.Value,
-      cocvtDebugPath: Result:='Add debug path: '+Node.Value,
-      cocvtLinkerOptions: Result:='Add linker options: '+Node.Value,
-      cocvtCustomOptions: Result:='Add custom options: '+Node.Value,
+      cocvtNone: Result:='Result:='+Node.Value;
+      cocvtUnitPath: Result:='Add unit path: '+Node.Value;
+      cocvtSrcPath: Result:='Add unit source path: '+Node.Value;
+      cocvtIncludePath: Result:='Add include path: '+Node.Value;
+      cocvtObjectPath: Result:='Add object path: '+Node.Value;
+      cocvtLibraryPath: Result:='Add library path: '+Node.Value;
+      cocvtDebugPath: Result:='Add debug path: '+Node.Value;
+      cocvtLinkerOptions: Result:='Add linker options: '+Node.Value;
+      cocvtCustomOptions: Result:='Add custom options: '+Node.Value;
       else
         Result:='(unknown ValueType)';
       end;
@@ -278,12 +279,6 @@ begin
     Result:='(unknown NodeType)';
   end;
   Result:=ValidUTF8String(Result);
-end;
-
-function TCompOptsConditionalsFrame.NodeToImageIndex(Node: TCompOptCondNode
-  ): integer;
-begin
-
 end;
 
 function TCompOptsConditionalsFrame.GetSelectedNode(out
@@ -310,6 +305,7 @@ var
   COCNode: TCompOptCondNode;
   s: String;
   NewTVNode: TTreeNode;
+  NewCOCNode: TCompOptCondNode;
 begin
   if not GetSelectedNode(COCNode,TVNode,true) then exit;
   NewCOCNode:=TCompOptCondNode.Create(COCNode.Owner);
@@ -332,7 +328,7 @@ begin
 
   for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
     FNodeTypeImageIDs[nt]:=-1;
-  FNodeTypeImageIDs[cocntNone]:=IDEImages.LoadImage(24,'da_none');
+  FNodeTypeImageIDs[cocntNone]:=-1;
   FNodeTypeImageIDs[cocntIf]:=IDEImages.LoadImage(24,'da_if');
   FNodeTypeImageIDs[cocntIfdef]:=IDEImages.LoadImage(24,'da_ifdef');
   FNodeTypeImageIDs[cocntIfNdef]:=IDEImages.LoadImage(24,'da_ifndef');

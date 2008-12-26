@@ -24,7 +24,7 @@
   ToDo: - multiselect for actions
         - standard icon
 }
-unit actionseditorstd;
+unit ActionsEditorStd;
 
 {$mode objfpc}{$H+}
 

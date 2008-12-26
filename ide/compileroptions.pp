@@ -282,6 +282,7 @@ type
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
+
     procedure SetTargetFilename(const AValue: String);
   protected
     procedure SetBaseDirectory(const AValue: string); override;
@@ -1753,6 +1754,11 @@ begin
   Result:=MakeOptionsString(GetDefaultMainSourceFileName,Globals,Flags);
 end;
 
+function CompilerSupportMessages(CompilerVersion, CompilerRelease, CompilerPatch: Integer): Boolean;
+begin
+  Result := (CompilerVersion >= 2) and (CompilerRelease >= 3) and (CompilerPatch >=1);
+end;
+
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.MakeOptionsString(
     const MainSourceFilename: string;
@@ -2276,7 +2282,6 @@ begin
      oxxx = Object files
      rxxx = Compiler messages file
 }
-
   { ----------------------------------------------- }
 
   { TODO: The following switches need to be implemented. They need to
