@@ -969,6 +969,7 @@ type
     property EchoMode;
     property EditLabel;
     property Enabled;
+    property Font;
     property LabelPosition;
     property LabelSpacing;
     property MaxLength;
