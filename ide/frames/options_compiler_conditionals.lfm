@@ -27,52 +27,62 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     Options = [tvoAutoExpand, tvoAutoInsertMark, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowSeparators, tvoToolTips]
   end
   object COCPopupMenu: TPopupMenu
+    OnPopup = COCPopupMenuPopup
     left = 48
     top = 48
     object InsertAboveMenuItem: TMenuItem
       Caption = 'InsertAboveMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = InsertAboveMenuItemClick
     end
     object InsertBelowMenuItem: TMenuItem
       Caption = 'InsertBelowMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = InsertBelowMenuItemClick
     end
     object InsertChildMenuItem: TMenuItem
       Caption = 'InsertChildMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = InsertChildMenuItemClick
     end
     object DeleteMenuItem: TMenuItem
       Caption = 'DeleteMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = DeleteMenuItemClick
     end
     object MoveUpMenuItem: TMenuItem
       Caption = 'MoveUpMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = MoveUpMenuItemClick
     end
     object MoveDownMenuItem: TMenuItem
       Caption = 'MoveDownMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = MoveDownMenuItemClick
     end
     object MoveLvlUpMenuItem: TMenuItem
       Caption = 'MoveLvlUpMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = MoveLvlUpMenuItemClick
     end
     object MoveLvlDownMenuItem: TMenuItem
       Caption = 'MoveLvlDownMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = MoveLvlDownMenuItemClick
     end
     object PropertiesMenuItem: TMenuItem
       Caption = 'PropertiesMenuItem'
       RightJustify = False
       ShowAlwaysCheckable = False
+      OnClick = PropertiesMenuItemClick
     end
   end
 end

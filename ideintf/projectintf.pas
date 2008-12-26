@@ -106,6 +106,8 @@ type
     FValueType: TCOCValueType;
     function GetChilds(Index: integer): TCompOptCondNode;
     function GetCount: integer;
+    function GetIndex: integer;
+    procedure SetIndex(const AValue: integer);
     procedure SetNodeType(const AValue: TCOCNodeType);
     procedure SetValue(const AValue: string);
     procedure SetValueType(const AValue: TCOCValueType);
@@ -117,6 +119,7 @@ type
     procedure AddLast(Child: TCompOptCondNode);
     procedure Insert(Index: integer; Child: TCompOptCondNode);
     procedure Move(OldIndex, NewIndex: integer);
+    procedure Move(NewParent: TCompOptCondNode; NewIndex: integer);
     procedure Delete(Index: integer);
     procedure Assign(Source: TCompOptCondNode);
     property NodeType: TCOCNodeType read FNodeType write SetNodeType;
@@ -126,6 +129,7 @@ type
     property Parent: TCompOptCondNode read FParent;
     property Count: integer read GetCount;
     property Childs[Index: integer]: TCompOptCondNode read GetChilds;
+    property Index: integer read GetIndex write SetIndex;
   end;
 
   { TLazCompOptConditionals }
@@ -946,6 +950,23 @@ begin
   Result:=fChilds.Count;
 end;
 
+function TCompOptCondNode.GetIndex: integer;
+begin
+  if Parent=nil then
+    Result:=-1
+  else
+    Result:=Parent.fChilds.IndexOf(Self);
+end;
+
+procedure TCompOptCondNode.SetIndex(const AValue: integer);
+var
+  OldIndex: LongInt;
+begin
+  OldIndex:=GetIndex;
+  if OldIndex=AValue then exit;
+  Parent.Move(OldIndex,AValue);
+end;
+
 procedure TCompOptCondNode.SetValue(const AValue: string);
 begin
   if FValue=AValue then exit;
@@ -1016,6 +1037,22 @@ begin
   if OldIndex=NewIndex then exit;
   fChilds.Move(OldIndex,NewIndex);
   Changed;
+end;
+
+procedure TCompOptCondNode.Move(NewParent: TCompOptCondNode; NewIndex: integer
+  );
+begin
+  if (NewParent=Parent) and (NewIndex=Index) then exit;
+  if FParent<>nil then begin
+    FParent.fChilds.Remove(Self);
+    FParent.Changed;
+  end;
+  FParent:=NewParent;
+  if FParent<>nil then begin
+    if (NewIndex<0) or (NewIndex>FParent.Count) then
+      NewIndex:=FParent.Count;
+    FParent.fChilds.Insert(NewIndex,Self);
+  end;
 end;
 
 procedure TCompOptCondNode.Delete(Index: integer);
