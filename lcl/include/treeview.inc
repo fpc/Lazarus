@@ -842,6 +842,9 @@ begin
     end;
   end else
     Result := Parent;
+  if (Result.Parent=nil) and (Result.GetPrevSibling=nil)
+  and (not (tvoShowRoot in TreeView.Options)) then
+    Result:=nil;
 end;
 
 function TTreeNode.GetNextChild(AValue: TTreeNode): TTreeNode;
@@ -3055,24 +3058,28 @@ end;
 
 procedure TCustomTreeView.UpdateAllTops;
 
-  procedure CalculateTops(FirstSibling: TTreeNode; var CurTop: integer;
-    Expanded: boolean);
+  procedure CalculateTops(FirstSibling: TTreeNode; var CurTop: integer);
   begin
     while FirstSibling<>nil do begin
       FirstSibling.fTop:=CurTop;
-      if Expanded then
-        inc(CurTop,FirstSibling.Height);
-      CalculateTops(FirstSibling.GetFirstChild,CurTop,
-        Expanded and FirstSibling.Expanded);
+      inc(CurTop,FirstSibling.Height);
+      if FirstSibling.Expanded then
+        CalculateTops(FirstSibling.GetFirstChild,CurTop);
       FirstSibling:=FirstSibling.GetNextSibling;
     end;
   end;
 
 var i: integer;
+  StartNode: TTreeNode;
 begin
   if not (tvsTopsNeedsUpdate in FStates) then exit;
   i:=0;
-  CalculateTops(Items.GetFirstNode,i,true);
+  StartNode:=Items.GetFirstNode;
+  if (not (tvoShowRoot in Options)) and (StartNode<>nil) then begin
+    StartNode.FTop:=0;
+    StartNode:=StartNode.GetNextExpanded;
+  end;
+  CalculateTops(StartNode,i);
   Exclude(FStates,tvsTopsNeedsUpdate);
   Include(FStates,tvsScrollbarChanged);
 end;
@@ -3274,6 +3281,11 @@ function TCustomTreeView.GetNodeAtInternalY(Y: Integer): TTreeNode;
 var i: integer;
 begin
   i:=IndexOfNodeAtTop(Items.FTopLvlItems,Items.FTopLvlCount,Y);
+  if (i=0) and (not (tvoShowRoot in Options)) then begin
+    inc(i);
+    if i>=Items.FTopLvlCount then
+      i:=-1;
+  end;
   if i>=0 then begin
     Result:=Items.FTopLvlItems[i];
     while Result.Expanded do begin
@@ -3478,6 +3490,7 @@ begin
     //  ' ',dbgs(FScrolledTop)+'>=',dbgs(ANode.Top+ANode.Height)+' or =',dbgs(FScrolledTop),'+'+dbgs(ClientHeight)+'<',dbgs(ANode.Top));
     if (FScrolledTop>=ANode.Top+ANode.Height)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
+    or ((not (tvoShowRoot in Options)) and (ANode.fParent=nil) and (ANode.FPrevBrother=nil))
     then
       Result:=false;
   end;
@@ -3496,6 +3509,7 @@ begin
     if (FScrolledTop>ANode.Top)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth
       <ANode.Top+ANode.Height)
+    or ((not (tvoShowRoot in Options)) and (ANode.fParent=nil) and (ANode.FPrevBrother=nil))
     then
       Result:=false;
   end;
@@ -3521,8 +3535,7 @@ begin
   begin
     if lNode <> nil then 
       lNode := lNode.GetNextExpanded
-    else
-    if Items.Count > 0 then
+    else if Items.Count > 0 then
       lNode := FTreeNodes.GetFirstNode;
     if lNode <> nil then
       Key:=VK_UNKNOWN;
@@ -3532,8 +3545,7 @@ begin
   begin
     if lNode <> nil then
       lNode := lNode.GetPrevExpanded
-    else
-    if Items.Count > 0 then
+    else if Items.Count > 0 then
       lNode := Items.GetLastExpandedSubNode;
     if lNode <> nil then
       Key:=VK_UNKNOWN;
@@ -3545,8 +3557,12 @@ begin
       if lNode.Expanded then
         lNode.Expanded := False
       else
-        if lNode.Parent <> nil then 
-          lNode := lNode.Parent
+        if lNode.Parent <> nil then begin
+          lNode := lNode.Parent;
+          if (not (tvoShowRoot in Options)) and (lNode.Parent=nil)
+          and (lNode.GetPrevSibling=nil) then
+            lNode:=lNode.GetNextSibling;
+        end;
     end;
 
   VK_RIGHT:
@@ -3567,11 +3583,14 @@ begin
       lNode.Expanded := False;
 
   VK_HOME:
-    if Items.Count > 0 then
-      lNode := Items[0];
+    if Items.GetFirstNode<>nil then begin
+      lNode := Items.GetFirstNode;
+      if (not (tvoShowRoot in Options)) then
+        lNode:=lNode.GetNextExpanded;
+    end;
       
   VK_END:
-    if Items.Count > 0 then
+    if Items.GetFirstNode<>nil then
       lNode := Items.GetLastExpandedSubNode;
       
   VK_PRIOR: // Page Up
