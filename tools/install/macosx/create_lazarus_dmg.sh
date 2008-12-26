@@ -81,7 +81,7 @@ LazRelease='0'
 # Iceberg only supports a major and a minor version number
 # convert 1.2.3 => 1.23
 LAZMAJORVERSION=$(echo $LazVersion | sed -e 's/\..*//')
-LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\.//')
+LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\.//g')
 
 COMPILER=$PP
 if [ -z "$COMPILER" ]; then
