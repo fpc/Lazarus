@@ -1483,11 +1483,15 @@ end;
 function TTreeNode.DisplayExpandSignLeft: integer;
 var
   TV: TCustomTreeView;
+  l: LongInt;
 begin
   Result:=0;
   TV:=TreeView;
-  if TV<>nil then
-    inc(Result,TV.Indent*Level+TV.BorderWidth-TV.FScrolledLeft);
+  if TV=nil then exit;
+  l:=Level;
+  if not (tvoShowRoot in TV.Options) then
+    dec(l);
+  inc(Result,TV.Indent*l+TV.BorderWidth-TV.FScrolledLeft);
 end;
 
 function TTreeNode.DisplayExpandSignRect: TRect;
@@ -4148,8 +4152,8 @@ var
   var
     CurMid: integer;
   begin
-    if CurNode <> nil then
-    begin
+    if (CurNode <> nil) and (tvoShowRoot in Options) or (CurNode.Parent<>nil)
+    then begin
       Result := DrawTreeLines(CurNode.Parent);
       if ShowLines then
       begin
