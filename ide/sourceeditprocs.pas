@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
-  SynEdit, SynRegExpr, SynCompletion,
+  SynEdit, SynEditHighlighter, SynRegExpr, SynCompletion,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, SourceChanger, CodeToolManager,
   PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
   LazIDEIntf, TextTools, IDETextConverter,
@@ -83,7 +83,7 @@ type
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
-  MeasureOnly: Boolean = False): TPoint;
+  Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean = False): TPoint;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   AddChar: TUTF8Char;
@@ -109,12 +109,13 @@ end;
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
-  MeasureOnly: Boolean): TPoint;
+  Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean): TPoint;
 var
   BGRed: Integer;
   BGGreen: Integer;
   BGBlue: Integer;
   TokenStart: Integer;
+  BackgroundColor: TColor;
 
   procedure SetFontColor(NewColor: TColor);
   
@@ -173,15 +174,51 @@ var
       TokenStart:=0;
     end;
   end;
-  
-  
+
+  procedure PaintHighlighted(s: string);
+  var
+    sToken: PChar;
+    nTokenLen: integer;
+    Attr: TSynHighlightElement;
+    CurForeground: Integer;
+    CurBackground: Integer;
+  begin
+    if MeasureOnly then begin
+      Inc(Result.X,ACanvas.TextWidth(s));
+      exit;
+    end;
+    if (Highlighter<>nil) and (not ItemSelected) then begin
+      Highlighter.ResetRange;
+      Highlighter.SetLine(s,0);
+      while not Highlighter.GetEol do begin
+        Highlighter.GetTokenEx(sToken,nTokenLen);
+        SetLength(s,nTokenLen);
+        if nTokenLen>0 then begin
+          System.Move(sToken^,s[1],nTokenLen);
+          attr := Highlighter.GetTokenAttribute;
+          CurForeground:=Attr.Foreground;
+          CurBackground:=Attr.Background;
+          if CurForeground=clNone then CurForeground:=clBlack;
+          if CurBackground=clNone then CurBackground:=BackgroundColor;
+          ACanvas.Font.Color:=CurForeground;
+          ACanvas.Brush.Color:=CurBackground;
+          ACanvas.TextOut(x,y,s);
+          inc(x,ACanvas.TextWidth(s));
+        end;
+        Highlighter.Next;
+      end;
+    end else begin
+      SetFontColor(clBlack);
+      ACanvas.TextOut(x+1,y,s);
+    end;
+  end;
+
 var
   i: Integer;
   s: string;
   IdentItem: TIdentifierListItem;
   AColor: TColor;
   ANode: TCodeTreeNode;
-  BackgroundColor: TColor;
   ItemNode: TCodeTreeNode;
 begin
   Result.X := 0;
@@ -265,6 +302,7 @@ begin
     inc(x,ACanvas.TextWidth('procedure '));
     if x>MaxX then exit;
 
+    // paint the identifier
     SetFontColor(clBlack);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=IdentItem.Identifier;
@@ -278,6 +316,7 @@ begin
     end;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
     
+    // finally paint the type/value/parameters
     s:='';
     ItemNode:=IdentItem.Node;
     if ItemNode<>nil then begin
@@ -343,11 +382,8 @@ begin
     end;
     
     if s<>'' then begin
-      SetFontColor(clBlack);
-      if MeasureOnly then
-        Inc(Result.X, ACanvas.TextWidth(s))
-      else
-        ACanvas.TextOut(x+1,y,s);
+      inc(x);
+      PaintHighlighted(s);
     end;
 
   end else begin
