@@ -421,7 +421,6 @@ begin
   Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
   Scroll.Parent := Self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
-  Scroll.Width := 10;
   {$IFDEF SYN_LAZARUS}
   Scroll.Visible := True;
   Scroll.Anchors:=[akTop,akRight];
