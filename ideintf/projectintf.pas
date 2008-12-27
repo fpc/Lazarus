@@ -128,7 +128,7 @@ type
     property Owner: TLazCompOptConditionals read FOwner;
     property Parent: TCompOptCondNode read FParent;
     property Count: integer read GetCount;
-    property Childs[Index: integer]: TCompOptCondNode read GetChilds;
+    property Childs[Index: integer]: TCompOptCondNode read GetChilds; default;
     property Index: integer read GetIndex write SetIndex;
   end;
 
@@ -1052,6 +1052,7 @@ begin
     if (NewIndex<0) or (NewIndex>FParent.Count) then
       NewIndex:=FParent.Count;
     FParent.fChilds.Insert(NewIndex,Self);
+    FParent.Changed;
   end;
 end;
 

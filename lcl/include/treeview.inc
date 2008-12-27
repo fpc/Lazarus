@@ -4152,7 +4152,7 @@ var
   var
     CurMid: integer;
   begin
-    if (CurNode <> nil) and (tvoShowRoot in Options) or (CurNode.Parent<>nil)
+    if (CurNode <> nil) and ((tvoShowRoot in Options) or (CurNode.Parent<>nil))
     then begin
       Result := DrawTreeLines(CurNode.Parent);
       if ShowLines then

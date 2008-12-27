@@ -3611,6 +3611,10 @@ resourcestring
   lisCEConstants = 'Constants';
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
+  dlgCOMoveLevelDown = 'Move level down';
+  dlgCOMoveLevelUp = 'Move level up';
+  dlgCOMoveDown = 'Move down';
+  dlgCOMoveUp = 'Move up';
   lisCEOMode = 'Preferred Exhibition Mode';
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
@@ -3999,6 +4003,9 @@ resourcestring
   rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
   rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
   lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
+  dlgCOCreateNodeAbove = 'Create node above';
+  dlgCOCreateNodeBelow = 'Create node below';
+  dlgCOCreateChildNode = 'Create child node';
 
 implementation
 

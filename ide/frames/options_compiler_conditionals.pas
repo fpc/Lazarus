@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileProcs, Controls, LResources, Forms, ComCtrls,
   Menus, Dialogs,
   ProjectIntf, IDEImagesIntf,
-  CompOptsModes;
+  LazarusIDEStrConsts, CompOptsModes;
 
 type
 
@@ -231,13 +231,17 @@ procedure TCompOptsConditionalsFrame.ConsistencyCheck;
       RaiseCatchableException('');
     if TVNode=nil then
       RaiseCatchableException('');
-    if COCNode<>TCompOptCondNode(TVNode.Data) then
+    if TVNode.Data=nil then
       RaiseCatchableException('');
+    if COCNode<>TCompOptCondNode(TVNode.Data) then
+      RaiseCatchableException(TCompOptCondNode(TObject(TVNode.Data)).Value+'<>'+COCNode.Value+' TVNode='+TVNode.Text);
     ChildTVNode:=TVNode.GetFirstChild;
     for i:=0 to COCNode.Count-1 do begin
       CheckNode(COCNode.Childs[i],ChildTVNode);
       ChildTVNode:=ChildTVNode.GetNextSibling;
     end;
+    if ChildTVNode<>nil then
+      RaiseCatchableException('');
   end;
 
 begin
@@ -310,10 +314,19 @@ begin
   if not GetSelectedNode(COCNode,TVNode,true) then exit;
   NewCOCNode:=TCompOptCondNode.Create(COCNode.Owner);
   s:=NodeToCaption(COCNode);
-  NewTVNode:=COCTreeView.Items.AddObject(TVNode,s,COCNode);
-  NewTVNode.MoveTo(TVNode,naAddChildFirst);
+  NewTVNode:=COCTreeView.Items.AddObject(TVNode,s,NewCOCNode);
+  NewTVNode.MoveTo(TVNode,AttachMode);
   NewTVNode.ImageIndex:=FNodeTypeImageIDs[NewCOCNode.NodeType];
   NewTVNode.StateIndex:=NewTVNode.ImageIndex;
+  case AttachMode of
+  naAdd: NewCOCNode.Move(COCNode.Parent,COCNode.Parent.Count);
+  naAddFirst: NewCOCNode.Move(COCNode.Parent,0);
+  naAddChild: NewCOCNode.Move(COCNode,COCNode.Count);
+  naAddChildFirst: NewCOCNode.Move(COCNode,0);
+  naInsert: NewCOCNode.Move(COCNode.Parent,COCNode.Index);
+  naInsertBehind: NewCOCNode.Move(COCNode.Parent,COCNode.Index+1);
+  end;
+  TVNode.Expanded:=true;
   ConsistencyCheck;
 end;
 
@@ -335,6 +348,16 @@ begin
   FNodeTypeImageIDs[cocntElseIf]:=IDEImages.LoadImage(24,'da_elseif');
   FNodeTypeImageIDs[cocntElse]:=IDEImages.LoadImage(24,'da_else');
   FNodeTypeImageIDs[cocntAddValue]:=IDEImages.LoadImage(24,'da_define');
+
+  InsertAboveMenuItem.Caption:=dlgCOCreateNodeAbove;
+  InsertBelowMenuItem.Caption:=dlgCOCreateNodeBelow;
+  InsertChildMenuItem.Caption:=dlgCOCreateChildNode;
+  DeleteMenuItem.Caption:=lisCodeToolsDefsDeleteNode;
+  PropertiesMenuItem.Caption:=lisCEProperties;
+  MoveLvlDownMenuItem.Caption:=dlgCOMoveLevelDown;
+  MoveLvlUpMenuItem.Caption:=dlgCOMoveLevelUp;
+  MoveDownMenuItem.Caption:=dlgCOMoveDown;
+  MoveUpMenuItem.Caption:=dlgCOMoveUp;
 end;
 
 initialization

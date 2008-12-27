@@ -98,6 +98,7 @@ type
     property Evaluator: TExpressionEvaluator read FEvaluator write SetEvaluator;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp; inline;
+    procedure WriteDebugReport;
     property ErrorNode: TCompOptCondNode read FErrorNode write FErrorNode;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
   end;
@@ -360,6 +361,22 @@ begin
     inc(FChangeStamp)
   else
     FChangeStamp:=Low(Integer);
+end;
+
+procedure TCompOptConditionals.WriteDebugReport;
+
+  procedure WriteNode(Prefix: string; Node: TCompOptCondNode);
+  var
+    i: Integer;
+  begin
+    DebugLn([Prefix,'Type=',COCNodeTypeNames[Node.NodeType],' Value=',Node.Value]);
+    for i:=0 to Node.Count-1 do
+      WriteNode(Prefix+'  ',Node.Childs[i]);
+  end;
+
+begin
+  DebugLn(['TCompOptConditionals.WriteDebugReport ']);
+  WriteNode('  ',Root);
 end;
 
 { TCompilerDiffTool }
