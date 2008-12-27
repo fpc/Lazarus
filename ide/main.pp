@@ -14354,6 +14354,7 @@ var
   Ancestor: TComponent;
   ComponentClassNames: TStringList;
   ClassUnitInfo: TUnitInfo;
+  i: Integer;
 begin
   DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
@@ -14394,14 +14395,18 @@ begin
     SourceNotebook.AddJumpPointClicked(Self);
 
     // add needed package to required packages
-    ComponentClassNames:=TStringList.Create;
-    try
-      ComponentClassNames.Add(APersistent.ClassName);
-      //DebugLn(['TMainIDE.OnPropHookPersistentAdded ComponentClassNames=',ComponentClassNames.Text]);
-      PkgBoss.AddUnitDependenciesForComponentClasses(ActiveUnitInfo.Filename,
-        ComponentClassNames,true);
-    finally
-      ComponentClassNames.Free;
+    if ADesigner.LookupRoot.ComponentCount>0 then
+    begin
+      ComponentClassNames:=TStringList.Create;
+      try
+        for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
+          ComponentClassNames.Add(ADesigner.LookupRoot.Components[i].ClassName);
+        //DebugLn(['TMainIDE.OnPropHookPersistentAdded ComponentClassNames=',ComponentClassNames.Text]);
+        PkgBoss.AddUnitDependenciesForComponentClasses(ActiveUnitInfo.Filename,
+          ComponentClassNames,true);
+      finally
+        ComponentClassNames.Free;
+      end;
     end;
 
     // add component definitions to form source
