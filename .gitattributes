@@ -2686,7 +2686,6 @@ ide/mainintf.pas svneol=native#text/pascal
 ide/makeresstrdlg.lfm svneol=native#text/plain
 ide/makeresstrdlg.lrs svneol=native#text/plain
 ide/makeresstrdlg.pas svneol=native#text/pascal
-ide/manifest.rc svneol=native#text/plain
 ide/miscoptions.pas svneol=native#text/pascal
 ide/msgquickfixes.pas svneol=native#text/plain
 ide/msgview.lfm svneol=native#text/plain
