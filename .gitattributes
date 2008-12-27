@@ -2483,7 +2483,6 @@ ide/componentlist.pas svneol=native#text/pascal
 ide/componentpalette.pas svneol=native#text/pascal
 ide/compoptcondpropsdlg.lfm svneol=native#text/plain
 ide/compoptcondpropsdlg.lrs svneol=native#text/plain
-ide/compoptcondpropsdlg.lrt svneol=native#text/plain
 ide/compoptcondpropsdlg.pas svneol=native#text/plain
 ide/compoptsmodes.pas svneol=native#text/plain
 ide/condef.lfm svneol=native#text/plain
