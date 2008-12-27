@@ -205,7 +205,6 @@ procedure TCompOptsConditionalsFrame.FillTreeView;
     if COCNode=nil then exit;
     TVNode:=COCTreeView.Items.AddChildObject(ParentTVNode,NodeToCaption(COCNode),COCNode);
     TVNode.ImageIndex:=FNodeTypeImageIDs[COCNode.NodeType];
-    TVNode.StateIndex:=TVNode.ImageIndex;
     for i:=0 to COCNode.Count-1 do
       Add(COCNode.Childs[i],TVNode);
   end;
@@ -317,7 +316,6 @@ begin
   NewTVNode:=COCTreeView.Items.AddObject(TVNode,s,NewCOCNode);
   NewTVNode.MoveTo(TVNode,AttachMode);
   NewTVNode.ImageIndex:=FNodeTypeImageIDs[NewCOCNode.NodeType];
-  NewTVNode.StateIndex:=NewTVNode.ImageIndex;
   case AttachMode of
   naAdd: NewCOCNode.Move(COCNode.Parent,COCNode.Parent.Count);
   naAddFirst: NewCOCNode.Move(COCNode.Parent,0);
@@ -337,7 +335,6 @@ begin
   inherited Create(TheOwner);
 
   COCTreeView.Images := IDEImages.Images_24;
-  COCTreeView.StateImages := IDEImages.Images_16;
 
   for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
     FNodeTypeImageIDs[nt]:=-1;

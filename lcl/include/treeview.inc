@@ -3392,7 +3392,7 @@ begin
         AnInsertMarkType:=tvimAsNextSibling;
       end;
     end else if (AnInsertMarkNode.Parent<>nil)
-    and (AnInsertMarkNode.IsVisible) then begin
+    and (AnInsertMarkNode.Parent.IsVisible) then begin
       AnInsertMarkNode:=AnInsertMarkNode.Parent;
       AnInsertMarkType:=tvimAsFirstChild;
     end;
@@ -4030,18 +4030,20 @@ begin
       //write('[TCustomTreeView.DoPaint] B Node=',DbgS(Node));
       //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
     end;
+    SpaceRect:=Rect(BorderWidth,BorderWidth,
+                    (ClientWidth-ScrollBarWidth)-BorderWidth,
+                    (ClientHeight-ScrollBarWidth)-BorderWidth);
     // draw insert mark for new root node
     if (InsertMarkType=tvimAsFirstChild)
     and (Items.Count=0) then begin
       Pen.Color:=FTreeLineColor;
       Brush.Color:=FSelectedColor;
-      InsertMarkRect:=Rect(0,0,ClientWidth,2);
+      InsertMarkRect:=SpaceRect;
+      InsertMarkRect.Bottom:=InsertMarkRect.Top+2;
       Rectangle(InsertMarkRect);
+      SpaceRect.Top:=InsertMarkRect.Bottom;
     end;
     // draw unused space below nodes
-    SpaceRect:=Rect(BorderWidth,BorderWidth,
-                    (ClientWidth-ScrollBarWidth)-BorderWidth,
-                    (ClientHeight-ScrollBarWidth)-BorderWidth);
     Node:=BottomItem;
     if Node<>nil then
       SpaceRect.Top:=Node.Top+Node.Height-FScrolledTop+BorderWidth;
@@ -4254,7 +4256,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=TreeLinePenStyle;
+          //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
           x:=Node.DisplayExpandSignRight+Indent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
@@ -4277,7 +4279,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=TreeLinePenStyle;
+          //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
           x:=Node.DisplayExpandSignLeft+Indent div 2;
           MoveTo(x,NodeRect.Top+1);
           x:=Node.DisplayExpandSignRight;
@@ -4299,7 +4301,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=TreeLinePenStyle;
+          //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
           x:=Node.DisplayExpandSignLeft+Indent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
