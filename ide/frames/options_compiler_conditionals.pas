@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileProcs, Controls, LResources, Forms, ComCtrls,
   Menus, Dialogs,
   ProjectIntf, IDEImagesIntf,
-  LazarusIDEStrConsts, CompOptsModes;
+  LazarusIDEStrConsts, CompOptsModes, CompOptCondPropsDlg;
 
 type
 
@@ -183,7 +183,11 @@ begin
 end;
 
 procedure TCompOptsConditionalsFrame.PropertiesMenuItemClick(Sender: TObject);
+var
+  COCNode: TCompOptCondNode;
+  TVNode: TTreeNode;
 begin
+  if not GetSelectedNode(COCNode,TVNode,false) then exit;
 
 end;
 

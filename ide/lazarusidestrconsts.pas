@@ -2367,6 +2367,7 @@ resourcestring
   lisCodeToolsDefsName = 'Name:';
   lisCodeToolsDefsDescription = 'Description:';
   lisCodeToolsDefsVariable = 'Variable:';
+  lisAddValue = 'Add value:';
   lisCodeToolsDefsValueAsText = 'Value as Text';
   lisCodeToolsDefsValueAsFilePaths = 'Value as File Paths';
   lisCodeToolsDefsAction = 'Action: %s';
@@ -4006,6 +4007,7 @@ resourcestring
   dlgCOCreateNodeAbove = 'Create node above';
   dlgCOCreateNodeBelow = 'Create node below';
   dlgCOCreateChildNode = 'Create child node';
+  lisResult = 'Result :=';
 
 implementation
 

@@ -784,7 +784,9 @@ function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
 function CompilationExecutableTypeNameToType(const s: string
                                              ): TCompilationExecutableType;
 function COCNodeTypeNameToType(const s: string): TCOCNodeType;
+function COCNodeTypeLocalizedName(const nt: TCOCNodeType): string;
 function COCValueTypeNameToType(const s: string): TCOCValueType;
+function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
@@ -807,11 +809,41 @@ begin
   Result:=cocntNone;
 end;
 
+function COCNodeTypeLocalizedName(const nt: TCOCNodeType): string;
+begin
+  case nt of
+  cocntNone:   Result:=sccsILEdtNone;
+  cocntIf:     Result:=liisIf;
+  cocntIfdef:  Result:=liisIfDef;
+  cocntIfNdef: Result:=liisIfNDef;
+  cocntElseIf: Result:=liisElseIf;
+  cocntElse:   Result:=liisElse;
+  cocntAddValue: Result:=liisAddValue;
+  else         Result:='?';
+  end;
+end;
+
 function COCValueTypeNameToType(const s: string): TCOCValueType;
 begin
   for Result:=Low(TCOCValueType) to High(TCOCValueType) do
     if SysUtils.CompareText(s,COCValueTypeNames[Result])=0 then exit;
   Result:=cocvtNone;
+end;
+
+function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
+begin
+  case vt of
+  cocvtNone:          Result:='None';
+  cocvtUnitPath:      Result:='unit search path';
+  cocvtSrcPath:       Result:='unit source search path';
+  cocvtIncludePath:   Result:='include search path';
+  cocvtObjectPath:    Result:='object search path';
+  cocvtLibraryPath:   Result:='library search path';
+  cocvtDebugPath:     Result:='debug search path';
+  cocvtLinkerOptions: Result:='linker options';
+  cocvtCustomOptions: Result:='custom options';
+  else                Result:='?';
+  end;
 end;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);

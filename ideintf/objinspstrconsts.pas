@@ -128,6 +128,12 @@ resourcestring
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';
+  liisIf = 'If';
+  liisIfDef = 'IfDef';
+  liisIfNDef = 'IfNDef';
+  liisElseIf = 'ElseIf';
+  liisElse = 'Else';
+  liisAddValue = 'Add value';
   sccsILEdtStretch     = 'Stretch';
   sccsILEdtCrop        = 'Crop';
   sccsILEdtCenter      = 'Center';
