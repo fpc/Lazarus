@@ -3,6 +3,11 @@
 set -e
 set -x
 
+LAZSOURCEDIR=$1
+if [ x$LAZSOURCEDIR == x ]; then
+  LAZSOURCEDIR=~/src/lazsource
+fi
+
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 
@@ -36,19 +41,19 @@ fi
 
 export FPC=~/fpc/bin/fpc
 
-LAZSOURCEDIR=~/src/lazsource
 $SVN up $LAZSOURCEDIR
 cd $LAZSOURCEDIR/tools/install/macosx
 ./create_lazarus_dmg.sh append-revision
 
 cd ..
-LazVersion=$(./get_lazarus_version.sh).$(./get_svn_revision_number.sh .)
+LazVersion=$(./get_lazarus_version.sh)
+LazFullVersion=$LazVersion.$(./get_svn_revision_number.sh .)
 cd -
 DATESTAMP=$(date +%Y%m%d)
 FPCARCH=$($FPC -iSP)
-DMGFILE=~/tmp/lazarus-$LazVersion-$DATESTAMP-$FPCARCH-macosx.dmg
+DMGFILE=~/tmp/lazarus-$LazFullVersion-$DATESTAMP-$FPCARCH-macosx.dmg
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
-  echo "$DMGFILE 'lazarus-*-*-$FPCARCH-macosx.dmg' " >> $UPDATELIST
+  echo "$DMGFILE 'lazarus-$LazVersion.?????-*-$FPCARCH-macosx.dmg' " >> $UPDATELIST
 fi
