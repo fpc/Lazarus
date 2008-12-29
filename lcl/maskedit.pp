@@ -83,7 +83,7 @@ type
 
     procedure SetMask(Value : String);
     function  ClearChar(Position : Integer) : Char;
-    procedure SetCursorPos;
+    procedure SetCursorPos(InsertingChar: Boolean = False);
     function  GetIsMasked : Boolean;
     procedure InsertChar(Ch : Char);
     procedure DeleteSelected(AlsoOnePosition : Boolean);
@@ -358,7 +358,7 @@ begin
          Inherited Text := S;
          CurrentText := S;
          Inc(FPosition);
-         SetCursorPos;
+         SetCursorPos(True);
        end;
 end;
 
@@ -541,7 +541,7 @@ begin
 end;
 
 // Set the cursor position
-procedure TCustomMaskEdit.SetCursorPos;
+procedure TCustomMaskEdit.SetCursorPos(InsertingChar: Boolean);
 Var
   Ok   : Boolean;
   I, C : Integer;
@@ -558,6 +558,9 @@ begin
     begin
       Inc(C);
       Ok := (C = FPosition);
+       if Ok and InsertingChar then
+         while (CharToMask(FMask[I]) in [Char_DateSeparator, Char_HourSeparator]) do
+           Inc(I);
     end;
 
     if Not Ok then Inc(I);
