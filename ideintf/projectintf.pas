@@ -93,7 +93,8 @@ const
 type
   TLazCompOptConditionals = class;
 
-  { TCompOptCondNode }
+  { TCompOptCondNode - a node in the conditional tree of the compiler options
+    of a project or package }
 
   TCompOptCondNode = class
   private
@@ -132,7 +133,9 @@ type
     property Index: integer read GetIndex write SetIndex;
   end;
 
-  { TLazCompOptConditionals }
+  { TLazCompOptConditionals
+    - conditional compiler options
+    - additions dependending  }
 
   TLazCompOptConditionals = class
   private
@@ -143,6 +146,29 @@ type
     procedure InvalidateValues; virtual; abstract;
     procedure Assign(Source: TLazCompOptConditionals); virtual; abstract;
     property Root: TCompOptCondNode read FRoot write FRoot;
+  end;
+
+  { TLazBuildMode }
+
+  TLazBuildMode = class
+  protected
+    FDefaultValue: TLazCompOptConditionals;
+    FIdentifier: string;
+    FLocalizedName: string;
+    FLocalizedValues: TStrings;
+    FValues: TStrings;
+    procedure SetIdentifier(const AValue: string); virtual; abstract;
+    procedure SetLocalizedName(const AValue: string); virtual; abstract;
+    procedure SetLocalizedValues(const AValue: TStrings); virtual; abstract;
+    procedure SetValues(const AValue: TStrings); virtual; abstract;
+  public
+    destructor Destroy; override;
+    procedure Assign(Source: TLazBuildMode); virtual; abstract;
+    property Identifier: string read FIdentifier write SetIdentifier;
+    property LocalizedName: string read FLocalizedName write SetLocalizedName;
+    property Values: TStrings read FValues write SetValues;
+    property LocalizedValues: TStrings read FLocalizedValues write SetLocalizedValues;
+    property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 
   { TLazCompilerOptions }
@@ -1568,6 +1594,14 @@ end;
 destructor TLazCompOptConditionals.Destroy;
 begin
   FreeAndNil(FRoot);
+  inherited Destroy;
+end;
+
+{ TLazBuildMode }
+
+destructor TLazBuildMode.Destroy;
+begin
+  FreeAndNil(FDefaultValue);
   inherited Destroy;
 end;
 
