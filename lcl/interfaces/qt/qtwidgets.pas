@@ -574,7 +574,7 @@ type
 
   { TQtTextEdit }
 
-  TQtTextEdit = class(TQtWidget, IQtEdit)
+  TQtTextEdit = class(TQtFrame, IQtEdit)
   private
     FViewportEventHook: QObject_hookH;
     FTextChangedHook: QTextEdit_hookH;
