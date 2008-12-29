@@ -1487,8 +1487,9 @@ begin
   if TV=nil then exit;
   l:=Level;
   if not (tvoShowRoot in TV.Options) then
-    dec(l);
-  inc(Result,TV.Indent*l+TV.BorderWidth-TV.FScrolledLeft);
+    inc(Result, TV.Indent * (l - 1) + (TV.Indent shr 2) + TV.BorderWidth - TV.FScrolledLeft)
+  else
+    inc(Result, TV.Indent * l + TV.BorderWidth - TV.FScrolledLeft);
 end;
 
 function TTreeNode.DisplayExpandSignRect: TRect;
@@ -4164,6 +4165,9 @@ var
       end;
       inc(Result, Indent);
     end else
+    if CurNode <> nil then
+      Result := Indent shr 2 // indent first level of tree with ShowRoot = false a bit
+    else
       Result := BorderWidth - FScrolledLeft;
   end;
 
@@ -4348,8 +4352,8 @@ begin
     Pen.Style := psSolid;
 
     // draw expand sign
-    if Node.HasChildren then
-      DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
+    if Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil)) then
+      DrawExpandSign(x - (Indent shr 1), VertMid, Node.Expanded);
 
     // draw icon
     if (Images<>nil) and PaintImages then
@@ -4376,19 +4380,20 @@ begin
     begin
       TextY:=NodeRect.Top+
          ((NodeRect.Bottom-NodeRect.Top-TextHeight(Node.Text)) div 2);
-      if NodeSelected and (FSelectedColor<>clNone) then begin
-        Brush.Color:=FSelectedColor;
-        CurTextRect:=NodeRect;
-        CurTextRect.Left:=x;
-        CurTextRect.Right:=x+TextWidth(Node.Text);
-        Font.Color:=InvertColor(Brush.Color);
+      if NodeSelected and (FSelectedColor<>clNone) then
+      begin
+        Brush.Color := FSelectedColor;
+        CurTextRect := NodeRect;
+        CurTextRect.Left := x;
+        CurTextRect.Right := x + TextWidth(Node.Text) + 1;
+        Font.Color := InvertColor(Brush.Color);
         FillRect(CurTextRect);
-        TextOut(x,TextY,Node.Text);
+        TextOut(x + 1, TextY, Node.Text);
       end
       else
       begin
         Font.Color := Self.Font.Color;
-        TextOut(x,TextY,Node.Text);
+        TextOut(x, TextY, Node.Text);
       end;
     end;
 
