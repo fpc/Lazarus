@@ -285,7 +285,6 @@ procedure TCompOptConditionals.CreateDiff(CompOpts: TLazCompOptConditionals;
     i: Integer;
     OldPath: String;
   begin
-    DebugLn(['Diff Cur=',CurNode.Value,' Other=',OtherNode.Value,' Cur=',dbgs(CurNode),' Other=',dbgs(OtherNode)]);
     Tool.AddDiff('NodeType',COCNodeTypeNames[CurNode.NodeType],COCNodeTypeNames[OtherNode.NodeType]);
     Tool.AddDiff('ValueType',COCValueTypeNames[CurNode.ValueType],COCValueTypeNames[OtherNode.ValueType]);
     Tool.AddDiff('Value',CurNode.Value,OtherNode.Value);
@@ -302,7 +301,6 @@ procedure TCompOptConditionals.CreateDiff(CompOpts: TLazCompOptConditionals;
   end;
 
 begin
-  DebugLn(['TCompOptConditionals.CreateDiff Self=',dbgs(Self),' CompOpts=',dbgs(CompOpts)]);
   Diff(Root,CompOpts.Root);
 end;
 

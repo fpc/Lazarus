@@ -41,8 +41,8 @@ uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, LResources,
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
   IDEDialogs, MacroIntf,
-  LazarusIDEStrConsts, BrokenDependenciesDlg, PackageDefs, PackageSystem,
-  CompilerOptions;
+  LazarusIDEStrConsts,
+  BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions;
 
 type
 
