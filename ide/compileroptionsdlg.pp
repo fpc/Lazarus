@@ -261,6 +261,7 @@ type
     procedure ClearInheritedTree;
   public
     CompilerOpts: TBaseCompilerOptions;
+    OldCompOpts: TBaseCompilerOptions;
 
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -409,6 +410,7 @@ end;
 ------------------------------------------------------------------------------}
 destructor TfrmCompilerOptions.Destroy;
 begin
+  FreeAndNil(OldCompOpts);
   ClearInheritedTree;
   inherited Destroy;
 end;
@@ -548,6 +550,11 @@ begin
     Options:=SrcCompilerOptions
   else
     Options:=CompilerOpts;
+
+  FreeAndNil(OldCompOpts);
+  OldCompOpts := TBaseCompilerOptionsClass(Options.ClassType).Create(nil);
+  OldCompOpts.Assign(Options);
+
   DisableAlign;
   try
     EnabledLinkerOpts:=Options.NeedsLinkerOpts;
@@ -799,7 +806,6 @@ var
   code: LongInt;
   hs: LongInt;
   i: integer;
-  OldCompOpts: TBaseCompilerOptions;
   NewTargetOS,
   NewTargetCPU: String;
   Options: TBaseCompilerOptions;
@@ -847,8 +853,6 @@ begin
     end;
   end;
 
-  OldCompOpts := TBaseCompilerOptionsClass(Options.ClassType).Create(nil);
-  OldCompOpts.Assign(Options);
   try
 
     // paths
@@ -880,7 +884,7 @@ begin
     else
       Options.LCLWidgetType:= LCLPlatformDirNames[TLCLPlatform(i-1)];
 
-    // parsing;
+    // parsing
     Options.AssemblerStyle := grpAsmStyle.ItemIndex;
 
     with grpSyntaxOptions do
@@ -1043,7 +1047,6 @@ begin
     if not Result then begin
       Options.Assign(OldCompOpts);
     end;
-    OldCompOpts.Free;
   end;
 end;
 
