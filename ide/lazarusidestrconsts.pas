@@ -4008,6 +4008,10 @@ resourcestring
   dlgCOCreateNodeBelow = 'Create node below';
   dlgCOCreateChildNode = 'Create child node';
   lisResult = 'Result :=';
+  lisPropertiesOfConditionalCompilerOption = 'Properties of conditional '
+    +'compiler option';
+  lisAction = 'Action:';
+  lisValue = 'Value:';
 
 implementation
 

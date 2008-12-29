@@ -8,8 +8,8 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 429
-  DesignTop = 305
+  DesignLeft = 434
+  DesignTop = 329
   object COCTreeView: TTreeView
     Left = 0
     Height = 166
@@ -22,9 +22,8 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     PopupMenu = COCPopupMenu
     ReadOnly = True
     RowSelect = True
-    ShowRoot = False
     TabOrder = 0
-    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowSeparators, tvoToolTips]
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
   end
   object COCPopupMenu: TPopupMenu
     OnPopup = COCPopupMenuPopup

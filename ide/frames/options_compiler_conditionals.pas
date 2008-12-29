@@ -188,7 +188,10 @@ var
   TVNode: TTreeNode;
 begin
   if not GetSelectedNode(COCNode,TVNode,false) then exit;
-
+  EditCompOptCondProperties(COCNode);
+  TVNode.Text:=NodeToCaption(COCNode);
+  TVNode.ImageIndex:=FNodeTypeImageIDs[COCNode.NodeType];
+  TVNode.SelectedIndex:=TVNode.ImageIndex;
 end;
 
 procedure TCompOptsConditionalsFrame.SetConditionals(
@@ -209,15 +212,20 @@ procedure TCompOptsConditionalsFrame.FillTreeView;
     if COCNode=nil then exit;
     TVNode:=COCTreeView.Items.AddChildObject(ParentTVNode,NodeToCaption(COCNode),COCNode);
     TVNode.ImageIndex:=FNodeTypeImageIDs[COCNode.NodeType];
+    TVNode.SelectedIndex:=TVNode.ImageIndex;
     for i:=0 to COCNode.Count-1 do
       Add(COCNode.Childs[i],TVNode);
   end;
 
+var
+  i: Integer;
 begin
   COCTreeView.BeginUpdate;
   COCTreeView.Items.Clear;
-  if Conditionals<>nil then begin
-    Add(Conditionals.Root,nil);
+  if (Conditionals<>nil) and (Conditionals.Root<>nil)
+  and (Conditionals.Root.Count>0) then begin
+    for i:=0 to Conditionals.Root.Count-1 do
+      Add(Conditionals.Root.Childs[i],nil);
   end;
   COCTreeView.EndUpdate;
   ConsistencyCheck;
@@ -225,20 +233,32 @@ end;
 
 procedure TCompOptsConditionalsFrame.ConsistencyCheck;
 
+  procedure CheckChilds(COCNode: TCompOptCondNode; ChildTVNode: TTreeNode); forward;
+
   procedure CheckNode(COCNode: TCompOptCondNode; TVNode: TTreeNode);
-  var
-    i: Integer;
-    ChildTVNode: TTreeNode;
   begin
     if COCNode=nil then
       RaiseCatchableException('');
-    if TVNode=nil then
+    if (TVNode=nil) then
       RaiseCatchableException('');
     if TVNode.Data=nil then
       RaiseCatchableException('');
     if COCNode<>TCompOptCondNode(TVNode.Data) then
       RaiseCatchableException(TCompOptCondNode(TObject(TVNode.Data)).Value+'<>'+COCNode.Value+' TVNode='+TVNode.Text);
-    ChildTVNode:=TVNode.GetFirstChild;
+    if NodeToCaption(COCNode)<>TVNode.Text then
+      RaiseCatchableException(NodeToCaption(COCNode)+'<>'+TVNode.Text);
+    if FNodeTypeImageIDs[COCNode.NodeType]<>TVNode.ImageIndex then
+      RaiseCatchableException(dbgs(FNodeTypeImageIDs[COCNode.NodeType])+'<>'+dbgs(TVNode.ImageIndex));
+    if FNodeTypeImageIDs[COCNode.NodeType]<>TVNode.SelectedIndex then
+      RaiseCatchableException(dbgs(FNodeTypeImageIDs[COCNode.NodeType])+'<>'+dbgs(TVNode.SelectedIndex));
+    CheckChilds(COCNode,TVNode.GetFirstChild);
+  end;
+
+  procedure CheckChilds(COCNode: TCompOptCondNode; ChildTVNode: TTreeNode);
+  var
+    i: Integer;
+  begin
+    if COCNode=nil then exit;
     for i:=0 to COCNode.Count-1 do begin
       CheckNode(COCNode.Childs[i],ChildTVNode);
       ChildTVNode:=ChildTVNode.GetNextSibling;
@@ -248,11 +268,14 @@ procedure TCompOptsConditionalsFrame.ConsistencyCheck;
   end;
 
 begin
-  if Conditionals=nil then begin
+  Conditionals.WriteDebugReport;
+  COCTreeView.WriteDebugReport('  ',true);
+  if (Conditionals=nil) or (Conditionals.Root=nil)
+  or (Conditionals.Root.Count=0) then begin
     if COCTreeView.Items.Count>0 then
       RaiseCatchableException('');
   end else begin
-    CheckNode(Conditionals.Root,COCTreeView.Items.GetFirstNode);
+    CheckChilds(Conditionals.Root,COCTreeView.Items.GetFirstNode);
   end;
 end;
 
@@ -296,8 +319,8 @@ begin
   TVNode:=COCTreeView.Selected;
   if TVNode=nil then begin
     if RootAsDefault then begin
-      TVNode:=COCTreeView.Items.GetFirstNode;
-      COCNode:=TCompOptCondNode(TVNode.Data);
+      TVNode:=nil;
+      COCNode:=Conditionals.Root;
     end;
   end else begin
     COCNode:=TCompOptCondNode(TVNode.Data);
@@ -316,10 +339,12 @@ var
 begin
   if not GetSelectedNode(COCNode,TVNode,true) then exit;
   NewCOCNode:=TCompOptCondNode.Create(COCNode.Owner);
-  s:=NodeToCaption(COCNode);
+  s:=NodeToCaption(NewCOCNode);
   NewTVNode:=COCTreeView.Items.AddObject(TVNode,s,NewCOCNode);
-  NewTVNode.MoveTo(TVNode,AttachMode);
+  if TVNode<>nil then
+    NewTVNode.MoveTo(TVNode,AttachMode);
   NewTVNode.ImageIndex:=FNodeTypeImageIDs[NewCOCNode.NodeType];
+  NewTVNode.SelectedIndex:=NewTVNode.ImageIndex;
   case AttachMode of
   naAdd: NewCOCNode.Move(COCNode.Parent,COCNode.Parent.Count);
   naAddFirst: NewCOCNode.Move(COCNode.Parent,0);
@@ -328,7 +353,8 @@ begin
   naInsert: NewCOCNode.Move(COCNode.Parent,COCNode.Index);
   naInsertBehind: NewCOCNode.Move(COCNode.Parent,COCNode.Index+1);
   end;
-  TVNode.Expanded:=true;
+  if TVNode<>nil then
+    TVNode.Expanded:=true;
   ConsistencyCheck;
 end;
 

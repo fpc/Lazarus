@@ -43,18 +43,31 @@ type
     ValueTypeLabel: TLabel;
     ValueLabel: TLabel;
     PropsGroupBox: TGroupBox;
+    procedure ButtonPanel1OkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure NodeTypeComboBoxEditingDone(Sender: TObject);
     procedure ValueEditEditingDone(Sender: TObject);
     procedure ValueTypeComboBoxEditingDone(Sender: TObject);
   private
-    FNode: TCompOptCondNode;
-    procedure SetNode(const AValue: TCompOptCondNode);
-    procedure NodeChanged;
-    procedure NodeTypeChanged;
+    FOriginalNode: TCompOptCondNode;
+    FNodeType: TCOCNodeType;
+    FValueType: TCOCValueType;
+    FValue: string;
+    function GetNodeType: TCOCNodeType;
+    function GetValue: string;
+    function GetValueType: TCOCValueType;
+    procedure SetNodeType(const AValue: TCOCNodeType);
+    procedure SetOriginalNode(const AValue: TCompOptCondNode);
+    procedure SetValue(const AValue: string);
+    procedure SetValueType(const AValue: TCOCValueType);
+    procedure UpdateNodeTypeControls;
+    procedure UpdateValueControls;
   public
-    property Node: TCompOptCondNode read FNode write SetNode;
-  end; 
+    property OriginalNode: TCompOptCondNode read FOriginalNode write SetOriginalNode;
+    property NodeType: TCOCNodeType read GetNodeType write SetNodeType;
+    property ValueType: TCOCValueType read GetValueType write SetValueType;
+    property Value: string read GetValue write SetValue;
+  end;
 
 function EditCompOptCondProperties(Node: TCompOptCondNode): TModalResult;
 
@@ -66,7 +79,7 @@ var
 begin
   CompOptCondPropsDialog:=TCompOptCondPropsDialog.Create(nil);
   try
-    CompOptCondPropsDialog.Node:=Node;
+    CompOptCondPropsDialog.OriginalNode:=Node;
     Result:=CompOptCondPropsDialog.ShowModal;
   finally
     CompOptCondPropsDialog.Free;
@@ -80,46 +93,108 @@ var
   nt: TCOCNodeType;
   vt: TCOCValueType;
 begin
-  Caption:='Properties of conditional compiler option';
+  Caption:=lisPropertiesOfConditionalCompilerOption;
+  PropsGroupBox.Caption:=lisHlpOptsProperties;
 
-  NodeTypeLabel.Caption:='Type:';
-  ValueTypeLabel.Caption:='Action:';
-  ValueLabel.Caption:='Value:';
+  NodeTypeLabel.Caption:=lisUIDType;
+  ValueTypeLabel.Caption:=lisAction;
+  ValueLabel.Caption:=lisValue;
   ValueTypeComboBox.Items.Clear;
   NodeTypeComboBox.Items.Clear;
   for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
     NodeTypeComboBox.Items.Add(COCNodeTypeLocalizedName(nt));
   for vt:=Low(TCOCValueType) to High(TCOCValueType) do
     ValueTypeComboBox.Items.Add(COCValueTypeLocalizedName(vt));
+
+  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OkClick;
+end;
+
+procedure TCompOptCondPropsDialog.ButtonPanel1OkClick(Sender: TObject);
+begin
+  if FOriginalNode<>nil then begin
+    FOriginalNode.NodeType:=NodeType;
+    FOriginalNode.ValueType:=ValueType;
+    FOriginalNode.Value:=Value;
+  end;
+  ModalResult:=mrOk;
 end;
 
 procedure TCompOptCondPropsDialog.NodeTypeComboBoxEditingDone(Sender: TObject);
 begin
-  NodeTypeChanged;
+  GetNodeType;
+  UpdateValueControls;
 end;
 
 procedure TCompOptCondPropsDialog.ValueEditEditingDone(Sender: TObject);
 begin
-
+  GetValue;
+  UpdateValueControls;
 end;
 
 procedure TCompOptCondPropsDialog.ValueTypeComboBoxEditingDone(Sender: TObject);
 begin
-
+  GetValueType;
+  UpdateValueControls;
 end;
 
-procedure TCompOptCondPropsDialog.SetNode(const AValue: TCompOptCondNode);
+procedure TCompOptCondPropsDialog.SetOriginalNode(const AValue: TCompOptCondNode);
 begin
-  if FNode=AValue then exit;
-  FNode:=AValue;
-  NodeChanged;
+  if FOriginalNode=AValue then exit;
+  FOriginalNode:=AValue;
+  if FOriginalNode<>nil then begin
+    FNodeType:=FOriginalNode.NodeType;
+    FValueType:=FOriginalNode.ValueType;
+    FValue:=FOriginalNode.Value;
+  end else begin
+    FNodeType:=cocntNone;
+    FValueType:=cocvtNone;
+    FValue:='';
+  end;
+  UpdateNodeTypeControls;
 end;
 
-procedure TCompOptCondPropsDialog.NodeChanged;
+function TCompOptCondPropsDialog.GetNodeType: TCOCNodeType;
+var
+  i: LongInt;
+begin
+  i:=NodeTypeComboBox.Items.IndexOf(NodeTypeComboBox.Text);
+  if i<0 then
+    FNodeType:=cocntNone
+  else
+    FNodeType:=TCOCNodeType(i);
+  Result:=FNodeType;
+end;
+
+function TCompOptCondPropsDialog.GetValue: string;
+begin
+  FValue:=ValueEdit.Text;
+  Result:=FValue;
+end;
+
+function TCompOptCondPropsDialog.GetValueType: TCOCValueType;
+var
+  i: LongInt;
+begin
+  i:=ValueTypeComboBox.Items.IndexOf(ValueTypeComboBox.Text);
+  if i<0 then
+    FValueType:=cocvtNone
+  else
+    FValueType:=TCOCValueType(i);
+  Result:=FValueType;
+end;
+
+procedure TCompOptCondPropsDialog.SetNodeType(const AValue: TCOCNodeType);
+begin
+  if FNodeType=AValue then exit;
+  FNodeType:=AValue;
+  UpdateNodeTypeControls;
+end;
+
+procedure TCompOptCondPropsDialog.UpdateNodeTypeControls;
 var
   NodeTypeStr: String;
 begin
-  if Node=nil then begin
+  if OriginalNode=nil then begin
     NodeTypeLabel.Enabled:=false;
     NodeTypeComboBox.Enabled:=false;
     ValueTypeLabel.Enabled:=false;
@@ -128,35 +203,49 @@ begin
     ValueEdit.Enabled:=false;
     ValueButton.Enabled:=false;
   end else begin
-    NodeTypeStr:=COCNodeTypeLocalizedName(Node.NodeType);
+    NodeTypeStr:=COCNodeTypeLocalizedName(FNodeType);
     NodeTypeLabel.Enabled:=true;
     NodeTypeComboBox.ItemIndex:=NodeTypeComboBox.Items.IndexOf(NodeTypeStr);
     NodeTypeComboBox.Text:=NodeTypeStr;
-    NodeTypeChanged;
-    ValueEdit.Text:=Node.Value;
+    UpdateValueControls;
   end;
 end;
 
-procedure TCompOptCondPropsDialog.NodeTypeChanged;
+procedure TCompOptCondPropsDialog.UpdateValueControls;
 var
   s: String;
 begin
-  if Node=nil then exit;
-  ValueTypeLabel.Enabled:=Node.NodeType in [cocntAddValue];
+  ValueTypeLabel.Enabled:=FNodeType in [cocntAddValue];
   ValueTypeComboBox.Enabled:=ValueTypeLabel.Enabled;
-  s:=COCValueTypeLocalizedName(Node.ValueType);
+  s:=COCValueTypeLocalizedName(fValueType);
   ValueTypeComboBox.ItemIndex:=ValueTypeComboBox.Items.IndexOf(s);
   ValueTypeComboBox.Text:=s;
-  ValueLabel.Enabled:=Node.NodeType in [cocntNone,cocntIf,
-    cocntIfdef,cocntIfNdef,cocntElseIf,cocntAddValue];
+  ValueLabel.Enabled:=fNodeType in [cocntNone,cocntIf,
+                              cocntIfdef,cocntIfNdef,cocntElseIf,cocntAddValue];
   ValueEdit.Enabled:=ValueLabel.Enabled;
   ValueButton.Enabled:=ValueLabel.Enabled;
-  case Node.NodeType of
+  case fNodeType of
   cocntNone: ValueLabel.Caption:=lisResult;
   cocntIf, cocntElseIf: ValueLabel.Caption:=lisExpression;
   cocntIfdef, cocntIfNdef: ValueLabel.Caption:=lisCodeToolsDefsVariable;
   cocntAddValue: ValueLabel.Caption:=lisAddValue;
+  else ValueLabel.Caption:='?';
   end;
+  ValueEdit.Text:=FValue;
+end;
+
+procedure TCompOptCondPropsDialog.SetValue(const AValue: string);
+begin
+  if FValue=AValue then exit;
+  FValue:=AValue;
+  ValueEdit.Text:=FValue;
+end;
+
+procedure TCompOptCondPropsDialog.SetValueType(const AValue: TCOCValueType);
+begin
+  if FValueType=AValue then exit;
+  FValueType:=AValue;
+  UpdateValueControls;
 end;
 
 initialization

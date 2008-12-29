@@ -4,12 +4,12 @@ LazarusResources.Add('TCompOptsConditionalsFrame','FORMDATA',[
   'TPF0'#26'TCompOptsConditionalsFrame'#25'CompOptsConditionalsFrame'#4'Left'#2
   +#0#6'Height'#3#170#0#3'Top'#2#0#5'Width'#3#129#1#12'ClientHeight'#3#166#0#11
   +'ClientWidth'#3'}'#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3
-  +#173#1#9'DesignTop'#3'1'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Heig'
+  +#178#1#9'DesignTop'#3'I'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Heig'
   +'ht'#3#166#0#3'Top'#2#0#5'Width'#3'}'#1#5'Align'#7#8'alClient'#10'AutoExpand'
   +#9#5'Ctl3D'#8#17'DefaultItemHeight'#2#19#9'PopupMenu'#7#12'COCPopupMenu'#8'R'
-  +'eadOnly'#9#9'RowSelect'#9#8'ShowRoot'#8#8'TabOrder'#2#0#7'Options'#11#13'tv'
-  +'oAutoExpand'#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsed'
-  +'Nodes'#11'tvoReadOnly'#12'tvoRowSelect'#14'tvoShowButtons'#12'tvoShowLines'
+  +'eadOnly'#9#9'RowSelect'#9#8'TabOrder'#2#0#7'Options'#11#13'tvoAutoExpand'#17
+  +'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoRea'
+  +'dOnly'#12'tvoRowSelect'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'
   +#17'tvoShowSeparators'#11'tvoToolTips'#0#0#0#10'TPopupMenu'#12'COCPopupMenu'
   +#7'OnPopup'#7#17'COCPopupMenuPopup'#4'left'#2'0'#3'top'#2'0'#0#9'TMenuItem'
   +#19'InsertAboveMenuItem'#7'Caption'#6#19'InsertAboveMenuItem'#12'RightJustif'
