@@ -40,12 +40,12 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo,
   // LCL
-  InterfaceBase, Forms, Buttons, Graphics, GraphType,
-  StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls,
+  InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc,
+  StdCtrls, LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls,
   LMessages, LResources, LazConfigStorage, Menus, Dialogs, Themes,
   ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ComponentEditors, IDEImagesIntf;
+  ComponentTreeView, ComponentEditors, IDEImagesIntf, OIFavouriteProperties;
 
 const
   OIOptionsFileVersion = 3;
@@ -74,94 +74,6 @@ type
     oipgpRestricted
     );
   TObjectInspectorPages = set of TObjectInspectorPage;
-
-
-  { TOIFavouriteProperty
-    BaseClassName }
-  TOIFavouriteProperty = class
-  public
-    BaseClass: TPersistentClass;
-    BaseClassname: string;
-    PropertyName: string;
-    Include: boolean; // include or exclude
-    constructor Create(ABaseClass: TPersistentClass;
-                       const APropertyName: string; TheInclude: boolean);
-    function Constrains(AnItem: TOIFavouriteProperty): boolean;
-    function IsFavourite(AClass: TPersistentClass;
-                         const APropertyName: string): boolean;
-    function Compare(AFavourite: TOIFavouriteProperty): integer;
-    procedure SaveToConfig(ConfigStore: TConfigStorage; const Path: string);
-    procedure Assign(Src: TOIFavouriteProperty); virtual;
-    function CreateCopy: TOIFavouriteProperty;
-    function DebugReportAsString: string;
-  end;
-  
-  { TOIRestrictedProperty}
-  TOIRestrictedProperty = class(TOIFavouriteProperty)
-  public
-    WidgetSets: TLCLPlatforms;
-    
-    function IsRestricted(AClass: TPersistentClass;
-                          const APropertyName: string): TLCLPlatforms;
-  end;
-
-  { TOIFavouriteProperties }
-
-  TOIFavouriteProperties = class
-  private
-    FItems: TFPList; // list of TOIFavouriteProperty
-    FModified: Boolean;
-    FSorted: Boolean;
-    FDoublesDeleted: Boolean;
-  protected
-    function GetCount: integer; virtual;
-    function GetItems(Index: integer): TOIFavouriteProperty; virtual;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear; virtual;
-    procedure Assign(Src: TOIFavouriteProperties); virtual;
-    function CreateCopy: TOIFavouriteProperties;
-    function Contains(AnItem: TOIFavouriteProperty): Boolean; virtual;
-    procedure Add(NewItem: TOIFavouriteProperty); virtual;
-    procedure AddNew(NewItem: TOIFavouriteProperty);
-    procedure Remove(AnItem: TOIFavouriteProperty); virtual;
-    procedure DeleteConstraints(AnItem: TOIFavouriteProperty); virtual;
-    function IsFavourite(AClass: TPersistentClass;
-                         const PropertyName: string): boolean;
-    function AreFavourites(Selection: TPersistentSelectionList;
-                           const PropertyName: string): boolean;
-    procedure LoadFromConfig(ConfigStore: TConfigStorage; const Path: string);
-    procedure SaveToConfig(ConfigStore: TConfigStorage; const Path: string);
-    procedure MergeConfig(ConfigStore: TConfigStorage; const Path: string);
-    procedure SaveNewItemsToConfig(ConfigStore: TConfigStorage;
-                    const Path: string; BaseFavourites: TOIFavouriteProperties);
-    procedure Sort; virtual;
-    procedure DeleteDoubles; virtual;
-    function IsEqual(TheFavourites: TOIFavouriteProperties): boolean;
-    function GetSubtractList(FavouritesToSubtract: TOIFavouriteProperties): TList;
-    procedure WriteDebugReport;
-  public
-    property Items[Index: integer]: TOIFavouriteProperty read GetItems; default;
-    property Count: integer read GetCount;
-    property Modified: Boolean read FModified write FModified;
-    property Sorted: Boolean read FSorted;
-    property DoublesDeleted: boolean read FDoublesDeleted;
-  end;
-  TOIFavouritePropertiesClass = class of TOIFavouriteProperties;
-  
-  { TOIRestrictedProperties }
-
-  TOIRestrictedProperties = class(TOIFavouriteProperties)
-  public
-    WidgetSetRestrictions: Array [TLCLPlatform] of Integer;
-    constructor Create;
-    
-    function IsRestricted(AClass: TPersistentClass;
-                          const PropertyName: string): TLCLPlatforms;
-    function AreRestricted(Selection: TPersistentSelectionList;
-                           const PropertyName: string): TLCLPlatforms;
-  end;
 
 
   { TOIOptions }
@@ -207,7 +119,7 @@ type
     function Save: boolean;
     procedure Assign(AnObjInspector: TObjectInspectorDlg);
     procedure AssignTo(AnObjInspector: TObjectInspectorDlg);
-  public
+
     property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
 
     property SaveBounds:boolean read FSaveBounds write FSaveBounds;
@@ -266,6 +178,10 @@ type
     FParent: TOIPropertyGridRow;
     FEditor: TPropertyEditor;
     FWidgetSets: TLCLPlatforms;
+
+    Index:integer;
+    LastPaintedValue: string;
+
     procedure GetLvl;
   public
     constructor Create(PropertyTree: TOICustomPropertyGrid;
@@ -274,9 +190,7 @@ type
     function ConsistencyCheck: integer;
     function HasChild(Row: TOIPropertyGridRow): boolean;
     procedure WriteDebugReport(const Prefix: string);
-  public
-    Index:integer;
-    LastPaintedValue: string;
+
     function GetBottom: integer;
     function IsReadOnly: boolean;
     function IsDisabled: boolean;
@@ -285,7 +199,7 @@ type
     function IsSorted(const Compare: TListSortCompare): boolean;
     function Next: TOIPropertyGridRow;
     function NextSkipChilds: TOIPropertyGridRow;
-  public
+
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
     property Height:integer read FHeight write FHeight;
@@ -377,6 +291,12 @@ type
     // hint stuff
     FHintTimer: TTimer;
     FHintWindow: THintWindow;
+
+    ValueEdit: TEdit;
+    ValueComboBox: TComboBox;
+    ValueCheckBox: TCheckBox;
+    ValueButton: TSpeedButton;
+
     procedure HintTimer(Sender: TObject);
     procedure ResetHintTimer;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
@@ -397,6 +317,7 @@ type
     procedure SetGutterEdgeColor(const AValue: TColor);
     procedure SetHighlightColor(const AValue: TColor);
     procedure SetItemIndex(NewIndex:integer);
+    function IsCurrentEditorAvailable: Boolean;
 
     function GetNameRowHeight: Integer; // temp solution untill TFont.height returns its actual value
 
@@ -480,11 +401,6 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoSelectionChange;
   public
-    ValueEdit: TEdit;
-    ValueComboBox: TComboBox;
-    ValueCheckBox: TCheckBox;
-    ValueButton: TSpeedButton;
-
     constructor Create(TheOwner: TComponent); override;
     constructor CreateWithParams(AnOwner: TComponent;
                                  APropertyEditorHook: TPropertyEditorHook;
@@ -515,7 +431,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
     procedure SetItemIndexAndFocus(NewItemIndex: integer);
-  public
+
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default DefBackgroundColor;
     property GutterColor: TColor read FGutterColor write SetGutterColor default DefGutterColor;
@@ -742,6 +658,8 @@ type
     procedure SetShowRestricted(const AValue: Boolean);
     procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
+    procedure RestrictedPaint(
+      ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -772,7 +690,7 @@ type
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
     procedure HookRefreshPropertyValues;
-  public
+
     property AutoShow: Boolean read FAutoShow write FAutoShow;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
@@ -821,6 +739,12 @@ type
 const
   DefaultObjectInspectorName: string = 'ObjectInspectorDlg';
 
+implementation
+
+uses
+  math;
+
+const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
     'EventPage',
@@ -834,34 +758,11 @@ const
     'RestrictedGrid'
     );
 
-
-function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
-
-
-implementation
-
-uses
-  math;
-
-const
-  ScrollBarWidth=0;
-
 function SortGridRows(Item1, Item2 : pointer) : integer;
 begin
   Result:=SysUtils.CompareText(TOIPropertyGridRow(Item1).Name,
                                TOIPropertyGridRow(Item2).Name);
 end;
-
-function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
-var
-  Favourite1: TOIFavouriteProperty;
-  Favourite2: TOIFavouriteProperty;
-begin
-  Favourite1:=TOIFavouriteProperty(Data1);
-  Favourite2:=TOIFavouriteProperty(Data2);
-  Result:=Favourite1.Compare(Favourite2)
-end;
-
 
 { TOICustomPropertyGrid }
 
@@ -1166,6 +1067,11 @@ begin
   end;
 end;
 
+function TOICustomPropertyGrid.IsCurrentEditorAvailable: Boolean;
+begin
+  Result := (FCurrentEdit <> nil) and InRange(FItemIndex, 0, FRows.Count - 1);
+end;
+
 function TOICustomPropertyGrid.ConsistencyCheck: integer;
 var
   i: integer;
@@ -1302,7 +1208,7 @@ var
   OldChangeStep: integer;
 begin
   //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
-  if not CanEditRowValue then exit;
+  if not CanEditRowValue or Rows[FItemIndex].IsReadOnly then exit;
 
   NewValue:=GetCurrentEditValue;
 
@@ -1364,16 +1270,7 @@ var
   OldChangeStep: integer;
 begin
   //writeln('#################### TOICustomPropertyGrid.DoCallEdit ...');
-  if GridIsUpdating
-  or (FCurrentEdit=nil)
-  or (FItemIndex<0)
-  or (FItemIndex>=FRows.Count)
-  or ((FCurrentEditorLookupRoot<>nil)
-    and (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
-  then begin
-    exit;
-  end;
+  if not CanEditRowValue then exit;
 
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
@@ -1419,9 +1316,7 @@ var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
 begin
-  if (not GridIsUpdating)
-  and (FCurrentEdit<>nil)
-  and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
+  if not GridIsUpdating and IsCurrentEditorAvailable then begin
     CurRow:=Rows[FItemIndex];
     NewValue:=CurRow.Editor.GetVisualValue;
     SetCurrentEditValue(NewValue);
@@ -1447,15 +1342,12 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ValueEditChange(Sender: TObject);
-var CurRow:TOIPropertyGridRow;
+var CurRow: TOIPropertyGridRow;
 begin
-  if pgsUpdatingEditControl in FStates then exit;
-  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
-  begin
-    CurRow:=Rows[FItemIndex];
-    if paAutoUpdate in CurRow.Editor.GetAttributes then
-      SetRowValue;
-  end;
+  if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
+  CurRow:=Rows[FItemIndex];
+  if paAutoUpdate in CurRow.Editor.GetAttributes then
+    SetRowValue;
 end;
 
 procedure TOICustomPropertyGrid.ValueEditMouseUp(Sender: TObject;
@@ -1487,13 +1379,10 @@ procedure TOICustomPropertyGrid.ValueCheckBoxClick(Sender: TObject);
 var
   CurRow: TOIPropertyGridRow;
 begin
-  if pgsUpdatingEditControl in FStates then exit;
-  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
-  begin
-    CurRow:=Rows[FItemIndex];
-    if paAutoUpdate in CurRow.Editor.GetAttributes then
-      SetRowValue;
-  end;
+  if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
+  CurRow:=Rows[FItemIndex];
+  if paAutoUpdate in CurRow.Editor.GetAttributes then
+    SetRowValue;
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
@@ -1910,7 +1799,7 @@ end;
 
 procedure TOICustomPropertyGrid.SetCurrentRowValue(const NewValue: string);
 begin
-  if not CanEditRowValue then exit;
+  if not CanEditRowValue or Rows[FItemIndex].IsReadOnly then exit;
   // SetRowValue reads the value from the current edit control and writes it
   // to the property editor
   // -> set the text in the current edit control without changing FLastEditValue
@@ -1932,15 +1821,12 @@ end;
 
 function TOICustomPropertyGrid.CanEditRowValue: boolean;
 begin
-  if GridIsUpdating
-  or (FCurrentEdit=nil)
-  or (FItemIndex<0)
-  or (FItemIndex>=FRows.Count)
-  or ((FCurrentEditorLookupRoot<>nil)
-    and (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
-  or (Rows[FItemIndex].IsReadOnly)
-  then begin
+  Result:=
+    not GridIsUpdating and IsCurrentEditorAvailable
+    and ((FCurrentEditorLookupRoot = nil)
+      or (FPropertyEditorHook = nil)
+      or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
+  if Result then begin
     {DebugLn(['TOICustomPropertyGrid.CanEditRowValue',
       ' pgsChangingItemIndex=',pgsChangingItemIndex in FStates,
       ' pgsApplyingValue=',pgsApplyingValue in FStates,
@@ -1950,9 +1836,6 @@ begin
       ' FCurrentEditorLookupRoot=',dbgsName(FCurrentEditorLookupRoot),
       ' FPropertyEditorHook.LookupRoot=',dbgsName(FPropertyEditorHook.LookupRoot)
       ]);}
-    Result:=false;
-  end else begin
-    Result:=true;
   end;
 end;
 
@@ -2418,7 +2301,7 @@ var
   CurRow:TOIPropertyGridRow;
   DrawState:TPropEditDrawState;
   OldFont:TFont;
-  Platform: TLCLPlatform;
+  lclPlatform: TLCLPlatform;
   X, Y: Integer;
   NameBgColor: TColor;
 
@@ -2541,13 +2424,13 @@ begin
     OldFont:=Font;
     Font:=FNameFont;
     Font.Color := clRed;
-    for Platform := High(TLCLPlatform) downto Low(TLCLPlatform) do
+    for lclPlatform := High(TLCLPlatform) downto Low(TLCLPlatform) do
     begin
-      if Platform in CurRow.FWidgetSets then
+      if lclPlatform in CurRow.FWidgetSets then
       begin
         Dec(X, IDEImages.Images_16.Width);
         IDEImages.Images_16.Draw(Canvas, X, Y,
-          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
+          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[lclPlatform]));
       end;
     end;
     Font:=OldFont;
@@ -2748,6 +2631,8 @@ begin
 end;
 
 function TOICustomPropertyGrid.RowRect(ARow:integer):TRect;
+const
+  ScrollBarWidth=0;
 begin
   Result.Left:=BorderWidth;
   Result.Top:=Rows[ARow].Top-FTopY+BorderWidth;
@@ -3060,16 +2945,7 @@ var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
 begin
-  if GridIsUpdating
-  or (FCurrentEdit=nil)
-  or (FItemIndex<0)
-  or (FItemIndex>=FRows.Count)
-  or ((FCurrentEditorLookupRoot<>nil)
-    and (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
-  then begin
-    exit;
-  end;
+  if not CanEditRowValue then exit;
 
   if FHintTimer<>nil then
     FHintTimer.Enabled := False;
@@ -4466,100 +4342,69 @@ begin
   DoUpdateRestricted;
 end;
 
-procedure TObjectInspectorDlg.WidgetSetRestrictedPaint(Sender: TObject);
+procedure TObjectInspectorDlg.RestrictedPaint(
+  ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
+
+  function OutVertCentered(AX: Integer; const AStr: String): TSize;
+  begin
+    Result := ABox.Canvas.TextExtent(AStr);
+    ABox.Canvas.TextOut(AX, (ABox.Height - Result.CY) div 2, AStr);
+  end;
+
 var
   X, Y: Integer;
-  S: TSize;
-  Platform: TLCLPlatform;
+  lclPlatform: TLCLPlatform;
   None: Boolean;
   OldStyle: TBrushStyle;
 begin
-  if RestrictedProps = nil then Exit;
-  
   X := 0;
-  Y := (WidgetSetsRestrictedBox.Height - IDEImages.Images_16.Height) div 2;
-  OldStyle := WidgetSetsRestrictedBox.Canvas.Brush.Style;
-  WidgetSetsRestrictedBox.Canvas.Brush.Style := bsClear;
-  None := True;
-  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
-  begin
-    if RestrictedProps.WidgetSetRestrictions[Platform] > 0 then
+  Y := (ABox.Height - IDEImages.Images_16.Height) div 2;
+  OldStyle := ABox.Canvas.Brush.Style;
+  try
+    ABox.Canvas.Brush.Style := bsClear;
+    None := True;
+    for lclPlatform := Low(TLCLPlatform) to High(TLCLPlatform) do
     begin
+      if ARestrictions[lclPlatform] = 0 then continue;
       None := False;
-      IDEImages.Images_16.Draw(WidgetSetsRestrictedBox.Canvas, X, Y,
-        IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
+      IDEImages.Images_16.Draw(
+        ABox.Canvas, X, Y,
+        IDEImages.LoadImage(16, 'issue_' + LCLPlatformDirNames[lclPlatform]));
       Inc(X, 16);
-      
-      S := WidgetSetsRestrictedBox.Canvas.TextExtent(IntToStr(RestrictedProps.WidgetSetRestrictions[Platform]));
-      WidgetSetsRestrictedBox.Canvas.TextOut(X, (WidgetSetsRestrictedBox.Height - S.CY) div 2,
-        IntToStr(RestrictedProps.WidgetSetRestrictions[Platform]));
-      Inc(X, S.CX);
+      Inc(X, OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX);
     end;
+
+    if None then
+      OutVertCentered(4, oisNone);
+  finally
+    ABox.Canvas.Brush.Style := OldStyle;
   end;
-  
-  if None then
-  begin
-    S := WidgetSetsRestrictedBox.Canvas.TextExtent(oisNone);
-    WidgetSetsRestrictedBox.Canvas.TextOut(4, (WidgetSetsRestrictedBox.Height - S.CY) div 2, oisNone);
-  end;
-  WidgetSetsRestrictedBox.Canvas.Brush.Style := OldStyle;
+end;
+
+procedure TObjectInspectorDlg.WidgetSetRestrictedPaint(Sender: TObject);
+begin
+  if RestrictedProps <> nil then
+    RestrictedPaint(
+      WidgetSetsRestrictedBox, RestrictedProps.WidgetSetRestrictions);
 end;
 
 procedure TObjectInspectorDlg.ComponentRestrictedPaint(Sender: TObject);
 var
-  X, Y, I, J: Integer;
-  S: TSize;
-  Platform: TLCLPlatform;
-  WidgetSetRestrictions: Array [TLCLPlatform] of Integer;
-  None: Boolean;
-  OldStyle: TBrushStyle;
+  I, J: Integer;
+  WidgetSetRestrictions: TWidgetSetRestrictionsArray;
 begin
-  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[Platform] := 0;
+  if (RestrictedProps = nil) or (Selection = nil) then exit;
 
-  if RestrictedProps = nil then Exit;
-  if Selection = nil then Exit;
-
-  OldStyle := ComponentRestrictedBox.Canvas.Brush.Style;
-  ComponentRestrictedBox.Canvas.Brush.Style := bsClear;
-
+  FillChar(WidgetSetRestrictions, SizeOf(WidgetSetRestrictions), 0);
   for I := 0 to RestrictedProps.Count - 1 do
   begin
-    for J := 0 to Selection.Count - 1 do
-    begin
-      if (RestrictedProps.Items[I] is TOIRestrictedProperty) and
-        Selection[J].ClassType.InheritsFrom(RestrictedProps.Items[I].BaseClass) and
-        (RestrictedProps.Items[I].PropertyName = '') then
-        for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
-          if Platform in (RestrictedProps.Items[I] as TOIRestrictedProperty).WidgetSets then
-            Inc(WidgetSetRestrictions[Platform]);
-    end;
+    if RestrictedProps.Items[I] is TOIRestrictedProperty then
+      for J := 0 to Selection.Count - 1 do
+        with RestrictedProps.Items[I] as TOIRestrictedProperty do
+          CheckRestrictions(Selection[J].ClassType, WidgetSetRestrictions);
   end;
 
-  X := 0;
-  Y := (ComponentRestrictedBox.Height - IDEImages.Images_16.Height) div 2;
-  None := True;
-  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
-  begin
-    if WidgetSetRestrictions[Platform] > 0 then
-    begin
-      None := False;
-      IDEImages.Images_16.Draw(WidgetSetsRestrictedBox.Canvas, X, Y,
-        IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
-      Inc(X, 16);
-
-      S := ComponentRestrictedBox.Canvas.TextExtent(IntToStr(WidgetSetRestrictions[Platform]));
-      ComponentRestrictedBox.Canvas.TextOut(X, (ComponentRestrictedBox.Height - S.CY) div 2,
-        IntToStr(WidgetSetRestrictions[Platform]));
-      Inc(X, S.CX);
-    end;
-  end;
-  
-  if None then
-  begin
-    S := ComponentRestrictedBox.Canvas.TextExtent(oisNone);
-    ComponentRestrictedBox.Canvas.TextOut(4, (ComponentRestrictedBox.Height - S.CY) div 2, oisNone);
-  end;
-  ComponentRestrictedBox.Canvas.Brush.Style := OldStyle;
+  RestrictedPaint(ComponentRestrictedBox, WidgetSetRestrictions);
 end;
 
 procedure TObjectInspectorDlg.CreateSplitter(TopSplitter: Boolean);
@@ -4603,6 +4448,35 @@ begin
 end;
 
 procedure TObjectInspectorDlg.CreateNoteBook;
+
+  function CreateGrid(
+    ATypeFilter: TTypeKinds; AOIPage: TObjectInspectorPage;
+    ANotebookPage: Integer): TOICustomPropertyGrid;
+  begin
+    Result:=TOICustomPropertyGrid.CreateWithParams(
+      Self, PropertyEditorHook, ATypeFilter, FDefaultItemHeight);
+    with Result do begin
+      Name := DefaultOIGridNames[AOIPage];
+      Selection := Self.FSelection;
+      Align := alClient;
+      PopupMenu := MainPopupMenu;
+      OnModified := @OnGridModified;
+      OnSelectionChange := @OnGridSelectionChange;
+      OnPropertyHint := @OnGridPropertyHint;
+      OnOIKeyDown := @OnGridKeyDown;
+      OnKeyUp := @OnGridKeyUp;
+      OnDblClick := @OnGridDblClick;
+
+      Parent := NoteBook.Page[ANotebookPage];
+    end;
+  end;
+
+const
+  PROPS = [
+    tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet,{ tkMethod,}
+    tkSString, tkLString, tkAString, tkWString, tkVariant,
+    {tkArray, tkRecord, tkInterface,} tkClass, tkObject, tkWChar, tkBool,
+    tkInt64, tkQWord];
 begin
   DestroyNoteBook;
 
@@ -4634,90 +4508,12 @@ begin
     PopupMenu:=MainPopupMenu;
   end;
 
-  // property grid
-  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self, PropertyEditorHook
-      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
-      , tkSString, tkLString, tkAString, tkWString, tkVariant
-      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord],
-      FDefaultItemHeight);
-  with PropertyGrid do begin
-    Name:=DefaultOIGridNames[oipgpProperties];
-    Selection:=Self.FSelection;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-    OnSelectionChange:=@OnGridSelectionChange;
-    OnPropertyHint:=@OnGridPropertyHint;
-    OnOIKeyDown:=@OnGridKeyDown;
-    OnKeyUp:=@OnGridKeyUp;
-    OnDblClick:=@OnGridDblClick;
+  PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
+  EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
+  FavouriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavourite, 2);
+  FavouriteGrid.Favourites := FFavourites;
+  RestrictedGrid := CreateGrid(PROPS + [tkMethod], oipgpRestricted, 3);
 
-    Parent:=NoteBook.Page[0];
-  end;
-
-  // event grid
-  EventGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
-                                                 [tkMethod],FDefaultItemHeight);
-  with EventGrid do begin
-    Name:=DefaultOIGridNames[oipgpEvents];
-    Selection:=Self.FSelection;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-    OnSelectionChange:=@OnGridSelectionChange;
-    OnPropertyHint:=@OnGridPropertyHint;
-    OnOIKeyDown:=@OnGridKeyDown;
-    OnKeyUp:=@OnGridKeyUp;
-    OnDblClick:=@OnGridDblClick;
-    
-    Parent:=NoteBook.Page[1];
-  end;
-  
-  // favourite grid
-  FavouriteGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
-      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
-      , tkSString, tkLString, tkAString, tkWString, tkVariant
-      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord],
-      FDefaultItemHeight);
-  with FavouriteGrid do begin
-    Name:=DefaultOIGridNames[oipgpFavourite];
-    Selection:=Self.FSelection;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-    OnSelectionChange:=@OnGridSelectionChange;
-    OnPropertyHint:=@OnGridPropertyHint;
-    OnOIKeyDown:=@OnGridKeyDown;
-    OnKeyUp:=@OnGridKeyUp;
-    OnDblClick:=@OnGridDblClick;
-    
-    Parent:=NoteBook.Page[2];
-  end;
-  FavouriteGrid.Favourites:=FFavourites;
-  
-  // RestrictedProps grid
-  RestrictedGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
-    [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
-      , tkSString, tkLString, tkAString, tkWString, tkVariant
-      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord],FDefaultItemHeight);
-  with RestrictedGrid do begin
-    Name:=DefaultOIGridNames[oipgpRestricted];
-    Selection:=Self.FSelection;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-    OnSelectionChange:=@OnGridSelectionChange;
-    OnPropertyHint:=@OnGridPropertyHint;
-    OnOIKeyDown:=@OnGridKeyDown;
-    OnKeyUp:=@OnGridKeyUp;
-    OnDblClick:=@OnGridDblClick;
-    
-    Parent:=NoteBook.Page[3];
-  end;
-  
   RestrictedPanel := TPanel.Create(Self);
   with RestrictedPanel do
   begin
@@ -4953,519 +4749,6 @@ begin
   if FAutoFreeHook then
     FPropertyEditorHook.Free;
   inherited Destroy;
-end;
-
-{ TOIFavouriteProperties }
-
-function TOIFavouriteProperties.GetCount: integer;
-begin
-  Result:=FItems.Count;
-end;
-
-function TOIFavouriteProperties.GetItems(Index: integer): TOIFavouriteProperty;
-begin
-  Result:=TOIFavouriteProperty(FItems[Index]);
-end;
-
-constructor TOIFavouriteProperties.Create;
-begin
-  FItems:=TFPList.Create;
-end;
-
-destructor TOIFavouriteProperties.Destroy;
-begin
-  Clear;
-  FreeAndNil(FItems);
-  inherited Destroy;
-end;
-
-procedure TOIFavouriteProperties.Clear;
-var
-  i: Integer;
-begin
-  for i:=0 to FItems.Count-1 do
-    TObject(FItems[i]).Free;
-  FItems.Clear;
-  FSorted:=true;
-end;
-
-procedure TOIFavouriteProperties.Assign(Src: TOIFavouriteProperties);
-var
-  i: Integer;
-begin
-  Clear;
-  for i:=0 to Src.Count-1 do
-    FItems.Add(Src[i].CreateCopy);
-  FModified:=Src.Modified;
-  FDoublesDeleted:=Src.DoublesDeleted;
-  FSorted:=Src.Sorted;
-end;
-
-function TOIFavouriteProperties.CreateCopy: TOIFavouriteProperties;
-begin
-  Result:=TOIFavouriteProperties.Create;
-  Result.Assign(Self);
-end;
-
-function TOIFavouriteProperties.Contains(AnItem: TOIFavouriteProperty
-  ): Boolean;
-var
-  i: Integer;
-begin
-  for i:=Count-1 downto 0 do begin
-    if Items[i].Compare(AnItem)=0 then begin
-      Result:=true;
-      exit;
-    end;
-  end;
-  Result:=false;
-end;
-
-procedure TOIFavouriteProperties.Add(NewItem: TOIFavouriteProperty);
-begin
-  FItems.Add(NewItem);
-  FSorted:=(Count<=1)
-           or (FSorted and (Items[Count-1].Compare(Items[Count-2])<0));
-  FDoublesDeleted:=FSorted
-             and ((Count<=1) or (Items[Count-1].Compare(Items[Count-2])<>0));
-  Modified:=true;
-end;
-
-procedure TOIFavouriteProperties.AddNew(NewItem: TOIFavouriteProperty);
-begin
-  if Contains(NewItem) then
-    NewItem.Free
-  else
-    Add(NewItem);
-end;
-
-procedure TOIFavouriteProperties.Remove(AnItem: TOIFavouriteProperty);
-begin
-  Modified:=FItems.Remove(AnItem)>=0;
-end;
-
-procedure TOIFavouriteProperties.DeleteConstraints(
-  AnItem: TOIFavouriteProperty);
-// delete all items, that would constrain AnItem
-var
-  i: Integer;
-  CurItem: TOIFavouriteProperty;
-begin
-  for i:=Count-1 downto 0 do begin
-    CurItem:=Items[i];
-    if CurItem.Constrains(AnItem) then begin
-      FItems.Delete(i);
-      Modified:=true;
-      CurItem.Free;
-    end;
-  end;
-end;
-
-function TOIFavouriteProperties.IsFavourite(AClass: TPersistentClass;
-  const PropertyName: string): boolean;
-var
-  i: Integer;
-  CurItem: TOIFavouriteProperty;
-  BestItem: TOIFavouriteProperty;
-begin
-  if (AClass=nil) or (PropertyName='') then begin
-    Result:=false;
-    exit;
-  end;
-  BestItem:=nil;
-  for i:=0 to Count-1 do begin
-    CurItem:=Items[i];
-    if not CurItem.IsFavourite(AClass,PropertyName) then continue;
-    if (BestItem=nil)
-    or (AClass.InheritsFrom(BestItem.BaseClass)) then begin
-      //debugln('TOIFavouriteProperties.IsFavourite ',AClass.ClassName,' ',PropertyName);
-      BestItem:=CurItem;
-    end;
-  end;
-  Result:=(BestItem<>nil) and BestItem.Include;
-end;
-
-function TOIFavouriteProperties.AreFavourites(
-  Selection: TPersistentSelectionList; const PropertyName: string): boolean;
-var
-  i: Integer;
-begin
-  Result:=(Selection<>nil) and (Selection.Count>0);
-  if not Result then exit;
-  for i:=0 to Selection.Count-1 do begin
-    if not IsFavourite(TPersistentClass(Selection[i].ClassType),PropertyName)
-    then begin
-      Result:=false;
-      exit;
-    end;
-  end;
-end;
-
-procedure TOIFavouriteProperties.LoadFromConfig(ConfigStore: TConfigStorage;
-  const Path: string);
-var
-  NewCount: LongInt;
-  i: Integer;
-  NewItem: TOIFavouriteProperty;
-  p: String;
-  NewPropertyName: String;
-  NewInclude: Boolean;
-  NewBaseClassname: String;
-  NewBaseClass: TPersistentClass;
-begin
-  Clear;
-  NewCount:=ConfigStore.GetValue(Path+'Count',0);
-  for i:=0 to NewCount-1 do begin
-    p:=Path+'Item'+IntToStr(i)+'/';
-    NewPropertyName:=ConfigStore.GetValue(p+'PropertyName','');
-    if (NewPropertyName='') or (not IsValidIdent(NewPropertyName)) then
-      continue;
-    NewInclude:=ConfigStore.GetValue(p+'Include',true);
-    NewBaseClassname:=ConfigStore.GetValue(p+'BaseClass','');
-    if (NewBaseClassname='') or (not IsValidIdent(NewBaseClassname))  then
-      continue;
-    NewBaseClass:=GetClass(NewBaseClassname);
-    NewItem:=TOIFavouriteProperty.Create(NewBaseClass,NewPropertyName,
-                                         NewInclude);
-    NewItem.BaseClassName:=NewBaseClassname;
-    Add(NewItem);
-  end;
-  {$IFDEF DebugFavouriteroperties}
-  debugln('TOIFavouriteProperties.LoadFromConfig END');
-  WriteDebugReport;
-  {$ENDIF}
-end;
-
-procedure TOIFavouriteProperties.SaveToConfig(ConfigStore: TConfigStorage;
-  const Path: string);
-var
-  i: Integer;
-begin
-  ConfigStore.SetDeleteValue(Path+'Count',Count,0);
-  for i:=0 to Count-1 do
-    Items[i].SaveToConfig(ConfigStore,Path+'Item'+IntToStr(i)+'/');
-end;
-
-procedure TOIFavouriteProperties.MergeConfig(ConfigStore: TConfigStorage;
-  const Path: string);
-var
-  NewFavourites: TOIFavouriteProperties;
-  OldItem: TOIFavouriteProperty;
-  NewItem: TOIFavouriteProperty;
-  cmp: LongInt;
-  NewIndex: Integer;
-  OldIndex: Integer;
-begin
-  NewFavourites:=TOIFavouritePropertiesClass(ClassType).Create;
-  {$IFDEF DebugFavouriteroperties}
-  debugln('TOIFavouriteProperties.MergeConfig ',dbgsName(NewFavourites),' ',dbgsName(NewFavourites.FItems));
-  {$ENDIF}
-  try
-    // load config
-    NewFavourites.LoadFromConfig(ConfigStore,Path);
-    // sort both to see the differences
-    NewFavourites.DeleteDoubles; // descending
-    DeleteDoubles;               // descending
-    // add all new things from NewFavourites
-    NewIndex:=0;
-    OldIndex:=0;
-    while (NewIndex<NewFavourites.Count) do begin
-      NewItem:=NewFavourites[NewIndex];
-      if OldIndex>=Count then begin
-        // item only exists in config -> move to this list
-        NewFavourites.FItems[NewIndex]:=nil;
-        inc(NewIndex);
-        FItems.Insert(OldIndex,NewItem);
-        inc(OldIndex);
-      end else begin
-        OldItem:=Items[OldIndex];
-        cmp:=OldItem.Compare(NewItem);
-        //debugln('TOIFavouriteProperties.MergeConfig cmp=',dbgs(cmp),' OldItem=[',OldItem.DebugReportAsString,'] NewItem=[',NewItem.DebugReportAsString,']');
-        if cmp=0 then begin
-          // item already exists in this list
-          inc(NewIndex);
-          inc(OldIndex);
-        end else if cmp<0 then begin
-          // item exists only in old favourites
-          // -> next old
-          inc(OldIndex);
-        end else begin
-          // item only exists in config -> move to this list
-          NewFavourites.FItems[NewIndex]:=nil;
-          inc(NewIndex);
-          FItems.Insert(OldIndex,NewItem);
-          inc(OldIndex);
-        end;
-      end;
-    end;
-  finally
-    NewFavourites.Free;
-  end;
-  {$IFDEF DebugFavouriteroperties}
-  debugln('TOIFavouriteProperties.MergeConfig END');
-  WriteDebugReport;
-  {$ENDIF}
-end;
-
-procedure TOIFavouriteProperties.SaveNewItemsToConfig(
-  ConfigStore: TConfigStorage; const Path: string;
-  BaseFavourites: TOIFavouriteProperties);
-// Save all items, that are in this list and not in BaseFavourites
-// It does not save, if an item in BaseFavourites is missing in this list
-var
-  SubtractList: TList;
-  i: Integer;
-  CurItem: TOIFavouriteProperty;
-begin
-  SubtractList:=GetSubtractList(BaseFavourites);
-  try
-    ConfigStore.SetDeleteValue(Path+'Count',SubtractList.Count,0);
-    {$IFDEF DebugFavouriteroperties}
-    debugln('TOIFavouriteProperties.SaveNewItemsToConfig A Count=',dbgs(SubtractList.Count));
-    {$ENDIF}
-    for i:=0 to SubtractList.Count-1 do begin
-      CurItem:=TOIFavouriteProperty(SubtractList[i]);
-      CurItem.SaveToConfig(ConfigStore,Path+'Item'+IntToStr(i)+'/');
-      {$IFDEF DebugFavouriteroperties}
-      debugln(' i=',dbgs(i),' ',CurItem.DebugReportAsString);
-      {$ENDIF}
-    end;
-  finally
-    SubtractList.Free;
-  end;
-end;
-
-procedure TOIFavouriteProperties.Sort;
-begin
-  if FSorted then exit;
-  FItems.Sort(@CompareOIFavouriteProperties);
-end;
-
-procedure TOIFavouriteProperties.DeleteDoubles;
-// This also sorts
-var
-  i: Integer;
-begin
-  if FDoublesDeleted then exit;
-  Sort;
-  for i:=Count-1 downto 1 do begin
-    if Items[i].Compare(Items[i-1])=0 then begin
-      Items[i].Free;
-      FItems.Delete(i);
-    end;
-  end;
-  FDoublesDeleted:=true;
-end;
-
-function TOIFavouriteProperties.IsEqual(TheFavourites: TOIFavouriteProperties
-  ): boolean;
-var
-  i: Integer;
-begin
-  Result:=false;
-  DeleteDoubles;
-  TheFavourites.DeleteDoubles;
-  if Count<>TheFavourites.Count then exit;
-  for i:=Count-1 downto 1 do
-    if Items[i].Compare(TheFavourites.Items[i])<>0 then exit;
-  Result:=true;
-end;
-
-function TOIFavouriteProperties.GetSubtractList(
-  FavouritesToSubtract: TOIFavouriteProperties): TList;
-// create a list of TOIFavouriteProperty of all items in this list
-// and not in FavouritesToSubtract
-var
-  SelfIndex: Integer;
-  SubtractIndex: Integer;
-  CurItem: TOIFavouriteProperty;
-  cmp: LongInt;
-begin
-  Result:=TList.Create;
-  DeleteDoubles; // this also sorts descending
-  FavouritesToSubtract.DeleteDoubles; // this also sorts descending
-  SelfIndex:=0;
-  SubtractIndex:=0;
-  while SelfIndex<Count do begin
-    CurItem:=Items[SelfIndex];
-    if SubtractIndex>=FavouritesToSubtract.Count then begin
-      // item does not exist in SubtractIndex -> add it
-      Result.Add(CurItem);
-      inc(SelfIndex);
-    end else begin
-      cmp:=CurItem.Compare(FavouritesToSubtract[SubtractIndex]);
-      //debugln('TOIFavouriteProperties.GetSubtractList cmp=',dbgs(cmp),' CurItem=[',CurItem.DebugReportAsString,'] SubtractItem=[',FavouritesToSubtract[SubtractIndex].DebugReportAsString,']');
-      if cmp=0 then begin
-        // item exists in SubtractIndex -> skip
-        inc(SubtractIndex);
-        inc(SelfIndex);
-      end else if cmp>0 then begin
-        // item does not exist in FavouritesToSubtract -> add it
-        Result.Add(CurItem);
-        inc(SelfIndex);
-      end else begin
-        // item exists only in FavouritesToSubtract -> skip
-        inc(SubtractIndex);
-      end;
-    end;
-  end;
-end;
-
-procedure TOIFavouriteProperties.WriteDebugReport;
-var
-  i: Integer;
-begin
-  debugln('TOIFavouriteProperties.WriteDebugReport Count=',dbgs(Count));
-  for i:=0 to Count-1 do
-    debugln('  i=',dbgs(i),' ',Items[i].DebugReportAsString);
-end;
-
-{ TOIFavouriteProperty }
-
-constructor TOIFavouriteProperty.Create(ABaseClass: TPersistentClass;
-  const APropertyName: string; TheInclude: boolean);
-begin
-  BaseClass:=ABaseClass;
-  PropertyName:=APropertyName;
-  Include:=TheInclude;
-end;
-
-function TOIFavouriteProperty.Constrains(AnItem: TOIFavouriteProperty
-  ): boolean;
-// true if this item constrains AnItem
-// This item constrains AnItem, if this is the opposite (Include) and
-// AnItem has the same or greater scope
-begin
-  Result:=(Include<>AnItem.Include)
-          and (CompareText(PropertyName,AnItem.PropertyName)=0)
-          and (BaseClass.InheritsFrom(AnItem.BaseClass));
-end;
-
-function TOIFavouriteProperty.IsFavourite(AClass: TPersistentClass;
-  const APropertyName: string): boolean;
-begin
-  Result:=(CompareText(PropertyName,APropertyName)=0)
-          and (AClass.InheritsFrom(BaseClass));
-end;
-
-function TOIFavouriteProperty.Compare(AFavourite: TOIFavouriteProperty
-  ): integer;
-
-  function CompareBaseClass: integer;
-  begin
-    if BaseClass<>nil then begin
-      if AFavourite.BaseClass<>nil then
-        Result:=ComparePointers(BaseClass,AFavourite.BaseClass)
-      else
-        Result:=CompareText(BaseClass.ClassName,AFavourite.BaseClassName);
-    end else begin
-      if AFavourite.BaseClass<>nil then
-        Result:=CompareText(BaseClassName,AFavourite.BaseClass.ClassName)
-      else
-        Result:=CompareText(BaseClassName,AFavourite.BaseClassName);
-    end;
-  end;
-
-begin
-  // first compare PropertyName
-  Result:=CompareText(PropertyName,AFavourite.PropertyName);
-  if Result<>0 then exit;
-  // then compare Include
-  if Include<>AFavourite.Include then begin
-    if Include then
-      Result:=1
-    else
-      Result:=-1;
-    exit;
-  end;
-  // then compare BaseClass and BaseClassName
-  Result:=CompareBaseClass;
-end;
-
-procedure TOIFavouriteProperty.SaveToConfig(ConfigStore: TConfigStorage;
-  const Path: string);
-begin
-  if BaseClass<>nil then
-    ConfigStore.SetDeleteValue(Path+'BaseClass',BaseClass.ClassName,'')
-  else
-    ConfigStore.SetDeleteValue(Path+'BaseClass',BaseClassName,'');
-  ConfigStore.SetDeleteValue(Path+'PropertyName',PropertyName,'');
-  ConfigStore.SetDeleteValue(Path+'Include',Include,true);
-end;
-
-procedure TOIFavouriteProperty.Assign(Src: TOIFavouriteProperty);
-begin
-  BaseClassName:=Src.BaseClassName;
-  BaseClass:=Src.BaseClass;
-  PropertyName:=Src.PropertyName;
-  Include:=Src.Include;
-end;
-
-function TOIFavouriteProperty.CreateCopy: TOIFavouriteProperty;
-begin
-  Result:=TOIFavouriteProperty.Create(BaseClass,PropertyName,Include);
-  Result.BaseClass:=BaseClass;
-end;
-
-function TOIFavouriteProperty.DebugReportAsString: string;
-begin
-  Result:='PropertyName="'+PropertyName+'"'
-      +' Include='+dbgs(Include)
-      +' BaseClassName="'+BaseClassName+'"'
-      +' BaseClass='+dbgsName(BaseClass);
-end;
-
-{ TOIRestrictedProperty }
-
-function TOIRestrictedProperty.IsRestricted(AClass: TPersistentClass;
-  const APropertyName: string): TLCLPlatforms;
-begin
-  //DebugLn('IsRestricted ', AClass.ClassName, ' ?= ', BaseClass.ClassName, ' ', APropertyName, ' ?= ', PropertyName);
-  Result := [];
-  if (CompareText(PropertyName,APropertyName) = 0)
-    and (AClass.InheritsFrom(BaseClass)) then Result := WidgetSets;
-end;
-
-
-{ TOIRestrictedProperties }
-
-constructor TOIRestrictedProperties.Create;
-var
-  P: TLCLPlatform;
-begin
-  inherited Create;
-  
-  for P := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[P] := 0;
-end;
-
-function TOIRestrictedProperties.IsRestricted(AClass: TPersistentClass;
-  const PropertyName: string): TLCLPlatforms;
-var
-  I: Integer;
-  CurItem: TOIRestrictedProperty;
-begin
-  Result := [];
-  if (AClass=nil) or (PropertyName='') then Exit;
-  for I := 0 to Count - 1 do
-  begin
-    if not (Items[I] is TOIRestrictedProperty) then Continue;
-    CurItem:=Items[I] as TOIRestrictedProperty;
-    Result := Result + CurItem.IsRestricted(AClass,PropertyName);
-  end;
-end;
-
-function TOIRestrictedProperties.AreRestricted(
-  Selection: TPersistentSelectionList;
-  const PropertyName: string): TLCLPlatforms;
-var
-  I: Integer;
-begin
-  Result := [];
-  if Selection = nil then Exit;
-  for i:=0 to Selection.Count-1 do
-  begin
-    Result := Result + IsRestricted(TPersistentClass(Selection[i].ClassType), PropertyName);
-  end;
 end;
 
 initialization

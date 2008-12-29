@@ -49,6 +49,7 @@ uses
   MenuIntf,
   NewItemIntf,
   ObjectInspector,
+  OIFavouriteProperties,
   ObjInspStrConsts,
   PackageIntf,
   ProjectIntf,

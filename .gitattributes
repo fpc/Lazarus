@@ -2881,6 +2881,7 @@ ideintf/objectinspector.lrs svneol=native#text/plain
 ideintf/objectinspector.pp svneol=native#text/plain
 ideintf/objectinspector_img.lrs svneol=native#text/plain
 ideintf/objinspstrconsts.pas svneol=native#text/pascal
+ideintf/oifavouriteproperties.pas svneol=native#text/pascal
 ideintf/packageintf.pas svneol=native#text/pascal
 ideintf/projectintf.pas svneol=native#text/pascal
 ideintf/projectresourcesintf.pas svneol=native#text/pascal
