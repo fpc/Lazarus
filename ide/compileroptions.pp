@@ -3355,6 +3355,7 @@ end;
 destructor TIDEBuildModes.Destroy;
 begin
   Clear;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
