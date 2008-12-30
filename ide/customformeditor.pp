@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEdits, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
-  LazarusIDEStrConsts, Project, JITForm, JITForms,
+  LazarusIDEStrConsts, Project, JITForms,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   DesignerProcs;

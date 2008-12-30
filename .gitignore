@@ -172,8 +172,6 @@ debugger/test/examples/units
 debugger/test/units
 debugger/units
 designer/*.bak
-designer/jitform/*.bak
-designer/jitform/units
 designer/units
 doceditor/*.bak
 doceditor/fpdocupdater/*.bak

@@ -96,7 +96,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp,
   // designer
-  JITForm, JITForms, ComponentPalette, ComponentList, ComponentReg,
+  JITForms, ComponentPalette, ComponentList, ComponentReg,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   MenuEditorForm,

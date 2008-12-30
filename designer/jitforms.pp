@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
   LCLMemManager, LCLIntf, Dialogs,
-  PropEdits, JITForm, IDEProcs,
+  PropEdits, IDEProcs,
   BasePkgManager;
 
 type
@@ -82,7 +82,7 @@ type
     );
   TJITCompListFlags = set of TJITCompListFlag;
 
-  TJITComponentList = class(TPersistentWithTemplates)
+  TJITComponentList = class(TPersistent)
   private
     FContextObject: TObject;
     FCurUnknownClass: string;
@@ -286,10 +286,58 @@ function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
 const
   DefaultJITUnitName = 'VirtualUnitForJITClasses';
 
+procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
+procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
+procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
 
 implementation
 
 {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
+
+// Define a dummy component to set the csDesigning, csDesignInstance, csInline flags which
+// can not be set by a TForm, because SetDesigning, SetDesignInstance and SetInline are protected.
+type
+  TSetDesigningComponent = class(TComponent)
+  public
+    class procedure SetDesigningOfComponent(AComponent: TComponent; Value: Boolean);
+    class procedure SetDesignInstanceOfComponent(AComponent: TComponent; Value: Boolean);
+    class procedure SetInlineOfComponent(AComponent: TComponent; Value: Boolean);
+  end;
+
+procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent.SetDesigningOfComponent(AComponent, True);
+end;
+
+procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent.SetDesignInstanceOfComponent(AComponent, True);
+end;
+
+procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent.SetInlineOfComponent(AComponent, True);
+end;
+
+class procedure TSetDesigningComponent.SetDesigningOfComponent(
+  AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent(AComponent).SetDesigning(Value);
+end;
+
+class procedure TSetDesigningComponent.SetDesignInstanceOfComponent(
+  AComponent: TComponent; Value: Boolean);
+begin
+  // requires fpc >= 2.2.1
+  TSetDesigningComponent(AComponent).SetDesignInstance(Value);
+end;
+
+class procedure TSetDesigningComponent.SetInlineOfComponent(
+  AComponent: TComponent; Value: Boolean);
+begin
+  // requires fpc >= 2.2.1
+  TSetDesigningComponent(AComponent).SetInline(Value);
+end;
 
 //------------------------------------------------------------------------------
 // adding, removing and renaming of classes and methods at runtime

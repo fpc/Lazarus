@@ -11,7 +11,7 @@ packages=regexpr
 
 [target]
 programs=lazarus startlazarus
-dirs=lcl components packager/registration ideintf designer packager
+dirs=lcl components packager/registration ideintf packager
 exampledirs=examples
 
 [compiler]
@@ -56,7 +56,7 @@ idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide: lcl packager/registration ideintf designer packager bigidecomponents idebig starter
+bigide: lcl packager/registration ideintf packager bigidecomponents idebig starter
 
 #-----------------------------------------------------------------------------
 idebig:
@@ -87,7 +87,7 @@ tools: lcl components
 examples: lcl components
 
 #-----------------------------------------------------------------------------
-all: lcl components packager/registration ideintf designer packager ide starter lazbuilder
+all: lcl components packager/registration ideintf packager ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
 cleanide:
@@ -97,7 +97,6 @@ cleanlaz: cleanide
 	$(MAKE) -C lcl clean
 	$(MAKE) -C components clean
 	$(MAKE) -C packager clean
-	$(MAKE) -C designer clean
 	$(MAKE) -C ideintf clean
 
 purge: cleanlaz

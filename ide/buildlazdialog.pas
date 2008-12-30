@@ -115,7 +115,6 @@ type
     FItemExamples: TBuildLazarusItem;
     FItemIDE: TBuildLazarusItem;
     FItemIDEIntf: TBuildLazarusItem;
-    FItemJITForm: TBuildLazarusItem;
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
     FItemSynEdit: TBuildLazarusItem;
@@ -159,7 +158,6 @@ type
     property ItemCodeTools: TBuildLazarusItem read FItemCodeTools;
     property ItemPkgReg: TBuildLazarusItem read FItemPkgReg;
     property ItemIDEIntf: TBuildLazarusItem read FItemIDEIntf;
-    property ItemJITForm: TBuildLazarusItem read FItemJITForm;
     property ItemIDE: TBuildLazarusItem read FItemIDE;
     property ItemExamples: TBuildLazarusItem read FItemExamples;
     property Advanced: boolean read FAdvanced write FAdvanced;
@@ -528,10 +526,7 @@ begin
   // create extra options
   ExtraOptions:=Options.ExtraOptions;
 
-  if CurItem=Options.ItemJITForm then begin
-    // remove profiler option for JIT form
-    ExtraOptions:=RemoveProfilerOption(ExtraOptions);
-  end else if CurItem=Options.ItemIDE then begin
+  if CurItem=Options.ItemIDE then begin
     // check for special IDE config file
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
@@ -1427,7 +1422,6 @@ begin
   FItemCodeTools:=nil;
   FItemPkgReg:=nil;
   FItemIDEIntf:=nil;
-  FItemJITForm:=nil;
   FItemIDE:=nil;
   FItemExamples:=nil;
 end;
@@ -1459,11 +1453,6 @@ begin
   FItemIDEIntf:=TBuildLazarusItem.Create(
     'IDEIntf',lisIDEIntf,'ideintf',mmBuild);
   FItems.Add(FItemIDEIntf);
-
-  // JITForm
-  FItemJITForm:=TBuildLazarusItem.Create(
-    'JITForm',lisJITForm,'designer/jitform',mmBuild);
-  FItems.Add(FItemJITForm);
 
   // IDE
   FItemIDE:=TBuildLazarusItem.Create('IDE',lisIDE,'',mmBuild);
@@ -1599,7 +1588,6 @@ begin
   FItemCodeTools:=FindName('CodeTools');
   FItemPkgReg:=FindName('PkgReg');
   FItemIDEIntf:=FindName('IDEIntf');
-  FItemJITForm:=FindName('JITForm');
   FItemIDE:=FindName('IDE');
   FItemExamples:=FindName('Examples');
 end;
