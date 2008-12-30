@@ -887,7 +887,7 @@ begin
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
-  IDEDialogLayoutList.ApplyLayout(Self, 500, 500);
+  IDEDialogLayoutList.ApplyLayout(Self, 520, 570);
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
   SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
