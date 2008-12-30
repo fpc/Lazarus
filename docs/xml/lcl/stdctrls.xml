@@ -3563,7 +3563,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.DrawItem">
         <short>
-          <var>DrawItem</var> - method to draw the nominated indexed item in the sspecified rectangle</short>
+          <var>DrawItem</var> - method to draw the nominated indexed item in the specified rectangle</short>
         <descr/>
         <errors/>
         <seealso/>

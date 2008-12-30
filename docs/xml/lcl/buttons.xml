@@ -285,7 +285,26 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBitBtnKind">
-        <short>A set of possible types for BitButtons.</short>
+        <short>
+          <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons.</short>
+        <descr>
+          <p>
+            <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons.</p>
+          <pre>bkCustom, 
+bkOK, 
+bkCancel, 
+bkHelp, 
+bkYes, 
+bkNo,      
+bkClose, 
+bkAbort, 
+bkRetry, 
+bkIgnore, 
+bkAll,
+bkNoToAll,
+bkYesToAll
+</pre>
+        </descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TBitBtnKind.bkCustom">
@@ -340,15 +359,22 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TBitBtnKinds"/>
+      <element name="TBitBtnKinds">
+        <short>
+          <var>TBitBtnKinds</var> - set of <var>TBitBtnKind</var>
+        </short>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomBitBtn">
-        <short>The ancestor class for TBitBtn.</short>
-        <descr>TCustomBitBtn is the ancestor for TBitBtn. If you want to define your own bitbutton class, you should use this class to derive it from.</descr>
+        <short>
+          <var>TCustomBitBtn</var> - the ancestor class for <var>TBitBtn</var>.</short>
+        <descr>TCustomBitBtn is the ancestor for TBitBtn. If you want to define your own bitbutton class, you should use this class to derive it from.
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomBitBtn.FButtonGlyph">
-        <short/>
+        <short>
+          <var>FButtonGlyph</var> - local variable holding the Glyph for this button</short>
         <descr/>
         <seealso/>
       </element>
@@ -499,7 +525,8 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.ActionChange">
-        <short>Change the action associated with this BitButton</short>
+        <short>
+          <var>ActionChange</var> - Change the action associated with this BitButton</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1115,7 +1142,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomSpeedButton.FState">
-        <short>The state of the speedbutton (whether checked or not)</short>
+        <short>
+          <var>FState</var> - local variable to hold the state of the speedbutton (whether checked or not)</short>
         <descr/>
         <seealso/>
       </element>
@@ -1214,7 +1242,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetDown">
-        <short/>
+        <short>
+          <var>SetDown</var> - specifies the boolean value of <var>Down</var> (ie whether or not button was pressed)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1225,7 +1254,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetGroupIndex">
-        <short/>
+        <short>
+          <var>SetGroupIndex</var> - specifies the value of the Group Index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1236,7 +1266,9 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetFlat">
-        <short/>
+        <short>
+          <var>SetFlat</var> - specifies whether or not the button is displayed <var>Flat</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1247,7 +1279,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetMargin">
-        <short/>
+        <short>
+          <var>SetMargin</var> - specifies the size of the margin</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1258,7 +1291,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetNumGlyphs">
-        <short/>
+        <short>
+          <var>SetNumGlyphs</var> - specifies the number of glyphs</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1269,7 +1303,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetSpacing">
-        <short/>
+        <short>
+          <var>SetSpacing</var> - specifies the spacing between buttons</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1291,7 +1326,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.UpdateState">
-        <short/>
+        <short>
+          <var>UpdateState</var> - brings the state up oto date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1313,12 +1349,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomSpeedButton.MouseInControl">
-        <short/>
+        <short>
+          <var>MouseInControl</var> - returns True if the mouse cursor is in the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.ActionChange">
+      <element name="TCustomSpeedButton.ActionChange" link="#LCL.Controls.TControl.ActionChange">
         <short/>
         <descr/>
         <errors/>
@@ -1333,7 +1370,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomSpeedButton.GetActionLinkClass">
+      <element name="TCustomSpeedButton.GetActionLinkClass" link="#LCL.Controls.TControl.GetActionLinkClass">
         <short/>
         <descr/>
         <errors/>
@@ -1689,10 +1726,11 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Draw the glyph in the specified canvas in the specified rectangle at a given offset within the client, with specified state and transparency</short>
       </element>
       <element name="TCustomSpeedButton.FindDownButton">
-        <short>Find any Down button</short>
+        <short>
+          <var>FindDownButton</var> - returns the button that is down</short>
       </element>
       <element name="TCustomSpeedButton.ShowAccelChar">
-        <short>Should accelerator character be shown (ie underlined character denoting key to be pressed for quick action)</short>
+        <short>Should accelerator character be shown (ie underlined character denoting key to be pressed for quick action)?</short>
       </element>
       <element name="TCustomSpeedButton.ShowCaption">
         <short>Should caption be displayed?</short>
@@ -1720,9 +1758,41 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TBitBtn.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TCustomSpeedButton.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
       <element name="TCustomSpeedButton.SetEnabled" link="#LCL.Controls.TControl.SetEnabled"/>
-      <element name="TCustomSpeedButton.GetDrawDetails"/>
+      <element name="TCustomSpeedButton.GetDrawDetails">
+        <short>
+          <var>GetDrawDetails</var> - returns the structured details for drawing</short>
+      </element>
       <element name="TCustomSpeedButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TCustomSpeedButton.LoadGlyphFromLazarusResource"/>
+      <element name="TCustomSpeedButton.LoadGlyphFromLazarusResource">
+        <short>
+          <var>LoadGlyphFromLazarusResource</var> - method for loading a glyph from a Lazarus Resource file (.lrs)</short>
+      </element>
+      <element name="TCustomBitBtn.LoadGlyphFromLazarusResource">
+        <short>
+          <var>LoadGlyphFromLazarusResource</var> - method for loading the glyph from a Lazarus resource file (.lrs)</short>
+      </element>
+      <element name="TCustomSpeedButton.GetGlyphSize">
+        <short>
+          <var>GetGlyphSize</var> - returns the size of the glyoh within the specified <var>PaintRect</var>
+        </short>
+      </element>
+      <element name="TCustomSpeedButton.GetTextSize">
+        <short>
+          <var>GetTextSize</var> - returns the size of the text within the specified <var>PaintRect</var>
+        </short>
+      </element>
+      <element name="TGetDefaultBitBtnGlyph">
+        <short>
+          <var>TGetDefaultBitBtnGlyph</var> - generic method to return a default Bit Button Glyph of specified Kind</short>
+      </element>
+      <element name="GetLCLDefaultBtnGlyph">
+        <short>
+          <var>GetLCLDefaultBtnGlyph</var> - generic method to return the LCL default button glyph of the specified Kind</short>
+      </element>
+      <element name="LoadGlyphFromLazarusResource">
+        <short>
+          <var>LoadGlyphFromLazarusResource</var> - generic method to load a button glyph with specified name from a Lazarus Resource file (.lrs)</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
