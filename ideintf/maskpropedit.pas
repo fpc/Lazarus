@@ -102,6 +102,30 @@ begin
   Mask := Line;
 end;
 
+function MaskDoFormatText(const EditMask: string; const Value: string; Blank: Char): String;
+var
+  P: Integer;
+  S: String;
+begin
+  // cheat maskutils while it has no its own MaskDoFormatText
+  S := EditMask;
+  P := LastDelimiter(';', S);
+  if P <> 0 then
+  begin
+    S[P + 1] := Blank;
+    dec(P);
+    while (P > 0) and (S[P] <> ';') do
+      dec(P);
+    if P <> 0 then
+     S[P + 1] := '0';
+  end;
+  try
+    Result := FormatMaskText(S, Value);
+  except
+    Result := Value;
+  end;
+end;
+
 { TMaskEditorForm }
 
 procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
@@ -133,11 +157,7 @@ begin
     ListBox.Canvas.TextStyle := NewTextStyle;
 
     ParseMaskLine(ListBox.Items[Index], AMaskCaption, AMaskExample, AEditMask);
-    try
-      // not all delphi masks can be handled at moment :( => catch exceptions here
-      AMaskExample := FormatMaskText(AEditMask, AMaskExample);
-    except
-    end;
+    AMaskExample := MaskDoFormatText(AEditMask, AMaskExample, ' ');
 
     R1 := ARect;
     R2 := ARect;
