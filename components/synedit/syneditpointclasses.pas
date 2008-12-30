@@ -778,6 +778,9 @@ begin
             EndInsert.x := Length(FLines[EndInsert.y - 1]);
           end;
         end;
+        if ChangeReason in [crSilentDelete, crSilentDeleteAfterCursor, crDelete,
+                            crDeleteAfterCursor] then
+          ChangeReason := crInsert;
         fUndoList.AddChange(ChangeReason, StartInsert, EndInsert, '', PasteMode);
       end;
       StartLineBytePos := FCaret.LineBytePos; // reset selection

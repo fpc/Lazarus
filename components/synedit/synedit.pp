@@ -6948,12 +6948,8 @@ begin
             end else begin
               // join line with the line after
               if CaretY < Lines.Count then begin
-                Helper := StringOfChar(' ', CaretX - 1 - Len);
-                {$IFDEF SYN_LAZARUS}
+                Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 Lines[CaretY - 1] := Temp + Helper + Lines[CaretY];
-                {$ELSE}
-                TrimmedSetLine(CaretY - 1, Temp + Helper + Lines[CaretY]);
-                {$ENDIF}
                 Caret := Point(1, CaretY + 1);
                 Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
                 Lines.Delete(CaretY);
@@ -6969,18 +6965,17 @@ begin
         end;
       ecDeleteWord, ecDeleteEOL:
         if not ReadOnly then begin
-          {$IFDEF SYN_LAZARUS}
           Len := LogicalToPhysicalCol(LineText,Length(LineText)+1)-1;
-          {$ELSE}
-          Len := Length(LineText);
-          {$ENDIF}
+          Helper := '';
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then
-              CaretX := Len + 1;
+              Helper := StringOfChar(' ', CaretX - 1 - Len);
             WP := NextWordPos{$IFDEF SYN_LAZARUS}(True){$ENDIF};
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
+            if Helper <> '' then
+              LineText := LineText + Helper;
             OldSelMode := FBlockSelection.ActiveSelectionMode;
             try
               SetBlockBegin(PhysicalToLogicalPos(WP));
