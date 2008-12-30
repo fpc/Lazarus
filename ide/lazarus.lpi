@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="33">
+    <Units Count="34">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -267,6 +267,14 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Options_Compiler_Conditionals"/>
       </Unit32>
+      <Unit33>
+        <Filename Value="frames/options_compiler_buildmodes.pas"/>
+        <ComponentName Value="CompOptBuildModesFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_compiler_buildmodes"/>
+      </Unit33>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

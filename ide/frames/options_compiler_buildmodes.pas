@@ -25,7 +25,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Grids, Buttons,
-  ExtCtrls, Options_Compiler_Conditionals;
+  ExtCtrls,
+  IDEImagesIntf, ProjectIntf, CompilerOptions,
+  Options_Compiler_Conditionals, LazarusIDEStrConsts;
 
 type
 
@@ -45,10 +47,76 @@ type
     ValuesSplitter: TSplitter;
     ValuesStringGrid: TStringGrid;
   private
+    FBuildModes: TIDEBuildModes;
+    procedure SetBuildModes(const AValue: TIDEBuildModes);
+    procedure UpdateModes;
+    procedure UpdateValues;
+    procedure UpdateDefaultValue;
+    procedure UpdateButtons;
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property BuildModes: TIDEBuildModes read FBuildModes write SetBuildModes;
   end;
 
 implementation
+
+{ TCompOptBuildModesFrame }
+
+procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
+begin
+  if FBuildModes=AValue then exit;
+  FBuildModes:=AValue;
+  UpdateModes;
+end;
+
+procedure TCompOptBuildModesFrame.UpdateModes;
+begin
+
+  UpdateValues;
+end;
+
+procedure TCompOptBuildModesFrame.UpdateValues;
+begin
+  UpdateDefaultValue;
+end;
+
+procedure TCompOptBuildModesFrame.UpdateDefaultValue;
+begin
+
+end;
+
+procedure TCompOptBuildModesFrame.UpdateButtons;
+begin
+
+end;
+
+constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  DefaultValueGroupBox.Caption:='Default value';
+  ValuesGroupBox.Caption:='Values';
+  ModesGroupBox.Caption:='Build modes';
+  NewSpeedButton.LoadGlyphFromLazarusResource('menu_new');
+  NewSpeedButton.ShowHint:=true;
+  NewSpeedButton.Hint:='Create new build mode';
+  DeleteSpeedButton.LoadGlyphFromLazarusResource('menu_project_remove');
+  DeleteSpeedButton.ShowHint:=true;
+  DeleteSpeedButton.Hint:='Delete ...';
+  MoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  MoveDownSpeedButton.ShowHint:=true;
+  MoveDownSpeedButton.Hint:='Move down';
+  MoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+  MoveUpSpeedButton.ShowHint:=true;
+  MoveUpSpeedButton.Hint:='Move up';
+end;
+
+destructor TCompOptBuildModesFrame.Destroy;
+begin
+
+  inherited Destroy;
+end;
 
 initialization
   {$I options_compiler_buildmodes.lrs}
