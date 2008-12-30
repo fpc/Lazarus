@@ -1349,7 +1349,7 @@ resourcestring
   dlgHintsParameterSenderNotUsed = 'Show Hints for parameter "Sender" not used';
   dlgConfigFiles = 'Config Files:';
   dlgUseFpcCfg = 'Use standard Compiler Config File (fpc.cfg)';
-  dlgUseCustomConfig = 'Use addional Compiler Config File';
+  dlgUseCustomConfig = 'Use additional Compiler Config File';
   lisCustomOptions2 = 'Custom options';
   dlgCOConditionals = 'Conditionals';
   dlgStopAfterNrErr = 'Stop after number of errors:';
