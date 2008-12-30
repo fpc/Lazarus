@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 389
+  Left = 394
   Height = 528
-  Top = 163
+  Top = 187
   Width = 669
   ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]

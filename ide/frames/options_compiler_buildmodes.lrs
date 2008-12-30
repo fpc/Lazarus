@@ -1,0 +1,50 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCompOptBuildModesFrame','FORMDATA',[
+  'TPF0'#23'TCompOptBuildModesFrame'#22'CompOptBuildModesFrame'#4'Left'#2#0#6'H'
+  +'eight'#3#233#0#3'Top'#2#0#5'Width'#3#236#1#12'ClientHeight'#3#229#0#11'Clie'
+  +'ntWidth'#3#232#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3'&'
+  +#1#9'DesignTop'#3#0#1#0#9'TGroupBox'#13'ModesGroupBox'#4'Left'#2#0#6'Height'
+  +#3#229#0#3'Top'#2#0#5'Width'#3#186#0#5'Align'#7#6'alLeft'#7'Caption'#6#13'Mo'
+  +'desGroupBox'#12'ClientHeight'#3#210#0#11'ClientWidth'#3#182#0#5'Ctl3D'#8#8
+  +'TabOrder'#2#0#0#12'TSpeedButton'#14'NewSpeedButton'#22'AnchorSideLeft.Contr'
+  +'ol'#7#13'ModesGroupBox'#24'AnchorSideBottom.Control'#7#13'ModesGroupBox'#21
+  +'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2#22#3'Top'#3
+  +#188#0#5'Width'#2#23#7'Anchors'#11#6'akLeft'#8'akBottom'#0#5'Color'#7#9'clBt'
+  +'nFace'#9'NumGlyphs'#2#0#0#0#12'TSpeedButton'#17'DeleteSpeedButton'#22'Ancho'
+  +'rSideLeft.Control'#7#14'NewSpeedButton'#19'AnchorSideLeft.Side'#7#9'asrBott'
+  +'om'#21'AnchorSideTop.Control'#7#14'NewSpeedButton'#4'Left'#2#23#6'Height'#2
+  +#22#3'Top'#3#188#0#5'Width'#2#23#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#0#0
+  +#12'TSpeedButton'#19'MoveDownSpeedButton'#22'AnchorSideLeft.Control'#7#17'De'
+  +'leteSpeedButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Co'
+  +'ntrol'#7#14'NewSpeedButton'#4'Left'#2'.'#6'Height'#2#22#3'Top'#3#188#0#5'Wi'
+  +'dth'#2#23#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#0#0#12'TSpeedButton'#17
+  +'MoveUpSpeedButton'#22'AnchorSideLeft.Control'#7#19'MoveDownSpeedButton'#19
+  +'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#14'NewSpeed'
+  +'Button'#4'Left'#2'E'#6'Height'#2#22#3'Top'#3#188#0#5'Width'#2#23#5'Color'#7
+  +#9'clBtnFace'#9'NumGlyphs'#2#0#0#0#8'TListBox'#12'ModesListBox'#24'AnchorSid'
+  +'eBottom.Control'#7#14'NewSpeedButton'#4'Left'#2#0#6'Height'#3#188#0#3'Top'#2
+  +#0#5'Width'#3#182#0#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
+  +'kRight'#8'akBottom'#0#10'ItemHeight'#2#0#8'TabOrder'#2#0#8'TopIndex'#2#255#0
+  +#0#0#9'TGroupBox'#14'ValuesGroupBox'#4'Left'#3#191#0#6'Height'#3#229#0#3'Top'
+  +#2#0#5'Width'#3')'#1#5'Align'#7#8'alClient'#7'Caption'#6#14'ValuesGroupBox'
+  +#12'ClientHeight'#3#210#0#11'ClientWidth'#3'%'#1#5'Ctl3D'#8#8'TabOrder'#2#1#0
+  +#11'TStringGrid'#16'ValuesStringGrid'#4'Left'#2#0#6'Height'#2'_'#3'Top'#2#0#5
+  +'Width'#3'%'#1#5'Align'#7#8'alClient'#8'ColCount'#2#2#9'FixedCols'#2#0#8'Tab'
+  +'Order'#2#0#0#0#9'TGroupBox'#20'DefaultValueGroupBox'#4'Left'#2#0#6'Height'#2
+  +'m'#3'Top'#2'e'#5'Width'#3'%'#1#5'Align'#7#8'alBottom'#7'Caption'#6#20'Defau'
+  +'ltValueGroupBox'#12'ClientHeight'#2'Z'#11'ClientWidth'#3'!'#1#5'Ctl3D'#8#8
+  +'TabOrder'#2#1#0#244#26'TCompOptsConditionalsFrame'#26'CompOptsConditionalsF'
+  +'rame1'#6'Height'#2'Z'#5'Width'#3'!'#1#5'Align'#7#8'alClient'#12'ClientHeigh'
+  +'t'#2'V'#11'ClientWidth'#3#29#1#7'Visible'#9#0#241#9'TTreeView'#11'COCTreeVi'
+  +'ew'#6'Height'#2'V'#5'Width'#3#29#1#0#0#241#10'TPopupMenu'#12'COCPopupMenu'#0
+  +#241#9'TMenuItem'#19'InsertAboveMenuItem'#0#0#241#9'TMenuItem'#19'InsertBelo'
+  +'wMenuItem'#0#0#241#9'TMenuItem'#19'InsertChildMenuItem'#0#0#241#9'TMenuItem'
+  +#14'DeleteMenuItem'#0#0#241#9'TMenuItem'#14'MoveUpMenuItem'#0#0#241#9'TMenuI'
+  +'tem'#16'MoveDownMenuItem'#0#0#241#9'TMenuItem'#17'MoveLvlUpMenuItem'#0#0#241
+  +#9'TMenuItem'#19'MoveLvlDownMenuItem'#0#0#241#9'TMenuItem'#18'PropertiesMenu'
+  +'Item'#0#0#0#0#0#9'TSplitter'#14'ValuesSplitter'#6'Cursor'#7#8'crVSplit'#4'L'
+  +'eft'#2#0#6'Height'#2#6#3'Top'#2'_'#5'Width'#3'%'#1#5'Align'#7#8'alBottom'#12
+  +'ResizeAnchor'#7#8'akBottom'#0#0#0#9'TSplitter'#12'MainSplitter'#4'Left'#3
+  +#186#0#6'Height'#3#229#0#3'Top'#2#0#5'Width'#2#5#0#0#0
+]);
