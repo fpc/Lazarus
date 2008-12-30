@@ -54,7 +54,7 @@ object MaskEditorForm: TMaskEditorForm
     OnClick = SampleMasksListBoxClick
     OnDrawItem = SampleMasksListBoxDrawItem
     Style = lbOwnerDrawFixed
-    TabOrder = 3
+    TabOrder = 4
     TopIndex = 0
   end
   object LoadSampleMasksButton: TButton
@@ -65,7 +65,7 @@ object MaskEditorForm: TMaskEditorForm
     Anchors = [akLeft, akBottom]
     Caption = '&Masks...'
     OnClick = LoadSampleMasksButtonClick
-    TabOrder = 4
+    TabOrder = 5
   end
   object CharactersForBlanksEdit: TEdit
     AnchorSideRight.Control = InputMaskEdit
@@ -100,7 +100,7 @@ object MaskEditorForm: TMaskEditorForm
     ClientHeight = 66
     ClientWidth = 192
     FullRepaint = False
-    TabOrder = 8
+    TabOrder = 3
     object TestInputLabel: TLabel
       Left = 8
       Height = 17
@@ -130,7 +130,7 @@ object MaskEditorForm: TMaskEditorForm
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
-    TabOrder = 5
+    TabOrder = 6
   end
   object CancelButton: TBitBtn
     Left = 343
@@ -143,7 +143,7 @@ object MaskEditorForm: TMaskEditorForm
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
-    TabOrder = 6
+    TabOrder = 7
   end
   object HelpButton: TBitBtn
     Left = 423
@@ -154,7 +154,7 @@ object MaskEditorForm: TMaskEditorForm
     Caption = '&Help'
     Kind = bkHelp
     NumGlyphs = 0
-    TabOrder = 7
+    TabOrder = 8
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open mask file (*.dem)'
