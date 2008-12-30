@@ -55,8 +55,8 @@ type
   TIDEBuildMode = class(TLazBuildMode)
   protected
     procedure SetIdentifier(const AValue: string); override;
-    procedure SetLocalizedName(const AValue: string); override;
-    procedure SetLocalizedValues(const AValue: TStrings); override;
+    procedure SetDescription(const AValue: string); override;
+    procedure SetValueDescriptions(const AValue: TStrings); override;
     procedure SetValues(const AValue: TStrings); override;
   public
     constructor Create;
@@ -3258,16 +3258,16 @@ begin
   FIdentifier:=AValue;
 end;
 
-procedure TIDEBuildMode.SetLocalizedName(const AValue: string);
+procedure TIDEBuildMode.SetDescription(const AValue: string);
 begin
-  if FLocalizedName=AValue then exit;
-  FLocalizedName:=AValue;
+  if FDescription=AValue then exit;
+  FDescription:=AValue;
 end;
 
-procedure TIDEBuildMode.SetLocalizedValues(const AValue: TStrings);
+procedure TIDEBuildMode.SetValueDescriptions(const AValue: TStrings);
 begin
-  if FLocalizedValues=AValue then exit;
-  FLocalizedValues.Assign(AValue);
+  if FValueDescriptions=AValue then exit;
+  FValueDescriptions.Assign(AValue);
 end;
 
 procedure TIDEBuildMode.SetValues(const AValue: TStrings);
@@ -3279,14 +3279,16 @@ end;
 constructor TIDEBuildMode.Create;
 begin
   FValues:=TStringList.Create;
-  FLocalizedValues:=TStringList.Create;
+  FValueDescriptions:=TStringList.Create;
   FDefaultValue:=TCompOptConditionals.Create(BuildModeSet.Evaluator);
+  FDefaultValue.Root.NodeType:=cocntAddValue;
+  FDefaultValue.Root.ValueType:=cocvtNone;
 end;
 
 destructor TIDEBuildMode.Destroy;
 begin
   FreeAndNil(FValues);
-  FreeAndNil(FLocalizedValues);
+  FreeAndNil(FValueDescriptions);
   FreeAndNil(FDefaultValue);
   inherited Destroy;
 end;
@@ -3295,8 +3297,8 @@ procedure TIDEBuildMode.Assign(Source: TLazBuildMode);
 begin
   FIdentifier:=Source.Identifier;
   FDefaultValue.Assign(Source.DefaultValue);
-  FLocalizedName:=Source.LocalizedName;
-  FLocalizedValues.Assign(Source.LocalizedValues);
+  FDescription:=Source.Description;
+  FValueDescriptions.Assign(Source.ValueDescriptions);
   FValues.Assign(Source.Values);
 end;
 
@@ -3304,16 +3306,26 @@ procedure TIDEBuildMode.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
   FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
+  if not IsValidIdent(FIdentifier) then FIdentifier:='';
+  FDescription:=AXMLConfig.GetValue(Path+'Description/Value','');
   LoadStringList(AXMLConfig,FValues,Path+'Values/');
+  LoadStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
   TCompOptConditionals(FDefaultValue).LoadFromXMLConfig(AXMLConfig,Path+'DefaultValue',
                                                         DoSwitchPathDelims);
+
+  while ValueDescriptions.Count>Values.Count do
+    ValueDescriptions.Delete(ValueDescriptions.Count-1);
+  while ValueDescriptions.Count<Values.Count do
+    ValueDescriptions.Add('');
 end;
 
 procedure TIDEBuildMode.SaveToXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 begin
   AXMLConfig.SetDeleteValue(Path+'Identifier/Value',FIdentifier,'');
+  AXMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   SaveStringList(AXMLConfig,FValues,Path+'Values/');
+  SaveStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
   TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue');
 end;
 
@@ -3321,7 +3333,9 @@ procedure TIDEBuildMode.CreateDiff(OtherMode: TLazBuildMode;
   Tool: TCompilerDiffTool);
 begin
   Tool.AddDiff('Identifier',Identifier,OtherMode.Identifier);
+  Tool.AddDiff('Description',Description,OtherMode.Description);
   Tool.AddStringsDiff('Values',Values,OtherMode.Values);
+  Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions);
   TCompOptConditionals(DefaultValue).CreateDiff(OtherMode.DefaultValue,Tool);
 end;
 
@@ -3330,8 +3344,8 @@ begin
   Identifier:=Source.Identifier;
   Values:=Source.Values;
   DefaultValue.Assign(Source.DefaultValue);
-  LocalizedName:=Source.LocalizedName;
-  LocalizedValues:=Source.LocalizedValues;
+  Description:=Source.Description;
+  ValueDescriptions:=Source.ValueDescriptions;
 end;
 
 { TIDEBuildModes }

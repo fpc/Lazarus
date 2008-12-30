@@ -56,8 +56,10 @@ type
     procedure MoveUpMenuItemClick(Sender: TObject);
     procedure PropertiesMenuItemClick(Sender: TObject);
   private
+    FAllowedValueTypes: TCOCValueTypes;
     FConditionals: TCompOptConditionals;
     FNodeTypeImageIDs: array[TCOCNodeType] of integer;
+    procedure SetAllowedValueTypes(const AValue: TCOCValueTypes);
     procedure SetConditionals(const AValue: TCompOptConditionals);
     procedure FillTreeView;
     procedure ConsistencyCheck;
@@ -68,6 +70,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     property Conditionals: TCompOptConditionals read FConditionals write SetConditionals;
+    property AllowedValueTypes: TCOCValueTypes read FAllowedValueTypes write SetAllowedValueTypes;
   end;
 
 implementation
@@ -188,7 +191,7 @@ var
   TVNode: TTreeNode;
 begin
   if not GetSelectedNode(COCNode,TVNode,false) then exit;
-  EditCompOptCondProperties(COCNode);
+  EditCompOptCondProperties(COCNode,AllowedValueTypes);
   TVNode.Text:=NodeToCaption(COCNode);
   TVNode.ImageIndex:=FNodeTypeImageIDs[COCNode.NodeType];
   TVNode.SelectedIndex:=TVNode.ImageIndex;
@@ -200,6 +203,13 @@ begin
   if FConditionals=AValue then exit;
   FConditionals:=AValue;
   FillTreeView;
+end;
+
+procedure TCompOptsConditionalsFrame.SetAllowedValueTypes(
+  const AValue: TCOCValueTypes);
+begin
+  if FAllowedValueTypes=AValue then exit;
+  FAllowedValueTypes:=AValue;
 end;
 
 procedure TCompOptsConditionalsFrame.FillTreeView;
@@ -363,6 +373,7 @@ var
   nt: TCOCNodeType;
 begin
   inherited Create(TheOwner);
+  FAllowedValueTypes:=[low(TCOCValueType)..high(TCOCValueType)];
 
   COCTreeView.Images := IDEImages.Images_24;
 

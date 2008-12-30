@@ -49,6 +49,7 @@ type
     procedure ValueEditEditingDone(Sender: TObject);
     procedure ValueTypeComboBoxEditingDone(Sender: TObject);
   private
+    FAllowedValueTypes: TCOCValueTypes;
     FOriginalNode: TCompOptCondNode;
     FNodeType: TCOCNodeType;
     FValueType: TCOCValueType;
@@ -56,6 +57,7 @@ type
     function GetNodeType: TCOCNodeType;
     function GetValue: string;
     function GetValueType: TCOCValueType;
+    procedure SetAllowedValueTypes(const AValue: TCOCValueTypes);
     procedure SetNodeType(const AValue: TCOCNodeType);
     procedure SetOriginalNode(const AValue: TCompOptCondNode);
     procedure SetValue(const AValue: string);
@@ -67,19 +69,23 @@ type
     property NodeType: TCOCNodeType read GetNodeType write SetNodeType;
     property ValueType: TCOCValueType read GetValueType write SetValueType;
     property Value: string read GetValue write SetValue;
+    property AllowedValueTypes: TCOCValueTypes read FAllowedValueTypes write SetAllowedValueTypes;
   end;
 
-function EditCompOptCondProperties(Node: TCompOptCondNode): TModalResult;
+function EditCompOptCondProperties(Node: TCompOptCondNode;
+  const AllowedValueTypes: TCOCValueTypes): TModalResult;
 
 implementation
 
-function EditCompOptCondProperties(Node: TCompOptCondNode): TModalResult;
+function EditCompOptCondProperties(Node: TCompOptCondNode;
+  const AllowedValueTypes: TCOCValueTypes): TModalResult;
 var
   CompOptCondPropsDialog: TCompOptCondPropsDialog;
 begin
   CompOptCondPropsDialog:=TCompOptCondPropsDialog.Create(nil);
   try
     CompOptCondPropsDialog.OriginalNode:=Node;
+    CompOptCondPropsDialog.AllowedValueTypes:=AllowedValueTypes;
     Result:=CompOptCondPropsDialog.ShowModal;
   finally
     CompOptCondPropsDialog.Free;
@@ -91,7 +97,6 @@ end;
 procedure TCompOptCondPropsDialog.FormCreate(Sender: TObject);
 var
   nt: TCOCNodeType;
-  vt: TCOCValueType;
 begin
   Caption:=lisPropertiesOfConditionalCompilerOption;
   PropsGroupBox.Caption:=lisHlpOptsProperties;
@@ -99,13 +104,10 @@ begin
   NodeTypeLabel.Caption:=lisUIDType;
   ValueTypeLabel.Caption:=lisAction;
   ValueLabel.Caption:=lisValue;
-  ValueTypeComboBox.Items.Clear;
   NodeTypeComboBox.Items.Clear;
   for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
     NodeTypeComboBox.Items.Add(COCNodeTypeLocalizedName(nt));
-  for vt:=Low(TCOCValueType) to High(TCOCValueType) do
-    ValueTypeComboBox.Items.Add(COCValueTypeLocalizedName(vt));
-
+  AllowedValueTypes:=[cocvtNone];
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OkClick;
 end;
 
@@ -181,6 +183,21 @@ begin
   else
     FValueType:=TCOCValueType(i);
   Result:=FValueType;
+end;
+
+procedure TCompOptCondPropsDialog.SetAllowedValueTypes(
+  const AValue: TCOCValueTypes);
+var
+  vt: TCOCValueType;
+begin
+  if FAllowedValueTypes=AValue then exit;
+  FAllowedValueTypes:=AValue;
+  ValueTypeComboBox.Items.BeginUpdate;
+  ValueTypeComboBox.Items.Clear;
+  for vt:=Low(TCOCValueType) to High(TCOCValueType) do
+    if vt in AllowedValueTypes then
+      ValueTypeComboBox.Items.Add(COCValueTypeLocalizedName(vt));
+  ValueTypeComboBox.Items.EndUpdate;
 end;
 
 procedure TCompOptCondPropsDialog.SetNodeType(const AValue: TCOCNodeType);

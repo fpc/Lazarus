@@ -8,8 +8,8 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 434
-  DesignTop = 329
+  DesignLeft = 439
+  DesignTop = 353
   object COCTreeView: TTreeView
     Left = 0
     Height = 166

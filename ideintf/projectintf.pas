@@ -154,19 +154,19 @@ type
   protected
     FDefaultValue: TLazCompOptConditionals;
     FIdentifier: string;
-    FLocalizedName: string;
-    FLocalizedValues: TStrings;
+    FDescription: string;
+    FValueDescriptions: TStrings;
     FValues: TStrings;
     procedure SetIdentifier(const AValue: string); virtual; abstract;
-    procedure SetLocalizedName(const AValue: string); virtual; abstract;
-    procedure SetLocalizedValues(const AValue: TStrings); virtual; abstract;
+    procedure SetDescription(const AValue: string); virtual; abstract;
+    procedure SetValueDescriptions(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
     procedure Assign(Source: TLazBuildMode); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
-    property LocalizedName: string read FLocalizedName write SetLocalizedName;
+    property Description: string read FDescription write SetDescription;
     property Values: TStrings read FValues write SetValues;
-    property LocalizedValues: TStrings read FLocalizedValues write SetLocalizedValues;
+    property ValueDescriptions: TStrings read FValueDescriptions write SetValueDescriptions;
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 

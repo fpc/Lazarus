@@ -1,8 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TCompOptsConditionalsFrame','FORMDATA',[
   'TPF0'#26'TCompOptsConditionalsFrame'#25'CompOptsConditionalsFrame'#4'Left'#2
   +#0#6'Height'#3#170#0#3'Top'#2#0#5'Width'#3#129#1#12'ClientHeight'#3#166#0#11
   +'ClientWidth'#3'}'#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3
-  +#178#1#9'DesignTop'#3'I'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Heig'
+  +#183#1#9'DesignTop'#3'a'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Heig'
   +'ht'#3#166#0#3'Top'#2#0#5'Width'#3'}'#1#5'Align'#7#8'alClient'#10'AutoExpand'
   +#9#5'Ctl3D'#8#17'DefaultItemHeight'#2#19#9'PopupMenu'#7#12'COCPopupMenu'#8'R'
   +'eadOnly'#9#9'RowSelect'#9#8'TabOrder'#2#0#7'Options'#11#13'tvoAutoExpand'#17
