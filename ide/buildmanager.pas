@@ -205,7 +205,7 @@ begin
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
-  BuildModes:=TBuildModes.Create;
+  BuildModeSet:=TBuildModeSet.Create;
 end;
 
 destructor TBuildManager.Destroy;
@@ -213,7 +213,7 @@ begin
   LazConfMacroFunc:=nil;
   OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
-  FreeAndNil(BuildModes);
+  FreeAndNil(BuildModeSet);
 
   inherited Destroy;
   MainBuildBoss:=nil;

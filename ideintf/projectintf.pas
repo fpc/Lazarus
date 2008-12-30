@@ -162,13 +162,28 @@ type
     procedure SetLocalizedValues(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
-    destructor Destroy; override;
     procedure Assign(Source: TLazBuildMode); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property LocalizedName: string read FLocalizedName write SetLocalizedName;
     property Values: TStrings read FValues write SetValues;
     property LocalizedValues: TStrings read FLocalizedValues write SetLocalizedValues;
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
+  end;
+
+  { TLazBuildModes }
+
+  TLazBuildModes = class
+  protected
+    function GetItems(Index: integer): TLazBuildMode; virtual; abstract;
+  public
+    function Add(Identifier: string): TLazBuildMode; virtual; abstract;
+    procedure Delete(Index: integer); virtual; abstract;
+    procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
+    function IndexOfIdentifier(Identifier: string): integer; virtual; abstract;
+    function ModeWithIdentifier(Identifier: string): TLazBuildMode; virtual; abstract;
+    function Count: integer; virtual; abstract;
+    procedure Clear; virtual; abstract;
+    property Items[Index: integer]: TLazBuildMode read GetItems; default;
   end;
 
   { TLazCompilerOptions }
@@ -208,6 +223,7 @@ type
 
     // conditionals / build modes
     FConditionals: TLazCompOptConditionals;
+    fBuildModes: TLazBuildModes;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -318,6 +334,7 @@ type
 
     // conditional / build modes
     property Conditionals: TLazCompOptConditionals read FConditionals;
+    property BuildModes: TLazBuildModes read fBuildModes;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
@@ -1594,14 +1611,6 @@ end;
 destructor TLazCompOptConditionals.Destroy;
 begin
   FreeAndNil(FRoot);
-  inherited Destroy;
-end;
-
-{ TLazBuildMode }
-
-destructor TLazBuildMode.Destroy;
-begin
-  FreeAndNil(FDefaultValue);
   inherited Destroy;
 end;
 

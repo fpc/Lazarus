@@ -50,9 +50,45 @@ uses
 
 type
 
-  { TBuildModes }
+  { TIDEBuildMode }
 
-  TBuildModes = class
+  TIDEBuildMode = class(TLazBuildMode)
+  protected
+    procedure SetIdentifier(const AValue: string); override;
+    procedure SetLocalizedName(const AValue: string); override;
+    procedure SetLocalizedValues(const AValue: TStrings); override;
+    procedure SetValues(const AValue: TStrings); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TLazBuildMode); override;
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+  end;
+
+  { TIDEBuildModes }
+
+  TIDEBuildModes = class(TLazBuildModes)
+  protected
+    FItems: TFPList;// list of TIDEBuildMode
+    function GetItems(Index: integer): TLazBuildMode; override;
+  public
+    function Add(Identifier: string): TLazBuildMode; override;
+    procedure Clear; override;
+    function Count: integer; override;
+    constructor Create;
+    procedure Delete(Index: integer); override;
+    destructor Destroy; override;
+    function IndexOfIdentifier(Identifier: string): integer; override;
+    function ModeWithIdentifier(Identifier: string): TLazBuildMode; override;
+    procedure Move(OldIndex, NewIndex: integer); override;
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+  end;
+
+  { TBuildModeSet }
+
+  TBuildModeSet = class
   private
     FEvaluator: TExpressionEvaluator;
   public
@@ -275,7 +311,6 @@ type
     fTargetFilename: string;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
-    FTargets: TFPList;// list of TCompileTarget
 
     // Compilation
     fCompilerPath: String;
@@ -460,7 +495,7 @@ type
   TCompilerOptions = TBaseCompilerOptions;
 
 var
-  BuildModes: TBuildModes;
+  BuildModeSet: TBuildModeSet;
 
 const
   CompileReasonNames: array[TCompileReason] of string = (
@@ -787,11 +822,12 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
   const AToolClass: TCompilationToolClass);
 begin
   inherited Create(AOwner);
-  FConditionals := TCompOptConditionals.Create(BuildModes.Evaluator);
+  FConditionals := TCompOptConditionals.Create(BuildModeSet.Evaluator);
   FParsedOpts := TParsedCompilerOptions.Create(TCompOptConditionals(FConditionals));
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
-  FTargets := TFPList.Create;
+  fBuildModes := TIDEBuildModes.Create;
+
   Clear;
 end;
 
@@ -805,11 +841,11 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
+  FreeAndNil(fBuildModes);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
   FreeThenNil(FConditionals); // free FConditionals before FParsedOpts
-  FreeThenNil(FTargets);
   inherited Destroy;
 end;
 
@@ -2814,7 +2850,7 @@ end;
 constructor TAdditionalCompilerOptions.Create(TheOwner: TObject);
 begin
   fOwner:=TheOwner;
-  FConditionals:=TCompOptConditionals.Create(BuildModes.Evaluator);
+  FConditionals:=TCompOptConditionals.Create(BuildModeSet.Evaluator);
   FParsedOpts:=TParsedCompilerOptions.Create(FConditionals);
   Clear;
 end;
@@ -3193,17 +3229,183 @@ begin
   FTargetOS:=AValue;
 end;
 
-{ TBuildModes }
+{ TBuildModeSet }
 
-constructor TBuildModes.Create;
+constructor TBuildModeSet.Create;
 begin
   FEvaluator:=TExpressionEvaluator.Create;
 end;
 
-destructor TBuildModes.Destroy;
+destructor TBuildModeSet.Destroy;
 begin
   FreeAndNil(FEvaluator);
   inherited Destroy;
+end;
+
+{ TIDEBuildMode }
+
+procedure TIDEBuildMode.SetIdentifier(const AValue: string);
+begin
+  if FIdentifier=AValue then exit;
+  if (FIdentifier='') or (not IsValidIdent(FIdentifier)) then
+    raise Exception.Create('TIDEBuildMode.SetIdentifier invalid identifier: '+FIdentifier);
+  FIdentifier:=AValue;
+end;
+
+procedure TIDEBuildMode.SetLocalizedName(const AValue: string);
+begin
+  if FLocalizedName=AValue then exit;
+  FLocalizedName:=AValue;
+end;
+
+procedure TIDEBuildMode.SetLocalizedValues(const AValue: TStrings);
+begin
+  if FLocalizedValues=AValue then exit;
+  FLocalizedValues.Assign(AValue);
+end;
+
+procedure TIDEBuildMode.SetValues(const AValue: TStrings);
+begin
+  if FValues=AValue then exit;
+  FValues.Assign(AValue);
+end;
+
+constructor TIDEBuildMode.Create;
+begin
+  FValues:=TStringList.Create;
+  FLocalizedValues:=TStringList.Create;
+  FDefaultValue:=TCompOptConditionals.Create(BuildModeSet.Evaluator);
+end;
+
+destructor TIDEBuildMode.Destroy;
+begin
+  FreeAndNil(FValues);
+  FreeAndNil(FLocalizedValues);
+  FreeAndNil(FDefaultValue);
+  inherited Destroy;
+end;
+
+procedure TIDEBuildMode.Assign(Source: TLazBuildMode);
+begin
+  FIdentifier:=Source.Identifier;
+  FDefaultValue.Assign(Source.DefaultValue);
+  FLocalizedName:=Source.LocalizedName;
+  FLocalizedValues.Assign(Source.LocalizedValues);
+  FValues.Assign(Source.Values);
+end;
+
+procedure TIDEBuildMode.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string; DoSwitchPathDelims: boolean);
+begin
+  FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
+  TCompOptConditionals(FDefaultValue).LoadFromXMLConfig(AXMLConfig,Path+'DefaultValue',
+                                                        DoSwitchPathDelims);
+  LoadStringList(AXMLConfig,FValues,Path+'Values/');
+end;
+
+procedure TIDEBuildMode.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  AXMLConfig.SetDeleteValue(Path+'Identifier/Value',FIdentifier,'');
+  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue');
+  SaveStringList(AXMLConfig,FValues,Path+'Values/');
+end;
+
+{ TIDEBuildModes }
+
+function TIDEBuildModes.GetItems(Index: integer): TLazBuildMode;
+begin
+  Result:=TLazBuildMode(FItems[Index]);
+end;
+
+function TIDEBuildModes.Add(Identifier: string): TLazBuildMode;
+begin
+  if IndexOfIdentifier(Identifier)>=0 then
+    raise Exception.Create('TIDEBuildModes.Add identifier already exists');
+  Result:=TIDEBuildMode.Create;
+  Result.Identifier:=Identifier;
+  FItems.Add(Result);
+end;
+
+procedure TIDEBuildModes.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do
+    TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+function TIDEBuildModes.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+constructor TIDEBuildModes.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+procedure TIDEBuildModes.Delete(Index: integer);
+begin
+  TObject(FItems[Index]).Free;
+  FItems.Delete(Index);
+end;
+
+destructor TIDEBuildModes.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TIDEBuildModes.IndexOfIdentifier(Identifier: string): integer;
+begin
+  Result:=FItems.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(Identifier,Items[Result].Identifier)<>0) do
+    dec(Result);
+end;
+
+function TIDEBuildModes.ModeWithIdentifier(Identifier: string): TLazBuildMode;
+var
+  i: LongInt;
+begin
+  i:=IndexOfIdentifier(Identifier);
+  if i<0 then
+    Result:=nil
+  else
+    Result:=Items[i];
+end;
+
+procedure TIDEBuildModes.Move(OldIndex, NewIndex: integer);
+begin
+  FItems.Move(OldIndex,NewIndex);
+end;
+
+procedure TIDEBuildModes.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string; DoSwitchPathDelims: boolean);
+var
+  NewItem: TIDEBuildMode;
+  NewCount: LongInt;
+  i: Integer;
+begin
+  Clear;
+  NewCount:=AXMLConfig.GetValue(Path+'Count/Value',0);
+  for i:=0 to NewCount-1 do begin
+    NewItem:=TIDEBuildMode.Create;
+    NewItem.LoadFromXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/',DoSwitchPathDelims);
+    if (NewItem.Identifier<>'') and IsValidIdent(NewItem.Identifier) then
+      FItems.Add(NewItem);
+  end;
+end;
+
+procedure TIDEBuildModes.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i: Integer;
+begin
+  AXMLConfig.SetDeleteValue(Path+'Count/Value',Count,0);
+  for i:=0 to Count-1 do
+    TIDEBuildMode(Items[i]).SaveToXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/');
 end;
 
 initialization
