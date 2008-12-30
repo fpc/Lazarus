@@ -1232,6 +1232,9 @@ begin
     MaxPos := gtk_text_get_length(PGtkText(Widget));
   end
   else
+  if GTK_IS_ENTRY(Widget) then
+    MaxPos := PGtkEntry(Widget)^.text_length
+  else
     MaxPos := 0;
   gtk_editable_set_position(PGtkOldEditable(Widget), Min(NewStart, MaxPos));
   WidgetSetSelLength(Widget,0); // Setting the selection start should cancel any selection
