@@ -176,7 +176,6 @@ type
     property OnUTF8KeyPress;
 
     property EditMask;
-    property isMasked;
     property Text;
     property SpaceChar;
   end;
