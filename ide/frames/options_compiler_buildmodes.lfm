@@ -8,8 +8,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 309
-  DesignTop = 328
+  DesignLeft = 324
+  DesignTop = 400
   object ModesGroupBox: TGroupBox
     Left = 0
     Height = 229
@@ -70,7 +70,7 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       NumGlyphs = 0
       OnClick = MoveUpSpeedButtonClick
     end
-    object ModesListBox: TListBox
+    object ModesGrid: TStringGrid
       AnchorSideBottom.Control = NewSpeedButton
       Left = 0
       Height = 188
@@ -78,9 +78,11 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       Width = 182
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ItemHeight = 0
+      ColCount = 1
+      FixedCols = 0
+      FixedRows = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goDblClickAutoSize, goSmoothScroll]
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object ValuesGroupBox: TGroupBox
@@ -102,6 +104,7 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       Align = alClient
       ColCount = 2
       FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goDblClickAutoSize, goSmoothScroll]
       TabOrder = 0
     end
     object DefaultValueGroupBox: TGroupBox

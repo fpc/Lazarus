@@ -36,9 +36,9 @@ type
   TCompOptBuildModesFrame = class(TFrame)
     DefaultValueEditor: TCompOptsConditionalsFrame;
     DefaultValueGroupBox: TGroupBox;
+    ModesGrid: TStringGrid;
     ValuesGroupBox: TGroupBox;
     ModesGroupBox: TGroupBox;
-    ModesListBox: TListBox;
     NewSpeedButton: TSpeedButton;
     DeleteSpeedButton: TSpeedButton;
     MoveDownSpeedButton: TSpeedButton;
@@ -69,8 +69,14 @@ implementation
 { TCompOptBuildModesFrame }
 
 procedure TCompOptBuildModesFrame.NewSpeedButtonClick(Sender: TObject);
+var
+  NewIdentifier: String;
 begin
-
+  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName;
+  BuildModes.Add(NewIdentifier);
+  ModesGrid.RowCount:=BuildModes.Count;
+  ModesGrid.Cells[0,BuildModes.Count-1]:=NewIdentifier;
+  ModesGrid.Row:=BuildModes.Count-1;
 end;
 
 procedure TCompOptBuildModesFrame.DeleteSpeedButtonClick(Sender: TObject);
@@ -79,16 +85,16 @@ var
   i: LongInt;
 begin
   if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesListBox.ItemIndex;
+  i:=ModesGrid.Row;
   if MessageDlg('Confirm delete',
     'Delete build mode "'+BuildMode.Identifier+'"?',
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
   BuildModes.Delete(i);
-  ModesListBox.Items.Delete(i);
-  if i=ModesListBox.Items.Count then
+  ModesGrid.DeleteColRow(true,i);
+  if i=ModesGrid.RowCount then
     dec(i);
-  ModesListBox.ItemIndex:=i;
+  ModesGrid.Row:=i;
 end;
 
 procedure TCompOptBuildModesFrame.MoveDownSpeedButtonClick(Sender: TObject);
@@ -97,11 +103,12 @@ var
   BuildMode: TIDEBuildMode;
 begin
   if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesListBox.ItemIndex;
-  if i<ModesListBox.Items.Count-1 then begin
+  i:=ModesGrid.Row;
+  if i<ModesGrid.Row-1 then begin
     BuildModes.Move(i,i+1);
-    ModesListBox.Items.Move(i,i+1);
-    ModesListBox.ItemIndex:=i+1;
+    ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
+    ModesGrid.Cells[0,i+1]:=BuildModes.Items[i+1].Identifier;
+    ModesGrid.Row:=i+1;
   end;
 end;
 
@@ -111,11 +118,12 @@ var
   BuildMode: TIDEBuildMode;
 begin
   if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesListBox.ItemIndex;
+  i:=ModesGrid.Row;
   if i>0 then begin
     BuildModes.Move(i,i-1);
-    ModesListBox.Items.Move(i,i-1);
-    ModesListBox.ItemIndex:=i-1;
+    ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
+    ModesGrid.Cells[0,i-1]:=BuildModes.Items[i-1].Identifier;
+    ModesGrid.Row:=i-1;
   end;
 end;
 
@@ -130,14 +138,14 @@ procedure TCompOptBuildModesFrame.UpdateModes;
 var
   i: Integer;
 begin
-  ModesListBox.Items.BeginUpdate;
-  ModesListBox.Items.Clear;
+  ModesGrid.BeginUpdate;
+  ModesGrid.ColCount:=1;
+  ModesGrid.RowCount:=BuildModes.Count;
   if BuildModes<>nil then begin
-    for i:=0 to BuildModes.Count-1 do begin
-      ModesListBox.Items.Add(BuildModes.Items[i].Identifier);
-    end;
+    for i:=0 to BuildModes.Count-1 do
+      ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
   end;
-  ModesListBox.Items.EndUpdate;
+  ModesGrid.EndUpdate;
   UpdateValues;
   UpdateButtons;
 end;
@@ -177,10 +185,10 @@ end;
 procedure TCompOptBuildModesFrame.UpdateButtons;
 begin
   NewSpeedButton.Enabled:=BuildModes<>nil;
-  DeleteSpeedButton.Enabled:=(ModesListBox.ItemIndex>=0);
-  MoveDownSpeedButton.Enabled:=(ModesListBox.ItemIndex>=0)
-                        and (ModesListBox.ItemIndex<ModesListBox.Items.Count-1);
-  MoveUpSpeedButton.Enabled:=(ModesListBox.ItemIndex>0);
+  DeleteSpeedButton.Enabled:=(ModesGrid.Row>=0);
+  MoveDownSpeedButton.Enabled:=(ModesGrid.Row>=0)
+                        and (ModesGrid.Row<ModesGrid.RowCount-1);
+  MoveUpSpeedButton.Enabled:=(ModesGrid.Row>0);
 end;
 
 function TCompOptBuildModesFrame.GetSelectedBuildMode(
@@ -188,8 +196,8 @@ function TCompOptBuildModesFrame.GetSelectedBuildMode(
 begin
   BuildMode:=nil;
   if BuildModes=nil then exit(false);
-  if ModesListBox.ItemIndex<0 then exit(false);
-  BuildMode:=TIDEBuildMode(BuildModes.Items[ModesListBox.ItemIndex]);
+  if ModesGrid.Row<0 then exit(false);
+  BuildMode:=TIDEBuildMode(BuildModes.Items[ModesGrid.Row]);
   Result:=true;
 end;
 
