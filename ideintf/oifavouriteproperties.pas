@@ -21,7 +21,7 @@ uses
   // FCL
   SysUtils, Classes,
   // LCL
-  InterfaceBase, LazConfigStorage, PropEdits;
+  LCLProc, InterfaceBase, LazConfigStorage, PropEdits;
 
 type
   TWidgetSetRestrictionsArray = array [TLCLPlatform] of Integer;
@@ -124,9 +124,6 @@ type
   end;
 
 implementation
-
-uses
-  LCLProc;
 
 function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
 var

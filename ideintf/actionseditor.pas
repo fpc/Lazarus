@@ -19,16 +19,6 @@
      Mattias Gaertner
      Pawel Piwowar, alfapawel@tlen.pl
 
-  version:
-    0.1 - 26-27.2.2004 - write all from scratch
-    0.2 -  3.3.2004 - speed up filling listboxes
-                      some ergonomic fixes (like stay in category after ADD)
-                      fixed possible language problems
-    0.3 - 27.3.2004 - rename action > actualise editor
-    0.4 - 29.3.2004 - dblclick generate xxx.OnExecute code to editor
-    0.5 - 10.03.2005 - New design
-    0.6 - 14.03.2005 - multilanguage support
-
   TODO:- multiselect for the actions and categories
        - drag & drop for the actions and categories
        - standard icon for "Standard Action"
@@ -37,7 +27,7 @@
           change to the gtk. Either it is a bug in the gtk1 or we are doing
           something wrong in the handlers.)
 }
-unit actionseditor;
+unit ActionsEditor;
 
 {$mode objfpc}{$H+}
 
@@ -47,9 +37,45 @@ uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, ComCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, DBActns, StdActns, LCLIntf, LCLType,
-  Graphics, Menus, actionseditorstd;
+  Graphics, Menus, contnrs;
 
 type
+  TActStdPropItem = class;
+  TActStdProp = class;
+  TResultActProc = procedure (const Category: string; ActionClass: TBasicActionClass;
+                  ActionProperty: TActStdPropItem; LastItem: Boolean) of object;
+
+  TRecActStdProp = packed record
+    Caption: String;
+    ShortCut: TShortCut;
+    Hint: String;
+  end;
+
+  { TActStdPropItem }
+
+  TActStdPropItem = class
+  private
+    FActProperties: TRecActStdProp;
+    FClassName: String;
+    procedure SetActClassName(const AValue: String);
+    procedure SetActProperties(const AValue: TRecActStdProp);
+  public
+    property ActClassName: String read FClassName write SetActClassName;
+    property ActionProperty: TRecActStdProp read FActProperties write FActProperties;
+  end;
+
+  { TActStdProp }
+
+  TActStdProp = class
+  private
+    fPropList: TObjectList;
+    procedure Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function IndexOfClass(ActClassName: String): TActStdPropItem;
+  end;
+
 
   TActionListComponentEditor = class;
   
@@ -122,13 +148,12 @@ type
     procedure OnRefreshPropertyValues;
     function GetSelectedAction: TContainedAction;
   private
-    { private declarations }
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
     FComponentEditor: TActionListComponentEditor;
-    procedure ResultStdActProc(const Category: string; ActionClass: TBasicActionClass; ActionProperty: TActStdPropItem; LastItem: Boolean);
+    procedure ResultStdActProc(const Category: string; ActionClass: TBasicActionClass;
+                            ActionProperty: TActStdPropItem; LastItem: Boolean);
   public
-    { public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetActionList(AActionList: TActionList);
@@ -208,10 +233,13 @@ type
   end;
 
   TNotifyActionListChange = procedure;
-  
+  TCreateDlgStdActions = procedure(AOwner: TComponent; ResultActProc: TResultActProc;
+                                   out Form: TForm);
+
 var
-  RegisteredActions: TRegisteredActionCategories;
-  NotifyActionListChange: TNotifyActionListChange;
+  RegisteredActions: TRegisteredActionCategories = nil;
+  NotifyActionListChange: TNotifyActionListChange = nil;
+  CreateDlgStdActions: TCreateDlgStdActions = nil;
 
 procedure RegisterActions(const ACategory: string;
                           const AClasses: array of TBasicActionClass;
@@ -595,8 +623,11 @@ begin
 end;
 
 procedure TActionListEditor.ActNewStdExecute(Sender: TObject);
+var
+  Form: TForm;
 begin
-  TFormActStandard.CreateEx(Self, @ResultStdActProc).ShowModal;
+  CreateDlgStdActions(Self, @ResultStdActProc, Form);
+  Form.ShowModal;
 end;
 
 procedure TActionListEditor.ActPanelDescrExecute(Sender: TObject);
@@ -1163,6 +1194,60 @@ begin
   if FItems = nil
   then Result := 0
   else Result := FItems.Count;
+end;
+
+{ TActStdProp }
+
+procedure TActStdProp.Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
+var
+  ActItem: TActStdPropItem;
+  ActionProperty: TRecActStdProp;
+begin
+  if Assigned(IndexOfClass(ActClassType.ClassName)) then Exit;
+  ActItem := TActStdPropItem.Create;
+  ActItem.ActClassName := ActClassType.ClassName;
+  ActionProperty.Caption := HeadLine;
+  ActionProperty.ShortCut := TextToShortCut(ShortCut);
+  ActionProperty.Hint := Hint;
+  ActItem.ActionProperty := ActionProperty;
+  fPropList.Add(ActItem);
+end;
+
+constructor TActStdProp.Create;
+begin
+  fPropList := TObjectList.Create;
+end;
+
+destructor TActStdProp.Destroy;
+begin
+  fPropList.Free;
+  inherited Destroy;
+end;
+
+function TActStdProp.IndexOfClass(ActClassName: String): TActStdPropItem;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i:= 0 to fPropList.Count-1 do begin
+    if TActStdPropItem(fPropList[i]).ActClassName = ActClassName then begin
+      Result := TActStdPropItem(fPropList[i]);
+      Break;
+    end;
+  end;
+end;
+
+{ TActStdPropItem }
+
+procedure TActStdPropItem.SetActClassName(const AValue: String);
+begin
+  if FClassName = AValue then Exit;
+  FClassName := AValue;
+end;
+
+procedure TActStdPropItem.SetActProperties(const AValue: TRecActStdProp);
+begin
+  FActProperties := AValue;
 end;
 
 procedure RegisterStandardActions;

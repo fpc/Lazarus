@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  ExtCtrls, Buttons, ComCtrls, IDEImagesIntf;
+  ExtCtrls, Buttons, ComCtrls, IDEImagesIntf, ObjInspStrConsts;
 
 type
 
@@ -60,8 +60,6 @@ type
 procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 
 implementation
-
-uses ObjInspStrConsts;
 
 procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 var

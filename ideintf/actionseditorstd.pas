@@ -33,12 +33,9 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType, Contnrs,
-  LCLProc;
+  LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls;
 
 type
-  TActStdPropItem = class;
-  TActStdProp = class;
-  TResultActProc = procedure (const Category: string; ActionClass: TBasicActionClass; ActionProperty: TActStdPropItem; LastItem: Boolean) of object;
 
   { TFormActStandard }
 
@@ -46,61 +43,25 @@ type
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     LabelHeadLine: TLabel;
+    BtnPanel: TPanel;
     tvActStdList: TTreeView;
     procedure FormActStandardClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormActStandardKeyPress(Sender: TObject; var Key: char);
     procedure btnOKClick(Sender: TObject);
     procedure tvActStdListDblClick(Sender: TObject);
   private
-    { private declarations }
     FResultActionProc: TResultActProc;
     fActStdProperty: TActStdProp;
     procedure EnumAct;
     procedure ResultActionProc;
     procedure AddStdActProperties;
   public
-    { public declarations }
     constructor Create(AOwner: TComponent); override;
     constructor CreateEx(AOwner: TComponent; ResultActProc: TResultActProc);
     destructor Destroy; override;
   end;
 
-
-  TRecActStdProp = packed record
-    Caption: String;
-    ShortCut: TShortCut;
-    Hint: String;
-  end;
-
-  { TActStdPropItem }
-
-  TActStdPropItem = class
-  private
-    FActProperties: TRecActStdProp;
-    FClassName: String;
-    procedure SetActClassName(const AValue: String);
-    procedure SetActProperties(const AValue: TRecActStdProp);
-  public
-    property ActClassName: String read FClassName write SetActClassName;
-    property ActionProperty: TRecActStdProp read FActProperties write FActProperties;
-  end;
-   
-  { TActStdProp }
-
-  TActStdProp = class
-  private
-    fPropList: TObjectList;
-    procedure Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function IndexOfClass(ActClassName: String): TActStdPropItem;
-  end;
-
 implementation
-
-uses actionseditor, ObjInspStrConsts;
-
 
 { TFormActStandard }
 
@@ -170,7 +131,6 @@ var
   fClass: TBasicActionClass;
 begin
   Category := tvActStdList.Selected.Parent.Text;
-
   lastItem := True;
   fClass := RegisteredActions.Items[RegisteredActions.IndexOfCategory(Category)].Items[tvActStdList.Selected.Index].ActionClass;
   FResultActionProc(Category, fClass, fActStdProperty.IndexOfClass(fClass.ClassName), lastItem);
@@ -237,62 +197,15 @@ begin
   inherited Destroy;
 end;
 
-{ TActStdProp }
-
-procedure TActStdProp.Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
-var
-  ActItem: TActStdPropItem;
-  ActionProperty: TRecActStdProp;
+procedure CreateFormActStandard(AOwner: TComponent;
+  ResultActProc: TResultActProc; out Form: TForm);
 begin
-  if Assigned(IndexOfClass(ActClassType.ClassName)) then Exit;
-  ActItem := TActStdPropItem.Create;
-  ActItem.ActClassName := ActClassType.ClassName;
-  ActionProperty.Caption := HeadLine;
-  ActionProperty.ShortCut := TextToShortCut(ShortCut);
-  ActionProperty.Hint := Hint;
-  ActItem.ActionProperty := ActionProperty;
-  fPropList.Add(ActItem);
-end;
-
-constructor TActStdProp.Create;
-begin
-  fPropList := TObjectList.Create;
-end;
-
-destructor TActStdProp.Destroy;
-begin
-  fPropList.Free;
-  inherited Destroy;
-end;
-
-function TActStdProp.IndexOfClass(ActClassName: String): TActStdPropItem;
-var
-  i: Integer;
-begin
-  Result := nil;
-  for i:= 0 to fPropList.Count-1 do begin
-    if TActStdPropItem(fPropList[i]).ActClassName = ActClassName then begin
-      Result := TActStdPropItem(fPropList[i]);
-      Break;
-    end;
-  end;
-end;
-
-{ TActStdPropItem }
-
-procedure TActStdPropItem.SetActClassName(const AValue: String);
-begin
-  if FClassName = AValue then Exit;
-  FClassName := AValue;
-end;
-
-procedure TActStdPropItem.SetActProperties(const AValue: TRecActStdProp);
-begin
-  FActProperties := AValue;
+  Form:=TFormActStandard.CreateEx(AOwner,ResultActProc);
 end;
 
 initialization
   {$I actionseditorstd.lrs}
+  CreateDlgStdActions:=@CreateFormActStandard;
 
 end.
 
