@@ -207,6 +207,9 @@ resourcestring
   cActionListEditorHelpCategory = 'Help';
   oisCategory = 'Category';
   oisAction = 'Action';
+
+  // Mask Editor
+  sccsMaskEditor = 'Edit Mask Editor...';
   oisMasks = 'Masks...';
   oisSaveLiteralCharacters = 'Save Literal Characters';
   oisInputMask = 'Input Mask:';
