@@ -36,6 +36,8 @@ unit CompilerOptionsDlg;
 
 interface
 
+{$I ide.inc}
+
 uses
   Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
   ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, LResources, FileUtil,
