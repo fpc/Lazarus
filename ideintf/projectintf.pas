@@ -11,7 +11,7 @@
  *****************************************************************************
 
   Author: Mattias Gaertner
-  
+
   Abstract:
     IDE interface to the IDE projects.
 }
@@ -187,7 +187,7 @@ type
   end;
 
   { TLazCompilerOptions }
-  
+
   TCompilationExecutableType = (
     cetProgram,
     cetLibrary
@@ -420,7 +420,7 @@ type
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write SetCustomOptions;
   end;
-  
+
 
   { TLazProjectFile }
 
@@ -447,10 +447,10 @@ type
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
   end;
   TLazProjectFileClass = class of TLazProjectFile;
-  
+
 
   { TProjectFileDescriptor
-  
+
     ResourceClass: When the IDE creates a new unit of this type the IDE will
                    create a direct descendant from this class.
                    You should also register this class, so that, when the IDE
@@ -510,8 +510,8 @@ type
     property AddToProject: boolean read FAddToProject write FAddToProject;// only if there is choice
   end;
   TProjectFileDescriptorClass = class of TProjectFileDescriptor;
-  
-  
+
+
   { TNewItemProjectFile - a new item for project file descriptors }
 
   TNewItemProjectFile = class(TNewIDEItemTemplate)
@@ -562,7 +562,7 @@ type
 
 
   { TProjectFileDescriptors }
-  
+
   TProjectFileDescriptors = class(TPersistent)
   protected
     function GetItems(Index: integer): TProjectFileDescriptor; virtual; abstract;
@@ -578,7 +578,7 @@ type
     property Items[Index: integer]: TProjectFileDescriptor read GetItems; default;
   end;
 
-  
+
 var
   ProjectFileDescriptors: TProjectFileDescriptors; // will be set by the IDE
 
@@ -592,7 +592,7 @@ type
   TLazProject = class;
 
   { TProjectDescriptor - Template for initializing new projects }
-  
+
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
     pfSaveOnlyProjectUnits, // save no info about foreign files (not part of project)
@@ -605,7 +605,7 @@ type
     pfLRSFilesInOutputDirectory // put .lrs files in output directory
     );
   TProjectFlags = set of TProjectFlag;
-  
+
   TProjectSessionStorage = (
     pssInProjectInfo, // save session info in .lpi file
     pssInProjectDir, // save session info in .lps file in project directory
@@ -808,7 +808,7 @@ const
       'AlwaysBuild',
       'LRSInOutputDirectory'
     );
-    
+
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (
     'InProjectInfo',
     'InProjectDir',

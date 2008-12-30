@@ -64,6 +64,8 @@ type
     procedure Assign(Source: TLazBuildMode); override;
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure CreateDiff(OtherMode: TLazBuildMode; Tool: TCompilerDiffTool);
+    procedure Assign(Source: TIDEBuildMode);
   end;
 
   { TIDEBuildModes }
@@ -84,6 +86,8 @@ type
     procedure Move(OldIndex, NewIndex: integer); override;
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure CreateDiff(OtherModes: TLazBuildModes; Tool: TCompilerDiffTool);
+    procedure Assign(Source: TLazBuildModes);
   end;
 
   { TBuildModeSet }
@@ -2578,8 +2582,9 @@ begin
   DebugPath := CompOpts.DebugPath;
 
   // conditionals
-  fLCLWidgetType := CompOpts.fLCLWidgetType;
   Conditionals.Assign(CompOpts.Conditionals);
+  TIDEBuildModes(BuildModes).Assign(CompOpts.BuildModes);
+  fLCLWidgetType := CompOpts.fLCLWidgetType;
 
   // Parsing
   FSyntaxMode := CompOpts.FSyntaxMode;
@@ -2702,6 +2707,7 @@ begin
 
   // conditionals
   TCompOptConditionals(Conditionals).CreateDiff(CompOpts.Conditionals,Tool);
+  TIDEBuildModes(fBuildModes).CreateDiff(CompOpts.BuildModes,Tool);
   Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
 
   // parsing
@@ -3298,17 +3304,34 @@ procedure TIDEBuildMode.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
   FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
+  LoadStringList(AXMLConfig,FValues,Path+'Values/');
   TCompOptConditionals(FDefaultValue).LoadFromXMLConfig(AXMLConfig,Path+'DefaultValue',
                                                         DoSwitchPathDelims);
-  LoadStringList(AXMLConfig,FValues,Path+'Values/');
 end;
 
 procedure TIDEBuildMode.SaveToXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 begin
   AXMLConfig.SetDeleteValue(Path+'Identifier/Value',FIdentifier,'');
-  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue');
   SaveStringList(AXMLConfig,FValues,Path+'Values/');
+  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue');
+end;
+
+procedure TIDEBuildMode.CreateDiff(OtherMode: TLazBuildMode;
+  Tool: TCompilerDiffTool);
+begin
+  Tool.AddDiff('Identifier',Identifier,OtherMode.Identifier);
+  Tool.AddStringsDiff('Values',Values,OtherMode.Values);
+  TCompOptConditionals(DefaultValue).CreateDiff(OtherMode.DefaultValue,Tool);
+end;
+
+procedure TIDEBuildMode.Assign(Source: TIDEBuildMode);
+begin
+  Identifier:=Source.Identifier;
+  Values:=Source.Values;
+  DefaultValue.Assign(Source.DefaultValue);
+  LocalizedName:=Source.LocalizedName;
+  LocalizedValues:=Source.LocalizedValues;
 end;
 
 { TIDEBuildModes }
@@ -3407,6 +3430,30 @@ begin
   AXMLConfig.SetDeleteValue(Path+'Count/Value',Count,0);
   for i:=0 to Count-1 do
     TIDEBuildMode(Items[i]).SaveToXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/');
+end;
+
+procedure TIDEBuildModes.CreateDiff(OtherModes: TLazBuildModes;
+  Tool: TCompilerDiffTool);
+var
+  i: Integer;
+begin
+  Tool.AddDiff('Count',Count,OtherModes.Count);
+  for i:=0 to Count-1 do begin
+    if i<OtherModes.Count then
+      TIDEBuildMode(Items[i]).CreateDiff(OtherModes.Items[i],Tool);
+  end;
+end;
+
+procedure TIDEBuildModes.Assign(Source: TLazBuildModes);
+var
+  i: Integer;
+  Item: TLazBuildMode;
+begin
+  Clear;
+  for i:=0 to Source.Count-1 do begin
+    Item:=Add(Source[i].Identifier);
+    TIDEBuildMode(Item).Assign(Source[i]);
+  end;
 end;
 
 initialization

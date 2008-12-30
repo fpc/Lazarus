@@ -60,6 +60,7 @@ type
     procedure AddDiff(const PropertyName: string; const Old, New: string);
     procedure AddDiff(const PropertyName: string; const Old, New: integer);
     procedure AddDiff(const PropertyName: string; const Old, New: boolean);
+    procedure AddStringsDiff(const PropertyName: string; const OldList, NewList: TStrings);
     procedure AddPathsDiff(const PropertyName: string; const Old, New: string);
     procedure AddSetDiff(const PropertyName: string; const Old, New: integer;
                          const EnumNames: PString);
@@ -434,6 +435,18 @@ procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
 begin
   if Old=New then exit;
   AddDiffItem(PropertyName,dbgs(New));
+end;
+
+procedure TCompilerDiffTool.AddStringsDiff(const PropertyName: string;
+  const OldList, NewList: TStrings);
+var
+  i: Integer;
+begin
+  AddDiff(PropertyName+'/Count',OldList.Count,NewList.Count);
+  for i:=0 to OldList.Count-1 do begin
+    if (i>=NewList.Count) or (OldList[i]<>NewList[i]) then
+      AddDiffItem(PropertyName+'/Item'+IntToStr(i),NewList[i]);
+  end;
 end;
 
 procedure TCompilerDiffTool.AddPathsDiff(const PropertyName: string; const Old,

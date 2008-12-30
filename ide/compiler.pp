@@ -3,8 +3,8 @@
  /***************************************************************************
                         compiler.pp  -  Lazarus IDE unit
                         -------------------------------------
-                   TCompiler is responsible for configuration and running
-                   the Free Pascal Compiler.
+               TCompiler is responsible for configuration and running
+               the Free Pascal Compiler.
 
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
