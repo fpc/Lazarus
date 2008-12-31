@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
   ComponentPalette, ComponentReg, PackageDefs, ExtDlgs, FormEditor, PropEdits,
-  LCLType, Menus, ButtonPanel;
+  LCLType, Menus, ButtonPanel, IDEWindowIntf;
 
 type
   { TComponentListForm }
@@ -68,7 +68,11 @@ type
     procedure TreeInheritanceDblClick ( Sender: TObject ) ;
     procedure TreePalletteDblClick(Sender: TObject);
     procedure UpdateComponentSelection(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure PatternEditChange(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
+    FTimer: TTimer;
     Processing: boolean;
     FComponentList: TFPList;
     procedure FindAllLazarusComponents;
@@ -89,9 +93,13 @@ implementation
 constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FTimer := TTimer.Create(nil);
+  FTimer.Interval := 500;
+  FTimer.Enabled := false;
+  FTimer.OnTimer := @Timer1Timer;
   FComponentList := TFPList.Create;
 
-  ButtonPanel.CloseButton.Cancel:=True;
+  ButtonPanel.CloseButton.Cancel := True;
 
   //Translations..
   LabelSearch.Caption := lisMenuFind;
@@ -105,12 +113,15 @@ begin
 
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 destructor TComponentListForm.Destroy;
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ComponentListForm := nil;
   FComponentList.Free;
+  FTimer.Free;
   inherited Destroy;
 end;
 
@@ -151,6 +162,7 @@ begin
   if Processing
   then exit;
   Processing := true;
+  FTimer.Enabled := false;
   Screen.Cursor := crHourGlass;
   try
     AFilter := UpperCase(PatternEdit.Text);
@@ -266,14 +278,19 @@ var
   TypeClass: TComponentClass;
   X, Y: integer;
 begin
-  if not Assigned(AComponent) then Exit;
-  if not Assigned(FormEditingHook) then Exit;
+  if not Assigned(AComponent)
+  then Exit;
+  if not Assigned(FormEditingHook)
+  then Exit;
   //TComponentPalette(IDEComponentPalette).Selected := AComponent;
 
   TypeClass:=AComponent.ComponentClass;
   ParentCI:=FormEditingHook.GetDefaultComponentParent(TypeClass);
-  if ParentCI=nil then exit;
+  if ParentCI=nil
+  then exit;
 
+  //Would be lovely if it would only select the component as if it was
+  //clicked in the pallette bar so you can drop it on your own position.
   if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
   then exit;
 
@@ -309,7 +326,6 @@ begin
   AComponent := TRegisteredComponent(TreeInheritance.Selected.Data);
   if not Assigned(AComponent)
   then exit;
-  
   AddSelectedComponent(AComponent);
 end;
 
@@ -318,6 +334,26 @@ begin
   if PatternEdit.Canfocus
   then PatternEdit.SetFocus;
 end;
+
+procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+//Close the form on escape key like every other IDE dialog does
+begin
+  if Key=VK_ESCAPE
+  then Close;
+end;
+
+procedure TComponentListForm.PatternEditChange(Sender: TObject);
+begin
+  //Reset for proper delay
+  FTimer.Enabled := false;
+  FTimer.Enabled := true;
+end;
+
+procedure TComponentListForm.Timer1Timer(Sender: TObject);
+begin
+  UpdateComponentSelection(nil);
+end;
+
 
 
 initialization
