@@ -52,13 +52,13 @@ type
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
     
     function GetControlState(Details: TThemedElementDetails): QStyleState;
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
