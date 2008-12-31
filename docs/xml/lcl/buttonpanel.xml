@@ -385,7 +385,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomButtonPanel.ButtonOrder">
         <short>
-          <var>ButtonOrder</var> - the order in which the buttons are to appear on the panel</short>
+          <var>ButtonOrder</var> - the order in which the series of buttons will appear on the panel</short>
         <descr/>
         <seealso/>
       </element>

@@ -95,7 +95,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TChangeLink">
-        <short/>
+        <short>
+          <var>TChangeLink</var> - class to notify when an Imagelist changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -113,7 +114,7 @@
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TChangeLink.Destroy">
+      <element name="TChangeLink.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -121,20 +122,23 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TChangeLink.Change">
-        <short/>
+        <short>
+          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TChangeLink.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the Imagelist</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TChangeLink.Sender">
-        <short/>
+        <short>
+          <var>Sender</var> - the imagelist that has notified us of a change</short>
         <descr/>
         <seealso/>
       </element>
@@ -460,14 +464,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.Initialize">
-        <short/>
+        <short>
+          <var>Initialize</var> - sets up the list</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.DefineProperties">
-        <short/>
+        <short>
+          <var>DefineProperties</var> - defines the properties of the ImageList (stored in a file)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -478,7 +484,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.SetWidthHeight">
-        <short/>
+        <short>
+          <var>SetWidthHeight</var> - specifies the dimensions for display</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -982,7 +989,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.UnRegisterChanges">
-        <short/>
+        <short>
+          <var>UnRegisterChanges</var> - remove the changes from the register</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -993,13 +1001,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.AllocBy">
-        <short/>
+        <short>
+          <var>AllocBy</var> - allocate images by an integer value</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.BlendColor">
-        <short/>
+        <short>
+          <var>BlendColor</var> - the colour for a blend</short>
         <descr/>
         <seealso/>
       </element>
@@ -1103,6 +1113,22 @@
       <element name="TCustomImageList.Reference">
         <short>
           <var>Reference</var> to the imagelist</short>
+      </element>
+      <element name="TCustomImageList.CheckIndex">
+        <short>
+          <var>CheckIndex</var> - method for checking whether the indexed item is supposed to be inserted (default condition is False)</short>
+      </element>
+      <element name="TCustomImageList.GetReferenceHandle">
+        <short>
+          <var>GetReferenceHandle</var> - returns a handle for the reference</short>
+      </element>
+      <element name="TCustomImageList.WSCreateReference">
+        <short>
+          <var>WSCreateReference</var> - creates a reference for the Imagelist (returns this as a result), passing the defined parameters for the creation process</short>
+      </element>
+      <element name="TCustomImageList.StretchDraw">
+        <short>
+          <var>StretchDraw</var> - draw the image to fill the canvas</short>
       </element>
     </module>
     <!-- ImgList -->

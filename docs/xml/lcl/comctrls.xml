@@ -1793,9 +1793,11 @@
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.HotTrack">
         <short>
-          <var>HotTrack</var> - if True, the current Tab is a hot track, ie selected, focused and currently executing its functions</short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.Images">
@@ -1922,7 +1924,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TTabControlNoteBookStrings.NBChanging">
         <short>
-          <var>NBChanging</var> - method for dealing with the process fo change in a NoteBook</short>
+          <var>NBChanging</var> - method for dealing with the process for change in a NoteBook</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2696,7 +2698,7 @@
           <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr/>
         <seealso>
-          <link id="#lcl.ConCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
@@ -5823,7 +5825,9 @@ cdsIndeterminate
           </ul>
           <p>This feature can be used in List Views and in TabControls</p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.HotTrackStyles">
