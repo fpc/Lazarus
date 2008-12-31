@@ -10003,6 +10003,11 @@ begin
 end;
 
 initialization
+  RegisterPropertyToSkip(TStringGrid, 'VisibleRowCount',
+    'Property streamed in by older compliler', '');
+  RegisterPropertyToSkip(TStringGrid, 'VisibleColCount',
+    'Property streamed in by older compliler', '');
+
 {$I lcl_dbgrid_images.lrs}
 
 end.
