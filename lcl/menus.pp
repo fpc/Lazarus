@@ -258,11 +258,11 @@ type
                                            stored IsImageIndexStored default -1;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
                                 default False;
-    property RightJustify: boolean read FRightJustify write SetRightJustify;
+    property RightJustify: boolean read FRightJustify write SetRightJustify default False;
     property ShortCut: TShortCut read FShortCut write SetShortCut
                                  stored IsShortCutStored default 0;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
-                                          write SetShowAlwaysCheckable;
+                                 write SetShowAlwaysCheckable default False;
     property SubMenuImages: TCustomImageList read FSubMenuImages
                                              write SetSubMenuImages;
     property Visible: Boolean read FVisible write SetVisible

@@ -101,6 +101,8 @@ begin
   FCommand := UniqueCommand;
   FImageIndex := -1;
   FBitmapIsValid := True;
+  FRightJustify := False;
+  FShowAlwaysCheckable := False;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
