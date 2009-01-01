@@ -9392,7 +9392,8 @@ function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
   ): TPoint;
 // returns physical (screen) position of end bracket
 const
-  Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
+  // keep the ' last
+  Brackets: array[0..6] of char = ('(', ')', '[', ']', '{', '}', '''');
 type
   TokenPos = Record X: Integer; Attr: Integer; end;
 var
@@ -9479,6 +9480,46 @@ var
       CaretXY := LogicalToPhysicalPos(Result)
   end;
 
+  procedure DoFindMatchingQuote;
+  var
+    Test, BracketInc, BracketDec: char;
+    NumBrackets, Len: integer;
+  begin
+    StartPt:=Point(PosX,PosY);
+    GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
+    if (TmpStart = PosX) and (Length(s1)>0) and (s1[Length(s1)] = '''') then begin
+      PosX := PosX + Length(s1) - 1;
+      DoMatchingBracketFound;
+      exit;
+    end;
+    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>0) and (s1[1] = '''') then begin
+      PosX := PosX - Length(s1) + 1;
+      DoMatchingBracketFound;
+      exit;
+    end;
+    MaxKnownTokenPos := 0;
+    Len := PosX;
+    // search until start of line
+    while PosX > 1 do begin
+      Dec(PosX);
+      Test := Line[PosX];
+      if (Test = '''') and IsContextBracket then begin
+        DoMatchingBracketFound;
+        exit;
+      end;
+    end;
+    PosX := Len;
+    Len := Length(Line);
+    while PosX < Len do begin
+      Inc(PosX);
+      Test := Line[PosX];
+      if (Test = '''') and IsContextBracket then begin
+        DoMatchingBracketFound;
+        exit;
+      end;
+    end;
+  end;
+
   procedure DoFindMatchingBracket(i: integer);
   var
     Test, BracketInc, BracketDec: char;
@@ -9562,7 +9603,10 @@ var
       for i := Low(Brackets) to High(Brackets) do begin
         if Test = Brackets[i] then begin
           // this is the bracket, get the matching one and the direction
-          DoFindMatchingBracket(i);
+          if Brackets[i] = '''' then
+            DoFindMatchingQuote
+          else
+            DoFindMatchingBracket(i);
           exit;
         end;
       end;
