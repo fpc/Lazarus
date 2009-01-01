@@ -767,8 +767,9 @@ begin
       end;
       if (FN<>'') then
       begin
-        FileName:=FN;
+        // set FDialogFiles first since assigning of FileName trigger events
         FDialogFiles.Text:=TOpenDialog(D).Files.Text;
+        FileName:=FN;
       end;
     end;
     dkSave,dkPictureSave :
