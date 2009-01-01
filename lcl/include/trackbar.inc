@@ -143,12 +143,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetParams(APosition, AMin, AMax: Integer);
 begin
-  if (not (csLoading in ComponentState)) then begin
-    if AMin>AMax then AMin:=AMax;
-    if APosition<AMin then APosition:=AMin;
-    if APosition>AMax then APosition:=AMax;
-  end;
-  if (FPosition=APosition) and (FMin=AMin) and (FMax=AMax) then exit;
+  if not (csLoading in ComponentState) then
+    FixParams(APosition, AMin, AMax);
+
+  if (FPosition = APosition) and (FMin = AMin) and (FMax = AMax) then
+    Exit;
+
   FPosition := APosition;
   FMax := AMax;
   FMin := AMin;
@@ -164,10 +164,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetPosition(Value: Integer);
 begin
+  FixParams(Value, FMin, FMax);
   if FPosition <> Value then
   begin
     FPosition := Value;
-    if HandleAllocated then 
+    if HandleAllocated then
       TWSTrackBarClass(WidgetSetClass).SetPosition(Self, FPosition);
   end;
 end;
@@ -181,7 +182,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetMin(Value: Integer);
 begin
-  if FMin <> Value then SetParams(FPosition,Value,FMax);
+  if FMin <> Value then
+    SetParams(FPosition, Value, FMax);
 end;
 
 {------------------------------------------------------------------------------
@@ -193,7 +195,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetMax(Value: Integer);
 begin
-  if FMax <> Value then SetParams(FPosition,FMin,Value);
+  if FMax <> Value then
+    SetParams(FPosition, FMin, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -313,6 +316,13 @@ begin
   EditingDone;
   if Assigned (FOnChange) then
     FOnChange(Self);
+end;
+
+procedure TCustomTrackBar.FixParams(var APosition, AMin, AMax: Integer);
+begin
+  if AMin > AMax then AMin := AMax;
+  if APosition < AMin then APosition := AMin;
+  if APosition > AMax then APosition := AMax;
 end;
 
 class function TCustomTrackBar.GetControlClassDefaultSize: TPoint;

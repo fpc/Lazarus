@@ -1664,6 +1664,7 @@ type
   protected
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
+    procedure FixParams(var APosition, AMin, AMax: Integer);
     class function GetControlClassDefaultSize: TPoint; override;
     procedure InitializeWnd; override;
     procedure Loaded; override;
