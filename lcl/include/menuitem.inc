@@ -258,8 +258,12 @@ end;
 procedure TMenuItem.DoClicked(var msg);
 begin
   if not (csDesigning in ComponentState) then
-    Click
-  else if Assigned(DesignerMenuItemClick) then
+  begin
+    InitiateActions;
+    Click;
+  end
+  else
+  if Assigned(DesignerMenuItemClick) then
     DesignerMenuItemClick(Self);
 end;
 
