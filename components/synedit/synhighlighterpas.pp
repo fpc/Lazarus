@@ -98,7 +98,9 @@ type
     cfbtUses,
     cfbtVarType,
     cfbtClass,
-    cfbtClassSection
+    cfbtClassSection,
+    cfbtUnitSection,
+    cfbtProgram
     );
   TPascalCompilerMode = (
     pcmObjFPC,
@@ -108,7 +110,7 @@ type
     pcmGPC,
     pcmMacPas
     );
-    
+
   { TSynPasSynRange }
 
   TSynPasSynRange = class(TSynCustomHighlighterRange)
@@ -758,8 +760,14 @@ begin
         EndCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProcedure then
           EndCodeFoldBlock;
+        if TopPascalCodeFoldBlockType = cfbtProgram then
+          EndCodeFoldBlock;
       end
-      else begin
+      else if TopPascalCodeFoldBlockType = cfbtUnitSection then begin
+        EndCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType = cfbtBeginEnd then // "Unit".."end."
+          EndCodeFoldBlock;
+      end else begin
         if TopPascalCodeFoldBlockType = cfbtClassSection then
           EndCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtClass then
@@ -1001,7 +1009,10 @@ end;
 
 function TSynPasSyn.Func64: TtkTokenKind;
 begin
-  if KeyComp('Unit') then Result := tkKey
+  if KeyComp('Unit') then begin
+    if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtBeginEnd);
+    Result := tkKey;
+  end
   else if KeyComp('Uses') then begin
     if rsAfterSemicolon in fRange then begin
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
@@ -1090,6 +1101,8 @@ begin
       if not(rsAfterEqual in fRange) and
          (fRange * [rsInterface, rsImplementation] = []) then begin
         if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType=cfbtUnitSection then EndCodeFoldBlockLastLine;
+        StartPascalCodeFoldBlock(cfbtUnitSection);
         fRange := fRange + [rsInterface, rsAtSemicolon];
         // Interface has no ";", implicit end of statement
       end;
@@ -1126,6 +1139,7 @@ function TSynPasSyn.Func88: TtkTokenKind;
 begin
   if KeyComp('Program') then begin
     fRange := fRange - [rsInterface] + [rsImplementation];
+    if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtProgram);
     Result := tkKey;
   end
   else Result := tkIdentifier;
@@ -1343,6 +1357,8 @@ begin
   if KeyComp('Finalization') then begin
     TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
     if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
+    if TopPascalCodeFoldBlockType=cfbtUnitSection then EndCodeFoldBlockLastLine;
+    StartPascalCodeFoldBlock(cfbtUnitSection);
     fRange := fRange - [rsInterface] + [rsImplementation, rsAtSemicolon];
     Result := tkKey
   end
@@ -1389,6 +1405,8 @@ begin
     if KeyComp('Implementation') then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
+      if TopPascalCodeFoldBlockType=cfbtUnitSection then EndCodeFoldBlockLastLine;
+      StartPascalCodeFoldBlock(cfbtUnitSection);
       fRange := fRange - [rsInterface] + [rsImplementation, rsAtSemicolon];
       // implicit end of statement
       Result := tkKey;
@@ -1406,6 +1424,8 @@ begin
   if KeyComp('Initialization') then begin
     TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
     if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
+    if TopPascalCodeFoldBlockType=cfbtUnitSection then EndCodeFoldBlockLastLine;
+    StartPascalCodeFoldBlock(cfbtUnitSection);
     fRange := fRange - [rsInterface] + [rsImplementation, rsAtSemicolon];
     Result := tkKey;
   end
@@ -1430,7 +1450,7 @@ var
 begin
   fToIdent := p;
   HashKey := KeyHash;
-  if HashKey < 192 then 
+  if HashKey < 192 then
     Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
   else
     Result := tkIdentifier;
@@ -1442,7 +1462,7 @@ var
 begin
   fToIdent := MayBe;
   HashKey := KeyHash(MayBe);
-  if HashKey < 192 then 
+  if HashKey < 192 then
     Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
   else
     Result := tkIdentifier;
@@ -2121,7 +2141,7 @@ end;
 procedure TSynPasSyn.EnumUserSettings(settings: TStrings);
 begin
   { returns the user settings that exist in the registry }
-  with TBetterRegistry.Create do 
+  with TBetterRegistry.Create do
   begin
     try
       RootKey := HKEY_LOCAL_MACHINE;
@@ -2184,10 +2204,10 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
 
   function ReadDelphiSettings(settingIndex: integer): boolean;
 
-    function ReadDelphiSetting(settingTag: string; 
+    function ReadDelphiSetting(settingTag: string;
       attri: TSynHighlighterAttributes; key: string): boolean;
 
-      function ReadDelphi2Or3(settingTag: string; 
+      function ReadDelphi2Or3(settingTag: string;
         attri: TSynHighlighterAttributes; name: string): boolean;
       var
         i: integer;
@@ -2198,7 +2218,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
                 '\Software\Borland\Delphi\'+settingTag+'\Highlight',name,true);
       end; { ReadDelphi2Or3 }
 
-      function ReadDelphi4OrMore(settingTag: string; 
+      function ReadDelphi4OrMore(settingTag: string;
         attri: TSynHighlighterAttributes; key: string): boolean;
       begin
         Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
