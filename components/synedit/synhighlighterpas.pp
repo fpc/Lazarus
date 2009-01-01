@@ -769,7 +769,7 @@ begin
           EndCodeFoldBlock;
       end else begin
         if TopPascalCodeFoldBlockType = cfbtClassSection then
-          EndCodeFoldBlock;
+          EndCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtClass then
           EndCodeFoldBlock;
       end;
@@ -985,7 +985,7 @@ begin
     Result := tkKey;
     if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then begin
       if (TopPascalCodeFoldBlockType=cfbtClassSection) then
-        EndCodeFoldBlock;
+        EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
     end;
   end
@@ -1152,7 +1152,7 @@ begin
     Result := tkKey;
     if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then begin
       if (TopPascalCodeFoldBlockType=cfbtClassSection) then
-        EndCodeFoldBlock;
+        EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
     end;
   end
@@ -1190,7 +1190,7 @@ begin
     Result := tkKey;
     if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then begin
       if (TopPascalCodeFoldBlockType=cfbtClassSection) then
-        EndCodeFoldBlock;
+        EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
     end;
   end
@@ -1280,7 +1280,7 @@ begin
     Result := tkKey;
     if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then begin
       if (TopPascalCodeFoldBlockType=cfbtClassSection) then
-        EndCodeFoldBlock;
+        EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
     end;
   end
