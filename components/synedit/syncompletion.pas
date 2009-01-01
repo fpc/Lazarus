@@ -1421,7 +1421,7 @@ begin
     if (Shift = ShortCutShift) and (Key = ShortCutKey) then
     with sender as TCustomSynEdit do begin
       if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then begin
-        p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
+        p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight + 1));
         Form.CurrentEditor := Sender as TCustomSynEdit;
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
         // eat it

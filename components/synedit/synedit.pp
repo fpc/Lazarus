@@ -1243,13 +1243,12 @@ end;
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // returns -1 for lines above visible screen (<TopLine)
 // 0 for the first line
-// Max(0,LinesInWindow-1) for the last fully visible line
-// and returns LinesInWindow for lines below visible screen including the
-// partially visible line at the bottom
+// 0 to LinesInWindow for visible lines (incl last partial visble line)
+// and returns LinesInWindow+1 for lines below visible screen
 begin
   Result := fTextView.TextIndexToScreenLine(PhysicalRow-1);
   if Result < -1 then Result := -1;
-  if Result > LinesInWindow then Result := LinesInWindow;
+  if Result > LinesInWindow+1 then Result := LinesInWindow+1;
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
 end;
 {$ENDIF}
@@ -1257,14 +1256,14 @@ end;
 function TCustomSynEdit.RowColumnToPixels(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
 // converts screen position (1,1) based
-// to client area coordinate
+// to client area coordinate (0,0 based on canvas)
 begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
   {$IFDEF SYN_LAZARUS}
-  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight + 1;
+  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight;
   {$ELSE}
-  Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
+  Result.Y := (Result.Y - fTopLine) * fTextHeight;
   {$ENDIF}
 end;
 
@@ -4513,28 +4512,20 @@ begin
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
     {$ENDIF}
-    CX := CaretXPix + FCaretOffset.X;
-    CY := CaretYPix + FCaretOffset.Y;
+    CX := CaretXPix;
+    CY := CaretYPix;
     if (CX >= fGutterWidth)
       and (CX < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (CY >= 0)
-      and (CY <= ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth-fTextHeight{$ENDIF})
+      and (CY <{=} ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{-fTextHeight}{$ENDIF})
     then begin
-      {$IFDEF SYN_LAZARUS}
-      SetCaretPosEx(Handle,CX,CY);
-      {$ELSE}
-      SetCaretPos(CX, CY);
-      {$ENDIF}
+      SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
       //DebugLn(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
       //DebugLn(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
-      {$IFDEF SYN_LAZARUS}
-      SetCaretPosEx(Handle,CX, CY);
-      {$ELSE}
-      SetCaretPos(CX, CY);
-      {$ENDIF}
+      SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
     end;
     {$IFDEF SYN_LAZARUS}
     if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
@@ -6301,24 +6292,24 @@ begin
       begin
         cw := fCharWidth;
         ch := 2;
-        FCaretOffset := Point(0, fTextHeight - 2);
+        FCaretOffset := Point(0, fTextHeight - 1);
       end;
     ctHalfBlock:
       begin
         cw := fCharWidth;
         ch := (fTextHeight - 2) div 2;
-        FCaretOffset := Point(0, ch);
+        FCaretOffset := Point(0, ch + 1);
       end;
     ctBlock:
       begin
         cw := fCharWidth;
         ch := fTextHeight - 2;
-        FCaretOffset := Point(0, 0);
+        FCaretOffset := Point(0, 1);
       end;
     else begin // ctVerticalLine
       cw := 2;
       ch := fTextHeight - 2;
-      FCaretOffset := Point(-1, 0);
+      FCaretOffset := Point(-1, 1);
     end;
   end;
   Exclude(fStateFlags, sfCaretVisible);
