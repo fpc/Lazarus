@@ -2084,7 +2084,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
   // -> update now
-  CodeFoldRange.RangeType:=Pointer(PtrInt(fRange));
+  CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
   {$ELSE}
@@ -2098,7 +2098,7 @@ begin
   //DebugLn(['TSynPasSyn.SetRange START']);
   inherited SetRange(Value);
   CompilerMode := TSynPasSynRange(CodeFoldRange).Mode;
-  fRange := TRangeStates(PtrUInt(CodeFoldRange.RangeType));
+  fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   {$ELSE}
   fRange := TRangeStates(PtrUInt(Value));
   {$ENDIF}
