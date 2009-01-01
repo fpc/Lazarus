@@ -1549,7 +1549,7 @@ Begin
         TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
       end;
       with TCustomSynEdit(Sender) do begin
-        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
         P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
         P := ClientToScreen(p);
       end;
@@ -2416,7 +2416,7 @@ begin
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
   with FEditor do begin
-    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
     P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
     P := ClientToScreen(p);
   end;
@@ -3353,7 +3353,7 @@ begin
     SourceNotebook.CreateCompletionForm;
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do begin
-      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight);
+      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight + 1);
       P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
       P := ClientToScreen(p);
     end;
