@@ -252,6 +252,7 @@ var
   QResult    : QMessageBoxStandardButton;
   QtMessageBox: TQtMessageBox;
 begin
+  ReleaseCapture;
   QtMessageBox := TQtMessageBox.Create(nil);
   QtMessageBox.AttachEvents;
   try
