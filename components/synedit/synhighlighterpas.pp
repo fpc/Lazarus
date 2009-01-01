@@ -730,7 +730,15 @@ end;
 
 function TSynPasSyn.Func21: TtkTokenKind;
 begin
-  if KeyComp('Of') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Of') then begin
+    Result := tkKey;
+    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass)
+    then begin
+      // Accidental start of block // End at next semicolon (usually same line)
+      CodeFoldRange.Top.BlockType := Pointer(PtrInt(cfbtUses));
+    end;
+  end
+  else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func23: TtkTokenKind;
