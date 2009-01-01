@@ -4854,10 +4854,18 @@ function TCustomSynEdit.ScanFrom(Index: integer
 {$IFDEF SYN_LAZARUS}
   var
     FixFStart: Integer;
+    LastLineDiffers : Boolean;
   procedure SetCodeFoldAttributes;
   begin
     TSynEditStrings(Lines).FoldMinLevel[Result-1] := fHighlighter.MinimumCodeFoldBlockLevel;
     TSynEditStrings(Lines).FoldEndLevel[Result-1] := fHighlighter.CurrentCodeFoldBlockLevel;
+    if (fHighlighter.LastLineCodeFoldLevelFix <> 0) and (result > 1) then begin
+      TSynEditStrings(Lines).FoldEndLevel[Result-2] :=
+        TSynEditStrings(Lines).FoldEndLevel[Result-2] + fHighlighter.LastLineCodeFoldLevelFix;
+      if TSynEditStrings(Lines).FoldMinLevel[Result-2] > TSynEditStrings(Lines).FoldEndLevel[Result-2] then
+        TSynEditStrings(Lines).FoldMinLevel[Result-2] := TSynEditStrings(Lines).FoldEndLevel[Result-2];
+      if Result - 1 < FixFStart then FixFStart := Result - 1;
+    end;
   end;
 {$ENDIF}
 
@@ -4890,14 +4898,22 @@ begin
   inc(Result);
   fHighlighter.NextToEol;
   {$IFDEF SYN_LAZARUS}
+  LastLineDiffers := True;
   while (fHighlighter.GetRange <> TSynEditStrings(Lines).Ranges[Result])
-  or (Result<=AtLeastTilIndex)
+    or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
+    or (TSynEditStrings(Lines).FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
+    or (TSynEditStrings(Lines).FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel)
+    or LastLineDiffers or (Result<=AtLeastTilIndex+1)
   {$ELSE}
   while (fHighlighter.GetRange <> TSynEditStringList(Lines).Ranges[Result])
   {$ENDIF}
   do begin
     //debugln(['TSynCustomHighlighter.ScanFrom WHILE Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' ScannedLine="',Lines[Result-1],'"']);
     {$IFDEF SYN_LAZARUS}
+    LastLineDiffers := (fHighlighter.GetRange <> TSynEditStrings(Lines).Ranges[Result])
+      or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
+      or (TSynEditStrings(Lines).FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
+      or (TSynEditStrings(Lines).FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel);
     TSynEditStrings(Lines).Ranges[Result] := fHighlighter.GetRange;
     SetCodeFoldAttributes;
     //if (Result and $fff)=0 then
@@ -4918,7 +4934,7 @@ begin
   //  => update code fold attributes of last scanned line
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
-  fTextView.FixFoldingAtTextIndex(Index, Result);
+  fTextView.FixFoldingAtTextIndex(FixFStart, Result);
   Topline := TopLine;
   if FixFStart < index then Invalidate;
   {$ENDIF}

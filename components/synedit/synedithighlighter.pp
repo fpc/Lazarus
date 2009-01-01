@@ -140,7 +140,7 @@ type
   );
 
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
-  
+
   {$IFDEF SYN_LAZARUS}
   { TSynCustomCodeFoldBlock }
 
@@ -210,7 +210,10 @@ type
     {$IFDEF SYN_LAZARUS}
     FCodeFoldRange: TSynCustomHighlighterRange;
     FCapabilities: TSynHighlighterCapabilities;
+    protected
     FMinimumCodeFoldBlockLevel: integer;
+    FLastLineCodeFoldLevelFix: integer;
+    private
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
@@ -231,7 +234,7 @@ type
     function GetDefaultFilter: string; virtual;
     function GetIdentChars: TSynIdentChars; virtual;
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
-    function GetSampleSource: string; virtual;                        
+    function GetSampleSource: string; virtual;
     function IsFilterStored: boolean; virtual;
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
@@ -292,6 +295,7 @@ type
     {$IFDEF SYN_LAZARUS}
     property MinimumCodeFoldBlockLevel: integer read FMinimumCodeFoldBlockLevel;
     function CurrentCodeFoldBlockLevel: integer;
+    property LastLineCodeFoldLevelFix: integer read FLastLineCodeFoldLevelFix;
     {$ENDIF}
   public
     property AttrCount: integer read GetAttribCount;
@@ -712,7 +716,7 @@ const
 
     function IsTrue(value: string): boolean;
     begin
-      Result := not ((UpperCase(value) = 'FALSE') or (value = '0')); 
+      Result := not ((UpperCase(value) = 'FALSE') or (value = '0'));
     end; { IsTrue }
 
   begin
@@ -797,7 +801,7 @@ begin
 end;
 
 procedure TSynHighlighterAttributes.SetStyle(Value: TFontStyles);
-begin 
+begin
   if fStyle <> Value then begin
     fStyle := Value;
     Changed;
@@ -1049,7 +1053,7 @@ begin
     else
     {$ENDIF}
       Result := false;
-    
+
   finally r.Free; end;
 end;
 
@@ -1213,6 +1217,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Clear;
+    FLastLineCodeFoldLevelFix:=0;
   end;
   {$ENDIF}
 end;
@@ -1237,6 +1242,7 @@ begin
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
     FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
+    FLastLineCodeFoldLevelFix:=0;
   end;
   {$ENDIF}
 end;
@@ -1273,6 +1279,7 @@ procedure TSynCustomHighlighter.SetLine(const NewValue: String;
 begin
   if (hcCodeFolding in Capabilities) then begin
     FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+    FLastLineCodeFoldLevelFix := 0;
   end;
 end;
 
@@ -1323,6 +1330,7 @@ begin
       FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
   end;
 end;
+
 {$ENDIF}
 
 {$IFNDEF SYN_CPPB_1}
