@@ -1830,11 +1830,12 @@ begin
       begin
         X := GET_X_LPARAM(LParam);
         Y := GET_Y_LPARAM(LParam);
-        // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
+        // check if mouse cursor within this window, otherwise send message to
+        // window the mouse is hovering over
         P.X := X;
         P.Y := Y;
         TargetWindow := TWin32WidgetSet(WidgetSet).WindowFromPoint(P);
-        if TargetWindow = HWND(nil) then
+        if (TargetWindow = 0) or not IsWindowEnabled(TargetWindow) then
           exit;
 
         // check if the window is an edit control of a combobox, if so,
