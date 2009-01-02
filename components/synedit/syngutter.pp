@@ -870,10 +870,6 @@ begin
 end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
-var
-  i: integer;
-  rcLine: TRect;
-  dc: HDC;
 begin
   with Canvas do
   begin
