@@ -472,6 +472,7 @@ type
     destructor Destroy; override;
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
+    procedure setColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -488,6 +489,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure setColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -4315,6 +4317,14 @@ begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
 end;
 
+procedure TQtCheckBox.setColor(const Value: PQColor);
+var
+  W: WideString;
+begin
+  W := Format('background-color: rgb(%d, %d, %d);', [Value^.r shr 8, Value^.g  shr 8, Value^.b  shr 8]);
+  QWidget_setStyleSheet(Widget, @W);
+end;
+
 procedure TQtCheckBox.AttachEvents;
 var
   Method: TMethod;
@@ -4378,6 +4388,14 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+procedure TQtRadioButton.setColor(const Value: PQColor);
+var
+  W: WideString;
+begin
+  W := Format('background-color: rgb(%d, %d, %d);', [Value^.r shr 8, Value^.g  shr 8, Value^.b  shr 8]);
+  QWidget_setStyleSheet(Widget, @W);
 end;
 
 procedure TQtRadioButton.AttachEvents;
