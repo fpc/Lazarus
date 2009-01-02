@@ -757,7 +757,7 @@ begin
   if GetNextSibling <> nil then
     Result := GetNextSibling.Top
   else
-  if GetLastChild <> nil then
+  if Expanded and (GetLastChild <> nil) then
     Result := GetLastChild.BottomExpanded
   else
     Result := Bottom;
