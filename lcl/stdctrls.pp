@@ -1281,6 +1281,7 @@ type
     property BorderSpacing;
     property Caption;
     property Checked;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -1305,6 +1306,7 @@ type
     property OnResize;
     property OnStartDrag;
     property ParentBidiMode;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
