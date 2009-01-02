@@ -77,22 +77,26 @@ end;
 function IndexOfNodeAtTop(NodeArray: TTreeNodeArray; Count, y: integer): integer;
 // NodeArray must be sorted via Top
 // returns index of Node with Node.Top <= y < Node[+1].Top
-var l, m, r: integer;
+var
+  l, m, r: integer;
 begin
-  if (Count=0) or (NodeArray=nil) then exit(-1);
-  l:=0;
-  r:=Count-1;
-  while (l<=r) do begin
-    m:=(l+r) shr 1;
+  if (Count = 0) or (NodeArray = nil) then
+    Exit(-1);
+  l := 0;
+  r := Count - 1;
+  while (l <= r) do
+  begin
+    m := (l + r) shr 1;
     //DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
-    if NodeArray[m].Top>y then
-      r:=m-1
-    else if NodeArray[m].BottomExpanded<=y then
-      l:=m+1
+    if NodeArray[m].Top > y then
+      r := m - 1
     else
-      exit(m);
+    if NodeArray[m].BottomExpanded <= y then
+      l := m + 1
+    else
+      Exit(m);
   end;
-  Result:=-1;
+  Result := -1;
 end;
 
 // procedure for sorting a TTreeNodeArray
@@ -326,7 +330,7 @@ end;
 
 function TTreeNode.GetTreeView: TCustomTreeView;
 begin
-  if Owner<>nil then
+  if Owner <> nil then
     Result := Owner.Owner
   else
     Result := nil;
@@ -334,9 +338,9 @@ end;
 
 function TTreeNode.GetTop: integer;
 begin
-  if TreeView<>nil then
+  if TreeView <> nil then
     TreeView.UpdateAllTops;
-  Result:=FTop;
+  Result := FTop;
 end;
 
 function TTreeNode.HasAsParent(AValue: TTreeNode): Boolean;
@@ -745,17 +749,18 @@ end;
 
 function TTreeNode.Bottom: integer;
 begin
-  Result:=Top+Height;
+  Result := Top + Height;
 end;
 
 function TTreeNode.BottomExpanded: integer;
 begin
-  if GetNextSibling<>nil then
-    Result:=GetNextSibling.Top
-  else if GetLastChild<>nil then
-    Result:=GetLastChild.BottomExpanded
+  if GetNextSibling <> nil then
+    Result := GetNextSibling.Top
   else
-    Result:=Bottom;
+  if GetLastChild <> nil then
+    Result := GetLastChild.BottomExpanded
+  else
+    Result := Bottom;
 end;
 
 function TTreeNode.GetFocused: Boolean;
@@ -789,12 +794,12 @@ end;
 
 function TTreeNode.GetNextSibling: TTreeNode;
 begin
-  Result:=FNextBrother;
+  Result := FNextBrother;
 end;
 
 function TTreeNode.GetPrevSibling: TTreeNode;
 begin
-  Result:=FPrevBrother;
+  Result := FPrevBrother;
 end;
 
 function TTreeNode.GetNextVisible: TTreeNode;
@@ -903,10 +908,10 @@ end;
 
 function TTreeNode.GetLastChild: TTreeNode;
 begin
-  if Count>0 then
-    Result:=FItems[Count-1]
+  if Count > 0 then
+    Result := FItems[Count - 1]
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TTreeNode.GetLastSubChild: TTreeNode;
@@ -968,18 +973,20 @@ end;
 
 function TTreeNode.GetDeleting: Boolean;
 begin
-  Result:=nsDeleting in FStates;
+  Result := nsDeleting in FStates;
 end;
 
 function TTreeNode.GetHeight: integer;
 begin
-  if FHeight<=0 then begin
-    if TreeView<>nil then
-      Result:=TreeView.FDefItemHeight
+  if FHeight <= 0 then
+  begin
+    if TreeView <> nil then
+      Result := TreeView.FDefItemHeight
     else
-      Result:=20;
-  end else
-    Result:=FHeight;
+      Result := 20;
+  end
+  else
+    Result := FHeight;
 end;
 
 function TTreeNode.GetIndex: Integer;
@@ -3274,30 +3281,34 @@ end;
 
 function TCustomTreeView.GetNodeAtInternalY(Y: Integer): TTreeNode;
 // search in all expanded nodes for the node at the absolute coordinate Y
-var i: integer;
+var
+  i: integer;
 begin
-  i:=IndexOfNodeAtTop(Items.FTopLvlItems,Items.FTopLvlCount,Y);
-  if i>=0 then begin
-    Result:=Items.FTopLvlItems[i];
-    while Result.Expanded do begin
-      i:=IndexOfNodeAtTop(Result.FItems,Result.FCount,Y);
-      if i>=0 then
-        Result:=Result.Items[i]
+  i := IndexOfNodeAtTop(Items.FTopLvlItems, Items.FTopLvlCount, Y);
+  if i >= 0 then
+  begin
+    Result := Items.FTopLvlItems[i];
+    while Result.Expanded do
+    begin
+      i := IndexOfNodeAtTop(Result.FItems, Result.FCount, Y);
+      if i >= 0 then
+        Result := Result.Items[i]
       else
         break;
     end;
-  end else
-    Result:=nil;
+  end
+  else
+    Result := nil;
 end;
 
 function TCustomTreeView.GetNodeAtY(Y: Integer): TTreeNode;
 // search in all expanded nodes for the node at the screen coordinate Y
 begin
-  Result:=nil;
-  if (Y>=BorderWidth) and (Y<(ClientHeight-ScrollBarWidth)-BorderWidth) then
+  Result := nil;
+  if (Y >= BorderWidth) and (Y < (ClientHeight - ScrollBarWidth) - BorderWidth) then
   begin
-    inc(Y,FScrolledTop-BorderWidth);
-    Result:=GetNodeAtInternalY(Y);
+    inc(Y, FScrolledTop - BorderWidth);
+    Result := GetNodeAtInternalY(Y);
   end;
 end;
 
@@ -3313,12 +3324,14 @@ end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
 begin
-  Result:=nil;
-  if (X>=BorderWidth) and (X<ClientWidth-BorderWidth) then begin
-    Result:=GetNodeAtY(Y);
-    if Result<>nil then begin
-      if (X<Result.DisplayExpandSignLeft) then
-        Result:=nil;
+  Result := nil;
+  if (X >= BorderWidth) and (X < ClientWidth - BorderWidth) then
+  begin
+    Result := GetNodeAtY(Y);
+    if Result <> nil then
+    begin
+      if (X < Result.DisplayExpandSignLeft) then
+        Result := nil;
     end;
   end;
 end;
@@ -4541,7 +4554,7 @@ begin
 
   inherited MouseDown(Button, Shift, X, Y);
 
-  CursorNode:=GetNodeAt(X,Y);
+  CursorNode := GetNodeAt(X, Y);
   LogicalX:=X;
   bStartDrag := false;
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
