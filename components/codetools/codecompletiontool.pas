@@ -5612,7 +5612,7 @@ var
     InsertEndPos: LongInt;
     ProcCode: String;
   begin
-    Result:=false;
+    Result:=true;
     BodiesWithoutDefs:=nil;
     DefsWithoutBodies:=nil;
     try
@@ -5627,6 +5627,7 @@ var
         BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
       end;
       if BodiesWithoutDefs=nil then exit;
+
       // collect all definitions without a body
       DefAVLNode:=ClassProcs.FindLowest;
       while DefAVLNode<>nil do begin
@@ -5650,10 +5651,8 @@ var
         DefNodeExt.Data:=BodyNodeExt;
       end else begin
         // no mapping found
-        // => warn user
-        ANode:=TCodeTreeNodeExtension(BodiesWithoutDefs.FindLowest.Data).Node;
-        MoveCursorToNodeStart(ANode.FirstChild);
-        RaiseException('procedure has no definition in the class');
+        debugln(CleanPosToStr(ANode.FirstChild.StartPos)+' warning: procedure has no definition in the class');
+        exit;
       end;
 
       // replace body proc head(s) with class proc head(s)
@@ -5681,7 +5680,6 @@ var
       BodiesWithoutDefs.Free;
       DefsWithoutBodies.Free;
     end;
-    Result:=true;
   end;
   
   procedure RemoveAbstractMethods;
