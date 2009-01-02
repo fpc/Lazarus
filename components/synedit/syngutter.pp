@@ -169,6 +169,7 @@ type
   protected
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark);
+    function NeedSeparatorLine: Boolean;
   public
     constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView;
       ABookMarkOpt: TSynBookMarkOpt; ATextDrawer: TheTextDrawer);
@@ -471,7 +472,10 @@ begin
     Exit;
   end;
 
-  Result := FLeftOffset + FRightOffset + 2; // 2 for the separator line
+  Result := FLeftOffset + FRightOffset;
+  if NeedSeparatorLine then
+    Inc(Result, 2); // 2 for the separator line
+
   for i := FGutterPartList.Count-1 downto 0 do
     Result := Result + GutterPart[i].RealGutterWidth(CharWidth);
 end;
@@ -611,6 +615,14 @@ begin
   GutterPart[i].DoOnGutterClick(X, Y);
 end;
 
+function TSynGutter.NeedSeparatorLine: Boolean;
+begin
+  Result :=
+    (FCodeFoldGutter = nil) or
+    not FCodeFoldGutter.Visible or
+    (FGutterPartList.IndexOf(FCodeFoldGutter) <> FGutterPartList.Count - 1);
+end;
+
 procedure TSynGutter.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 var
   i: integer;
@@ -637,20 +649,24 @@ begin
 
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
-  for i := 0 to FGutterPartList.Count -1 do begin
-    if GutterPart[i].Visible then begin
+  for i := 0 to FGutterPartList.Count -1 do
+  begin
+    if GutterPart[i].Visible then
+    begin
       rcLine.Left := rcLine.Right;
       rcLine.Right := rcLine.Left + GutterPart[i].Width;
       GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
 
-  // the gutter separator if visible
-  if AClip.Right >= TSynEdit(FEdit).GutterWidth - 2 then
-    with Canvas do begin
+  // draw gutter separator if visible and last visible part is not a fold tree
+  if NeedSeparatorLine and (AClip.Right >= TSynEdit(FEdit).GutterWidth - 2) then
+    with Canvas do
+    begin
       Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
       Pen.Width := 1;
-      with AClip do begin
+      with AClip do
+      begin
         MoveTo(TSynEdit(FEdit).GutterWidth - 2, Top);
         LineTo(TSynEdit(FEdit).GutterWidth - 2, Bottom);
         Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
