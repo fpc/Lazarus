@@ -147,6 +147,8 @@ begin
   if not Visible then exit;
   LineHeight := TSynEdit(FEdit).LineHeight;
   LineOffset := 0;
+  if (iLine > 0) and (FFoldView.FoldType[iLine-1] = cfEnd) then
+    LineOffset := 2;
   BoxSize := Min(Width, LineHeight - cNodeOffset*2);
 
   if MarkupInfoCodeFoldingTree.Background <> clNone then
