@@ -166,11 +166,11 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
   
@@ -202,11 +202,11 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
 
@@ -238,11 +238,11 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
   
@@ -274,11 +274,11 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
 
