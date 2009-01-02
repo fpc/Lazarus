@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls;//, LCLProc;
+  SynEditMiscClasses, Controls, LCLProc;
 
 type
 
@@ -372,14 +372,14 @@ begin
   if not fHasInvalidLines
   then exit;
   fHasInvalidLines := false;
-  
+
   LastLine := ScreenRowToRow(LinesInWindow);
 
   { TODO: need a list of invalidated lines, so we can keep valid matches }
   FindStartPoint;
   ptStart := fStartPoint;
   Pos := 0;
-  
+
   FindInitialize(false);
   ptEnd.Y:= Lines.Count;
   ptEnd.X:= Length(Lines[ptEnd.y - 1]);
@@ -448,9 +448,11 @@ begin
   Pos := 0;
   while (Pos < fMatches.PointCount)
   do begin
-    if ( (Pos = 0) or (fMatches.Point[Pos].y <> fMatches.Point[Pos-1].y) )
-    then InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos].y);
-    inc(pos);
+    // first block, or new-end bigger last-end
+    if ( (Pos = 0) or (fMatches.Point[Pos+1].y > fMatches.Point[Pos-1].y) )
+    then
+      InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos+1].y);
+    inc(pos,2);
   end;
 
   fInvalidating := False;
