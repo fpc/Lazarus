@@ -75,7 +75,7 @@ begin
   end;
 
   if AutoSize then
-    Width := 6;
+    Width := 4;
   Result := Width;
 end;
 
@@ -95,7 +95,7 @@ begin
     Canvas.FillRect(AClip);
   end;
 
-  Canvas.Pen.Width := Width - 2;
+  Canvas.Pen.Width := Width ;
   Canvas.Pen.EndCap:= pecFlat;
 
   rcLine := AClip;

@@ -546,7 +546,6 @@ type
     procedure SetExtraLineSpacing(const Value: integer);
     procedure SetFont(const Value: TFont);
     procedure SetGutter(const Value: TSynGutter);
-    procedure SetGutterWidth(Value: Integer);
     procedure SetHideSelection(const Value: boolean);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
     procedure SetInsertCaret(const Value: TSynEditCaretType);
@@ -4215,28 +4214,6 @@ begin
   end;
   DebugLn(Format('  TCustomSynEdit.SetFont E "%s" Height=%d AveCW=%d MaxCW=%d CharWidth=%d', [Font.Name, Font.Height, AveCW, MaxCW, CharWidth]));
   if fGutter.ShowLineNumbers then GutterChanged(Self);
-end;
-
-procedure TCustomSynEdit.SetGutterWidth(Value: Integer);
-begin
-  Value := Max(Value, 0);
-  if fGutterWidth <> Value then begin
-    fGutterWidth := Value;
-    fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
-    fBookmarkOpt.XOffset := Value - 18;
-    if HandleAllocated then begin
-      {$IFDEF SYN_LAZARUS}
-      fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
-                              div fCharWidth);
-      //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
-      {$ELSE}
-      fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
-                                     - ScrollBarWidth) div Max(1,fCharWidth)));
-      {$ENDIF}
-      UpdateScrollBars;
-      Invalidate;
-    end;
-  end;
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -7989,7 +7966,15 @@ begin
     if nW = fGutterWidth then
       InvalidateGutter
     else
-      SetGutterWidth(nW);
+      fGutterWidth := nw;
+      fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
+      if HandleAllocated then begin
+        fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
+                                div fCharWidth);
+        //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
+        UpdateScrollBars;
+        Invalidate;
+      end;
   end;
 end;
 

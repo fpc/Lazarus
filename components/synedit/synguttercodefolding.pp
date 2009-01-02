@@ -153,8 +153,8 @@ begin
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, LineHeight);
 
-      rcCodeFold.Left := 0;
-      rcCodeFold.Right := self.Width;
+      rcCodeFold.Left := AClip.Left;
+      rcCodeFold.Right := AClip.Left + self.Width;
       rcCodeFold.Top := rcLine.Top;
       rcCodeFold.Bottom := rcLine.Bottom;
 

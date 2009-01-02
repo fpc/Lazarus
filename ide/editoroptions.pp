@@ -2209,7 +2209,6 @@ begin
   end;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
-  ASynEdit.Gutter.LeftOffset := 2*11; // bookmark + breakpoint
   if fVisibleRightMargin then
     ASynEdit.RightEdge := fRightMargin
   else

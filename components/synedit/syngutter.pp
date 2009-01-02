@@ -128,7 +128,7 @@ type
 
     FColor: TColor;
     FWidth: integer;
-    FRightOffset: integer;
+    FRightOffset, FLeftOffset: integer;
     FOnChange: TNotifyEvent;
     FCursor: TCursor;
     FVisible: boolean;
@@ -143,9 +143,7 @@ type
     function  GetPartGutter(Index : Integer) : TSynGutterPartBase;
     property  GutterPart[Index: Integer]: TSynGutterPartBase read GetPartGutter;
   private
-    // Forward to Marks (Bookmars / Breakpoints)
     procedure SetLeftOffset(Value: integer);
-    function  GetLeftOffset: Integer;
     // Forward to Code Folding
     procedure SetShowCodeFolding(const Value: boolean);
     procedure SetCodeFoldingWidth(const AValue: integer);
@@ -191,7 +189,7 @@ type
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
     // Forward to Marks (Bookmars / Breakpoints)
-    property LeftOffset: integer read GetLeftOffset write SetLeftOffset
+    property LeftOffset: integer read FLeftOffset write SetLeftOffset
       default 16;
     // Forward to Code Folding
     property ShowCodeFolding: boolean read GetShowCodeFolding
@@ -405,9 +403,6 @@ begin
 //  FFoldView := AFoldView;
   FTextDrawer := ATextDrawer;
 
-  FCodeFoldGutter := TSynGutterCodeFolding.Create(AOwner, AFoldView);
-  FGutterPartList.Add(FCodeFoldGutter);
-
   FMarkGutter := TSynGutterMarks.Create(AOwner, AFoldView, ABookMarkOpt);
   FGutterPartList.Add(FMarkGutter);
 
@@ -417,6 +412,9 @@ begin
   FChangesGutter := TSynGutterChanges.Create(AOwner, AFoldView);
   FGutterPartList.Add(FChangesGutter);
 
+  FCodeFoldGutter := TSynGutterCodeFolding.Create(AOwner, AFoldView);
+  FGutterPartList.Add(FCodeFoldGutter);
+
   for i := 0 to FGutterPartList.Count-1 do begin
     GutterPart[i].OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
     GutterPart[i].OnGutterClick := {$IFDEF FPC}@{$ENDIF}DoDefaultGutterClick;
@@ -425,8 +423,8 @@ begin
   Color := clBtnFace;
   Visible := True;
   Width := 30;
-  LeftOffset := 16;
-  FRightOffset := 2;
+  LeftOffset := 0;
+  FRightOffset := 0;
 end;
 
 destructor TSynGutter.Destroy;
@@ -471,7 +469,7 @@ begin
     Exit;
   end;
 
-  Result := FRightOffset;
+  Result := FLeftOffset + FRightOffset + 2; // 2 for the separator line
   for i := FGutterPartList.Count-1 downto 0 do
     Result := Result + GutterPart[i].RealGutterWidth(CharWidth);
 end;
@@ -479,6 +477,16 @@ end;
 function TSynGutter.GetPartGutter(Index : Integer) : TSynGutterPartBase;
 begin
   Result := TSynGutterPartBase(FGutterPartList[Index]);
+end;
+
+procedure TSynGutter.SetLeftOffset(Value: integer);
+begin
+  Value := Max(0, Value);
+  if FLeftOffset <> Value then
+  begin
+    FLeftOffset := Value;
+    DoChange(Self);
+  end;
 end;
 
 function TSynGutter.GetShowChanges: Boolean;
@@ -609,7 +617,7 @@ begin
   {$ENDIF}
 
   // currently redraw full gutter
-  AClip.Left := 0;
+  AClip.Left := FLeftOffset;
 
   // Clear all
   fTextDrawer.BeginDrawing(dc);
@@ -793,17 +801,6 @@ end;
 function TSynGutter.GetCodeFoldingWidth : integer;
 begin
   Result := FCodeFoldGutter.Width;
-end;
-
-{ Forward to Marks (Bookmars / Breakpoints) }
-procedure TSynGutter.SetLeftOffset(Value: integer);
-begin
-  FMarkGutter.Width := Max(0, Value);
-end;
-
-function TSynGutter.GetLeftOffset : Integer;
-begin
-  Result := FMarkGutter.Width;
 end;
 
 procedure TSynGutter.SetShowChanges(const AValue: Boolean);
