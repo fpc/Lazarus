@@ -118,6 +118,7 @@ type
     FMode: TPascalCompilerMode;
     FBracketNestLevel : Integer;
   public
+    procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
     procedure Assign(Src: TSynCustomHighlighterRange); override;
     procedure IncBracketNestLevel;
@@ -2394,6 +2395,12 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 { TSynPasSynRange }
+
+procedure TSynPasSynRange.Clear;
+begin
+  inherited Clear;
+  FBracketNestLevel := 0;
+end;
 
 function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
 begin
