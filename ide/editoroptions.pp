@@ -576,7 +576,7 @@ type
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
     property CFDividerDrawLevel: Integer
-        read FCFDividerDrawLevel write FCFDividerDrawLevel default 3;
+        read FCFDividerDrawLevel write FCFDividerDrawLevel default 4;
   end;
 
 const
@@ -1377,7 +1377,7 @@ begin
   end;
   
   // Code Folding
-  FCFDividerDrawLevel := 3;
+  FCFDividerDrawLevel := 4;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1537,7 +1537,7 @@ begin
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
     FCFDividerDrawLevel :=
-      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 3);
+      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 4);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1673,7 +1673,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
-        FCFDividerDrawLevel, 3);
+        FCFDividerDrawLevel, 4);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
