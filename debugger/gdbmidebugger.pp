@@ -153,7 +153,7 @@ type
     function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
-    function  GetWideText(const ALocation: TDBGPtr): WideString;
+    function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetData(const ALocation: TDbgPtr): TDbgPtr; overload;
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
@@ -1761,7 +1761,7 @@ begin
   Result := Result + Trailor;
 end;
 
-function TGDBMIDebugger.GetWideText(const ALocation: TDBGPtr): WideString;
+function TGDBMIDebugger.GetWideText(const ALocation: TDBGPtr): String;
 
   function GetWideChar(const ALocation: TDBGPtr): WideChar;
   var
@@ -1781,17 +1781,19 @@ function TGDBMIDebugger.GetWideText(const ALocation: TDBGPtr): WideString;
 var
   OneChar: WideChar;
   CurLocation: TDBGPtr;
+  WStr: WideString;
 begin
-  Result := '';
+  WStr := '';
   CurLocation := ALocation;
   repeat
     OneChar := GetWideChar(CurLocation);
     if OneChar <> #0 then
     begin
-      Result := Result + OneChar;
+      WStr := WStr + OneChar;
       CurLocation := CurLocation + 2;
     end;
   until (OneChar = #0);
+  Result := UTF8Encode(WStr);
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
