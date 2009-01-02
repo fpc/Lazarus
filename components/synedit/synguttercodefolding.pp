@@ -67,7 +67,7 @@ var
   dc: HDC;
   rcCodeFold: TRect;
   tmp: TSynEditCodeFoldType;
-  LineHeight: Integer;
+  LineHeight, LineOffset: Integer;
 
   procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
   const cNodeOffset = 3;
@@ -106,6 +106,7 @@ var
       Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
       Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
     end;
+    LineOffset := 0;
   end;
 
   procedure DrawParagraphContinue(rcCodeFold: TRect);
@@ -115,26 +116,28 @@ var
     //center of the draw area
     iCenter := (rcCodeFold.Left + rcCodeFold.Right) div 2;
 
-    Canvas.MoveTo(iCenter, rcCodeFold.Top);
+    Canvas.MoveTo(iCenter, rcCodeFold.Top + LineOffset);
     Canvas.LineTo(iCenter, rcCodeFold.Bottom);
+    LineOffset := 0;
   end;
 
   procedure DrawParagraphEnd(rcCodeFold: TRect);
   var
-    ptCenter : TPoint;
+    X : Integer;
   begin
     //center of the draw area
-    ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
-    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
+    X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
 
-    Canvas.MoveTo(ptCenter.X, rcCodeFold.Top);
-    Canvas.LineTo(ptCenter.X, ptCenter.Y);
-    Canvas.LineTo(rcCodeFold.Right, ptCenter.Y);
+    Canvas.MoveTo(X, rcCodeFold.Top + LineOffset);
+    Canvas.LineTo(X, rcCodeFold.Bottom - 1);
+    Canvas.LineTo(rcCodeFold.Right, rcCodeFold.Bottom - 1);
+    LineOffset := min(2, (rcCodeFold.Top + rcCodeFold.Bottom) div 2);
   end;
 
 begin
   if not Visible then exit;
   LineHeight := TSynEdit(FEdit).LineHeight;
+  LineOffset := 0;
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
@@ -165,6 +168,7 @@ begin
         cfExpanded: DrawNodeBox(rcCodeFold, False);
         cfContinue: DrawParagraphContinue(rcCodeFold);
         cfEnd: DrawParagraphEnd(rcCodeFold);
+        else LineOffset := 0;
       end;
     end;
   end;
