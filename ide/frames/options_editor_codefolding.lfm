@@ -5,8 +5,8 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
   ClientWidth = 400
   TabOrder = 0
   Visible = False
-  DesignLeft = 66
-  DesignTop = 87
+  DesignLeft = 580
+  DesignTop = 542
   object Bevel1: TBevel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkCodeFoldingEnabled
@@ -56,5 +56,17 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     MaxValue = 10
     TabOrder = 1
     Value = 1
+  end
+  object chkAllowSkipGutterSeparatorDraw: TCheckBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edDividerDrawLevel
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 17
+    Top = 60
+    Width = 182
+    BorderSpacing.Top = 6
+    Caption = 'chkAllowSkipGutterSeparatorDraw'
+    TabOrder = 2
   end
 end

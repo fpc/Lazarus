@@ -134,6 +134,7 @@ type
     FVisible: boolean;
     FAutoSize: boolean;
     FOnGutterClick: TGutterClickEvent;
+    FAllowSkipGutterSeparatorDraw: boolean;
     procedure SetAutoSize(const Value: boolean);
     procedure SetColor(const Value: TColor);
     procedure SetRightOffset(Value: integer);
@@ -143,6 +144,7 @@ type
     function  GetPartGutter(Index : Integer) : TSynGutterPartBase;
     property  GutterPart[Index: Integer]: TSynGutterPartBase read GetPartGutter;
   private
+    procedure SetAllowSkipGutterSeparatorDraw(const AValue: Boolean);
     procedure SetLeftOffset(Value: integer);
     // Forward to Code Folding
     procedure SetShowCodeFolding(const Value: boolean);
@@ -184,6 +186,8 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property AutoSize: boolean read FAutoSize write SetAutoSize default FALSE;
+    property AllowSkipGutterSeparatorDraw: boolean
+      read FAllowSkipGutterSeparatorDraw write SetAllowSkipGutterSeparatorDraw default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property RightOffset: integer read FRightOffset write SetRightOffset
@@ -490,6 +494,15 @@ begin
   Result := TSynGutterCodeFolding(FCodeFoldGutter).MarkupInfoCodeFoldingTree;
 end;
 
+procedure TSynGutter.SetAllowSkipGutterSeparatorDraw(const AValue: Boolean);
+begin
+  if FAllowSkipGutterSeparatorDraw <> AValue then
+  begin
+    FAllowSkipGutterSeparatorDraw := AValue;
+    DoChange(Self);
+  end;
+end;
+
 procedure TSynGutter.SetLeftOffset(Value: integer);
 begin
   Value := Max(0, Value);
@@ -618,6 +631,7 @@ end;
 function TSynGutter.NeedSeparatorLine: Boolean;
 begin
   Result :=
+    not AllowSkipGutterSeparatorDraw or
     (FCodeFoldGutter = nil) or
     not FCodeFoldGutter.Visible or
     (FGutterPartList.IndexOf(FCodeFoldGutter) <> FGutterPartList.Count - 1);

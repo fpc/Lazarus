@@ -90,7 +90,8 @@ type
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
-    ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine);
+    ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
+    ahaCodeFoldingTree);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
@@ -111,7 +112,8 @@ const
     'Mouse link',
     'Line number',
     'Line highlight',
-    'Modified line'
+    'Modified line',
+    'Code folding tree'
   );
 
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -163,7 +165,8 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -198,7 +201,8 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -233,7 +237,8 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -268,7 +273,8 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clNone;      FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -303,7 +309,8 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;      FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;      FC: clNone;  Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow;Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -455,6 +462,7 @@ type
     // Code Folding
     FUseCodeFolding: Boolean;
     FCFDividerDrawLevel: Integer;
+    FAllowSkipGutterSeparatorDraw: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -577,6 +585,8 @@ type
         read FUseCodeFolding write FUseCodeFolding default True;
     property CFDividerDrawLevel: Integer
         read FCFDividerDrawLevel write FCFDividerDrawLevel default 4;
+    property AllowSkipGutterSeparatorDraw: Boolean
+       read FAllowSkipGutterSeparatorDraw write FAllowSkipGutterSeparatorDraw default False;
   end;
 
 const
@@ -1538,6 +1548,8 @@ begin
       'EditorOptions/CodeFolding/UseCodeFolding', True);
     FCFDividerDrawLevel :=
       XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 4);
+    FAllowSkipGutterSeparatorDraw :=
+      XMLConfig.GetValue('EditorOptions/CodeFolding/AllowSkipGutterSeparatorDraw', False);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1674,6 +1686,8 @@ begin
         FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
         FCFDividerDrawLevel, 4);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/AllowSkipGutterSeparatorDraw',
+        FAllowSkipGutterSeparatorDraw, False);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2150,6 +2164,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
   SetMarkupColor(aSynEd.Highlighter, ahaModifiedLine, aSynEd.ModifiedLineColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaCodeFoldingTree, aSynEd.CodeFoldingTreeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
 end;
 
@@ -2200,9 +2215,11 @@ begin
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
   ASynEdit.Gutter.AutoSize := true;
   ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf := fShowOnlyLineNumbersMultiplesOf;
+  ASynEdit.Gutter.AllowSkipGutterSeparatorDraw := FAllowSkipGutterSeparatorDraw;
 
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
-  if ASynEdit.Gutter.ShowCodeFolding<>FUseCodeFolding then begin
+  if ASynEdit.Gutter.ShowCodeFolding <> FUseCodeFolding then
+  begin
     ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
     if not FUseCodeFolding then
       ASynEdit.UnfoldAll;
@@ -2247,19 +2264,20 @@ begin
   fVisibleGutter := ASynEdit.Gutter.Visible;
   fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
   fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf;
+  FAllowSkipGutterSeparatorDraw := ASynEdit.Gutter.AllowSkipGutterSeparatorDraw;
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
-  fGutterColor   := ASynEdit.Gutter.Color;
-  fGutterWidth   := ASynEdit.Gutter.Width;
+  fGutterColor := ASynEdit.Gutter.Color;
+  fGutterWidth := ASynEdit.Gutter.Width;
   fVisibleRightMargin := ASynEdit.RightEdge>0;
   if fVisibleRightMargin then
-    fRightMargin   := ASynEdit.RightEdge;
+    fRightMargin:= ASynEdit.RightEdge;
   fRightMarginColor := ASynEdit.RightEdgeColor;
-  fEditorFont    := ASynEdit.Font.Name;
+  fEditorFont := ASynEdit.Font.Name;
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraCharSpacing := ASynEdit.ExtraCharSpacing;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
   fDisableAntialiasing := (ASynEdit.Font.Quality = fqNonAntialiased);
-  fUndoLimit     := ASynEdit.MaxUndo;
+  fUndoLimit := ASynEdit.MaxUndo;
 end;
 
 procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(
