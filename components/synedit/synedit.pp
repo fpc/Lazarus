@@ -9374,7 +9374,7 @@ function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
 // returns physical (screen) position of end bracket
 const
   // keep the ' last
-  Brackets: array[0..6] of char = ('(', ')', '[', ']', '{', '}', '''');
+  Brackets: array[0..7] of char = ('(', ')', '[', ']', '{', '}', '''', '"');
 type
   TokenPos = Record X: Integer; Attr: Integer; end;
 var
@@ -9461,19 +9461,19 @@ var
       CaretXY := LogicalToPhysicalPos(Result)
   end;
 
-  procedure DoFindMatchingQuote;
+  procedure DoFindMatchingQuote(q: char);
   var
     Test: char;
     Len: integer;
   begin
     StartPt:=Point(PosX,PosY);
     GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
-    if (TmpStart = PosX) and (Length(s1)>0) and (s1[Length(s1)] = '''') then begin
+    if (TmpStart = PosX) and (Length(s1)>0) and (s1[Length(s1)] = q) then begin
       PosX := PosX + Length(s1) - 1;
       DoMatchingBracketFound;
       exit;
     end;
-    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>0) and (s1[1] = '''') then begin
+    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>0) and (s1[1] = q) then begin
       PosX := PosX - Length(s1) + 1;
       DoMatchingBracketFound;
       exit;
@@ -9484,7 +9484,7 @@ var
     while PosX > 1 do begin
       Dec(PosX);
       Test := Line[PosX];
-      if (Test = '''') and IsContextBracket then begin
+      if (Test = q) and IsContextBracket then begin
         DoMatchingBracketFound;
         exit;
       end;
@@ -9494,7 +9494,7 @@ var
     while PosX < Len do begin
       Inc(PosX);
       Test := Line[PosX];
-      if (Test = '''') and IsContextBracket then begin
+      if (Test = q) and IsContextBracket then begin
         DoMatchingBracketFound;
         exit;
       end;
@@ -9584,8 +9584,8 @@ var
       for i := Low(Brackets) to High(Brackets) do begin
         if Test = Brackets[i] then begin
           // this is the bracket, get the matching one and the direction
-          if Brackets[i] = '''' then
-            DoFindMatchingQuote
+          if Brackets[i] in ['''', '"'] then
+            DoFindMatchingQuote(Brackets[i])
           else
             DoFindMatchingBracket(i);
           exit;

@@ -92,7 +92,7 @@ end;
 procedure TSynEditMarkupBracket.FindMatchingBracketPair(PhysCaret: TPoint;
   var StartBracket, EndBracket: TPoint);
 const
-  Brackets: set of Char = ['(',')','{','}','[',']', '''' ];
+  Brackets: set of Char = ['(',')','{','}','[',']', '''', '"' ];
 var
   StartLine: string;
   LogCaretXY: TPoint;
