@@ -586,14 +586,15 @@ var
     if FBackwards then begin
       // backwards
       if x>0 then begin
-        DebugLn(['MultiLinePatternFits Backwards: last pattern line not found at start of line']);
+        //DebugLn(['MultiLinePatternFits Backwards: last pattern line not found at start of line']);
         exit;
       end;
       if not WholeWordAtEndFits then begin
         //DebugLn(['MultiLinePatternFits Backwards: end pos not word boundary']);
         exit;
       end;
-      LineStartPos:=SearchLineEndPos;
+      //SearchLineEndPos points at the LAST char of LineEnding
+      LineStartPos:=SearchLineEndPos+1;
       LineEndPos:=length(Pat);
     end else begin
       // forwards
@@ -602,8 +603,9 @@ var
         exit;
       end;
       // Note: word boundary at start was already checked
+      //SearchLineEndPos points at the FIRST char of LineEnding
       LineStartPos:=1;
-      LineEndPos:=SearchLineEndPos;
+      LineEndPos:=SearchLineEndPos-1;
     end;
     CurY:=Y;
 
@@ -614,11 +616,16 @@ var
         dec(CurY);
         if CurY<0 then exit;
         LineEndPos:=LineStartPos-1;
-        if (LineEndPos>0) and (Pat[LineEndPos] in [#10,#13])
-        and (Pat[LineEndPos]<>Pat[LineEndPos+1]) then
-          dec(LineEndPos);
-        LineStartPos:=FindPrevPatternLineEnd(Pat,LineEndPos)+1;
+        if (LineEndPos>=length(LineEnding)) and
+           CompareMem(@Pat[LineEndPos+1-length(LineEnding)], @LineEnding[1], length(LineEnding))
+          then
+          dec(LineEndPos, length(LineEnding));
         CurLineStr:=Lines[CurY];
+        if LineEndPos = 0 then begin // match empty string
+          FoundStartPos:=Point(length(CurLineStr),CurY+1);
+          exit(WholeWordAtStartFits);
+        end;
+        LineStartPos:=FindPrevPatternLineEnd(Pat,LineEndPos)+1;
         //DebugLn(['MultiLinePatternFits Backward: CurLineStr="',CurLineStr,'" CurPattern="',copy(Pat,LineStartPos,LineEndPos-LineStartPos+1),'"']);
         CompareStartPos:=length(CurLineStr)-(LineEndPos-LineStartPos);
         if CompareStartPos<1 then
@@ -648,9 +655,14 @@ var
           exit;
         end;
         LineStartPos:=LineEndPos+1;
-        if (LineStartPos>0) and (Pat[LineStartPos] in [#10,#13])
-        and (Pat[LineStartPos]<>Pat[LineStartPos-1]) then
-          inc(LineStartPos);
+        if (LineStartPos>0) and (LineStartPos+Length(LineEnding)-1<=length(Pat)) and
+           CompareMem(@Pat[LineStartPos], @LineEnding[1], length(LineEnding))
+          then
+          inc(LineStartPos, length(LineEnding));
+        if (LineStartPos > length(Pat)) then begin // Empty string
+          FoundEndPos:=Point(1,CurY+1);
+          exit(WholeWordAtEndFits);
+        end;
         LineEndPos:=FindNextPatternLineEnd(Pat,LineStartPos)-1;
         CurLineStr:=Lines[CurY];
         //DebugLn(['MultiLinePatternFits Forward: CurLineStr="',CurLineStr,'" CurPattern="',copy(Pat,LineStartPos,LineEndPos-LineStartPos+1),'"']);
@@ -894,9 +906,12 @@ begin
     end else begin
       // normal search
       MaxPos:=LineLen-SearchLen;
-      if (SearchLen=0) and (LineLen=0) then begin
+      if (SearchLen=0) and ((LineLen=0) or IsMultiLinePattern) then begin
         // first (last if backwards) line of pattern is empty line
-        FoundStartPos:=Point(1,y+1);
+        if FBackwards then
+          FoundStartPos:=Point(LineLen,y+1)
+        else
+          FoundStartPos:=Point(1,y+1);
         FoundEndPos:=FoundStartPos;
         x:=MaxPos;
         if CheckFound then exit(true);
@@ -904,7 +919,7 @@ begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
         while (x>=0) and (x<=MaxPos) do begin
           //DebugLn(['TSynEditSearch.FindNextOne x=',x]);
-          if CompTable[Line[x]]=CompTable[SearchFor^] then begin
+          if (SearchLen=0) or (CompTable[Line[x]]=CompTable[SearchFor^]) then begin
             //DebugLn(['TSynEditSearch.FindNextOne First character found x=',x,' Line[x]=',Line[x]]);
             if (not fWhole)
             or (x=0) or (not (Line[x-1] in FIdentChars)) then begin
