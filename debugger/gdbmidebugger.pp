@@ -153,6 +153,7 @@ type
     function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetWideText(const ALocation: TDBGPtr): WideString;
     function  GetData(const ALocation: TDbgPtr): TDbgPtr; overload;
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
@@ -1397,7 +1398,7 @@ begin
         if e <> 0 then Exit;
 
         S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type']) of
+        case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
           0, 1: begin
             if Addr = 0
             then AResult := ''''''
@@ -1411,6 +1412,12 @@ begin
               if S = '' then S := '???';
               AResult := 'class of ' + S + ' ' + AResult;
             end;
+          end;
+          3: begin
+            // widestring handling
+            if Addr = 0
+            then AResult := ''''''
+            else AResult := MakePrintable(GetWideText(Addr));
           end;
         else
           if Addr = 0
@@ -1752,6 +1759,39 @@ begin
   end;
   SetLength(Result, n);
   Result := Result + Trailor;
+end;
+
+function TGDBMIDebugger.GetWideText(const ALocation: TDBGPtr): WideString;
+
+  function GetWideChar(const ALocation: TDBGPtr): WideChar;
+  var
+    Address, S: String;
+    R: TGDBMIExecResult;
+  begin
+    Str(ALocation, Address);
+    if not ExecuteCommand('x/uh' + Address, [], [cfNoMICommand, cfIgnoreError], R)
+    then begin
+      Result := #0;
+      Exit;
+    end;
+    S := StripLN(R.Values);
+    S := GetPart(['\t'], [], S);
+    Result := WideChar(StrToIntDef(S, 0) and $FFFF);
+  end;
+var
+  OneChar: WideChar;
+  CurLocation: TDBGPtr;
+begin
+  Result := '';
+  CurLocation := ALocation;
+  repeat
+    OneChar := GetWideChar(CurLocation);
+    if OneChar <> #0 then
+    begin
+      Result := Result + OneChar;
+      CurLocation := CurLocation + 2;
+    end;
+  until (OneChar = #0);
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
