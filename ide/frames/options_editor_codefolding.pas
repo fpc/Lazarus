@@ -34,7 +34,6 @@ type
 
   TEditorCodefoldingOptionsFrame = class(TAbstractIDEOptionsEditor)
     Bevel1: TBevel;
-    chkAllowSkipGutterSeparatorDraw: TCheckBox;
     chkCodeFoldingEnabled: TCheckBox;
     edDividerDrawLevel: TSpinEdit;
     lblDividerDrawLevel: TLabel;
@@ -57,7 +56,6 @@ procedure TEditorCodefoldingOptionsFrame.chkCodeFoldingEnabledChange(Sender: TOb
 begin
   lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
   edDividerDrawLevel.Enabled  := chkCodeFoldingEnabled.Checked;
-  chkAllowSkipGutterSeparatorDraw.Enabled := chkCodeFoldingEnabled.Checked;
 end;
 
 function TEditorCodefoldingOptionsFrame.GetTitle: String;
@@ -69,7 +67,6 @@ procedure TEditorCodefoldingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDi
 begin
   chkCodeFoldingEnabled.Caption := dlgUseCodeFolding;
   lblDividerDrawLevel.Caption := dlgCFDividerDrawLevel + ':';
-  chkAllowSkipGutterSeparatorDraw.Caption := dlgAllowSkipGutterSeparatorDraw;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.ReadSettings(
@@ -79,7 +76,6 @@ begin
   begin
     chkCodeFoldingEnabled.Checked := UseCodeFolding;
     edDividerDrawLevel.Value := CFDividerDrawLevel;
-    chkAllowSkipGutterSeparatorDraw.Checked := AllowSkipGutterSeparatorDraw;
   end;
 end;
 
@@ -90,7 +86,6 @@ begin
   begin
     UseCodeFolding := chkCodeFoldingEnabled.Checked;
     CFDividerDrawLevel := edDividerDrawLevel.Value;
-    AllowSkipGutterSeparatorDraw := chkAllowSkipGutterSeparatorDraw.Checked;
   end;
 end;
 

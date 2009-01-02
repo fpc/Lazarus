@@ -468,7 +468,6 @@ type
     // Code Folding
     FUseCodeFolding: Boolean;
     FCFDividerDrawLevel: Integer;
-    FAllowSkipGutterSeparatorDraw: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -591,8 +590,6 @@ type
         read FUseCodeFolding write FUseCodeFolding default True;
     property CFDividerDrawLevel: Integer
         read FCFDividerDrawLevel write FCFDividerDrawLevel default 4;
-    property AllowSkipGutterSeparatorDraw: Boolean
-       read FAllowSkipGutterSeparatorDraw write FAllowSkipGutterSeparatorDraw default False;
   end;
 
 const
@@ -1554,8 +1551,6 @@ begin
       'EditorOptions/CodeFolding/UseCodeFolding', True);
     FCFDividerDrawLevel :=
       XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 4);
-    FAllowSkipGutterSeparatorDraw :=
-      XMLConfig.GetValue('EditorOptions/CodeFolding/AllowSkipGutterSeparatorDraw', False);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1692,8 +1687,6 @@ begin
         FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
         FCFDividerDrawLevel, 4);
-    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/AllowSkipGutterSeparatorDraw',
-        FAllowSkipGutterSeparatorDraw, False);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2222,7 +2215,6 @@ begin
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
   ASynEdit.Gutter.AutoSize := true;
   ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf := fShowOnlyLineNumbersMultiplesOf;
-  ASynEdit.Gutter.AllowSkipGutterSeparatorDraw := FAllowSkipGutterSeparatorDraw;
 
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
   if ASynEdit.Gutter.ShowCodeFolding <> FUseCodeFolding then
@@ -2271,7 +2263,6 @@ begin
   fVisibleGutter := ASynEdit.Gutter.Visible;
   fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
   fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf;
-  FAllowSkipGutterSeparatorDraw := ASynEdit.Gutter.AllowSkipGutterSeparatorDraw;
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
   fGutterColor := ASynEdit.Gutter.Color;
   fGutterWidth := ASynEdit.Gutter.Width;

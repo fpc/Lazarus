@@ -1136,7 +1136,6 @@ resourcestring
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';
-  dlgAllowSkipGutterSeparatorDraw = 'Allow to skip gutter separator line draw';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgBracketHighlight = 'Bracket highlight';
