@@ -76,6 +76,8 @@ type
   public
     constructor Create;
     procedure Assign(aSource: TPersistent); override;
+    procedure Clear;
+    function IsEnabled: boolean;
   published
     function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor; var AStyle: TFontStyles);
@@ -286,6 +288,21 @@ begin
     FStyleMask := Source.FStyleMask;
     DoChange; {TODO: only if really changed}
   end;
+end;
+
+procedure TSynSelectedColor.Clear;
+begin
+  FBG := clNone;
+  FFG := clNone;
+  FFrameColor := clNone;
+  FStyle := [];
+  FStyleMask := [];
+end;
+
+function TSynSelectedColor.IsEnabled: boolean;
+begin
+  Result := (FBG <> clNone) or (FFG <> clNone) or (FFrameColor <> clNone) or
+            (FStyle <> []) or (FStyleMask <> []);
 end;
 
 { TSynBookMarkOpt }

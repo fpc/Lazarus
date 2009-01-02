@@ -340,6 +340,7 @@ type
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
+    fMarkupHighCaret : TSynEditMarkupHighlightAllCaret;
     fMarkupBracket : TSynEditMarkupBracket;
     fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
@@ -467,6 +468,7 @@ type
     function GetCaretX : Integer;
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
+    function GetHighlightCaretColor: TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
@@ -934,6 +936,7 @@ type
     read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
     property IncrementColor: TSynSelectedColor read GetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
+    property HighlightCaretColor: TSynSelectedColor read GetHighlightCaretColor;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
@@ -1465,14 +1468,16 @@ begin
   Cursor := crIBeam;
 {$IFDEF SYN_LAZARUS}
   // needed before setting color
-  fMarkupHighAll := TSynEditMarkupHighlightAll.Create(self);
-  fMarkupBracket := TSynEditMarkupBracket.Create(self);
+  fMarkupHighAll   := TSynEditMarkupHighlightAll.Create(self);
+  fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
+  fMarkupBracket   := TSynEditMarkupBracket.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
   fMarkupSpecialLine := TSynEditMarkupSpecialLine.Create(self);
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
+  fMarkupManager.AddMarkUp(fMarkupHighCaret);
   fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
   fMarkupManager.AddMarkUp(fMarkupSpecialLine);
   fMarkupManager.AddMarkUp(fMarkupBracket);
@@ -1719,6 +1724,11 @@ end;
 function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
 begin
   result := fMarkupHighAll.MarkupInfo;
+end;
+
+function TCustomSynEdit.GetHighlightCaretColor: TSynSelectedColor;
+begin
+  result := fMarkupHighCaret.MarkupInfo;
 end;
 
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
