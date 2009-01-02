@@ -3951,7 +3951,7 @@ lcl/interfaces/win32/win32wsdirsel.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wseditbtn.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextctrls.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextdlgs.pp svneol=native#text/pascal
-lcl/interfaces/win32/win32wsextdlgs.rc svneol=native#text/plain
+lcl/interfaces/win32/win32wsextdlgs.rc svneol=CRLF#text/plain eol=crlf
 lcl/interfaces/win32/win32wsfilectrl.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsforms.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsgrids.pp svneol=native#text/pascal
