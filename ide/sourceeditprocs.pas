@@ -448,6 +448,7 @@ var
   ProcModifierPos: LongInt;
   ProcHeadFlags: TProcHeadAttributes;
   CanAddSemicolon: Boolean;
+  CanAddComma: Boolean;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -456,6 +457,7 @@ begin
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
   CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
+  CanAddComma:=(AddChar<>',');
 
   IdentItem:=IdentList.FilteredItems[Index];
   if IdentItem=nil then exit;
@@ -588,6 +590,12 @@ begin
         inc(CursorToLeft);
       end;
     end;
+  end;
+
+  if CanAddComma
+  and (ilcfNeedsEndComma in IdentList.ContextFlags) then
+  begin
+    Result:=Result+',';
   end;
 
   //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);

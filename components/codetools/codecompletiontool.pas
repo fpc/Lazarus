@@ -5596,6 +5596,53 @@ var
       AnAVLNode:=NextAVLNode;
     end;
   end;
+
+  procedure CheckForChangedProcs;
+  var
+    BodyAVLNode: TAVLTreeNode;
+    BodyNodeExt: TCodeTreeNodeExtension;
+    BodiesWithoutDefs: TAVLTree;
+    DefsWithoutBodies: TAVLTree;
+    DefAVLNode: TAVLTreeNode;
+    DefNodeExt: TCodeTreeNodeExtension;
+  begin
+    BodiesWithoutDefs:=nil;
+    DefsWithoutBodies:=nil;
+    try
+      // collect all bodies without a definition
+      BodyAVLNode:=ProcBodyNodes.FindLowest;
+      while BodyAVLNode<>nil do begin
+        BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+        if ClassProcs.Find(BodyNodeExt)=nil then begin
+          BodiesWithoutDefs:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+          BodiesWithoutDefs.Add(BodyNodeExt);
+        end;
+        BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
+      end;
+      if BodiesWithoutDefs=nil then exit;
+      // collect all definitions without a body
+      DefAVLNode:=ClassProcs.FindLowest;
+      while DefAVLNode<>nil do begin
+        DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
+        if ProcBodyNodes.Find(DefNodeExt)=nil then begin
+          DefsWithoutBodies:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+          DefsWithoutBodies.Add(DefNodeExt);
+        end;
+        DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
+      end;
+      if DefsWithoutBodies=nil then exit;
+      if BodiesWithoutDefs.Count<>DefsWithoutBodies.Count then exit;
+
+      // there is the same amount of bodies without a def and defs without bodies
+      // => try to create a mapping
+
+
+
+    finally
+      BodiesWithoutDefs.Free;
+      DefsWithoutBodies.Free;
+    end;
+  end;
   
   procedure RemoveAbstractMethods;
   begin
@@ -5695,6 +5742,9 @@ begin
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
+
+    // check for changed procs (existing proc bodies without definitions in the class)
+    CheckForChangedProcs;
 
     // remove abstract methods
     RemoveAbstractMethods;
