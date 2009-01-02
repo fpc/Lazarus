@@ -469,6 +469,7 @@ type
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetHighlightCaretColor: TSynSelectedColor;
+    function GetHighlightCaretTime: integer;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
@@ -480,6 +481,7 @@ type
     function GetMouseLinkColor : TSynSelectedColor;
     procedure SetBracketHighlightStyle(
       const AValue: TSynEditBracketHighlightStyle);
+    procedure SetHighlightCaretTime(const AValue: integer);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
     procedure SetRealLines(const AValue : TStrings);
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
@@ -937,6 +939,7 @@ type
     property IncrementColor: TSynSelectedColor read GetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
     property HighlightCaretColor: TSynSelectedColor read GetHighlightCaretColor;
+    property HighlightCaretTime: integer read GetHighlightCaretTime write SetHighlightCaretTime;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
@@ -1731,6 +1734,11 @@ begin
   result := fMarkupHighCaret.MarkupInfo;
 end;
 
+function TCustomSynEdit.GetHighlightCaretTime: integer;
+begin
+  Result := fMarkupHighCaret.WaitTime;
+end;
+
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
 begin
   result := fMarkupSelection.MarkupInfoIncr;
@@ -1792,6 +1800,11 @@ procedure TCustomSynEdit.SetBracketHighlightStyle(
   const AValue: TSynEditBracketHighlightStyle);
 begin
   fMarkupBracket.HighlightStyle := AValue;
+end;
+
+procedure TCustomSynEdit.SetHighlightCaretTime(const AValue: integer);
+begin
+  FMarkupHighCaret.WaitTime := AValue;
 end;
 
 procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);
