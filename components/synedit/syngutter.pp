@@ -660,10 +660,12 @@ begin
   i := 0;
   x2 := x;
   while i < FGutterPartList.Count-1 do begin
-    if x2 >= GutterPart[i].Width then
-      x2 := x2 - GutterPart[i].Width
-    else
-      break;
+    if GutterPart[i].Visible then begin
+      if x2 >= GutterPart[i].Width then
+        x2 := x2 - GutterPart[i].Width
+      else
+        break;
+    end;
     inc(i)
   end;
   GutterPart[i].DoOnGutterClick(X, Y);

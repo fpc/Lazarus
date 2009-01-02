@@ -2070,16 +2070,13 @@ procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
 var
   BreakPtMark: TSourceMark;
 begin
-  if (not EditorComponent.Gutter.ShowCodeFolding)
-  or (X>=EditorComponent.Gutter.CodeFoldingWidth) then begin
-    // create or delete breakpoint
-    // find breakpoint mark at line
-    BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
-    if BreakPtMark = nil then
-      DebugBoss.DoCreateBreakPoint(Filename,Line,true)
-    else
-      DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
-  end;
+  // create or delete breakpoint
+  // find breakpoint mark at line
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(Filename,Line,true)
+  else
+    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
