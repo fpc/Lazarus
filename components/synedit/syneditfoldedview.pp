@@ -183,6 +183,7 @@ type
 
     function GetCount : integer;
     function GetDrawDivider(Index : integer) : Boolean;
+    function GetFoldNestLevel(index : Integer): integer;
     function GetLines(index : Integer) : String;
     function GetDisplayNumber(index : Integer) : Integer;
     function GetRange(Index : integer) : TSynEditRange;
@@ -231,6 +232,8 @@ type
       read GetDisplayNumber;
     property FoldType[index : Integer] : TSynEditCodeFoldType (* FoldIcon / State *)
       read GetFoldType;
+    property FoldNestLvl[index : Integer] : integer           (* FoldIcon / Deep/Level of nesting; 1 for top-lvl *)
+      read GetFoldNestLevel;
     property DrawDivider[Index: integer]: Boolean
       read GetDrawDivider;
     property TextIndex[index : Integer] : Integer       (* Position in SynTextBuffer / result is 0-based *)
@@ -1534,6 +1537,15 @@ function TSynEditFoldedView.GetDrawDivider(Index : integer) : Boolean;
 begin
   result := (FoldType[Index] in [cfEnd])
     and (fLines.FoldEndLevel[TextIndex[index]] < CFDividerDrawLevel);
+end;
+
+function TSynEditFoldedView.GetFoldNestLevel(index : Integer): integer;
+begin
+  if (index < 0) or (index > fLinesInWindow) then exit(-1);
+  if (fFoldTypeList[index] = cfEnd) and (fTextIndexList[index] > 0) then
+    Result := fLines.FoldEndLevel[fTextIndexList[index]-1]
+  else
+    Result := fLines.FoldEndLevel[fTextIndexList[index]];
 end;
 
 (* Topline *)
