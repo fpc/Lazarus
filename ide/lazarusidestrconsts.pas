@@ -1149,6 +1149,7 @@ resourcestring
   dlgMarginGutter = 'Margin and gutter';
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';
+  dlgGutterSeparatorIndex = 'Gutter separator index';
   dlgShowLineNumbers = 'Show line numbers';
   dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';

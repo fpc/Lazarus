@@ -3,22 +3,23 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 501
   ClientHeight = 441
   ClientWidth = 501
+  TabOrder = 0
   Visible = False
-  DesignLeft = 88
-  DesignTop = 116
+  DesignLeft = 154
+  DesignTop = 203
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 128
+    Height = 122
     Top = 0
     Width = 501
     Align = alTop
     AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 110
+    ClientHeight = 104
     ClientWidth = 497
     Ctl3D = False
     TabOrder = 0
@@ -27,7 +28,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RightMarginComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 338
+      Left = 288
       Height = 14
       Top = 9
       Width = 83
@@ -41,54 +42,62 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 14
-      Top = 85
+      Top = 79
       Width = 110
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Every n-th line number'
       ParentColor = False
     end
+    object GutterSeparatorIndexLabel: TLabel
+      AnchorSideLeft.Control = RightMarginLabel
+      AnchorSideTop.Control = GutterSeparatorIndexSpinBox
+      AnchorSideTop.Side = asrCenter
+      Left = 288
+      Height = 14
+      Top = 37
+      Width = 133
+      Caption = 'GutterSeparatorIndexLabel'
+      ParentColor = False
+    end
     object VisibleRightMarginCheckBox: TCheckBox
       AnchorSideLeft.Control = MarginAndGutterGroupBox
       AnchorSideTop.Control = MarginAndGutterGroupBox
       Left = 6
-      Height = 19
+      Height = 17
       Top = 6
-      Width = 159
+      Width = 151
       BorderSpacing.Around = 6
       Caption = 'VisibleRightMarginCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 0
-      UseOnChange = False
     end
     object VisibleGutterCheckBox: TCheckBox
       AnchorSideLeft.Control = MarginAndGutterGroupBox
       AnchorSideTop.Control = VisibleRightMarginCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 31
-      Width = 133
+      Height = 17
+      Top = 29
+      Width = 125
       BorderSpacing.Around = 6
       Caption = 'VisibleGutterCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 1
-      UseOnChange = False
     end
     object ShowLineNumbersCheckBox: TCheckBox
       AnchorSideLeft.Control = MarginAndGutterGroupBox
       AnchorSideTop.Control = VisibleGutterCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 56
-      Width = 160
+      Height = 17
+      Top = 52
+      Width = 152
       BorderSpacing.Around = 6
       Caption = 'ShowLineNumbersCheckBox'
       OnChange = GeneralCheckBoxOnChange
       OnClick = ShowLineNumbersCheckBoxClick
       TabOrder = 2
-      UseOnChange = False
     end
     object RightMarginComboBox: TComboBox
       AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
@@ -97,7 +106,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 232
       Height = 21
       Top = 6
-      Width = 100
+      Width = 50
       AutoComplete = False
       BorderSpacing.Left = 50
       BorderSpacing.Around = 6
@@ -121,13 +130,26 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 122
       Height = 23
-      Top = 81
+      Top = 75
       Width = 54
       BorderSpacing.Around = 6
       MinValue = 1
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 4
       Value = 1
+    end
+    object GutterSeparatorIndexSpinBox: TSpinEdit
+      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideTop.Control = RightMarginComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 232
+      Height = 23
+      Top = 33
+      Width = 50
+      MaxValue = 4
+      MinValue = -1
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 5
     end
   end
   object EditorFontGroupBox: TGroupBox[1]
@@ -137,7 +159,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 105
-    Top = 134
+    Top = 128
     Width = 501
     Align = alTop
     AutoSize = True
@@ -303,13 +325,12 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 6
       Height = 21
       Top = 60
-      Width = 161
+      Width = 153
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'DisableAntialiasingCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 5
-      UseOnChange = False
     end
   end
   object DisplayPreview: TSynEdit[2]
@@ -320,8 +341,8 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 196
-    Top = 245
+    Height = 202
+    Top = 239
     Width = 501
     Align = alClient
     BorderSpacing.Top = 6
@@ -336,7 +357,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     TabOrder = 2
     BookMarkOptions.Xoffset = 30
     BookMarkOptions.OnChange = nil
+    Gutter.RightOffset = 0
+    Gutter.LeftOffset = 0
     Gutter.ShowCodeFolding = True
+    Gutter.CodeFoldingWidth = 10
     Gutter.ShowChanges = True
     Gutter.ShowLineNumbers = True
     Gutter.ZeroStart = False

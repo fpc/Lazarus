@@ -18,7 +18,7 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
- 
+
   Author: Mattias Gaertner
 
   Abstract:
@@ -62,12 +62,12 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript);
-    
+
   TPascalHilightAttribute = (
     phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
     phaString, phaSymbol
   );
-  
+
 const
   PascalHilightAttributeNames: array[TPascalHilightAttribute] of String = (
     SYNS_AttrAssembler,
@@ -122,7 +122,7 @@ const
     dlgGutter,
     dlgRightMargin
   );
-    
+
 type
   TSchemeAttribute = record
     BG, FG, FC: TColor;
@@ -137,7 +137,7 @@ type
     Additional: array[TAdditionalHilightAttribute] of TSchemeAttribute;
     Single: array[TSingleColorAttribute] of TColor;
   end;
-  
+
 const
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
@@ -175,7 +175,7 @@ const
       { shaRightMargin } clSilver
     )
   );
-  
+
   TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Twilight';
     Default: (BG: clBlack;  FG: clWhite; FC: clNone; Styles: []; StylesMask: []);
@@ -249,7 +249,7 @@ const
       { shaRightMargin } clSilver
     )
   );
-  
+
   OCEAN_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Ocean';
     Default: (BG: clNavy;  FG: clYellow; FC: clNone; Styles: []; StylesMask: []);
@@ -439,6 +439,7 @@ type
     fShowOnlyLineNumbersMultiplesOf: integer;
     fGutterColor: TColor;
     fGutterWidth: Integer;
+    FGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
     fRightMarginColor: TColor;
     fEditorFont:  String;
@@ -542,6 +543,8 @@ type
       read fGutterColor write fGutterColor default clBtnFace;
     property GutterWidth: Integer
       read fGutterWidth write fGutterWidth default 30;
+    property GutterSeparatorIndex: Integer read FGutterSeparatorIndex
+      write FGutterSeparatorIndex default 3;
     property RightMargin: Integer
       read fRightMargin write fRightMargin default 80;
     property RightMarginColor: Integer
@@ -1355,6 +1358,7 @@ begin
   fUndoLimit := 32767;
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
+  FGutterSeparatorIndex := 3;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -1388,7 +1392,7 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
-  
+
   // Code Folding
   FCFDividerDrawLevel := 4;
 end;
@@ -1488,6 +1492,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
       XMLConfig.GetValue('EditorOptions/Display/GutterWidth', 30);
+    FGutterSeparatorIndex :=
+      XMLConfig.GetValue('EditorOptions/Display/GutterSeparatorIndex', 3);
     fRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
     fRightMarginColor :=
@@ -1630,6 +1636,8 @@ begin
       fGutterColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
       fGutterWidth, 30);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterSeparatorIndex',
+      fGutterSeparatorIndex, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMargin',
       fRightMargin, 80);
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMarginColor',
@@ -1848,7 +1856,7 @@ begin
     Attr.StyleMask := Scheme.Attributes[pha].StylesMask;
     Exit;
   end;
-  
+
   for aha := low(aha) to High(aha) do
   begin
     if AttriName <> LowerCase(AdditionalHighlightAttributes[aha]) then Continue;
@@ -1865,7 +1873,7 @@ begin
     Attr.StyleMask := Scheme.Additional[aha].StylesMask;
     Exit;
   end;
-  
+
   Attr.Foreground := Scheme.Default.FG;
   Attr.Background := Scheme.Default.BG;
   Attr.FrameColor := Scheme.Default.FC;
@@ -2137,7 +2145,7 @@ begin
       if Attrib.Name = '' then Continue;
       if LowerCase(Attrib.Name) <> LowerCase(AdditionalHighlightAttributes[AddHilightAttr])
       then Continue;
-      
+
       FG := Attrib.Foreground;
       BG := Attrib.Background;
       Styles := Attrib.Style;
@@ -2145,7 +2153,7 @@ begin
       Exit((FG <> clNone) or (BG <> clNone) or (Styles <> []) or (StylesMask <> []));
     end;
   end;
-    
+
   // set default
   FG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;
   BG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
@@ -2225,6 +2233,7 @@ begin
   end;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
+  ASynEdit.Gutter.SeparatorIndex := FGutterSeparatorIndex;
   if fVisibleRightMargin then
     ASynEdit.RightEdge := fRightMargin
   else
@@ -2237,7 +2246,7 @@ begin
   else
     ASynEdit.Font.Quality := fqDefault;
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
-  
+
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
@@ -2266,6 +2275,7 @@ begin
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
   fGutterColor := ASynEdit.Gutter.Color;
   fGutterWidth := ASynEdit.Gutter.Width;
+  FGutterSeparatorIndex := ASynEdit.Gutter.SeparatorIndex;
   fVisibleRightMargin := ASynEdit.RightEdge>0;
   if fVisibleRightMargin then
     fRightMargin:= ASynEdit.RightEdge;
@@ -2314,7 +2324,7 @@ begin
   if not (APreviewEditor is TSynEdit) then
     exit;
   ASynEdit := TSynEdit(APreviewEditor);
-  
+
   // Get real settings
   GetSynEditSettings(ASynEdit);
 

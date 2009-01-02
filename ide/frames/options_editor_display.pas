@@ -45,12 +45,14 @@ type
     ExtraCharSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
+    GutterSeparatorIndexLabel: TLabel;
     MarginAndGutterGroupBox: TGroupBox;
     RightMarginComboBox: TComboBox;
     RightMarginLabel: TLabel;
     ShowLineNumbersCheckBox: TCheckBox;
     ShowOnlyLineNumbersMultiplesOfLabel: TLabel;
     ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit;
+    GutterSeparatorIndexSpinBox: TSpinEdit;
     VisibleGutterCheckBox: TCheckBox;
     VisibleRightMarginCheckBox: TCheckBox;
     procedure EditorFontButtonClick(Sender: TObject);
@@ -205,6 +207,7 @@ begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
         PreviewEdits[a].Gutter.ShowLineNumbers  := ShowLineNumbersCheckBox.Checked;
         PreviewEdits[a].Gutter.ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
+        PreviewEdits[a].Gutter.SeparatorIndex := GutterSeparatorIndexSpinBox.Value;
         if VisibleRightMarginCheckBox.Checked then
           PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80)
         else
@@ -241,6 +244,7 @@ begin
   VisibleGutterCheckBox.Caption := dlgVisibleGutter;
   ShowLineNumbersCheckBox.Caption := dlgShowLineNumbers;
   ShowOnlyLineNumbersMultiplesOfLabel.Caption := lisEveryNThLineNumber;
+  GutterSeparatorIndexLabel.Caption := dlgGutterSeparatorIndex;
   RightMarginLabel.Caption := dlgRightMargin;
   EditorFontGroupBox.Caption := dlgDefaultEditorFont;
   EditorFontHeightLabel.Caption := dlgEditorFontHeight;
@@ -260,6 +264,7 @@ begin
     VisibleGutterCheckBox.Checked := VisibleGutter;
     ShowLineNumbersCheckBox.Checked := ShowLineNumbers;
     ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := ShowOnlyLineNumbersMultiplesOf;
+    GutterSeparatorIndexSpinBox.Value := GutterSeparatorIndex;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
     SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin));
     SetComboBoxText(EditorFontComboBox, EditorFont);
@@ -281,6 +286,7 @@ begin
     VisibleGutter := VisibleGutterCheckBox.Checked;
     ShowLineNumbers := ShowLineNumbersCheckBox.Checked;
     ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
+    GutterSeparatorIndex := GutterSeparatorIndexSpinBox.Value;
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;
     RightMargin := StrToIntDef(RightMarginComboBox.Text, 80);
     EditorFont := EditorFontComboBox.Text;
