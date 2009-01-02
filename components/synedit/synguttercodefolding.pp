@@ -147,7 +147,7 @@ begin
   if not Visible then exit;
   LineHeight := TSynEdit(FEdit).LineHeight;
   LineOffset := 0;
-  if (iLine > 0) and (FFoldView.FoldType[iLine-1] = cfEnd) then
+  if (FirstLine > 0) and (FFoldView.FoldType[FirstLine-1] = cfEnd) then
     LineOffset := 2;
   BoxSize := Min(Width, LineHeight - cNodeOffset*2);
 
