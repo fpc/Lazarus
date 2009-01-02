@@ -109,6 +109,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoTextChanged(StartLine, EndLine: Integer); override;
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
@@ -116,8 +117,6 @@ type
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
-    Procedure InvalidateScreenLines(aFirstCodeLine, aLastCodeLine: Integer);
-    Procedure InvalidateLines(aFirstCodeLine, aLastCodeLine: Integer);
     Procedure Invalidate;
     Procedure SendLineInvalidation;
 
@@ -380,12 +379,7 @@ begin
   SendLineInvalidation;
 end;
 
-procedure TSynEditMarkupHighlightAll.InvalidateScreenLines(aFirstCodeLine, aLastCodeLine : Integer);
-begin
-  InvalidateLines(ScreenRowToRow(aFirstCodeLine), ScreenRowToRow(aLastCodeLine));
-end;
-
-procedure TSynEditMarkupHighlightAll.InvalidateLines(aFirstCodeLine, aLastCodeLine : Integer);
+procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
 var
   Pos: Integer;
 begin
@@ -396,18 +390,18 @@ begin
   // Invalidate neighbouring lines, which have an overlapping match
   Pos := 0;
   while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y < aFirstCodeLine )
+  and (fMatches.EndPoint[Pos].y < StartLine)
   do inc(Pos);
   // curent Match ends in aFirstCodeLine or later
-  if fMatches.StartPoint[Pos].y < aFirstCodeLine
-  then InvalidateSynLines(fMatches.StartPoint[Pos].y, aFirstCodeLine - 1);
+  if fMatches.StartPoint[Pos].y < StartLine
+  then InvalidateSynLines(fMatches.StartPoint[Pos].y, StartLine - 1);
 
   while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y = aLastCodeLine )
+  and (fMatches.EndPoint[Pos].y = EndLine )
   do inc(Pos);
   // curent Match ends after aLastCodeLine
-  if fMatches.StartPoint[Pos].y <= aLastCodeLine
-  then InvalidateSynLines(aLastCodeLine + 1, fMatches.EndPoint[Pos].y);
+  if fMatches.StartPoint[Pos].y <= EndLine
+  then InvalidateSynLines(EndLine + 1, fMatches.EndPoint[Pos].y);
 
   fInvalidating := False;
   fHasInvalidLines := true;

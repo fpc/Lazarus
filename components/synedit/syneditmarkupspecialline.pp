@@ -47,6 +47,11 @@ type
   protected
     procedure DoMarkupLineHighlightInfoChange(Sender: TObject);
     function HasLineHighlight: Boolean;
+    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoTopLineChanged(OldTopLine : Integer); override;
+    procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
+    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit: TCustomControl);
     destructor Destroy; override;
@@ -85,6 +90,31 @@ begin
   Result :=
     (FMarkupLineHighlightInfo.Background <> clNone) or
     (FMarkupLineHighlightInfo.Foreground <> clNone);
+end;
+
+procedure TSynEditMarkupSpecialLine.DoCaretChanged(OldCaret: TPoint);
+begin
+  InvalidateLineHighlight;
+end;
+
+procedure TSynEditMarkupSpecialLine.DoTopLineChanged(OldTopLine: Integer);
+begin
+  InvalidateLineHighlight;
+end;
+
+procedure TSynEditMarkupSpecialLine.DoLinesInWindoChanged(OldLinesInWindow: Integer);
+begin
+  InvalidateLineHighlight;
+end;
+
+procedure TSynEditMarkupSpecialLine.DoTextChanged(StartLine, EndLine: Integer);
+begin
+  InvalidateLineHighlight;
+end;
+
+procedure TSynEditMarkupSpecialLine.DoMarkupChanged(AMarkup: TSynSelectedColor);
+begin
+  InvalidateLineHighlight;
 end;
 
 constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TCustomControl);

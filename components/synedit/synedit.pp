@@ -1605,15 +1605,7 @@ begin
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
     if sfCaretChanged in fStateFlags then
-      UpdateCaret
-    else
-    if not(sfPainting in fStateFlags) then
-    begin
-      if Assigned(fMarkupBracket) then
-        fMarkupBracket.InvalidateBracketHighlight;
-      if Assigned(fMarkupSpecialLine) then
-        fMarkupSpecialLine.InvalidateLineHighlight;
-    end;
+      UpdateCaret;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
   end;
@@ -2010,7 +2002,6 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      fMarkupHighAll.InvalidateScreenLines(0, LinesInWindow+1);
       rcInval := ClientRect;
       rcInval.Left := fGutterWidth;
       if sfLinesChanging in fStateFlags then
@@ -2033,7 +2024,6 @@ begin
       { any line visible? }
       if (l >= f) then begin
         If LastLine < 0 then LastLine := ScreenRowToRow(LinesInWindow + 1);
-        fMarkupHighAll.InvalidateLines(FirstLine, LastLine);
         rcInval := Rect(fGutterWidth, fTextHeight * f,
           ClientWidth-ScrollBarWidth, fTextHeight * l);
         if sfLinesChanging in fStateFlags then
@@ -3954,9 +3944,6 @@ procedure TCustomSynEdit.Invalidate;
 begin
   //DebugLn('TCustomSynEdit.Invalidate A');
   //RaiseGDBException('');
-  {$IFDEF SYN_LAZARUS}
-  fMarkupHighAll.InvalidateScreenLines(0, LinesInWindow+1);
-  {$ENDIF}
   inherited Invalidate;
 end;
 
@@ -4168,6 +4155,7 @@ begin
       end;
       {$IFDEF SYN_LAZARUS}
       fCaret.LineCharPos:= Value;
+      fMarkupManager.Caret := Value;
       {$ENDIF}
       EnsureCursorPosVisible;
       Include(fStateFlags, sfCaretChanged);
@@ -4502,10 +4490,6 @@ begin
   {$ENDIF}
   then begin
     Include(fStateFlags, sfCaretChanged);
-    {$IFDEF SYN_LAZARUS}
-    if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
-    if assigned(fMarkupSpecialLine) then fMarkupSpecialLine.InvalidateLineHighlight;
-    {$ENDIF}
   end else begin
     Exclude(fStateFlags, sfCaretChanged);
     {$IFDEF SYN_LAZARUS}
@@ -4527,10 +4511,6 @@ begin
       HideCaret;
       SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
     end;
-    {$IFDEF SYN_LAZARUS}
-    if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
-    if assigned(fMarkupSpecialLine) then fMarkupSpecialLine.InvalidateLineHighlight;
-    {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
       cf.dwStyle := CFS_POINT;
@@ -4877,6 +4857,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   if not assigned(fHighlighter) or (Index > Lines.Count - 1) then begin
     fTextView.FixFoldingAtTextIndex(Index);
+    fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     exit;
   end;
@@ -4890,6 +4871,7 @@ begin
   {$ENDIF}
   if Index >= Lines.Count - 1 then begin
     fTextView.FixFoldingAtTextIndex(Index);
+    fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     Exit;
   end;
@@ -4935,6 +4917,8 @@ begin
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
   fTextView.FixFoldingAtTextIndex(FixFStart, Result);
+  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(FixFStart+1), 0),
+                                       Min(RowToScreenRow(Result), LinesInWindow+1));
   Topline := TopLine;
   if FixFStart < index then Invalidate;
   {$ENDIF}
@@ -9269,9 +9253,6 @@ begin
     TopLine + LinesInWindow{$ENDIF})
     and (Line <= Lines.Count) and HandleAllocated
   then begin
-    {$IFDEF SYN_LAZARUS}
-    fMarkupHighAll.InvalidateLines(Line, Line);
-    {$ENDIF}
     // we invalidate gutter and text area of this line
     rcInval := Rect(0, fTextHeight * RowToScreenRow(Line)
         , ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}, 0);
@@ -9482,8 +9463,8 @@ var
 
   procedure DoFindMatchingQuote;
   var
-    Test, BracketInc, BracketDec: char;
-    NumBrackets, Len: integer;
+    Test: char;
+    Len: integer;
   begin
     StartPt:=Point(PosX,PosY);
     GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);

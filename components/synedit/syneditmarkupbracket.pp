@@ -46,6 +46,11 @@ type
   protected
     procedure FindMatchingBracketPair(PhysCaret: TPoint;
       var StartBracket, EndBracket: TPoint);
+    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoTopLineChanged(OldTopLine : Integer); override;
+    procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
+    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit: TCustomControl);
 
@@ -127,6 +132,31 @@ begin
       EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
     end;
   end;
+end;
+
+procedure TSynEditMarkupBracket.DoCaretChanged(OldCaret: TPoint);
+begin
+  InvalidateBracketHighlight;
+end;
+
+procedure TSynEditMarkupBracket.DoTopLineChanged(OldTopLine: Integer);
+begin
+  InvalidateBracketHighlight;
+end;
+
+procedure TSynEditMarkupBracket.DoLinesInWindoChanged(OldLinesInWindow: Integer);
+begin
+  InvalidateBracketHighlight;
+end;
+
+procedure TSynEditMarkupBracket.DoTextChanged(StartLine, EndLine: Integer);
+begin
+  InvalidateBracketHighlight;
+end;
+
+procedure TSynEditMarkupBracket.DoMarkupChanged(AMarkup: TSynSelectedColor);
+begin
+  InvalidateBracketHighlight;
 end;
 
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;

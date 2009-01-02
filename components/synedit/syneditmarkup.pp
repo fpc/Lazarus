@@ -64,6 +64,7 @@ type
     procedure DoCaretChanged(OldCaret : TPoint); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
+    procedure DoTextChanged(StartLine, EndLine : Integer); virtual;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
 
     procedure InvalidateSynLines(FirstLine, LastLine: integer); // Call Synedt to invalidate lines
@@ -81,6 +82,9 @@ type
     Procedure EndMarkup; virtual;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; virtual; abstract;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; virtual; abstract;
+
+    // Notifications about Changes to the text
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
 
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
@@ -117,6 +121,10 @@ type
     Procedure EndMarkup; override;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+
+    // Notifications about Changes to the text
+    Procedure TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
   end;
 
 
@@ -229,6 +237,10 @@ procedure TSynEditMarkup.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
 end;
 
+procedure TSynEditMarkup.DoTextChanged(StartLine, EndLine: Integer);
+begin
+end;
+
 procedure TSynEditMarkup.DoMarkupChanged(AMarkup : TSynSelectedColor);
 begin
 end;
@@ -279,6 +291,11 @@ end;
 
 procedure TSynEditMarkup.EndMarkup;
 begin
+end;
+
+procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+begin
+  DoTextChanged(aFirstCodeLine, aLastCodeLine);
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow : Integer);
@@ -369,6 +386,19 @@ begin
     j := TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowCol(aRow, aCol);
     if ((j>0) and (j < Result)) or (Result<0) then Result := j;
   end;
+end;
+
+procedure TSynEditMarkupManager.TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
+begin
+  TextChanged(ScreenRowToRow(aFirstCodeLine), ScreenRowToRow(aLastCodeLine));
+end;
+
+procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+var
+  i : integer;
+begin
+  for i := 0 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).TextChanged(aFirstCodeLine, aLastCodeLine);
 end;
 
 procedure TSynEditMarkupManager.SetInvalidateLinesMethod(const AValue : TInvalidateLines);
