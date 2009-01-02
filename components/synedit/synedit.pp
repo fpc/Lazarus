@@ -1088,6 +1088,7 @@ type
     {$IFDEF SYN_LAZARUS}
     property IncrementColor;
     property HighlightAllColor;
+    property HighlightCaretColor;
     property BracketHighlightStyle;
     property BracketMatchColor;
     property ModifiedLineColor;

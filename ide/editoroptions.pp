@@ -91,7 +91,7 @@ type
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
     ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
-    ahaCodeFoldingTree);
+    ahaCodeFoldingTree, ahaHighlightWord);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
@@ -113,7 +113,8 @@ const
     'Line number',
     'Line highlight',
     'Modified line',
-    'Code folding tree'
+    'Code folding tree',
+    'Highlight current word'
   );
 
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -166,7 +167,8 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: $E6E6E6;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -202,7 +204,8 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: $303030;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -238,7 +241,8 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -274,7 +278,8 @@ const
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -310,7 +315,8 @@ const
       { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;      FC: clNone;  Styles: []; StylesMask: []),
       { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow;Styles: []; StylesMask: []),
-      { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: [])
+      { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -2161,6 +2167,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaHighlightWord, aSynEd.HighlightCaretColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
   SetMarkupColor(aSynEd.Highlighter, ahaModifiedLine, aSynEd.ModifiedLineColor);
