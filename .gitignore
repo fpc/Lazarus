@@ -159,10 +159,10 @@ debian/*.bak
 debian/units
 debugger/*.bak
 debugger/fpdebug/*.bak
+debugger/fpdebug/fpd/*.bak
+debugger/fpdebug/fpd/units
 debugger/fpdebug/fpdd/*.bak
 debugger/fpdebug/fpdd/units
-debugger/fpdebug/fpwd/*.bak
-debugger/fpdebug/fpwd/units
 debugger/fpdebug/test/*.bak
 debugger/fpdebug/test/units
 debugger/fpdebug/units
