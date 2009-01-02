@@ -150,7 +150,7 @@ uses
   Windows,
   {$ENDIF}
   SysUtils;
-  
+
 var
   CompTableSensitive: boolean;
   CompTable: array[#0..#255] of Byte;
@@ -428,7 +428,7 @@ var
   MaxPos: Integer;
   xStep: Integer;
   IsMultiLinePattern: Boolean;
-  
+
   procedure FixRange;
   var
     aLine: string;
@@ -456,13 +456,13 @@ var
         EndPos:=Point(1,EndPos.Y+1);
     end;
   end;
-  
+
   function FindNextPatternLineEnd(const s: string; StartPos: integer): integer;
   begin
     Result:=StartPos;
     while (Result<=length(s)) and (not (s[Result] in [#10,#13])) do inc(Result);
   end;
-  
+
   function FindPrevPatternLineEnd(const s: string; StartPos: integer): integer;
   begin
     Result:=StartPos;
@@ -513,7 +513,7 @@ var
       RegExprEngine.ExecPos(FoundPos);
     end;
   end;
-  
+
   function CompareContent(p1, p2: PChar; Count: integer): boolean;
   begin
     while Count>0 do begin
@@ -528,7 +528,7 @@ var
     end;
     Result:=true;
   end;
-  
+
   function WholeWordAtStartFits: boolean;
   var
     CurLine: string;
@@ -617,7 +617,7 @@ var
         if CurY<0 then exit;
         LineEndPos:=LineStartPos-1;
         if (LineEndPos>=length(LineEnding)) and
-           CompareMem(@Pat[LineEndPos+1-length(LineEnding)], @LineEnding[1], length(LineEnding))
+           CompareMem(@Pat[LineEndPos+1-length(LineEnding)], PChar(LineEnding), length(LineEnding))
           then
           dec(LineEndPos, length(LineEnding));
         CurLineStr:=Lines[CurY];
@@ -656,7 +656,7 @@ var
         end;
         LineStartPos:=LineEndPos+1;
         if (LineStartPos>0) and (LineStartPos+Length(LineEnding)-1<=length(Pat)) and
-           CompareMem(@Pat[LineStartPos], @LineEnding[1], length(LineEnding))
+           CompareMem(@Pat[LineStartPos], PChar(LineEnding), length(LineEnding))
           then
           inc(LineStartPos, length(LineEnding));
         if (LineStartPos > length(Pat)) then begin // Empty string
@@ -692,7 +692,7 @@ var
       end;
     until false;
   end;
-  
+
   function GetTextRange: string;
   // get the search text range as one string
   // returns whole lines. That means if StartPos start in the middle of a line
@@ -708,7 +708,7 @@ var
   begin
     //DebugLn(['GetTextRange StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos)]);
     //DebugLn(Lines.Text);
-  
+
     if EndPos.Y<StartPos.Y then begin
       Result:='';
       exit;
@@ -743,7 +743,7 @@ var
         RaiseGDBException('inconsistency');
     end;
   end;
-  
+
   function PosToLineCol(const s: string; const Offset: TPoint; p: integer
     ): TPoint;
   var
@@ -763,7 +763,7 @@ var
       end;
     end;
   end;
-  
+
   function SearchRegExprMultiLine: boolean;
   var
     s: String;
@@ -784,7 +784,7 @@ var
                            RegExprEngine.MatchPos[0]+RegExprEngine.MatchLen[0]);
     fRegExprReplace:=RegExprEngine.Substitute(Replacement);
   end;
-  
+
   function CheckFound: boolean;
   begin
     if ((not IsMultiLinePattern) and WholeWordAtEndFits)
@@ -843,7 +843,7 @@ begin
   end;
   SearchFor:=PChar(FirstPattern);
   SearchLen:=length(FirstPattern);
-  
+
   if fRegExpr then begin
     RegExprEngine.ModifierI:=not fSensitive;
     RegExprEngine.ModifierM:=IsMultiLinePattern;
@@ -856,7 +856,7 @@ begin
       exit;
     end;
   end;
-  
+
   //DebugLn(['TSynEditSearch.FindNextOne IsMultiLinePattern=',IsMultiLinePattern,' RegExpr=',fRegExpr,' Sensitive=',Sensitive,' StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos)]);
 
   // Working: case sensitive, backwards, whole word, regex whole word,
@@ -888,7 +888,7 @@ begin
     end;
     x:=MinMax(x,0,LineLen-1);
     //DebugLn(['TSynEditSearch.FindNextOne Line="',LineStr,'" x=',x,' LineLen=',LineLen]);
-    
+
     // search in the line
     if fRegExpr then begin
       // regular expression
@@ -968,7 +968,7 @@ procedure TSynEditSearch.SetPattern(const Value: string);
 begin
   if Pat <> Value then begin
     Pat := Value;
-    fShiftInitialized := FALSE;                                  
+    fShiftInitialized := FALSE;
     {$IFDEF SYN_LAZARUS}
     PatLen:=length(Pat);
     {$ENDIF}
@@ -1102,6 +1102,6 @@ initialization
   {$IFNDEF SYN_LAZARUS}
   MakeDelimiterTable;
   {$ENDIF}
-  
+
 end.
 
