@@ -547,7 +547,10 @@ begin
   if AValue < 0 then
     FSeparatorGutter.Visible := False
   else
+  begin
     FGutterPartList.Move(FGutterPartList.IndexOf(FSeparatorGutter), AValue);
+    FSeparatorGutter.Visible := True;
+  end;
   DoChange(Self);
 end;
 
