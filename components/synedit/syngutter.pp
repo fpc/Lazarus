@@ -157,6 +157,7 @@ type
     procedure SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
     function GetMarkupInfoLineNumber: TSynSelectedColor;
     function GetMarkupInfoModifiedLine: TSynSelectedColor;
+    function GetMarkupInfoCodeFoldingTree: TSynSelectedColor;
     function GetDigitCount : Integer;
     function GetZeroStart : Boolean;
     function GetShowOnlyLineNumbersMultiplesOf : Integer;
@@ -206,6 +207,7 @@ type
     property ZeroStart: boolean read GetZeroStart write SetZeroStart;
     property MarkupInfoLineNumber: TSynSelectedColor read GetMarkupInfoLineNumber;
     property MarkupInfoModifiedLine: TSynSelectedColor read GetMarkupInfoModifiedLine;
+    property MarkupInfoCodeFoldingTree: TSynSelectedColor read GetMarkupInfoCodeFoldingTree;
     property LeadingZeros: boolean read GetLeadingZeros write SetLeadingZeros
       default FALSE;
     property DigitCount: integer read GetDigitCount  write SetDigitCount
@@ -477,6 +479,11 @@ end;
 function TSynGutter.GetPartGutter(Index : Integer) : TSynGutterPartBase;
 begin
   Result := TSynGutterPartBase(FGutterPartList[Index]);
+end;
+
+function TSynGutter.GetMarkupInfoCodeFoldingTree: TSynSelectedColor;
+begin
+  Result := TSynGutterCodeFolding(FCodeFoldGutter).MarkupInfoCodeFoldingTree;
 end;
 
 procedure TSynGutter.SetLeftOffset(Value: integer);

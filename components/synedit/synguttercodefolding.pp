@@ -16,7 +16,7 @@ type
   private
     FEdit: TSynEditBase;
     FFoldView: TSynEditFoldedView;
-
+    FMarkupInfoCodeFoldingTree: TSynSelectedColor;
   public
     constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
 
@@ -25,6 +25,7 @@ type
     function RealGutterWidth(CharWidth: integer): integer;  override;
     procedure DoOnGutterClick(X, Y: integer); override;
   public
+    property MarkupInfoCodeFoldingTree: TSynSelectedColor read FMarkupInfoCodeFoldingTree;
   end;
 
 implementation
@@ -39,6 +40,12 @@ begin
   inherited Create;
   FEdit := AOwner;
   FFoldView := AFoldView;
+
+  FMarkupInfoCodeFoldingTree := TSynSelectedColor.Create;
+  FMarkupInfoCodeFoldingTree.Background := clNone;
+  FMarkupInfoCodeFoldingTree.Foreground := clDkGray;
+  FMarkupInfoCodeFoldingTree.FrameColor := clNone;
+  FMarkupInfoCodeFoldingTree.OnChange := @DoChange;
 
   Width := 14;
 end;
@@ -64,7 +71,6 @@ procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine
 var
   iLine: integer;
   rcLine: TRect;
-  dc: HDC;
   rcCodeFold: TRect;
   tmp: TSynEditCodeFoldType;
   LineHeight, LineOffset: Integer;
@@ -138,15 +144,19 @@ begin
   if not Visible then exit;
   LineHeight := TSynEdit(FEdit).LineHeight;
   LineOffset := 0;
-  Canvas.Brush.Color := Color;
-  dc := Canvas.Handle;
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
-  {$ENDIF}
+
+  if MarkupInfoCodeFoldingTree.Background <> clNone then
+  begin
+    Canvas.Brush.Color := MarkupInfoCodeFoldingTree.Background;
+    {$IFDEF SYN_LAZARUS}
+    LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
+    {$ENDIF}
+    Canvas.FillRect(AClip);
+  end;
 
   with Canvas do
   begin
-    Pen.Color := clDkGray;
+    Pen.Color := MarkupInfoCodeFoldingTree.Foreground;
     Pen.Width := 1;
 
     rcLine.Bottom := FirstLine * LineHeight;

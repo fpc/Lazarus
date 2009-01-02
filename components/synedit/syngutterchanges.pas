@@ -95,7 +95,7 @@ begin
     Canvas.FillRect(AClip);
   end;
 
-  Canvas.Pen.Width := Width ;
+  Canvas.Pen.Width := Width;
   Canvas.Pen.EndCap:= pecFlat;
 
   rcLine := AClip;

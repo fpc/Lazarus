@@ -471,6 +471,7 @@ type
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
     function GetModifiedLineColor: TSynSelectedColor;
+    function GetCodeFoldingTreeColor: TSynSelectedColor;
     function GetOnGutterClick : TGutterClickEvent;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
@@ -938,6 +939,7 @@ type
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
     property ModifiedLineColor: TSynSelectedColor read GetModifiedLineColor;
+    property CodeFoldingTreeColor: TSynSelectedColor read GetCodeFoldingTreeColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     //property Color: TSynSelectedColor read GetSelectedColor;
@@ -1083,6 +1085,7 @@ type
     property BracketHighlightStyle;
     property BracketMatchColor;
     property ModifiedLineColor;
+    property CodeFoldingTreeColor;
     property MouseLinkColor;
     property LineNumberColor;
     property LineHighlightColor;
@@ -4101,6 +4104,11 @@ end;
 function TCustomSynEdit.GetCaretXY: TPoint;
 begin
   Result := Point(CaretX, CaretY);
+end;
+
+function TCustomSynEdit.GetCodeFoldingTreeColor: TSynSelectedColor;
+begin
+  Result := fGutter.MarkupInfoCodeFoldingTree;
 end;
 
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
