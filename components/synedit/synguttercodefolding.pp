@@ -48,7 +48,7 @@ begin
   FMarkupInfoCodeFoldingTree.FrameColor := clNone;
   FMarkupInfoCodeFoldingTree.OnChange := @DoChange;
 
-  Width := 14;
+  Width := 10;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;
@@ -75,39 +75,35 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
+const cNodeOffset = 2;
 var
   iLine: integer;
   rcLine: TRect;
   rcCodeFold: TRect;
   tmp: TSynEditCodeFoldType;
-  LineHeight, LineOffset: Integer;
+  LineHeight, LineOffset, BoxSize: Integer;
 
   procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
-  const cNodeOffset = 3;
   var
     rcNode: TRect;
     ptCenter : TPoint;
-    iSquare: integer;
   begin
     //center of the draw area
     ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
     ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
 
-    //make node rect square
-    iSquare := Max(0, rcCodeFold.Bottom - rcCodeFold.Top - 14) div 2;
-
     //area of drawbox
-    rcNode.Right := rcCodeFold.Right - cNodeOffset + 1;
-    rcNode.Left := rcCodeFold.Left + cNodeOffset;
-    rcNode.Top := rcCodeFold.Top + cNodeOffset + iSquare;
-    rcNode.Bottom := rcCodeFold.Bottom - cNodeOffset - iSquare + 1;
+    rcNode.Left   := ptCenter.X - (BoxSize div 2) + 1;
+    rcNode.Right  := ptCenter.X + (BoxSize div 2);
+    rcNode.Top    := ptCenter.Y - (BoxSize div 2) + 1;
+    rcNode.Bottom := ptCenter.Y + (BoxSize div 2);
 
     Canvas.Brush.Color:=clWhite;
     Canvas.Rectangle(rcNode);
 
     //draw bottom handle to paragraph line
-    Canvas.MoveTo((rcNode.Left + rcNode.Right) div 2, rcNode.Bottom);
-    Canvas.LineTo((rcNode.Left + rcNode.Right) div 2, rcCodeFold.Bottom);
+    Canvas.MoveTo(ptCenter.X, rcNode.Bottom);
+    Canvas.LineTo(ptCenter.X, rcCodeFold.Bottom);
 
     //draw unfolded sign in node box
     Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
@@ -151,13 +147,14 @@ begin
   if not Visible then exit;
   LineHeight := TSynEdit(FEdit).LineHeight;
   LineOffset := 0;
+  BoxSize := Min(Width, LineHeight - cNodeOffset*2);
 
   if MarkupInfoCodeFoldingTree.Background <> clNone then
   begin
     Canvas.Brush.Color := MarkupInfoCodeFoldingTree.Background;
-    {$IFDEF SYN_LAZARUS}
+  {$IFDEF SYN_LAZARUS}
     LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
-    {$ENDIF}
+  {$ENDIF}
     Canvas.FillRect(AClip);
   end;
 
