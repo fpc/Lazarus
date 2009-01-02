@@ -3253,7 +3253,7 @@ var
       begin
         ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+        LCLIntf.LineTo(dc, fGutterWidth - 1, ypos);
       end;
     end;
     CurLine:=-1;
