@@ -19,6 +19,7 @@ type
     FMarkupInfoCodeFoldingTree: TSynSelectedColor;
   public
     constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
+    destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
@@ -48,6 +49,12 @@ begin
   FMarkupInfoCodeFoldingTree.OnChange := @DoChange;
 
   Width := 14;
+end;
+
+destructor TSynGutterCodeFolding.Destroy;
+begin
+  FMarkupInfoCodeFoldingTree.Free;
+  inherited Destroy;
 end;
 
 function TSynGutterCodeFolding.RealGutterWidth(CharWidth : integer) : integer;
