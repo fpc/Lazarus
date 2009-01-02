@@ -645,6 +645,7 @@ type
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
     function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
+    function GetLCLPageIndex(AIndex: Integer): Integer;
     function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
@@ -5585,6 +5586,24 @@ begin
   {$endif}
 end;
 
+function TQtTabWidget.GetLCLPageIndex(AIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := AIndex;
+  if (LCLObject = nil) or
+     (csDesigning in LCLObject.ComponentState) or
+     not (LCLObject is TCustomNotebook) then
+    Exit;
+  I := 0;
+  while (I < TCustomNotebook(LCLObject).PageCount) and (I <= Result) do
+  begin
+    if not TCustomNotebook(LCLObject).Page[I].TabVisible then
+      Inc(Result);
+    Inc(I);
+  end;
+end;
+
 procedure TQtTabWidget.AttachEvents;
 var
   Method: TMethod;
@@ -5727,7 +5746,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := Index;
+  Hdr.idFrom := GetLCLPageIndex(Index);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);
@@ -5747,7 +5766,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := Index;
+  Hdr.idFrom := GetLCLPageIndex(Index);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);
@@ -5772,7 +5791,7 @@ begin
 
     Hdr.hwndFrom := LCLObject.Handle;
     Hdr.Code := TCN_SELCHANGING;
-    Hdr.idFrom := CurIndex;
+    Hdr.idFrom := GetLCLPageIndex(CurIndex);
     Msg.NMHdr := @Hdr;
     Msg.Result := 0;
     DeliverMessage(Msg);

@@ -50,7 +50,7 @@ end;
 
 function TCustomPage.GetTabVisible: Boolean;
 begin
-  Result := fTabVisible;
+  Result := FTabVisible;
 end;
 
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
