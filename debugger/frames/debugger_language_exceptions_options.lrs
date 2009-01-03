@@ -1,5 +1,3 @@
-{ Это - файл ресурсов, автоматически созданный lazarus }
-
 LazarusResources.Add('TDebuggerLanguageExceptionsOptions','FORMDATA',[
   'TPF0"TDebuggerLanguageExceptionsOptions!DebuggerLanguageExceptionsOptions'#4
   +'Left'#2#0#6'Height'#3#165#1#3'Top'#2#0#5'Width'#3#192#1#11'HelpContext'#2#0

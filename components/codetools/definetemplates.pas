@@ -4015,6 +4015,7 @@ begin
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/converter;'
        +LazarusSrcDir+'/packager;'
+       +LazarusSrcDir+'/packager/frames;'
        +LazarusSrcDir+'/packager/registration;'
        +LazarusSrcDir+'/components/custom;'
        +LazarusSrcDir+'/components/mpaslex;')
@@ -4178,6 +4179,7 @@ begin
     Format(ctsAddsDirToSourcePath,['synedit']),
     SrcPathMacroName,
       d('registration;'
+      +'frames;'
       +'../ideintf;'
       +'../components/synedit;'
       +'../components/codetools;'
@@ -4189,6 +4191,15 @@ begin
     ExternalMacroStart+'IncPath',
     d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
+  // <LazarusSrcDir>/packager/registration
+  SubDirTempl:=TDefineTemplate.Create('Frames',
+    'Frames','','frames',da_Directory);
+  DirTempl.AddChild(SubDirTempl);
+  SubDirTempl.AddChild(TDefineTemplate.Create('src path addition',
+    Format(ctsAddsDirToSourcePath,['ide']),
+    SrcPathMacroName,
+    d(LazarusSrcDir+'/ide;'+SrcPath)
+    ,da_Define));
   // <LazarusSrcDir>/packager/registration
   SubDirTempl:=TDefineTemplate.Create('Registration',
     ctsPackagerRegistrationDirectory,'','registration',da_Directory);
