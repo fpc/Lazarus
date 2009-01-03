@@ -293,6 +293,7 @@ constructor TSynEditMarkup.Create(ASynEdit : TCustomControl);
 begin
   inherited Create();
   fSynEdit := ASynEdit;
+  FEnabled := true;
   fMarkupInfo := TSynSelectedColor.Create;
   fMarkupInfo.OnChange := @MarkupChanged;
 end;
