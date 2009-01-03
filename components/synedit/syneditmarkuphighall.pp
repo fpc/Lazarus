@@ -132,6 +132,8 @@ type
   private
     FTimer: TTimer;
     FWaitTime: Integer;
+    FFullWord: Boolean;
+    procedure SetFullWord(const AValue: Boolean);
     procedure SetWaitTime(const AValue: Integer);
   protected
     procedure DoCaretChanged(OldCaret : TPoint); override;
@@ -140,10 +142,12 @@ type
     procedure RestartTimer;
     procedure ScrollTimerHandler(Sender: TObject);
     function  GetCurrentText: String;
+    function  GetCurrentOption: TSynSearchOptions;
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
     property  WaitTime: Integer read FWaitTime write SetWaitTime;
+    property  FullWord: Boolean read FFullWord write SetFullWord;
   end;
 
 implementation
@@ -532,9 +536,17 @@ begin
   RestartTimer;
 end;
 
+procedure TSynEditMarkupHighlightAllCaret.SetFullWord(const AValue: Boolean);
+begin
+  if FFullWord = AValue then exit;
+  FFullWord := AValue;
+  SearchOptions := GetCurrentOption;
+end;
+
 procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
 begin
-  if SearchString = GetCurrentText then exit;
+  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+    exit;
   SearchString := '';
   RestartTimer;
 end;
@@ -560,6 +572,10 @@ end;
 
 procedure TSynEditMarkupHighlightAllCaret.ScrollTimerHandler(Sender: TObject);
 begin
+  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+    exit;
+  SearchString := ''; // prevent double update
+  SearchOptions := GetCurrentOption;
   SearchString := GetCurrentText;
 end;
 
@@ -572,11 +588,20 @@ begin
       (TCustomSynEdit(SynEdit).PhysicalToLogicalPos(TCustomSynEdit(SynEdit).CaretXY));
 end;
 
+function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
+begin
+  If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
+    Result := []
+  else
+    Result := [ssoWholeWord];
+end;
+
 constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
   MarkupInfo.Clear;
   HideSingleMatch := True;
+  FFullWord := False;
   FWaitTime := 1500;
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;

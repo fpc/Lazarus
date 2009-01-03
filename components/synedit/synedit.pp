@@ -471,7 +471,6 @@ type
     function GetCaretX : Integer;
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
-    function GetHighlightCaretColor: TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
@@ -944,7 +943,6 @@ type
     read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
     property IncrementColor: TSynSelectedColor read GetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
-    property HighlightCaretColor: TSynSelectedColor read GetHighlightCaretColor;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
@@ -1093,7 +1091,6 @@ type
     {$IFDEF SYN_LAZARUS}
     property IncrementColor;
     property HighlightAllColor;
-    property HighlightCaretColor;
     property BracketHighlightStyle;
     property BracketMatchColor;
     property ModifiedLineColor;
@@ -1738,11 +1735,6 @@ end;
 function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
 begin
   result := fMarkupHighAll.MarkupInfo;
-end;
-
-function TCustomSynEdit.GetHighlightCaretColor: TSynSelectedColor;
-begin
-  result := fMarkupHighCaret.MarkupInfo;
 end;
 
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;

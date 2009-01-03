@@ -415,8 +415,6 @@ type
 
   TEditorOptions = class(TAbstractIDEOptions)
   private
-    FMarkupCurWordEnabled: Boolean;
-    FMarkupCurWordTime: Integer;
     xmlconfig: TXMLConfig;
 
     // general options
@@ -457,6 +455,11 @@ type
 
     // Color options
     fHighlighterList: TEditOptLangList;
+
+    // Markup Current Word
+    FMarkupCurWordEnabled: Boolean;
+    FMarkupCurWordFull: Boolean;
+    FMarkupCurWordTime: Integer;
 
     // Code tools options (MG: these will move to an unit of their own)
     fAutoIdentifierCompletion: Boolean;
@@ -575,6 +578,8 @@ type
     // Markup Current Word
     property MarkupCurWordEnabled: Boolean
       read FMarkupCurWordEnabled write FMarkupCurWordEnabled default True;
+    property MarkupCurWordFull: Boolean
+      read FMarkupCurWordFull write FMarkupCurWordFull default False;
     property MarkupCurWordTime: Integer
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
 
@@ -1381,6 +1386,7 @@ begin
   fHighlighterList := TEditOptLangList.Create;
 
   FMarkupCurWordEnabled := True;
+  FMarkupCurWordFull := False;
   FMarkupCurWordTime := 1500;
 
   // Code Tools options
@@ -1544,6 +1550,9 @@ begin
     FMarkupCurWordEnabled :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWordEnabled', True);
+    FMarkupCurWordFull :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordFull', False);
     FMarkupCurWordTime :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWordTime', 1500);
@@ -1691,6 +1700,8 @@ begin
 
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordEnabled',
       FMarkupCurWordEnabled, True);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordFull',
+      FMarkupCurWordFull, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordTime',
       FMarkupCurWordTime, 1500);
 
@@ -2187,17 +2198,24 @@ begin
 end;
 
 procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
+  procedure SetMarkupColorByClass(AddHilightAttr: TAdditionalHilightAttribute;
+                                  aClass: TSynEditMarkupClass);
+  begin
+    if assigned(ASynEd.MarkupByClass[aClass]) then
+      SetMarkupColor(aSynEd.Highlighter, AddHilightAttr,
+                     ASynEd.MarkupByClass[aClass].MarkupInfo);
+  end;
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
-  SetMarkupColor(aSynEd.Highlighter, ahaHighlightWord, aSynEd.HighlightCaretColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
   SetMarkupColor(aSynEd.Highlighter, ahaModifiedLine, aSynEd.ModifiedLineColor);
   SetMarkupColor(aSynEd.Highlighter, ahaCodeFoldingTree, aSynEd.CodeFoldingTreeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
+  SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
@@ -2281,6 +2299,7 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     MarkCaret.Enabled := FMarkupCurWordEnabled;
+    MarkCaret.FullWord := FMarkupCurWordFull;
     MarkCaret.WaitTime := FMarkupCurWordTime;
   end;
 
@@ -2324,6 +2343,7 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     FMarkupCurWordEnabled := MarkCaret.Enabled;
+    FMarkupCurWordFull := MarkCaret.FullWord;
     FMarkupCurWordTime := MarkCaret.WaitTime;
   end;
 end;

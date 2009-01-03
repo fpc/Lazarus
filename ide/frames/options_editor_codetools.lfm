@@ -5,8 +5,8 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   ClientWidth = 496
   TabOrder = 0
   Visible = False
-  DesignLeft = 92
-  DesignTop = 92
+  DesignLeft = 161
+  DesignTop = 161
   object AutoDelayMaxLabel: TLabel[0]
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
@@ -52,7 +52,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 278
+    Top = 303
     Width = 149
     BorderSpacing.Top = 2
     Caption = 'MarkupWordDelayMinLabel'
@@ -65,7 +65,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 346
     Height = 16
-    Top = 278
+    Top = 303
     Width = 150
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
@@ -79,7 +79,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 300
+    Top = 325
     Width = 128
     BorderSpacing.Top = 24
     Caption = 'MarkupWordDelayLabel'
@@ -177,13 +177,13 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   end
   object MarkupWordTimeTrackBar: TTrackBar[13]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MarkupWordEnabledCheckBox
+    AnchorSideTop.Control = MarkupWordFullCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 40
-    Top = 236
+    Top = 261
     Width = 496
     Frequency = 250
     Max = 4000
@@ -193,5 +193,17 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Top = 6
     Ctl3D = False
     TabOrder = 7
+  end
+  object MarkupWordFullCheckBox: TCheckBox[14]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MarkupWordEnabledCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 236
+    Width = 161
+    BorderSpacing.Top = 6
+    Caption = 'MarkupWordFullCheckBox'
+    TabOrder = 8
   end
 end
