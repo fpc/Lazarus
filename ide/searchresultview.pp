@@ -1043,7 +1043,7 @@ begin
   if not Assigned(Node) then
     Node := Items.AddFirst(Node, MatchPos.FileName);
 
-  ChildNode := Items.AddChildFirst(Node, Line);
+  ChildNode := Items.AddChild(Node, Line);
   Node.Expanded:=true;
   ChildNode.Data := MatchPos;
 end;
