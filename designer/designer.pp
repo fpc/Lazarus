@@ -626,10 +626,13 @@ begin
 
         DestroyDriver:=false;
         Writer := CreateLRSWriter(BinCompStream,DestroyDriver);
-        Try
+        try
+          {$IFNDEF DisableFakeMethods}
+          Writer.OnWriteMethodProperty:=@BaseFormEditor1.WriteMethodPropertyEvent;
+          {$ENDIF}
           Writer.Root:=FLookupRoot;
           Writer.WriteComponent(CurComponent);
-        Finally
+        finally
           if DestroyDriver then Writer.Driver.Free;
           Writer.Destroy;
         end;
