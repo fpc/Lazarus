@@ -177,6 +177,8 @@ end;
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const ARow, ACol : Integer): TSynSelectedColor;
 begin
   Result := nil;
+  MarkupInfo.StartX := -1;
+  MarkupInfo.EndX := -1;
   if FSpecialLine then
     Result := MarkupInfo;
 end;

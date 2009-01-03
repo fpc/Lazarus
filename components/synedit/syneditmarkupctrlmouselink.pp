@@ -99,6 +99,8 @@ begin
   if (aRow <> FCtrlMouseLine) or ((aCol < FCurX1) or (aCol >= FCurX2))
   then exit;
   Result := MarkupInfo;
+  MarkupInfo.StartX := FCurX1;
+  MarkupInfo.EndX := FCurX2;
 end;
 
 function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;

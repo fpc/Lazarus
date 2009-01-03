@@ -129,6 +129,8 @@ begin
       then nSelEnd := p2.x;
     end;
   end;
+  MarkupInfo.StartX := nSelStart;
+  MarkupInfo.EndX := nSelEnd;
 end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;

@@ -370,6 +370,11 @@ begin
         sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
         Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
         Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);
+        if c.FrameColor <> clNone then begin
+          // Only frames need start/end info => copy *here* to separate fields if needed
+          Result.StartX := C.StartX;
+          Result.EndX := C.EndX;
+        end;
       end;
     end;
   end;

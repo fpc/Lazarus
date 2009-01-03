@@ -213,7 +213,11 @@ begin
   Result := nil;
   if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aCol))
   or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aCol))
-  then Result := MarkupInfo;
+  then begin
+    Result := MarkupInfo;
+    MarkupInfo.StartX := aCol;
+    MarkupInfo.EndX := aCol;
+  end;
 end;
 
 function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;

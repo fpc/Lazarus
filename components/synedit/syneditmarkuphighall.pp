@@ -482,6 +482,14 @@ begin
   then exit;
   
   //debugLN('+++>MARUP *ON* ',dbgs(@result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+  if fMatches.Point[Pos-1].y < aRow then
+    MarkupInfo.StartX := -1
+  else
+    MarkupInfo.StartX := fMatches.Point[Pos-1].x;
+  if fMatches.Point[Pos].y > aRow then
+    MarkupInfo.EndX := -1
+  else
+    MarkupInfo.EndX := fMatches.Point[Pos].x-1;
   result := MarkupInfo;
 end;
 

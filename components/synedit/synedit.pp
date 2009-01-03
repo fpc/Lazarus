@@ -3085,6 +3085,8 @@ var
       ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
   end;
 
+  var
+    LastFSX, LastFEX: integer;
   procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
     sToken: PChar; nTokenByteLen: integer);
   var
@@ -3185,6 +3187,20 @@ var
         else FG := DefaultBGCol;
       end;
 
+      if assigned(MarkupInfo) and
+         ((MarkupInfo.StartX <> LastFSX) or (MarkupInfo.EndX <> LastFEX)) and
+         ((TokenAccu.FC <> clNone) or (FC <> clNone))
+      then begin
+        // force Paint
+        PaintHighlightToken(FALSE);
+        TokenAccu.Len := 0;
+        // Set Frame Boundaries
+        LastFSX := MarkupInfo.StartX;
+        LastFEX := MarkupInfo.EndX;
+        FTextDrawer.FrameStartX := ScreenColumnToXValue(MarkupInfo.StartX);
+        FTextDrawer.FrameEndX := ScreenColumnToXValue(MarkupInfo.EndX+1);
+      end;
+
       // Add to TokenAccu
       AddHighlightToken(sToken, SubTokenByteLen,
         PhysicalStartPos, PhysicalEndPos, FG, BG, FC, Style);
@@ -3218,6 +3234,10 @@ var
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
       inc(CurLine);
+      FTextDrawer.FrameStartX := -1;
+      FTextDrawer.FrameEndX := -1;
+      LastFSX := -1;
+      LastFEX := -1;
 
       fMarkupManager.PrepareMarkupForRow(fTextView.TextIndex[CurLine]+1);
       // Get the line.

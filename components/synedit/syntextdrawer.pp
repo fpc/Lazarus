@@ -211,6 +211,7 @@ type
     FColor: TColor;
     FBkColor: TColor;
     FFrameColor: TColor;
+    FFrameStartX, FFrameEndX: Integer;
     FCharExtra: Integer;
 
     // Begin/EndDrawing calling count
@@ -256,6 +257,9 @@ type
     property ForeColor: TColor write SetForeColor;
     property BackColor: TColor write SetBackColor;
     property FrameColor: TColor write SetFrameColor;
+    property FrameStartX: Integer read FFrameStartX write FFrameStartX;
+    property FrameEndX: Integer read FFrameEndX write FFrameEndX;
+
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
     {$IFDEF SYN_LAZARUS}
@@ -1217,7 +1221,7 @@ var
   NeedDistArray: Boolean;
   DistArray: PInteger;
   Pen, OldPen: HPen;
-  Points: array[0..4] of TPoint;
+  old : TPoint;
 begin
   {$IFDEF SYN_LAZARUS}
   NeedDistArray:= (FCharExtra > 0) or not MonoSpace;
@@ -1241,18 +1245,24 @@ begin
   {$ENDIF}
   if FFrameColor <> clNone then
   begin
-    with ARect do
-    begin
-      Points[0] := TopLeft;
-      Points[1] := Point(Right - 1, Top);
-      Points[2] := Point(Right - 1, Bottom - 1);
-      Points[3] := Point(Left, Bottom - 1);
-      Points[4] := TopLeft;
-    end;
-
     Pen := CreateColorPen(FFrameColor);
     OldPen := SelectObject(FDC, Pen);
-    Polyline(FDC, @Points, 5);
+    MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+    if ARect.Right = FFrameEndX then begin
+      LineTo(FDC, ARect.Right-1, ARect.Top);
+      LineTo(FDC, ARect.Right-1, ARect.Bottom-1);
+    end else begin
+      // Last point of the line may not be drawn, so paint one more
+      LineTo(FDC, ARect.Right, ARect.Top);
+      MoveToEx(FDC, ARect.Right-1, ARect.Bottom-1, @old);
+    end;
+    if ARect.Left = FFrameStartX then begin
+      LineTo(FDC, ARect.Left, ARect.Bottom-1);
+      LineTo(FDC, ARect.Left, ARect.Top);
+    end else begin
+      MoveToEx(FDC, ARect.Left, ARect.Bottom-1, @old);
+      LineTo(FDC, ARect.Right, ARect.Bottom-1);
+    end;
     DeleteObject(SelectObject(FDC, OldPen));
   end;
 end;
