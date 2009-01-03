@@ -85,6 +85,7 @@ uses
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
+  IDEOptionsIntf,
   // protocol
   IDEProtocol,
   // compile
@@ -114,7 +115,19 @@ uses
   ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser,
+  CodeTemplatesDlg, CodeBrowser, OI_options, IdeOptionsDlg,
+  editor_general_options, formed_options,
+  files_options, desktop_options, window_options,
+  Backup_Options, naming_options, fpdoc_options,
+  editor_display_options, editor_keymapping_options,
+  editor_color_options, editor_codetools_options, editor_codefolding_options,
+  editor_general_misc_options,
+  codetools_general_options, codetools_codecreation_options, atom_checkboxes_options,
+  codetools_wordpolicy_options, codetools_linesplitting_options,
+  codetools_space_options, codetools_identifiercompletion_options,
+  debugger_general_options, debugger_eventlog_options,
+  debugger_language_exceptions_options, debugger_signals_options,
+
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -123,18 +136,6 @@ uses
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
-  // options frames
-  IDEOptionsIntf, IDEOptionsDlg,
-  options_files, options_desktop, window_options, options_formed, options_oi,
-  options_backup, options_naming, options_fpdoc,
-  options_editor_general, options_editor_display, options_editor_keymapping,
-  options_editor_color, options_editor_codetools, options_editor_codefolding,
-  options_editor_general_misc,
-  options_codetools_general, options_codetools_codecreation, options_atom_checkboxes,
-  options_codetools_wordpolicy, options_codetools_linesplitting,
-  options_codetools_space, options_codetools_identifiercompletion,
-  options_debugger_general, options_debugger_eventlog,
-  options_debugger_language_exceptions, options_debugger_signals,
   // main ide
   MainBar, MainIntf, MainBase;
 

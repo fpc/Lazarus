@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_naming;
+unit naming_options;
 
 {$mode objfpc}{$H+}
 
@@ -135,7 +135,7 @@ begin
 end;
 
 initialization
-  {$I options_naming.lrs}
+  {$I naming_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TNamingOptionsFrame, EnvOptionsNaming);
 end.
 

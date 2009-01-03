@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_codetools_codecreation;
+unit codetools_codecreation_options;
 
 {$mode objfpc}{$H+}
 
@@ -223,7 +223,7 @@ begin
 end;
 
 initialization
-  {$I options_codetools_codecreation.lrs}
+  {$I codetools_codecreation_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsCodeCreationOptionsFrame, CdtOptionsCodeCreation);
 end.
 

@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_files;
+unit files_options;
 
 {$mode objfpc}{$H+}
 
@@ -350,7 +350,7 @@ begin
 end;
 
 initialization
-  {$I options_files.lrs}
+  {$I files_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFilesOptionsFrame, EnvOptionsFiles);
 end.
 

@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_color;
+unit editor_color_options;
 
 {$mode objfpc}{$H+}
 
@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
   Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, options_editor_general,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
   IDEProcs, ColorBox, SynEditMarkupBracket;
 
 type
@@ -1182,6 +1182,6 @@ begin
 end;
 
 initialization
-  {$I options_editor_color.lrs}
+  {$I editor_color_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors);
 end.

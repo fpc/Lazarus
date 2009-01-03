@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_OI;
+unit OI_options;
 
 {$mode objfpc}{$H+}
 
@@ -308,7 +308,7 @@ begin
 end;
 
 initialization
-  {$I options_oi.lrs}
+  {$I oi_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TOIOptionsFrame, EnvOptionsOI);
 end.
 

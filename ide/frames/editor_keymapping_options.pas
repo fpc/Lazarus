@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_keymapping;
+unit editor_keymapping_options;
 
 {$mode objfpc}{$H+}
 
@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ComCtrls, Controls,
   Dialogs, LCLType, LCLProc,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, options_editor_general,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf,
+  editor_general_options,
   KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf;
 
 type
@@ -398,7 +399,7 @@ begin
 end;
 
 initialization
-  {$I options_editor_keymapping.lrs}
+  {$I editor_keymapping_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorKeymappingOptionsFrame, EdtOptionsKeys);
 end.
 

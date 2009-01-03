@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_debugger_signals;
+unit debugger_signals_options;
 
 {$mode objfpc}{$H+}
 
@@ -114,7 +114,7 @@ begin
 end;
 
 initialization
-  {$I options_debugger_signals.lrs}
+  {$I debugger_signals_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerSignalsOptions, DbgOptionsSignals);
 end.
 

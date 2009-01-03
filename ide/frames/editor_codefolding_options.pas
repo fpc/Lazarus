@@ -18,27 +18,26 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_codetools_general;
+unit editor_codefolding_options;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls,
-  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls, Spin,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
 
-  { TCodetoolsGeneralOptionsFrame }
+  { TEditorCodefoldingOptionsFrame }
 
-  TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AdjustTopLineDueToCommentCheckBox: TCheckBox;
-    CursorBeyondEOLCheckBox: TCheckBox;
-    JumpCenteredCheckBox: TCheckBox;
-    JumpingGroupBox: TGroupBox;
-    SrcPathEdit: TEdit;
-    SrcPathGroupBox: TGroupBox;
+  TEditorCodefoldingOptionsFrame = class(TAbstractIDEOptionsEditor)
+    Bevel1: TBevel;
+    chkCodeFoldingEnabled: TCheckBox;
+    edDividerDrawLevel: TSpinEdit;
+    lblDividerDrawLevel: TLabel;
+    procedure chkCodeFoldingEnabledChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -51,62 +50,52 @@ type
 
 implementation
 
-{ TCodetoolsGeneralOptionsFrame }
+{ TEditorCodefoldingOptionsFrame }
 
-function TCodetoolsGeneralOptionsFrame.GetTitle: String;
+procedure TEditorCodefoldingOptionsFrame.chkCodeFoldingEnabledChange(Sender: TObject);
 begin
-  Result := lisMenuInsertGeneral;
+  lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
+  edDividerDrawLevel.Enabled  := chkCodeFoldingEnabled.Checked;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+function TEditorCodefoldingOptionsFrame.GetTitle: String;
 begin
-  with SrcPathGroupBox do
-    Caption:=dlgAdditionalSrcPath;
-
-  with JumpingGroupBox do
-    Caption:=dlgJumpingETC;
-
-  with AdjustTopLineDueToCommentCheckBox do
-    Caption:=dlgAdjustTopLine;
-
-  with JumpCenteredCheckBox do
-    Caption:=dlgcentercursorline;
-
-  with CursorBeyondEOLCheckBox do
-    Caption:=dlgcursorbeyondeol;
+  Result := dlgUseCodeFolding;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
+procedure TEditorCodefoldingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  chkCodeFoldingEnabled.Caption := dlgUseCodeFolding;
+  lblDividerDrawLevel.Caption := dlgCFDividerDrawLevel + ':';
+end;
+
+procedure TEditorCodefoldingOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TCodeToolsOptions do
+  with AOptions as TEditorOptions do
   begin
-    SrcPathEdit.Text := SrcPath;
-    AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
-    JumpCenteredCheckBox.Checked := JumpCentered;
-    CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
+    chkCodeFoldingEnabled.Checked := UseCodeFolding;
+    edDividerDrawLevel.Value := CFDividerDrawLevel;
   end;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
+procedure TEditorCodefoldingOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TCodeToolsOptions do
+  with AOptions as TEditorOptions do
   begin
-    SrcPath := SrcPathEdit.Text;
-    AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
-    JumpCentered := JumpCenteredCheckBox.Checked;
-    CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
+    UseCodeFolding := chkCodeFoldingEnabled.Checked;
+    CFDividerDrawLevel := edDividerDrawLevel.Value;
   end;
 end;
 
-class function TCodetoolsGeneralOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TEditorCodefoldingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TCodeToolsOptions;
+  Result := TEditorOptions;
 end;
 
 initialization
-  {$I options_codetools_general.lrs}
-  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsGeneralOptionsFrame, CdtOptionsGeneral);
+  {$I editor_codefolding_options.lrs}
+  RegisterIDEOptionsEditor(GroupEditor, TEditorCodefoldingOptionsFrame, EdtOptionsCodeFolding);
 end.
 

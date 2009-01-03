@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_codetools_space;
+unit codetools_linesplitting_options;
 
 {$mode objfpc}{$H+}
 
@@ -26,22 +26,23 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, StdCtrls, SynEdit,
-  SourceChanger, IDEOptionsIntf, EditorOptions, options_atom_checkboxes;
+  SourceChanger, IDEOptionsIntf, EditorOptions, atom_checkboxes_options;
 
 type
+  { TCodetoolsLineSplittingOptionsFrame }
 
-  { TCodetoolsSpaceOptionsFrame }
-
-  TCodetoolsSpaceOptionsFrame = class(TCodetoolsAtomCheckboxesOptionsFrame)
-    DoInsertSpaceAfterGroupBox: TGroupBox;
-    DoInsertSpaceInFrontGroupBox: TGroupBox;
-    SpacePreviewLabel: TLabel;
-    SpacePreviewSynEdit: TSynEdit;
+  TCodetoolsLineSplittingOptionsFrame = class(TCodetoolsAtomCheckboxesOptionsFrame)
+    DoNotSplitLineAfterGroupBox: TGroupBox;
+    DoNotSplitLineInFrontGroupBox: TGroupBox;
+    LineLengthEdit: TEdit;
+    LineLengthLabel: TLabel;
+    SplitPreviewLabel: TLabel;
+    SplitPreviewSynEdit: TSynEdit;
     procedure UpdateExample(Sender: TObject);
   private
     BeautifyCodeOptions: TBeautifyCodeOptions;
     FHighlighter: TPreviewPasSyn;
-    procedure UpdateSpaceExample;
+    procedure UpdateSplitLineExample;
     procedure UpdatePreviewSettings;
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
     function GetHighlighter(Options: TEditorOptions): TPreviewPasSyn;
@@ -61,35 +62,30 @@ implementation
 uses
   CodeToolsOptions, LazarusIDEStrConsts;
 
-{ TCodetoolsSpaceOptionsFrame }
+{ TCodetoolsLineSplittingOptionsFrame }
 
-procedure TCodetoolsSpaceOptionsFrame.UpdateExample(Sender: TObject);
+procedure TCodetoolsLineSplittingOptionsFrame.UpdateExample(Sender: TObject);
 begin
-  UpdateSpaceExample;
+  UpdateSplitLineExample;
   UpdatePreviewSettings;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.UpdateSpaceExample;
+procedure TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample;
 const
-  SpaceExampleText =
-    'function F(Sender:TObject;const Val1,Val2,Val3:char;' +
-    'var Var1,Var2:array of const):integer;'#13 +
-    'const i=1+2+3;'#13 +
-    'begin'#13 +
-    '  A:=@B.C;D:=3;E:=X[5];'#13 +
-    '  {$I unit1.lrs}'#13 +
-    '  {$R-}{$R+}'#13 +
-    'end;';
+  LineSplitExampleText =
+    'function F(Sender: TObject; const Val1, Val2, Val3:char; ' +
+    'var Var1, Var2: array of const): integer;'#13 +
+    'const i=1+2+3;';
 begin
   if BeautifyCodeOptions = nil then
     Exit;
   WriteBeautifyCodeOptions(BeautifyCodeOptions);
-  BeautifyCodeOptions.LineLength := 40;
-  SpacePreviewSynEdit.Text := BeautifyCodeOptions.BeautifyStatement(
-    SpaceExampleText, 0);
+  BeautifyCodeOptions.LineLength := 1;
+  SplitPreviewSynEdit.Text :=
+    BeautifyCodeOptions.BeautifyStatement(LineSplitExampleText, 0);
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.UpdatePreviewSettings;
+procedure TCodetoolsLineSplittingOptionsFrame.UpdatePreviewSettings;
 var
   Options: TEditorOptions;
 begin
@@ -97,18 +93,17 @@ begin
   try
     if Assigned(OnSaveIDEOptions) then
       OnSaveIDEOptions(Self, Options);
-    SpacePreviewSynEdit.Highlighter := GetHighlighter(Options);
-    Options.GetSynEditPreviewSettings(SpacePreviewSynEdit);
-    SpacePreviewSynEdit.Gutter.Visible := False;
-    SpacePreviewSynEdit.Options := SpacePreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
-    SpacePreviewSynEdit.ReadOnly := True;
+    SplitPreviewSynEdit.Highlighter := GetHighlighter(Options);
+    Options.GetSynEditPreviewSettings(SplitPreviewSynEdit);
+    SplitPreviewSynEdit.Gutter.Visible := False;
+    SplitPreviewSynEdit.Options := SplitPreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
+    SplitPreviewSynEdit.ReadOnly := True;
   finally
     Options.Free;
   end;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.WriteBeautifyCodeOptions(
-  Options: TBeautifyCodeOptions);
+procedure TCodetoolsLineSplittingOptionsFrame.WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
 var
   ACodeToolsOptions: TCodeToolsOptions;
 begin
@@ -122,7 +117,8 @@ begin
   end;
 end;
 
-function TCodetoolsSpaceOptionsFrame.GetHighlighter(Options: TEditorOptions): TPreviewPasSyn;
+function TCodetoolsLineSplittingOptionsFrame.GetHighlighter(
+  Options: TEditorOptions): TPreviewPasSyn;
 begin
   if FHighlighter = nil then
   begin
@@ -133,74 +129,81 @@ begin
   Result := FHighlighter;
 end;
 
-constructor TCodetoolsSpaceOptionsFrame.Create(AOwner: TComponent);
+constructor TCodetoolsLineSplittingOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BeautifyCodeOptions := TBeautifyCodeOptions.Create;
   UpdateExample(nil);
 end;
 
-destructor TCodetoolsSpaceOptionsFrame.Destroy;
+destructor TCodetoolsLineSplittingOptionsFrame.Destroy;
 begin
   BeautifyCodeOptions.Free;
   inherited Destroy;
 end;
 
-function TCodetoolsSpaceOptionsFrame.GetTitle: String;
+function TCodetoolsLineSplittingOptionsFrame.GetTitle: String;
 begin
-  Result := dlgSpaceNotCosmos;
+  Result := dlgLineSplitting;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.Setup(
+procedure TCodetoolsLineSplittingOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 const
-  DoInsertSpaceAtoms = [
+  DoNotSplitAtoms = [
     atKeyword, atIdentifier, atColon, atSemicolon, atComma,
-    atPoint, atAt, atNumber, atStringConstant, atSymbol, atBracket];
+    atPoint, atAt, atNumber, atStringConstant, atSpace, atSymbol, atBracket];
 begin
-  with DoInsertSpaceInFrontGroupBox do begin
-    Caption:=dlgInsSpaceFront;
+  with LineLengthLabel do
+    Caption:=dlgMaxLineLength;
+
+  with DoNotSplitLineInFrontGroupBox do begin
+    Caption:=dlgNotSplitLineFront;
     CreateAtomCheckBoxes(
-      DoInsertSpaceInFrontGroupBox, DoInsertSpaceAtoms, 2, @UpdateExample);
+      DoNotSplitLineInFrontGroupBox, DoNotSplitAtoms, 2, @UpdateExample);
   end;
 
-  with DoInsertSpaceAfterGroupBox do begin
-    Caption:=dlgInsSpaceAfter;
+  with DoNotSplitLineAfterGroupBox do begin
+    Caption:=dlgNotSplitLineAfter;
     CreateAtomCheckBoxes(
-      DoInsertSpaceAfterGroupBox, DoInsertSpaceAtoms, 2, @UpdateExample);
+      DoNotSplitLineAfterGroupBox, DoNotSplitAtoms, 2, @UpdateExample);
   end;
 
-  with SpacePreviewLabel do
-    Caption:=dlgWRDPreview;
+  with SplitPreviewLabel do
+    Caption:=dlgCDTPreview;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.ReadSettings(
+procedure TCodetoolsLineSplittingOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodetoolsOptions do
   begin
-    SetAtomCheckBoxes(DoInsertSpaceInFront, DoInsertSpaceInFrontGroupBox);
-    SetAtomCheckBoxes(DoInsertSpaceAfter, DoInsertSpaceAfterGroupBox);
+    LineLengthEdit.Text := IntToStr(LineLength);
+    SetAtomCheckBoxes(DoNotSplitLineInFront, DoNotSplitLineInFrontGroupBox);
+    SetAtomCheckBoxes(DoNotSplitLineAfter, DoNotSplitLineAfterGroupBox);
   end;
 end;
 
-procedure TCodetoolsSpaceOptionsFrame.WriteSettings(
+procedure TCodetoolsLineSplittingOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodetoolsOptions do
   begin
-    DoInsertSpaceInFront := ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);
-    DoInsertSpaceAfter := ReadAtomCheckBoxes(DoInsertSpaceAfterGroupBox);
+    LineLength := StrToIntDef(LineLengthEdit.Text, 80);
+    if LineLength < 5 then
+      LineLength:=5;
+    DoNotSplitLineInFront := ReadAtomCheckBoxes(DoNotSplitLineInFrontGroupBox);
+    DoNotSplitLineAfter := ReadAtomCheckBoxes(DoNotSplitLineAfterGroupBox);
   end;
 end;
 
-class function TCodetoolsSpaceOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodetoolsLineSplittingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TCodetoolsOptions;
 end;
 
 initialization
-  {$I options_codetools_space.lrs}
-  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsSpaceOptionsFrame, CdtOptionsSpace);
+  {$I codetools_linesplitting_options.lrs}
+  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsLineSplittingOptionsFrame, CdtOptionsLineSplitting);
 end.
 

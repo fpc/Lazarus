@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Options_Backup;
+unit Backup_Options;
 
 {$mode objfpc}{$H+}
 
@@ -297,7 +297,7 @@ begin
 end;
 
 initialization
-  {$I options_backup.lrs}
+  {$I backup_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TBackupOptionsFrame, EnvOptionsBackup);
 end.
 

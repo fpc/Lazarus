@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_formed;
+unit formed_options;
 
 {$mode objfpc}{$H+}
 
@@ -207,7 +207,7 @@ begin
 end;
 
 initialization
-  {$I options_formed.lrs}
+  {$I formed_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFormEditorOptionsFrame, EnvOptionsFormEd);
 end.
 

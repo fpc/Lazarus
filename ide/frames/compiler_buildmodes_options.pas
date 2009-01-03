@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_compiler_buildmodes;
+unit compiler_buildmodes_options;
 
 {$mode objfpc}{$H+}
 
@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, FileUtil, Controls, LResources, Forms, StdCtrls, Grids,
   Buttons, ExtCtrls, Dialogs,
   IDEImagesIntf, ProjectIntf, CompilerOptions,
-  Options_Compiler_Conditionals, LazarusIDEStrConsts, CompOptsModes;
+  Compiler_Conditionals_Options, LazarusIDEStrConsts, CompOptsModes;
 
 type
 
@@ -229,7 +229,7 @@ begin
 end;
 
 initialization
-  {$I options_compiler_buildmodes.lrs}
+  {$I compiler_buildmodes_options.lrs}
 
 end.
 

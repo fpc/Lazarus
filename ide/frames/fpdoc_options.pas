@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_fpdoc;
+unit fpdoc_options;
 
 {$mode objfpc}{$H+}
 
@@ -105,7 +105,7 @@ begin
 end;
 
 initialization
-  {$I options_fpdoc.lrs}
+  {$I fpdoc_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFpDocOptionsFrame, EnvOptionsFpDoc);
 end.
 

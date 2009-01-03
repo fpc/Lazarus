@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_general;
+unit editor_general_options;
 
 {$mode objfpc}{$H+}
 
@@ -490,7 +490,7 @@ begin
 end;
 
 initialization
-  {$I options_editor_general.lrs}
+  {$I editor_general_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorGeneralOptionsFrame, EdtOptionsGeneral);
 end.
 

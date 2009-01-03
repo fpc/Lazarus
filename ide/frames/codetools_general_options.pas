@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_codetools_identifiercompletion;
+unit codetools_general_options;
 
 {$mode objfpc}{$H+}
 
@@ -30,11 +30,15 @@ uses
 
 type
 
-  { TCodetoolsIndentifierComplietionOptionsFrame }
+  { TCodetoolsGeneralOptionsFrame }
 
-  TCodetoolsIndentifierComplietionOptionsFrame = class(TAbstractIDEOptionsEditor)
-    ICAddAssignOperatorCheckBox: TCheckBox;
-    ICAddSemicolonCheckBox: TCheckBox;
+  TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
+    AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    CursorBeyondEOLCheckBox: TCheckBox;
+    JumpCenteredCheckBox: TCheckBox;
+    JumpingGroupBox: TGroupBox;
+    SrcPathEdit: TEdit;
+    SrcPathGroupBox: TGroupBox;
   private
     { private declarations }
   public
@@ -47,49 +51,62 @@ type
 
 implementation
 
-{ TCodetoolsIndentifierComplietionOptionsFrame }
+{ TCodetoolsGeneralOptionsFrame }
 
-function TCodetoolsIndentifierComplietionOptionsFrame.GetTitle: String;
+function TCodetoolsGeneralOptionsFrame.GetTitle: String;
 begin
-  Result := dlgIdentifierCompletion;
+  Result := lisMenuInsertGeneral;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.Setup(
-  ADialog: TAbstractOptionsEditorDialog);
+procedure TCodetoolsGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  with ICAddSemicolonCheckBox do
-    Caption:=dlgAddSemicolon;
-  with ICAddAssignOperatorCheckBox do
-    Caption:=dlgAddAssignmentOperator;
+  with SrcPathGroupBox do
+    Caption:=dlgAdditionalSrcPath;
+
+  with JumpingGroupBox do
+    Caption:=dlgJumpingETC;
+
+  with AdjustTopLineDueToCommentCheckBox do
+    Caption:=dlgAdjustTopLine;
+
+  with JumpCenteredCheckBox do
+    Caption:=dlgcentercursorline;
+
+  with CursorBeyondEOLCheckBox do
+    Caption:=dlgcursorbeyondeol;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.ReadSettings(
+procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
   begin
-    ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
-    ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
+    SrcPathEdit.Text := SrcPath;
+    AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
+    JumpCenteredCheckBox.Checked := JumpCentered;
+    CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
   end;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.WriteSettings(
+procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
   begin
-    IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;
-    IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
+    SrcPath := SrcPathEdit.Text;
+    AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
+    JumpCentered := JumpCenteredCheckBox.Checked;
+    CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
   end;
 end;
 
-class function TCodetoolsIndentifierComplietionOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodetoolsGeneralOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TCodeToolsOptions;
 end;
 
 initialization
-  {$I options_codetools_identifiercompletion.lrs}
-  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsIndentifierComplietionOptionsFrame, CdtOptionsIdentCompletion);
+  {$I codetools_general_options.lrs}
+  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsGeneralOptionsFrame, CdtOptionsGeneral);
 end.
 

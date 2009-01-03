@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_general_misc;
+unit editor_general_misc_options;
 
 {$mode objfpc}{$H+}
 
@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, options_editor_general;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
+  editor_general_options;
 
 type
   { TEditorGeneralMiscOptionsFrame }
@@ -165,7 +166,7 @@ begin
 end;
 
 initialization
-  {$I options_editor_general_misc.lrs}
+  {$I editor_general_misc_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorGeneralMiscOptionsFrame, EdtOptionsGeneralMisc, EdtOptionsGeneral);
 end.
 

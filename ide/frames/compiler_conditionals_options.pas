@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Options_Compiler_Conditionals;
+unit Compiler_Conditionals_Options;
 
 {$mode objfpc}{$H+}
 
@@ -399,7 +399,7 @@ begin
 end;
 
 initialization
-  {$I options_compiler_conditionals.lrs}
+  {$I compiler_conditionals_options.lrs}
 
 end.
 

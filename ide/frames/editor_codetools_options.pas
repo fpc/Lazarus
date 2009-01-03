@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_codetools;
+unit editor_codetools_options;
 
 {$mode objfpc}{$H+}
 
@@ -123,7 +123,7 @@ begin
 end;
 
 initialization
-  {$I options_editor_codetools.lrs}
+  {$I editor_codetools_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorCodetoolsOptionsFrame, EdtOptionsCodetools);
 end.
 

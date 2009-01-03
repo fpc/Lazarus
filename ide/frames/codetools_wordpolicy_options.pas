@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_codetools_wordpolicy;
+unit codetools_wordpolicy_options;
 
 {$mode objfpc}{$H+}
 
@@ -138,7 +138,7 @@ begin
 end;
 
 initialization
-  {$I options_codetools_wordpolicy.lrs}
+  {$I codetools_wordpolicy_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsWordPolicyOptionsFrame, CdtOptionsWords);
 end.
 

@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_atom_checkboxes;
+unit atom_checkboxes_options;
 
 {$mode objfpc}{$H+}
 

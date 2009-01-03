@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_desktop;
+unit desktop_options;
 
 {$mode objfpc}{$H+}
 
@@ -284,7 +284,7 @@ begin
 end;
 
 initialization
-  {$I options_desktop.lrs}
+  {$I desktop_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TDesktopOptionsFrame, EnvOptionsDesktop);
 end.
 

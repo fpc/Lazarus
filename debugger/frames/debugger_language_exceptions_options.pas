@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_debugger_language_exceptions;
+unit debugger_language_exceptions_options;
 
 {$mode objfpc}{$H+}
 
@@ -187,7 +187,7 @@ begin
 end;
 
 initialization
-  {$I options_debugger_language_exceptions.lrs}
+  {$I debugger_language_exceptions_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions);
 end.
 

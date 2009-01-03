@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_display;
+unit editor_display_options;
 
 {$mode objfpc}{$H+}
 
@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
   Spin, LCLType, SynEdit, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
-  options_editor_general, IDEProcs;
+  editor_general_options, IDEProcs;
 
 type
   { TEditorDisplayOptionsFrame }
@@ -303,7 +303,7 @@ begin
 end;
 
 initialization
-  {$I options_editor_display.lrs}
+  {$I editor_display_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorDisplayOptionsFrame, EdtOptionsDisplay);
 end.
 

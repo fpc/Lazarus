@@ -18,26 +18,23 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_editor_codefolding;
+unit codetools_identifiercompletion_options;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls, Spin,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls,
+  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
 
-  { TEditorCodefoldingOptionsFrame }
+  { TCodetoolsIndentifierComplietionOptionsFrame }
 
-  TEditorCodefoldingOptionsFrame = class(TAbstractIDEOptionsEditor)
-    Bevel1: TBevel;
-    chkCodeFoldingEnabled: TCheckBox;
-    edDividerDrawLevel: TSpinEdit;
-    lblDividerDrawLevel: TLabel;
-    procedure chkCodeFoldingEnabledChange(Sender: TObject);
+  TCodetoolsIndentifierComplietionOptionsFrame = class(TAbstractIDEOptionsEditor)
+    ICAddAssignOperatorCheckBox: TCheckBox;
+    ICAddSemicolonCheckBox: TCheckBox;
   private
     { private declarations }
   public
@@ -50,52 +47,49 @@ type
 
 implementation
 
-{ TEditorCodefoldingOptionsFrame }
+{ TCodetoolsIndentifierComplietionOptionsFrame }
 
-procedure TEditorCodefoldingOptionsFrame.chkCodeFoldingEnabledChange(Sender: TObject);
+function TCodetoolsIndentifierComplietionOptionsFrame.GetTitle: String;
 begin
-  lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
-  edDividerDrawLevel.Enabled  := chkCodeFoldingEnabled.Checked;
+  Result := dlgIdentifierCompletion;
 end;
 
-function TEditorCodefoldingOptionsFrame.GetTitle: String;
+procedure TCodetoolsIndentifierComplietionOptionsFrame.Setup(
+  ADialog: TAbstractOptionsEditorDialog);
 begin
-  Result := dlgUseCodeFolding;
+  with ICAddSemicolonCheckBox do
+    Caption:=dlgAddSemicolon;
+  with ICAddAssignOperatorCheckBox do
+    Caption:=dlgAddAssignmentOperator;
 end;
 
-procedure TEditorCodefoldingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-begin
-  chkCodeFoldingEnabled.Caption := dlgUseCodeFolding;
-  lblDividerDrawLevel.Caption := dlgCFDividerDrawLevel + ':';
-end;
-
-procedure TEditorCodefoldingOptionsFrame.ReadSettings(
+procedure TCodetoolsIndentifierComplietionOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TEditorOptions do
+  with AOptions as TCodeToolsOptions do
   begin
-    chkCodeFoldingEnabled.Checked := UseCodeFolding;
-    edDividerDrawLevel.Value := CFDividerDrawLevel;
+    ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
+    ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
   end;
 end;
 
-procedure TEditorCodefoldingOptionsFrame.WriteSettings(
+procedure TCodetoolsIndentifierComplietionOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TEditorOptions do
+  with AOptions as TCodeToolsOptions do
   begin
-    UseCodeFolding := chkCodeFoldingEnabled.Checked;
-    CFDividerDrawLevel := edDividerDrawLevel.Value;
+    IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;
+    IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
   end;
 end;
 
-class function TEditorCodefoldingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodetoolsIndentifierComplietionOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TEditorOptions;
+  Result := TCodeToolsOptions;
 end;
 
 initialization
-  {$I options_editor_codefolding.lrs}
-  RegisterIDEOptionsEditor(GroupEditor, TEditorCodefoldingOptionsFrame, EdtOptionsCodeFolding);
+  {$I codetools_identifiercompletion_options.lrs}
+  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsIndentifierComplietionOptionsFrame, CdtOptionsIdentCompletion);
 end.
 

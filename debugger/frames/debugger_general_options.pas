@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_debugger_general; 
+unit debugger_general_options;
 
 {$mode objfpc}{$H+}
 
@@ -314,7 +314,7 @@ begin
 end;
 
 initialization
-  {$I options_debugger_general.lrs}
+  {$I debugger_general_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerGeneralOptionsFrame, DbgOptionsGeneral);
 end.
 

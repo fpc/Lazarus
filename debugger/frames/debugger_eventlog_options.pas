@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_debugger_eventlog;
+unit debugger_eventlog_options;
 
 {$mode objfpc}{$H+}
 
@@ -97,7 +97,7 @@ begin
 end;
 
 initialization
-  {$I options_debugger_eventlog.lrs}
+  {$I debugger_eventlog_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerEventLogOptionsFrame, DbgOptionsEventLog);
 end.
 
