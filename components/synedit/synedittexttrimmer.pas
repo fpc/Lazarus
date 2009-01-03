@@ -48,7 +48,7 @@ type
     fLockList : TStringList;
     procedure DoCaretChanged(Sender : TObject);
     procedure SetEnabled(const AValue : Boolean);
-    function  TrimLine(const S : String; Index: Integer) : String;
+    function  TrimLine(const S : String; Index: Integer; RealUndo: Boolean = False) : String;
     function  Spaces(Index: Integer) : String;
     procedure DoLinesChanged(Index, N: integer);
     procedure TrimAfterLock;
@@ -98,6 +98,7 @@ type
     procedure Lock;
     procedure UnLock;
     procedure ForceTrim; // for redo; redo can not wait for UnLock
+    procedure UndoRealSpaces(Item: TSynEditUndoItem);
     property Enabled : Boolean read fEnabled write SetEnabled;
     property UndoList: TSynEditUndoList read fUndoList write fUndoList;
   end;
@@ -161,12 +162,36 @@ begin
     fSynStrings[fLineIndex] := TrimLine(fSynStrings[fLineIndex], fLineIndex);
 end;
 
-function TSynEditStringTrimmingList.TrimLine(const S: String; Index: Integer): String;
+procedure TSynEditStringTrimmingList.UndoRealSpaces(Item: TSynEditUndoItem);
+var
+  i: Integer;
+begin
+  fSynStrings.Strings[Item.fChangeStartPos.y-1]
+    := copy(fSynStrings.Strings[Item.fChangeStartPos.y-1],
+            1, Item.fChangeStartPos.x-1) + Item.fChangeStr;
+  if (fLineIndex = Item.fChangeStartPos.y-1) then fSpaces := '';
+  i := fLockList.IndexOfObject(TObject(Pointer(Item.fChangeStartPos.y-1)));
+  if i >= 0 then fLockList.Delete(i);
+end;
+
+function TSynEditStringTrimmingList.TrimLine(const S: String; Index: Integer;
+         RealUndo: Boolean = False): String;
 var
   l, i:integer;
   temp: String;
 begin
-  if not fEnabled then exit(s);
+  if (not fEnabled) or (fUndoList.IsLocked) then exit(s);
+  if RealUndo then begin
+    temp := fSynStrings.Strings[Index];
+    l := length(temp);
+    i:= l;
+    while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
+    // Add RealSpaceUndo
+    if i < l then
+      fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
+                          Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
+  end;
+
   l := length(s);
   i := l;
   while (i>0) and (s[i] in [#9, ' ']) do dec(i);
@@ -376,7 +401,7 @@ end;
 
 procedure TSynEditStringTrimmingList.Put(Index : integer; const S : string);
 begin
-  fSynStrings.Strings[Index]:= TrimLine(S, Index);
+  fSynStrings.Strings[Index]:= TrimLine(S, Index, True);
 end;
 
 procedure TSynEditStringTrimmingList.PutObject(Index : integer; AObject : TObject);
@@ -440,7 +465,7 @@ var
 begin
   DoLinesChanged(Index, NewStrings.Count);
   for i := 0 to NewStrings.Count-1 do
-    NewStrings[i] := TrimLine(NewStrings[i], Index+i);
+    NewStrings[i] := TrimLine(NewStrings[i], Index+i, True);
   fSynStrings.InsertStrings(Index, NewStrings);
 end;
 

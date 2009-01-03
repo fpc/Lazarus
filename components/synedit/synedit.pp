@@ -5851,6 +5851,8 @@ begin
             Item.fChangeEndPos, '', Item.fChangeSelMode);
           EnsureCursorPosVisible;
         end;
+      crTrimRealSpace:
+        TSynEditStringTrimmingList(fTrimLines).UndoRealSpaces(Item);
       crLineBreak:
         begin
           // If there's no selection, we have to set
@@ -6972,6 +6974,11 @@ begin
               if CaretY < Lines.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 Lines[CaretY - 1] := Temp + Helper + Lines[CaretY];
+                if helper <> '' then begin
+                  Caret := Point(Len+1, CaretY); // logical
+                  fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
+                                      Caret, '', smNormal);
+                end;
                 Caret := Point(1, CaretY + 1);
                 Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
                 Lines.Delete(CaretY);
@@ -6996,8 +7003,12 @@ begin
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            if Helper <> '' then
+            if Helper <> '' then begin
               LineText := LineText + Helper;
+              Caret := PhysicalToLogicalPos(Point(Len+1, CaretY));
+              fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
+                                  Caret, '', smNormal);
+            end;
             OldSelMode := FBlockSelection.ActiveSelectionMode;
             try
               SetBlockBegin(PhysicalToLogicalPos(WP));
@@ -7099,6 +7110,7 @@ begin
             end else begin
               // move the whole line
               Lines.Insert(CaretY - 1, '');
+              Lines[CaretY] := Lines[CaretY]; // trigger trim spaces
               fUndoList.AddChange(crLineBreak,
                 LogCaretXY, LogCaretXY,
                 Temp2, smNormal);
@@ -7110,6 +7122,7 @@ begin
             if Lines.Count = 0 then
               Lines.Add('');
             // linebreak after end of line
+            Lines[CaretY-1] := Lines[CaretY-1]; // trigger trim spaces
             fUndoList.AddChange(crLineBreak,
               LogCaretXY, LogCaretXY,
               '', smNormal);

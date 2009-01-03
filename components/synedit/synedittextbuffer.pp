@@ -72,8 +72,17 @@ type
     crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
     crLineBreak, crIndent, crUnindent,
     crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
-    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace {$ENDIF});
+    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace, crTrimRealSpace {$ENDIF});
 
+const
+  SynChangeReasonNames : Array [TSynChangeReason] of string =
+   ('crInsert', 'crPaste', 'crDragDropInsert',
+    'crDeleteAfterCursor', 'crDelete', {'crSelDelete', 'crDragDropDelete', }
+    'crLineBreak', 'crIndent', 'crUnindent',
+    'crSilentDelete', 'crSilentDeleteAfterCursor',
+    'crNothing' {$IFDEF SYN_LAZARUS}, 'crTrimSpace', 'crTrimRealSpace' {$ENDIF});
+
+type
   PSynEditStringRec = ^TSynEditStringRec;
   TSynEditStringRec = record
     fString: string;
@@ -265,6 +274,7 @@ type
     function PopItem: TSynEditUndoItem;
     procedure PushItem(Item: TSynEditUndoItem);
     procedure Unlock;
+    function IsLocked: Boolean;
     {$IFDEF SYN_LAZARUS}
     procedure MarkTopAsUnmodified;
     function IsTopMarkedAsUnmodified: boolean;
@@ -1293,6 +1303,11 @@ procedure TSynEditUndoList.Unlock;
 begin
   if fLockCount > 0 then
     Dec(fLockCount);
+end;
+
+function TSynEditUndoList.IsLocked: Boolean;
+begin
+  Result := fLockCount > 0;
 end;
 
 {$IFDEF SYN_LAZARUS}
