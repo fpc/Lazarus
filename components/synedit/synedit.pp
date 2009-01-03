@@ -8474,9 +8474,8 @@ procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
 begin
   if (Value <> fOptions2) then begin
     fOptions2 := Value;
-    // Reset column position in case Cursor is past EOL.
-    if not (eoScrollPastEol in fOptions) then
-      CaretX := CaretX;
+    if eoAlwaysVisibleCaret in fOptions2 then
+      MoveCaretToVisibleArea;
   end;
 end;
 {$ENDIF}
