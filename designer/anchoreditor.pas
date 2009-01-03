@@ -461,34 +461,37 @@ begin
     NewSibling:=nil;
     if (NewValue<>AnchorDesignerNoSiblingText) then
     begin
-      CurNeighbour:=akTop;
-      while CurNeighbour <= akBottom do
-      begin
-        if NewValue=AnchorDesignerNeighbourText(CurNeighbour) then
-        begin
+      CurNeighbour:=low(TAnchorKind);
+      // Check if relative Anchor to be used, such as '(selected left neighbour)'
+      while true do begin
+        if NewValue=AnchorDesignerNeighbourText(CurNeighbour) then begin
           UseNeighbours:=true;
-          //todo: copy the list if it is needed unsorted somewhere else
-          case CurNeighbour of //todo: use just one sorting function
-             akTop: SelectedControls.Sort(@compareControlTop);
-             akLeft: SelectedControls.Sort(@compareControlLeft);
-             akRight: SelectedControls.Sort(@compareControlRight);
-             akBottom: SelectedControls.Sort(@compareControlBottom);
-          end;
-          setlength(OldPositions,SelectedControls.Count);
-          setlength(OldPositions2,SelectedControls.Count);
-          for i:=0 to SelectedControls.Count-1 do begin
-            OldPositions[i]:=NeighbourPosition(tcontrol(SelectedControls[i]));
-            case CurNeighbour of
-              akLeft,akRight: OldPositions2[i]:=tcontrol(SelectedControls[i]).top;
-              akTop,akBottom: OldPositions2[i]:=tcontrol(SelectedControls[i]).Left;
-            end;
-          end;
           break;
         end;
+        if (CurNeighbour = high(TAnchorKind)) then
+          break;
         inc(CurNeighbour);
       end;
-      if not UseNeighbours then
+      if UseNeighbours then
       begin
+        //todo: copy the list if it is needed unsorted somewhere else
+        case CurNeighbour of //todo: use just one sorting function
+           akTop: SelectedControls.Sort(@compareControlTop);
+           akLeft: SelectedControls.Sort(@compareControlLeft);
+           akRight: SelectedControls.Sort(@compareControlRight);
+           akBottom: SelectedControls.Sort(@compareControlBottom);
+        end;
+        setlength(OldPositions,SelectedControls.Count);
+        setlength(OldPositions2,SelectedControls.Count);
+        for i:=0 to SelectedControls.Count-1 do begin
+          OldPositions[i]:=NeighbourPosition(tcontrol(SelectedControls[i]));
+          case CurNeighbour of
+            akLeft,akRight: OldPositions2[i]:=tcontrol(SelectedControls[i]).top;
+            akTop,akBottom: OldPositions2[i]:=tcontrol(SelectedControls[i]).Left;
+          end;
+        end;
+     end
+      else begin
         NewSibling:=FindSibling(NewValue);
         if NewSibling=nil then exit;
       end;
