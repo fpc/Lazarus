@@ -125,7 +125,7 @@ uses
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
   // options frames
   IDEOptionsIntf, IDEOptionsDlg,
-  options_files, options_desktop, options_window, options_formed, options_oi,
+  options_files, options_desktop, window_options, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
   options_editor_color, options_editor_codetools, options_editor_codefolding,

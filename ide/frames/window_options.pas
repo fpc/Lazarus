@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit options_window;
+unit window_options;
 
 {$mode objfpc}{$H+}
 
@@ -149,7 +149,7 @@ begin
 end;
 
 initialization
-  {$I options_window.lrs}                                                              
+  {$I window_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TWindowOptionsFrame, EnvOptionsWindow);
 end.
 
