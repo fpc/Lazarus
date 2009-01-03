@@ -1251,11 +1251,12 @@ var
   textSize: Windows.SIZE;
   winHandle: HWND;
   canvasHandle: HDC;
-  oldFontHandle: HFONT;
+  oldFontHandle, newFontHandle: HFONT;
 begin
   winHandle := AWinControl.Handle;
   canvasHandle := Windows.GetDC(winHandle);
-  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Reference.Handle);
+  newFontHandle := HFONT(SendMessage(winHandle, WM_GETFONT, 0, 0));
+  oldFontHandle := SelectObject(canvasHandle, newFontHandle);
   DeleteAmpersands(Text);
 
   Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
