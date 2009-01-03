@@ -147,6 +147,7 @@ const
 {$ENDIF}
 
 type
+  TSynEditMarkupClass = SynEditMarkup.TSynEditMarkupClass;
   TSynReplaceAction = (raCancel, raSkip, raReplace, raReplaceAll);
 
   ESynEditError = class(Exception);
@@ -464,12 +465,13 @@ type
     function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
     function GetFont: TFont;
+    function GetMarkup(Index: integer): TSynEditMarkup;
+    function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     {$IFDEF SYN_LAZARUS}
     function GetCaretX : Integer;
     function GetCaretY : Integer;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetHighlightCaretColor: TSynSelectedColor;
-    function GetHighlightCaretTime: integer;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetLineNumberColor: TSynSelectedColor;
@@ -481,7 +483,6 @@ type
     function GetMouseLinkColor : TSynSelectedColor;
     procedure SetBracketHighlightStyle(
       const AValue: TSynEditBracketHighlightStyle);
-    procedure SetHighlightCaretTime(const AValue: integer);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
     procedure SetRealLines(const AValue : TStrings);
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
@@ -898,6 +899,11 @@ type
     property OnKeyPress;
     property OnProcessCommand: TProcessCommandEvent
       read FOnProcessCommand write FOnProcessCommand;
+    function MarkupCount: Integer;
+    property Markup[Index: integer]: TSynEditMarkup
+      read GetMarkup;
+    property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
+      read GetMarkupByClass;
   protected
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
@@ -939,7 +945,6 @@ type
     property IncrementColor: TSynSelectedColor read GetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
     property HighlightCaretColor: TSynSelectedColor read GetHighlightCaretColor;
-    property HighlightCaretTime: integer read GetHighlightCaretTime write SetHighlightCaretTime;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
     property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
@@ -1724,6 +1729,11 @@ begin
   Result := FCaret.LineText;
 end;
 
+function TCustomSynEdit.GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
+begin
+  Result := fMarkupManager.MarkupByClass[Index];
+end;
+
 {$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
 begin
@@ -1733,11 +1743,6 @@ end;
 function TCustomSynEdit.GetHighlightCaretColor: TSynSelectedColor;
 begin
   result := fMarkupHighCaret.MarkupInfo;
-end;
-
-function TCustomSynEdit.GetHighlightCaretTime: integer;
-begin
-  Result := fMarkupHighCaret.WaitTime;
 end;
 
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
@@ -1801,11 +1806,6 @@ procedure TCustomSynEdit.SetBracketHighlightStyle(
   const AValue: TSynEditBracketHighlightStyle);
 begin
   fMarkupBracket.HighlightStyle := AValue;
-end;
-
-procedure TCustomSynEdit.SetHighlightCaretTime(const AValue: integer);
-begin
-  FMarkupHighCaret.WaitTime := AValue;
 end;
 
 procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);
@@ -3993,6 +3993,11 @@ begin
   inherited Invalidate;
 end;
 
+function TCustomSynEdit.MarkupCount: Integer;
+begin
+  Result := FMarkupManager.Count;
+end;
+
 procedure TCustomSynEdit.PasteFromClipboard;
 var
 {$IFDEF SYN_LAZARUS}
@@ -4130,6 +4135,11 @@ begin
   Result:= fCaret.LinePos;
 end;
 {$ENDIF}
+
+function TCustomSynEdit.GetMarkup(Index: integer): TSynEditMarkup;
+begin
+  Result := fMarkupManager.Markup[Index];
+end;
 
 procedure TCustomSynEdit.SetCaretX(Value: Integer);
 begin
