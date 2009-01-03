@@ -1482,10 +1482,10 @@ begin
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
+  fMarkupManager.AddMarkUp(fMarkupSpecialLine);
   fMarkupManager.AddMarkUp(fMarkupHighCaret);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
   fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
-  fMarkupManager.AddMarkUp(fMarkupSpecialLine);
   fMarkupManager.AddMarkUp(fMarkupBracket);
   fMarkupManager.AddMarkUp(fMarkupSelection);
   fMarkupManager.Lines := TSynEditStrings(Lines);
