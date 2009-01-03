@@ -268,7 +268,7 @@
         <UnitName Value="Compiler_Conditionals_Options"/>
       </Unit32>
       <Unit33>
-        <Filename Value="frames\compiler_buildmodes_options.pas"/>
+        <Filename Value="..\packager\frames\compiler_buildmodes_options.pas"/>
         <ComponentName Value="CompOptBuildModesFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>

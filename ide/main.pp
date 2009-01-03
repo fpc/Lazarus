@@ -127,7 +127,6 @@ uses
   codetools_space_options, codetools_identifiercompletion_options,
   debugger_general_options, debugger_eventlog_options,
   debugger_language_exceptions_options, debugger_signals_options,
-
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
