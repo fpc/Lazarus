@@ -4178,10 +4178,11 @@ var
       end;
       inc(Result, Indent);
     end else
-    if CurNode <> nil then
-      Result := Indent shr 2 // indent first level of tree with ShowRoot = false a bit
-    else
+    begin
       Result := BorderWidth - FScrolledLeft;
+      if CurNode <> nil then // indent first level of tree with ShowRoot = false a bit
+        inc(Result, Indent shr 2);
+    end;
   end;
 
   procedure DrawExpandSign(MidX, MidY: integer; CollapseSign: boolean);
