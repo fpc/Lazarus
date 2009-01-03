@@ -53,7 +53,9 @@ type
     AddPackageUnitToProjectCheckBox: TCheckBox;
     CancelButton: TBitBtn;
     EnableI18NCheckBox: TCheckBox;
+    ConditionalsGroupBox: TGroupBox;
     OKButton: TBitBtn;
+    Usage2Page: TPage;
     ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
@@ -267,7 +269,9 @@ end;
 
 procedure TPackageOptionsDialog.FormCreate(Sender: TObject);
 begin
-
+  {$IFNDEF EnableBuildModes}
+  Usage2Page.TabVisible:=false;
+  {$ENDIF}
 end;
 
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
