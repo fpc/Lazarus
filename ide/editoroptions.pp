@@ -40,7 +40,7 @@ uses
   Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
-  SynEditStrConst, SynEditMarkupBracket,
+  SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
@@ -415,6 +415,8 @@ type
 
   TEditorOptions = class(TAbstractIDEOptions)
   private
+    FMarkupCurWordEnabled: Boolean;
+    FMarkupCurWordTime: Integer;
     xmlconfig: TXMLConfig;
 
     // general options
@@ -569,6 +571,12 @@ type
     // Color options
     property HighlighterList: TEditOptLangList
       read fHighlighterList write fHighlighterList;
+
+    // Markup Current Word
+    property MarkupCurWordEnabled: Boolean
+      read FMarkupCurWordEnabled write FMarkupCurWordEnabled default True;
+    property MarkupCurWordTime: Integer
+      read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
 
     // Code Tools options
     property AutoIdentifierCompletion: Boolean
@@ -1372,6 +1380,9 @@ begin
   // Color options
   fHighlighterList := TEditOptLangList.Create;
 
+  FMarkupCurWordEnabled := True;
+  FMarkupCurWordTime := 1500;
+
   // Code Tools options
   fCodeTemplateFileName := SetDirSeparators(GetPrimaryConfigPath + '/lazarus.dci');
   CopySecondaryConfigFile('lazarus.dci');
@@ -1530,6 +1541,13 @@ begin
       // color attributes are stored in the highlighters
     ;
 
+    FMarkupCurWordEnabled :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordEnabled', True);
+    FMarkupCurWordTime :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordTime', 1500);
+
     // Code Tools options
     fAutoIdentifierCompletion :=
       XMLConfig.GetValue(
@@ -1669,6 +1687,12 @@ begin
         fHighlighterList[i].DefaultFileExtensions)
       // color attributes are stored in the highlighters
     ;
+
+
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordEnabled',
+      FMarkupCurWordEnabled, True);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordTime',
+      FMarkupCurWordTime, 1500);
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
@@ -2210,6 +2234,8 @@ end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
+var
+  MarkCaret: TSynEditMarkupHighlightAllCaret;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2252,6 +2278,12 @@ begin
   ASynEdit.MaxUndo := fUndoLimit;
   SetMarkupColors(ASynEdit.Highlighter, ASynEdit);
 
+  MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  if assigned(MarkCaret) then begin
+    MarkCaret.Enabled := FMarkupCurWordEnabled;
+    MarkCaret.WaitTime := FMarkupCurWordTime;
+  end;
+
   // Code Folding
   ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
 
@@ -2260,6 +2292,8 @@ end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 // copy settings from a synedit to the options
+var
+  MarkCaret: TSynEditMarkupHighlightAllCaret;
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -2286,6 +2320,12 @@ begin
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
   fDisableAntialiasing := (ASynEdit.Font.Quality = fqNonAntialiased);
   fUndoLimit := ASynEdit.MaxUndo;
+
+  MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  if assigned(MarkCaret) then begin
+    FMarkupCurWordEnabled := MarkCaret.Enabled;
+    FMarkupCurWordTime := MarkCaret.WaitTime;
+  end;
 end;
 
 procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(

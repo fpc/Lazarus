@@ -1188,6 +1188,7 @@ resourcestring
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
+  dlgMarkupWordEnabled = 'Highlight Current Word/Block';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';
