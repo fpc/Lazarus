@@ -694,8 +694,12 @@ begin
   E := TManagedExceptions(GetOwner).FMaster;
   if ((FMaster = nil) = Enabled) and (E <> nil)
   then begin
-    if Enabled
-    then FMaster := E.Add(Name)
+    if Enabled then
+    begin
+      FMaster := E.Find(Name);
+      if FMaster = nil then
+        FMaster := E.Add(Name);
+    end
     else FreeAndNil(FMaster);
   end;
 
@@ -740,17 +744,24 @@ begin
     for n := 0 to Count - 1 do
     begin
       Item := Items[n];
-      if Item.Enabled
+      if Item.Enabled and (FMaster.Find(Item.Name) = nil)
       then FMaster.Add(Item.Name);
     end;
   end;
 end;
 
 procedure TManagedExceptions.AddDefault;
+
+  procedure AddIfNeeded(AName: string);
+  begin
+    if Find(AName) = nil then
+      Add(AName);
+  end;
+
 begin
-  Add('EAbort');
-  Add('ECodetoolError');
-  Add('EFOpenError');
+  AddIfNeeded('EAbort');
+  AddIfNeeded('ECodetoolError');
+  AddIfNeeded('EFOpenError');
 end;
 
 { TManagedSignal }
