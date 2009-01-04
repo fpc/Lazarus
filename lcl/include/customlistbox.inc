@@ -670,10 +670,15 @@ function TCustomListBox.GetSelectedText: string;
 var
   i: Integer;
 begin
-  Result:='';
-  if ItemIndex<0 then exit;
-  for i:=0 to Items.Count-1 do
-    if Selected[i] then Result:=Result+Items[i]+LineEnding;
+  Result := '';
+  if ItemIndex < 0 then
+    Exit;
+  for i := 0 to Items.Count - 1 do
+    if Selected[i] then
+      if Result = '' then
+        Result := Items[i]
+      else
+        Result := Result + LineEnding + Items[i]
 end;
 
 {------------------------------------------------------------------------------
