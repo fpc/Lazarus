@@ -1651,7 +1651,6 @@ debugger/frames/debugger_language_exceptions_options.pas svneol=native#text/pasc
 debugger/frames/debugger_signals_options.lfm svneol=native#text/plain
 debugger/frames/debugger_signals_options.lrs svneol=native#text/pascal
 debugger/frames/debugger_signals_options.pas svneol=native#text/pascal
-debugger/gdbdebugger.pp svneol=native#text/pascal
 debugger/gdbmidebugger.pp svneol=native#text/pascal
 debugger/gdbtypeinfo.pp svneol=native#text/pascal
 debugger/localsdlg.lfm svneol=native#text/plain
