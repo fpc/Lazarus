@@ -3792,7 +3792,7 @@ begin
   if FName = AValue then exit;
   
   if TBaseExceptions(GetOwner).Find(AValue) <> nil
-  then raise EDBGExceptions.Create('Duplicate name');
+  then raise EDBGExceptions.Create('Duplicate name: ' + AValue);
 
   FName := AValue;
   Changed;
