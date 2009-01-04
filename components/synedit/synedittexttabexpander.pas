@@ -64,7 +64,7 @@ begin
   FIndexOfLongestLine := -1;
   inherited Create(ASynStringSource);
   RegisterAttribute(TSynEditStringTabExpander, SizeOf(Integer));
-  FTabWidth := 8;
+  TabWidth := 8;
   fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
