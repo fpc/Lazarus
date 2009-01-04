@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -167,12 +167,6 @@ begin
   end;
 end;
 
-procedure TCustomSpeedButton.SetEnabled(NewEnabled: boolean);
-begin
-  inherited;
-  UpdateState(true);
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.SetFlat
   Params: Value:
@@ -181,7 +175,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetFlat(const Value : boolean);
 begin
-  if FFlat <> Value then begin
+  if FFlat <> Value then 
+  begin
     FFlat := Value;
     Invalidate;
   end;
@@ -935,7 +930,7 @@ end;
 procedure TCustomSpeedButton.CMEnabledChanged(var Message: TLMEssage);
 Begin
   //Should create a new glyph based on the new state
-  Invalidate;
+  UpdateState(true);
 end;
 
 {------------------------------------------------------------------------------

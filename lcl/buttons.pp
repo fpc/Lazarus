@@ -288,7 +288,6 @@ type
     procedure SetNumGlyphs(Value: integer);
     procedure SetSpacing(const Value: integer);
     procedure RealSetText(const Value: TCaption); override;
-    procedure SetEnabled(NewEnabled: boolean); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawDetails: TThemedElementDetails; virtual;
     property MouseInControl: Boolean read FMouseInControl;
