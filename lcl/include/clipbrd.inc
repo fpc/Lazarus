@@ -140,7 +140,6 @@ begin
     FData[i].Stream.Clear;
     if Size>0 then
       FData[i].Stream.Write(Buffer,Size);
-    FSupportedFormatsChanged:=true;
   finally
     Result:=EndUpdate;
   end;
