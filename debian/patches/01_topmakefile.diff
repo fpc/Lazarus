@@ -1,11 +1,6 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## 06_unit_dbase.dpatch by  <Mazen Neifer <mazen.neifer@supaero.org>>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: This patch fixes dist_clean target used to remove generated
-## DP: files before packaging sources.
+This patch fixes dist_clean target used to remove generated files before
+packaging sources.
 
-@DPATCH@
 Index: Makefile.fpc
 ===================================================================
 --- lazarus~/Makefile.fpc	(révision 16588)
@@ -19,7 +14,7 @@ Index: Makefile.fpc
  exampledirs=examples
  
  [compiler]
-@@ -40,13 +40,9 @@
+@@ -45,13 +45,9 @@
  
  #-----------------------------------------------------------------------------
  [rules]
@@ -34,7 +29,7 @@ Index: Makefile.fpc
  idepkg:
  	$(MAKE) -C ide idepkg
  
-@@ -76,7 +72,6 @@
+@@ -81,7 +77,6 @@
  
  #-----------------------------------------------------------------------------
  tools: lcl components
@@ -42,12 +37,3 @@ Index: Makefile.fpc
  	
  #-----------------------------------------------------------------------------
  examples: lcl components
-@@ -128,7 +123,7 @@
- 	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
- 	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
- 	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
--	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
-+	cat $(LAZARUS_INSTALL_DIR)/install/man/man1/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
- endif
- 
- 

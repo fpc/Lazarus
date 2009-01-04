@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freepascal.org>
 Standards-Version: 3.8.0
-Build-Depends: debhelper (>= 5), dpatch, fpc (>= 2.2.2-3), fpc-source (>= 2.2.2-3), 
- fp-units-i386 [i386], fp-utils, imagemagick, libgdk-pixbuf-dev
+Build-Depends: debhelper (>= 5), quilt, fpc (>= 2.2.2-5), fpc-source (>= 2.2.2-5), 
+ fp-utils, imagemagick, libgdk-pixbuf-dev
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
@@ -67,7 +67,7 @@ Description: IDE to create (graphical and console) applications with Free
 Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 arm
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-3), fp-units-base, fp-units-rtl,
+Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-5), fp-units-base, fp-units-rtl,
  fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
  ${fpc-abi:Depends}, lazarus-src
 Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
