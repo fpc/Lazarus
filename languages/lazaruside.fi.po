@@ -357,7 +357,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
-msgstr ""
+msgstr "Komentorivin parametrit"
 
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -688,7 +688,7 @@ msgstr "Muut tiedostot"
 
 #: lazarusidestrconsts.dlgenvproject
 msgid "Project"
-msgstr ""
+msgstr "Projekti"
 
 #: lazarusidestrconsts.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -802,7 +802,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlggroupeditor
 msgid "Editor"
-msgstr ""
+msgstr "Editori"
 
 #: lazarusidestrconsts.dlggroupenvironment
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
@@ -928,7 +928,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
-msgstr ""
+msgstr "Yritä pysyä samalla kohtaa eri riveillä (x-paikka)"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -1165,7 +1165,7 @@ msgstr "Sovellus"
 
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
-msgstr ""
+msgstr "Poista kuvake"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
@@ -1181,7 +1181,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpoicon
 msgid "Icon:"
-msgstr ""
+msgstr "Kuvake:"
 
 #: lazarusidestrconsts.dlgpoicondesc
 msgid "(size: %d:%d, bpp: %d)"
@@ -1194,7 +1194,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "Load Icon"
-msgstr ""
+msgstr "Tuo kuvake"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -1207,7 +1207,7 @@ msgstr "Sovelluksen tiedostoasetukset"
 
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
-msgstr ""
+msgstr "Tallenna kuvake"
 
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
@@ -1837,11 +1837,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisa2paddtopackage
 msgid "Add to package"
-msgstr ""
+msgstr "Lisää komponenttipakettiin"
 
 #: lazarusidestrconsts.lisa2paddunit
 msgid "Add Unit"
-msgstr ""
+msgstr "Lisää käännösyksikkö(unit)"
 
 #: lazarusidestrconsts.lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1906,7 +1906,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilename
 msgid "File name:"
-msgstr ""
+msgstr "Tiedoston nimi:"
 
 #: lazarusidestrconsts.lisa2pfilename2
 msgid "Filename"
@@ -2077,11 +2077,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisa2punitfilename2
 msgid "Unit File Name:"
-msgstr ""
+msgstr "Käännösyksikön (unit) tiedostonimi:"
 
 #: lazarusidestrconsts.lisa2punitname
 msgid "Unit Name:"
-msgstr ""
+msgstr "Käännösyksikön (unit) nimi:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
@@ -2193,11 +2193,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaf2pfiletype
 msgid "File Type"
-msgstr ""
+msgstr "Tiedoston tyyppi"
 
 #: lazarusidestrconsts.lisaf2phasregisterprocedure
 msgid "Has Register procedure"
-msgstr ""
+msgstr "Sisältää Register aliohjelman"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
@@ -4351,7 +4351,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
-msgstr ""
+msgstr "Valitse näppäinkaavio"
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -5578,7 +5578,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
-msgstr ""
+msgstr "Valitse näppäinkaavio"
 
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
@@ -5602,7 +5602,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
-msgstr ""
+msgstr "Kääntäjän optioasetukset"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -6853,7 +6853,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
-msgstr ""
+msgstr "Asetukset ..."
 
 #: lazarusidestrconsts.lismenugotoincludedirective
 msgid "Goto include directive"
@@ -6977,7 +6977,7 @@ msgstr "Uusi"
 
 #: lazarusidestrconsts.lismenunewpackage
 msgid "New package ..."
-msgstr ""
+msgstr "Uusi komponenttipaketti ..."
 
 #: lazarusidestrconsts.lismenunewproject
 msgid "New Project ..."
@@ -8115,11 +8115,11 @@ msgstr "Komponenttipaketti %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
 msgid "Package %s%s%s has changed.%sSave package?"
-msgstr ""
+msgstr "Komponenttipaketti %s%s%s on muuttunut.%sTallennetaanko komponenttipaketti?"
 
 #: lazarusidestrconsts.lispckeditpackagenotsaved
 msgid "package %s not saved"
-msgstr ""
+msgstr "komponenttipakettia %s ei ole tallennettu"
 
 #: lazarusidestrconsts.lispckeditpage
 msgid "%s, Page: %s"
@@ -8203,7 +8203,7 @@ msgstr "Talletetaanko muutokset?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
-msgstr ""
+msgstr "Tallenna komponenttipaketti"
 
 #: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
 msgid "Store dependency filename"
@@ -8478,7 +8478,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
-msgstr ""
+msgstr "Uusi käännösyksikkö (unit) ei ole hakupolussa"
 
 #: lazarusidestrconsts.lispkgeditpublishpackage
 msgid "Publish Package"
@@ -8768,7 +8768,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
-msgstr ""
+msgstr "Tallenna komponenttipaketti %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
@@ -9544,7 +9544,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
-msgstr ""
+msgstr "Suhteelliset hakupolut"
 
 #: lazarusidestrconsts.lisremove
 msgid "remove"
@@ -11325,7 +11325,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rslanguageslovak
 msgid "Slovak"
-msgstr "Slovakki"
+msgstr "slovakki"
 
 #: lazarusidestrconsts.rslanguagespanish
 msgid "Spanish"
@@ -12185,11 +12185,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"
-msgstr ""
+msgstr "Siirrä kursori sanan vasemmalle puolelle (eteen)"
 
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
-msgstr ""
+msgstr "Siirrä kursori sanan oikealle puolelle (loppuun)"
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"
