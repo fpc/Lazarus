@@ -531,7 +531,7 @@ begin
   FFilteredList.Count:=0;
   FFilteredList.Capacity:=FItems.Count;
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
+  DebugLn(['TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"']);
   {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
@@ -540,7 +540,7 @@ begin
     and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
     then begin
       {$IFDEF ShowFilteredIdents}
-      DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier);
+      DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
       {$ENDIF}
       if length(Prefix)=length(CurItem.Identifier) then
         // put exact matches at the beginning
@@ -551,7 +551,7 @@ begin
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count));
+  DebugLn(['TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count)]);
   {$ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
