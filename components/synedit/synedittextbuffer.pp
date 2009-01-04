@@ -57,14 +57,8 @@ type
   {$ENDIF}
   TSynEditRangeClass = class end; // For Register
   TSynEditFlagsClass = class end; // For Register
-  TSynEditFoldMinClass = class end; // For Register
-  TSynEditFoldEndClass = class end; // For Register
-  TSynEditExpLenClass = class end; // For Register
 
   TSynEditStringFlag = (
-    sfHasTabs,               //
-    sfHasNoTabs,             //
-    sfExpandedLengthUnknown, //
     sfModified,              // a line is modified and not saved after
     sfSaved                  // a line is modified and saved after
   );
@@ -161,19 +155,9 @@ type
     Procedure SetAttributeSize(NewSize: Integer);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
   protected
-    fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
-    fOnDeleted: TStringListIndexEvent;
-    fOnInserted: TStringListIndexEvent;
-    fOnPutted: TStringListIndexEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
-    {$IFDEF SYN_LAZARUS}
-    function GetFoldEndLevel(Index: integer): integer; override;
-    function GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
-    {$ENDIF}
     function GetRange(Index: integer): TSynEditRange; {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
@@ -217,25 +201,16 @@ type
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); override;
   public
-    property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
+    property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
 {begin}                                                                         //mh 2000-10-19
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
 {end}                                                                           //mh 2000-10-19
     property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
-    property OnAdded: TStringListIndexEvent read fOnAdded write fOnAdded;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
     property OnCleared: TNotifyEvent read fOnCleared write fOnCleared;
-    property OnDeleted: TStringListIndexEvent read fOnDeleted write fOnDeleted;
-    property OnInserted: TStringListIndexEvent read fOnInserted
-      write fOnInserted;
-    property OnPutted: TStringListIndexEvent read fOnPutted write fOnPutted;
     {$IFDEF SYN_LAZARUS}
-    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
-                                                   write SetFoldMinLevel;
-    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
-                                                   write SetFoldEndLevel;
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
     {$ENDIF}
@@ -312,12 +287,11 @@ type
 implementation
 
 {$IFNDEF FPC}
-
-{$IFDEF SYN_COMPILER_3_UP}                                                      //mh 2000-10-18
+  {$IFDEF SYN_COMPILER_3_UP}
 resourcestring
-{$ELSE}
+  {$ELSE}
 const
-{$ENDIF}
+  {$ENDIF}
 {$ELSE}
 const
 {$ENDIF}
@@ -539,9 +513,6 @@ begin
   SetAttributeSize(0);
   RegisterAttribute(TSynEditRangeClass, SizeOf(Pointer));
   RegisterAttribute(TSynEditFlagsClass, SizeOf(TSynEditStringFlag));
-  RegisterAttribute(TSynEditFoldMinClass, SizeOf(Integer));
-  RegisterAttribute(TSynEditFoldEndClass, SizeOf(Integer));
-  RegisterAttribute(TSynEditExpLenClass, SizeOf(Integer));
   fDosFileFormat := TRUE;
 {begin}                                                                         //mh 2000-10-19
   fIndexOfLongestLine := -1;
@@ -567,8 +538,6 @@ begin
   Result := Count;
   InsertItem(Result, S);
   FLineRangeNotificationList.CallRangeNotifyEvents(self, Result, Count - Result);
-  if Assigned(fOnAdded) then
-    fOnAdded(Result);
   EndUpdate;
 end;
 
@@ -592,16 +561,9 @@ begin
           Objects[Count-1] := AStrings.Objects[i];
         end;
         SetAttribute(TSynEditRangeClass, Count-1, NullRange);
-        SetAttribute(TSynEditExpLenClass, Count-1, Pointer(-1));
-        Flags[Count-1] := [sfExpandedLengthUnknown];
-          {$IFDEF SYN_LAZARUS}
-        FoldMinLevel[Count-1]:=0;
-        FoldEndLevel[Count-1]:=0;
-          {$ENDIF}
+        Flags[Count-1] := [];
       end;
       FLineRangeNotificationList.CallRangeNotifyEvents(self, FirstAdded, Count - FirstAdded);
-      if Assigned(fOnAdded) then
-        fOnAdded(FirstAdded);
     finally
       EndUpdate;
     end;
@@ -636,8 +598,6 @@ begin
   SetCount(Count - 1);
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
   FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -1);
-  if Assigned(fOnDeleted) then
-    fOnDeleted(Index);
   EndUpdate;
 end;
 
@@ -662,8 +622,6 @@ begin
     end;
     SetCount(Count - NumLines);
     FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -NumLines);
-    if Assigned(fOnDeleted) then
-      fOnDeleted(Index);
   end;
 end;
 {end}                                                                           // DJLP 2000-11-01
@@ -694,36 +652,6 @@ begin
     Result := TSynEditStringFlags(Integer(PtrUInt(GetAttribute(TSynEditFlagsClass, Index))))
   else
     Result := [];
-end;
-
-function TSynEditStringList.GetFoldEndLevel(Index: integer): integer;
-begin
-  if (Index >= 0) and (Index < Count) then
-    Result := Integer(GetAttribute(TSynEditFoldEndClass, Index))
-  else
-    Result := 0;
-end;
-
-function TSynEditStringList.GetFoldMinLevel(Index: integer): integer;
-begin
-  if (Index >= 0) and (Index < Count) then
-    Result := Integer(GetAttribute(TSynEditFoldMinClass, Index))
-  else
-    Result := 0;
-end;
-
-procedure TSynEditStringList.SetFoldEndLevel(Index: integer;
-  const AValue: integer);
-begin
-  if (Index >= 0) and (Index < Count) then
-    SetAttribute(TSynEditFoldEndClass, Index, Pointer(PtrUInt(AValue)));
-end;
-
-procedure TSynEditStringList.SetFoldMinLevel(Index: integer;
-  const AValue: integer);
-begin
-  if (Index >= 0) and (Index < Count) then
-    SetAttribute(TSynEditFoldMinClass, Index, Pointer(PtrUInt(AValue)));
 end;
 {$ENDIF}
 
@@ -823,8 +751,6 @@ begin
   {$ENDIF}
   InsertItem(Index, S);
   FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, Count - OldCnt);
-  if Assigned(fOnInserted) then
-    fOnInserted(Index);
   EndUpdate;
 end;
 
@@ -840,12 +766,7 @@ begin
   fList[Index] := S;
   FList.Objects[Index] := nil;
   Ranges[Index] := NullRange;
-  SetAttribute(TSynEditExpLenClass, Index, Pointer(-1));
-  Flags[Index] := [sfExpandedLengthUnknown];
-  {$IFDEF SYN_LAZARUS}
-  FoldMinLevel[Index]:=0;
-  FoldEndLevel[Index]:=0;
-  {$ENDIF}
+  Flags[Index] := [];
   EndUpdate;
 end;
 
@@ -861,8 +782,6 @@ begin
         FList.Move(Index, Index + NumLines, Count-Index);
       SetCount(Count + NumLines);
       FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, NumLines);
-      if Assigned(fOnAdded) then
-        fOnAdded(Index);
     finally
       EndUpdate;
     end;
@@ -909,8 +828,6 @@ begin
 end;
 
 procedure TSynEditStringList.Put(Index: integer; const S: string);
-var
-  f: TSynEditStringFlags;
 begin
   if (Index = 0) and (Count = 0) then
     Add(S)
@@ -919,15 +836,8 @@ begin
       ListIndexOutOfBounds(Index);
     BeginUpdate;
     fIndexOfLongestLine := -1;
-    f :=  Flags[Index];
-    Include(f, sfExpandedLengthUnknown);
-    Exclude(f, sfHasTabs);
-    Exclude(f, sfHasNoTabs);
-    Flags[Index] := f;
     FList[Index] := S;
-    if Assigned(fOnPutted) then
-      fOnPutted(Index);
-      FLineChangeNotificationList.CallRangeNotifyEvents(self, Index, 1);
+    FLineChangeNotificationList.CallRangeNotifyEvents(self, Index, 1);
     EndUpdate;
   end;
 end;
