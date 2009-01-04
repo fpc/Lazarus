@@ -597,7 +597,7 @@ type
     property Style: TListBoxStyle read FStyle write SetStyle default lbStandard;
     property TabOrder;
     property TabStop default true;
-    property TopIndex: Integer read GetTopIndex write SetTopIndex;
+    property TopIndex: Integer read GetTopIndex write SetTopIndex default 0;
     property Visible;
   end;
 
