@@ -1,288 +1,395 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
-  Left = 329
-  Height = 367
-  Top = 288
-  Width = 387
-  HorzScrollBar.Page = 382
-  HorzScrollBar.Range = 392
-  HorzScrollBar.Visible = True
-  VertScrollBar.Page = 188
-  VertScrollBar.Range = 209
-  VertScrollBar.Visible = True
+  Left = 973
+  Height = 379
+  Top = 224
+  Width = 370
+  HorzScrollBar.Page = 386
+  VertScrollBar.Page = 366
+  VertScrollBar.Range = 325
   AutoScroll = False
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 367
-  ClientWidth = 387
+  ClientHeight = 379
+  ClientWidth = 370
+  Position = poScreenCenter
   object lblFileName: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtFilename
     AnchorSideTop.Side = asrCenter
-    Left = 8
-    Height = 13
-    Top = 14
-    Width = 55
+    Left = 6
+    Height = 14
+    Top = 11
+    Width = 47
+    BorderSpacing.Around = 6
     Caption = 'Filename:'
     ParentColor = False
   end
   object lblLine: TLabel[1]
-    AnchorSideLeft.Control = lblFileName
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtLine
     AnchorSideTop.Side = asrCenter
-    Left = 8
-    Height = 13
-    Top = 41
-    Width = 28
+    Left = 6
+    Height = 14
+    Top = 40
+    Width = 24
+    BorderSpacing.Around = 6
     Caption = 'Line:'
     ParentColor = False
   end
   object lblCondition: TLabel[2]
-    AnchorSideLeft.Control = lblFileName
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtCondition
     AnchorSideTop.Side = asrCenter
-    Left = 8
-    Height = 13
-    Top = 68
-    Width = 57
+    Left = 6
+    Height = 14
+    Top = 69
+    Width = 50
+    BorderSpacing.Around = 6
     Caption = 'Condition:'
     ParentColor = False
   end
   object lblHitCount: TLabel[3]
-    AnchorSideLeft.Control = lblFileName
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtCounter
     AnchorSideTop.Side = asrCenter
-    Left = 8
-    Height = 13
-    Top = 95
-    Width = 61
+    Left = 6
+    Height = 14
+    Top = 98
+    Width = 55
+    BorderSpacing.Around = 6
     Caption = 'Hitcounter:'
     ParentColor = False
   end
   object lblGroup: TLabel[4]
-    AnchorSideLeft.Control = lblFileName
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbGroup
     AnchorSideTop.Side = asrCenter
-    Left = 8
-    Height = 13
-    Top = 152
-    Width = 38
+    Left = 6
+    Height = 14
+    Top = 155
+    Width = 34
+    BorderSpacing.Around = 6
     Caption = 'Group:'
     ParentColor = False
   end
   object lblAutoContinue: TLabel[5]
-    Left = 9
-    Height = 13
-    Top = 124
-    Width = 106
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtAutocontinueMS
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 127
+    Width = 92
+    BorderSpacing.Around = 6
     Caption = 'Auto continue (ms)'
     ParentColor = False
   end
   object edtAutocontinueMS: TEdit[6]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtCounter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
+    Left = 114
     Height = 23
-    Top = 117
-    Width = 251
+    Top = 123
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 4
-    TabOrder = 0
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
+    TabOrder = 4
     Text = 'edtAutocontinueMS'
   end
   object edtCounter: TEdit[7]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtCondition
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
+    Left = 114
     Height = 23
-    Top = 90
-    Width = 251
+    Top = 94
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 4
-    BorderSpacing.Around = 4
-    TabOrder = 1
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
+    TabOrder = 3
     Text = 'edtCounter'
   end
   object edtCondition: TEdit[8]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtLine
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
+    Left = 114
     Height = 23
-    Top = 63
-    Width = 251
+    Top = 65
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 4
-    BorderSpacing.Around = 4
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
     TabOrder = 2
     Text = 'edtCondition'
   end
   object edtLine: TEdit[9]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtFilename
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
+    Left = 114
     Height = 23
     Top = 36
-    Width = 251
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 4
-    BorderSpacing.Around = 4
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
     Color = clBtnFace
     ReadOnly = True
-    TabOrder = 3
+    TabOrder = 1
     Text = 'edtLine'
   end
   object edtFilename: TEdit[10]
-    AnchorSideTop.Side = asrCenter
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
+    Left = 114
     Height = 24
-    Top = 8
-    Width = 247
+    Top = 6
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Right = 4
-    BorderSpacing.Around = 4
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
     Color = clBtnFace
     ReadOnly = True
-    TabOrder = 4
+    TabOrder = 0
     Text = 'edtFilename'
   end
   object cmbGroup: TComboBox[11]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtAutocontinueMS
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 137
-    Height = 25
-    Top = 144
-    Width = 251
+    Left = 114
+    Height = 21
+    Top = 152
+    Width = 250
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 4
+    AutoComplete = False
+    BorderSpacing.Left = 10
+    BorderSpacing.Around = 6
+    Ctl3D = False
+    ItemHeight = 13
+    ItemWidth = 0
     TabOrder = 5
     Text = 'cmbGroup'
   end
   object gbActions: TGroupBox[12]
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbGroup
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 4
-    Height = 149
-    Top = 176
-    Width = 384
+    Left = 6
+    Height = 163
+    Top = 179
+    Width = 358
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 4
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'Actions'
-    ClientHeight = 132
-    ClientWidth = 380
+    ClientHeight = 145
+    ClientWidth = 354
+    Ctl3D = False
     TabOrder = 6
     object chkActionBreak: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = gbActions
       Left = 6
-      Height = 20
-      Top = 5
-      Width = 56
+      Height = 17
+      Top = 6
+      Width = 46
+      BorderSpacing.Around = 6
       Caption = 'Break'
       TabOrder = 0
     end
     object chkEnableGroups: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtEnableGroups
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 20
-      Top = 29
-      Width = 101
+      Height = 17
+      Top = 32
+      Width = 83
+      BorderSpacing.Around = 6
       Caption = 'Enable goups'
       TabOrder = 1
     end
     object chkDisableGroups: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtDisableGroups
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 20
-      Top = 53
-      Width = 108
+      Height = 17
+      Top = 61
+      Width = 88
+      BorderSpacing.Around = 6
       Caption = 'Disable groups'
       TabOrder = 2
     end
     object edtEnableGroups: TEditButton
-      Left = 130
+      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkActionBreak
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 132
       Height = 23
       Top = 29
-      Width = 221
+      Width = 193
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 80
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       ButtonWidth = 23
+      Ctl3D = False
       Enabled = False
       NumGlyphs = 1
       OnButtonClick = edtEnableGroupsButtonClick
-      TabOrder = 3
+      TabOrder = 5
     end
     object edtDisableGroups: TEditButton
-      Left = 130
+      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtEnableGroups
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 132
       Height = 23
-      Top = 53
-      Width = 221
+      Top = 58
+      Width = 193
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 80
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       ButtonWidth = 23
+      Ctl3D = False
       Enabled = False
       NumGlyphs = 1
       OnButtonClick = edtDisableGroupsButtonClick
-      TabOrder = 4
-    end
-    object chkEvalExpression: TCheckBox
-      Left = 6
-      Height = 20
-      Top = 77
-      Width = 113
-      Caption = 'Eval expression'
-      Enabled = False
-      TabOrder = 5
-    end
-    object chkLogMessage: TCheckBox
-      Left = 6
-      Height = 20
-      Top = 101
-      Width = 98
-      Caption = 'Log message'
-      Enabled = False
       TabOrder = 6
     end
+    object chkEvalExpression: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtEvalExpression
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 90
+      Width = 92
+      BorderSpacing.Around = 6
+      Caption = 'Eval expression'
+      Enabled = False
+      TabOrder = 3
+    end
+    object chkLogMessage: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtLogMessage
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 119
+      Width = 81
+      BorderSpacing.Around = 6
+      Caption = 'Log message'
+      Enabled = False
+      TabOrder = 4
+    end
     object edtEvalExpression: TEdit
-      Left = 130
+      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtDisableGroups
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbActions
+      AnchorSideRight.Side = asrBottom
+      Left = 132
       Height = 23
-      Top = 77
-      Width = 244
+      Top = 87
+      Width = 216
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 80
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
       Enabled = False
       TabOrder = 7
-      Text = 'edtEvalExpression'
     end
     object edtLogMessage: TEdit
-      Left = 130
+      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtEvalExpression
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbActions
+      AnchorSideRight.Side = asrBottom
+      Left = 132
       Height = 23
-      Top = 101
-      Width = 244
+      Top = 116
+      Width = 216
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 80
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
       Enabled = False
       TabOrder = 8
-      Text = 'Edit1'
     end
   end
   object btnHelp: TBitBtn[13]
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbActions
+    AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
-    Top = 335
-    Width = 35
-    Anchors = [akLeft, akBottom]
+    Height = 25
+    Top = 348
+    Width = 75
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Help'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     NumGlyphs = 0
     OnClick = btnHelpClick
     TabOrder = 7
   end
   object btnOK: TBitBtn[14]
+    AnchorSideTop.Control = gbActions
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = btnCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 304
-    Height = 26
-    Top = 335
-    Width = 27
-    Anchors = [akRight, akBottom]
+    Left = 208
+    Height = 25
+    Top = 348
+    Width = 75
+    Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'OK'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     ModalResult = 1
     NumGlyphs = 0
@@ -290,19 +397,23 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     TabOrder = 8
   end
   object btnCancel: TBitBtn[15]
+    AnchorSideTop.Control = gbActions
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 337
-    Height = 26
-    Top = 335
-    Width = 49
-    Anchors = [akRight, akBottom]
+    Left = 289
+    Height = 25
+    Top = 348
+    Width = 75
+    Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 9
