@@ -209,7 +209,6 @@ type
 
     procedure DoCaretChanged(Sender : TObject);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
-    Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LinesInsertedAtTextIndex(AStartIndex, ALineCount : Integer;
                                        SkipFixFolding : Boolean = False);
     Procedure LinesInsertedAtViewPos(AStartPos, ALineCount : Integer;
@@ -1415,7 +1414,6 @@ begin
   fTopLine := 0;
   fLinesInWindow := -1;
   fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fLines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
 end;
 
 destructor TSynEditFoldedView.Destroy;
@@ -1897,7 +1895,6 @@ end;
 
 procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
 begin
-  LineTextChanged(Sender, AIndex, ACount);
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
   if (fLockCount > 0) and (AIndex < max(fNeedFixFrom, fNeedFixMinEnd)) then begin
@@ -1908,16 +1905,6 @@ begin
   if ACount<0
   then LinesDeletedAtTextIndex(AIndex, -ACount, true)
   else LinesInsertedAtTextIndex(AIndex, ACount, true);
-end;
-
-procedure TSynEditFoldedView.LineTextChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
-var
-  i: integer;
-begin
-  for i := AIndex to AIndex + ACount - 1 do begin
-    FoldMinLevel[i]:=-1;
-    FoldEndLevel[i]:=-1;
-  end;
 end;
 
 procedure TSynEditFoldedView.FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine : Integer);
