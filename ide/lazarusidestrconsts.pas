@@ -3892,6 +3892,8 @@ resourcestring
   // ProjectWizard Dialog
   lisPWNewProject = 'New Project';
   lisPWOpenProject = 'Open Project';
+  lisPWRecentProjects  = 'Recent Projects';
+  lisPWOpenRecentProject = 'Open Recent';
   lisPWConvertProject = 'Convert Delphi Project';
   lisInvalidCircle = 'Invalid circle';
   lisIsAThisCircleDependencyIsNotAllowed = '%s is a %s.%sThis circle '

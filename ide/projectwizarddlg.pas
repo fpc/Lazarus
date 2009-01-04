@@ -29,13 +29,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, EnvironmentOpts, StdCtrls;
 
 type
-  TProjectWizardSelectionType=(tpws_new,
-                               tpws_open,
-                               tpws_convert,
-                               tpws_closeIDE);
+  TProjectWizardSelectionType = (
+    tpws_new,
+    tpws_open,
+    tpws_openRecent,
+    tpws_convert,
+    tpws_closeIDE
+  );
 
   { TProjectWizardDialog }
 
@@ -43,43 +46,52 @@ type
     btnNewProject: TBitBtn;
     btnConvertProject: TBitBtn;
     btnCloseIDE: TBitBtn;
+    btnOpenRecent: TBitBtn;
     btnOpenProject: TBitBtn;
+    cbRecentProjects: TComboBox;
     procedure btnCloseIDEClick(Sender: TObject);
     procedure btnConvertProjectClick(Sender: TObject);
     procedure btnNewProjectClick(Sender: TObject);
     procedure btnOpenProjectClick(Sender: TObject);
+    procedure btnOpenRecentClick(Sender: TObject);
   private
     FResult: TProjectWizardSelectionType;
   public
     property Result: TProjectWizardSelectionType read FResult;
   end; 
 
-function ShowProjectWizardDlg:TProjectWizardSelectionType;
+function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 
 implementation
 
 { TProjectWizardDialog }
 
-function ShowProjectWizardDlg:TProjectWizardSelectionType;
+function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 var
   ProjectWizardDialog: TProjectWizardDialog;
 begin
-  result:=tpws_closeIDE;
-  ProjectWizardDialog:=TProjectWizardDialog.create(nil);
+  Result := tpws_closeIDE;
+  ARecentProject := '';
+  ProjectWizardDialog := TProjectWizardDialog.create(nil);
   with ProjectWizardDialog do
   begin
     btnNewProject.caption:=lisPWNewProject;
     btnOpenProject.caption:=lisPWOpenProject;
     btnConvertProject.caption:=lisPWConvertProject;
+    cbRecentProjects.text:=lisPWRecentProjects;
+    btnOpenRecent.caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;
     btnNewProject.LoadGlyphFromLazarusResource('item_project');
     btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
     btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
+    cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
   end;
 
   try
-    if ProjectWizardDialog.showmodal<>mrOk then exit;
-    result:=ProjectWizardDialog.result;
+    if ProjectWizardDialog.ShowModal <> mrOk then
+      Exit;
+    Result := ProjectWizardDialog.Result;
+    ARecentProject := ProjectWizardDialog.cbRecentProjects.Text;
   finally
     ProjectWizardDialog.free;
   end;
@@ -87,22 +99,27 @@ end;
 
 procedure TProjectWizardDialog.btnNewProjectClick(Sender: TObject);
 begin
-  FResult:=tpws_new;
+  FResult := tpws_new;
 end;
 
 procedure TProjectWizardDialog.btnConvertProjectClick(Sender: TObject);
 begin
-  FResult:=tpws_convert;
+  FResult := tpws_convert;
 end;
 
 procedure TProjectWizardDialog.btnCloseIDEClick(Sender: TObject);
 begin
-  FResult:=tpws_closeIDE;
+  FResult := tpws_closeIDE;
 end;
 
 procedure TProjectWizardDialog.btnOpenProjectClick(Sender: TObject);
 begin
-  FResult:=tpws_open;
+  FResult := tpws_open;
+end;
+
+procedure TProjectWizardDialog.btnOpenRecentClick(Sender: TObject);
+begin
+  FResult := tpws_openRecent;
 end;
 
 initialization

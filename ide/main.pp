@@ -3423,6 +3423,7 @@ end;
 procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
 var
   DlgResult: TModalResult;
+  ARecentProject: String;
 begin
   // stop debugging/compiling/...
   if not DoResetToolStatus(true) then exit;
@@ -3449,16 +3450,29 @@ begin
   DoCloseProject;
 
   // ask what to do next
-  while (Project1=nil) do begin
-    case ShowProjectWizardDlg of
-    tpws_new:
-      mnuNewProjectClicked(Sender);
-    tpws_open:
-      mnuOpenProjectClicked(Sender);
-    tpws_convert:
-      mnuToolConvertDelphiProjectClicked(Sender);
-    tpws_closeIDE:
-      if QuitIDE then exit;
+  while (Project1 = nil) do
+  begin
+    case ShowProjectWizardDlg(ARecentProject) of
+      tpws_new:
+        mnuNewProjectClicked(Sender);
+      tpws_open:
+        mnuOpenProjectClicked(Sender);
+      tpws_openRecent:
+        begin
+          ARecentProject := ExpandFileNameUTF8(ARecentProject);
+          if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
+          begin
+            // open failed
+            if not FileExistsUTF8(ARecentProject) then
+              EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
+            else
+              AddRecentProjectFileToEnvironment(ARecentProject);
+          end;
+        end;
+      tpws_convert:
+        mnuToolConvertDelphiProjectClicked(Sender);
+      tpws_closeIDE:
+        if QuitIDE then exit;
     end;
   end;
 end;
