@@ -125,11 +125,13 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Paint; override;
-    procedure ScrollGetFocus(Sender: TObject);
     procedure Deactivate; override;
     procedure SelectPrec;
     procedure SelectNext;
     procedure ScrollChange(Sender: TObject);
+    procedure ScrollGetFocus(Sender: TObject);
+    procedure ScrollScroll(Sender: TObject; ScrollCode: TScrollCode;
+      var ScrollPos: Integer);
     procedure SetItemList(const Value: TStrings);
     procedure SetPosition(const Value: Integer);
     procedure SetNbLinesInWindow(const Value: Integer);
@@ -421,6 +423,7 @@ begin
   Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
   Scroll.Parent := Self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
+  Scroll.OnScroll := {$IFDEF FPC}@{$ENDIF}ScrollScroll;
   {$IFDEF SYN_LAZARUS}
   Scroll.Visible := True;
   Scroll.Anchors:=[akTop,akRight];
@@ -637,14 +640,22 @@ begin
 //Writeln('[TSynBaseCompletionForm.Paint]');
 
   // update scroll bar
-  if ItemList.Count - NbLinesInWindow < 0 then
-    Scroll.Max := 0
+  Scroll.Visible := ItemList.Count > NbLinesInWindow;
+
+  if Scroll.Visible then
+  begin
+    Scroll.Max := ItemList.Count - 1;
+    Scroll.LargeChange := NbLinesInWindow;
+    Scroll.PageSize := NbLinesInWindow;
+  end
   else
-    Scroll.Max := ItemList.Count - NbLinesInWindow;
+  begin
+    Scroll.PageSize := 0;
+    Scroll.Max := 0;
+  end;
   {$IFNDEF SYN_LAZARUS}  
   Position := Position;
   {$ENDIF}
-  Scroll.LargeChange := NbLinesInWindow;
 
   {$IFDEF SYN_LAZARUS}
   bitmap.SetSize(ClientWidth, ClientHeight);
@@ -652,15 +663,18 @@ begin
   bitmap.Width:=ClientWidth;
   bitmap.Height:=ClientHeight;
   {$ENDIF}
-  with bitmap do begin
+  with bitmap do 
+  begin
     {$IFNDEF SYN_LAZARUS}
     canvas.pen.color := fbcolor;
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
     {$ENDIF}
     //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
-    for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
-      if i + Scroll.Position = Position then begin
+    for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do 
+    begin
+      if i + Scroll.Position = Position then 
+      begin
         Canvas.Brush.Color := clSelect;
         Canvas.Pen.Color := clSelect;
         Canvas.Rectangle(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1);
@@ -673,38 +687,38 @@ begin
         Hint := ItemList[Position];
       end
       else
-        Begin
-          {$IFDEF SYN_LAZARUS}
-          Canvas.Brush.Color := BackgroundColor;
-          Canvas.Font.Color := TextColor;
-          Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
-          {$ELSE}
-          Canvas.Brush.Color := Color;
-          Canvas.Font.Color := clBlack;
-          {$ENDIF}
-        end;
+      begin
+        {$IFDEF SYN_LAZARUS}
+        Canvas.Brush.Color := BackgroundColor;
+        Canvas.Font.Color := TextColor;
+        Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
+        {$ELSE}
+        Canvas.Brush.Color := Color;
+        Canvas.Font.Color := clBlack;
+        {$ENDIF}
+      end;
 
       //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
-      if not Assigned(OnPaintItem)
-      or not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
+      if not Assigned(OnPaintItem) or
+         not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
           {$IFDEF SYN_LAZARUS}
           0, FFontHeight * i, i + Scroll.Position = Position,
           i + Scroll.Position
           {$ELSE}
           0, FFontHeight * i
           {$ENDIF}
-          )
-      then
-        Begin
-          Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
-        end;
+          ) then
+      begin
+        Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
+      end;
     end;
     {$IFDEF SYN_LAZARUS}
     // paint the rest of the background
-    if NbLinesInWindow > ItemList.Count then begin
-      canvas.brush.color := color;
+    if NbLinesInWindow > ItemList.Count - Scroll.Position then 
+    begin
+      Canvas.brush.color := color;
       i:=(FFontHeight * ItemList.Count)+1;
-      canvas.FillRect(Rect(0, i, Width, Height));
+      Canvas.FillRect(Rect(0, i, Width, Height));
     end;
     {$ENDIF}
   end;
@@ -726,7 +740,8 @@ procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
 begin
   if Position < Scroll.Position then
     Position := Scroll.Position
-  else if Position > Scroll.Position + NbLinesInWindow - 1 then
+  else 
+  if Position > Scroll.Position + NbLinesInWindow - 1 then
     Position := Scroll.Position + NbLinesInWindow - 1;
   Invalidate;
 end;
@@ -734,6 +749,13 @@ end;
 procedure TSynBaseCompletionForm.ScrollGetFocus(Sender: TObject);
 begin
   ActiveControl := nil;
+end;
+
+procedure TSynBaseCompletionForm.ScrollScroll(Sender: TObject; ScrollCode: TScrollCode;
+  var ScrollPos: Integer);
+begin
+  if ScrollPos > (Scroll.Max - Scroll.PageSize) + 1 then
+    ScrollPos := Scroll.Max - Scroll.PageSize + 1;
 end;
 
 procedure TSynBaseCompletionForm.SelectNext;
