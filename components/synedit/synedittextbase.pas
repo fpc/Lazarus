@@ -21,7 +21,7 @@ of this file under either the MPL or the GPL.
 -------------------------------------------------------------------------------}
 unit SynEditTextBase;
 
-{$mode objfpc}{$H+}
+{$I synedit.inc}
 
 interface
 
@@ -29,33 +29,124 @@ uses
   Classes, SysUtils, LCLProc, SynEditTypes;
 
 type
+  TSynEditStrings = class;
+
+  TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
+                                        Index, Count: Integer) of object;
+  TSynEditNotifyReason = (senrLineCount, senrLineChange);
 
   { TSynEditStrings }
 
   TSynEditStrings = class(TStrings)
   protected
-    FTabWidth: integer;
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
-    function  GetTabWidth : integer; virtual;
-    procedure SetTabWidth(const AValue : integer); virtual;
     function GetFoldEndLevel(Index: integer): integer; virtual; abstract;
     function GetFoldMinLevel(Index: integer): integer; virtual; abstract;
     procedure SetFoldEndLevel(Index: integer; const AValue: integer); virtual; abstract;
     procedure SetFoldMinLevel(Index: integer; const AValue: integer); virtual; abstract;
     function GetRange(Index: integer): TSynEditRange; virtual; abstract;
     procedure PutRange(Index: integer; ARange: TSynEditRange); virtual; abstract;
+    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; virtual; abstract;
+    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); virtual; abstract;
+    procedure RegisterAttribute(const Index: TClass; const Size: Word); virtual; abstract;
+
     function GetExpandedString(Index: integer): string; virtual; abstract;
     function GetLengthOfLongestLine: integer; virtual; abstract;
     procedure SetTextStr(const Value: string); override;
+
+    property Attribute[Owner: TClass; Index: Integer]: Pointer
+      read GetAttribute write SetAttribute;
   public
     constructor Create;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
     procedure ClearRanges(ARange: TSynEditRange); virtual; abstract;
+
+    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); virtual; abstract;
+    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); virtual; abstract;
   public
+    // Byte to Char
+    function LogicalToPhysicalPos(const p: TPoint): TPoint;
+    function LogicalToPhysicalCol(const Line: string;
+                                  LogicalPos: integer): integer;
+    function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
+                  LogicalPos, StartBytePos,
+                  StartPhysicalPos: integer): integer; virtual;
+    // Char to Byte
+    function PhysicalToLogicalPos(const p: TPoint): TPoint;
+    function PhysicalToLogicalCol(const Line: string;
+                                  PhysicalPos: integer): integer;
+    function PhysicalToLogicalCol(const Line: string;
+                  PhysicalPos, StartBytePos,
+                  StartPhysicalPos: integer): integer; virtual;
+  public
+    property ExpandedStrings[Index: integer]: string read GetExpandedString;
+    property LengthOfLongestLine: integer read GetLengthOfLongestLine;
+    property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
+    property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
+    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
+                                                   write SetFoldMinLevel;
+    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
+                                                   write SetFoldEndLevel;
+  end;
+
+  { TSynEditStringsLinked }
+
+  TSynEditStringsLinked = class(TSynEditStrings)
+  protected
+    fSynStrings: TSynEditStrings;
+
+    function  GetIsUtf8 : Boolean;  override;
+    procedure SetIsUtf8(const AValue : Boolean);  override;
+
+    function GetFoldEndLevel(Index: integer): integer;  override;
+    function GetFoldMinLevel(Index: integer): integer;  override;
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer);  override;
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer);  override;
+    function GetRange(Index: integer): TSynEditRange;  override;
+    procedure PutRange(Index: integer; ARange: TSynEditRange);  override;
+
+    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
+    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
+    // Size: 0 = Bit (TODO); 1..8 Size In Byte "SizeOf()"
+    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
+  protected
+    function GetCount: integer; override;
+    function GetCapacity: integer;
+      {$IFDEF SYN_COMPILER_3_UP} override; {$ELSE} virtual; {$ENDIF}
+    procedure SetCapacity(NewCapacity: integer);
+      {$IFDEF SYN_COMPILER_3_UP} override; {$ELSE} virtual; {$ENDIF}
+    function  Get(Index: integer): string; override;
+    function  GetObject(Index: integer): TObject; override;
+    procedure Put(Index: integer; const S: string); override;
+    procedure PutObject(Index: integer; AObject: TObject); override;
+
+    procedure SetUpdateState(Updating: Boolean); override;
+  public
+    constructor Create(ASynStringSource: TSynEditStrings);
+
+    function Add(const S: string): integer; override;
+    procedure AddStrings(AStrings: TStrings); override;
+    procedure Clear; override;
+    procedure Delete(Index: integer); override;
+    procedure DeleteLines(Index, NumLines: integer);  override;
+    procedure Insert(Index: integer; const S: string); override;
+    procedure InsertLines(Index, NumLines: integer); override;
+    procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
+    procedure Exchange(Index1, Index2: integer); override;
+
+    procedure ClearRanges(ARange: TSynEditRange); override;
+
+    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); override;
+    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); override;
+(*  public
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: string;
@@ -68,17 +159,9 @@ type
                                   PhysicalPos: integer): integer;
     function PhysicalToLogicalCol(const Line: string;
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-  public
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
-    property LengthOfLongestLine: integer read GetLengthOfLongestLine;
-    property TabWidth: integer read GetTabWidth write SetTabWidth;
-    property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
-    property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
-    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
-                                                   write SetFoldMinLevel;
-    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
-                                                   write SetFoldEndLevel;
+*)
   end;
+
 
 
 implementation
@@ -89,7 +172,6 @@ implementation
 constructor TSynEditStrings.Create;
 begin
   inherited Create;
-  TabWidth := 8;
   IsUtf8 := True;
 end;
 
@@ -98,19 +180,9 @@ begin
   Result := FIsUtf8;
 end;
 
-function TSynEditStrings.GetTabWidth : integer;
-begin
-  Result := FTabWidth;
-end;
-
 procedure TSynEditStrings.SetIsUtf8(const AValue : Boolean);
 begin
   FIsUtf8 := AValue;
-end;
-
-procedure TSynEditStrings.SetTabWidth(const AValue : integer);
-begin
-  FTabWidth := AValue;
 end;
 
 procedure TSynEditStrings.SetTextStr(const Value : string);
@@ -165,21 +237,16 @@ var
   ScreenPos: integer;
 begin
   ByteLen := LineLen;
-  // map UTF8 and Tab chars
+  // map UTF8
   ScreenPos := StartPhysicalPos;
   BytePos:= StartBytePos;
   while BytePos<LogicalPos do begin
     if (BytePos <= ByteLen) then begin
-      if Line[BytePos-1] = #9 then begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+      inc(ScreenPos);
+      if IsUTF8 then
+        inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
+      else
         inc(BytePos);
-      end else begin
-        inc(ScreenPos);
-        if IsUTF8 then
-          inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
-        else
-          inc(BytePos);
-      end;
     end else begin
       // beyond end of line
       inc(ScreenPos,LogicalPos-BytePos);
@@ -213,19 +280,14 @@ begin
   ScreenPos := StartPhysicalPos;
   BytePos := StartBytePos;
   PLine := PChar(Line);
-  // map utf and tab chars
+  // map utf
   while ScreenPos < PhysicalPos do begin
     if (BytePos <= ByteLen) then begin
-      if (PLine[BytePos-1] <> #9) then begin
-        inc(ScreenPos);
-        if IsUTF8 then
-          inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
-        else
-          inc(BytePos);
-      end else begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+      inc(ScreenPos);
+      if IsUTF8 then
+        inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
+      else
         inc(BytePos);
-      end;
     end else begin
       // beyond end of line
       inc(BytePos,PhysicalPos-ScreenPos);
@@ -236,6 +298,176 @@ begin
   and (PLine[BytePos-2]=#9) then
     dec(BytePos);
   Result := BytePos;
+end;
+
+{ TSynEditStringsLinked }
+
+constructor TSynEditStringsLinked.Create(ASynStringSource: TSynEditStrings);
+begin
+  fSynStrings := ASynStringSource;
+  Inherited Create;
+end;
+
+function TSynEditStringsLinked.Add(const S: string): integer;
+begin
+  Result := fSynStrings.Add(S);
+end;
+
+procedure TSynEditStringsLinked.AddStrings(AStrings: TStrings);
+begin
+  fSynStrings.AddStrings(AStrings);
+end;
+
+procedure TSynEditStringsLinked.Clear;
+begin
+  fSynStrings.Clear;
+end;
+
+procedure TSynEditStringsLinked.Delete(Index: integer);
+begin
+  fSynStrings.Delete(Index);
+end;
+
+procedure TSynEditStringsLinked.DeleteLines(Index, NumLines: integer);
+begin
+  fSynStrings.DeleteLines(Index, NumLines);
+end;
+
+procedure TSynEditStringsLinked.Insert(Index: integer; const S: string);
+begin
+  fSynStrings.Insert(Index, S);
+end;
+
+procedure TSynEditStringsLinked.InsertLines(Index, NumLines: integer);
+begin
+  fSynStrings.InsertLines(Index, NumLines);
+end;
+
+procedure TSynEditStringsLinked.InsertStrings(Index: integer; NewStrings: TStrings);
+begin
+  fSynStrings.InsertStrings(Index, NewStrings);
+end;
+
+procedure TSynEditStringsLinked.Exchange(Index1, Index2: integer);
+begin
+  fSynStrings.Exchange(Index1, Index2);
+end;
+
+function TSynEditStringsLinked.GetIsUtf8: Boolean;
+begin
+  Result := FSynStrings.IsUtf8;
+end;
+
+procedure TSynEditStringsLinked.SetIsUtf8(const AValue: Boolean);
+begin
+  FSynStrings.IsUtf8 := AValue;
+end;
+
+//Fold
+function TSynEditStringsLinked.GetFoldEndLevel(Index: integer): integer;
+begin
+  Result:= fSynStrings.FoldEndLevel[Index];
+end;
+
+function TSynEditStringsLinked.GetFoldMinLevel(Index: integer): integer;
+begin
+  Result:= fSynStrings.FoldMinLevel[Index];
+end;
+
+procedure TSynEditStringsLinked.SetFoldEndLevel(Index: integer; const AValue: integer);
+begin
+  fSynStrings.FoldEndLevel[Index] := AValue;
+end;
+
+procedure TSynEditStringsLinked.SetFoldMinLevel(Index: integer; const AValue: integer);
+begin
+  fSynStrings.FoldMinLevel[Index] := AValue;
+end;
+
+//Ranges
+function TSynEditStringsLinked.GetRange(Index: integer): TSynEditRange;
+begin
+  Result:= fSynStrings.Ranges[Index];
+end;
+
+procedure TSynEditStringsLinked.PutRange(Index: integer; ARange: TSynEditRange);
+begin
+  fSynStrings.Ranges[Index] := ARange;
+end;
+
+function TSynEditStringsLinked.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
+begin
+  Result := fSynStrings.Attribute[Owner, Index];
+end;
+
+procedure TSynEditStringsLinked.SetAttribute(const Owner: TClass;
+                                const Index: Integer; const AValue: Pointer);
+begin
+  fSynStrings.Attribute[Owner, Index] := AValue;
+end;
+
+procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);
+begin
+  fSynStrings.RegisterAttribute(Index, Size);
+end;
+
+procedure TSynEditStringsLinked.ClearRanges(ARange: TSynEditRange);
+begin
+  fSynStrings.ClearRanges(ARange);
+end;
+
+procedure TSynEditStringsLinked.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+begin
+  fSynStrings.AddChangeHandler(AReason, AHandler);
+end;
+
+procedure TSynEditStringsLinked.RemoveChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+begin
+  fSynStrings.RemoveChangeHandler(AReason, AHandler);
+end;
+
+// Count
+function TSynEditStringsLinked.GetCount: integer;
+begin
+  Result:= fSynStrings.Count;
+end;
+
+function TSynEditStringsLinked.GetCapacity: integer;
+begin
+  Result:= fSynStrings.Capacity;
+end;
+
+procedure TSynEditStringsLinked.SetCapacity(NewCapacity: integer);
+begin
+  fSynStrings.Capacity := NewCapacity;
+end;
+
+function TSynEditStringsLinked.Get(Index: integer): string;
+begin
+  Result:= fSynStrings.Get(Index);
+end;
+
+function TSynEditStringsLinked.GetObject(Index: integer): TObject;
+begin
+  Result:= fSynStrings.GetObject(Index);
+end;
+
+procedure TSynEditStringsLinked.Put(Index: integer; const S: string);
+begin
+  fSynStrings.Put(Index, S);
+end;
+
+procedure TSynEditStringsLinked.PutObject(Index: integer; AObject: TObject);
+begin
+  fSynStrings.PutObject(Index, AObject);
+end;
+
+procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean);
+begin
+  if Updating then
+    fSynStrings.BeginUpdate
+  else
+   fSynStrings.EndUpdate;
 end;
 
 end.

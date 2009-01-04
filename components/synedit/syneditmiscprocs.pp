@@ -84,10 +84,10 @@ function ConvertTabs(const Line: AnsiString; TabWidth: integer): AnsiString;
 {begin}                                                                         //mh 2000-10-19
 type
   TConvertTabsProcEx = function(const Line: AnsiString; TabWidth: integer;
-    var HasTabs: boolean): AnsiString;
+    out HasTabs: boolean): AnsiString;
   {$IFDEF SYN_LAZARUS}
   TSimulateConvertTabsProcEx = function(const Line: AnsiString;
-    TabWidth: integer; var HasTabs: boolean): integer; 
+    TabWidth: integer; out HasTabs: boolean): integer;
     // returns length of converted string
   {$ENDIF}
 
@@ -98,7 +98,7 @@ function GetBestSimulateConvertTabsProcEx(
 {$ENDIF}
 // This is the slowest conversion function which can handle TabWidth <> 2^n.
 function ConvertTabsEx(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): AnsiString;
+  out HasTabs: boolean): AnsiString;
 {end}                                                                           //mh 2000-10-19
 
 function CharIndex2CaretPos(Index, TabWidth: integer;
@@ -268,7 +268,7 @@ end;
 
 {begin}                                                                         //mh 2000-10-19
 function ConvertTabs1Ex(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): AnsiString;
+  out HasTabs: boolean): AnsiString;
 var
   pDest: PChar;
   nBeforeTab: integer;
@@ -289,7 +289,7 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function SimulateConvertTabs1Ex(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): integer;
+  out HasTabs: boolean): integer;
 // TabWidth=1
 var
   i: integer;
@@ -309,7 +309,7 @@ begin
 end;
 
 function ConvertTabs2nEx(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): AnsiString;
+  out HasTabs: boolean): AnsiString;
 var
   i, DestLen, TabCount, TabMask: integer;
   pSrc, pDest: PChar;
@@ -369,7 +369,7 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function SimulateConvertTabs2nEx(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): integer;
+  out HasTabs: boolean): integer;
 var
   LineLen, DestLen, SrcPos, TabMask: integer;
 begin
@@ -404,7 +404,7 @@ begin
 end;
 
 function ConvertTabsEx(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): AnsiString;
+  out HasTabs: boolean): AnsiString;
 var
   i, DestLen, TabCount: integer;
   pSrc, pDest: PChar;
@@ -461,7 +461,7 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function SimulateConvertTabsEx(const Line: AnsiString; TabWidth: integer;
-  var HasTabs: boolean): integer;
+  out HasTabs: boolean): integer;
 var
   LineLen, DestLen, SrcPos: integer;
 begin

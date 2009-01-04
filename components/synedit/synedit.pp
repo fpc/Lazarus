@@ -77,7 +77,7 @@ uses
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
-  SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView,
+  SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
   SynGutter,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
@@ -370,10 +370,12 @@ type
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     fBeautifier: TSynCustomBeautifier;
     fExtraCharSpacing: integer;
-    fTextView : TSynEditFoldedView;
-    fTrimLines: TStrings; //TSynEditStringTrimmingList;
     {$ENDIF}
-    fLines: TStrings;
+    FFoldedLinesView:  TSynEditFoldedView;
+    FTrimmedLinesView: TSynEditStringTrimmingList;
+    FTabbedLinesView:  TSynEditStringTabExpander;
+    FTheLinesView: TStrings;
+    fLines: TStrings;  // The real (un-mapped) line-buffer
     fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
@@ -706,7 +708,7 @@ type
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
     procedure SetSelStart(const Value: integer);
-    property TextView : TSynEditFoldedView read fTextView;
+    property TextView : TSynEditFoldedView read FFoldedLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     {$ENDIF}
   public
@@ -873,8 +875,8 @@ type
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
     {$IFDEF SYN_LAZARUS}
-    property RealLines: TStrings read fLines write SetRealLines;                // No trailing (trimmable) spaces
-    property Lines: TStrings read fTrimLines write SetLines;
+    property RealLines: TStrings read FLines write SetRealLines;              // No trailing (trimmable) spaces
+    property Lines: TStrings read FTheLinesView write SetLines;
     {$ELSE}
     property Lines: TStrings read fLines write SetLines;
     {$ENDIF}
@@ -1247,8 +1249,8 @@ function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer): integer;
 // ScreenRow is 0-base
 // result is 1-based
 begin
-  Result := fTextView.ScreenLineToTextIndex(ScreenRow)+1;
-//  DebugLn(['=== SrceenRow TO Row   In:',ScreenRow,'  out:',Result, ' topline=',TopLine, '  view topline=',fTextView.TopLine]);
+  Result := FFoldedLinesView.ScreenLineToTextIndex(ScreenRow)+1;
+//  DebugLn(['=== SrceenRow TO Row   In:',ScreenRow,'  out:',Result, ' topline=',TopLine, '  view topline=',FFoldedLinesView.TopLine]);
 end;
 
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
@@ -1257,7 +1259,7 @@ function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // 0 to LinesInWindow for visible lines (incl last partial visble line)
 // and returns LinesInWindow+1 for lines below visible screen
 begin
-  Result := fTextView.TextIndexToScreenLine(PhysicalRow-1);
+  Result := FFoldedLinesView.TextIndexToScreenLine(PhysicalRow-1);
   if Result < -1 then Result := -1;
   if Result > LinesInWindow+1 then Result := LinesInWindow+1;
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
@@ -1396,21 +1398,26 @@ end;
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{begin}                                                                         //mh 2000-10-10
-//  fLines := TSynEditList.Create;
+
   fLines := TSynEditStringList.Create;
-  {$IFDEF SYN_LAZARUS}
   fCaret := TSynEditCaret.Create;
 
-  fTrimLines := TSynEditStringTrimmingList.Create(TSynEditStrings(fLines),
-                                                  fCaret);
-  fCaret.Lines := TSynEditStrings(fTrimLines);
-  fTextView := TSynEditFoldedView.Create(TSynEditStringList(fLines),
-                                         TSynEditStrings(fTrimLines),
-                                         fCaret);
-  fTextView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
-  {$ENDIF}
-//  with TSynEditList(fLines) do begin
+  // Create the lines/views
+  FTrimmedLinesView := TSynEditStringTrimmingList.Create
+                         (TSynEditStrings(fLines), fCaret);
+
+  FTabbedLinesView := TSynEditStringTabExpander.Create
+                        (TSynEditStrings(FTrimmedLinesView));
+
+  FFoldedLinesView := TSynEditFoldedView.Create
+                        (TSynEditStrings(FTabbedLinesView), fCaret);
+  FFoldedLinesView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
+
+  // Pointer to the First/Lowest View
+  // TODO: this should be Folded...
+  FTheLinesView := FTabbedLinesView;
+
+  fCaret.Lines := TSynEditStrings(FTheLinesView);
   with TSynEditStringList(fLines) do begin
     OnAdded := {$IFDEF FPC}@{$ENDIF}ListAdded;
     OnChange := {$IFDEF FPC}@{$ENDIF}LinesChanged;
@@ -1421,17 +1428,16 @@ begin
     OnPutted := {$IFDEF FPC}@{$ENDIF}ListPutted;
 //    OnScanRanges := {$IFDEF FPC}@{$ENDIF}ListScanRanges;
   end;
-{end}                                                                           //mh 2000-10-10
+
   fFontDummy := TFont.Create;
   fUndoList := TSynEditUndoList.Create;
   fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
   fRedoList := TSynEditUndoList.Create;
   fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
-  {$IFDEF SYN_LAZARUS}
-  TSynEditStringTrimmingList(fTrimLines).UndoList := fUndoList;
-  {$ENDIF}
 
-  FBlockSelection := TSynEditSelection.Create(TSynEditStrings(FTrimLines));
+  FTrimmedLinesView.UndoList := fUndoList;
+
+  FBlockSelection := TSynEditSelection.Create(TSynEditStrings(FTheLinesView));
   FBlockSelection.Caret := FCaret;
   FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -1454,7 +1460,7 @@ begin
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
   fRightEdge := 80;
-  fGutter := TSynGutter.Create(self, fTextView, fBookMarkOpt, fTextDrawer);
+  fGutter := TSynGutter.Create(self, FFoldedLinesView, fBookMarkOpt, fTextDrawer);
   fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   fGutterWidth := fGutter.Width;
   fTextOffset := fGutterWidth + 2;
@@ -1534,7 +1540,7 @@ begin
   fLeftChar := 1;
   fTopLine := 1;
   {$IFDEF SYN_LAZARUS}
-  fTextView.TopLine := 1;
+  FFoldedLinesView.TopLine := 1;
   {$ELSE}
   fCaretX := 1;
   fCaretY := 1;
@@ -1543,8 +1549,8 @@ begin
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
+  FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
   {$IFDEF SYN_LAZARUS}
-  TSynEditStringTrimmingList(fTrimLines).Enabled := eoTrimTrailingSpaces in fOptions;
   fOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
   {$ENDIF}
   fScrollTimer := TTimer.Create(Self);
@@ -1602,7 +1608,7 @@ begin
     {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
-  fTextView.UnLock; // after ScanFrom, but before UpdateCaret
+  FFoldedLinesView.UnLock; // after ScanFrom, but before UpdateCaret
   {$ENDIF}
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
@@ -1649,7 +1655,10 @@ begin
   fTextDrawer.Free;
   fFontDummy.Free;
   fBlockSelection.Free;
+  FTabbedLinesView.Free;
+  FTrimmedLinesView.Free;
   Lines.Free;
+  fCaret.Free;
   {$ELSE}
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
@@ -1664,9 +1673,10 @@ begin
   FreeAndNil(fGutter);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
-  FreeAndNil(fTextView);
+  FreeAndNil(FFoldedLinesView);
   FreeAndNil(fBlockSelection);
-  FreeAndNil(fTrimLines);
+  FreeAndNil(FTabbedLinesView);
+  FreeAndNil(FTrimmedLinesView);
   FreeAndNil(fLines);
   FreeAndNil(fCaret);
   {$ENDIF}
@@ -1799,7 +1809,7 @@ end;
 procedure TCustomSynEdit.SetRealLines(const AValue : TStrings);
 begin
   if HandleAllocated then
-    fLines.Assign(AValue);
+    FLines.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
@@ -1839,12 +1849,12 @@ end;
 
 procedure TCustomSynEdit.SetCFDividerDrawLevel(const AValue: Integer);
 begin
-  fTextView.CFDividerDrawLevel := AValue;
+  FFoldedLinesView.CFDividerDrawLevel := AValue;
 end;
 
 function TCustomSynEdit.GetCFDividerDrawLevel : Integer;
 begin
-  Result := fTextView.CFDividerDrawLevel;
+  Result := FFoldedLinesView.CFDividerDrawLevel;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
@@ -1953,7 +1963,7 @@ procedure TCustomSynEdit.IncPaintLock;
 begin
   inc(fPaintLock);
   {$IFDEF SYN_LAZARUS}
-  fTextView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   {$ENDIF}
 end;
 
@@ -2470,7 +2480,7 @@ begin
       else
         TopView := TopView + fScrollDeltaY;
       if fScrollDeltaY > 0
-      then Y := fTextView.TextIndex[LinesInWindow-1]+1  // scrolling down
+      then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
       else Y := TopLine;  // scrolling up
       {$ELSE}
       if GetKeyState(VK_SHIFT) < 0 then
@@ -2605,7 +2615,7 @@ begin
              {$ENDIF}
              );
   nL2 := Min({$IFDEF SYN_LAZARUS}
-             (rcClip.Bottom-1) div fTextHeight, fTextView.Count - fTextView.TopLine
+             (rcClip.Bottom-1) div fTextHeight, FFoldedLinesView.Count - FFoldedLinesView.TopLine
              {$ELSE}
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight, Lines.Count
              {$ENDIF}
@@ -2648,10 +2658,10 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 begin
   if (iLine<=0) or (iLine>Lines.Count) then exit;
   dec(iLine);
-//DebugLn(['****** FoldAction at ',iLine,' scrline=',fTextView.TextIndexToScreenLine(iLine), ' type ', SynEditCodeFoldTypeNames[fTextView.FoldType[fTextView.TextIndexToScreenLine(iLine)]],  '  view topline=',fTextView.TopLine  ]);
-  case fTextView.FoldType[fTextView.TextIndexToScreenLine(iLine)] of
-    cfCollapsed : fTextView.UnFoldAtTextIndex(iLine);
-    cfExpanded  : fTextView.FoldAtTextIndex(iLine);
+//DebugLn(['****** FoldAction at ',iLine,' scrline=',FFoldedLinesView.TextIndexToScreenLine(iLine), ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]],  '  view topline=',FFoldedLinesView.TopLine  ]);
+  case FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)] of
+    cfCollapsed : FFoldedLinesView.UnFoldAtTextIndex(iLine);
+    cfExpanded  : FFoldedLinesView.FoldAtTextIndex(iLine);
   end;
 end;
 
@@ -2661,19 +2671,19 @@ function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
 begin
   Result:=iLine;
   while (Result>0) and (Result<=Lines.Count)
-  and (fTextView.FoldedAtTextIndex[Result-1]) do
+  and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
     if Down then inc(Result) else dec(Result);
 end;
 
 procedure TCustomSynEdit.UnfoldAll;
 begin
-  fTextView.UnfoldAll;
+  FFoldedLinesView.UnfoldAll;
   Invalidate;
 end;
 
 procedure TCustomSynEdit.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
 begin
-  fTextView.FoldAll(StartLevel, IgnoreNested);
+  FFoldedLinesView.FoldAll(StartLevel, IgnoreNested);
   Invalidate;
 end;
 {$ENDIF}
@@ -2928,8 +2938,8 @@ var
       eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
       NextPos := Min(LastCol, TokenAccu.PhysicalEndPos+1);
       Repeat
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(fTextView.TextIndex[CurLine]+1, NextPos);
-        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(fTextView.TextIndex[CurLine]+1, NextPos);
+        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
+        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
 
         with fTextDrawer do
           if MarkupInfo = nil
@@ -3137,7 +3147,7 @@ var
     {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
     while (nTokenByteLen > 0) do begin
       // Calculate Token Sublen for current Markup
-      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol(fTextView.TextIndex[CurLine]+1, PhysicalStartPos);
+      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol(FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
       if NextPhysPos < 1
       then SubCharLen := TokenCharLen
       else SubCharLen := NextPhysPos - PhysicalStartPos;
@@ -3160,7 +3170,7 @@ var
       FG := DefaultFGCol;
       FC := DefaultFCCol;
       Style := DefaultStyle;
-      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(fTextView.TextIndex[CurLine]+1, PhysicalStartPos);
+      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
       if assigned(MarkupInfo)
       then MarkupInfo.ModifyColors(FG, BG, FC, Style);
       // Deal with equal colors
@@ -3222,9 +3232,9 @@ var
       LastFSX := -1;
       LastFEX := -1;
 
-      fMarkupManager.PrepareMarkupForRow(fTextView.TextIndex[CurLine]+1);
+      fMarkupManager.PrepareMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
       // Get the line.
-      sLine := fTextView[CurLine];
+      sLine := FFoldedLinesView[CurLine];
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, fTextHeight);
@@ -3240,8 +3250,8 @@ var
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
-        fHighlighter.SetRange(fTextView.Ranges[CurLine]);     //mh 2000-10-10
-        fHighlighter.SetLine(sLine, fTextView.TextIndex[CurLine]);
+        fHighlighter.SetRange(FFoldedLinesView.Ranges[CurLine]);     //mh 2000-10-10
+        fHighlighter.SetLine(sLine, FFoldedLinesView.TextIndex[CurLine]);
         // Try to concatenate as many tokens as possible to minimize the count
         // of ExtTextOut calls necessary. This depends on the selection state
         // or the line having special colors. For spaces the foreground color
@@ -3262,11 +3272,11 @@ var
       // of the invalid area with the correct colors.
       PaintHighlightToken(TRUE);
 
-      fMarkupManager.FinishMarkupForRow(fTextView.TextIndex[CurLine]+1);
+      fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
 
       // codefold draw splitter line
       if Gutter.ShowCodeFolding
-      and (fTextView.DrawDivider[curLine]) then
+      and (FFoldedLinesView.DrawDivider[curLine]) then
       begin
         ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -3371,7 +3381,7 @@ begin
 
     // codefold draw splitter line
     if Gutter.ShowCodeFolding
-    and (fTextView.DrawDivider[LastLine]) then
+    and (FFoldedLinesView.DrawDivider[LastLine]) then
     begin
       ypos := rcToken.Bottom - 1;
       LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -4287,7 +4297,7 @@ end;
 procedure TCustomSynEdit.SetLines(Value: TStrings);
 begin
   if HandleAllocated then
-    Lines.Assign(Value);
+    FTheLinesView.Assign(Value);
 end;
 
 procedure TCustomSynEdit.SetLineText(Value: string);
@@ -4331,7 +4341,7 @@ procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
   ChangeReason: TSynChangeReason = crInsert);
 Begin
   IncPaintLock;
-  TSynEditStringTrimmingList(fTrimLines).Lock;
+  FTrimmedLinesView.Lock;
   try
     FBlockSelection.SetSelTextPrimitive(PasteMode, Value, AddToUndoList,
                                         ChangeReason);
@@ -4342,7 +4352,7 @@ Begin
     Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
   finally
-    TSynEditStringTrimmingList(fTrimLines).UnLock;
+    FTrimmedLinesView.UnLock;
     DecPaintLock;
   end;
 end;
@@ -4351,7 +4361,7 @@ procedure TCustomSynEdit.SetSelTextExternal(const Value: string);
 begin
   // undo entry added
   BeginUndoBlock;
-  TSynEditStringTrimmingList(fTrimLines).Lock;
+  FTrimmedLinesView.Lock;
   try
     FBlockSelection.SelText := Value;
     // Force caret reset
@@ -4361,7 +4371,7 @@ begin
     Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
   finally
-    TSynEditStringTrimmingList(fTrimLines).UnLock;
+    FTrimmedLinesView.UnLock;
     EndUndoBlock;
   end;
 end;
@@ -4391,20 +4401,20 @@ begin
     Value := Min(Value, Lines.Count)
   else
     {$ifdef SYN_LAZARUS}
-    Value := Min(Value, fTextView.TextPosAddLines(Lines.Count+1, -fLinesInWindow));
+    Value := Min(Value, FFoldedLinesView.TextPosAddLines(Lines.Count+1, -fLinesInWindow));
     {$ELSE}
     Value := Min(Value, Lines.Count + 1 - fLinesInWindow);
     {$ENDIF}
   Value := Max(Value, 1);
   {$IFDEF SYN_LAZARUS}
-  if fTextView.FoldedAtTextIndex[Value-1] then
+  if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
   {$ENDIF}
   if Value <> fTopLine then begin
 {$ifdef SYN_LAZARUS}
     OldTopLine:=TopLine;
     fTopLine := Value;
-    fTextView.TopTextIndex := Value-1;
+    FFoldedLinesView.TopTextIndex := Value-1;
     UpdateScrollBars;
     Delta := OldTopLine - TopLine;
     if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags)
@@ -4588,7 +4598,7 @@ begin
         {$ENDIF}
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
-        nMaxScroll := {$IFDEF SYN_LAZARUS}fTextView.Count+1{$ELSE}Lines.Count{$ENDIF};
+        nMaxScroll := {$IFDEF SYN_LAZARUS}FFoldedLinesView.Count+1{$ELSE}Lines.Count{$ENDIF};
         if (eoScrollPastEof in Options) then
           Inc(nMaxScroll, LinesInWindow - 1);
 {$IFNDEF SYN_LAZARUS}
@@ -4597,7 +4607,7 @@ begin
           ScrollInfo.nMax := Max(1, nMaxScroll);
           ScrollInfo.nPage := LinesInWindow;
           {$IFDEF SYN_LAZARUS}
-          ScrollInfo.nPos := fTextView.TextIndexToViewPos(TopLine-1);
+          ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
           {$ELSE}
           ScrollInfo.nPos := TopLine;
           {$ENDIF}
@@ -4878,7 +4888,7 @@ begin
   Result := Index;
   {$IFDEF SYN_LAZARUS}
   if not assigned(fHighlighter) or (Index > Lines.Count - 1) then begin
-    fTextView.FixFoldingAtTextIndex(Index);
+    FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     exit;
@@ -4892,7 +4902,7 @@ begin
   end;
   {$ENDIF}
   if Index >= Lines.Count - 1 then begin
-    fTextView.FixFoldingAtTextIndex(Index);
+    FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     Exit;
@@ -4938,7 +4948,7 @@ begin
   //  => update code fold attributes of last scanned line
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
-  fTextView.FixFoldingAtTextIndex(FixFStart, Result);
+  FFoldedLinesView.FixFoldingAtTextIndex(FixFStart, Result);
   fMarkupManager.TextChangedScreen(Max(RowToScreenRow(FixFStart+1), 0),
                                        Min(RowToScreenRow(Result), LinesInWindow+1));
   Topline := TopLine;
@@ -5100,7 +5110,7 @@ var
   i: Integer;
 begin
   TopLine := TopLine;
-  i := fTextView.CollapsedLineForFoldAtLine(CaretY);
+  i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
   if i > 0 then
     SetCaretXY(Point(1, i))
   else
@@ -5114,12 +5124,12 @@ end;
 
 procedure TCustomSynEdit.SetTopView(const AValue : Integer);
 begin
-  TopLine := fTextView.ViewPosToTextIndex(AValue)+1;
+  TopLine := FFoldedLinesView.ViewPosToTextIndex(AValue)+1;
 end;
 
 function TCustomSynEdit.GetTopView : Integer;
 begin
-  Result := fTextView.TextIndexToViewPos(TopLine-1);
+  Result := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
 end;
 {$ENDIF}
 
@@ -5618,7 +5628,7 @@ begin
 {end}                                                                           //mh 2000-11-20
         end;
       {$IFDEF SYN_LAZARUS}
-      crTrimSpace: TSynEditStringTrimmingList(fTrimLines).ForceTrim;
+      crTrimSpace: FTrimmedLinesView.ForceTrim;
       {$ENDIF}
       crLineBreak:
 {begin}                                                                         //sbs 2000-11-20
@@ -5753,7 +5763,7 @@ begin
       {$ENDIF}
     finally
       // Todo: Decide what do to, If there are any trimable spaces.
-      TSynEditStringTrimmingList(fTrimLines).ForceTrim;
+      FTrimmedLinesView.ForceTrim;
       fUndoList.UnLock;
       {$IFDEF SYN_LAZARUS}
       fRedoList.EndBlock;
@@ -5843,7 +5853,7 @@ begin
           EnsureCursorPosVisible;
         end;
       crTrimRealSpace:
-        TSynEditStringTrimmingList(fTrimLines).UndoRealSpaces(Item);
+        FTrimmedLinesView.UndoRealSpaces(Item);
       crLineBreak:
         begin
           // If there's no selection, we have to set
@@ -6431,7 +6441,7 @@ begin
       TopLine := CaretY
       {$IFDEF SYN_LAZARUS}
     else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
-      TopLine := fTextView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
+      TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
       {$ELSE}
     else if CaretY > TopLine + Max(1, LinesInWindow) - 1 then                   //mh 2000-10-19
       TopLine := CaretY - (LinesInWindow - 1)
@@ -6709,7 +6719,7 @@ begin
       ecEditorBottom, ecSelEditorBottom:
         begin
           {$IFDEF SYN_LAZARUS}
-          CaretNew := Point(1, fTextView.ViewPosToTextIndex(fTextView.Count)+1);
+          CaretNew := Point(1, FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1);
           {$ELSE}
           CaretNew := Point(1, Lines.Count);
           {$ENDIF}
@@ -6742,7 +6752,7 @@ begin
           Caret := CaretXY;
           CaretNew := PrevWordPos;
           {$IFDEF SYN_LAZARUS}
-          if fTextView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
+          if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
             CaretNew := LogicalToPhysicalPos(Point(1 + Length(Lines[CY-1]), CY));
           end;
@@ -6761,7 +6771,7 @@ begin
           Caret := CaretXY;
           CaretNew := NextWordPos;
           {$IFDEF SYN_LAZARUS}
-          if fTextView.FoldedAtTextIndex[CaretNew.Y - 1] then
+          if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
           MoveCaretAndSelectionPhysical
           {$ELSE}
@@ -7493,14 +7503,14 @@ begin
         UnfoldAll;
       EcFoldCurrent:
         begin
-          CY := fTextView.ExpandedLineForBlockAtLine(CaretY);
+          CY := FFoldedLinesView.ExpandedLineForBlockAtLine(CaretY);
           if CY > 0 then begin
-            fTextView.FoldAtTextIndex(CY-1);
+            FFoldedLinesView.FoldAtTextIndex(CY-1);
             SetCaretXY(Point(1, CY));
           end;
         end;
       EcUnFoldCurrent:
-          fTextView.UnFoldAtTextIndex(CaretY-1);
+          FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
       {$ENDIF}
     end;
   finally
@@ -7787,8 +7797,8 @@ begin
   fUndoList.BeginBlock;
   {$IFDEF SYN_LAZARUS}
   IncPaintLock;
-  fTextView.Lock;
-  TSynEditStringTrimmingList(fTrimLines).Lock;
+  FFoldedLinesView.Lock;
+  FTrimmedLinesView.Lock;
   {$ENDIF}
 end;
 {end}                                                                           //sbs 2000-11-19
@@ -7804,8 +7814,8 @@ begin
   {$IFDEF SYN_LAZARUS}
   // Write all trimming info to the end of the undo block,
   // so it will be undone first, and other UndoItems do see the expected spaces
-  TSynEditStringTrimmingList(fTrimLines).UnLock;
-  fTextView.UnLock;
+  FTrimmedLinesView.UnLock;
+  FFoldedLinesView.UnLock;
    // must be last => May call MoveCaretToVisibleArea, which must only happen
    // after unfold
   DecPaintLock;
@@ -8101,10 +8111,11 @@ end;
 
 procedure TCustomSynEdit.SetTabWidth(Value: integer);
 begin
-  Value := MinMax(Value, 1{0}, 256);                                            //lt 2000-10-19
+  Value := MinMax(Value, 1{0}, 256);
   if (Value <> fTabWidth) then begin
     fTabWidth := Value;
-    TSynEditStringList(fLines).TabWidth := Value;                        //mh 2000-10-19
+    FTabbedLinesView.TabWidth := Value;
+    FBlockSelection.TabWidth := Value;
     Invalidate; // to redraw text containing tab chars
   end;
 end;
@@ -8430,9 +8441,7 @@ begin
     {$ENDIF}
     bSetDrag := (eoDropFiles in fOptions) <> (eoDropFiles in Value);
     fOptions := Value;
-    {$IFDEF SYN_LAZARUS}
-    TSynEditStringTrimmingList(fTrimLines).Enabled := eoTrimTrailingSpaces in fOptions;
-    {$ENDIF}
+    FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
     // Reset column position in case Cursor is past EOL.
     if not (eoScrollPastEol in fOptions) then
       CaretX := CaretX;
@@ -8508,7 +8517,7 @@ begin
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
     fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
-    fTextView.LinesInWindow := fLinesInWindow;
+    FFoldedLinesView.LinesInWindow := fLinesInWindow;
 
     fMarkupManager.LinesInWindow:= fLinesInWindow;
     //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
@@ -8551,7 +8560,7 @@ begin
       NewCaret.X:=1
     else begin
       // move to end of prev line
-      NewCaret.Y:= fTextView.TextPosAddLines(NewCaret.Y, -1);
+      NewCaret.Y:= FFoldedLinesView.TextPosAddLines(NewCaret.Y, -1);
       s:=Lines[NewCaret.Y-1];
       PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
       NewCaret.X:=PhysicalLineLen+1;
@@ -8562,7 +8571,7 @@ begin
     if NewCaret.X>PhysicalLineLen+1 then begin
       // move to start of next line
       NewCaret.X:=1;
-      NewCaret.Y:=fTextView.TextPosAddLines(NewCaret.Y, +1);
+      NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
     end;
   end;
 
@@ -8639,7 +8648,7 @@ var
 begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
-  NewCaret.Y:=fTextView.TextPosAddLines(NewCaret.Y, DY);
+  NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, DY);
   if (OldCaret.Y<>NewCaret.Y) and (fLastCaretX>0) and (eoKeepCaretX in Options)
   then
     NewCaret.X:=fLastCaretX;
@@ -8986,7 +8995,7 @@ begin
       inc(BB.x, fBlockIndent);
       BE.x := x;
     end;
-    TSynEditStringTrimmingList(fTrimLines).ForceTrim; // Otherwise it may reset the block
+    FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
     SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
     {$ELSE}
     SetCaretAndSelection(OrgCaretPos,
@@ -9143,7 +9152,7 @@ begin
         dec(BB.x, FirstIndent);
         dec(BE.x, LastIndent);
       end;
-      TSynEditStringTrimmingList(fTrimLines).ForceTrim; // Otherwise it may reset the block
+      FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
       SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
       {$ELSE}
       if FirstIndent = -1 then

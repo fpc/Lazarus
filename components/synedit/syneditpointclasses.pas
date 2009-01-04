@@ -72,6 +72,7 @@ type
     FLinesInsertedMethod: TLinesCountChanged;
     FEnabled: Boolean;
     FSpacesToTabs: Boolean;
+    FTabWidth: Integer;
     FActiveSelectionMode: TSynSelectionMode;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
@@ -124,6 +125,8 @@ type
     property  LinesInsertedMethod: TLinesCountChanged write FLinesInsertedMethod;
     property  Caret: TSynEditCaret read FCaret write FCaret;
     property  UndoList: TSynEditUndoList read fUndoList write fUndoList;
+    // TODO: Move dependend functions to Lines
+    property TabWidth: integer read FTabWidth write FTabWidth;
   end;
 
   { TSynEditCaret }
@@ -568,8 +571,7 @@ var
         sLeftSide := sLeftSide
                      + CreateTabsAndSpaces(FCaret.CharPos,
                                            FCaret.CharPos-1-PhysicalLineEndPos,
-                                           FLines.TabWidth,
-                                           FSpacesToTabs);
+                                           FTabWidth, FSpacesToTabs);
       end;
       sRightSide := Copy(FCaret.LineText, LogCaretXY.X,
                          Length(FCaret.LineText) - (LogCaretXY.X - 1));

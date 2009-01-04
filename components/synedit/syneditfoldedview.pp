@@ -201,7 +201,7 @@ type
     function FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 
     procedure DoCaretChanged(Sender : TObject);
-    Procedure LineCountChanged(AIndex, ACount : Integer);
+    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LinesInsertedAtTextIndex(AStartIndex, ALineCount : Integer;
                                        SkipFixFolding : Boolean = False);
     Procedure LinesInsertedAtViewPos(AStartPos, ALineCount : Integer;
@@ -211,7 +211,7 @@ type
     Procedure LinesDeletedAtViewPos(AStartPos, ALineCount : Integer;
                                     SkipFixFolding : Boolean = False);
   public
-    constructor Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
+    constructor Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
@@ -1390,20 +1390,21 @@ end;
 
 { TSynEditFoldedView }
 
-constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
+constructor TSynEditFoldedView.Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
 begin
   fCaret := ACaret;
-  fCaret.AddChangeHandler(@DoCaretChanged);
+  fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fLines := aTextView;
   fFoldTree := TSynTextFoldAVLTree.Create;
   fTopLine := 0;
   fLinesInWindow := -1;
-  aTextBuffer.OnLineCountChanged := {$IFDEF FPC}@{$ENDIF}LineCountChanged;
+  fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
-  fCaret.RemoveChangeHandler(@DoCaretChanged);
+  fLines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  fCaret.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -1849,7 +1850,7 @@ begin
     UnFoldAtTextIndex(i, true);
 end;
 
-procedure TSynEditFoldedView.LineCountChanged(AIndex, ACount : Integer);
+procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
 begin
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}

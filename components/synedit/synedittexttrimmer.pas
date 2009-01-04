@@ -35,9 +35,8 @@ type
 
   { TSynEditStringTrimmingList }
 
-  TSynEditStringTrimmingList = class(TSynEditStrings)
+  TSynEditStringTrimmingList = class(TSynEditStringsLinked)
   private
-    fSynStrings: TSynEditStrings;
     fCaret: TSynEditCaret;
     fUndoList: TSynEditUndoList;
     fSpaces: String;
@@ -53,31 +52,12 @@ type
     procedure DoLinesChanged(Index, N: integer);
     procedure TrimAfterLock;
   protected
-    function  GetIsUtf8 : Boolean; override;
-    procedure SetIsUtf8(const AValue : Boolean); override;
-    function  GetTabWidth : integer; override;
-    procedure SetTabWidth(const AValue : integer); override;
-    function  GetFoldEndLevel(Index: integer): integer; override;
-    function  GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
-    function  GetRange(Index: integer): TSynEditRange; override;
-    procedure PutRange(Index: integer; ARange: TSynEditRange); override;
-
-    function GetCount: integer; override;
-    function GetCapacity: integer;
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
-    procedure SetCapacity(NewCapacity: integer);
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
-
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
     function  Get(Index: integer): string; override;
     function  GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
-
-    procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(ASynStringSource: TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
@@ -91,7 +71,6 @@ type
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     procedure Exchange(Index1, Index2: integer); override;
-    procedure ClearRanges(ARange: TSynEditRange); override;
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
@@ -110,14 +89,13 @@ implementation
 
 constructor TSynEditStringTrimmingList.Create(ASynStringSource : TSynEditStrings; ACaret: TSynEditCaret);
 begin
-  fSynStrings := ASynStringSource;
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
   fLockList := TStringList.Create;
   fLineIndex:= -1;
   fSpaces := '';
   fEnabled:=false;
-  Inherited Create;
+  Inherited Create(ASynStringSource);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
@@ -125,14 +103,6 @@ begin
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(fLockList);
   inherited Destroy;
-end;
-
-procedure TSynEditStringTrimmingList.SetUpdateState(Updating : Boolean);
-begin
-  if Updating then
-    fSynStrings.BeginUpdate
-  else
-   fSynStrings.EndUpdate;
 end;
 
 procedure TSynEditStringTrimmingList.DoCaretChanged(Sender : TObject);
@@ -294,82 +264,9 @@ begin
   fLockList.Clear;
 end;
 
-function TSynEditStringTrimmingList.GetIsUtf8 : Boolean;
-begin
-  Result := FSynStrings.IsUtf8;
-end;
-
-procedure TSynEditStringTrimmingList.SetIsUtf8(const AValue : Boolean);
-begin
-  FSynStrings.IsUtf8 := AValue;
-end;
-
-function TSynEditStringTrimmingList.GetTabWidth : integer;
-begin
-  Result := FSynStrings.TabWidth;
-end;
-
-procedure TSynEditStringTrimmingList.SetTabWidth(const AValue : integer);
-begin
-  FSynStrings.TabWidth := AValue;
-end;
-
 procedure TSynEditStringTrimmingList.ForceTrim;
 begin
   TrimAfterLock;
-end;
-
-// Fold
-function TSynEditStringTrimmingList.GetFoldEndLevel(Index : integer) : integer;
-begin
-  Result:= fSynStrings.FoldEndLevel[Index];
-end;
-
-function TSynEditStringTrimmingList.GetFoldMinLevel(Index : integer) : integer;
-begin
-  Result:= fSynStrings.FoldMinLevel[Index];
-end;
-
-procedure TSynEditStringTrimmingList.SetFoldEndLevel(Index : integer; const AValue : integer);
-begin
-  fSynStrings.FoldEndLevel[Index] := AValue;
-end;
-
-procedure TSynEditStringTrimmingList.SetFoldMinLevel(Index : integer; const AValue : integer);
-begin
-  fSynStrings.FoldMinLevel[Index] := AValue;
-end;
-
-// Range
-function TSynEditStringTrimmingList.GetRange(Index : integer) : TSynEditRange;
-begin
-  Result:= fSynStrings.Ranges[Index];
-end;
-
-procedure TSynEditStringTrimmingList.PutRange(Index : integer; ARange : TSynEditRange);
-begin
-  fSynStrings.Ranges[Index] := ARange;
-end;
-
-procedure TSynEditStringTrimmingList.ClearRanges(ARange : TSynEditRange);
-begin
-  fSynStrings.ClearRanges(ARange);
-end;
-
-// Count
-function TSynEditStringTrimmingList.GetCount : integer;
-begin
-  Result:= fSynStrings.Count;
-end;
-
-function TSynEditStringTrimmingList.GetCapacity : integer;
-begin
-  Result:= fSynStrings.Capacity;
-end;
-
-procedure TSynEditStringTrimmingList.SetCapacity(NewCapacity : integer);
-begin
-  fSynStrings.Capacity := NewCapacity;
 end;
 
 // Lines
