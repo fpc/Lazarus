@@ -1915,8 +1915,8 @@ var
   i: integer;
 begin
   for i := AIndex to AIndex + ACount - 1 do begin
-    FoldMinLevel[Count-1]:=-1;
-    FoldEndLevel[Count-1]:=-1;
+    FoldMinLevel[i]:=-1;
+    FoldEndLevel[i]:=-1;
   end;
 end;
 
