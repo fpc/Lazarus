@@ -1296,95 +1296,86 @@ var
   SLen: integer;
   Failed: boolean;
 begin
-  if SText <> '' then begin
-    Failed := TRUE; // assume the worst.
-    SLen := Length(SText);
-    {$IFDEF SYN_LAZARUS}
-    try
-      Clipboard.Clear;
-      Clipboard.AsText:=SText;
-      Failed:=not Clipboard.HasFormat(CF_TEXT);
-    except
+  if SText = '' then exit;
+  SLen := Length(SText);
+  {$IFDEF SYN_LAZARUS}
+  Clipboard.Clear;
+  Clipboard.AsText:=SText;
+  if not Clipboard.HasFormat(CF_TEXT) then
+    raise ESynEditError.Create('Clipboard copy operation failed: HasFormat');
+  // Copy it in our custom format so we know what kind of block it is.
+  // That effects how it is pasted in.
+  BufSize:=SLen+SizeOf(TSynSelectionMode)+1;
+  GetMem(Buf,BufSize);
+  if Buf = nil then
+    raise ESynEditError.Create('Clipboard copy operation failed: GetMem');
+  try
+    P:=PChar(Buf);
+    // Our format:  TSynSelectionMode value followed by text.
+    PSynSelectionMode(P)^ := SelectionMode;
+    inc(P, SizeOf(TSynSelectionMode));
+    if SLen>0 then begin
+      Move(SText[1], P^, SLen);
+      inc(P,SLen);
     end;
-    if not Failed then begin
-      Failed:=true;
-      // Copy it in our custom format so we know what kind of block it is.
-      // That effects how it is pasted in.
-      BufSize:=SLen+SizeOf(TSynSelectionMode)+1;
-      GetMem(Buf,BufSize);
-      if Buf<>nil then
+    P[0]:=#0;
+    if not Clipboard.AddFormat(SynEditClipboardFormat,Buf^,BufSize) then
+      raise ESynEditError.Create('Clipboard copy operation failed: AddFormat');
+  finally
+    FreeMem(Buf);
+  end;
+  {$ELSE}
+  Failed := true; // assume the worst.
+  // Open and Close are the only TClipboard methods we use because TClipboard
+  // is very hard (impossible) to work with if you want to put more than one
+  // format on it at a time.
+  Clipboard.Open;
+  try
+    // Clear anything already on the clipboard.
+    EmptyClipboard;
+    // Put it on the clipboard as normal text format so it can be pasted into
+    // things like notepad or Delphi.
+    Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen + 1);
+    if Mem <> 0 then begin
+      P := GlobalLock(Mem);
       try
-        P:=PChar(Buf);
-        // Our format:  TSynSelectionMode value followed by text.
-        PSynSelectionMode(P)^ := SelectionMode;
-        inc(P, SizeOf(TSynSelectionMode));
-        if SLen>0 then begin
-          Move(SText[1], P^, SLen);
-          inc(P,SLen);
-        end;
-        P[0]:=#0;
-        try
-          Failed:=not Clipboard.AddFormat(SynEditClipboardFormat,Buf^,BufSize);
-        except
+        if P <> nil then begin
+          Move(PChar(SText)^, P^, SLen + 1);
+          // Put it on the clipboard in text format
+          Failed := SetClipboardData(CF_TEXT, Mem) = 0;
         end;
       finally
-        FreeMem(Buf);
+        GlobalUnlock(Mem);
       end;
     end;
-    if Failed then
-      raise ESynEditError.Create('Clipboard copy operation failed');
-    {$ELSE}
-    // Open and Close are the only TClipboard methods we use because TClipboard
-    // is very hard (impossible) to work with if you want to put more than one
-    // format on it at a time.
-    Clipboard.Open;
-    try
-      // Clear anything already on the clipboard.
-      EmptyClipboard;
-      // Put it on the clipboard as normal text format so it can be pasted into
-      // things like notepad or Delphi.
-      Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen + 1);
-      if Mem <> 0 then begin
-        P := GlobalLock(Mem);
-        try
-          if P <> nil then begin
-            Move(PChar(SText)^, P^, SLen + 1);
-            // Put it on the clipboard in text format
-            Failed := SetClipboardData(CF_TEXT, Mem) = 0;
-          end;
-        finally
-          GlobalUnlock(Mem);
+    // Don't free Mem!  It belongs to the clipboard now, and it will free it
+    // when it is done with it.
+    if not Failed then begin
+      // Copy it in our custom format so we know what kind of block it is.
+      // That effects how it is pasted in.
+      Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen +
+        SizeOf(TSynSelectionMode) + 1);
+      P := GlobalLock(Mem);
+      try
+        if P <> nil then begin
+          // Our format:  TSynSelectionMode value followed by text.
+          PSynSelectionMode(P)^ := SelectionMode;
+          inc(P, SizeOf(TSynSelectionMode));
+          Move(PChar(SText)^, P^, SLen + 1);
+          Failed := SetClipboardData(SynEditClipboardFormat, Mem) = 0;
         end;
+      finally
+        GlobalUnlock(Mem);
       end;
       // Don't free Mem!  It belongs to the clipboard now, and it will free it
       // when it is done with it.
-      if not Failed then begin
-        // Copy it in our custom format so we know what kind of block it is.
-        // That effects how it is pasted in.
-        Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen +
-          SizeOf(TSynSelectionMode) + 1);
-        P := GlobalLock(Mem);
-        try
-          if P <> nil then begin
-            // Our format:  TSynSelectionMode value followed by text.
-            PSynSelectionMode(P)^ := SelectionMode;
-            inc(P, SizeOf(TSynSelectionMode));
-            Move(PChar(SText)^, P^, SLen + 1);
-            Failed := SetClipboardData(SynEditClipboardFormat, Mem) = 0;
-          end;
-        finally
-          GlobalUnlock(Mem);
-        end;
-        // Don't free Mem!  It belongs to the clipboard now, and it will free it
-        // when it is done with it.
-      end;
-    finally
-      Clipboard.Close;
-      if Failed then
-        raise ESynEditError.Create('Clipboard copy operation failed');
     end;
-    {$ENDIF}
+  finally
+    Clipboard.Close;
+    if Failed then
+      raise ESynEditError.Create('Clipboard copy operation failed');
   end;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.CopyToClipboard;
