@@ -2948,7 +2948,8 @@ function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 begin
   if PrefixIdent<>nil then begin
     if Identifier<>nil then begin
-      while UpChars[PrefixIdent^]=UpChars[Identifier^] do begin
+      while (UpChars[PrefixIdent^]=UpChars[Identifier^]) and (PrefixIdent^>#0) do
+      begin
         inc(PrefixIdent);
         inc(Identifier);
       end;
