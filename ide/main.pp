@@ -849,7 +849,7 @@ type
                         ActiveSrcEdit: TSourceEditor;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean): TModalResult; override;
+                        AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
@@ -10770,6 +10770,7 @@ procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
 begin
   if MainIDEBar=nil then exit;
+  if ToolStatus = itExiting then exit;
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   if MainBarSubTitle<>'' then begin
     NewCaption:=NewCaption+' - '+MainBarSubTitle;
@@ -12185,7 +12186,7 @@ end;
 function TMainIDE.DoJumpToCodePos(
   ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-  AddJumpPoint: boolean): TModalResult;
+  AddJumpPoint: boolean; FocusEditor: boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   NewUnitInfo: TUnitInfo;
@@ -12235,8 +12236,12 @@ begin
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
-  SourceNoteBook.ShowOnTop;
-  SourceNotebook.FocusEditor;
+
+  if FocusEditor
+  then begin
+    SourceNoteBook.ShowOnTop;
+    SourceNotebook.FocusEditor;
+  end;
   UpdateSourceNames;
   Result:=mrOk;
 end;

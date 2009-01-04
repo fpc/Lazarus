@@ -3850,6 +3850,7 @@ resourcestring
   lisBreak = 'Break';
   lisEnableGroup = 'Enable Group';
   lisDisableGroup = 'Disable Group';
+  lisAutoContinue = 'Auto Continue';
   lisDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';
   lisInvalidOn = 'Invalid (On)';

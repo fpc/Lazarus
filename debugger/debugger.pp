@@ -68,7 +68,7 @@ type
     dcDisassemble
     );
   TDBGCommands = set of TDBGCommand;
-  
+
   TDBGState = (
     dsNone,
     dsIdle,
@@ -78,7 +78,7 @@ type
     dsRun,
     dsError
     );
-    
+
 {
   Debugger states
   --------------------------------------------------------------------------
@@ -143,7 +143,7 @@ type
     destructor Destroy; override;
     procedure ReleaseReference;
   end;
-  
+
 
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
@@ -178,26 +178,30 @@ type
     bpaDisableGroup
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
-  
+
+  { TBaseBreakPoint }
+
   TBaseBreakPoint = class(TDelayedUdateItem)
   private
     FEnabled: Boolean;
     FExpression: String;
     FHitCount: Integer;
+    FBreakHitCount: Integer;
     FLine: Integer;
     FSource: String;
     FValid: TValidState;
     FInitialEnabled: Boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    procedure DoBreakHitCountChange; virtual;
     procedure DoExpressionChange; virtual;
     procedure DoEnableChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
     procedure SetValid(const AValue: TValidState);
-
   protected
     // virtual properties
+    function GetBreakHitCount: Integer; virtual;
     function GetEnabled: Boolean; virtual;
     function GetExpression: String; virtual;
     function GetHitCount: Integer; virtual;
@@ -206,12 +210,14 @@ type
     function GetSourceLine: Integer; virtual;
     function GetValid: TValidState; virtual;
 
+    procedure SetBreakHitCount(const AValue: Integer); virtual;
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;// PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
+    property BreakHitCount: Integer read GetBreakHitCount write SetBreakHitCount;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
@@ -227,6 +233,7 @@ type
 
   TIDEBreakPoint = class(TBaseBreakPoint)
   private
+    FAutoContinueTime: Cardinal;
     FActions: TIDEBreakPointActions;
     FDisableGroupList: TList;
     FEnableGroupList: TList;
@@ -246,8 +253,10 @@ type
     // virtual properties
     function GetActions: TIDEBreakPointActions; virtual;
     function GetGroup: TIDEBreakPointGroup; virtual;
+    function GetAutoContinueTime: Cardinal; virtual;
     procedure SetActions(const AValue: TIDEBreakPointActions); virtual;
     procedure SetGroup(const AValue: TIDEBreakPointGroup); virtual;
+    procedure SetAutoContinueTime(const AValue: Cardinal); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -262,10 +271,13 @@ type
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
+    property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
     property Loading: Boolean read FLoading;
   end;
   TIDEBreakPointClass = class of TIDEBreakPoint;
+
+  { TDBGBreakPoint }
 
   TDBGBreakPoint = class(TBaseBreakPoint)
   private
@@ -280,6 +292,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     function GetSourceLine: integer; override;
+    procedure Hit(var ACanContinue: Boolean);
     property Slave: TBaseBreakPoint read FSlave write SetSlave;
   end;
   TDBGBreakPointClass = class of TDBGBreakPoint;
@@ -337,7 +350,7 @@ type
     property Items[const AnIndex: Integer]: TIDEBreakPoint read GetItem
                                                          write SetItem; default;
   end;
-  
+
   TDBGBreakPoints = class(TBaseBreakPoints)
   private
     FDebugger: TDebugger;  // reference to our debugger
@@ -419,8 +432,8 @@ type
     property Items[const AnIndex: Integer]: TIDEBreakPointGroup
                                             read GetItem write SetItem; default;
   end;
-  
-  
+
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -442,7 +455,7 @@ type
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
     procedure SetValid(const AValue: TValidState);
-    
+
   protected
     // virtual properties
     function GetExpression: String; virtual;
@@ -460,7 +473,7 @@ type
     property Value: String read GetValue;
   end;
   TBaseWatchClass = class of TBaseWatch;
-  
+
   TIDEWatch = class(TBaseWatch)
   private
   protected
@@ -498,7 +511,7 @@ type
 
   TIDEWatchesEvent =
        procedure(const ASender: TIDEWatches; const AWatch: TIDEWatch) of object;
-       
+
   TIDEWatchesNotification = class(TDebuggerNotification)
   private
     FOnAdd:    TIDEWatchesEvent;
@@ -519,7 +532,7 @@ type
     function Find(const AExpression: String): TBaseWatch;
     // no items property needed, it is "overridden" anyhow
   end;
-  
+
   TIDEWatches = class(TBaseWatches)
   private
     FNotificationList: TList;
@@ -568,7 +581,7 @@ type
                                                       write SetItem; default;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -630,8 +643,8 @@ type
     constructor Create(const ADebugger: TDebugger);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  
-  
+
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -722,7 +735,7 @@ type
     FLine: Integer;
     FArguments: TStrings;
     FSource: String;
-    function GetArgumentCount: Integer; 
+    function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
     function GetCurrent: Boolean;
@@ -743,7 +756,7 @@ type
     property Line: Integer read FLine;
     property Source: String read FSource;
   end;
-  
+
   { TBaseCallStack }
 
   TBaseCallStack = class(TObject)
@@ -765,7 +778,7 @@ type
     property Current: TCallStackEntry read GetCurrent write SetCurrent;
     property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
-  
+
 
   { TIDECallStackNotification }
 
@@ -854,9 +867,9 @@ type
     property ResumeHandled: Boolean read FResumeHandled write SetResumeHandled;
   end;
   TBaseSignalClass = class of TBaseSignal;
-    
+
   { TDBGSignal }
-  
+
   TDBGSignal = class(TBaseSignal)
   private
     function GetDebugger: TDebugger;
@@ -865,7 +878,7 @@ type
   public
   end;
   TDBGSignalClass = class of TDBGSignal;
-  
+
   TIDESignal = class(TBaseSignal)
   private
   protected
@@ -906,7 +919,7 @@ type
   end;
 
   { TIDESignals }
-  
+
   TIDESignals = class(TBaseSignals)
   private
     function GetItem(const AIndex: Integer): TIDESignal;
@@ -1028,6 +1041,8 @@ type
 
   TDebuggerStateChangedEvent = procedure(ADebugger: TDebugger;
                                          AOldState: TDBGState) of object;
+  TDebuggerBreakPointHitEvent = procedure(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
+                                          var ACanContinue: Boolean) of object;
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject;
                                    const ALocation: TDBGLocationRec) of object;
@@ -1064,6 +1079,7 @@ type
     FOnOutput: TDBGOutputEvent;
     FOnDbgOutput: TDBGOutputEvent;
     FOnState: TDebuggerStateChangedEvent;
+    FOnBreakPointHit: TDebuggerBreakPointHitEvent;
     FWorkingDir: String;
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
@@ -1085,6 +1101,7 @@ type
     procedure DoDbgOutput(const AText: String);
     procedure DoException(const AExceptionClass: String; const AExceptionText: String);
     procedure DoOutput(const AText: String);
+    procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands;
@@ -1153,9 +1170,10 @@ type
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
+    property OnBreakPointHit: TDebuggerBreakPointHitEvent read FOnBreakPointHit write FOnBreakPointHit;   // Fires when the program is paused at a breakpoint
   end;
   TDebuggerClass = class of TDebugger;
-  
+
 const
   DBGCommandNames: array[TDBGCommand] of string = (
     'Run',
@@ -1174,7 +1192,7 @@ const
     'SetStackFrame',
     'Disassemble'
     );
-    
+
   DBGStateNames: array[TDBGState] of string = (
     'None',
     'Idle',
@@ -1184,13 +1202,13 @@ const
     'Run',
     'Error'
     );
-    
+
   DBGBreakPointActionNames: array[TIDEBreakPointAction] of string = (
     'Stop',
     'EnableGroup',
     'DisableGroup'
     );
-    
+
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 function DBGStateNameToState(const s: string): TDBGState;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
@@ -1217,7 +1235,7 @@ const
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
   );
-  
+
 var
   MDebuggerPropertiesList: TStringlist;
 
@@ -1334,7 +1352,7 @@ begin
   Result := TDBGBreakPoints.Create(Self, TDBGBreakPoint);
 end;
 
-function TDebugger.CreateCallStack: TDBGCallStack; 
+function TDebugger.CreateCallStack: TDBGCallStack;
 begin
   Result := TDBGCallStack.Create(Self);
 end;
@@ -1349,7 +1367,7 @@ begin
   Result := TDBGLocals.Create(Self);
 end;
 
-class function TDebugger.CreateProperties: TDebuggerProperties; 
+class function TDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TDebuggerProperties.Create;
 end;
@@ -1421,7 +1439,7 @@ begin
 end;
 
 procedure TDebugger.DoDbgOutput(const AText: String);
-begin                          
+begin
   // WriteLN(' [TDebugger] ', AText);
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
 end;
@@ -1436,6 +1454,12 @@ end;
 procedure TDebugger.DoOutput(const AText: String);
 begin
   if Assigned(FOnOutput) then FOnOutput(Self, AText);
+end;
+
+procedure TDebugger.DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+begin
+  if Assigned(FOnBreakpointHit)
+  then FOnBreakpointHit(Self, ABreakPoint, ACanContinue);
 end;
 
 procedure TDebugger.DoState(const OldState: TDBGState);
@@ -1469,7 +1493,7 @@ begin
           then Env.Delete(idx);
         end;
       end;
-      
+
       // Set the remaining
       for n := 0 to Env.Count - 1 do
       begin
@@ -1567,7 +1591,7 @@ function TDebugger.ReqCmd(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
 begin
   if FState = dsNone then Init;
-  if ACommand in Commands 
+  if ACommand in Commands
   then begin
     Result := RequestCommand(ACommand, AParams);
     if not Result then begin
@@ -1618,7 +1642,7 @@ begin
       if FState <> dsStop
       then SetState(dsError);
     end;
-    
+
     if FState = dsStop
     then begin
       // Reset state
@@ -1651,7 +1675,7 @@ var
 begin
   if AValue <> FState
   then begin
-    OldState := FState;            
+    OldState := FState;
     FState := AValue;
     FBreakpoints.DoStateChange(OldState);
     FLocals.DoStateChange(OldState);
@@ -1694,12 +1718,12 @@ end;
 
 procedure TBaseBreakPoint.AssignTo(Dest: TPersistent);
 var
-  DestBreakPoint: TBaseBreakPoint;
+  DestBreakPoint: TBaseBreakPoint absolute Dest;
 begin
   // updatelock is set in source.assignto
   if Dest is TBaseBreakPoint
   then begin
-    DestBreakPoint:=TBaseBreakPoint(Dest);
+    DestBreakPoint.SetBreakHitCount(FBreakHitCount);
     DestBreakPoint.SetLocation(FSource, FLine);
     DestBreakPoint.SetExpression(FExpression);
     DestBreakPoint.SetEnabled(FEnabled);
@@ -1715,9 +1739,15 @@ begin
   FValid := vsUnknown;
   FEnabled := False;
   FHitCount := 0;
+  FBreakHitCount := 0;
   FExpression := '';
   FInitialEnabled := False;
   inherited Create(ACollection);
+end;
+
+procedure TBaseBreakPoint.DoBreakHitCountChange;
+begin
+  Changed;
 end;
 
 procedure TBaseBreakPoint.DoEnableChange;
@@ -1733,6 +1763,11 @@ end;
 procedure TBaseBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean );
 begin
   SetHitCount(ACount);
+end;
+
+function TBaseBreakPoint.GetBreakHitCount: Integer;
+begin
+  Result := FBreakHitCount;
 end;
 
 function TBaseBreakPoint.GetEnabled: Boolean;
@@ -1768,6 +1803,15 @@ end;
 function TBaseBreakPoint.GetValid: TValidState;
 begin
   Result := FValid;
+end;
+
+procedure TBaseBreakPoint.SetBreakHitCount(const AValue: Integer);
+begin
+  if FBreakHitCount <> AValue
+  then begin
+    FBreakHitCount := AValue;
+    DoBreakHitCountChange;
+  end;
 end;
 
 procedure TBaseBreakPoint.SetEnabled (const AValue: Boolean );
@@ -1840,12 +1884,25 @@ begin
   Changed;
 end;
 
+function TIDEBreakPoint.GetAutoContinueTime: Cardinal;
+begin
+  Result := FAutoContinueTime;
+end;
+
+procedure TIDEBreakPoint.SetAutoContinueTime(const AValue: Cardinal);
+begin
+  if FAutoContinueTime = AValue then Exit;
+  FAutoContinueTime := AValue;
+  Changed;
+end;
+
 procedure TIDEBreakPoint.AssignTo(Dest: TPersistent);
 begin
   inherited;
   if Dest is TIDEBreakPoint
   then begin
     TIDEBreakPoint(Dest).Actions := FActions;
+    TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
   end;
 end;
 
@@ -1967,6 +2024,8 @@ begin
     GroupName:=XMLConfig.GetValue(Path+'Group/Name','');
     Group:=OnGetGroup(GroupName);
     Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
+    AutoContinueTime:=XMLConfig.GetValue(Path+'AutoContinueTime/Value',0);
+    BreakHitCount := XMLConfig.GetValue(Path+'BreakHitCount/Value',0);
     Filename:=XMLConfig.GetValue(Path+'Source/Value','');
     if Assigned(OnLoadFilename) then OnLoadFilename(Filename);
     FSource:=Filename;
@@ -2008,7 +2067,7 @@ end;
 
 procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
   const APath: string; const OnSaveFilename: TOnSaveFilenameToConfig);
-  
+
   procedure SaveGroupList(const AList: TList; const AListPath: string);
   var
     i: Integer;
@@ -2022,19 +2081,21 @@ procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
         CurGroup.Name, '');
     end;
   end;
-  
+
 var
   Filename: String;
   CurAction: TIDEBreakPointAction;
 begin
   if Group <> nil
   then AConfig.SetDeleteValue(APath+'Group/Name',Group.Name,'');
-  
+
   AConfig.SetDeleteValue(APath+'Expression/Value',Expression,'');
+  AConfig.SetDeleteValue(APath+'AutoContinueTime/Value',AutoContinueTime,0);
+  AConfig.SetDeleteValue(APath+'BreakHitCount/Value',BreakHitCount,0);
 
   Filename := Source;
   if Assigned(OnSaveFilename) then OnSaveFilename(Filename);
-  
+
   AConfig.SetDeleteValue(APath+'Source/Value',Filename,'');
   AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
   AConfig.SetDeleteValue(APath+'Line/Value',Line,-1);
@@ -2132,6 +2193,17 @@ begin
     Result:=Slave.GetSourceLine
   else
     Result:=inherited GetSourceLine;
+end;
+
+procedure TDBGBreakPoint.Hit(var ACanContinue: Boolean);
+var
+  cnt: Integer;
+begin
+  cnt := HitCount + 1;
+  if BreakHitcount > 0
+  then ACanContinue := cnt < BreakHitcount;
+  DoHit(cnt, ACanContinue);
+  Debugger.DoBreakpointHit(Self, ACanContinue)
 end;
 
 procedure TDBGBreakPoint.DoChanged;
@@ -2270,13 +2342,13 @@ begin
     LoadBreakPoint := TIDEBreakPoint.Create(nil);
     LoadBreakPoint.LoadFromXMLConfig(XMLConfig,
       Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
-      
+
     BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
 
     if BreakPoint = nil
     then BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
     BreakPoint.Assign(LoadBreakPoint);
-    
+
     FreeAndNil(LoadBreakPoint)
   end;
 end;
@@ -2674,7 +2746,7 @@ begin
 end;
 
 function TBaseWatch.GetValue: String;
-begin       
+begin
   if not Enabled
   then Result := '<disabled>'
   else begin
@@ -2942,7 +3014,7 @@ begin
   begin
     Notification := TIDEWatchesNotification(FNotificationList[n]);
     if not Assigned(Notification.FOnUpdate) then Continue;
-    
+
     if Item = nil
     then begin
       for m := 0 to Count - 1 do
@@ -3254,7 +3326,7 @@ constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const ASource: String; const ALine: Integer);
 begin
-  inherited Create;   
+  inherited Create;
   FIndex := AIndex;
   FAdress := AnAdress;
   FArguments := TStringlist.Create;
@@ -3287,7 +3359,7 @@ begin
 end;
 
 function TCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
-begin                        
+begin
   Result := FArguments[AnIndex];
   Result := GetPart('=', '', Result);
 end;
@@ -3301,7 +3373,7 @@ procedure TCallStackEntry.SetCurrent(const AValue: Boolean);
 begin
   if FOwner = nil then Exit;
   if GetCurrent = AValue then Exit;
-  
+
   if AValue
   then FOwner.SetCurrent(self)
   else FOwner.SetCurrent(nil);
@@ -3502,12 +3574,12 @@ begin
     Changed;
   end
   else begin
-    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation } 
-    then begin 
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    then begin
       Clear;
       if Assigned(FOnClear) then FOnClear(Self);
     end;
-  end;          
+  end;
 end;
 
 function TDBGCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
@@ -3790,7 +3862,7 @@ end;
 procedure TBaseException.SetName(const AValue: String);
 begin
   if FName = AValue then exit;
-  
+
   if TBaseExceptions(GetOwner).Find(AValue) <> nil
   then raise EDBGExceptions.Create('Duplicate name: ' + AValue);
 
