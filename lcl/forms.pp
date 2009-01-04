@@ -159,7 +159,7 @@ type
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default true;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
-    function  GetClientScrollOffset: TPoint; override;
+    function GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
     procedure DoOnResize; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
