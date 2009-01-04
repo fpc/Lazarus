@@ -290,6 +290,29 @@ begin
   inc(FChildCount);
 end;
 
+procedure TDockZone.AddSibling(NewZone: TDockZone; InsertAt: TAlign);
+var
+  LinkAfter: TDockZone;
+begin
+  case InsertAt of
+    alLeft, alTop:  LinkAfter := FPrevSibling;
+    alRight, alBottom: LinkAfter := Self;
+  else
+    raise Exception.Create('TDockZone.AddSibling: unhandled insertion');
+  end;
+  if LinkAfter = nil then
+    Parent.AddAsFirstChild(NewZone)
+  else
+  begin
+    NewZone.FPrevSibling := LinkAfter;
+    NewZone.FNextSibling := LinkAfter.NextSibling;
+    NewZone.FParentZone := Parent;
+    if LinkAfter.NextSibling <> nil then
+      LinkAfter.NextSibling.FPrevSibling := NewZone;
+    LinkAfter.FNextSibling := NewZone;
+  end;
+end;
+
 procedure TDockZone.ReplaceChild(OldChild, NewChild: TDockZone);
 begin
   NewChild.FParentZone := Self;

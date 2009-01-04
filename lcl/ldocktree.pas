@@ -33,7 +33,7 @@ uses
   Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
   Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
   LMessages, LResources, typinfo;
-  
+
 type
   TLazDockPages = class;
   TLazDockPage = class;
@@ -67,9 +67,9 @@ type
     dhiRestore,
     dhiClose
   );
-  
+
   TDockHeaderImages = array[TDockHeaderImageKind] of TCustomBitmap;
-  
+
   { TLazDockTree }
 
   TLazDockTree = class(TDockTree)
@@ -105,7 +105,7 @@ type
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
-  
+
   TLazDockHeaderPart =
   (
     ldhpAll,           // total header rect
@@ -122,7 +122,7 @@ type
       TCustomAnchoredDockManager does not use TLazDockZone and allows arbitrary
         layouts.
  }
-  
+
   TLazDockForm = class(TCustomForm)
   private
     FMainControl: TControl;
@@ -153,8 +153,8 @@ type
     function GetTitleOrientation(Control: TControl): TDockOrientation;
     property MainControl: TControl read FMainControl write SetMainControl;// used for the default caption
   end;
-  
-  
+
+
   { TLazDockPage
     Pretty the same as a TLazDockForm but as page of a TLazDockPages }
 
@@ -186,18 +186,18 @@ type
                                            write SetActiveNotebookPageComponent;
     property Pages;
   end;
-  
-  
+
+
   { TLazDockSplitter }
 
   TLazDockSplitter = class(TCustomSplitter)
   public
     constructor Create(AOwner: TComponent); override;
   end;
-  
-  
+
+
   TCustomAnchoredDockManager = class;
-  
+
   { TLazDockOwnerComponent
     A TComponent owning all automatically created controls of a
     TCustomAnchoredDockManager, like TLazDockForm }
@@ -208,11 +208,11 @@ type
   end;
 
   //----------------------------------------------------------------------------
-  
+
   { TCustomAnchoredDockManager
     This class implements an LCL TDockManager via anchoring.
     It implements the docking, undocking, enlarging, shrinking.
-    
+
     The TCustomLazDockingManager component in LDockCtrl uses this
     docking manager and extends it by layouts that can be stored/restored. }
 
@@ -271,8 +271,8 @@ type
     // here.
     function CreateForm: TLazDockForm;
   end;
-  
-  
+
+
 const
   DockAlignOrientations: array[TAlign] of TDockOrientation =
   (
@@ -322,7 +322,7 @@ type
   TDockHeader = class
     class procedure CreateDockHeaderImages(out Images: TDockHeaderImages);
     class procedure DestroyDockHeaderImages(var Images: TDockHeaderImages);
-    
+
     class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
     class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
     class procedure Draw(ACanvas: TCanvas; ACaption: String; DockBtnImages: TDockHeaderImages; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
@@ -430,7 +430,7 @@ class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImag
     dy := (ARect.Bottom - ARect.Top - ABitmap.Height) div 2;
     ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
   end;
-  
+
 var
   BtnRect: TRect;
   DrawRect: TRect;
@@ -445,7 +445,7 @@ begin
   ACanvas.Brush.Color := clBtnShadow;
   ACanvas.FrameRect(DrawRect);
   InflateRect(DrawRect, -1, -1);
-  
+
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 
   // draw close button
@@ -459,7 +459,7 @@ begin
 
   // draw caption
   DrawRect := GetRectOfPart(ARect, AOrientation, ldhpCaption);
-  
+
   OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
 
   case AOrientation of
@@ -588,11 +588,11 @@ function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
   DestControl: TControl): boolean;
 { true if there is an Anchor way from StartControl to DestControl over Side.
   For example:
-  
+
     +-+|+-+
     |A|||B|
     +-+|+-+
-    
+
   A is akLeft to B.
   B is akRight to A.
   The splitter is akLeft to B.
@@ -602,7 +602,7 @@ function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
 var
   Checked: array of Boolean;
   Parent: TWinControl;
-  
+
   function Check(ControlIndex: integer): boolean;
   var
     AControl: TControl;
@@ -614,7 +614,7 @@ var
     Checked[ControlIndex]:=true;
     AControl:=Parent.Controls[ControlIndex];
     if AControl=DestControl then exit(true);
-    
+
     if (Side in AControl.Anchors) then begin
       SideControl:=AControl.AnchorSide[Side].Control;
       if (SideControl<>nil) and Check(Parent.GetControlIndex(SideControl)) then
@@ -631,7 +631,7 @@ var
     end;
     Result:=false;
   end;
-  
+
 var
   i: Integer;
 begin
@@ -659,19 +659,19 @@ function GetEnclosingControlRect(ControlList: TFPlist; out
   ARect: TAnchorControlsRect): boolean;
 { ARect will be the minimum TAnchorControlsRect around the controls in the list
   returns true, if there is such a TAnchorControlsRect.
-  
+
   The controls in ARect will either be the Parent or a TLazDockSplitter
 }
 var
   Parent: TWinControl;
-  
+
   function ControlIsValidAnchor(Control: TControl; Side: TAnchorKind): boolean;
   var
     i: Integer;
   begin
     Result:=false;
     if (Control=ARect[Side]) then exit(true);// this allows Parent at the beginning
-    
+
     if not (Control is TLazDockSplitter) then
       exit;// not a splitter
     if (TLazDockSplitter(Control).ResizeAnchor in [akLeft,akRight])
@@ -690,7 +690,7 @@ var
     end;
     Result:=true;
   end;
-  
+
 var
   TopIndex: Integer;
   TopControl: TControl;
@@ -712,7 +712,7 @@ begin
   if Parent=nil then exit;
   for i:=0 to ControlList.Count-1 do
     if TControl(ControlList[i]).Parent<>Parent then exit;
-    
+
   // set the default rect: the Parent
   Result:=true;
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
@@ -731,21 +731,21 @@ begin
   for TopIndex:=0 to Candidates.Count-1 do begin
     TopControl:=TControl(Candidates[TopIndex]);
     if not ControlIsValidAnchor(TopControl,akTop) then continue;
-    
+
     for RightIndex:=0 to Candidates.Count-1 do begin
       RightControl:=TControl(Candidates[RightIndex]);
       if (TopControl.AnchorSide[akRight].Control<>RightControl)
       and (RightControl.AnchorSide[akTop].Control<>TopControl) then
         continue; // not touching / not a corner
       if not ControlIsValidAnchor(RightControl,akRight) then continue;
-      
+
       for BottomIndex:=0 to Candidates.Count-1 do begin
         BottomControl:=TControl(Candidates[BottomIndex]);
         if (RightControl.AnchorSide[akBottom].Control<>BottomControl)
         and (BottomControl.AnchorSide[akRight].Control<>RightControl) then
           continue; // not touching / not a corner
         if not ControlIsValidAnchor(BottomControl,akBottom) then continue;
-        
+
         for LeftIndex:=0 to Candidates.Count-1 do begin
           LeftControl:=TControl(Candidates[LeftIndex]);
           if (BottomControl.AnchorSide[akLeft].Control<>LeftControl)
@@ -765,7 +765,7 @@ begin
       end;
     end;
   end;
-  
+
   Candidates.Free;
 end;
 
@@ -773,7 +773,7 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 { return a list of all controls bounded by the anchors in ARect }
 var
   Parent: TWinControl;
-  
+
   procedure Fill(AControl: TControl);
   var
     a: TAnchorKind;
@@ -784,10 +784,10 @@ var
     if AControl=Parent then exit;// do not add Parent
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
       if ARect[a]=AControl then exit;// do not add boundary
-      
+
     if Result.IndexOf(AControl)>=0 then exit;// already added
     Result.Add(AControl);
-    
+
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
       Fill(AControl.AnchorSide[a].Control);
     for i:=0 to Parent.ControlCount-1 do begin
@@ -797,7 +797,7 @@ var
           Fill(SideControl);
     end;
   end;
-  
+
 var
   i: Integer;
   AControl: TControl;
@@ -810,7 +810,7 @@ begin
     Parent:=TWinControl(ARect[akLeft])
   else
     Parent:=ARect[akLeft].Parent;
-    
+
   // find the left, top most control
   for i:=0 to Parent.ControlCount-1 do begin
     AControl:=Parent.Controls[i];
@@ -821,7 +821,7 @@ begin
     end;
   end;
   if Result.Count=0 then exit;
-  
+
   // use flood fill to find the rest
   Fill(LeftTopControl);
 end;
@@ -1169,12 +1169,12 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
   It creates a new TDockZone for AControl and inserts it as a new leaf.
   It automatically changes the tree, so that the parent of the new TDockZone
   will have the Orientation for InsertAt.
-  
+
   Example 1:
 
     A newly created TLazDockTree has only a DockSite (TLazDockForm) and a single
     TDockZone - the RootZone, which has as ChildControl the DockSite.
-    
+
     Visual:
       +-DockSite--+
       |           |
@@ -1241,11 +1241,11 @@ begin
 
   // undock
   UndockControlForDocking(AControl);
-  
+
   // dock
   // create a new zone for AControl
   NewZone := DockZoneClass.Create(Self,AControl) as TLazDockZone;
-  
+
   // insert new zone into tree
   if (DropZone = RootZone) and (RootZone.FirstChild = nil) then
   begin
@@ -1263,7 +1263,7 @@ begin
 
     AControl.BoundsRect := NewBounds;
     AControl.Parent := DockSite;
-    
+
     if AControl.Visible then
       DockSite.Visible := True;
   end else
@@ -1282,7 +1282,7 @@ begin
       else
         DropZone := DropZone.GetLastChild;
     end;
-    
+
     // insert a new Parent Zone if needed
     NeedNewParentZone := True;
     if (DropZone.Parent <> nil) then
@@ -1302,7 +1302,7 @@ begin
         OldParentZone.ReplaceChild(DropZone, NewParentZone);
       NewParentZone.AddAsFirstChild(DropZone);
     end;
-    
+
     if DropZone.Parent = nil then
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
     // adjust Orientation in tree
@@ -1318,17 +1318,15 @@ begin
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Orientation<>NewOrientation');
 
     // insert new node
-    if InsertAt in [alLeft, alTop] then
-      DropZone.Parent.AddAsFirstChild(NewZone)
-    else
-      DropZone.Parent.AddAsLastChild(NewZone);
-      
+    //DoDi: should insert relative to dropzone, not at begin/end of the parent zone
+    DropZone.AddSibling(NewZone, InsertAt);
+
     // add AControl to DockSite
     PrepareControlForResize(AControl);
     AControl.DockOrientation := NewOrientation;
     AControl.Parent := NewZone.GetParentControl;
   end;
-  
+
   // Build dock layout (anchors, splitters, pages)
   if NewZone.Parent <> nil then
     BuildDockLayout(NewZone.Parent as TLazDockZone)
@@ -1397,7 +1395,7 @@ procedure TLazDockTree.FindBorderControls(Zone: TLazDockZone; Side: TAnchorKind;
 begin
   if List=nil then List:=TFPList.Create;
   if Zone=nil then exit;
-  
+
   if (Zone.Splitter<>nil) and (Zone.Parent<>nil)
   and (Zone.Orientation=doVertical) then begin
     // this splitter is leftmost, topmost, bottommost
@@ -1574,7 +1572,7 @@ procedure TLazDockTree.MouseMessage(var Message: TLMessage);
       InvalidateRect(DockSite.Handle, @NewMouseState.Rect, False);
     end;
   end;
-  
+
   function FindControlAndPart(MouseMsg: TLMMouse; out ARect: TRect; out APart: TLazDockHeaderPart): TControl;
   var
     i: integer;
@@ -1610,7 +1608,7 @@ procedure TLazDockTree.MouseMessage(var Message: TLMessage);
     end;
     Result := nil;
   end;
-  
+
 var
   ARect: TRect;
   Part: TLazDockHeaderPart;
@@ -1854,19 +1852,19 @@ procedure TCustomAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
               |------
               |   D
   }
-  
+
   procedure MoveAnchorSide(AControl: TControl; Side: TAnchorKind);
   begin
     if AControl.AnchorSide[Side].Control=Splitter2 then
       AControl.AnchorSide[Side].Control:=Splitter1;
   end;
-  
+
   procedure EnlargeSplitter(Side: TAnchorKind);
   begin
     if GetAnchorDepth(Splitter1,Side)>GetAnchorDepth(Splitter2,Side) then
       Splitter1.AnchorSide[Side].Assign(Splitter2.AnchorSide[Side]);
   end;
-  
+
 var
   LeftRightSplitter: boolean;
   ParentControl: TWinControl;
@@ -1900,7 +1898,7 @@ begin
         MoveAnchorSide(CurControl,akBottom);
       end;
     end;
-    
+
     // enlarge Splitter1
     if LeftRightSplitter then begin
       // enlarge Splitter1 to top and bottom
@@ -1911,7 +1909,7 @@ begin
       EnlargeSplitter(akLeft);
       EnlargeSplitter(akRight);
     end;
-    
+
     // delete Splitter2
     Splitter2.Free;
   finally
@@ -2100,7 +2098,7 @@ begin
 
         DropCtlAnchor:=MainAlignAnchor[InsertAt];
         ControlAnchor:=OppositeAnchor[DropCtlAnchor];
-        
+
         DropCtlTitlePos:=GetPreferredTitlePosition(DropCtl.ClientWidth,
                                                    DropCtl.ClientHeight);
 
@@ -2146,7 +2144,7 @@ begin
             end;
           end;
 
-          if not ParentDisabledAlign then 
+          if not ParentDisabledAlign then
           begin
             DropCtl.Parent.DisableAlign;
             ParentDisabledAlign := True;
@@ -2234,7 +2232,7 @@ begin
 
           // position DropCtl
           DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
-          
+
           // set titles
           UpdateTitlePosition(DropCtl);
           UpdateTitlePosition(Control);
@@ -2309,7 +2307,7 @@ end;
 
   Removes a control from a docking form.
   It breaks all anchors and cleans up.
-  
+
   The created gap will be tried to fill up.
   It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
   longer needed.
@@ -2342,7 +2340,7 @@ procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boo
 
 
   2. Four spiral splitters:
-  
+
      Before:
               |
            A  |
@@ -2354,7 +2352,7 @@ procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boo
        |   D
 
      The left and right splitter will be combined to one.
-     
+
      After:
               |
            A  |
@@ -2369,12 +2367,12 @@ procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boo
   3. No TLazDockSplitter. Control is the only child of a TLazDockPage
      In this case the page will be deleted.
      If the TLazDockPages has no childs left, it is recursively undocked.
-  
+
   4. No TLazDockSplitter, Control is the only child of a TLazDockForm.
      The TLazDockForm is deleted and the Control is floated.
      This normally means: A form will simply be placed on the desktop, other
      controls will be docked into their DockSite.
-     
+
   5. Otherwise: this control was not docked.
 }
 var
@@ -2416,7 +2414,7 @@ var
         ParentControl:=nil;
         DebugLn(['DoFinallyForParent EnableAlign for ',DbgSName(OldParentControl),' Control=',DbgSName(Control),' OldParentControl.ControlCount=',OldParentControl.ControlCount]);
         OldParentControl.EnableAlign;
-        
+
         // check if the remaining is a TLazDockForm with only one child
         if (OldParentControl is TLazDockForm)
         and (OldParentControl.ControlCount=1) then
@@ -2435,7 +2433,7 @@ var
       end;
     end;
   end;
-  
+
 var
   OldParentPage: TLazDockPage;
   OldParentForm: TLazDockForm;
@@ -2445,7 +2443,7 @@ begin
     // already undocked
     RaiseGDBException('TCustomAnchoredDockManager.UndockControl Control.Parent=nil');
   end;
-  
+
   ParentControl:=Control.Parent;
   ParentControl.DisableAlign;
   try
@@ -2515,7 +2513,7 @@ begin
         Done:=true;
       end;
     end;
-    
+
     if not Done then begin
       // check if Control is the only child of a TLazDockForm
       if (ParentControl.ControlCount=1)
@@ -2526,11 +2524,11 @@ begin
         Done:=true;
       end;
     end;
-    
+
     if not Done then begin
       // otherwise: keep
     end;
-    
+
   finally
     DoFinallyForParent;
   end;
@@ -2593,14 +2591,14 @@ var
   ParentDisabledAlign: Boolean;
   EnlargeSplitter: TLazDockSplitter;
   RotateSplitter: TLazDockSplitter;
-  
+
   procedure ParentDisableAlign;
   begin
     if ParentDisabledAlign then exit;
     ParentDisabledAlign:=true;
     Parent.DisableAlign;
   end;
-  
+
 begin
   Result:=false;
   if Control=nil then exit;
@@ -2615,7 +2613,7 @@ begin
   if not GetLazDockSplitterOrParent(Control,Side3,Side3Anchor) then exit;
   Parent:=Control.Parent;
   if (Side2Anchor=Parent) and (Side3Anchor=Parent) then exit;
-  
+
   // search controls anchored to the MainSplitter on the other side
   Neighbour:=nil;
   for i:=0 to Parent.ControlCount-1 do begin
@@ -2652,7 +2650,7 @@ begin
         if Sibling.Top>Control.Top+Control.Height then continue;
       end;
     end;
-    
+
     if Neighbour=nil then
       Neighbour:=Sibling
     else if Sibling is TLazDockSplitter then begin
@@ -2667,7 +2665,7 @@ begin
 
   if Neighbour=nil then exit; // no neighbour found
   DebugLn(['TCustomAnchoredDockManager.EnlargeControl Neighbour=',DbgSName(Neighbour)]);
-  
+
   ParentDisabledAlign:=false;
   try
     if Neighbour is TLazDockSplitter then begin
@@ -2760,7 +2758,7 @@ begin
         end;
         UpdateTitlePosition(Control);
       end;
-      
+
     end else begin
       // shrink a neighbour control
       DebugLn(['TCustomAnchoredDockManager.EnlargeControl Shrink one control: Neighbour=',DbgSName(Neighbour)]);
@@ -2777,7 +2775,7 @@ begin
           ------------------- }
         exit;
       end;
-      
+
       // check if the Neighbour can be shrinked
       if NeighbourCanBeShrinked(Control,Neighbour,Side2) then begin
         ShrinkSide:=Side2;
@@ -2787,7 +2785,7 @@ begin
         // Neighbour can not be shrinked
         exit;
       end;
-      
+
 
       {              EnlargeSplitter
                            ^

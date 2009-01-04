@@ -118,14 +118,19 @@ var
 begin
   //determine drop zone
   if DropCtl = nil then
-    DropZone := RootZone
+  begin
+    DropZone := RootZone;
+    R := DockSite.ClientRect;
+  end 
   else
+  begin
     DropZone := RootZone.FindZone(DropCtl);
-
-  //get the zone extent.
-  //r := dzone.FBounds; //todo: doesn't work
-  with DropZone do
-    R := Rect(Left, Top, Width, Height);
+    if DropZone = nil then
+      DropZone := RootZone;
+    //get the zone extent.
+    with DropZone do
+      R := Rect(Left, Top, Width, Height);
+  end;
 
   // if there are no zones then use the whole rect
   // else split drop zone

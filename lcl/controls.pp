@@ -1916,6 +1916,7 @@ type
     function GetNextVisibleZone: TDockZone;
     function NextVisible: TDockZone;
     function PrevVisible: TDockZone;
+    procedure AddSibling(NewZone: TDockZone; InsertAt: TAlign);
     procedure AddAsFirstChild(NewChildZone: TDockZone);
     procedure AddAsLastChild(NewChildZone: TDockZone);
     procedure ReplaceChild(OldChild, NewChild: TDockZone);
@@ -2050,7 +2051,6 @@ type
     procedure DeleteZone(Zone: TDockZone);
     procedure SetDockSite(const AValue: TWinControl);
   protected
-    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
     function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); virtual;
@@ -2061,6 +2061,7 @@ type
     destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
+    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
     procedure GetControlBounds(AControl: TControl;
                                out ControlBounds: TRect); override;
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
