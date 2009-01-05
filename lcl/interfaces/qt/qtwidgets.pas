@@ -546,6 +546,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function getAlignment: QtAlignment;
     function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
@@ -556,6 +557,7 @@ type
     function isUndoAvailable: Boolean;
     function hasSelectedText: Boolean;
     procedure selectAll;
+    procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
     procedure setTextColor(const Value: PQColor); override;
     procedure setCursorPosition(const AValue: Integer);
@@ -587,6 +589,7 @@ type
   public
     FList: TStrings;
     procedure append(AStr: WideString);
+    function getAlignment: QtAlignment;
     function getMaxLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -5026,6 +5029,11 @@ begin
   Result := QLineEdit_create();
 end;
 
+function TQtLineEdit.getAlignment: QtAlignment;
+begin
+  Result := QLineEdit_alignment(QLineEditH(Widget));
+end;
+
 function TQtLineEdit.getCursorPosition: Integer;
 begin
   Result := QLineEdit_cursorPosition(QLineEditH(Widget));
@@ -5085,6 +5093,11 @@ end;
 procedure TQtLineEdit.selectAll;
 begin
   QLineEdit_selectAll(QLineEditH(Widget));
+end;
+
+procedure TQtLineEdit.setAlignment(const AAlignment: QtAlignment);
+begin
+  QLineEdit_setAlignment(QLineEditH(Widget), AAlignment);
 end;
 
 procedure TQtLineEdit.AttachEvents;
@@ -5247,6 +5260,11 @@ end;
 procedure TQtTextEdit.append(AStr: WideString);
 begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
+end;
+
+function TQtTextEdit.getAlignment: QtAlignment;
+begin
+  Result := QTextEdit_alignment(QTextEditH(Widget));
 end;
 
 function TQtTextEdit.getMaxLength: Integer;

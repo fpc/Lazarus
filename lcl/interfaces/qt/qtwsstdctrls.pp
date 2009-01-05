@@ -135,6 +135,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -155,8 +156,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
@@ -588,16 +589,15 @@ var
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
   QtTextEdit.AttachEvents;
-  
-  QtTextEdit.setAlignment(AlignmentMap[TCustomMemo(AWinControl).Alignment]);
+
   QtTextEdit.setReadOnly(TCustomMemo(AWinControl).ReadOnly);
-
   QtTextEdit.setLineWrapMode(WordWrapMap[TCustomMemo(AWinControl).WordWrap]);
-
   // create our FList helper
   QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
   QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
   QtTextEdit.setTabChangesFocus(not TCustomMemo(AWinControl).WantTabs);
+  QtTextEdit.setAlignment(AlignmentMap[TCustomMemo(AWinControl).Alignment]);
+
 
   Result := TLCLIntfHandle(QtTextEdit);
 end;
@@ -617,15 +617,6 @@ begin
   TQtTextEdit(ACustomMemo.Handle).append(AStr);
 end;
 
-class procedure TQtWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
-  const AAlignment: TAlignment);
-begin
-  if not WSCheckHandleAllocated(ACustomMemo, 'SetAlignment') then
-    Exit;
-  TQtTextEdit(ACustomMemo.Handle).setAlignment(AlignmentMap[AAlignment]);
-end;
-
-
 {------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.GetStrings
   Params:  None
@@ -644,6 +635,14 @@ begin
   end;
   
   Result := TQtTextEdit(ACustomMemo.Handle).FList;
+end;
+
+class procedure TQtWSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then
+    Exit;
+  TQtTextEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
 class procedure TQtWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
@@ -709,9 +708,18 @@ var
   QtLineEdit: TQtLineEdit;
 begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
+  QtLineEdit.setAlignment(AlignmentMap[TCustomEdit(AWinControl).Alignment]);
   QtLineEdit.AttachEvents;
 
   Result := TLCLIntfHandle(QtLineEdit);
+end;
+
+class procedure TQtWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then
+    Exit;
+  TQtLineEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
 class function TQtWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;

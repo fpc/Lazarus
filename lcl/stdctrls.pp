@@ -671,6 +671,7 @@ type
 
   TCustomEdit = class(TWinControl)
   private
+    FAlignment: TAlignment;
     FAutoSelect: Boolean;
     FAutoSelected: Boolean;
     FCharCase: TEditCharCase;
@@ -701,6 +702,7 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    procedure SetAlignment(const AValue: TAlignment);
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetReadOnly(Value: Boolean); virtual;
@@ -726,6 +728,7 @@ type
     procedure PasteFromClipboard; virtual;
     procedure Undo; virtual;
   public
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle default bsSingle;
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
@@ -767,7 +770,6 @@ type
 
   TCustomMemo = class(TCustomEdit)
   private
-    FAlignment: TAlignment;
     FHorzScrollBar: TMemoScrollBar;
     FLines: TStrings;
     FScrollBars: TScrollStyle;
@@ -785,7 +787,6 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
     function GetCaretPos: TPoint; override;
-    procedure SetAlignment(const AValue: TAlignment);
     procedure SetCaretPos(const Value: TPoint); override;
     procedure SetLines(const Value: TStrings);
     procedure SetSelText(const Val: string); override;
@@ -803,7 +804,6 @@ type
     destructor Destroy; override;
     procedure Append(const Value: String);
   public
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Lines: TStrings read FLines write SetLines;
     //property Font: TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
@@ -825,6 +825,7 @@ type
   published
     property Action;
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSize;
     property AutoSelect;

@@ -144,6 +144,7 @@ type
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
 
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); virtual;
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); virtual;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); virtual;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); virtual;
@@ -164,7 +165,6 @@ type
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
     class procedure FreeStrings(var AStrings: TStrings); virtual;
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); virtual;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); virtual;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); virtual;
@@ -450,6 +450,12 @@ begin
   result := 0;
 end;
 
+class procedure TWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+begin
+
+end;
+
 class procedure TWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
 begin
 
@@ -503,11 +509,6 @@ class procedure TWSCustomMemo.FreeStrings(var AStrings: TStrings);
 begin
   AStrings.Free;
   AStrings := nil;
-end;
-
-class procedure TWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
-  const AAlignment: TAlignment);
-begin
 end;
 
 class procedure TWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);

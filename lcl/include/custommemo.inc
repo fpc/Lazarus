@@ -75,15 +75,6 @@ begin
   FHorzScrollBar:=AValue;
 end;
 
-procedure TCustomMemo.SetAlignment(const AValue: TAlignment);
-begin
-  if FAlignment = AValue then
-    exit;
-  FAlignment := AValue;
-  if HandleAllocated then
-    TWSCustomMemoClass(WidgetSetClass).SetAlignment(Self, AValue);
-end;
-
 {------------------------------------------------------------------------------
   Setter for CaretPos
  ------------------------------------------------------------------------------}

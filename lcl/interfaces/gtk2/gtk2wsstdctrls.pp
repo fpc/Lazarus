@@ -177,6 +177,7 @@ type
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -191,7 +192,7 @@ type
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -936,6 +937,21 @@ begin
   gtk_entry_select_region(Entry,
     Entry^.current_pos,
     Entry^.current_pos + NewLength);
+end;
+
+class procedure TGtk2WSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+var
+  Entry: PGtkEntry;
+  Alignment: GFloat;
+begin
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  case AAlignment of
+    taLeftJustify: Alignment := 0;
+    taRightJustify: Alignment := 1;
+    taCenter: Alignment := 0.5;
+  end;
+  gtk_entry_set_alignment(Entry, Alignment);
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(

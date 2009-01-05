@@ -145,7 +145,7 @@ type
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
@@ -909,12 +909,12 @@ end;
 
   Sets the alignment of memo in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+class procedure TCarbonWSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
   const AAlignment: TAlignment);
 begin
-  if not CheckHandle(ACustomMemo, Self, 'SetAlignment') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetAlignment') then Exit;
 
-  TCarbonMemo(ACustomMemo.Handle).SetAlignment(AAlignment);
+  TCarbonMemo(ACustomEdit.Handle).SetAlignment(AAlignment);
 end;
 
 {------------------------------------------------------------------------------
