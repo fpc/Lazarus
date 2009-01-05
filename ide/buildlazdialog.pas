@@ -329,27 +329,6 @@ var
   DisableSvn2RevisionInc: boolean;
   CurMakeMode: TMakeMode;
 
-  {$IFDEF win32}
-  // add compiler directory to the PATH, so that windres called by the compiler
-  // can find the preprocessor
-  // windres is only used for compiling for win32
-  procedure AddCompilerDirToPath;
-  var
-    FPCVersion, FPCRelease, FPCPatch: integer;
-  begin
-    // This is only needed for fpc 2.2.0, later version have been fixed.
-    {$IFDEF VER2_2_2}
-    {$WARNING AddCompilerDirToPath workaround can be removed}
-    {$ENDIF}
-    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
-                                           FPCVersion,FPCRelease,FPCPatch);
-    if (FPCVersion=2) and (FPCRelease=2) and (FPCPatch=0) then
-      Tool.EnvironmentOverrides.Values['PATH']:=
-        ExtractFileDir(CompilerPath)+PathSep+GetProgramSearchPath();
-      DebugLn(['AddCompilerDirToPath new path: ', Tool.EnvironmentOverrides.Values['PATH']]);
-  end;
-  {$ENDIF}
-  
 begin
   Result:=mrCancel;
   
@@ -378,10 +357,6 @@ begin
     end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
-
-    {$IFDEF win32}
-    AddCompilerDirToPath;
-    {$ENDIF}
 
     // clean up
     if Options.CleanAll
