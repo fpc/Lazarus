@@ -138,7 +138,7 @@ begin
   with Params do
   begin
     SubClassWndProc := @SpinWindowProc;
-    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0], StrCaption,
+    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0], PChar(StrCaption),
       Flags or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
     Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy

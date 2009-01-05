@@ -390,7 +390,7 @@ begin
     else
       Flags := Flags or BS_PUSHBUTTON;
     Flags := Flags or BS_BITMAP;
-    WindowTitle := nil;
+    WindowTitle := '';
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

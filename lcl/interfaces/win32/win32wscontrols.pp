@@ -116,7 +116,7 @@ type
     MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
-    WindowTitle, StrCaption: PChar;
+    StrCaption, WindowTitle: String;
     pClassName: PChar;
   end;
 
@@ -156,8 +156,8 @@ begin
       Parent := TWin32WidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
-    StrCaption := PChar(AWinControl.Caption);
-    WindowTitle := nil;
+    StrCaption := AWinControl.Caption;
+    WindowTitle := '';
     Height := AWinControl.Height;
     Left := AWinControl.Left;
     //Parent := AWinControl.Parent;
@@ -206,13 +206,14 @@ begin
       if UnicodeEnabledOS then
         Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
           PWideChar(Utf8Decode(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil)
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil)
       else
-        Window := CreateWindowEx(FlagsEx, pClassName, PChar(Utf8ToAnsi(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+        Window := CreateWindowEx(FlagsEx, pClassName,
+          PChar(Utf8ToAnsi(WindowTitle)), Flags,
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
       {$else}
         Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
       {$endif}
 
       if Window = 0 then
