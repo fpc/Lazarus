@@ -32,6 +32,10 @@ const
 {idDialogConfirm} 'dialog_confirmation'
   );
 
+  MsgDlgCaptions: Array[mtWarning..mtCustom] of String = (rsMtWarning, rsMtError,
+        rsMtInformation, rsMtConfirmation, rsMtCustom);
+
+
 type
 
   { TPromptDialog }
@@ -543,6 +547,26 @@ begin
       Free;
     end;
 end;
+
+
+function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType;
+                             Buttons: TMsgDlgButtons): TForm;
+var PDlg: TPromptDialog;
+    aCaption: String;
+    Btns: PLongInt;
+    CancelValue, DefaultIndex, ButtonCount: Longint;
+begin
+  if DlgType <> mtCustom then
+    aCaption := MsgDlgCaptions[DlgType]
+  else
+    aCaption := Application.Title;
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
+                               False, mbOk);
+  PDlg := TPromptDialog.CreateMessageDialog(aCaption, Msg, DialogIds[DlgType], Btns, ButtonCount, DefaultIndex);
+  Result := TForm(PDlg);
+  ReallocMem(Btns, 0);
+end;
+
 
 
 type
