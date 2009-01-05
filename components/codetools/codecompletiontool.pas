@@ -4361,7 +4361,10 @@ var
 
   procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
   // allowed after simple specifier like 'read':
-  //   one semicolon or an <identifier> or an <identifier>.<identifier>
+  //   one semicolon
+  //   or an <identifier>
+  //   or an <identifier>.<identifier>
+  //   (only read, write: ) or an <identifier>[ordinal expression]
   //   or a specifier
   begin
     if Parts[SpecWord].StartPos>=1 then
@@ -4380,6 +4383,13 @@ var
       ReadNextAtom;
       PartIsAtom[SpecParam]:=false;
       Parts[SpecParam].EndPos:=CurPos.EndPos;
+    end;
+    if (SpecParam in [ppRead,ppWrite])
+    and (CurPos.Flag=cafEdgedBracketOpen) then begin
+      // array access
+      PartIsAtom[SpecParam]:=false;
+      ReadTilBracketClose(true);
+      ReadNextAtom;
     end;
   end;
 
