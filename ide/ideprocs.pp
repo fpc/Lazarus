@@ -85,6 +85,13 @@ type
     pdsUnix,    // switch to slash /
     pdsWindows  // switch to backslash \
     );
+const
+  PathDelimSwitchToDelim: array[TPathDelimSwitch] of char = (
+    PathDelim, // pdsNone
+    PathDelim, // pdsSystem
+    '/',       // pdsUnix
+    '\'        // pdsWindows
+    );
 
 // file names
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -99,6 +106,7 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
 function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
 function ChompEndNumber(const s: string): string;
 
 // file stats
@@ -841,6 +849,22 @@ begin
     Result:=SwitchPathDelims(Filename,pdsSystem)
   else
     Result:=Filename;
+end;
+
+function CheckPathDelim(const OldPathDelim: string; out Changed: boolean
+  ): TPathDelimSwitch;
+begin
+  Changed:=OldPathDelim<>PathDelim;
+  if Changed then begin
+    if OldPathDelim='/' then
+      Result:=pdsUnix
+    else if OldPathDelim='\' then
+      Result:=pdsWindows
+    else
+      Result:=pdsSystem;
+  end else begin
+    Result:=pdsNone;
+  end;
 end;
 
 function ChompEndNumber(const s: string): string;

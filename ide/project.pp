@@ -599,6 +599,7 @@ type
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
+    FStorePathDelim: TPathDelimSwitch;
     FTargetFileExt: String;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
@@ -821,6 +822,7 @@ type
                                  read FCompilerOptions write SetCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
+    property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
@@ -828,9 +830,8 @@ type
                                                    read FFirstRemovedDependency;
     property FirstRequiredDependency: TPkgDependency
                                                   read FFirstRequiredDependency;
-    property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
-    property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
+    property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property JumpHistory: TProjectJumpHistory
                                            read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
@@ -840,40 +841,40 @@ type
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
     property MainFilename: String read GetMainFilename;
+    property MainProject: boolean read FMainProject write SetMainProject;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
-    property MainProject: boolean read FMainProject write SetMainProject;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
-    property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
-    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
-    property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
-                                                   write FOnSaveProjectInfo;
-    property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
-                                                   write FOnLoadProjectInfo;
-    property OnGetTestDirectory: TOnProjectGetTestDirectory
-                             read FOnGetTestDirectory write FOnGetTestDirectory;
     property OnChangeProjectInfoFile: TOnChangeProjectInfoFile read FOnChangeProjectInfoFile
                                                  write FOnChangeProjectInfoFile;
+    property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
+    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
+    property OnGetTestDirectory: TOnProjectGetTestDirectory
+                             read FOnGetTestDirectory write FOnGetTestDirectory;
+    property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
+                                                   write FOnLoadProjectInfo;
+    property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
+                                                   write FOnSaveProjectInfo;
+    property POOutputDirectory: string read FPOOutputDirectory
+                                       write SetPOOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions
                                      read FPublishOptions write FPublishOptions;
+    property Resources: TProjectResources read FResources;
+
     property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
-    property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
+    property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
+    property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
     property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
-    
-    property Resources: TProjectResources read FResources;
-
-    property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
-    property POOutputDirectory: string read FPOOutputDirectory
-                                       write SetPOOutputDirectory;
+    property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
   end;
 
   
@@ -2420,8 +2421,8 @@ begin
     NewMainUnitID:=-1;
     try
       Path:='ProjectOptions/';
-      fPathDelimChanged:=
-        XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+      StorePathDelim:=CheckPathDelim(
+        XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
