@@ -1,3 +1,5 @@
+# translation of objinspstrconsts.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"

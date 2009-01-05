@@ -1801,10 +1801,6 @@ msgstr "Editor dei define dei CodeTool ..."
 msgid "CodeTools options"
 msgstr "Opzioni CodeTools"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Editor dei define dei CodeTool"
@@ -2961,10 +2957,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Editor della documentazione"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Dominio"
@@ -3541,11 +3533,11 @@ msgstr "Directory sorgenti FPC \"%s\" non trovata."
 msgid "FPC unit path contains a source: "
 msgstr ""
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr ""
 
@@ -6351,10 +6343,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

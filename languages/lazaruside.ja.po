@@ -1800,10 +1800,6 @@ msgstr "コードツール定義エディタ ..."
 msgid "CodeTools options"
 msgstr "コードツールオプション"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "コードツール定義エディタ"
@@ -2960,10 +2956,6 @@ msgstr "ドック中"
 msgid "Documentation Editor"
 msgstr "ドキュメントエディター"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "領域"
@@ -3540,11 +3532,11 @@ msgstr "FPCソースディレクトリ \"%s\" が見つかりません"
 msgid "FPC unit path contains a source: "
 msgstr "ソースを含むFPCユニットパス"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr "FPDocエディタ"
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr "FPDocエディタ"
 
@@ -6350,10 +6342,6 @@ msgstr "Object Pascal - デフォルト"
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

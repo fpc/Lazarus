@@ -1793,10 +1793,6 @@ msgstr "Definir Editor de Ferramentas de Códigos ..."
 msgid "CodeTools options"
 msgstr "Opções de ferramentas de codigo"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Definir editor das Ferramentas de Código"
@@ -2953,10 +2949,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Editor de Documentação"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Dominio"
@@ -3533,11 +3525,11 @@ msgstr "Diretório-fonte do FPC \"%s\" não encontrado."
 msgid "FPC unit path contains a source: "
 msgstr ""
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr ""
 
@@ -6343,10 +6335,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

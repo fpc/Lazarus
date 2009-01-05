@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-06 05:19+0300\n"
+"PO-Revision-Date: 2008-11-04 04:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2960,10 +2960,6 @@ msgstr "Стыковка"
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Редактор документации"
-
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr "Документация:"
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
@@ -6352,10 +6348,6 @@ msgstr "Object Pascal - по умолчанию"
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "Выкл."
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
-msgstr "Официальный сайт:"
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"

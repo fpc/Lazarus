@@ -2360,10 +2360,6 @@ msgstr ""
 msgid "Editor"
 msgstr ""
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr ""
@@ -2461,7 +2457,7 @@ msgid "Naming"
 msgstr ""
 
 #: lazarusidestrconsts:lisfpdoceditor
-msgid "FPDoc Editor"
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
@@ -10266,14 +10262,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
 msgstr ""
 
 #: lazarusidestrconsts:lischaractermap

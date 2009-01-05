@@ -1804,10 +1804,6 @@ msgstr "Editor definícií CodeTools ..."
 msgid "CodeTools options"
 msgstr "Voľby CodeTools"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Editor definícií CodeTools"
@@ -2964,10 +2960,6 @@ msgstr "Dokovanie"
 msgid "Documentation Editor"
 msgstr "Editor dokumentácie"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Doména"
@@ -3544,11 +3536,11 @@ msgstr "Adresár zdrojových kódov FCP \"%s\" nenájdený."
 msgid "FPC unit path contains a source: "
 msgstr "Cesta k jednotkám FPC so zdrojovým kódom"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr "Editor FPCDoc"
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr "Editor·FPCDoc"
 
@@ -6357,10 +6349,6 @@ msgstr "Object Pascal - predvolené"
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "Off"
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
-msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"

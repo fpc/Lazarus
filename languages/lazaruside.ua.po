@@ -1796,10 +1796,6 @@ msgstr "Редактор визначень Інструментів Коду ..
 msgid "CodeTools options"
 msgstr "Опції інструментів коду"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Редактор визначень Інструментів Коду"
@@ -2956,10 +2952,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Редактор документації"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Домен"
@@ -3536,11 +3528,11 @@ msgstr "Не знайдена тека кодів FPC \"%s\"."
 msgid "FPC unit path contains a source: "
 msgstr ""
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr ""
 
@@ -6346,10 +6338,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

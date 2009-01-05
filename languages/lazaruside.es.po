@@ -1799,10 +1799,6 @@ msgstr "Definir editor de CodeTools ..."
 msgid "CodeTools options"
 msgstr "Opciones de CodeTools"
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Editor de defines de CodeTools"
@@ -2959,10 +2955,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Editor de Documentación"
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Dominio"
@@ -3539,11 +3531,11 @@ msgstr "Directorio de las fuentes de FPC \"%s\" no encontrado."
 msgid "FPC unit path contains a source: "
 msgstr "La ruta de unidad de FPC contienen un fuente: "
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr "Editor FPDoc"
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr "Editor FPDoc"
 
@@ -6349,10 +6341,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

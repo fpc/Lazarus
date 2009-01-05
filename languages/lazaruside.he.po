@@ -1802,10 +1802,6 @@ msgstr ""
 msgid "CodeTools options"
 msgstr ""
 
-#: lazarusidestrconsts:dlggroupcodetools
-msgid "Codetools"
-msgstr ""
-
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr ""
@@ -2962,10 +2958,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr ""
 
-#: lazarusidestrconsts:lisaboutdocumentation
-msgid "Documentation:"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr ""
@@ -3542,11 +3534,11 @@ msgstr ""
 msgid "FPC unit path contains a source: "
 msgstr ""
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:liscodehelpmainformcaption
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
 msgstr ""
 
@@ -6353,10 +6345,6 @@ msgstr "Object Pascal ברירת מחדל"
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "כבוי"
-
-#: lazarusidestrconsts:lisaboutofficial
-msgid "Official:"
-msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
