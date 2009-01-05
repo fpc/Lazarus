@@ -255,7 +255,7 @@ type
     property BaseFont: TFont write SetBaseFont;
     property BaseStyle: TFontStyles write SetBaseStyle;
     property ForeColor: TColor write SetForeColor;
-    property BackColor: TColor write SetBackColor;
+    property BackColor: TColor read FBkColor write SetBackColor;
     property FrameColor: TColor write SetFrameColor;
     property FrameStartX: Integer read FFrameStartX write FFrameStartX;
     property FrameEndX: Integer read FFrameEndX write FFrameEndX;

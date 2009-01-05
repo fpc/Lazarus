@@ -2870,13 +2870,14 @@ var
     //debugln('ExpandSpecialChars Token with Tabs: "',DbgStr(copy(ExpandedPaintToken,1,Count)),'"');
   end;
 
+  const
+    ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
+
   procedure PaintToken(Token: PChar; TokenLen, FirstPhysical: integer);
   // FirstPhysical is the physical (screen without scrolling)
   // column of the first character
   var
     nX: integer;
-  const
-    ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
     {debugln('PaintToken A TokenLen=',dbgs(TokenLen),
       ' FirstPhysical=',dbgs(FirstPhysical),
@@ -2910,6 +2911,8 @@ var
     nX1, eolx: integer;
     NextPos : Integer;
     MarkupInfo : TSynSelectedColor;
+    FoldCol, cDummy: TColor;
+    FoldStyle: TFontStyles;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -2970,6 +2973,28 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       end;
+
+      if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then begin
+        rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
+        rcToken.Right := ScreenColumnToXValue(CurPhysPos+8);
+        FoldCol := Font.Color;
+        FoldStyle := []; //Font.Style ?
+        MarkupInfo := FGutter.MarkupInfoCodeFoldingTree;
+        if assigned(MarkupInfo) then
+          MarkupInfo.ModifyColors(cDummy, cDummy, FoldCol, FoldStyle);
+        if (FTextDrawer.BackColor = FoldCol) then        // Deal with equal colors
+          FoldCol := not(FTextDrawer.BackColor) and $00ffffff;
+        FTextDrawer.FrameColor := foldCol;
+        FTextDrawer.ForeColor := foldCol;
+        FTextDrawer.SetStyle(FoldStyle);
+        FTextDrawer.FrameStartX := rcToken.Left;
+        FTextDrawer.FrameEndX := rcToken.Right;
+        rcToken.Right := Min(rcToken.Right, rcLine.Right);
+        if rcToken.Right > rcToken.Left then
+          fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
+                                 rcToken, ' ... ', 5);
+      end;
+
     end;
   end;
 
