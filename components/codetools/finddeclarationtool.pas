@@ -5188,7 +5188,7 @@ begin
       Result:=CurAtom.StartPos;
       exit;
     end;
-    if CurAtomType in [vatAS,vatKeyword] then begin
+    if (CurAtomType in [vatAS,vatKeyword]) then begin
       Result:=NextAtom.StartPos;
       exit;
     end;

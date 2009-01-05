@@ -1265,9 +1265,15 @@ procedure TIdentCompletionTool.FindCollectionContext(
   function GetContextExprStartPos(IdentStartPos: integer;
     ContextNode: TCodeTreeNode): integer;
   begin
-    Result:=FindStartOfVariable(IdentStartPos);
-    if Result<ContextNode.StartPos then
-      Result:=ContextNode.StartPos;
+    MoveCursorToCleanPos(IdentStartPos);
+    ReadPriorAtom;
+    if (CurPos.Flag=cafPoint)
+    or (UpAtomIs('INHERITED')) then begin
+      Result:=FindStartOfVariable(IdentStartPos);
+      if Result<ContextNode.StartPos then
+        Result:=ContextNode.StartPos;
+    end else
+      Result:=IdentStartPos;
     MoveCursorToCleanPos(Result);
     ReadNextAtom;
     case ContextNode.Desc of
