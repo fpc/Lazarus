@@ -7,16 +7,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DebuggerDlg, Debugger, ButtonPanel, EditBtn,
-  BaseDebugManager, IDEContextHelpEdit;
+  BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts;
 
 type
 
   { TBreakPropertyDlg }
 
   TBreakPropertyDlg = class(TDebuggerDlg)
-    btnCancel: TBitBtn;
-    btnHelp: TBitBtn;
-    btnOK: TBitBtn;
+    ButtonPanel: TButtonPanel;
     chkEnableGroups: TCheckBox;
     chkDisableGroups: TCheckBox;
     chkEvalExpression: TCheckBox;
@@ -33,6 +31,7 @@ type
     edtFilename: TEdit;
     edtLine: TEdit;
     gbActions: TGroupBox;
+    lblMS: TLabel;
     lblFileName: TLabel;
     lblLine: TLabel;
     lblCondition: TLabel;
@@ -48,14 +47,12 @@ type
     procedure edtDisableGroupsButtonClick(Sender: TObject);
     procedure edtEnableGroupsButtonClick(Sender: TObject);
   private
-    { private declarations }
     FBreakpointsNotification : TIDEBreakPointsNotification;
     FBreakpoint: TIDEBreakPoint;
   protected
     procedure DoEndUpdate; override;
     procedure UpdateInfo;
   public
-    { public declarations }
     constructor Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);overload;
     destructor Destroy; override;
   end;
@@ -72,7 +69,7 @@ end;
 
 procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(btnHelp);
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TBreakPropertyDlg.BreakPointRemove(
@@ -167,9 +164,12 @@ begin
   FBreakpointsNotification.OnRemove := @BreakPointRemove;
   UpdateInfo;
 
-  btnOK.LoadGlyphFromLazarusResource('btn_ok');
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
-  btnHelp.LoadGlyphFromLazarusResource('btn_help');
+  ButtonPanel.OKButton.Caption:= lisOkBtn;
+  ButtonPanel.CancelButton.Caption:= dlgCancel;
+  ButtonPanel.HelpButton.Caption:= lisPckEditHelp;
+
+  ButtonPanel.OKButton.OnClick := @btnOKClick;
+  ButtonPanel.HelpButton.OnClick := @btnHelpClick;
 end;
 
 destructor TBreakPropertyDlg.Destroy;

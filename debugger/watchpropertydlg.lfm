@@ -1,86 +1,128 @@
 object WatchPropertyDlg: TWatchPropertyDlg
-  Left = 336
-  Height = 206
-  Top = 227
+  Left = 331
+  Height = 213
+  Top = 184
   Width = 420
   ActiveControl = chkAllowFunc
   Caption = 'Watch Properties'
-  ClientHeight = 206
+  ClientHeight = 213
   ClientWidth = 420
-  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object lblExpression: TLabel
-    Left = 16
-    Height = 14
-    Top = 14
-    Width = 57
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = txtExpression
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 11
+    Width = 65
+    BorderSpacing.Left = 6
     Caption = 'Expression:'
     ParentColor = False
   end
   object lblRepCount: TLabel
-    Left = 15
-    Height = 14
-    Top = 45
-    Width = 72
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = txtRepCount
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 40
+    Width = 80
+    BorderSpacing.Left = 6
     Caption = 'Repeat Count:'
     ParentColor = False
   end
   object lblDigits: TLabel
-    Left = 176
-    Height = 14
-    Top = 45
-    Width = 31
+    AnchorSideLeft.Control = txtRepCount
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = txtDigits
+    AnchorSideTop.Side = asrCenter
+    Left = 171
+    Height = 13
+    Top = 40
+    Width = 35
+    BorderSpacing.Left = 6
     Caption = 'Digits:'
     ParentColor = False
   end
   object txtExpression: TEdit
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 105
     Height = 23
-    Top = 8
-    Width = 300
+    Top = 6
+    Width = 309
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     TabOrder = 1
   end
   object txtRepCount: TEdit
+    AnchorSideTop.Control = txtExpression
+    AnchorSideTop.Side = asrBottom
     Left = 105
     Height = 23
-    Top = 39
+    Top = 35
     Width = 60
+    BorderSpacing.Top = 6
     TabOrder = 2
     Text = '0'
   end
   object txtDigits: TEdit
-    Left = 225
+    AnchorSideLeft.Control = lblDigits
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = txtExpression
+    AnchorSideTop.Side = asrBottom
+    Left = 212
     Height = 23
-    Top = 39
-    Width = 180
+    Top = 35
+    Width = 60
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     TabOrder = 4
     Text = '0'
   end
   object chkEnabled: TCheckBox
-    Left = 15
-    Height = 19
-    Top = 65
-    Width = 64
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = chkAllowFunc
+    Left = 6
+    Height = 20
+    Top = 64
+    Width = 70
     AllowGrayed = True
+    BorderSpacing.Left = 6
     Caption = 'Enabled'
     TabOrder = 5
   end
   object chkAllowFunc: TCheckBox
+    AnchorSideTop.Control = txtRepCount
+    AnchorSideTop.Side = asrBottom
     Left = 105
-    Height = 19
-    Top = 65
-    Width = 120
+    Height = 20
+    Top = 64
+    Width = 140
     AllowGrayed = True
+    BorderSpacing.Top = 6
     Caption = 'Allow Function Calls'
     TabOrder = 0
   end
   object rgStyle: TRadioGroup
-    Left = 15
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = chkAllowFunc
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
     Height = 78
     Top = 90
-    Width = 390
+    Width = 408
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     Caption = 'Style'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -90,8 +132,8 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 60
-    ClientWidth = 386
+    ClientHeight = 61
+    ClientWidth = 404
     Columns = 3
     ItemIndex = 7
     Items.Strings = (
@@ -107,56 +149,14 @@ object WatchPropertyDlg: TWatchPropertyDlg
     )
     TabOrder = 3
   end
-  object btnHelp: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 177
-    Width = 47
-    Anchors = [akLeft, akBottom]
+  object ButtonPanel: TButtonPanel
+    AnchorSideTop.Side = asrBottom
+    Height = 42
+    Top = 171
+    Width = 420
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Help'
-    NumGlyphs = 0
-    OnClick = btnHelpClick
     TabOrder = 6
-  end
-  object btnCancel: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 356
-    Height = 23
-    Top = 177
-    Width = 58
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 7
-  end
-  object btnOK: TBitBtn
-    AnchorSideRight.Control = btnCancel
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 310
-    Height = 23
-    Top = 177
-    Width = 40
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = btnOKClick
-    TabOrder = 8
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

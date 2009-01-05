@@ -41,16 +41,14 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
   Buttons, Extctrls, Menus,
-  IDEContextHelpEdit, Debugger, BaseDebugManager;
+  IDEContextHelpEdit, Debugger, BaseDebugManager, ButtonPanel;
 
 type
 
   { TWatchPropertyDlg }
 
   TWatchPropertyDlg = class(TForm)
-    btnCancel: TBitBtn;
-    btnHelp: TBitBtn;
-    btnOK: TBitBtn;
+    ButtonPanel: TButtonPanel;
     lblExpression: TLabel;
     lblRepCount: TLabel;
     lblDigits: TLabel;
@@ -90,7 +88,7 @@ end;
 
 procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(btnHelp);
+  ShowContextHelpForIDE(Self);
 end;
 
 constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch);
@@ -119,9 +117,9 @@ begin
   lblDigits.Caption:= lisDigits;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
-  btnOK.Caption:= lisOkBtn;
-  btnCancel.Caption:= dlgCancel;
-  btnHelp.Caption:= lisPckEditHelp;
+  ButtonPanel.OKButton.Caption:= lisOkBtn;
+  ButtonPanel.CancelButton.Caption:= dlgCancel;
+  ButtonPanel.HelpButton.Caption:= lisPckEditHelp;
   rgStyle.Caption:= lisStyle;
   rgStyle.Items[0]:= lisCharacter;
   rgStyle.Items[1]:= lisString;
@@ -132,9 +130,9 @@ begin
   rgStyle.Items[6]:= lisRecordStruct;
   rgStyle.Items[7]:= dlgAssemblerDefault;
   rgStyle.Items[8]:= lisMemoryDump;
-  btnOK.LoadGlyphFromLazarusResource('btn_ok');
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
-  btnHelp.LoadGlyphFromLazarusResource('btn_help');
+
+  ButtonPanel.OKButton.OnClick := @btnOKClick;
+  ButtonPanel.HelpButton.OnClick := @btnHelpClick;
 end;
 
 destructor TWatchPropertyDlg.destroy;
