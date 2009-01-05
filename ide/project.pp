@@ -275,7 +275,8 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 Merge: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              SaveData, SaveSession: boolean);
+                              SaveData, SaveSession: boolean;
+                              UsePathDelim: TPathDelimSwitch);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: extended);
     procedure UpdateSourceDirectoryReference;
@@ -375,7 +376,8 @@ type
     procedure Assign(Src: TCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); override;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch); override;
   end;
   
   { TProjectCompilerOptions }
@@ -588,7 +590,7 @@ type
     FOnGetTestDirectory: TOnProjectGetTestDirectory;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
-    fPathDelimChanged: boolean;
+    fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
     FPOOutputDirectory: string;
     fProjectDirectory: string;
     fProjectDirectoryReferenced: string;
@@ -596,6 +598,7 @@ type
     FPublishOptions: TPublishProjectOptions;
     FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
+    FSessionStorePathDelim: TPathDelimSwitch;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
@@ -868,6 +871,7 @@ type
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
+    property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
     property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
@@ -1164,14 +1168,14 @@ end;
   TUnitInfo SaveToXMLConfig
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveData, SaveSession: boolean);
+  SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
 var AFilename:string;
 begin
   // global data
   AFilename:=Filename;
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
-  XMLConfig.SetValue(Path+'Filename/Value',AFilename);
+  XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
   // context data (project/session)
   if (IsPartOfProject and SaveData)
@@ -1901,6 +1905,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string): TModalResult;
+var
+  UsePathDelim: TPathDelimSwitch;
 
   procedure SaveFlags(XMLConfig: TXMLConfig; const Path: string);
   var f: TProjectFlag;
@@ -1960,7 +1966,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       if UnitMustBeSaved(i,SaveData,SaveSession) then begin
         Units[i].SaveToXMLConfig(
           xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
-          SaveData,SaveSession);
+          SaveData,SaveSession,UsePathDelim);
         inc(SaveUnitCount);
       end;
     end;
@@ -1990,10 +1996,9 @@ var
   CurSessionFilename: String;
   CurFlags: TProjectWriteFlags;
   SessionSaveResult: TModalResult;
-  UsePathDelim: TPathDelimSwitch;
 begin
   Result := mrCancel;
-  UsePathDelim:=pdsSystem;
+  UsePathDelim:=pdsNone;
 
   if OverrideProjectInfoFile<>'' then
     CfgFilename := OverrideProjectInfoFile
@@ -2043,7 +2048,7 @@ begin
 
     try
       Path:='ProjectOptions/';
-      xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
+      xmlconfig.SetValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim]);
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
       SaveFlags(XMLConfig,Path);
       xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
@@ -2058,12 +2063,16 @@ begin
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
-                    CreateRelativeSearchPath(LazDocPaths,ProjectDirectory), '');
+         SwitchPathDelims(CreateRelativeSearchPath(LazDocPaths,ProjectDirectory),
+                          UsePathDelim),
+         '');
       
       // i18n
       xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
       xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
-                   CreateRelativePath(POOutputDirectory,ProjectDirectory) , '');
+         SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
+                          UsePathDelim) ,
+         '');
 
       // Resources
       Resources.WriteToProjectFile(xmlconfig, Path);
@@ -2075,10 +2084,10 @@ begin
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
       
       // save the Publish Options
-      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/');
+      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',UsePathDelim);
 
       // save the Run Parameter Options
-      RunParameterOptions.Save(xmlconfig,Path);
+      RunParameterOptions.Save(xmlconfig,Path,UsePathDelim);
       
       // save dependencies
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
@@ -2151,7 +2160,8 @@ begin
 
       try
         Path:='ProjectSession/';
-        xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
+        UsePathDelim:=pdsNone;
+        xmlconfig.SetValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim]);
         xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
         // save all units
@@ -2508,10 +2518,10 @@ begin
           xmlconfig := TXMLConfig.Create(ProjectSessionFile);
 
           Path:='ProjectSession/';
-          fPathDelimChanged:=
-            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+          SessionStorePathDelim:=CheckPathDelim(
+            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
 
-          FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
+          FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
 
           // load session info
           LoadSessionInfo(XMLConfig,Path,true);
@@ -2527,20 +2537,14 @@ begin
           exit;
         end;
 
+        fPathDelimChanged:=false;
         try
-          Path:='ProjectOptions/';
-          fPathDelimChanged:=
-            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
-        finally
-          fPathDelimChanged:=false;
-          try
-            xmlconfig.Free;
-          except
-          end;
-          xmlconfig:=nil;
+          xmlconfig.Free;
+        except
         end;
+        xmlconfig:=nil;
       end else begin
-        // there is no .ps file -> create some defaults
+        // there is no .lps file -> create some defaults
         LoadDefaultSession;
       end;
     end;
@@ -3371,6 +3375,10 @@ begin
 end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
+{ This function is used after reading a filename from the config
+  and before writing a filename to a config.
+  The config can be the lpi or the session.
+}
 var
   ProjectPath: string;
   FileWasAbsolute: Boolean;
@@ -3390,10 +3398,10 @@ var
 begin
   if AFileName='' then exit;
   //debugln('TProject.OnLoadSaveFilename A "',AFilename,'"');
-  if not fPathDelimChanged then begin
+  if (not fPathDelimChanged) or (not Load) then begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end else begin
-    {$IFdef MSWindows}
+    {$IFDEF MSWindows}
     // PathDelim changed from '/' to '\'
     FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName);
     {$ELSE}
@@ -4620,9 +4628,9 @@ begin
 end;
 
 procedure TProjectCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 begin
-  inherited SaveToXMLConfig(XMLConfig, Path);
+  inherited SaveToXMLConfig(XMLConfig, Path, UsePathDelim);
   SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons,
                         DefaultCompileReasons);
 end;

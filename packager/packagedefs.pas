@@ -2724,9 +2724,9 @@ var
   end;
 
 begin
-  UsePathDelim:=pdsSystem;
+  UsePathDelim:=pdsNone;
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
-  XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelim,'/');
+  XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
                            FAddToProjectUsesSection,true);
@@ -2751,8 +2751,8 @@ begin
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,UsePathDelim);
-  FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
-  fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/');
+  FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
+  fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
   Modified:=false;
 end;

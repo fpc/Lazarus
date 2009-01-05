@@ -94,7 +94,8 @@ type
                          Tool: TCompilerDiffTool); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch); virtual;
     property Values[ValueType: TCOCValueType]: string read GetValues;
     property Evaluator: TExpressionEvaluator read FEvaluator write SetEvaluator;
     property ChangeStamp: integer read FChangeStamp;
@@ -313,11 +314,13 @@ procedure TCompOptConditionals.LoadFromXMLConfig(XMLConfig: TXMLConfig;
     NewCount: LongInt;
     i: Integer;
     NewChild: TCompOptCondNode;
+    s: String;
   begin
     Node.ClearNodes;
     Node.NodeType:=COCNodeTypeNameToType(XMLConfig.GetValue(SubPath+'NodeType',''));
     Node.ValueType:=COCValueTypeNameToType(XMLConfig.GetValue(SubPath+'ValueType',''));
-    Node.Value:=XMLConfig.GetValue(SubPath+'Value','');
+    s:=XMLConfig.GetValue(SubPath+'Value','');
+    Node.Value:=SwitchPathDelims(s,DoSwitchPathDelims);
     // load childs
     NewCount:=XMLConfig.GetValue(SubPath+'ChildCount',0);
     for i:=1 to NewCount do begin
@@ -335,17 +338,19 @@ begin
 end;
 
 procedure TCompOptConditionals.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 
   procedure SaveNode(Node: TCompOptCondNode; const SubPath: string);
   var
     i: Integer;
+    s: String;
   begin
     XMLConfig.SetDeleteValue(SubPath+'NodeType',COCNodeTypeNames[Node.NodeType],
                              COCNodeTypeNames[cocntNone]);
     XMLConfig.SetDeleteValue(SubPath+'ValueType',COCValueTypeNames[Node.ValueType],
                              COCValueTypeNames[cocvtNone]);
-    XMLConfig.SetDeleteValue(SubPath+'Value',Node.Value,'');
+    s:=SwitchPathDelims(Node.Value,UsePathDelim);
+    XMLConfig.SetDeleteValue(SubPath+'Value',s,'');
     // save childs
     XMLConfig.SetDeleteValue(SubPath+'ChildCount',Node.Count,0);
     for i:=0 to Node.Count-1 do

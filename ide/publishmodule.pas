@@ -80,7 +80,8 @@ type
     procedure LoadDefaults; virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string;
                                 AdjustPathDelims: boolean); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string;
+                              UsePathDelim: TPathDelimSwitch); virtual;
     function FileCanBePublished(const AFilename: string): boolean; virtual;
     procedure LockModified;
     procedure UnlockModified;
@@ -314,12 +315,19 @@ begin
 end;
 
 procedure TPublishModuleOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string);
+  const APath: string; UsePathDelim: TPathDelimSwitch);
+
+  function f(const AFilename: string): string;
+  begin
+    Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
+
 begin
   XMLConfig.SetValue(APath+'Version/Value',PublishModulOptsVersion);
   XMLConfig.SetDeleteValue(APath+'DestinationDirectory/Value',
-                           DestinationDirectory,GetDefaultDestinationDir);
-  XMLConfig.SetDeleteValue(APath+'CommandAfter/Value',CommandAfter,'');
+                           f(DestinationDirectory),
+                           f(GetDefaultDestinationDir));
+  XMLConfig.SetDeleteValue(APath+'CommandAfter/Value',f(CommandAfter),'');
   XMLConfig.SetDeleteValue(APath+'IgnoreBinaries/Value',IgnoreBinaries,true);
   XMLConfig.SetDeleteValue(APath+'UseIncludeFileFilter/Value',
     UseIncludeFileFilter,true);

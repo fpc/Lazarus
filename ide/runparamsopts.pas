@@ -64,6 +64,9 @@ type
   {
     the storage object for run parameters
   }
+
+  { TRunParamsOptions }
+
   TRunParamsOptions = class
   private
     // local options
@@ -84,7 +87,8 @@ type
     procedure Clear;
     function Load(XMLConfig: TXMLConfig; const Path: string;
       AdjustPathDelims: boolean): TModalResult;
-    function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
+    function Save(XMLConfig: TXMLConfig; const Path: string;
+      UsePathDelim: TPathDelimSwitch): TModalResult;
     procedure AssignEnvironmentTo(Strings: TStrings);
 
     // local options
@@ -271,8 +275,13 @@ begin
   Result := mrOk;
 end;
 
-function TRunParamsOptions.Save(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
+function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
+  UsePathDelim: TPathDelimSwitch): TModalResult;
+
+  function f(const AFilename: string): string;
+  begin
+    Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
 
   procedure SaveUserOverrides(const APath: string);
   var
@@ -295,15 +304,15 @@ begin
 
   // local options
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/HostApplicationFilename/Value',
-    fHostApplicationFilename, '');
+    f(fHostApplicationFilename), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/CommandLineParams/Value',
-    fCmdLineParams, '');
+    f(fCmdLineParams), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/Use',
     fUseLaunchingApplication, False);
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
-    fLaunchingApplicationPathPlusParams, '');
+    f(fLaunchingApplicationPathPlusParams), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/WorkingDirectory/Value',
-    fWorkingDirectory, '');
+    f(fWorkingDirectory), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Use',
     fUseDisplay, False);
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Value',

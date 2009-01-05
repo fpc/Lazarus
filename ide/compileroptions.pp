@@ -62,8 +62,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TLazBuildMode); override;
-    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
-    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherMode: TLazBuildMode; Tool: TCompilerDiffTool);
     procedure Assign(Source: TIDEBuildMode);
   end;
@@ -90,8 +92,10 @@ type
     function IndexOfIdentifier(Identifier: string): integer; override;
     function ModeWithIdentifier(Identifier: string): TIDEBuildMode; override;
     procedure Move(OldIndex, NewIndex: integer); override;
-    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
-    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherModes: TLazBuildModes; Tool: TCompilerDiffTool);
     procedure Assign(Source: TLazBuildModes);
     property BuildModeSet: TBuildModeSet read FBuildModeSet write SetBuildModeSet;// active in BuildModeSet
@@ -303,7 +307,8 @@ type
     procedure Assign(Src: TCompilationToolOptions); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch); virtual;
     procedure CreateDiff(CompOpts: TCompilationToolOptions;
                          Tool: TCompilerDiffTool); virtual;
     function Execute(const WorkingDir, ToolTitle: string): TModalResult;
@@ -323,6 +328,7 @@ type
     fLoaded: Boolean;
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
+    FStorePathDelim: TPathDelimSwitch;
     fTargetFilename: string;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
@@ -441,6 +447,7 @@ type
     property XMLFile: String read fXMLFile write fXMLFile;
     property XMLConfigFile: TXMLConfig read FXMLConfig write FXMLConfig;
     property Loaded: Boolean read fLoaded write fLoaded;
+    property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
 
     // compilation
     property CompilerPath: String read fCompilerPath write SetCompilerPath;
@@ -487,7 +494,8 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 AdjustPathDelims: boolean);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch);
     function GetOwnerName: string; virtual;
     function GetOption(AnOption: TInheritedCompilerOption): string;
   public
@@ -1100,8 +1108,8 @@ var
 begin
   { Load the compiler options from the XML file }
   p:=Path;
-  PathDelimChange:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
   FileVersion:=XMLConfigFile.GetValue(p+'Version/Value', 0);
+  StorePathDelim:=CheckPathDelim(XMLConfigFile.GetValue(p+'PathDelim/Value', '/'),PathDelimChange);
 
   { Target }
   p:=Path+'Target/';
@@ -1113,13 +1121,14 @@ begin
   Libraries := sp(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
   OtherUnitFiles := sp(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
   UnitOutputDirectory := sp(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
-  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
   ObjectPath := sp(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
   SrcPath := sp(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
   TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
                                          Path+'Conditionals/',PathDelimChange);
+  // ToDo: replace this with conditional compiler options
+  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1272,30 +1281,41 @@ end;
 ------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.SaveTheCompilerOptions(const Path: string);
 var
+  UsePathDelim: TPathDelimSwitch;
+
+  function f(const AFilename: string): string;
+  begin
+    Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
+
+var
   P: string;
 begin
   { Save the compiler options to the XML file }
   p:=Path;
+  UsePathDelim:=pdsNone;
   XMLConfigFile.SetValue(p+'Version/Value', CompilerOptionsVersion);
-  XMLConfigFile.SetDeleteValue(p+'PathDelim/Value', PathDelim, '/');
+  XMLConfigFile.SetDeleteValue(p+'PathDelim/Value',
+                                   PathDelimSwitchToDelim[UsePathDelim], '/');
 
   { Target }
   p:=Path+'Target/';
-  XMLConfigFile.SetDeleteValue(p+'Filename/Value', TargetFilename,'');
+  XMLConfigFile.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludePath,'');
-  XMLConfigFile.SetDeleteValue(p+'Libraries/Value', Libraries,'');
-  XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', OtherUnitFiles,'');
-  XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
-  XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
-  XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', ObjectPath,'');
-  XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', SrcPath,'');
+  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', f(IncludePath),'');
+  XMLConfigFile.SetDeleteValue(p+'Libraries/Value', f(Libraries),'');
+  XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', f(OtherUnitFiles),'');
+  XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', f(UnitOutputDirectory),'');
+  XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', f(ObjectPath),'');
+  XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', f(SrcPath),'');
 
   { Conditionals }
   TCompOptConditionals(FConditionals).SaveToXMLConfig(XMLConfigFile,
-                                                      Path+'Conditionals/');
+                                           Path+'Conditionals/',UsePathDelim);
+  // ToDo: remove
+  XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1326,10 +1346,10 @@ begin
   XMLConfigFile.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
   XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
+  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
-  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
 
   { Linking }
   p:=Path+'Linking/';
@@ -1343,7 +1363,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value',
-                               LineBreaksToSystemLineBreaks(LinkerOptions),'');
+                               f(LineBreaksToSystemLineBreaks(LinkerOptions)),'');
   XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
   XMLConfigFile.SetDeleteValue(p+'Options/ExecutableType/Value',
                                  CompilationExecutableTypeNames[ExecutableType],
@@ -1378,14 +1398,14 @@ begin
   p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'extrafpc.cfg');
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value',
-                               LineBreaksToSystemLineBreaks(CustomOptions),'');
+                               f(LineBreaksToSystemLineBreaks(CustomOptions)),'');
 
   { Compilation }
-  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
-  ExecuteBefore.SaveToXMLConfig(XMLConfigFile,p+'ExecuteBefore/');
-  ExecuteAfter.SaveToXMLConfig(XMLConfigFile,p+'ExecuteAfter/');
+  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
+  ExecuteBefore.SaveToXMLConfig(XMLConfigFile,p+'ExecuteBefore/',UsePathDelim);
+  ExecuteAfter.SaveToXMLConfig(XMLConfigFile,p+'ExecuteAfter/',UsePathDelim);
   XMLConfigFile.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
                                CreateMakefileOnBuild,false);
 
@@ -2584,6 +2604,7 @@ begin
   fLoaded := CompOpts.fLoaded;
 
   // Search Paths
+  StorePathDelim := CompOpts.StorePathDelim;
   IncludePath := CompOpts.fIncludePaths;
   Libraries := CompOpts.fLibraryPaths;
   OtherUnitFiles := CompOpts.fUnitPaths;
@@ -2706,6 +2727,9 @@ procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
   end;
 
 begin
+  Tool.AddPathsDiff('StorePathDelim',PathDelimSwitchToDelim[FStorePathDelim],
+                              PathDelimSwitchToDelim[CompOpts.FStorePathDelim]);
+
   // search paths
   Tool.Path:='Paths';
   Tool.AddPathsDiff('IncludePaths',fIncludePaths,CompOpts.fIncludePaths);
@@ -2717,6 +2741,7 @@ begin
   Tool.AddPathsDiff('DebugPath',fDebugPath,CompOpts.fDebugPath);
 
   // conditionals
+  Tool.Path:='Conditionals';
   TCompOptConditionals(Conditionals).CreateDiff(CompOpts.Conditionals,Tool);
   TIDEBuildModes(fBuildModes).CreateDiff(CompOpts.BuildModes,Tool);
   Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
@@ -2909,7 +2934,7 @@ begin
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 begin
   XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',fCustomOptions,'');
   XMLConfig.SetDeleteValue(Path+'IncludePath/Value',FIncludePath,'');
@@ -2917,7 +2942,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',fLinkerOptions,'');
   XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',FObjectPath,'');
   XMLConfig.SetDeleteValue(Path+'UnitPath/Value',FUnitPath,'');
-  FConditionals.SaveToXMLConfig(XMLConfig,Path+'Conditionals/');
+  FConditionals.SaveToXMLConfig(XMLConfig,Path+'Conditionals/',UsePathDelim);
 end;
 
 function TAdditionalCompilerOptions.GetOwnerName: string;
@@ -3172,9 +3197,10 @@ begin
 end;
 
 procedure TCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 begin
-  XMLConfig.SetDeleteValue(Path+'Command/Value',Command,'');
+  XMLConfig.SetDeleteValue(Path+'Command/Value',
+                           SwitchPathDelims(Command,UsePathDelim),'');
   XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
                            ScanForFPCMessages,false);
   XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
@@ -3357,13 +3383,14 @@ begin
 end;
 
 procedure TIDEBuildMode.SaveToXMLConfig(AXMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 begin
   AXMLConfig.SetDeleteValue(Path+'Identifier/Value',FIdentifier,'');
   AXMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   SaveStringList(AXMLConfig,FValues,Path+'Values/');
   SaveStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue');
+  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue',
+                                                      UsePathDelim);
 end;
 
 procedure TIDEBuildMode.CreateDiff(OtherMode: TLazBuildMode;
@@ -3492,13 +3519,14 @@ begin
 end;
 
 procedure TIDEBuildModes.SaveToXMLConfig(AXMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
 var
   i: Integer;
 begin
   AXMLConfig.SetDeleteValue(Path+'Count/Value',Count,0);
   for i:=0 to Count-1 do
-    TIDEBuildMode(Items[i]).SaveToXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/');
+    TIDEBuildMode(Items[i]).SaveToXMLConfig(AXMLConfig,
+                                    Path+'Item'+IntToStr(i+1)+'/',UsePathDelim);
 end;
 
 procedure TIDEBuildModes.CreateDiff(OtherModes: TLazBuildModes;

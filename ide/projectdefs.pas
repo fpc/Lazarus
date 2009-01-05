@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg,
-  Forms, SynRegExpr, FileUtil, LCLProc,
+  Forms, SynRegExpr, FileUtil, LCLProc, IDEProcs,
   ProjectIntf, PublishModule;
 
 type
@@ -286,7 +286,8 @@ type
     procedure LoadDefaults; override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string;
                                 AdjustPathDelims: boolean); override;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string); override;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string;
+                              UsePathDelim: TPathDelimSwitch); override;
     function WriteFlags: TProjectWriteFlags;
   public
     // project info
@@ -833,9 +834,9 @@ begin
 end;
 
 procedure TPublishProjectOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string);
+  const APath: string; UsePathDelim: TPathDelimSwitch);
 begin
-  inherited SaveToXMLConfig(XMLConfig,APath);
+  inherited SaveToXMLConfig(XMLConfig,APath,UsePathDelim);
   XMLConfig.SetDeleteValue(APath+'SaveClosedEditorFilesInfo/Value',
     SaveClosedEditorFilesInfo,false);
   XMLConfig.SetDeleteValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
