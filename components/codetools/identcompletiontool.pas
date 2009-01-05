@@ -132,6 +132,7 @@ type
     function HasChilds: boolean;
     function IsFunction: boolean;
     function IsAbstractMethod: boolean;
+    function TryIsAbstractMethod: boolean;
     procedure Clear;
     procedure UnbindNode;
     procedure StoreNodeHash;
@@ -2041,6 +2042,15 @@ begin
     Include(Flags,iliIsAbstractMethodValid);
   end;
   Result:=iliIsAbstractMethod in Flags;
+end;
+
+function TIdentifierListItem.TryIsAbstractMethod: boolean;
+begin
+  try
+    Result:=IsAbstractMethod;
+  except
+    Result:=false;
+  end;
 end;
 
 procedure TIdentifierListItem.Clear;
