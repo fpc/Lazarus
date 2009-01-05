@@ -1313,6 +1313,8 @@ var
 begin
   //debugln('TSynCompletion.Validate ',dbgsName(Sender),' ',dbgs(Shift),' Position=',dbgs(Position));
   F := Sender as TSynBaseCompletionForm;
+  if not F.Visible then
+    Exit;
   if F.CurrentEditor is TCustomSynEdit then
     with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
