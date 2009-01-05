@@ -5697,6 +5697,8 @@ begin
       {$IFDEF SYN_LAZARUS}crTrimSpace,{$ENDIF}
       crSilentDelete, crSilentDeleteAfterCursor:                                //mh 2000-10-30
         begin
+          if Item.fChangeReason = crTrimSpace then
+            FTrimmedLinesView.UndoTrimmedSpaces := true;
           // If there's no selection, we have to set
           // the Caret's position manually.
           if Item.fChangeSelMode = smColumn then
@@ -5724,6 +5726,7 @@ begin
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
           EnsureCursorPosVisible;
+          FTrimmedLinesView.UndoTrimmedSpaces := False;
         end;
       crTrimRealSpace:
         FTrimmedLinesView.UndoRealSpaces(Item);
@@ -5796,6 +5799,7 @@ begin
         end;
     end;
   finally
+    FTrimmedLinesView.UndoTrimmedSpaces := False;
     FBlockSelection.SelectionMode       := OldSelMode;
     FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
     if ChangeScrollPastEol then                                                 //mh 2000-10-30

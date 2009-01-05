@@ -43,6 +43,7 @@ type
     fLineText: String;
     fLineIndex: Integer;
     fEnabled: Boolean;
+    FUndoTrimmedSpaces: Boolean;
     fLockCount: Integer;
     fLockList : TStringList;
     procedure DoCaretChanged(Sender : TObject);
@@ -79,6 +80,7 @@ type
     procedure ForceTrim; // for redo; redo can not wait for UnLock
     procedure UndoRealSpaces(Item: TSynEditUndoItem);
     property Enabled : Boolean read fEnabled write SetEnabled;
+    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces;
     property UndoList: TSynEditUndoList read fUndoList write fUndoList;
   end;
 
@@ -95,6 +97,7 @@ begin
   fLineIndex:= -1;
   fSpaces := '';
   fEnabled:=false;
+  FUndoTrimmedSpaces := False;
   Inherited Create(ASynStringSource);
 end;
 
@@ -136,6 +139,8 @@ procedure TSynEditStringTrimmingList.UndoRealSpaces(Item: TSynEditUndoItem);
 var
   i: Integer;
 begin
+  if length(fSynStrings.Strings[Item.fChangeStartPos.y-1]) + 1 <> Item.fChangeStartPos.x then
+    exit;
   fSynStrings.Strings[Item.fChangeStartPos.y-1]
     := copy(fSynStrings.Strings[Item.fChangeStartPos.y-1],
             1, Item.fChangeStartPos.x-1) + Item.fChangeStr;
@@ -150,26 +155,31 @@ var
   l, i:integer;
   temp: String;
 begin
-  if (not fEnabled) or (fUndoList.IsLocked) then exit(s);
-  if RealUndo then begin
-    temp := fSynStrings.Strings[Index];
-    l := length(temp);
-    i:= l;
-    while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
-    // Add RealSpaceUndo
-    if i < l then
-      fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
-                          Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
-  end;
+  if (not fEnabled) then exit(s);
+  If (fUndoList.IsLocked and not UndoTrimmedSpaces) then begin
+    result := s;
+    temp := '';
+  end else begin
+    if RealUndo then begin
+      temp := fSynStrings.Strings[Index];
+      l := length(temp);
+      i:= l;
+      while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
+      // Add RealSpaceUndo
+      if i < l then
+        fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
+                            Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
+    end;
 
-  l := length(s);
-  i := l;
-  while (i>0) and (s[i] in [#9, ' ']) do dec(i);
-  temp := copy(s, i+1, l-i);
-  if i=l then
-    result := s   // No need to make a copy
-  else
-    result := copy(s, 1, i);
+    l := length(s);
+    i := l;
+    while (i>0) and (s[i] in [#9, ' ']) do dec(i);
+    temp := copy(s, i+1, l-i);
+    if i=l then
+      result := s   // No need to make a copy
+    else
+      result := copy(s, 1, i);
+  end;
 
   if fLockCount > 0 then begin
     i := fLockList.IndexOfObject(TObject(pointer(Index)));
