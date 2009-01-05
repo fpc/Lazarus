@@ -458,8 +458,10 @@ type
 
     // Markup Current Word
     FMarkupCurWordEnabled: Boolean;
-    FMarkupCurWordFull: Boolean;
     FMarkupCurWordTime: Integer;
+    FMarkupCurWordFull: Boolean;
+    FMarkupCurWordFullLen: Integer;
+    FMarkupCurWordNoKeyword: Boolean;
 
     // Code tools options (MG: these will move to an unit of their own)
     fAutoIdentifierCompletion: Boolean;
@@ -578,10 +580,15 @@ type
     // Markup Current Word
     property MarkupCurWordEnabled: Boolean
       read FMarkupCurWordEnabled write FMarkupCurWordEnabled default True;
-    property MarkupCurWordFull: Boolean
-      read FMarkupCurWordFull write FMarkupCurWordFull default False;
     property MarkupCurWordTime: Integer
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
+    property MarkupCurWordFull: Boolean
+      read FMarkupCurWordFull write FMarkupCurWordFull default False;
+
+    property MarkupCurWordFullLen: Integer
+      read FMarkupCurWordFullLen write FMarkupCurWordFullLen default 3;
+    property MarkupCurWordNoKeyword: Boolean
+      read FMarkupCurWordNoKeyword write FMarkupCurWordNoKeyword default False;
 
     // Code Tools options
     property AutoIdentifierCompletion: Boolean
@@ -1386,8 +1393,10 @@ begin
   fHighlighterList := TEditOptLangList.Create;
 
   FMarkupCurWordEnabled := True;
-  FMarkupCurWordFull := False;
   FMarkupCurWordTime := 1500;
+  FMarkupCurWordFull := False;
+  FMarkupCurWordFullLen := 3;
+  FMarkupCurWordNoKeyword := False;
 
   // Code Tools options
   fCodeTemplateFileName := SetDirSeparators(GetPrimaryConfigPath + '/lazarus.dci');
@@ -1549,13 +1558,19 @@ begin
 
     FMarkupCurWordEnabled :=
       XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWordEnabled', True);
-    FMarkupCurWordFull :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWordFull', False);
+      'EditorOptions/Display/MarkupCurrentWord/Enabled', True);
     FMarkupCurWordTime :=
       XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWordTime', 1500);
+      'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
+    FMarkupCurWordFull :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWord/FullWord', False);
+    FMarkupCurWordFullLen :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
+    FMarkupCurWordNoKeyword :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWord/NoKeyword', False);
 
     // Code Tools options
     fAutoIdentifierCompletion :=
@@ -1698,12 +1713,16 @@ begin
     ;
 
 
-    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordEnabled',
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Enabled',
       FMarkupCurWordEnabled, True);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordFull',
-      FMarkupCurWordFull, True);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordTime',
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Time',
       FMarkupCurWordTime, 1500);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord',
+      FMarkupCurWordFull, False);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullLen',
+      FMarkupCurWordFullLen, 3);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword',
+      FMarkupCurWordNoKeyword, False);
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
@@ -2299,8 +2318,10 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     MarkCaret.Enabled := FMarkupCurWordEnabled;
-    MarkCaret.FullWord := FMarkupCurWordFull;
     MarkCaret.WaitTime := FMarkupCurWordTime;
+    MarkCaret.FullWord := FMarkupCurWordFull;
+    MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
+    MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
   end;
 
   // Code Folding
@@ -2343,8 +2364,10 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     FMarkupCurWordEnabled := MarkCaret.Enabled;
-    FMarkupCurWordFull := MarkCaret.FullWord;
     FMarkupCurWordTime := MarkCaret.WaitTime;
+    FMarkupCurWordFull := MarkCaret.FullWord;
+    FMarkupCurWordFullLen := MarkCaret.FullWordMaxLen;
+    FMarkupCurWordNoKeyword := MarkCaret.IgnoreKeywords;
   end;
 end;
 

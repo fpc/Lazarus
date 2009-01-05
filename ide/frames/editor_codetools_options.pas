@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ComCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin;
 
 type
   { TEditorCodetoolsOptionsFrame }
@@ -41,6 +41,9 @@ type
     AutoToolTipExprEvalCheckBox: TCheckBox;
     MarkupWordDelayLabel: TLabel;
     MarkupWordFullCheckBox: TCheckBox;
+    MarkupWordFullLenSpin: TSpinEdit;
+    MarkupWordFullLenLabel: TLabel;
+    MarkupWordNoKeyword: TCheckBox;
     MarkupWordMaxLabel: TLabel;
     MarkupWordMinLabel: TLabel;
     MarkupWordEnabledCheckBox: TCheckBox;
@@ -83,6 +86,8 @@ begin
   MarkupWordDelayLabel.Caption := dlgEdDelay;
   MarkupWordMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;;
   MarkupWordMaxLabel.Caption := '4.0 ' + DlgTimeSecondUnit;;
+  MarkupWordFullLenLabel.Caption := dlgMarkupWordFullLen;
+  MarkupWordNoKeyword.Caption := dlgMarkupWordNoKeyword;
 end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -98,6 +103,8 @@ begin
     MarkupWordEnabledCheckBox.Checked := MarkupCurWordEnabled;
     MarkupWordFullCheckBox.Checked := MarkupCurWordFull;
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
+    MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
+    MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
   end;
 end;
 
@@ -114,6 +121,8 @@ begin
     MarkupCurWordEnabled := MarkupWordEnabledCheckBox.Checked;
     MarkupCurWordFull := MarkupWordFullCheckBox.Checked;
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
+    MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
+    MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;
   end;
 end;
 

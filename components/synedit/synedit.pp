@@ -6137,6 +6137,7 @@ begin
       Value.FreeNotification(Self);
     end;
     fHighlighter := Value;
+    fMarkupHighCaret.Highlighter := Value;
     {$IFDEF SYN_LAZARUS}
     if fHighlighter<>nil then begin
       fHighlighter.ResetRange;

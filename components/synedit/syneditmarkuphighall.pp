@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls, LCLProc;
+  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter;
 
 type
 
@@ -133,7 +133,13 @@ type
     FTimer: TTimer;
     FWaitTime: Integer;
     FFullWord: Boolean;
+    FFullWordMaxLen: Integer;
+    FIgnoreKeywords: Boolean;
+    FHighlighter: TSynCustomHighlighter;
     procedure SetFullWord(const AValue: Boolean);
+    procedure SetFullWordMaxLen(const AValue: Integer);
+    procedure SetHighlighter(const AValue: TSynCustomHighlighter);
+    procedure SetIgnoreKeywords(const AValue: Boolean);
     procedure SetWaitTime(const AValue: Integer);
   protected
     procedure DoCaretChanged(OldCaret : TPoint); override;
@@ -148,6 +154,10 @@ type
     destructor Destroy; override;
     property  WaitTime: Integer read FWaitTime write SetWaitTime;
     property  FullWord: Boolean read FFullWord write SetFullWord;
+    property  FullWordMaxLen: Integer read FFullWordMaxLen write SetFullWordMaxLen;
+    property  IgnoreKeywords: Boolean read FIgnoreKeywords write SetIgnoreKeywords;
+    property  Highlighter: TSynCustomHighlighter
+      read FHighlighter write SetHighlighter;
   end;
 
 implementation
@@ -543,6 +553,27 @@ begin
   SearchOptions := GetCurrentOption;
 end;
 
+procedure TSynEditMarkupHighlightAllCaret.SetFullWordMaxLen(const AValue: Integer);
+begin
+  if FFullWordMaxLen = AValue then exit;
+  FFullWordMaxLen := AValue;
+  SearchOptions := GetCurrentOption;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.SetHighlighter(const AValue: TSynCustomHighlighter);
+begin
+  if FHighlighter = AValue then exit;
+  FHighlighter := AValue;
+  ScrollTimerHandler(self);
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.SetIgnoreKeywords(const AValue: Boolean);
+begin
+  if FIgnoreKeywords = AValue then exit;
+  FIgnoreKeywords := AValue;
+  ScrollTimerHandler(self);
+end;
+
 procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
 begin
   if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
@@ -583,9 +614,13 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
 begin
   If TCustomSynEdit(SynEdit).SelAvail then
     Result := TCustomSynEdit(SynEdit).SelText
-  else
+  else begin
     Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol
       (TCustomSynEdit(SynEdit).PhysicalToLogicalPos(TCustomSynEdit(SynEdit).CaretXY));
+    if FIgnoreKeywords and assigned(FHighlighter)
+       and FHighlighter.IsKeyword(Result) then
+      Result := '';
+  end;
 end;
 
 function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
@@ -593,7 +628,10 @@ begin
   If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
     Result := []
   else
-    Result := [ssoWholeWord];
+    if (FFullWordMaxLen >0) and (UTF8Length(GetCurrentText) > FFullWordMaxLen) then
+      Result := []
+    else
+      Result := [ssoWholeWord];
 end;
 
 constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TCustomControl);

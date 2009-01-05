@@ -46,8 +46,10 @@ type
     fSynEdit : TCustomControl;
     fInvalidateLinesMethod : TInvalidateLines;
     FEnabled: Boolean;
+    FTempEnable: Integer;
 
     function GetBGColor : TColor;
+    function GetEnabled: Boolean;
     function GetFGColor : TColor;
     function GetFrameColor: TColor;
     function GetStyle : TFontStyles;
@@ -89,13 +91,15 @@ type
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
+    Procedure TempDisable;
+    Procedure TempEnable;
 
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
     property Style : TFontStyles read GetStyle;
-    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
     property Lines : TSynEditStrings read fLines write SetLines;
     property Caret : TPoint read fCaret write SetCaret;
     property TopLine : Integer read fTopLine write SetTopLine;
@@ -149,6 +153,11 @@ uses SynEdit, SynEditMiscProcs;
 function TSynEditMarkup.GetBGColor : TColor;
 begin
   result := fMarkupInfo.Background;
+end;
+
+function TSynEditMarkup.GetEnabled: Boolean;
+begin
+  Result := FEnabled and (FTempEnable = 0);
 end;
 
 function TSynEditMarkup.GetFGColor : TColor;
@@ -294,6 +303,7 @@ begin
   inherited Create();
   fSynEdit := ASynEdit;
   FEnabled := true;
+  FTempEnable := 0;
   fMarkupInfo := TSynSelectedColor.Create;
   fMarkupInfo.OnChange := @MarkupChanged;
 end;
@@ -315,6 +325,17 @@ end;
 procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
 begin
   DoTextChanged(aFirstCodeLine, aLastCodeLine);
+end;
+
+procedure TSynEditMarkup.TempDisable;
+begin
+  inc(FTempEnable);
+end;
+
+procedure TSynEditMarkup.TempEnable;
+begin
+  if FTempEnable > 0 then
+    dec(FTempEnable);
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow : Integer);

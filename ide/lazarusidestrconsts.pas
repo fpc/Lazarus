@@ -1190,6 +1190,8 @@ resourcestring
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupWordEnabled = 'Highlight Current Word/Block';
   dlgMarkupWordFull = 'Highlight Current Word match word boundaries';
+  dlgMarkupWordFullLen = 'Only if shorter than';
+  dlgMarkupWordNoKeyword = 'Ignore Keywords';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';

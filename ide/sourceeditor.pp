@@ -50,6 +50,7 @@ uses
   // synedit
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
+  SynEditMarkupHighAll,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -4607,8 +4608,12 @@ begin
   fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
   FIncrementalSearchPos:=fIncrementalSearchStartPos;
   FIncrementalSearchEditor := TempEditor;
-  if assigned(FIncrementalSearchEditor.EditorComponent)
-  then FIncrementalSearchEditor.EditorComponent.UseIncrementalColor:= true;
+  if assigned(FIncrementalSearchEditor.EditorComponent) then
+    with FIncrementalSearchEditor.EditorComponent do begin
+      UseIncrementalColor:= true;
+      if assigned(MarkupByClass[TSynEditMarkupHighlightAll]) then
+        MarkupByClass[TSynEditMarkupHighlightAll].TempEnable;
+    end;
 
   IncrementalSearchStr:='';
 
@@ -4623,8 +4628,12 @@ begin
 
   if FIncrementalSearchEditor <> nil
   then begin
-    if assigned(FIncrementalSearchEditor.EditorComponent)
-    then FIncrementalSearchEditor.EditorComponent.UseIncrementalColor:= false;
+    if assigned(FIncrementalSearchEditor.EditorComponent) then
+      with FIncrementalSearchEditor.EditorComponent do begin
+        UseIncrementalColor:= False;
+        if assigned(MarkupByClass[TSynEditMarkupHighlightAll]) then
+          MarkupByClass[TSynEditMarkupHighlightAll].TempEnable;
+      end;
     FIncrementalSearchEditor.EditorComponent.SetHighlightSearch('', []);
     FIncrementalSearchEditor := nil;
   end;
