@@ -78,6 +78,14 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
 
+type
+  TPathDelimSwitch = (
+    pdsNone,    // no change
+    pdsSystem,  // switch to current PathDelim
+    pdsUnix,    // switch to slash /
+    pdsWindows  // switch to backslash \
+    );
+
 // file names
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(const Filename1, Filename2: string;
@@ -89,6 +97,7 @@ function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
+function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 function ChompEndNumber(const s: string): string;
 
@@ -808,11 +817,30 @@ begin
   Result:=FileProcs.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
 end;
 
-function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch
+  ): string;
+var
+  i: Integer;
+  p: Char;
 begin
   Result:=Filename;
+  case Switch of
+  pdsSystem:  p:=PathDelim;
+  pdsUnix:    p:='/';
+  pdsWindows: p:='\';
+  else exit;
+  end;
+  for i:=1 to length(Result) do
+    if Result[i] in ['/','\'] then
+      Result[i]:=p;
+end;
+
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+begin
   if Switch then
-    DoDirSeparators(Result);
+    Result:=SwitchPathDelims(Filename,pdsSystem)
+  else
+    Result:=Filename;
 end;
 
 function ChompEndNumber(const s: string): string;

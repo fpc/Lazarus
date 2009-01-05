@@ -1054,18 +1054,18 @@ end;
 procedure TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string);
 var
   p: String;
-  PathDelimChanged: boolean;
+  PathDelimChange: boolean;
   FileVersion: Integer;
   i: LongInt;
   
   function f(const Filename: string): string;
   begin
-    Result:=SwitchPathDelims(Filename,PathDelimChanged);
+    Result:=SwitchPathDelims(Filename,PathDelimChange);
   end;
   
   function sp(const SearchPath: string): string;
   begin
-    Result:=SwitchPathDelims(SearchPath,PathDelimChanged);
+    Result:=SwitchPathDelims(SearchPath,PathDelimChange);
     Result:=MinimizeSearchPath(Result);
   end;
 
@@ -1100,7 +1100,7 @@ var
 begin
   { Load the compiler options from the XML file }
   p:=Path;
-  PathDelimChanged:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
+  PathDelimChange:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
   FileVersion:=XMLConfigFile.GetValue(p+'Version/Value', 0);
 
   { Target }
@@ -1119,7 +1119,7 @@ begin
 
   { Conditionals }
   TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
-                                         Path+'Conditionals/',PathDelimChanged);
+                                         Path+'Conditionals/',PathDelimChange);
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1234,8 +1234,8 @@ begin
   { Compilation }
   CompilerPath := f(XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)'));
 
-  ExecuteBefore.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteBefore/',PathDelimChanged);
-  ExecuteAfter.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteAfter/',PathDelimChanged);
+  ExecuteBefore.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteBefore/',PathDelimChange);
+  ExecuteAfter.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteAfter/',PathDelimChange);
   CreateMakefileOnBuild:=XMLConfigFile.GetValue(p+'CreateMakefileOnBuild/Value',false);
 end;
 
