@@ -1692,9 +1692,9 @@ msgstr "Sulje projekti"
 msgid "Close all editor files"
 msgstr "Sulje kaikki editorin tiedostot"
 
-#: lazarusidestrconsts:rsclosecurrentpage
-msgid "Close current page"
-msgstr ""
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr "Sulje välilehti"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3172,10 +3172,6 @@ msgstr "englanti"
 msgid "Enter data"
 msgstr ""
 
-#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
-msgstr ""
-
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr ""
@@ -3744,10 +3740,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr ""
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Etsi"
@@ -3888,14 +3880,6 @@ msgstr ""
 msgid "Focus to source editor"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecfoldcurrent
-msgid "Fold at Cursor"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecfoldlevel
-msgid "Fold to Level %d"
-msgstr ""
-
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr ""
@@ -3951,10 +3935,6 @@ msgstr "Yksi eteenpäin"
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
 msgstr "Löydetyt tyhjät metodit:"
-
-#: lazarusidestrconsts:rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
-msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
@@ -4166,10 +4146,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr ""
-
-#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
@@ -7656,10 +7632,6 @@ msgstr ""
 msgid "Reset debugger"
 msgstr ""
 
-#: lazarusidestrconsts:rsresetfilter
-msgid "Reset filter"
-msgstr ""
-
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Resurssitiedoston lukeminen epäonnistui"
@@ -8076,6 +8048,10 @@ msgstr "Viittaukset tunnisteeseen: "
 msgid "Search Results"
 msgstr "Hakutulokset"
 
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr "Etsi uudelleen"
+
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Käy kommentit myöskin läpi"
@@ -8083,6 +8059,10 @@ msgstr "Käy kommentit myöskin läpi"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Haetaan näistä luokan (class) osista:"
+
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8808,10 +8788,6 @@ msgstr ""
 msgid "Standard Help Menu"
 msgstr ""
 
-#: lazarusidestrconsts:rsstartanewsearch
-msgid "Start a new search"
-msgstr ""
-
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Aloita uusi projekti"
@@ -9131,10 +9107,6 @@ msgstr "Kirjaimien määritteet"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Tekstin muokkauskomennot"
-
-#: lazarusidestrconsts:srkmcatfold
-msgid "Text folding commands"
-msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10490,14 +10462,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldall
-msgid "Unfold all"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldcurrent
-msgid "Unfold at Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent

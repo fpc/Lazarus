@@ -780,6 +780,14 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
 msgstr ""
@@ -5928,22 +5936,6 @@ msgstr ""
 msgid "Go to editor %d"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecfoldlevel
-msgid "Fold to Level %d"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldall
-msgid "Unfold all"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecfoldcurrent
-msgid "Fold at Cursor"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldcurrent
-msgid "Unfold at Cursor"
-msgstr ""
-
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
 msgstr ""
@@ -6410,10 +6402,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
-msgstr ""
-
-#: lazarusidestrconsts:srkmcatfold
-msgid "Text folding commands"
 msgstr ""
 
 #: lazarusidestrconsts:liskmsetfreebookmark
@@ -11400,40 +11388,16 @@ msgstr ""
 msgid "Change Class of %s"
 msgstr ""
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
 msgstr ""
 
 #: lazarusidestrconsts:lisvsrresetresultlist
 msgid "Reset Result List"
-msgstr ""
-
-#: lazarusidestrconsts:rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
-msgstr ""
-
-#: lazarusidestrconsts:rsstartanewsearch
-msgid "Start a new search"
-msgstr ""
-
-#: lazarusidestrconsts:rsclosecurrentpage
-msgid "Close current page"
-msgstr ""
-
-#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr ""
-
-#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr ""
-
-#: lazarusidestrconsts:rsresetfilter
-msgid "Reset filter"
-msgstr ""
-
-#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
 msgstr ""
 
 #: lazarusidestrconsts:listddinserttodo

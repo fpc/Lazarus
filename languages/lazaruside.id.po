@@ -1697,9 +1697,9 @@ msgstr "Tutuip Proyek"
 msgid "Close all editor files"
 msgstr "Tutup semua file editor"
 
-#: lazarusidestrconsts:rsclosecurrentpage
-msgid "Close current page"
-msgstr ""
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr "Tutup halaman"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3177,10 +3177,6 @@ msgstr "Inggris"
 msgid "Enter data"
 msgstr "Masukkan data"
 
-#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
-msgstr ""
-
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Masukkan parameter menjalankan"
@@ -3749,10 +3745,6 @@ msgstr "Filter menyamai setiap bagian dari method"
 msgid "Filter by matching with start of method"
 msgstr "Filter menyamai setiap awal dari method"
 
-#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr ""
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Cari"
@@ -3893,14 +3885,6 @@ msgstr ""
 msgid "Focus to source editor"
 msgstr "Fokus ke editor sumber"
 
-#: lazarusidestrconsts:srkmecfoldcurrent
-msgid "Fold at Cursor"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecfoldlevel
-msgid "Fold to Level %d"
-msgstr ""
-
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr "Mengikuti kursor"
@@ -3955,10 +3939,6 @@ msgstr "Maju satu"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
-msgstr ""
-
-#: lazarusidestrconsts:rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
@@ -4172,10 +4152,6 @@ msgstr "Pergi ke editor sumber 8"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "Pergi ke editor sumber 9"
-
-#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7661,10 +7637,6 @@ msgstr ""
 msgid "Reset debugger"
 msgstr "Reset debugger"
 
-#: lazarusidestrconsts:rsresetfilter
-msgid "Reset filter"
-msgstr ""
-
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Kesalahan pengambilan resource"
@@ -8081,12 +8053,20 @@ msgstr "Mencari"
 msgid "Search Results"
 msgstr "Cari Hasil"
 
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr "Cari lagi"
+
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Cari dalam komentar juga"
 
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
+msgstr ""
+
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
 msgstr ""
 
 #: lazarusidestrconsts:lispatheditsearchpaths
@@ -8813,10 +8793,6 @@ msgstr "Menu File Standar"
 msgid "Standard Help Menu"
 msgstr "Menu Panduan Standar"
 
-#: lazarusidestrconsts:rsstartanewsearch
-msgid "Start a new search"
-msgstr ""
-
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Mulai dengan proyek baru"
@@ -9136,10 +9112,6 @@ msgstr "Atribut teks"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Perintah pengeditan teks"
-
-#: lazarusidestrconsts:srkmcatfold
-msgid "Text folding commands"
-msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10496,14 +10468,6 @@ msgstr "Undo setelah menyimpan"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Batas Undo"
-
-#: lazarusidestrconsts:srkmecunfoldall
-msgid "Unfold all"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldcurrent
-msgid "Unfold at Cursor"
-msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

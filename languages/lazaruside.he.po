@@ -1698,9 +1698,9 @@ msgstr "סגור פרויקט"
 msgid "Close all editor files"
 msgstr "סגור את כל הקבצים בעורך"
 
-#: lazarusidestrconsts:rsclosecurrentpage
-msgid "Close current page"
-msgstr ""
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr "סגור את הדף"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3178,10 +3178,6 @@ msgstr "אנגלית"
 msgid "Enter data"
 msgstr "הזן מידע"
 
-#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
-msgstr ""
-
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "הזן פרמטרים לריצה"
@@ -3750,10 +3746,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr ""
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "מצא"
@@ -3894,14 +3886,6 @@ msgstr ""
 msgid "Focus to source editor"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecfoldcurrent
-msgid "Fold at Cursor"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecfoldlevel
-msgid "Fold to Level %d"
-msgstr ""
-
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr ""
@@ -3956,10 +3940,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
-msgstr ""
-
-#: lazarusidestrconsts:rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
@@ -4172,10 +4152,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr ""
-
-#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
@@ -7662,10 +7638,6 @@ msgstr ""
 msgid "Reset debugger"
 msgstr ""
 
-#: lazarusidestrconsts:rsresetfilter
-msgid "Reset filter"
-msgstr ""
-
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -8082,6 +8054,10 @@ msgstr "חפש את"
 msgid "Search Results"
 msgstr "תוצאות חיפוש"
 
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr "חפש שוב"
+
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "חפש גם בהערות"
@@ -8089,6 +8065,10 @@ msgstr "חפש גם בהערות"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr ""
+
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr "חפש או פלטר ביטויים ברשימה"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8814,10 +8794,6 @@ msgstr ""
 msgid "Standard Help Menu"
 msgstr ""
 
-#: lazarusidestrconsts:rsstartanewsearch
-msgid "Start a new search"
-msgstr ""
-
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr ""
@@ -9136,10 +9112,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
-msgstr ""
-
-#: lazarusidestrconsts:srkmcatfold
-msgid "Text folding commands"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
@@ -10496,14 +10468,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldall
-msgid "Unfold all"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecunfoldcurrent
-msgid "Unfold at Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent

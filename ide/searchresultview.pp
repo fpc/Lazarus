@@ -88,9 +88,9 @@ type
   end;//TLazSearch
 
 
-  { TLazSearchResultTV }
+  { TLazSearchResultLB }
 
-  TLazSearchResultTV = class(TCustomTreeView)
+  TLazSearchResultLB = class(TCustomListBox)
   private
     fSearchObject: TLazSearch;
     FSkipped: integer;
@@ -102,7 +102,6 @@ type
     FSearchInListPhrases: string;
     fFiltered: Boolean;
     procedure SetSkipped(const AValue: integer);
-    procedure AddNode(Line: string; MatchPos: TLazSearchMatchPos);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -110,7 +109,6 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShortenPaths;
-    procedure FreeObjectsTN(tnItems: TTreeNodes);
     procedure FreeObjects(slItems: TStrings);
     function BeautifyLine(const Filename: string; X, Y: integer;
                           const Line: string): string;
@@ -121,54 +119,51 @@ type
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property UpdateState: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
-    property Items;
-    function ItemsAsStrings: TStrings;
   end;
 
 
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
-    SearchInListEdit: TEdit;
-    ImageList: TImageList;
+    btnSearchAgain: TButton;
+    ClosePageButton: TButton;
     ResultsNoteBook: TNotebook;
-    ToolBar: TToolBar;
-    SearchAgainButton: TToolButton;
-    ToolButton3: TToolButton;
-    FilterButton: TToolButton;
-    ClosePageButton: TToolButton;
-    ForwardSearchButton: TToolButton;
-    ResetResultsButton: TToolButton;
+    gbSearchPhraseInList: TGroupBox;
+    edSearchInList: TEdit;
+    bnForwardSearch: TButton;
+    bnResetResults: TButton;
+    bnFilter: TButton;
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
-    procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
-    procedure SearchAgainButtonClick(Sender: TObject);
-    procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
-    procedure LazTVShowHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure LazTVMousemove(Sender: TObject; Shift: TShiftState;
+    procedure SearchResultsViewDestroy(Sender: TObject);
+    procedure btnSearchAgainClick(Sender: TObject);
+    procedure ListboxDrawitem(Control: TWinControl; Index: Integer;
+                              ARect: TRect; State: TOwnerDrawState);
+    procedure LazLBShowHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure LazLBMousemove(Sender: TObject; Shift: TShiftState;
                              X, Y: Integer);
-    Procedure LazTVMouseWheel(Sender: TObject; Shift: TShiftState;
+    Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure edSearchInListChange(Sender: TObject );
     procedure ResultsNoteBookPageChanged (Sender: TObject );
-    procedure ForwardSearchButtonClick(Sender: TObject );
-    procedure ResetResultsButtonClick(Sender: TObject );
-    procedure SearchInListEditKeyDown(Sender: TObject; var Key: Word;
+    procedure bnForwardSearchClick(Sender: TObject );
+    procedure bnResetResultsClick(Sender: TObject );
+    procedure edSearchInListKeyDown(Sender: TObject; var Key: Word;
                                     Shift: TShiftState );
-    procedure FilterButtonClick (Sender: TObject );
+    procedure bnFilterClick (Sender: TObject );
   private
     FMaxItems: integer;
     FOnSelectionChanged: TNotifyEvent;
+    FListBoxFont: TFont;
     FMouseOverIndex: integer;
     function BeautifyPageName(const APageName: string): string;
     function PageExists(const APageName: string): boolean;
     function GetPageIndex(const APageName: string): integer;
-    function GetTreeView(APageIndex: integer): TLazSearchResultTV;
-    procedure TreeViewClicked(Sender: TObject);
-    procedure TreeViewDoubleClicked(Sender: TObject);
+    function GetListBox(APageIndex: integer): TLazSearchResultLB;
+    procedure ListBoxClicked(Sender: TObject);
+    procedure ListBoxDoubleClicked(Sender: TObject);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
@@ -192,6 +187,7 @@ type
     procedure EndUpdate(APageIndex: integer);
     procedure Parse_Search_Phrases(var slPhrases: TStrings);
     procedure ClosePage(PageIndex: integer);
+    property ListBoxFont: TFont read fListBoxFont write fListBoxFont;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
@@ -232,19 +228,22 @@ begin
   ResultsNoteBook.Update;
 
   Caption:=lisMenuViewSearchResults;
-
-  SearchAgainButton.Hint:=rsStartANewSearch;
-  ClosePageButton.Hint := rsCloseCurrentPage;
-  FilterButton.Hint:=rsFilterTheListWithTheCurrentFilterExpression;
-  ForwardSearchButton.Hint:=rsGoToTheNextItemInTheSearchList;
-  ResetResultsButton.Hint:=rsResetFilter;
-  SearchInListEdit.Hint:=rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn;
+  gbSearchPhraseInList.Caption:=lisVSRSearchOrFilterPhrasesInList;
+  btnSearchAgain.Caption:=lisSearchAgain;
+  ClosePageButton.Caption:=lisSRClosePage;
+  bnFilter.Caption:=lisFilter;
+  bnForwardSearch.Caption:=lisVSRForwardSearch;
+  bnResetResults.Caption:=lisVSRResetResultList;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
                                           ItemByEnum(nmiwSearchResultsViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
+  fListBoxFont:= TFont.Create;
+  fListBoxFont.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
+  fListBoxFont.Name:=EditorOpts.EditorFont;
+  fListBoxFont.Style:= [];
   fOnSelectionChanged:= nil;
   ShowHint:= True;
   fMouseOverIndex:= -1;
@@ -256,213 +255,211 @@ begin
 end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
-if the Item length is longer than the TreeView client width.}
-procedure TSearchResultsView.LazTVMousemove(Sender: TObject; Shift: TShiftState;
+if the Item length is longer than the Listbox client width.}
+procedure TSearchResultsView.LazLBMousemove(Sender: TObject; Shift: TShiftState;
                                        X, Y: Integer);
 begin
-  if Sender is TLazSearchResultTV then
+  if Sender is TLazSearchResultLB then
   begin
-    with Sender as TLazSearchResultTV do
+    with Sender as TLazSearchResultLB do
     begin
-      if Assigned(GetNodeAt(X, Y)) then
-        fMouseOverIndex:=GetNodeAt(X, Y).Index
-      else
-        fMouseOverIndex:=-1;
+      fMouseOverIndex:= ItemAtPos(Point(X,Y),true);
       if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count)
-      and (Canvas.TextWidth(Items[fMouseOverIndex].Text) > Width) then
+      and (Canvas.TextWidth(Items[fMouseOverIndex]) > Width) then
         ShowHint:= True
       else
         ShowHint:= False;
     end;//with
   end;//
-end;//LazTVMousemove
+end;//LazLBMousemove
 
-{Keep track of the mouse position over the treeview when the wheel is used}
-procedure TSearchResultsView.LazTVMouseWheel(Sender: TObject;
+{Keep track of the mouse position over the list box when the wheel is used}
+procedure TSearchResultsView.LazLBMouseWheel(Sender: TObject;
                                              Shift: TShiftState;
                                              WheelDelta: Integer;
                                              MousePos: TPoint;
                                              var Handled: Boolean);
 begin
-  LazTVMouseMove(Sender,Shift,MousePos.X, MousePos.Y);
+  LazLBMouseMove(Sender,Shift,MousePos.X, MousePos.Y);
   Handled:= false;
-end;//LazTVMouseWheel
+end;//LazLBMouseWheel
 
 procedure TSearchResultsView.edSearchInListChange (Sender: TObject );
-var CurrentTV: TLazSearchResultTV;
+var CurrentLB: TLazSearchResultLB;
 begin
- CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
- if Assigned(CurrentTV) then
-  CurrentTV.SearchInListPhrases := SearchInListEdit.Text;
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  CurrentLB.SearchInListPhrases := edSearchInList.Text;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookPageChanged (Sender: TObject );
-var CurrentTV: TLazSearchResultTV;
+var CurrentLB: TLazSearchResultLB;
 begin
- CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
- if Assigned(CurrentTV) then
-  SearchInListEdit.Text := CurrentTV.SearchInListPhrases;
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  edSearchInList.Text := CurrentLB.SearchInListPhrases;
 end;
 
-procedure TSearchResultsView.ForwardSearchButtonClick (Sender: TObject );
-var CurrentTV: TLazSearchResultTV;
+procedure TSearchResultsView.bnForwardSearchClick (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
     slPhrases: TStrings;
     i, j, iCurrentIndex: Integer;
     S: string;
 begin
- CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
- if Assigned(CurrentTV) then
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
   begin
-   if (Length(SearchInListEdit.Text) = 0) then Exit;//No Search Phrases specified.
-   if (CurrentTV.Items.Count <= 0) then Exit;
+   if (Length(edSearchInList.Text) = 0) then Exit;//No Search Phrases specified.
+   if (CurrentLB.Items.Count <= 0) then Exit;
    slPhrases := TStringList.Create;
    try
-     if Assigned(CurrentTV.Selected) then
-      iCurrentIndex := CurrentTV.Selected.Index + 1
-    else
-      iCurrentIndex := 0;
-    if (iCurrentIndex > CurrentTV.Items.Count) then iCurrentIndex := CurrentTV.Items.Count;
+    iCurrentIndex := CurrentLB.ItemIndex + 1;
+    if (iCurrentIndex > CurrentLB.Items.Count) then iCurrentIndex := CurrentLB.Items.Count;
     if (iCurrentIndex < 0) then iCurrentIndex := 0;//Set to 1st list-item if none are selected
     //Parse Phrases
     Parse_Search_Phrases(slPhrases);
     if (slPhrases.Count > 0) then
      begin
-      for i:=iCurrentIndex to CurrentTV.Items.Count-1 do
+      for i:=iCurrentIndex to CurrentLB.Items.Count-1 do
        begin
-        S := UpperCase(CurrentTV.Items[i].Text);//for case-insensitive search
+        S := UpperCase(CurrentLB.Items[i]);//for case-insensitive search
         for j:=0 to slPhrases.Count-1 do
          begin
           if (Pos(slPhrases[j], S) <> 0) then
            begin
-            CurrentTV.Items[i].Selected:=True;//Set TreeView's itemindex
+            CurrentLB.ItemIndex := i;//Set listbox's itemindex
+            CurrentLB.MakeCurrentVisible;
             Exit;//Found what we looking for, exit
-           end;//End if (Pos(slPhrases[j], CurrentTV.Items[i]) <> 0)
+           end;//End if (Pos(slPhrases[j], CurrentLB.Items[i]) <> 0)
          end;//End for-loop j
        end;//End for-loop i
      end;//End if if (slPhrases.Count > 0)
    finally
     FreeAndNil(slPhrases);
-    SearchInListEdit.SetFocus;
+    edSearchInList.SetFocus;
    end;//End try-finally
-  end;//End if Assigned(CurrentTV)
+  end;//End if Assigned(CurrentLB)
 end;
 
-procedure TSearchResultsView.ResetResultsButtonClick (Sender: TObject );
-var
-  i: Integer;
-  CurrentTV: TLazSearchResultTV;
-  mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+procedure TSearchResultsView.bnResetResultsClick (Sender: TObject );
+var i: Integer;
+    oObject: TObject;
+    CurrentLB: TLazSearchResultLB;
+    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
 begin
- CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
  try
-  if assigned(CurrentTV) and CurrentTV.Filtered then
+  if assigned(CurrentLB) and CurrentLB.Filtered then
    begin
-    if (CurrentTV.Items.Count > 0) then
+    if (CurrentLB.Items.Count > 0) then
      begin
-      CurrentTV.FreeObjectsTN(CurrentTV.Items);//Free the objects
-      CurrentTV.Items.Clear;
-     end;//End if (CurrentTV.Items.Count > 0)
+      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.Items.Clear;
+     end;//End if (CurrentLB.Items.Count > 0)
 
-    if (CurrentTV.BackUpStrings.Count > 0) then
+    if (CurrentLB.BackUpStrings.Count > 0) then
      begin
-      CurrentTV.Items.BeginUpdate;
-      for i:=0 to CurrentTV.BackUpStrings.Count-1 do
-      begin
-        mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.BackUpStrings.Objects[i]);
+      for i:=0 to CurrentLB.BackUpStrings.Count-1 do
+       begin
+        oObject := CurrentLB.BackUpStrings.Objects[i];
+        if not (oObject is TLazSearchMatchPos) then Continue;
+        mpOrgMatchPos := TLazSearchMatchPos(oObject);
         if Assigned(mpOrgMatchPos) then
-        begin
+         begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-            CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
-        end;//End if Assigned(mpOrgMatchPos)
-      end;//End for-loop i
-    end;//End if (CurrentTV.BackUpStrings.Count > 0)
-    CurrentTV.Items.EndUpdate;
-    CurrentTV.Filtered := False;
-   end;//End if CurrentTV.Filtered
+           CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+         end;//End if Assigned(mpOrgMatchPos)
+       end;//End for-loop i
+     end;//End if (CurrentLB.BackUpStrings.Count > 0)
+    CurrentLB.Filtered := False;
+   end;//End if CurrentLB.Filtered
  finally
-  SearchInListEdit.SetFocus;
+  edSearchInList.SetFocus;
  end;//End try-finally
 end;
 
-procedure TSearchResultsView.SearchInListEditKeyDown (Sender: TObject;
+procedure TSearchResultsView.edSearchInListKeyDown (Sender: TObject;
  var Key: Word; Shift: TShiftState );
 begin
  if (Key = VK_RETURN) then
-  ForwardSearchButtonClick(ForwardSearchButton);
+  bnForwardSearchClick(bnForwardSearch);
 end;
 
-procedure TSearchResultsView.FilterButtonClick (Sender: TObject );
-var
-  CurrentTV: TLazSearchResultTV;
-  mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
-  slPhrases: TStrings;
-  i, j: Integer;
-  S: string;
+procedure TSearchResultsView.bnFilterClick (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
+    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+    slPhrases: TStrings;
+    i, j: Integer;
+    S: string;
+    oObject: TObject;
 begin
- CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
- if Assigned(CurrentTV) then
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
   begin
-   if (Length(SearchInListEdit.Text) = 0) then Exit;//No Filter Phrases specified.
+   if (Length(edSearchInList.Text) = 0) then Exit;//No Filter Phrases specified.
    slPhrases := TStringList.Create;
    try
     //Parse Phrases
     Parse_Search_Phrases(slPhrases);
     //BackUp Result List
-    if not (CurrentTV.Filtered or (CurrentTV.BackUpStrings.Count > 0)) then
+    if not (CurrentLB.Filtered or (CurrentLB.BackUpStrings.Count > 0)) then
      begin
-      if (CurrentTV.Items.Count <= 1) then Exit;
-      for i:=0 to CurrentTV.Items.Count-1 do
+      if (CurrentLB.Items.Count <= 1) then Exit;
+      for i:=0 to CurrentLB.Items.Count-1 do
        begin
-        mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.Items[i].Data);
+        oObject := CurrentLB.Items.Objects[i];
+        if not (oObject is TLazSearchMatchPos) then Continue;
+        mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.Items.Objects[i]);
         if Assigned(mpOrgMatchPos) then
          begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-            CurrentTV.BackUpStrings.AddObject(CurrentTV.Items[i].Text, mpMatchPos);
+           CurrentLB.BackUpStrings.AddObject(CurrentLB.Items[i], mpMatchPos);
          end;//End if Assigned(mpOrgMatchPos)
        end;//End for-loop i
-     end;//End if not (CurrentTV.Filtered or (CurrentTV.BackUpStrings.Count > 0))
+     end;//End if not (CurrentLB.Filtered or (CurrentLB.BackUpStrings.Count > 0))
      
-    if (CurrentTV.BackUpStrings.Count <= 0) then Exit;//Empty list
+    if (CurrentLB.BackUpStrings.Count <= 0) then Exit;//Empty list
 
-    if (CurrentTV.Items.Count > 0) then
+    if (CurrentLB.Items.Count > 0) then
      begin
-      CurrentTV.FreeObjectsTN(CurrentTV.Items);//Free the objects
-      CurrentTV.Items.Clear;//Clear the list
-      //Clear update items as their objects are freed together with CurrentTV.Items
-      CurrentTV.UpdateItems.Clear;
-     end;//End if (CurrentTV.Items.Count > 0)
+      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.Items.Clear;//Clear the list
+      //Clear update items as their objects are freed together with CurrentLB.Items
+      CurrentLB.UpdateItems.Clear;
+     end;//End if (CurrentLB.Items.Count > 0)
 
     if (slPhrases.Count > 0) then
-    begin
-      CurrentTV.Items.BeginUpdate;
-      for i:=0 to CurrentTV.BackUpStrings.Count-1 do
+     begin
+      for i:=0 to CurrentLB.BackUpStrings.Count-1 do
        begin
-        S := UpperCase(CurrentTV.BackUpStrings[i]);//for case-insensitive search
+        S := UpperCase(CurrentLB.BackUpStrings[i]);//for case-insensitive search
         for j:=0 to slPhrases.Count-1 do
-        begin
+         begin
           if (Pos(slPhrases[j], S) <> 0) then
-          begin
-            mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.BackUpStrings.Objects[i]);
+           begin
+            oObject := CurrentLB.BackUpStrings.Objects[i];
+            if not (oObject is TLazSearchMatchPos) then Continue;
+            mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.BackUpStrings.Objects[i]);
             if Assigned(mpOrgMatchPos) then
-            begin
+             begin
               mpMatchPos := TLazSearchMatchPos.Create;
               if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-                CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
-            end;//End if Assigned(mpOrgMatchPos)
-          end;//End if (Pos(slPhrases[j], S) <> 0)
-        end;//End for-loop j
-      end;//End for-loop i
-      CurrentTV.Items.EndUpdate;
-      CurrentTV.Filtered := True;
+               CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+             end;//End if Assigned(mpOrgMatchPos)
+            Break;
+           end;//End if (Pos(slPhrases[j], S) <> 0)
+         end;//End for-loop j
+       end;//End for-loop i
+      CurrentLB.Filtered := True;
      end;//End if if (slPhrases.Count > 0)
    finally
     FreeAndNil(slPhrases);
-    SearchInListEdit.SetFocus;
-    if (CurrentTV.Items.Count > 0) then CurrentTV.Items[0].Selected:=True;//Goto first item
+    edSearchInList.SetFocus;
+    if (CurrentLB.Items.Count > 0) then CurrentLB.ItemIndex := 0;//Goto first item
    end;//End try-finally
-  end;//End if Assigned(CurrentTV)
+  end;//End if Assigned(CurrentLB)
 end;
 
 function TSearchResultsView.BeautifyPageName(const APageName: string): string;
@@ -479,22 +476,22 @@ procedure TSearchResultsView.AddMatch(const APageIndex: integer;
   const TheText: string;
   const MatchStart: integer; const MatchLen: integer);
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
   SearchPos: TLazSearchMatchPos;
   ShownText: String;
   LastPos: TLazSearchMatchPos;
 begin
-  CurrentTV:=GetTreeView(APageIndex);
-  if Assigned(CurrentTV) then
+  CurrentLB:=GetListBox(APageIndex);
+  if Assigned(CurrentLB) then
   begin
-    if CurrentTV.UpdateState then begin
-      if CurrentTV.UpdateItems.Count>=MaxItems then begin
-        CurrentTV.Skipped:=CurrentTV.Skipped+1;
+    if CurrentLB.UpdateState then begin
+      if CurrentLB.UpdateItems.Count>=MaxItems then begin
+        CurrentLB.Skipped:=CurrentLB.Skipped+1;
         exit;
       end;
     end else begin
-      if CurrentTV.Items.Count>=MaxItems then begin
-        CurrentTV.Skipped:=CurrentTV.Skipped+1;
+      if CurrentLB.Items.Count>=MaxItems then begin
+        CurrentLB.Skipped:=CurrentLB.Skipped+1;
         exit;
       end;
     end;
@@ -507,14 +504,14 @@ begin
     SearchPos.FileEndPos:=EndPos;
     SearchPos.TheText:=TheText;
     SearchPos.ShownFilename:=SearchPos.Filename;
-    ShownText:=CurrentTV.BeautifyLine(SearchPos);
+    ShownText:=CurrentLB.BeautifyLine(SearchPos);
     LastPos:=nil;
-    if CurrentTV.UpdateState then begin
-      if (CurrentTV.UpdateItems.Count>0) and (CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1] is TLazSearchMatchPos) then
-        LastPos:=TLazSearchMatchPos(CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1]);
+    if CurrentLB.UpdateState then begin
+      if (CurrentLB.UpdateItems.Count>0) and (CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1] is TLazSearchMatchPos) then
+        LastPos:=TLazSearchMatchPos(CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1]);
     end else
-      if (CurrentTV.Items.Count>0) and Assigned(CurrentTV.Items[CurrentTV.Items.Count-1].Data) then
-        LastPos:=TLazSearchMatchPos(CurrentTV.Items[CurrentTV.Items.Count-1].Data);
+      if (CurrentLB.Items.Count>0) and (CurrentLB.Items.Objects[CurrentLB.Items.Count-1] is TLazSearchMatchPos) then
+        LastPos:=TLazSearchMatchPos(CurrentLB.Items.Objects[CurrentLB.Items.Count-1]);
     if (LastPos<>nil) and (LastPos.Filename=SearchPos.Filename) and
        (LastPos.FFileStartPos.Y=SearchPos.FFileStartPos.Y) and
        (LastPos.FFileEndPos.Y=SearchPos.FFileEndPos.Y) then
@@ -523,33 +520,39 @@ begin
         LastPos := LastPos.NextInThisLine;
       LastPos.NextInThisLine:=SearchPos
     end
-    else if CurrentTV.UpdateState then
-      CurrentTV.UpdateItems.AddObject(ShownText, SearchPos)
+    else if CurrentLB.UpdateState then
+      CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
     else
-      CurrentTV.AddNode(ShownText, SearchPos);
-    CurrentTV.ShortenPaths;
+      CurrentLB.Items.AddObject(ShownText, SearchPos);
+    CurrentLB.ShortenPaths;
   end;//if
 end;//AddMatch
 
+procedure TSearchResultsView.SearchResultsViewDestroy(Sender: TObject);
+begin
+  fListBoxFont.free;
+end;//SearchResulstViewDestroy
+
 Procedure TSearchResultsView.BeginUpdate(APageIndex: integer);
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
 begin
-  CurrentTV:= GetTreeView(APageIndex);
-  if Assigned(CurrentTV) then
-    CurrentTV.BeginUpdate;
+  CurrentLB:= GetListBox(APageIndex);
+  if Assigned(CurrentLB) then
+    CurrentLB.BeginUpdate;
 end;//BeginUpdate
 
 procedure TSearchResultsView.EndUpdate(APageIndex: integer);
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
 begin
-  CurrentTV:= GetTreeView(APageIndex);
-  if Assigned(CurrentTV) then
+  CurrentLB:= GetListBox(APageIndex);
+  if Assigned(CurrentLB) then
   begin
-    CurrentTV.EndUpdate;
-    if CurrentTV.Items.Count>0 then begin
-      CurrentTV.Items[0].Selected:=True;
+    CurrentLB.EndUpdate;
+    if CurrentLB.Items.Count>0 then begin
+      CurrentLB.ItemIndex:= 0;
+      CurrentLB.TopIndex:= 0;
     end;
   end;
 end;
@@ -559,7 +562,7 @@ var i, iLength: Integer;
     sPhrases, sPhrase: string;
 begin
  //Parse Phrases
- sPhrases := SearchInListEdit.Text;
+ sPhrases := edSearchInList.Text;
  iLength := Length(sPhrases);
  sPhrase := '';
  for i:=1 to iLength do
@@ -597,38 +600,38 @@ begin
   end;//if
 end;//BringResultsToFront
 
-{Sets the Items from the treeview on the currently selected page in the
+{Sets the Items from the list box on the currently selected page in the
  TNoteBook}
 procedure TSearchResultsView.SetItems(Index: integer; Value: TStrings);
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
 begin
   if Index > -1 then
   begin
-    CurrentTV:= GetTreeView(Index);
-    if Assigned(CurrentTV) then
+    CurrentLB:= GetListBox(Index);
+    if Assigned(CurrentLB) then
     begin
-      if CurrentTV.UpdateState then
-        CurrentTV.UpdateItems.Assign(Value)
+      if CurrentLB.UpdateState then
+        CurrentLB.UpdateItems.Assign(Value)
       else
-        CurrentTV.Items.Assign(Value);
-      CurrentTV.Skipped:=0;
+        CurrentLB.Items.Assign(Value);
+      CurrentLB.Skipped:=0;
     end;//if
   end//if
 end;//SetItems
 
 function TSearchResultsView.GetItems(Index: integer): TStrings;
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
 begin
   result:= nil;
-  CurrentTV:= GetTreeView(Index);
-  if Assigned(CurrentTV) then
+  CurrentLB:= GetListBox(Index);
+  if Assigned(CurrentLB) then
   begin
-    if CurrentTV.UpdateState then
-      result:= CurrentTV.UpdateItems
+    if CurrentLB.UpdateState then
+      result:= CurrentLB.UpdateItems
     else
-      Result := CurrentTV.ItemsAsStrings;
+      result:= CurrentLB.Items;
   end;//if
 end;//GetItems
 
@@ -649,17 +652,17 @@ begin
   end;//if
 end;//ResultsNoteBookClosetabclicked
 
-procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
+procedure TSearchResultsView.btnSearchAgainClick(Sender: TObject);
 var
-  CurrentTV: TLazSearchResultTV;
+  CurrentLB: TLazSearchResultLB;
   SearchObj: TLazSearch;
 begin
-  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
-  if not Assigned(CurrentTV) then begin
+  CurrentLB:= GetListBox(ResultsNoteBook.PageIndex);
+  if not Assigned(CurrentLB) then begin
     MainIDEInterface.FindInFilesPerDialog(Project1);
   end
   else begin
-    SearchObj:= CurrentTV.SearchObject;
+    SearchObj:= CurrentLB.SearchObject;
     if Assigned(FindInFilesDialog) then
     begin
       with FindInFilesDialog do
@@ -692,7 +695,7 @@ begin
   end;//for
 end;//PageExists
 
-procedure TSearchResultsView.TreeViewKeyDown(Sender: TObject; var Key: Word;
+procedure TSearchResultsView.ListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -708,7 +711,7 @@ begin
 end;
 
 { Add Result will create a tab in the Results view window with an new
-  treeview or focus an existing TreeView and update it's searchoptions.}
+  list box or focus an existing listbox and update it's searchoptions.}
 function TSearchResultsView.AddSearch(const ResultsName: string;
   const SearchText: string;
   const ReplaceText: string;
@@ -716,7 +719,7 @@ function TSearchResultsView.AddSearch(const ResultsName: string;
   const AMask: string;
   const TheOptions: TLazFindInFileSearchOptions): integer;
 var
-  NewTreeView: TLazSearchResultTV;
+  NewListBox: TLazSearchResultLB;
   NewPage: LongInt;
   i: integer;
   SearchObj: TLazSearch;
@@ -732,41 +735,44 @@ begin
       i:= GetPageIndex(NewPageName);
       if i>=0 then
       begin
-        NewTreeView:= GetTreeView(i);
+        NewListBox:= GetListBox(i);
         ResultsNoteBook.PageIndex:= i;
-        //Free backup objects and list since its a new search with the same TreeView
-        NewTreeView.FreeObjects(NewTreeView.BackUpStrings);
-        NewTreeView.BackUpStrings.Clear;
-        NewTreeView.Filtered := False;
+        //Free backup objects and list since its a new search with the same listbox
+        NewListBox.FreeObjects(NewListBox.BackUpStrings);
+        NewListBox.BackUpStrings.Clear;
+        NewListBox.Filtered := False;
       end//if
       else
       begin
         NewPage:= Pages.Add(NewPageName);
         ResultsNoteBook.PageIndex:= NewPage;
-        ResultsNoteBook.Page[ResultsNoteBook.PageIndex].OnKeyDown := @TreeViewKeyDown;
+        ResultsNoteBook.Page[ResultsNoteBook.PageIndex].OnKeyDown := @ListBoxKeyDown;
         if NewPage > -1 then
         begin
-          NewTreeView:= TLazSearchResultTV.Create(Page[NewPage]);
-          with NewTreeView do
+          NewListBox:= TLazSearchResultLB.Create(Page[NewPage]);
+          with NewListBox do
           begin
             Parent:= Page[NewPage];
             Align:= alClient;
             BorderSpacing.Around := 0;
-            OnClick:= @TreeViewClicked;
-            OnDblClick:= @TreeViewDoubleClicked;
-            OnKeyDown := @TreeViewKeyDown;
-            OnAdvancedCustomDrawItem:= @TreeViewAdvancedCustomDrawItem;
-            OnShowHint:= @LazTVShowHint;
-            OnMouseMove:= @LazTVMousemove;
-            OnMouseWheel:= @LazTVMouseWheel;
+            ClickOnSelChange:=false;
+            OnClick:= @ListBoxClicked;
+            OnDblClick:= @ListBoxDoubleClicked;
+            OnKeyDown := @ListBoxKeyDown;
+            Style:= lbOwnerDrawFixed;
+            OnDrawItem:= @ListBoxDrawItem;
+            OnShowHint:= @LazLBShowHint;
+            OnMouseMove:= @LazLBMousemove;
+            OnMouseWheel:= @LazLBMouseWheel;
+            Font.Height:=fListBoxFont.Height;
+            Font.Name:=fListBoxFont.Name;            
             ShowHint:= true;
-            RowSelect := True;
-            NewTreeView.Canvas.Brush.Color:= clWhite;
+            NewListBox.Canvas.Brush.Color:= clWhite;
           end;//with
         end;//if
       end;//else
     end;//with
-    SearchObj:=NewTreeView.SearchObject;
+    SearchObj:=NewListBox.SearchObject;
     if SearchObj<>nil then begin
       SearchObj.SearchString:= SearchText;
       SearchObj.ReplaceText := ReplaceText;
@@ -774,26 +780,26 @@ begin
       SearchObj.SearchMask:= AMask;
       SearchObj.SearchOptions:= TheOptions;
     end;
-    NewTreeView.Skipped:=0;
+    NewListBox.Skipped:=0;
     Result:= ResultsNoteBook.PageIndex;
-    SearchInListEdit.Clear;
+    edSearchInList.Clear;
   end;//if
 end;//AddResult
 
-procedure TSearchResultsView.LazTVShowHint(Sender: TObject;
+procedure TSearchResultsView.LazLBShowHint(Sender: TObject;
   HintInfo: PHintInfo);
 var
   MatchPos: TLazSearchMatchPos;
   HintStr: string;
 begin
-  if Sender is TLazSearchResultTV then
+  if Sender is TLazSearchResultLB then
   begin
-    With Sender as TLazSearchResultTV do
+    With Sender as TLazSearchResultLB do
     begin
       if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count) then
       begin
-        if Assigned(Items[fMouseOverIndex].Data) then
-          MatchPos:= TLazSearchMatchPos(Items[fMouseOverIndex].Data)
+        if Items.Objects[fMouseOverIndex] is TLazSearchMatchPos then
+          MatchPos:= TLazSearchMatchPos(Items.Objects[fMouseOverIndex])
         else
           MatchPos:= nil;
         if MatchPos<>nil then
@@ -802,16 +808,16 @@ begin
                    +','+IntToStr(MatchPos.FileStartPos.X)+')'
                    +' '+MatchPos.TheText
         else
-          HintStr:=Items[fMouseOverIndex].Text;
+          HintStr:=Items[fMouseOverIndex];
         Hint:= HintStr;
       end;//if
     end;//with
   end;//if
-end;//LazTVShowHint
+end;//LazLBShowHint
 
-procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
-  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
-  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
+                                             Index: Integer; ARect: TRect;
+                                             State: TOwnerDrawState);
 var
   CurPart: string;
   TheText: string;
@@ -820,15 +826,13 @@ var
   MatchPos,FirstMatchPos: TLazSearchMatchPos;
 
   TextEnd, DrawnTextLength: integer;
-  ARect: TRect;
 begin
-  With Sender as TLazSearchResultTV do
+  With Control as TLazSearchResultLB do
   begin
-    ARect:=Node.DisplayRect(true);
     Canvas.FillRect(ARect);
-    MatchObj := TLazSearchMatchPos(Node.Data);
+    MatchObj := Items.Objects[Index];
     if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
-      MatchPos:= TLazSearchMatchPos(Node.Data)
+      MatchPos:= TLazSearchMatchPos(Items.Objects[Index])
     else
       MatchPos:= nil;
 
@@ -875,25 +879,25 @@ begin
     end//if
     else
     begin
-      TheText:=Node.Text;
+      TheText:=Items[Index];
       Canvas.TextOut(ARect.Left, ARect.Top, TheText);
     end;//else
   end;//with
-end;//TreeViewDrawItem
+end;//ListBoxDrawItem
 
-procedure TSearchResultsView.TreeViewClicked(Sender: TObject);
+procedure TSearchResultsView.ListBoxClicked(Sender: TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
   if Assigned(fOnSelectionChanged) then
     fOnSelectionChanged(Self)
-end;//TreeViewClicked
+end;//ListBoxClicked
 
-procedure TSearchResultsView.TreeViewDoubleClicked(Sender: TObject);
+procedure TSearchResultsView.ListBoxDoubleClicked(Sender: TObject);
 begin
   if not EnvironmentOptions.MsgViewDblClickJumps then exit;
   if Assigned(fOnSelectionChanged) then
     fOnSelectionChanged(Self)
-end;//TreeViewDoubleClicked
+end;//ListBoxDoubleClicked
 
 {Returns the Position within the source file from a properly formated search
  result}
@@ -920,11 +924,11 @@ begin
     Result:=MatchPos.Filename;
 end;//GetSourceFileName
 
-{Returns the selected text in the currently active TreeView.}
+{Returns the selected text in the currently active listbox.}
 function TSearchResultsView.GetSelectedText: string;
 var
   ThePage: TPage;
-  TheTreeView: TLazSearchResultTV;
+  TheListBox: TLazSearchResultLB;
   i: integer;
 begin
   result:= '';
@@ -934,9 +938,13 @@ begin
     ThePage:= ResultsNoteBook.Page[i];
     if Assigned(ThePage) then
     begin
-      TheTreeView:= GetTreeView(ThePage.PageIndex);
-      if Assigned(TheTreeView.Selected) then
-        Result:= TheTreeView.Selected.Text;
+      TheListBox:= GetListBox(ThePage.PageIndex);
+      if Assigned(TheListBox) then
+      begin
+        i:= TheListBox.ItemIndex;
+        if i > -1 then
+          result:= TheListBox.Items[i];
+      end;//if
     end;//if
   end;//if
 end;//GetSelectedText
@@ -944,8 +952,9 @@ end;//GetSelectedText
 function TSearchResultsView.GetSelectedMatchPos: TLazSearchMatchPos;
 var
   ThePage: TPage;
-  TheTreeView: TLazSearchResultTV;
+  TheListBox: TLazSearchResultLB;
   i: integer;
+  AnObject: TObject;
 begin
   Result:= nil;
   i:= ResultsNoteBook.PageIndex;
@@ -954,9 +963,16 @@ begin
     ThePage:= ResultsNoteBook.Page[i];
     if Assigned(ThePage) then
     begin
-      TheTreeView:= GetTreeView(ThePage.PageIndex);
-      if Assigned(TheTreeView.Selected) then
-        Result := TLazSearchMatchPos(TheTreeView.Selected.Data);
+      TheListBox:= GetListBox(ThePage.PageIndex);
+      if Assigned(TheListBox) then
+      begin
+        i:= TheListBox.ItemIndex;
+        if i > -1 then begin
+          AnObject:=TheListBox.Items.Objects[i];
+          if AnObject is TLazSearchMatchPos then
+            Result:=TLazSearchMatchPos(AnObject);
+        end;
+      end;//if
     end;//if
   end;//if
 end;
@@ -978,9 +994,9 @@ begin
   end;//for
 end;//GetPageIndex
 
-{Returns a the TreeView control from a Tab if both the page and the TreeView
+{Returns a the listbox control from a Tab if both the page and the listbox
  exist else returns nil}
-function TSearchResultsView.GetTreeView(APageIndex: integer): TLazSearchResultTV;
+function TSearchResultsView.GetListBox(APageIndex: integer): TLazSearchResultLB;
 var
   i: integer;
   ThePage: TPage;
@@ -993,17 +1009,17 @@ begin
     begin
       for i:= 0 to ThePage.ComponentCount - 1 do
       begin
-        if ThePage.Components[i] is TLazSearchResultTV then
+        if ThePage.Components[i] is TLazSearchResultLB then
         begin
-          result:= TLazSearchResultTV(ThePage.Components[i]);
+          result:= TLazSearchResultLB(ThePage.Components[i]);
           break;
         end;//if
       end;//for
     end;//if
   end;//if
-end;//GetTreeView
+end;//GetListBox
 
-procedure TLazSearchResultTV.SetSkipped(const AValue: integer);
+procedure TLazSearchResultLB.SetSkipped(const AValue: integer);
 var
   SrcList: TStrings;
   s: String;
@@ -1012,11 +1028,11 @@ var
 begin
   if FSkipped=AValue then exit;
   FSkipped:=AValue;
-  s:=rsFoundButNotListedHere;
+  s:='Found, but not listed here: ';
   if fUpdating then
     SrcList:=fUpdateStrings
   else
-    SrcList:=ItemsAsStrings;
+    SrcList:=Items;
   if (SrcList.Count>0) and (copy(SrcList[SrcList.Count-1],1,length(s))=s) then
     HasSkippedLine:=true
   else
@@ -1034,24 +1050,10 @@ begin
   end;
 end;
 
-procedure TLazSearchResultTV.AddNode(Line: string; MatchPos: TLazSearchMatchPos);
-var
-  Node: TTreeNode;
-begin
-  Node := Items.FindNodeWithText(MatchPos.FileName);
-
-  //enter a new file entry
-  if not Assigned(Node) then
-    Node := Items.AddFirst(Node, MatchPos.FileName);
-
-  Node := Items.AddChildFirst(Node, Line);
-  Node.Data := MatchPos;
-end;
-
 {******************************************************************************
-  TLazSearchResultTV
+  TLazSearchResultLB
 ******************************************************************************}
-Constructor TLazSearchResultTV.Create(AOwner: TComponent);
+Constructor TLazSearchResultLB.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fSearchObject:= TLazSearch.Create;
@@ -1063,7 +1065,7 @@ begin
   fFiltered := False;
 end;//Create
 
-Destructor TLazSearchResultTV.Destroy;
+Destructor TLazSearchResultLB.Destroy;
 begin
   if Assigned(fSearchObject) then
     FreeAndNil(fSearchObject);
@@ -1071,7 +1073,7 @@ begin
   //means the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
-   FreeObjectsTN(Items);
+   FreeObjects(Items);
   if Assigned(fUpdateStrings) then
   begin
     FreeObjects(fUpdateStrings);
@@ -1085,47 +1087,32 @@ begin
   inherited Destroy;
 end;//Destroy
 
-procedure TLazSearchResultTV.BeginUpdate;
-var
-  s: TStrings;
+procedure TLazSearchResultLB.BeginUpdate;
 begin
   inc(fUpdateCount);
   if (fUpdateCount = 1) then
   begin
     if Assigned(Items) then
-    begin
-      s := ItemsAsStrings;
-      fUpdateStrings.Assign(s);
-      s.Free;
-    end;
+      fUpdateStrings.Assign(Items);
     fUpdating:= true;
   end;//if
 end;//BeginUpdate
 
-procedure TLazSearchResultTV.EndUpdate;
-var
-  i: integer;
+procedure TLazSearchResultLB.EndUpdate;
 begin
   if (fUpdateCount = 0) then
-    RaiseGDBException('TLazSearchResultTV.EndUpdate');
-
-  Dec(fUpdateCount);
+    RaiseGDBException('TLazSearchResultLB.EndUpdate');
+  dec(fUpdateCount);
   if (fUpdateCount = 0) then
   begin
     ShortenPaths;
     fUpdating:= false;
-    FreeObjectsTN(Items);
-
-    Items.BeginUpdate;
-
-    for i := 0 to fUpdateStrings.Count - 1 do
-      AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
-
-    Items.EndUpdate;
+    FreeObjects(Items);
+    Items.Assign(fUpdateStrings);
   end;//if
 end;//EndUpdate
 
-procedure TLazSearchResultTV.ShortenPaths;
+procedure TLazSearchResultLB.ShortenPaths;
 var
   i: Integer;
   AnObject: TObject;
@@ -1144,7 +1131,7 @@ begin
   if fUpdating then
     SrcList:=fUpdateStrings
   else
-    SrcList:=ItemsAsStrings;
+    SrcList:=Items;
   
   // find shared path (the path of all filenames, that is the same)
   SharedPath:='';
@@ -1184,15 +1171,7 @@ begin
   end;
 end;
 
-procedure TLazSearchResultTV.FreeObjectsTN(tnItems: TTreeNodes);
-var i: Integer;
-begin
- for i:=0 to tnItems.Count-1 do
-   if Assigned(tnItems[i].Data) then
-    TLazSearchMatchPos(tnItems[i].Data).Free;
-end;
-
-procedure TLazSearchResultTV.FreeObjects(slItems: TStrings);
+procedure TLazSearchResultLB.FreeObjects(slItems: TStrings);
 var i: Integer;
 begin
  if (slItems.Count <= 0) then Exit;
@@ -1203,7 +1182,7 @@ begin
   end;//End for-loop
 end;
 
-function TLazSearchResultTV.BeautifyLine(const Filename: string; X, Y: integer;
+function TLazSearchResultLB.BeautifyLine(const Filename: string; X, Y: integer;
   const Line: string): string;
 begin
   Result:=SpecialCharsToHex(Line);
@@ -1215,21 +1194,11 @@ begin
           +' '+Result;
 end;
 
-function TLazSearchResultTV.BeautifyLine(SearchPos: TLazSearchMatchPos
+function TLazSearchResultLB.BeautifyLine(SearchPos: TLazSearchMatchPos
   ): string;
 begin
   Result:=BeautifyLine(SearchPos.ShownFilename,SearchPos.FileStartPos.X,
                        SearchPos.FileStartPos.Y,SearchPos.TheText);
-end;
-
-function TLazSearchResultTV.ItemsAsStrings: TStrings;
-var
-  i: integer;
-begin
-  Result := TStringList.Create;
-
-  for i := 0 to Items.Count - 1 do
-    Result.Add(Items[i].Text);
 end;
 
 { TLazSearchMatchPos }
