@@ -1041,7 +1041,7 @@ begin
 
   //enter a new file entry
   if not Assigned(Node) then
-    Node := Items.AddFirst(Node, MatchPos.FileName);
+    Node := Items.Add(Node, MatchPos.FileName);
 
   ChildNode := Items.AddChild(Node, Line);
   Node.Expanded:=true;
