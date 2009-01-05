@@ -1696,9 +1696,9 @@ msgstr "プロジェクトを閉じる"
 msgid "Close all editor files"
 msgstr "全ファイルを閉じる"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "ページを閉じる"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3176,6 +3176,10 @@ msgstr "英語"
 msgid "Enter data"
 msgstr "データを入力してください"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "実行時引数を入力してください"
@@ -3744,6 +3748,10 @@ msgstr "メソッドの任意の位置に適合するフィルタ"
 msgid "Filter by matching with start of method"
 msgstr "メソッドの冒頭に適合するフィルタ"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "検索"
@@ -3884,6 +3892,14 @@ msgstr "コンパイラ後のメッセージにフォーカス"
 msgid "Focus to source editor"
 msgstr "ソースエディターへフォーカスを移動"
 
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
+
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr "カーソルを追跡"
@@ -3939,6 +3955,10 @@ msgstr "前方に一つ進む"
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
 msgstr "空のメソッドが見つかりました。"
+
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
@@ -4151,6 +4171,10 @@ msgstr "ソースエディタ8に移動"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "ソースエディタ9に移動"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7636,6 +7660,10 @@ msgstr "結果リストをリセット"
 msgid "Reset debugger"
 msgstr "デバッガをリセット"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "リソースの読み込みに失敗"
@@ -8052,10 +8080,6 @@ msgstr "次を検索"
 msgid "Search Results"
 msgstr "結果を検索"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "再び検索"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "コメントも検索"
@@ -8063,10 +8087,6 @@ msgstr "コメントも検索"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "これらのクラスセクションで検索"
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "リスト内の語句を検索もしくはフィルタ"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8792,6 +8812,10 @@ msgstr "標準ファイルメニュー"
 msgid "Standard Help Menu"
 msgstr "標準ヘルプメニュー"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "新プロジェクトで開始"
@@ -9111,6 +9135,10 @@ msgstr "テキストの属性"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "テキスト編集コマンド"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10467,6 +10495,14 @@ msgstr "保存後元に戻す"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Undo回数の上限"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

@@ -1700,9 +1700,9 @@ msgstr "关闭工程"
 msgid "Close all editor files"
 msgstr "关闭所有编辑器中的文件"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "关闭页"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3180,6 +3180,10 @@ msgstr "英语"
 msgid "Enter data"
 msgstr "输入数据"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "输入运行参数"
@@ -3748,6 +3752,10 @@ msgstr "过滤匹配方法的任意部分"
 msgid "Filter by matching with start of method"
 msgstr "过滤匹配方法的起始部分"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "查找"
@@ -3888,6 +3896,14 @@ msgstr ""
 msgid "Focus to source editor"
 msgstr "焦点转移到代码编辑器"
 
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
+
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr "跟随光标"
@@ -3942,6 +3958,10 @@ msgstr "前进一个"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
@@ -4155,6 +4175,10 @@ msgstr "转向源码编辑器 8"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "转向源码编辑器 9"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7640,6 +7664,10 @@ msgstr "复位返回列表"
 msgid "Reset debugger"
 msgstr "重置调试器"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "资源装载错误"
@@ -8056,10 +8084,6 @@ msgstr "查找"
 msgid "Search Results"
 msgstr "查找结果"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "再次查找"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "同时在注释中查找"
@@ -8067,10 +8091,6 @@ msgstr "同时在注释中查找"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr ""
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "在列表中搜索或过滤词组"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8796,6 +8816,10 @@ msgstr "标准文件菜单"
 msgid "Standard Help Menu"
 msgstr "标准的帮助菜单"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "以新的工程开始"
@@ -9115,6 +9139,10 @@ msgstr "文本属性"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "文本编辑命令"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10471,6 +10499,14 @@ msgstr "撤销保存后的"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "撤销限制"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

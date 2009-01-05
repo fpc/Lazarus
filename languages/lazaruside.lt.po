@@ -1698,9 +1698,9 @@ msgstr "Užverti projektą"
 msgid "Close all editor files"
 msgstr "Užverti visus rengyklės failus"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "Užverti lapą"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3178,6 +3178,10 @@ msgstr "Anglų"
 msgid "Enter data"
 msgstr "Įveskite duomenis"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Įveskite starto parametrus"
@@ -3746,6 +3750,10 @@ msgstr "Filtruoti pagal bet kurią metodo dalį"
 msgid "Filter by matching with start of method"
 msgstr "Filtruoti pagal metodo pradžią"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Paieška"
@@ -3886,6 +3894,14 @@ msgstr "Kompiliacijai pasibaigus, rodyti pranešimų langą"
 msgid "Focus to source editor"
 msgstr "Aktyvuoti pirminio kodo rengyklę"
 
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
+
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr "Sekti žymeklį"
@@ -3941,6 +3957,10 @@ msgstr "Vienu pirmyn"
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
 msgstr "Rasti tušti metodai:"
+
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
@@ -4153,6 +4173,10 @@ msgstr "Rodyti pirminio kodo rengyklės 8 kortelę"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "Rodyti pirminio kodo rengyklės 9 kortelę"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7638,6 +7662,10 @@ msgstr "Atstatyti rezultatų sąrašą"
 msgid "Reset debugger"
 msgstr "Atstatyti derintuvę pradžion"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Klaida įkeliant resursus"
@@ -8054,10 +8082,6 @@ msgstr "Ko ieškoti"
 msgid "Search Results"
 msgstr "Ieškos rezultatai"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "Ieškoti toliau"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Taip pat ir komentaruose"
@@ -8065,10 +8089,6 @@ msgstr "Taip pat ir komentaruose"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Ieškoti šiose klasės sekcijose:"
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "Ieškoti arba filtruoti žodžius sąraše"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8794,6 +8814,10 @@ msgstr "Standartinis failo meniu"
 msgid "Standard Help Menu"
 msgstr "Standartinis žinyno meniu"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Startuti su nauju projektu"
@@ -9113,6 +9137,10 @@ msgstr "Teksto atributai"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Teksto keitimo komandos"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10469,6 +10497,14 @@ msgstr "Išsaugojus grąžinimas neišvalomas"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Grąžinimų riba"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

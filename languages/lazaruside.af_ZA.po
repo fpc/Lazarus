@@ -1699,8 +1699,8 @@ msgstr ""
 msgid "Close all editor files"
 msgstr "Sluit alle lêers"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
 msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
@@ -3179,6 +3179,10 @@ msgstr "English"
 msgid "Enter data"
 msgstr ""
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr ""
@@ -3747,6 +3751,10 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr ""
@@ -3887,6 +3895,14 @@ msgstr ""
 msgid "Focus to source editor"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
+
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr ""
@@ -3941,6 +3957,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascal
@@ -4153,6 +4173,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
+msgstr ""
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
@@ -7639,6 +7663,10 @@ msgstr ""
 msgid "Reset debugger"
 msgstr ""
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -8055,20 +8083,12 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr ""
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr ""
 
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
-msgstr ""
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
 msgstr ""
 
 #: lazarusidestrconsts:lispatheditsearchpaths
@@ -8795,6 +8815,10 @@ msgstr ""
 msgid "Standard Help Menu"
 msgstr ""
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr ""
@@ -9113,6 +9137,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
@@ -10470,6 +10498,14 @@ msgstr "Ontdoen na stoor"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Ontdoen limiet"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
