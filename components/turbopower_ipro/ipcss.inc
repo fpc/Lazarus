@@ -1,12 +1,12 @@
 {$IFDEF CSS_INTERFACE}
  TCSSGroup = class
  end;
- 
+
  TCSSFontStyle = (cfsNormal, cfsItalic, cfsOblique, cfsInherit);
  TCSSFontWeight = (cfwNormal, cfwBold, cfwBolder, cfwLighter, cfw100, cfw200,
                     cfw300, cfw400 , cfw500, cfw600, cfw700, cfw800, cfw900);
  TCSSFontVariant = (cfvNormal, cfvSmallCaps, cfvInherit);
- 
+
  TCSSBorderStyle = (cbsNone, cbsHidden, cbsDotted, cbsDashed, cbsSolid, cbsDouble,
                    cbsGroove, cbsRidge, cbsInset, cbsOutset);
 
@@ -25,7 +25,7 @@
    //proprety Variant: TCSSFontVariant
    property Weight: TCSSFontWeight read FWeight write FWeight;
  end;
- 
+
  { TCSSBorder }
 
  TCSSBorder = class
@@ -36,7 +36,7 @@
    property Color: TColor read FColor write FColor;
    property Style: TCSSBorderStyle read FStyle write FStyle;
  end;
- 
+
  { TCSSProps }
 
  TCSSProps = class
@@ -64,7 +64,7 @@
    destructor Destroy; override;
    procedure ReadCommands(ACommands: TStrings);
  end;
- 
+
  { TCSSGlobalProps }
 
  TCSSGlobalProps = class
@@ -74,7 +74,7 @@
    destructor Destroy; override;
    function GetElement(AElementID: String; ClassID: String = ''; CreateIfNotExist: Boolean = False): TCSSProps;
  end;
- 
+
 {$ELSE implementation}
 type
 
@@ -519,7 +519,7 @@ begin
      Result.Delimiter := ',';
      Result.DelimitedText := Elements;
   end;
-  
+
   for i := 0 to Result.Count-1 do begin
     Element := LowerCase(Result[i]);
     ElementClass := '';
@@ -558,7 +558,8 @@ var
 begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
-  
+  ACommand := ACommand + ' ';
+
 
   WantArg := True;
   Quote := #0;
@@ -683,7 +684,7 @@ begin
   EatWhiteSpace;
 
   AStatement := '';
-    
+
   FStart := FStream.Position;
   while not EOF do
   begin
@@ -757,9 +758,15 @@ begin
     Command := LowerCase(GetCommandName(ACommand));
 
     if Command = 'color' then
-      Color := ColorFromString(Args[0])
+      if Args.Count > 0 then
+        Color := ColorFromString(Args[0])
+      else
+        Color := clDefault
     else if Command = 'background-color' then
-      BGColor := ColorFromString(Args[0])
+      if Args.Count > 0 then
+        BGColor := ColorFromString(Args[0])
+      else
+        BGColor := clDefault
     else if Command = 'background' then
     begin
       if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
@@ -776,7 +783,7 @@ begin
       Font.Style := CSSFontStyleFromName(Args[0])
     else if Command = 'font-weight' then
       Font.Weight := FontWeightFromString(Args[0]);
-  
+
     Args.Free;
   end;
 end;
@@ -811,19 +818,19 @@ var
       ElementName := Lowercase(aElement+'.'+ClassId)
     else
       ElementName := lowercase(aElement);
-      
+
     ElementIndex := FElements.IndexOf(ElementName);
-    
+
     if ElementIndex>=0 then begin
       result := TCSSProps(FElements.Objects[ElementIndex]);
     end;
-      
+
   end;
 begin
   Result := nil;
   if (ClassID = '') and (AElementID = '') then
     exit;
-    
+
   LookForElement(aElementID);
   if (Result=nil) and not CreateIfNotExist then
     LookForelement('*');

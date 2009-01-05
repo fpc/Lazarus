@@ -139,7 +139,6 @@ type
      
      function GetXDPI: Integer; override;
      function GetYDPI: Integer; override;
-     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
 
      {-------------------------------------------------
          SPECIFIC CUPS METHODS OR PROPERTIES
@@ -159,6 +158,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
     
     {-------------------------------------------------
         SPECIFIC CUPS METHODS OR PROPERTIES

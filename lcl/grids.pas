@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -10003,6 +10003,11 @@ begin
 end;
 
 initialization
+  RegisterPropertyToSkip(TStringGrid, 'VisibleRowCount',
+    'Property streamed in by older compliler', '');
+  RegisterPropertyToSkip(TStringGrid, 'VisibleColCount',
+    'Property streamed in by older compliler', '');
+
 {$I lcl_dbgrid_images.lrs}
 
 end.

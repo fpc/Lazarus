@@ -451,7 +451,8 @@ type
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
     pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
     pfRunnable, // project can be run
-    pfAlwaysBuild // skip IDE's smart check if compilation is needed and always compile
+    pfAlwaysBuild, // skip IDE's smart check if compilation is needed and always compile
+    pfLRSFilesInOutputDirectory // put .lrs files in output directory
     );
   TProjectFlags = set of TProjectFlag;
   
@@ -644,7 +645,8 @@ const
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
                          pfRunnable,
-                         pfAlwaysBuild];
+                         pfAlwaysBuild,
+                         pfLRSFilesInOutputDirectory];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles',
       'SaveOnlyProjectUnits',
@@ -653,7 +655,8 @@ const
       'MainUnitHasCreateFormStatements',
       'MainUnitHasTitleStatement',
       'Runnable',
-      'AlwaysBuild'
+      'AlwaysBuild',
+      'LRSInOutputDirectory'
     );
     
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (

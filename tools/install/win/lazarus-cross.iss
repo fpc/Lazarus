@@ -32,6 +32,7 @@ WizardSmallImageFile=lazarus_install_cheetah_small.bmp
 WizardImageStretch=false
 ShowTasksTreeLines=true
 WindowVisible=true
+PrivilegesRequired=none
 
 [Files]
 Source: {#BuildDir}\image\*.*; DestDir: {app}; Flags: recursesubdirs

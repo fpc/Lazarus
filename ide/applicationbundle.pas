@@ -38,7 +38,7 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, FileUtil, Forms, Controls, Dialogs,
-  DialogProcs;
+  DialogProcs, LazarusIDEStrConsts;
 
 type
   EApplicationBundleException = Exception;
@@ -61,11 +61,6 @@ const
   PropertyListFileName = 'Info.plist';
   PackageInfoFileName = 'PkgInfo';
   PackageInfoHeader = 'APPL????';
-  
-resourcestring
-  rsCreatingDirFailed = 'Creating directory "%s" failed!';
-  rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
-  rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
   
 implementation
 

@@ -34,15 +34,17 @@ type
 
   TSynEditMarkupCtrlMouseLink = class(TSynEditMarkup)
   private
-    FCtrlMouseLine : Integer;
-    FCtrlMouseX1 : Integer;
-    FCtrlMouseX2 : Integer;
+    FCtrlMouseLine: Integer;
+    FCtrlMouseX1: Integer;
+    FCtrlMouseX2: Integer;
+    FCurX1, FCurX2: Integer;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit: TCustomControl);
 
     Procedure EndMarkup; override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    Procedure PrepareMarkupForRow(aRow: Integer); override;
+    Function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor; override;
+    Function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer; override;
 
     property CtrlMouseLine : Integer read FCtrlMouseLine write FCtrlMouseLine;
     property CtrlMouseX1 : Integer read FCtrlMouseX1 write FCtrlMouseX1;
@@ -54,7 +56,7 @@ uses SynEdit; //, SynEditTypes;
 
 { TSynEditMarkupCtrlMouseLink }
 
-constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
   FCtrlMouseLine:=-1;
@@ -82,24 +84,33 @@ begin
   end;
 end;
 
-function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+procedure TSynEditMarkupCtrlMouseLink.PrepareMarkupForRow(aRow: Integer);
+begin
+  inherited PrepareMarkupForRow(aRow);
+  if aRow = FCtrlMouseLine then begin
+    FCurX1 := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine)).x;
+    FCurX2 := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine)).x;
+  end;
+end;
+
+function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
 begin
   Result := nil;
-  if (aRow <> FCtrlMouseLine) or ((aCol < FCtrlMouseX1) or (aCol >= FCtrlMouseX2))
+  if (aRow <> FCtrlMouseLine) or ((aCol < FCurX1) or (aCol >= FCurX2))
   then exit;
   Result := MarkupInfo;
 end;
 
-function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
+function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
 begin
   Result := -1;
   if FCtrlMouseLine <> aRow
   then exit;
 
-  if aCol < FCtrlMouseX1
-  then Result := FCtrlMouseX1;
-  if (aCol < FCtrlMouseX2) and (aCol >= FCtrlMouseX1)
-  then Result := FCtrlMouseX2;
+  if aCol < FCurX1
+  then Result := FCurX1;
+  if (aCol < FCurX2) and (aCol >= FCurX1)
+  then Result := FCurX2;
 end;
 
 end.

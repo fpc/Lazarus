@@ -1004,7 +1004,7 @@
         <short>The <var>Palette</var> of colours to be included</short>
       </element>
       <element name="TCustomColorBox.Selected">
-        <short>the colour that has been <var>Selected</var> from the ComboBox</short>
+        <short>The colour that has been <var>Selected</var> from the ComboBox</short>
       </element>
       <element name="TCustomColorListBox">
         <short>
@@ -1015,10 +1015,7 @@
         <short>
           <var>SetStyle</var> - specify the Style</short>
       </element>
-      <element name="TCustomColorListBox.DrawItem">
-        <short>
-          <var>DrawItem</var> - draw the specified item in the list</short>
-      </element>
+      <element name="TCustomColorListBox.DrawItem" link="#LCL.StdCtrls.TCustomListBox.DrawItem"/>
       <element name="TCustomColorListBox.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TCustomColorListBox.SetColorList">
         <short>
@@ -1032,6 +1029,90 @@
       <element name="TCustomColorListBox.Palette">
         <short>The <var>Palette</var> to be used to supply the colours</short>
       </element>
+      <element name="TColorBoxStyle">
+        <short>
+          <var>TColorBoxStyle</var> - set of <var>TColorBoxStyles</var>
+        </short>
+      </element>
+      <element name="TCustomColorBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomColorBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
+      <element name="TCustomColorBox.DoGetColors">
+        <short>
+          <var>DoGetColors</var> - perform the code for getting colours</short>
+      </element>
+      <element name="TCustomColorBox.Change" link="#LCL.StdCtrls.TCustomComboBox.Change"/>
+      <element name="TCustomColorBox.PickCustomColor">
+        <short>
+          <var>PickCustomColor</var> - if True, a custom colour is picked rather than one of the standard list</short>
+      </element>
+      <element name="TCustomColorBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
+      <element name="TCustomColorBox.ColorNames">
+        <short>
+          <var>ColorNames</var> - the name of the specified (indexed) colour, stored as a string</short>
+      </element>
+      <element name="TCustomColorBox.DefaultColorColor">
+        <short>
+          <var>DefaultColorColor</var> - the default colour, expressed as a Color value</short>
+        <descr>
+          <p>
+            <var>DefaultColorColor</var> - the default colour, expressed as a Color value</p>
+          <p>The use of the construct <var>..ColorColor</var> denotes the value of a colour as a TColor, as opposed to an index value</p>
+        </descr>
+      </element>
+      <element name="TCustomColorBox.NoneColorColor">
+        <short>
+          <var>NoneColorColor</var> - the colour to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
+        </short>
+      </element>
+      <element name="TCustomColorBox.OnGetColors">
+        <short>
+          <var>OnGetColors</var> - event handler for the instruction to Get Colours</short>
+      </element>
+      <element name="TColorBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorBox.DefaultColorColor"/>
+      <element name="TColorBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorBox.NoneColorColor"/>
+      <element name="TColorBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
+      <element name="TColorBox.OnGetColors" link="#LCL.ColorBox.TCustomColorBox.OnGetColors"/>
+      <element name="TCustomColorListBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomColorListBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
+      <element name="TCustomColorListBox.DoGetColors">
+        <short>
+          <var>DoGetColors</var> - perform the code for getting the colours</short>
+      </element>
+      <element name="TCustomColorListBox.DoSelectionChange" link="#LCL.StdCtrls.TCustomListBox.DoSelectionChange"/>
+      <element name="TCustomColorListBox.PickCustomColor">
+        <short>
+          <var>PickCustomColor</var> - if True, a custom colour is picked rather than one from the standard list</short>
+      </element>
+      <element name="TCustomColorListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
+      <element name="TCustomColorListBox.ColorNames">
+        <short>
+          <var>ColorNames</var> - the name of the indexed colour, stored as a string</short>
+      </element>
+      <element name="TCustomColorListBox.DefaultColorColor">
+        <short>
+          <var>DefaultColorColor</var> - the default colour, expressed as a Color value</short>
+        <descr>
+          <p>
+            <var>DefaultColorColor</var> - the default colour, expressed as a Color value</p>
+          <p>The use of the construct <var>..ColorColor</var> denotes the value of a colour as a TColor, as opposed to an index value</p>
+        </descr>
+      </element>
+      <element name="TCustomColorListBox.NoneColorColor">
+        <short>
+          <var>NoneColorColor</var> - the colour to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
+        </short>
+      </element>
+      <element name="TCustomColorListBox.OnGetColors">
+        <short>
+          <var>OnGetColors</var> - event handler for the instruction to Get Colours</short>
+      </element>
+      <element name="TColorListBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorListBox.DefaultColorColor"/>
+      <element name="TColorListBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorListBox.NoneColorColor"/>
+      <element name="TColorListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
+      <element name="TColorListBox.OnGetColors" link="#LCL.ColorBox.TCustomColorListBox.OnGetColors"/>
+      <element name="TColorListBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TColorListBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TColorListBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
     </module>
     <!-- ColorBox -->
   </package>

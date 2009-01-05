@@ -116,6 +116,7 @@ resourcestring
   lisProjectUnitPath = 'Project Unit Path';
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
+  lisProjectOutDir = 'Project Output directory (e.g. the ppu directory)';
   lisUserSHomeDirectory = 'User''s home directory';
   lisMakeExe = 'Make Executable';
   lisProjectMacroProperties = 'Project macro properties';
@@ -3985,6 +3986,11 @@ resourcestring
   lisSelectedRightNeighbour = '(selected right neighbour)';
   lisSelectedTopNeighbour = '(selected top neighbour)';
   lisSelectedBottomNeighbour = '(selected bottom neighbour)';
+
+  rsCreatingDirFailed = 'Creating directory "%s" failed!';
+  rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
+  rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
+  lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
 
 implementation
 

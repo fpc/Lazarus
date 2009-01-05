@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -83,7 +83,7 @@ type
 
     procedure SetMask(Value : String);
     function  ClearChar(Position : Integer) : Char;
-    procedure SetCursorPos;
+    procedure SetCursorPos(InsertingChar: Boolean = False);
     function  GetIsMasked : Boolean;
     procedure InsertChar(Ch : Char);
     procedure DeleteSelected(AlsoOnePosition : Boolean);
@@ -176,7 +176,6 @@ type
     property OnUTF8KeyPress;
 
     property EditMask;
-    property isMasked;
     property Text;
     property SpaceChar;
   end;
@@ -358,7 +357,7 @@ begin
          Inherited Text := S;
          CurrentText := S;
          Inc(FPosition);
-         SetCursorPos;
+         SetCursorPos(True);
        end;
 end;
 
@@ -499,6 +498,12 @@ begin
     Exit;
   end;
 
+  // Number on numeric keyboard
+  if (Key >= VK_NUMPAD0) and (Key <= VK_NUMPAD9) and (Shift = []) then
+  begin 
+    Key := (Key - VK_NUMPAD0) + Ord('0'); // Translate Numeric key input to the corresponding numbers
+  end;
+
   // Insert a char
   if (Key In [32..122]) then
   begin
@@ -535,7 +540,7 @@ begin
 end;
 
 // Set the cursor position
-procedure TCustomMaskEdit.SetCursorPos;
+procedure TCustomMaskEdit.SetCursorPos(InsertingChar: Boolean);
 Var
   Ok   : Boolean;
   I, C : Integer;
@@ -552,6 +557,9 @@ begin
     begin
       Inc(C);
       Ok := (C = FPosition);
+       if Ok and InsertingChar then
+         while (CharToMask(FMask[I]) in [Char_DateSeparator, Char_HourSeparator]) do
+           Inc(I);
     end;
 
     if Not Ok then Inc(I);
@@ -581,7 +589,7 @@ begin
        Char_AllFixedUpCase      : Result := '0';
        Char_AllFixedDownCase    : Result := '0';
        Char_Space               : Result := FSpaceChar;
-       Char_HourSeparator       : Result := DecimalSeparator;
+       Char_HourSeparator       : Result := TimeSeparator;
        Char_DateSeparator       : Result := DateSeparator;
   end;
 end;

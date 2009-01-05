@@ -1313,7 +1313,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetAutoCheck">
-        <short/>
+        <short>
+          <var>SetAutoCheck</var> - specifies the value of AutoCheck, whether True or False</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1324,7 +1325,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetCaption">
-        <short/>
+        <short>
+          <var>SetCaption</var> - specifies the string to be used as caption</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1335,7 +1337,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetChecked">
-        <short/>
+        <short>
+          <var>SetChecked</var> - specifies the value of the Checked property: True or False</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1357,7 +1360,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetGroupIndex">
-        <short/>
+        <short>
+          <var>SetGroupIndex</var> - specifies the value for the Group Index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1368,7 +1372,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpContext">
-        <short/>
+        <short>
+          <var>SetHelpContext</var> - specifies the value to be used for context-sensitive Help</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1379,7 +1384,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpKeyword">
-        <short/>
+        <short>
+          <var>SetHelpKeyword</var> - specifies the keyword to be used for Help</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1390,7 +1396,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpType">
-        <short/>
+        <short>
+          <var>SetHelpType</var> - specifies the trpe of Help to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1401,7 +1408,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHint">
-        <short/>
+        <short>
+          <var>SetHint</var> - specifies the string to be used for Hints</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1412,7 +1420,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetImageIndex">
-        <short/>
+        <short>
+          <var>SetImageIndex</var> - specifies the index value for the image associated with the action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1423,7 +1432,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetShortCut">
-        <short/>
+        <short>
+          <var>SetShortCut</var> - specifies the shortcut for the action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1434,7 +1444,9 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetVisible">
-        <short/>
+        <short>
+          <var>SetVisible</var> - specifies whether or not the control for the action is <var>Visible</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1555,7 +1567,9 @@ executed at this point in time.
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TActionLinkClass">
-        <short/>
+        <short>
+          <var>TActionLinkClass</var> - class of <var>TActionLink</var>
+        </short>
         <descr/>
         <seealso/>
       </element>

@@ -728,7 +728,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TPrinter.GetCanvasRef">
-        <short/>
+        <short>
+          <var>GetCanvasRef</var> - returns a reference to a printer canvas</short>
         <descr/>
         <errors/>
         <seealso/>

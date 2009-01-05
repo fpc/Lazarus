@@ -34,8 +34,8 @@ unit CompatibilityRestrictions;
 interface
 
 uses
-  Classes, Forms, SysUtils, InterfaceBase, ObjectInspector, PackageSystem, PackageDefs,
-  ComponentReg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, LazConf, LCLProc, StringHashList;
+  Classes, Forms, SysUtils, InterfaceBase, ObjectInspector, OIFavouriteProperties, PackageSystem, 
+  PackageDefs, ComponentReg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, LazConf, LCLProc, StringHashList;
 
 type
   TReadRestrictedEvent = procedure (const RestrictedName, WidgetSetName: String) of object;
@@ -242,7 +242,7 @@ begin
   if AClass = nil then
   begin
     // add as generic widgetset issue
-    Inc(FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)]);
+    FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)] := FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)] + 1;
     Exit;
   end;
   

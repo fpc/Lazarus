@@ -3055,7 +3055,8 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.DrawFocusRect">
-        <short/>
+        <short>
+          <var>DrawFocusRect</var> - draw a rectangle with focus in the nominated cell</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3286,7 +3287,8 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.InvalidateCell">
-        <short/>
+	      <short>
+		      <var>InvalidateCell</var> - render a cell non-valid, and redraw if required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4421,7 +4423,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EndUpdate">
-        <short>Finish updating the grid</short>
+        <short>
+          <var>EndUpdate</var> - Finish updating the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4432,7 +4435,9 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EndUpdate">
-        <short/>
+	      <short>
+		      <var>EndUpdate</var> - Finish updating the grid</short>
+
         <descr/>
         <errors/>
         <seealso/>
@@ -4527,7 +4532,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.MouseToCell">
-        <short/>
+	      <short>Convert mouse coordinates to the position of a cell in the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7290,7 +7295,7 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TGridColumn.Assign">
+      <element name="TGridColumn.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -7429,14 +7434,16 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGridColumn.AllColumnsChange">
-        <short/>
+        <short>
+          <var>AllColumnsChange</var> - method for processing a change in al columns</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGridColumn.CreateTitle">
-        <short/>
+        <short>
+          <var>CreateTitle</var> - creates a column title and returns it in the result</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7447,12 +7454,13 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TGridColumn.IsDefaultFont">
-        <short/>
+        <short>
+          <var>IsDefaultFont</var> - if True, the default font is being used</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGridColumn.Create">
+      <element name="TGridColumn.Create" link="#rtl.Classes.TCollectionItem.Create">
         <short/>
         <descr/>
         <errors/>
@@ -7463,7 +7471,7 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TGridColumn.Destroy">
+      <element name="TGridColumn.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -7471,14 +7479,16 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGridColumn.FillDefaultFont">
-        <short/>
+        <short>
+          <var>FillDefaultFont</var> - method to fill all cells in the column with the default font</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TGridColumn.IsDefault">
-        <short/>
+        <short>
+          <var>IsDefault</var> - returns True if this column is the default</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9778,13 +9788,15 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.HeaderHotZones">
-        <short/>
+        <short>
+          <var>HeaderHotZones</var> - the zones of the header that are under the cursor, so are capable of being selected or pushed (or not!)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.HeaderPushZones">
-        <short/>
+        <short>
+          <var>HeaderPushZones</var> - the zones of the header that have been selected by the cursor, or pushed</short>
         <descr/>
         <seealso/>
       </element>
@@ -11149,7 +11161,8 @@ Segunda linea de texto</descr>
       <element name="TStringGridStrings">
         <short>
           <var>TStringGridStrings</var> - the strings that populate the cells of a TStringGrid</short>
-        <descr/>
+        <descr>All of the properties are defined in the ancestor classes (<var>TStrings</var> etc)
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -12673,10 +12686,7 @@ Segunda linea de texto</descr>
         <short>
           <var>msg_SetPos</var> - issues a message to specify the position</short>
       </element>
-      <element name="TCompositeCellEditor.VisibleChanging">
-        <short>
-          <var>VisibleChanging</var> - method for a change in the Visibility property</short>
-      </element>
+      <element name="TCompositeCellEditor.VisibleChanging" link="#LCL.Controls.TControl.VisibleChanging"/>
       <element name="TCompositeCellEditor.SendChar">
         <short>
           <var>SendChar</var> - transmits the specified character and returns an integer status result</short>
@@ -12750,6 +12760,51 @@ Segunda linea de texto</descr>
       <element name="TStringGrid.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TStringGrid.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TStringGrid.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TGridColumn.GetValueChecked">
+        <short>
+          <var>GetValueChecked</var> - returns a checked value as a string</short>
+      </element>
+      <element name="TGridColumn.GetValueUnchecked">
+        <short>
+          <var>GetValueUnchecked</var> - returns an unchecked value as a string</short>
+      </element>
+      <element name="TGridColumn.ValueChecked">
+        <short>
+          <var>ValueChecked</var> - a string value of a checked item</short>
+      </element>
+      <element name="TGridColumn.ValueUnchecked">
+        <short>
+          <var>ValueUnchecked</var> - a string value of an unchecked item</short>
+      </element>
+      <element name="TCustomGrid.DrawGridCheckboxBitmaps">
+        <short>
+          <var>DrawGridCheckboxBitmaps</var> - draws checkbox bitmaps in th enominated rectangle with the specified checkbox state</short>
+      </element>
+      <element name="TCustomGrid.OnUserCheckboxBitmap">
+        <short>
+          <var>OnUserCheckboxBitmap</var> - event handler for a user accessing a checkbox bitmap</short>
+      </element>
+      <element name="TCustomDrawGrid.GetCheckBoxState">
+        <short>
+          <var>GetCheckBoxState</var> - returns the state of the checkbox at the specified position</short>
+      </element>
+      <element name="TCustomDrawGrid.SetCheckboxState">
+        <short>
+          <var>SetCheckboxState</var> - specifies the state of the checkbox in the nominated cell</short>
+      </element>
+      <element name="TCustomDrawGrid.ToggleCheckbox">
+        <short>
+          <var>ToggleCheckbox</var> - toggles checkbox state between checked and unchecked</short>
+      </element>
+      <element name="TCustomDrawGrid.OnGetCheckboxState">
+        <short>
+          <var>OnGetCheckboxState</var> - event handler for finding checkbox state</short>
+      </element>
+      <element name="TCustomDrawGrid.OnSetCheckboxState">
+        <short>
+          <var>OnSetCheckboxState</var> - event handler for specifying checkbox state</short>
+      </element>
+      <element name="TCustomStringGrid.GetCheckBoxState" link="#LCL.Grids.TCustomDrawGrid.GetCheckBoxState"/>
     </module>
     <!-- Grids -->
   </package>

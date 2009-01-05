@@ -720,6 +720,8 @@ begin
          TWinControl(ControlSelection[i].Persistent).ControlStyle)
     and (not ControlSelection[i].ParentInSelection) then begin
       Result:=TWinControl(ControlSelection[i].Persistent);
+      if GetLookupRootForComponent(Result)<>FLookupRoot then
+        Result:=nil;
       break;
     end;
   end;

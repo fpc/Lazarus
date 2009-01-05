@@ -3,15 +3,13 @@ object MaskEditorForm: TMaskEditorForm
   Height = 239
   Top = 248
   Width = 507
-  HorzScrollBar.Page = 506
-  VertScrollBar.Page = 238
   BorderStyle = bsDialog
   Caption = 'Input Mask Editor'
   ClientHeight = 239
   ClientWidth = 507
   OnCreate = MaskEditorFormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object InputMaskLabel: TLabel
     Left = 8
     Height = 14
@@ -52,37 +50,12 @@ object MaskEditorForm: TMaskEditorForm
     Top = 24
     Width = 287
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     OnClick = SampleMasksListBoxClick
-    TabOrder = 1
-  end
-  object OkButton: TButton
-    Left = 263
-    Height = 25
-    Top = 206
-    Width = 75
-    Anchors = [akRight, akBottom]
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 2
-  end
-  object CancelButton: TButton
-    Left = 343
-    Height = 25
-    Top = 206
-    Width = 75
-    Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 3
-  end
-  object HelpButton: TButton
-    Left = 423
-    Height = 25
-    Top = 206
-    Width = 75
-    Anchors = [akRight, akBottom]
-    Caption = '&Help'
+    OnDrawItem = SampleMasksListBoxDrawItem
+    Style = lbOwnerDrawFixed
     TabOrder = 4
+    TopIndex = 0
   end
   object LoadSampleMasksButton: TButton
     Left = 16
@@ -105,18 +78,17 @@ object MaskEditorForm: TMaskEditorForm
     BorderSpacing.Left = 3
     MaxLength = 1
     OnChange = CharactersForBlankEditChange
-    TabOrder = 6
+    TabOrder = 1
   end
   object SaveLiteralCheckBox: TCheckBox
     Left = 8
     Height = 19
     Top = 88
-    Width = 136
+    Width = 138
     BorderSpacing.Left = 3
     Caption = 'Save &Literal Characters'
     OnClick = SaveLiteralCheckBoxClick
-    TabOrder = 7
-    UseOnChange = True
+    TabOrder = 2
   end
   object TestInputPanel: TPanel
     Left = 8
@@ -128,7 +100,7 @@ object MaskEditorForm: TMaskEditorForm
     ClientHeight = 66
     ClientWidth = 192
     FullRepaint = False
-    TabOrder = 8
+    TabOrder = 3
     object TestInputLabel: TLabel
       Left = 8
       Height = 17
@@ -142,11 +114,47 @@ object MaskEditorForm: TMaskEditorForm
       Height = 23
       Top = 26
       Width = 176
-      BorderStyle = bsSingle
-      ParentColor = False
+      Ctl3D = False
       TabOrder = 0
       SpaceChar = '_'
     end
+  end
+  object OkButton: TBitBtn
+    Left = 263
+    Height = 25
+    Top = 206
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 6
+  end
+  object CancelButton: TBitBtn
+    Left = 343
+    Height = 25
+    Top = 206
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 7
+  end
+  object HelpButton: TBitBtn
+    Left = 423
+    Height = 25
+    Top = 206
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = '&Help'
+    Kind = bkHelp
+    NumGlyphs = 0
+    TabOrder = 8
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open mask file (*.dem)'

@@ -203,9 +203,12 @@ var
   OutStream: TStringStream;
 begin
   OutStream := TStringStream.Create('');
-  BinaryToLazarusResourceCode(AResource, OutStream, ResourceName, ResourceType);
-  FLazarusResources.Add(OutStream.DataString);
-  OutStream.Free;
+  try
+    BinaryToLazarusResourceCode(AResource, OutStream, ResourceName, ResourceType);
+    FLazarusResources.Add(OutStream.DataString);
+  finally
+    OutStream.Free;
+  end;
 end;
 
 procedure TProjectResources.Clear;
@@ -295,6 +298,8 @@ begin
   with AConfig do
   begin
     ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
+    XPManifest.ManifestFileName := ChangeFileExt(FileName, '.manifest');
+
     ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
     XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
     VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);

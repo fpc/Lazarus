@@ -3216,7 +3216,7 @@ begin
   end;
   MaxX:=aCompletion.TheForm.ClientWidth;
   PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,aCompletion,
-                      CurrentCompletionType);
+                      CurrentCompletionType,aCompletion.Editor.Highlighter);
   Result:=true;
 end;
 
@@ -3240,7 +3240,7 @@ begin
   end;
   MaxX := Screen.Width-20;
   Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
-                                aCompletion,CurrentCompletionType, True);
+                                aCompletion,CurrentCompletionType,nil,True);
   if CurCompletionControl<>nil then
     Result.Y:=CurCompletionControl.FontHeight;
 end;
