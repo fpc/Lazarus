@@ -1989,8 +1989,10 @@ var
   CurSessionFilename: String;
   CurFlags: TProjectWriteFlags;
   SessionSaveResult: TModalResult;
+  UsePathDelim: TPathDelimSwitch;
 begin
   Result := mrCancel;
+  UsePathDelim:=pdsSystem;
 
   if OverrideProjectInfoFile<>'' then
     CfgFilename := OverrideProjectInfoFile
@@ -2079,7 +2081,7 @@ begin
       
       // save dependencies
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
-        FFirstRequiredDependency,pdlRequires);
+        FFirstRequiredDependency,pdlRequires,UsePathDelim);
 
       // save units
       SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);

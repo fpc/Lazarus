@@ -211,7 +211,8 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer; AdjustPathDelims: boolean);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+      UsePathDelim: TPathDelimSwitch);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
     function GetShortFilename(UseUp: boolean): string;
@@ -315,7 +316,8 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 FileVersion: integer);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+      UsePathDelim: TPathDelimSwitch);
     function MakeSense: boolean;
     function IsCompatible(const Version: TPkgVersion): boolean;
     function IsCompatible(const PkgName: string;
@@ -918,7 +920,8 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages, SortList: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  First: TPkgDependency; ListType: TPkgDependencyList);
+  First: TPkgDependency; ListType: TPkgDependencyList;
+  UsePathDelim: TPathDelimSwitch);
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
@@ -1045,7 +1048,8 @@ begin
 end;
 
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  First: TPkgDependency; ListType: TPkgDependencyList);
+  First: TPkgDependency; ListType: TPkgDependencyList;
+  UsePathDelim: TPathDelimSwitch);
 var
   i: Integer;
   Dependency: TPkgDependency;
@@ -1054,7 +1058,7 @@ begin
   Dependency:=First;
   while Dependency<>nil do begin
     inc(i);
-    Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/');
+    Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/',UsePathDelim);
     Dependency:=Dependency.NextDependency[ListType];
   end;
   XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
@@ -1590,13 +1594,15 @@ begin
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
 end;
 
-procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  UsePathDelim: TPathDelimSwitch);
 var
   TmpFilename: String;
 begin
   TmpFilename:=Filename;
   FPackage.ShortenFilename(TmpFilename,true);
-  XMLConfig.SetDeleteValue(Path+'Filename/Value',TmpFilename,'');
+  XMLConfig.SetDeleteValue(Path+'Filename/Value',
+                           SwitchPathDelims(TmpFilename,UsePathDelim),'');
   XMLConfig.SetDeleteValue(Path+'HasRegisterProc/Value',HasRegisterProc,
                            false);
   XMLConfig.SetDeleteValue(Path+'AddToUsesPkgSection/Value',AddToUsesPkgSection,
@@ -1781,7 +1787,7 @@ begin
 end;
 
 procedure TPkgDependency.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; UsePathDelim: TPathDelimSwitch);
   
   procedure SaveFilename(const aPath: string; AFilename: string);
   var
@@ -1793,7 +1799,7 @@ procedure TPkgDependency.SaveToXMLConfig(XMLConfig: TXMLConfig;
       if BaseDir<>'' then
         AFilename:=CreateRelativePath(AFilename,BaseDir);
     end;
-    XMLConfig.SetDeleteValue(Path+aPath,AFilename,'');
+    XMLConfig.SetDeleteValue(Path+aPath,SwitchPathDelims(AFilename,UsePathDelim),'');
   end;
   
 begin
@@ -2696,7 +2702,9 @@ end;
 
 procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
-  
+var
+  UsePathDelim: TPathDelimSwitch;
+
   procedure SaveFiles(const ThePath: string; List: TFPList);
   var
     i: Integer;
@@ -2705,7 +2713,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
     XMLConfig.SetDeleteValue(ThePath+'Count',List.Count,0);
     for i:=0 to List.Count-1 do begin
       PkgFile:=TPkgFile(List[i]);
-      PkgFile.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/');
+      PkgFile.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',UsePathDelim);
     end;
   end;
   
@@ -2716,6 +2724,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   end;
 
 begin
+  UsePathDelim:=pdsSystem;
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelim,'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
@@ -2741,7 +2750,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires);
+                        FFirstRequiredDependency,pdlRequires,UsePathDelim);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/');
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
