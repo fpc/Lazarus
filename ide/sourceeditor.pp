@@ -4611,8 +4611,8 @@ begin
   if assigned(FIncrementalSearchEditor.EditorComponent) then
     with FIncrementalSearchEditor.EditorComponent do begin
       UseIncrementalColor:= true;
-      if assigned(MarkupByClass[TSynEditMarkupHighlightAll]) then
-        MarkupByClass[TSynEditMarkupHighlightAll].TempEnable;
+      if assigned(MarkupByClass[TSynEditMarkupHighlightAllCaret]) then
+        MarkupByClass[TSynEditMarkupHighlightAllCaret].TempDisable;
     end;
 
   IncrementalSearchStr:='';
@@ -4631,8 +4631,8 @@ begin
     if assigned(FIncrementalSearchEditor.EditorComponent) then
       with FIncrementalSearchEditor.EditorComponent do begin
         UseIncrementalColor:= False;
-        if assigned(MarkupByClass[TSynEditMarkupHighlightAll]) then
-          MarkupByClass[TSynEditMarkupHighlightAll].TempEnable;
+        if assigned(MarkupByClass[TSynEditMarkupHighlightAllCaret]) then
+          MarkupByClass[TSynEditMarkupHighlightAllCaret].TempEnable;
       end;
     FIncrementalSearchEditor.EditorComponent.SetHighlightSearch('', []);
     FIncrementalSearchEditor := nil;
