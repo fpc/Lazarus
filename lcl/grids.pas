@@ -871,7 +871,7 @@ type
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
-
+    procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
     procedure InternalSetColCount(ACount: Integer);
@@ -1056,6 +1056,7 @@ type
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
   TGetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: TCheckboxState) of object;
   TSetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: TCheckboxState) of object;
+  TMouseWheelOption = (mwCursor, mwGrid);
 
 
   { TCustomDrawGrid }
@@ -1073,6 +1074,7 @@ type
     FOnSelectCell: TOnSelectcellEvent;
     FOnSetCheckboxState: TSetCheckboxStateEvent;
     FOnSetEditText: TSetEditEvent;
+    FMouseWheelOption: TMouseWheelOption;
     function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
     procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
   protected
@@ -1090,6 +1092,7 @@ type
     procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); virtual;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    procedure GridMouseWheel(shift: TShiftState; Delta: Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
@@ -1101,6 +1104,8 @@ type
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
     procedure ToggleCheckbox; virtual;
 
+    property MouseWheelOption: TMouseWheelOption read FMouseWheelOption
+                              write FMouseWheelOption default mwCursor;
     property OnGetCheckboxState: TGetCheckboxStateEvent
                               read FOnGetCheckboxState write FOnGetCheckboxState;
     property OnSetCheckboxState: TSetCheckboxStateEvent
@@ -1270,6 +1275,7 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property MouseWheelOption;
     property Options;
     //property ParentBiDiMode;
     property ParentColor default false;
@@ -1462,6 +1468,7 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property MouseWheelOption;
     property Options;
     //property ParentBiDiMode;
     property ParentColor default false;
@@ -5455,12 +5462,8 @@ function TCustomGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
 begin
   {$ifdef dbgScroll}DebugLn('doMouseWheelDown INIT');{$endif}
   Result:=inherited DoMouseWheelDown(Shift, MousePos);
-  if not result then begin
-    // event wasn't handled by the user
-    if ssCtrl in Shift then
-      MoveNextSelectable(true, 1, 0)
-    else
-      MoveNextSelectable(true, 0, 1);
+  if not Result then begin
+    GridMouseWheel(Shift, 1);
     Result := true;
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelDown END');{$endif}
@@ -5471,13 +5474,9 @@ function TCustomGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
 begin
   {$ifdef dbgScroll}DebugLn('doMouseWheelUP INIT');{$endif}
   Result:=inherited DoMouseWheelUp(Shift, MousePos);
-  if not result then begin
-    // event wasn't handled by the user
-    if ssCtrl in Shift then
-      MoveNextSelectable(true, -1, 0)
-    else
-      MoveNextSelectable(true, 0, -1);
-    Result := True;
+  if not Result then begin
+    GridMouseWheel(Shift, -1);
+    Result := true;
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelUP END');{$endif}
 end;
@@ -6522,6 +6521,14 @@ begin
   result := Columns.VisibleIndex(ColumnIndex);
   if result>=0 then
     result := result + FixedCols;
+end;
+
+procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
+begin
+  if ssCtrl in Shift then
+    MoveNextSelectable(true, Delta, 0)
+  else
+    MoveNextSelectable(true, 0, Delta);
 end;
 
 function TCustomGrid.GetEditMask(ACol, ARow: Longint): string;
@@ -7990,6 +7997,18 @@ function TCustomDrawGrid.GetEditText(aCol, aRow: Longint): string;
 begin
   result:='';
   if assigned(OnGetEditText) then OnGetEditText(self, aCol, aRow, Result);
+end;
+
+procedure TCustomDrawGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
+begin
+  if FMouseWheelOption=mwCursor then
+    inherited GridMouseWheel(shift, Delta)
+  else begin
+    if ssCtrl in Shift then
+      TryScrollTo(LeftCol+Delta, TopRow)
+    else
+      TryScrollTo(LeftCol, TopRow+Delta);
+  end;
 end;
 
 procedure TCustomDrawGrid.NotifyColRowChange(WasInsert, IsColumn: boolean;
