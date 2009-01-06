@@ -11784,6 +11784,7 @@ begin
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
+  CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
