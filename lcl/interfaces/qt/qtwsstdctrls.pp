@@ -596,8 +596,6 @@ begin
   QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
   QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
   QtTextEdit.setTabChangesFocus(not TCustomMemo(AWinControl).WantTabs);
-  QtTextEdit.setAlignment(AlignmentMap[TCustomMemo(AWinControl).Alignment]);
-
 
   Result := TLCLIntfHandle(QtTextEdit);
 end;

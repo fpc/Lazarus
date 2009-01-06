@@ -154,6 +154,9 @@ begin
   end
   else
     QTextEdit_append(FQtTextEdit,@Str);
+
+  if QTextEdit_alignment(FQtTextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
+    QTextEdit_setAlignment(FQtTextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
     
   FUpdating := False;
   {FillChar(Mess, SizeOf(Mess), #0);
