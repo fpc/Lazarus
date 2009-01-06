@@ -29,7 +29,7 @@ unit SynEditFoldedView;
 interface
 
 uses
-LCLProc,
+  LCLProc, Graphics,
   Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase,
   SynEditMiscClasses, SynEditPointClasses;
 
@@ -174,6 +174,7 @@ type
     fCaret: TSynEditCaret;
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
+    FMarkupInfoFoldedCode: TSynSelectedColor;
     fTopLine : Integer;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
@@ -257,7 +258,7 @@ type
     property Count : integer read GetCount;             (* refers to visible (unfolded) lines *)
 
     property CFDividerDrawLevel: Integer read fCFDividerDrawLevel write fCFDividerDrawLevel;
-
+    property MarkupInfoFoldedCode: TSynSelectedColor read FMarkupInfoFoldedCode;
   public
     procedure Lock;
     procedure UnLock;
@@ -1413,6 +1414,12 @@ begin
   fFoldTree := TSynTextFoldAVLTree.Create;
   fTopLine := 0;
   fLinesInWindow := -1;
+
+  FMarkupInfoFoldedCode := TSynSelectedColor.Create;
+  FMarkupInfoFoldedCode.Background := clNone;
+  FMarkupInfoFoldedCode.Foreground := clDkGray;
+  FMarkupInfoFoldedCode.FrameColor := clDkGray;
+
   fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
 
@@ -1423,6 +1430,7 @@ begin
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
+  FMarkupInfoFoldedCode.Free;
   inherited Destroy;
 end;
 

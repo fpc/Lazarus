@@ -466,6 +466,7 @@ type
     function GetCanRedo: Boolean;
     function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
+    function GetFoldedCodeColor: TSynSelectedColor;
     function GetFont: TFont;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
@@ -948,6 +949,7 @@ type
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
     property ModifiedLineColor: TSynSelectedColor read GetModifiedLineColor;
     property CodeFoldingTreeColor: TSynSelectedColor read GetCodeFoldingTreeColor;
+    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     //property Color: TSynSelectedColor read GetSelectedColor;
@@ -1094,6 +1096,7 @@ type
     property BracketMatchColor;
     property ModifiedLineColor;
     property CodeFoldingTreeColor;
+    property FoldedCodeColor;
     property MouseLinkColor;
     property LineNumberColor;
     property LineHighlightColor;
@@ -2910,9 +2913,7 @@ var
   var
     nX1, eolx: integer;
     NextPos : Integer;
-    MarkupInfo : TSynSelectedColor;
-    FoldCol, cDummy: TColor;
-    FoldStyle: TFontStyles;
+    MarkupInfo, FoldedCodeInfo: TSynSelectedColor;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -2974,19 +2975,27 @@ var
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       end;
 
-      if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then begin
+      if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
+      begin
         rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
         rcToken.Right := ScreenColumnToXValue(CurPhysPos+8);
-        FoldCol := Font.Color;
-        FoldStyle := []; //Font.Style ?
-        MarkupInfo := FGutter.MarkupInfoCodeFoldingTree;
-        if assigned(MarkupInfo) then
-          MarkupInfo.ModifyColors(cDummy, cDummy, FoldCol, FoldStyle);
-        if (FTextDrawer.BackColor = FoldCol) then        // Deal with equal colors
-          FoldCol := not(FTextDrawer.BackColor) and $00ffffff;
-        FTextDrawer.FrameColor := foldCol;
-        FTextDrawer.ForeColor := foldCol;
-        FTextDrawer.SetStyle(FoldStyle);
+        FoldedCodeInfo := FoldedCodeColor;
+
+        FTextDrawer.FrameColor := FoldedCodeInfo.FrameColor;
+        FTextDrawer.ForeColor := FoldedCodeInfo.Foreground;
+
+        if FoldedCodeInfo.Background <> clNone then
+          FTextDrawer.BackColor := FoldedCodeInfo.Background
+        else
+        begin
+          MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos);
+          if MarkupInfo <> nil then
+            FTextDrawer.BackColor := MarkupInfo.Background
+          else
+            FTextDrawer.BackColor := colEditorBG;
+        end;
+
+        FTextDrawer.SetStyle(FoldedCodeInfo.Style);
         FTextDrawer.FrameStartX := rcToken.Left;
         FTextDrawer.FrameEndX := rcToken.Right;
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
@@ -4173,6 +4182,11 @@ end;
 function TCustomSynEdit.GetCaretXY: TPoint;
 begin
   Result := Point(CaretX, CaretY);
+end;
+
+function TCustomSynEdit.GetFoldedCodeColor: TSynSelectedColor;
+begin
+  Result := FFoldedLinesView.MarkupInfoFoldedCode;
 end;
 
 function TCustomSynEdit.GetCodeFoldingTreeColor: TSynSelectedColor;
