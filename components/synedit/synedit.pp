@@ -2914,6 +2914,8 @@ var
     nX1, eolx: integer;
     NextPos : Integer;
     MarkupInfo, FoldedCodeInfo: TSynSelectedColor;
+    FGFold, BGfold, FFfold : TColor;
+    Sfold: TFontStyles;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -2977,27 +2979,40 @@ var
 
       if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
       begin
-        rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
-        rcToken.Right := ScreenColumnToXValue(CurPhysPos+8);
+        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos);
+        if MarkupInfo <> nil then begin
+          FGfold := MarkupInfo.Foreground;
+          BGfold := MarkupInfo.Background;
+          FFfold := MarkupInfo.FrameColor;
+          Sfold  := MarkupInfo.Style;
+        end else begin
+          FGfold := Font.Color;
+          BGfold := colEditorBG;
+          FFfold := clNone;
+          Sfold  := [];
+        end;
         FoldedCodeInfo := FoldedCodeColor;
-
-        FTextDrawer.FrameColor := FoldedCodeInfo.FrameColor;
-        FTextDrawer.ForeColor := FoldedCodeInfo.Foreground;
-
-        if FoldedCodeInfo.Background <> clNone then
-          FTextDrawer.BackColor := FoldedCodeInfo.Background
-        else
-        begin
-          MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos);
-          if MarkupInfo <> nil then
-            FTextDrawer.BackColor := MarkupInfo.Background
-          else
-            FTextDrawer.BackColor := colEditorBG;
+        If assigned(FoldedCodeInfo) then
+          FoldedCodeInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
+        if (BGfold = FGfold) then begin // or if diff(gb,fg) < x
+          if BGfold = colEditorBG
+          then FGFold := not(BGfold) and $00ffffff // or maybe Font.color ?
+          else FGFold := colEditorBG;
         end;
 
-        FTextDrawer.SetStyle(FoldedCodeInfo.Style);
-        FTextDrawer.FrameStartX := rcToken.Left;
-        FTextDrawer.FrameEndX := rcToken.Right;
+        rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
+        rcToken.Right := ScreenColumnToXValue(CurPhysPos+8);
+
+        FTextDrawer.FrameColor := FFfold;
+        FTextDrawer.ForeColor := FGfold;
+        FTextDrawer.BackColor := BGfold;
+        FTextDrawer.SetStyle(Sfold);
+
+        If assigned(FoldedCodeInfo) and (FoldedCodeInfo.FrameColor <> clNone) then
+        begin
+          FTextDrawer.FrameStartX := rcToken.Left;
+          FTextDrawer.FrameEndX := rcToken.Right;
+        end;
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
         if rcToken.Right > rcToken.Left then
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
