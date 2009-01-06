@@ -581,7 +581,6 @@ type
   TQtTextEdit = class(TQtFrame, IQtEdit)
   private
     FViewportEventHook: QObject_hookH;
-    FTextChangedHook: QTextEdit_hookH;
     FUndoAvailableHook: QTextEdit_hookH;
     FUndoAvailable: Boolean;
   protected
@@ -614,7 +613,6 @@ type
     function viewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function getContextMenuPolicy: QtContextMenuPolicy; override;
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); override;
-    procedure SignalTextChanged; cdecl;
     procedure SignalUndoAvailable(b: Boolean); cdecl;
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
   end;
@@ -5425,12 +5423,7 @@ var
 begin
   inherited AttachEvents;
 
-  FTextChangedHook := QTextEdit_hook_create(Widget);
   FUndoAvailableHook := QTextEdit_hook_create(Widget);
-
-  QTextEdit_textChanged_Event(Method) := @SignalTextChanged;
-  QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
-  
   QTextEdit_undoAvailable_Event(Method) := @SignalUndoAvailable;
   QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, Method);
 
@@ -5444,7 +5437,6 @@ procedure TQtTextEdit.DetachEvents;
 begin
   QObject_hook_destroy(FViewportEventHook);
   inherited DetachEvents;
-  QTextEdit_hook_destroy(FTextChangedHook);
 end;
 
 function TQtTextEdit.viewportEventFilter(Sender: QObjectH; Event: QEventH
@@ -5475,22 +5467,6 @@ var
 begin
   w := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
   QWidget_setContextMenuPolicy(w, AValue);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTextEdit.SignalTextChanged
-  Params:  none
-  Returns: Nothing
-
-  Fires OnChange() event of TCustomMemo
- ------------------------------------------------------------------------------}
-procedure TQtTextEdit.SignalTextChanged; cdecl;
-var
-  Msg: TLMessage;
-begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Msg);
 end;
 
 procedure TQtTextEdit.SignalUndoAvailable(b: Boolean); cdecl;

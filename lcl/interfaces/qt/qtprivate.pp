@@ -85,6 +85,7 @@ type
 
   TQtMemoStrings = class(TStrings)
   private
+    FTextChangedHook : QTextEdit_hookH;
     FTextChanged: Boolean; // StringList and QtTextEdit out of sync
     FStringList: TStringList; // Holds the lines to show
     FQtTextEdit: QTextEditH;  // Qt Widget
@@ -110,7 +111,7 @@ type
   public
     //property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
-    function TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure TextChangedHandler; cdecl;
   end;
 
 implementation
@@ -230,7 +231,6 @@ end;
 constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
 var
   Method: TMethod;
-  Hook : QTextEdit_hookH;
 begin
   inherited Create;
 
@@ -245,10 +245,10 @@ begin
   FOwner:=TheOwner;
 
   // Callback Event
-  {Method := MemoChanged;}
-  TEventFilterMethod(Method) := @TextChangedHandler;
-  Hook := QTextEdit_hook_create(FQtTextEdit);
-  QTextEdit_hook_hook_textChanged(Hook, Method);
+  {Method := MemoChanged;   }
+  FTextChangedHook := QTextEdit_hook_create(FQtTextEdit);
+  QTextEdit_textChanged_Event(Method) := @TextChangedHandler;
+  QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
 end;
 
 {------------------------------------------------------------------------------
@@ -263,6 +263,8 @@ begin
   Clear;
   FStringList.Free;
   // don't destroy the widgets
+  if FTextChangedHook <> nil then
+    QTextEdit_hook_destroy(FTextChangedHook);
   inherited Destroy;
 end;
 
@@ -273,7 +275,7 @@ end;
 
   Signal handler for the TextChanged Signal.
  ------------------------------------------------------------------------------}
-function TQtMemoStrings.TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+procedure TQtMemoStrings.TextChangedHandler; cdecl;
 var
   Mess: TLMessage;
 begin
@@ -282,10 +284,8 @@ begin
     FTextChanged := True;
     FillChar(Mess, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
-    //(FOwner as TCustomMemo).Modified := True;
     FOwner.Dispatch(TLMessage(Mess));
   end;
-  Result := True;
 end;
 
 {------------------------------------------------------------------------------
