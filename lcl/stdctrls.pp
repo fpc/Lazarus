@@ -216,6 +216,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -595,7 +597,7 @@ type
     property Style: TListBoxStyle read FStyle write SetStyle default lbStandard;
     property TabOrder;
     property TabStop default true;
-    property TopIndex: Integer read GetTopIndex write SetTopIndex;
+    property TopIndex: Integer read GetTopIndex write SetTopIndex default 0;
     property Visible;
   end;
 
@@ -713,6 +715,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
+    property ParentColor default False;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Clear;
@@ -723,7 +726,7 @@ type
     procedure PasteFromClipboard; virtual;
     procedure Undo; virtual;
   public
-    property BorderStyle;
+    property BorderStyle default bsSingle;
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
@@ -879,6 +882,7 @@ type
     property Anchors;
     property BidiMode;
     property BorderSpacing;
+    property BorderStyle;
     property Color;
     property Constraints;
     property DragCursor;
@@ -1277,6 +1281,7 @@ type
     property BorderSpacing;
     property Caption;
     property Checked;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -1301,6 +1306,7 @@ type
     property OnResize;
     property OnStartDrag;
     property ParentBidiMode;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

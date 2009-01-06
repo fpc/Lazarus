@@ -318,7 +318,7 @@ var
   Done: Boolean;
 begin
   ProcessAsyncCallQueue;
-  MouseIdle(GetControlAtMouse);
+  UpdateMouseHint(GetControlAtMouse);
 
   Done := True;
   if (FIdleLockCount=0) then begin
@@ -375,16 +375,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TApplication.MouseIdle
+  Method: TApplication.UpdateMouseHint
   Params: None
   Returns:  Nothing
 
   Handles mouse Idle
  ------------------------------------------------------------------------------}
-procedure TApplication.MouseIdle(const CurrentControl: TControl);
+procedure TApplication.UpdateMouseHint(CurrentControl: TControl);
+var
+  HintControl: TControl;
 begin
-  if FMouseControl <> CurrentControl then
-    UpdateMouseControl(CurrentControl);
+  HintControl := GetHintControl(CurrentControl);
+  if HintControl = nil then
+    Hint := ''
+  else
+    Hint := GetLongHint(HintControl.Hint);
 end;
 
 procedure TApplication.SetCaptureExceptions(const AValue: boolean);
@@ -495,8 +500,6 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
-var
-  HintControl: TControl;
 begin
   //debugln(['TApplication.UpdateMouseControl Old=',DbgSName(FMouseControl),' New=',DbgSName(NewMouseControl)]);
   if FMouseControl = NewMouseControl then
@@ -508,11 +511,7 @@ begin
   end;
   FMouseControl := NewMouseControl;
 
-  HintControl := GetHintControl(FMouseControl);
-  if HintControl = nil then
-    Application.Hint := ''
-  else
-    Application.Hint := GetLongHint(HintControl.Hint);
+  Application.UpdateMouseHint(FMouseControl);
 
   if (FMouseControl <> nil) then
   begin

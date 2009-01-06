@@ -286,7 +286,7 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 {$UNDEF MEMOHEADER}
 
 implementation
-  
+
 const
   AlignmentMap: array[TAlignment] of DWORD =
   (
@@ -392,7 +392,7 @@ begin
     ScrollInfo.nMax := AMax;
     ScrollInfo.nPage := PageSize;
     ScrollInfo.nPos := Position;
-    
+
     SendMessage(Handle, SBM_SETSCROLLINFO, WParam(True), LParam(@ScrollInfo));
     case Kind of
       sbHorizontal:
@@ -553,7 +553,7 @@ begin
           lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
           lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
         end;
-      
+
       if BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
@@ -924,7 +924,7 @@ begin
   if UnicodeEnabledOS then
   begin
     WideBuffer := UTF8Decode(AText);
-    
+
     if TCustomComboBox(AWinControl).ReadOnly then
       Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(WideBuffer)))
     else
@@ -933,7 +933,7 @@ begin
   else
   begin
     AnsiBuffer := UTF8ToAnsi(AText);
-    
+
     if TCustomComboBox(AWinControl).ReadOnly then
       Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AnsiBuffer)))
     else
@@ -963,7 +963,7 @@ end;
 
 class function TWin32WSCustomComboBox.GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer;
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemHeight') then 
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemHeight') then
     Result := 0
   else
     Result := SendMessage(ACustomComboBox.Handle, CB_GETITEMHEIGHT, 0, 0);
@@ -971,7 +971,7 @@ end;
 
 class procedure TWin32WSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemHeight') then 
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemHeight') then
     Exit;
   // size requests are done through WM_MeasureItem
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, -1);
@@ -1192,9 +1192,9 @@ end;
 
 {
   The index of the first line is zero
-  
+
   The index of the caret before the first char is zero
-  
+
   If there is a selection, the caret is considered to be right after
   the last selected char, being that "last" here means the right-most char.
 }
@@ -1203,7 +1203,7 @@ var
   BufferX: Longword;
 begin
   { X position calculation }
-  
+
   { EM_GETSEL returns the char index of the caret, but this index
     doesn't go back to zero in new lines, so we need to subtract
     the char index from the line
@@ -1333,11 +1333,11 @@ begin
     exit;
 
   // maybe we need TWSCustomStaticText.SetShowAccelChar ?
-  
+
   if (GetWindowLong(AWinControl.Handle, GWL_STYLE) and SS_NOPREFIX) <>
      AccelCharToStaticTextFlags[TCustomStaticText(AWinControl).ShowAccelChar] then
     RecreateWnd(AWinControl);
-    
+
   TWSWinControlClass(ClassParent).SetText(AWinControl, AText);
 end;
 
@@ -1432,15 +1432,19 @@ var
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
-    // 7 pixels spacing between checkbox and text
-    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK) + 7);
+    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK));
+    // pixels spacing between checkbox and text
+    if ThemeServices.ThemesEnabled then
+      Inc(PreferredWidth, 4)
+    else
+      Inc(PreferredWidth, 6);
     iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
     if WithThemeSpace then
     begin
-      Inc(PreferredWidth, 6);
-      Inc(PreferredHeight, 6);
+      Inc(PreferredWidth, 1);
+      Inc(PreferredHeight, 4);
     end;
   end;
 end;

@@ -245,13 +245,15 @@ procedure TControlScrollBar.AutoCalcRange;
     c: TControl;
   begin
     TmpRange := 0;
-    For I := 0 to FControl.ControlCount - 1 do begin
+    for I := 0 to FControl.ControlCount - 1 do
+    begin
       c:=FControl.Controls[I];
       if not c.IsControlVisible then continue;
       if c.Align=alCustom then continue;
       if akBottom in c.Anchors then continue;
       if (c.Align<>alNone) and (akBottom in AnchorAlign[c.Align]) then continue;
       if (FControl.ChildSizing.Layout<>cclNone) and IsNonAligned(c) then continue;
+      if (akTop in c.Anchors) and (c.AnchorSide[akTop].Control <> nil) then continue;
       TmpRange := Max(TmpRange, c.Top + c.Height);
     end;
     Range := TmpRange;
@@ -264,14 +266,15 @@ procedure TControlScrollBar.AutoCalcRange;
     c: TControl;
   begin
     TmpRange := 0;
-    for i := 0 to FControl.ControlCount - 1 do begin
+    for i := 0 to FControl.ControlCount - 1 do
+    begin
       c:=FControl.Controls[I];
       if not c.IsControlVisible then continue;
       if c.Align=alCustom then continue;
       if akRight in c.Anchors then continue;
       if (c.Align<>alNone) and (akRight in AnchorAlign[c.Align]) then continue;
-      if (FControl.ChildSizing.Layout<>cclNone)
-      and IsNonAligned(c) then continue;
+      if (FControl.ChildSizing.Layout<>cclNone) and IsNonAligned(c) then continue;
+      if (akLeft in c.Anchors) and (c.AnchorSide[akLeft].Control <> nil) then continue;
       TmpRange := Max(TmpRange, c.Left + c.Width);
     end;
     Range := TmpRange;

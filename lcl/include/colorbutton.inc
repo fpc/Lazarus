@@ -26,11 +26,13 @@ begin
   FButtonColorSize := 16;
   FBorderWidth := 2;
   FButtonColorAutoSize := True;
+  FDisabledPattern := nil;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
 destructor TColorButton.Destroy;
-Begin
+begin
+  FreeAndNil(FDisabledPattern);
   inherited Destroy;
 end;
 
@@ -121,10 +123,19 @@ var
   Size: TSize;
 begin
   Canvas.Pen.Color := clBlack;
-  Canvas.Brush.Color := ButtonColor;
+  if AState = bsDisabled then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.Brush.Bitmap := GetDisabledPattern;
+  end
+  else
+  begin
+    Canvas.Brush.Bitmap := nil;
+    Canvas.Brush.Color := ButtonColor;
+  end;
   Size := GetGlyphSize(AClient);
   
-  Result:=Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
+  Result := Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
     Size.CX - 1, Size.CY - 1);
   Canvas.Rectangle(Result);
 end;
@@ -141,6 +152,18 @@ begin
   FButtonColorSize := AValue;
   
   Invalidate;
+end;
+
+function TColorButton.GetDisabledPattern: TBitmap;
+const
+  LineBitsDotted: array[0..7] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA);
+begin
+  if FDisabledPattern = nil then
+  begin
+    FDisabledPattern := TBitmap.Create;
+    FDisabledPattern.SetHandles(CreateBitmap(8, 8, 1, 1, @LineBitsDotted), 0);
+  end;
+  Result := FDisabledPattern;
 end;
 
 procedure TColorButton.Click;

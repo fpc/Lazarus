@@ -152,6 +152,7 @@ type
     ilcfStartIsLValue,     // position is start of one statement. e.g. 'A|:=', does not check if A can be assigned
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
     ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
+    ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'sysutil| classes'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration // context allows to declare a procedure/method
     );
@@ -1477,6 +1478,13 @@ begin
     GatherContext:=CreateFindContext(Self,CursorNode);
     if CursorNode.Desc=ctnUsesSection then begin
       GatherUnitNames(IdentStartPos,GatherContext,BeautifyCodeOptions);
+      MoveCursorToCleanPos(IdentEndPos);
+      ReadNextAtom;
+      if (CurPos.Flag=cafWord) and (not UpAtomIs('IN')) then begin
+        // add comma
+        CurrentIdentifierList.ContextFlags:=
+          CurrentIdentifierList.ContextFlags+[ilcfNeedsEndComma];
+      end;
     end else if CursorNode.Desc in AllSourceTypes then begin
       GatherSourceNames(GatherContext);
     end else begin
@@ -1555,7 +1563,7 @@ begin
         MoveCursorToCleanPos(IdentEndPos);
         ReadNextAtom;
         CurrentIdentifierList.StartAtomBehind:=CurPos;
-        // check if a semicolon is needed at the end
+        // check if a semicolon is needed or forbidden at the end
         if (CurrentIdentifierList.StartBracketLvl>0)
         or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
                    cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
@@ -1565,7 +1573,9 @@ begin
                  or UpAtomIs('THEN')
                  or UpAtomIs('DO')
                  or UpAtomIs('TO')
-                 or UpAtomIs('OF')))
+                 or UpAtomIs('OF')
+                 or WordIsBinaryOperator.DoItUppercase(UpperSrc,
+                          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
         then begin
           // do not add semicolon
           CurrentIdentifierList.ContextFlags:=

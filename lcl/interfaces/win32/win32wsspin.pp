@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              Win32WSSpin.pp                               * 
- *                              --------------                               * 
+ *                              Win32WSSpin.pp                               *
+ *                              --------------                               *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -29,7 +29,7 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -39,7 +39,7 @@ uses
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
-  
+
 type
 
   { TWin32WSCustomFloatSpinEdit }
@@ -126,7 +126,7 @@ begin
   newValueText := ASpinEdit.ValueToStr(ANewValue);
   Windows.SendMessage(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PChar(newValueText)));
 end;
-  
+
 class function TWin32WSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -138,8 +138,19 @@ begin
   with Params do
   begin
     SubClassWndProc := @SpinWindowProc;
-    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0], StrCaption,
+    {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Buddy := CreateWindowExW(WS_EX_CLIENTEDGE, PWideChar(WideString(EditClsName)),
+                  PWideChar(UTF8Decode(StrCaption)), Flags or ES_AUTOHSCROLL,
+                  Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil)
+    else
+      Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0],
+                  PChar(Utf8ToAnsi(StrCaption)), Flags or ES_AUTOHSCROLL,
+                  Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
+    {$ELSE}
+    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0], PChar(StrCaption),
       Flags or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
+    {$ENDIF}
     Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
       0, 0,       // size - ignored for buddy

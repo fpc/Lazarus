@@ -83,9 +83,9 @@ type
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
-    property Flat : Boolean read GetFlat write SetFlat;
-    property ButtonOnlyWhenFocused : Boolean read FButtonNeedsFocus write SetButtonNeedsFocus;
+    destructor Destroy; override;
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ButtonOnlyWhenFocused: Boolean read FButtonNeedsFocus write SetButtonNeedsFocus default False;
   end;
   
   
@@ -183,7 +183,7 @@ type
     property FileName : String read GetFileName write SetFileName;
     property InitialDir : String read FInitialDir write FInitialDir;
     property OnAcceptFileName : TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
-    property DialogKind : TDialogKind read FDialogKind write FDialogKind;
+    property DialogKind : TDialogKind read FDialogKind write FDialogKind default dkOpen;
     property DialogTitle : String read FDialogTitle write FDialogTitle;
     property DialogOptions : TOpenOptions read FDialogOptions write FDialogOptions;
     property Filter : String read FFilter write FFilter;
@@ -554,10 +554,10 @@ end;
 
 function TCustomEditButton.GetFlat: Boolean;
 begin
-  If Assigned(FButton) then
-    Result:=FButton.Flat
+  if Assigned(FButton) then
+    Result := FButton.Flat
   else
-    Result:=False;
+    Result := False;
 end;
 
 procedure TCustomEditButton.CheckButtonVisible;
@@ -703,7 +703,8 @@ end;
 constructor TFileNameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDialogFiles:=TStringList.Create;
+  FDialogFiles := TStringList.Create;
+  FDialogKind := dkOpen;
 end;
 
 destructor TFileNameEdit.Destroy;
@@ -766,8 +767,9 @@ begin
       end;
       if (FN<>'') then
       begin
-        FileName:=FN;
+        // set FDialogFiles first since assigning of FileName trigger events
         FDialogFiles.Text:=TOpenDialog(D).Files.Text;
+        FileName:=FN;
       end;
     end;
     dkSave,dkPictureSave :

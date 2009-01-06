@@ -1033,7 +1033,7 @@ type
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure UpdateMouseControl(NewMouseControl: TControl);
-    procedure MouseIdle(const CurrentControl: TControl);
+    procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
     procedure SetHint(const AValue: string);
     procedure SetHintColor(const AValue: TColor);
@@ -1163,7 +1163,9 @@ type
     procedure DoReturnKey(AControl: TWinControl; var Key: Word;
                           Shift: TShiftState);
     procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
+
     property Active: boolean read GetActive;
+    property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
@@ -1181,6 +1183,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
+    property MouseControl: TControl read FMouseControl;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
@@ -1201,7 +1204,6 @@ type
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default true;
     property Title: String read GetTitle write SetTitle;
-    property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
   end;
 
   { TApplicationProperties }

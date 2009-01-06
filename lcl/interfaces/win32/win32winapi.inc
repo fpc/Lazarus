@@ -1947,7 +1947,7 @@ end;
 
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
+function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 {$ifdef WindowsUnicodeSupport}
 var
   s: AnsiString;

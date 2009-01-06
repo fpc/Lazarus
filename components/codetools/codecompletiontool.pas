@@ -5478,10 +5478,10 @@ end;
 
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
 var
-  Indent, InsertPos: integer;
   TheClassName: string;
    
-  procedure InsertProcBody(ANodeExt: TCodeTreeNodeExtension);
+  procedure InsertProcBody(ANodeExt: TCodeTreeNodeExtension;
+    InsertPos, Indent: integer);
   var ProcCode: string;
   begin
     if ANodeExt.ExtTxt3<>'' then
@@ -5508,7 +5508,8 @@ var
     end;
   end;
 
-  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension);
+  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension;
+    Indent: integer);
   var
     ANode: TCodeTreeNode;
     ProcCode: string;
@@ -5596,6 +5597,90 @@ var
       AnAVLNode:=NextAVLNode;
     end;
   end;
+
+  function CheckForChangedProcs: boolean;
+  var
+    BodyAVLNode: TAVLTreeNode;
+    BodyNodeExt: TCodeTreeNodeExtension;
+    BodiesWithoutDefs: TAVLTree;
+    DefsWithoutBodies: TAVLTree;
+    DefAVLNode: TAVLTreeNode;
+    DefNodeExt: TCodeTreeNodeExtension;
+    InsertPos: LongInt;
+    Indent: LongInt;
+    BodyProcHeadNode: TCodeTreeNode;
+    InsertEndPos: LongInt;
+    ProcCode: String;
+  begin
+    Result:=true;
+    BodiesWithoutDefs:=nil;
+    DefsWithoutBodies:=nil;
+    try
+      // collect all bodies without a definition
+      BodyAVLNode:=ProcBodyNodes.FindLowest;
+      while BodyAVLNode<>nil do begin
+        BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+        if ClassProcs.Find(BodyNodeExt)=nil then begin
+          BodiesWithoutDefs:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+          BodiesWithoutDefs.Add(BodyNodeExt);
+        end;
+        BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
+      end;
+      if BodiesWithoutDefs=nil then exit;
+
+      // collect all definitions without a body
+      DefAVLNode:=ClassProcs.FindLowest;
+      while DefAVLNode<>nil do begin
+        DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
+        DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
+        if ProcBodyNodes.Find(DefNodeExt)=nil then begin
+          // move proc definition from ClassProcs to DefsWithoutBodies
+          DefsWithoutBodies:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+          DefsWithoutBodies.Add(DefNodeExt);
+        end;
+      end;
+      if DefsWithoutBodies=nil then exit;
+      if BodiesWithoutDefs.Count<>DefsWithoutBodies.Count then exit;
+
+      // there is the same amount of bodies without a def and defs without bodies
+      // => try to create a mapping from defs to bodies
+      if DefsWithoutBodies.Count=1 then begin
+        // only one method def changed
+        BodyNodeExt:=TCodeTreeNodeExtension(BodiesWithoutDefs.FindLowest.Data);
+        DefNodeExt:=TCodeTreeNodeExtension(DefsWithoutBodies.FindLowest.Data);
+        DefNodeExt.Data:=BodyNodeExt;
+      end else begin
+        // no mapping found
+        debugln(CleanPosToStr(ANode.FirstChild.StartPos)+' warning: procedure has no definition in the class');
+        exit;
+      end;
+
+      // replace body proc head(s) with class proc head(s)
+      DefAVLNode:=DefsWithoutBodies.FindLowest;
+      while DefAVLNode<>nil do begin
+        DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
+        BodyNodeExt:=TCodeTreeNodeExtension(DefNodeExt.Data);
+        BodyNodeExt.Txt:=DefNodeExt.Txt;
+        BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
+        InsertPos:=BodyNodeExt.Node.StartPos;
+        InsertEndPos:=BodyProcHeadNode.EndPos;
+        Indent:=GetLineIndent(Src,InsertPos);
+        ProcCode:=ExtractProcHead(DefNodeExt.Node,[phpWithStart,
+             phpAddClassname,phpWithVarModifiers,
+             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs,
+             phpWithoutSemicolon]);
+        ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                     ProcCode,Indent,false);
+        //debugln(['CheckForChangedProcs OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',ProcCode]);
+        if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,ProcCode) then
+          exit;
+        DefAVLNode:=DefsWithoutBodies.FindSuccessor(DefAVLNode);
+      end;
+    finally
+      BodiesWithoutDefs.Free;
+      DefsWithoutBodies.Free;
+    end;
+  end;
   
   procedure RemoveAbstractMethods;
   begin
@@ -5613,8 +5698,10 @@ var
     end;
   end;
   
-  procedure FindInsertPointForNewClass;
+  procedure FindInsertPointForNewClass(out InsertPos, Indent: LongInt);
   begin
+    InsertPos:=0;
+    Indent:=0;
     if NodeHasParentOfType(FCodeCompleteClassNode,ctnInterface) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
@@ -5645,7 +5732,7 @@ var
     end;
   end;
   
-  procedure InsertClassMethodsComment;
+  procedure InsertClassMethodsComment(InsertPos, Indent: integer);
   var
     CommentStart, CommentEnd: TCodeXYPosition;
   begin
@@ -5666,6 +5753,9 @@ var
                                ClassStartComment);
   end;
   
+var
+  InsertPos: integer;
+  Indent: integer;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
@@ -5695,6 +5785,9 @@ begin
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
+
+    // check for changed procs (existing proc bodies without definitions in the class)
+    if not CheckForChangedProcs then exit;
 
     // remove abstract methods
     RemoveAbstractMethods;
@@ -5756,15 +5849,15 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
       {$ENDIF}
-      FindInsertPointForNewClass;
-      InsertClassMethodsComment;
+      FindInsertPointForNewClass(InsertPos,Indent);
+      InsertClassMethodsComment(InsertPos,Indent);
 
       // insert all proc bodies
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        CreateCodeForMissingProcBody(ANodeExt);
-        InsertProcBody(ANodeExt);
+        CreateCodeForMissingProcBody(ANodeExt,Indent);
+        InsertProcBody(ANodeExt,InsertPos,Indent);
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
       
@@ -5788,6 +5881,7 @@ begin
         ExistingNode:=ProcBodyNodes.Find(MissingNode.Data);
         //DebugLn(['TCodeCompletionCodeTool.CreateMissingProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
         if ExistingNode=nil then begin
+          //DebugLn(['TCodeCompletionCodeTool.CreateMissingProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
           // MissingNode does not have a body -> insert proc body
           case MethodInsertPolicy of
           mipAlphabetically:
@@ -5852,8 +5946,8 @@ begin
               end;
             end;
           end;
-          CreateCodeForMissingProcBody(ANodeExt);
-          InsertProcBody(ANodeExt);
+          CreateCodeForMissingProcBody(ANodeExt,Indent);
+          InsertProcBody(ANodeExt,InsertPos,Indent);
         end;
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;

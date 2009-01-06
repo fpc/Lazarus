@@ -9018,13 +9018,8 @@ begin
         SB_VERT: gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[bRedraw],nil]);
       end;
     end
-    else begin
-      if (SBSTYLE = SB_CTL)
-      and GtkWidgetIsA(PGtkWidget(Scroll),gtk_widget_get_type) then
-        gtk_widget_show(PGTKWidget(Scroll))
-      else
-        gtk_widget_hide(PGTKWidget(Scroll));
-    end;
+    else
+      gtk_widget_queue_draw(PGTKWidget(Scroll));
 
 (*
     DebugLn('TGtkWidgetSet.SetScrollInfo:' +

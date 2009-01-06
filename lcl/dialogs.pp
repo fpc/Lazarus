@@ -255,17 +255,19 @@ type
     FButtonColor: TColor;
     FColorDialog: TColorDialog;
     FOnColorChanged: TNotifyEvent;
+    FDisabledPattern: TBitmap;
     function IsButtonColorAutoSizeStored: boolean;
     procedure SetBorderWidth(const AValue: Integer);
     procedure SetButtonColor(const AValue: TColor);
     procedure SetButtonColorAutoSize(const AValue: Boolean);
     procedure SetButtonColorSize(const AValue: Integer);
   protected
-    procedure ShowColorDialog; virtual;
-    function GetGlyphSize(PaintRect: TRect): TSize; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
+    function GetDisabledPattern: TBitmap; virtual;
+    function GetGlyphSize(PaintRect: TRect): TSize; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure ShowColorDialog; virtual;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; Override;
