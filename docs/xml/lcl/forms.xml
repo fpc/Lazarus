@@ -1722,7 +1722,8 @@ If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TIDesigner">
-        <short/>
+        <short>
+          <var>TIDesigner</var> - a class describing a Form Designer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8641,7 +8642,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: public -->
       <element name="TIDesigner.IsDesignMsg">
-        <short/>
+        <short>
+          <var>IsDesignMsg</var> - receives a message from Sender, and returns True if it is a design message</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8660,14 +8662,16 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.Modified">
-        <short/>
+        <short>Method when design is <var>Modified</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.Notification">
-        <short/>
+        <short>
+          <var>Notification</var> that the suppied Operation has been applied to the specified Component</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8682,14 +8686,16 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.PaintGrid">
-        <short/>
+        <short>
+          <var>PaintGrid</var> - method for painting the grid in the designer</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.ValidateRename">
-        <short/>
+        <short>
+          <var>ValidateRename</var> - method to validate the Rename process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8708,7 +8714,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: public -->
       <element name="TIDesigner.GetShiftState">
-        <short/>
+        <short>
+          <var>GetShiftState</var> - returns the value of the shift state (whether shifted, Cntl key, Alt key etc)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8719,7 +8726,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.SelectOnlyThisComponent">
-        <short/>
+        <short>
+          <var>SelectOnlyThisComponent</var> - method to select only the currrent component in the designer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8730,7 +8738,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: public -->
       <element name="TIDesigner.UniqueName">
-        <short/>
+        <short>
+          <var>UniqueName</var> - returns a Unique name for the designer, using the BaseName as a starting point</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8745,7 +8754,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- object Visibility: default -->
       <element name="TFormPropertyStorage">
-        <short/>
+        <short>
+          <var>TFormPropertyStorage</var> - class for storage of a Form's properties</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8777,7 +8787,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFormPropertyStorage.Create">
+      <element name="TFormPropertyStorage.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -8788,7 +8798,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFormPropertyStorage.Destroy">
+      <element name="TFormPropertyStorage.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -9107,7 +9117,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: default -->
       <element name="KeysToShiftState">
-        <short/>
+        <short>
+          <var>KeysToShiftState</var> - converts an actual physical key code to a shift state (ie Shift, Ctrl, Alt etc)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9122,7 +9133,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: default -->
       <element name="KeyDataToShiftState">
-        <short/>
+        <short>
+          <var>KeyDataToShiftState</var> - converts Key data to a shift state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9137,7 +9149,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: default -->
       <element name="WindowStateToStr">
-        <short/>
+        <short>
+          <var>WindowStateToStr</var> - converts a Window state to a string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9152,7 +9165,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- function Visibility: default -->
       <element name="StrToWindowState">
-        <short/>
+        <short>
+          <var>StrToWindowState</var> - converts a string to a Window state</short>
         <descr/>
         <errors/>
         <seealso/>
