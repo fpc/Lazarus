@@ -1239,7 +1239,7 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if (rsImplementation in fRange) and
+      if not (rsInterface in fRange) and
          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
@@ -1260,7 +1260,7 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if (rsImplementation in fRange) and
+      if not (rsInterface in fRange) and
          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
@@ -1380,7 +1380,7 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if (rsImplementation in fRange) and
+      if not (rsInterface in fRange) and
          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
@@ -1396,7 +1396,7 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if (rsImplementation in fRange) and
+      if not (rsInterface in fRange) and
          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
@@ -2131,7 +2131,7 @@ end;
 
 procedure TSynPasSyn.ResetRange;
 begin
-  fRange:= [];
+  fRange:= [rsAfterSemicolon]; // Begin of file = new Statement
   FStartCodeFoldBlockLevel:=0;
   {$IFDEF SYN_LAZARUS}
   Inherited ResetRange;
