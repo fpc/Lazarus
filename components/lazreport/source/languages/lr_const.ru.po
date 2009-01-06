@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-11 04:14+0300\n"
+"PO-Revision-Date: 2008-11-27 02:26+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -288,6 +288,10 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Применяет маску <Mask> к з�
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Выводит диалоговое окно с заголовком <Caption> и полем ввода. Если задан параметр [Default], помещает эту строку в поле ввода. После нажатия пользователем кнопки OK возвращает введённую строку."
 
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Возвращает длину строки <String>."
+
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr "LOWERCASE(<String>)/Преобразует символы строки <String> в нижний регистр."
@@ -343,6 +347,10 @@ msgstr "TRIM(<String>)/Удаляет пробелы в начале и конц
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
 msgstr "UPPERCASE(<String>)/Меняет регистр символов в <String> на верхний."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr "YEAROF(<Date>)/Возвращает год для заданной даты <Date>."
 
 #: lr_const.sdesignreport
 msgid "Design report"

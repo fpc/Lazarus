@@ -10,1207 +10,1441 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: objinspstrconsts:oisdlinesdchars
-msgid "%d lines, %d chars"
-msgstr "%d eilučių, %d simbolių"
-
-#: objinspstrconsts:oisitemsselected
-msgid "%u items selected"
-msgstr "pažymėta %u elementų"
-
-#: objinspstrconsts:oiscadd
-msgid "&Add"
-msgstr "Pri&dėti"
-
-#: objinspstrconsts:oistdactdatasetcancelheadline
-msgid "&Cancel"
-msgstr "&Atsisakyti"
-
-#: objinspstrconsts:oistdacthelpcontentsheadline
-msgid "&Contents"
-msgstr "Turin&ys"
-
-#: objinspstrconsts:oistdacteditcopyheadline
-msgid "&Copy"
-msgstr "&Kopijuoti"
-
-#: objinspstrconsts:oiscdelete
-msgid "&Delete"
-msgstr "Paša&linti"
-
-#: objinspstrconsts:oistdactdataseteditheadline
-msgid "&Edit"
-msgstr "&Taisa"
-
-#: objinspstrconsts:oistdactsearchfindheadline
-msgid "&Find..."
-msgstr "&Ieškoti..."
-
-#: objinspstrconsts:oistdactdatasetfirstheadline
-msgid "&First"
-msgstr "&Pirmasis"
-
-#: objinspstrconsts:oistdacthelphelphelpheadline
-msgid "&Help on Help"
-msgstr "Apie ži&nyną"
-
-#: objinspstrconsts:oistdactdatasetinsertheadline
-msgid "&Insert"
-msgstr "Į&terpti"
-
-#: objinspstrconsts:oistdactdatasetlastheadline
-msgid "&Last"
-msgstr "Pasku&tinis"
-
-#: objinspstrconsts:oisload
-msgid "&Load"
-msgstr "Į&kelti"
-
-#: objinspstrconsts:oistdactdatasetnextheadline
-msgid "&Next"
-msgstr "&Kitas"
-
-#: objinspstrconsts:oisok
-msgid "&OK"
-msgstr "&Tinka"
-
-#: objinspstrconsts:oistdactfileopenheadline
-msgid "&Open..."
-msgstr "At&verti..."
-
-#: objinspstrconsts:oistdacteditpasteheadline
-msgid "&Paste"
-msgstr "Į&dėti"
-
-#: objinspstrconsts:oistdactdatasetpriorheadline
-msgid "&Prior"
-msgstr "Ank&stesnis"
-
-#: objinspstrconsts:oistdactdatasetrefreshheadline
-msgid "&Refresh"
-msgstr "Atnau&jinti"
-
-#: objinspstrconsts:oistdactsearchreplaceheadline
-msgid "&Replace"
-msgstr "&Pakeisti"
-
-#: objinspstrconsts:oissave
-msgid "&Save"
-msgstr "Į&rašyti"
-
-#: objinspstrconsts:oistdacthelptopicsearchheadline
-msgid "&Topic Search"
-msgstr "&Rodyklė"
-
-#: objinspstrconsts:oistdacteditundoheadline
-msgid "&Undo"
-msgstr "&Grąžinti"
-
-#: objinspstrconsts:cactionlisteditorallcategory
+#: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Visos)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Nežinoma)"
-
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(jokia)"
-
-#: objinspstrconsts:ois0lines0chars
-msgid "0 lines, 0 chars"
-msgstr "0 eilučių, 0 simbolių"
-
-#: objinspstrconsts:ois1linedchars
-msgid "1 line, %d chars"
-msgstr "1 eilutė, %d simbolių"
-
-#: objinspstrconsts:srvk_accept
-msgid "Accept"
-msgstr "Priimti"
-
-#: objinspstrconsts:oisaction
-msgid "Action"
-msgstr "Veiksmas"
-
-#: objinspstrconsts:oisactionlisteditor
-msgid "Action List Editor"
-msgstr "ActionList rengyklė"
-
-#: objinspstrconsts:oicoleditadd
-msgid "Add"
-msgstr "Pridėti"
-
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr "Pridėti paveikslų"
-
-#: objinspstrconsts:s_addassingle
-msgid "Add as single"
-msgstr "Pridėti vientisą"
-
-#: objinspstrconsts:clbadd
-msgid "Add new Item"
-msgstr "Pridėti elementą"
-
-#: objinspstrconsts:nbcesaddpage
-msgid "Add page"
-msgstr "Pridėti lapą"
-
-#: objinspstrconsts:tccesaddtab
-msgid "Add tab"
-msgstr "Pridėti kortelę"
-
-#: objinspstrconsts:oisaddtofavorites
-msgid "Add to Favorites"
-msgstr "Įdėti į mėgstamiausiųjų sąrašą"
-
-#: objinspstrconsts:sccsiledtadd
-msgid "Add..."
-msgstr "Pridėti..."
-
-#: objinspstrconsts:sccsiledtadjustment
-msgid "Adjustment"
-msgstr "Korekcija"
-
-#: objinspstrconsts:rscdalignment
-msgid "Alignment"
-msgstr "Lygiuotė"
-
-#: objinspstrconsts:oisall
-msgid "All"
-msgstr "Visus"
-
-#: objinspstrconsts:oisallfiles
-msgid "All files"
-msgstr "Visi failai"
-
-#: objinspstrconsts:srkm_alt
-msgid "Alt"
-msgstr "Alt"
-
-#: objinspstrconsts:sccstredtapply
-msgid "Apply"
-msgstr "Pritaikyti"
-
-#: objinspstrconsts:oisarray
-msgid "Array"
-msgstr "Masyvas"
-
-#: objinspstrconsts:rscdautosize
-msgid "Auto Size"
-msgstr "Dydis adaptyvus"
-
-#: objinspstrconsts:oisstdactionlisteditorclass
-msgid "Available Action Classes:"
-msgstr "Galimų veiksmų klasės:"
-
-#: objinspstrconsts:srvk_back
-msgid "Backspace"
-msgstr "Backspace"
-
-#: objinspstrconsts:oisboolean
-msgid "Boolean"
-msgstr "Loginis tipas"
-
-#: objinspstrconsts:oisclear
-msgid "C&lear"
-msgstr "Iš&valyti"
-
-#: objinspstrconsts:oistdactdatasetcancel1hint
-msgid "Cancel"
-msgstr "Atsisakyti"
-
-#: objinspstrconsts:srvk_capital
-msgid "Capital"
-msgstr "Capital"
-
-#: objinspstrconsts:rscdcaption
-msgid "Caption"
-msgstr "Užrašas"
-
-#: objinspstrconsts:sccslvedtlabelcaption
-msgid "Caption:"
-msgstr "Užrašas:"
-
-#: objinspstrconsts:oiscategory
-msgid "Category"
-msgstr "Kategorija"
-
-#: objinspstrconsts:sccsiledtcenter
-msgid "Center"
-msgstr "Centruoti"
-
-#: objinspstrconsts:oischar
-msgid "Char"
-msgstr "Simbolis"
-
-#: objinspstrconsts:oischaractersforblanks
-msgid "Characters for Blanks"
-msgstr "Tarpo simboliai"
-
-#: objinspstrconsts:fescheckdset
-msgid "Check dataset settings"
-msgstr "Patikrinkite duomenų aibės nustatymus"
-
-#: objinspstrconsts:cgcheckgroupeditor
-msgid "CheckGroup Editor"
-msgstr "CheckGroup rengyklė"
-
-#: objinspstrconsts:clbchecklistboxeditor
-msgid "CheckListBox Editor"
-msgstr "CheckListBox rengyklė"
-
-#: objinspstrconsts:oisclass
-msgid "Class"
-msgstr "Klasė"
-
-#: objinspstrconsts:sccssgedtclean
-msgid "Clean"
-msgstr "Išvalyti"
-
-#: objinspstrconsts:sccsiledtclear
-msgid "Clear"
-msgstr "Išvalyti"
-
-#: objinspstrconsts:oisclearpicture
-msgid "Clear picture"
-msgstr "Išvalyti paveikslą"
-
-#: objinspstrconsts:srvk_cmd
-msgid "Cmd"
-msgstr "Cmd"
-
-#: objinspstrconsts:oistdactcolorselecthint
-msgid "Color Select"
-msgstr "Išrinkti spalvą"
-
-#: objinspstrconsts:rscdcolumneditor
-msgid "Column Editor"
-msgstr "Stulpelių rengyklė"
-
-#: objinspstrconsts:cgcolumns
-msgid "Columns:"
-msgstr "Stulpelių:"
-
-#: objinspstrconsts:oiscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
-msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
-
-#: objinspstrconsts:oiscomponentrestrictions
-msgid "Component restrictions: "
-msgstr "Komponento apribojimai: "
-
-#: objinspstrconsts:oiscomponents
-msgid "Components"
-msgstr "Komponentai"
-
-#: objinspstrconsts:oisconfirmdelete
-msgid "Confirm delete"
-msgstr "Patvirtinimas šalinant"
-
-#: objinspstrconsts:srvk_control
-msgid "Control"
-msgstr "Control"
-
-#: objinspstrconsts:srvk_convert
-msgid "Convert"
-msgstr "Convert"
-
-#: objinspstrconsts:oistdacteditcopyshorthint
-msgid "Copy"
-msgstr "Kopijuoti"
-
-#: objinspstrconsts:oiscopycomponents
-msgid "Copy components"
-msgstr "Kopijuoti komponentą"
-
-#: objinspstrconsts:oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Kurti naują Paskalio modulį."
-
-#: objinspstrconsts:oiscreatedefaultevent
-msgid "Create default event"
-msgstr "Kurti numatytą įvykį"
-
-#: objinspstrconsts:sccsiledtcrop
-msgid "Crop"
-msgstr "Apkirtpti"
-
-#: objinspstrconsts:srkm_ctrl
-msgid "Ctrl"
-msgstr "Ctrl"
-
-#: objinspstrconsts:oistdacteditselectallshortcut
-msgid "Ctrl+A"
-msgstr "Ctrl+A"
-
-#: objinspstrconsts:oistdacteditcopyshortcut
-msgid "Ctrl+C"
-msgstr "Ctrl+C"
-
-#: objinspstrconsts:oistdactsearchfindshortcut
-msgid "Ctrl+F"
-msgstr "Ctrl+F"
-
-#: objinspstrconsts:oistdactfileopenshortcut
-msgid "Ctrl+O"
-msgstr "Ctrl+O"
-
-#: objinspstrconsts:oistdacteditpasteshortcut
-msgid "Ctrl+V"
-msgstr "Ctrl+V"
-
-#: objinspstrconsts:oistdacteditcutshortcut
-msgid "Ctrl+X"
-msgstr "Ctrl+X"
-
-#: objinspstrconsts:oistdacteditundoshortcut
-msgid "Ctrl+Z"
-msgstr "Ctrl+Z"
-
-#: objinspstrconsts:oistdacteditcutheadline
-msgid "Cu&t"
-msgstr "&Iškirpti"
-
-#: objinspstrconsts:oistdacteditcutshorthint
-msgid "Cut"
-msgstr "Iškirpti"
-
-#: objinspstrconsts:oiscutcomponents
-msgid "Cut components"
-msgstr "Iškirpti komponentą"
-
-#: objinspstrconsts:cactionlisteditordatabasecategory
+#: objinspstrconsts.cactionlisteditordatabasecategory
 msgid "Database"
 msgstr "Duomenų bazė"
 
-#: objinspstrconsts:oistdacteditdeleteshortcut
-msgid "Del"
-msgstr "Del"
-
-#: objinspstrconsts:oisdelete
+#: objinspstrconsts.cactionlisteditordeleteaction
+msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
 msgid "Delete"
-msgstr "Pašalinti"
+msgstr ""
 
-#: objinspstrconsts:cactionlisteditordeleteactionhint
+#: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
 msgstr "Pašalinti veiksmą"
 
-#: objinspstrconsts:oisdeletecomponents
-msgid "Delete components"
-msgstr "Pašalinti komponentą"
-
-#: objinspstrconsts:oisdeleteitem
-msgid "Delete item %s%s%s?"
-msgstr "Pašalinti elementą %s%s%s?"
-
-#: objinspstrconsts:nbcesdeletepage
-msgid "Delete page"
-msgstr "Pašalinti lapą"
-
-#: objinspstrconsts:tccesdeletetab
-msgid "Delete tab"
-msgstr "Pašalinti kortelę"
-
-#: objinspstrconsts:clbdeletehint
-msgid "Delete the Item"
-msgstr "Pašalinti elementą"
-
-#: objinspstrconsts:clbdeletequest
-msgid "Delete the Item %d \"%s\"?"
-msgstr "Pašalinti elementą  %d „%s“?"
-
-#: objinspstrconsts:cactionlisteditordialogcategory
+#: objinspstrconsts.cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "Dialogas"
 
-#: objinspstrconsts:s_suggestsplitimage
-msgid "Do you want to split the image?"
-msgstr "Ar norite perskelti paveikslą?"
-
-#: objinspstrconsts:clbdown
-msgid "Down"
-msgstr "Žemyn"
-
-#: objinspstrconsts:oistdactfileexitheadline
-msgid "E&xit"
-msgstr "&Baigti darbą"
-
-#: objinspstrconsts:cactionlisteditoreditcategory
+#: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
 msgstr "Keitimas"
 
-#: objinspstrconsts:sccslvcoledt
-msgid "Edit Columns ..."
-msgstr "Keisti stulpelis..."
-
-#: objinspstrconsts:fesfetitle
-msgid "Edit Fields"
-msgstr "Keisti laukus"
-
-#: objinspstrconsts:sccslvedt
-msgid "Edit ListView Items..."
-msgstr "Keisti ListView elementus..."
-
-#: objinspstrconsts:sccssgedt
-msgid "Edit StringGrid..."
-msgstr "Keisti StringGrid..."
-
-#: objinspstrconsts:sccstredt
-msgid "Edit TreeView Items..."
-msgstr "Keisti TreeView elementus..."
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Keisti ActionList..."
-
-#: objinspstrconsts:oicoleditediting
-msgid "Editing"
-msgstr "Keičiama"
-
-#: objinspstrconsts:srvk_end
-msgid "End"
-msgstr "End"
-
-#: objinspstrconsts:oisenumeration
-msgid "Enumeration"
-msgstr "Vardinis tipas"
-
-#: objinspstrconsts:oiserror
-msgid "Error"
-msgstr "Klaida"
-
-#: objinspstrconsts:oiserrorloadingimage
-msgid "Error loading image"
-msgstr "Klaida įkeliant paveikslą"
-
-#: objinspstrconsts:oiserrorloadingimage2
-msgid "Error loading image %s%s%s:%s%s"
-msgstr "Įkeliant paveikslą įvyko klaida %s%s%s:%s%s"
-
-#: objinspstrconsts:srvk_escape
-msgid "Escape"
-msgstr "Escape"
-
-#: objinspstrconsts:oisevents
-msgid "Events"
-msgstr "Įvykiai"
-
-#: objinspstrconsts:srvk_execute
-msgid "Execute"
-msgstr "Execute"
-
-#: objinspstrconsts:oistdactfileexithint
-msgid "Exit"
-msgstr "Baigti darbą"
-
-#: objinspstrconsts:oistdactsearchfindfirstheadline
-msgid "F&ind First"
-msgstr "Ieškoti &pirmojo"
-
-#: objinspstrconsts:oistdactsearchfindnextshortcut
-msgid "F3"
-msgstr "F3"
-
-#: objinspstrconsts:oisfavorites
-msgid "Favorites"
-msgstr "Mėgstamiausi"
-
-#: objinspstrconsts:fesnofieldsnote
-msgid "Field's list is not available, can't check for duplicates"
-msgstr "Nėra laukų sąrašo, tad neis patikrinti ar yra dublikatų"
-
-#: objinspstrconsts:fesfltitle
-msgid "FieldDefs"
-msgstr "FieldDefs"
-
-#: objinspstrconsts:cactionlisteditorfilecategory
+#: objinspstrconsts.cactionlisteditorfilecategory
 msgid "File"
 msgstr "Failas"
 
-#: objinspstrconsts:pefilter
-msgid "Filter"
-msgstr "Filtras"
-
-#: objinspstrconsts:pefiltereditor
-msgid "Filter editor"
-msgstr ""
-
-#: objinspstrconsts:pefiltername
-msgid "Filter name"
-msgstr "Filtro pavadinimas"
-
-#: objinspstrconsts:srvk_final
-msgid "Final"
-msgstr "Final"
-
-#: objinspstrconsts:oistdactsearchfindhint
-msgid "Find"
-msgstr "Paieška"
-
-#: objinspstrconsts:oistdactsearchfindnextheadline
-msgid "Find &Next"
-msgstr "Ieškoti t&oliau"
-
-#: objinspstrconsts:oistdactsearchfindfirsthint
-msgid "Find first"
-msgstr "Ieškoti pirmojo"
-
-#: objinspstrconsts:oistdactsearchfindnexthint
-msgid "Find next"
-msgstr "Ieškoti toliau"
-
-#: objinspstrconsts:oistdactdatasetfirsthint
-msgid "First"
-msgstr "Pirmasis"
-
-#: objinspstrconsts:oisfloat
-msgid "Float"
-msgstr "Realusis skaičius"
-
-#: objinspstrconsts:oistdactfontedithint
-msgid "Font Select"
-msgstr "Išrinkti šriftą"
-
-#: objinspstrconsts:oiswidgetsetrestrictions
-msgid "General widget set restrictions: "
-msgstr "Pagrindinių valdiklių apribojimai: "
-
-#: objinspstrconsts:srgrabkey
-msgid "Grab key"
-msgstr "Registruoti klavišą"
-
-#: objinspstrconsts:srvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
-
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
 msgid "Help"
 msgstr "Žinynas"
 
-#: objinspstrconsts:oistdacthelpcontentshint
-msgid "Help Contents"
-msgstr "Žinyno turinys"
-
-#: objinspstrconsts:oistdacthelphelphelphint
-msgid "Help on help"
-msgstr "Apie žinyną"
-
-#: objinspstrconsts:srvk_home
-msgid "Home"
-msgstr "Home"
-
-#: objinspstrconsts:sccstredtlabelimageindex
-msgid "Image Index:"
-msgstr "Įprastas pav.:"
-
-#: objinspstrconsts:sccsiledtcaption
-msgid "ImageList Editor"
-msgstr "ImageList rengyklė"
-
-#: objinspstrconsts:sccsiledtgrplcaption
-msgid "Images"
-msgstr "Paveikslai"
-
-#: objinspstrconsts:oisincompatibleidentifier
-msgid "Incompatible Identifier"
-msgstr "Nesuderinamas identifikatorius"
-
-#: objinspstrconsts:oisincompatiblemethod
-msgid "Incompatible Method"
-msgstr "Nesuderinamas metodas"
-
-#: objinspstrconsts:oisinputmask
-msgid "Input Mask:"
-msgstr "Įvedimo kaukė:"
-
-#: objinspstrconsts:oistdactdatasetinserthint
-msgid "Insert"
-msgstr "Įterpti"
-
-#: objinspstrconsts:nbcesinsertpage
-msgid "Insert page"
-msgstr "Įterpti lapą"
-
-#: objinspstrconsts:tccesinserttab
-msgid "Insert tab"
-msgstr "Įterpti kortelę"
-
-#: objinspstrconsts:oisint64
-msgid "Int64"
-msgstr "Int64 tipo sveikasis skaičius"
-
-#: objinspstrconsts:oisinteger
-msgid "Integer"
-msgstr "Integer tipo sveikasis skaičius"
-
-#: objinspstrconsts:oisinterface
-msgid "Interface"
-msgstr "Interfeisas"
-
-#: objinspstrconsts:rscdinvalidnumericvalue
-msgid "Invalid numeric Value"
-msgstr "Klaidingas numeris"
-
-#: objinspstrconsts:oisinvalidpropertyvalue
-msgid "Invalid property value"
-msgstr "Klaidinga savybės reikšmė"
-
-#: objinspstrconsts:srvk_irregular
-msgid "Irregular "
-msgstr "Irregular "
-
-#: objinspstrconsts:fesnofields
-msgid "It was not possible to get the dataset field's list"
-msgstr "Neįmanoma gauti duomenų aibės laukų sąrašo"
-
-#: objinspstrconsts:sccstredtitem
-msgid "Item"
-msgstr "Elementas"
-
-#: objinspstrconsts:sccstredtgrprcaption
-msgid "Item Properties"
-msgstr "Elemento savybės"
-
-#: objinspstrconsts:sccstredtgrplcaption
-msgid "Items"
-msgstr "Elementai"
-
-#: objinspstrconsts:oisfinddeclaration
-msgid "Jump to declaration"
-msgstr "Rodyti kur paskelbta"
-
-#: objinspstrconsts:srvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: objinspstrconsts:srvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: objinspstrconsts:oistdactdatasetlasthint
-msgid "Last"
-msgstr "Paskutinis"
-
-#: objinspstrconsts:rscdleft
-msgid "Left"
-msgstr "Kairė"
-
-#: objinspstrconsts:sccslvedtcaption
-msgid "ListView Items Editor"
-msgstr "ListView elementų rengyklė"
-
-#: objinspstrconsts:sccstredtload
-msgid "Load"
-msgstr "Įkelti"
-
-#: objinspstrconsts:oisloadimagedialog
-msgid "Load Image Dialog"
-msgstr "Įkelti paveikslą"
-
-#: objinspstrconsts:oisloadpicture
-msgid "Load picture"
-msgstr "Įkelti paveikslą"
-
-#: objinspstrconsts:sccssgedtload
-msgid "Load..."
-msgstr "Įkelti..."
-
-#: objinspstrconsts:oismasks
-msgid "Masks..."
-msgstr "Kaukės..."
-
-#: objinspstrconsts:srvk_menu
-msgid "Menu"
-msgstr "Menu"
-
-#: objinspstrconsts:srvk_meta
-msgid "Meta"
-msgstr "Meta"
-
-#: objinspstrconsts:oismethod
-msgid "Method"
-msgstr "Metodas"
-
-#: objinspstrconsts:srvk_modechange
-msgid "Mode Change"
-msgstr "Mode Change"
-
-#: objinspstrconsts:clbmodify
-msgid "Modify the Item"
-msgstr "Keisti elementą"
-
-#: objinspstrconsts:srvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Kairysis pelės klavišas"
-
-#: objinspstrconsts:srvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Vidurinis pelės klavišas"
-
-#: objinspstrconsts:srvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Dešinysis pelės klavišas"
-
-#: objinspstrconsts:sccsiledtmovedown
+#: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr "Perkelti žemyn"
+msgstr ""
 
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr "Perkelti eilutes/stulpelius"
-
-#: objinspstrconsts:sccsiledtmoveup
+#: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr "Perkelti aukštyn"
+msgstr ""
 
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr "Perkelti žemyn"
-
-#: objinspstrconsts:nbcesmovepageleft
-msgid "Move page left"
-msgstr "Lapą perkelti kairėn"
-
-#: objinspstrconsts:nbcesmovepageright
-msgid "Move page right"
-msgstr "Lapą perkelti dešinėn"
-
-#: objinspstrconsts:tccesmovetableft
-msgid "Move tab left"
-msgstr "Kortelę perkelti kairėn"
-
-#: objinspstrconsts:tccesmovetabright
-msgid "Move tab right"
-msgstr "Kortelę perkelti dešinėn"
-
-#: objinspstrconsts:rscdmoveup
-msgid "Move up"
-msgstr "Perkelti viršun"
-
-#: objinspstrconsts:cactionlisteditornewaction
+#: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
 msgstr "Naujas veiksmas"
 
-#: objinspstrconsts:sccstredtnewitem
-msgid "New Item"
-msgstr "Naujas elementas"
-
-#: objinspstrconsts:cactionlisteditornewstdaction
+#: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
 msgstr "Naujas standartinis veiksmas"
 
-#: objinspstrconsts:sccstredtnewsubitem
-msgid "New SubItem"
-msgstr "Naujas poelementis"
-
-#: objinspstrconsts:oistdactdatasetnexthint
-msgid "Next"
-msgstr "Kitas"
-
-#: objinspstrconsts:srvk_nonconvert
-msgid "Nonconvert"
-msgstr "Nonconvert"
-
-#: objinspstrconsts:sccsiledtnone
-msgid "None"
-msgstr "Jiokios"
-
-#: objinspstrconsts:srvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
-
-#: objinspstrconsts:srvk_numpad
-msgid "Numpad %d"
-msgstr "Numpad %d"
-
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr "Tinka"
-
-#: objinspstrconsts:oisobject
-msgid "Object"
-msgstr "Objektas"
-
-#: objinspstrconsts:oisobjectinspector
-msgid "Object Inspector"
-msgstr "Objektų inspektorius"
-
-#: objinspstrconsts:oisok2
-msgid "Ok"
-msgstr "Tinka"
-
-#: objinspstrconsts:cgcheckduplicate
-msgid "On Add, Check for Duplicate in Items"
-msgstr "Tikrinti ar įdedamas elementas unikalus"
-
-#: objinspstrconsts:sccstredtopendialog
-msgid "Open"
-msgstr "Įkelti"
-
-#: objinspstrconsts:oispeopenimagefile
-msgid "Open image file"
-msgstr "Atverti paveikslo failą"
-
-#: objinspstrconsts:oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Įkelti kaukes iš failo (*.dem)"
-
-#: objinspstrconsts:oistdactfileopenwithhint
-msgid "Open with"
-msgstr "Atverti su"
-
-#: objinspstrconsts:oistdactfileopenwithheadline
-msgid "Open with..."
-msgstr "Atverti su..."
-
-#: objinspstrconsts:oisoptions
-msgid "Options"
-msgstr "Parinktys"
-
-#: objinspstrconsts:oistdactdatasetpostheadline
-msgid "P&ost"
-msgstr "&Siųsti"
-
-#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+#: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
 msgstr "Panelės aprašymai"
 
-#: objinspstrconsts:sccssbeditpanels
-msgid "Panels Editor ..."
-msgstr "Panelių rengyklė..."
-
-#: objinspstrconsts:oistdacteditpasteshorthint
-msgid "Paste"
-msgstr "Įdėti"
-
-#: objinspstrconsts:oispastecomponents
-msgid "Paste components"
-msgstr "Įterpti komponentą"
-
-#: objinspstrconsts:srvk_pause
-msgid "Pause key"
-msgstr "Pause key"
-
-#: objinspstrconsts:oispepicture
-msgid "Picture"
-msgstr "Paveikslas"
-
-#: objinspstrconsts:cgdisable
-msgid "Popup to disable/enable items"
-msgstr "Prieinamumą keisk per kontekstinį menių"
-
-#: objinspstrconsts:oistdactdatasetposthint
-msgid "Post"
-msgstr "Siūsti"
-
-#: objinspstrconsts:srvk_print
-msgid "Print"
-msgstr "Print"
-
-#: objinspstrconsts:oistdactdatasetpriorhint
-msgid "Prior"
-msgstr "Ankstesnis"
-
-#: objinspstrconsts:oisproperties
-msgid "Properties"
-msgstr "Savybės"
-
-#: objinspstrconsts:oispropertiesof
-msgid "Properties of %s"
-msgstr "%s savybės"
-
-#: objinspstrconsts:oisrecord
-msgid "Record"
-msgstr "Įrašas"
-
-#: objinspstrconsts:oistdactdatasetrefreshhint
-msgid "Refresh"
-msgstr "Atnaujinti"
-
-#: objinspstrconsts:oisremovefromfavorites
-msgid "Remove from Favorites"
-msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
-
-#: objinspstrconsts:oistdactsearchreplacehint
-msgid "Replace"
-msgstr "Pakeisti"
-
-#: objinspstrconsts:oisrestricted
-msgid "Restricted"
-msgstr "Apribota"
-
-#: objinspstrconsts:srvk_return
-msgid "Return"
-msgstr "Return"
-
-#: objinspstrconsts:rscdright
-msgid "Right"
-msgstr "Dešinė"
-
-#: objinspstrconsts:oissamplemasks
-msgid "Sample Masks:"
-msgstr "Kaukių pavyzdžiai:"
-
-#: objinspstrconsts:sccstredtsave
-msgid "Save"
-msgstr "Įrašyti"
-
-#: objinspstrconsts:oistdactfilesaveasheadline
-msgid "Save &As..."
-msgstr "Įrašyti &kaip..."
-
-#: objinspstrconsts:sccsiledtsaveall
-msgid "Save All..."
-msgstr "Įrašyti visus…"
-
-#: objinspstrconsts:oistdactfilesaveashint
-msgid "Save As"
-msgstr "Įrašyti taip"
-
-#: objinspstrconsts:sccsiledtsavedialog
-msgid "Save Image"
-msgstr "Įrašyti paveikslą"
-
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr "Įrašyti literalinius simbolius"
-
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr "Įrašyti paveikslą taip"
-
-#: objinspstrconsts:oissavepicture
-msgid "Save picture"
-msgstr "Įrašyti paveikslą"
-
-#: objinspstrconsts:sccsiledtsave
-msgid "Save..."
-msgstr "Įrašyti..."
-
-#: objinspstrconsts:srvk_scroll
-msgid "Scroll"
-msgstr "Scroll"
-
-#: objinspstrconsts:cactionlisteditorsearchcategory
-msgid "Search"
-msgstr "Ieškoti"
-
-#: objinspstrconsts:sccshceditsections
-msgid "Sections Editor ..."
-msgstr "Antraščių rengyklė..."
-
-#: objinspstrconsts:srselect
-msgid "Select"
-msgstr "Pažymėti"
-
-#: objinspstrconsts:oistdacteditselectallheadline
-msgid "Select &All"
-msgstr "Pažymėti &viską"
-
-#: objinspstrconsts:oistdactcolorselect1headline
-msgid "Select &Color..."
-msgstr "Išrinkti &spalvą..."
-
-#: objinspstrconsts:oistdactfonteditheadline
-msgid "Select &Font..."
-msgstr "Išrinkti šri&ftą..."
-
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Pažymėti viską"
-
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Išrink failą"
-
-#: objinspstrconsts:oisselectshortcut
-msgid "Select short cut"
-msgstr "Parinkite sparčiųjų klavišų derinį"
-
-#: objinspstrconsts:sccsiledtgrprcaption
-msgid "Selected Image"
-msgstr "Pažymėtas paveikslas"
-
-#: objinspstrconsts:sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Pav. pažymėjus:"
-
-#: objinspstrconsts:oisset
-msgid "Set"
-msgstr "Aibė"
-
-#: objinspstrconsts:oissettodefaultvalue
-msgid "Set to default value"
-msgstr "Keisti į numatytą reikšmę"
-
-#: objinspstrconsts:oissettodefault
-msgid "Set to default: %s"
-msgstr "Keisti į numatytą: %s"
-
-#: objinspstrconsts:srvk_shift
-msgid "Shift"
-msgstr "Shift"
-
-#: objinspstrconsts:oisshowcomponenttree
-msgid "Show Component Tree"
-msgstr "Rodyti komponentų medį"
-
-#: objinspstrconsts:oisshowhints
-msgid "Show Hints"
-msgstr "Rodyti suflerius"
-
-#: objinspstrconsts:nbcesshowpage
-msgid "Show page ..."
-msgstr "Rodyti lapą..."
-
-#: objinspstrconsts:srvk_snapshot
-msgid "Snapshot"
-msgstr "Snapshot"
-
-#: objinspstrconsts:oissort
-msgid "Sort"
-msgstr "Rūšiuoti"
-
-#: objinspstrconsts:srvk_space
-msgid "Space key"
-msgstr "Tarpo klavišas"
-
-#: objinspstrconsts:s_splitimage
-msgid "Split image"
-msgstr "Perskelti paveikslą"
-
-#: objinspstrconsts:oisstdactionlisteditor
-msgid "Standard Action Classes"
-msgstr "Standartinių veiksmų klasės:"
-
-#: objinspstrconsts:sccstredtlabelstateindex
-msgid "State Index:"
-msgstr "Būsenos pav.:"
-
-#: objinspstrconsts:sccsiledtstretch
-msgid "Stretch"
-msgstr "Ištempti"
-
-#: objinspstrconsts:oisstring
-msgid "String"
-msgstr "Tekstas"
-
-#: objinspstrconsts:sccssgedtgrp
-msgid "String Grid"
-msgstr "Teksto lentelė"
-
-#: objinspstrconsts:sccssgedtcaption
-msgid "StringGrid Editor"
-msgstr "StringGrid rengyklė"
-
-#: objinspstrconsts:oisstringseditordialog
-msgid "Strings Editor Dialog"
-msgstr "Teksto rengyklė"
-
-#: objinspstrconsts:srvk_super
-msgid "Super"
-msgstr "Super"
-
-#: objinspstrconsts:srvk_tab
-msgid "Tab"
-msgstr "Tab"
-
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Testas"
-
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Išbandyti dialogą..."
-
-#: objinspstrconsts:sccstredtlabeltext
-msgid "Text:"
-msgstr "Tekstas:"
-
-#: objinspstrconsts:cgcheckduplicatemsg
-msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "Jau yra toks elementas „%s“. Šį pridėti vistiek?"
-
-#: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s identifikatorius nėra metodas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
-
-#: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
-
-#: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
-
-#: objinspstrconsts:cactionlisteditorpaneltoolbar
+#: objinspstrconsts.cactionlisteditorpaneltoolbar
 msgid "Toolbar"
 msgstr "Įrankių juosta"
 
-#: objinspstrconsts:oistdacthelptopicsearchhint
-msgid "Topic Search"
-msgstr "Paieška rodyklėje"
+#: objinspstrconsts.cactionlisteditorsearchcategory
+msgid "Search"
+msgstr "Ieškoti"
 
-#: objinspstrconsts:sccsiledtransparentcolor
-msgid "Transparent Color:"
-msgstr "Permatoma spalva:"
+#: objinspstrconsts.cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Nežinoma)"
 
-#: objinspstrconsts:sccstredtcaption
-msgid "TreeView Items Editor"
-msgstr "TreeView elementų rengyklė"
+#: objinspstrconsts.cgcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr "Tikrinti ar įdedamas elementas unikalus"
 
-#: objinspstrconsts:oisundo
-msgid "Undo"
-msgstr "Grąžinti"
+#: objinspstrconsts.cgcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway?"
+msgstr "Jau yra toks elementas „%s“. Šį pridėti vistiek?"
 
-#: objinspstrconsts:oisunknown
-msgid "Unknown"
-msgstr "Nežinoma"
+#: objinspstrconsts.cgcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "CheckGroup rengyklė"
 
-#: objinspstrconsts:clbup
+#: objinspstrconsts.cgcolumns
+msgid "Columns:"
+msgstr "Stulpelių:"
+
+#: objinspstrconsts.cgdisable
+msgid "Popup to disable/enable items"
+msgstr "Prieinamumą keisk per kontekstinį menių"
+
+#: objinspstrconsts.clbadd
+msgid "Add new Item"
+msgstr "Pridėti elementą"
+
+#: objinspstrconsts.clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "CheckListBox rengyklė"
+
+#: objinspstrconsts.clbdeletehint
+msgid "Delete the Item"
+msgstr "Pašalinti elementą"
+
+#: objinspstrconsts.clbdeletequest
+msgid "Delete the Item %d \"%s\"?"
+msgstr "Pašalinti elementą  %d „%s“?"
+
+#: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
+msgid "Down"
+msgstr "Žemyn"
+
+#: objinspstrconsts.clbmodify
+msgid "Modify the Item"
+msgstr "Keisti elementą"
+
+#: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Viršun"
 
-#: objinspstrconsts:oisvalue
+#: objinspstrconsts.fescheckdset
+msgid "Check dataset settings"
+msgstr "Patikrinkite duomenų aibės nustatymus"
+
+#: objinspstrconsts.fesfetitle
+msgid "Edit Fields"
+msgstr "Keisti laukus"
+
+#: objinspstrconsts.fesfltitle
+msgid "FieldDefs"
+msgstr "FieldDefs"
+
+#: objinspstrconsts.fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr "Neįmanoma gauti duomenų aibės laukų sąrašo"
+
+#: objinspstrconsts.fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr "Nėra laukų sąrašo, tad neis patikrinti ar yra dublikatų"
+
+#: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
+msgid "Add"
+msgstr ""
+
+#: objinspstrconsts.nbcesaddpage
+msgid "Add page"
+msgstr "Pridėti lapą"
+
+#: objinspstrconsts.nbcesdeletepage
+msgid "Delete page"
+msgstr "Pašalinti lapą"
+
+#: objinspstrconsts.nbcesinsertpage
+msgid "Insert page"
+msgstr "Įterpti lapą"
+
+#: objinspstrconsts.nbcesmovepageleft
+msgid "Move page left"
+msgstr "Lapą perkelti kairėn"
+
+#: objinspstrconsts.nbcesmovepageright
+msgid "Move page right"
+msgstr "Lapą perkelti dešinėn"
+
+#: objinspstrconsts.nbcesshowpage
+msgid "Show page ..."
+msgstr "Rodyti lapą..."
+
+#: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
+msgid "Add"
+msgstr "Pridėti"
+
+#: objinspstrconsts.oicoleditdelete
+msgctxt "objinspstrconsts.oicoleditdelete"
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
+msgid "Down"
+msgstr "Žemyn"
+
+#: objinspstrconsts.oicoleditediting
+msgid "Editing"
+msgstr "Keičiama"
+
+#: objinspstrconsts.oicoleditup
+msgctxt "objinspstrconsts.oicoleditup"
+msgid "Up"
+msgstr "Viršun"
+
+#: objinspstrconsts.ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 eilučių, 0 simbolių"
+
+#: objinspstrconsts.ois1linedchars
+msgid "1 line, %d chars"
+msgstr "1 eilutė, %d simbolių"
+
+#: objinspstrconsts.oisaction
+msgid "Action"
+msgstr "Veiksmas"
+
+#: objinspstrconsts.oisactionlisteditor
+msgid "Action List Editor"
+msgstr "ActionList rengyklė"
+
+#: objinspstrconsts.oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "Įdėti į mėgstamiausiųjų sąrašą"
+
+#: objinspstrconsts.oisall
+msgid "All"
+msgstr "Visus"
+
+#: objinspstrconsts.oisallfiles
+msgid "All files"
+msgstr "Visi failai"
+
+#: objinspstrconsts.oisarray
+msgid "Array"
+msgstr "Masyvas"
+
+#: objinspstrconsts.oisboolean
+msgid "Boolean"
+msgstr "Loginis tipas"
+
+#: objinspstrconsts.oiscadd
+msgid "&Add"
+msgstr "Pri&dėti"
+
+#: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
+msgid "&Cancel"
+msgstr ""
+
+#: objinspstrconsts.oiscategory
+msgid "Category"
+msgstr "Kategorija"
+
+#: objinspstrconsts.oiscdelete
+msgctxt "objinspstrconsts.oiscdelete"
+msgid "&Delete"
+msgstr "Paša&linti"
+
+#: objinspstrconsts.oischar
+msgid "Char"
+msgstr "Simbolis"
+
+#: objinspstrconsts.oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "Tarpo simboliai"
+
+#: objinspstrconsts.oisclass
+msgid "Class"
+msgstr "Klasė"
+
+#: objinspstrconsts.oisclear
+msgid "C&lear"
+msgstr "Iš&valyti"
+
+#: objinspstrconsts.oisclearpicture
+msgid "Clear picture"
+msgstr "Išvalyti paveikslą"
+
+#: objinspstrconsts.oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
+
+#: objinspstrconsts.oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr "Komponento apribojimai: "
+
+#: objinspstrconsts.oiscomponents
+msgid "Components"
+msgstr "Komponentai"
+
+#: objinspstrconsts.oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Patvirtinimas šalinant"
+
+#: objinspstrconsts.oiscopycomponents
+msgid "Copy components"
+msgstr "Kopijuoti komponentą"
+
+#: objinspstrconsts.oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Kurti naują Paskalio modulį."
+
+#: objinspstrconsts.oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Kurti numatytą įvykį"
+
+#: objinspstrconsts.oiscutcomponents
+msgid "Cut components"
+msgstr "Iškirpti komponentą"
+
+#: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: objinspstrconsts.oisdeletecomponents
+msgid "Delete components"
+msgstr "Pašalinti komponentą"
+
+#: objinspstrconsts.oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "Pašalinti elementą %s%s%s?"
+
+#: objinspstrconsts.oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr "%d eilučių, %d simbolių"
+
+#: objinspstrconsts.oiseditactionlist
+msgid "Edit action list..."
+msgstr "Keisti ActionList..."
+
+#: objinspstrconsts.oisenumeration
+msgid "Enumeration"
+msgstr "Vardinis tipas"
+
+#: objinspstrconsts.oiserror
+msgid "Error"
+msgstr "Klaida"
+
+#: objinspstrconsts.oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Klaida įkeliant paveikslą"
+
+#: objinspstrconsts.oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "Įkeliant paveikslą įvyko klaida %s%s%s:%s%s"
+
+#: objinspstrconsts.oisevents
+msgid "Events"
+msgstr "Įvykiai"
+
+#: objinspstrconsts.oisfavorites
+msgid "Favorites"
+msgstr "Mėgstamiausi"
+
+#: objinspstrconsts.oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "Rodyti kur paskelbta"
+
+#: objinspstrconsts.oisfloat
+msgid "Float"
+msgstr "Realusis skaičius"
+
+#: objinspstrconsts.oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr "Nesuderinamas identifikatorius"
+
+#: objinspstrconsts.oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr "Nesuderinamas metodas"
+
+#: objinspstrconsts.oisinputmask
+msgid "Input Mask:"
+msgstr "Įvedimo kaukė:"
+
+#: objinspstrconsts.oisint64
+msgid "Int64"
+msgstr "Int64 tipo sveikasis skaičius"
+
+#: objinspstrconsts.oisinteger
+msgid "Integer"
+msgstr "Integer tipo sveikasis skaičius"
+
+#: objinspstrconsts.oisinterface
+msgid "Interface"
+msgstr "Interfeisas"
+
+#: objinspstrconsts.oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Klaidinga savybės reikšmė"
+
+#: objinspstrconsts.oisitemsselected
+msgid "%u items selected"
+msgstr "pažymėta %u elementų"
+
+#: objinspstrconsts.oisload
+msgid "&Load"
+msgstr "Į&kelti"
+
+#: objinspstrconsts.oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Įkelti paveikslą"
+
+#: objinspstrconsts.oisloadpicture
+msgid "Load picture"
+msgstr "Įkelti paveikslą"
+
+#: objinspstrconsts.oismasks
+msgid "Masks..."
+msgstr "Kaukės..."
+
+#: objinspstrconsts.oismethod
+msgid "Method"
+msgstr "Metodas"
+
+#: objinspstrconsts.oisnone
+msgid "(none)"
+msgstr "(jokia)"
+
+#: objinspstrconsts.oisobject
+msgid "Object"
+msgstr "Objektas"
+
+#: objinspstrconsts.oisobjectinspector
+msgid "Object Inspector"
+msgstr "Objektų inspektorius"
+
+#: objinspstrconsts.oisok
+msgid "&OK"
+msgstr "&Tinka"
+
+#: objinspstrconsts.oisok2
+msgid "Ok"
+msgstr "Tinka"
+
+#: objinspstrconsts.oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "Įkelti kaukes iš failo (*.dem)"
+
+#: objinspstrconsts.oisoptions
+msgid "Options"
+msgstr "Parinktys"
+
+#: objinspstrconsts.oispastecomponents
+msgid "Paste components"
+msgstr "Įterpti komponentą"
+
+#: objinspstrconsts.oispeopenimagefile
+msgid "Open image file"
+msgstr "Atverti paveikslo failą"
+
+#: objinspstrconsts.oispepicture
+msgid "Picture"
+msgstr "Paveikslas"
+
+#: objinspstrconsts.oispesaveimageas
+msgid "Save image as"
+msgstr "Įrašyti paveikslą taip"
+
+#: objinspstrconsts.oisproperties
+msgid "Properties"
+msgstr "Savybės"
+
+#: objinspstrconsts.oispropertiesof
+msgid "Properties of %s"
+msgstr "%s savybės"
+
+#: objinspstrconsts.oisrecord
+msgid "Record"
+msgstr "Įrašas"
+
+#: objinspstrconsts.oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
+
+#: objinspstrconsts.oisrestricted
+msgid "Restricted"
+msgstr "Apribota"
+
+#: objinspstrconsts.oissamplemasks
+msgid "Sample Masks:"
+msgstr "Kaukių pavyzdžiai:"
+
+#: objinspstrconsts.oissave
+msgid "&Save"
+msgstr "Į&rašyti"
+
+#: objinspstrconsts.oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Įrašyti literalinius simbolius"
+
+#: objinspstrconsts.oissavepicture
+msgid "Save picture"
+msgstr "Įrašyti paveikslą"
+
+#: objinspstrconsts.oisselectafile
+msgid "Select a file"
+msgstr "Išrink failą"
+
+#: objinspstrconsts.oisselectshortcut
+msgid "Select short cut"
+msgstr "Parinkite sparčiųjų klavišų derinį"
+
+#: objinspstrconsts.oisset
+msgid "Set"
+msgstr "Aibė"
+
+#: objinspstrconsts.oissettodefault
+msgid "Set to default: %s"
+msgstr "Keisti į numatytą: %s"
+
+#: objinspstrconsts.oissettodefaultvalue
+msgid "Set to default value"
+msgstr "Keisti į numatytą reikšmę"
+
+#: objinspstrconsts.oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "Rodyti komponentų medį"
+
+#: objinspstrconsts.oisshowhints
+msgid "Show Hints"
+msgstr "Rodyti suflerius"
+
+#: objinspstrconsts.oissort
+msgid "Sort"
+msgstr "Rūšiuoti"
+
+#: objinspstrconsts.oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "Standartinių veiksmų klasės:"
+
+#: objinspstrconsts.oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "Galimų veiksmų klasės:"
+
+#: objinspstrconsts.oisstring
+msgid "String"
+msgstr "Tekstas"
+
+#: objinspstrconsts.oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Teksto rengyklė"
+
+#: objinspstrconsts.oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr "Išrinkti &spalvą..."
+
+#: objinspstrconsts.oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Išrinkti spalvą"
+
+#: objinspstrconsts.oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
+msgid "&Cancel"
+msgstr "&Atsisakyti"
+
+#: objinspstrconsts.oistdactdatasetdeleteheadline
+msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
+msgid "&Delete"
+msgstr "Paša&linti"
+
+#: objinspstrconsts.oistdactdatasetdeletehint
+msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Taisa"
+
+#: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
+msgid "Edit"
+msgstr "Keitimas"
+
+#: objinspstrconsts.oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "&Pirmasis"
+
+#: objinspstrconsts.oistdactdatasetfirsthint
+msgid "First"
+msgstr "Pirmasis"
+
+#: objinspstrconsts.oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "Į&terpti"
+
+#: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
+msgid "Insert"
+msgstr "Įterpti"
+
+#: objinspstrconsts.oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "Pasku&tinis"
+
+#: objinspstrconsts.oistdactdatasetlasthint
+msgid "Last"
+msgstr "Paskutinis"
+
+#: objinspstrconsts.oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "&Kitas"
+
+#: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
+msgid "Next"
+msgstr "Kitas"
+
+#: objinspstrconsts.oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "&Siųsti"
+
+#: objinspstrconsts.oistdactdatasetposthint
+msgid "Post"
+msgstr "Siūsti"
+
+#: objinspstrconsts.oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "Ank&stesnis"
+
+#: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
+msgid "Prior"
+msgstr "Ankstesnis"
+
+#: objinspstrconsts.oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "Atnau&jinti"
+
+#: objinspstrconsts.oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: objinspstrconsts.oistdacteditcopyheadline
+msgid "&Copy"
+msgstr "&Kopijuoti"
+
+#: objinspstrconsts.oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts.oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: objinspstrconsts.oistdacteditcutheadline
+msgid "Cu&t"
+msgstr "&Iškirpti"
+
+#: objinspstrconsts.oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts.oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Iškirpti"
+
+#: objinspstrconsts.oistdacteditdeleteheadline
+msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
+msgid "&Delete"
+msgstr "Paša&linti"
+
+#: objinspstrconsts.oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Del"
+
+#: objinspstrconsts.oistdacteditdeleteshorthint
+msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.oistdacteditpasteheadline
+msgid "&Paste"
+msgstr "Į&dėti"
+
+#: objinspstrconsts.oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts.oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Įdėti"
+
+#: objinspstrconsts.oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "Pažymėti &viską"
+
+#: objinspstrconsts.oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts.oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Pažymėti viską"
+
+#: objinspstrconsts.oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Grąžinti"
+
+#: objinspstrconsts.oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
+msgid "Undo"
+msgstr ""
+
+#: objinspstrconsts.oistdactfileexitheadline
+msgid "E&xit"
+msgstr "&Baigti darbą"
+
+#: objinspstrconsts.oistdactfileexithint
+msgid "Exit"
+msgstr "Baigti darbą"
+
+#: objinspstrconsts.oistdactfileopenheadline
+msgid "&Open..."
+msgstr "At&verti..."
+
+#: objinspstrconsts.oistdactfileopenhint
+msgctxt "objinspstrconsts.oistdactfileopenhint"
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts.oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts.oistdactfileopenwithheadline
+msgid "Open with..."
+msgstr "Atverti su..."
+
+#: objinspstrconsts.oistdactfileopenwithhint
+msgid "Open with"
+msgstr "Atverti su"
+
+#: objinspstrconsts.oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr "Įrašyti &kaip..."
+
+#: objinspstrconsts.oistdactfilesaveashint
+msgid "Save As"
+msgstr "Įrašyti taip"
+
+#: objinspstrconsts.oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr "Išrinkti šri&ftą..."
+
+#: objinspstrconsts.oistdactfontedithint
+msgid "Font Select"
+msgstr "Išrinkti šriftą"
+
+#: objinspstrconsts.oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "Turin&ys"
+
+#: objinspstrconsts.oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "Žinyno turinys"
+
+#: objinspstrconsts.oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "Apie ži&nyną"
+
+#: objinspstrconsts.oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Apie žinyną"
+
+#: objinspstrconsts.oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "&Rodyklė"
+
+#: objinspstrconsts.oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Paieška rodyklėje"
+
+#: objinspstrconsts.oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr "Ieškoti &pirmojo"
+
+#: objinspstrconsts.oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr "Ieškoti pirmojo"
+
+#: objinspstrconsts.oistdactsearchfindheadline
+msgid "&Find..."
+msgstr "&Ieškoti..."
+
+#: objinspstrconsts.oistdactsearchfindhint
+msgid "Find"
+msgstr "Paieška"
+
+#: objinspstrconsts.oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr "Ieškoti t&oliau"
+
+#: objinspstrconsts.oistdactsearchfindnexthint
+msgid "Find next"
+msgstr "Ieškoti toliau"
+
+#: objinspstrconsts.oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr "F3"
+
+#: objinspstrconsts.oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr "Ctrl+F"
+
+#: objinspstrconsts.oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr "&Pakeisti"
+
+#: objinspstrconsts.oistdactsearchreplacehint
+msgid "Replace"
+msgstr "Pakeisti"
+
+#: objinspstrconsts.oistestdialog
+msgid "Test dialog..."
+msgstr "Išbandyti dialogą..."
+
+#: objinspstrconsts.oistestinput
+msgid "Test Input"
+msgstr "Testas"
+
+#: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "%s%s%s identifikatorius nėra metodas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+
+#: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "%s%s%s metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+
+#: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+
+#: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
+msgid "Undo"
+msgstr "Grąžinti"
+
+#: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: objinspstrconsts.oisvalue
 msgid "Value:"
 msgstr "Reikšmė:"
 
-#: objinspstrconsts:oisvariant
+#: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Įvairaus tipo"
 
-#: objinspstrconsts:oisviewrestrictedproperties
+#: objinspstrconsts.oisviewrestrictedproperties
 msgid "View restricted properties"
 msgstr "Rodyti apribotas savybes"
 
-#: objinspstrconsts:rscdvisible
-msgid "Visible"
-msgstr "Matoma"
+#: objinspstrconsts.oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
+msgstr "Pagrindinių valdiklių apribojimai: "
 
-#: objinspstrconsts:rscdwidth
-msgid "Width"
-msgstr "Plotis"
-
-#: objinspstrconsts:oisword
+#: objinspstrconsts.oisword
 msgid "Word"
 msgstr "Word tipo sveikasis skaičius"
 
-#: objinspstrconsts:srvk_apps
+#: objinspstrconsts.pefilter
+msgid "Filter"
+msgstr "Filtras"
+
+#: objinspstrconsts.pefiltereditor
+msgid "Filter editor"
+msgstr ""
+
+#: objinspstrconsts.pefiltername
+msgid "Filter name"
+msgstr "Filtro pavadinimas"
+
+#: objinspstrconsts.rscdalignment
+msgid "Alignment"
+msgstr "Lygiuotė"
+
+#: objinspstrconsts.rscdautosize
+msgid "Auto Size"
+msgstr "Dydis adaptyvus"
+
+#: objinspstrconsts.rscdcaption
+msgid "Caption"
+msgstr "Užrašas"
+
+#: objinspstrconsts.rscdcolumneditor
+msgid "Column Editor"
+msgstr "Stulpelių rengyklė"
+
+#: objinspstrconsts.rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr "Klaidingas numeris"
+
+#: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
+msgid "Left"
+msgstr "Kairė"
+
+#: objinspstrconsts.rscdmovedown
+msgid "Move down"
+msgstr "Perkelti žemyn"
+
+#: objinspstrconsts.rscdmoveup
+msgid "Move up"
+msgstr "Perkelti viršun"
+
+#: objinspstrconsts.rscdok
+msgid "OK"
+msgstr "Tinka"
+
+#: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
+msgid "Right"
+msgstr "Dešinė"
+
+#: objinspstrconsts.rscdvisible
+msgid "Visible"
+msgstr "Matoma"
+
+#: objinspstrconsts.rscdwidth
+msgid "Width"
+msgstr "Plotis"
+
+#: objinspstrconsts.sccshceditsections
+msgid "Sections Editor ..."
+msgstr "Antraščių rengyklė..."
+
+#: objinspstrconsts.sccsiledtadd
+msgid "Add..."
+msgstr "Pridėti..."
+
+#: objinspstrconsts.sccsiledtadjustment
+msgid "Adjustment"
+msgstr "Korekcija"
+
+#: objinspstrconsts.sccsiledtapply
+msgctxt "objinspstrconsts.sccsiledtapply"
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts.sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "ImageList rengyklė"
+
+#: objinspstrconsts.sccsiledtcenter
+msgid "Center"
+msgstr "Centruoti"
+
+#: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
+msgid "Clear"
+msgstr "Išvalyti"
+
+#: objinspstrconsts.sccsiledtcrop
+msgid "Crop"
+msgstr "Apkirtpti"
+
+#: objinspstrconsts.sccsiledtdelete
+msgctxt "objinspstrconsts.sccsiledtdelete"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: objinspstrconsts.sccsiledtgrplcaption
+msgid "Images"
+msgstr "Paveikslai"
+
+#: objinspstrconsts.sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "Pažymėtas paveikslas"
+
+#: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
+msgid "Move Down"
+msgstr "Perkelti žemyn"
+
+#: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
+msgid "Move Up"
+msgstr "Perkelti aukštyn"
+
+#: objinspstrconsts.sccsiledtnone
+msgid "None"
+msgstr "Jiokios"
+
+#: objinspstrconsts.sccsiledtopendialog
+msgid "Add Images"
+msgstr "Pridėti paveikslų"
+
+#: objinspstrconsts.sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "Permatoma spalva:"
+
+#: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
+msgid "Save..."
+msgstr "Įrašyti..."
+
+#: objinspstrconsts.sccsiledtsaveall
+msgid "Save All..."
+msgstr "Įrašyti visus…"
+
+#: objinspstrconsts.sccsiledtsavedialog
+msgid "Save Image"
+msgstr "Įrašyti paveikslą"
+
+#: objinspstrconsts.sccsiledtstretch
+msgid "Stretch"
+msgstr "Ištempti"
+
+#: objinspstrconsts.sccslvcoledt
+msgid "Edit Columns ..."
+msgstr "Keisti stulpelis..."
+
+#: objinspstrconsts.sccslvedt
+msgid "Edit ListView Items..."
+msgstr "Keisti ListView elementus..."
+
+#: objinspstrconsts.sccslvedtapply
+msgctxt "objinspstrconsts.sccslvedtapply"
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "ListView elementų rengyklė"
+
+#: objinspstrconsts.sccslvedtdelete
+msgctxt "objinspstrconsts.sccslvedtdelete"
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
+msgid "Items"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "Užrašas:"
+
+#: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
+msgid "Image Index:"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
+msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
+msgid "New Item"
+msgstr ""
+
+#: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
+msgid "New SubItem"
+msgstr ""
+
+#: objinspstrconsts.sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr "Panelių rengyklė..."
+
+#: objinspstrconsts.sccssgedt
+msgid "Edit StringGrid..."
+msgstr "Keisti StringGrid..."
+
+#: objinspstrconsts.sccssgedtapply
+msgctxt "objinspstrconsts.sccssgedtapply"
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "StringGrid rengyklė"
+
+#: objinspstrconsts.sccssgedtclean
+msgid "Clean"
+msgstr "Išvalyti"
+
+#: objinspstrconsts.sccssgedtgrp
+msgid "String Grid"
+msgstr "Teksto lentelė"
+
+#: objinspstrconsts.sccssgedtload
+msgid "Load..."
+msgstr "Įkelti..."
+
+#: objinspstrconsts.sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Perkelti eilutes/stulpelius"
+
+#: objinspstrconsts.sccssgedtopendialog
+msgctxt "objinspstrconsts.sccssgedtopendialog"
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
+msgid "Save..."
+msgstr "Įrašyti..."
+
+#: objinspstrconsts.sccssgedtsavedialog
+msgctxt "objinspstrconsts.sccssgedtsavedialog"
+msgid "Save"
+msgstr ""
+
+#: objinspstrconsts.sccstredt
+msgid "Edit TreeView Items..."
+msgstr "Keisti TreeView elementus..."
+
+#: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
+msgid "Apply"
+msgstr "Pritaikyti"
+
+#: objinspstrconsts.sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "TreeView elementų rengyklė"
+
+#: objinspstrconsts.sccstredtdelete
+msgctxt "objinspstrconsts.sccstredtdelete"
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
+msgid "Items"
+msgstr "Elementai"
+
+#: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
+msgid "Item Properties"
+msgstr "Elemento savybės"
+
+#: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
+msgid "Item"
+msgstr "Elementas"
+
+#: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
+msgid "Image Index:"
+msgstr "Įprastas pav.:"
+
+#: objinspstrconsts.sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "Pav. pažymėjus:"
+
+#: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
+msgid "State Index:"
+msgstr "Būsenos pav.:"
+
+#: objinspstrconsts.sccstredtlabeltext
+msgid "Text:"
+msgstr "Tekstas:"
+
+#: objinspstrconsts.sccstredtload
+msgid "Load"
+msgstr "Įkelti"
+
+#: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
+msgid "New Item"
+msgstr "Naujas elementas"
+
+#: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
+msgid "New SubItem"
+msgstr "Naujas poelementis"
+
+#: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
+msgid "Open"
+msgstr "Įkelti"
+
+#: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
+msgid "Save"
+msgstr "Įrašyti"
+
+#: objinspstrconsts.sccstredtsavedialog
+msgctxt "objinspstrconsts.sccstredtsavedialog"
+msgid "Save"
+msgstr "Įrašyti"
+
+#: objinspstrconsts.srgrabkey
+msgid "Grab key"
+msgstr "Registruoti klavišą"
+
+#: objinspstrconsts.srkm_alt
+msgid "Alt"
+msgstr "Alt"
+
+#: objinspstrconsts.srkm_ctrl
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: objinspstrconsts.srselect
+msgid "Select"
+msgstr "Pažymėti"
+
+#: objinspstrconsts.srvk_accept
+msgid "Accept"
+msgstr "Priimti"
+
+#: objinspstrconsts.srvk_apps
 msgid "application key"
 msgstr "Klavišas „application“"
 
-#: objinspstrconsts:srvk_lwin
+#: objinspstrconsts.srvk_back
+msgid "Backspace"
+msgstr "Backspace"
+
+#: objinspstrconsts.srvk_capital
+msgid "Capital"
+msgstr "Capital"
+
+#: objinspstrconsts.srvk_clear
+msgctxt "objinspstrconsts.srvk_clear"
+msgid "Clear"
+msgstr "Išvalyti"
+
+#: objinspstrconsts.srvk_cmd
+msgid "Cmd"
+msgstr "Cmd"
+
+#: objinspstrconsts.srvk_control
+msgid "Control"
+msgstr "Control"
+
+#: objinspstrconsts.srvk_convert
+msgid "Convert"
+msgstr "Convert"
+
+#: objinspstrconsts.srvk_end
+msgid "End"
+msgstr "End"
+
+#: objinspstrconsts.srvk_escape
+msgid "Escape"
+msgstr "Escape"
+
+#: objinspstrconsts.srvk_execute
+msgid "Execute"
+msgstr "Execute"
+
+#: objinspstrconsts.srvk_final
+msgid "Final"
+msgstr "Final"
+
+#: objinspstrconsts.srvk_hanja
+msgid "Hanja"
+msgstr "Hanja"
+
+#: objinspstrconsts.srvk_help
+msgctxt "objinspstrconsts.srvk_help"
+msgid "Help"
+msgstr "Žinynas"
+
+#: objinspstrconsts.srvk_home
+msgid "Home"
+msgstr "Home"
+
+#: objinspstrconsts.srvk_insert
+msgctxt "objinspstrconsts.srvk_insert"
+msgid "Insert"
+msgstr "Įterpti"
+
+#: objinspstrconsts.srvk_irregular
+msgid "Irregular "
+msgstr "Irregular "
+
+#: objinspstrconsts.srvk_junja
+msgid "Junja"
+msgstr "Junja"
+
+#: objinspstrconsts.srvk_kana
+msgid "Kana"
+msgstr "Kana"
+
+#: objinspstrconsts.srvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Kairysis pelės klavišas"
+
+#: objinspstrconsts.srvk_left
+msgctxt "objinspstrconsts.srvk_left"
+msgid "Left"
+msgstr "Kairė"
+
+#: objinspstrconsts.srvk_lwin
 msgid "left windows key"
 msgstr "Kairysis „windows“ klavišas"
 
-#: objinspstrconsts:srvk_none
+#: objinspstrconsts.srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Vidurinis pelės klavišas"
+
+#: objinspstrconsts.srvk_menu
+msgid "Menu"
+msgstr "Menu"
+
+#: objinspstrconsts.srvk_meta
+msgid "Meta"
+msgstr "Meta"
+
+#: objinspstrconsts.srvk_modechange
+msgid "Mode Change"
+msgstr "Mode Change"
+
+#: objinspstrconsts.srvk_next
+msgctxt "objinspstrconsts.srvk_next"
+msgid "Next"
+msgstr "Kitas"
+
+#: objinspstrconsts.srvk_nonconvert
+msgid "Nonconvert"
+msgstr "Nonconvert"
+
+#: objinspstrconsts.srvk_none
 msgid "none"
 msgstr "none"
 
-#: objinspstrconsts:srvk_rwin
+#: objinspstrconsts.srvk_numlock
+msgid "Numlock"
+msgstr "Numlock"
+
+#: objinspstrconsts.srvk_numpad
+msgid "Numpad %d"
+msgstr "Numpad %d"
+
+#: objinspstrconsts.srvk_pause
+msgid "Pause key"
+msgstr "Pause key"
+
+#: objinspstrconsts.srvk_print
+msgid "Print"
+msgstr "Print"
+
+#: objinspstrconsts.srvk_prior
+msgctxt "objinspstrconsts.srvk_prior"
+msgid "Prior"
+msgstr "Ankstesnis"
+
+#: objinspstrconsts.srvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Dešinysis pelės klavišas"
+
+#: objinspstrconsts.srvk_return
+msgid "Return"
+msgstr "Return"
+
+#: objinspstrconsts.srvk_right
+msgctxt "objinspstrconsts.srvk_right"
+msgid "Right"
+msgstr "Dešinė"
+
+#: objinspstrconsts.srvk_rwin
 msgid "right windows key"
 msgstr "Dešinysis „windows“ klavišas"
+
+#: objinspstrconsts.srvk_scroll
+msgid "Scroll"
+msgstr "Scroll"
+
+#: objinspstrconsts.srvk_shift
+msgid "Shift"
+msgstr "Shift"
+
+#: objinspstrconsts.srvk_snapshot
+msgid "Snapshot"
+msgstr "Snapshot"
+
+#: objinspstrconsts.srvk_space
+msgid "Space key"
+msgstr "Tarpo klavišas"
+
+#: objinspstrconsts.srvk_super
+msgid "Super"
+msgstr "Super"
+
+#: objinspstrconsts.srvk_tab
+msgid "Tab"
+msgstr "Tab"
+
+#: objinspstrconsts.srvk_unknown
+msgctxt "objinspstrconsts.srvk_unknown"
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: objinspstrconsts.srvk_up
+msgctxt "objinspstrconsts.srvk_up"
+msgid "Up"
+msgstr "Viršun"
+
+#: objinspstrconsts.s_addassingle
+msgid "Add as single"
+msgstr "Pridėti vientisą"
+
+#: objinspstrconsts.s_splitimage
+msgid "Split image"
+msgstr "Perskelti paveikslą"
+
+#: objinspstrconsts.s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr "Ar norite perskelti paveikslą?"
+
+#: objinspstrconsts.tccesaddtab
+msgid "Add tab"
+msgstr "Pridėti kortelę"
+
+#: objinspstrconsts.tccesdeletetab
+msgid "Delete tab"
+msgstr "Pašalinti kortelę"
+
+#: objinspstrconsts.tccesinserttab
+msgid "Insert tab"
+msgstr "Įterpti kortelę"
+
+#: objinspstrconsts.tccesmovetableft
+msgid "Move tab left"
+msgstr "Kortelę perkelti kairėn"
+
+#: objinspstrconsts.tccesmovetabright
+msgid "Move tab right"
+msgstr "Kortelę perkelti dešinėn"
 

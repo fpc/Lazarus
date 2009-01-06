@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Language: chinese\n"
 "X-Poedit-Country: china\n"
 
-#: synmacrorecorder:scannotpause
+#: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
 msgstr "录制宏时只能暂停"
 
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr "暂停时只能恢复"
-
-#: synmacrorecorder:scannotplay
+#: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
 msgstr "录制宏时无法回放宏"
 
-#: synmacrorecorder:scannotrecord
+#: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
 msgstr "无法同时录制两个宏"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "暂停时只能恢复"
 

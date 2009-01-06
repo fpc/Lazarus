@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 00:34+0300\n"
+"PO-Revision-Date: 2008-11-27 02:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -531,6 +531,10 @@ msgstr "Успешно"
 #: ipconst.sipicmp_ttl_expired_reassem
 msgid "Time to live expired during reassembly"
 msgstr "Время жизни истекло во время пересборки"
+
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr "Время жизни истекло во время передачи"
 
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
@@ -1457,6 +1461,14 @@ msgstr "USER"
 msgid "-ERR"
 msgstr "-ERR"
 
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr "%s нельзя вызвать во время транзакции"
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr "%s нельзя вызвать во время проверки подлинности"
+
 #: ipconst.spop3okresp
 msgid "+OK"
 msgstr "+OK"
@@ -2095,6 +2107,10 @@ msgstr "Несоответствие размера прочитанного."
 msgid "Revoked Certificate."
 msgstr "Отозванный сертификат."
 
+#: ipconst.ssslservernohandshake
+msgid "Server cid not return a handshake message."
+msgstr "Сервер не возвратил инициализационное (handshake) сообщение."
+
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
 msgstr "Сервер не возвратил сообщение server hello."
@@ -2261,6 +2277,10 @@ msgstr "Адрес уже используется"
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
 msgstr "Невозможно назначить запрашиваемый адрес"
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr "Семейство адресов не поддерживается семейством протоколов"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"

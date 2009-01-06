@@ -526,6 +526,10 @@ msgstr "Sukses"
 msgid "Time to live expired during reassembly"
 msgstr "Waktu hidup berakhir selama reassembly"
 
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr ""
+
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
 msgstr "Status tidak dikenal"
@@ -1451,6 +1455,14 @@ msgstr "USER"
 msgid "-ERR"
 msgstr "-ERR"
 
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr ""
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr ""
+
 #: ipconst.spop3okresp
 msgid "+OK"
 msgstr "+OK"
@@ -2089,6 +2101,10 @@ msgstr "Ukuran baca tidak sama."
 msgid "Revoked Certificate."
 msgstr "Sertifikat Dihidupkan."
 
+#: ipconst.ssslservernohandshake
+msgid "Server cid not return a handshake message."
+msgstr ""
+
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
 msgstr "Server tidak mengembalikan pesan serverhello."
@@ -2255,6 +2271,10 @@ msgstr "Sudah dalam penggunaan"
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
 msgstr "Tidak bisa menempatkan alamat yang diminta"
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr ""
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"

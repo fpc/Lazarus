@@ -9,23 +9,23 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ideprinting:sprintfile
-msgid "Complete file"
-msgstr "Весь файл"
-
-#: ideprinting:sprintsources
-msgid "Print sources"
-msgstr "Печать исходного кода"
-
-#: ideprinting:sdescrpfselection
+#: ideprinting.sdescrpfselection
 msgid "Print..."
 msgstr "Печать..."
 
-#: ideprinting:sprintselection
+#: ideprinting.sprintfile
+msgid "Complete file"
+msgstr "Весь файл"
+
+#: ideprinting.sprintselection
 msgid "Selected text"
 msgstr "Выделенный текст"
 
-#: ideprinting:sprintwhat
+#: ideprinting.sprintsources
+msgid "Print sources"
+msgstr "Печать исходного кода"
+
+#: ideprinting.sprintwhat
 msgid "What would you like to print ?"
 msgstr "Что вы хотите напечатать?"
 
