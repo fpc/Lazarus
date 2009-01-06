@@ -2979,18 +2979,13 @@ var
 
       if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
       begin
+        FGfold := Font.Color;
+        BGfold := colEditorBG;
+        FFfold := Font.Color;
+        Sfold  := [];
         MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos);
-        if MarkupInfo <> nil then begin
-          FGfold := MarkupInfo.Foreground;
-          BGfold := MarkupInfo.Background;
-          FFfold := MarkupInfo.FrameColor;
-          Sfold  := MarkupInfo.Style;
-        end else begin
-          FGfold := Font.Color;
-          BGfold := colEditorBG;
-          FFfold := clNone;
-          Sfold  := [];
-        end;
+        if MarkupInfo <> nil then
+          MarkupInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
         FoldedCodeInfo := FoldedCodeColor;
         If assigned(FoldedCodeInfo) then
           FoldedCodeInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
