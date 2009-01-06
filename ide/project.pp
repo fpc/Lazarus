@@ -568,6 +568,7 @@ type
     FBookmarks: TProjectBookmarkList;
     fChanged: boolean;
     FCompilerOptions: TProjectCompilerOptions;
+    fCurStorePathDelim: TPathDelimSwitch; // used by OnLoadSaveFilename
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
     FEnableI18N: boolean;
@@ -596,6 +597,7 @@ type
     fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
     FPublishOptions: TPublishProjectOptions;
+    FResources: TProjectResources;
     FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
     FSessionStorePathDelim: TPathDelimSwitch;
@@ -607,7 +609,6 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
-    FResources: TProjectResources;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -1905,8 +1906,6 @@ end;
  ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string): TModalResult;
-var
-  UsePathDelim: TPathDelimSwitch;
 
   procedure SaveFlags(XMLConfig: TXMLConfig; const Path: string);
   var f: TProjectFlag;
@@ -1966,7 +1965,7 @@ var
       if UnitMustBeSaved(i,SaveData,SaveSession) then begin
         Units[i].SaveToXMLConfig(
           xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
-          SaveData,SaveSession,UsePathDelim);
+          SaveData,SaveSession,fCurStorePathDelim);
         inc(SaveUnitCount);
       end;
     end;
@@ -1998,7 +1997,7 @@ var
   SessionSaveResult: TModalResult;
 begin
   Result := mrCancel;
-  UsePathDelim:=pdsNone;
+  fCurStorePathDelim:=StorePathDelim;
 
   if OverrideProjectInfoFile<>'' then
     CfgFilename := OverrideProjectInfoFile
@@ -2048,7 +2047,7 @@ begin
 
     try
       Path:='ProjectOptions/';
-      xmlconfig.SetValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim]);
+      xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
       SaveFlags(XMLConfig,Path);
       xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
@@ -2064,14 +2063,14 @@ begin
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
          SwitchPathDelims(CreateRelativeSearchPath(LazDocPaths,ProjectDirectory),
-                          UsePathDelim),
+                          fCurStorePathDelim),
          '');
       
       // i18n
       xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
       xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
          SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
-                          UsePathDelim) ,
+                          fCurStorePathDelim) ,
          '');
 
       // Resources
@@ -2084,14 +2083,14 @@ begin
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
       
       // save the Publish Options
-      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',UsePathDelim);
+      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
 
       // save the Run Parameter Options
-      RunParameterOptions.Save(xmlconfig,Path,UsePathDelim);
+      RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
       
       // save dependencies
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
-        FFirstRequiredDependency,pdlRequires,UsePathDelim);
+        FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
 
       // save units
       SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
@@ -2160,8 +2159,8 @@ begin
 
       try
         Path:='ProjectSession/';
-        UsePathDelim:=pdsNone;
-        xmlconfig.SetValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim]);
+        fCurStorePathDelim:=SessionStorePathDelim;
+        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
         xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
         // save all units
@@ -3425,6 +3424,9 @@ begin
       end;
     end;
   end;
+
+  if (not Load) then
+    AFilename:=SwitchPathDelims(AFileName,fCurStorePathDelim);
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;
 

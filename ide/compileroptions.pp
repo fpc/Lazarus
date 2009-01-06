@@ -1293,7 +1293,7 @@ var
 begin
   { Save the compiler options to the XML file }
   p:=Path;
-  UsePathDelim:=pdsNone;
+  UsePathDelim:=StorePathDelim;
   XMLConfigFile.SetValue(p+'Version/Value', CompilerOptionsVersion);
   XMLConfigFile.SetDeleteValue(p+'PathDelim/Value',
                                    PathDelimSwitchToDelim[UsePathDelim], '/');
