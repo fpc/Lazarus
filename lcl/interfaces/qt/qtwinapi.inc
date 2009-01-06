@@ -4389,8 +4389,8 @@ begin
     {$IFDEF UNIX}
     if (Result <> 0) and (Result <> hWnd) and not
       ((TQtWidget(Hwnd) is TQtMainWindow) or
-      (TQtWidget(Result) is TQtMainWindow) and
-      Supports(TQtWidget(Result), IQtEdit, QtEdit))
+      (TQtWidget(Result) is TQtMainWindow)) and
+      Supports(TQtWidget(Result), IQtEdit, QtEdit)
     then
       QWidget_clearFocus(TQtWidget(Result).Widget);
     {$ENDIF}
