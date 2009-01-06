@@ -78,7 +78,6 @@ type
     FMouseState: TDockHeaderMouseState;
     FDockHeaderImages: TDockHeaderImages;
   protected
-    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure AnchorDockLayout(Zone: TLazDockZone);
     procedure CreateDockLayoutHelperControls(Zone: TLazDockZone);
     procedure ResetSizes(Zone: TLazDockZone);
@@ -90,6 +89,7 @@ type
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
+    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
                             DropControl: TControl); override;
     procedure RemoveControl(AControl: TControl); override;

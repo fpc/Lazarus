@@ -162,7 +162,6 @@ type
     procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
-    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
@@ -181,6 +180,7 @@ type
     procedure AddStrings(AStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index: integer); override;
+    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     procedure DeleteLines(Index, NumLines: integer);                            // DJLP 2000-11-01
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure Exchange(Index1, Index2: integer); override;
