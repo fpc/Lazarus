@@ -28,12 +28,17 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TRubberBandShape.rbsLine"><short/></element>
+      <element name="TRubberBandShape.rbsLine">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TRubberBandShape.rbsRectangle"><short/></element>
+      <element name="TRubberBandShape.rbsRectangle">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomRubberBand">
-        <short/>
+        <short>
+          <var>TCustomRubberBand</var> - base class for <var>TRubberBand</var>, for drawing a ring resembling a rubber band around a selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -52,7 +57,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomRubberBand.GetShape.Result"><short/></element>
+      <element name="TCustomRubberBand.GetShape.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomRubberBand.SetShape">
         <short/>
@@ -61,25 +68,30 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRubberBand.SetShape.AValue"><short/></element>
+      <element name="TCustomRubberBand.SetShape.AValue">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomRubberBand.Create">
+      <element name="TCustomRubberBand.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRubberBand.Create.AOwner"><short/></element>
+      <element name="TCustomRubberBand.Create.AOwner">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomRubberBand.Shape">
-        <short/>
+        <short>The <var>Shape</var> of the rubber band device: a line or a rectangle around the selection</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TRubberBand">
-        <short>TRubberBand is control that can be used to draw selection.</short>
+        <short>
+          <var>TRubberBand</var> for drawing a ring resembling a rubber band around a selection</short>
       </element>
     </module>
     <!-- RubberBand -->
