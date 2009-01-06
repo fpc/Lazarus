@@ -107,7 +107,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPreviewFileControl">
-        <short/>
+        <short>
+          <var>TPreviewFileControl</var> - a windowed control allowing the contents of a file to be previewed before opening</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -120,7 +121,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPreviewFileControl.SetPreviewFileDialog">
-        <short/>
+        <short>
+          <var>SetPreviewFileDialog</var> - specify the PreviewFile Dialog to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -130,7 +132,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPreviewFileControl.CreateParams">
+      <element name="TPreviewFileControl.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <errors/>
@@ -141,7 +143,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPreviewFileControl.Create">
+      <element name="TPreviewFileControl.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -153,13 +155,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPreviewFileControl.PreviewFileDialog">
-        <short/>
+        <short>The <var>PreviewFileDialog</var> that is used for this control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TPreviewFileDialog">
-        <short/>
+        <short>
+          <var>TPreviewFileDialog</var> - a dialog that allows the file contents to be inspected before opening the file</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -172,20 +175,22 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPreviewFileDialog.CreatePreviewControl">
-        <short/>
+        <short>
+          <var>CreatePreviewControl</var> - create an instance of the windowed control that uses this dialog</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPreviewFileDialog.InitPreviewControl">
-        <short/>
+        <short>
+          <var>InitPreviewControl</var> - initialises the windowed control that uses this dialog</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPreviewFileDialog.Execute">
+      <element name="TPreviewFileDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -196,7 +201,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPreviewFileDialog.Create">
+      <element name="TPreviewFileDialog.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -208,13 +213,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPreviewFileDialog.PreviewFileControl">
-        <short/>
+        <short>
+          <var>PreviewFileControl</var> - the windowed control that uses this dialog</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TOpenPictureDialog">
-        <short/>
+        <short>
+          <var>TOpenPictureDialog</var> - a preview dialog that shows a preview of a picture before opening the file</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -245,7 +252,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TOpenPictureDialog.IsFilterStored">
-        <short/>
+        <short>
+          <var>IsFilterStored</var> - returns True if a filter is stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -256,7 +264,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TOpenPictureDialog.PreviewKeyDown">
-        <short/>
+        <short>
+          <var>PreviewKeyDown</var> - determines if the Preview key has been pressed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -271,7 +280,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TOpenPictureDialog.PreviewClick">
-        <short/>
+        <short>
+          <var>PreviewClick</var> - method for emulating a click on the Preview button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -281,21 +291,21 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoClose">
+      <element name="TOpenPictureDialog.DoClose" link="#LCL.Dialogs.TCommonDialog.DoClose">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoSelectionChange">
+      <element name="TOpenPictureDialog.DoSelectionChange" link="#LCL.Dialogs.TOpenDialog.DoSelectionChange">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoShow">
+      <element name="TOpenPictureDialog.DoShow" link="#LCL.Dialogs.TCommonDialog.DoShow">
         <short/>
         <descr/>
         <errors/>
@@ -303,18 +313,20 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TOpenPictureDialog.ImageCtrl">
-        <short/>
+        <short>
+          <var>ImageCtrl</var> - the Image used as a control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TOpenPictureDialog.PictureGroupBox">
-        <short/>
+        <short>
+          <var>PictureGroupBox</var> - a groupbox related to a single picture</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.InitPreviewControl">
+      <element name="TOpenPictureDialog.InitPreviewControl" link="#LCL.ExtDlgs.TPreviewFileDialog.InitPreviewControl">
         <short/>
         <descr/>
         <errors/>
@@ -322,20 +334,22 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TOpenPictureDialog.ClearPreview">
-        <short/>
+        <short>
+          <var>ClearPreview</var> - clears the preview area</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TOpenPictureDialog.UpdatePreview">
-        <short/>
+        <short>
+          <var>UpdatePreview</var> - updates the preview image, implementing any pending changes</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TOpenPictureDialog.Create">
+      <element name="TOpenPictureDialog.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -347,25 +361,27 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TOpenPictureDialog.DefaultFilter">
-        <short/>
+        <short>
+          <var>DefaultFilter</var> - the default filename filter</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TOpenPictureDialog.Filter">
+      <element name="TOpenPictureDialog.Filter" link="#LCL.Dialogs.TFileDialog.Filter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TSavePictureDialog">
-        <short/>
+        <short>
+          <var>TSavePictureDialog</var> - a dialog for saving the picture in the current buffer to a file</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSavePictureDialog.Create">
+      <element name="TSavePictureDialog.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -539,14 +555,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorDialog.Change">
-        <short/>
+        <short>
+          <var>Change</var> - software emulator for the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorDialog.CalcKey">
-        <short/>
+        <short>
+          <var>CalcKey</var> - software emulator for the <var>OnCalcKey</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -557,13 +575,14 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorDialog.DisplayChange">
-        <short/>
+        <short>
+          <var>DisplayChange</var> - software emulator for the <var>OnDisplayChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCalculatorDialog.Create">
+      <element name="TCalculatorDialog.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -574,14 +593,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCalculatorDialog.Destroy">
+      <element name="TCalculatorDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCalculatorDialog.Execute">
+      <element name="TCalculatorDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -614,12 +633,13 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TCalculatorDialog.Ctl3D">
-        <short/>
+        <short>
+          <var>Ctl3D</var> - deprecated property (for Delphi compatability)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.HelpContext">
+      <element name="TCalculatorDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
         <short/>
         <descr/>
         <seealso/>
@@ -640,7 +660,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Title">
+      <element name="TCalculatorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title">
         <short/>
         <descr/>
         <seealso/>
@@ -770,7 +790,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.OkClick">
-        <short/>
+        <short>
+          <var>OkClick</var> - method to handle a click on th eOK button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -781,7 +802,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.CancelClick">
-        <short/>
+        <short>
+          <var>CancelClick</var> - method to handle a click on the Cancel button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -792,7 +814,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.CalcKey">
-        <short/>
+        <short>
+          <var>CalcKey</var> - method to handle activation of the specified calculator key</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -807,7 +830,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.DisplayChange">
-        <short/>
+        <short>
+          <var>DisplayChange</var> - method for handling a change in the calculator display</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -818,7 +842,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.InitForm">
-        <short/>
+        <short>
+          <var>InitForm</var> - initialise the form, using the specified calculator layout</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -888,7 +913,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateCalculatorForm">
-        <short/>
+        <short>
+          <var>CreateCalculatorForm</var> - returns the created calculator form, using the specified layout and help context</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1123,7 +1149,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCalendarDialog.Create">
+      <element name="TCalendarDialog.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1134,14 +1160,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCalendarDialog.Destroy">
+      <element name="TCalendarDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCalendarDialog.Execute">
+      <element name="TCalendarDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -1191,7 +1217,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendarDialog.HelpContext">
+      <element name="TCalendarDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
         <short/>
         <descr/>
         <seealso/>
@@ -1258,6 +1284,15 @@
       <element name="TCalendarDialog.GetNewDate">
         <short>
           <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected dae to the calling program</short>
+      </element>
+      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TOpenPictureDialog.GetFilterExt">
+        <short>
+          <var>GetFilterExt</var> - returns the extention for filtering filenames</short>
+      </element>
+      <element name="TCalendarDialog.CalendarDblClick">
+        <short>
+          <var>CalendarDblClick</var> - method for handling doubleclick on the calendar</short>
       </element>
     </module>
     <!-- ExtDlgs -->
