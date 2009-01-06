@@ -635,6 +635,7 @@ type
     FRemovedFiles: TFPList; // TFPList of TPkgFile
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
+    FStorePathDelim: TPathDelimSwitch;
     FTopologicalLevel: integer;
     FTranslated: string;
     FUpdateLock: integer;
@@ -672,6 +673,7 @@ type
     procedure SetModified(const AValue: boolean);
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
+    procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetUserReadOnly(const AValue: boolean);
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
@@ -839,6 +841,7 @@ type
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
+    property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property Translated: string read FTranslated write FTranslated;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
@@ -2448,6 +2451,12 @@ begin
   Modified:=true;
 end;
 
+procedure TLazPackage.SetStorePathDelim(const AValue: TPathDelimSwitch);
+begin
+  if FStorePathDelim=AValue then exit;
+  FStorePathDelim:=AValue;
+end;
+
 constructor TLazPackage.Create;
 begin
   inherited Create;
@@ -2554,6 +2563,7 @@ begin
   end else begin
     FFlags:=[lpfDestroying];
   end;
+  FStorePathDelim:=pdsNone;
 end;
 
 procedure TLazPackage.UpdateSourceDirectories;
@@ -2651,7 +2661,7 @@ begin
   Clear;
   Filename:=OldFilename;
   LockModified;
-  PathDelimChanged:=XMLConfig.GetValue(Path+'PathDelim/Value','/')<>PathDelim;
+  StorePathDelim:=CheckPathDelim(XMLConfig.GetValue(Path+'PathDelim/Value','/'),PathDelimChanged);
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
@@ -2705,6 +2715,11 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
 var
   UsePathDelim: TPathDelimSwitch;
 
+  function f(const AFilename: string): string;
+  begin
+    Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
+
   procedure SaveFiles(const ThePath: string; List: TFPList);
   var
     i: Integer;
@@ -2724,7 +2739,7 @@ var
   end;
 
 begin
-  UsePathDelim:=pdsNone;
+  UsePathDelim:=StorePathDelim;
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
@@ -2739,13 +2754,13 @@ begin
   FVersion.SaveToXMLConfig(XMLConfig,Path+'Version/');
   SaveFiles(Path+'Files/',FFiles);
   SaveFlags(Path);
-  XMLConfig.SetDeleteValue(Path+'IconFile/Value',FIconFile,'');
+  XMLConfig.SetDeleteValue(Path+'IconFile/Value',f(FIconFile),'');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
-  XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',OutputStateFile,'');
-  XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,'');
+  XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',f(OutputStateFile),'');
+  XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',f(FLazDocPaths),'');
 
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
-  XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',FPOOutputDirectory, '');
+  XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',f(FPOOutputDirectory), '');
 
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
