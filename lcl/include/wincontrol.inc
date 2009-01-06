@@ -4019,9 +4019,10 @@ begin
           if I<0 then
             I:=List.Count-1;
         end;
-        if I=J then exit;
 
         Next := TWinControl(List[I]);
+        if Next = CurrentControl then
+          Exit;
         //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
         //  +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
         //  +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
