@@ -75,7 +75,7 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
-const cNodeOffset = 2;
+const cNodeOffset = 1;
 var
   iLine: integer;
   rcLine: TRect;
