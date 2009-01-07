@@ -44,6 +44,7 @@ Known Issues:
 
 unit SynEdit;
 
+
 {$I synedit.inc}
 
 {$IFDEF LCLGTK1}
@@ -4909,32 +4910,35 @@ end;
 function TCustomSynEdit.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
 // Index and AtLeastTilIndex are 0 based
   var
+    FixFStart: Integer;
     LastLineDiffers : Boolean;
+    SkipPrev: Boolean;
   procedure SetCodeFoldAttributes;
   begin
     FFoldedLinesView.FoldMinLevel[Result-1] := fHighlighter.MinimumCodeFoldBlockLevel;
     FFoldedLinesView.FoldEndLevel[Result-1] := fHighlighter.CurrentCodeFoldBlockLevel;
     if (fHighlighter.LastLineCodeFoldLevelFix <> 0) and (result > 1) then begin
-      if Result >= Index Then Begin
+      if SkipPrev then
+        FixFStart := Index - 1
+      else begin
         FFoldedLinesView.FoldEndLevel[Result-2] :=
           FFoldedLinesView.FoldEndLevel[Result-2] + fHighlighter.LastLineCodeFoldLevelFix;
         if FFoldedLinesView.FoldMinLevel[Result-2] > FFoldedLinesView.FoldEndLevel[Result-2] then
           FFoldedLinesView.FoldMinLevel[Result-2] := FFoldedLinesView.FoldEndLevel[Result-2];
-      end
-      else
-        dec(Index);
+      end;
     end;
   end;
 
 begin
   if Index < 0 then Index := 0;
-  Result := Min(Index - 1, 0);
+  Result := Max(Index - 1,0);
   if not assigned(fHighlighter) or (Index > Lines.Count - 1) then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     exit;
   end;
+  FixFStart := Index;
   if Result > 0 then
     fHighlighter.SetRange(TSynEditStrings(Lines).Ranges[Result])
   else begin
@@ -4952,6 +4956,7 @@ begin
   inc(Result);
   fHighlighter.NextToEol;
   LastLineDiffers := True;
+  SkipPrev := True;
   while (fHighlighter.GetRange <> TSynEditStrings(Lines).Ranges[Result])
     or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
     or (FFoldedLinesView.FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
@@ -4965,6 +4970,7 @@ begin
       or (FFoldedLinesView.FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel);
     TSynEditStrings(Lines).Ranges[Result] := fHighlighter.GetRange;
     SetCodeFoldAttributes;
+    SkipPrev := False;
     //if (Result and $fff)=0 then
     //  debugln('TCustomSynEdit.ScanFrom A Line=', dbgs(Result),' Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',dbgs(length(Lines[Result-1])));
     fHighlighter.SetLine(Lines[Result], Result);
@@ -4979,11 +4985,11 @@ begin
   //  => update code fold attributes of last scanned line
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
-  FFoldedLinesView.FixFoldingAtTextIndex(Index, Result);
-  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index + 1), 0),
+  FFoldedLinesView.FixFoldingAtTextIndex(FixFStart, Result);
+  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(FixFStart+1), 0),
                                        Min(RowToScreenRow(Result), LinesInWindow+1));
   Topline := TopLine;
-  if Index < index then Invalidate;
+  if FixFStart < index then Invalidate;
   Dec(Result);
 end;
 
