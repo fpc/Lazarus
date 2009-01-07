@@ -195,9 +195,10 @@ begin
     while Assigned(Node) do 
     begin
       AnObject := TObject(Node.Data);
-      AcceptControl := AcceptControl and (AnObject is TControl);
+      AcceptControl := AcceptControl and (AnObject is TControl) and 
+        AContainer.CheckChildClassAllowed(AnObject.ClassType, False);
       // Check if one of the parent of the container is the control itself
-      if AcceptControl and AcceptContainer then 
+      if AcceptControl then 
       begin
         while Assigned(AContainer) do 
         begin
