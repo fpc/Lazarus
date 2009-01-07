@@ -2984,7 +2984,7 @@ var
         BGfold := colEditorBG;
         FFfold := Font.Color;
         Sfold  := [];
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos);
+        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos + 3);
         if MarkupInfo <> nil then
           MarkupInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
         FoldedCodeInfo := FoldedCodeColor;
@@ -2997,7 +2997,7 @@ var
         end;
 
         rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
-        rcToken.Right := ScreenColumnToXValue(CurPhysPos+8);
+        rcToken.Right := ScreenColumnToXValue(CurPhysPos+6);
 
         FTextDrawer.FrameColor := FFfold;
         FTextDrawer.ForeColor := FGfold;
@@ -3012,7 +3012,7 @@ var
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
         if rcToken.Right > rcToken.Left then
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
-                                 rcToken, ' ... ', 5);
+                                 rcToken, '...', 3);
       end;
 
     end;
