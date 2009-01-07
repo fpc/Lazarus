@@ -7024,7 +7024,7 @@ begin
           if Len >= LogCaretXY.X then begin
             if LogCaretXY.X > 1 then begin
               // break line in two
-              SpaceCount1 := LeftSpaces(Temp);
+              SpaceCount1 := LeftSpaces(copy(Temp, 1, LogCaretXY.X-1));
               Temp := Copy(LineText, 1, LogCaretXY.X - 1);
               FTheLinesView.Insert(CaretY - 1, Temp);
               Delete(Temp2, 1, LogCaretXY.X - 1);
@@ -10111,7 +10111,7 @@ begin
   Result:=0;
   if InsertPos.Y<1 then exit;
   LastTextY:=InsertPos.Y;
-  Lines:=Editor.Lines;
+  Lines:=Editor.RealLines;
   if LastTextY>Lines.Count then
     LastTextY:=Lines.Count;
   while (LastTextY>0) do begin
