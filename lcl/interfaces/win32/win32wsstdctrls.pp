@@ -1353,7 +1353,7 @@ end;
 class procedure TWin32WSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, 0, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     Inc(PreferredWidth, 20);
     Inc(PreferredHeight, 4);
@@ -1437,7 +1437,7 @@ class procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinC
 var
   iconHeight: integer;
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, 0, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK));
     // pixels spacing between checkbox and text

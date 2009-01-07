@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                             Win32WSButtons.pp                             * 
- *                             -----------------                             * 
+ *                             Win32WSButtons.pp                             *
+ *                             -----------------                             *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -29,14 +29,14 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Classes, Buttons, Graphics, GraphType, Controls,
 ////////////////////////////////////////////////////
-  WSProc, WSControls, WSButtons, WSLCLClasses, 
+  WSProc, WSControls, WSButtons, WSLCLClasses,
   Win32WSControls, Win32WSImgList, LCLType, Themes;
 
 type
@@ -47,7 +47,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl;
@@ -146,7 +146,7 @@ var
   ButtonCaptionA: string;
   ButtonCaptionW: widestring;
   {$ENDIF}
-  
+
   procedure DrawBitmap(AState: TButtonState);
   var
     TextFlags: integer; // flags for caption (enabled or disabled)
@@ -247,7 +247,7 @@ begin
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Reference.Handle);
-  MeasureText(BitBtn, ButtonCaption, BitBtn.Font.Reference.Handle, TextSize.cx, TextSize.cy);
+  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -370,6 +370,32 @@ begin
   BitBtn.Invalidate;
 end;
 
+function BitBtnWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  Info: PWindowInfo;
+  Control: TWinControl;
+begin
+  Info := GetWindowInfo(Window);
+  if (Info = nil) or (Info^.WinControl = nil) then
+  begin
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    Exit;
+  end
+  else
+    Control := Info^.WinControl;
+
+  case Msg of
+    WM_GETFONT:
+      begin
+        Result := Control.Font.Reference.Handle;
+      end;
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
+
 class function TWin32WSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -387,6 +413,7 @@ begin
       Flags := Flags or BS_PUSHBUTTON;
     Flags := Flags or BS_BITMAP;
     WindowTitle := '';
+    SubClassWndProc := @BitBtnWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -401,7 +428,7 @@ var
   Glyph: TBitmap;
   spacing, srcWidth: integer;
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, 0, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     Glyph := BitBtn.Glyph;
     if not Glyph.Empty then

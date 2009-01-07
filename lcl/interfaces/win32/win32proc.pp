@@ -111,7 +111,7 @@ procedure RestoreStayOnTopFlags(Window: HWND);
 
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
-function MeasureText(const AWinControl: TWinControl; Text: string; UseFont: HFont; var Width, Height: integer): boolean;
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 procedure SetMenuFlag(const Menu:HMenu; Flag: Cardinal; Value: boolean);
 
@@ -1246,7 +1246,7 @@ begin
   SetMenuItemInfo(Menu, 0, True, @MenuInfo);
 end;
 
-function MeasureText(const AWinControl: TWinControl; Text: string; UseFont: HFont; var Width, Height: integer): boolean;
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 var
   textSize: Windows.SIZE;
   winHandle: HWND;
@@ -1255,10 +1255,7 @@ var
 begin
   winHandle := AWinControl.Handle;
   canvasHandle := Windows.GetDC(winHandle);
-  if UseFont = 0 then
-    newFontHandle := HFONT(SendMessage(winHandle, WM_GETFONT, 0, 0))
-  else
-    newFontHandle := UseFont;
+  newFontHandle := HFONT(SendMessage(winHandle, WM_GETFONT, 0, 0));
   oldFontHandle := SelectObject(canvasHandle, newFontHandle);
   DeleteAmpersands(Text);
 
