@@ -203,6 +203,18 @@ begin
   Exclude(FFlags,pfAdded);
 end;
 
+procedure TCustomPage.RealSetText(const AValue: TCaption);
+begin
+  if (Parent <> nil) and Parent.HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    WSSetText(AValue);
+    InvalidatePreferredSize;
+    inherited RealSetText(AValue);
+    AdjustSize;
+  end
+  else inherited RealSetText(AValue);
+end;
+
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then

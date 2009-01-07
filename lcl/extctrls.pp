@@ -70,6 +70,7 @@ type
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure DestroyHandle; override;
+    procedure RealSetText(const AValue: TCaption); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
