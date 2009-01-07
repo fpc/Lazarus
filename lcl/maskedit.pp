@@ -137,7 +137,7 @@ type
  To make this undo possible it is necessary to set CurrentText every time you set
  the text in the control!
 
- (Bart Broersma, januari 2008)
+ (Bart Broersma, januari 2009)
 
  ************************************************************************************************ }
 
