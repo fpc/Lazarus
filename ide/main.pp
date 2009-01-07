@@ -11680,6 +11680,7 @@ end;
 procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
 begin
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  ObjectInspector1.SaveChanges;
   ObjectInspector1.RefreshPropertyValues;
 end;
 

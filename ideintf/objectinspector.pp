@@ -681,6 +681,7 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure RefreshSelection;
+    procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
     procedure FillPersistentComboBox;
@@ -3966,6 +3967,15 @@ begin
   ComponentTree.MakeSelectionVisible;
   if (not Visible) and AutoShow and (FSelection.Count > 0) then
     Visible:=true;
+end;
+
+procedure TObjectInspectorDlg.SaveChanges;
+var
+  Page: TObjectInspectorPage;
+begin
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].SaveChanges;
 end;
 
 procedure TObjectInspectorDlg.RefreshPropertyValues;
