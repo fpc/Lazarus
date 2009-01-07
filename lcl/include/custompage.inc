@@ -218,11 +218,17 @@ end;
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
-  begin
-    Result := (PageIndex = TCustomNotebook(Parent).PageIndex);
-  end else begin
+    Result := (PageIndex = TCustomNotebook(Parent).PageIndex)
+  else
     Result := inherited IsControlVisible;
-  end;
+end;
+
+function TCustomPage.HandleObjectShouldBeVisible: boolean;
+begin
+  if Parent is TCustomNotebook then
+    Result := (PageIndex = TCustomNotebook(Parent).PageIndex)
+  else
+    Result := inherited HandleObjectShouldBeVisible;
 end;
 
 function TCustomPage.VisibleIndex: integer;

@@ -77,6 +77,7 @@ type
     function CanTab: boolean; override;
     function AutoSizeDelayed: boolean; override;
     function IsControlVisible: Boolean; override;
+    function HandleObjectShouldBeVisible: boolean; override;
     function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
