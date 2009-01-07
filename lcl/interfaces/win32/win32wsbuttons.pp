@@ -388,7 +388,7 @@ begin
   case Msg of
     WM_GETFONT:
       begin
-        Result := Control.Font.Reference.Handle;
+        Result := LResult(Control.Font.Reference.Handle);
       end;
     else
       Result := WindowProc(Window, Msg, WParam, LParam);
