@@ -3105,39 +3105,50 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateMaxRight;
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
   i: integer;
   FMaxTextLen: Integer;
   Cnt: Integer;
 begin
   if not (tvsMaxRightNeedsUpdate in FStates) then exit;
-  FMaxRight:=0;
-  FMaxTextLen:=0;
-  Node:=Items.GetFirstNode;
-  Cnt:=0;
-  while Node<>nil do begin
+  FMaxRight := 0;
+  FMaxTextLen := 0;
+  Node := Items.GetFirstNode;
+  Cnt := 0;
+  while Node <> nil do
+  begin
+    if not Node.AreParentsExpanded then
+    begin
+      Node := Node.GetNext;
+      Continue;
+    end;
     inc(Cnt);
-    if (Cnt<100) then begin
-      i:=Node.DisplayTextRight;
-    end else begin
+    if (Cnt < 100) then
+    begin
+      i := Node.DisplayTextRight;
+    end else
+    begin
       // computing DisplayTextRight is too expensive when the tree
       // has hundreds of nodes
       // => use a heuristic
-      if Cnt=100 then
-        i:=Node.DisplayTextRight+100
-      else if length(Node.Text)>FMaxTextLen then
-        i:=Node.DisplayTextRight+100
+      if Cnt = 100 then
+        i := Node.DisplayTextRight + 100
       else
-        i:=FMaxRight;
+      if length(Node.Text) > FMaxTextLen then
+        i := Node.DisplayTextRight + 100
+      else
+        i := FMaxRight;
     end;
-    if FMaxRight<i then begin
-      FMaxRight:=i;
-      FMaxTextLen:=length(Node.Text);
+    if FMaxRight < i then
+    begin
+      FMaxRight := i;
+      FMaxTextLen := length(Node.Text);
     end;
-    Node:=Node.GetNext;
+    Node := Node.GetNext;
   end;
-  Exclude(FStates,tvsMaxRightNeedsUpdate);
-  Include(FStates,tvsScrollbarChanged);
+  Exclude(FStates, tvsMaxRightNeedsUpdate);
+  Include(FStates, tvsScrollbarChanged);
 end;
 
 procedure TCustomTreeView.UpdateTopItem;
