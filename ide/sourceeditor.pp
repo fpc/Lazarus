@@ -2291,7 +2291,7 @@ begin
       debugln('');
       {$ENDIF}
       FEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(FEditor.RealLines,true);
+      FCodeBuffer.AssignTo(FEditor.Lines,true);
       FEditor.EndUpdate;
     end;
     if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
@@ -2385,7 +2385,9 @@ begin
     debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
     DumpStack;
     {$ENDIF}
+    FEditor.BeginUpdate;
     Sender.AssignTo(FEditor.Lines,false);
+    FEditor.EndUpdate;
   end;
 end;
 
@@ -2445,8 +2447,10 @@ begin
   if FCodeBuffer=nil then exit;
   IncreaseIgnoreCodeBufferLock;
   FModified:=FModified or FEditor.Modified;
-  FCodeBuffer.Assign(FEditor.RealLines);
+  FEditor.BeginUpdate;
+  FCodeBuffer.Assign(FEditor.Lines);
   FEditor.Modified:=false;
+  FEditor.EndUpdate;
   DecreaseIgnoreCodeBufferLock;
 end;
 

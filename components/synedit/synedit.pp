@@ -608,7 +608,7 @@ type
     procedure TripleClick; override;
     procedure QuadClick; override;
     procedure Resize; override;
-    function RealGetText: TCaption; override;
+    function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     {$ENDIF}
     procedure DecPaintLock;
@@ -873,12 +873,9 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
-    {$IFDEF SYN_LAZARUS}
-    property RealLines: TStrings read FLines write SetRealLines;              // No trailing (trimmable) spaces
-    property Lines: TStrings read FTheLinesView write SetLines;
-    {$ELSE}
-    property Lines: TStrings read fLines write SetLines;
-    {$ENDIF}
+    property RealLines: TStrings read FTheLinesView write SetRealLines; Deprecated; // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property Lines: TStrings read FLines write SetLines;                        // No uncommited (trailing/trimmable) spaces
+    property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
       default 1024;
@@ -887,7 +884,6 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property SelAvail: Boolean read GetSelAvail;
     property SelText: string read GetSelText write SetSelTextExternal;
-    property Text: string read SynGetText write SynSetText;
     property TopLine: Integer read fTopLine write SetTopLine;
     {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read FUseUTF8;
@@ -1485,7 +1481,7 @@ begin
   fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
   fMarkupManager.AddMarkUp(fMarkupBracket);
   fMarkupManager.AddMarkUp(fMarkupSelection);
-  fMarkupManager.Lines := TSynEditStrings(Lines);
+  fMarkupManager.Lines := TSynEditStrings(FTheLinesView);
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
   Color := clWhite;
@@ -1589,9 +1585,9 @@ begin
     {$IFDEF SYN_LAZARUS}
     if fHighlighterNeedsUpdateStartLine>0 then begin
       //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine));
-      if fHighlighterNeedsUpdateStartLine<=Lines.Count then begin
-        if fHighlighterNeedsUpdateEndLine>Lines.Count then
-          fHighlighterNeedsUpdateEndLine:=Lines.Count;
+      if fHighlighterNeedsUpdateStartLine<=FTheLinesView.Count then begin
+        if fHighlighterNeedsUpdateEndLine>FTheLinesView.Count then
+          fHighlighterNeedsUpdateEndLine:=FTheLinesView.Count;
         LastLineChanged:=fHighlighterNeedsUpdateEndLine;
         // rescan all lines in range
         // Note: The highlighter range of the line can be invalid as well,
@@ -1809,7 +1805,7 @@ end;
 procedure TCustomSynEdit.SetRealLines(const AValue : TStrings);
 begin
   if HandleAllocated then
-    FLines.Assign(AValue);
+    FTheLinesView.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
@@ -1835,8 +1831,8 @@ begin
   Result:=PhysPos;
   if Result<1 then
     Result:=1
-  else if (Line>=1) and (Line<=Lines.Count) then begin
-    s:=Lines[Line-1];
+  else if (Line>=1) and (Line<=FTheLinesView.Count) then begin
+    s:=FTheLinesView[Line-1];
     BytePos:=PhysicalToLogicalCol(s,Result);
     Result:=LogicalToPhysicalCol(s,BytePos);
   end;
@@ -1895,8 +1891,8 @@ end;
 
 function TCustomSynEdit.RealGetText: TCaption;
 begin
-  if Lines<>nil then
-    Result := Lines.Text
+  if FLines<>nil then
+    Result := FLines.Text
   else
     Result := '';
 end;
@@ -2213,7 +2209,7 @@ begin
     InvalidateRect(Handle, @fInvalidateRect, False);
     FillChar(fInvalidateRect, SizeOf(TRect), 0);
     if fGutter.ShowLineNumbers and fGutter.AutoSize then
-      fGutter.AutoSizeDigitCount(Lines.Count);
+      fGutter.AutoSizeDigitCount(FTheLinesView.Count);
     if not (eoScrollPastEof in Options) then
       TopLine := TopLine;
   end;
@@ -2657,7 +2653,7 @@ end;
 procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 // iLine is 1 based as parameter
 begin
-  if (iLine<=0) or (iLine>Lines.Count) then exit;
+  if (iLine<=0) or (iLine>FTheLinesView.Count) then exit;
   dec(iLine);
 //DebugLn(['****** FoldAction at ',iLine,' scrline=',FFoldedLinesView.TextIndexToScreenLine(iLine), ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]],  '  view topline=',FFoldedLinesView.TopLine  ]);
   case FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)] of
@@ -2671,7 +2667,7 @@ function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
 // iLine is 1 based
 begin
   Result:=iLine;
-  while (Result>0) and (Result<=Lines.Count)
+  while (Result>0) and (Result<=FTheLinesView.Count)
   and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
     if Down then inc(Result) else dec(Result);
 end;
@@ -4098,9 +4094,9 @@ procedure TCustomSynEdit.SelectAll;
 var
   LastPt: TPoint;
 begin
-  LastPt := Point(1, Lines.Count);
+  LastPt := Point(1, FTheLinesView.Count);
   if LastPt.y > 0 then
-    Inc(LastPt.x, Length(Lines[LastPt.y - 1]))
+    Inc(LastPt.x, Length(FTheLinesView[LastPt.y - 1]))
   else
     LastPt.y  := 1;
   SetCaretAndSelection(
@@ -4214,8 +4210,8 @@ var
   {$ENDIF}
 begin
   nMaxX := fMaxLeftChar;
-  if Value.Y > Lines.Count then
-    Value.Y := Lines.Count;
+  if Value.Y > FTheLinesView.Count then
+    Value.Y := FTheLinesView.Count;
   if Value.Y < 1 then begin
     // this is just to make sure if Lines stringlist should be empty
     Value.Y := 1;
@@ -4224,10 +4220,10 @@ begin
   end else begin
     if not (eoScrollPastEol in fOptions) then begin
       {$IFDEF SYN_LAZARUS}
-      Line:=Lines[Value.Y-1];
+      Line:=FTheLinesView[Value.Y-1];
       nMaxX := PhysicalLineLength(PChar(Line),length(Line),true)+1;
       {$ELSE}
-      nMaxX := Length(Lines[Value.Y - 1]) + 1;                                  //abc 2000-09-30
+      nMaxX := Length(FTheLinesView[Value.Y - 1]) + 1;                                  //abc 2000-09-30
       {$ENDIF}
     end;
   end;
@@ -4326,9 +4322,7 @@ begin
   if eoScrollPastEol in Options then
     MaxVal := fMaxLeftChar
   else
-    MaxVal :=
-    {$IFDEF SYN_LAZARUS}TSynEditStrings{$ELSE}TSynEditStringList{$ENDIF}
-      (Lines).LengthOfLongestLine;
+    MaxVal := TSynEditStrings(FTheLinesView).LengthOfLongestLine;
   Value := Min(Value, MaxVal - fCharsInWindow + 1);
 {end}                                                                           //mh 2000-10-19
   Value := Max(Value, 1);
@@ -4344,7 +4338,7 @@ end;
 procedure TCustomSynEdit.SetLines(Value: TStrings);
 begin
   if HandleAllocated then
-    FTheLinesView.Assign(Value);
+    FLines.Assign(Value);
 end;
 
 procedure TCustomSynEdit.SetLineText(Value: string);
@@ -4425,13 +4419,13 @@ end;
 
 procedure TCustomSynEdit.SynSetText(const Value: string);
 begin
-  Lines.Text := Value;
+  FLines.Text := Value;
 end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.RealSetText(const Value: TCaption);
 begin
-  Lines.Text := Value; // Do not trim
+  FLines.Text := Value; // Do not trim
 end;
 {$ENDIF}
 
@@ -4445,10 +4439,10 @@ begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   if (eoScrollPastEof in Options) then
-    Value := Min(Value, Lines.Count)
+    Value := Min(Value, FTheLinesView.Count)
   else
     {$ifdef SYN_LAZARUS}
-    Value := Min(Value, FFoldedLinesView.TextPosAddLines(Lines.Count+1, -fLinesInWindow));
+    Value := Min(Value, FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -fLinesInWindow));
     {$ELSE}
     Value := Min(Value, Lines.Count + 1 - fLinesInWindow);
     {$ENDIF}
@@ -4621,7 +4615,7 @@ begin
           ScrollInfo.nMax := fMaxLeftChar
         else
           {$IFDEF SYN_LAZARUS}
-          ScrollInfo.nMax := TSynEditStrings(Lines).LengthOfLongestLine;
+          ScrollInfo.nMax := TSynEditStrings(FTheLinesView).LengthOfLongestLine;
           {$ELSE}
           ScrollInfo.nMax := TSynEditStringList(Lines).LengthOfLongestLine;
           {$ENDIF}
@@ -4832,7 +4826,7 @@ begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP: TopLine := 1;
-    SB_BOTTOM: TopLine := Lines.Count;
+    SB_BOTTOM: TopLine := FTheLinesView.Count;
       // Scrolls one line up / down
 {$IFDEF SYN_LAZARUS}
     SB_LINEDOWN: TopView := TopView + 1;
@@ -4932,7 +4926,7 @@ function TCustomSynEdit.ScanFrom(Index: integer; AtLeastTilIndex: integer): inte
 begin
   if Index < 0 then Index := 0;
   Result := Max(Index - 1,0);
-  if not assigned(fHighlighter) or (Index > Lines.Count - 1) then begin
+  if not assigned(fHighlighter) or (Index > FTheLinesView.Count - 1) then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
@@ -4940,50 +4934,50 @@ begin
   end;
   FixFStart := Index;
   if Result > 0 then
-    fHighlighter.SetRange(TSynEditStrings(Lines).Ranges[Result])
+    fHighlighter.SetRange(TSynEditStrings(FTheLinesView).Ranges[Result])
   else begin
     fHighlighter.ReSetRange;
-    TSynEditStrings(Lines).Ranges[0] := fHighlighter.GetRange;
+    TSynEditStrings(FTheLinesView).Ranges[0] := fHighlighter.GetRange;
   end;
-  if Index >= Lines.Count - 1 then begin
+  if Index >= FTheLinesView.Count - 1 then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     Exit;
   end;
   //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' Line="',Lines[Index],'"');
-  fHighlighter.SetLine(Lines[Result], Result);
+  fHighlighter.SetLine(FTheLinesView[Result], Result);
   inc(Result);
   fHighlighter.NextToEol;
   LastLineDiffers := True;
   SkipPrev := True;
-  while (fHighlighter.GetRange <> TSynEditStrings(Lines).Ranges[Result])
+  while (fHighlighter.GetRange <> TSynEditStrings(FTheLinesView).Ranges[Result])
     or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
     or (FFoldedLinesView.FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
     or (FFoldedLinesView.FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel)
     or LastLineDiffers or (Result<=AtLeastTilIndex+1)
   do begin
     //debugln(['TSynCustomHighlighter.ScanFrom WHILE Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' ScannedLine="',Lines[Result-1],'"']);
-    LastLineDiffers := (fHighlighter.GetRange <> TSynEditStrings(Lines).Ranges[Result])
+    LastLineDiffers := (fHighlighter.GetRange <> TSynEditStrings(FTheLinesView).Ranges[Result])
       or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
       or (FFoldedLinesView.FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
       or (FFoldedLinesView.FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel);
-    TSynEditStrings(Lines).Ranges[Result] := fHighlighter.GetRange;
+    TSynEditStrings(FTheLinesView).Ranges[Result] := fHighlighter.GetRange;
     SetCodeFoldAttributes;
     SkipPrev := False;
     //if (Result and $fff)=0 then
     //  debugln('TCustomSynEdit.ScanFrom A Line=', dbgs(Result),' Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',dbgs(length(Lines[Result-1])));
-    fHighlighter.SetLine(Lines[Result], Result);
+    fHighlighter.SetLine(FTheLinesView[Result], Result);
     //debugln(['TSynCustomHighlighter.ScanFrom SetLine Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' Line="',Lines[Result],'"']);
     fHighlighter.NextToEol;
     //debugln(['TSynCustomHighlighter.ScanFrom NextEOL Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel]);
     inc(Result);
-    if Result = Lines.Count then
+    if Result = FTheLinesView.Count then
       break;
   end;
   // at least one line changed
   //  => update code fold attributes of last scanned line
-  if (Result>Index+1) and (Result<=Lines.Count) then
+  if (Result>Index+1) and (Result<=FTheLinesView.Count) then
     SetCodeFoldAttributes;
   FFoldedLinesView.FixFoldingAtTextIndex(FixFStart, Result);
   fMarkupManager.TextChangedScreen(Max(RowToScreenRow(FixFStart+1), 0),
@@ -5069,7 +5063,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF SYN_LAZARUS}
-  ScanFrom(0,Lines.Count-1);
+  ScanFrom(0,FTheLinesView.Count-1);
   {$ELSE}
   if Assigned(fHighlighter) and (Lines.Count > 0) then begin
     fHighlighter.ResetRange;
@@ -5087,7 +5081,7 @@ begin
 *)
     i := 0;
     repeat
-      TSynEditStringList(Lines).Ranges[i] := fHighlighter.GetRange;
+      TSynEditStrings(FTheLinesView).Ranges[i] := fHighlighter.GetRange;
       fHighlighter.SetLine(Lines[i], i);
       fHighlighter.NextToEol;
       Inc(i);
@@ -5240,8 +5234,8 @@ var
 begin
   { Value is the position of the Carat in bytes }
   Value.x := MinMax(Value.x, 1, fMaxLeftChar);
-  Value.y := MinMax(Value.y, 1, Lines.Count);
-  TempString := Lines[Value.Y - 1];
+  Value.y := MinMax(Value.y, 1, FTheLinesView.Count);
+  TempString := FTheLinesView[Value.Y - 1];
   if TempString = '' then exit;
   // Click on right side of text
   if Length(TempString) < Value.X then Value.X := Length(TempString);
@@ -5298,7 +5292,7 @@ begin
   FBlockSelection.EndLineBytePos := Runner;
   FBlockSelection.ActiveSelectionMode := smNormal;
 // set caret to the end of selected block
-  CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(Runner);
+  CaretXY := TSynEditStrings(FTheLinesView).LogicalToPhysicalPos(Runner);
 end;
 
 {$ENDIF}
@@ -5309,35 +5303,35 @@ var
   ALine: string;
   x, x2: Integer;
 begin
-  FBlockSelection.StartLineBytePos := Point(1,MinMax(Value.y, 1, Lines.Count));
-  FBlockSelection.EndLineBytePos := Point(1,MinMax(Value.y+1, 1, Lines.Count));
+  FBlockSelection.StartLineBytePos := Point(1,MinMax(Value.y, 1, FTheLinesView.Count));
+  FBlockSelection.EndLineBytePos := Point(1,MinMax(Value.y+1, 1, FTheLinesView.Count));
   if (FBlockSelection.StartLinePos >= 1)
-  and (FBlockSelection.StartLinePos <= Lines.Count) then begin
-    ALine:=Lines[FBlockSelection.StartLinePos - 1];
+  and (FBlockSelection.StartLinePos <= FTheLinesView.Count) then begin
+    ALine:=FTheLinesView[FBlockSelection.StartLinePos - 1];
     x := FBlockSelection.StartBytePos;
     while (x<length(ALine)) and (ALine[x] in [' ',#9]) do
       inc(x);
-    FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, Lines.Count));
+    FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, FTheLinesView.Count));
     x2:=length(ALine)+1;
     while (x2 > x) and (ALine[X2-1] in [' ',#9]) do
       dec(x2);
-    FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, Lines.Count));
+    FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, FTheLinesView.Count));
   end;
   FBlockSelection.ActiveSelectionMode := smNormal;
-  CaretXY := TSynEditStrings(Lines).LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
+  CaretXY := TSynEditStrings(FTheLinesView).LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.SetParagraphBlock(Value: TPoint);
 var ParagraphStartLine, ParagraphEndLine: integer;
 begin
-  ParagraphStartLine:=MinMax(Value.y, 1, Lines.Count);
-  ParagraphEndLine:=MinMax(Value.y+1, 1, Lines.Count);
+  ParagraphStartLine:=MinMax(Value.y, 1, FTheLinesView.Count);
+  ParagraphEndLine:=MinMax(Value.y+1, 1, FTheLinesView.Count);
   while (ParagraphStartLine>1)
-  and (Trim(Lines[ParagraphStartLine-1])<>'') do
+  and (Trim(FTheLinesView[ParagraphStartLine-1])<>'') do
     dec(ParagraphStartLine);
-  while (ParagraphEndLine<Lines.Count)
-  and (Trim(Lines[ParagraphEndLine-1])<>'') do
+  while (ParagraphEndLine<FTheLinesView.Count)
+  and (Trim(FTheLinesView[ParagraphEndLine-1])<>'') do
     inc(ParagraphEndLine);
   FBlockSelection.StartLineBytePos := Point(1,ParagraphStartLine);
   FBlockSelection.EndLineBytePos := Point(1,ParagraphEndLine);
@@ -5603,9 +5597,9 @@ begin
             if x < 0 then
               x:= Len;
             if Len > 0 then begin
-              TempString := Lines[CaretY - 1];
+              TempString := FTheLinesView[CaretY - 1];
               Delete(TempString, 1, Len);
-              Lines[CaretY - 1] := TempString;
+              FTheLinesView[CaretY - 1] := TempString;
             end;
             if Run^ in [#10,#13] then begin
               if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
@@ -5763,9 +5757,9 @@ begin
           else
             TmpPos := minPoint(Item.fChangeStartPos, Item.fChangeEndPos);
           if (Item.fChangeReason in [crDeleteAfterCursor,
-            crSilentDeleteAfterCursor]) and (TmpPos.Y > Lines.Count)            //mh 2000-10-30
+            crSilentDeleteAfterCursor]) and (TmpPos.Y > FTheLinesView.Count)            //mh 2000-10-30
           then begin
-            CaretXY := Point(1, Lines.Count);
+            CaretXY := Point(1, FTheLinesView.Count);
             // this stinks!!!
             CommandProcessor(ecLineBreak, #13, nil);
           end;
@@ -5794,18 +5788,18 @@ begin
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
           if CaretY > 0 then begin
-            TmpStr := Lines.Strings[CaretY - 1];
+            TmpStr := FTheLinesView.Strings[CaretY - 1];
             if (Length(TmpStr) < CaretX - 1)
               and (LeftSpaces(Item.fChangeStr) = 0)
             then
               AppendStr(TmpStr, StringOfChar(' ', CaretX - 1 - Length(TmpStr)));
-            Lines.Delete(Item.fChangeEndPos.y);
+            FTheLinesView.Delete(Item.fChangeEndPos.y);
           end;
           CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
                      {$ELSE}Item.fChangeStartPos{$ENDIF};
           {$IFDEF SYN_LAZARUS}
           if Item.fChangeStr <> '' then
-            Lines[CaretY - 1] := TmpStr + Item.fChangeStr;
+            FTheLinesView[CaretY - 1] := TmpStr + Item.fChangeStr;
           {$ELSE}
           TrimmedSetLine(CaretY - 1, TmpStr + Item.fChangeStr);
           {$ENDIF}
@@ -6197,18 +6191,18 @@ begin
     {$IFDEF SYN_LAZARUS}
     if fHighlighter<>nil then begin
       fHighlighter.ResetRange;
-      TSynEditStrings(Lines).ClearRanges(fHighlighter.GetRange);
+      TSynEditStrings(FTheLinesView).ClearRanges(fHighlighter.GetRange);
       fTSearch.IdentChars:=fHighlighter.IdentChars;
     end else begin
       fTSearch.ResetIdentChars;
     end;
     {$ENDIF}
     RecalcCharExtent;
-    Lines.BeginUpdate;
+    FTheLinesView.BeginUpdate;
     try
       ListScanRanges(Self);
     finally
-      Lines.EndUpdate;
+      FTheLinesView.EndUpdate;
     end;
     SizeOrFontChanged(TRUE);
   end;
@@ -6658,7 +6652,7 @@ begin
           CaretNew := Point(1, Lines.Count);
           {$ENDIF}
           if (CaretNew.Y > 0) then
-            CaretNew.X := Length(Lines[CaretNew.Y - 1]) + 1;
+            CaretNew.X := Length(FTheLinesView[CaretNew.Y - 1]) + 1;
           MoveCaretAndSelection(
             {$IFDEF SYN_LAZARUS}
             PhysicalToLogicalPos(CaretXY),
@@ -6688,7 +6682,7 @@ begin
           {$IFDEF SYN_LAZARUS}
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
-            CaretNew := LogicalToPhysicalPos(Point(1 + Length(Lines[CY-1]), CY));
+            CaretNew := LogicalToPhysicalPos(Point(1 + Length(FTheLinesView[CY-1]), CY));
           end;
           MoveCaretAndSelectionPhysical
           {$ELSE}
@@ -6749,12 +6743,12 @@ begin
               if CaretY > 1 then begin
                 CaretY := CaretY - 1;
                 {$IFDEF SYN_LAZARUS}
-                CaretX := LogicalToPhysicalCol(Lines[CaretY - 1],
-                                               Length(Lines[CaretY - 1]) + 1);
+                CaretX := LogicalToPhysicalCol(FTheLinesView[CaretY - 1],
+                                               Length(FTheLinesView[CaretY - 1]) + 1);
                 {$ELSE}
                 CaretX := Length(Lines[CaretY - 1]) + 1;
                 {$ENDIF}
-                Lines.Delete(CaretY);
+                FTheLinesView.Delete(CaretY);
                 DoLinesDeleted(CaretY, 1);
                 {$IFNDEF SYN_LAZARUS}
                 if eoTrimTrailingSpaces in Options then
@@ -6778,7 +6772,7 @@ begin
                 if SpaceCount1 > 0 then begin
                   BackCounter := CaretY - 2;
                   while BackCounter >= 0 do begin
-                    SpaceCount2 :=LeftSpaces(Lines[BackCounter]
+                    SpaceCount2 :=LeftSpaces(FTheLinesView[BackCounter]
                                              {$IFDEF SYN_LAZARUS},true{$ENDIF});
                     if SpaceCount2 < SpaceCount1 then
                       break;
@@ -6797,7 +6791,7 @@ begin
                 //   ' LogCaretXY.X=',dbgs(LogCaretXY.X),
                 //   ' Temp="',DbgStr(Temp),'" Helper="',DbgStr(Helper),'"');
                 Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
-                Lines[CaretY - 1] :=  Temp;
+                FTheLinesView[CaretY - 1] :=  Temp;
                 CaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
                 {$ELSE}
                 Helper := Copy(Temp, 1, SpaceCount1 - SpaceCount2);
@@ -6824,7 +6818,7 @@ begin
                   //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
                   //  ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
                   {$ENDIF USE_UTF8BIDI_LCL}
-                  Lines[CaretY - 1] := Temp;
+                  FTheLinesView[CaretY - 1] := Temp;
                 {$ELSE}
                   {$IFDEF SYN_MBCSSUPPORT}
                   if ByteType(Temp, CaretX - 2) = mbLeadByte then
@@ -6892,7 +6886,7 @@ begin
 {$ELSE USE_UTF8BIDI_LCL}
                 System.Delete(Temp, LogCaretXY.X, Counter);
 {$ENDIF USE_UTF8BIDI_LCL}
-                Lines[CaretY - 1] := Temp;
+                FTheLinesView[CaretY - 1] := Temp;
               {$ELSE}
                 counter := 1;
                 {$IFDEF SYN_MBCSSUPPORT}
@@ -6906,9 +6900,9 @@ begin
               {$ENDIF}
             end else begin
               // join line with the line after
-              if CaretY < Lines.Count then begin
+              if CaretY < FTheLinesView.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
-                Lines[CaretY - 1] := Temp + Helper + Lines[CaretY];
+                FTheLinesView[CaretY - 1] := Temp + Helper + FTheLinesView[CaretY];
                 if helper <> '' then begin
                   Caret := Point(Len+1, CaretY); // logical
                   fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
@@ -6916,7 +6910,7 @@ begin
                 end;
                 Caret := Point(1, CaretY + 1);
                 Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
-                Lines.Delete(CaretY);
+                FTheLinesView.Delete(CaretY);
                 DoLinesDeleted(CaretY - 1, 1);
               end;
             end;
@@ -6977,12 +6971,12 @@ begin
         end;
 {end}                                                                           //mh 2000-10-30
       ecDeleteLine:
-        if not ReadOnly and not ((Lines.Count = 1) and (Length(Lines[0]) = 0))
+        if not ReadOnly and not ((FTheLinesView.Count = 1) and (Length(FTheLinesView[0]) = 0))
         then begin
           if SelAvail then
             SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                           {$ELSE}CaretXY{$ENDIF});
-          if Lines.Count = 1 then begin
+          if FTheLinesView.Count = 1 then begin
             fUndoList.AddChange(crDeleteAfterCursor,
               {$IFDEF SYN_LAZARUS}
               PhysicalToLogicalPos(Point(1, CaretY)),
@@ -6991,7 +6985,7 @@ begin
               Point(1, CaretY), CaretXY,
               {$ENDIF}
               LineText, smNormal);
-            Lines[0] := '';
+            FTheLinesView[0] := '';
           end else begin
             fUndoList.AddChange(crDeleteAfterCursor,
               {$IFDEF SYN_LAZARUS}
@@ -7003,7 +6997,7 @@ begin
               LineText + #13#10,
               {$ENDIF}
               smNormal);
-            Lines.Delete(CaretY - 1);
+            FTheLinesView.Delete(CaretY - 1);
           end;
           DoLinesDeleted(CaretY - 1, 1);
           CaretXY := Point(1, CaretY); // like seen in the Delphi editor
@@ -7032,20 +7026,20 @@ begin
               // break line in two
               SpaceCount1 := LeftSpaces(Temp);
               Temp := Copy(LineText, 1, LogCaretXY.X - 1);
-              Lines.Insert(CaretY - 1, Temp);
+              FTheLinesView.Insert(CaretY - 1, Temp);
               Delete(Temp2, 1, LogCaretXY.X - 1);
               if Assigned(Beautifier) then
                 SpaceCount1:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp2);
               fUndoList.AddChange(crLineBreak,
                 LogCaretXY, LogCaretXY,
                 Temp2, smNormal);
-              Lines[CaretY] := StringOfChar(' ', SpaceCount1) + Temp2;
+              FTheLinesView[CaretY] := StringOfChar(' ', SpaceCount1) + Temp2;
               if Command = ecLineBreak then
                 CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
             end else begin
               // move the whole line
-              Lines.Insert(CaretY - 1, '');
-              Lines[CaretY] := Lines[CaretY]; // trigger trim spaces
+              FTheLinesView.Insert(CaretY - 1, '');
+              FTheLinesView[CaretY] := FTheLinesView[CaretY]; // trigger trim spaces
               fUndoList.AddChange(crLineBreak,
                 LogCaretXY, LogCaretXY,
                 Temp2, smNormal);
@@ -7054,10 +7048,10 @@ begin
             end;
           end else begin
             // current line is empty (len = 0)
-            if Lines.Count = 0 then
-              Lines.Add('');
+            if FTheLinesView.Count = 0 then
+              FTheLinesView.Add('');
             // linebreak after end of line
-            Lines[CaretY-1] := Lines[CaretY-1]; // trigger trim spaces
+            FTheLinesView[CaretY-1] := FTheLinesView[CaretY-1]; // trigger trim spaces
             fUndoList.AddChange(crLineBreak,
               LogCaretXY, LogCaretXY,
               '', smNormal);
@@ -7069,14 +7063,14 @@ begin
               BackCounter := CaretY;
               repeat
                 Dec(BackCounter);
-                Temp := Lines[BackCounter];
+                Temp := FTheLinesView[BackCounter];
                 SpaceCount2 := LeftSpaces(Temp,true);
               until (BackCounter = 0) or (Temp <> '');
             end;
-            Lines.Insert(CaretY, '');
+            FTheLinesView.Insert(CaretY, '');
             if Command = ecLineBreak then begin
               if (SpaceCount2 > 0) then
-                Lines[CaretY] := StringOfChar(' ', SpaceCount2);
+                FTheLinesView[CaretY] := StringOfChar(' ', SpaceCount2);
               CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
             end;
           end;
@@ -7093,7 +7087,7 @@ begin
                 fUndoList.AddChange(crLineBreak,
                   CaretXY, CaretXY,
                   Temp2, smNormal);
-                Lines.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
+                FTheLinesView.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
                 if Command = ecLineBreak then
                   CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
               end else begin
@@ -7207,7 +7201,7 @@ begin
                 //debugln('ecChar Temp=',DbgStr(Temp),' AChar=',DbgStr(AChar));
                 CaretX := CaretX + 1;
                 {$ENDIF}
-                Lines[CaretY - 1] := Temp;
+                FTheLinesView[CaretY - 1] := Temp;
                 fUndoList.AddChange(crInsert, StartOfBlock,
                   PhysicalToLogicalPos(CaretXY), '', smNormal);
               end else begin
@@ -7228,7 +7222,7 @@ begin
                   Temp:=Temp+StringOfChar(' ', LogCaretXY.X-1-Len)+AChar;
                 {$ENDIF}
                 CaretNew := Point((CaretX + 1), CaretY);
-                Lines[CaretY - 1] := Temp;
+                FTheLinesView[CaretY - 1] := Temp;
                 fUndoList.AddChange(crInsert,
                   StartOfBlock, PhysicalToLogicalPos(CaretNew),
                   Helper, smNormal);
@@ -7503,8 +7497,8 @@ var
 
   procedure FindFirstNonWhiteSpaceCharInNextLine;
   begin
-    if CY < Lines.Count then begin
-      Line := Lines[CY];
+    if CY < FTheLinesView.Count then begin
+      Line := FTheLinesView[CY];
       LineLen := Length(Line);
       Inc(CY);
       CX:=1;
@@ -7518,15 +7512,15 @@ begin
   CX := LogCaret.X;
   CY := LogCaret.Y;
   // valid line?
-  if (CY >= 1) and (CY <= Lines.Count) then begin
-    Line := Lines[CY - 1];
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
     LineLen := Length(Line);
     WhiteChars := [#9,' '];
     if CX > LineLen then begin
       FindFirstNonWhiteSpaceCharInNextLine;
     end else begin
       if fHighlighter<>nil then begin
-        fHighlighter.SetRange(TSynEditStrings(Lines).Ranges[CY - 1]);
+        fHighlighter.SetRange(TSynEditStrings(FTheLinesView).Ranges[CY - 1]);
         fHighlighter.SetLine(Line, CY - 1);
         while not fHighlighter.GetEol do begin
           nTokenPos := fHighlighter.GetTokenPos; // zero-based
@@ -7581,8 +7575,8 @@ begin
   CY := CaretY;
   {$ENDIF}
   // valid line?
-  if (CY >= 1) and (CY <= Lines.Count) then begin
-    Line := Lines[CY - 1];
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
 
     {$IFDEF SYN_LAZARUS}
     if Assigned(Highlighter) then
@@ -7599,8 +7593,8 @@ begin
 
     if CX >{$IFNDEF SYN_LAZARUS}={$ENDIF} LineLen then begin
       // find first IdentChar in the next line
-      if CY < Lines.Count then begin
-        Line := Lines[CY];
+      if CY < FTheLinesView.Count then begin
+        Line := FTheLinesView[CY];
         Inc(CY);
         {$IFDEF SYN_LAZARUS}
         if WordEndForDelete then
@@ -7666,8 +7660,8 @@ begin
   {$ENDIF}
   //DebugLn(['TCustomSynEdit.PrevWordPos ',dbgs(LogCaret)]);
   // valid line?
-  if (CY >= 1) and (CY <= Lines.Count) then begin
-    Line := Lines[CY - 1];
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
     CX := Min(CX, Length(Line) + 1);
 
     {$IFDEF SYN_LAZARUS}
@@ -7685,7 +7679,7 @@ begin
       // find last IdentChar in the previous line
       if CY > 1 then begin
         Dec(CY);
-        Line := Lines[CY - 1];
+        Line := FTheLinesView[CY - 1];
         CX := Length(Line) + 1;
       end;
     end else begin
@@ -7700,7 +7694,7 @@ begin
         // just position at the end of the previous line
         if CY > 1 then begin
           Dec(CY);
-          Line := Lines[CY - 1];
+          Line := FTheLinesView[CY - 1];
           CX := Length(Line) + 1;
         end;
       //DebugLn(['TCustomSynEdit.PrevWordPos AAA2 CX=',CX]);
@@ -7809,13 +7803,13 @@ begin
 
   result := 0;
   loop := 0;
-  while (loop < (p.Y - 1)) and (loop < Lines.Count) do
+  while (loop < (p.Y - 1)) and (loop < FTheLinesView.Count) do
   begin
-    result := result + llen(Lines[loop]);
+    result := result + llen(FTheLinesView[loop]);
     inc(loop);
   end;
-  if loop < Lines.Count then
-    result := result + Min(p.X, length(lines[loop]) + 1);
+  if loop < FTheLinesView.Count then
+    result := result + Min(p.X, length(FTheLinesView[loop]) + 1);
 end;
 
 procedure TCustomSynEdit.SetSelStart(const Value: integer);
@@ -7831,8 +7825,8 @@ var
 begin
   loop := 0;
   count := 0;
-  while (loop < Lines.Count) and (count + llen(lines[loop]) < value) do begin
-    count := count + llen(Lines[loop]);
+  while (loop < FTheLinesView.Count) and (count + llen(FTheLinesView[loop]) < value) do begin
+    count := count + llen(FTheLinesView[loop]);
     inc(loop);
   end;
 {  CaretX := value - count;
@@ -7867,11 +7861,11 @@ begin
 
   result := 0;
   loop := 0;
-  while (loop < (p.y - 1)) and (loop < Lines.Count) do begin
-    Result := result + llen(Lines[loop]);
+  while (loop < (p.y - 1)) and (loop < FTheLinesView.Count) do begin
+    Result := result + llen(FTheLinesView[loop]);
     inc(loop);
   end;
-  if loop<Lines.Count then
+  if loop<FTheLinesView.Count then
     result := result + p.x;
 end;
 
@@ -7889,8 +7883,8 @@ var
 begin
   loop := 0;
   count := 0;
-  while (loop < Lines.Count) and (count + llen(lines[loop]) < value) do begin
-    count := count + llen(Lines.strings[loop]);
+  while (loop < FTheLinesView.Count) and (count + llen(FTheLinesView[loop]) < value) do begin
+    count := count + llen(FTheLinesView.strings[loop]);
     inc(loop);
   end;
   p.x := value - count; p.y := loop + 1;
@@ -7963,7 +7957,7 @@ var
 begin
   if not (csLoading in ComponentState) then begin
     if fGutter.ShowLineNumbers and fGutter.AutoSize then
-      fGutter.AutoSizeDigitCount(Lines.Count);
+      fGutter.AutoSizeDigitCount(FTheLinesView.Count);
     nW := fGutter.RealGutterWidth(fCharWidth);
     if nW = fGutterWidth then
       InvalidateGutter
@@ -8115,7 +8109,7 @@ begin
     // search the whole line in the line selection mode
     if (FBlockSelection.ActiveSelectionMode = smLine) then begin
       ptStart.X := 1;
-      ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
+      ptEnd.X := Length(FTheLinesView[ptEnd.Y - 1]) + 1;
     end else if (FBlockSelection.ActiveSelectionMode = smColumn) then
       // make sure the start column is smaller than the end column
       if (ptStart.X > ptEnd.X) then begin
@@ -8127,8 +8121,8 @@ begin
     if bBackward then ptCurrent := ptEnd else ptCurrent := ptStart;
   end else begin
     ptStart := Point(1, 1);
-    ptEnd.Y := Lines.Count;
-    ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
+    ptEnd.Y := FTheLinesView.Count;
+    ptEnd.X := Length(FTheLinesView[ptEnd.Y - 1]) + 1;
     if bFromCursor then
       if bBackward then
         ptEnd := {$IFDEF SYN_LAZARUS}AStart{$ELSE}CaretXY{$ENDIF}
@@ -8154,7 +8148,7 @@ begin
   try
     {$IFDEF SYN_LAZARUS}
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
-    while fTSearch.FindNextOne(Lines,ptStart,ptEnd,ptFoundStart,ptFoundEnd) do
+    while fTSearch.FindNextOne(FTheLinesView,ptStart,ptEnd,ptFoundStart,ptFoundEnd) do
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
@@ -8495,7 +8489,7 @@ begin
     else begin
       // move to end of prev line
       NewCaret.Y:= FFoldedLinesView.TextPosAddLines(NewCaret.Y, -1);
-      s:=Lines[NewCaret.Y-1];
+      s:=FTheLinesView[NewCaret.Y-1];
       PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
       NewCaret.X:=PhysicalLineLen+1;
     end;
@@ -8778,11 +8772,11 @@ begin
       OldCaretX := CaretX;
     if eoSmartTabs in fOptions then begin
       iLine := CaretY - 1;
-      if (iLine > 0) and (iLine < Lines.Count) then begin
+      if (iLine > 0) and (iLine < FTheLinesView.Count) then begin
         repeat
           Dec(iLine);
           if iLine < 0 then break;
-          PrevLine := Lines[iLine];
+          PrevLine := FTheLinesView[iLine];
         until PhysicalLineLength(PChar(PrevLine),length(PrevLine),true) > OldCaretX - 1;
 
         if iLine >= 0 then begin
@@ -9012,14 +9006,14 @@ begin
       SomethingToDelete := False;
       for x := BB.Y to e{$IFNDEF SYN_LAZARUS}-1{$ENDIF} do
       begin
-        Line := PChar(Lines[x-1]);
+        Line := PChar(FTheLinesView[x-1]);
         TempString:=StringOfChar(' ', GetDelLen);
         StrCat(FullStrToDelete,PChar(TempString));
         StrCat(FullStrToDelete,
                     PChar({$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF}));
       end;
       {$IFNDEF SYN_LAZARUS}
-      Line := PChar(Lines[e-1]);
+      Line := PChar(FTheLinesView[e-1]);
       TempString:=StringOfChar(' ', GetDelLen);
       StrCat(FullStrToDelete,PChar(TempString));
       {$ENDIF}
@@ -9040,9 +9034,9 @@ begin
             if FirstIndent = -1 then
               FirstIndent := Len;
             if Len > 0 then begin
-              TempString := Lines[CaretY - 1];
+              TempString := FTheLinesView[CaretY - 1];
               Delete(TempString, 1, Len);
-              Lines[CaretY - 1] := TempString;
+              FTheLinesView[CaretY - 1] := TempString;
             end;
           {$IFNDEF SYN_LAZARUS}
           end;
@@ -9123,8 +9117,8 @@ begin
   end else begin
     // calculate line start position
     FirstNonBlank:=-1;
-    if CaretY<=Lines.Count then begin
-      s:=Lines[CaretXY.Y-1];
+    if CaretY<=FTheLinesView.Count then begin
+      s:=FTheLinesView[CaretXY.Y-1];
 
       // search first non blank char pos
       FirstNonBlank:=1;
@@ -9236,7 +9230,7 @@ begin
   if Visible and (Line >= TopLine) and
     (Line <= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}
     TopLine + LinesInWindow{$ENDIF})
-    and (Line <= Lines.Count) and HandleAllocated
+    and (Line <= FTheLinesView.Count) and HandleAllocated
   then begin
     // we invalidate gutter and text area of this line
     rcInval := Rect(0, fTextHeight * RowToScreenRow(Line)
@@ -9389,7 +9383,7 @@ var
       end;
       // Init the Highlighter only once per line
       if MaxKnownTokenPos < 1 then begin
-        fHighlighter.SetRange(TSynEditStrings(Lines).Ranges[PosY - 1]);
+        fHighlighter.SetRange(TSynEditStrings(FTheLinesView).Ranges[PosY - 1]);
         fHighlighter.SetLine(Line, PosY - 1);
         TokenListCnt := 0;
       end
@@ -9522,7 +9516,7 @@ var
         and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
         then
           break;
-        Line := Lines[PosY - 1];
+        Line := FTheLinesView[PosY - 1];
         MaxKnownTokenPos := 0;
         PosX := Length(Line) + 1;
       until FALSE;
@@ -9545,13 +9539,13 @@ var
           end;
         end;
         // get next line if possible
-        if PosY = Lines.Count then break;
+        if PosY = FTheLinesView.Count then break;
         Inc(PosY);
         if OnlyVisible
         and ((PosY < TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
         then
           break;
-        Line := Lines[PosY - 1];
+        Line := FTheLinesView[PosY - 1];
         MaxKnownTokenPos := 0;
         PosX := 0;
       until FALSE;
@@ -9587,13 +9581,13 @@ begin
   LogicalStart:=PhysicalToLogicalPos(PhysStartBracket);
   PosX := LogicalStart.X;
   PosY := LogicalStart.Y;
-  if (PosY<1) or (PosY>Lines.Count) then exit;
+  if (PosY<1) or (PosY>FTheLinesView.Count) then exit;
   if OnlyVisible
   and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
   then
    exit;
 
-  Line := Lines[PosY - 1];
+  Line := FTheLinesView[PosY - 1];
   try
     DoCheckBracket;
     if Result.Y>0 then exit;
@@ -9637,11 +9631,11 @@ var
   Line: string;
 begin
   PosY := XY.Y -1;
-  if Assigned(Highlighter) and (PosY >= 0) and (PosY < Lines.Count) then
+  if Assigned(Highlighter) and (PosY >= 0) and (PosY < FTheLinesView.Count) then
   begin
-    Line := Lines[PosY];
+    Line := FTheLinesView[PosY];
     {$IFDEF SYN_LAZARUS}
-    Highlighter.SetRange(TSynEditStrings(Lines).Ranges[PosY]);
+    Highlighter.SetRange(TSynEditStrings(FTheLinesView).Ranges[PosY]);
     {$ELSE}
     Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY]);
     {$ENDIF}
@@ -9679,8 +9673,8 @@ begin
   //debugln('TCustomSynEdit.GetWordBoundsAtRowCol A ',dbgs(XY));
   StartX:=XY.X;
   EndX:=XY.X;
-  if (XY.Y >= 1) and (XY.Y <= Lines.Count) then begin
-    Line := Lines[XY.Y - 1];
+  if (XY.Y >= 1) and (XY.Y <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[XY.Y - 1];
     Len := Length(Line);
     if (XY.X >= 1) and (XY.X <= Len + 1) then begin
       if Assigned(Highlighter) then
@@ -9714,9 +9708,9 @@ begin
   end else begin
     // default: use last non empty line indent, ignore always current line
     y:=Line-1;
-    if y>Lines.Count then y:=Lines.Count;
+    if y>FTheLinesView.Count then y:=FTheLinesView.Count;
     while y>=1 do begin
-      s:=Lines[y-1];
+      s:=FTheLinesView[y-1];
       FirstNonBlank:=1;
       while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [' ',#9]) do
         inc(FirstNonBlank);
@@ -9889,8 +9883,8 @@ var
   Len, Stop: integer;
 begin
   Result := '';
-  if (XY.Y >= 1) and (XY.Y <= Lines.Count) then begin
-    Line := Lines[XY.Y - 1];
+  if (XY.Y >= 1) and (XY.Y <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[XY.Y - 1];
     Len := Length(Line);
     if (XY.X >= 1) and (XY.X <= Len + 1) then begin
       {$IFDEF SYN_LAZARUS}
@@ -9918,7 +9912,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
 begin
-  Result := TSynEditStrings(Lines).LogicalToPhysicalPos(p);
+  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalPos(p);
 end;
 {$ELSE}
 function TCustomSynEdit.LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -9952,7 +9946,7 @@ end;
 function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
   LogicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(Lines).LogicalToPhysicalCol(PChar(Pointer(Line)),
+  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalCol(PChar(Pointer(Line)),
     length(Line),LogicalPos,1,1);
 end;
 
@@ -9960,7 +9954,7 @@ function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
 // Note: LogicalPos, StartBytePos, StartPhysicalPos start at 1
 begin
-  Result := TSynEditStrings(Lines).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
+  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
                                         StartBytePos, StartPhysicalPos);
 end;
 
@@ -9975,19 +9969,19 @@ end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
 begin
-  Result := TSynEditStrings(Lines).PhysicalToLogicalPos(p);
+  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalPos(p);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(Lines).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
+  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
   PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(Lines).PhysicalToLogicalCol(Line, PhysicalPos,
+  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalCol(Line, PhysicalPos,
     StartBytePos, StartPhysicalPos);
 end;
 
