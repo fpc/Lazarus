@@ -3631,7 +3631,10 @@ var
   Editor: TSynEdit;
   OldCompletionType: TCompletionType;
 Begin
-  if CurCompletionControl=nil then exit;
+  if CurCompletionControl=nil then begin
+    Value:='';
+    exit;
+  end;
   OldCompletionType:=CurrentCompletionType;
   case CurrentCompletionType of
 
@@ -3685,6 +3688,10 @@ Begin
         ccSelection := '';
         if Value<>'' then AWordCompletion.AddWord(Value);
       end;
+
+    else begin
+      Value:='';
+    end;
   end;
 
   DeactivateCompletionForm;
