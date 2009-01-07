@@ -247,7 +247,7 @@ begin
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Reference.Handle);
-  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
+  MeasureText(BitBtn, ButtonCaption, BitBtn.Font.Reference.Handle, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -401,7 +401,7 @@ var
   Glyph: TBitmap;
   spacing, srcWidth: integer;
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, AWinControl.Caption, 0, PreferredWidth, PreferredHeight) then
   begin
     Glyph := BitBtn.Glyph;
     if not Glyph.Empty then
