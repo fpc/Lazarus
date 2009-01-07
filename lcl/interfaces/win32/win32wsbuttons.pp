@@ -256,8 +256,6 @@ begin
         newWidth := BitBtn.Width - 10
       else
         newWidth := TextSize.cx + srcWidth + BitBtn.Spacing;
-      if srcWidth <> 0 then
-        inc(newWidth, 2);
       newHeight := TextSize.cy;
       if newHeight < srcHeight then
         newHeight := srcHeight;
@@ -293,8 +291,6 @@ begin
         newHeight := BitBtn.Height - 10
       else
         newHeight := TextSize.cy + srcHeight + BitBtn.Spacing;
-      if srcHeight <> 0 then
-        inc(newHeight, 2);
       XDestBitmap := (newWidth - srcWidth) shr 1;
       XDestText := (newWidth - TextSize.cx) shr 1;
       case BitBtnLayout of
