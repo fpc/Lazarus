@@ -429,6 +429,11 @@ var
 begin
   with ANotebook do
   begin
+    // other widgetsets allocates handles because they really need this
+    // but on windows page handle is differ from tab and thus allocation can be
+    // postponed, but this cause problems with event handling like bug #0012434
+    // so to overcome such problems we need to allocate this handle
+    AChild.HandleNeeded;
     if ShowTabs then
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
