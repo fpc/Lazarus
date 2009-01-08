@@ -231,7 +231,8 @@ type
   {$IFDEF SYN_LAZARUS}
   TSynEditorOption2 = (
     eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
-    eoAlwaysVisibleCaret       // Move caret to be always visible when scrolling
+    eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
+    eoEnhanceEndKey            // end key jumps to visual/hard line end whichever is nearer
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
   {$ENDIF}
@@ -456,6 +457,7 @@ type
     procedure DoBlockIndent;
     procedure DoBlockUnindent;
     procedure DoHomeKey(Selection: boolean);
+    procedure DoEndKey(Selection: boolean);
     procedure DoLinesDeleted(FirstLine, Count: integer);
     procedure DoLinesInserted(FirstLine, Count: integer);
     procedure DoTabKey;
@@ -6557,7 +6559,6 @@ begin
         begin
           MoveCaretHorz(CharsInWindow, Command = ecSelPageRight);
         end;
-{begin}                                                                         //mh 2000-10-19
       ecLineStart, ecSelLineStart:
         DoHomeKey(Command=ecSelLineStart);
         {begin
@@ -6566,18 +6567,7 @@ begin
           fLastCaretX := CaretX;
         end;}
       ecLineEnd, ecSelLineEnd:
-        begin
-          {$IFDEF SYN_LAZARUS}
-          MoveCaretAndSelectionPhysical(CaretXY,
-             LogicalToPhysicalPos(Point(1 + Length(LineText), CaretY)),
-             Command = ecSelLineEnd);
-          {$ELSE}
-          MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
-             Command = ecSelLineEnd);
-          {$ENDIF}
-          fLastCaretX := CaretX;
-        end;
-{end}                                                                           //mh 2000-10-19
+        DoEndKey(Command=ecSelLineEnd);
 // vertical caret movement or selection
       ecUp, ecSelUp:
         begin
@@ -9141,6 +9131,53 @@ begin
     if (eoEnhanceHomeKey in fOptions) and (OldPos.X>1) and (OldPos.X<=NewPos.X)
     then begin
       NewPos.X:=1;
+    end;
+  end;
+
+  MoveCaretAndSelection(OldPos, NewPos, Selection);
+end;
+
+procedure TCustomSynEdit.DoEndKey(Selection: boolean);
+// jump to start of line (x=1),
+// or if already there, jump to first non blank char
+// or if blank line, jump to line indent position
+// if eoEnhanceHomeKey and behind alternative point then jump first
+var
+  s: string;
+  LastNonBlank: Integer;
+  LineEnd: LongInt;
+  OldPos: TPoint;
+  NewPos: TPoint;
+begin
+  OldPos := LogicalCaretXY;
+  NewPos := OldPos;
+  s := LineText;
+
+  if not (eoEnhanceEndKey in fOptions2) and (CaretX <> Length(s)+1) then begin
+    // not at end of real line -> jump to end of line
+    NewPos.X := Length(s)+1;
+  end else begin
+    // calculate line end position
+    LastNonBlank := -1;
+    if s <> '' then begin
+      // search first non blank char pos
+      LastNonBlank := Length(s);
+      while (LastNonBlank > 0) and (s[LastNonBlank] in [#32, #9]) do
+        dec(LastNonBlank);
+    end;
+    if LastNonBlank >=1 then begin
+      // this line is not blank
+      LineEnd := LastNonBlank + 1;
+    end else begin
+      // this line is blank
+      // -> use automatic line indent
+      LineEnd := GetLineIndentProposal(CaretY,true);
+    end;
+
+    NewPos.X:=LineEnd;
+    if (eoEnhanceEndKey in fOptions2) and (OldPos.X <> Length(s)+1) and (OldPos.X >= NewPos.X)
+    then begin
+      NewPos.X := Length(s)+1;
     end;
   end;
 

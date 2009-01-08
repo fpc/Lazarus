@@ -1467,6 +1467,8 @@ begin
           SynEditOptName := 'CaretSkipsSelection';
         eoAlwaysVisibleCaret:
           SynEditOptName := 'AlwaysVisibleCaret';
+        eoEnhanceEndKey:
+          SynEditOptName := 'EnhanceEndKey';
         else
           SynEditOptName := '';
       end;
@@ -1638,6 +1640,8 @@ begin
           SynEditOptName := 'CaretSkipsSelection';
         eoAlwaysVisibleCaret:
           SynEditOptName := 'AlwaysVisibleCaret';
+        eoEnhanceEndKey:
+          SynEditOptName := 'EnhanceEndKey';
         else
           SynEditOptName := '';
       end;

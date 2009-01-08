@@ -42,6 +42,7 @@ type
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
+    EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
     AlwaysVisibleCursorCheckBox: TCheckBox;
@@ -80,6 +81,7 @@ type
     procedure DragDropEdCheckBoxChange(Sender: TObject);
     procedure DropFilesCheckBoxChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
+    procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure GroupUndoCheckBoxChange(Sender: TObject);
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
     procedure HomeKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
@@ -159,6 +161,7 @@ begin
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
   RightMouseMovesCursorCheckBox.Caption := dlgRightMouseMovesCursor;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
+  EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -200,6 +203,7 @@ begin
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
     RightMouseMovesCursorCheckBox.Checked := eoRightMouseMovesCursor in SynEditOptions;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
+    EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -279,6 +283,7 @@ begin
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
     UpdateOptionFromBool(RightMouseMovesCursorCheckBox.Checked, eoRightMouseMovesCursor);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
+    UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
   end;
 end;
 
@@ -384,6 +389,12 @@ begin
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].TabWidth := NewVal;
   end
+end;
+
+procedure TEditorGeneralOptionsFrame.EndKeyJumpsToNearestStartCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
 end;
 
 procedure TEditorGeneralOptionsFrame.GroupUndoCheckBoxChange(Sender: TObject);
