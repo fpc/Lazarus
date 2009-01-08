@@ -38,11 +38,6 @@ begin
     inherited;
 end;
 
-procedure TBevel.Invalidate;
-begin
-  if Canvas.HandleAllocated then Paint;
-end;
-
 function TBevel.GetStyle:TBevelStyle;
 begin
   Result:=FStyle;

@@ -655,12 +655,11 @@ type
     function GetShape:TBevelShape;
     procedure SetShape(aShape:TBevelShape);
   protected
-    procedure Paint; Override;
+    procedure Paint; override;
   public
     constructor Create(AOwner:TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure Invalidate; override;
   published
     property Align;
     property Anchors;
