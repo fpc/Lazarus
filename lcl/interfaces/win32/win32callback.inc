@@ -275,8 +275,6 @@ var
       Flags := SW_HIDE;
     Windows.ShowWindow(PageHandle, Flags);
     Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
-    if Showing then
-      NotebookFocusNewControl(Notebook, PageIndex);
     Result := PageIndex;
   end;
 
@@ -2447,6 +2445,8 @@ begin
           TCN_SELCHANGING:
             if LMNotify.Result = 0 then
               ShowHideTabPage(HWndFrom, False);
+          TCN_SELCHANGE:
+            NotebookFocusNewControl(GetWindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
         end;
     end;
 

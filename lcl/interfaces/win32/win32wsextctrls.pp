@@ -229,6 +229,7 @@ var
   ControlList: TFPList;
   lWinControl: TWinControl;
   I: integer;
+  FocusSet: Boolean;
 begin
   { see if currently focused control is within notebook }
   if not IsNotebookGroupFocused(ANotebook) then exit;
@@ -239,16 +240,20 @@ begin
   try
     Page.GetTabOrderList(ControlList);
     I := 0;
+    FocusSet := False;
     while I < ControlList.Count do
     begin
       lWinControl := TWinControl(ControlList[I]);
       if lWinControl.TabStop and lWinControl.Enabled and lWinControl.CanFocus then
       begin
         lWinControl.SetFocus;
+        FocusSet := True;
         break;
       end;
       Inc(I);
     end;
+    if not FocusSet then
+      Page.SetFocus;
   finally
     ControlList.Free;
   end;
