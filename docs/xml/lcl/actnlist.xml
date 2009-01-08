@@ -1349,7 +1349,8 @@ executed at this point in time.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetEnabled">
-        <short/>
+        <short>
+          <var>SetEnabled</var> - specifies the value of the <var>Enabled</var> property: True or False</short>
         <descr/>
         <errors/>
         <seealso/>

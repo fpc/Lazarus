@@ -3287,8 +3287,8 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.InvalidateCell">
-	      <short>
-		      <var>InvalidateCell</var> - render a cell non-valid, and redraw if required</short>
+        <short>
+          <var>InvalidateCell</var> - render a cell non-valid, and redraw if required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4435,9 +4435,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EndUpdate">
-	      <short>
-		      <var>EndUpdate</var> - Finish updating the grid</short>
-
+        <short>
+          <var>EndUpdate</var> - Finish updating the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4532,7 +4531,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.MouseToCell">
-	      <short>Convert mouse coordinates to the position of a cell in the grid</short>
+        <short>Convert mouse coordinates to the position of a cell in the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7435,7 +7434,7 @@ Segunda linea de texto</descr>
       <!-- procedure Visibility: protected -->
       <element name="TGridColumn.AllColumnsChange">
         <short>
-          <var>AllColumnsChange</var> - method for processing a change in al columns</short>
+          <var>AllColumnsChange</var> - method for processing a change in all columns</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12805,6 +12804,14 @@ Segunda linea de texto</descr>
           <var>OnSetCheckboxState</var> - event handler for specifying checkbox state</short>
       </element>
       <element name="TCustomStringGrid.GetCheckBoxState" link="#LCL.Grids.TCustomDrawGrid.GetCheckBoxState"/>
+      <element name="TGridColumn.GetDefaultValueChecked">
+        <short>
+          <var>GetDefaultValueChecked</var> - returns the default value for a checked column</short>
+      </element>
+      <element name="TGridColumn.GetDefaultValueUnchecked">
+        <short>
+          <var>GetDefaultValueUnchecked</var> - returns the default value for an unchecked column</short>
+      </element>
     </module>
     <!-- Grids -->
   </package>

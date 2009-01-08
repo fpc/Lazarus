@@ -251,7 +251,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMMonthChanged">
-        <short/>
+        <short>
+          <var>LMMonthChanged</var> - LCL Message method for change in Month</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -262,7 +263,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMYearChanged">
-        <short/>
+        <short>
+          <var>LMYearChanged</var> - LCL Message method for change in Year</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -273,7 +275,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMDayChanged">
-        <short/>
+        <short>
+          <var>LMDayChanged</var> - LCL Message method for change in Day</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -558,6 +561,10 @@
       <element name="TCustomCalendar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCalendar.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TCalendar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomCalendar.LMChanged">
+        <short>
+          <var>LMChanged</var> - LCL Message method to deal with changes in the control</short>
+      </element>
     </module>
     <!-- Calendar -->
   </package>

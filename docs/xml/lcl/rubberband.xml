@@ -7,7 +7,8 @@
   ====================================================================
 -->
     <module name="RubberBand">
-      <short/>
+	    <short>
+Describes <var>TRubberBand</var>, for drawing a ring resembling a rubber band around a selection</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">

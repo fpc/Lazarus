@@ -2216,7 +2216,8 @@ customise by choosing various menu items.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPopupMenu.DoClose">
-        <short/>
+        <short>
+          <var>DoClose</var> - perform the <var>Close</var> method</short>
         <descr/>
         <errors/>
         <seealso/>

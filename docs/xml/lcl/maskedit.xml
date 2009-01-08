@@ -546,7 +546,8 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomMaskEdit.SetEditText">
-        <short/>
+        <short>
+          <var>SetEditText</var> - specifies the text to appear in the Edit box</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -719,7 +720,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.KeyPress">
+      <element name="TCustomMaskEdit.KeyPress" link="#LCL.Controls.TWinControl.KeyPress">
         <short/>
         <descr/>
         <errors/>
@@ -764,7 +765,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.MouseUp">
+      <element name="TCustomMaskEdit.MouseUp" link="#LCL.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -787,14 +788,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.DoEnter">
+      <element name="TCustomMaskEdit.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.DoExit">
+      <element name="TCustomMaskEdit.DoExit" link="#LCL.Controls.TWinControl.DoExit">
         <short/>
         <descr/>
         <errors/>
@@ -1423,6 +1424,12 @@ Reads or Writes flag if control is re-sized.
       <element name="TMaskEdit.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TMaskEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TMaskEdit.SpaceChar" link="#LCL.MaskEdit.TCustomMaskEdit.SpaceChar"/>
+      <element name="TCustomMaskEdit.GetText" link="#LCL.Controls.TControl.GetText"/>
+      <element name="TCustomMaskEdit.SetText" link="#LCL.Controls.TControl.SetText"/>
+      <element name="TCustomMaskEdit.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
+      <element name="TCustomMaskEdit.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomMaskEdit.CutToClipBoard" link="#LCL.StdCtrls.TCustomEdit.CutToClipboard"/>
+      <element name="TCustomMaskEdit.PasteFromClipBoard" link="#LCL.StdCtrls.TCustomEdit.PasteFromClipboard"/>
     </module>
     <!-- MaskEdit -->
   </package>
