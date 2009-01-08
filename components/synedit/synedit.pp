@@ -729,7 +729,7 @@ type
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
-    procedure BeginUndoBlock;                                                   //sbs 2000-11-19
+    procedure BeginUndoBlock(aList: TSynEditUndoList = nil);
     procedure BeginUpdate;
     function CaretXPix: Integer;
     function CaretYPix: Integer;
@@ -746,7 +746,7 @@ type
     destructor Destroy; override;
     procedure DoCopyToClipboard(const SText: string);
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    procedure EndUndoBlock;                                                     //sbs 2000-11-19
+    procedure EndUndoBlock(aList: TSynEditUndoList = nil);
     procedure EndUpdate;
     procedure EnsureCursorPosVisible;
 {$IFDEF SYN_COMPILER_4_UP}
@@ -875,7 +875,7 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
-    property RealLines: TStrings read FTheLinesView write SetRealLines; Deprecated; // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property RealLines: TStrings read FTheLinesView write SetRealLines; // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property Lines: TStrings read FLines write SetLines;                        // No uncommited (trailing/trimmable) spaces
     property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
     property Marks: TSynEditMarkList read fMarkList;
@@ -5435,7 +5435,7 @@ begin
   Item := fRedoList.PeekItem;
   if Item <> nil then begin
     {$IFDEF SYN_LAZARUS}
-    fUndoList.BeginBlock;
+    BeginUndoBlock;
     OldChangeNumber := Item.fChangeNumber;
     {$ELSE}
     OldChangeNumber := fUndoList.BlockChangeNumber;
@@ -5452,7 +5452,7 @@ begin
       {$ENDIF}
     finally
       {$IFDEF SYN_LAZARUS}
-      fUndoList.EndBlock;
+      EndUndoBlock;
       {$ELSE}
       fUndoList.BlockChangeNumber := OldChangeNumber;
       {$ENDIF}
@@ -5490,35 +5490,27 @@ begin
     case Item.fChangeReason of
       crInsert, crPaste, crDragDropInsert:
         begin
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos, Item.fChangeStartPos
-            );
+          SetCaretAndSelection(LogicalToPhysicalPos(Item.ChangeStartPos),
+                               Item.ChangeStartPos, Item.ChangeStartPos);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          {$IFDEF SYN_LAZARUS}
           CaretXY := LogicalToPhysicalPos(Item.fChangeEndPos);
-          {$ELSE}
-          CaretXY := Item.fChangeEndPos;                                        //mh 2000-10-30
-          {$ENDIF}
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
 {begin}                                                                         //mh 2000-11-20
           if Item.fChangeReason = crDragDropInsert then begin
-            SetCaretAndSelection(
-              {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-              Item.fChangeStartPos, Item.fChangeEndPos);
+            SetCaretAndSelection(PhysStartPos,
+                                 Item.fChangeStartPos, Item.fChangeEndPos);
           end;
 {end}                                                                           //mh 2000-11-20
         end;
       crDeleteAfterCursor, crSilentDeleteAfterCursor:                           //mh 2000-10-30
         begin
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos,{$IFDEF SYN_LAZARUS}Item.fChangeEndPos{$ELSE}Item.fChangeStartPos{$ENDIF}
-            );
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
+          SetCaretAndSelection(PhysStartPos,
+                               Item.fChangeStartPos, Item.fChangeEndPos);
+          TempString := GetSelText;
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
+          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
+            Item.fChangeEndPos, TempString, Item.fChangeSelMode);
           {$IFDEF SYN_LAZARUS}
           CaretXY := LogicalToPhysicalPos(Item.ChangeStartPos);
           {$ELSE}
@@ -5531,9 +5523,10 @@ begin
             {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
             Item.fChangeStartPos, {$IFDEF SYN_LAZARUS}Item.fChangeEndPos{$ELSE}Item.fChangeStartPos{$ENDIF}
             );
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
+          TempString := GetSelText;;
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
+          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
+            Item.fChangeEndPos, TempString, Item.fChangeSelMode);
           {$IFDEF SYN_LAZARUS}
           CaretXY := PhysStartPos;
           {$ELSE}
@@ -5555,6 +5548,11 @@ begin
       {$IFDEF SYN_LAZARUS}
       crTrimSpace: FTrimmedLinesView.ForceTrim;
       {$ENDIF}
+      crTrimRealSpace:
+        begin
+          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
+            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
+        end;
       crLineBreak:
 {begin}                                                                         //sbs 2000-11-20
 //        CommandProcessor(ecLineBreak, #13, nil);
@@ -5670,7 +5668,7 @@ begin
   Item := fUndoList.PeekItem;
   if Item <> nil then begin
     {$IFDEF SYN_LAZARUS}
-    fRedoList.BeginBlock;
+    BeginUndoBlock(fRedoList);
     OldChangeNumber := Item.fChangeNumber;
     {$ELSE}
     OldChangeNumber := fRedoList.BlockChangeNumber;
@@ -5691,7 +5689,7 @@ begin
       FTrimmedLinesView.ForceTrim;
       fUndoList.UnLock;
       {$IFDEF SYN_LAZARUS}
-      fRedoList.EndBlock;
+      EndUndoBlock(fRedoList);
       {$ELSE}
       fRedoList.BlockChangeNumber := OldChangeNumber;
       {$ENDIF}
@@ -5781,7 +5779,11 @@ begin
           FTrimmedLinesView.UndoTrimmedSpaces := False;
         end;
       crTrimRealSpace:
-        FTrimmedLinesView.UndoRealSpaces(Item);
+        begin
+          FTrimmedLinesView.UndoRealSpaces(Item);
+          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
+            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
+        end;
       crLineBreak:
         begin
           // If there's no selection, we have to set
@@ -6893,6 +6895,7 @@ begin
               if CaretY < FTheLinesView.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 FTheLinesView[CaretY - 1] := Temp + Helper + FTheLinesView[CaretY];
+                FTheLinesView.Delete(CaretY);
                 if helper <> '' then begin
                   Caret := Point(Len+1, CaretY); // logical
                   fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
@@ -6900,7 +6903,6 @@ begin
                 end;
                 Caret := Point(1, CaretY + 1);
                 Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
-                FTheLinesView.Delete(CaretY);
                 DoLinesDeleted(CaretY - 1, 1);
               end;
             end;
@@ -6915,9 +6917,12 @@ begin
         if not ReadOnly then begin
           Len := LogicalToPhysicalCol(LineText,Length(LineText)+1)-1;
           Helper := '';
+          Caret := CaretXY;
           if Command = ecDeleteWord then begin
-            if CaretX > Len + 1 then
+            if CaretX > Len + 1 then begin
               Helper := StringOfChar(' ', CaretX - 1 - Len);
+              Caret.X := Caret.X - (CaretX - 1 - Len);
+            end;
             WP := NextWordPos{$IFDEF SYN_LAZARUS}(True){$ENDIF};
           end else
             WP := Point(Len + 1, CaretY);
@@ -7016,6 +7021,7 @@ begin
               // break line in two
               SpaceCount1 := LeftSpaces(copy(Temp, 1, LogCaretXY.X-1));
               Temp := Copy(LineText, 1, LogCaretXY.X - 1);
+              LineText := LineText; // TrimRealSpaces
               FTheLinesView.Insert(CaretY - 1, Temp);
               Delete(Temp2, 1, LogCaretXY.X - 1);
               if Assigned(Beautifier) then
@@ -7028,8 +7034,8 @@ begin
                 CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
             end else begin
               // move the whole line
+              LineText := LineText; // TrimRealSpaces
               FTheLinesView.Insert(CaretY - 1, '');
-              FTheLinesView[CaretY] := FTheLinesView[CaretY]; // trigger trim spaces
               fUndoList.AddChange(crLineBreak,
                 LogCaretXY, LogCaretXY,
                 Temp2, smNormal);
@@ -7041,7 +7047,7 @@ begin
             if FTheLinesView.Count = 0 then
               FTheLinesView.Add('');
             // linebreak after end of line
-            FTheLinesView[CaretY-1] := FTheLinesView[CaretY-1]; // trigger trim spaces
+            LineText := LineText; // TrimRealSpaces
             fUndoList.AddChange(crLineBreak,
               LogCaretXY, LogCaretXY,
               '', smNormal);
@@ -7710,14 +7716,13 @@ begin
 end;
 
 {begin}                                                                         //sbs 2000-11-19
-procedure TCustomSynEdit.BeginUndoBlock;
+procedure TCustomSynEdit.BeginUndoBlock(aList: TSynEditUndoList = nil);
 begin
-  fUndoList.BeginBlock;
-  {$IFDEF SYN_LAZARUS}
+  if aList = nil then aList := fUndoList;
+  aList.BeginBlock;
   IncPaintLock;
   FFoldedLinesView.Lock;
   FTrimmedLinesView.Lock;
-  {$ENDIF}
 end;
 {end}                                                                           //sbs 2000-11-19
 
@@ -7727,9 +7732,9 @@ begin
 end;
 
 {begin}                                                                         //sbs 2000-11-19
-procedure TCustomSynEdit.EndUndoBlock;
+procedure TCustomSynEdit.EndUndoBlock(aList: TSynEditUndoList = nil);
 begin
-  {$IFDEF SYN_LAZARUS}
+  if aList = nil then aList := fUndoList;
   // Write all trimming info to the end of the undo block,
   // so it will be undone first, and other UndoItems do see the expected spaces
   FTrimmedLinesView.UnLock;
@@ -7737,8 +7742,7 @@ begin
    // must be last => May call MoveCaretToVisibleArea, which must only happen
    // after unfold
   DecPaintLock;
-  {$ENDIF}
-  fUndoList.EndBlock;
+  aList.EndBlock;
 end;
 {end}                                                                           //sbs 2000-11-19
 

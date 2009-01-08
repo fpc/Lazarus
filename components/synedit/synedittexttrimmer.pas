@@ -112,6 +112,7 @@ procedure TSynEditStringTrimmingList.DoCaretChanged(Sender : TObject);
 var
   s: String;
 begin
+  if (not fEnabled) then exit;
   if (fLineIndex = TSynEditCaret(Sender).LinePos - 1) then exit;
   if (length(fSpaces) > 0) and (fLineIndex > 0)
   and (fLineIndex <= fSynStrings.Count)
@@ -131,6 +132,9 @@ begin
   fEnabled:=AValue;
   fLockList.Clear;
   fLockCount:=0;
+  FSpaces := '';
+  FLineIndex := -1;
+  FLockList.Clear;
   if fEnabled and (fLineIndex >= 0) and (fLineIndex < fSynStrings.Count) then
     fSynStrings[fLineIndex] := TrimLine(fSynStrings[fLineIndex], fLineIndex);
 end;
@@ -139,6 +143,7 @@ procedure TSynEditStringTrimmingList.UndoRealSpaces(Item: TSynEditUndoItem);
 var
   i: Integer;
 begin
+  if (not fEnabled) then exit;
   if length(fSynStrings.Strings[Item.fChangeStartPos.y-1]) + 1 <> Item.fChangeStartPos.x then
     exit;
   fSynStrings.Strings[Item.fChangeStartPos.y-1]
@@ -156,30 +161,25 @@ var
   temp: String;
 begin
   if (not fEnabled) then exit(s);
-  If (fUndoList.IsLocked and not UndoTrimmedSpaces) then begin
-    result := s;
-    temp := '';
-  end else begin
-    if RealUndo then begin
-      temp := fSynStrings.Strings[Index];
-      l := length(temp);
-      i:= l;
-      while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
-      // Add RealSpaceUndo
-      if i < l then
-        fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
-                            Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
-    end;
-
-    l := length(s);
-    i := l;
-    while (i>0) and (s[i] in [#9, ' ']) do dec(i);
-    temp := copy(s, i+1, l-i);
-    if i=l then
-      result := s   // No need to make a copy
-    else
-      result := copy(s, 1, i);
+  if RealUndo then begin
+    temp := fSynStrings.Strings[Index];
+    l := length(temp);
+    i:= l;
+    while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
+    // Add RealSpaceUndo
+    if i < l then
+      fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
+                          Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
   end;
+
+  l := length(s);
+  i := l;
+  while (i>0) and (s[i] in [#9, ' ']) do dec(i);
+  temp := copy(s, i+1, l-i);
+  if i=l then
+    result := s   // No need to make a copy
+  else
+    result := copy(s, 1, i);
 
   if fLockCount > 0 then begin
     i := fLockList.IndexOfObject(TObject(pointer(Index)));
@@ -198,6 +198,7 @@ function TSynEditStringTrimmingList.Spaces(Index : Integer) : String;
 var
   i : Integer;
 begin
+  if (not fEnabled) then exit('');
   if fLockCount > 0 then begin
     i := fLockList.IndexOfObject(TObject(Pointer(Index)));
     if i < 0 then
@@ -219,6 +220,7 @@ procedure TSynEditStringTrimmingList.DoLinesChanged(Index, N : integer);
 var
   i, j: Integer;
 begin
+  if (not fEnabled) then exit;
   if  fLockCount > 0 then begin
     for i := fLockList.Count-1 downto 0 do begin
       j := Integer(Pointer(fLockList.Objects[i]));
@@ -237,7 +239,7 @@ end;
 
 procedure TSynEditStringTrimmingList.Lock;
 begin
-  if (fLockCount = 0) and (fLineIndex >= 0) then
+  if (fLockCount = 0) and (fLineIndex >= 0) and Enabled then
     fLockList.AddObject(Spaces(fLineIndex), TObject(Pointer(fLineIndex)));
   inc(fLockCount);
 end;
@@ -253,6 +255,7 @@ var
   i, index, llen, slen: Integer;
   ltext: String;
 begin
+  if (not fEnabled) then exit;
   i := fLockList.IndexOfObject(TObject(Pointer(fLineIndex)));
   if i >= 0 then begin
     fSpaces:= fLockList[i];
@@ -344,12 +347,17 @@ end;
 
 procedure TSynEditStringTrimmingList.Delete(Index : integer);
 begin
+  TrimLine('', Index, True);
   fSynStrings.Delete(Index);
   DoLinesChanged(Index, -1);
 end;
 
 procedure TSynEditStringTrimmingList.DeleteLines(Index, NumLines : integer);
+var
+  i: Integer;
 begin
+  for i := 0 to NumLines-1 do
+    TrimLine('', Index+i, True);
   fSynStrings.DeleteLines(Index, NumLines);
   DoLinesChanged(Index, -NumLines);
 end;

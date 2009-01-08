@@ -748,6 +748,8 @@ begin
     BB := FirstLineBytePos;
     BE := LastLineBytePos;
     if SelAvail then begin
+      // todo: better move add-undo past actual delete
+      FLines[BB.Y - 1] := FLines[BB.Y - 1]; // TrimRealSpaces (in case of smNormal or smLine
       if AddToUndoList then begin
         if ChangeReason in [crSilentDelete, crSilentDeleteAfterCursor] then begin
           if IsBackwardSel then
