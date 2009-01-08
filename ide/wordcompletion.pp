@@ -13,7 +13,7 @@
  *****************************************************************************
 
   Abstract:
-    A wordcompletion stores words and can createe a list of words gathered
+    A wordcompletion stores words and can createse a list of words gathered
     from the recently added words and provided source texts.
  
 }

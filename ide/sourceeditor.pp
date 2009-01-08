@@ -1545,7 +1545,7 @@ Begin
       else begin
         while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
           dec(i);
-        TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
+        TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
       end;
       with TCustomSynEdit(Sender) do begin
         P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
