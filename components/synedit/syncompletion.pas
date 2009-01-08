@@ -776,16 +776,28 @@ end;
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   //debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
-  if UTF8Key=#8 then begin
+  if UTF8Key=#8 then
+  begin
     // backspace
-  end else begin
-    if (length(UTF8Key)>=1)
-    and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then begin
+  end else
+  begin
+    if (Length(UTF8Key)>=1) and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then
+    begin
       // non identifier character
+
+      // if it is special key then eat it
+      if (Length(UTF8Key) = 1) and (UTF8Key[1] < #32) then
+      begin
+        if Assigned(OnCancel) then
+          OnCancel(Self);
+      end
+      else
       if Assigned(OnValidate) then
-        OnValidate(Self,UTF8Key,[]);
-      UTF8Key:='';
-    end else if (UTF8Key<>'') then begin
+        OnValidate(Self, UTF8Key, []);
+      UTF8Key := '';
+    end else
+    if (UTF8Key<>'') then
+    begin
       // identifier character
       CurrentString := CurrentString + UTF8Key;
       if Assigned(OnUTF8KeyPress) then
