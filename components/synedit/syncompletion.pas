@@ -65,6 +65,7 @@ type
   {$ENDIF}
   TCodeCompletionEvent = procedure(var Value: string;
                                    {$IFDEF SYN_LAZARUS}
+                                   SourceValue: string;
                                    KeyChar: TUTF8Char;
                                    {$ENDIF}
                                    Shift: TShiftState) of object;
@@ -1344,9 +1345,10 @@ begin
       {$ENDIF}
       //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
       if Position>=0 then begin
-        if Assigned(FOnCodeCompletion) then begin
+        if Assigned(FOnCodeCompletion) then
+        begin
           Value := ItemList[Position];
-          FOnCodeCompletion(Value,{$IFDEF SYN_LAZARUS}KeyChar{$ENDIF}, Shift);
+          FOnCodeCompletion(Value,{$IFDEF SYN_LAZARUS}SelText, KeyChar{$ENDIF}, Shift);
           SelText := Value;
         end else
           SelText := ItemList[Position];

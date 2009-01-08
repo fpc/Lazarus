@@ -553,7 +553,7 @@ type
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
-    procedure ccComplete(var Value: ansistring; KeyChar: TUTF8Char;
+    procedure ccComplete(var Value: string; SourceValue: string; KeyChar: TUTF8Char;
                          Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
                  X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
@@ -3594,7 +3594,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.ccComplete(var Value: ansistring; KeyChar: TUTF8Char;
+procedure TSourceNotebook.ccComplete(var Value: string; SourceValue: string; KeyChar: TUTF8Char;
   Shift: TShiftState);
 // completion selected -> deactivate completion form
 // Called when user has selected a completion item
@@ -3635,8 +3635,9 @@ var
   Editor: TSynEdit;
   OldCompletionType: TCompletionType;
 Begin
-  if CurCompletionControl=nil then begin
-    Value:='';
+  if CurCompletionControl=nil then 
+  begin
+    Value := SourceValue;
     exit;
   end;
   OldCompletionType:=CurrentCompletionType;
