@@ -896,6 +896,7 @@ procedure TSynEditSelection.SetSelectionMode(const AValue: TSynSelectionMode);
 begin
   FSelectionMode := AValue;
   SetActiveSelectionMode(AValue);
+  fOnChangeList.CallNotifyEvents(self);
 end;
 
 procedure TSynEditSelection.SetActiveSelectionMode(const Value: TSynSelectionMode);

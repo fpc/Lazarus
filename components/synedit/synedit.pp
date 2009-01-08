@@ -1470,6 +1470,7 @@ begin
 {$IFDEF SYN_LAZARUS}
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
+  fMarkupHighCaret.Selection := FBlockSelection;
   fMarkupHighAll   := TSynEditMarkupHighlightAll.Create(self);
   fMarkupBracket   := TSynEditMarkupBracket.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);

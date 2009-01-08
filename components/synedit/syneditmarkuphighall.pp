@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter;
+  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses;
 
 type
 
@@ -135,13 +135,16 @@ type
     FFullWord: Boolean;
     FFullWordMaxLen: Integer;
     FIgnoreKeywords: Boolean;
+    FSelection: TSynEditSelection;
     FHighlighter: TSynCustomHighlighter;
     procedure SetFullWord(const AValue: Boolean);
     procedure SetFullWordMaxLen(const AValue: Integer);
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
     procedure SetIgnoreKeywords(const AValue: Boolean);
+    procedure SetSelection(const AValue: TSynEditSelection);
     procedure SetWaitTime(const AValue: Integer);
   protected
+    procedure SelectionChanged(Sender: TObject);
     procedure DoCaretChanged(OldCaret : TPoint); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
@@ -158,6 +161,7 @@ type
     property  IgnoreKeywords: Boolean read FIgnoreKeywords write SetIgnoreKeywords;
     property  Highlighter: TSynCustomHighlighter
       read FHighlighter write SetHighlighter;
+    property  Selection: TSynEditSelection write SetSelection;
   end;
 
 implementation
@@ -546,6 +550,14 @@ begin
   RestartTimer;
 end;
 
+procedure TSynEditMarkupHighlightAllCaret.SelectionChanged(Sender: TObject);
+begin
+  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+    exit;
+  SearchString := '';
+  RestartTimer;
+end;
+
 procedure TSynEditMarkupHighlightAllCaret.SetFullWord(const AValue: Boolean);
 begin
   if FFullWord = AValue then exit;
@@ -572,6 +584,15 @@ begin
   if FIgnoreKeywords = AValue then exit;
   FIgnoreKeywords := AValue;
   ScrollTimerHandler(self);
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.SetSelection(const AValue: TSynEditSelection);
+begin
+  if Assigned(FSelection) then
+    FSelection.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
+  FSelection := AValue;
+  if Assigned(FSelection) then
+    FSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
@@ -603,6 +624,7 @@ end;
 
 procedure TSynEditMarkupHighlightAllCaret.ScrollTimerHandler(Sender: TObject);
 begin
+  FTimer.Enabled := False;
   if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
     exit;
   SearchString := ''; // prevent double update
@@ -649,6 +671,8 @@ end;
 
 destructor TSynEditMarkupHighlightAllCaret.Destroy;
 begin
+  if Assigned(FSelection) then
+    FSelection.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
   FreeAndNil(FTimer);
   inherited Destroy;
 end;
