@@ -1497,6 +1497,17 @@ type
     );
   TControlAtPosFlags = set of TControlAtPosFlag;
 
+  // needed for VCL compatebility on custom aligning
+  TAlignInfo = record
+    AlignList: TFPList;    // The list of controls currently being aligned
+    ControlIndex: Integer; // Index of current control
+    Align: TAlign;         // The kind of alignment currently processed
+                           // since this info is only used for custom aligning,
+                           // the value is always alCustom
+    Scratch: Integer;      // ??? Declared in the VCL, not used and not documented
+  end;
+
+
   TWinControl = class(TControl)
   private
     FBorderWidth: TBorderWidth;
@@ -1568,6 +1579,10 @@ type
                                     AlignList: TFPList; StartControl: TControl);
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
+    function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; virtual;
+    procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop, ANewWidth,
+                                  ANewHeight: Integer; var AlignRect: TRect;
+                                  AlignInfo: TAlignInfo); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;

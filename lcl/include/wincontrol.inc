@@ -2135,29 +2135,37 @@ end;
 procedure TWinControl.CreateControlAlignList(TheAlign: TAlign;
   AlignList: TFPList; StartControl: TControl);
 
-  function InsertBefore(Control1, Control2: TControl;
-    AAlign: TAlign): Boolean;
+  function InsertBefore(Control1, Control2: TControl; AAlign: TAlign): Boolean;
   begin
-    Result := False;
     case AAlign of
-      alTop:
+      alTop: begin
         Result := (Control1.Top < Control2.Top)
-             or ((Control1.Top = Control2.Top)
-                 and (Control1.FBaseBounds.Top<Control2.FBaseBounds.Top));
-      alLeft: Result := (Control1.Left < Control2.Left)
-                 or ((Control1.Left = Control2.Left)
-                     and (Control1.FBaseBounds.Left<Control2.FBaseBounds.Left));
+               or ( (Control1.Top = Control2.Top)
+                and (Control1.FBaseBounds.Top<Control2.FBaseBounds.Top));
+      end;
+      alLeft: begin
+        Result := (Control1.Left < Control2.Left)
+               or ( (Control1.Left = Control2.Left)
+                and (Control1.FBaseBounds.Left<Control2.FBaseBounds.Left));
+      end;
       // contrary to VCL, LCL uses > for alBottom, alRight
       // Maybe it is a bug in the VCL.
       // This results in first control is put rightmost/bottommost
-      alBottom: Result :=
-          ((Control1.Top + Control1.Height) > (Control2.Top + Control2.Height))
-           or (((Control1.Top + Control1.Height) = (Control2.Top + Control2.Height))
-             and (Control1.FBaseBounds.Bottom > Control2.FBaseBounds.Bottom));
-      alRight: Result :=
-          ((Control1.Left + Control1.Width) > (Control2.Left + Control2.Width))
-           or (((Control1.Left + Control1.Width) = (Control2.Left + Control2.Width))
-             and (Control1.FBaseBounds.Right > Control2.FBaseBounds.Right));
+      alBottom: begin
+        Result := ((Control1.Top + Control1.Height) > (Control2.Top + Control2.Height))
+               or ( ((Control1.Top + Control1.Height) = (Control2.Top + Control2.Height))
+                and (Control1.FBaseBounds.Bottom > Control2.FBaseBounds.Bottom));
+      end;
+      alRight: begin
+        Result := ((Control1.Left + Control1.Width) > (Control2.Left + Control2.Width))
+               or ( ((Control1.Left + Control1.Width) = (Control2.Left + Control2.Width))
+                and (Control1.FBaseBounds.Right > Control2.FBaseBounds.Right));
+      end;
+      alCustom: begin
+        Result := CustomAlignInsertBefore(Control1, Control2);
+      end;
+    else
+      Result := False;
     end;
   end;
 
@@ -2249,7 +2257,7 @@ var
         and (AControl.AnchorSide[akTop].Control=nil);
   end;
 
-  procedure DoPosition(Control: TControl; AAlign: TAlign);
+  procedure DoPosition(Control: TControl; AAlign: TAlign; AControlIndex: Integer);
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
     ParentBaseClientSize: TPoint;
@@ -2274,6 +2282,8 @@ var
     OldBounds: TRect;
     NewBounds: TRect;
     r: TRect;
+
+    AlignInfo: TAlignInfo; // alCustom
 
     function ConstraintWidth(NewWidth: integer): Integer;
     begin
@@ -2414,7 +2424,8 @@ var
       2. If AnchorSide[].Control is set, the BorderSpace properties defines the
       distance to another sibling (i.e. AnchorSide[].Control).
     }
-    if (AAlign = alNone) or (Control.Anchors <> CurAlignAnchors) then begin
+    if (AAlign = alNone) or (Control.Anchors <> CurAlignAnchors)
+    then begin
       // at least one side is anchored without align
     
       // Get the base bounds. The base bounds are the user defined bounds
@@ -2540,106 +2551,135 @@ var
     if NewWidth<0 then NewWidth:=0;
     if NewHeight<0 then NewHeight:=0;
 
-    if AAlign in [alLeft,alTop,alRight,alBottom,alClient] then begin
-      { Realign
+    case AAlign of
+      alLeft,alTop,alRight,alBottom,alClient: begin
+        { Realign
 
-        Use Align to align a control to the top, bottom, left, right of a
-        form or panel and have it remain there even if the size of the form,
-        panel, or component that contains the control changes. When the parent
-        is resized, an aligned control also resizes so that it continues to span
-        the top, bottom, left, or right edge of the parent (more exact:
-        span the remaining client area of its parent).
-      }
-      NewRight:=NewLeft+NewWidth;
-      NewBottom:=NewTop+NewHeight;
+          Use Align to align a control to the top, bottom, left, right of a
+          form or panel and have it remain there even if the size of the form,
+          panel, or component that contains the control changes. When the parent
+          is resized, an aligned control also resizes so that it continues to span
+          the top, bottom, left, or right edge of the parent (more exact:
+          span the remaining client area of its parent).
+        }
+        NewRight:=NewLeft+NewWidth;
+        NewBottom:=NewTop+NewHeight;
 
-      // calculate current RemainingClientRect for the current Control
-      CurRemainingClientRect:=RemainingClientRect;
-      CurRemainingBorderSpace:=RemainingBorderSpace;
-      Control.BorderSpacing.GetSpaceAround(ChildAroundSpace);
-      AdjustBorderSpace(CurRemainingClientRect,CurRemainingBorderSpace,
-                        ChildAroundSpace);
-      {$IFDEF CHECK_POSITION}
-      if CheckPosition(Control) then
-        DebugLn('DoPosition Before aligning ',dbgsName(Control),' akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
-                ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
-                //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
-                ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
-      {$ENDIF}
-      if akLeft in AnchorAlign[AAlign] then begin
-        if (akRight in CurAnchors) then begin
-          // left align and keep right border
-          NewLeft:=CurRemainingClientRect.Left;
-          NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
-        end else begin
-          // left align and right border free to move (-> keep width)
-          dec(NewRight,NewLeft-CurRemainingClientRect.Left);
-          NewLeft:=CurRemainingClientRect.Left;
+        // calculate current RemainingClientRect for the current Control
+        CurRemainingClientRect:=RemainingClientRect;
+        CurRemainingBorderSpace:=RemainingBorderSpace;
+        Control.BorderSpacing.GetSpaceAround(ChildAroundSpace);
+        AdjustBorderSpace(CurRemainingClientRect,CurRemainingBorderSpace,
+                          ChildAroundSpace);
+        {$IFDEF CHECK_POSITION}
+        if CheckPosition(Control) then
+          DebugLn('DoPosition Before aligning ',dbgsName(Control),' akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
+                  ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
+                  //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
+                  ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
+        {$ENDIF}
+
+        if akLeft in AnchorAlign[AAlign]
+        then begin
+          if (akRight in CurAnchors)
+          then begin
+            // left align and keep right border
+            NewLeft:=CurRemainingClientRect.Left;
+            NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
+          end
+          else begin
+            // left align and right border free to move (-> keep width)
+            dec(NewRight,NewLeft-CurRemainingClientRect.Left);
+            NewLeft:=CurRemainingClientRect.Left;
+          end;
         end;
-      end;
-      if akTop in AnchorAlign[AAlign] then begin
-        if (akBottom in CurAnchors) then begin
-          // top align and keep bottom border
-          NewTop:=CurRemainingClientRect.Top;
-          NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
-        end else begin
-          // top align and bottom border is free to move (-> keep height)
-          dec(NewBottom,NewTop-CurRemainingClientRect.Top);
-          NewTop:=CurRemainingClientRect.Top;
+
+        if akTop in AnchorAlign[AAlign]
+        then begin
+          if (akBottom in CurAnchors)
+          then begin
+            // top align and keep bottom border
+            NewTop:=CurRemainingClientRect.Top;
+            NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
+          end
+          else begin
+            // top align and bottom border is free to move (-> keep height)
+            dec(NewBottom,NewTop-CurRemainingClientRect.Top);
+            NewTop:=CurRemainingClientRect.Top;
+          end;
         end;
-      end;
-      if akRight in AnchorAlign[AAlign] then begin
-        if (akLeft in CurAnchors) then begin
-          // right align and keep left border
-          NewWidth:=ConstraintWidth(CurRemainingClientRect.Right-NewLeft);
-          if Align=alRight then begin
-            // align to right (this overrides the keeping of left border)
+
+        if akRight in AnchorAlign[AAlign]
+        then begin
+          if (akLeft in CurAnchors)
+          then begin
+            // right align and keep left border
+            NewWidth:=ConstraintWidth(CurRemainingClientRect.Right-NewLeft);
+            if Align=alRight
+            then begin
+              // align to right (this overrides the keeping of left border)
+              NewRight:=CurRemainingClientRect.Right;
+              NewLeft:=NewRight-NewWidth;
+            end
+            else begin
+              // keep left border overrides keeping right border
+              NewRight:=NewLeft+NewWidth;
+            end;
+          end
+          else begin
+            // right align and left border free to move (-> keep width)
+            inc(NewLeft,CurRemainingClientRect.Right-NewRight);
             NewRight:=CurRemainingClientRect.Right;
-            NewLeft:=NewRight-NewWidth;
-          end else begin
-            // keep left border overrides keeping right border
-            NewRight:=NewLeft+NewWidth;
           end;
-        end else begin
-          // right align and left border free to move (-> keep width)
-          inc(NewLeft,CurRemainingClientRect.Right-NewRight);
-          NewRight:=CurRemainingClientRect.Right;
         end;
-      end;
-      if akBottom in AnchorAlign[AAlign] then begin
-        if (akTop in CurAnchors) then begin
-          // bottom align and keep top border
-          NewHeight:=ConstraintHeight(CurRemainingClientRect.Bottom-NewTop);
-          if AAlign=alBottom then begin
-            // align to bottom (this overrides the keeping of top border)
+
+        if akBottom in AnchorAlign[AAlign]
+        then begin
+          if (akTop in CurAnchors)
+          then begin
+            // bottom align and keep top border
+            NewHeight:=ConstraintHeight(CurRemainingClientRect.Bottom-NewTop);
+            if AAlign=alBottom
+            then begin
+              // align to bottom (this overrides the keeping of top border)
+              NewBottom:=CurRemainingClientRect.Bottom;
+              NewTop:=NewBottom-NewHeight;
+            end
+            else begin
+              // keeping top border overrides keeping bottom border
+              NewBottom:=NewTop+NewHeight;
+            end;
+          end
+          else begin
+            // bottom align and top border free to move (-> keep height)
+            inc(NewTop,CurRemainingClientRect.Bottom-NewBottom);
             NewBottom:=CurRemainingClientRect.Bottom;
-            NewTop:=NewBottom-NewHeight;
-          end else begin
-            // keeping top border overrides keeping bottom border
-            NewBottom:=NewTop+NewHeight;
           end;
-        end else begin
-          // bottom align and top border free to move (-> keep height)
-          inc(NewTop,CurRemainingClientRect.Bottom-NewBottom);
-          NewBottom:=CurRemainingClientRect.Bottom;
         end;
+
+        NewWidth:=Max(0,NewRight-NewLeft);
+        NewHeight:=Max(0,NewBottom-NewTop);
+
+        {$IFDEF CHECK_POSITION}
+        //if csDesigning in Control.ComponentState then
+        if CheckPosition(Control) then
+          with Control do
+            DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
+            ' ',Name,':',ClassName,
+            ' Align=',AlignNames[AAlign],
+            ' Control=',Name,':',ClassName,
+            ' Old=',DbgS(Left,Top,Width,Height),
+            ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
+            //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
+            '');
+        {$ENDIF}
       end;
-      NewWidth:=Max(0,NewRight-NewLeft);
-      NewHeight:=Max(0,NewBottom-NewTop);
-      
-      {$IFDEF CHECK_POSITION}
-      //if csDesigning in Control.ComponentState then
-      if CheckPosition(Control) then
-        with Control do
-          DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
-          ' ',Name,':',ClassName,
-          ' Align=',AlignNames[AAlign],
-          ' Control=',Name,':',ClassName,
-          ' Old=',DbgS(Left,Top,Width,Height),
-          ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
-          //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
-          '');
-      {$ENDIF}
+      alCustom: begin
+        AlignInfo.AlignList := AlignList;
+        AlignInfo.Align := alCustom;
+        AlignInfo.ControlIndex := AControlIndex;
+        CustomAlignPosition(Control, NewLeft, NewTop, NewWidth, NewHeight, RemainingClientRect, AlignInfo);
+      end;
     end;
     
     // apply the constraints
@@ -2771,7 +2811,7 @@ var
       end;
     // anchor/align control
     for I := 0 to AlignList.Count - 1 do
-      DoPosition(TControl(AlignList[I]), AAlign);
+      DoPosition(TControl(AlignList[I]), AAlign, I);
   end;
   
   procedure DoAlignNotAligned;
@@ -2887,6 +2927,20 @@ begin
     end;
   end;
 end;
+
+function TWinControl.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
+begin
+  // Default does nothing
+  Result := False;
+end;
+
+procedure TWinControl.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
+  ANewWidth, ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo);
+begin
+  // Default does nothing
+end;
+
+
 
 function TWinControl.DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
   AControlList: TFPList; var ARect: TRect): Boolean;
