@@ -1402,8 +1402,11 @@ procedure TCustomMaskEdit.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  FCursorPos := GetSelStart;
-  if not Hasselection then SetCursorPos;
+  if IsMasked then
+  begin
+    FCursorPos := GetSelStart;
+    if not HasSelection then SetCursorPos;
+  end;
 end;
 
 procedure TCustomMaskEdit.CutToClipBoard;
