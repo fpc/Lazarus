@@ -109,7 +109,7 @@ type
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
   TAnchorSideReference = (asrTop, asrBottom, asrCenter);
-  
+
 const
   asrLeft = asrTop;
   asrRight = asrBottom;
@@ -250,9 +250,9 @@ type
     procedure FreeHandle;override;
     property Control: TControl read FControl write SetControl;
   end;
-  
+
   { Hint stuff }
-  
+
   PHintInfo = ^THintInfo;
   THintInfo = record
     HintControl: TControl;
@@ -348,7 +348,7 @@ type
 
     procedure HideDragImage; virtual;
     procedure ShowDragImage; virtual;
-    
+
     property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
     property AutoCreated: Boolean read FAutoCreated;
     property Control: TControl read FControl write FControl;
@@ -431,7 +431,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;abstract;
   public
     constructor Create(TheOwner: TComponent); override;
-    
+
     function IsDragging: boolean; virtual;abstract;
     function Dragging(AControl: TControl): boolean; virtual;abstract;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;abstract;
@@ -439,11 +439,11 @@ type
     procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer);virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
-    
+
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
   end;
-  
+
 var
   DragManager: TDragManager = nil;// created in initialization
 
@@ -536,7 +536,7 @@ type
 
 
   { TControlBorderSpacing }
-  
+
   { TControlBorderSpacing defines the spacing around a control.
     The spacing around its childs and between its childs is defined in
     TWinControl.ChildSizing.
@@ -558,12 +558,12 @@ type
         For example: A buttons widget returns 75x25 on GetPreferredSize.
         CalculatePreferredSize adds 2 times the InnerBorder to the width and
         height.
-        
+
     CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
         Used for example when the Parents.ChildSizing.Layout defines a table
         layout.
   }
-  
+
   TSpacingSize = 0..MaxInt;
   TControlCellAlign = (
     ccaFill,
@@ -621,8 +621,8 @@ type
     property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
     property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
   end;
-  
-  
+
+
   { TAnchorSide
     Class holding the reference sides of the anchors of a TControl.
     Every TControl has four AnchorSides:
@@ -633,7 +633,7 @@ type
     right side of its parent client area.
     With AnchorSide[akLeft] you can define a different reference side. The
     kept distance is defined by the BorderSpacing and Parent.ChildSizing.
-    
+
     Example1:
        +-----+  +-----+
        |  B  |  |  C  |
@@ -650,14 +650,14 @@ type
 
       Do not setup in both directions, because this will create a circle, and
       circles are not allowed.
-      
+
     Example2:
             +-------+
       +---+ |       |
       | A | |   B   |
       +---+ |       |
             +-------+
-            
+
       Centering A relative to B:
         A.AnchorSide[akTop].Side:=arsCenter;
         A.AnchorSide[akTop].Control:=B;
@@ -754,16 +754,16 @@ type
     );
 
 {* Note on TControl.Caption
- * The VCL implementation relies on the virtual Get/SetTextBuf to 
- * exchange text between widgets and VCL. This means a lot of 
+ * The VCL implementation relies on the virtual Get/SetTextBuf to
+ * exchange text between widgets and VCL. This means a lot of
  * (unnecesary) text copies.
  * The LCL uses strings for exchanging text (more efficient).
  * To maintain VCL compatibility, the virtual RealGet/SetText is
  * introduced. These functions interface with the LCLInterface. The
  * default Get/SetTextbuf implementation calls the RealGet/SetText.
- * As long as the Get/SetTextBuf isn't overridden Get/SetText 
+ * As long as the Get/SetTextBuf isn't overridden Get/SetText
  * calls RealGet/SetText to avoid PChar copying.
- * To keep things optimal, LCL implementations should always 
+ * To keep things optimal, LCL implementations should always
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
  }
@@ -874,7 +874,7 @@ type
     function GetLRDockWidth: Integer;
     function GetMouseCapture: Boolean;
     function GetTBDockHeight: Integer;
-    function GetText: TCaption; 
+    function GetText: TCaption;
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
     function IsAnchorsStored: boolean;
@@ -914,7 +914,7 @@ type
     procedure SetParentFont(Value: Boolean);
     procedure SetPopupMenu(Value: TPopupMenu);
     procedure SetShowHint(Value: Boolean);
-    procedure SetText(const Value: TCaption); 
+    procedure SetText(const Value: TCaption);
     procedure SetTop(Value: Integer);
     procedure SetWidth(Value: Integer);
   protected
@@ -966,7 +966,7 @@ type
     function GetControlOrigin: TPoint; virtual;
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
-    
+
     property AutoSizing: Boolean Read FAutoSizing;
   protected
     // protected messages
@@ -1473,7 +1473,7 @@ type
 
 
   { TWinControl }
-  
+
   TWinControlFlag = (
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
@@ -1487,7 +1487,7 @@ type
     wcfHandleVisible
     );
   TWinControlFlags = set of TWinControlFlag;
-  
+
   TControlAtPosFlag = (
     capfAllowDisabled,   // include controls with Enabled=false
     capfAllowWinControls,// include TWinControls
@@ -1507,6 +1507,10 @@ type
     Scratch: Integer;      // ??? Declared in the VCL, not used and not documented
   end;
 
+  TAlignInsertBeforeEvent = function (Sender: TWinControl; Control1, Control2: TControl): Boolean of object;
+  TAlignPositionEvent = procedure (Sender: TWinControl; Control: TControl;
+                                   var NewLeft, NewTop, NewWidth, NewHeight: Integer;
+                                   var AlignRect: TRect; AlignInfo: TAlignInfo) of object;
 
   TWinControl = class(TControl)
   private
@@ -1525,6 +1529,8 @@ type
     FClientWidth: Integer;
     FClientHeight: Integer;
     FDockManager: TDockManager;
+    FOnAlignInsertBefore: TAlignInsertBeforeEvent;
+    FOnAlignPosition: TAlignPositionEvent;
     FOnDockDrop: TDockDropEvent;
     FOnDockOver: TDockOverEvent;
     FOnGetSiteInfo: TGetSiteInfoEvent;
@@ -1745,6 +1751,8 @@ type
     property IsResizing: Boolean read GetIsResizing;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
     property TabStop: Boolean read FTabStop write SetTabStop default false;
+    property OnAlignInsertBefore: TAlignInsertBeforeEvent read FOnAlignInsertBefore write FOnAlignInsertBefore;
+    property OnAlignPosition: TAlignPositionEvent read FOnAlignPosition write FOnAlignPosition;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
     property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
     property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
@@ -1889,8 +1897,8 @@ type
   protected
     procedure GetPropertyList(List: TStrings); override;
   end;
-  
-  
+
+
   { TDockZone }
 
   TDockTree = class;
@@ -1960,7 +1968,7 @@ type
 
 
   { TDockTree - a tree of TDockZones - Every docked window has one tree
-  
+
     This is an abstract class.
     A real implementation can be found for example in ldocktree.pas.
 
@@ -1971,7 +1979,7 @@ type
     window.
 
     Example1: Docking "A" (source window) left to "B" (target window)
-    
+
        +---+    +----+
        | A | -> | B  |
        +---+    |    |
@@ -1981,7 +1989,7 @@ type
               A splitter will be inserted between "A" and "B".
               And all three are childs of the newly created TLazDockForm of the
               newly created TDockTree.
-      
+
        +------------+
        |+---+|+----+|
        || A ||| B  ||
@@ -1994,16 +2002,16 @@ type
       replaced by docked decorations.
       If "A" had a TDockTree, it is freed and its child dockzones are merged to
       the docktree of "B". Analog for docking "C" left to "A":
-      
+
        +------------------+
        |+---+|+---+|+----+|
        || C ||| A ||| B  ||
        ||   |||   |||    ||
        |+---+|+---+|+----+|
        +------------------+
-       
 
-      
+
+
     Example2: Docking A into B
                 +-----+
        +---+    |     |
@@ -2014,7 +2022,7 @@ type
       Result: A new docktree will be created. "A" will be resized to the size
               of "B". Both will be put into a TLazDockPages control which is the
               child of the newly created TDockTree.
-              
+
        +-------+
        |[B][A] |
        |+-----+|
@@ -2096,7 +2104,7 @@ type
     property DockSite: TWinControl read FDockSite write SetDockSite;
     property RootZone: TDockZone read FRootZone;
   end;
-  
+
 var
   DockSplitterClass: TControlClass = nil;
 
@@ -2223,7 +2231,7 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect);
-  
+
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
@@ -2465,7 +2473,7 @@ end;
 
 {-------------------------------------------------------------------------------
   function DoControlMsg(Handle: hwnd; var Message): Boolean;
-  
+
   Find the owner wincontrol and Perform the Message.
 -------------------------------------------------------------------------------}
 function DoControlMsg(Handle: hwnd; var Message): Boolean;
@@ -2799,7 +2807,7 @@ begin
   if Source is TControlBorderSpacing then begin
     SrcSpacing:=TControlBorderSpacing(Source);
     if IsEqual(SrcSpacing) then exit;
-    
+
     FAround:=SrcSpacing.Around;
     FBottom:=SrcSpacing.Bottom;
     FLeft:=SrcSpacing.Left;
@@ -3101,12 +3109,12 @@ end;
 
 procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
   out ReferenceSide: TAnchorSideReference; out Position: Integer);
-  
+
   procedure RaiseInvalidSide;
   begin
     raise Exception.Create('TAnchorSide.GetSidePosition invalid Side');
   end;
-  
+
   function GetNextCentered(ReferenceControl: TControl; Side: TAnchorKind;
     var NextReferenceSide: TAnchorSide): boolean;
   begin
@@ -3118,7 +3126,7 @@ procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
     end else
       Result:=false;
   end;
-  
+
 var
   NextReferenceSide: TAnchorSide;
   ChainLength: Integer;
@@ -3139,7 +3147,7 @@ begin
   ChainLength:=0;
   MaxChainLength:=OwnerParent.ControlCount;
   while ReferenceControl<>nil do begin
-  
+
     // check for circles
     inc(ChainLength);
     if ChainLength>MaxChainLength then begin
@@ -3148,7 +3156,7 @@ begin
       ReferenceControl:=nil;
       exit;
     end;
-    
+
     // check if ReferenceControl is valid
     if (ReferenceControl.Parent<>OwnerParent)
     and (ReferenceControl<>OwnerParent) then begin
@@ -3157,14 +3165,14 @@ begin
       ReferenceControl:=nil;
       exit;
     end;
-    
+
     if ReferenceControl.IsControlVisible then begin
       // ReferenceControl is visible
       // -> calculate Position
       OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
       //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
       case ReferenceSide of
-      
+
       asrTop: // asrTop = asrLeft
         if Kind in [akLeft,akRight] then begin
           // anchor to left side of ReferenceControl
@@ -3280,7 +3288,7 @@ begin
       // side found
       exit;
     end;
-    
+
     // ReferenceControl is not visible -> try next
     NextReferenceSide:=nil;
     if ReferenceControl<>OwnerParent then begin

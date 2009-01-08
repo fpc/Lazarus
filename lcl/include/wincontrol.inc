@@ -2930,14 +2930,15 @@ end;
 
 function TWinControl.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
 begin
-  // Default does nothing
-  Result := False;
+  Result := Assigned(FOnAlignInsertBefore)
+        and FOnAlignInsertBefore(Self, AControl1, AControl2);
 end;
 
 procedure TWinControl.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
   ANewWidth, ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo);
 begin
-  // Default does nothing
+  if Assigned(FOnAlignPosition)
+  then FOnAlignPosition(Self, AControl, ANewLeft, ANewTop, ANewWidth, ANewHeight, AlignRect, AlignInfo);
 end;
 
 
