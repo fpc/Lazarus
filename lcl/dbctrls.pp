@@ -130,7 +130,7 @@ Type
     function GetField: TField;
 
 
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     function IsReadOnly: boolean;
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
@@ -220,7 +220,7 @@ Type
     function GetDataSource: TDataSource;
     function GetField: TField;
 
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
@@ -274,7 +274,7 @@ Type
     function GetReadOnly: Boolean;
     procedure SetReadOnly(Value: Boolean);
 
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
@@ -758,9 +758,6 @@ Type
     property Visible;
   end;
 
-
-  { TDBCalender }
-
   { TDBCalendar }
 
   TDBCalendar = class(TCalendar)
@@ -779,7 +776,7 @@ Type
 
     procedure SetDate(const AValue: String);
 
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateDate(const AValue: string);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;

@@ -99,7 +99,7 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TDBListBox.SetDataField(Value: string);
+procedure TDBListBox.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;

@@ -114,7 +114,7 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TDBEdit.SetDataField(Value: string);
+procedure TDBEdit.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;

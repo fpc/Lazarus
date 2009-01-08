@@ -54,7 +54,7 @@ begin
   Result := FDataLink.Field;
 end;
 
-procedure TDBText.SetDataField(Value: string);
+procedure TDBText.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;

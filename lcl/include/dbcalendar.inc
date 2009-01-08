@@ -77,7 +77,7 @@ begin
   DataChange(Self);
 end;
 
-procedure TDBCalendar.SetDataField(Value: string);
+procedure TDBCalendar.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;
