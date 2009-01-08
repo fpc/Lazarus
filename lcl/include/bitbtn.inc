@@ -25,8 +25,9 @@ begin
   FKind := bkCustom;
   FLayout := blGlyphLeft;
   FSpacing := 3;
-  fMargin:=-1;
+  FMargin := -1;
   FButtonGlyph := TButtonGlyph.Create;
+  FButtonGlyph.NumGlyphs := 1;
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
   RealizeKind;
@@ -36,7 +37,7 @@ end;
        TCustomBitBtn destructor
 ------------------------------------------------------------------------------}
 destructor TCustomBitBtn.Destroy;
-Begin
+begin
   FreeThenNil(FButtonGlyph);
   inherited Destroy;
 end;
@@ -44,8 +45,8 @@ end;
 procedure TCustomBitBtn.Click;
 var
   Form : TCustomForm;
-Begin
-  if FKind = bkClose then Begin
+begin
+  if FKind = bkClose then begin
     Form := GetParentForm(Self);
     if Form <> nil then begin
       Form.Close;
@@ -53,7 +54,7 @@ Begin
     end;
   end;
   inherited Click;
-End;
+end;
 
 procedure TCustomBitBtn.LoadGlyphFromLazarusResource(const AName: String);
 begin
@@ -61,7 +62,7 @@ begin
 end;
 
 function TCustomBitBtn.GetGlyph : TBitmap;
-Begin
+begin
   Result := FButtonGlyph.Glyph;
 end;
 
@@ -78,7 +79,7 @@ begin
 end;
 
 procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
-Begin
+begin
   FButtonGlyph.Glyph := AValue;
   InvalidatePreferredSize;
   AdjustSize;
@@ -107,7 +108,7 @@ begin
 end;
 
 procedure TCustomBitBtn.SetKind(AValue: TBitBtnKind);
-Begin
+begin
   if FKind = AValue then Exit;
   FKind := AValue;
   if FKind = bkCustom then Exit;
@@ -116,7 +117,7 @@ Begin
 end;
 
 procedure TCustomBitBtn.SetLayout(AValue: TButtonLayout);
-Begin
+begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
   if HandleAllocated 
@@ -146,7 +147,7 @@ begin
 end;
 
 procedure TCustomBitBtn.SetSpacing(AValue: Integer);
-Begin
+begin
   if (FSpacing = AValue) or (AValue < -1) then Exit;
   FSpacing := AValue;
   if HandleAllocated 
