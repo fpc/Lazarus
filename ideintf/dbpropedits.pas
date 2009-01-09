@@ -23,7 +23,8 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, PropEdits, Componenteditors, TypInfo, DB, SysUtils, DBGrids;
+  Classes, ObjInspStrConsts, PropEdits, Componenteditors, TypInfo, DB, SysUtils,
+  DBGrids;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -36,6 +37,15 @@ type
   TDBGridFieldProperty = class(TFieldProperty)
   public
     procedure FillValues(const Values: TStringList); override;
+  end;
+
+  { TDBGridComponentEditor }
+
+  TDBGridComponentEditor = class(TComponentEditor)
+  public
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
 
 implementation
@@ -87,9 +97,33 @@ begin
     DataSource.DataSet.GetFieldNames(Values);
 end;
 
+{ TDBGridComponentEditor }
+
+function TDBGridComponentEditor.GetVerbCount: Integer;
+begin
+  Result:= 1;
+end;
+
+function TDBGridComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:= sccsLvColEdt;
+end;
+
+procedure TDBGridComponentEditor.ExecuteVerb(Index: Integer);
+var
+  Hook: TPropertyEditorHook;
+  DBGrid: TDBGrid;
+begin
+  DBGrid := GetComponent as TDBGrid;
+  GetHook(Hook);
+  EditCollection(DBGrid, DBGrid.Columns, 'Columns');
+  if Assigned(Hook) then Hook.Modified(Self);
+end;
+
 initialization
   RegisterPropertyEditor(TypeInfo(string), TComponent, 'DataField', TFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TColumn, 'FieldName', TDBGridFieldProperty);
+  RegisterComponentEditor(TDBGrid,TDBGridComponentEditor);
 
 end.
 
