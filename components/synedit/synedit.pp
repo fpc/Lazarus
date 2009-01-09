@@ -8565,7 +8565,6 @@ procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
 // moves Caret vertical DY unfolded lines
 var
   NewCaret: TPoint;
-  LogCaret: TPoint;
   OldCaret: TPoint;
   SaveLastCaretX: LongInt;
 begin
@@ -8575,18 +8574,17 @@ begin
   if (OldCaret.Y<>NewCaret.Y) and (fLastCaretX>0) and (eoKeepCaretX in Options)
   then
     NewCaret.X:=fLastCaretX;
-  // set caret and block begin / end
-  LogCaret:=PhysicalToLogicalPos(NewCaret);
   IncPaintLock;
-  if SelectionCommand then begin
-    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-    SetBlockEnd(LogCaret);
-    AquirePrimarySelection;
-  end else
-    SetBlockBegin(LogCaret);
   SaveLastCaretX:=fLastCaretX;
   CaretXY:=NewCaret;
   fLastCaretX:=SaveLastCaretX;
+  // set caret and block begin / end
+  if SelectionCommand then begin
+    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(OldCaret));
+    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+    AquirePrimarySelection;
+  end else
+    SetBlockBegin(PhysicalToLogicalPos(CaretXY));
   DecPaintLock;
 end;
 {$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
