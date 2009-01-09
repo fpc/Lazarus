@@ -58,7 +58,7 @@ type
 
   TWin32WSCustomNotebook = class(TWSCustomNotebook)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
     class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
@@ -197,7 +197,7 @@ type
   end;
 
 procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
-function  NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
 
 implementation
 
@@ -439,7 +439,7 @@ begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       // store object as extra, so we can verify we got the right page later
       TCI.lParam := PtrUInt(AChild);
-      TCI.iImage := ANotebook.GetImageIndex(AIndex);
+      TCI.iImage := ANotebook.GetImageIndex(NotebookPageRealToLCLIndex(ANotebook, AIndex));
   {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
@@ -459,7 +459,7 @@ begin
       // windows should send a WM_SIZE message because of this, but it doesn't
       // send it ourselves
     end;
-    LCLControlSizeNeedsUpdate(ANotebook, true);
+    LCLControlSizeNeedsUpdate(ANotebook, True);
   end;
 end;
 
@@ -571,7 +571,7 @@ var
 begin
   Result := AIndex;
   if csDesigning in ANotebook.ComponentState then exit;
-  for X := 0 to AIndex-1 do
+  for X := 0 to AIndex - 1 do
     if ANotebook.Page[X].TabVisible = False then Dec(Result);
 end;
 

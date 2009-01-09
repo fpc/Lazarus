@@ -256,19 +256,23 @@ end;
 class procedure TQtWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 var
   ImageList: TCustomImageList;
+  ImageIndex: Integer;
   Bmp: TBitmap;
 begin
   ImageList := TCustomNoteBook(ACustomPage.Parent).Images;
 
-  if Assigned(ImageList) and (ACustomPage.ImageIndex >= 0) and
-     (ACustomPage.ImageIndex < ImageList.Count) then
+  if Assigned(ImageList) then
   begin
-    Bmp := TBitmap.Create;
-    try
-      ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
-      TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
-    finally
-      Bmp.Free;
+    ImageIndex := TCustomNoteBook(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
+    if (ImageIndex >= 0) and (ImageIndex < ImageList.Count) then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
+        TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
+      finally
+        Bmp.Free;
+      end;
     end;
   end;
 end;

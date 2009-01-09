@@ -309,13 +309,13 @@ function TCustomNotebook.GetImageIndex(ThePageIndex: Integer): Integer;
 var
   APage: TCustomPage;
 begin
-  APage:=Page[ThePageIndex];
-  if APage<>nil then
-    Result:=APage.ImageIndex
+  APage := Page[ThePageIndex];
+  if APage <> nil then
+    Result := APage.ImageIndex
   else
-    Result:=-1;
+    Result := -1;
   if Assigned(OnGetImageIndex) then
-    OnGetImageIndex(Self,ThePageIndex,Result);
+    OnGetImageIndex(Self, ThePageIndex, Result);
 end;
 
 function TCustomNotebook.IndexOf(APage: TCustomPage): integer;
