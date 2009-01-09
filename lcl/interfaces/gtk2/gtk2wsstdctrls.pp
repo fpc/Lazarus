@@ -1649,7 +1649,7 @@ class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-  SignalConnect(AWidgetInfo^.ClientWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
+  SignalConnect(AWidgetInfo^.CoreWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
 end;
 
 {
@@ -1687,8 +1687,8 @@ begin
 
   { The WidgetInfo is important for the form designer }
   WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
-  WidgetInfo^.CoreWidget := EventBox;
-  WidgetInfo^.ClientWidget := BtnWidget;
+  WidgetInfo^.CoreWidget := BtnWidget;
+  WidgetInfo^.ClientWidget := EventBox;
   //DebugLn(['TGtk2WSButton.CreateHandle ',GetWidgetInfo(EventBox)=WidgetInfo,' ',GetWidgetInfo(EventBox)^.ClientWidget=BtnWidget]);
 //  gtk_object_set_data(PGtkObject(Result), 'widgetinfo', WidgetInfo);
   SetMainWidget(EventBox, BtnWidget);
