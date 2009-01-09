@@ -1054,8 +1054,8 @@ procedure TCustomMaskEdit.TextChanged;
 begin
   if not IsMasked then
   begin
-    Exit;
     Inherited TextChanged;
+    Exit;
   end;
   if FChangeAllowed then Inherited TextChanged;
   if not FChangeAllowed then
@@ -1392,7 +1392,8 @@ begin
   begin
     DeleteSelected;
     InsertChar(Key);
-    Key:= #0;
+    //TDBEdit needs the value of Key to decide if Datasource is in Edit state
+    //Key:= #0;
   end;
 end;
 
@@ -1496,6 +1497,8 @@ begin
     and TextIsValid might wrongly return False
     We need the text with literals and FSpaceChar translated to #32
   }
+  //Somehow TDBEdit calls ValidateEdit even no mask is set!!
+  if not IsMasked then Exit;
   _MaskSave := FMaskSave;
   FMaskSave := True;
   S := Text;
