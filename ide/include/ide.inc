@@ -37,7 +37,8 @@
 {off $apptype console}
 
 {off $define UseTurbopowerInHelp}
-{off $define UseJCF}
+{$define UseJCF}
+{off $define EnableBuildModes}
 
 {$inline on}
 
