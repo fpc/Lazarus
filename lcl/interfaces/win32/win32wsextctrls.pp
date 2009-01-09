@@ -648,9 +648,9 @@ begin
       SendSelChangeMessage(ANotebook, Handle, AIndex);
       NotebookFocusNewControl(ANotebook, AIndex);
     end;
-    if (OldIndex >= 0) and (OldIndex <> AIndex)
-        and (OldIndex < ANotebook.PageCount)
-        and (ANotebook.CustomPage(OldIndex).HandleAllocated) then
+    if (OldIndex >= 0) and (OldIndex <> AIndex) and
+       (OldIndex < ANotebook.PageCount) and
+       (ANotebook.CustomPage(OldIndex).HandleAllocated) then
       ShowWindow(ANotebook.CustomPage(OldIndex).Handle, SW_HIDE);
   end;
 end;

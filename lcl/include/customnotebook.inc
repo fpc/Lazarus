@@ -437,11 +437,11 @@ begin
   if (csLoading in ComponentState) then FLoadedPageIndex:=AValue;
   //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
   if (AValue < 0) or (AValue >= PageCount) then exit;
-  if fPageIndex = AValue then exit;
+  if FPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
   //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
-  fPageIndex := AValue;
+  FPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
   if ([csDesigning, csLoading, csDestroying] * ComponentState = [])
@@ -454,7 +454,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPageIndex: Integer;
 begin
-  Result := fPageIndex;
+  Result := FPageIndex;
 end;
 
 procedure TCustomNotebook.InsertPage(APage: TCustomPage; Index: Integer);
@@ -645,11 +645,11 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook GetPage
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetPage(aIndex: Integer): TCustomPage;
+function TCustomNotebook.GetPage(AIndex: Integer): TCustomPage;
 begin
-  if (aIndex<0) or (aIndex>=fPageList.Count) then
+  if (AIndex < 0) or (AIndex >= FPageList.Count) then
     RaiseGDBException('TCustomNotebook.GetCustomPage Index out of bounds');
-  Result := TCustomPage(fPageList.Items[aIndex]);
+  Result := TCustomPage(FPageList.Items[AIndex]);
 end;
 
 {------------------------------------------------------------------------------
@@ -845,11 +845,13 @@ var
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
   begin
-    CurPage:=Page[FPageIndex];
+    CurPage := Page[FPageIndex];
     // first make the new page visible
     //DebugLn(['TCustomNotebook.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
-    if CurPage.Visible then begin
-      if FPageIndexOnLastShow<>fPageIndex then begin
+    if CurPage.Visible then
+    begin
+      if FPageIndexOnLastShow <> FPageIndex then
+      begin
         // some widgetsets like win32/64 do not send WM_SIZE messages for
         // hidden pages. Force resizing page (it is alClient).
         //DebugLn(['TCustomNotebook.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
@@ -858,19 +860,20 @@ begin
         // therefore AutoSizing of childs was skipped => do it now
         CurPage.ReAlign;
       end;
-    end else begin
+    end else
+    begin
       CurPage.Visible := true;
       //DebugLn(['TCustomNotebook.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
     end;
-    FPageIndexOnLastShow:=fPageIndex;
+    FPageIndexOnLastShow := FPageIndex;
     CurPage.DoShow;
-    if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
-       (FPageIndexOnLastChange <> FPageIndex) then
-    begin
-      // Page[FPageIndexOnLastChange].Visible := False; <-- this will be better,
-      // but this does not work on gtk (tab hides too)
-      Page[FPageIndexOnLastChange].DoHide;
-    end;
+  end;
+  if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
+     (FPageIndexOnLastChange <> FPageIndex) then
+  begin
+    // Page[FPageIndexOnLastChange].Visible := False; <-- this will be better,
+    // but this does not work on gtk (tab hides too)
+    Page[FPageIndexOnLastChange].DoHide;
   end;
 end;
 

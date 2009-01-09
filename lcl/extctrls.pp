@@ -159,7 +159,7 @@ type
     procedure DoSendTabPosition;
     function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;
-    function GetPage(aIndex: Integer): TCustomPage;
+    function GetPage(AIndex: Integer): TCustomPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
     function FindVisiblePage(Index: Integer): Integer;
