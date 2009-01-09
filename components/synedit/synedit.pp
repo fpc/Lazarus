@@ -2204,8 +2204,8 @@ begin
   Exclude(fStateFlags, sfLinesChanging);
   if HandleAllocated then begin
     UpdateScrollBars;
-    SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                  {$ELSE}CaretXY{$ENDIF});
+    if not FTrimmedLinesView.IsTrimming then
+      SetBlockBegin(PhysicalToLogicalPos(CaretXY));
     {$IFDEF VerboseSynEditInvalidate}
     DebugLn(['TCustomSynEdit.LinesChanged ',dbgs(fInvalidateRect)]);
     {$ENDIF}

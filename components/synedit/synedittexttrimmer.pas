@@ -38,6 +38,7 @@ type
   TSynEditStringTrimmingList = class(TSynEditStringsLinked)
   private
     fCaret: TSynEditCaret;
+    FIsTrimming: Boolean;
     fUndoList: TSynEditUndoList;
     fSpaces: String;
     fLineText: String;
@@ -82,6 +83,7 @@ type
     property Enabled : Boolean read fEnabled write SetEnabled;
     property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces;
     property UndoList: TSynEditUndoList read fUndoList write fUndoList;
+    property IsTrimming: Boolean read FIsTrimming;
   end;
 
 implementation
@@ -98,6 +100,7 @@ begin
   fSpaces := '';
   fEnabled:=false;
   FUndoTrimmedSpaces := False;
+  FIsTrimming := False;
   Inherited Create(ASynStringSource);
 end;
 
@@ -114,6 +117,7 @@ var
 begin
   if (not fEnabled) then exit;
   if (fLineIndex = TSynEditCaret(Sender).LinePos - 1) then exit;
+  FIsTrimming := True;
   if (length(fSpaces) > 0) and (fLineIndex > 0)
   and (fLineIndex <= fSynStrings.Count)
   and (fLockCount = 0) then begin
@@ -122,6 +126,7 @@ begin
     fUndoList.AddChange(crTrimSpace, Point(1+length(s), fLineIndex+1),
       Point(1+length(s)+length(fSpaces), fLineIndex+1), fSpaces, smNormal);
   end;
+  FIsTrimming := False;
   fLineIndex := TSynEditCaret(Sender).LinePos - 1;
   fSpaces := '';
 end;
@@ -135,8 +140,10 @@ begin
   FSpaces := '';
   FLineIndex := -1;
   FLockList.Clear;
+  FIsTrimming := True;
   if fEnabled and (fLineIndex >= 0) and (fLineIndex < fSynStrings.Count) then
     fSynStrings[fLineIndex] := TrimLine(fSynStrings[fLineIndex], fLineIndex);
+  FIsTrimming := False;
 end;
 
 procedure TSynEditStringTrimmingList.UndoRealSpaces(Item: TSynEditUndoItem);
@@ -256,6 +263,7 @@ var
   ltext: String;
 begin
   if (not fEnabled) then exit;
+  FIsTrimming := True;
   i := fLockList.IndexOfObject(TObject(Pointer(fLineIndex)));
   if i >= 0 then begin
     fSpaces:= fLockList[i];
@@ -274,6 +282,7 @@ begin
         Point(1+llen+slen, index+1), fLockList[i], smNormal);
     end;
   end;
+  FIsTrimming := False;
   fLockList.Clear;
 end;
 
