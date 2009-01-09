@@ -10,7 +10,6 @@ object TabOrderDialog: TTabOrderDialog
   ClientWidth = 310
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
-  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ArrowUp: TSpeedButton
@@ -44,11 +43,12 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ShowOldValuesCheckbox
     Left = 6
-    Height = 318
+    Height = 320
     Top = 6
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    Ctl3D = False
     DefaultItemHeight = 15
     HideSelection = False
     ParentCtl3D = False
@@ -60,9 +60,9 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 19
-    Top = 330
-    Width = 146
+    Height = 17
+    Top = 332
+    Width = 141
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'

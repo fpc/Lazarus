@@ -161,19 +161,18 @@ var
   AControl: TWinControl;
   CurTabOrder: Integer;
 begin
-  CurTabOrder:=0;
-  while ANode<>nil do begin
-    AControl:=TWinControl(ANode.Data);
-    if AControl.TabStop then begin
-      if AControl.TabOrder<>CurTabOrder then
-        TabChanged:=true;
-      AControl.TabOrder:=TTabOrder(CurTabOrder);
-      DebugLn('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',
-        IntToStr(AControl.TabOrder),' ',IntToStr(CurTabOrder));
-      inc(CurTabOrder);
-    end;
-    CommitNodes(ANode.GetFirstChild,TabChanged);
-    ANode:=ANode.GetNextSibling;
+  CurTabOrder := 0;
+  while ANode <> nil do
+  begin
+    AControl := TWinControl(ANode.Data);
+    if AControl.TabOrder <> CurTabOrder then
+      TabChanged := True;
+    AControl.TabOrder := TTabOrder(CurTabOrder);
+    //DebugLn('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',
+    //  IntToStr(AControl.TabOrder),' ',IntToStr(CurTabOrder));
+    inc(CurTabOrder);
+    CommitNodes(ANode.GetFirstChild, TabChanged);
+    ANode := ANode.GetNextSibling;
   end;
 end;
 
