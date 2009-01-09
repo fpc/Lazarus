@@ -5307,8 +5307,8 @@ end;
 
 procedure TCustomGrid.DestroyHandle;
 begin
-  editorGetValue;
   inherited DestroyHandle;
+  editorGetValue;
 end;
 
 function TCustomGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
