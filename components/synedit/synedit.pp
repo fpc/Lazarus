@@ -2205,7 +2205,10 @@ begin
   if HandleAllocated then begin
     UpdateScrollBars;
     if not FTrimmedLinesView.IsTrimming then
-      SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+      SetBlockBegin(PhysicalToLogicalPos(CaretXY))
+    else
+      if not(eoScrollPastEol in Options) then
+        FBlockSelection.AdjustAfterTrimming;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLn(['TCustomSynEdit.LinesChanged ',dbgs(fInvalidateRect)]);
     {$ENDIF}
@@ -8580,7 +8583,13 @@ begin
   fLastCaretX:=SaveLastCaretX;
   // set caret and block begin / end
   if SelectionCommand then begin
-    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(OldCaret));
+    if not SelAvail then begin
+      OldCaret := PhysicalToLogicalPos(OldCaret);
+      if (OldCaret.X > Length(FTheLinesView[OldCaret.Y-1]) + 1) and
+         not(eoScrollPastEol in Options) then
+        OldCaret.X := Length(FTheLinesView[OldCaret.Y-1]) + 1;
+      SetBlockBegin(OldCaret);
+    end;
     SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     AquirePrimarySelection;
   end else

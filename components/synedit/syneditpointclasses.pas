@@ -96,6 +96,7 @@ type
     FMaxLeftChar: Integer;
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
+    procedure AdjustAfterTrimming; // TODO: Move into TrimView
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false; ChangeReason: TSynChangeReason = crInsert);
     function  SelAvail: Boolean;
@@ -268,6 +269,14 @@ begin
   FEndLinePos := 1;
   FEndBytePos := 1;
   FEnabled := True;
+end;
+
+procedure TSynEditSelection.AdjustAfterTrimming;
+begin
+  if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then
+    FStartBytePos := Length(FLines[FStartLinePos-1]) + 1;
+  if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then
+    FEndBytePos := Length(FLines[FEndLinePos-1]) + 1;
 end;
 
 function TSynEditSelection.GetSelText : string;
