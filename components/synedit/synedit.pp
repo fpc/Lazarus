@@ -8347,6 +8347,7 @@ var
   NewCaret: TPoint;
   s: String;
   PhysicalLineLen: Integer;
+  eol: Boolean;
 begin
   NewCaret:=Point(CaretX+DX,CaretY);
   if NewCaret.X<1 then begin
@@ -8362,16 +8363,17 @@ begin
   end else if not (eoScrollPastEol in fOptions) then begin
     s:=LineText;
     PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,CaretY)).X-1;
-    if NewCaret.X>PhysicalLineLen+1 then begin
+    if (NewCaret.X>PhysicalLineLen+1) and (DX > 0) then begin
       // move to start of next line (if it was a move to the right)
       NewCaret.X:=1;
-      if DX > 0 then
-        NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
+      NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
     end;
   end;
 
   // adjust selection
   IncPaintLock;
+  eol := not (eoScrollPastEol in fOptions);
+  Include(fOptions, eoScrollPastEol);
   if SelectionCommand then begin
     //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
     if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
@@ -8382,6 +8384,8 @@ begin
     SetBlockBegin(PhysicalToLogicalPos(NewCaret));
   // commit new caret
   CaretXY := NewCaret;
+  if eol then
+    Exclude(fOptions, eoScrollPastEol);
   DecPaintLock;
 end;
 {$ELSE}
