@@ -259,6 +259,8 @@ type
     destructor Destroy; override;
     procedure AddChange(AReason: TSynChangeReason; AStart, AEnd: TPoint;
       ChangeText: string; SelMode: TSynSelectionMode);
+    procedure AppendToLastChange(AReason: TSynChangeReason; AStart, AEnd: TPoint;
+      ChangeText: string; SelMode: TSynSelectionMode);
     procedure BeginBlock;                                                       //sbs 2000-11-19
     procedure Clear;
     procedure EndBlock;                                                         //sbs 2000-11-19
@@ -1064,6 +1066,34 @@ begin
                '  Reason=', SynChangeReasonNames[AReason],'  Astart=',dbgs(AStart),
                ' AEnd=',dbgs(AEnd),'  SelMode=',ord(SelMode)]); *)
       PushItem(NewItem);
+    except
+      NewItem.Free;
+      raise;
+    end;
+  end;
+end;
+
+procedure TSynEditUndoList.AppendToLastChange(AReason: TSynChangeReason; AStart,
+  AEnd: TPoint; ChangeText: string; SelMode: TSynSelectionMode);
+var
+  NewItem: TSynEditUndoItem;
+begin
+  if (fLockCount = 0) and (PeekItem <> nil) then begin
+    if (fItems.Count = fUnModifiedItem) then
+      inc(fUnModifiedItem);
+    NewItem := TSynEditUndoItem.Create;
+    try
+      with NewItem do begin
+        fChangeReason := AReason;
+        fChangeSelMode := SelMode;
+        fChangeStartPos := AStart;
+        fChangeEndPos := AEnd;
+        fChangeStr := ChangeText;
+        fChangeNumber := PeekItem.fChangeNumber;
+      end;
+      //PushItem(NewItem);
+      fItems.Add(NewItem);
+      EnsureMaxEntries;
     except
       NewItem.Free;
       raise;

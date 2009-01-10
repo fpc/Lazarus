@@ -123,7 +123,7 @@ begin
   and (fLockCount = 0) then begin
     s := fSynStrings[fLineIndex];
     fSynStrings[fLineIndex] := s;                                               // trigger OnPutted, so the line gets repainted
-    fUndoList.AddChange(crTrimSpace, Point(1+length(s), fLineIndex+1),
+    fUndoList.AppendToLastChange(crTrimSpace, Point(1+length(s), fLineIndex+1),
       Point(1+length(s)+length(fSpaces), fLineIndex+1), fSpaces, smNormal);
   end;
   FIsTrimming := False;
@@ -278,7 +278,7 @@ begin
       ltext := fSynStrings[index];
       llen := length(ltext);
       fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
-      fUndoList.AddChange(crTrimSpace, Point(1+llen, index+1),
+      fUndoList.AppendToLastChange(crTrimSpace, Point(1+llen, index+1),
         Point(1+llen+slen, index+1), fLockList[i], smNormal);
     end;
   end;

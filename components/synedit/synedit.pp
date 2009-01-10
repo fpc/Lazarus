@@ -597,6 +597,7 @@ type
     {$IFNDEF SYN_LAZARUS}
     procedure TrimmedSetLine(ALine: integer; ALineText: string);
     {$ENDIF}
+    procedure UpdateModified;
     procedure UndoRedoAdded(Sender: TObject);
     procedure UnlockUndo;
     procedure UpdateCaret;
@@ -5550,7 +5551,11 @@ begin
 {end}                                                                           //mh 2000-11-20
         end;
       {$IFDEF SYN_LAZARUS}
-      crTrimSpace: FTrimmedLinesView.ForceTrim;
+      crTrimSpace:
+        begin
+          FTrimmedLinesView.ForceTrim;
+          UpdateModified;
+        end;
       {$ENDIF}
       crTrimRealSpace:
         begin
@@ -9900,23 +9905,25 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
-var
-  Item: TSynEditUndoItem;
+procedure TCustomSynEdit.UpdateModified;
 begin
-//  Modified := TRUE;
-  {$IFDEF SYN_LAZARUS}
-  Item := TSynEditUndoList(Sender).PeekItem;
-  if Item <> nil then
-    TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,
-      Item.ChangeEndPos.y - 1, Sender = fUndoList, Item.fChangeReason);
   if fUndoList.UnModifiedMarkerExists then
     Modified:=not fUndoList.IsTopMarkedAsUnmodified
   else if fRedoList.UnModifiedMarkerExists then
     Modified:=not fRedoList.IsTopMarkedAsUnmodified
   else
-  {$ENDIF}
     Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;              //mh 2000-10-03
+end;
+
+procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
+var
+  Item: TSynEditUndoItem;
+begin
+  Item := TSynEditUndoList(Sender).PeekItem;
+  if Item <> nil then
+    TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,
+      Item.ChangeEndPos.y - 1, Sender = fUndoList, Item.fChangeReason);
+  UpdateModified;
   // we have to clear the redo information, since adding undo info removes
   // the necessary context to undo earlier edit actions
   if (Sender = fUndoList) and not (sfInsideRedo in fStateFlags) then            //mh 2000-10-30
