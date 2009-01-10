@@ -5,8 +5,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientWidth = 459
   TabOrder = 0
   Visible = False
-  DesignLeft = 23
-  DesignTop = 23
+  DesignLeft = 230
+  DesignTop = 230
   object BlockIndentLabel: TLabel[0]
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -548,6 +548,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
+    Style = csDropDownList
     TabOrder = 24
   end
 end
