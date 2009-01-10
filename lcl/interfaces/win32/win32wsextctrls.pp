@@ -226,36 +226,27 @@ end;
 procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
 var
   Page: TCustomPage;
-  ControlList: TFPList;
-  lWinControl: TWinControl;
-  I: integer;
-  FocusSet: Boolean;
+  AWinControl: TWinControl;
+  ParentForm: TCustomForm;
 begin
   { see if currently focused control is within notebook }
   if not IsNotebookGroupFocused(ANotebook) then exit;
 
   { focus was/is within notebook, pick a new control to focus }
   Page := ANotebook.CustomPage(NewIndex);
-  ControlList := TFPList.Create;
-  try
-    Page.GetTabOrderList(ControlList);
-    I := 0;
-    FocusSet := False;
-    while I < ControlList.Count do
+  ParentForm := GetParentForm(ANotebook);
+  if ParentForm <> nil then
+  begin
+    if ANotebook.ContainsControl(ParentForm.ActiveControl) and (ParentForm.ActiveControl <> ANotebook) then
     begin
-      lWinControl := TWinControl(ControlList[I]);
-      if lWinControl.TabStop and lWinControl.Enabled and lWinControl.CanFocus then
-      begin
-        lWinControl.SetFocus;
-        FocusSet := True;
-        break;
-      end;
-      Inc(I);
+      AWinControl := nil;
+      if Page.CanFocus then
+        AWinControl := TCustomPageAccess(Page).FindNextControl(nil, True, True, False);
+      // if nothing to focus then focus notebook then we can traverse pages by keys
+      if AWinControl = nil then
+        AWinControl := ANotebook;
+      AWinControl.SetFocus;
     end;
-    if not FocusSet then
-      Page.SetFocus;
-  finally
-    ControlList.Free;
   end;
 end;
 
