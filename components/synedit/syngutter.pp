@@ -190,7 +190,7 @@ type
       read FOnGutterClick write FOnGutterClick;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property AutoSize: boolean read FAutoSize write SetAutoSize default FALSE;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property AllowSkipGutterSeparatorDraw: boolean
       read FAllowSkipGutterSeparatorDraw write SetAllowSkipGutterSeparatorDraw default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
@@ -450,6 +450,7 @@ begin
   Width := 30;
   LeftOffset := 0;
   FRightOffset := 0;
+  AutoSize := True;
 end;
 
 destructor TSynGutter.Destroy;
