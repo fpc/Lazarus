@@ -3327,23 +3327,16 @@
       <element name="TCustomDrawStateFlag">
         <short>
           <var>TCustomDrawStateFlag</var> - series of flags to define the DrawState</short>
-        <descr>TCustomDrawStateFlag consists of the following constants:<br/>
-cdsSelected,<br/>
- 
-cdsGrayed,<br/>
- 
-cdsDisabled,<br/>
- 
-cdsChecked,<br/>
-cdsFocused,<br/>
- 
-cdsDefault,<br/>
- 
-cdsHot,<br/>
- 
-cdsMarked,<br/>
- 
-cdsIndeterminate
+        <descr><p>TCustomDrawStateFlag consists of the following constants:</p>
+<ul><li>cdsSelected,</li>
+<li>cdsGrayed,</li> 
+<li>cdsDisabled,</li> 
+<li>cdsChecked,</li>
+<li>cdsFocused,</li> 
+<li>cdsDefault,</li> 
+<li>cdsHot,</li> 
+<li>cdsMarked,</li> 
+<li>cdsIndeterminate</li></ul>
 </descr>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -6714,8 +6707,8 @@ cdsIndeterminate
           <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
         <descr>
           <p>
-            <printshort id="TCustomUpdown"/>
-          </p>
+            <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
+</p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
           <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively, a number may be displayed in a text box, and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
@@ -7133,7 +7126,7 @@ cdsIndeterminate
         <short>
           <var>OnClick</var> - special event handler for a click on up or down button</short>
         <descr>
-          <printshort/>
+		<p><var>OnClick</var> - special event handler for a click on up or down button</short></p>
           <p>The event handler must determine whether the [next] or [prev] button was clicked, and therefore whether to increment or decrement the controlled variable and adjust the display</p>
         </descr>
         <seealso/>
@@ -7162,7 +7155,7 @@ cdsIndeterminate
           <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
         <descr>
           <p>
-            <printshort id="TUpDown"/>
+		  <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
           </p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
@@ -10130,7 +10123,6 @@ cdsIndeterminate
             <var>taAddFirst</var>: Adds the node as the first child.</p>
           <p>
             <var>taInsert</var>: Adds the node in front another node.</p>
-          <br/>
           <p>This set is used in <var>TTreeNode.InternalMove</var> and <var>TTreeNodes.InternalAddObject</var>
           </p>
         </descr>
@@ -11337,7 +11329,7 @@ Const
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr>
-          <printshort id="TTreeNode.DefaultTreeViewSort"/>
+		<p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
           <p>
             <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p>
@@ -11868,7 +11860,7 @@ the comparision is case sensitive.
         <short>
           <var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</short>
         <descr>
-          <printshort id="TTreeNode.MoveTo"/>
+		<p><var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</p>
           <p>Definition of the modes of attachment:</p>
           <pre>naAdd,           // add as last sibling of Destination
     naAddFirst,      // add as first sibling of Destination
@@ -12104,7 +12096,7 @@ the comparision is case sensitive.
         <short>
           <var>StateIndex</var> the index of the state (within an enumerated type)</short>
         <descr>
-          <printshort id="TTreeNode.StateIndex"/>
+		<p><var>StateIndex</var> the index of the state (within an enumerated type)</p>
           <p>Definition of enumerated type NodeState:</p>
           <p>nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound</p>
         </descr>
@@ -13174,14 +13166,14 @@ the comparision is case sensitive.
       <!-- constant Visibility: default -->
       <element name="DefaultTreeViewOptions">
         <short>A set of TreeViewOptions which are set be default.</short>
-        <descr>These set of options is used to set the options of a TreeView object when first placed on a form. This set consists of the follwoing items:<br/>
-tvoShowRoot,<br/> 
-tvoShowLines,<br/> 
-tvoShowButtons,<br/>
-tvoHideSelection,<br/> 
-tvoToolTips,<br/>
-tvoKeepCollapsedNodes,<br/>
-tvoAutoItemHeight<br/>
+        <descr>These set of options is used to set the options of a TreeView object when first placed on a form. This set consists of the following items:
+tvoShowRoot, 
+tvoShowLines,
+tvoShowButtons,
+tvoHideSelection, 
+tvoToolTips,
+tvoKeepCollapsedNodes,
+tvoAutoItemHeight
 For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
@@ -14274,7 +14266,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</short>
         <descr>
-          <printshort id="TCustomTreeView.CustomDraw"/>
+		<p><var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</p>
           <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
         </descr>
         <errors/>
@@ -14299,7 +14291,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</short>
         <descr>
-          <printshort id="TCustomTreeView.CustomDrawItem"/>
+		<p><var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</p>
           <p>State denotes one of <var>Selected, Grayed, Disabled, Checked, Focused, Default, Hot, Marked or Indeterminate</var>
           </p>
           <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
@@ -15573,7 +15565,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TCustomTreeView.Options">
         <short>The set of <var>Options</var> for displaying the tree view</short>
         <descr>
-          <printshort id="TCustomTreeView.Options"/>
+		<p><short>The set of <var>Options</var> for displaying the tree view</p>
           <p>List of available options:</p>
           <pre>tvoAllowMultiselect,
     tvoAutoExpand,
@@ -16119,7 +16111,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property. </short>
         <descr>
-          <printshort id="TTreeNodeExpandedState"/>
+		<p><var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property.</p>
           <p>Usage example:</p>
           <pre>// save old expanded state
       OldExpanded:=TTreeNodeExpandedState.Create(ATreeView);
@@ -16495,11 +16487,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>FindCaption</var>- search for and return the list item that contains the nominated caption</short>
         <descr>
-          <printshort id="TCustomListView.FindCaption"/>
+          <p>
+            <var>FindCaption</var>- search for and return the list item that contains the nominated caption</p>
           <p>Starting from item with <var>StartIndex</var>
           </p>
-          <var>Looking for the string <var>Value</var>
-          </var>
+          <p>Looking for the string <var>Value</var>
+          </p>
           <p>
             <var>Partial, Inclusive, Wrap, PartStart</var>: Boolean arguments allowing matches with part of the string, permitting the string to wrap over a line, etc</p>
         </descr>
@@ -16632,7 +16625,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item</short>
         <descr>
-          <printshort id="TListItem.DisplayRect"/>
+          <p>
+            <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item</p>
           <p>Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>
           </p>
         </descr>
@@ -16641,7 +16635,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>DisplayRectSubItem</var> - returns the coordinates of a display rectangle for a specified sub-item</short>
         <descr>
-          <printshort id="TListItem.DisplayRectSubItem"/>
+          <p>
+            <var>DisplayRectSubItem</var> - returns the coordinates of a display rectangle for a specified sub-item</p>
           <p>Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>
           </p>
         </descr>
@@ -16680,7 +16675,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr>
-          <printshort id="TCustomTreeView.DefaultTreeViewSort"/>
+		<p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
           <p>
             <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p>
