@@ -7126,7 +7126,7 @@
         <short>
           <var>OnClick</var> - special event handler for a click on up or down button</short>
         <descr>
-		<p><var>OnClick</var> - special event handler for a click on up or down button</short></p>
+		<p><var>OnClick</var> - special event handler for a click on up or down button</p>
           <p>The event handler must determine whether the [next] or [prev] button was clicked, and therefore whether to increment or decrement the controlled variable and adjust the display</p>
         </descr>
         <seealso/>
@@ -15565,7 +15565,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TCustomTreeView.Options">
         <short>The set of <var>Options</var> for displaying the tree view</short>
         <descr>
-		<p><short>The set of <var>Options</var> for displaying the tree view</p>
+		<p>The set of <var>Options</var> for displaying the tree view</p>
           <p>List of available options:</p>
           <pre>tvoAllowMultiselect,
     tvoAutoExpand,
