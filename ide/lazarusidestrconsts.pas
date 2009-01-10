@@ -1081,7 +1081,7 @@ resourcestring
   dlgEdDisplay = 'Display';
   lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
-  dlgEdColor = 'Syntax highlight';
+  dlgEdColor = 'Colors';
   dlgKeyMappingErrors = 'Key mapping errors';
   dlgEdBack = 'Back';
   dlgReport = 'Report';
