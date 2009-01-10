@@ -1138,7 +1138,7 @@ resourcestring
   dlgUseCodeFolding = 'Code folding';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
-  dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest start';
+  dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
   dlgBracketHighlight = 'Bracket highlight';
   dlgNoBracketHighlight = 'No Highlight';
   dlgHighlightLeftOfCursor = 'Left Of Cursor';
