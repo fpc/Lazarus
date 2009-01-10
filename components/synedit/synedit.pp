@@ -303,9 +303,17 @@ type
   public
     function LeftSpaces(Editor: TCustomSynEdit; const Line: string;
                         Physical: boolean): Integer;
-    // InsertPos is 1 based. e.g. left,top is 1,1
-    function GetIndentForLineBreak(Editor: TCustomSynEdit;
-                     InsertPos: TPoint; var NextText: string): integer; virtual;
+    function CanUnindent(const Editor: TCustomSynEdit;  const Line: string;
+                         const PhysCaretX: Integer): Boolean; virtual;
+    function UnIndentLine(const Editor: TCustomSynEdit;  const Line: string;
+                          const PhysCaret: TPoint; out DelChars, InsChars: String;
+                          out CaretNewX: Integer): String; virtual; // Todo InsChar are not supprted for undo
+    function IndentLine(const Editor: TCustomSynEdit; Line: string;
+                        const PhysCaret: TPoint; out DelChars, InsChars: String;
+                        out CaretNewX: Integer;
+                        RemoveCurrentIndent: Boolean = False): String; virtual; // Todo DelChar are not supprted for undo
+    function GetIndentForLine(Editor: TCustomSynEdit; const Line: string;
+                              const PhysCaret: TPoint): Integer; virtual;
   end;
   {$ENDIF}
 
@@ -370,7 +378,7 @@ type
     fLastCtrlMouseLinkX2: integer; // logical (byte)
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
-    fBeautifier: TSynCustomBeautifier;
+    FBeautifier: TSynCustomBeautifier;
     fExtraCharSpacing: integer;
     {$ENDIF}
     FFoldedLinesView:  TSynEditFoldedView;
@@ -515,10 +523,6 @@ type
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
-    function LeftSpaces(const Line: string): Integer;
-    {$IFDEF SYN_LAZARUS}
-    function LeftSpaces(const Line: string; Physical: boolean): Integer;
-    {$ENDIF}
     procedure LockUndo;
     procedure MoveCaretAndSelection(
       {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;
@@ -766,8 +770,6 @@ type
     {$IFDEF SYN_LAZARUS}
     function IsLinkable(Y, X1, X2: Integer): Boolean;
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
-    function GetLineIndentProposal(Line: integer;
-                                   IgnoreCurrentLineText: boolean): integer;
     {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
@@ -1142,6 +1144,9 @@ uses
 
 
 {$IFDEF SYN_LAZARUS}
+var
+  SynDefaultBeautifier: TSynCustomBeautifier;
+
 const
   fSynEditClipboardFormat: TClipboardFormat = 0;
 
@@ -1398,6 +1403,8 @@ end;
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  fBeautifier := SynDefaultBeautifier;
 
   fLines := TSynEditStringList.Create;
   fCaret := TSynEditCaret.Create;
@@ -1864,8 +1871,11 @@ end;
 
 procedure TCustomSynEdit.SetBeautifier(NewBeautifier: TSynCustomBeautifier);
 begin
-  if fBeautifier=NewBeautifier then exit;
-  fBeautifier:=NewBeautifier;
+  if fBeautifier = NewBeautifier then exit;
+  if NewBeautifier = nil then
+    fBeautifier := SynDefaultBeautifier
+  else
+    fBeautifier := NewBeautifier;
 end;
 
 {$ENDIF}
@@ -2168,31 +2178,6 @@ begin
   // MG: the comment was right, the implementation not consequent enough
   Key:=#0;
   {$ENDIF}
-end;
-
-function TCustomSynEdit.LeftSpaces(const Line: string): Integer;
-begin
-  Result:=LeftSpaces(Line,false);
-end;
-
-function TCustomSynEdit.LeftSpaces(const Line: string;
-  Physical: boolean): Integer;
-var
-  p: PChar;
-begin
-  p := pointer(Line);
-  if Assigned(p) and (eoAutoIndent in fOptions) then begin
-    Result := 0;
-    while p^ in [#1..#32] do begin
-      Inc(p);
-      Inc(Result);
-    end;
-    {$IFDEF SYN_LAZARUS}
-    if Physical and (Result>0) then
-      Result:=LogicalToPhysicalCol(Line,Result+1)-1;
-    {$ENDIF}
-  end else
-    Result := 0;
 end;
 
 procedure TCustomSynEdit.LinesChanging(Sender: TObject);
@@ -5797,19 +5782,11 @@ begin
         begin
           // If there's no selection, we have to set
           // the Caret's position manualy.
-          CaretXY := Item.fChangeStartPos;
+          CaretXY := PhysStartPos;
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
-          if CaretY > 0 then begin
-            TmpStr := FTheLinesView.Strings[CaretY - 1];
-            if (Length(TmpStr) < CaretX - 1)
-              and (LeftSpaces(Item.fChangeStr) = 0)
-            then
-              AppendStr(TmpStr, StringOfChar(' ', CaretX - 1 - Length(TmpStr)));
-            FTheLinesView.Delete(Item.fChangeEndPos.y);
-          end;
-          CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
-                     {$ELSE}Item.fChangeStartPos{$ENDIF};
+          TmpStr := FTheLinesView.Strings[CaretY - 1];
+          FTheLinesView.Delete(Item.fChangeEndPos.y);
           {$IFDEF SYN_LAZARUS}
           if Item.fChangeStr <> '' then
             FTheLinesView[CaretY - 1] := TmpStr + Item.fChangeStr;
@@ -6512,9 +6489,6 @@ var
   Temp: string;
   Temp2: string;
   Helper: string;
-  SpaceCount1: Integer;
-  SpaceCount2: Integer;
-  BackCounter: Integer;
   StartOfBlock: TPoint;
   bChangeScroll: boolean;
   moveBkm: boolean;
@@ -6532,7 +6506,6 @@ var
   LogCounter: integer;
   LogCaretXY: TPoint;
   LogCaret: TPoint;
-  LogSpacePos: integer;
   LastUndoItem:TSynEditUndoItem;
   CY: Integer;
   {$ENDIF}
@@ -6760,46 +6733,14 @@ begin
               end;
             end else begin
               // delete text before the caret
-              SpaceCount1 := LeftSpaces(Temp{$IFDEF SYN_LAZARUS},true{$ENDIF});
-              SpaceCount2 := 0;
-              //debugln('ecDeleteLastChar C SpaceCount1=',dbgs(SpaceCount1),' Temp[LogCaretXY.X-1]=',DbgStr(Temp[LogCaretXY.X-1]));
-              {$IFDEF SYN_LAZARUS}
-              if (Temp[LogCaretXY.X-1] <= #32) and (SpaceCount1 = CaretX - 1) then
-              {$ELSE}
-              if (Temp[CaretX-1] <= #32) and (SpaceCount1 = CaretX - 1) then
-              {$ENDIF}
+              if (eoAutoIndent in fOptions) and
+                 FBeautifier.CanUnindent(Self, Temp, CaretX) then
               begin
                 // unindent
-                if SpaceCount1 > 0 then begin
-                  BackCounter := CaretY - 2;
-                  while BackCounter >= 0 do begin
-                    SpaceCount2 :=LeftSpaces(FTheLinesView[BackCounter]
-                                             {$IFDEF SYN_LAZARUS},true{$ENDIF});
-                    if SpaceCount2 < SpaceCount1 then
-                      break;
-                    Dec(BackCounter);
-                  end;
-                end;
-                if SpaceCount2 = SpaceCount1 then
-                  SpaceCount2 := 0;
-                {$IFDEF SYN_LAZARUS}
-                // remove visible spaces
-                LogSpacePos:=PhysicalToLogicalCol(Temp,SpaceCount2+1);
-                Helper:=copy(Temp,LogSpacePos,LogCaretXY.X-LogSpacePos);
-                //debugln('ecDeleteLastChar LogSpacePos=',dbgs(LogSpacePos),
-                //   ' SpaceCount1=',dbgs(SpaceCount1),
-                //   ' SpaceCount2=',dbgs(SpaceCount2),
-                //   ' LogCaretXY.X=',dbgs(LogCaretXY.X),
-                //   ' Temp="',DbgStr(Temp),'" Helper="',DbgStr(Helper),'"');
-                Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
-                FTheLinesView[CaretY - 1] :=  Temp;
-                CaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
-                {$ELSE}
-                Helper := Copy(Temp, 1, SpaceCount1 - SpaceCount2);
-                Delete(Temp, 1, SpaceCount1 - SpaceCount2);
-                TrimmedSetLine(CaretY - 1, Temp);
-                fCaretX := fCaretX - (SpaceCount1 - SpaceCount2);
-                {$ENDIF}
+                Temp := FBeautifier.UnIndentLine(Self, Temp, CaretXY,
+                                                 Helper, Temp2, CX); // TODO: Temp2 must be added as crInsert to undolist
+                FTheLinesView[CaretY - 1] := Temp;
+                CaretX := CX;
                 fLastCaretX := CaretX;
                 StatusChanged([scCaretX]);
               end else begin
@@ -7016,31 +6957,31 @@ begin
           if SelAvail then begin
             SetSelTextExternal('');
           end;
-          SpaceCount2 := 0;
           Temp := LineText;
           Temp2 := Temp; //LineText;
 // This is sloppy, but the Right Thing would be to track the column of markers
 // too, so they could be moved depending on whether they are after the caret...
           InsDelta := Ord(CaretX = 1);
-          {$IFDEF SYN_LAZARUS}
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           Len := Length(Temp);
           if Len >= LogCaretXY.X then begin
             if LogCaretXY.X > 1 then begin
               // break line in two
-              SpaceCount1 := LeftSpaces(copy(Temp, 1, LogCaretXY.X-1));
-              Temp := Copy(LineText, 1, LogCaretXY.X - 1);
               LineText := LineText; // TrimRealSpaces
-              FTheLinesView.Insert(CaretY - 1, Temp);
+              FTheLinesView.Insert(CaretY - 1, Copy(Temp, 1, LogCaretXY.X - 1));
               Delete(Temp2, 1, LogCaretXY.X - 1);
-              if Assigned(Beautifier) then
-                SpaceCount1:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp2);
-              fUndoList.AddChange(crLineBreak,
-                LogCaretXY, LogCaretXY,
-                Temp2, smNormal);
-              FTheLinesView[CaretY] := StringOfChar(' ', SpaceCount1) + Temp2;
+              fUndoList.AddChange(crLineBreak, LogCaretXY, LogCaretXY,
+                                  Temp2, smNormal);
+              if (eoAutoIndent in fOptions) then begin
+                Caret := CaretXY;
+                Caret.Y := Caret.Y + 1;
+                Temp2 := FBeautifier.IndentLine(Self, Temp2, Caret, Helper,
+                                                Temp, CX, False);
+              end else
+                CX := 1;
+              FTheLinesView[CaretY] := Temp2;
               if Command = ecLineBreak then
-                CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
+                CaretXY := Point(CX, CaretY + 1);
             end else begin
               // move the whole line
               LineText := LineText; // TrimRealSpaces
@@ -7060,91 +7001,18 @@ begin
             fUndoList.AddChange(crLineBreak,
               LogCaretXY, LogCaretXY,
               '', smNormal);
-            SpaceCount2 := 0;
-            if Assigned(Beautifier) then begin
-              Temp:='';
-              SpaceCount2:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp);
-            end else if eoAutoIndent in Options then begin
-              BackCounter := CaretY;
-              repeat
-                Dec(BackCounter);
-                Temp := FTheLinesView[BackCounter];
-                SpaceCount2 := LeftSpaces(Temp,true);
-              until (BackCounter = 0) or (Temp <> '');
-            end;
-            FTheLinesView.Insert(CaretY, '');
-            if Command = ecLineBreak then begin
-              if (SpaceCount2 > 0) then
-                FTheLinesView[CaretY] := StringOfChar(' ', SpaceCount2);
-              CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
-            end;
-          end;
-          {$ELSE}
-          Len := Length(Temp);
-          if Len > 0 then begin
-            if Len >= LogCaretXY.X then begin
-              if LogCaretXY.X > 1 then begin
-                // break line in two
-                SpaceCount1 := LeftSpaces(Temp);
-                Temp := Copy(LineText, 1, LogCaretXY.X - 1);
-                TrimmedSetLine(CaretY - 1, Temp);
-                Delete(Temp2, 1, LogCaretXY.X - 1);
-                fUndoList.AddChange(crLineBreak,
-                  CaretXY, CaretXY,
-                  Temp2, smNormal);
-                FTheLinesView.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
-                if Command = ecLineBreak then
-                  CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
-              end else begin
-                // move the whole line
-                Lines.Insert(CaretY - 1, '');
-                fUndoList.AddChange(crLineBreak,
-                  CaretXY, CaretXY,
-                  Temp2, smNormal);
-                if Command = ecLineBreak then
-                  CaretY := CaretY + 1;
-              end;
-            end else begin
-              // linebreak after end of line
-              fUndoList.AddChange(crLineBreak,
-                CaretXY, CaretXY,
-                '', smNormal);
-              SpaceCount2 := 0;
-              if eoAutoIndent in Options then begin
-                BackCounter := CaretY;
-                repeat
-                  Dec(BackCounter);
-                  Temp := Lines[BackCounter];
-                  SpaceCount2 := LeftSpaces(Temp);
-                until (BackCounter = 0) or (Temp <> '');
-              end;
-              Lines.Insert(CaretY, '');
-              if Command = ecLineBreak then begin
-                if SpaceCount2 > 0 then
-                  Lines[CaretY] := StringOfChar(' ', SpaceCount2);
-                CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
-              end;
-            end;
-          end else begin
-            // current line is empty
-            if fLines.Count = 0 then
-              fLines.Add('');
-            BackCounter := CaretY - 1;
-            while BackCounter >= 0 do begin
-              SpaceCount2 := LeftSpaces(Lines[BackCounter]);
-              if Length(Lines[BackCounter]) > 0 then break;
-              dec(BackCounter);
-            end;
-            fUndoList.AddChange(crLineBreak,
-              CaretXY, CaretXY,
-              '', smNormal);
+            Temp2 := '';
+            if (eoAutoIndent in fOptions) then begin
+              Caret := CaretXY;
+              Caret.Y := Caret.Y + 1;
+              Temp2 := FBeautifier.IndentLine(Self, Temp2, Caret, Helper,
+                                              Temp, CX, False);
+            end else
+              CX := 1;
+            FTheLinesView.Insert(CaretY, Temp);
             if Command = ecLineBreak then
-              CaretX := SpaceCount2 + 1;
-            Lines.Insert(CaretY - 1, '');
-            if Command = ecLineBreak then
-              CaretY := CaretY + 1;
+              CaretXY := Point(CX, CaretY + 1);
           end;
-          {$ENDIF}
           DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
           fLastCaretX := CaretX;                                               //mh 2000-10-19
@@ -9141,7 +9009,7 @@ begin
     end else begin
       // this line is blank
       // -> use automatic line indent
-      LineStart:=GetLineIndentProposal(CaretY,true);
+      LineStart:= FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], CaretXY);
     end;
 
     NewPos.X:=LineStart;
@@ -9188,7 +9056,7 @@ begin
     end else begin
       // this line is blank
       // -> use automatic line indent
-      LineEnd := GetLineIndentProposal(CaretY,true);
+      LineEnd := FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], CaretXY);
     end;
 
     NewPos.X:=LineEnd;
@@ -9744,40 +9612,6 @@ begin
     end;
   end;
 end;
-
-function TCustomSynEdit.GetLineIndentProposal(Line: integer;
-  IgnoreCurrentLineText: boolean): integer;
-// calculate a nice indent for the Line (starting at 1)
-var
-  y: Integer;
-  s: string;
-  FirstNonBlank: Integer;
-begin
-  if fBeautifier<>nil then begin
-    if IgnoreCurrentLineText then
-      s:=''
-    else
-      s:=LineText;
-    Result:=fBeautifier.GetIndentForLineBreak(Self,Point(1,Line),s);
-  end else begin
-    // default: use last non empty line indent, ignore always current line
-    y:=Line-1;
-    if y>FTheLinesView.Count then y:=FTheLinesView.Count;
-    while y>=1 do begin
-      s:=FTheLinesView[y-1];
-      FirstNonBlank:=1;
-      while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [' ',#9]) do
-        inc(FirstNonBlank);
-      if FirstNonBlank<=Length(s) then begin
-        // non empty line found
-        Result:=LogicalToPhysicalCol(s,FirstNonBlank);
-        exit;
-      end;
-      dec(y);
-    end;
-    Result:=1;
-  end;
-end;
 {$ENDIF}
 
 function TCustomSynEdit.FindHookedCmdEvent(AHandlerProc: THookedCommandEvent):
@@ -10157,29 +9991,74 @@ begin
     Result := 0;
 end;
 
-function TSynCustomBeautifier.GetIndentForLineBreak(Editor: TCustomSynEdit;
-  InsertPos: TPoint; var NextText: string): integer;
-var
-  LastTextY: LongInt;
-  Line: string;
-  Lines: TStrings;
+function TSynCustomBeautifier.CanUnindent(const Editor: TCustomSynEdit;
+  const Line: string; const PhysCaretX: Integer): Boolean;
 begin
-  Result:=0;
-  if InsertPos.Y<1 then exit;
-  LastTextY:=InsertPos.Y;
-  Lines:=Editor.RealLines;
-  if LastTextY>Lines.Count then
-    LastTextY:=Lines.Count;
-  while (LastTextY>0) do begin
-    Line:=Lines[LastTextY-1];
-    if LastTextY=InsertPos.Y then
-      Line:=copy(Line,1,InsertPos.X-1);
-    if Line<>'' then begin
-      Result:=LeftSpaces(Editor,Line,false);
-      exit;
+  Result := (LeftSpaces(Editor, Line, True) = PhysCaretX - 1);
+end;
+
+function TSynCustomBeautifier.UnIndentLine(const Editor: TCustomSynEdit;
+  const Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String;
+  out CaretNewX: Integer): String;
+var
+  SpaceCount1, SpaceCount2: Integer;
+  BackCounter, LogSpacePos: Integer;
+begin
+  SpaceCount1 := LeftSpaces(Editor, Line, true);
+  SpaceCount2 := 0;
+  if (SpaceCount1 > 0) then begin
+    BackCounter := PhysCaret.Y - 2;
+    while BackCounter >= 0 do begin
+      SpaceCount2 := LeftSpaces(Editor, Editor.RealLines[BackCounter], true);
+      if SpaceCount2 < SpaceCount1 then
+        break;
+      Dec(BackCounter);
     end;
-    dec(LastTextY);
   end;
+  if SpaceCount2 = SpaceCount1 then
+    SpaceCount2 := 0;
+  // remove visible spaces
+  LogSpacePos:=Editor.PhysicalToLogicalCol(Line, SpaceCount2 + 1);
+  CaretNewX :=  SpaceCount2 + 1;
+  DelChars := copy(Line, LogSpacePos, PhysCaret.X - LogSpacePos);
+  InsChars := ''; // TODO: if tabs were removed, maybe fill-up with spaces
+  Result :=copy(Line, 1, LogSpacePos-1) + copy(Line, PhysCaret.X, MaxInt);
+end;
+
+function TSynCustomBeautifier.IndentLine(const Editor: TCustomSynEdit;
+  Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String;
+  out CaretNewX: Integer; RemoveCurrentIndent: Boolean = False): String;
+var
+  SpaceCount1, SpaceCount2: Integer;
+  BackCounter: Integer;
+  Temp: string;
+begin
+  DelChars := '';
+  If RemoveCurrentIndent then begin
+    SpaceCount1 := LeftSpaces(Editor, Line, False);
+    DelChars := copy(Line, 1, SpaceCount1);
+    Line := copy(Line, SpaceCount1 + 1, MaxInt);
+  end;
+
+  SpaceCount2 := 0;
+  BackCounter := PhysCaret.Y - 1;
+  repeat
+    Dec(BackCounter);
+    Temp := Editor.RealLines[BackCounter];
+    SpaceCount2 := LeftSpaces(Editor, Temp, True);
+  until (BackCounter = 0) or (Temp <> '');
+
+  InsChars := StringOfChar(' ', SpaceCount2);
+  CaretNewX := Length(InsChars) + 1;
+  Result := InsChars + Line;
+end;
+
+function TSynCustomBeautifier.GetIndentForLine(Editor: TCustomSynEdit;
+  const Line: string; const PhysCaret: TPoint): integer;
+var
+  s1, s2: string;
+begin
+  IndentLine(Editor, Line, PhysCaret, s1, s2, Result, False);
 end;
 {$ENDIF}
 
@@ -10187,4 +10066,6 @@ initialization
   {$IFNDEF SYN_LAZARUS}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
   {$ENDIF}
-    end.
+  SynDefaultBeautifier := TSynCustomBeautifier.Create(Application);
+
+end.
