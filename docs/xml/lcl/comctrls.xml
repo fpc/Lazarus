@@ -760,8 +760,8 @@
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
-      <element name="TTabStyle">
-        <short/>
+      <element name="TTabStyle" link="#LCL.ExtCtrls.TTabStyle">
+        <short>TTabStyle</short>
         <descr/>
         <seealso/>
       </element>
@@ -3327,17 +3327,20 @@
       <element name="TCustomDrawStateFlag">
         <short>
           <var>TCustomDrawStateFlag</var> - series of flags to define the DrawState</short>
-        <descr><p>TCustomDrawStateFlag consists of the following constants:</p>
-<ul><li>cdsSelected,</li>
-<li>cdsGrayed,</li> 
-<li>cdsDisabled,</li> 
-<li>cdsChecked,</li>
-<li>cdsFocused,</li> 
-<li>cdsDefault,</li> 
-<li>cdsHot,</li> 
-<li>cdsMarked,</li> 
-<li>cdsIndeterminate</li></ul>
-</descr>
+        <descr>
+          <p>TCustomDrawStateFlag consists of the following constants:</p>
+          <ul>
+            <li>cdsSelected,</li>
+            <li>cdsGrayed,</li>
+            <li>cdsDisabled,</li>
+            <li>cdsChecked,</li>
+            <li>cdsFocused,</li>
+            <li>cdsDefault,</li>
+            <li>cdsHot,</li>
+            <li>cdsMarked,</li>
+            <li>cdsIndeterminate</li>
+          </ul>
+        </descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawStateFlag.cdsSelected">
@@ -3791,7 +3794,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TListItems">
-        <short>TListItems - a list of items with a cache of the last accessed item</short>
+        <short>
+          <var>TListItems</var> - a list of items with a cache of the last accessed item</short>
         <descr>
           <var>TListitems</var>
  has a built-in cache of the last accessed item. This will speed up interface updates since <var>Item.Index</var> is   often used for the same item updating more properties.  If <var>FCacheIndex</var> = -1 then the cache is not valid.
@@ -4521,7 +4525,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TItemChange">
-        <short/>
+        <short>
+          <var>TItemChange</var> - enumerated type for kind of change: in text, in image or in state</short>
         <descr/>
         <seealso/>
       </element>
@@ -4539,7 +4544,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TViewStyle">
-        <short/>
+        <short>
+          <var>TViewStyle</var> - enumerated type for style of view</short>
         <descr/>
         <seealso/>
       </element>
@@ -4561,7 +4567,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVChangeEvent">
-        <short/>
+        <short>
+          <var>TLVChangeEvent</var> - generic event handler method for change in List View</short>
         <descr/>
         <seealso/>
       </element>
@@ -4579,7 +4586,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVColumnClickEvent">
-        <short/>
+        <short>
+          <var>TLVColumnClickEvent</var> - generic event handler method for a click on a List View column</short>
         <descr/>
         <seealso/>
       </element>
@@ -4593,7 +4601,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVColumnRClickEvent">
-        <short/>
+        <short>
+          <var>TLVColumnRClickEvent</var> - generic event handler method for a right click on a List View column</short>
         <descr/>
         <seealso/>
       </element>
@@ -4611,7 +4620,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVCompareEvent">
-        <short/>
+        <short>
+          <var>TLVCompareEvent</var> - generic event handler method for List View comparison</short>
         <descr/>
         <seealso/>
       </element>
@@ -4637,7 +4647,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVDeletedEvent">
-        <short/>
+        <short>
+          <var>TLVDeletedEvent</var> - generic event handler method for deleted items in List View</short>
         <descr/>
         <seealso/>
       </element>
@@ -4651,13 +4662,15 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TLVInsertEvent">
-        <short/>
+        <short>
+          <var>TLVInsertEvent</var> - generic event handler method for List View insertion</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLVSelectItemEvent">
-        <short/>
+        <short>
+          <var>TLVSelectItemEvent</var> - generic event handler method for List View selection</short>
         <descr/>
         <seealso/>
       </element>
@@ -4677,7 +4690,27 @@
       <element name="TListViewProperty">
         <short>
           <var>TListViewProperty</var> - enumerated type: a series of constants denoting the properties of a listview</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TListViewProperty</var> - enumerated type: a series of constants denoting the properties of a listview</p>
+          <pre>lvpAutoArrange,
+    lvpCheckboxes,
+    lvpColumnClick,
+    lvpFlatScrollBars,
+    lvpFullDrag,
+    lvpGridLines,
+    lvpHideSelection,
+    lvpHotTrack,
+    lvpMultiSelect,
+    lvpOwnerDraw,
+    lvpReadOnly,
+    lvpRowSelect,
+    lvpShowColumnHeaders,
+    lvpShowWorkAreas,
+    lvpWrapText,
+    lvpToolTips
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -4742,13 +4775,16 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TListViewProperties">
-        <short/>
+        <short>
+          <var>TListViewProperties</var> - set of <var>TListViewProperty</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListViewImageList">
-        <short/>
+        <short>
+          <var>TListViewImageList</var> - enumerated type denoting the category of image list</short>
         <descr/>
         <seealso/>
       </element>
@@ -4766,7 +4802,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TListHotTrackStyle">
-        <short/>
+        <short>
+          <var>TListHotTrackStyle</var> - enumerated type denoting the style of HotTrack</short>
         <descr/>
         <seealso/>
       </element>
@@ -4784,7 +4821,9 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TListHotTrackStyles">
-        <short/>
+        <short>
+          <var>TListHotTrackStyles</var> - set of <var>TListHotTrackStyle</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7126,7 +7165,8 @@
         <short>
           <var>OnClick</var> - special event handler for a click on up or down button</short>
         <descr>
-		<p><var>OnClick</var> - special event handler for a click on up or down button</p>
+          <p>
+            <var>OnClick</var> - special event handler for a click on up or down button</p>
           <p>The event handler must determine whether the [next] or [prev] button was clicked, and therefore whether to increment or decrement the controlled variable and adjust the display</p>
         </descr>
         <seealso/>
@@ -7155,7 +7195,7 @@
           <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
         <descr>
           <p>
-		  <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
+            <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
           </p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
@@ -8285,7 +8325,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TToolBarFlag">
         <short>
-          <var>TToolBarFlag</var> - enumerated type for flags denoting atatus of ToolBar</short>
+          <var>TToolBarFlag</var> - enumerated type for flags denoting status of ToolBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -10176,11 +10216,12 @@ Const
       </element>
       <!-- constant Visibility: default -->
       <element name="LCLStreamID">
-        <short>A constant</short>
+        <short>A constant for the identifier of a LCL stream</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVChangingEvent">
-        <short/>
+        <short>
+          <var>TTVChangingEvent</var> - a generic event handling method for changing a specified Tree Node if <var>AllowChange</var> is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -10198,7 +10239,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVChangedEvent">
-        <short/>
+        <short>
+          <var>TTVChangedEvent</var> - generic event handling method for a changed Tree Node</short>
         <descr/>
         <seealso/>
       </element>
@@ -10212,7 +10254,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVEditingEvent">
-        <short/>
+        <short>
+          <var>TTVEditingEvent</var> - generic event handling method for editing a specified node, if <var>AllowEdit</var> is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -10230,7 +10273,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVEditedEvent">
-        <short/>
+        <short>
+          <var>TTVEditedEvent</var> - generic event handling method for a node that has been edited</short>
         <descr/>
         <seealso/>
       </element>
@@ -10248,7 +10292,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVExpandingEvent">
-        <short/>
+        <short>
+          <var>TTVExpandingEvent</var> - generic event handling method for expanding a tree node, if <var>AllowExpansion</var> is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -10266,7 +10311,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVCollapsingEvent">
-        <short/>
+        <short>
+          <var>TTVCollapsingEvent</var> - generic event handling method for collapsing a Tree Node if AllowCollapse is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -10284,7 +10330,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVExpandedEvent">
-        <short/>
+        <short>
+          <var>TTVExpandedEvent</var> - generic event handling method for a Tree Node that has been expanded</short>
         <descr/>
         <seealso/>
       </element>
@@ -10298,7 +10345,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVCompareEvent">
-        <short/>
+        <short>
+          <var>TTVCompareEvent</var> - generic event handling method for comparing two Tree Nodes</short>
         <descr/>
         <seealso/>
       </element>
@@ -10320,7 +10368,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVCustomDrawEvent">
-        <short/>
+        <short>
+          <var>TTVCustomDrawEvent</var> - generic event handling method for Tree View custom drawing</short>
         <descr/>
         <seealso/>
       </element>
@@ -10338,7 +10387,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVCustomDrawItemEvent">
-        <short/>
+        <short>
+          <var>TTVCustomDrawItemEvent</var> - generic event handling method for Tree View Item custom drawing</short>
         <descr/>
         <seealso/>
       </element>
@@ -10360,7 +10410,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVAdvancedCustomDrawEvent">
-        <short/>
+        <short>
+          <var>TTVAdvancedCustomDrawEvent</var> - generic event handler method for Tree View advanced custom drawing</short>
         <descr/>
         <seealso/>
       </element>
@@ -10382,7 +10433,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVAdvancedCustomDrawItemEvent">
-        <short/>
+        <short>
+          <var>TTVAdvancedCustomDrawItemEvent</var> - generic event handler method for Tree View Item advanced custom drawing</short>
         <descr/>
         <seealso/>
       </element>
@@ -10412,7 +10464,8 @@ Const
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVCustomCreateNodeEvent">
-        <short/>
+        <short>
+          <var>TTVCustomCreateNodeEvent</var> - generic event handling method for Tree View node creation</short>
         <descr/>
         <seealso/>
       </element>
@@ -10426,7 +10479,8 @@ Const
       </element>
       <!-- function type Visibility: default -->
       <element name="TTreeNodeCompare">
-        <short/>
+        <short>
+          <var>TTreeNodeCompare</var> - generic function to compare Tree Nodes: returns -1 if Node1 less than Node2, zero if equal, +1 if Node 2 greater</short>
         <descr/>
         <seealso/>
       </element>
@@ -10448,7 +10502,8 @@ Const
       </element>
       <!-- record type Visibility: default -->
       <element name="TTreeNodeInfo">
-        <short/>
+        <short>
+          <var>TTreeNodeInfo</var> - record structure for (new) Tree Node information</short>
         <descr/>
         <seealso/>
       </element>
@@ -10508,11 +10563,13 @@ Const
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PDelphiNodeInfo">
-        <short>A pointer to TDelphiNodeInfo</short>
+        <short>A pointer to <var>TDelphiNodeInfo</var>
+        </short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TDelphiNodeInfo">
-        <short/>
+        <short>
+          <var>TDelphiNodeInfo</var> - record structure for Tree Node information (for Delphi compatability)</short>
         <descr/>
         <seealso/>
       </element>
@@ -11329,7 +11386,8 @@ Const
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr>
-		<p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
+          <p>
+            <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
           <p>
             <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p>
@@ -11860,7 +11918,8 @@ the comparision is case sensitive.
         <short>
           <var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</short>
         <descr>
-		<p><var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</p>
+          <p>
+            <var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</p>
           <p>Definition of the modes of attachment:</p>
           <pre>naAdd,           // add as last sibling of Destination
     naAddFirst,      // add as first sibling of Destination
@@ -12096,7 +12155,8 @@ the comparision is case sensitive.
         <short>
           <var>StateIndex</var> the index of the state (within an enumerated type)</short>
         <descr>
-		<p><var>StateIndex</var> the index of the state (within an enumerated type)</p>
+          <p>
+            <var>StateIndex</var> the index of the state (within an enumerated type)</p>
           <p>Definition of enumerated type NodeState:</p>
           <p>nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound</p>
         </descr>
@@ -13166,19 +13226,23 @@ the comparision is case sensitive.
       <!-- constant Visibility: default -->
       <element name="DefaultTreeViewOptions">
         <short>A set of TreeViewOptions which are set be default.</short>
-        <descr>These set of options is used to set the options of a TreeView object when first placed on a form. This set consists of the following items:
-tvoShowRoot, 
-tvoShowLines,
-tvoShowButtons,
-tvoHideSelection, 
-tvoToolTips,
-tvoKeepCollapsedNodes,
-tvoAutoItemHeight
-For the meaning of this options, see the documentation of TTreeView.</descr>
+        <descr>
+          <p>A series of defaults used to set the options of a TreeView object when first placed on a form. This set consists of the following items:</p>
+          <pre>tvoShowRoot, 
+    tvoShowLines,
+    tvoShowButtons,
+    tvoHideSelection, 
+    tvoToolTips,
+    tvoKeepCollapsedNodes,
+    tvoAutoItemHeight
+</pre>
+          <p>For the meaning of these options, see the documentation of <var>TTreeView</var>.</p>
+        </descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTreeViewExpandSignType">
-        <short/>
+        <short>
+          <var>TTreeViewExpandSignType</var> - enumerated type for specifying the symbol type to appear in treeviews to denote whether or not the node is expanded: either a +- sign or an arrow</short>
         <descr/>
         <seealso/>
       </element>
@@ -14266,7 +14330,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</short>
         <descr>
-		<p><var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</p>
+          <p>
+            <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</p>
           <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
         </descr>
         <errors/>
@@ -14291,7 +14356,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</short>
         <descr>
-		<p><var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</p>
+          <p>
+            <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</p>
           <p>State denotes one of <var>Selected, Grayed, Disabled, Checked, Focused, Default, Hot, Marked or Indeterminate</var>
           </p>
           <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
@@ -15565,7 +15631,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TCustomTreeView.Options">
         <short>The set of <var>Options</var> for displaying the tree view</short>
         <descr>
-		<p>The set of <var>Options</var> for displaying the tree view</p>
+          <p>The set of <var>Options</var> for displaying the tree view</p>
           <p>List of available options:</p>
           <pre>tvoAllowMultiselect,
     tvoAutoExpand,
@@ -16111,7 +16177,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property. </short>
         <descr>
-		<p><var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property.</p>
+          <p>
+            <var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property.</p>
           <p>Usage example:</p>
           <pre>// save old expanded state
       OldExpanded:=TTreeNodeExpandedState.Create(ATreeView);
@@ -16215,11 +16282,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <!-- function Visibility: default -->
       <element name="CompareExpandedNodes">
         <short>Function to compare the node text two nodes.</short>
-        <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
--1: The nodetext from the first node is lower then the nodetext from the second.<br/>
-0: The nodetext-s from both nodes are equal.<br/>
-1: The nodetext from the first node is higher then the nodetext from the second.
-</descr>
+        <descr>
+          <p>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.</p>
+          <p>-1: The nodetext from the first node is lower then the nodetext from the second.</p>
+          <p>0: The nodetext-s from both nodes are equal.</p>
+          <var>1: The nodetext from the first node is higher then the nodetext from the second.</var>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareExpandedNodes.Result">
@@ -16236,11 +16304,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <!-- function Visibility: default -->
       <element name="CompareTextWithExpandedNode">
         <short>Function to compare the given text with the nodetextof the specified node.</short>
-        <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
--1: The given text is lower then the nodetext from the given node.<br/>
-0: The given text is equal to the nodetext from the given node.<br/>
-1: The given text is higher then the nodetext from the given node.
-</descr>
+        <descr>
+          <p>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.</p>
+          <p>-1: The given text is lower then the nodetext from the given node.</p>
+          <p>0: The given text is equal to the nodetext from the given node.</p>
+          <var>1: The given text is higher then the nodetext from the given node.</var>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareTextWithExpandedNode.Result">
@@ -16508,7 +16577,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TCustomUpDown.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="THeaderSections.GetOwner" link="#rtl.Classes.TPersistent.GetOwner"/>
       <element name="THeaderSections.Update" link="#rtl.Classes.TCollection.Update"/>
-      <element name="TSectionTrackState"/>
+      <element name="TSectionTrackState">
+        <short>
+          <var>TSectionTrackState</var> - enumerated type for tracking the state of a header section</short>
+      </element>
       <element name="TListItem.Checked">
         <short>
           <var>Checked</var> - if True, a check mark is present beside the item, implying it has been selected</short>
@@ -16675,7 +16747,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr>
-		<p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
+          <p>
+            <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
           <p>
             <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p>
@@ -16876,6 +16949,55 @@ the comparision is case sensitive.
       <element name="TCustomHeaderControl.SectionFromOriginalIndex">
         <short>
           <var>SectionFromOriginalIndex</var> - the section as defined by the original (unchanged) index</short>
+      </element>
+      <element name="TLVCustomDrawEvent">
+        <short>
+          <var>TLVCustomDrawEvent</var> - generic event handler method for List View custom drawing</short>
+      </element>
+      <element name="TLVCustomDrawItemEvent">
+        <short>
+          <var>TLVCustomDrawItemEvent</var> - generic event handling method for List View item drawing</short>
+      </element>
+      <element name="TLVCustomDrawSubItemEvent">
+        <short>
+          <var>TLVCustomDrawSubItemEvent</var> - generic event handling method for List View subitem drawing</short>
+      </element>
+      <element name="TLVAdvancedCustomDrawEvent">
+        <short>
+          <var>TLVAdvancedCustomDrawEvent</var> - generic event handling method for List View custom drawing</short>
+      </element>
+      <element name="TLVAdvancedCustomDrawSubItemEvent">
+        <short>
+          <var>TLVAdvancedCustomDrawSubItemEvent</var> - generic event handling method for List View custom subitem drawing</short>
+      </element>
+      <element name="TListViewFlag">
+        <short>
+          <var>TListViewFlag</var> - enumerated type (currently containing only one value) for List View flag</short>
+      </element>
+      <element name="TListViewFlags">
+        <short>
+          <var>TListViewFlags</var> - set of <var>TListViewFlag</var>
+        </short>
+      </element>
+      <element name="TOldTreeNodeInfo">
+        <short>
+          <var>TOldTreeNodeInfo</var> - record type (old version) for Tree Node information</short>
+      </element>
+      <element name="TCustomSectionTrackEvent">
+        <short>
+          <var>TCustomSectionTrackEvent</var> - generic event handling method for custom tracking a header section</short>
+      </element>
+      <element name="TSectionDragEvent">
+        <short>
+          <var>TSectionDragEvent</var> - generic event handling method for dragging a header section</short>
+      </element>
+      <element name="TCustomSectionNotifyEvent">
+        <short>
+          <var>TCustomSectionNotifyEvent</var> - generic event notification method for header section</short>
+      </element>
+      <element name="TCustomHCCreateSectionClassEvent">
+        <short>
+          <var>TCustomHCCreateSectionClassEvent</var> - generic event handler method for custom creation of header control</short>
       </element>
     </module>
     <!-- ComCtrls -->
