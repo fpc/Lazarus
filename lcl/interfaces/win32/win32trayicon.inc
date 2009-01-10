@@ -19,6 +19,28 @@
 
 { TWin32WSCustomTrayIcon }
 
+type
+  // IE 5+ version of TNotifyIconDataW
+  TNotifyIconDataW2 = record
+    cbSize: DWORD;
+    hWnd: HWND;
+    uID: UINT;
+    uFlags: UINT;
+    uCallbackMessage: UINT;
+    hIcon: HICON;
+    szTip: array [0..127] of WideChar;
+    dwState: DWORD;
+    dwStateMask: DWORD;
+    szInfo: array [0..255] of WideChar;
+    u: record
+         case longint of
+           0 : ( uTimeout : UINT );
+           1 : ( uVersion : UINT );
+          end;
+    szInfoTitle: array[0..63] of WideChar;
+    dwInfoFlags: DWORD;
+  end;
+
 const
   szClassName = 'TTrayIconClass';
   szAppTitle = 'apptitle';
@@ -141,7 +163,7 @@ class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Bo
 var
   tnida: TNotifyIconDataA;
   {$ifdef WindowsUnicodeSupport}
-  tnidw: TNotifyIconDataW;
+  tnidw: TNotifyIconDataW2;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
   {$endif}
@@ -184,7 +206,7 @@ begin
   begin
     // Fill TNotifyIconDataW
     FillChar(tnidw, SizeOf(tnidw), 0);
-    tnidw.cbSize := SizeOf(TNotifyIconDataW);
+    tnidw.cbSize := SizeOf(tnidw);
     tnidw.hWnd := ATrayIcon.Handle;
     tnidw.uID := uIDTrayIcon;
     tnidw.uFlags := NIF_MESSAGE or NIF_ICON;
@@ -195,7 +217,14 @@ begin
     WideBuffer := UTF8Decode(ATrayIcon.Hint);
     WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
 
-    Result := Shell_NotifyIconW(NIM_ADD, @tnidw)
+    Result := Shell_NotifyIconW(NIM_ADD, @tnidw);
+    if not Result then
+    begin
+      // Try old version of TNotifyIconDataW
+      tnidw.cbSize := SizeOf(TNotifyIconDataW);
+      WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
+      Result := Shell_NotifyIconW(NIM_MODIFY, @tnidw);
+    end;
   end
   else
   begin
@@ -243,7 +272,7 @@ class procedure TWin32WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTr
 var
   tnida: TNotifyIconDataA;
   {$ifdef WindowsUnicodeSupport}
-  tnidw: TNotifyIconDataW;
+  tnidw: TNotifyIconDataW2;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
   {$endif}
@@ -253,7 +282,7 @@ begin
   begin
     // Fill TNotifyIconDataW
     FillChar(tnidw, SizeOf(tnidw), 0);
-    tnidw.cbSize := SizeOf(TNotifyIconDataW);
+    tnidw.cbSize := SizeOf(tnidw);
     tnidw.hWnd := ATrayIcon.Handle;
     tnidw.uID := uIDTrayIcon;
     tnidw.hIcon := ATrayIcon.Icon.Handle;
@@ -262,7 +291,13 @@ begin
     WideBuffer := UTF8Decode(ATrayIcon.Hint);
     WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
 
-    Shell_NotifyIconW(NIM_MODIFY, @tnidw)
+    if not Shell_NotifyIconW(NIM_MODIFY, @tnidw) then
+    begin
+      // Try old version of TNotifyIconDataW
+      tnidw.cbSize := SizeOf(TNotifyIconDataW);
+      WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
+      Shell_NotifyIconW(NIM_MODIFY, @tnidw);
+    end;
   end
   else
   begin
@@ -299,23 +334,32 @@ end;
 *
 *  DESCRIPTION:    Shows a small message balloon near the tray icon
 *
+*  RETURNS:        False if the default cross-platform hint should be used
+*                  True if a platform-specific hint will be used
+*
 *******************************************************************}
-class function TWin32WSCustomTrayIcon.ShowBalloonHint(
- const ATrayIcon: TCustomTrayIcon): Boolean;
-{var
-  NotifyData: TNotifyIconDataEx:}
+class function TWin32WSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+const
+  FlagsMap: array[TBalloonFlags] of dword = (NIIF_NONE, NIIF_INFO, NIIF_WARNING, NIIF_ERROR);
+var
+  NotifyData: TNotifyIconDataW2;
+  w: WideString;
 begin
-  Result := True;
-{  NotifyData.szInfo              : array[0..255] of CHAR;
-                                    DUMMYUNIONNAME      : record
-                                                           case longint of
-                                                               0 : ( uTimeout : UINT );
-                                                               1 : ( uVersion : UINT );
-                                                              end;
-                                    szInfoTitle : array[0..63] of CHAR;
-                                    dwInfoFlags : DWORD;
+  Result := UnicodeEnabledOS;
+  if not Result then exit;
 
-  Shell_NotifyIconA():}
+  NotifyData.cbSize:=SizeOf(NotifyData);
+  NotifyData.hWnd := ATrayIcon.Handle;
+  NotifyData.uID := uIDTrayIcon;
+  NotifyData.uFlags:=NIF_INFO;
+  NotifyData.u.uTimeout:=ATrayIcon.BalloonTimeout;
+  w:=UTF8Decode(ATrayIcon.BalloonHint);
+  WideStrLCopy(@NotifyData.szInfo, PWideChar(w), High(NotifyData.szInfo));
+  w:=UTF8Decode(ATrayIcon.BalloonTitle);
+  WideStrLCopy(@NotifyData.szInfoTitle, PWideChar(w), High(NotifyData.szInfoTitle));
+  NotifyData.dwInfoFlags:=FlagsMap[ATrayIcon.BalloonFlags];
+
+  Result:= Shell_NotifyIconW(NIM_MODIFY, @NotifyData);
 end;
 
 {*******************************************************************
@@ -374,4 +418,5 @@ begin
   Result.X := TaskbarRect.Right;
   Result.Y := TaskbarRect.Top;
 end;
+
 

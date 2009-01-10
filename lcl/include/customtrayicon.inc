@@ -202,7 +202,7 @@ var
   UsePopUpNotifier: Boolean;
   Pt: TPoint;
 begin
-  UsePopUpNotifier := TWSCustomTrayIconClass(WidgetSetClass).ShowBalloonHint(Self);
+  UsePopUpNotifier := not TWSCustomTrayIconClass(WidgetSetClass).ShowBalloonHint(Self);
   
   if UsePopUpNotifier then
   begin

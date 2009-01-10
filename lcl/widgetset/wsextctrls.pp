@@ -337,12 +337,13 @@ end;
 {*******************************************************************
 *  TWSCustomTrayIcon.ShowBalloonHint ()
 *
-*  RETURNS:        If we should use the popupnotifier to implement this method
+*  RETURNS:        False if we should use the popupnotifier to implement this method
+*                  True if a platform-specific baloon is implemented
 *
 *******************************************************************}
 class function TWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
-  Result := True;
+  Result := False;
 end;
 
 class function TWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;

@@ -94,7 +94,7 @@ end;
 
 class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
-  Result := True;
+  Result := False;
 end;
 
 class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
