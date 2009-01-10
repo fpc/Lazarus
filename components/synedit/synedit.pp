@@ -6697,7 +6697,11 @@ begin
             then begin
               // only move caret one column
               Helper := ' ';
+              bChangeScroll := not (eoScrollPastEol in fOptions);
+              Include(fOptions, eoScrollPastEol);
               CaretX := CaretX - 1;
+              if bChangeScroll then
+                Exclude(fOptions, eoScrollPastEol);
               {$IFDEF SYN_LAZARUS}
               // behind EOL, there was no char to delete, this wa a simple cursor move, do not undo
               Caret := CaretXY;
