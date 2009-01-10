@@ -7891,7 +7891,6 @@ begin
 
   QAction_triggered_Event(Method) := @SlotTriggered;
   QAction_hook_hook_triggered(FTriggeredHook, Method);
-  TEventFilterMethod(Method) := @EventFilter;
 
   QAction_hovered_Event(Method) := @SlotHovered;
   QAction_hook_hook_hovered(FHoveredHook, Method);
