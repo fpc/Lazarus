@@ -1145,6 +1145,10 @@ resourcestring
   dlgHighlightRightOfCursor = 'Right Of Cursor';
   gldHighlightBothSidesOfCursor = 'On Both Sides';
   dlgBlockIndent = 'Block indent';
+  dlgBlockIndentType = 'Indent method';
+  dlgBlockIndentTypeSpace = 'Spaces';
+  dlgBlockIndentTypeCopy = 'Space/tab as prev Line';
+  dlgBlockIndentTypePos = 'Position only';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

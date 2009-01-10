@@ -44,14 +44,14 @@ unit SynBeautifierPas;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, SynEdit, SynEditTextBuffer,
+  Math, Classes, SysUtils, LCLProc, SynEdit, SynBeautifier, SynEditTextBuffer,
   SynEditHighlighter, SynHighlighterPas;
   
 type
 
   { TSynBeautifierPas }
 
-  TSynBeautifierPas = class(TSynCustomBeautifier)
+  TSynBeautifierPas = class(TSynBeautifier)
   public
     function TokenKindIsComment(Kind: integer): boolean;
     function InComment(Editor: TCustomSynEdit; XY: TPoint): boolean;

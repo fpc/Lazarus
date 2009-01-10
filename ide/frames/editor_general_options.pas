@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, SynBeautifier;
 
 type
   TPreviewEditor = TSynEdit;
@@ -40,8 +40,10 @@ type
     Bevel4: TBevel;
     Bevel5: TBevel;
     BlockIndentComboBox: TComboBox;
+    BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
+    BlockIndentTypeLabel: TLabel;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
@@ -124,6 +126,10 @@ end;
 procedure TEditorGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   BlockIndentLabel.Caption := dlgBlockIndent;
+  BlockIndentTypeLabel.Caption := dlgBlockIndent;
+  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
+  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeCopy);
+  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypePos);
   TabWidthsLabel.Caption := dlgTabWidths;
 
   // undo
@@ -172,6 +178,7 @@ begin
   begin
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent));
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth));
+    BlockIndentTypeComboBox.ItemIndex := ord(BlockIndentType);
 
     // undo
     UndoAfterSaveCheckBox.Checked := UndoAfterSave;
@@ -269,6 +276,7 @@ begin
     if i > 20 then
       i := 20;
     BlockIndent := i;
+    BlockIndentType := TSynBeautifierIndentType(BlockIndentTypeComboBox.ItemIndex);
 
     // mouse
     UpdateOptionFromBool(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);

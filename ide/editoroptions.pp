@@ -44,7 +44,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynEditMiscClasses,
+  SynHighlighterJScript, SynEditMiscClasses, SynBeautifier,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -434,6 +434,7 @@ type
     FCopyWordAtCursorOnCopyNone: Boolean;
     FShowGutterHints: Boolean;
     fBlockIndent: Integer;
+    fBlockIndentType: TSynBeautifierIndentType;
     fUndoLimit: Integer;
     fTabWidth:  Integer;
     FBracketHighlightStyle: TSynEditBracketHighlightStyle;
@@ -488,6 +489,8 @@ type
     procedure Load;
     procedure Save;
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
+    function GetSynBeautifierIndentName(IndentType: TSynBeautifierIndentType): string;
+    function GetSynBeautifierIndentType(IndentName: String): TSynBeautifierIndentType;
 
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure SetHighlighterSettings(Syn: TSrcIDEHighlighter); // write highlight settings to config file
@@ -539,6 +542,8 @@ type
       write FShowGutterHints;
     property BlockIndent: Integer
       read fBlockIndent write fBlockIndent default 2;
+    property BlockIndentType: TSynBeautifierIndentType
+      read fBlockIndentType write fBlockIndentType default sbitCopySpaceTab;
     property UndoLimit: Integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidth: Integer read fTabWidth write fTabWidth default 8;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle read FBracketHighlightStyle write FBracketHighlightStyle default sbhsBoth;
@@ -1381,6 +1386,7 @@ begin
   FCopyWordAtCursorOnCopyNone := True;
   FShowGutterHints := True;
   fBlockIndent := 2;
+  fBlockIndentType := sbitSpace;
   fUndoLimit := 32767;
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
@@ -1499,6 +1505,9 @@ begin
       'EditorOptions/General/Editor/UseSyntaxHighlight', True);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
+    fBlockIndentType := GetSynBeautifierIndentType
+      (XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndentType',
+                          'SpaceIndent'));
     fUndoLimit :=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit', 32767);
     fTabWidth :=
@@ -1668,6 +1677,8 @@ begin
       , fUseSyntaxHighlight, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
       , fBlockIndent, 2);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndentType'
+      , GetSynBeautifierIndentName(fBlockIndentType), 'SpaceIndent');
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
       , fUndoLimit, 32767);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/TabWidth'
@@ -1815,6 +1826,28 @@ begin
     else
       Result := '';
   end;
+end;
+
+function TEditorOptions.GetSynBeautifierIndentName(IndentType: TSynBeautifierIndentType): string;
+begin
+  case IndentType of
+    sbitSpace:
+      Result := 'SpaceIndent';
+    sbitCopySpaceTab:
+      Result := 'CopySpaceTabIndent';
+    sbitPositionCaret:
+      Result := 'PositionIndent';
+  end;
+end;
+
+function TEditorOptions.GetSynBeautifierIndentType(IndentName: String): TSynBeautifierIndentType;
+begin
+  if IndentName = 'SpaceIndent' then
+    Result := sbitSpace
+  else if IndentName = 'CopySpaceTabIndent' then
+    Result := sbitCopySpaceTab
+  else if IndentName = 'PositionIndent' then
+    Result := sbitPositionCaret;
 end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter):
@@ -2289,6 +2322,7 @@ begin
   ASynEdit.Options := fSynEditOptions;
   ASynEdit.Options2 := fSynEditOptions2;
   ASynEdit.BlockIndent := fBlockIndent;
+  (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
   ASynEdit.TabWidth := fTabWidth;
   ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
 
@@ -2350,6 +2384,7 @@ begin
   fSynEditOptions := ASynEdit.Options;
   fSynEditOptions2 := ASynEdit.Options2;
   fBlockIndent := ASynEdit.BlockIndent;
+  fBlockIndentType := (ASynEdit.Beautifier as TSynBeautifier).IndentType;
   fTabWidth := ASynEdit.TabWidth;
   FBracketHighlightStyle := ASynEdit.BracketHighlightStyle;
 

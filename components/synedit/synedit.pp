@@ -74,7 +74,7 @@ uses
   Imm,
 {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
-  SynEditPointClasses,
+  SynEditPointClasses, SynBeautifier,
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
@@ -296,27 +296,6 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF SYN_LAZARUS}
-  { TSynCustomBeautifier }
-
-  TSynCustomBeautifier = class(TComponent)
-  public
-    function LeftSpaces(Editor: TCustomSynEdit; const Line: string;
-                        Physical: boolean): Integer;
-    function CanUnindent(const Editor: TCustomSynEdit;  const Line: string;
-                         const PhysCaretX: Integer): Boolean; virtual;
-    function UnIndentLine(const Editor: TCustomSynEdit;  const Line: string;
-                          const PhysCaret: TPoint; out DelChars, InsChars: String;
-                          out CaretNewX: Integer): String; virtual; // Todo InsChar are not supprted for undo
-    function IndentLine(const Editor: TCustomSynEdit; Line: string;
-                        const PhysCaret: TPoint; out DelChars, InsChars: String;
-                        out CaretNewX: Integer;
-                        RemoveCurrentIndent: Boolean = False): String; virtual; // Todo DelChar are not supprted for undo
-    function GetIndentForLine(Editor: TCustomSynEdit; const Line: string;
-                              const PhysCaret: TPoint): Integer; virtual;
-  end;
-  {$ENDIF}
-
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
@@ -479,6 +458,7 @@ type
     function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
     function GetFont: TFont;
+    function GetLines: TStrings; override;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     {$IFDEF SYN_LAZARUS}
@@ -494,10 +474,11 @@ type
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
+    function GetTheLinesView: TStrings; override;
     procedure SetBracketHighlightStyle(
       const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
-    procedure SetRealLines(const AValue : TStrings);
+    procedure SetRealLines(const AValue : TStrings); override;
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
@@ -568,7 +549,7 @@ type
     procedure SetLastMouseCaret(const AValue: TPoint);
     {$ENDIF}
     procedure SetLeftChar(Value: Integer);
-    procedure SetLines(Value: TStrings);
+    procedure SetLines(Value: TStrings); override;
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
     procedure SetMaxUndo(const Value: Integer);
@@ -878,8 +859,6 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
-    property RealLines: TStrings read FTheLinesView write SetRealLines; // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
-    property Lines: TStrings read FLines write SetLines;                        // No uncommited (trailing/trimmable) spaces
     property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
@@ -1729,6 +1708,11 @@ begin
   Result := inherited Font;
 end;
 
+function TCustomSynEdit.GetLines: TStrings;
+begin
+  Result := FLines;
+end;
+
 function TCustomSynEdit.GetLineText: string;
 begin
   Result := FCaret.LineText;
@@ -1800,6 +1784,11 @@ end;
 function TCustomSynEdit.GetMouseLinkColor : TSynSelectedColor;
 begin
   Result := fMarkupCtrlMouse.MarkupInfo;
+end;
+
+function TCustomSynEdit.GetTheLinesView: TStrings;
+begin
+  Result := FTheLinesView;
 end;
 
 procedure TCustomSynEdit.SetBracketHighlightStyle(
@@ -5782,6 +5771,7 @@ begin
         begin
           // If there's no selection, we have to set
           // the Caret's position manualy.
+          Include(fOptions, eoScrollPastEol); // old state has been stored above
           CaretXY := PhysStartPos;
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
@@ -7010,8 +7000,13 @@ begin
             end else
               CX := 1;
             FTheLinesView.Insert(CaretY, Temp);
-            if Command = ecLineBreak then
+            if Command = ecLineBreak then begin
+              bChangeScroll := not (eoScrollPastEol in fOptions);
+              Include(fOptions, eoScrollPastEol);
               CaretXY := Point(CX, CaretY + 1);
+              if bChangeScroll then
+                Exclude(fOptions, eoScrollPastEol);
+            end;
           end;
           DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
@@ -8368,9 +8363,10 @@ begin
     s:=LineText;
     PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,CaretY)).X-1;
     if NewCaret.X>PhysicalLineLen+1 then begin
-      // move to start of next line
+      // move to start of next line (if it was a move to the right)
       NewCaret.X:=1;
-      NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
+      if DX > 0 then
+        NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
     end;
   end;
 
@@ -9970,102 +9966,10 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF SYN_LAZARUS}
-{ TSynCustomBeautifier }
-
-function TSynCustomBeautifier.LeftSpaces(Editor: TCustomSynEdit;
-  const Line: string; Physical: boolean): Integer;
-var
-  p: PChar;
-begin
-  p := pointer(Line);
-  if Assigned(p) then begin
-    Result := 0;
-    while p^ in [#1..#32] do begin
-      Inc(p);
-      Inc(Result);
-    end;
-    if Physical and (Result>0) then
-      Result:=Editor.LogicalToPhysicalCol(Line,Result+1)-1;
-  end else
-    Result := 0;
-end;
-
-function TSynCustomBeautifier.CanUnindent(const Editor: TCustomSynEdit;
-  const Line: string; const PhysCaretX: Integer): Boolean;
-begin
-  Result := (LeftSpaces(Editor, Line, True) = PhysCaretX - 1);
-end;
-
-function TSynCustomBeautifier.UnIndentLine(const Editor: TCustomSynEdit;
-  const Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String;
-  out CaretNewX: Integer): String;
-var
-  SpaceCount1, SpaceCount2: Integer;
-  BackCounter, LogSpacePos: Integer;
-begin
-  SpaceCount1 := LeftSpaces(Editor, Line, true);
-  SpaceCount2 := 0;
-  if (SpaceCount1 > 0) then begin
-    BackCounter := PhysCaret.Y - 2;
-    while BackCounter >= 0 do begin
-      SpaceCount2 := LeftSpaces(Editor, Editor.RealLines[BackCounter], true);
-      if SpaceCount2 < SpaceCount1 then
-        break;
-      Dec(BackCounter);
-    end;
-  end;
-  if SpaceCount2 = SpaceCount1 then
-    SpaceCount2 := 0;
-  // remove visible spaces
-  LogSpacePos:=Editor.PhysicalToLogicalCol(Line, SpaceCount2 + 1);
-  CaretNewX :=  SpaceCount2 + 1;
-  DelChars := copy(Line, LogSpacePos, PhysCaret.X - LogSpacePos);
-  InsChars := ''; // TODO: if tabs were removed, maybe fill-up with spaces
-  Result :=copy(Line, 1, LogSpacePos-1) + copy(Line, PhysCaret.X, MaxInt);
-end;
-
-function TSynCustomBeautifier.IndentLine(const Editor: TCustomSynEdit;
-  Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String;
-  out CaretNewX: Integer; RemoveCurrentIndent: Boolean = False): String;
-var
-  SpaceCount1, SpaceCount2: Integer;
-  BackCounter: Integer;
-  Temp: string;
-begin
-  DelChars := '';
-  If RemoveCurrentIndent then begin
-    SpaceCount1 := LeftSpaces(Editor, Line, False);
-    DelChars := copy(Line, 1, SpaceCount1);
-    Line := copy(Line, SpaceCount1 + 1, MaxInt);
-  end;
-
-  SpaceCount2 := 0;
-  BackCounter := PhysCaret.Y - 1;
-  repeat
-    Dec(BackCounter);
-    Temp := Editor.RealLines[BackCounter];
-    SpaceCount2 := LeftSpaces(Editor, Temp, True);
-  until (BackCounter = 0) or (Temp <> '');
-
-  InsChars := StringOfChar(' ', SpaceCount2);
-  CaretNewX := Length(InsChars) + 1;
-  Result := InsChars + Line;
-end;
-
-function TSynCustomBeautifier.GetIndentForLine(Editor: TCustomSynEdit;
-  const Line: string; const PhysCaret: TPoint): integer;
-var
-  s1, s2: string;
-begin
-  IndentLine(Editor, Line, PhysCaret, s1, s2, Result, False);
-end;
-{$ENDIF}
-
 initialization
   {$IFNDEF SYN_LAZARUS}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
   {$ENDIF}
-  SynDefaultBeautifier := TSynCustomBeautifier.Create(Application);
+  SynDefaultBeautifier := TSynBeautifier.Create(Application);
 
 end.

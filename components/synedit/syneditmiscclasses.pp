@@ -53,7 +53,16 @@ type
 
   // Empty - For type checking on function-arguments
   // in places where TCustomSynEdit can not be used due to circular unit refs
-  TSynEditBase = class(TCustomControl);
+  TSynEditBase = class(TCustomControl)
+  protected
+    function GetTheLinesView: TStrings; virtual; abstract;
+    procedure SetRealLines(const AValue : TStrings); virtual; abstract;
+    function GetLines: TStrings; virtual; abstract;
+    procedure SetLines(Value: TStrings); virtual; abstract;
+  public
+    property RealLines: TStrings read GetTheLinesView write SetRealLines;       // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property Lines: TStrings read GetLines write SetLines;                      // No uncommited (trailing/trimmable) spaces
+  end;
 
   { TSynSelectedColor }
 
