@@ -1023,6 +1023,27 @@ var
       then lmNotify.result := lmNotify.result or CDRFRESULT[ResultFlag];
     end;
   end;
+
+  procedure HandleBitBtnCustomDraw(ABitBtn: TCustomBitBtn);
+  var
+    DrawInfo: PNMCustomDraw absolute NMHdr;
+    ARect: TRect;
+  begin
+    case DrawInfo^.dwDrawStage of
+      CDDS_PREPAINT:
+      begin
+        lmNotify.result := CDRF_DODEFAULT;
+        WinProcess := False;
+        if ABitBtn.Focused then
+        begin
+          ARect := DrawInfo^.rc;
+          InflateRect(ARect, -3, -3);
+          if not IsRectEmpty(ARect) then
+            DrawFocusRect(DrawInfo^.hdc, ARect);
+        end;
+      end;
+    end;
+  end;
   
   procedure HandleDropFiles;
   var
@@ -1986,10 +2007,13 @@ begin
                 idFrom := ShowHideTabPage(HWndFrom, true);
               NM_CUSTOMDRAW:
               begin
-                if WindowInfo^.WinControl is TCustomListView
-                then HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl))
-                else if GetNeedParentPaint(WindowInfo, lWinControl)
-                  and WindowInfo^.ThemedCustomDraw then
+                if WindowInfo^.WinControl is TCustomListView then
+                  HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl))
+                else
+                if WindowInfo^.WinControl is TCustomBitBtn then
+                  HandleBitBtnCustomDraw(TCustomBitBtn(WindowInfo^.WinControl))
+                else
+                if GetNeedParentPaint(WindowInfo, lWinControl) and WindowInfo^.ThemedCustomDraw then
                 begin
                   case PNMCustomDraw(LParam)^.dwDrawStage of
                     CDDS_PREPAINT:
