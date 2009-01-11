@@ -573,6 +573,19 @@ type
     );
   TControlCellAligns = set of TControlCellAlign;
 
+  { TControlBorderSpacingDefault defines the default values for TControlBorderSpacing
+    so derived TControl classes can define their own default values }
+
+  TControlBorderSpacingDefault = record
+    Left: TSpacingSize;
+    Top: TSpacingSize;
+    Right: TSpacingSize;
+    Bottom: TSpacingSize;
+    Around: TSpacingSize;
+  end;
+  PControlBorderSpacingDefault = ^TControlBorderSpacingDefault;
+
+
   { TControlBorderSpacing }
 
   TControlBorderSpacing = class(TPersistent)
@@ -587,7 +600,13 @@ type
     FOnChange: TNotifyEvent;
     FRight: TSpacingSize;
     FTop: TSpacingSize;
+    FDefault: PControlBorderSpacingDefault;
+    function IsAroundStored: boolean;
+    function IsBottomStored: boolean;
     function IsInnerBorderStored: boolean;
+    function IsLeftStored: boolean;
+    function IsRightStored: boolean;
+    function IsTopStored: boolean;
     procedure SetAround(const AValue: TSpacingSize);
     procedure SetBottom(const AValue: TSpacingSize);
     procedure SetCellAlignHorizontal(const AValue: TControlCellAlign);
@@ -600,7 +619,7 @@ type
   protected
     procedure Change(InnerSpaceChanged: Boolean); dynamic;
   public
-    constructor Create(OwnerControl: TControl);
+    constructor Create(OwnerControl: TControl; ADefault: PControlBorderSpacingDefault = nil);
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
@@ -612,11 +631,11 @@ type
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Left: TSpacingSize read FLeft write SetLeft default 0;
-    property Top: TSpacingSize read FTop write SetTop default 0;
-    property Right: TSpacingSize read FRight write SetRight default 0;
-    property Bottom: TSpacingSize read FBottom write SetBottom default 0;
-    property Around: TSpacingSize read FAround write SetAround default 0;
+    property Left: TSpacingSize read FLeft write SetLeft stored IsLeftStored;
+    property Top: TSpacingSize read FTop write SetTop stored IsTopStored;
+    property Right: TSpacingSize read FRight write SetRight stored IsRightStored;
+    property Bottom: TSpacingSize read FBottom write SetBottom stored IsBottomStored;
+    property Around: TSpacingSize read FAround write SetAround stored IsAroundStored;
     property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default 0;
     property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
     property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
@@ -936,6 +955,7 @@ type
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value: Boolean); virtual;
     procedure BoundsChanged; dynamic;
+    function CreateControlBorderSpacing: TControlBorderSpacing; virtual;
     procedure DoConstraintsChange(Sender: TObject); virtual;
     procedure DoBorderSpacingChange(Sender: TObject;
                                     InnerSpaceChanged: Boolean); virtual;
@@ -2719,9 +2739,44 @@ begin
   Change(false);
 end;
 
+function TControlBorderSpacing.IsAroundStored: boolean;
+begin
+  if FDefault = nil
+  then Result := FAround <> 0
+  else Result := FAround <> FDefault^.Around;
+end;
+
+function TControlBorderSpacing.IsBottomStored: boolean;
+begin
+  if FDefault = nil
+  then Result := FBottom <> 0
+  else Result := FBottom <> FDefault^.Bottom;
+end;
+
 function TControlBorderSpacing.IsInnerBorderStored: boolean;
 begin
   Result:=Control.IsBorderSpacingInnerBorderStored;
+end;
+
+function TControlBorderSpacing.IsLeftStored: boolean;
+begin
+  if FDefault = nil
+  then Result := FLeft <> 0
+  else Result := FLeft <> FDefault^.Left;
+end;
+
+function TControlBorderSpacing.IsRightStored: boolean;
+begin
+  if FDefault = nil
+  then Result := FRight <> 0
+  else Result := FRight <> FDefault^.Right;
+end;
+
+function TControlBorderSpacing.IsTopStored: boolean;
+begin
+  if FDefault = nil
+  then Result := FTop <> 0
+  else Result := FTop <> FDefault^.Top;
 end;
 
 procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);
@@ -2787,14 +2842,25 @@ begin
   Change(false);
 end;
 
-constructor TControlBorderSpacing.Create(OwnerControl: TControl);
+constructor TControlBorderSpacing.Create(OwnerControl: TControl; ADefault: PControlBorderSpacingDefault);
 begin
   FControl := OwnerControl;
-  FLeft := 0;
-  FRight := 0;
-  FTop := 0;
-  FBottom := 0;
-  FAround := 0;
+  FDefault := ADefault;
+  if FDefault = nil
+  then begin
+    FLeft := 0;
+    FRight := 0;
+    FTop := 0;
+    FBottom := 0;
+    FAround := 0;
+  end
+  else begin
+    FLeft := FDefault^.Left;
+    FRight := FDefault^.Right;
+    FTop := FDefault^.Top;
+    FBottom := FDefault^.Bottom;
+    FAround := FDefault^.Around;
+  end;
   FCellAlignHorizontal := ccaFill;
   FCellAlignVertical := ccaFill;
   inherited Create;
@@ -2844,6 +2910,7 @@ begin
   SpaceAround.Right:=Right+Around;
   SpaceAround.Bottom:=Bottom+Around;
 end;
+
 
 function TControlBorderSpacing.GetSpace(Kind: TAnchorKind): Integer;
 begin

@@ -3835,7 +3835,7 @@ begin
   FControlStyle := FControlStyle
                  +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
   FConstraints:= TSizeConstraints.Create(Self);
-  FBorderSpacing:=TControlBorderSpacing.Create(Self);
+  FBorderSpacing := CreateControlBorderSpacing;
   for Side:=Low(FAnchorSides) to High(FAnchorSides) do
     FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
 
@@ -3858,6 +3858,19 @@ begin
   FFloatingDockSiteClass := TCustomDockForm;
   FParentBidiMode := True;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.CreateControlBorderSpacing
+  Params:  None
+  Returns: ControlBorderSpacing instance
+
+  Creates the default ControlBorderSpacing. Allowes descendant controls to overide
+  this.
+ ------------------------------------------------------------------------------}
+function TControl.CreateControlBorderSpacing: TControlBorderSpacing;
+begin
+  Result := TControlBorderSpacing.Create(Self);
 end;
 
 {------------------------------------------------------------------------------
