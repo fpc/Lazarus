@@ -1604,6 +1604,7 @@ begin
       UpdateCaret;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
+    fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
   end;
 end;
 
@@ -7312,6 +7313,8 @@ begin
       EcUnFoldCurrent:
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
       {$ENDIF}
+      EcToggleMarkupWord:
+          FMarkupHighCaret.ToggleCurrentWord;
     end;
   finally
     DecPaintLock;

@@ -422,6 +422,7 @@ begin
   EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcUnFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcToggleMarkupWord: SetResult(VK_M,[ssAlt],VK_UNKNOWN,[]);
 
   // file menu
   ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -753,6 +754,7 @@ begin
   EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcToggleMarkupWord: SetResult(VK_M,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // file menu
   ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1272,6 +1274,7 @@ begin
   EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcToggleMarkupWord: SetResult(VK_M,[ssAlt],VK_UNKNOWN,[]);
 
   // file menu
   ecNew: SetResult(VK_N,[ssMeta],VK_UNKNOWN,[]);
@@ -1587,6 +1590,7 @@ begin
     EcFoldLevel0             : Result:= srkmecUnFoldAll;
     EcFoldCurrent            : Result:= srkmecFoldCurrent;
     EcUnFoldCurrent          : Result:= srkmecUnFoldCurrent;
+    EcToggleMarkupWord       : Result := srkmecToggleMarkupWord;
 
     // file menu
     ecNew                     : Result:= lisMenuNewOther;
@@ -1988,6 +1992,7 @@ begin
   AddDefault(C, 'Select word', lisMenuSelectWord, ecSelectWord);
   AddDefault(C, 'Select line', lisMenuSelectLine, ecSelectLine);
   AddDefault(C, 'Select paragraph', lisMenuSelectParagraph, ecSelectParagraph);
+  AddDefault(C, 'Toggle Current-Word highlight', srkmecToggleMarkupWord, EcToggleMarkupWord);
 
   // editing - without menu items in the IDE bar
   C:=Categories[AddCategory('text editing commands',srkmCatEditing,

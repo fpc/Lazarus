@@ -177,6 +177,7 @@ const
   EcFoldLevel0             = EcFoldLevel9 + 1;
   EcFoldCurrent            = 381;
   EcUnFoldCurrent          = 382;
+  EcToggleMarkupWord       = 383;
 
   ecDeleteLastChar  = 501;  // Delete last char (i.e. backspace key)
   ecDeleteChar      = 502;  // Delete char at cursor (i.e. delete key)
@@ -407,7 +408,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..111] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..112] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -519,7 +520,8 @@ const
     (Value: EcFoldLevel9; Name: 'EcFoldLevel9'),
     (Value: EcFoldLevel0; Name: 'EcFoldLevel0'),
     (Value: EcFoldCurrent; Name: 'EcFoldCurrent'),
-    (Value: EcUnFoldCurrent; Name: 'EcUnFoldCurrent')
+    (Value: EcUnFoldCurrent; Name: 'EcUnFoldCurrent'),
+    (Value: EcToggleMarkupWord; Name: 'EcToggleMarkupWord')
   );
 
 procedure GetEditorCommandValues(Proc: TGetStrProc);
@@ -958,6 +960,7 @@ begin
   AddKey(ecFoldLevel0, ord('0'), [ssAlt,ssShift]);
   AddKey(ecFoldCurrent, ord('-'), [ssAlt,ssShift]);
   AddKey(ecUnFoldCurrent, ord('+'), [ssAlt,ssShift]);
+  AddKey(EcToggleMarkupWord, ord('M'), [ssAlt]);
   AddKey(ecNormalSelect, ord('N'), [ssCtrl,ssShift]);
   AddKey(ecColumnSelect, ord('C'), [ssCtrl,ssShift]);
   AddKey(ecLineSelect, ord('L'), [ssCtrl,ssShift]);

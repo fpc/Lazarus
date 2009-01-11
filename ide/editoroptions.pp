@@ -469,6 +469,8 @@ type
     FMarkupCurWordFull: Boolean;
     FMarkupCurWordFullLen: Integer;
     FMarkupCurWordNoKeyword: Boolean;
+    FMarkupCurWordTrim: Boolean;
+    FMarkupCurWordNoTimer: Boolean;
 
     // Code tools options (MG: these will move to an unit of their own)
     fAutoIdentifierCompletion: Boolean;
@@ -595,11 +597,14 @@ type
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
     property MarkupCurWordFull: Boolean
       read FMarkupCurWordFull write FMarkupCurWordFull default False;
-
     property MarkupCurWordFullLen: Integer
       read FMarkupCurWordFullLen write FMarkupCurWordFullLen default 3;
     property MarkupCurWordNoKeyword: Boolean
       read FMarkupCurWordNoKeyword write FMarkupCurWordNoKeyword default False;
+    property MarkupCurWordTrim: Boolean
+      read FMarkupCurWordTrim write FMarkupCurWordTrim default True;
+    property MarkupCurWordNoTimer: Boolean
+      read FMarkupCurWordNoTimer write FMarkupCurWordNoTimer default False;
 
     // Code Tools options
     property AutoIdentifierCompletion: Boolean
@@ -1409,6 +1414,8 @@ begin
   FMarkupCurWordFull := False;
   FMarkupCurWordFullLen := 3;
   FMarkupCurWordNoKeyword := False;
+  FMarkupCurWordTrim := True;
+  FMarkupCurWordNoTimer := False;
 
   // Code Tools options
   fCodeTemplateFileName := SetDirSeparators(GetPrimaryConfigPath + '/lazarus.dci');
@@ -1588,6 +1595,12 @@ begin
     FMarkupCurWordNoKeyword :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/NoKeyword', False);
+    FMarkupCurWordTrim :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWord/Trim', True);
+    FMarkupCurWordNoTimer :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
 
     // Code Tools options
     fAutoIdentifierCompletion :=
@@ -1744,6 +1757,10 @@ begin
       FMarkupCurWordFullLen, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword',
       FMarkupCurWordNoKeyword, False);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Trim',
+      FMarkupCurWordTrim, True);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoTimer',
+      FMarkupCurWordNoTimer, False);
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
@@ -2363,10 +2380,14 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     MarkCaret.Enabled := FMarkupCurWordEnabled;
-    MarkCaret.WaitTime := FMarkupCurWordTime;
+    if FMarkupCurWordNoTimer then
+      MarkCaret.WaitTime := 0
+    else
+      MarkCaret.WaitTime := FMarkupCurWordTime;
     MarkCaret.FullWord := FMarkupCurWordFull;
     MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
     MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
+    MarkCaret.Trim := FMarkupCurWordTrim;
   end;
 
   // Code Folding
@@ -2410,10 +2431,15 @@ begin
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
     FMarkupCurWordEnabled := MarkCaret.Enabled;
-    FMarkupCurWordTime := MarkCaret.WaitTime;
+    FMarkupCurWordNoTimer := MarkCaret.WaitTime = 0;
+    if FMarkupCurWordNoTimer then
+      FMarkupCurWordTime := 1500
+    else
+      FMarkupCurWordTime := MarkCaret.WaitTime;
     FMarkupCurWordFull := MarkCaret.FullWord;
     FMarkupCurWordFullLen := MarkCaret.FullWordMaxLen;
     FMarkupCurWordNoKeyword := MarkCaret.IgnoreKeywords;
+    FMarkupCurWordTrim := MarkCaret.Trim;
   end;
 end;
 

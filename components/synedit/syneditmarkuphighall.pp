@@ -27,7 +27,8 @@ interface
 
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses;
+  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses,
+  SynEditMiscProcs;
 
 type
 
@@ -103,15 +104,17 @@ type
 
     Procedure FindStartPoint;
     Procedure FindInitialize(Backward: Boolean);
+    function GetMatchCount: Integer;
     Procedure ValidateMatches;
     procedure SetSearchOptions(const AValue : TSynSearchOptions);
-    procedure SetSearchString(const AValue : String);
   protected
+    procedure SetSearchString(const AValue : String); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoTextChanged(StartLine, EndLine: Integer); override;
     property  HideSingleMatch: Boolean read FHideSingleMatch write FHideSingleMatch;
+    property MatchCount: Integer read GetMatchCount;
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
@@ -131,19 +134,27 @@ type
   TSynEditMarkupHighlightAllCaret = class(TSynEditMarkupHighlightAll)
   private
     FTimer: TTimer;
+    FTrim: Boolean;
     FWaitTime: Integer;
     FFullWord: Boolean;
     FFullWordMaxLen: Integer;
     FIgnoreKeywords: Boolean;
     FSelection: TSynEditSelection;
     FHighlighter: TSynCustomHighlighter;
+    FLowBound, FUpBound, FOldLowBound, FOldUpBound: TPoint;
+    FToggledWord: String;
+    FToggledOption: TSynSearchOptions;
+    FStateChanged: Boolean;
     procedure SetFullWord(const AValue: Boolean);
     procedure SetFullWordMaxLen(const AValue: Integer);
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
     procedure SetIgnoreKeywords(const AValue: Boolean);
     procedure SetSelection(const AValue: TSynEditSelection);
+    procedure SetTrim(const AValue: Boolean);
     procedure SetWaitTime(const AValue: Integer);
+    function LogicalCaret: TPoint;
   protected
+    procedure SetSearchString(const AValue : String); override;
     procedure SelectionChanged(Sender: TObject);
     procedure DoCaretChanged(OldCaret : TPoint); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
@@ -155,7 +166,10 @@ type
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
+    procedure CheckState; // Todo need a global lock, including the markup
+    procedure ToggleCurrentWord;
     property  WaitTime: Integer read FWaitTime write SetWaitTime;
+    property  Trim: Boolean read FTrim write SetTrim;
     property  FullWord: Boolean read FFullWord write SetFullWord;
     property  FullWordMaxLen: Integer read FFullWordMaxLen write SetFullWordMaxLen;
     property  IgnoreKeywords: Boolean read FIgnoreKeywords write SetIgnoreKeywords;
@@ -361,6 +375,11 @@ begin
   fSearch.Backwards := Backward;
 end;
 
+function TSynEditMarkupHighlightAll.GetMatchCount: Integer;
+begin
+  Result := fMatches.Count;
+end;
+
 procedure TSynEditMarkupHighlightAll.FindStartPoint;
 var
   ptStart, ptEnd, ptFoundStart, ptFoundEnd: TPoint;
@@ -405,13 +424,13 @@ begin
   While (true) do begin
     if not fSearch.FindNextOne(Lines, ptStart, ptEnd, ptFoundStart, ptFoundEnd)
     then break;
-    if ptFoundStart.Y > LastLine
-    then break;
     ptStart := ptFoundEnd;
 
-    { TODO: skip if all folded }
     fMatches.StartPoint[Pos] := LogicalToPhysicalPos(ptFoundStart);
     fMatches.EndPoint[Pos]:= LogicalToPhysicalPos(ptFoundEnd);
+
+    if ptFoundStart.Y > LastLine
+    then break;
     inc(Pos);
   end;
 
@@ -547,15 +566,24 @@ begin
   if FWaitTime = AValue then exit;
   FWaitTime := AValue;
   FTimer.Interval := FWaitTime;
+  if FWaitTime = 0 then
+    SearchString := '';
   RestartTimer;
 end;
 
-procedure TSynEditMarkupHighlightAllCaret.SelectionChanged(Sender: TObject);
+function TSynEditMarkupHighlightAllCaret.LogicalCaret: TPoint;
 begin
-  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
-    exit;
-  SearchString := '';
-  RestartTimer;
+  Result := TCustomSynEdit(SynEdit).PhysicalToLogicalPos
+                                    (TCustomSynEdit(SynEdit).CaretXY);
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.SetSearchString(const AValue: String);
+begin
+  inherited SetSearchString(AValue);
+  if AValue = '' then
+    FLowBound.X := -1;
+  FOldLowBound := FLowBound;
+  FOldUpBound := FUpBound;
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.SetFullWord(const AValue: Boolean);
@@ -595,18 +623,55 @@ begin
     FSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
 end;
 
-procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
+procedure TSynEditMarkupHighlightAllCaret.SetTrim(const AValue: Boolean);
 begin
-  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+  if FTrim = AValue then exit;
+  FTrim := AValue;
+  ScrollTimerHandler(self);
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.CheckState;
+var
+  t: String;
+begin
+  if not FStateChanged then
     exit;
+  FStateChanged := False;
+  t := GetCurrentText;
+  if (SearchString = t) and (SearchOptions = GetCurrentOption) then begin
+    SearchString := t; // Update old bounds
+    exit;
+  end;
+  if (SearchString <> '') and
+     ( ((CompareCarets(FLowBound, FOldLowBound) = 0) and
+       (CompareCarets(LogicalCaret, FUpBound) >= 0) and (MatchCount > 1) )
+      OR ((CompareCarets(FUpBound, FOldUpBound) = 0) and
+       (CompareCarets(LogicalCaret, FLowBound) <= 0) and (MatchCount > 1) )
+     ) then begin
+    ScrollTimerHandler(self);
+    exit;
+  end;
+
   SearchString := '';
   RestartTimer;
 end;
 
+procedure TSynEditMarkupHighlightAllCaret.SelectionChanged(Sender: TObject);
+begin
+  FStateChanged := True; // Something changed, paint will be called
+  inherited;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
+begin
+  FStateChanged := True; // Something changed, paint will be called
+  inherited;
+end;
+
 procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine: Integer);
 begin
-  SearchString := '';
-  RestartTimer;
+  FStateChanged := True; // Something changed, paint will be called
+  inherited;
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
@@ -618,7 +683,7 @@ end;
 procedure TSynEditMarkupHighlightAllCaret.RestartTimer;
 begin
   FTimer.Enabled := False;
-  if MarkupInfo.IsEnabled then
+  if (MarkupInfo.IsEnabled) and (FWaitTime > 0) then
     FTimer.Enabled := True;
 end;
 
@@ -633,20 +698,43 @@ begin
 end;
 
 function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
+  function TrimS(s: String): String;
+  var
+    i: Integer;
+  begin
+    i := 1;
+    while (i <= length(s)) and (s[i] in [#1..#32]) do inc(i);
+    Result := copy(s, i, MaxInt);
+    i := length(Result);
+    while (i > 0) and (Result[i] in [#1..#32]) do dec(i);
+    Result := copy(Result, 1, i);
+  end;
 begin
-  If TCustomSynEdit(SynEdit).SelAvail then
-    Result := TCustomSynEdit(SynEdit).SelText
-  else begin
-    Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol
-      (TCustomSynEdit(SynEdit).PhysicalToLogicalPos(TCustomSynEdit(SynEdit).CaretXY));
+  if FToggledWord <> '' then
+    exit(FToggledWord);
+  If TCustomSynEdit(SynEdit).SelAvail then begin
+    if FTrim then
+      Result := TrimS(TCustomSynEdit(SynEdit).SelText)
+    else
+      Result := TCustomSynEdit(SynEdit).SelText;
+    if TrimS(Result) = '' then Result := '';
+    FLowBound := TCustomSynEdit(SynEdit).BlockBegin;
+    FUpBound := TCustomSynEdit(SynEdit).BlockEnd;
+  end else begin
+    Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol(LogicalCaret);
     if FIgnoreKeywords and assigned(FHighlighter)
        and FHighlighter.IsKeyword(Result) then
       Result := '';
+    FLowBound.Y := LogicalCaret.Y;
+    FUpBound.Y := LogicalCaret.Y;
+    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(LogicalCaret, FLowBound.X, FUpBound.X);
   end;
 end;
 
 function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
 begin
+  if FToggledWord <> '' then
+    exit(FToggledOption);
   If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
     Result := []
   else
@@ -659,10 +747,16 @@ end;
 constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
+  FStateChanged := False;
   MarkupInfo.Clear;
   HideSingleMatch := True;
   FFullWord := False;
   FWaitTime := 1500;
+  FTrim := True;
+  FLowBound := Point(-1, -1);
+  FUpBound := Point(-1, -1);
+  FOldLowBound := Point(-1, -1);
+  FOldUpBound := Point(-1, -1);
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
   FTimer.Interval := FWaitTime;
@@ -675,6 +769,30 @@ begin
     FSelection.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
   FreeAndNil(FTimer);
   inherited Destroy;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.ToggleCurrentWord;
+var
+  s: String;
+begin
+  if FToggledWord = '' then begin
+    FToggledWord := GetCurrentText;
+    FToggledOption :=  GetCurrentOption;
+  end else begin
+    s := FToggledWord;
+    FToggledWord := '';
+    if GetCurrentText <> s then begin
+      FToggledWord := GetCurrentText;
+      FToggledOption :=  GetCurrentOption;
+    end;
+  end;
+  SearchString := FToggledWord;
+  SearchOptions := GetCurrentOption;
+  if FToggledWord = '' then begin
+    RestartTimer;
+  end else begin
+    ScrollTimerHandler(self);
+  end;
 end;
 
 end.

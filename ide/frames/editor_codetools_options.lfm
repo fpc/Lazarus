@@ -5,8 +5,8 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   ClientWidth = 496
   TabOrder = 0
   Visible = False
-  DesignLeft = 46
-  DesignTop = 46
+  DesignLeft = 23
+  DesignTop = 23
   object AutoDelayMaxLabel: TLabel[0]
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
@@ -86,17 +86,16 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     ParentColor = False
   end
   object MarkupWordFullLenLabel: TLabel[6]
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = MarkupWordFullCheckBox
     AnchorSideTop.Control = MarkupWordEnabledCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = MarkupWordFullLenSpin
-    Left = 307
+    Left = 230
     Height = 16
     Top = 236
     Width = 137
-    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 230
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 4
     Caption = 'MarkupWordFullLenLabel'
     ParentColor = False
   end
@@ -234,17 +233,44 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     TabOrder = 9
   end
   object MarkupWordFullLenSpin: TSpinEdit[17]
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = MarkupWordFullLenLabel
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = MarkupWordEnabledCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 448
+    Left = 373
     Height = 19
     Top = 236
     Width = 48
-    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     TabOrder = 10
+  end
+  object MarkupWordNoTimerCheckBox: TCheckBox[18]
+    AnchorSideLeft.Control = MarkupWordEnabledCheckBox
+    AnchorSideTop.Control = AutoDelayLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 230
+    Height = 19
+    Top = 211
+    Width = 171
+    BorderSpacing.Left = 230
+    BorderSpacing.Top = 6
+    Caption = 'MarkupWordNoTimerCheckBox'
+    TabOrder = 11
+  end
+  object MarkupWordTrim: TCheckBox[19]
+    AnchorSideLeft.Control = MarkupWordNoKeyword
+    AnchorSideTop.Control = MarkupWordFullCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 230
+    Height = 19
+    Top = 261
+    Width = 102
+    BorderSpacing.Left = 230
+    BorderSpacing.Top = 6
+    Caption = 'MarkupWordTrim'
+    TabOrder = 12
   end
 end

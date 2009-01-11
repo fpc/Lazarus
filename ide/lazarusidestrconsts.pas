@@ -1194,9 +1194,11 @@ resourcestring
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupWordEnabled = 'Highlight Current Word/Block';
-  dlgMarkupWordFull = 'Highlight Current Word match word boundaries';
+  dlgMarkupWordFull = 'Current Word match word boundaries';
   dlgMarkupWordFullLen = 'Only if shorter than';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
+  dlgMarkupWordTrim = 'Trim Spaces';
+  dlgMarkupWordNoTimer = 'Disable Timer';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';
@@ -1927,6 +1929,7 @@ resourcestring
   srkmecUnFoldAll             = 'Unfold all';
   srkmecFoldCurrent           = 'Fold at Cursor';
   srkmecUnFoldCurrent         = 'Unfold at Cursor';
+  srkmecToggleMarkupWord      = 'Toggle Current-Word highlight';
 
   // edit menu
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';

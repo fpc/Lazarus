@@ -40,6 +40,7 @@ type
     AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     MarkupWordDelayLabel: TLabel;
+    MarkupWordNoTimerCheckBox: TCheckBox;
     MarkupWordFullCheckBox: TCheckBox;
     MarkupWordFullLenSpin: TSpinEdit;
     MarkupWordFullLenLabel: TLabel;
@@ -47,6 +48,7 @@ type
     MarkupWordMaxLabel: TLabel;
     MarkupWordMinLabel: TLabel;
     MarkupWordEnabledCheckBox: TCheckBox;
+    MarkupWordTrim: TCheckBox;
     MarkupWordTimeTrackBar: TTrackBar;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
@@ -88,6 +90,8 @@ begin
   MarkupWordMaxLabel.Caption := '4.0 ' + DlgTimeSecondUnit;;
   MarkupWordFullLenLabel.Caption := dlgMarkupWordFullLen;
   MarkupWordNoKeyword.Caption := dlgMarkupWordNoKeyword;
+  MarkupWordTrim.Caption := dlgMarkupWordTrim;
+  MarkupWordNoTimerCheckBox.Caption := dlgMarkupWordNoTimer;
 end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -105,6 +109,8 @@ begin
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
     MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
     MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
+    MarkupWordTrim.Checked := MarkupCurWordTrim;
+    MarkupWordNoTimerCheckBox.Checked := MarkupCurWordNoTimer;
   end;
 end;
 
@@ -123,6 +129,8 @@ begin
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
     MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;
+    MarkupCurWordTrim := MarkupWordTrim.Checked;
+    MarkupCurWordNoTimer := MarkupWordNoTimerCheckBox.Checked;
   end;
 end;
 
