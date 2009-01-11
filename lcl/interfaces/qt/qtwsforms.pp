@@ -259,7 +259,15 @@ begin
     
     We can ofcource hide widget, set flags here and then show it, but we dont
     want window flickering :)
+    
+    Under X11 we must call syncX() since heavy usage of modal forms can segfault
+    sometimes inside qt4 libs.
   }
+  {$IFNDEF QTOPIA}
+  {$IFDEF LINUX}
+  QApplication_syncX();
+  {$ENDIF}
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
