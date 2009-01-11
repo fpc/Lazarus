@@ -54,14 +54,12 @@ type
     FBevel: TBevel;
     FGlyphs: array[TPanelButton] of TBitmap;
     FButtons: array[TPanelButton] of TPanelBitBtn;
+    FButtonsWidth: Integer;
+    FButtonsHeight: Integer;
     FButtonOrder: TButtonOrder;
     FDefaultButton: TPanelButton;
     FSpacing: TSpacingSize;
-    procedure OrderButtonsRightToLeft(TheButtons: array of TControl);
-    procedure ButtonOrderCloseCancelOK;
-    procedure ButtonOrderCloseOKCancel;
     procedure CreateButton(AButton: TPanelButton);
-    procedure DoButtonOrder;
     procedure DoDefaultButton;
     procedure DoRestoreCancel;
     procedure DoShowButtons;
@@ -73,7 +71,14 @@ type
     procedure SetShowGlyphs(Value: TPanelButtons);
     procedure SetSpacing(AValue: TSpacingSize);
     procedure UpdateBevel;
+    procedure UpdateButtonOrder;
+    procedure UpdateSizes;
   protected
+    function CreateControlBorderSpacing: TControlBorderSpacing; override;
+    function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
+    procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop, ANewWidth,
+                                  ANewHeight: Integer; var AlignRect: TRect;
+                                  AlignInfo: TAlignInfo); override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
@@ -102,6 +107,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property OKButton;
     property HelpButton;
     property CloseButton;
@@ -133,6 +139,11 @@ procedure Register;
 
 implementation
 
+const
+  DEFAULT_BUTTONPANEL_BORDERSPACING: TControlBorderSpacingDefault = (
+    Left:0; Top:0; Right:0; Bottom:0; Around:6;
+  );
+
 procedure Register;
 begin
   RegisterComponents('Misc', [TButtonPanel]);
@@ -158,24 +169,14 @@ begin
     then begin
       FButtons[btn].Visible := True;
       FButtons[btn].Enabled := True;
-      if btn = pbHelp
-      then FButtons[btn].Align := alLeft
-      else FButtons[btn].Align := alRight;
     end
     else begin
       FButtons[btn].Visible := False;
       FButtons[btn].Enabled := False;
-      FButtons[btn].Align := alNone;
-      // when designing, hide doesn't work, so position button outside panel
-      if csDesigning in ComponentState
-      then begin
-        FButtons[btn].Left := -FButtons[btn].Width - 100;
-        FButtons[btn].Anchors := [];
-      end;
     end;
   end;
 
-  DoButtonOrder;
+  UpdateButtonOrder;
 end;
 
 procedure TCustomButtonPanel.SetShowButtons(Value: TPanelButtons);
@@ -209,26 +210,16 @@ end;
 
 procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
 begin
-  if FShowGlyphs = Value then
-    Exit;
-
+  if FShowGlyphs = Value then Exit;
   FShowGlyphs := Value;
-
   DoShowGlyphs;
 end;
 
 procedure TCustomButtonPanel.SetSpacing(AValue: TSpacingSize);
-var
-  btn: TPanelButton;
 begin
   if FSpacing = AValue then Exit;
   FSpacing := AValue;
-  for btn := Low(btn) to High(btn) do
-  begin
-    if FButtons[btn] = nil then Continue;
-    FButtons[btn].BorderSpacing.Around := FSpacing;
-  end;
-  UpdateBevel;
+  ReAlign;
 end;
 
 procedure TCustomButtonPanel.UpdateBevel;
@@ -236,143 +227,80 @@ begin
   if FBevel = nil then Exit;
 
   case Align of
-    alTop: begin
-      FBevel.Shape := bsBottomLine;
-      FBevel.Align := alBottom;
-    end;
-    alLeft: begin
-      FBevel.Shape := bsRightLine;
-      FBevel.Align := alRight;
-    end;
-    alRight: begin
-      FBevel.Shape := bsLeftLine;
-      FBevel.Align := alLeft;
-    end;
+    alTop:   FBevel.Shape := bsBottomLine;
+    alLeft:  FBevel.Shape := bsRightLine;
+    alRight: FBevel.Shape := bsLeftLine;
   else
     // default to bottom
     FBevel.Shape := bsTopLine;
-    FBevel.Align := alTop;
   end;
 
+  if Align in [alLeft, alRight]
+  then FBevel.Width := 2
+  else FBevel.Height := 2;
+end;
+
+procedure TCustomButtonPanel.UpdateSizes;
+var
+  btn: TPanelButton;
+begin
+  FButtonsHeight := 0;
+  for btn := Low(btn) to High(btn) do
+  begin
+    if FButtons[btn] = nil then Continue;
+    if FButtonsHeight > FButtons[btn].Height then Continue;
+    FButtonsHeight := FButtons[btn].Height;
+  end;
 
   if Align in [alLeft, alRight]
   then begin
-    FBevel.Width := 2;
-    FBevel.BorderSpacing.Top := FSpacing;
-    FBevel.BorderSpacing.Bottom := FSpacing;
-    FBevel.BorderSpacing.Left := 0;
-    FBevel.BorderSpacing.Right := 0;
-  end
-  else begin
-    FBevel.Height := 2;
-    FBevel.BorderSpacing.Top := 0;
-    FBevel.BorderSpacing.Bottom := 0;
-    FBevel.BorderSpacing.Left := FSpacing;
-    FBevel.BorderSpacing.Right := FSpacing;
-  end;
-end;
-
-procedure TCustomButtonPanel.DoButtonOrder;
-begin
-  case FButtonOrder of
-    boCloseCancelOK: ButtonOrderCloseCancelOK;
-    boCloseOKCancel: ButtonOrderCloseOKCancel;
-    else
-      //boDefault
-      {$IFDEF UNIX}
-        ButtonOrderCloseCancelOK;
-      {$ELSE}
-        ButtonOrderCloseOKCancel;
-      {$ENDIF}
-  end;
-end;
-
-procedure TCustomButtonPanel.OrderButtonsRightToLeft(TheButtons: array of TControl);
- // reorder aligned buttons from left to right.
- // The buttons are Align=alRight. The order is determined by the right edge.
- // Set the Left+Width property to some values in ascending order and the LCL
- // will do the rest.
- function Previous(AIndex: Integer): Integer;
- begin
-   Result := AIndex;
-   repeat
-     Dec(Result)
-   until (Result < Low(TheButtons))
-      or ((TheButtons[Result] <> nil) and (TheButtons[Result].Align = alRight));
- end;
-
-var
-  i, x: integer;
-begin
-  i := Previous(Length(TheButtons));
-  if i < Low(TheButtons) then Exit; // no buttons
-
-  repeat
-    x:=TheButtons[i].Left+TheButtons[i].Width;
-    i := Previous(i);
-    if i < Low(TheButtons) then Exit; // all buttons are already in the correct order
-  until TheButtons[i].Left+TheButtons[i].Width >= x;
-
-  DisableAlign;
-  try
-    x := ClientWidth;
-    for i := High(TheButtons) downto Low(TheButtons) do
+    // give the sime width in this case too
+    FButtonsWidth := 0;
+    for btn := Low(btn) to High(btn) do
     begin
-      if TheButtons[i]=nil then continue;
-      Dec(x, TheButtons[i].Width);
-      TheButtons[i].Left := x;
+      if FButtons[btn] = nil then Continue;
+      if FButtonsWidth > FButtons[btn].Width then Continue;
+      FButtonsWidth := FButtons[btn].Width;
     end;
-  finally
-    EnableAlign;
   end;
+end;
+
+procedure TCustomButtonPanel.UpdateButtonOrder;
+const
+  TABORDERS: array[TButtonOrder, 0..3] of TPanelButton = (
+    {$IFDEF UNIX}
+    {boDefault      } (pbOK, pbCancel, pbClose, pbHelp),
+    {$ELSE}
+    {boDefault      } (pbCancel, pbOK, pbClose, pbHelp),
+    {$ENDIF}
+    {boCloseCancelOK} (pbOK, pbCancel, pbClose, pbHelp),
+    {boCloseOKCancel} (pbCancel, pbOK, pbClose, pbHelp)
+  );
+var
+  i: Integer;
+begin
+  //set taborder
+  for i := Low(TABORDERS[FButtonOrder]) to High(TABORDERS[FButtonOrder]) do
+  begin
+    if FButtons[TABORDERS[FButtonOrder, i]] = nil then Continue;
+    FButtons[TABORDERS[FButtonOrder, i]].Taborder := i;
+  end;
+  Realign;
 end;
 
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
 begin
   inherited SetAlign(Value);
   UpdateBevel;
-end;
-
-procedure TCustomButtonPanel.ButtonOrderCloseCancelOK;
-const
-  TABORDERS: array[0..3] of TPanelButton = (pbOK, pbCancel, pbClose, pbHelp);
-var
-  i: Integer;
-begin
-  OrderButtonsRightToLeft([FButtons[pbClose], FButtons[pbCancel], FButtons[pbOK]]);
-
-  //set taborder
-  for i := Low(TABORDERS) to High(TABORDERS) do
-  begin
-    if FButtons[TABORDERS[i]] = nil then Continue;
-    FButtons[TABORDERS[i]].Taborder := i;
-  end;
-end;
-
-procedure TCustomButtonPanel.ButtonOrderCloseOKCancel;
-const
-  TABORDERS: array[0..3] of TPanelButton = (pbCancel, pbOK, pbClose, pbHelp);
-var
-  i: Integer;
-begin
-  OrderButtonsRightToLeft([FButtons[pbClose], FButtons[pbOK], FButtons[pbCancel]]);
-
-  //set taborder
-  for i := Low(TABORDERS) to High(TABORDERS) do
-  begin
-    if FButtons[TABORDERS[i]] = nil then Continue;
-    FButtons[TABORDERS[i]].Taborder := i;
-  end;
+  UpdateSizes;
+  Realign;
 end;
 
 procedure TCustomButtonPanel.SetButtonOrder(Value: TButtonOrder);
 begin
-  if FButtonOrder = Value then
-    Exit;
-
+  if FButtonOrder = Value then Exit;
   FButtonOrder := Value;
-
-  DoButtonOrder;
+  UpdateButtonOrder;
 end;
 
 procedure TCustomButtonPanel.DoDefaultButton;
@@ -419,6 +347,7 @@ begin
   FBevel := TBevel.Create(Self);
   FBevel.Parent := Self;
   FBevel.Name   := 'Bevel';
+  FBevel.Align := alCustom;
 
   UpdateBevel;
 end;
@@ -428,6 +357,7 @@ begin
   inherited Loaded;
 
   DoRestoreCancel;
+  Realign;
 end;
 
 procedure TCustomButtonPanel.Notification(AComponent: TComponent;
@@ -445,6 +375,7 @@ begin
     end;
   end;
   inherited Notification(AComponent, Operation);
+  UpdateSizes;
 end;
 
 constructor TCustomButtonPanel.Create(AOwner: TComponent);
@@ -495,13 +426,10 @@ begin
     Name     := NAMES[AButton];
     Parent   := Self;
     Kind     := KINDS[AButton];
-    BorderSpacing.Around := FSpacing;
     AutoSize := True;
     Caption  := CAPTIONS[AButton];
     TabOrder := Ord(AButton); //initial order
-    if AButton = pbHelp
-    then  Align    := alLeft
-    else  Align    := alRight;
+    Align    := alCustom;
     if FGlyphs[AButton] = nil
     then begin
       // first time
@@ -515,6 +443,101 @@ begin
     // set default
     if AButton = FDefaultButton
     then Default := True;
+  end;
+end;
+
+function TCustomButtonPanel.CreateControlBorderSpacing: TControlBorderSpacing;
+begin
+  Result := TControlBorderSpacing.Create(Self, @DEFAULT_BUTTONPANEL_BORDERSPACING);
+end;
+
+function TCustomButtonPanel.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
+begin
+  if AControl1 = FBevel then Exit(True);
+  if AControl2 = FBevel then Exit(False);
+
+  Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder;
+end;
+
+procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
+  ANewWidth, ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo);
+var
+  Prev: TControl;
+begin
+  if AControl = FBevel
+  then begin
+    case Align of
+      alTop: begin
+        ANewTop := AlignRect.Top + FSpacing + FButtonsHeight;
+        ANewLeft := AlignRect.Left;
+        ANewWidth := AlignRect.Right - AlignRect.Left;
+      end;
+      alLeft: begin
+        ANewTop := AlignRect.Top;
+        ANewLeft := AlignRect.Left + FSpacing + FButtonsWidth;
+        ANewHEight := AlignRect.Bottom - AlignRect.Top;
+      end;
+      alRight: begin
+        ANewTop := AlignRect.Top;
+        ANewLeft := AlignRect.Right - ANewWidth - FSpacing - FButtonsWidth;
+        ANewHeight := AlignRect.Bottom - AlignRect.Top;
+      end;
+    else
+      // bottom, none and custom
+      ANewTop := AlignRect.Bottom - ANewHeight - FSpacing - FButtonsHeight;
+      ANewLeft := AlignRect.Left;
+      ANewWidth := AlignRect.Right - AlignRect.Left;
+    end;
+
+    Exit;
+  end;
+
+  if (csDesigning in ComponentState) and not AControl.Visible
+  then begin
+    // when designing, hide doesn't work, so position button outside panel
+    ANewLeft := -ANewWidth - 100;
+    Exit;
+  end;
+
+
+  // make all buttons the same height
+  ANewHeight := FButtonsHeight;
+  if Align in [alLeft, alRight]
+  then begin
+    ANewWidth := FButtonsWidth;
+
+    if AControl = FButtons[pbHelp]
+    then begin
+      ANewTop := AlignRect.Bottom - ANewHeight;
+    end
+    else if AlignInfo.ControlIndex = 0
+    then begin
+      ANewTop := AlignRect.Top;
+    end
+    else begin
+      Prev := TControl(AlignInfo.AlignList[AlignInfo.ControlIndex - 1]);
+      ANewTop := Prev.Top + Prev.Height + FSpacing;
+    end;
+    if Align = alLeft
+    then ANewLeft := AlignRect.Left
+    else ANewLeft := AlignRect.Right - ANewWidth;
+  end
+  else begin
+    if AControl = FButtons[pbHelp]
+    then begin
+      ANewLeft := 0
+    end
+    else if AlignInfo.ControlIndex = 0
+    then begin
+      ANewLeft := AlignRect.Right - ANewWidth;
+    end
+    else begin
+      Prev := TControl(AlignInfo.AlignList[AlignInfo.ControlIndex - 1]);
+      ANewLeft := Prev.Left - ANewWidth - FSpacing;
+    end;
+    if Align = alTop
+    then ANewTop := AlignRect.Top
+    else ANewTop := AlignRect.Bottom - ANewHeight;
   end;
 end;
 
