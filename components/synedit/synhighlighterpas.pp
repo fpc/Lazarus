@@ -100,7 +100,8 @@ type
     cfbtClass,
     cfbtClassSection,
     cfbtUnitSection,
-    cfbtProgram
+    cfbtProgram,
+    cfbtRecord
     );
   TPascalCompilerMode = (
     pcmObjFPC,
@@ -757,7 +758,9 @@ begin
         TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       {$IFDEF SYN_LAZARUS}
       // there may be more than on block ending here
-      if TopPascalCodeFoldBlockType = cfbtBeginEnd then begin
+      if TopPascalCodeFoldBlockType = cfbtRecord then begin
+        EndCodeFoldBlock;
+      end else if TopPascalCodeFoldBlockType = cfbtBeginEnd then begin
         EndCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProcedure then
           EndCodeFoldBlock;
@@ -991,7 +994,7 @@ begin
     end;
   end
   else if KeyComp('Record') then begin
-    StartPascalCodeFoldBlock(cfbtBeginEnd);
+    StartPascalCodeFoldBlock(cfbtRecord);
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey
