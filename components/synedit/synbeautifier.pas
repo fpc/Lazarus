@@ -138,8 +138,8 @@ begin
       else
         InsChars := '';
   end;
-  CaretNewX := TSynEdit(Editor).LogicalToPhysicalCol(Result, SpaceCount2+1);
   Result := InsChars + Line;
+  CaretNewX := TSynEdit(Editor).LogicalToPhysicalCol(Result, SpaceCount2+1);
 end;
 
 function TSynBeautifier.GetIndentForLine(Editor: TSynEditBase; const Line: string; const PhysCaret: TPoint): Integer;
