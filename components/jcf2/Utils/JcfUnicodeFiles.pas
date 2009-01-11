@@ -172,6 +172,29 @@ begin
   Result := WideString(lsContents8bit);
 end;
 
+
+function ReadUtf8File(const pcFileStream: TFileStream): WideString;
+var
+  liBytesRemaining: integer;
+  lsContents: AnsiString;
+begin
+  liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
+  // read the bytes into a string
+  SetLength(lsContents, liBytesRemaining);
+  if pcFileStream.Size > 0 then
+  begin
+    pcFileStream.ReadBuffer(lsContents[1], liBytesRemaining);
+  end;
+
+  // convert to wide string
+  {$IFDEF DELPHI12}
+  Result := UTF8ToWideString(lsContents);
+  {$ELSE}
+  Result := UTF8Decode(lsContents);
+  {$ENDIF}
+end;
+
+
 function Read16BitFile(const pcFileStream: TFileStream; const pbBigEndian: boolean): WideString;
 var
   liBytesRemaining: integer;
@@ -258,10 +281,15 @@ begin
     ReadPastFileHeader(fs, peContentType);
 
     case peContentType of
-      e8Bit, eUtf8:
+      e8Bit:
         psContents := Read8BitFile(fs);
+
+      eUtf8:
+        psContents := ReadUtf8File(fs);
+
       eUtf16LittleEndian, eUtf16BigEndian:
         psContents := Read16BitFile(fs, peContentType = eUtf16BigEndian);
+
       eUtf32LittleEndian, eUtf32BigEndian:
         psContents := Read32BitFile(fs, peContentType = eUtf32BigEndian);
       else
@@ -275,24 +303,37 @@ begin
 end;
 
 { this is one of the few cases when "AnsiString" must be used }
-procedure Write8BitFile(const pcFileStream: TFileStream;
-  const psContents: WideString; const pbUtf8Header: boolean);
+procedure Write8BitFile(const pcFileStream: TFileStream; const psContents: WideString);
+var
+  Len:    integer;
+  lsContents: AnsiString;
+begin
+  lsContents := AnsiString(psContents);
+
+  Len := Length(lsContents);
+
+  if Len > 0 then
+  begin
+    pcFileStream.WriteBuffer(lsContents[1], Len);
+  end;
+end;
+
+{ this is one of the few cases when "AnsiString" must be used }
+procedure WriteUtf8File(const pcFileStream: TFileStream; const psContents: WideString);
 var
   Len:    integer;
   lsContents: AnsiString;
   utf8Header: array [0..2] of byte;
 begin
-  lsContents := AnsiString(psContents);
+  lsContents := UTF8Encode(psContents);
+
   Len := Length(lsContents);
 
-  if pbUtf8Header then
-  begin
-    // write the BOM
-    utf8Header[0] := Utf8Marker1;
-    utf8Header[1] := Utf8Marker2;
-    utf8Header[2] := Utf8Marker3;
-    pcFileStream.WriteBuffer(utf8Header[0], 3);
-  end;
+  // write the BOM
+  utf8Header[0] := Utf8Marker1;
+  utf8Header[1] := Utf8Marker2;
+  utf8Header[2] := Utf8Marker3;
+  pcFileStream.WriteBuffer(utf8Header[0], 3);
 
   if Len > 0 then
   begin
@@ -386,9 +427,14 @@ var
   try
 
    case peContentType of
-     e8Bit, eUtf8:
+     e8Bit:
      begin
-       Write8BitFile(fs, psContents, peContentType = eUtf8);
+       Write8BitFile(fs, psContents);
+     end;
+
+     eUtf8:
+     begin
+       WriteUtf8File(fs, psContents);
      end;
 
      eUtf16LittleEndian, eUtf16BigEndian:

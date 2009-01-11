@@ -2198,10 +2198,12 @@ begin
   // VarSection -> VAR (VarDecl ';')...
   Recognise([ttVar, ttThreadvar]);
 
-  repeat
+  // can be enpty
+  while not (fcTokenList.FirstSolidTokenType in leEndVarSection) do
+  begin
     RecogniseVarDecl;
     Recognise(ttSemicolon);
-  until (fcTokenList.FirstSolidTokenType in leEndVarSection);
+  end;
 
   PopNode;
 end;

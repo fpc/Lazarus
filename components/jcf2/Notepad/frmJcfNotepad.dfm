@@ -230,6 +230,10 @@ object fmJCFNotepad: TfmJCFNotepad
         Caption = 'Save &Input'
         OnClick = mnuFileSaveInClick
       end
+      object mnuFileSaveInAs: TMenuItem
+        Caption = 'Save Input &as...'
+        OnClick = mnuFileSaveInAsClick
+      end
       object N1: TMenuItem
         Caption = '-'
       end

@@ -37,7 +37,7 @@ uses
   { JEDI }
   JvMRUManager, JvMemo, JvComponent, JvExStdCtrls, JvFormPlacement, JvComponentBase,
   { local }
-  JcfRegistrySettings, Converter, ConvertTypes;
+  JcfRegistrySettings, Converter, ConvertTypes, JcfUnicodeFiles;
 
 { have to do file pos display *after* various processing }
 const
@@ -85,7 +85,7 @@ type
     mnuEditSelectAll: TMenuItem;
     mnuEditCopyMessages: TMenuItem;
     mnuFormat:    TMenuItem;
-    mnuFileSaveIn: TMenuItem;
+    mnuFileSaveInAs: TMenuItem;
     mnuHelp:      TMenuItem;
     mnuHelpAbout: TMenuItem;
     mnuShowRegSetting: TMenuItem;
@@ -93,6 +93,7 @@ type
     ActCut:       TAction;
     Contents1:    TMenuItem;
     JvFormStorage1: TJvFormStorage;
+    mnuFileSaveIn: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure pcPagesChange(Sender: TObject);
     procedure actGoExecute(Sender: TObject);
@@ -111,7 +112,7 @@ type
     procedure mnuEditCopyOutputClick(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditCopyMessagesClick(Sender: TObject);
-    procedure mnuFileSaveInClick(Sender: TObject);
+    procedure mnuFileSaveInAsClick(Sender: TObject);
     procedure mnuHelpAboutClick(Sender: TObject);
     procedure mnuShowRegSettingClick(Sender: TObject);
     procedure mnuFormatSettingsClick(Sender: TObject);
@@ -127,8 +128,11 @@ type
     procedure mInputClick(Sender: TObject);
     procedure mOutputClick(Sender: TObject);
     procedure mInputKeyPress(Sender: TObject; var Key: char);
+    procedure mnuFileSaveInClick(Sender: TObject);
   private
     fcConvert: TConverter;
+    fsLastInputFileName: string;
+    feLastInputContentType: TFileContentType;
 
     procedure OnConvertStatusMessage(const psUnit, psMessage: string;
      const peMessageType: TStatusMessageType;
@@ -137,6 +141,10 @@ type
     procedure CheckInputState;
     procedure CheckCutPasteState;
     procedure DoFileOpen(const psFileName: string);
+    procedure SaveInputToFile(const psFileName: string);
+
+    procedure CheckSaveEnabled;
+
     procedure AddCheckMRU(const psFile: string);
 
     procedure ShowFilePos;
@@ -157,7 +165,7 @@ uses
   { jcl }
   JclStrings,
   { local }
-  JcfUnicodeFiles, JcfStringUtils,
+  JcfStringUtils,
   JCFHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;
 
 {$ifdef FPC}
@@ -170,6 +178,11 @@ procedure TfmJCFNotepad.CheckInputState;
 begin
   actGo.Enabled := (mInput.Text <> '');
   actClear.Enabled := (mInput.Text <> '');
+end;
+
+procedure TfmJCFNotepad.CheckSaveEnabled;
+begin
+  mnuFileSaveIn.Enabled := (fsLastInputFileName <> '');
 end;
 
 procedure TfmJCFNotepad.CheckCutPasteState;
@@ -192,7 +205,6 @@ end;
 procedure TfmJCFNotepad.DoFileOpen(const psFileName: string);
 var
   lsFileContents: WideString;
-  leContentType: TFileContentType;
 begin
   if psFileName = '' then
     exit;
@@ -201,7 +213,7 @@ begin
 
   GetRegSettings.InputDir := ExtractFilePath(psFileName);
 
-  ReadTextFile(psFileName, lsFileContents, leContentType);
+  ReadTextFile(psFileName, lsFileContents, feLastInputContentType);
 
   // use standard line breaks - temp
   //lsFileContents := WideStringReplace(lsFileContents, NativeLineFeed, NativeCrLf, [rfReplaceAll]);
@@ -212,6 +224,28 @@ begin
 
   CheckInputState;
   SendShowFilePos;
+  CheckSaveEnabled;
+end;
+
+procedure TfmJCFNotepad.SaveInputToFile(const psFileName: string);
+begin
+  if psFileName = '' then
+    exit;
+
+  // default the file type to utf-8 if it's not known
+  if feLastInputContentType = eUnknown then
+  begin
+    feLastInputContentType := eUtf8;
+  end;
+
+  WriteTextFile(psFileName, mInput.Text, feLastInputContentType);
+
+
+  sb1.Panels[1].Text := 'Saved input as ' + psFileName;
+  AddCheckMRU(psFileName);
+
+  fsLastInputFileName := psFileName;
+  CheckSaveEnabled;
 end;
 
 procedure TfmJCFNotepad.AddCheckMRU(const psFile: string);
@@ -355,6 +389,11 @@ begin
   mruFiles.RemoveInvalid;
 
   pcPages.ActivePage := tsInput;
+
+  feLastInputContentType := eUnknown;
+  fsLastInputFileName := '';
+
+  CheckSaveEnabled;
 end;
 
 procedure TfmJCFNotepad.FormDestroy(Sender: TObject);
@@ -424,6 +463,16 @@ end;
 
 procedure TfmJCFNotepad.mnuFileSaveInClick(Sender: TObject);
 begin
+  if fsLastInputFileName <> '' then
+  begin
+    SaveInputToFile(fsLastInputFileName);
+  end;
+
+end;
+
+
+procedure TfmJCFNotepad.mnuFileSaveInAsClick(Sender: TObject);
+begin
   SaveDialog1.InitialDir := GetRegSettings.OutputDir;
   SaveDialog1.Title  := 'Save input file';
   SaveDialog1.Filter := SOURCE_FILE_FILTERS;
@@ -431,9 +480,8 @@ begin
   if SaveDialog1.Execute then
   begin
     GetRegSettings.OutputDir := ExtractFilePath(SaveDialog1.FileName);
-    StringToFile(SaveDialog1.FileName,  AnsiString(mInput.Text));
-    sb1.Panels[1].Text := 'Saved input as ' + SaveDialog1.FileName;
-    AddCheckMRU(SaveDialog1.FileName);
+
+    SaveInputToFile(SaveDialog1.FileName);
   end;
 end;
 

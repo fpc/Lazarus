@@ -110,6 +110,23 @@ begin
   end;
 end;
 
+function InGlobalTypeOrVarSection(const pt: TSourceToken): Boolean;
+begin
+  // are we in a type or var section?
+  if not pt.HasParentNode([nTypeSection, nVarSection]) then
+  begin
+    Result := False;
+    exit;
+  end;
+
+  if pt.HasParentNode([nProcedureDecl, nFunctionDecl, nConstructorDecl, nDestructorDecl]) then
+  begin
+    Result := False;
+    exit;
+  end;
+
+  Result := True;
+end;
 
 function IsIndented(const pt: TSourceToken): Boolean;
 begin
@@ -573,7 +590,7 @@ begin
   begin
     if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then
     begin
-      if not pt.HasParentNode([nExports, nUses, nTypeSection, nVarSection]) then
+      if not pt.HasParentNode([nExports, nUses]) and (not InGlobalTypeOrVarSection(pt)) then
       begin
         if pt.HasParentNode([nCompoundStatement]) and not pt.HasParentNode([nDeclSection]) then
         begin
