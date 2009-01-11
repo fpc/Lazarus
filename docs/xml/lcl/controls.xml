@@ -201,13 +201,17 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TWinControlClass">
-        <short/>
+        <short>
+          <var>TWinControlClass</var> - class of <var>TWinControl</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TControlClass">
-        <short/>
+        <short>
+          <var>TControlClass</var> - class of <var>TControl</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -6725,7 +6729,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Render the preferred size no longer valid (implies that we will look for another)</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControl.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TControl.Create">
         <descr>
           <p>
             <var>Create</var>
@@ -6734,13 +6738,15 @@ mrLast=mrYesToAll=10</descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create"/>
         </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TControl </var>and derived classes</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TControl.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TControl.Destroy">
         <descr>
           <p>
             <var>Destructor</var>
@@ -6750,6 +6756,8 @@ mrLast=mrYesToAll=10</descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy"/>
         </seealso>
+        <short>
+          <var>Destroy</var> - Destructor for <var>TControl</var>. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
@@ -10754,10 +10762,17 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TWinControl.Create" link="#LCL.Controls.TControl.Create">
+      <element name="TWinControl.Create">
         <seealso>
           <link id="#rtl.Classes.TComponent"/>
         </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TWinControl</var>: performs inherited <var>Create</var> and initialises some local variables</short>
+        <descr>
+          <p>
+            <var>Create</var> - Constructor for <var>TWinControl</var>: performs inherited <var>Create</var> and initialises some local variables</p>
+          <p>Overrides ancestor constructor, and may in turn be overridden</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.Create.TheOwner">
@@ -10792,7 +10807,17 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TWinControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
+      <element name="TWinControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TWinControl</var> and derived classes</short>
+        <descr>
+          <p>
+            <var>Destroy</var> - destructor for <var>TWinControl</var> and derived classes</p>
+          <p>Destroys any allocated handles, removes any docking links, and frees the resources used by the control, then performs inherited <var>Destroy</var>
+          </p>
+          <p>Overrides ancestor destructors, and may in turn be overridden</p>
+        </descr>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
         <short>
