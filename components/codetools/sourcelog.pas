@@ -657,25 +657,26 @@ begin
 end;
 
 function TSourceLog.LoadFromFile(const Filename: string): boolean;
-var s: string;
+var
+  s: string;
   fs: TFileStream;
 begin
-  Result:=true;
+  Result := True;
   try
-    fs:=TFileStream.Create(UTF8ToSys(Filename), fmOpenRead);
+    fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyNone);
     try
-      SetLength(s,fs.Size);
-      if s<>'' then
-        fs.Read(s[1],length(s));
-      FDiskEncoding:='';
-      FMemEncoding:='';
-      DecodeLoaded(Filename,s,FDiskEncoding,FMemEncoding);
-      Source:=s;
+      SetLength(s, fs.Size);
+      if s <> '' then
+        fs.Read(s[1], length(s));
+      FDiskEncoding := '';
+      FMemEncoding := '';
+      DecodeLoaded(Filename, s, FDiskEncoding, FMemEncoding);
+      Source := s;
     finally
       fs.Free;
     end;
   except
-    Result:=false;
+    Result := False;
   end;
 end;
 
@@ -695,22 +696,25 @@ var
   s: String;
 begin
   //DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
-  Result:=true;
+  Result := True;
   try
     InvalidateFileStateCache;
     // keep filename case on disk
-    TheFilename:=FindDiskFilename(Filename);
-    fs:=TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
+    TheFilename := FindDiskFilename(Filename);
+    if FileExistsUTF8(TheFilename) then
+      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone)
+    else
+      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
     try
-      s:=Source;
-      EncodeSaving(Filename,s);
-      if s<>'' then
-        fs.Write(s[1],length(s));
+      s := Source;
+      EncodeSaving(Filename, s);
+      if s <> '' then
+        fs.Write(s[1], length(s));
     finally
       fs.Free;
     end;
   except
-    Result:=false;
+    Result := False;
   end;
 end;
 

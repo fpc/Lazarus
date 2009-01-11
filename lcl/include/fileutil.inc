@@ -723,9 +723,9 @@ begin
   if FileReadable then ;
 end;
 
-function FileIsText(const AFilename: string; out FileReadable: boolean
-  ): boolean;
-var fs: TFileStream;
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
+var
+  fs: TFileStream;
   Buf: string;
   Len, i: integer;
   NewLine: boolean;
@@ -734,7 +734,7 @@ begin
   Result:=false;
   FileReadable:=true;
   try
-    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
+    fs := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
     try
       // read the first 1024 bytes
       Len:=1024;
