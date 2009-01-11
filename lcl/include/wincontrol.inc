@@ -2162,7 +2162,10 @@ procedure TWinControl.CreateControlAlignList(TheAlign: TAlign;
                 and (Control1.FBaseBounds.Right > Control2.FBaseBounds.Right));
       end;
       alCustom: begin
-        Result := CustomAlignInsertBefore(Control1, Control2);
+        // CustomAlignInsertBefore returns true when Control2 is inserted before Control1
+        // We return true when Control1 is inserted before Control2
+        // So swap controls
+        Result := CustomAlignInsertBefore(Control2, Control1);
       end;
     else
       Result := False;
