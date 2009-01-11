@@ -458,7 +458,6 @@ type
     function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
     function GetFont: TFont;
-    function GetLines: TStrings; override;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     {$IFDEF SYN_LAZARUS}
@@ -474,11 +473,9 @@ type
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
-    function GetTheLinesView: TStrings; override;
     procedure SetBracketHighlightStyle(
       const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
-    procedure SetRealLines(const AValue : TStrings); override;
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
@@ -549,7 +546,6 @@ type
     procedure SetLastMouseCaret(const AValue: TPoint);
     {$ENDIF}
     procedure SetLeftChar(Value: Integer);
-    procedure SetLines(Value: TStrings); override;
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
     procedure SetMaxUndo(const Value: Integer);
@@ -599,6 +595,10 @@ type
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     {$ENDIF}
+    procedure SetRealLines(const AValue : TStrings); override;
+    function GetTheLinesView: TStrings; override;
+    function GetLines: TStrings; override;
+    procedure SetLines(Value: TStrings); override;
     procedure DecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
