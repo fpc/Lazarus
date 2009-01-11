@@ -1,13 +1,13 @@
 object WatchPropertyDlg: TWatchPropertyDlg
   Left = 331
-  Height = 213
+  Height = 210
   Top = 184
   Width = 420
   ActiveControl = chkAllowFunc
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Watch Properties'
-  ClientHeight = 213
+  ClientHeight = 210
   ClientWidth = 420
   Position = poScreenCenter
   LCLVersion = '0.9.27'
@@ -16,9 +16,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
-    Top = 10
-    Width = 57
+    Height = 13
+    Top = 11
+    Width = 65
     BorderSpacing.Left = 6
     Caption = 'Expression:'
     ParentColor = False
@@ -28,9 +28,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
-    Top = 39
-    Width = 72
+    Height = 13
+    Top = 40
+    Width = 80
     BorderSpacing.Left = 6
     Caption = 'Repeat Count:'
     ParentColor = False
@@ -41,9 +41,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtDigits
     AnchorSideTop.Side = asrCenter
     Left = 171
-    Height = 14
-    Top = 39
-    Width = 31
+    Height = 13
+    Top = 40
+    Width = 35
     BorderSpacing.Left = 6
     Caption = 'Digits:'
     ParentColor = False
@@ -77,7 +77,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrBottom
-    Left = 208
+    Left = 212
     Height = 23
     Top = 35
     Width = 60
@@ -90,9 +90,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkAllowFunc
     Left = 6
-    Height = 17
+    Height = 20
     Top = 64
-    Width = 57
+    Width = 70
     AllowGrayed = True
     BorderSpacing.Left = 6
     Caption = 'Enabled'
@@ -102,9 +102,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrBottom
     Left = 105
-    Height = 17
+    Height = 20
     Top = 64
-    Width = 112
+    Width = 140
     AllowGrayed = True
     BorderSpacing.Top = 6
     Caption = 'Allow Function Calls'
@@ -118,7 +118,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 78
-    Top = 87
+    Top = 90
     Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -134,10 +134,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 60
+    ClientHeight = 61
     ClientWidth = 404
     Columns = 3
-    Ctl3D = False
     ItemIndex = 7
     Items.Strings = (
       'Character'
@@ -153,14 +152,17 @@ object WatchPropertyDlg: TWatchPropertyDlg
     TabOrder = 3
   end
   object ButtonPanel: TButtonPanel
+    AnchorSideTop.Control = rgStyle
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 40
-    Top = 173
+    Height = 30
+    Top = 174
     Width = 408
     Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = True
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
   end
 end
