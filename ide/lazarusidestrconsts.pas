@@ -1149,6 +1149,10 @@ resourcestring
   dlgBlockIndentTypeSpace = 'Spaces';
   dlgBlockIndentTypeCopy = 'Space/tab as prev Line';
   dlgBlockIndentTypePos = 'Position only';
+  dlgTrimSpaceTypeCaption = 'Trim Spaces Style';
+  dlgTrimSpaceTypeLeaveLine = 'Leave line';
+  dlgTrimSpaceTypeEditLine = 'Line Edited';
+  dlgTrimSpaceTypeCaretMove = 'Caret or Edit';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

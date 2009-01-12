@@ -28,13 +28,15 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  editor_general_options;
+  editor_general_options, SynEditTextTrimmer;
 
 type
   { TEditorGeneralMiscOptionsFrame }
 
   TEditorGeneralMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
+    EditorTrimSpaceTypeCheckBox: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
+    EditorTrimSpaceTypeLabel: TLabel;
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -75,6 +77,10 @@ begin
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
   end;
+  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
+  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
+  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeCaretMove);
+  EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
 end;
 
 procedure TEditorGeneralMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -91,6 +97,7 @@ begin
       Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
       Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
     end;
+    EditorTrimSpaceTypeCheckBox.ItemIndex :=  ord(TrimSpaceType);
   end;
 end;
 
@@ -122,6 +129,7 @@ begin
     CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
     ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
+    TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
   end;
 end;
 

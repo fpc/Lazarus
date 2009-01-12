@@ -44,7 +44,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynEditMiscClasses, SynBeautifier,
+  SynHighlighterJScript, SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -435,6 +435,7 @@ type
     FShowGutterHints: Boolean;
     fBlockIndent: Integer;
     fBlockIndentType: TSynBeautifierIndentType;
+    FTrimSpaceType: TSynEditStringTrimmingType;
     fUndoLimit: Integer;
     fTabWidth:  Integer;
     FBracketHighlightStyle: TSynEditBracketHighlightStyle;
@@ -493,6 +494,8 @@ type
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
     function GetSynBeautifierIndentName(IndentType: TSynBeautifierIndentType): string;
     function GetSynBeautifierIndentType(IndentName: String): TSynBeautifierIndentType;
+    function GetTrimSpaceName(IndentType: TSynEditStringTrimmingType): string;
+    function GetTrimSpaceType(IndentName: String): TSynEditStringTrimmingType;
 
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure SetHighlighterSettings(Syn: TSrcIDEHighlighter); // write highlight settings to config file
@@ -546,6 +549,8 @@ type
       read fBlockIndent write fBlockIndent default 2;
     property BlockIndentType: TSynBeautifierIndentType
       read fBlockIndentType write fBlockIndentType default sbitCopySpaceTab;
+    property TrimSpaceType: TSynEditStringTrimmingType
+      read FTrimSpaceType write FTrimSpaceType default settLeaveLine;
     property UndoLimit: Integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidth: Integer read fTabWidth write fTabWidth default 8;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle read FBracketHighlightStyle write FBracketHighlightStyle default sbhsBoth;
@@ -1392,6 +1397,7 @@ begin
   FShowGutterHints := True;
   fBlockIndent := 2;
   fBlockIndentType := sbitSpace;
+  FTrimSpaceType := settLeaveLine;
   fUndoLimit := 32767;
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
@@ -1515,6 +1521,9 @@ begin
     fBlockIndentType := GetSynBeautifierIndentType
       (XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndentType',
                           'SpaceIndent'));
+    FTrimSpaceType := GetTrimSpaceType
+      (XMLConfig.GetValue('EditorOptions/General/Editor/SpaceTrimType',
+                          'LeaveLine'));
     fUndoLimit :=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit', 32767);
     fTabWidth :=
@@ -1692,6 +1701,8 @@ begin
       , fBlockIndent, 2);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndentType'
       , GetSynBeautifierIndentName(fBlockIndentType), 'SpaceIndent');
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/SpaceTrimType'
+      , GetTrimSpaceName(FTrimSpaceType), 'LeaveLine');
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
       , fUndoLimit, 32767);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/TabWidth'
@@ -1859,12 +1870,32 @@ end;
 
 function TEditorOptions.GetSynBeautifierIndentType(IndentName: String): TSynBeautifierIndentType;
 begin
-  if IndentName = 'SpaceIndent' then
-    Result := sbitSpace
-  else if IndentName = 'CopySpaceTabIndent' then
+  Result := sbitSpace;
+  if IndentName = 'CopySpaceTabIndent' then
     Result := sbitCopySpaceTab
   else if IndentName = 'PositionIndent' then
     Result := sbitPositionCaret;
+end;
+
+function TEditorOptions.GetTrimSpaceName(IndentType: TSynEditStringTrimmingType): string;
+begin
+  case IndentType of
+    settLeaveLine:
+      Result := 'LeaveLine';
+    settEditLine:
+      Result := 'EditLine';
+    settMoveCaret:
+      Result := 'MoveCaret';
+  end;
+end;
+
+function TEditorOptions.GetTrimSpaceType(IndentName: String): TSynEditStringTrimmingType;
+begin
+  Result := settLeaveLine;
+  if IndentName = 'EditLine' then
+    Result := settEditLine
+  else if IndentName = 'MoveCaret' then
+    Result := settMoveCaret;
 end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter):
@@ -2340,6 +2371,7 @@ begin
   ASynEdit.Options2 := fSynEditOptions2;
   ASynEdit.BlockIndent := fBlockIndent;
   (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
+  ASynEdit.TrimSpaceType := FTrimSpaceType;
   ASynEdit.TabWidth := fTabWidth;
   ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
 
@@ -2406,6 +2438,7 @@ begin
   fSynEditOptions2 := ASynEdit.Options2;
   fBlockIndent := ASynEdit.BlockIndent;
   fBlockIndentType := (ASynEdit.Beautifier as TSynBeautifier).IndentType;
+  FTrimSpaceType := ASynEdit.TrimSpaceType;
   fTabWidth := ASynEdit.TabWidth;
   FBracketHighlightStyle := ASynEdit.BracketHighlightStyle;
 

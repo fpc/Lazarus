@@ -473,6 +473,7 @@ type
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
+    function GetTrimSpaceType: TSynEditStringTrimmingType;
     procedure SetBracketHighlightStyle(
       const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
@@ -494,6 +495,7 @@ type
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
+    procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
     {$IFDEF SYN_LAZARUS}
     procedure SetTabChar(const AValue: Char);
@@ -884,6 +886,8 @@ type
       read GetMarkup;
     property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
       read GetMarkupByClass;
+    property TrimSpaceType: TSynEditStringTrimmingType
+      read GetTrimSpaceType write SetTrimSpaceType;
   protected
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
@@ -1787,6 +1791,11 @@ begin
   Result := fMarkupCtrlMouse.MarkupInfo;
 end;
 
+function TCustomSynEdit.GetTrimSpaceType: TSynEditStringTrimmingType;
+begin
+  Result := FTrimmedLinesView.TrimType;
+end;
+
 function TCustomSynEdit.GetTheLinesView: TStrings;
 begin
   Result := FTheLinesView;
@@ -1878,6 +1887,11 @@ end;
 function TCustomSynEdit.GetSelText: string;
 begin
   Result := FBlockSelection.SelText;
+end;
+
+procedure TCustomSynEdit.SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
+begin
+  FTrimmedLinesView.TrimType := AValue;
 end;
 
 function TCustomSynEdit.SynGetText: string;
