@@ -702,7 +702,10 @@ begin
     // keep filename case on disk
     TheFilename := FindDiskFilename(Filename);
     if FileExistsUTF8(TheFilename) then
-      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone)
+    begin
+      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone);
+      fs.Size := 0;
+    end
     else
       fs := TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
     try
