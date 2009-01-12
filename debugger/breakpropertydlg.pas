@@ -44,8 +44,6 @@ type
       const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
-    procedure edtDisableGroupsButtonClick(Sender: TObject);
-    procedure edtEnableGroupsButtonClick(Sender: TObject);
   private
     FBreakpointsNotification : TIDEBreakPointsNotification;
     FBreakpoint: TIDEBreakPoint;
@@ -111,16 +109,6 @@ procedure TBreakPropertyDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
   UpdateInfo;
-end;
-
-procedure TBreakPropertyDlg.edtDisableGroupsButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TBreakPropertyDlg.edtEnableGroupsButtonClick(Sender: TObject);
-begin
-
 end;
 
 procedure TBreakPropertyDlg.UpdateInfo;
