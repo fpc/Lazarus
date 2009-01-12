@@ -86,6 +86,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    property Align default alBottom;
+    property AutoSize default True;
+
     property OKButton: TPanelBitBtn read FButtons[pbOK] stored False;
     property HelpButton: TPanelBitBtn read FButtons[pbHelp] stored False;
     property CloseButton: TPanelBitBtn read FButtons[pbClose] stored False;
