@@ -777,12 +777,16 @@ Var
 begin
   if CanInsertChar(FCursorPos + 1, Ch) then
   begin
+    DeleteChars(True);
     S    := Inherited Text;
     S[FCursorPos + 1] := Ch;
     CurrentText := S;
     SetInheritedText(S);
     SelectNextChar;
-  end;
+  end
+  else
+  //If we have a selcetion (> 1) then Delete the selected text: Delphi compatibility
+  if HasExtSelection then DeleteSelected;
 end;
 
 
@@ -1390,7 +1394,7 @@ begin
   // Insert a char
   if (Key In [#32..#255]) then
   begin
-    DeleteSelected;
+    //DeleteSelected;
     InsertChar(Key);
     //TDBEdit needs the value of Key to decide if Datasource is in Edit state
     //Key:= #0;
