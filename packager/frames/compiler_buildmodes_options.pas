@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Controls, LResources, Forms, StdCtrls, Grids,
-  Buttons, ExtCtrls, Dialogs,
+  Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
   IDEImagesIntf, ProjectIntf, CompilerOptions,
   Compiler_Conditionals_Options, LazarusIDEStrConsts, CompOptsModes;
 
@@ -34,33 +34,20 @@ type
   { TCompOptBuildModesFrame }
 
   TCompOptBuildModesFrame = class(TFrame)
-    DefaultValueEditor: TCompOptsConditionalsFrame;
-    DefaultValueGroupBox: TGroupBox;
-    ModesGrid: TStringGrid;
-    ValuesGroupBox: TGroupBox;
-    ModesGroupBox: TGroupBox;
-    NewSpeedButton: TSpeedButton;
-    DeleteSpeedButton: TSpeedButton;
-    MoveDownSpeedButton: TSpeedButton;
-    MoveUpSpeedButton: TSpeedButton;
-    MainSplitter: TSplitter;
-    ValuesSplitter: TSplitter;
-    ValuesStringGrid: TStringGrid;
+    BuildModesGroupBox: TGroupBox;
+    BuildModesTreeView: TTreeView;
+    BuildModeTVPopupMenu: TPopupMenu;
+    procedure BuildModeTVPopupMenuPopup(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
-    procedure ModesGridSelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
-    procedure ModesGridSelection(Sender: TObject; aCol, aRow: Integer);
-    procedure MoveDownSpeedButtonClick(Sender: TObject);
-    procedure MoveUpSpeedButtonClick(Sender: TObject);
     procedure NewSpeedButtonClick(Sender: TObject);
   private
     FBuildModes: TIDEBuildModes;
+    fModeImgID: LongInt;
+    fValuesImgID: LongInt;
+    fValueImgID: LongInt;
+    fDefValueImgID: LongInt;
     procedure SetBuildModes(const AValue: TIDEBuildModes);
-    procedure UpdateModes;
-    procedure UpdateValues;
-    procedure UpdateDefaultValue;
-    procedure UpdateButtons;
-    function GetSelectedBuildMode(out BuildMode: TIDEBuildMode): boolean;
+    procedure RebuildTreeView;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -72,22 +59,22 @@ implementation
 { TCompOptBuildModesFrame }
 
 procedure TCompOptBuildModesFrame.NewSpeedButtonClick(Sender: TObject);
-var
-  NewIdentifier: String;
+{var
+  NewIdentifier: String;}
 begin
-  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName(BuildModes);
+{  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName(BuildModes);
   BuildModes.Add(NewIdentifier);
   ModesGrid.RowCount:=BuildModes.Count;
   ModesGrid.Cells[0,BuildModes.Count-1]:=NewIdentifier;
-  ModesGrid.Row:=BuildModes.Count-1;
+  ModesGrid.Row:=BuildModes.Count-1;}
 end;
 
 procedure TCompOptBuildModesFrame.DeleteSpeedButtonClick(Sender: TObject);
-var
+{var
   BuildMode: TIDEBuildMode;
-  i: LongInt;
+  i: LongInt;}
 begin
-  if not GetSelectedBuildMode(BuildMode) then exit;
+{  if not GetSelectedBuildMode(BuildMode) then exit;
   i:=ModesGrid.Row;
   if MessageDlg('Confirm delete',
     'Delete build mode "'+BuildMode.Identifier+'"?',
@@ -97,49 +84,21 @@ begin
   ModesGrid.DeleteColRow(false,i);
   if i=ModesGrid.RowCount then
     dec(i);
-  ModesGrid.Row:=i;
+  ModesGrid.Row:=i;}
 end;
 
-procedure TCompOptBuildModesFrame.ModesGridSelectCell(Sender: TObject; aCol,
-  aRow: Integer; var CanSelect: Boolean);
-begin
-
-end;
-
-procedure TCompOptBuildModesFrame.ModesGridSelection(Sender: TObject; aCol,
-  aRow: Integer);
-begin
-  UpdateValues;
-  UpdateButtons;
-end;
-
-procedure TCompOptBuildModesFrame.MoveDownSpeedButtonClick(Sender: TObject);
+procedure TCompOptBuildModesFrame.BuildModeTVPopupMenuPopup(Sender: TObject);
 var
-  i: LongInt;
-  BuildMode: TIDEBuildMode;
+  SelTVNode: TTreeNode;
 begin
-  if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesGrid.Row;
-  if (i<ModesGrid.RowCount-1) and (i<BuildModes.Count-1) then begin
-    BuildModes.Move(i,i+1);
-    ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
-    ModesGrid.Cells[0,i+1]:=BuildModes.Items[i+1].Identifier;
-    ModesGrid.Row:=i+1;
-  end;
-end;
+  SelTVNode:=BuildModesTreeView.Selected;
+  BuildModeTVPopupMenu.Items.Clear;
 
-procedure TCompOptBuildModesFrame.MoveUpSpeedButtonClick(Sender: TObject);
-var
-  i: LongInt;
-  BuildMode: TIDEBuildMode;
-begin
-  if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesGrid.Row;
-  if (i>0) and (i<ModesGrid.RowCount) and (i<BuildModes.Count) then begin
-    BuildModes.Move(i,i-1);
-    ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
-    ModesGrid.Cells[0,i-1]:=BuildModes.Items[i-1].Identifier;
-    ModesGrid.Row:=i-1;
+  if SelTVNode=nil then begin
+    // no node selected
+
+  end else begin
+
   end;
 end;
 
@@ -147,108 +106,59 @@ procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
 begin
   if FBuildModes=AValue then exit;
   FBuildModes:=AValue;
-  UpdateModes;
+  RebuildTreeView;
 end;
 
-procedure TCompOptBuildModesFrame.UpdateModes;
+procedure TCompOptBuildModesFrame.RebuildTreeView;
 var
   i: Integer;
+  TVNode: TTreeNode;
+  BuildMode: TLazBuildMode;
+  j: Integer;
+  Values: TStrings;
+  ValueTVNode: TTreeNode;
+  ValuesTVNode: TTreeNode;
+  DefValueTVNode: TTreeNode;
 begin
-  ModesGrid.BeginUpdate;
-  ModesGrid.ColCount:=1;
-  ModesGrid.RowCount:=BuildModes.Count;
+  BuildModesTreeView.BeginUpdate;
+  BuildModesTreeView.Items.Clear;
   if BuildModes<>nil then begin
-    for i:=0 to BuildModes.Count-1 do
-      ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
+    // first level: build modes
+    for i:=0 to BuildModes.Count-1 do begin
+      BuildMode:=BuildModes.Items[i];
+      TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildMode.Identifier,BuildMode);
+      TVNode.ImageIndex:=fModeImgID;
+      TVNode.StateIndex:=TVNode.ImageIndex;
+      // second level: values and default values
+      ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Values');
+      ValuesTVNode.ImageIndex:=fValuesImgID;
+      ValuesTVNode.StateIndex:=ValuesTVNode.ImageIndex;
+      Values:=BuildMode.Values;
+      for j:=0 to Values.Count-1 do begin
+        ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,Values[j]);
+        ValueTVNode.ImageIndex:=fValueImgID;
+        ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
+      end;
+      DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Default value');
+      DefValueTVNode.ImageIndex:=fDefValueImgID;
+      DefValueTVNode.StateIndex:=DefValueTVNode.ImageIndex;
+      // ToDo: add default value nodes
+      TVNode.Expand(true);
+    end;
   end;
-  ModesGrid.EndUpdate;
-  UpdateValues;
-  UpdateButtons;
-end;
-
-procedure TCompOptBuildModesFrame.UpdateValues;
-var
-  BuildMode: TIDEBuildMode;
-  i: Integer;
-begin
-  if not GetSelectedBuildMode(BuildMode) then exit;
-  ValuesStringGrid.ColCount:=2;
-  ValuesStringGrid.FixedCols:=0;
-  ValuesStringGrid.RowCount:=BuildMode.Values.Count+1;
-  ValuesStringGrid.FixedRows:=1;
-  ValuesStringGrid.Cells[0,0]:='Value';
-  ValuesStringGrid.Cells[1,0]:='Description';
-  ValuesStringGrid.ColWidths[0]:=90;
-  ValuesStringGrid.ColWidths[1]:=120;
-  for i:=0 to BuildMode.Values.Count-1 do begin
-    ValuesStringGrid.Cells[0,i+1]:=BuildMode.Values[i];
-    if i<BuildMode.ValueDescriptions.Count then
-      ValuesStringGrid.Cells[1,i+1]:=BuildMode.ValueDescriptions[i]
-    else
-      ValuesStringGrid.Cells[1,i+1]:='';
-  end;
-  UpdateDefaultValue;
-end;
-
-procedure TCompOptBuildModesFrame.UpdateDefaultValue;
-var
-  BuildMode: TIDEBuildMode;
-begin
-  if not GetSelectedBuildMode(BuildMode) then exit;
-  DefaultValueEditor.Conditionals:=TCompOptConditionals(BuildMode.DefaultValue);
-end;
-
-procedure TCompOptBuildModesFrame.UpdateButtons;
-var
-  BuildMode: TIDEBuildMode;
-begin
-  GetSelectedBuildMode(BuildMode);
-
-  NewSpeedButton.Enabled:=BuildModes<>nil;
-
-  NewSpeedButton.Hint:='Create new build mode';
-  if BuildMode<>nil then begin
-    DeleteSpeedButton.Enabled:=true;
-    MoveDownSpeedButton.Enabled:=(ModesGrid.Row<ModesGrid.RowCount-1);
-    MoveUpSpeedButton.Enabled:=(ModesGrid.Row>0);
-    DeleteSpeedButton.Hint:='Delete '+BuildMode.Identifier;
-    MoveDownSpeedButton.Hint:='Move '+BuildMode.Identifier+' down';
-    MoveUpSpeedButton.Hint:='Move '+BuildMode.Identifier+' up';
-  end else begin
-    DeleteSpeedButton.Enabled:=false;
-    MoveDownSpeedButton.Enabled:=false;
-    MoveUpSpeedButton.Enabled:=false;
-    DeleteSpeedButton.Hint:='Delete ...';
-    MoveDownSpeedButton.Hint:='Move down';
-    MoveUpSpeedButton.Hint:='Move up';
-  end;
-end;
-
-function TCompOptBuildModesFrame.GetSelectedBuildMode(
-  out BuildMode: TIDEBuildMode): boolean;
-begin
-  BuildMode:=nil;
-  if BuildModes=nil then exit(false);
-  if (ModesGrid.Row<0) or (ModesGrid.Row>=BuildModes.Count) then exit(false);
-  BuildMode:=TIDEBuildMode(BuildModes.Items[ModesGrid.Row]);
-  Result:=true;
+  BuildModesTreeView.EndUpdate;
 end;
 
 constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  DefaultValueGroupBox.Caption:='Default value';
-  ValuesGroupBox.Caption:='Values';
-  ModesGroupBox.Caption:='Build modes';
-  NewSpeedButton.LoadGlyphFromLazarusResource('menu_new');
-  NewSpeedButton.ShowHint:=true;
-  DeleteSpeedButton.LoadGlyphFromLazarusResource('menu_project_remove');
-  DeleteSpeedButton.ShowHint:=true;
-  MoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  MoveDownSpeedButton.ShowHint:=true;
-  MoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
-  MoveUpSpeedButton.ShowHint:=true;
+  BuildModesTreeView.Images := IDEImages.Images_24;
+  fModeImgID:=IDEImages.LoadImage(24,'da_define');
+  fValueImgID:=IDEImages.LoadImage(24,'da_define');
+  fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
+
+  BuildModesGroupBox.Caption:='Build modes';
 end;
 
 destructor TCompOptBuildModesFrame.Destroy;

@@ -8,167 +8,34 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 334
-  DesignTop = 448
-  object ModesGroupBox: TGroupBox
+  DesignLeft = 339
+  DesignTop = 472
+  object BuildModesGroupBox: TGroupBox
     Left = 0
     Height = 229
     Top = 0
-    Width = 186
-    Align = alLeft
-    Caption = 'ModesGroupBox'
+    Width = 488
+    Align = alClient
+    Caption = 'BuildModesGroupBox'
     ClientHeight = 210
-    ClientWidth = 182
+    ClientWidth = 484
     Ctl3D = False
     TabOrder = 0
-    object NewSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = ModesGroupBox
-      AnchorSideBottom.Control = ModesGroupBox
-      AnchorSideBottom.Side = asrBottom
+    object BuildModesTreeView: TTreeView
       Left = 0
-      Height = 22
-      Top = 188
-      Width = 23
-      Anchors = [akLeft, akBottom]
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = NewSpeedButtonClick
-    end
-    object DeleteSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = NewSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = NewSpeedButton
-      Left = 23
-      Height = 22
-      Top = 188
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = DeleteSpeedButtonClick
-    end
-    object MoveDownSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = DeleteSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = NewSpeedButton
-      Left = 46
-      Height = 22
-      Top = 188
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = MoveDownSpeedButtonClick
-    end
-    object MoveUpSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = MoveDownSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = NewSpeedButton
-      Left = 69
-      Height = 22
-      Top = 188
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = MoveUpSpeedButtonClick
-    end
-    object ModesGrid: TStringGrid
-      AnchorSideBottom.Control = NewSpeedButton
-      Left = 0
-      Height = 188
+      Height = 210
       Top = 0
-      Width = 182
-      Align = alTop
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      ColCount = 1
-      FixedCols = 0
-      FixedRows = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goDblClickAutoSize, goSmoothScroll]
-      TabOrder = 0
-      OnSelection = ModesGridSelection
-      OnSelectCell = ModesGridSelectCell
-    end
-  end
-  object ValuesGroupBox: TGroupBox
-    Left = 191
-    Height = 229
-    Top = 0
-    Width = 297
-    Align = alClient
-    Caption = 'ValuesGroupBox'
-    ClientHeight = 210
-    ClientWidth = 293
-    Ctl3D = False
-    TabOrder = 1
-    object ValuesStringGrid: TStringGrid
-      Left = 0
-      Height = 95
-      Top = 0
-      Width = 293
+      Width = 484
       Align = alClient
-      ColCount = 2
-      FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goDblClickAutoSize, goSmoothScroll]
+      Ctl3D = False
+      DefaultItemHeight = 19
+      PopupMenu = BuildModeTVPopupMenu
       TabOrder = 0
     end
-    object DefaultValueGroupBox: TGroupBox
-      Left = 0
-      Height = 109
-      Top = 101
-      Width = 293
-      Align = alBottom
-      Caption = 'DefaultValueGroupBox'
-      ClientHeight = 90
-      ClientWidth = 289
-      Ctl3D = False
-      TabOrder = 1
-      inline DefaultValueEditor: TCompOptsConditionalsFrame
-        Height = 90
-        Width = 289
-        Align = alClient
-        ClientHeight = 86
-        ClientWidth = 285
-        Visible = True
-        DesignLeft = 434
-        DesignTop = 329
-        inherited COCTreeView: TTreeView
-          Height = 86
-          Width = 285
-        end
-        inherited COCPopupMenu: TPopupMenu
-          inherited InsertAboveMenuItem: TMenuItem
-          end
-          inherited InsertBelowMenuItem: TMenuItem
-          end
-          inherited InsertChildMenuItem: TMenuItem
-          end
-          inherited DeleteMenuItem: TMenuItem
-          end
-          inherited MoveUpMenuItem: TMenuItem
-          end
-          inherited MoveDownMenuItem: TMenuItem
-          end
-          inherited MoveLvlUpMenuItem: TMenuItem
-          end
-          inherited MoveLvlDownMenuItem: TMenuItem
-          end
-          inherited PropertiesMenuItem: TMenuItem
-          end
-        end
-      end
-    end
-    object ValuesSplitter: TSplitter
-      Cursor = crVSplit
-      Left = 0
-      Height = 6
-      Top = 95
-      Width = 293
-      Align = alBottom
-      ResizeAnchor = akBottom
-    end
   end
-  object MainSplitter: TSplitter
-    Left = 186
-    Height = 229
-    Top = 0
-    Width = 5
+  object BuildModeTVPopupMenu: TPopupMenu
+    OnPopup = BuildModeTVPopupMenuPopup
+    left = 99
+    top = 77
   end
 end
