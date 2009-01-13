@@ -300,11 +300,6 @@ begin
     Result:=-1;
 end;
 
-function TCustomNotebook.CanTab: boolean;
-begin
-  Result:=false;
-end;
-
 function TCustomNotebook.GetImageIndex(ThePageIndex: Integer): Integer;
 var
   APage: TCustomPage;
