@@ -4596,28 +4596,14 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCanvas.Create" link="#rtl.System.TObject.Create">
+      <element name="TCanvas.Create" link="#fcl.FPCanvas.TFPCustomCanvas.create">
         <descr>
-          <var>Canvas</var>  constructor: creates a new instance of the class 
-          
-          
-          
-          
-          
-          
           <var>TCanvas</var>
         </descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCanvas.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TCanvas.Destroy" link="#fcl.FPCanvas.TFPCustomCanvas.destroy">
         <descr>
-          <var>Canvas</var> destructor: removes this instance of 
-          
-          
-          
-          
-          
-          
           <var>TCanvas</var> and makes its resources available
 </descr>
       </element>

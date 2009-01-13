@@ -1011,7 +1011,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlCanvas.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TControlCanvas.Create" link="#fcl.FPCanvas.TFPCustomCanvas.create"/>
       <!-- destructor Visibility: public -->
       <element name="TControlCanvas.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
       <!-- procedure Visibility: public -->
@@ -2953,11 +2953,20 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlBorderSpacing.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TControlBorderSpacing.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TControlBorderSpacing</var>: sets some default positions, dimensions and alignments, then performs inherited <var>Create</var>
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for TControlBorderSpacing: sets some default positions, dimensions and alignments, then performs inherited <var>Create</var>
+          </p>
+          <p>Overrides ancestor constructors, and may be overridden</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlBorderSpacing.Create.OwnerControl">
@@ -8009,11 +8018,18 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlChildSizing.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TControlChildSizing.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TControlChildSizing</var>: performs inherited <var>Create</var> then sets some default alignments and sizes</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TControlChildSizing</var>: performs inherited <var>Create</var> then sets some default alignments and sizes</p>
+          <p>Overrides ancestors, may be overridden</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlChildSizing.Create.OwnerControl">
@@ -11262,13 +11278,36 @@ need the ability to accept keyboard input or contain other controls. </p>
         <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.</descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGraphicControl.Create" link="#LCL.Controls.TControl.Create"/>
+      <element name="TGraphicControl.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TGraphicControl</var>: performs inherited <var>Create</var> then creates local <var>Canvas</var>
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TGraphicControl</var>: performs inherited <var>Create</var> then creates local <var>Canvas</var>
+          </p>
+          <p>Overrides ancestor and may be overridden</p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Create"/>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TGraphicControl.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TGraphicControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
+      <element name="TGraphicControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TGraphicControl</var>: frees local canvas and performs inherited <var>Destroy</var>
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> - destructor for <var>TGraphicControl</var>: frees local canvas and performs inherited <var>Destroy</var>
+          </p>
+          <p>Overrides ancestor destructors, and may be overridden</p>
+        </descr>
+      </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
@@ -11338,13 +11377,32 @@ getting the parent control's Canvas dimensions.</p>
         <short>The Device Context in which to paint</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomControl.Create" link="#LCL.Controls.TControl.Create"/>
+      <element name="TCustomControl.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomControl</var>: performs inherited <var>Create</var>, then creates local <var>Canvas</var> and sets <var>DoubleBuffered</var> to be False</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Create"/>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomControl.Create.AOwner">
         <short>Owner, ie the component that called this control</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
+      <element name="TCustomControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomControl</var>: frees local <var>Canvas</var> then performs inherited <var>Destroy</var>
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> - destructor for <var>TCustomControl</var>: frees local <var>Canvas</var> then performs inherited <var>Destroy</var>
+          </p>
+          <p>Overrides ancestor destructors, may be overridden</p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Destroy"/>
+        </seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomControl.DestroyComponent">
         <short>If the custom control has been destroyed, free its handle as well</short>
@@ -11633,9 +11691,19 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDockZone.Create" link="#rtl.System.TObject.Create">
-        <descr>Specifies the tree to which this zone belongs, and and child zones which it contains
-</descr>
+      <element name="TDockZone.Create">
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TDockZone</var>: sets local variables to show the <var>Tree</var> to which the zone belongs and the <var>ChildControl</var> which it contains, sets default bounds and then performs inherited <var>Create</var>
+          </p>
+          <p>Overrides ancestor constructors, and may be overridden</p>
+        </descr>
+        <short>
+          <var>Create</var> - constructor for <var>TDockZone</var>: sets local variables to show the <var>Tree</var> and the <var>ChildControl</var>, sets default bounds and then performs inherited <var>Create</var>
+        </short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockZone.Create.TheTree">
@@ -12171,13 +12239,37 @@ getting the parent control's Canvas dimensions.</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDockTree.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TDockTree.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TDockTree</var>: sets up the <var>DockSite</var>, performs inherited <var>Create</var> and sets default <var>BorderWidth</var>, creates the <var>RootZone</var> for the Tree</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TDockTree</var>: sets up the <var>DockSite</var>, performs inherited <var>Create</var> and sets default <var>BorderWidth</var>, creates the <var>RootZone</var> for the Tree</p>
+          <p>Overrides ancestor constructors, may be overridden</p>
+        </descr>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TDockTree.Create.TheDockSite">
         <short>The window control that is to be the site for docking</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TDockTree.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
+      <element name="TDockTree.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TDockTree</var>: deletes the <var>RootZone</var> then performs inherited <var>Destroy</var>
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> - destructor for <var>TDockTree</var>: deletes the <var>RootZone</var> then performs inherited <var>Destroy</var>
+          </p>
+          <p>Overrides ancestor destructors, and may be overridden</p>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TDockTree.PaintSite" link="#LCL.Controls.TDockManager.PaintSite">
         <short/>

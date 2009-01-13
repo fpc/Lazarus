@@ -1950,18 +1950,34 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFPCustomCanvas.create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TFPCustomCanvas.create">
+        <short>
+          <var>create</var> - constructor for <var>TFPCustomCanvas</var>. Performs inherited Create, creates helpers, sets up default sizes and pen, brush and font</short>
+        <descr>
+          <p>
+            <var>create</var> - constructor for <var>TFPCustomCanvas</var>. Performs inherited Create, creates helpers, sets up default sizes and pen, brush and font</p>
+          <p>Overrides ancestor constructor, and may be overridden by descendants</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFPCustomCanvas.destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
-        <descr/>
+      <element name="TFPCustomCanvas.destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TFPCustomCanvas</var>: frees helpers and default pen, brush and font, then performs inherited <var>Destroy</var>
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> - destructor for <var>TFPCustomCanvas</var>: frees helpers and default pen, brush and font, then performs inherited <var>Destroy</var>
+          </p>
+          <p>Overrides ancestor destructor; may be overridden by descendants</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPCustomCanvas.LockCanvas">
