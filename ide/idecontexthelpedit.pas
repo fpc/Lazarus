@@ -154,6 +154,8 @@ begin
   NodeNameLabel.Caption:=lisDebugOptionsFrmName;
   NodesGroupBox.Caption:=lisHelpEntries;
 
+  ButtonPanel.OKButton.OnClick:=@OkBitBtnClick;
+
   IDEDialogLayoutList.ApplyLayout(Self, 600, 450);
 
   LoadIDEWindowHelp;
