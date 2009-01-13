@@ -798,6 +798,7 @@ type
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
+    FBiDiMode: TBiDiMode;
     FBorderSpacing: TControlBorderSpacing;
     FBoundsRectForNewParent: TRect;
     FCaption: TCaption;
@@ -856,6 +857,7 @@ type
     FOnStartDrag: TStartDragEvent;
     FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
+    FParentBiDiMode: Boolean;
     FPopupMenu: TPopupMenu;
     FPreferredMinWidth: integer;// without theme space
     FPreferredMinHeight: integer;// without theme space
@@ -897,6 +899,7 @@ type
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
     function IsAnchorsStored: boolean;
+    function IsBiDiModeStored: boolean;
     function IsCaptionStored: Boolean;
     function IsColorStored: Boolean;
     function IsEnabledStored: Boolean;
@@ -977,6 +980,8 @@ type
     procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    procedure SetBiDiMode(const AValue: TBiDiMode); virtual;
+    procedure SetParentBiDiMode(const AValue: Boolean); virtual;
     function IsAParentAligning: boolean;
     function GetClientOrigin: TPoint; virtual;
     function GetClientRect: TRect; virtual;// visual size of client area
@@ -1012,11 +1017,13 @@ type
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure LMCaptureChanged(var Message: TLMessage); message LM_CaptureChanged;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(var Message: TCMHittest) ; message CM_HITTEST;
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
+    procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
@@ -1304,15 +1311,6 @@ type
     property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
     property UndockHeight: Integer read GetUndockHeight write FUndockHeight;// Height used when undocked
     property UndockWidth: Integer read GetUndockWidth write FUndockWidth;// Width used when undocked
-  private
-    //BidiMode property, RightToLeft
-    FBiDiMode: TBiDiMode;
-    FParentBiDiMode: Boolean;
-    function IsBiDiModeStored: boolean;
-    procedure SetBiDiMode(const AValue: TBiDiMode);
-    procedure SetParentBiDiMode(const AValue: Boolean);
-    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
-    procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
   public
     function UseRightToLeftAlignment: Boolean; virtual;
     function UseRightToLeftReading: Boolean; virtual;
