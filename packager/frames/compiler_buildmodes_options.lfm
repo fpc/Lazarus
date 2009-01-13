@@ -8,8 +8,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 329
-  DesignTop = 424
+  DesignLeft = 334
+  DesignTop = 448
   object ModesGroupBox: TGroupBox
     Left = 0
     Height = 229

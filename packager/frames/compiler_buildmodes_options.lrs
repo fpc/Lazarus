@@ -1,8 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TCompOptBuildModesFrame','FORMDATA',[
   'TPF0'#23'TCompOptBuildModesFrame'#22'CompOptBuildModesFrame'#4'Left'#2#0#6'H'
   +'eight'#3#233#0#3'Top'#2#0#5'Width'#3#236#1#12'ClientHeight'#3#229#0#11'Clie'
-  +'ntWidth'#3#232#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3'I'
-  +#1#9'DesignTop'#3#168#1#0#9'TGroupBox'#13'ModesGroupBox'#4'Left'#2#0#6'Heigh'
+  +'ntWidth'#3#232#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3'N'
+  +#1#9'DesignTop'#3#192#1#0#9'TGroupBox'#13'ModesGroupBox'#4'Left'#2#0#6'Heigh'
   +'t'#3#229#0#3'Top'#2#0#5'Width'#3#186#0#5'Align'#7#6'alLeft'#7'Caption'#6#13
   +'ModesGroupBox'#12'ClientHeight'#3#210#0#11'ClientWidth'#3#182#0#5'Ctl3D'#8#8
   +'TabOrder'#2#0#0#12'TSpeedButton'#14'NewSpeedButton'#22'AnchorSideLeft.Contr'

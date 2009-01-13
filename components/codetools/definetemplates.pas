@@ -4163,29 +4163,19 @@ begin
   // <LazarusSrcDir>/packager
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
     '','packager',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
+  DirTempl.AddChild(TDefineTemplate.Create('src path addition',
+    Format(ctsAddsDirToSourcePath,['lcl synedit codetools ideintf']),
     SrcPathMacroName,
-      d('../lcl'
-      +';../lcl/interfaces/'+WidgetType)
-      +';'+SrcPath
-    ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('main path addition',
-    Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
-    SrcPathMacroName,
-     d('../ide;'+SrcPath)
-    ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
-    Format(ctsAddsDirToSourcePath,['synedit']),
-    SrcPathMacroName,
-      d('registration;'
-      +'frames;'
-      +'../ideintf;'
-      +'../components/synedit;'
-      +'../components/codetools;'
-      +'../components/custom;')
-      +SrcPath
-    ,da_Define));
+      d(LazarusSrcDir+'/lcl'
+      +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
+      +';'+LazarusSrcDir+'/ide'
+      +';'+LazarusSrcDir+'/ideintf'
+      +';'+LazarusSrcDir+'/components/synedit'
+      +';'+LazarusSrcDir+'/components/codetools'
+      +';'+LazarusSrcDir+'/packager/frames'
+      +';'+LazarusSrcDir+'/packager/registration'
+      +';'+SrcPath)
+    ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
     ExternalMacroStart+'IncPath',
