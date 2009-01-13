@@ -120,7 +120,7 @@ var
 begin
   if not GetSelectedBuildMode(BuildMode) then exit;
   i:=ModesGrid.Row;
-  if i<ModesGrid.Row-1 then begin
+  if (i<ModesGrid.RowCount-1) and (i<BuildModes.Count-1) then begin
     BuildModes.Move(i,i+1);
     ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
     ModesGrid.Cells[0,i+1]:=BuildModes.Items[i+1].Identifier;
@@ -135,7 +135,7 @@ var
 begin
   if not GetSelectedBuildMode(BuildMode) then exit;
   i:=ModesGrid.Row;
-  if i>0 then begin
+  if (i>0) and (i<ModesGrid.RowCount) and (i<BuildModes.Count) then begin
     BuildModes.Move(i,i-1);
     ModesGrid.Cells[0,i]:=BuildModes.Items[i].Identifier;
     ModesGrid.Cells[0,i-1]:=BuildModes.Items[i-1].Identifier;
