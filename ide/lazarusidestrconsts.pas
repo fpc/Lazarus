@@ -358,6 +358,7 @@ resourcestring
 
   lisMenuConfigExternalTools = 'Configure external tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
+  lisMenuQuickSyntaxCheckOk = 'Quick syntax check OK';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
   lisMenuMakeResourceString = 'Make Resource String ...';

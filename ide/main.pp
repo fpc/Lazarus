@@ -10386,12 +10386,17 @@ begin
   or (ActiveSrcEdit=nil) then exit;
   SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-  if not CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
+  if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
+    DoArrangeSourceEditorAndMessageView(false);
+    MessagesView.ClearTillLastSeparator;
+    MessagesView.AddSeparator;
+    MessagesView.AddMsg(lisMenuQuickSyntaxCheckOk,'',-1);
+  end else begin
     DoJumpToCodeToolBossError;
   end;
-  if (ErrorMsg='') or (NewTopLine=0) or (NewX=0) or (NewY=0) or (NewCode=nil) then ;
+  if (ErrorMsg='') or (NewTopLine=0) or (NewX=0) or (NewY=0) or (NewCode=nil) then ; // avoid compiler hints about parameters not used
 end;
 
 //-----------------------------------------------------------------------------
