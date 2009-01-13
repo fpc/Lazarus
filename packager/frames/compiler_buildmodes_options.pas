@@ -47,6 +47,9 @@ type
     ValuesSplitter: TSplitter;
     ValuesStringGrid: TStringGrid;
     procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure ModesGridSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
+    procedure ModesGridSelection(Sender: TObject; aCol, aRow: Integer);
     procedure MoveDownSpeedButtonClick(Sender: TObject);
     procedure MoveUpSpeedButtonClick(Sender: TObject);
     procedure NewSpeedButtonClick(Sender: TObject);
@@ -91,10 +94,23 @@ begin
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
   BuildModes.Delete(i);
-  ModesGrid.DeleteColRow(true,i);
+  ModesGrid.DeleteColRow(false,i);
   if i=ModesGrid.RowCount then
     dec(i);
   ModesGrid.Row:=i;
+end;
+
+procedure TCompOptBuildModesFrame.ModesGridSelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+
+end;
+
+procedure TCompOptBuildModesFrame.ModesGridSelection(Sender: TObject; aCol,
+  aRow: Integer);
+begin
+  UpdateValues;
+  UpdateButtons;
 end;
 
 procedure TCompOptBuildModesFrame.MoveDownSpeedButtonClick(Sender: TObject);

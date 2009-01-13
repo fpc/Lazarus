@@ -1,10 +1,8 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCompOptBuildModesFrame','FORMDATA',[
   'TPF0'#23'TCompOptBuildModesFrame'#22'CompOptBuildModesFrame'#4'Left'#2#0#6'H'
   +'eight'#3#233#0#3'Top'#2#0#5'Width'#3#236#1#12'ClientHeight'#3#229#0#11'Clie'
-  +'ntWidth'#3#232#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3'D'
-  +#1#9'DesignTop'#3#144#1#0#9'TGroupBox'#13'ModesGroupBox'#4'Left'#2#0#6'Heigh'
+  +'ntWidth'#3#232#1#5'Ctl3D'#8#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3'I'
+  +#1#9'DesignTop'#3#168#1#0#9'TGroupBox'#13'ModesGroupBox'#4'Left'#2#0#6'Heigh'
   +'t'#3#229#0#3'Top'#2#0#5'Width'#3#186#0#5'Align'#7#6'alLeft'#7'Caption'#6#13
   +'ModesGroupBox'#12'ClientHeight'#3#210#0#11'ClientWidth'#3#182#0#5'Ctl3D'#8#8
   +'TabOrder'#2#0#0#12'TSpeedButton'#14'NewSpeedButton'#22'AnchorSideLeft.Contr'
@@ -30,28 +28,30 @@ LazarusResources.Add('TCompOptBuildModesFrame','FORMDATA',[
   +'Left'#7'akRight'#8'akBottom'#0#8'ColCount'#2#1#9'FixedCols'#2#0#9'FixedRows'
   +#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10
   +'goHorzLine'#13'goRangeSelect'#9'goEditing'#18'goDblClickAutoSize'#14'goSmoo'
-  +'thScroll'#0#8'TabOrder'#2#0#0#0#0#9'TGroupBox'#14'ValuesGroupBox'#4'Left'#3
-  +#191#0#6'Height'#3#229#0#3'Top'#2#0#5'Width'#3')'#1#5'Align'#7#8'alClient'#7
-  +'Caption'#6#14'ValuesGroupBox'#12'ClientHeight'#3#210#0#11'ClientWidth'#3'%'
-  +#1#5'Ctl3D'#8#8'TabOrder'#2#1#0#11'TStringGrid'#16'ValuesStringGrid'#4'Left'
-  +#2#0#6'Height'#2'_'#3'Top'#2#0#5'Width'#3'%'#1#5'Align'#7#8'alClient'#8'ColC'
-  +'ount'#2#2#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorz'
-  +'Line'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goColSizing'#9'goE'
-  +'diting'#18'goDblClickAutoSize'#14'goSmoothScroll'#0#8'TabOrder'#2#0#0#0#9'T'
-  +'GroupBox'#20'DefaultValueGroupBox'#4'Left'#2#0#6'Height'#2'm'#3'Top'#2'e'#5
-  +'Width'#3'%'#1#5'Align'#7#8'alBottom'#7'Caption'#6#20'DefaultValueGroupBox'
-  +#12'ClientHeight'#2'Z'#11'ClientWidth'#3'!'#1#5'Ctl3D'#8#8'TabOrder'#2#1#0
-  +#244#26'TCompOptsConditionalsFrame'#18'DefaultValueEditor'#6'Height'#2'Z'#5
-  +'Width'#3'!'#1#5'Align'#7#8'alClient'#12'ClientHeight'#2'V'#11'ClientWidth'#3
-  +#29#1#7'Visible'#9#10'DesignLeft'#3#178#1#9'DesignTop'#3'I'#1#0#241#9'TTreeV'
-  +'iew'#11'COCTreeView'#6'Height'#2'V'#5'Width'#3#29#1#0#0#241#10'TPopupMenu'
-  +#12'COCPopupMenu'#0#241#9'TMenuItem'#19'InsertAboveMenuItem'#0#0#241#9'TMenu'
-  +'Item'#19'InsertBelowMenuItem'#0#0#241#9'TMenuItem'#19'InsertChildMenuItem'#0
-  +#0#241#9'TMenuItem'#14'DeleteMenuItem'#0#0#241#9'TMenuItem'#14'MoveUpMenuIte'
-  +'m'#0#0#241#9'TMenuItem'#16'MoveDownMenuItem'#0#0#241#9'TMenuItem'#17'MoveLv'
-  +'lUpMenuItem'#0#0#241#9'TMenuItem'#19'MoveLvlDownMenuItem'#0#0#241#9'TMenuIt'
-  +'em'#18'PropertiesMenuItem'#0#0#0#0#0#9'TSplitter'#14'ValuesSplitter'#6'Curs'
-  +'or'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#6#3'Top'#2'_'#5'Width'#3'%'#1#5'A'
-  +'lign'#7#8'alBottom'#12'ResizeAnchor'#7#8'akBottom'#0#0#0#9'TSplitter'#12'Ma'
-  +'inSplitter'#4'Left'#3#186#0#6'Height'#3#229#0#3'Top'#2#0#5'Width'#2#5#0#0#0
+  +'thScroll'#0#8'TabOrder'#2#0#11'OnSelection'#7#18'ModesGridSelection'#12'OnS'
+  +'electCell'#7#19'ModesGridSelectCell'#0#0#0#9'TGroupBox'#14'ValuesGroupBox'#4
+  +'Left'#3#191#0#6'Height'#3#229#0#3'Top'#2#0#5'Width'#3')'#1#5'Align'#7#8'alC'
+  +'lient'#7'Caption'#6#14'ValuesGroupBox'#12'ClientHeight'#3#210#0#11'ClientWi'
+  +'dth'#3'%'#1#5'Ctl3D'#8#8'TabOrder'#2#1#0#11'TStringGrid'#16'ValuesStringGri'
+  +'d'#4'Left'#2#0#6'Height'#2'_'#3'Top'#2#0#5'Width'#3'%'#1#5'Align'#7#8'alCli'
+  +'ent'#8'ColCount'#2#2#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15
+  +'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goColSi'
+  +'zing'#9'goEditing'#18'goDblClickAutoSize'#14'goSmoothScroll'#0#8'TabOrder'#2
+  +#0#0#0#9'TGroupBox'#20'DefaultValueGroupBox'#4'Left'#2#0#6'Height'#2'm'#3'To'
+  +'p'#2'e'#5'Width'#3'%'#1#5'Align'#7#8'alBottom'#7'Caption'#6#20'DefaultValue'
+  +'GroupBox'#12'ClientHeight'#2'Z'#11'ClientWidth'#3'!'#1#5'Ctl3D'#8#8'TabOrde'
+  +'r'#2#1#0#244#26'TCompOptsConditionalsFrame'#18'DefaultValueEditor'#6'Height'
+  +#2'Z'#5'Width'#3'!'#1#5'Align'#7#8'alClient'#12'ClientHeight'#2'V'#11'Client'
+  +'Width'#3#29#1#7'Visible'#9#10'DesignLeft'#3#178#1#9'DesignTop'#3'I'#1#0#241
+  +#9'TTreeView'#11'COCTreeView'#6'Height'#2'V'#5'Width'#3#29#1#0#0#241#10'TPop'
+  +'upMenu'#12'COCPopupMenu'#0#241#9'TMenuItem'#19'InsertAboveMenuItem'#0#0#241
+  +#9'TMenuItem'#19'InsertBelowMenuItem'#0#0#241#9'TMenuItem'#19'InsertChildMen'
+  +'uItem'#0#0#241#9'TMenuItem'#14'DeleteMenuItem'#0#0#241#9'TMenuItem'#14'Move'
+  +'UpMenuItem'#0#0#241#9'TMenuItem'#16'MoveDownMenuItem'#0#0#241#9'TMenuItem'
+  +#17'MoveLvlUpMenuItem'#0#0#241#9'TMenuItem'#19'MoveLvlDownMenuItem'#0#0#241#9
+  +'TMenuItem'#18'PropertiesMenuItem'#0#0#0#0#0#9'TSplitter'#14'ValuesSplitter'
+  +#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#6#3'Top'#2'_'#5'Width'#3'%'
+  +#1#5'Align'#7#8'alBottom'#12'ResizeAnchor'#7#8'akBottom'#0#0#0#9'TSplitter'
+  +#12'MainSplitter'#4'Left'#3#186#0#6'Height'#3#229#0#3'Top'#2#0#5'Width'#2#5#0
+  +#0#0
 ]);

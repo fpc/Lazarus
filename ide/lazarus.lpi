@@ -504,15 +504,6 @@
       <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <BuildModes>
-      <Count Value="2"/>
-      <Item1 DefaultValueNodeType="AddValue">
-        <Identifier Value="Mode1"/>
-      </Item1>
-      <Item2 DefaultValueNodeType="AddValue">
-        <Identifier Value="Mode2"/>
-      </Item2>
-    </BuildModes>
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>

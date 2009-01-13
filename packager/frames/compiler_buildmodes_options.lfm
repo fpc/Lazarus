@@ -8,8 +8,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 324
-  DesignTop = 400
+  DesignLeft = 329
+  DesignTop = 424
   object ModesGroupBox: TGroupBox
     Left = 0
     Height = 229
@@ -83,6 +83,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       FixedRows = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goDblClickAutoSize, goSmoothScroll]
       TabOrder = 0
+      OnSelection = ModesGridSelection
+      OnSelectCell = ModesGridSelectCell
     end
   end
   object ValuesGroupBox: TGroupBox
