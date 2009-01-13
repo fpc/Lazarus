@@ -1126,7 +1126,9 @@ begin
 
   { Conditionals }
   TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
-                                         Path+'Conditionals/',PathDelimChange);
+                                          Path+'Conditionals/',PathDelimChange);
+  TIDEBuildModes(fBuildModes).LoadFromXMLConfig(XMLConfigFile,
+                                            Path+'BuildModes/',PathDelimChange);
   // ToDo: replace this with conditional compiler options
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
 
@@ -1313,7 +1315,9 @@ begin
 
   { Conditionals }
   TCompOptConditionals(FConditionals).SaveToXMLConfig(XMLConfigFile,
-                                           Path+'Conditionals/',UsePathDelim);
+                                             Path+'Conditionals/',UsePathDelim);
+  TIDEBuildModes(fBuildModes).SaveToXMLConfig(XMLConfigFile,
+                                              Path+'BuildModes/',UsePathDelim);
   // ToDo: remove
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
