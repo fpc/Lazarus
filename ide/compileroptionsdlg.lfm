@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 394
+  Left = 399
   Height = 528
-  Top = 187
+  Top = 211
   Width = 669
   ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]
@@ -1011,6 +1011,91 @@ object frmCompilerOptions: TfrmCompilerOptions
         Width = 667
         Align = alTop
         ResizeAnchor = akTop
+      end
+      inline BuildModesFrame: TCompOptBuildModesFrame
+        Height = 234
+        Top = 219
+        Width = 667
+        Align = alClient
+        ClientHeight = 230
+        ClientWidth = 663
+        TabOrder = 2
+        Visible = True
+        inherited ModesGroupBox: TGroupBox
+          Height = 230
+          ClientHeight = 211
+          inherited NewSpeedButton: TSpeedButton
+            Top = 189
+          end
+          inherited DeleteSpeedButton: TSpeedButton
+            Top = 189
+          end
+          inherited MoveDownSpeedButton: TSpeedButton
+            Top = 189
+          end
+          inherited MoveUpSpeedButton: TSpeedButton
+            Top = 189
+          end
+          inherited ModesGrid: TStringGrid
+            Height = 189
+          end
+        end
+        inherited ValuesGroupBox: TGroupBox
+          Height = 230
+          Width = 472
+          ClientHeight = 211
+          ClientWidth = 468
+          inherited ValuesStringGrid: TStringGrid
+            Height = 96
+            Width = 468
+          end
+          inherited DefaultValueGroupBox: TGroupBox
+            Top = 102
+            Width = 468
+            ClientWidth = 464
+            inline DefaultValueEditor: TCompOptsConditionalsFrame
+              Height = 90
+              Width = 464
+              Align = alClient
+              ClientHeight = 86
+              ClientWidth = 460
+              Visible = True
+              DesignLeft = 434
+              DesignTop = 329
+              inherited COCTreeView: TTreeView
+                Height = 86
+                Width = 460
+              end
+              inherited COCPopupMenu: TPopupMenu
+                inherited InsertAboveMenuItem: TMenuItem
+                end
+                inherited InsertBelowMenuItem: TMenuItem
+                end
+                inherited InsertChildMenuItem: TMenuItem
+                end
+                inherited DeleteMenuItem: TMenuItem
+                end
+                inherited MoveUpMenuItem: TMenuItem
+                end
+                inherited MoveDownMenuItem: TMenuItem
+                end
+                inherited MoveLvlUpMenuItem: TMenuItem
+                end
+                inherited MoveLvlDownMenuItem: TMenuItem
+                end
+                inherited PropertiesMenuItem: TMenuItem
+                end
+              end
+            end
+          end
+          inherited ValuesSplitter: TSplitter
+            Top = 96
+            Width = 468
+          end
+        end
+        inherited MainSplitter: TSplitter
+          Height = 230
+        end
       end
     end
     object InheritedPage: TPage

@@ -63,6 +63,7 @@ type
 
   TfrmCompilerOptions = class(TForm)
     chkUseExternalDbgSyms: TCheckBox;
+    BuildModesFrame: TCompOptBuildModesFrame;
     ConditionalOptionsFrame: TCompOptsConditionalsFrame;
     ConditionalsGroupBox: TGroupBox;
     MainNoteBook: TNoteBook;
