@@ -132,6 +132,7 @@ type
     function HasChilds: boolean;
     function IsFunction: boolean;
     function IsAbstractMethod: boolean;
+    function TryIsAbstractMethod: boolean;
     procedure Clear;
     procedure UnbindNode;
     procedure StoreNodeHash;
@@ -531,7 +532,7 @@ begin
   FFilteredList.Count:=0;
   FFilteredList.Capacity:=FItems.Count;
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
+  DebugLn(['TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"']);
   {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
@@ -540,7 +541,7 @@ begin
     and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
     then begin
       {$IFDEF ShowFilteredIdents}
-      DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier);
+      DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
       {$ENDIF}
       if length(Prefix)=length(CurItem.Identifier) then
         // put exact matches at the beginning
@@ -551,7 +552,7 @@ begin
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count));
+  DebugLn(['TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count)]);
   {$ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
@@ -1264,9 +1265,15 @@ procedure TIdentCompletionTool.FindCollectionContext(
   function GetContextExprStartPos(IdentStartPos: integer;
     ContextNode: TCodeTreeNode): integer;
   begin
-    Result:=FindStartOfVariable(IdentStartPos);
-    if Result<ContextNode.StartPos then
-      Result:=ContextNode.StartPos;
+    MoveCursorToCleanPos(IdentStartPos);
+    ReadPriorAtom;
+    if (CurPos.Flag=cafPoint)
+    or (UpAtomIs('INHERITED')) then begin
+      Result:=FindStartOfVariable(IdentStartPos);
+      if Result<ContextNode.StartPos then
+        Result:=ContextNode.StartPos;
+    end else
+      Result:=IdentStartPos;
     MoveCursorToCleanPos(Result);
     ReadNextAtom;
     case ContextNode.Desc of
@@ -2041,6 +2048,15 @@ begin
     Include(Flags,iliIsAbstractMethodValid);
   end;
   Result:=iliIsAbstractMethod in Flags;
+end;
+
+function TIdentifierListItem.TryIsAbstractMethod: boolean;
+begin
+  try
+    Result:=IsAbstractMethod;
+  except
+    Result:=false;
+  end;
 end;
 
 procedure TIdentifierListItem.Clear;

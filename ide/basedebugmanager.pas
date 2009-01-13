@@ -62,6 +62,7 @@ type
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
+    FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TIDELocals;
     FWatches: TIDEWatches;
     FRegisters: TIDERegisters;
@@ -120,6 +121,7 @@ type
     property State: TDBGState read GetState;           // The current state of the debugger
 
     property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
+    property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TIDECallStack read FCallStack;
     property Locals: TIDELocals read FLocals;

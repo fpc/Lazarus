@@ -546,7 +546,7 @@ begin
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
-    Case (Message.SizeType and not SIZE_SourceIsInterface) of
+    case (Message.SizeType and not SIZE_SourceIsInterface) of
       SIZENORMAL :
         if Showing then
           FWindowState := wsNormal;

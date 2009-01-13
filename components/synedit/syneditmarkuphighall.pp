@@ -26,8 +26,8 @@ unit SynEditMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls;//, LCLProc;
+  Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
+  SynEditMiscClasses, Controls, LCLProc;
 
 type
 
@@ -99,6 +99,7 @@ type
     fStartPoint : TPoint;        // First found position, before TopLine of visible area
     fMatches : TSynMarkupHighAllMatchList;
     fInvalidating, fHasInvalidLines : Boolean;
+    FHideSingleMatch: Boolean;
 
     Procedure FindStartPoint;
     Procedure FindInitialize(Backward: Boolean);
@@ -109,6 +110,8 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoTextChanged(StartLine, EndLine: Integer); override;
+    property  HideSingleMatch: Boolean read FHideSingleMatch write FHideSingleMatch;
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
@@ -116,17 +119,39 @@ type
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
-    Procedure InvalidateScreenLines(aFirstCodeLine, aLastCodeLine: Integer);
-    Procedure InvalidateLines(aFirstCodeLine, aLastCodeLine: Integer);
     Procedure Invalidate;
     Procedure SendLineInvalidation;
 
     property SearchString : String read fSearchString write SetSearchString;
     property SearchOptions : TSynSearchOptions read fSearchOptions write SetSearchOptions;
   end;
-  
-  
+
+  { TSynEditMarkupHighlightAllCaret }
+
+  TSynEditMarkupHighlightAllCaret = class(TSynEditMarkupHighlightAll)
+  private
+    FTimer: TTimer;
+    FWaitTime: Integer;
+    FFullWord: Boolean;
+    procedure SetFullWord(const AValue: Boolean);
+    procedure SetWaitTime(const AValue: Integer);
+  protected
+    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure RestartTimer;
+    procedure ScrollTimerHandler(Sender: TObject);
+    function  GetCurrentText: String;
+    function  GetCurrentOption: TSynSearchOptions;
+  public
+    constructor Create(ASynEdit : TCustomControl);
+    destructor Destroy; override;
+    property  WaitTime: Integer read FWaitTime write SetWaitTime;
+    property  FullWord: Boolean read FFullWord write SetFullWord;
+  end;
+
 implementation
+uses SynEdit;
 
 { TSynMarkupHighAllLines }
 
@@ -265,6 +290,7 @@ begin
   fSearchString:='';
   fInvalidating := false;
   fHasInvalidLines:=True;
+  FHideSingleMatch := False;
 end;
 
 destructor TSynEditMarkupHighlightAll.Destroy;
@@ -350,14 +376,14 @@ begin
   if not fHasInvalidLines
   then exit;
   fHasInvalidLines := false;
-  
+
   LastLine := ScreenRowToRow(LinesInWindow);
 
   { TODO: need a list of invalidated lines, so we can keep valid matches }
   FindStartPoint;
   ptStart := fStartPoint;
   Pos := 0;
-  
+
   FindInitialize(false);
   ptEnd.Y:= Lines.Count;
   ptEnd.X:= Length(Lines[ptEnd.y - 1]);
@@ -377,15 +403,11 @@ begin
 
   fMatches.Count := Pos;
   fMatches.MaybeReduceCapacity;
-  SendLineInvalidation;
+  if not(HideSingleMatch) or (fMatches.Count > 1) then
+    SendLineInvalidation;
 end;
 
-procedure TSynEditMarkupHighlightAll.InvalidateScreenLines(aFirstCodeLine, aLastCodeLine : Integer);
-begin
-  InvalidateLines(ScreenRowToRow(aFirstCodeLine), ScreenRowToRow(aLastCodeLine));
-end;
-
-procedure TSynEditMarkupHighlightAll.InvalidateLines(aFirstCodeLine, aLastCodeLine : Integer);
+procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
 var
   Pos: Integer;
 begin
@@ -396,18 +418,18 @@ begin
   // Invalidate neighbouring lines, which have an overlapping match
   Pos := 0;
   while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y < aFirstCodeLine )
+  and (fMatches.EndPoint[Pos].y < StartLine)
   do inc(Pos);
   // curent Match ends in aFirstCodeLine or later
-  if fMatches.StartPoint[Pos].y < aFirstCodeLine
-  then InvalidateSynLines(fMatches.StartPoint[Pos].y, aFirstCodeLine - 1);
+  if fMatches.StartPoint[Pos].y < StartLine
+  then InvalidateSynLines(fMatches.StartPoint[Pos].y, StartLine - 1);
 
   while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y = aLastCodeLine )
+  and (fMatches.EndPoint[Pos].y = EndLine )
   do inc(Pos);
   // curent Match ends after aLastCodeLine
-  if fMatches.StartPoint[Pos].y <= aLastCodeLine
-  then InvalidateSynLines(aLastCodeLine + 1, fMatches.EndPoint[Pos].y);
+  if fMatches.StartPoint[Pos].y <= EndLine
+  then InvalidateSynLines(EndLine + 1, fMatches.EndPoint[Pos].y);
 
   fInvalidating := False;
   fHasInvalidLines := true;
@@ -430,9 +452,11 @@ begin
   Pos := 0;
   while (Pos < fMatches.PointCount)
   do begin
-    if ( (Pos = 0) or (fMatches.Point[Pos].y <> fMatches.Point[Pos-1].y) )
-    then InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos].y);
-    inc(pos);
+    // first block, or new-end bigger last-end
+    if ( (Pos = 0) or (fMatches.Point[Pos+1].y > fMatches.Point[Pos-1].y) )
+    then
+      InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos+1].y);
+    inc(pos,2);
   end;
 
   fInvalidating := False;
@@ -447,6 +471,8 @@ begin
   exit;
 
   ValidateMatches;
+  if HideSingleMatch and (fMatches.Count <= 1) then exit;
+
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
@@ -460,6 +486,14 @@ begin
   then exit;
   
   //debugLN('+++>MARUP *ON* ',dbgs(@result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+  if fMatches.Point[Pos-1].y < aRow then
+    MarkupInfo.StartX := -1
+  else
+    MarkupInfo.StartX := fMatches.Point[Pos-1].x;
+  if fMatches.Point[Pos].y > aRow then
+    MarkupInfo.EndX := -1
+  else
+    MarkupInfo.EndX := fMatches.Point[Pos].x-1;
   result := MarkupInfo;
 end;
 
@@ -472,6 +506,8 @@ begin
   exit;
 
   ValidateMatches;
+  if HideSingleMatch and (fMatches.Count <= 1) then exit;
+
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
@@ -488,6 +524,95 @@ begin
 
   Result := fMatches.Point[Pos].x;
   //debugLN('--->NEXT POS ',dbgs(result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+end;
+
+{ TSynEditMarkupHighlightAllCaret }
+
+procedure TSynEditMarkupHighlightAllCaret.SetWaitTime(const AValue: Integer);
+begin
+  if FWaitTime = AValue then exit;
+  FWaitTime := AValue;
+  FTimer.Interval := FWaitTime;
+  RestartTimer;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.SetFullWord(const AValue: Boolean);
+begin
+  if FFullWord = AValue then exit;
+  FFullWord := AValue;
+  SearchOptions := GetCurrentOption;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
+begin
+  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+    exit;
+  SearchString := '';
+  RestartTimer;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine: Integer);
+begin
+  SearchString := '';
+  RestartTimer;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
+begin
+  SearchString := '';
+  RestartTimer;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.RestartTimer;
+begin
+  FTimer.Enabled := False;
+  if MarkupInfo.IsEnabled then
+    FTimer.Enabled := True;
+end;
+
+procedure TSynEditMarkupHighlightAllCaret.ScrollTimerHandler(Sender: TObject);
+begin
+  if (SearchString = GetCurrentText) and (SearchOptions = GetCurrentOption) then
+    exit;
+  SearchString := ''; // prevent double update
+  SearchOptions := GetCurrentOption;
+  SearchString := GetCurrentText;
+end;
+
+function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
+begin
+  If TCustomSynEdit(SynEdit).SelAvail then
+    Result := TCustomSynEdit(SynEdit).SelText
+  else
+    Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol
+      (TCustomSynEdit(SynEdit).PhysicalToLogicalPos(TCustomSynEdit(SynEdit).CaretXY));
+end;
+
+function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
+begin
+  If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
+    Result := []
+  else
+    Result := [ssoWholeWord];
+end;
+
+constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TCustomControl);
+begin
+  inherited Create(ASynEdit);
+  MarkupInfo.Clear;
+  HideSingleMatch := True;
+  FFullWord := False;
+  FWaitTime := 1500;
+  FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
+  FTimer.Interval := FWaitTime;
+  FTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+end;
+
+destructor TSynEditMarkupHighlightAllCaret.Destroy;
+begin
+  FreeAndNil(FTimer);
+  inherited Destroy;
 end;
 
 end.

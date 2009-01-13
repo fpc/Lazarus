@@ -849,7 +849,7 @@ type
                         ActiveSrcEdit: TSourceEditor;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean): TModalResult; override;
+                        AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
@@ -3423,6 +3423,7 @@ end;
 procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
 var
   DlgResult: TModalResult;
+  ARecentProject: String;
 begin
   // stop debugging/compiling/...
   if not DoResetToolStatus(true) then exit;
@@ -3449,16 +3450,29 @@ begin
   DoCloseProject;
 
   // ask what to do next
-  while (Project1=nil) do begin
-    case ShowProjectWizardDlg of
-    tpws_new:
-      mnuNewProjectClicked(Sender);
-    tpws_open:
-      mnuOpenProjectClicked(Sender);
-    tpws_convert:
-      mnuToolConvertDelphiProjectClicked(Sender);
-    tpws_closeIDE:
-      if QuitIDE then exit;
+  while (Project1 = nil) do
+  begin
+    case ShowProjectWizardDlg(ARecentProject) of
+      tpws_new:
+        mnuNewProjectClicked(Sender);
+      tpws_open:
+        mnuOpenProjectClicked(Sender);
+      tpws_openRecent:
+        begin
+          ARecentProject := ExpandFileNameUTF8(ARecentProject);
+          if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
+          begin
+            // open failed
+            if not FileExistsUTF8(ARecentProject) then
+              EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
+            else
+              AddRecentProjectFileToEnvironment(ARecentProject);
+          end;
+        end;
+      tpws_convert:
+        mnuToolConvertDelphiProjectClicked(Sender);
+      tpws_closeIDE:
+        if QuitIDE then exit;
     end;
   end;
 end;
@@ -10756,6 +10770,7 @@ procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
 begin
   if MainIDEBar=nil then exit;
+  if ToolStatus = itExiting then exit;
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   if MainBarSubTitle<>'' then begin
     NewCaption:=NewCaption+' - '+MainBarSubTitle;
@@ -11770,6 +11785,7 @@ begin
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
+  CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
@@ -12175,7 +12191,7 @@ end;
 function TMainIDE.DoJumpToCodePos(
   ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-  AddJumpPoint: boolean): TModalResult;
+  AddJumpPoint: boolean; FocusEditor: boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   NewUnitInfo: TUnitInfo;
@@ -12225,8 +12241,12 @@ begin
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
-  SourceNoteBook.ShowOnTop;
-  SourceNotebook.FocusEditor;
+
+  if FocusEditor
+  then begin
+    SourceNoteBook.ShowOnTop;
+    SourceNotebook.FocusEditor;
+  end;
   UpdateSourceNames;
   Result:=mrOk;
 end;

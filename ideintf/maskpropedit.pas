@@ -25,8 +25,8 @@ interface
 
 uses
   Classes, SysUtils, MaskUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf, PropEdits,
-  ComponentEditors, ObjInspStrConsts;
+  StrUtils, StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
+  PropEdits, ComponentEditors, ObjInspStrConsts;
 
 type
 
@@ -84,8 +84,6 @@ type
   end;
 
 implementation
-
-uses StrUtils;
 
 procedure ParseMaskLine(Line: String; out Caption, Example, Mask: String);
 begin

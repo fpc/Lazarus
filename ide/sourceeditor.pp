@@ -293,8 +293,6 @@ type
     // used to get the word at the mouse cursor
     function GetWordAtPosition(Position: TPoint): String;
     function GetWordFromCaret(const ACaretPos: TPoint): String;
-    function GetWordFromCaretEx(const ACaretPos: TPoint;
-      const ALeftLimit, ARightLimit: TCharSet): String;
     function GetWordAtCurrentCaret: String;
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
     function PositionInSelection(const APosition: TPoint): Boolean;
@@ -1549,7 +1547,7 @@ Begin
         TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
       end;
       with TCustomSynEdit(Sender) do begin
-        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
         P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
         P := ClientToScreen(p);
       end;
@@ -2072,16 +2070,13 @@ procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
 var
   BreakPtMark: TSourceMark;
 begin
-  if (not EditorComponent.Gutter.ShowCodeFolding)
-  or (X>=EditorComponent.Gutter.CodeFoldingWidth) then begin
-    // create or delete breakpoint
-    // find breakpoint mark at line
-    BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
-    if BreakPtMark = nil then
-      DebugBoss.DoCreateBreakPoint(Filename,Line,true)
-    else
-      DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
-  end;
+  // create or delete breakpoint
+  // find breakpoint mark at line
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(Filename,Line,true)
+  else
+    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
@@ -2416,7 +2411,7 @@ begin
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
   with FEditor do begin
-    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
     P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
     P := ClientToScreen(p);
   end;
@@ -2667,7 +2662,7 @@ var
   CaretPos: TPoint;
 begin
   Result := '';
-  Caretpos := GetCaretPosfromCursorPos(Position);
+  Caretpos := ScreenToTextPosition(GetCaretPosfromCursorPos(Position));
   Result := GetWordFromCaret(CaretPos);
 end;
 
@@ -2944,44 +2939,12 @@ begin
   Result := '';
   CaretPos.Y := CurrentCursorYLine;
   CaretPos.X := CurrentCursorXLine;
-  Result := GetWordFromCaret(CaretPos);
+  Result := GetWordFromCaret(ScreenToTextPosition(CaretPos));
 end;
 
 function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;
 begin
-  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9','_'],
-                                          ['A'..'Z', 'a'..'z', '0'..'9', '_']);
-end;
-
-function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint;
-  const ALeftLimit, ARightLimit: TCharSet): String;
-var
-  XLine,YLine: Integer;
-  EditorLine: String;
-begin
-  Result := '';
-
-  YLine := ACaretPos.Y;
-  XLine := ACaretPos.X;
-  EditorLine := FEditor.Lines[YLine-1];
-
-  if Length(Trim(EditorLine)) = 0 then Exit;
-  if (XLine > Length(EditorLine)) or (XLine < 1) then Exit;
-  if not (EditorLine[XLine] in ALeftLimit) then Exit;
-
-  //walk backwards to a space or non-standard character.
-  while (XLine > 1) and (EditorLine[XLine - 1] in ALeftLimit) do Dec(XLine);
-
-  //chop off the beginning
-  Result := Copy(EditorLine, XLine, Length(EditorLine));
-
-  //start forward search
-  XLine := ACaretPos.X - XLine + 1;
-
-  while (XLine <= Length(Result)) and (Result[XLine] in ARightLimit) do Inc(Xline);
-
-  // Strip remainder
-  SetLength(Result, XLine - 1);
+  Result := FEditor.GetWordAtRowCol(ACaretPos);
 end;
 
 procedure TSourceEditor.LinesDeleted(Sender: TObject; FirstLine,
@@ -3353,7 +3316,7 @@ begin
     SourceNotebook.CreateCompletionForm;
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do begin
-      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight);
+      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight + 1);
       P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
       P := ClientToScreen(p);
     end;
@@ -6317,7 +6280,7 @@ begin
   ASynEdit:=ASrcEdit.EditorComponent;
   EditPos:=ASynEdit.ScreenToClient(MousePos);
   if not PtInRect(ASynEdit.ClientRect,EditPos) then exit;
-  EditCaret:=ASynEdit.PixelsToRowColumn(EditPos);
+  EditCaret:=ASynEdit.PhysicalToLogicalPos(ASynEdit.PixelsToRowColumn(EditPos));
   if (EditCaret.Y<1) then exit;
   if EditPos.X<ASynEdit.Gutter.Width then begin
     // hint for a gutter item

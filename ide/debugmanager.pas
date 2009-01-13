@@ -40,19 +40,19 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
   Laz_XMLCfg,
   { for Get/SetForegroundWindow }
   LCLType, LCLIntf,
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  LazConf, 
+  LazConf,
   CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
-  ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
+  ProjectDefs, Project, IDEProcs, InputHistory, Debugger, CmdLineDebugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
-  DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
+  DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
@@ -73,6 +73,7 @@ type
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
+    procedure BreakAutoContinueTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
@@ -81,6 +82,7 @@ type
     function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
 
     // Debugger events
+    procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
@@ -90,11 +92,13 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
   private
     FDebugger: TDebugger;
-    FBreakPointGroups: TIDEBreakPointGroups;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FPrevShownWindow: HWND;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
+    // last hit breakpoint
+    FCurrentBreakpoint: TIDEBreakpoint;
+    FAutoContinueTimer: TTimer;
 
     // When a source file is not found, the user can choose one
     // here are all choices stored
@@ -946,7 +950,7 @@ begin
   else
     AddMenuItem('Enable Breakpoint',true,@OnToggleEnableMenuItemClick);
   AddMenuItem('Delete Breakpoint',true,@OnDeleteMenuItemClick);
-  AddMenuItem('View Breakpoint Properties',false,@OnViewPropertiesMenuItemClick);
+  AddMenuItem('View Breakpoint Properties',true,@OnViewPropertiesMenuItemClick);
   // add separator
   AddMenuItem('-',true,nil);
 end;
@@ -1176,6 +1180,23 @@ begin
   end;
 end;
 
+procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
+begin
+  FAutoContinueTimer.Enabled := False;
+  FDebugger.Run;
+end;
+
+procedure TDebugManager.DebuggerBreakPointHit(ADebugger: TDebugger;
+  ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+begin
+  FCurrentBreakPoint := nil;
+  if FBreakPoints = nil then Exit;
+  if ABreakpoint = nil then Exit;
+  if ACanContinue then Exit;
+
+  FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.SourceLine);
+end;
+
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
 begin
   ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
@@ -1286,20 +1307,27 @@ begin
   if MainIDE.ToolStatus in [itNone,itDebugger]
   then MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
 
+  FAutoContinueTimer.Enabled := false;
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun
-        and (MainIDE.ToolStatus=itDebugger) then
-      MainIDE.HideIDE;
+    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger)
+    then  MainIDE.HideIDE;
+
     if FPrevShownWindow <> 0 then
     begin
       SetForegroundWindow(FPrevShownWindow);
       FPrevShownWindow := 0;
     end;
+    FCurrentBreakPoint := nil;
   end
   else begin
-    if (OldState in [dsRun]) then
+    if (FCurrentBreakPoint <> nil) and (FCurrentBreakPoint.AutoContinueTime > 0) then
+    begin
+      FAutoContinueTimer.Enabled := True;
+      FAutoContinueTimer.Interval := FCurrentBreakPoint.AutoContinueTime;
+    end
+    else if (OldState in [dsRun]) then
     begin
       MainIDE.UnhideIDE;
       FPrevShownWindow := GetForegroundWindow;
@@ -1308,8 +1336,7 @@ begin
   end;
 
   // unmark execution line
-  if (FDebugger.State <> dsPause)
-  and (SourceNotebook <> nil)
+  if (FDebugger.State <> dsPause) and (SourceNotebook <> nil)
   then begin
     Editor := SourceNotebook.GetActiveSE;
     if Editor <> nil
@@ -1329,10 +1356,10 @@ begin
     dsStop: begin
       if (OldState<>dsIdle)
       then begin
-        if EnvironmentOptions.DebuggerShowStopMessage then begin
-        MessageDlg(lisExecutionStopped,
-          Format(lisExecutionStoppedOn, [#13#13]),
-          mtInformation, [mbOK],0);
+        if EnvironmentOptions.DebuggerShowStopMessage
+        then begin
+          MessageDlg(lisExecutionStopped,
+            Format(lisExecutionStoppedOn, [#13#13]), mtInformation, [mbOK],0);
         end;
         FDebugger.FileName := '';
 
@@ -1355,6 +1382,7 @@ var
   SrcLine: Integer;
   i: Integer;
   StackEntry: TCallStackEntry;
+  FocusEditor: Boolean;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
@@ -1417,9 +1445,9 @@ begin
     SourceNotebook.ClearExecutionLines;
     SourceNotebook.ClearErrorLines;
   end;
-
   // jump editor to execution line
-  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,SrcLine,-1,true)<>mrOk
+  FocusEditor := (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0);
+  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,SrcLine,-1,true, FocusEditor)<>mrOk
   then exit;
 
   // mark execution line
@@ -1596,6 +1624,10 @@ begin
 
   FUserSourceFiles := TStringList.Create;
 
+  FAutoContinueTimer := TTimer.Create(Self);
+  FAutoContinueTimer.Enabled := False;
+  FAutoContinueTimer.OnTimer := @BreakAutoContinueTimer;
+
   inherited Create(TheOwner);
 end;
 
@@ -1603,7 +1635,9 @@ destructor TDebugManager.Destroy;
 var
   DialogType: TDebugDialogType;
 begin
-  FDestroying:=true;
+  FDestroying := true;
+
+  FreeAndNil(FAutoContinueTimer);
 
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     DestroyDebugDialog(DialogType);
@@ -1945,10 +1979,11 @@ begin
 
   ClearDebugOutputLog;
 
-  FDebugger.OnState     := @DebuggerChangeState;
-  FDebugger.OnCurrent   := @DebuggerCurrentLine;
-  FDebugger.OnDbgOutput := @DebuggerOutput;
-  FDebugger.OnException := @DebuggerException;
+  FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
+  FDebugger.OnState         := @DebuggerChangeState;
+  FDebugger.OnCurrent       := @DebuggerCurrentLine;
+  FDebugger.OnDbgOutput     := @DebuggerOutput;
+  FDebugger.OnException     := @DebuggerException;
 
   if FDebugger.State = dsNone
   then begin
@@ -2246,17 +2281,12 @@ end;
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
 begin
-  Result:=mrCancel;
-  // ToDo
+  Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
 end;
 
 function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch): TModalresult;
 begin
-  with TWatchPropertyDlg.Create(Self, AWatch) do
-  begin
-    Result := ShowModal;
-    Free;
-  end;
+  Result := TWatchPropertyDlg.Create(Self, AWatch).ShowModal;
 end;
 
 procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);
@@ -2285,4 +2315,5 @@ begin
 end;
 
 end.
+
 

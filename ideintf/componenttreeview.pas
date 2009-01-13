@@ -145,15 +145,17 @@ end;
 
 procedure TComponentTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
-  Node, SelNode:TTreeNode;
-  AContainer,AControl:TControl;
+  Node, SelNode: TTreeNode;
+  AContainer, AControl: TControl;
 begin
-  Node:=GetNodeAt(X, Y);
-  if Assigned(Node) then begin
-    AContainer:=TControl(Node.Data);
+  Node := GetNodeAt(X, Y);
+  if Assigned(Node) then 
+  begin
+    AContainer := TControl(Node.Data);
     SelNode := GetFirstMultiSelected;
-    while Assigned(SelNode) do begin
-      AControl:=TControl(SelNode.Data);
+    while Assigned(SelNode) do 
+    begin
+      AControl := TControl(SelNode.Data);
       AControl.Parent := AContainer as TWinControl;
       SelNode := SelNode.GetNextMultiSelected;
     end;
@@ -165,10 +167,10 @@ end;
 procedure TComponentTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var
-  Node:TTreeNode;
-  AnObject:TObject;
-  AContainer,AControl:TControl;
-  AcceptControl, AcceptContainer:Boolean;
+  Node: TTreeNode;
+  AnObject: TObject;
+  AContainer,AControl: TControl;
+  AcceptControl, AcceptContainer: Boolean;
 begin
   //debugln('TComponentTreeView.DragOver START ',dbgs(Accept));
 
@@ -176,25 +178,31 @@ begin
   AcceptControl := True;
 
   Node:=GetNodeAt(X, Y);
-  if Assigned(Node) and Assigned(Node.Data) then begin
-    AnObject:=TObject(Node.Data);
-    if (AnObject is TWinControl)
-    and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
+  if Assigned(Node) and Assigned(Node.Data) then 
+  begin
+    AnObject := TObject(Node.Data);
+    if (AnObject is TWinControl) and 
+       (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
     begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
     end;
   end;
 
-  if AcceptContainer then begin
+  if AcceptContainer then 
+  begin
     Node := GetFirstMultiSelected;
-    while Assigned(Node) do begin
-      AnObject:=TObject(Node.Data);
-      AcceptControl := AcceptControl and (AnObject is TControl);
+    while Assigned(Node) do 
+    begin
+      AnObject := TObject(Node.Data);
+      AcceptControl := AcceptControl and (AnObject is TControl) and 
+        AContainer.CheckChildClassAllowed(AnObject.ClassType, False);
       // Check if one of the parent of the container is the control itself
-      if AcceptControl and AcceptContainer then begin
-        while Assigned(AContainer) do begin
-          AControl:=TControl(AnObject);
+      if AcceptControl then 
+      begin
+        while Assigned(AContainer) do 
+        begin
+          AControl := TControl(AnObject);
           AcceptControl := AcceptControl and (AControl <> AContainer);
           AContainer := AContainer.Parent;
         end;

@@ -18,7 +18,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Arrow, StdCtrls, Buttons, Grids;
+  Arrow, StdCtrls, Buttons, Grids,
+  ObjInspStrConsts;
 
 type
 
@@ -59,8 +60,6 @@ type
   end;
 
 implementation
-
-uses ObjInspStrConsts;
 
 procedure AssignGrid(Dest, Src: TStringGrid; Full: Boolean);
 var

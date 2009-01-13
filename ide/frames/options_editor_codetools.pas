@@ -39,6 +39,12 @@ type
     AutoDelayTrackBar: TTrackBar;
     AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
+    MarkupWordDelayLabel: TLabel;
+    MarkupWordFullCheckBox: TCheckBox;
+    MarkupWordMaxLabel: TLabel;
+    MarkupWordMinLabel: TLabel;
+    MarkupWordEnabledCheckBox: TCheckBox;
+    MarkupWordTimeTrackBar: TTrackBar;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
   private
@@ -71,6 +77,12 @@ begin
   AutoDelayLabel.Caption := dlgEdDelay;
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
+
+  MarkupWordEnabledCheckBox.Caption := dlgMarkupWordEnabled;
+  MarkupWordFullCheckBox.Caption := dlgMarkupWordFull;
+  MarkupWordDelayLabel.Caption := dlgEdDelay;
+  MarkupWordMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;;
+  MarkupWordMaxLabel.Caption := '4.0 ' + DlgTimeSecondUnit;;
 end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -83,6 +95,9 @@ begin
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
+    MarkupWordEnabledCheckBox.Checked := MarkupCurWordEnabled;
+    MarkupWordFullCheckBox.Checked := MarkupCurWordFull;
+    MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
   end;
 end;
 
@@ -96,6 +111,9 @@ begin
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
+    MarkupCurWordEnabled := MarkupWordEnabledCheckBox.Checked;
+    MarkupCurWordFull := MarkupWordFullCheckBox.Checked;
+    MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
   end;
 end;
 

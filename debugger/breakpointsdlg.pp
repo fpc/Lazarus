@@ -123,7 +123,7 @@ function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 
 implementation
 uses
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, BaseDebugManager;
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   //                 enabled  valid
@@ -634,8 +634,16 @@ begin
 end;
 
 procedure TBreakPointsDlg.ShowProperties;
+var
+  Item: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
 begin
-  ShowMessage(lisNotImplementedYet2);
+  Item:=lvBreakPoints.Selected;
+  if Item = nil then exit;
+
+  CurBreakPoint:=TIDEBreakPoint(Item.Data);
+
+  DebugBoss.ShowBreakPointProperties(CurBreakPoint);
 end;
 
 

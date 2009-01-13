@@ -4532,6 +4532,9 @@ begin
     end;
   end;
 
+  if not Focused and CanFocus then
+    SetFocus;
+
   inherited MouseDown(Button, Shift, X, Y);
 
   CursorNode:=GetNodeAt(X,Y);

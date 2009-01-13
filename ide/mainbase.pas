@@ -5,7 +5,7 @@
                     ----------------------------------------
   TMainIDEBase is the ancestor of TMainIDE. The various top level parts of the
   IDE (called bosses/managers) access the TMainIDE via TMainIDEBase.
-  
+
 
   main.pp      - TMainIDE = class(TMainIDEBase)
                    The highest manager/boss of the IDE. Only lazarus.pp uses
@@ -115,7 +115,7 @@ type
     procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
     procedure OnMainBarDestroy(Sender: TObject); virtual;
-    
+
     procedure ConnectOutputFilter;
 
   public
@@ -165,15 +165,15 @@ type
                         ActiveSrcEdit: TSourceEditor;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean): TModalResult; virtual; abstract;
-                        
+                        AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; virtual; abstract;
+
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
   end;
 
 var
   MainIDE: TMainIDEBase = nil;
-  
+
   { Normally the IDE builds itself with packages named in config files.
     When the IDE should keep the packages installed in the current executable
     set KeepInstalledPackages to true. }
@@ -1018,10 +1018,10 @@ begin
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
-  
+
   // create menuitems
   ItemCount := WindowsList.Count;
-  for i:=0 to WindowsList.Count-1 do 
+  for i:=0 to WindowsList.Count-1 do
   begin
     CurMenuItem := GetMenuItem(i);
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
@@ -1031,14 +1031,14 @@ begin
 
   //create source page menuitems
 
-  if (SourceNotebook<>nil) and (SourceNotebook.Notebook<>nil) and not (nbcPageListPopup in SourceNotebook.Notebook.GetCapabilities) then 
+  if (SourceNotebook<>nil) and (SourceNotebook.Notebook<>nil) and not (nbcPageListPopup in SourceNotebook.Notebook.GetCapabilities) then
   begin
     CurMenuItem := GetMenuItem(ItemCount);
     CurMenuItem.OnClick:=nil;
     CurMenuItem.Caption:='-';
     inc(ItemCount);
 
-    for i := 0 to SourceNotebook.EditorCount-1 do 
+    for i := 0 to SourceNotebook.EditorCount-1 do
     begin
       CurMenuItem := GetMenuItem(ItemCount);
       CurMenuItem.Caption:=SourceNotebook.Editors[i].PageName;

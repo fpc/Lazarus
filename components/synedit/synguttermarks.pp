@@ -44,7 +44,7 @@ begin
   FFoldView := AFoldView;
   FBookMarkOpt := ABookMarkOpt;
 
-  Width := 16;
+  Width := 22;
 end;
 
 destructor TSynGutterMarks.Destroy;

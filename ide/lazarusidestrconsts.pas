@@ -1149,6 +1149,7 @@ resourcestring
   dlgMarginGutter = 'Margin and gutter';
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';
+  dlgGutterSeparatorIndex = 'Gutter separator index';
   dlgShowLineNumbers = 'Show line numbers';
   dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';
@@ -1187,6 +1188,8 @@ resourcestring
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
+  dlgMarkupWordEnabled = 'Highlight Current Word/Block';
+  dlgMarkupWordFull = 'Highlight Current Word match word boundaries';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';
@@ -3841,6 +3844,7 @@ resourcestring
   lisBreak = 'Break';
   lisEnableGroup = 'Enable Group';
   lisDisableGroup = 'Disable Group';
+  lisAutoContinue = 'Auto Continue';
   lisDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';
   lisInvalidOn = 'Invalid (On)';
@@ -3883,6 +3887,8 @@ resourcestring
   // ProjectWizard Dialog
   lisPWNewProject = 'New Project';
   lisPWOpenProject = 'Open Project';
+  lisPWRecentProjects  = 'Recent Projects';
+  lisPWOpenRecentProject = 'Open Recent';
   lisPWConvertProject = 'Convert Delphi Project';
   lisInvalidCircle = 'Invalid circle';
   lisIsAThisCircleDependencyIsNotAllowed = '%s is a %s.%sThis circle '

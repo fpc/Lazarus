@@ -70,12 +70,14 @@ type
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure DestroyHandle; override;
+    procedure RealSetText(const AValue: TCaption); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
     function AutoSizeDelayed: boolean; override;
     function IsControlVisible: Boolean; override;
+    function HandleObjectShouldBeVisible: boolean; override;
     function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;

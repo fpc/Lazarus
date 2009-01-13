@@ -35,49 +35,30 @@ type
 
   { TSynEditStringTrimmingList }
 
-  TSynEditStringTrimmingList = class(TSynEditStrings)
+  TSynEditStringTrimmingList = class(TSynEditStringsLinked)
   private
-    fSynStrings: TSynEditStrings;
     fCaret: TSynEditCaret;
     fUndoList: TSynEditUndoList;
     fSpaces: String;
     fLineText: String;
     fLineIndex: Integer;
     fEnabled: Boolean;
+    FUndoTrimmedSpaces: Boolean;
     fLockCount: Integer;
     fLockList : TStringList;
     procedure DoCaretChanged(Sender : TObject);
     procedure SetEnabled(const AValue : Boolean);
-    function  TrimLine(const S : String; Index: Integer) : String;
+    function  TrimLine(const S : String; Index: Integer; RealUndo: Boolean = False) : String;
     function  Spaces(Index: Integer) : String;
     procedure DoLinesChanged(Index, N: integer);
     procedure TrimAfterLock;
   protected
-    function  GetIsUtf8 : Boolean; override;
-    procedure SetIsUtf8(const AValue : Boolean); override;
-    function  GetTabWidth : integer; override;
-    procedure SetTabWidth(const AValue : integer); override;
-    function  GetFoldEndLevel(Index: integer): integer; override;
-    function  GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
-    function  GetRange(Index: integer): TSynEditRange; override;
-    procedure PutRange(Index: integer; ARange: TSynEditRange); override;
-
-    function GetCount: integer; override;
-    function GetCapacity: integer;
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
-    procedure SetCapacity(NewCapacity: integer);
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
-
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
     function  Get(Index: integer): string; override;
     function  GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
-
-    procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(ASynStringSource: TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
@@ -91,14 +72,15 @@ type
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     procedure Exchange(Index1, Index2: integer); override;
-    procedure ClearRanges(ARange: TSynEditRange); override;
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
     procedure Lock;
     procedure UnLock;
     procedure ForceTrim; // for redo; redo can not wait for UnLock
+    procedure UndoRealSpaces(Item: TSynEditUndoItem);
     property Enabled : Boolean read fEnabled write SetEnabled;
+    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces;
     property UndoList: TSynEditUndoList read fUndoList write fUndoList;
   end;
 
@@ -109,14 +91,14 @@ implementation
 
 constructor TSynEditStringTrimmingList.Create(ASynStringSource : TSynEditStrings; ACaret: TSynEditCaret);
 begin
-  fSynStrings := ASynStringSource;
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
   fLockList := TStringList.Create;
   fLineIndex:= -1;
   fSpaces := '';
   fEnabled:=false;
-  Inherited Create;
+  FUndoTrimmedSpaces := False;
+  Inherited Create(ASynStringSource);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
@@ -124,14 +106,6 @@ begin
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(fLockList);
   inherited Destroy;
-end;
-
-procedure TSynEditStringTrimmingList.SetUpdateState(Updating : Boolean);
-begin
-  if Updating then
-    fSynStrings.BeginUpdate
-  else
-   fSynStrings.EndUpdate;
 end;
 
 procedure TSynEditStringTrimmingList.DoCaretChanged(Sender : TObject);
@@ -161,20 +135,51 @@ begin
     fSynStrings[fLineIndex] := TrimLine(fSynStrings[fLineIndex], fLineIndex);
 end;
 
-function TSynEditStringTrimmingList.TrimLine(const S: String; Index: Integer): String;
+procedure TSynEditStringTrimmingList.UndoRealSpaces(Item: TSynEditUndoItem);
+var
+  i: Integer;
+begin
+  if length(fSynStrings.Strings[Item.fChangeStartPos.y-1]) + 1 <> Item.fChangeStartPos.x then
+    exit;
+  fSynStrings.Strings[Item.fChangeStartPos.y-1]
+    := copy(fSynStrings.Strings[Item.fChangeStartPos.y-1],
+            1, Item.fChangeStartPos.x-1) + Item.fChangeStr;
+  if (fLineIndex = Item.fChangeStartPos.y-1) then fSpaces := '';
+  i := fLockList.IndexOfObject(TObject(Pointer(Item.fChangeStartPos.y-1)));
+  if i >= 0 then fLockList.Delete(i);
+end;
+
+function TSynEditStringTrimmingList.TrimLine(const S: String; Index: Integer;
+         RealUndo: Boolean = False): String;
 var
   l, i:integer;
   temp: String;
 begin
-  if not fEnabled then exit(s);
-  l := length(s);
-  i := l;
-  while (i>0) and (s[i] in [#9, ' ']) do dec(i);
-  temp := copy(s, i+1, l-i);
-  if i=l then
-    result := s   // No need to make a copy
-  else
-    result := copy(s, 1, i);
+  if (not fEnabled) then exit(s);
+  If (fUndoList.IsLocked and not UndoTrimmedSpaces) then begin
+    result := s;
+    temp := '';
+  end else begin
+    if RealUndo then begin
+      temp := fSynStrings.Strings[Index];
+      l := length(temp);
+      i:= l;
+      while (i>0) and (temp[i] in [#9, ' ']) do dec(i);
+      // Add RealSpaceUndo
+      if i < l then
+        fUndoList.AddChange(crTrimRealSpace, Point(i+1, Index+1),
+                            Point(l, Index+1), copy(temp, i+1, l-i), smNormal);
+    end;
+
+    l := length(s);
+    i := l;
+    while (i>0) and (s[i] in [#9, ' ']) do dec(i);
+    temp := copy(s, i+1, l-i);
+    if i=l then
+      result := s   // No need to make a copy
+    else
+      result := copy(s, 1, i);
+  end;
 
   if fLockCount > 0 then begin
     i := fLockList.IndexOfObject(TObject(pointer(Index)));
@@ -269,82 +274,9 @@ begin
   fLockList.Clear;
 end;
 
-function TSynEditStringTrimmingList.GetIsUtf8 : Boolean;
-begin
-  Result := FSynStrings.IsUtf8;
-end;
-
-procedure TSynEditStringTrimmingList.SetIsUtf8(const AValue : Boolean);
-begin
-  FSynStrings.IsUtf8 := AValue;
-end;
-
-function TSynEditStringTrimmingList.GetTabWidth : integer;
-begin
-  Result := FSynStrings.TabWidth;
-end;
-
-procedure TSynEditStringTrimmingList.SetTabWidth(const AValue : integer);
-begin
-  FSynStrings.TabWidth := AValue;
-end;
-
 procedure TSynEditStringTrimmingList.ForceTrim;
 begin
   TrimAfterLock;
-end;
-
-// Fold
-function TSynEditStringTrimmingList.GetFoldEndLevel(Index : integer) : integer;
-begin
-  Result:= fSynStrings.FoldEndLevel[Index];
-end;
-
-function TSynEditStringTrimmingList.GetFoldMinLevel(Index : integer) : integer;
-begin
-  Result:= fSynStrings.FoldMinLevel[Index];
-end;
-
-procedure TSynEditStringTrimmingList.SetFoldEndLevel(Index : integer; const AValue : integer);
-begin
-  fSynStrings.FoldEndLevel[Index] := AValue;
-end;
-
-procedure TSynEditStringTrimmingList.SetFoldMinLevel(Index : integer; const AValue : integer);
-begin
-  fSynStrings.FoldMinLevel[Index] := AValue;
-end;
-
-// Range
-function TSynEditStringTrimmingList.GetRange(Index : integer) : TSynEditRange;
-begin
-  Result:= fSynStrings.Ranges[Index];
-end;
-
-procedure TSynEditStringTrimmingList.PutRange(Index : integer; ARange : TSynEditRange);
-begin
-  fSynStrings.Ranges[Index] := ARange;
-end;
-
-procedure TSynEditStringTrimmingList.ClearRanges(ARange : TSynEditRange);
-begin
-  fSynStrings.ClearRanges(ARange);
-end;
-
-// Count
-function TSynEditStringTrimmingList.GetCount : integer;
-begin
-  Result:= fSynStrings.Count;
-end;
-
-function TSynEditStringTrimmingList.GetCapacity : integer;
-begin
-  Result:= fSynStrings.Capacity;
-end;
-
-procedure TSynEditStringTrimmingList.SetCapacity(NewCapacity : integer);
-begin
-  fSynStrings.Capacity := NewCapacity;
 end;
 
 // Lines
@@ -376,7 +308,7 @@ end;
 
 procedure TSynEditStringTrimmingList.Put(Index : integer; const S : string);
 begin
-  fSynStrings.Strings[Index]:= TrimLine(S, Index);
+  fSynStrings.Strings[Index]:= TrimLine(S, Index, True);
 end;
 
 procedure TSynEditStringTrimmingList.PutObject(Index : integer; AObject : TObject);
@@ -440,7 +372,7 @@ var
 begin
   DoLinesChanged(Index, NewStrings.Count);
   for i := 0 to NewStrings.Count-1 do
-    NewStrings[i] := TrimLine(NewStrings[i], Index+i);
+    NewStrings[i] := TrimLine(NewStrings[i], Index+i, True);
   fSynStrings.InsertStrings(Index, NewStrings);
 end;
 

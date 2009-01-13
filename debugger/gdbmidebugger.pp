@@ -67,7 +67,7 @@ type
                    // some MI functions return normal output
                    // some normal functions return MI output
   );
-  
+
   TGDBMIExecResult = record
     State: TDBGState;
     Values: String;
@@ -198,13 +198,13 @@ type
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
-    
+
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
 
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
-    
+
     // internal testing
     procedure TestCmd(const ACommand: String); override;
   end;
@@ -268,7 +268,6 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure Hit(var ACanContinue: Boolean);
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   end;
 
@@ -334,7 +333,7 @@ type
     constructor Create(ACollection: TCollection); override;
     procedure Invalidate;
   end;
-  
+
   { TDBGWatches }
 
   { TGDBMIWatches }
@@ -345,7 +344,7 @@ type
     procedure Changed;
   public
   end;
-  
+
   { TGDBMICallStack }
 
   TGDBMICallStack = class(TDBGCallStack)
@@ -363,7 +362,7 @@ type
 
   TGDBMIExpression = class(TObject)
   private
-    FDebugger: TGDBMIDebugger; 
+    FDebugger: TGDBMIDebugger;
     FOperator: String;
     FLeft: TGDBMIExpression;
     FRight: TGDBMIExpression;
@@ -375,7 +374,7 @@ type
     function DumpExpression: String;
     function GetExpression(var AResult: String): Boolean;
   end;
-  
+
   { TGDBMIType }
 
   TGDBMIType = class(TGDBType)
@@ -661,11 +660,11 @@ var
 procedure InitWin32;
 var
   hMod: THandle;
-begin           
+begin
   // Check if we already are initialized
   if DebugBreakAddr <> nil then Exit;
-   
-  // normally you would load a lib, but since kernel32 is 
+
+  // normally you would load a lib, but since kernel32 is
   // always loaded we can use this (and we don't have to free it
   hMod := GetModuleHandle(kernel32);
   if hMod = 0 then Exit; //????
@@ -673,7 +672,7 @@ begin
   DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
   Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
 end;
-{$ENDIF}  
+{$ENDIF}
 
 { =========================================================================== }
 { Helpers }
@@ -685,14 +684,14 @@ begin
   Result := APath;
   // no need to process empty filename
   if Result='' then exit;
-  
+
   {$WARNINGS off}
   if DirectorySeparator <> '/' then
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
-end;              
-  
+end;
+
 { =========================================================================== }
 { TGDBMIDebuggerProperties }
 { =========================================================================== }
@@ -713,7 +712,7 @@ begin
   if FCurrentStackFrame = AIndex then Exit;
   FCurrentStackFrame := AIndex;
   SelectStackFrame(FCurrentStackFrame);
-  
+
   TGDBMICallstack(CallStack).CurrentChanged;
   TGDBMILocals(Locals).Changed;
   TGDBMIWatches(Watches).Changed;
@@ -737,14 +736,14 @@ var
   List: TGDBMINameValueList;
 begin
   Result := False;
-  
+
   //Cleanup our own breakpoints
   ClearBreakpoint(FExceptionBreakID);
   ClearBreakpoint(FBreakErrorBreakID);
   ClearBreakpoint(FRunErrorBreakID);
 
 
-  S := ConvertToGDBPath(UTF8ToSys(FileName)); 
+  S := ConvertToGDBPath(UTF8ToSys(FileName));
   if not ExecuteCommand('-file-exec-and-symbols %s', [S], [cfIgnoreError], R) then Exit;
   if  (R.State = dsError)
   and (FileName <> '')
@@ -757,12 +756,12 @@ begin
   end;
   if not (inherited ChangeFileName) then Exit;
   if State = dsError then Exit;
-  if FileName = '' 
+  if FileName = ''
   then begin
     Result := True;
     Exit;
   end;
-  
+
   if tfHasSymbols in FTargetFlags
   then begin
     // Force setting language
@@ -796,7 +795,7 @@ begin
 
 {$IFdef MSWindows}
   InitWin32;
-{$ENDIF}  
+{$ENDIF}
 
   inherited;
 end;
@@ -806,7 +805,7 @@ begin
   Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
-function TGDBMIDebugger.CreateCallStack: TDBGCallStack; 
+function TGDBMIDebugger.CreateCallStack: TDBGCallStack;
 begin
   Result := TGDBMICallStack.Create(Self);
 end;
@@ -938,7 +937,7 @@ begin
       ExecResult.Values := '';
       ExecResult.State := dsNone;
       ExecResult.Flags := [];
-      
+
       Cmd := FCommandQueue[0];
       CmdInfo := PGDBMICmdInfo(FCommandQueue.Objects[0]);
       SendCmdLn(Cmd);
@@ -980,7 +979,7 @@ begin
     finally
       Dec(FInExecuteCount);
     end;
-    
+
     if  FCommandQueue.Count = 0
     then begin
       if  (FInExecuteCount = 0)
@@ -1080,7 +1079,7 @@ begin
   end;
 end;
 
-function PosSetEx(const ASubStrSet, AString: string; 
+function PosSetEx(const ASubStrSet, AString: string;
   const Offset: integer): integer;
 begin
   for Result := Offset to Length(AString) do
@@ -1309,7 +1308,7 @@ begin
 
   if State = dsRun
   then GDBPause(True);
-  if ASet then 
+  if ASet then
   begin
     S := EscapeGDBCommand(AVariable);
     ExecuteCommand('-gdb-set env %s', [S], [cfIgnoreState, cfExternal]);
@@ -1321,7 +1320,7 @@ end;
 
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
   var AResult: String): Boolean;
-  
+
   function MakePrintable(const AString: String): String;
   var
     n: Integer;
@@ -1353,7 +1352,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
     if InString
     then Result := Result + '''';
   end;
-  
+
 var
   R: TGDBMIExecResult;
   S: String;
@@ -1541,7 +1540,7 @@ function TGDBMIDebugger.GDBStop: Boolean;
 begin
   if State = dsError
   then begin
-    // We don't know the state of the debugger, 
+    // We don't know the state of the debugger,
     // force a reinit. Let's hope this works.
     DebugProcess.Terminate(0);
     Done;
@@ -1733,14 +1732,14 @@ begin
         idx := 8; // the char after ' times>'
         len := Length(S);
         if v <= 1 then Continue;
-        
+
         // limit the amount of repeats
         if v > 1000
         then begin
           Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
           v := 1000;
         end;
-        
+
         // make sure result has some room
         SetLength(Result, Length(Result) + v - 1);
         while v > 1 do begin
@@ -1817,10 +1816,10 @@ procedure TGDBMIDebugger.Init;
     FGDBVersion := '';
     FGDBOS := '';
     FGDBCPU := '';
-    
+
     if not ExecuteCommand('-gdb-version', [], [cfNoMiCommand], R) // No MI since the output is no MI
     then Exit;
-    
+
     S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
     if Pos('--target=', S) <> 0 then
       S := GetPart('--target=', '', S);
@@ -1830,11 +1829,11 @@ procedure TGDBMIDebugger.Init;
 
     FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
     if FGDBVersion <> '' then Exit;
-    
+
     FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
     if FGDBVersion <> '' then Exit;
   end;
-  
+
   procedure CheckGDBVersion;
   begin
     if FGDBVersion < '5.3'
@@ -1851,20 +1850,20 @@ procedure TGDBMIDebugger.Init;
 begin
   FPauseWaitState := pwsNone;
   FInExecuteCount := 0;
-  
+
   if CreateDebugProcess('-silent -i mi -nx')
   then begin
     if not ParseInitialization
     then begin
       SetState(dsError);
-      Exit;                             
+      Exit;
     end;
-    
+
     ExecuteCommand('-gdb-set confirm off', []);
     // for win32, turn off a new console otherwise breaking gdb will fail
     // ignore the error on other platforms
     ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
-    
+
     ParseGDBVersion;
     CheckGDBVersion;
 
@@ -1887,12 +1886,12 @@ procedure TGDBMIDebugger.InterruptTarget;
     ThreadID: Cardinal;
     E: Integer;
     Emsg: PChar;
-  begin                  
+  begin
     Result := False;
-    
+
     hProcess := OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, TargetPID);
     if hProcess = 0 then Exit;
-  
+
     try
       hThread := _CreateRemoteThread(hProcess, nil, 0, DebugBreakAddr, nil, 0, ThreadID);
       if hThread = 0
@@ -1925,9 +1924,9 @@ begin
   // GenerateConsoleCtrlEvent is nice, but only works if both gdb and
   // our target have a console. On win95 and family this is our only
   // option, on NT4+ we have a choice. Since this is not likely that
-  // we have a console, we do it the hard way. On XP there exists 
+  // we have a console, we do it the hard way. On XP there exists
   // DebugBreakProcess, but it does efectively the same.
-  
+
   if (DebugBreakAddr = nil)
   or not Assigned(_CreateRemoteThread)
   or not TryNT
@@ -1935,7 +1934,7 @@ begin
     // We have no other choice than trying this
     GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, TargetPID);
     Exit;
-  end;   
+  end;
 {$ENDIF}
 end;
 
@@ -1955,7 +1954,7 @@ begin
 
   // we're stopped in our thread
   if FPauseWaitState = pwsInternal then Exit; // internal, dont care
-  
+
   S := '';
   if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
   List := TGDBMINameValueList.Create(R);
@@ -2019,12 +2018,12 @@ begin
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
-  
+
   DoCurrent(Location);
 end;
 
 function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
-  
+
   function DoResultRecord(Line: String): Boolean;
   var
     ResultClass: String;
@@ -2063,7 +2062,7 @@ function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
       DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
     end;
   end;
-  
+
   procedure DoConsoleStream(Line: String);
   var
     len: Integer;
@@ -2090,7 +2089,7 @@ function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
           Line := Line + LineEnding;
         end;
       end;
-      
+
       AResult.Values := AResult.Values + Line;
     end;
   end;
@@ -2256,7 +2255,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
       Result.SrcFile := GetPart('\"', '\"', R.Values);
     end;
   end;
-  
+
   function GetExceptionInfo: TGDBMIExceptionInfo;
   begin
     if tfRTLUsesRegCall in FTargetFlags
@@ -2274,7 +2273,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   procedure ProcessException(AInfo: TGDBMIExceptionInfo);
   var
     ExceptionMessage: String;
-  begin   
+  begin
     if dfImplicidTypes in FDebuggerFlags
     then begin
       ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
@@ -2286,7 +2285,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     DoException(AInfo.Name, ExceptionMessage);
     DoCurrent(GetLocation);
   end;
-  
+
   procedure ProcessBreak;
   var
     ErrorNo: Integer;
@@ -2299,7 +2298,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     DoException(Format('RunError(%d)', [ErrorNo]), '');
     DoCurrent(GetLocation);
   end;
-  
+
   procedure ProcessRunError;
   var
     ErrorNo: Integer;
@@ -2329,10 +2328,10 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     if not AIgnoreSigIntState
     or not SigInt
     then SetState(dsPause);
-    
+
     if not SigInt
     then DoException('External: ' + S, '');
-    
+
     if not AIgnoreSigIntState
     or not SigInt
     then ProcessFrame(AList.Values['frame']);
@@ -2348,7 +2347,7 @@ var
 begin
   Result := True;
   FCurrentStackFrame :=  0;
-  
+
   List := TGDBMINameValueList.Create(AParams);
   try
     Reason := List.Values['reason'];
@@ -2357,14 +2356,14 @@ begin
       SetState(dsStop);
       Exit;
     end;
-    
+
     if Reason = 'exited'
     then begin
       SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
       SetState(dsStop);
       Exit;
     end;
-    
+
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
@@ -2372,13 +2371,13 @@ begin
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
-    
+
     if Reason = 'signal-received'
     then begin
       ProcessSignalReceived(List);
       Exit;
-    end;   
-    
+    end;
+
     if Reason = 'breakpoint-hit'
     then begin
       BreakID := StrToIntDef(List.Values['bkptno'], -1);
@@ -2402,7 +2401,7 @@ begin
         ProcessRunError;
         Exit;
       end;
-      
+
       if BreakID = FExceptionBreakID
       then begin
         ExceptionInfo := GetExceptionInfo;
@@ -2416,7 +2415,7 @@ begin
         end;
         Exit;
       end;
-      
+
       BreakPoint := TGDBMIBreakPoint(FindBreakpoint(BreakID));
       if BreakPoint <> nil
       then begin
@@ -2433,33 +2432,33 @@ begin
       end;
       Exit;
     end;
-    
+
     if Reason = 'function-finished'
     then begin
       SetState(dsPause);
       ProcessFrame(List.Values['frame']);
       Exit;
     end;
-    
+
     if Reason = 'end-stepping-range'
     then begin
       SetState(dsPause);
       ProcessFrame(List.Values['frame']);
       Exit;
     end;
-    
+
     if Reason = 'location-reached'
     then begin
       SetState(dsPause);
       ProcessFrame(List.Values['frame']);
       Exit;
     end;
-    
+
     Result := False;
     DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
   finally
     List.Free;
-  end; 
+  end;
 end;
 
 function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
@@ -2522,7 +2521,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
 
     ExecuteCommand('-data-evaluate-expression FPC_THREADVAR_RELOCATE_PROC', [cfIgnoreError], R);
     if R.State <> dsError then Exit; // guessed right
-    
+
     // next attempt, posibly no symbols, try functions
     if CheckFunction('FPC_CPUINIT') then Exit; // function present --> not 1.0
 
@@ -2536,7 +2535,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     //    params are passes by stack
     Exclude(FTargetFlags, tfRTLUsesRegCall);
   end;
-  
+
   function InsertBreakPoint(const AName: String): Integer;
   var
     R: TGDBMIExecResult;
@@ -2555,7 +2554,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     // assume some defaults
     FTargetPtrSize := 4;
     FTargetIsBE := False;
-  
+
     case StringCase(AFileType, [
       'efi-app-ia32', 'elf32-i386', 'pei-i386',
       'elf64-x86-64',
@@ -2643,7 +2642,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     end;
 
   end;
-  
+
   function SetTempMainBreak: Boolean;
   var
     R: TGDBMIExecResult;
@@ -2672,7 +2671,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     FMainAddr := StrToIntDef(ResultList.Values['addr'], 0);
     ResultList.Free;
   end;
-  
+
 var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
@@ -2705,7 +2704,7 @@ begin
   // also call execute -exec-arguments if there are no arguments in this run
   // so the possible arguments of a previous run are cleared
   ExecuteCommand('-exec-arguments %s', [Arguments], [cfIgnoreError]);
-  
+
   if tfHasSymbols in FTargetFlags
   then begin
     // Make sure we are talking pascal
@@ -2716,7 +2715,7 @@ begin
     DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
     TempInstalled := False;
   end;
-  
+
   // try Insert Break breakpoint
   // we might have rtl symbols
   if FExceptionBreakID = -1
@@ -2751,7 +2750,7 @@ begin
   end;
 
   SetTargetInfo(FileType);
-  
+
   if not TempInstalled and (EntryPoint <> '')
   then begin
     // We could not set our initial break to get info and allow stepping
@@ -2760,9 +2759,9 @@ begin
     ExecuteCommand('-break-insert -t *%u', [FMainAddr], [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
-  
+
   FTargetPID := 0;
-  
+
   // fire the first step
   if TempInstalled
   and ExecuteCommand('-exec-run', [], R)
@@ -2807,7 +2806,7 @@ begin
     else SetState(dsPause);
   end
   else SetState(R.State);
-  
+
   if State = dsPause
   then ProcessFrame;
 
@@ -2850,7 +2849,7 @@ end;
 procedure TGDBMIBreakPoint.DoStateChange(const AOldState: TDBGState);
 begin
   inherited DoStateChange(AOldState);
-  
+
   case Debugger.State of
     dsInit: begin
       SetBreakpoint;
@@ -2860,11 +2859,6 @@ begin
       then ReleaseBreakpoint;
     end;
   end;
-end;
-
-procedure TGDBMIBreakPoint.Hit(var ACanContinue: Boolean);
-begin
-  DoHit(HitCount + 1, ACanContinue);
 end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -2878,7 +2872,7 @@ begin
   then TGDBMIDebugger(Debugger).GDBPause(True);
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d',
     [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0);
-  
+
 end;
 
 procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
@@ -2895,7 +2889,7 @@ begin
     else SetValid(vsInvalid);
     UpdateExpression;
     UpdateEnable;
-    
+
     if (FBreakID <> 0)
     and Enabled
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
@@ -2915,7 +2909,7 @@ procedure TGDBMIBreakPoint.ReleaseBreakPoint;
 begin
   if FBreakID = 0 then Exit;
   if Debugger = nil then Exit;
-  
+
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID], []);
@@ -2933,7 +2927,7 @@ begin
 end;
 
 procedure TGDBMIBreakPoint.UpdateEnable;
-const                         
+const
   // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
   CMD: array[Boolean] of ShortString = ('disable', 'enable');
 begin
@@ -3439,7 +3433,7 @@ begin
 end;
 
 function TGDBMICallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
-var                 
+var
   R: TGDBMIExecResult;
   ArgList, FrameList: TGDBMINameValueList;
 begin
@@ -3453,7 +3447,7 @@ begin
   then ArgList := TGDBMINameValueList.Create(R, ['stack-args', 'frame', 'args'])
   else ArgList := nil;
 
-  
+
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %0:d %0:d',
                                           [AIndex], [cfIgnoreError], R);
 
@@ -3767,9 +3761,9 @@ var
   S: String;
   List: TGDBMINameValueList;
   GDBType: TGDBType;
-begin  
+begin
   Result := False;
-  
+
   if FLeft = nil
   then AResult := ''
   else begin
@@ -3783,7 +3777,7 @@ begin
     AResult := AResult + '(' + S + ')';
   end
   else if FOperator = '['
-  then begin              
+  then begin
     if not FRight.GetExpression(S) then Exit;
     AResult := AResult + '[' + S + ']';
   end
@@ -3791,7 +3785,7 @@ begin
     if (Length(FOperator) > 0)
     and (FOperator[1] = '''')
     then AResult := AResult + ConvertToCString(FOperator)
-    else begin                                           
+    else begin
       GDBType := FDebugger.GetGDBTypeInfo(FOperator);
       if GDBType = nil
       then begin
@@ -3801,7 +3795,7 @@ begin
 
       if not FDebugger.ExecuteCommand('ptype %s', [FOperator], [cfIgnoreError, cfNoMiCommand], R)
       then Exit;
-      
+
       if R.State = dsError
       then begin
         // no type possible, use literal operator
@@ -3829,7 +3823,7 @@ begin
       AResult := AResult + S;
     end;
   end;
-  
+
   Result := True;
 end;
 
@@ -3843,5 +3837,5 @@ end;
 
 initialization
   RegisterDebugger(TGDBMIDebugger);
-  
+
 end.

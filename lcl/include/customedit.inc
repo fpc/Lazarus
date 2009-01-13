@@ -34,6 +34,7 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
   TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
   TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+  TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
 
 {------------------------------------------------------------------------------
@@ -502,6 +503,16 @@ function TCustomEdit.GetCaretPos: TPoint;
 begin
   Result := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
 end;
+
+procedure TCustomEdit.SetAlignment(const AValue: TAlignment);
+begin
+  if FAlignment = AValue then
+    exit;
+  FAlignment := AValue;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
+end;
+
 
 
 // included by stdctrls.pp

@@ -8000,14 +8000,40 @@ begin
 end;
 
 procedure TCustomDrawGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
+var
+  ScrollCols: boolean;
+  Target: Integer;
+
+  function IsTargetZero: boolean;
+  begin
+    if ScrollCols then
+      result := (ColWidths[Target]=0)
+    else
+      result := (RowHeights[Target]=0);
+  end;
+
+  function TLValue(const AIndex,AMin,AMax: Integer): Integer;
+  begin
+    Target := AIndex+Delta;
+    while InRange(Target,AMin,AMax) and IsTargetZero do begin
+      if Delta>0 then
+        Inc(Target)
+      else
+        Dec(Target);
+    end;
+    result := EnsureRange(Target, AMin, AMax);
+  end;
+
 begin
   if FMouseWheelOption=mwCursor then
     inherited GridMouseWheel(shift, Delta)
-  else begin
-    if ssCtrl in Shift then
-      TryScrollTo(LeftCol+Delta, TopRow)
+  else
+  if Delta<>0 then begin
+    ScrollCols := (ssCtrl in shift);
+    if ScrollCols then
+      TryScrollTo(TLValue(LeftCol,FixedCols,GCache.MaxTopLeft.x), TopRow)
     else
-      TryScrollTo(LeftCol, TopRow+Delta);
+      TryScrollTo(LeftCol, TLValue(TopRow,FixedRows,GCache.MaxTopLeft.y));
   end;
 end;
 

@@ -42,9 +42,9 @@ unit SynEditTextBuffer;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, SynEditTextBase,
   {$IFDEF SYN_LAZARUS}
-  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType, SynEditTextBase,
+  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -55,11 +55,10 @@ type
   {$IFNDEF SYN_LAZARUS}
   TSynEditRange = pointer;
   {$ENDIF}
+  TSynEditRangeClass = class end; // For Register
+  TSynEditFlagsClass = class end; // For Register
 
   TSynEditStringFlag = (
-    sfHasTabs,               //
-    sfHasNoTabs,             //
-    sfExpandedLengthUnknown, //
     sfModified,              // a line is modified and not saved after
     sfSaved                  // a line is modified and saved after
   );
@@ -72,99 +71,108 @@ type
     crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
     crLineBreak, crIndent, crUnindent,
     crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
-    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace {$ENDIF});
-
-  PSynEditStringRec = ^TSynEditStringRec;
-  TSynEditStringRec = record
-    fString: string;
-    fObject: TObject;
-    fRange: TSynEditRange; // range at start of line
-{begin}                                                                         //mh 2000-10-19
-    fExpandedLength: integer;
-    fFlags: TSynEditStringFlags;
-    {$IFDEF SYN_LAZARUS}
-    fFoldMinLevel: LongInt; // minimum block depth in this line
-    fFoldEndLevel: LongInt; // block depth at end of this line
-    {$ENDIF}
-{end}                                                                           //mh 2000-10-19
-  end;
+    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace, crTrimRealSpace {$ENDIF});
 
 const
-  SynEditStringRecSize = SizeOf(TSynEditStringRec);
-  MaxSynEditStrings = MaxInt div SynEditStringRecSize;
+  SynChangeReasonNames : Array [TSynChangeReason] of string =
+   ('crInsert', 'crPaste', 'crDragDropInsert',
+    'crDeleteAfterCursor', 'crDelete', {'crSelDelete', 'crDragDropDelete', }
+    'crLineBreak', 'crIndent', 'crUnindent',
+    'crSilentDelete', 'crSilentDeleteAfterCursor',
+    'crNothing' {$IFDEF SYN_LAZARUS}, 'crTrimSpace', 'crTrimRealSpace' {$ENDIF});
 
   NullRange = TSynEditRange(-1);
 
 type
-  PSynEditStringRecList = ^TSynEditStringRecList;
-  TSynEditStringRecList = array[0..MaxSynEditStrings - 1] of TSynEditStringRec;
-
   TStringListIndexEvent = procedure(Index: Integer) of object;
-  {$IFDEF SYN_LAZARUS}
-  TStringListLineCountEvent = procedure(Index, Count: Integer) of object;
-  {$ENDIF}
+
+  TSynEditStringAttribute = record
+    Index: TClass;
+    Size: Word;
+    Pos: Integer;
+  end;
+
+  { TLineRangeNotificationList }
+
+  TLineRangeNotificationList = Class(TMethodList)
+  public
+    procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
+  end;
+
+
+  { TSynEditStringMemory }
+
+  TSynEditStringMemory = class
+  private
+    FMem: ^Byte;
+    FCount, FCapacity: Integer;
+    FAttributeSize: Integer;
+    function GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
+    function GetAttributeSize: Integer;
+    function GetCapacity: Integer;
+    function GetObject(Index: Integer): TObject;
+    function GetString(Index: Integer): String;
+    procedure SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
+    procedure SetAttributeSize(const AValue: Integer);
+    procedure SetCapacity(const AValue: Integer);
+    procedure SetCount(const AValue: Integer);
+    procedure SetObject(Index: Integer; const AValue: TObject);
+    procedure SetString(Index: Integer; const AValue: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Move(AFrom, ATo, ALen: Integer);
+
+    property Strings[Index: Integer]: String read GetString write SetString; default;
+    property Objects[Index: Integer]: TObject read GetObject write SetObject;
+    property Attribute[Index: Integer; Pos: Integer; Size: Word]: Pointer
+      read  GetAttribute write SetAttribute;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    // Count must be maintained by owner
+    property Count: Integer read FCount write SetCount;
+    property AttributeSize: Integer read  GetAttributeSize write SetAttributeSize;
+  end;
 
   { TSynEditStringList }
 
-  {$IFDEF SYN_LAZARUS}
   TSynEditStringList = class(TSynEditStrings)
-  {$ELSE}
-  TSynEditStringList = class(TStrings)
-  {$ENDIF}
   private
-    fList: PSynEditStringRecList;
-    fCount: integer;
-    fCapacity: integer;
+    FList: TSynEditStringMemory;
+    FAttributeList: Array of TSynEditStringAttribute;
+    FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
+    FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
     fDosFileFormat: boolean;
-{begin}                                                                         //mh 2000-10-19
-    fConvertTabsProc: TConvertTabsProcEx;
-    {$IFDEF SYN_LAZARUS}
-    fSimulateConvertTabsProc: TSimulateConvertTabsProcEx;
-    {$ENDIF}
     fIndexOfLongestLine: integer;
-{end}                                                                           //mh 2000-10-19
     fOnChange: TNotifyEvent;
     fOnChanging: TNotifyEvent;
-{begin}                                                                         //mh 2000-10-19
-    function ExpandedString(Index: integer): string;
+
     {$IFDEF SYN_LAZARUS}
-    function ExpandedStringLength(Index: integer): integer;
     function GetFlags(Index: Integer): TSynEditStringFlags;
     {$ENDIF}
-    {$IFNDEF SYN_LAZARUS}                                                       // protected in SynLazarus
-    function GetExpandedString(Index: integer): string;
-    function GetLengthOfLongestLine: integer;
-    {$ENDIF}
-{end}                                                                           //mh 2000-10-19
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
+    function ClassIndexForAttribute(AttrIndex: TClass): Integer;
+    Procedure SetAttributeSize(NewSize: Integer);
+    procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
   protected
-    fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
-    fOnDeleted: TStringListIndexEvent;
-    fOnInserted: TStringListIndexEvent;
-    fOnPutted: TStringListIndexEvent;
-    {$IFDEF SYN_LAZARUS}
-    fOnLineCountChanged : TStringListLineCountEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
-    function GetFoldEndLevel(Index: integer): integer; override;
-    function GetFoldMinLevel(Index: integer): integer; override;
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer); override;
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer); override;
-    {$ENDIF}
     function GetRange(Index: integer): TSynEditRange; {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
+    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
+    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
+    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
     function GetCount: integer; override;
+    procedure SetCount(const AValue: Integer);
     function GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: integer);
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
-    procedure SetTabWidth(const Value: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create;
@@ -188,29 +196,23 @@ type
     procedure MarkModified(AFirst, ALast: Integer; AUndo: Boolean; AReason: TSynChangeReason);
     procedure MarkSaved;
     {$ENDIF}
+    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); override;
+    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent); override;
   public
-    property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
+    property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
 {begin}                                                                         //mh 2000-10-19
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
 {end}                                                                           //mh 2000-10-19
     property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
-    property OnAdded: TStringListIndexEvent read fOnAdded write fOnAdded;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
     property OnCleared: TNotifyEvent read fOnCleared write fOnCleared;
-    property OnDeleted: TStringListIndexEvent read fOnDeleted write fOnDeleted;
-    property OnInserted: TStringListIndexEvent read fOnInserted
-      write fOnInserted;
-    property OnPutted: TStringListIndexEvent read fOnPutted write fOnPutted;
     {$IFDEF SYN_LAZARUS}
-    property OnLineCountChanged: TStringListLineCountEvent
-      read fOnLineCountChanged write fOnLineCountChanged;
-    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
-                                                   write SetFoldMinLevel;
-    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
-                                                   write SetFoldEndLevel;
-    property Flags[Index: Integer]: TSynEditStringFlags read GetFlags;
+    property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
+      write SetFlags;
     {$ENDIF}
   end;
 
@@ -265,6 +267,7 @@ type
     function PopItem: TSynEditUndoItem;
     procedure PushItem(Item: TSynEditUndoItem);
     procedure Unlock;
+    function IsLocked: Boolean;
     {$IFDEF SYN_LAZARUS}
     procedure MarkTopAsUnmodified;
     function IsTopMarkedAsUnmodified: boolean;
@@ -284,12 +287,11 @@ type
 implementation
 
 {$IFNDEF FPC}
-
-{$IFDEF SYN_COMPILER_3_UP}                                                      //mh 2000-10-18
+  {$IFDEF SYN_COMPILER_3_UP}
 resourcestring
-{$ELSE}
+  {$ELSE}
 const
-{$ENDIF}
+  {$ENDIF}
 {$ELSE}
 const
 {$ENDIF}
@@ -504,7 +506,13 @@ end;
 
 constructor TSynEditStringList.Create;
 begin
+  fList := TSynEditStringMemory.Create;
+  FLineRangeNotificationList := TLineRangeNotificationList.Create;
+  FLineChangeNotificationList := TLineRangeNotificationList.Create;
   inherited Create;
+  SetAttributeSize(0);
+  RegisterAttribute(TSynEditRangeClass, SizeOf(Pointer));
+  RegisterAttribute(TSynEditFlagsClass, SizeOf(TSynEditStringFlag));
   fDosFileFormat := TRUE;
 {begin}                                                                         //mh 2000-10-19
   fIndexOfLongestLine := -1;
@@ -512,31 +520,24 @@ begin
 end;
 
 destructor TSynEditStringList.Destroy;
-{$IFDEF FPC}
-var i: integer;
-{$ENDIF}
 begin
   fOnChange := nil;
   fOnChanging := nil;
+  fAttributeList := nil;
   inherited Destroy;
-  {$IFDEF FPC}
-  for i:=0 to fCount-1 do fList^[i].fString:='';
-  {$ENDIF}
-  fCount := 0;
+  SetCount(0);
   SetCapacity(0);
+  FreeAndNil(FLineRangeNotificationList);
+  FreeAndNil(FLineChangeNotificationList);
+  FreeAndNil(fList);
 end;
 
 function TSynEditStringList.Add(const S: string): integer;
 begin
   BeginUpdate;
-  Result := fCount;
+  Result := Count;
   InsertItem(Result, S);
-  {$IFDEF SYN_LAZARUS}
-  if Assigned(fOnLineCountChanged) then
-    fOnLineCountChanged(Result, fCount - Result);
-  {$ENDIF}
-  if Assigned(fOnAdded) then
-    fOnAdded(Result);
+  FLineRangeNotificationList.CallRangeNotifyEvents(self, Result, Count - Result);
   EndUpdate;
 end;
 
@@ -549,31 +550,20 @@ begin
     fIndexOfLongestLine := -1;
     BeginUpdate;
     try
-      i := fCount + AStrings.Count;
-      if i > fCapacity then
+      i := Count + AStrings.Count;
+      if i > Capacity then
         SetCapacity((i + 15) and (not 15));
-      FirstAdded := fCount;
+      FirstAdded := Count;
       for i := 0 to AStrings.Count - 1 do begin
-        with fList^[fCount] do begin
-          Pointer(fString) := nil;
-          fString := AStrings[i];
-          fObject := AStrings.Objects[i];
-          fRange := NullRange;
-          fExpandedLength := -1;
-          fFlags := [sfExpandedLengthUnknown];
-          {$IFDEF SYN_LAZARUS}
-          fFoldMinLevel:=0;
-          fFoldEndLevel:=0;
-          {$ENDIF}
+        SetCount(Count + 1);
+        with fList do begin
+          Strings[Count-1] := AStrings[i];
+          Objects[Count-1] := AStrings.Objects[i];
         end;
-        Inc(fCount);
+        SetAttribute(TSynEditRangeClass, Count-1, NullRange);
+        Flags[Count-1] := [];
       end;
-      {$IFDEF SYN_LAZARUS}
-      if Assigned(fOnLineCountChanged) then
-        fOnLineCountChanged(FirstAdded, fCount - FirstAdded);
-      {$ENDIF}
-      if Assigned(fOnAdded) then
-        fOnAdded(FirstAdded);
+      FLineRangeNotificationList.CallRangeNotifyEvents(self, FirstAdded, Count - FirstAdded);
     finally
       EndUpdate;
     end;
@@ -582,19 +572,17 @@ begin
 end;
 
 procedure TSynEditStringList.Clear;
-{$IFDEF FPC}
-var i: integer;
-{$ENDIF}
+var
+  c: Integer;
 begin
-  if fCount <> 0 then begin
+  c := Count;
+  if c <> 0 then begin
     BeginUpdate;
-    {$IFDEF FPC}
-    for i:=0 to fCount-1 do fList^[i].fString:='';
-    {$ENDIF}
-    fCount := 0;
+    SetCount(0);
     SetCapacity(0);
     if Assigned(fOnCleared) then
       fOnCleared(Self);
+    FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, -c);
     EndUpdate;
   end;
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
@@ -602,24 +590,14 @@ end;
 
 procedure TSynEditStringList.Delete(Index: integer);
 begin
-  if (Index < 0) or (Index > fCount) then
+  if (Index < 0) or (Index > Count) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
-  {$IFDEF FPC}
-  fList^[Index].fString:='';
-  {$ENDIF}
-  Dec(fCount);
-  if Index < fCount then begin
-    System.Move(fList^[Index + 1], fList^[Index],
-      (fCount - Index) * SynEditStringRecSize);
-  end;
+  if Index < Count-1 then
+    fList.Move(Index + 1, Index, Count-Index-1);
+  SetCount(Count - 1);
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
-  {$IFDEF SYN_LAZARUS}
-  if Assigned(fOnLineCountChanged) then
-    fOnLineCountChanged(Index, -1);
-  {$ENDIF}
-  if Assigned(fOnDeleted) then
-    fOnDeleted(Index);
+  FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -1);
   EndUpdate;
 end;
 
@@ -627,213 +605,106 @@ end;
 procedure TSynEditStringList.DeleteLines(Index, NumLines: Integer);
 var
   LinesAfter: integer;
-  {$IFDEF FPC}
-  i: integer;
-  {$ENDIF}
 begin
   if NumLines > 0 then begin
-    if (Index < 0) or (Index >= fCount) then
+    if (Index < 0) or (Index >= Count) then
       ListIndexOutOfBounds(Index);
-    LinesAfter := fCount - (Index + NumLines);
+    LinesAfter := Count - (Index + NumLines);
     if LinesAfter < 0 then
-      NumLines := fCount - Index;
-    {$IFDEF FPC}
-    // free the strings
-    for i:=Index to Index+NumLines-1 do
-      fList^[i].fString:='';
-    {$ENDIF}
+      NumLines := Count - Index;
     if LinesAfter > 0 then begin
       BeginUpdate;
       try
-        // move
-        System.Move(fList^[Index + NumLines], fList^[Index],
-          LinesAfter * SynEditStringRecSize);
-        {$IFDEF FPC}
-        // clear unused references
-        FillChar(fList^[Index + LinesAfter], NumLines * SynEditStringRecSize,0);
-        {$ENDIF}
+          fList.Move(Index + NumLines, Index, LinesAfter);
       finally
         EndUpdate;
       end;
     end;
-    Dec(fCount, NumLines);
-    {$IFDEF SYN_LAZARUS}
-    if Assigned(fOnLineCountChanged) then
-      fOnLineCountChanged(Index, -NumLines);
-    {$ENDIF}
-    if Assigned(fOnDeleted) then
-      fOnDeleted(Index);
+    SetCount(Count - NumLines);
+    FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -NumLines);
   end;
 end;
 {end}                                                                           // DJLP 2000-11-01
 
 procedure TSynEditStringList.Exchange(Index1, Index2: integer);
-var
-  Temp: TSynEditStringRec;
 begin
-  if (Index1 < 0) or (Index1 >= fCount) then
+  if (Index1 < 0) or (Index1 >= Count) then
     ListIndexOutOfBounds(Index1);
-  if (Index2 < 0) or (Index2 >= fCount) then
+  if (Index2 < 0) or (Index2 >= Count) then
     ListIndexOutOfBounds(Index2);
   BeginUpdate;
-  Temp := fList^[Index1];
-  fList^[Index1] := fList^[Index2];
-  fList^[Index2] := Temp;
-{begin}                                                                         //mh 2000-10-19
+  If Count+1 >= Capacity then Grow;
+  FList.Move(Index1, Count, 1);
+  FList.Move(Index2, Index1, 1);
+  FList.Move(Count, Index2, 1);
+  FList.Move(Count+1, Count, 1); // clean it
   if fIndexOfLongestLine = Index1 then
     fIndexOfLongestLine := Index2
   else if fIndexOfLongestLine = Index2 then
     fIndexOfLongestLine := Index1;
-{end}                                                                           //mh 2000-10-19
   EndUpdate;
 end;
 
-{begin}                                                                         //mh 2000-10-19
-function TSynEditStringList.ExpandedString(Index: integer): string;
-var
-  HasTabs: boolean;
-begin
-  with fList^[Index] do
-    if fString = '' then begin
-      Result := '';
-      Exclude(fFlags, sfExpandedLengthUnknown);
-      Exclude(fFlags, sfHasTabs);
-      Include(fFlags, sfHasNoTabs);
-      fExpandedLength := 0;
-    end else begin
-      Result := fConvertTabsProc(fString, fTabWidth, HasTabs);
-      fExpandedLength := Length(Result);
-      Exclude(fFlags, sfExpandedLengthUnknown);
-      Exclude(fFlags, sfHasTabs);
-      Exclude(fFlags, sfHasNoTabs);
-      if HasTabs then
-        Include(fFlags, sfHasTabs)
-      else
-        Include(fFlags, sfHasNoTabs);
-    end;
-end;
-{end}                                                                           //mh 2000-10-19
-
 {$IFDEF SYN_LAZARUS}
-function TSynEditStringList.ExpandedStringLength(Index: integer): integer;
-var
-  HasTabs: boolean;
-begin
-  with fList^[Index] do
-    if length(fString) = 0 then begin
-      Result := 0;
-      Exclude(fFlags, sfExpandedLengthUnknown);
-      Exclude(fFlags, sfHasTabs);
-      Include(fFlags, sfHasNoTabs);
-      fExpandedLength := 0;
-    end else begin
-      Result := fSimulateConvertTabsProc(fString, fTabWidth, HasTabs);
-      fExpandedLength := Result;
-      Exclude(fFlags, sfExpandedLengthUnknown);
-      Exclude(fFlags, sfHasTabs);
-      Exclude(fFlags, sfHasNoTabs);
-      if HasTabs then
-        Include(fFlags, sfHasTabs)
-      else
-        Include(fFlags, sfHasNoTabs);
-    end;
-end;
-
 function TSynEditStringList.GetFlags(Index: Integer): TSynEditStringFlags;
 begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFlags
+  if (Index >= 0) and (Index < Count) then
+    Result := TSynEditStringFlags(Integer(PtrUInt(GetAttribute(TSynEditFlagsClass, Index))))
   else
     Result := [];
-end;
-
-function TSynEditStringList.GetFoldEndLevel(Index: integer): integer;
-begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFoldEndLevel
-  else
-    Result := 0;
-end;
-
-function TSynEditStringList.GetFoldMinLevel(Index: integer): integer;
-begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFoldMinLevel
-  else
-    Result := 0;
-end;
-
-procedure TSynEditStringList.SetFoldEndLevel(Index: integer;
-  const AValue: integer);
-begin
-  if (Index >= 0) and (Index < fCount) then
-    fList^[Index].fFoldEndLevel := AValue;
-end;
-
-procedure TSynEditStringList.SetFoldMinLevel(Index: integer;
-  const AValue: integer);
-begin
-  if (Index >= 0) and (Index < fCount) then
-    fList^[Index].fFoldMinLevel := AValue;
 end;
 {$ENDIF}
 
 function TSynEditStringList.Get(Index: integer): string;
 begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fString
+  if (Index >= 0) and (Index < Count) then
+    Result := fList[Index]
   else
     Result := '';
 end;
 
 function TSynEditStringList.GetCapacity: integer;
 begin
-  Result := fCapacity;
+  Result := fList.Capacity;
 end;
 
 function TSynEditStringList.GetCount: integer;
 begin
-  Result := fCount;
+  Result := FList.Count;
+end;
+
+procedure TSynEditStringList.SetCount(const AValue: Integer);
+begin
+  fList.Count := AValue;
 end;
 
 {begin}                                                                         //mh 2000-10-19
 function TSynEditStringList.GetExpandedString(Index: integer): string;
 begin
-  if (Index >= 0) and (Index < fCount) then begin
-    if sfHasNoTabs in fList^[Index].fFlags then
-      Result := fList^[Index].fString
-    else
-      Result := ExpandedString(Index);
+  if (Index >= 0) and (Index < Count) then begin
+    Result := FList[Index];
   end else
     Result := '';
 end;
 
 function TSynEditStringList.GetLengthOfLongestLine: integer;                    //mh 2000-10-19
 var
-  i, MaxLen: integer;
-  PRec: PSynEditStringRec;
+  i, j, MaxLen: integer;
 begin
   if fIndexOfLongestLine < 0 then begin
     MaxLen := 0;
-    if fCount > 0 then begin
-      PRec := @fList^[0];
-      for i := 0 to fCount - 1 do begin
-        if sfExpandedLengthUnknown in PRec^.fFlags then
-          {$IFDEF SYN_LAZARUS}
-          ExpandedStringLength(i);
-          {$ELSE}
-          ExpandedString(i);
-          {$ENDIF}
-        if PRec^.fExpandedLength > MaxLen then begin
-          MaxLen := PRec^.fExpandedLength;
+    if Count > 0 then begin
+      for i := 0 to Count - 1 do begin
+        j := length(FList[i]);
+        if j > MaxLen then begin
+          MaxLen := j;
           fIndexOfLongestLine := i;
         end;
-        Inc(PRec);
       end;
     end;
   end;
-  if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < fCount) then
-    Result := fList^[fIndexOfLongestLine].fExpandedLength
+  if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then
+    Result := length(FList[fIndexOfLongestLine])
   else
     Result := 0;
 end;
@@ -841,16 +712,16 @@ end;
 
 function TSynEditStringList.GetObject(Index: integer): TObject;
 begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fObject
+  if (Index >= 0) and (Index < Count) then
+    Result := fList.Objects[Index]
   else
     Result := nil;
 end;
 
 function TSynEditStringList.GetRange(Index: integer): TSynEditRange;
 begin
-  if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fRange
+  if (Index >= 0) and (Index < Count) then
+    Result := TSynEditRange(GetAttribute(TSynEditRangeClass, Index))
   else
     Result := nil;
 end;
@@ -859,11 +730,11 @@ procedure TSynEditStringList.Grow;
 var
   Delta: Integer;
 begin
-  if fCapacity > 64 then
-    Delta := fCapacity div 4
+  if Capacity > 64 then
+    Delta := Capacity div 4
   else
     Delta := 16;
-  SetCapacity(fCapacity + Delta);
+  SetCapacity(Capacity + Delta);
 end;
 
 procedure TSynEditStringList.Insert(Index: integer; const S: string);
@@ -872,47 +743,30 @@ var
   OldCnt : integer;
 {$ENDIF}
 begin
-  if (Index < 0) or (Index > fCount) then
+  if (Index < 0) or (Index > Count) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
   {$IFDEF SYN_LAZARUS}
-  OldCnt:=fCount;
+  OldCnt:=Count;
   {$ENDIF}
   InsertItem(Index, S);
-  {$IFDEF SYN_LAZARUS}
-  if Assigned(fOnLineCountChanged) then
-    fOnLineCountChanged(Index, fCount-OldCnt);
-  {$ENDIF}
-  if Assigned(fOnInserted) then
-    fOnInserted(Index);
+  FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, Count - OldCnt);
   EndUpdate;
 end;
 
 procedure TSynEditStringList.InsertItem(Index: integer; const S: string);
 begin
   BeginUpdate;
-  if fCount = fCapacity then
+  if Count = Capacity then
     Grow;
-  if Index < fCount then begin
-    System.Move(fList^[Index], fList^[Index + 1],
-      (fCount - Index) * SynEditStringRecSize);
-  end;
+  if Index < Count then
+    FList.Move(Index, Index+1, Count - Index);
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
-  with fList^[Index] do begin
-    Pointer(fString) := nil;
-    fString := S;
-    fObject := nil;
-    fRange := NullRange;
-{begin}                                                                         //mh 2000-10-19
-    fExpandedLength := -1;
-    fFlags := [sfExpandedLengthUnknown];
-    {$IFDEF SYN_LAZARUS}
-    fFoldMinLevel:=0;
-    fFoldEndLevel:=0;
-    {$ENDIF}
-{end}                                                                           //mh 2000-10-19
-  end;
-  Inc(fCount);
+  SetCount(Count + 1);
+  fList[Index] := S;
+  FList.Objects[Index] := nil;
+  Ranges[Index] := NullRange;
+  Flags[Index] := [];
   EndUpdate;
 end;
 
@@ -922,22 +776,12 @@ begin
   if NumLines > 0 then begin
     BeginUpdate;
     try
-      {$IFDEF FPC}
-      if FCapacity<fCount + NumLines then
-      {$ENDIF}
-        SetCapacity(fCount + NumLines);
-      if Index < fCount then begin
-        System.Move(fList^[Index], fList^[Index + NumLines],
-          (fCount - Index) * SynEditStringRecSize);
-      end;
-      FillChar(fList^[Index], NumLines * SynEditStringRecSize, 0);
-      Inc(fCount, NumLines);
-      {$IFDEF SYN_LAZARUS}
-      if Assigned(fOnLineCountChanged) then
-        fOnLineCountChanged(Index, NumLines);
-      {$ENDIF}
-      if Assigned(fOnAdded) then
-        fOnAdded(Index);
+      if Capacity<Count + NumLines then
+        SetCapacity(Count + NumLines);
+      if Index < Count then
+        FList.Move(Index, Index + NumLines, Count-Index);
+      SetCount(Count + NumLines);
+      FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, NumLines);
     finally
       EndUpdate;
     end;
@@ -985,52 +829,108 @@ end;
 
 procedure TSynEditStringList.Put(Index: integer; const S: string);
 begin
-  if (Index = 0) and (fCount = 0) then
+  if (Index = 0) and (Count = 0) then
     Add(S)
   else begin
-    if (Index < 0) or (Index >= fCount) then
+    if (Index < 0) or (Index >= Count) then
       ListIndexOutOfBounds(Index);
     BeginUpdate;
-{begin}                                                                         //mh 2000-10-19
     fIndexOfLongestLine := -1;
-    with fList^[Index] do begin
-      Include(fFlags, sfExpandedLengthUnknown);
-      Exclude(fFlags, sfHasTabs);
-      Exclude(fFlags, sfHasNoTabs);
-      fString := S;
-    end;
-{end}                                                                           //mh 2000-10-19
-    if Assigned(fOnPutted) then
-      fOnPutted(Index);
+    FList[Index] := S;
+    FLineChangeNotificationList.CallRangeNotifyEvents(self, Index, 1);
     EndUpdate;
   end;
 end;
 
 procedure TSynEditStringList.PutObject(Index: integer; AObject: TObject);
 begin
-  if (Index < 0) or (Index >= fCount) then
+  if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
   {$IFDEF SYN_LAZARUS}
-  if fList^[Index].fObject = AObject then exit;
+  if fList.Objects[Index] = AObject then exit;
   {$ENDIF}
   BeginUpdate;
-  fList^[Index].fObject := AObject;
+  fList.Objects[Index]:= AObject;
   EndUpdate;
 end;
 
 procedure TSynEditStringList.PutRange(Index: integer; ARange: TSynEditRange);
 begin
-  if (Index < 0) or (Index >= fCount) then
+  if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
   {$IFDEF SYN_LAZARUS}
   // do not call BeginUpdate/EndUpdate. It would call the too generic OnChange
   // events
-  fList^[Index].fRange := ARange;
+  SetAttribute(TSynEditRangeClass, Index, Pointer(PtrUInt(ARange)));
   {$ELSE}
   BeginUpdate;
-  fList^[Index].fRange := ARange;
+  SetAttribute(TSynEditRangeClass, Index, Pointer(PtrUInt(ARange)));
   EndUpdate;
   {$ENDIF}
+end;
+
+function TSynEditStringList.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
+var
+  i: Integer;
+begin
+  if (Index < 0) or (Index >= Count) then
+    ListIndexOutOfBounds(Index);
+  i := ClassIndexForAttribute(Owner);
+  if i < 0 then
+    raise ESynEditStringList.CreateFmt('Unknown Attribute', []);
+  Result := FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size];
+end;
+
+procedure TSynEditStringList.SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer);
+var
+  i: Integer;
+begin
+  if (Index < 0) or (Index >= Count) then
+    ListIndexOutOfBounds(Index);
+  i := ClassIndexForAttribute(Owner);
+  if i < 0 then
+    raise ESynEditStringList.CreateFmt('Unknown Attribute', []);
+  FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size] := AValue;
+end;
+
+procedure TSynEditStringList.RegisterAttribute(const Index: TClass; const Size: Word);
+var
+  i: Integer;
+begin
+  if ClassIndexForAttribute(Index) >= 0 then
+    raise ESynEditStringList.CreateFmt('Duplicate Attribute', []);
+  i := Length(fAttributeList);
+  SetLength(fAttributeList, i+1);
+  fAttributeList[i].Index := Index;
+  fAttributeList[i].Size := Size;
+  if i= 0 then
+    fAttributeList[i].Pos := 0
+  else
+    fAttributeList[i].Pos := fAttributeList[i-1].Pos + fAttributeList[i-1].Size;
+  SetAttributeSize(fAttributeList[i].Pos + Size);
+end;
+
+function TSynEditStringList.ClassIndexForAttribute(AttrIndex: TClass): Integer;
+var
+  i: Integer;
+begin
+  for i := 0 to high(fAttributeList) do
+    if fAttributeList[i].Index = AttrIndex then
+      exit(i);
+  result := -1;
+end;
+
+procedure TSynEditStringList.SetAttributeSize(NewSize: Integer);
+begin
+  if FList.AttributeSize = NewSize then exit;
+  if Count > 0 then
+    raise ESynEditStringList.CreateFmt('Add Attribute only allowed with zero lines', []);
+  FList.AttributeSize := NewSize;
+end;
+
+procedure TSynEditStringList.SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
+begin
+  SetAttribute(TSynEditFlagsClass, Index, Pointer(PtrUInt(Integer(AValue))));
 end;
 
 procedure TSynEditStringList.SaveToFile(const FileName: string);
@@ -1041,7 +941,7 @@ begin
   Writer := TSynEditFileWriter.Create(FileName);
   try
     Writer.DosFile := fDosFileFormat;
-    for i := 0 to fCount - 1 do
+    for i := 0 to Count - 1 do
       Writer.WriteLine(Get(i));
   finally
     Writer.Free;
@@ -1053,8 +953,8 @@ procedure TSynEditStringList.ClearRanges(ARange: TSynEditRange);
 var
   Index: Integer;
 begin
-  for Index:=0 to fCount-1 do
-    fList^[Index].fRange := ARange;
+  for Index:=0 to Count-1 do
+    Ranges[Index] := ARange;
 end;
 
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer;
@@ -1067,48 +967,40 @@ begin
 
   for Index := AFirst to ALast do
     if (Index >= 0) and (Index < Count) then
-      fList^[Index].fFlags := fList^[Index].fFlags + [sfModified] - [sfSaved];
+      Flags[Index] := Flags[Index] + [sfModified] - [sfSaved];
 end;
 
 procedure TSynEditStringList.MarkSaved;
 var
   Index: Integer;
 begin
-  for Index := 0 to fCount - 1 do
-    if sfModified in fList^[Index].fFlags then
-      include(fList^[Index].fFlags, sfSaved);
+  for Index := 0 to Count - 1 do
+    if sfModified in Flags[Index] then
+      Flags[Index] := Flags[Index] + [sfSaved];
 end;
+
+procedure TSynEditStringList.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+begin
+  case AReason of
+    senrLineChange : FLineChangeNotificationList.Add(TMethod(AHandler));
+    senrLineCount : FLineRangeNotificationList.Add(TMethod(AHandler));
+  end;
+end;
+
+procedure TSynEditStringList.RemoveChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+begin
+  case AReason of
+    senrLineChange : FLineChangeNotificationList.Remove(TMethod(AHandler));
+    senrLineCount : FLineRangeNotificationList.Remove(TMethod(AHandler));
+  end;
+end;
+
 {$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin
-  ReallocMem(fList, NewCapacity * SynEditStringRecSize);
-  fCapacity := NewCapacity;
+  fList.SetCapacity(NewCapacity);
 end;
-
-{begin}                                                                         //mh 2000-10-19
-procedure TSynEditStringList.SetTabWidth(const Value: integer);
-var
-  i: integer;
-begin
-  if Value <> FTabWidth then begin
-    Inherited SetTabWidth(Value);
-    fConvertTabsProc := GetBestConvertTabsProcEx(fTabWidth);
-    {$IFDEF SYN_LAZARUS}
-    fSimulateConvertTabsProc := GetBestSimulateConvertTabsProcEx(fTabWidth);
-    {$ENDIF}
-    fIndexOfLongestLine := -1;
-{begin}                                                                         //mh 2000-11-08
-    for i := 0 to fCount - 1 do
-      with fList^[i] do begin
-        fExpandedLength := -1;
-        Exclude(fFlags, sfHasNoTabs);
-        Include(fFlags, sfExpandedLengthUnknown);
-      end;
-{end}                                                                           //mh 2000-11-08
-  end;
-end;
-{end}                                                                           //mh 2000-10-19
 
 procedure TSynEditStringList.SetUpdateState(Updating: Boolean);
 begin
@@ -1168,6 +1060,9 @@ begin
         end;
 {end}                                                                           //sbs 2000-11-19
       end;
+      (* DebugLn(['TSynEditUndoList.AddChange ChangeNumber=',NewItem.fChangeNumber,
+               '  Reason=', SynChangeReasonNames[AReason],'  Astart=',dbgs(AStart),
+               ' AEnd=',dbgs(AEnd),'  SelMode=',ord(SelMode)]); *)
       PushItem(NewItem);
     except
       NewItem.Free;
@@ -1266,6 +1161,9 @@ begin
     {$IFDEF SYN_LAZARUS}
     if fUnModifiedItem>fItems.Count then fUnModifiedItem:=-1;
     {$ENDIF}
+    (*DebugLn(['TSynEditUndoList.PopItem=',Result.fChangeNumber,
+               '  Reason=', SynChangeReasonNames[Result.fChangeReason],'  Astart=',dbgs(Result.fChangeStartPos),
+               ' AEnd=',dbgs(result.fChangeEndPos),'  SelMode=',ord(result.fChangeSelMode )]);*)
   end;
 end;
 
@@ -1293,6 +1191,11 @@ procedure TSynEditUndoList.Unlock;
 begin
   if fLockCount > 0 then
     Dec(fLockCount);
+end;
+
+function TSynEditUndoList.IsLocked: Boolean;
+begin
+  Result := fLockCount > 0;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -1332,6 +1235,139 @@ begin
   else result := fChangeStartPos;
 end;
 {$ENDIF}
+
+{ TSynEditStringMemory }
+type
+  PString = ^String;
+  PObject = ^TObject;
+  PByte = ^Byte;
+  PWord = ^Word;
+  PLong = ^LongWord;
+  PQLong = ^QWord;
+
+const
+  AttributeOfset = SizeOf(String) + SizeOf(TObject);
+
+constructor TSynEditStringMemory.Create;
+begin
+  inherited Create;
+  FCapacity := 0;
+  FCount := 0;
+  AttributeSize := 0;
+end;
+
+destructor TSynEditStringMemory.Destroy;
+begin
+  SetCount(0);
+  SetCapacity(0);
+  inherited Destroy;
+end;
+
+procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);
+var
+  i, len: Integer;
+begin
+  //debugln(['TSynEditStringMemory.Move(',AFrom, ',', ATo, ', ',ALen,')']);
+  if ATo < AFrom then begin
+    Len := Min(ALen, AFrom-ATo);
+    for i:=ATo to ATo + Len -1 do Strings[i]:='';
+    System.Move((FMem+AFrom*FAttributeSize)^, (FMem+ATo*FAttributeSize)^, Alen*FAttributeSize);
+    FillChar((FMem+(AFrom+ALen-Len)*FAttributeSize)^, Len*FAttributeSize, 0);
+  end else begin
+    Len := Min(ALen, ATo-AFrom);
+    for i:=ATo+Alen-Len to ATo+ALen -1 do Strings[i]:='';
+    System.Move((FMem+AFrom*FAttributeSize)^, (FMem+ATo*FAttributeSize)^, Alen*FAttributeSize);
+    FillChar((FMem+AFrom*FAttributeSize)^, Len*FAttributeSize, 0);
+  end;
+end;
+
+function TSynEditStringMemory.GetCapacity: Integer;
+begin
+  Result := FCapacity;
+end;
+
+procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);
+begin
+  if FCapacity = AValue then exit;;
+  FMem := ReallocMem(FMem, AValue * FAttributeSize);
+  if AValue > FCapacity then
+    FillChar((FMem+FCapacity*FAttributeSize)^, (AValue-FCapacity)*FAttributeSize, 0);
+  FCapacity := AValue;
+end;
+
+procedure TSynEditStringMemory.SetCount(const AValue: Integer);
+var
+  i : Integer;
+begin
+  If FCount = AValue then exit;
+  for i:= AValue to FCount-1 do Strings[i]:='';
+  FCount := AValue;
+end;
+
+
+function TSynEditStringMemory.GetAttributeSize: Integer;
+begin
+  Result := FAttributeSize - SizeOf(String) - SizeOf(TObject)
+end;
+
+procedure TSynEditStringMemory.SetAttributeSize(const AValue: Integer);
+begin
+  if FAttributeSize = AValue + SizeOf(String) + SizeOf(TObject) then exit;;
+  FAttributeSize := AValue + SizeOf(String) + SizeOf(TObject);
+  SetCapacity(FCapacity);
+  // Todo: Move existing records
+end;
+
+function TSynEditStringMemory.GetString(Index: Integer): String;
+begin
+  Result := (PString(FMem + Index * FAttributeSize))^;
+end;
+
+procedure TSynEditStringMemory.SetString(Index: Integer; const AValue: String);
+begin
+  (PString(FMem + Index * FAttributeSize))^ := AValue;
+end;
+
+function TSynEditStringMemory.GetObject(Index: Integer): TObject;
+begin
+  Result := (PObject(FMem + Index * FAttributeSize + SizeOf(String)))^;
+end;
+
+procedure TSynEditStringMemory.SetObject(Index: Integer; const AValue: TObject);
+begin
+  (PObject(FMem + Index * FAttributeSize + SizeOf(String)))^ := AValue;
+end;
+
+function TSynEditStringMemory.GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
+begin
+  case Size of
+    1 : Result := Pointer(PtrUInt((PByte(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+    2 : Result := Pointer(PtrUInt((PWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+    4 : Result := Pointer(PtrUInt((PLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+    8 : Result := Pointer(PtrUInt((PQLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+  end;
+end;
+
+procedure TSynEditStringMemory.SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
+begin
+  case Size of
+    1 : (PByte(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := Byte(PtrUInt(AValue));
+    2 : (PWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := Word(PtrUInt(AValue));
+    4 : (PLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := LongWord(PtrUInt(AValue));
+    8 : (PQLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := QWord(PtrUInt(AValue));
+  end;
+end;
+
+{ TLineRangeNotificationList }
+
+procedure TLineRangeNotificationList.CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TStringListLineCountEvent(Items[i])(Sender, aIndex, aCount);
+end;
 
 end.
 

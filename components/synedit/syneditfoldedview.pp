@@ -163,10 +163,13 @@ type
       *ViewPos   = Line (1-based) in the array of viewable/visible lines
       *TextIndex = Line (0-based) in the complete text(folded and unfolded)
   }
-  
+
+  TSynEditFoldMinClass = class end; // For RegisterAttribute
+  TSynEditFoldEndClass = class end; // For RegisterAttribute
+
   { TSynEditFoldedView }
 
-  TSynEditFoldedView = class {TODO: Make a base class, that just maps everything one to one}
+  TSynEditFoldedView = class // TODO: class(TSynEditStringsLinked)
   private
     fCaret: TSynEditCaret;
     fLines : TSynEditStrings;
@@ -183,6 +186,9 @@ type
 
     function GetCount : integer;
     function GetDrawDivider(Index : integer) : Boolean;
+    function GetFoldEndLevel(Index: integer): integer;
+    function GetFoldMinLevel(Index: integer): integer;
+    function GetFoldNestLevel(index : Integer): integer;
     function GetLines(index : Integer) : String;
     function GetDisplayNumber(index : Integer) : Integer;
     function GetRange(Index : integer) : TSynEditRange;
@@ -190,6 +196,8 @@ type
     function GetFoldType(index : Integer) : TSynEditCodeFoldType;
     function IsFolded(index : integer) : Boolean;  // TextIndex
     procedure PutRange(Index : integer; const AValue : TSynEditRange);
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer);
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer);
     procedure SetTopLine(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
@@ -200,7 +208,7 @@ type
     function FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 
     procedure DoCaretChanged(Sender : TObject);
-    Procedure LineCountChanged(AIndex, ACount : Integer);
+    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LinesInsertedAtTextIndex(AStartIndex, ALineCount : Integer;
                                        SkipFixFolding : Boolean = False);
     Procedure LinesInsertedAtViewPos(AStartPos, ALineCount : Integer;
@@ -210,7 +218,7 @@ type
     Procedure LinesDeletedAtViewPos(AStartPos, ALineCount : Integer;
                                     SkipFixFolding : Boolean = False);
   public
-    constructor Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
+    constructor Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
@@ -231,6 +239,8 @@ type
       read GetDisplayNumber;
     property FoldType[index : Integer] : TSynEditCodeFoldType (* FoldIcon / State *)
       read GetFoldType;
+    property FoldNestLvl[index : Integer] : integer           (* FoldIcon / Deep/Level of nesting; 1 for top-lvl *)
+      read GetFoldNestLevel;
     property DrawDivider[Index: integer]: Boolean
       read GetDrawDivider;
     property TextIndex[index : Integer] : Integer       (* Position in SynTextBuffer / result is 0-based *)
@@ -272,6 +282,12 @@ type
 
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
       read fOnFoldChanged write fOnFoldChanged;
+  public
+    // TextIndex
+    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
+                                                   write SetFoldMinLevel;
+    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
+                                                   write SetFoldEndLevel;
   end;
 
   
@@ -1387,20 +1403,23 @@ end;
 
 { TSynEditFoldedView }
 
-constructor TSynEditFoldedView.Create(aTextBuffer : TSynEditStringList; aTextView : TSynEditStrings; ACaret: TSynEditCaret);
+constructor TSynEditFoldedView.Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
 begin
-  fCaret := ACaret;
-  fCaret.AddChangeHandler(@DoCaretChanged);
   fLines := aTextView;
+  flines.RegisterAttribute(TSynEditFoldMinClass, SizeOf(Integer));
+  flines.RegisterAttribute(TSynEditFoldEndClass, SizeOf(Integer));
+  fCaret := ACaret;
+  fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
   fTopLine := 0;
   fLinesInWindow := -1;
-  aTextBuffer.OnLineCountChanged := {$IFDEF FPC}@{$ENDIF}LineCountChanged;
+  fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
-  fCaret.RemoveChangeHandler(@DoCaretChanged);
+  fLines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  fCaret.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -1533,7 +1552,16 @@ end;
 function TSynEditFoldedView.GetDrawDivider(Index : integer) : Boolean;
 begin
   result := (FoldType[Index] in [cfEnd])
-    and (fLines.FoldEndLevel[TextIndex[index]] < CFDividerDrawLevel);
+    and (FoldEndLevel[TextIndex[index]] < CFDividerDrawLevel);
+end;
+
+function TSynEditFoldedView.GetFoldNestLevel(index : Integer): integer;
+begin
+  if (index < 0) or (index > fLinesInWindow) then exit(-1);
+  if (fFoldTypeList[index] = cfEnd) and (fTextIndexList[index] > 0) then
+    Result := FoldEndLevel[fTextIndexList[index]-1]
+  else
+    Result := FoldEndLevel[fTextIndexList[index]];
 end;
 
 (* Topline *)
@@ -1584,13 +1612,13 @@ begin
       if (node.IsInFold) and (tpos+1 = node.StartLine)
       then fFoldTypeList[i] := cfCollapsed
       else
-      if fLines.FoldEndLevel[tpos-1] > fLines.FoldMinLevel[tpos-1]
+      if FoldEndLevel[tpos-1] > FoldMinLevel[tpos-1]
       then fFoldTypeList[i] := cfExpanded
       else
-      if (tpos > 1) and (fLines.FoldEndLevel[tpos-2] > fLines.FoldMinLevel[tpos-1])
+      if (tpos > 1) and (FoldEndLevel[tpos-2] > FoldMinLevel[tpos-1])
       then fFoldTypeList[i] := cfEnd
       else
-      if fLines.FoldEndLevel[tpos-1] > 0
+      if FoldEndLevel[tpos-1] > 0
       then fFoldTypeList[i] := cfContinue
       else fFoldTypeList[i] := cfNone;
 
@@ -1647,6 +1675,34 @@ begin
 end;
 
 (* Folding *)
+procedure TSynEditFoldedView.SetFoldEndLevel(Index: integer; const AValue: integer);
+begin
+  if (Index >= 0) and (Index < fLines.Count) then
+    fLines.Attribute[TSynEditFoldEndClass, Index] := Pointer(PtrUInt(AValue));
+end;
+
+procedure TSynEditFoldedView.SetFoldMinLevel(Index: integer; const AValue: integer);
+begin
+  if (Index >= 0) and (Index < fLines.Count) then
+    fLines.Attribute[TSynEditFoldMinClass, Index] := Pointer(PtrUInt(AValue));
+end;
+
+function TSynEditFoldedView.GetFoldEndLevel(Index: integer): integer;
+begin
+  if (Index >= 0) and (Index < fLines.Count) then
+    Result := Integer(fLines.Attribute[TSynEditFoldEndClass, Index])
+  else
+    Result := 0;
+end;
+
+function TSynEditFoldedView.GetFoldMinLevel(Index: integer): integer;
+begin
+  if (Index >= 0) and (Index < fLines.Count) then
+    Result := Integer(fLines.Attribute[TSynEditFoldMinClass, Index])
+  else
+    Result := 0;
+end;
+
 procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer);
 begin
   FoldAtViewPos(AStartLine + fTopLine);
@@ -1663,11 +1719,11 @@ var
 begin
   cnt := fLines.Count;
   // AStartLine is 1-based // FoldEndLevel is 0-based
-  lvl := fLines.FoldEndLevel[ALine];
+  lvl := FoldEndLevel[ALine];
   i := ALine+1;
-  while (i < cnt)  and (fLines.FoldMinLevel[i] >= lvl) do inc(i);
+  while (i < cnt)  and (FoldMinLevel[i] >= lvl) do inc(i);
   // check if fold last line of block (not mixed "end begin")
-  if (i < cnt) and (fLines.FoldEndLevel[i] <= fLines.FoldMinLevel[i]) then inc(i);
+  if (i < cnt) and (FoldEndLevel[i] <= FoldMinLevel[i]) then inc(i);
   Result := i-ALine-1;
 end;
 
@@ -1728,8 +1784,8 @@ begin
   fFoldTree.Clear;
   i := 0;
   while i < fLines.Count do begin
-    if (fLines.FoldEndLevel[i] > fLines.FoldMinLevel[i])
-    and (fLines.FoldEndLevel[i] > StartLevel) then begin
+    if (FoldEndLevel[i] > FoldMinLevel[i])
+    and (FoldEndLevel[i] > StartLevel) then begin
       l := LengthForFoldAtTextIndex(i);
       // i is 0-based
       // FoldTree is 1-based AND first line remains visble
@@ -1794,7 +1850,7 @@ begin
     LastCount := cnt;
 
     // look at the 0-based cfCollapsed (visible) Line
-    if not(fLines.FoldEndLevel[line -1] > fLines.FoldMinLevel[line - 1]) then begin
+    if not(FoldEndLevel[line -1] > FoldMinLevel[line - 1]) then begin
       // the Fold-Begin of this node has gone
       tmpnode := node.Prev;
       aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
@@ -1837,7 +1893,7 @@ begin
     UnFoldAtTextIndex(i, true);
 end;
 
-procedure TSynEditFoldedView.LineCountChanged(AIndex, ACount : Integer);
+procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
 begin
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
@@ -1864,8 +1920,8 @@ begin
   Result := -1;
   i := ALine-1;
 
-  if (i>0) and (fLines.FoldMinLevel[i] < fLines.FoldEndLevel[i-1])then begin
-    if fLines.FoldMinLevel[i] < fLines.FoldEndLevel[i] then begin
+  if (i>0) and (FoldMinLevel[i] < FoldEndLevel[i-1])then begin
+    if FoldMinLevel[i] < FoldEndLevel[i] then begin
       // this is a combined "end begin" line
       node := fFoldTree.FindFoldForLine(ALine, true);
       if node.IsInFold and (node.StartLine = ALine +1) then
@@ -1875,8 +1931,8 @@ begin
       // this is a "end" line
       dec(i);
     end;
-    l := fLines.FoldEndLevel[i];
-  end else if fLines.FoldEndLevel[i] = 0 then
+    l := FoldEndLevel[i];
+  end else if FoldEndLevel[i] = 0 then
     exit
   else begin
     // check if current line is cfCollapsed
@@ -1884,12 +1940,12 @@ begin
     if node.IsInFold and (node.StartLine = ALine +1) then
       dec(i);
     if i < 0 then exit;
-    l := fLines.FoldEndLevel[i]
+    l := FoldEndLevel[i]
   end;
 
-  while (i > 0) and (fLines.FoldMinLevel[i] >= l) do
+  while (i > 0) and (FoldMinLevel[i] >= l) do
     dec(i);
-  if (fLines.FoldEndLevel[i] > 0) then // TODO, check for collapsed at index = 0
+  if (FoldEndLevel[i] > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
 end;
 

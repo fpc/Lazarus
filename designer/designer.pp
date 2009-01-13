@@ -1447,24 +1447,29 @@ var
     ControlSelection.RubberbandActive:=false;
     ControlSelection.Clear;
 
+    NewComponentClass := SelectedCompClass.GetCreationClass;
+
     // find a parent for the new component
-    if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame) then begin
+    if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame) then
+    begin
       if MouseDownComponent is TWinControl then
-        NewParentControl:=TWinControl(MouseDownComponent)
+        NewParentControl := TWinControl(MouseDownComponent)
       else
-        NewParentControl:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X,true,true);
-      while (NewParentControl<>nil)
-      and ((not (csAcceptsControls in NewParentControl.ControlStyle))
-        or (csInline in NewParentControl.ComponentState) // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
-        or ((NewParentControl.Owner<>FLookupRoot)
-             and (NewParentControl<>FLookupRoot)))
-      do begin
-        NewParentControl:=NewParentControl.Parent;
+        NewParentControl := WinControlAtPos(MouseDownPos.X, MouseUpPos.X, true, true);
+
+      while (NewParentControl <> nil) and
+        ((not (csAcceptsControls in NewParentControl.ControlStyle)) or
+         (NewComponentClass.InheritsFrom(TControl) and not NewParentControl.CheckChildClassAllowed(NewComponentClass, False)) or
+         (csInline in NewParentControl.ComponentState) or // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
+         ((NewParentControl.Owner <> FLookupRoot) and
+          (NewParentControl <> FLookupRoot))) do
+      begin
+        NewParentControl := NewParentControl.Parent;
       end;
-      NewParent:=NewParentControl;
-    end else begin
-      NewParent:=FLookupRoot;
-    end;
+      NewParent := NewParentControl;
+    end else
+      NewParent := FLookupRoot;
+
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
 
@@ -1493,7 +1498,6 @@ var
       NewHeight:=0;
     end;
 
-    NewComponentClass:=SelectedCompClass.GetCreationClass;
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
     if NewComponentClass=nil then exit;
     if LookupRoot.InheritsFrom(NewComponentClass) then begin

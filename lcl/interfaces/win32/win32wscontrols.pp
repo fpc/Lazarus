@@ -212,7 +212,8 @@ begin
           PChar(Utf8ToAnsi(WindowTitle)), Flags,
           Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
       {$else}
-        Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+        Window := CreateWindowEx(FlagsEx, pClassName,
+          PChar(WindowTitle), Flags,
           Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
       {$endif}
 

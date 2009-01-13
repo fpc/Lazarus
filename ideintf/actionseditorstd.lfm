@@ -1,31 +1,36 @@
 object FormActStandard: TFormActStandard
+  Left = 294
+  Height = 483
+  Top = 184
+  Width = 330
+  ActiveControl = tvActStdList
   BorderStyle = bsDialog
   Caption = 'FormActStandard'
-  ClientHeight = 439
+  ClientHeight = 483
   ClientWidth = 330
   KeyPreview = True
   OnClose = FormActStandardClose
   OnKeyPress = FormActStandardKeyPress
-  PixelsPerInch = 120
   Position = poOwnerFormCenter
-  HorzScrollBar.Page = 329
-  VertScrollBar.Page = 438
-  Left = 289
-  Height = 439
-  Top = 160
-  Width = 330
+  LCLVersion = '0.9.27'
   object LabelHeadLine: TLabel
-    AutoSize = True
-    Caption = 'LabelHeadLine'
-    Color = clNone
     Left = 12
-    Height = 17
+    Height = 18
     Top = 9
-    Width = 86
+    Width = 95
+    Caption = 'LabelHeadLine'
+    ParentColor = False
   end
   object tvActStdList: TTreeView
+    AnchorSideBottom.Control = BtnPanel
+    Left = 8
+    Height = 395
+    Top = 32
+    Width = 313
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpand = True
+    BorderSpacing.Bottom = 6
+    Ctl3D = False
     DefaultItemHeight = 19
     HideSelection = False
     HotTrack = True
@@ -35,33 +40,52 @@ object FormActStandard: TFormActStandard
     TabOrder = 0
     OnDblClick = tvActStdListDblClick
     Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    Left = 8
-    Height = 367
-    Top = 32
-    Width = 313
   end
-  object btnCancel: TBitBtn
-    Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    TabOrder = 2
-    Left = 230
-    Height = 25
-    Top = 408
-    Width = 91
-  end
-  object btnOK: TBitBtn
-    Anchors = [akRight, akBottom]
-    Caption = '&OK'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    OnClick = btnOKClick
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 50
+    Top = 433
+    Width = 330
+    Align = alBottom
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ClientHeight = 50
+    ClientWidth = 330
     TabOrder = 1
-    Left = 127
-    Height = 25
-    Top = 408
-    Width = 91
+    object btnCancel: TBitBtn
+      Left = 165
+      Height = 38
+      Top = 6
+      Width = 78
+      Align = alRight
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object btnOK: TBitBtn
+      Left = 249
+      Height = 38
+      Top = 6
+      Width = 75
+      Align = alRight
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = btnOKClick
+      TabOrder = 1
+    end
   end
 end

@@ -18,7 +18,7 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
- 
+
   Author: Mattias Gaertner
 
   Abstract:
@@ -40,7 +40,7 @@ uses
   Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
-  SynEditStrConst, SynEditMarkupBracket,
+  SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
@@ -62,12 +62,12 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript);
-    
+
   TPascalHilightAttribute = (
     phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
     phaString, phaSymbol
   );
-  
+
 const
   PascalHilightAttributeNames: array[TPascalHilightAttribute] of String = (
     SYNS_AttrAssembler,
@@ -90,7 +90,8 @@ type
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
-    ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine);
+    ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
+    ahaCodeFoldingTree, ahaHighlightWord);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
@@ -111,7 +112,9 @@ const
     'Mouse link',
     'Line number',
     'Line highlight',
-    'Modified line'
+    'Modified line',
+    'Code folding tree',
+    'Highlight current word'
   );
 
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -119,7 +122,7 @@ const
     dlgGutter,
     dlgRightMargin
   );
-    
+
 type
   TSchemeAttribute = record
     BG, FG, FC: TColor;
@@ -134,7 +137,7 @@ type
     Additional: array[TAdditionalHilightAttribute] of TSchemeAttribute;
     Single: array[TSingleColorAttribute] of TColor;
   end;
-  
+
 const
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
@@ -163,14 +166,16 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: $E6E6E6;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
-  
+
   TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Twilight';
     Default: (BG: clBlack;  FG: clWhite; FC: clNone; Styles: []; StylesMask: []);
@@ -198,11 +203,13 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: $303030;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
 
@@ -233,14 +240,16 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
-  
+
   OCEAN_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Ocean';
     Default: (BG: clNavy;  FG: clYellow; FC: clNone; Styles: []; StylesMask: []);
@@ -268,11 +277,13 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: clNone;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
-      { shaRightMargin } clBtnFace
+      { shaRightMargin } clSilver
     )
   );
 
@@ -303,7 +314,9 @@ const
       { ahaMouseLink          } (BG: clDefault;   FG: clBlue;      FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineNumber         } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaLineHighlight      } (BG: $E6FFFA;     FG: clNone;      FC: clNone;  Styles: []; StylesMask: []),
-      { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow; Styles: []; StylesMask: [])
+      { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow;Styles: []; StylesMask: []),
+      { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
+      { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -426,6 +439,7 @@ type
     fShowOnlyLineNumbersMultiplesOf: integer;
     fGutterColor: TColor;
     fGutterWidth: Integer;
+    FGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
     fRightMarginColor: TColor;
     fEditorFont:  String;
@@ -441,6 +455,11 @@ type
 
     // Color options
     fHighlighterList: TEditOptLangList;
+
+    // Markup Current Word
+    FMarkupCurWordEnabled: Boolean;
+    FMarkupCurWordFull: Boolean;
+    FMarkupCurWordTime: Integer;
 
     // Code tools options (MG: these will move to an unit of their own)
     fAutoIdentifierCompletion: Boolean;
@@ -529,6 +548,8 @@ type
       read fGutterColor write fGutterColor default clBtnFace;
     property GutterWidth: Integer
       read fGutterWidth write fGutterWidth default 30;
+    property GutterSeparatorIndex: Integer read FGutterSeparatorIndex
+      write FGutterSeparatorIndex default 3;
     property RightMargin: Integer
       read fRightMargin write fRightMargin default 80;
     property RightMarginColor: Integer
@@ -554,6 +575,14 @@ type
     property HighlighterList: TEditOptLangList
       read fHighlighterList write fHighlighterList;
 
+    // Markup Current Word
+    property MarkupCurWordEnabled: Boolean
+      read FMarkupCurWordEnabled write FMarkupCurWordEnabled default True;
+    property MarkupCurWordFull: Boolean
+      read FMarkupCurWordFull write FMarkupCurWordFull default False;
+    property MarkupCurWordTime: Integer
+      read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
+
     // Code Tools options
     property AutoIdentifierCompletion: Boolean
       read fAutoIdentifierCompletion write fAutoIdentifierCompletion default True;
@@ -576,7 +605,7 @@ type
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
     property CFDividerDrawLevel: Integer
-        read FCFDividerDrawLevel write FCFDividerDrawLevel default 3;
+        read FCFDividerDrawLevel write FCFDividerDrawLevel default 4;
   end;
 
 const
@@ -1342,6 +1371,7 @@ begin
   fUndoLimit := 32767;
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
+  FGutterSeparatorIndex := 3;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -1354,6 +1384,10 @@ begin
 
   // Color options
   fHighlighterList := TEditOptLangList.Create;
+
+  FMarkupCurWordEnabled := True;
+  FMarkupCurWordFull := False;
+  FMarkupCurWordTime := 1500;
 
   // Code Tools options
   fCodeTemplateFileName := SetDirSeparators(GetPrimaryConfigPath + '/lazarus.dci');
@@ -1375,9 +1409,9 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
-  
+
   // Code Folding
-  FCFDividerDrawLevel := 3;
+  FCFDividerDrawLevel := 4;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1475,6 +1509,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
       XMLConfig.GetValue('EditorOptions/Display/GutterWidth', 30);
+    FGutterSeparatorIndex :=
+      XMLConfig.GetValue('EditorOptions/Display/GutterSeparatorIndex', 3);
     fRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
     fRightMarginColor :=
@@ -1511,6 +1547,16 @@ begin
       // color attributes are stored in the highlighters
     ;
 
+    FMarkupCurWordEnabled :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordEnabled', True);
+    FMarkupCurWordFull :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordFull', False);
+    FMarkupCurWordTime :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/MarkupCurrentWordTime', 1500);
+
     // Code Tools options
     fAutoIdentifierCompletion :=
       XMLConfig.GetValue(
@@ -1537,7 +1583,7 @@ begin
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
     FCFDividerDrawLevel :=
-      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 3);
+      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 4);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1617,6 +1663,8 @@ begin
       fGutterColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
       fGutterWidth, 30);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterSeparatorIndex',
+      fGutterSeparatorIndex, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMargin',
       fRightMargin, 80);
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMarginColor',
@@ -1649,6 +1697,14 @@ begin
       // color attributes are stored in the highlighters
     ;
 
+
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordEnabled',
+      FMarkupCurWordEnabled, True);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordFull',
+      FMarkupCurWordFull, True);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWordTime',
+      FMarkupCurWordTime, 1500);
+
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
       , fAutoIdentifierCompletion, True);
@@ -1673,7 +1729,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
-        FCFDividerDrawLevel, 3);
+        FCFDividerDrawLevel, 4);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -1835,7 +1891,7 @@ begin
     Attr.StyleMask := Scheme.Attributes[pha].StylesMask;
     Exit;
   end;
-  
+
   for aha := low(aha) to High(aha) do
   begin
     if AttriName <> LowerCase(AdditionalHighlightAttributes[aha]) then Continue;
@@ -1852,7 +1908,7 @@ begin
     Attr.StyleMask := Scheme.Additional[aha].StylesMask;
     Exit;
   end;
-  
+
   Attr.Foreground := Scheme.Default.FG;
   Attr.Background := Scheme.Default.BG;
   Attr.FrameColor := Scheme.Default.FC;
@@ -2124,7 +2180,7 @@ begin
       if Attrib.Name = '' then Continue;
       if LowerCase(Attrib.Name) <> LowerCase(AdditionalHighlightAttributes[AddHilightAttr])
       then Continue;
-      
+
       FG := Attrib.Foreground;
       BG := Attrib.Background;
       Styles := Attrib.Style;
@@ -2132,7 +2188,7 @@ begin
       Exit((FG <> clNone) or (BG <> clNone) or (Styles <> []) or (StylesMask <> []));
     end;
   end;
-    
+
   // set default
   FG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;
   BG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
@@ -2142,6 +2198,13 @@ begin
 end;
 
 procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
+  procedure SetMarkupColorByClass(AddHilightAttr: TAdditionalHilightAttribute;
+                                  aClass: TSynEditMarkupClass);
+  begin
+    if assigned(ASynEd.MarkupByClass[aClass]) then
+      SetMarkupColor(aSynEd.Highlighter, AddHilightAttr,
+                     ASynEd.MarkupByClass[aClass].MarkupInfo);
+  end;
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
@@ -2150,7 +2213,9 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
   SetMarkupColor(aSynEd.Highlighter, ahaModifiedLine, aSynEd.ModifiedLineColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaCodeFoldingTree, aSynEd.CodeFoldingTreeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
+  SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
@@ -2187,6 +2252,8 @@ end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
+var
+  MarkCaret: TSynEditMarkupHighlightAllCaret;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2202,14 +2269,15 @@ begin
   ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf := fShowOnlyLineNumbersMultiplesOf;
 
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
-  if ASynEdit.Gutter.ShowCodeFolding<>FUseCodeFolding then begin
+  if ASynEdit.Gutter.ShowCodeFolding <> FUseCodeFolding then
+  begin
     ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
     if not FUseCodeFolding then
       ASynEdit.UnfoldAll;
   end;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
-  ASynEdit.Gutter.LeftOffset := 2*11; // bookmark + breakpoint
+  ASynEdit.Gutter.SeparatorIndex := FGutterSeparatorIndex;
   if fVisibleRightMargin then
     ASynEdit.RightEdge := fRightMargin
   else
@@ -2222,11 +2290,18 @@ begin
   else
     ASynEdit.Font.Quality := fqDefault;
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
-  
+
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
   SetMarkupColors(ASynEdit.Highlighter, ASynEdit);
+
+  MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  if assigned(MarkCaret) then begin
+    MarkCaret.Enabled := FMarkupCurWordEnabled;
+    MarkCaret.FullWord := FMarkupCurWordFull;
+    MarkCaret.WaitTime := FMarkupCurWordTime;
+  end;
 
   // Code Folding
   ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
@@ -2236,6 +2311,8 @@ end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 // copy settings from a synedit to the options
+var
+  MarkCaret: TSynEditMarkupHighlightAllCaret;
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -2249,18 +2326,26 @@ begin
   fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
   fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf;
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
-  fGutterColor   := ASynEdit.Gutter.Color;
-  fGutterWidth   := ASynEdit.Gutter.Width;
+  fGutterColor := ASynEdit.Gutter.Color;
+  fGutterWidth := ASynEdit.Gutter.Width;
+  FGutterSeparatorIndex := ASynEdit.Gutter.SeparatorIndex;
   fVisibleRightMargin := ASynEdit.RightEdge>0;
   if fVisibleRightMargin then
-    fRightMargin   := ASynEdit.RightEdge;
+    fRightMargin:= ASynEdit.RightEdge;
   fRightMarginColor := ASynEdit.RightEdgeColor;
-  fEditorFont    := ASynEdit.Font.Name;
+  fEditorFont := ASynEdit.Font.Name;
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraCharSpacing := ASynEdit.ExtraCharSpacing;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
   fDisableAntialiasing := (ASynEdit.Font.Quality = fqNonAntialiased);
-  fUndoLimit     := ASynEdit.MaxUndo;
+  fUndoLimit := ASynEdit.MaxUndo;
+
+  MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  if assigned(MarkCaret) then begin
+    FMarkupCurWordEnabled := MarkCaret.Enabled;
+    FMarkupCurWordFull := MarkCaret.FullWord;
+    FMarkupCurWordTime := MarkCaret.WaitTime;
+  end;
 end;
 
 procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(
@@ -2299,7 +2384,7 @@ begin
   if not (APreviewEditor is TSynEdit) then
     exit;
   ASynEdit := TSynEdit(APreviewEditor);
-  
+
   // Get real settings
   GetSynEditSettings(ASynEdit);
 

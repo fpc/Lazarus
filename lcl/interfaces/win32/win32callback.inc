@@ -2621,7 +2621,7 @@ begin
       if (Owner is TCustomForm) or (Owner is TCustomFrame) then
       begin
         // ask form about control under mouse. we need TWinControl
-        Control := Owner.ControlAtPos(P, [capfAllowWinControls]);        
+        Control := Owner.ControlAtPos(P, [capfAllowWinControls, capfRecursive]);
         if (Control <> nil) and not (Control is TWinControl) then
           Control := Control.Parent;
       end

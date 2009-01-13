@@ -128,6 +128,7 @@ type
 
   TCodeCache = class(TObject)
   private
+    FDefaultEncoding: string;
     FItems: TAVLTree;  // tree of TCodeBuffer
     FIncludeLinks: TAVLTree; // tree of TIncludedByLink
     FDestroying: boolean;
@@ -198,6 +199,7 @@ type
                                                       write FOnDecodeLoaded;
     property OnEncodeSaving: TOnCodeCacheEncodeSaving read FOnEncodeSaving
                                                       write FOnEncodeSaving;
+    property DefaultEncoding: string read FDefaultEncoding write FDefaultEncoding;
   end;
 
 
@@ -361,6 +363,8 @@ begin
     Result.FCodeCache:=Self;// must be called after FileName:=
     Result.LastIncludedByFile:=FindIncludeLink(Result.Filename);
   end;
+  Result.DiskEncoding:=DefaultEncoding;
+  Result.MemEncoding:=Result.DiskEncoding;
 end;
 
 function TCodeCache.SaveBufferAs(OldBuffer: TCodeBuffer; 

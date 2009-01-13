@@ -3529,6 +3529,9 @@ procedure TGtkWidgetSet.RemoveCallbacks(Widget: PGtkWidget);
 var
   MainWidget, ClientWidget, ImplWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
+{$ELSE}
+var
+  Info: PWinWidgetInfo;
 {$ENDIF}
 begin
   {$IFDEF Gtk1}
@@ -3548,6 +3551,12 @@ begin
   if (ImplWidget<>nil)
   and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
     g_signal_handlers_destroy(PGtkObject(ImplWidget));
+  {$ELSE}
+  if Widget=nil then exit;
+  Info:=GetWidgetInfo(Widget,false);
+  if Info<>nil then begin
+    g_signal_handlers_disconnect_matched(Widget,G_SIGNAL_MATCH_DATA,0,0,nil,nil,Info);
+  end;
   {$ENDIF}
 end;
 

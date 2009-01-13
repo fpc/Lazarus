@@ -23,7 +23,7 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, PropEdits, Componenteditors, TypInfo;
+  Classes, PropEdits, Componenteditors, TypInfo, DB, SysUtils, DBGrids;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -39,8 +39,6 @@ type
   end;
 
 implementation
-
-uses DB, SysUtils, DBGrids;
 
 { TFieldProperty }
 

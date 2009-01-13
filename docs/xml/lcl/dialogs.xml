@@ -394,7 +394,7 @@ and then check the result to see if the user made a valid choice and pressed the
       </element>
       <!-- property Visibility: public -->
       <element name="TCommonDialog.Handle">
-        <short>Operaating system <var>Handle</var> for the dialog</short>
+        <short>Operating system <var>Handle</var> for the dialog</short>
         <descr/>
         <seealso/>
       </element>
@@ -1384,7 +1384,7 @@ Call the Execute function to show the color dialog.
       </element>
       <!-- property Visibility: published -->
       <element name="TColorButton.ColorDialog">
-        <short/>
+        <short>The <var>ColorDialog</var> that opens when the button is activated</short>
         <descr/>
         <seealso/>
       </element>
@@ -3069,6 +3069,10 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element>
       <element name="TColorButton.GroupIndex" link="#LCL.Buttons.TCustomSpeedButton.GroupIndex"/>
       <element name="TFontDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TColorButton.GetDisabledPattern">
+        <short>
+          <var>GetDisabledPattern</var> - returns a BitMap with a disabled pattern</short>
+      </element>
     </module>
     <!-- Dialogs -->
   </package>

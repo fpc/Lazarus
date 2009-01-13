@@ -30,6 +30,7 @@ Christopher Kirkpatrick
 Cliff Baeseman
 Colin Western
 Curtis White
+Daniel Oom
 Darek Mazur
 Darius Blaszijk
 David Guadagnini

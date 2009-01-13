@@ -50,7 +50,7 @@ end;
 
 function TCustomPage.GetTabVisible: Boolean;
 begin
-  Result := fTabVisible;
+  Result := FTabVisible;
 end;
 
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
@@ -203,14 +203,32 @@ begin
   Exclude(FFlags,pfAdded);
 end;
 
+procedure TCustomPage.RealSetText(const AValue: TCaption);
+begin
+  if (Parent <> nil) and Parent.HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    WSSetText(AValue);
+    InvalidatePreferredSize;
+    inherited RealSetText(AValue);
+    AdjustSize;
+  end
+  else inherited RealSetText(AValue);
+end;
+
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
-  begin
-    Result := (PageIndex = TCustomNotebook(Parent).PageIndex);
-  end else begin
+    Result := (PageIndex = TCustomNotebook(Parent).PageIndex)
+  else
     Result := inherited IsControlVisible;
-  end;
+end;
+
+function TCustomPage.HandleObjectShouldBeVisible: boolean;
+begin
+  if Parent is TCustomNotebook then
+    Result := (PageIndex = TCustomNotebook(Parent).PageIndex)
+  else
+    Result := inherited HandleObjectShouldBeVisible;
 end;
 
 function TCustomPage.VisibleIndex: integer;

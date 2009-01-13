@@ -33,6 +33,8 @@ type
   TInvalidateLines = procedure(FirstLine, LastLine: integer) of Object;
 
 type
+  TSynEditMarkupClass = class of TSynEditMarkup;
+
   { TSynEditMarkup }
 
   TSynEditMarkup = class(TObject)
@@ -43,12 +45,14 @@ type
     fTopLine, FLinesInWindow : Integer;
     fSynEdit : TCustomControl;
     fInvalidateLinesMethod : TInvalidateLines;
+    FEnabled: Boolean;
 
     function GetBGColor : TColor;
     function GetFGColor : TColor;
     function GetFrameColor: TColor;
     function GetStyle : TFontStyles;
     procedure SetBGColor(const AValue : TColor);
+    procedure SetEnabled(const AValue: Boolean);
     procedure SetFGColor(const AValue : TColor);
     procedure SetFrameColor(const AValue : TColor);
     procedure SetStyle(const AValue : TFontStyles);
@@ -64,6 +68,7 @@ type
     procedure DoCaretChanged(OldCaret : TPoint); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
+    procedure DoTextChanged(StartLine, EndLine : Integer); virtual;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
 
     procedure InvalidateSynLines(FirstLine, LastLine: integer); // Call Synedt to invalidate lines
@@ -82,11 +87,15 @@ type
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; virtual; abstract;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; virtual; abstract;
 
+    // Notifications about Changes to the text
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
+
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
     property Style : TFontStyles read GetStyle;
+    property Enabled: Boolean read FEnabled write SetEnabled;
     property Lines : TSynEditStrings read fLines write SetLines;
     property Caret : TPoint read fCaret write SetCaret;
     property TopLine : Integer read fTopLine write SetTopLine;
@@ -99,6 +108,8 @@ type
   TSynEditMarkupManager = class(TSynEditMarkup) { TODO: Forward onchange calls to all others }
   private
     fMarkUpList : TList;
+    function GetMarkup(Index: integer): TSynEditMarkup;
+    function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
 
   protected
     procedure SetInvalidateLinesMethod(const AValue : TInvalidateLines); override;
@@ -111,12 +122,21 @@ type
     destructor Destroy; override;
     
     Procedure AddMarkUp(aMarkUp : TSynEditMarkup);
+    function Count: Integer;
+    property Markup[Index: integer]: TSynEditMarkup
+      read GetMarkup;
+    property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
+      read GetMarkupByClass;
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure FinishMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+
+    // Notifications about Changes to the text
+    Procedure TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
   end;
 
 
@@ -150,6 +170,12 @@ procedure TSynEditMarkup.SetBGColor(const AValue : TColor);
 begin
   if fMarkupInfo.Background = AValue then exit;
   fMarkupInfo.Background := AValue;
+end;
+
+procedure TSynEditMarkup.SetEnabled(const AValue: Boolean);
+begin
+  if AValue = FEnabled then exit;
+  FEnabled := AValue;
 end;
 
 procedure TSynEditMarkup.SetFGColor(const AValue : TColor);
@@ -229,6 +255,10 @@ procedure TSynEditMarkup.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
 end;
 
+procedure TSynEditMarkup.DoTextChanged(StartLine, EndLine: Integer);
+begin
+end;
+
 procedure TSynEditMarkup.DoMarkupChanged(AMarkup : TSynSelectedColor);
 begin
 end;
@@ -263,6 +293,7 @@ constructor TSynEditMarkup.Create(ASynEdit : TCustomControl);
 begin
   inherited Create();
   fSynEdit := ASynEdit;
+  FEnabled := true;
   fMarkupInfo := TSynSelectedColor.Create;
   fMarkupInfo.OnChange := @MarkupChanged;
 end;
@@ -279,6 +310,11 @@ end;
 
 procedure TSynEditMarkup.EndMarkup;
 begin
+end;
+
+procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+begin
+  DoTextChanged(aFirstCodeLine, aLastCodeLine);
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow : Integer);
@@ -308,12 +344,18 @@ begin
   fMarkUpList.Add(aMarkUp);
 end;
 
+function TSynEditMarkupManager.Count: Integer;
+begin
+  Result := fMarkUpList.Count;
+end;
+
 procedure TSynEditMarkupManager.FinishMarkupForRow(aRow : Integer);
 var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).FinishMarkupForRow(aRow);
+    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+      TSynEditMarkup(fMarkUpList[i]).FinishMarkupForRow(aRow);
 end;
 
 procedure TSynEditMarkupManager.EndMarkup;
@@ -321,7 +363,8 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).EndMarkup;
+    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+      TSynEditMarkup(fMarkUpList[i]).EndMarkup;
 end;
 
 procedure TSynEditMarkupManager.PrepareMarkupForRow(aRow : Integer);
@@ -329,7 +372,8 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).PrepareMarkupForRow(aRow);
+    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+      TSynEditMarkup(fMarkUpList[i]).PrepareMarkupForRow(aRow);
 end;
 
 function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
@@ -341,6 +385,7 @@ begin
   Result := nil;
 
   for i := 0 to fMarkUpList.Count-1 do begin
+    if not TSynEditMarkup(fMarkUpList[i]).Enabled then continue;
     c := TSynEditMarkup(fMarkUpList[i]).GetMarkupAttributeAtRowCol(aRow, aCol);
     if assigned(c) then begin
       if not Assigned(Result) then begin
@@ -353,6 +398,11 @@ begin
         sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
         Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
         Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);
+        if c.FrameColor <> clNone then begin
+          // Only frames need start/end info => copy *here* to separate fields if needed
+          Result.StartX := C.StartX;
+          Result.EndX := C.EndX;
+        end;
       end;
     end;
   end;
@@ -366,9 +416,38 @@ begin
   then exit(-1);
   Result := TSynEditMarkup(fMarkUpList[0]).GetNextMarkupColAfterRowCol(aRow, aCol);
   for i := 1 to fMarkUpList.Count-1 do begin
+    if not TSynEditMarkup(fMarkUpList[i]).Enabled then continue;
     j := TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowCol(aRow, aCol);
     if ((j>0) and (j < Result)) or (Result<0) then Result := j;
   end;
+end;
+
+procedure TSynEditMarkupManager.TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
+begin
+  TextChanged(ScreenRowToRow(aFirstCodeLine), ScreenRowToRow(aLastCodeLine));
+end;
+
+procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+var
+  i : integer;
+begin
+  for i := 0 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).TextChanged(aFirstCodeLine, aLastCodeLine);
+end;
+
+function TSynEditMarkupManager.GetMarkup(Index: integer): TSynEditMarkup;
+begin
+  Result := TSynEditMarkup(fMarkUpList[Index]);
+end;
+
+function TSynEditMarkupManager.GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
+var
+  i : Integer;
+begin
+  Result := nil;
+  for i := 0 to fMarkUpList.Count-1 do
+    if TSynEditMarkup(fMarkUpList[i]).ClassType = Index then
+      exit(TSynEditMarkup(fMarkUpList[i]));
 end;
 
 procedure TSynEditMarkupManager.SetInvalidateLinesMethod(const AValue : TInvalidateLines);

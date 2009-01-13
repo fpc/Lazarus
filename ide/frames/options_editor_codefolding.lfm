@@ -1,56 +1,59 @@
-object EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
+inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
   Height = 88
   Width = 400
   ClientHeight = 88
   ClientWidth = 400
   TabOrder = 0
   Visible = False
-  DesignLeft = 489
-  DesignTop = 250
-  object Bevel1: TBevel
+  DesignLeft = 110
+  DesignTop = 145
+  object Bevel1: TBevel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkCodeFoldingEnabled
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 2
-    Top = 25
+    Top = 23
     Width = 400
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
   end
-  object lblDividerDrawLevel: TLabel
+  object lblDividerDrawLevel: TLabel[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edDividerDrawLevel
     AnchorSideTop.Side = asrCenter
+    Left = 0
     Height = 14
-    Top = 37
+    Top = 35
     Width = 94
     Caption = 'lblDividerDrawLevel'
     ParentColor = False
   end
-  object chkCodeFoldingEnabled: TCheckBox
+  object chkCodeFoldingEnabled: TCheckBox[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Height = 19
-    Width = 139
+    Left = 0
+    Height = 17
+    Top = 0
+    Width = 131
     Caption = 'chkCodeFoldingEnabled'
     OnChange = chkCodeFoldingEnabledChange
     TabOrder = 0
   end
-  object edDividerDrawLevel: TSpinEdit
+  object edDividerDrawLevel: TSpinEdit[3]
     AnchorSideLeft.Control = lblDividerDrawLevel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Bevel1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 33
+    Top = 31
     Width = 50
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     MaxValue = 10
-    MinValue = 1
     TabOrder = 1
     Value = 1
   end

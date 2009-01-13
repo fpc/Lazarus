@@ -157,6 +157,7 @@ type
     class function GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
     class function GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -180,7 +181,6 @@ type
     class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -288,20 +288,20 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 implementation
 
 const
-  AlignmentMap: array[TAlignment] of DWORD =
+  AlignmentMap: array[TAlignment] of DWord =
   (
 {taLeftJustify } ES_LEFT,
 {taRightJustify} ES_RIGHT,
 {taCenter      } ES_CENTER
   );
 
-  AlignmentToStaticTextFlags: array[TAlignment] of dword =
+  AlignmentToStaticTextFlags: array[TAlignment] of DWord =
   (
     SS_LEFT,
     SS_RIGHT,
     SS_CENTER
   );
-  BorderToStaticTextFlags: array[TStaticBorderStyle] of dword =
+  BorderToStaticTextFlags: array[TStaticBorderStyle] of DWord =
   (
     0,
     WS_BORDER, // generic border
@@ -817,7 +817,7 @@ end;
 
 class procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 var
-  CurrentStyle: dword;
+  CurrentStyle: DWord;
 begin
   CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
   if (CurrentStyle and ComboBoxStylesMask) =
@@ -1022,8 +1022,11 @@ begin
   with Params do
   begin
     if (AWinControl is TCustomEdit) then
+    begin
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+      Flags := Flags or AlignmentMap[TCustomEdit(AWinControl).Alignment];
+    end;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
     Flags := Flags or ES_AUTOHSCROLL;
@@ -1075,6 +1078,17 @@ begin
   if not Result then
     exit;
   AText := GetControlText(AWinControl.Handle);
+end;
+
+class procedure TWin32WSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+var
+  CurrentStyle: DWord;
+begin
+  CurrentStyle := GetWindowLong(ACustomEdit.Handle, GWL_STYLE);
+  if (CurrentStyle and 3) = AlignmentMap[AAlignment] then
+    Exit;
+  RecreateWnd(ACustomEdit);
 end;
 
 class procedure TWin32WSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
@@ -1222,13 +1236,6 @@ begin
     char index.
   }
   Result.Y := Windows.SendMessageW(ACustomEdit.Handle, EM_LINEFROMCHAR, BufferX, 0);
-end;
-
-class procedure TWin32WSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
-  const AAlignment: TAlignment);
-begin
-  // SetWidowLong is not working here
-  RecreateWnd(ACustomMemo);
 end;
 
 class procedure TWin32WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);

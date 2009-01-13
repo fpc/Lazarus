@@ -121,6 +121,7 @@ type
     FCodeFoldGutter: TSynGutterPartBase;
     FMarkGutter: TSynGutterPartBase;
     FChangesGutter: TSynGutterPartBase;
+    FSeparatorGutter: TSynGutterPartBase;
 
     FEdit: TSynEditBase;
 //    FFoldView: TSynEditFoldedView;
@@ -128,12 +129,13 @@ type
 
     FColor: TColor;
     FWidth: integer;
-    FRightOffset: integer;
+    FRightOffset, FLeftOffset: integer;
     FOnChange: TNotifyEvent;
     FCursor: TCursor;
     FVisible: boolean;
     FAutoSize: boolean;
     FOnGutterClick: TGutterClickEvent;
+    FAllowSkipGutterSeparatorDraw: boolean;
     procedure SetAutoSize(const Value: boolean);
     procedure SetColor(const Value: TColor);
     procedure SetRightOffset(Value: integer);
@@ -143,9 +145,11 @@ type
     function  GetPartGutter(Index : Integer) : TSynGutterPartBase;
     property  GutterPart[Index: Integer]: TSynGutterPartBase read GetPartGutter;
   private
-    // Forward to Marks (Bookmars / Breakpoints)
+    function GetGutterPartCount: integer;
+    function GetSeparatorIndex: integer;
+    procedure SetAllowSkipGutterSeparatorDraw(const AValue: Boolean);
     procedure SetLeftOffset(Value: integer);
-    function  GetLeftOffset: Integer;
+    procedure SetSeparatorIndex(const AValue: integer);
     // Forward to Code Folding
     procedure SetShowCodeFolding(const Value: boolean);
     procedure SetCodeFoldingWidth(const AValue: integer);
@@ -159,6 +163,7 @@ type
     procedure SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
     function GetMarkupInfoLineNumber: TSynSelectedColor;
     function GetMarkupInfoModifiedLine: TSynSelectedColor;
+    function GetMarkupInfoCodeFoldingTree: TSynSelectedColor;
     function GetDigitCount : Integer;
     function GetZeroStart : Boolean;
     function GetShowOnlyLineNumbersMultiplesOf : Integer;
@@ -179,11 +184,15 @@ type
     function RealGutterWidth(CharWidth: integer): integer;
     procedure DoOnGutterClick(X, Y: integer);
     procedure AutoSizeDigitCount(LinesCount: integer);    // Forward to Line Number
+    property GutterPartCount: integer read GetGutterPartCount;
+    property SeparatorIndex: integer read GetSeparatorIndex write SetSeparatorIndex;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property AutoSize: boolean read FAutoSize write SetAutoSize default FALSE;
+    property AllowSkipGutterSeparatorDraw: boolean
+      read FAllowSkipGutterSeparatorDraw write SetAllowSkipGutterSeparatorDraw default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property RightOffset: integer read FRightOffset write SetRightOffset
@@ -191,7 +200,7 @@ type
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
     // Forward to Marks (Bookmars / Breakpoints)
-    property LeftOffset: integer read GetLeftOffset write SetLeftOffset
+    property LeftOffset: integer read FLeftOffset write SetLeftOffset
       default 16;
     // Forward to Code Folding
     property ShowCodeFolding: boolean read GetShowCodeFolding
@@ -208,11 +217,22 @@ type
     property ZeroStart: boolean read GetZeroStart write SetZeroStart;
     property MarkupInfoLineNumber: TSynSelectedColor read GetMarkupInfoLineNumber;
     property MarkupInfoModifiedLine: TSynSelectedColor read GetMarkupInfoModifiedLine;
+    property MarkupInfoCodeFoldingTree: TSynSelectedColor read GetMarkupInfoCodeFoldingTree;
     property LeadingZeros: boolean read GetLeadingZeros write SetLeadingZeros
       default FALSE;
     property DigitCount: integer read GetDigitCount  write SetDigitCount
       default 2;
   end;
+
+  { TSynGutterSeparator }
+
+  TSynGutterSeparator = class(TSynGutterPartBase)
+  public
+    constructor Create(AOwner: TSynEditBase; AFoldView: TSynEditFoldedView);
+    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
+    function RealGutterWidth(CharWidth: integer): integer;  override;
+  end;
+
 
 implementation
 uses
@@ -405,9 +425,6 @@ begin
 //  FFoldView := AFoldView;
   FTextDrawer := ATextDrawer;
 
-  FCodeFoldGutter := TSynGutterCodeFolding.Create(AOwner, AFoldView);
-  FGutterPartList.Add(FCodeFoldGutter);
-
   FMarkGutter := TSynGutterMarks.Create(AOwner, AFoldView, ABookMarkOpt);
   FGutterPartList.Add(FMarkGutter);
 
@@ -417,6 +434,12 @@ begin
   FChangesGutter := TSynGutterChanges.Create(AOwner, AFoldView);
   FGutterPartList.Add(FChangesGutter);
 
+  FSeparatorGutter := TSynGutterSeparator.Create(AOwner, AFoldView);
+  FGutterPartList.Add(FSeparatorGutter);
+
+  FCodeFoldGutter := TSynGutterCodeFolding.Create(AOwner, AFoldView);
+  FGutterPartList.Add(FCodeFoldGutter);
+
   for i := 0 to FGutterPartList.Count-1 do begin
     GutterPart[i].OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
     GutterPart[i].OnGutterClick := {$IFDEF FPC}@{$ENDIF}DoDefaultGutterClick;
@@ -425,8 +448,8 @@ begin
   Color := clBtnFace;
   Visible := True;
   Width := 30;
-  LeftOffset := 16;
-  FRightOffset := 2;
+  LeftOffset := 0;
+  FRightOffset := 0;
 end;
 
 destructor TSynGutter.Destroy;
@@ -471,7 +494,8 @@ begin
     Exit;
   end;
 
-  Result := FRightOffset;
+  Result := FLeftOffset + FRightOffset;
+
   for i := FGutterPartList.Count-1 downto 0 do
     Result := Result + GutterPart[i].RealGutterWidth(CharWidth);
 end;
@@ -479,6 +503,55 @@ end;
 function TSynGutter.GetPartGutter(Index : Integer) : TSynGutterPartBase;
 begin
   Result := TSynGutterPartBase(FGutterPartList[Index]);
+end;
+
+function TSynGutter.GetGutterPartCount: integer;
+begin
+  result := FGutterPartList.Count;
+end;
+
+function TSynGutter.GetSeparatorIndex: integer;
+begin
+  if FSeparatorGutter.Visible then
+    Result := FGutterPartList.IndexOf(FSeparatorGutter)
+  else
+    Result := -1;
+end;
+
+function TSynGutter.GetMarkupInfoCodeFoldingTree: TSynSelectedColor;
+begin
+  Result := TSynGutterCodeFolding(FCodeFoldGutter).MarkupInfoCodeFoldingTree;
+end;
+
+procedure TSynGutter.SetAllowSkipGutterSeparatorDraw(const AValue: Boolean);
+begin
+  if FAllowSkipGutterSeparatorDraw <> AValue then
+  begin
+    FAllowSkipGutterSeparatorDraw := AValue;
+    DoChange(Self);
+  end;
+end;
+
+procedure TSynGutter.SetLeftOffset(Value: integer);
+begin
+  Value := Max(0, Value);
+  if FLeftOffset <> Value then
+  begin
+    FLeftOffset := Value;
+    DoChange(Self);
+  end;
+end;
+
+procedure TSynGutter.SetSeparatorIndex(const AValue: integer);
+begin
+  if AValue < 0 then
+    FSeparatorGutter.Visible := False
+  else
+  begin
+    FGutterPartList.Move(FGutterPartList.IndexOf(FSeparatorGutter), AValue);
+    FSeparatorGutter.Visible := True;
+  end;
+  DoChange(Self);
 end;
 
 function TSynGutter.GetShowChanges: Boolean;
@@ -587,10 +660,12 @@ begin
   i := 0;
   x2 := x;
   while i < FGutterPartList.Count-1 do begin
-    if x2 >= GutterPart[i].Width then
-      x2 := x2 - GutterPart[i].Width
-    else
-      break;
+    if GutterPart[i].Visible then begin
+      if x2 >= GutterPart[i].Width then
+        x2 := x2 - GutterPart[i].Width
+      else
+        break;
+    end;
     inc(i)
   end;
   GutterPart[i].DoOnGutterClick(X, Y);
@@ -609,7 +684,7 @@ begin
   {$ENDIF}
 
   // currently redraw full gutter
-  AClip.Left := 0;
+  AClip.Left := FLeftOffset;
 
   // Clear all
   fTextDrawer.BeginDrawing(dc);
@@ -622,28 +697,15 @@ begin
 
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
-  for i := 0 to FGutterPartList.Count -1 do begin
-    if GutterPart[i].Visible then begin
+  for i := 0 to FGutterPartList.Count -1 do
+  begin
+    if GutterPart[i].Visible then
+    begin
       rcLine.Left := rcLine.Right;
       rcLine.Right := rcLine.Left + GutterPart[i].Width;
       GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
-
-  // the gutter separator if visible
-  if AClip.Right >= TSynEdit(FEdit).GutterWidth - 2 then
-    with Canvas do begin
-      Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
-      Pen.Width := 1;
-      with AClip do begin
-        MoveTo(TSynEdit(FEdit).GutterWidth - 2, Top);
-        LineTo(TSynEdit(FEdit).GutterWidth - 2, Bottom);
-        Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
-        MoveTo(TSynEdit(FEdit).GutterWidth - 1, Top);
-        LineTo(TSynEdit(FEdit).GutterWidth - 1, Bottom);
-      end;
-    end;
-
 end;
 
 { TSynGutterPartBase }
@@ -795,22 +857,44 @@ begin
   Result := FCodeFoldGutter.Width;
 end;
 
-{ Forward to Marks (Bookmars / Breakpoints) }
-procedure TSynGutter.SetLeftOffset(Value: integer);
-begin
-  FMarkGutter.Width := Max(0, Value);
-end;
-
-function TSynGutter.GetLeftOffset : Integer;
-begin
-  Result := FMarkGutter.Width;
-end;
-
 procedure TSynGutter.SetShowChanges(const AValue: Boolean);
 begin
   TSynGutterChanges(FChangesGutter).Visible := AValue;
 end;
 
+
+{ TSynGutterSeparator }
+
+constructor TSynGutterSeparator.Create(AOwner: TSynEditBase; AFoldView: TSynEditFoldedView);
+begin
+  Inherited Create;
+  Width := 2;
+end;
+
+procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+begin
+  with Canvas do
+  begin
+    Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
+    Pen.Width := 1;
+    with AClip do
+    begin
+      MoveTo(AClip.Left, AClip.Top);
+      LineTo(AClip.Left, AClip.Bottom);
+      Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
+      MoveTo(AClip.Left+1, AClip.Top);
+      LineTo(AClip.Left+1, AClip.Bottom);
+    end;
+  end;
+end;
+
+function TSynGutterSeparator.RealGutterWidth(CharWidth: integer): integer;
+begin
+  If Visible then
+    Result := Width
+  else
+    Result := 0;
+end;
 
 end.
 

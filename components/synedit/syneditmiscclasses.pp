@@ -67,6 +67,8 @@ type
     // StyleMask = 0 => Invert where Style Bit = 1
     FStyleMask: TFontStyles;
     FOnChange: TNotifyEvent;
+    // 0 or -1 start/end before/after line // 1 first char
+    FStartX, FEndX: Integer;
     procedure SetBG(Value: TColor);
     procedure SetFG(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
@@ -76,6 +78,8 @@ type
   public
     constructor Create;
     procedure Assign(aSource: TPersistent); override;
+    procedure Clear;
+    function IsEnabled: boolean;
   published
     function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor; var AStyle: TFontStyles);
@@ -84,6 +88,8 @@ type
     property FrameColor: TColor read FFrameColor write SetFrameColor default clNone;
     property Style: TFontStyles read FStyle write SetStyle default [];
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
+    property StartX: Integer read FStartX write FStartX;
+    property EndX: Integer read FEndX write FEndX;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
@@ -284,8 +290,27 @@ begin
     FFrameColor := Source.FFrameColor;
     FStyle := Source.FStyle;
     FStyleMask := Source.FStyleMask;
+    FStartX := Source.FStartX;
+    FEndX   := Source.FEndX;
     DoChange; {TODO: only if really changed}
   end;
+end;
+
+procedure TSynSelectedColor.Clear;
+begin
+  FBG := clNone;
+  FFG := clNone;
+  FFrameColor := clNone;
+  FStyle := [];
+  FStyleMask := [];
+  FStartX := -1;
+  FEndX := -1;
+end;
+
+function TSynSelectedColor.IsEnabled: boolean;
+begin
+  Result := (FBG <> clNone) or (FFG <> clNone) or (FFrameColor <> clNone) or
+            (FStyle <> []) or (FStyleMask <> []);
 end;
 
 { TSynBookMarkOpt }

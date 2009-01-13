@@ -2554,16 +2554,17 @@ end;
 
 procedure TPropertyEditor.SetPtrValue(const NewValue:Pointer);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
-  Changed:=false;
-  for I:=0 to FPropCount-1 do
+  Changed := False;
+  for I := 0 to FPropCount - 1 do
     with FPropList^[I] do
-      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>PtrInt(PtrUInt(NewValue)));
-  if Changed then begin
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetOrdProp(Instance,PropInfo,PtrInt(PtrUInt(NewValue)));
+      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> PtrInt(PtrUInt(NewValue)));
+  if Changed then
+  begin
+    for I := 0 to FPropCount - 1 do
+      with FPropList^[I] do SetOrdProp(Instance, PropInfo, PtrInt(PtrUInt(NewValue)));
     Modified;
   end;
 end;
@@ -4945,16 +4946,12 @@ end;
 
 procedure TStringsPropertyEditor.Edit;
 var
-  TheDialog : TStringsPropEditorDlg;
-  Strings : TStrings;
+  TheDialog: TStringsPropEditorDlg;
 begin
-  Strings:= TStrings(GetObjectValue);
-  TheDialog:= CreateDlg(Strings);
+  TheDialog := CreateDlg(TStrings(GetObjectValue));
   try
-    if (TheDialog.ShowModal = mrOK) then begin
-      Strings.Text:=TheDialog.Memo.Text;
-      Modified;
-    end;
+    if (TheDialog.ShowModal = mrOK) then 
+      SetPtrValue(TheDialog.Memo.Lines);
   finally
     TheDialog.Free;
   end;

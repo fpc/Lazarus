@@ -1,16 +1,16 @@
 { $Id$ }
-{                    ----------------------------------------  
+{                    ----------------------------------------
                        DebuggerDlg.pp  -  Base class for all
                          debugger related forms
-                     ---------------------------------------- 
- 
+                     ----------------------------------------
+
  @created(Wed Mar 16st WET 2001)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@dommelstein.net>)                       
+ @author(Marc Weustink <marc@@dommelstein.net>)
 
- This unit contains the base class for all debugger related dialogs. 
+ This unit contains the base class for all debugger related dialogs.
  All common info needed for the IDE is found in this class
- 
+
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -37,15 +37,15 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts;
+  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts, IDEOptionDefs;
 
 type
   TDebuggerDlgClass = class of TDebuggerDlg;
-  
+
   TDebuggerDlg = class(TForm)
   private
     FUpdateCount: integer;
-  protected                                              
+  protected
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate; virtual;
@@ -55,10 +55,10 @@ type
     function UpdateCount: integer;
   end;
 
-implementation 
-          
-{ TDebuggerDlg }          
-          
+implementation
+
+{ TDebuggerDlg }
+
 procedure TDebuggerDlg.BeginUpdate;
 begin
   Inc(FUpdateCount);
@@ -80,24 +80,25 @@ end;
 (*
 procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger);
 begin
-  FDebugger := ADebugger; 
+  FDebugger := ADebugger;
 end;
 *)
 procedure TDebuggerDlg.DoClose(var CloseAction: TCloseAction);
+var
+  Layout: TIDEWindowLayout;
 begin
   CloseAction := caFree; // we default to free
   inherited DoClose(CloseAction);
-  EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name).GetCurrentPosition;
+  Layout := EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
+  if Layout <> nil then Layout.GetCurrentPosition;
 end;
 
 procedure TDebuggerDlg.DoBeginUpdate;
 begin
-
 end;
 
 procedure TDebuggerDlg.DoEndUpdate;
 begin
-
 end;
 
 end.

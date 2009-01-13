@@ -267,7 +267,7 @@ begin
           AColor:=clNavy;
           s:='procedure';
         end;
-        if IdentItem.IsAbstractMethod then
+        if IdentItem.TryIsAbstractMethod then
           AColor:=clRed;
       end;
       

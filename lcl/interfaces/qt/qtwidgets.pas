@@ -546,6 +546,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function getAlignment: QtAlignment;
     function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
@@ -556,6 +557,7 @@ type
     function isUndoAvailable: Boolean;
     function hasSelectedText: Boolean;
     procedure selectAll;
+    procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
     procedure setTextColor(const Value: PQColor); override;
     procedure setCursorPosition(const AValue: Integer);
@@ -587,6 +589,7 @@ type
   public
     FList: TStrings;
     procedure append(AStr: WideString);
+    function getAlignment: QtAlignment;
     function getMaxLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -645,6 +648,7 @@ type
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
     function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
+    function GetLCLPageIndex(AIndex: Integer): Integer;
     function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
@@ -5024,6 +5028,11 @@ begin
   Result := QLineEdit_create();
 end;
 
+function TQtLineEdit.getAlignment: QtAlignment;
+begin
+  Result := QLineEdit_alignment(QLineEditH(Widget));
+end;
+
 function TQtLineEdit.getCursorPosition: Integer;
 begin
   Result := QLineEdit_cursorPosition(QLineEditH(Widget));
@@ -5083,6 +5092,11 @@ end;
 procedure TQtLineEdit.selectAll;
 begin
   QLineEdit_selectAll(QLineEditH(Widget));
+end;
+
+procedure TQtLineEdit.setAlignment(const AAlignment: QtAlignment);
+begin
+  QLineEdit_setAlignment(QLineEditH(Widget), AAlignment);
 end;
 
 procedure TQtLineEdit.AttachEvents;
@@ -5245,6 +5259,11 @@ end;
 procedure TQtTextEdit.append(AStr: WideString);
 begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
+end;
+
+function TQtTextEdit.getAlignment: QtAlignment;
+begin
+  Result := QTextEdit_alignment(QTextEditH(Widget));
 end;
 
 function TQtTextEdit.getMaxLength: Integer;
@@ -5584,6 +5603,24 @@ begin
   {$endif}
 end;
 
+function TQtTabWidget.GetLCLPageIndex(AIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := AIndex;
+  if (LCLObject = nil) or
+     (csDesigning in LCLObject.ComponentState) or
+     not (LCLObject is TCustomNotebook) then
+    Exit;
+  I := 0;
+  while (I < TCustomNotebook(LCLObject).PageCount) and (I <= Result) do
+  begin
+    if not TCustomNotebook(LCLObject).Page[I].TabVisible then
+      Inc(Result);
+    Inc(I);
+  end;
+end;
+
 procedure TQtTabWidget.AttachEvents;
 var
   Method: TMethod;
@@ -5726,7 +5763,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := Index;
+  Hdr.idFrom := GetLCLPageIndex(Index);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);
@@ -5746,7 +5783,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := Index;
+  Hdr.idFrom := GetLCLPageIndex(Index);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);
@@ -5771,7 +5808,7 @@ begin
 
     Hdr.hwndFrom := LCLObject.Handle;
     Hdr.Code := TCN_SELCHANGING;
-    Hdr.idFrom := CurIndex;
+    Hdr.idFrom := GetLCLPageIndex(CurIndex);
     Msg.NMHdr := @Hdr;
     Msg.Result := 0;
     DeliverMessage(Msg);

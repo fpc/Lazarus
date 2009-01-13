@@ -147,13 +147,13 @@ begin
   Result := TGtk2MemoStrings.Create(TextView, ACustomMemo);
 end;
 
-class procedure TGtk2WSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
+class procedure TGtk2WSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
   const AAlignment: TAlignment);
 var
   TextView: PGtkTextView;
 begin
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
-  gtk_text_view_set_justification(TextView, aGtkJustification[ACustomMemo.Alignment]);
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+  gtk_text_view_set_justification(TextView, aGtkJustification[AAlignment]);
 end;
 
 
