@@ -29,6 +29,7 @@ const
   flWordWrap               = 2;
   flWordBreak              = 4;
   flAutoSize               = 8;
+  flHideDuplicates         = 16;
   flBandNewPageAfter       = 2;
   flBandPrintifSubsetEmpty = 4;
   flBandPageBreak          = 8;
@@ -38,6 +39,7 @@ const
   flPictCenter             = 2;
   flPictRatio              = 4;
   flWantHook               = $8000;
+  flIsDuplicate            = $4000;
 
 // object types
   gtMemo                   = 0;
@@ -228,9 +230,7 @@ type
     FDataSet: TfrTDataSet;
     FField: String;
     olddy: Integer;
-    
 
-    
     procedure ShowBackGround; virtual;
     procedure ShowFrame; virtual;
     procedure BeginDraw(ACanvas: TCanvas);
@@ -238,6 +238,7 @@ type
     procedure OnHook(View: TfrView); virtual;
     procedure BeforeChange;
     procedure AfterChange;
+    procedure ResetLastValue; virtual;
   public
     Parent: TfrBand;
     ID: Integer;
@@ -247,9 +248,7 @@ type
     ScaleX, ScaleY: Double;   // used for scaling objects in preview
     OffsX, OffsY: Integer;    //
     IsPrinting: Boolean;
-
     Flags: Word;
-
     DRect: TRect;
 
     constructor Create; override;
@@ -315,9 +314,12 @@ type
   private
     fAngle       : Byte;
     fFont        : TFont;
+    fLastValue   : TStringList;
 
     function GetAlignment: TAlignment;
     function GetAutoSize: Boolean;
+    function GetHideDuplicates: Boolean;
+    function GetIsLastValueSet: boolean;
     function GetLayout: TTextLayout;
     function GetWordWrap: Boolean;
     procedure P1Click(Sender: TObject);
@@ -328,6 +330,8 @@ type
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetFont(Value: TFont);
+    procedure SetHideDuplicates(const AValue: Boolean);
+    procedure SetIsLastValueSet(const AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetWordWrap(const AValue: Boolean);
   protected
@@ -346,6 +350,9 @@ type
     function RemainHeight: Integer; override;
     procedure GetBlob(b: TfrTField); override;
     procedure FontChange(sender: TObject);
+    procedure ResetLastValue; override;
+
+    property IsLastValueSet: boolean read GetIsLastValueSet write SetIsLastValueSet;
   public
     Adjust: Integer; // bit format xxxLLRAA: LL=Layout, R=Rotated, AA=Alignment
     Highlight: TfrHighlightAttr;
@@ -374,6 +381,7 @@ type
     property Angle     : Byte read fAngle write fAngle;
     property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
+    property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
     
     property FillColor;
     property Memo;
@@ -548,6 +556,7 @@ type
     function Draw: Boolean;
     procedure InitValues;
     procedure DoAggregate;
+    procedure ResetLastValues;
   public
     maxdy: Integer;
 
@@ -1893,6 +1902,11 @@ begin
     frDesigner.AfterChange;
 end;
 
+procedure TfrView.ResetLastValue;
+begin
+  // to be overriden in TfrMemoView
+end;
+
 function TfrView.GetClipRgn(rt: TfrRgnType): HRGN;
 var
   bx, by, bx1, by1, w1, w2: Integer;
@@ -2174,6 +2188,8 @@ end;
 destructor TfrMemoView.Destroy;
 begin
   FFont.Free;
+  if FLastValue<>nil then
+    FLastValue.Free;
   inherited Destroy;
 end;
 
@@ -2182,6 +2198,29 @@ begin
   BeforeChange;
   fFont.Assign(Value);
   AfterChange;
+end;
+
+procedure TfrMemoView.SetHideDuplicates(const AValue: Boolean);
+begin
+  if HideDuplicates<>AValue then
+  begin
+    BeforeChange;
+    SetBit(Flags, AValue, flHideDuplicates);
+    AfterChange;
+  end;
+end;
+
+procedure TfrMemoView.SetIsLastValueSet(const AValue: boolean);
+begin
+  if AValue then begin
+    if FLastValue=nil then
+      FLastValue := TStringList.Create;
+    FLastValue.Assign(Memo1);
+  end else
+  if FLastValue<>nil then begin
+    FLastValue.Free;
+    FLastValue:=nil;
+  end;
 end;
 
 procedure TfrMemoView.SetLayout(const AValue: TTextLayout);
@@ -2770,6 +2809,7 @@ var
   NeedWrap: Boolean;
   newdx: Integer;
   OldScaleX, OldScaleY: Double;
+  IsVisible: boolean;
 begin
   BeginDraw(aCanvas);
   {$IFDEF DebugLR}
@@ -2825,10 +2865,20 @@ begin
   end;
 
   CalcGaps;
-  if not Exporting then ShowBackground;
-  if not Exporting then ShowFrame;
-  if Memo1.Count > 0 then
-    ShowMemo;
+
+  if Flags and flHideDuplicates <> 0 then
+    IsVisible := (flIsDuplicate and Flags = 0)
+  else
+    IsVisible := true;
+
+  if IsVisible then
+  begin
+    if not Exporting then ShowBackground;
+    if not Exporting then ShowFrame;
+    if Memo1.Count > 0 then
+      ShowMemo;
+  end;
+
   RestoreCoord;
 end;
 
@@ -2862,6 +2912,14 @@ begin
            CanExpandVar := False;
   if DrawMode <> drPart then
     if CanExpandVar then ExpandVariables;
+
+  if HideDuplicates then begin
+    if IsLastValueSet then
+      SetBit(Flags, FLastValue.Equals(Memo1), flIsDuplicate)
+    else
+      SetBit(Flags, false, flIsDuplicate);
+    IsLastValueSet := True;
+  end;
 
   if not Visible then
   begin
@@ -3126,6 +3184,11 @@ begin
   AfterChange;
 end;
 
+procedure TfrMemoView.ResetLastValue;
+begin
+  IsLastValueSet := False;
+end;
+
 procedure TfrMemoView.DefinePopupMenu(Popup: TPopupMenu);
 var
   m: TMenuItem;
@@ -3201,6 +3264,16 @@ end;
 function TfrMemoView.GetAutoSize: Boolean;
 begin
   Result:=((Flags and flAutoSize)<>0);
+end;
+
+function TfrMemoView.GetHideDuplicates: Boolean;
+begin
+  result:=((Flags and flHideDuplicates)<>0);
+end;
+
+function TfrMemoView.GetIsLastValueSet: boolean;
+begin
+  result := FLastValue<>nil;
 end;
 
 function TfrMemoView.GetLayout: TTextLayout;
@@ -5108,6 +5181,18 @@ begin
   Inc(Count);
 end;
 
+procedure TfrBand.ResetLastValues;
+var
+  i: Integer;
+  t: TfrView;
+begin
+  for i := 0 to Objects.Count - 1 do
+  begin
+    t :=TfrView(Objects[i]);
+    t.ResetLastValue;
+  end;
+end;
+
 {----------------------------------------------------------------------------}
 type
   TfrBandParts = (bpHeader, bpData, bpFooter);
@@ -5836,9 +5921,12 @@ begin
       b := b.Next;
     end;
   if Band.Typ in [btMasterData, btDetailData, btSubDetailData] then
+  begin
     if (Band.HeaderBand <> nil) and
       ((Band.HeaderBand.Flags and flBandRepeatHeader) <> 0) then
       ShowBand(Band.HeaderBand);
+    Band.ResetLastValues;
+  end;
   {$IFDEF DebugLR}
   IncSpc(-1);
   DebugLn('%sTfrPage.NewColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
@@ -5874,7 +5962,6 @@ end;
 
 function TfrPage.RowsLayout: boolean;
 begin
-  // esta funcion debe leerse de las opciones de la pagina
   result := (ColCount>1) and (LayoutOrder=loRows)
 end;
 
@@ -5910,6 +5997,7 @@ var
   HasGroups            : Boolean;
   DetailCount          : Integer;
   BooksBkUp            : array of TBookRecord;
+  CurGroupValue        : variant;
   
   procedure AddToStack(b: TfrBand);
   begin
@@ -5996,6 +6084,7 @@ var
     b := Bands[Bnds[Level, bpData]];
     while (b <> nil) and (b.Dataset <> nil) do
     begin
+      b.ResetLastValues;
       try
         b.DataSet.First;
 
@@ -6054,7 +6143,12 @@ var
               b1 := Bands[btGroupHeader];
               while b1 <> nil do
               begin
-                if (frParser.Calc(b1.GroupCondition) <> b1.LastGroupValue) or
+                curGroupValue := frParser.Calc(b1.GroupCondition);
+                {$IFDEF DebugLR}
+                DebugLn('%sGroupCondition=%s curGroupValue=%s LastGroupValue=%s',
+                  [sspc,b1.GroupCondition,string(b1.LastGroupValue),string(curGroupValue)]);
+                {$ENDIF}
+                if (curGroupValue <> b1.LastGroupValue) or
                   b.Dataset.Eof then
                 begin
                   ShowBand(b.FooterBand);
@@ -6073,6 +6167,7 @@ var
                     ShowBand(b.HeaderBand);
                     b.Positions[psLocal] := 0;
                   end;
+                  b.ResetLastValues;
                   break;
                 end;
                 b1 := b1.Next;
@@ -6087,7 +6182,10 @@ var
               Inc(b.Positions[psGlobal]);
               Inc(b.Positions[psLocal]);
               if not b.DataSet.Eof and b.NewPageAfter then
+              begin
                 NewPage;
+                b.ResetLastValues;
+              end;
             end;
             if MasterReport.Terminated then
               break;
@@ -6170,7 +6268,8 @@ begin
   end;
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
-  DebugLn('%sMaxLevel=%d doing DoLoop(1)',[sspc,MaxLevel]);
+  DebugLn('%sGroupsCount=%d MaxLevel=%d doing DoLoop(1)',[sspc,
+    Bands[btGroupHeader].Objects.Count, MaxLevel]);
   {$ENDIF}
   DisableControls;
   DoLoop(1);
