@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit compiler_buildmodes_options;
+unit Compiler_BuildModes_Options;
 
 {$mode objfpc}{$H+}
 
@@ -72,7 +72,7 @@ procedure TCompOptBuildModesFrame.NewSpeedButtonClick(Sender: TObject);
 var
   NewIdentifier: String;
 begin
-  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName;
+  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName(BuildModes);
   BuildModes.Add(NewIdentifier);
   ModesGrid.RowCount:=BuildModes.Count;
   ModesGrid.Cells[0,BuildModes.Count-1]:=NewIdentifier;
@@ -183,12 +183,29 @@ begin
 end;
 
 procedure TCompOptBuildModesFrame.UpdateButtons;
+var
+  BuildMode: TIDEBuildMode;
 begin
+  GetSelectedBuildMode(BuildMode);
+
   NewSpeedButton.Enabled:=BuildModes<>nil;
-  DeleteSpeedButton.Enabled:=(ModesGrid.Row>=0);
-  MoveDownSpeedButton.Enabled:=(ModesGrid.Row>=0)
-                        and (ModesGrid.Row<ModesGrid.RowCount-1);
-  MoveUpSpeedButton.Enabled:=(ModesGrid.Row>0);
+
+  NewSpeedButton.Hint:='Create new build mode';
+  if BuildMode<>nil then begin
+    DeleteSpeedButton.Enabled:=true;
+    MoveDownSpeedButton.Enabled:=(ModesGrid.Row<ModesGrid.RowCount-1);
+    MoveUpSpeedButton.Enabled:=(ModesGrid.Row>0);
+    DeleteSpeedButton.Hint:='Delete '+BuildMode.Identifier;
+    MoveDownSpeedButton.Hint:='Move '+BuildMode.Identifier+' down';
+    MoveUpSpeedButton.Hint:='Move '+BuildMode.Identifier+' up';
+  end else begin
+    DeleteSpeedButton.Enabled:=false;
+    MoveDownSpeedButton.Enabled:=false;
+    MoveUpSpeedButton.Enabled:=false;
+    DeleteSpeedButton.Hint:='Delete ...';
+    MoveDownSpeedButton.Hint:='Move down';
+    MoveUpSpeedButton.Hint:='Move up';
+  end;
 end;
 
 function TCompOptBuildModesFrame.GetSelectedBuildMode(
@@ -196,7 +213,7 @@ function TCompOptBuildModesFrame.GetSelectedBuildMode(
 begin
   BuildMode:=nil;
   if BuildModes=nil then exit(false);
-  if ModesGrid.Row<0 then exit(false);
+  if (ModesGrid.Row<0) or (ModesGrid.Row>=BuildModes.Count) then exit(false);
   BuildMode:=TIDEBuildMode(BuildModes.Items[ModesGrid.Row]);
   Result:=true;
 end;
@@ -210,16 +227,12 @@ begin
   ModesGroupBox.Caption:='Build modes';
   NewSpeedButton.LoadGlyphFromLazarusResource('menu_new');
   NewSpeedButton.ShowHint:=true;
-  NewSpeedButton.Hint:='Create new build mode';
   DeleteSpeedButton.LoadGlyphFromLazarusResource('menu_project_remove');
   DeleteSpeedButton.ShowHint:=true;
-  DeleteSpeedButton.Hint:='Delete ...';
   MoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   MoveDownSpeedButton.ShowHint:=true;
-  MoveDownSpeedButton.Hint:='Move down';
   MoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
   MoveUpSpeedButton.ShowHint:=true;
-  MoveUpSpeedButton.Hint:='Move up';
 end;
 
 destructor TCompOptBuildModesFrame.Destroy;

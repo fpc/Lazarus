@@ -272,7 +272,7 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_buildmodes_options"/>
+        <UnitName Value="Compiler_BuildModes_Options"/>
       </Unit33>
       <Unit34>
         <Filename Value="sourceeditor.pp"/>
@@ -504,6 +504,11 @@
       <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

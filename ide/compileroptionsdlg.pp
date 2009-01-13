@@ -47,7 +47,7 @@ uses
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
   CompilerOptions, CheckCompilerOpts, CompOptsModes,
-  Compiler_Conditionals_Options, compiler_buildmodes_options;
+  Compiler_Conditionals_Options, Compiler_BuildModes_Options;
 
 type
   { Compiler options form }
@@ -62,13 +62,7 @@ type
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
-    chkUseExternalDbgSyms: TCheckBox;
-    BuildModesFrame: TCompOptBuildModesFrame;
-    ConditionalOptionsFrame: TCompOptsConditionalsFrame;
-    ConditionalsGroupBox: TGroupBox;
     MainNoteBook: TNoteBook;
-    BtnPanel: TPanel;
-    ConditionalPage: TPage;
 
     { Search Paths Controls }
     PathPage: TPage;
@@ -150,6 +144,7 @@ type
     chkUseValgrind: TCheckBox;
     chkGenGProfCode: TCheckBox;
     chkSymbolsStrip: TCheckBox;
+    chkUseExternalDbgSyms: TCheckBox;
 
     grpLinkLibraries: TGroupBox;
     chkLinkSmart: TCheckBox;
@@ -175,6 +170,12 @@ type
     edtConfigPath: TEdit;
     grpCustomOptions: TGroupBox;
     memCustomOptions: TMemo;
+
+    { Conditionals }
+    ConditionalPage: TPage;
+    ConditionalOptionsFrame: TCompOptsConditionalsFrame;
+    ConditionalsGroupBox: TGroupBox;
+    BuildModesFrame: TCompOptBuildModesFrame;
 
     { Inherited Options }
     InheritedPage: TPage;
@@ -220,6 +221,7 @@ type
     ExecuteAfterShowAllCheckBox: TCheckBox;
 
     { Buttons }
+    BtnPanel: TPanel;
     btnShowOptions: TBitBtn;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
@@ -269,9 +271,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure GetCompilerOptions;
+    procedure GetCompilerOptions; // options to dialog
     procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
-    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
+    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean; // dlg to options
     function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
                             DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
@@ -690,6 +692,7 @@ begin
     // conditional
     {$IFDEF EnableBuildModes}
     ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
+    BuildModesFrame.BuildModes:=Options.BuildModes as TIDEBuildModes;
     {$ENDIF}
 
     // inherited tab
@@ -881,6 +884,7 @@ begin
     if not CheckPutSearchPath('debugger search path',OldPath,Options.GetDebugPath(false)) then
       exit(false);
 
+    // ToDo: will be replaced by buildmodes
     i:=LCLWidgetTypeComboBox.Itemindex;
     if i<=0 then
       Options.LCLWidgetType:=''
@@ -982,6 +986,9 @@ begin
       Options.ShowHintsForUnusedUnitsInMainSrc := Checked[18];
       Options.WriteFPCLogo := Checked[19];
     end;
+
+    // conditionals
+    // these are all done via the frames
 
     // other
     Options.DontUseConfigFile := not chkConfigFile.Checked;

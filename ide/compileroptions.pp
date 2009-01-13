@@ -112,7 +112,7 @@ type
     destructor Destroy; override;
     function FindModeWithIdentifier(Identifier: string; out BuildModes: TIDEBuildModes;
       out BuildMode: TIDEBuildMode): boolean;
-    function GetUniqueModeName: string;
+    function GetUniqueModeName(CheckToo: TIDEBuildModes): string;
     property Evaluator: TExpressionEvaluator read FEvaluator;
   end;
 
@@ -3298,7 +3298,7 @@ begin
   Result:=false;
 end;
 
-function TBuildModeSet.GetUniqueModeName: string;
+function TBuildModeSet.GetUniqueModeName(CheckToo: TIDEBuildModes): string;
 var
   i: Integer;
   BuildModes: TIDEBuildModes;
@@ -3308,7 +3308,8 @@ begin
   repeat
     inc(i);
     Result:='Mode'+IntToStr(i);
-  until not FindModeWithIdentifier(Result,BuildModes,BuildMode);
+  until (not FindModeWithIdentifier(Result,BuildModes,BuildMode))
+    and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
 end;
 
 { TIDEBuildMode }
@@ -3316,8 +3317,8 @@ end;
 procedure TIDEBuildMode.SetIdentifier(const AValue: string);
 begin
   if FIdentifier=AValue then exit;
-  if (FIdentifier='') or (not IsValidIdent(FIdentifier)) then
-    raise Exception.Create('TIDEBuildMode.SetIdentifier invalid identifier: '+FIdentifier);
+  if (AValue='') or (not IsValidIdent(AValue)) then
+    raise Exception.Create('TIDEBuildMode.SetIdentifier invalid identifier: '+AValue);
   FIdentifier:=AValue;
 end;
 
