@@ -470,6 +470,7 @@ begin
     newLrsFileName := ExtractFileName(lrsFileName);
 
     // update resources (FLazarusResources, FSystemResources, ...)
+    UpdateCanHasLrsInclude(CurFileName);
     if not Update then
       Exit;
     // update codebuffers of new .lrs and .rc files
