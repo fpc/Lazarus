@@ -4287,6 +4287,7 @@ var
 begin
   LFMCode:=nil;
   ResourceCode:=nil;
+  //DebugLn(['TMainIDE.DoLoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
     LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
@@ -4933,7 +4934,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
-  //debugln('TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName);
+  //debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil]);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
