@@ -544,13 +544,14 @@ begin
   DebugLn('[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',dbgs(Message.SizeType),' Message.Width=',dbgs(Message.Width),' Message.Height=',dbgs(Message.Height));
   {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
-  if not (csDesigning in ComponentState) then begin
-    OldState:=FWindowState;
+  if not (csDesigning in ComponentState) then
+  begin
+    OldState := FWindowState;
     case (Message.SizeType and not SIZE_SourceIsInterface) of
-      SIZENORMAL :
+      SIZENORMAL:
         if Showing then
           FWindowState := wsNormal;
-      SIZEICONIC :
+      SIZEICONIC:
       begin
         if Showing then
           FWindowState := wsMinimized;
@@ -562,7 +563,8 @@ begin
         if Showing then
           FWindowState := wsMaximized;
     end;
-    if OldState<>FWindowState then begin
+    if OldState <> FWindowState then
+    begin
       if Assigned(OnWindowStateChange) then
         OnWindowStateChange(Self);
     end;

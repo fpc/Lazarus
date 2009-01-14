@@ -161,7 +161,7 @@ type
     procedure CheckPipeEvents;
 
     function WinRegister: Boolean;
- protected
+  protected
     function CreateThemeServices: TThemeServices; override;
   public
     { Creates a callback of Lazarus message Msg for Sender }
