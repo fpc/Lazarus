@@ -887,7 +887,8 @@ var
               and Application.MainForm.HandleAllocated then
           begin
             PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            Windows.ShowWindow(Application.MainForm.Handle, SW_RESTORE);
+            if Application.MainForm.HandleObjectShouldBeVisible then
+              Windows.ShowWindow(Application.MainForm.Handle, SW_SHOW);
             if Windows.IsWindowEnabled(Application.MainForm.Handle) then
               Windows.SetActiveWindow(Application.MainForm.Handle);
             WinProcess := false;
