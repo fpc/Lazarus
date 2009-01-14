@@ -47,6 +47,9 @@ type
     FInEventCount: Integer;
     FReleaseInEvent: Boolean;
   public
+    {$IFDEF USE_QT_44}
+    FDeleteLater: Boolean;
+    {$ENDIF}
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
     constructor Create; virtual; overload;
@@ -706,6 +709,9 @@ end;
 
 constructor TQtObject.Create;
 begin
+  {$IFDEF USE_QT_44}
+  FDeleteLater := False;
+  {$ENDIF}
   FEventHook := nil;
   FUpdateCount := 0;
   FInEventCount := 0;
@@ -716,9 +722,17 @@ destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
   begin
+    {$IFDEF USE_QT_44}
+    DetachEvents;
+    if FDeleteLater then
+      QObject_deleteLater(TheObject)
+    else
+      QObject_destroy(TheObject);
+    {$ELSE}
     QCoreApplication_removePostedEvents(TheObject);
     DetachEvents;
     QObject_deleteLater(TheObject);
+    {$ENDIF}
     TheObject := nil;
   end;
   inherited Destroy;
@@ -3328,6 +3342,9 @@ constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 begin
   inherited Create;
+  {$IFDEF USE_QT_44}
+  FDeleteLater := True;
+  {$ENDIF}
   FAppObject := App;
 
   FCallbackFunc := TimerFunc;
@@ -3374,6 +3391,9 @@ end;
 
 procedure TQtTimer.DetachEvents;
 begin
+  {$IFDEF USE_QT_44}
+  QTimer_stop(QTimerH(TheObject));
+  {$ENDIF}
   if FTimerHook <> nil then
     QTimer_hook_destroy(FTimerHook);
   inherited DetachEvents;

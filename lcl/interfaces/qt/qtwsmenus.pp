@@ -365,6 +365,9 @@ begin
   else if (AMenu is TPopUpMenu) then
   begin
     Menu := TQtMenu.Create(AMenu.Items);
+    {$IFDEF USE_QT_44}
+    Menu.FDeleteLater := True;
+    {$ENDIF}
     //Menu.setParent(Parent);
     Menu.AttachEvents;
   

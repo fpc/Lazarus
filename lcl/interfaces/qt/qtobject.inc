@@ -183,7 +183,7 @@ begin
   {$IFDEF USE_QT_44}
   {$note we must use QEventLoopDefferedDeletion because of SlotClose.
     Normal forms are NOT closed without this ...}
-  QCoreApplication_processEvents(QEventLoopAllEvents or $10);
+  QCoreApplication_processEvents(QEventLoopAllEvents);
   {$ELSE}
   QCoreApplication_processEvents(QEventLoopAllEvents or QEventLoopDeferredDeletion);
   {$ENDIF}

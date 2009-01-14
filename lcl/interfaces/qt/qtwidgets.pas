@@ -3562,7 +3562,14 @@ end;
 procedure TQtWidget.DestroyWidget;
 begin
   if (Widget <> nil) and FOwnWidget then
+  begin
+    {$IFDEF USE_QT_44}
+    if not FDeleteLater then
+      QWidget_destroy(Widget)
+    else
+    {$ENDIF}
     QObject_deleteLater(Widget);
+  end;
   Widget := nil;
 end;
 
@@ -3967,6 +3974,9 @@ begin
       
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
+    {$IFDEF USE_QT_44}
+    QWidget_setAttribute(Result, QtWA_DeleteOnClose);
+    {$ENDIF}
   end;
   
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7933,7 +7943,11 @@ end;
 procedure TQtMenu.SlotAboutToHide; cdecl;
 begin
   if FMenuItem.Menu is TPopupMenu then
+    {$IFDEF USE_QT_44}
+    DoPopupClose;
+    {$ELSE}
     QCoreApplication_postEvent(Widget, QEvent_create(LCLQt_PopupMenuClose));
+    {$ENDIF}
 end;
 
 procedure TQtMenu.DoPopupClose;
