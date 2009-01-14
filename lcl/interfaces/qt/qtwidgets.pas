@@ -399,7 +399,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
+    {$IFNDEF USE_QT_44}
     destructor Destroy; override;
+    {$ENDIF}
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     procedure AttachEvents; override;
@@ -469,7 +471,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    {$IFNDEF USE_QT_44}
     destructor Destroy; override;
+    {$ENDIF}
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
     procedure setColor(const Value: PQColor); override;
@@ -488,7 +492,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    {$IFNDEF USE_QT_44}
     destructor Destroy; override;
+    {$ENDIF}
     procedure setColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
@@ -501,7 +507,9 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    {$IFNDEF USE_QT_44}
     destructor Destroy; override;
+    {$ENDIF}
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
   end;
@@ -3776,6 +3784,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+{$IFNDEF USE_QT_44}
 destructor TQtPushButton.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -3791,6 +3800,7 @@ begin
 
   inherited Destroy;
 end;
+{$ENDIF}
 
 procedure TQtPushButton.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
@@ -4293,6 +4303,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+{$IFNDEF USE_QT_44}
 destructor TQtCheckBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4308,6 +4319,7 @@ begin
 
   inherited Destroy;
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: TQtCheckBox.CheckState
@@ -4386,6 +4398,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+{$IFNDEF USE_QT_44}
 destructor TQtRadioButton.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4401,6 +4414,7 @@ begin
 
   inherited Destroy;
 end;
+{$ENDIF}
 
 procedure TQtRadioButton.setColor(const Value: PQColor);
 var
@@ -4452,6 +4466,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+{$IFNDEF USE_QT_44}
 destructor TQtGroupBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4467,6 +4482,7 @@ begin
 
   inherited Destroy;
 end;
+{$ENDIF}
 
 function TQtGroupBox.getText: WideString;
 begin
@@ -6243,10 +6259,16 @@ var
   ev: QEventH;
   str: WideString;
 begin
-  BeginEventProcessing;
 
+  BeginEventProcessing;
   Result := False;
   QEvent_accept(Event);
+
+  if LCLObject = nil then
+  begin
+    EndEventProcessing;
+    exit;
+  end;
 
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
