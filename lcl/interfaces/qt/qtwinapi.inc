@@ -4372,10 +4372,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
-{$IFDEF UNIX}
 var
   QtEdit: IQtEdit;
-{$ENDIF}
 begin
   if hwnd<>0 then
   begin
@@ -4384,16 +4382,12 @@ begin
     {$endif}
     result := GetFocus;
 
-    {apply clearFocus only to X11 & Mac,
-     qt win32 doesn't like this}
-    {$IFDEF UNIX}
     if (Result <> 0) and (Result <> hWnd) and not
       ((TQtWidget(Hwnd) is TQtMainWindow) or
       (TQtWidget(Result) is TQtMainWindow)) and
       Supports(TQtWidget(Result), IQtEdit, QtEdit)
     then
       QWidget_clearFocus(TQtWidget(Result).Widget);
-    {$ENDIF}
 
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
