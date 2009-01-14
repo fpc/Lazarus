@@ -611,15 +611,24 @@ end;
 
 { TWinCEWSCustomComboBox }
 
+{
+    Obs:
+    CBS_SIMPLE, CBS_OWNERDRAWFIXED and CBS_OWNERDRAWVARIABLE
+    are unsupported in Windows CE
+}
 const
-  ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
-    CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
+  ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST
+    { or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE};
 
 function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
 const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
-    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+    CBS_DROPDOWN,
+    0 {CBS_SIMPLE},
+    CBS_DROPDOWNLIST,
+    0 {CBS_OWNERDRAWFIXED},
+    0 {CBS_OWNERDRAWVARIABLE}
+    );
   ComboBoxReadOnlyStyles: array[boolean] of dword = (
     CBS_DROPDOWN, CBS_DROPDOWNLIST);
 begin
@@ -777,6 +786,7 @@ begin
   Assert(False, Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
   pwAText := UTF8Decode(AText);
+
   if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessageW(Handle, CB_SELECTSTRING, WPARAM(-1), LPARAM(PWideChar(pwAText)))
   else

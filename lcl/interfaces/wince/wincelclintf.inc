@@ -564,4 +564,15 @@ begin
   Result := True;
 end;
 
+
+{------------------------------------------------------------------------------
+  function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.IntfSendsUTF8KeyPress: boolean;
+begin
+  Result := true;
+end;
+
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

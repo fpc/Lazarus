@@ -204,6 +204,9 @@ Var
   LMNotify: TLMNotify; // used by WM_NOTIFY
   DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
   CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
+
+  OrgCharCode: word; // used in WM_CHAR handling
+
   
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
@@ -898,6 +901,23 @@ Var
     end;
   end;
   
+  function HandleUnicodeChar(AChar: Word): boolean;
+  var
+    UTF8Char: TUTF8Char;
+  begin
+    Result := false;
+    UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
+    lWinControl := WindowInfo^.WinControl;
+    if Assigned(lWinControl) then
+    begin
+      Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
+
+      if UTF8Char='' then
+        Result:= true;
+    end;
+  end;
+
+
 begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1010,17 +1030,23 @@ begin
     end;
     WM_CHAR:
     begin
+     if not HandleUnicodeChar(Word(WParam)) then
+      begin
       PLMsg:=@LMChar;
       with LMChar Do
       begin
         Msg := CN_CHAR;
         KeyData := LParam;
-        CharCode := Word(WParam);
+        CharCode := Word(Char(WideChar(WParam)));
+        OrgCharCode := CharCode;
         Result := 0;
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
-    end;
+    end
+     else
+       WinProcess := true;
+   end;
     WM_MENUCHAR:
     begin
       PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
@@ -2041,8 +2067,11 @@ begin
     CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
+
       WinProcess := LMChar.Result = 0;
-      WParam := LMChar.CharCode;
+      if (LMChar.Result=1) or (OrgCharCode<>LMChar.CharCode) then
+          WParam := Word(WideChar(Char(LMChar.CharCode)));
+//    WParam := LMChar.CharCode;
     end;
 
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
@@ -2299,6 +2328,7 @@ begin
     end;
   end;
 end;
+
 
 
 
