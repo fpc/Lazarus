@@ -322,7 +322,14 @@ begin
           or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
         begin
           TranslateMessage(@AMessage);
+{$IFDEF WindowsUnicodeSupport}
+          if UnicodeEnabledOS then
+            DispatchMessageW(@AMessage)
+          else
+            DispatchMessage(@AMessage);
+{$ELSE}
           DispatchMessage(@AMessage);
+{$ENDIF}
         end;
       end;
     end else
