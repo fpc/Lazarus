@@ -741,8 +741,12 @@ end;
 procedure TQtObject.Release;
 begin
   if InEvent then
-    FReleaseInEvent := True
-  else
+  begin
+    {$IFDEF USE_QT_44}
+    FDeleteLater := True;
+    {$ENDIF}
+    FReleaseInEvent := True;
+  end else
     Free;
 end;
 
