@@ -2141,12 +2141,25 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFont.Create" link="#rtl.System.TObject.Create">
-        <descr>Opens a new instance of the class and sets defaults for character set, colour, size etc
+      <element name="TFont.Create">
+        <descr>
+          <var>Create</var> - constructor for TFont: Opens a new instance of the class and sets defaults for character set, colour, size etc
 </descr>
+        <short>
+          <var>Create</var> - constructor for TFont: Opens a new instance of the class</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFont.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
+      <element name="TFont.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TFont</var>: frees reference then performs inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign" link="#rtl.Classes.TPersistent.Assign">
         <descr>

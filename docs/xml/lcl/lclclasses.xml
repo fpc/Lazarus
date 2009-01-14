@@ -44,17 +44,23 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLCLComponent.BeforeDestruction">
-        <short/>
+        <short>
+          <var>BeforeDestruction</var> - code to execute before destruction of Control: performs inherited <var>Destroying</var> method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroying"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TLCLComponent.NewInstance">
-        <short/>
+        <short>
+          <var>NewInstance</var> - performs inherited <var>NewInstance</var> to allocate space on the heap, and loads the correct WidgetSet</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TObject.NewInstance"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TLCLComponent.NewInstance.Result">
@@ -72,13 +78,17 @@
       <element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
-      <element name="TLCLComponent.Create"/>
-      <element name="TLCLComponent.Destroy"/>
+      <element name="TLCLComponent.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TLCLComponent.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
       <element name="TLCLReferenceComponent">
         <short>
           <var>TLCLReferenceComponent</var> - A base class for all components having a handle</short>
       </element>
-      <element name="TLCLReferenceComponent.Destroy"/>
+      <element name="TLCLReferenceComponent.Destroy">
+        <short>
+          <var>Destroy</var> the reference, then perform inherited <var>Destroy</var>
+        </short>
+      </element>
       <element name="TLCLReferenceComponent.Handle">
         <short>
           <var>Handle</var> a handle (sort of pointer or reference) allocated by the operating system to this component</short>
@@ -90,6 +100,22 @@
       <element name="TLCLReferenceComponent.ReferenceAllocated">
         <short>
           <var>ReferenceAllocated</var> - if True, a handle (reference) has been allocated to this component</short>
+      </element>
+      <element name="TLCLReferenceComponent.CreateParams">
+        <short>
+          <var>CreateParams</var> - create parameters</short>
+      </element>
+      <element name="TLCLReferenceComponent.GetReferenceHandle"/>
+      <element name="TLCLReferenceComponent.DestroyReference">
+        <short>
+          <var>DestroyReference</var> - destroys the reference if it has been allocated and adjusts the pointers</short>
+      </element>
+      <element name="TLCLReferenceComponent.ReferenceDestroying">
+        <short>
+          <var>ReferenceDestroying</var> - the reference is being destroyed</short>
+      </element>
+      <element name="TLCLReferenceComponent.ReferenceNeeded">
+        <short>If <var>ReferenceNeeded</var> and not yet allocated, creates a reference using the correct widgetset and parameters</short>
       </element>
     </module>
     <!-- LCLClasses -->
