@@ -34,7 +34,7 @@
 {$DEFINE VerboseIDEMultiForm}
 {$ENDIF}
 
-{off $apptype console}
+{$apptype console}
 
 {off $define UseTurbopowerInHelp}
 {$define UseJCF}
