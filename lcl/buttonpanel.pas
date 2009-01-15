@@ -393,9 +393,6 @@ begin
   Caption    := '';
   ControlStyle := ControlStyle - [csSetCaption];
   AutoSize   := True;
-  // let the designer decide this
-  //BorderSpacing.Left := 6;
-  //BorderSpacing.Right := 6;
   FSpacing := 6;
   ShowBevel := True;
 
