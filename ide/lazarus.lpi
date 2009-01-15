@@ -291,61 +291,61 @@
         <UnitName Value="ComponentList"/>
       </Unit35>
       <Unit36>
-        <Filename Value="frames/options_oi.pas"/>
+        <Filename Value="frames/oi_options.pas"/>
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_OI"/>
+        <UnitName Value="OI_options"/>
       </Unit36>
       <Unit37>
-        <Filename Value="frames/options_files.pas"/>
+        <Filename Value="frames/files_options.pas"/>
         <ComponentName Value="FilesOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_files"/>
+        <UnitName Value="files_options"/>
       </Unit37>
       <Unit38>
-        <Filename Value="frames/options_desktop.pas"/>
+        <Filename Value="frames/desktop_options.pas"/>
         <ComponentName Value="DesktopOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_desktop"/>
+        <UnitName Value="desktop_options"/>
       </Unit38>
       <Unit39>
-        <Filename Value="frames/options_window.pas"/>
+        <Filename Value="frames/window_options.pas"/>
         <ComponentName Value="WindowOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_window"/>
+        <UnitName Value="window_options"/>
       </Unit39>
       <Unit40>
-        <Filename Value="frames/options_formed.pas"/>
+        <Filename Value="frames/formed_options.pas"/>
         <ComponentName Value="FormEditorOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_formed"/>
+        <UnitName Value="formed_options"/>
       </Unit40>
       <Unit41>
-        <Filename Value="frames/options_backup.pas"/>
+        <Filename Value="frames/backup_options.pas"/>
         <ComponentName Value="BackupOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_backup"/>
+        <UnitName Value="backup_options"/>
       </Unit41>
       <Unit42>
-        <Filename Value="frames/options_naming.pas"/>
+        <Filename Value="frames/naming_options.pas"/>
         <ComponentName Value="NamingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_naming"/>
+        <UnitName Value="naming_options"/>
       </Unit42>
       <Unit43>
-        <Filename Value="frames/options_fpdoc.pas"/>
+        <Filename Value="frames/fpdoc_options.pas"/>
         <ComponentName Value="FpDocOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_fpdoc"/>
+        <UnitName Value="fpdoc_options"/>
       </Unit43>
       <Unit44>
         <Filename Value="frames/options_editor_general.pas"/>
