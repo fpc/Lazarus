@@ -783,17 +783,18 @@ begin
   Result := CallBackDefaultReturn;
 
   if ComponentIsDestroyingHandle(TWinControl(Info^.LCLObject)) or
-    (Info^.ChangeLock > 0) or
-    (gtk_signal_n_emissions_by_name(PGtkObject(widget), 'changed') > 1)
-     then exit;
+     (Info^.ChangeLock > 0) or
+     (gtk_signal_n_emissions_by_name(PGtkObject(widget), 'changed') > 1) or
+     (GTK_WIDGET_VISIBLE(PGtkCombo(Info^.CoreWidget)^.popwin)) then exit;
 
   {$IFDEF EventTrace}
   EventTrace('changed', Info^.LCLObject);
   {$ENDIF}
+
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_CHANGED;
   DeliverMessage(Info^.LCLObject, Mess);
-  
+
   GtkComboWidget := PGtkCombo(Info^.CoreWidget);
   GtkListWidget := PGtkList(GtkComboWidget^.list);
   LCLIndex := PInteger(Info^.UserData);
@@ -828,6 +829,8 @@ begin
     //gtk1 and gtk2 have different 'changed' event handlers
     g_signal_connect(PGtkObject(PGtkCombo(AGtkWidget)^.entry),
       'changed', TGTKSignalFunc(@gtkComboBoxChanged), AWidgetInfo);
+    g_signal_connect(PGtkObject(PGtkCombo(AGtkWidget)^.popwin),
+      'hide', TGTKSignalFunc(@gtkComboBoxChanged), AWidgetInfo);
     SetCallback(LM_COMMAND, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
 end;
