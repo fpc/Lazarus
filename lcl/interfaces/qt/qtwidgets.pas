@@ -6260,15 +6260,13 @@ var
   str: WideString;
 begin
 
-  BeginEventProcessing;
   Result := False;
   QEvent_accept(Event);
 
   if LCLObject = nil then
-  begin
-    EndEventProcessing;
     exit;
-  end;
+
+  BeginEventProcessing;
 
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
@@ -6288,6 +6286,11 @@ begin
   end else
   begin
     case QEvent_type(Event) of
+      QEventHide: 
+      begin
+        if getVisible then
+          SlotShow(False);
+      end;
       QEventPaint:
       begin
         if FOwnerDrawn and not getEditable then
