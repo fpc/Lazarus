@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg,
-  LCLProc, IDEProcs, DBGUtils, maps;
+  LCLProc, IDEProcs, DebugUtils, maps;
 
 type
   // datatype pointing to data on the target

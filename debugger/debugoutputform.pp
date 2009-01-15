@@ -1,7 +1,7 @@
 { $Id$ }
-{                        ----------------------------------------  
-                          dbgoutputform.pp  -  Shows target output 
-                         ---------------------------------------- 
+{                       ------------------------------------------  
+                        debugoutputform.pp  -  Shows target output 
+                        ------------------------------------------ 
  
  @created(Wed Feb 25st WET 2001)
  @lastmod($Date$)
@@ -26,7 +26,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DBGOutputForm;
+unit DebugOutputForm;
 
 {$mode objfpc}
 {$H+}
@@ -114,6 +114,6 @@ begin
 end;
 
 initialization
-  {$I dbgoutputform.lrs}
+  {$I debugoutputform.lrs}
 
 end.

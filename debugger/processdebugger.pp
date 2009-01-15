@@ -1,11 +1,11 @@
-{ $Id: $ }
+{ $Id$ }
 {      ------------------------------------------------  
        ProcessDebugger.pp  -  Debugger class which only
                               executes a target 
        ------------------------------------------------ 
  
  @created(Sun Nov 27st WET 2005)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.net>)                       
 
  This unit contains the process debugger class. It simply creates a process.
@@ -38,7 +38,7 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Process, Debugger, LCLProc, DBGUtils,
+  Classes, SysUtils, FileUtil, Process, Debugger, LCLProc, DebugUtils,
   BaseDebugManager, Dialogs, ProcessList;
 
 type

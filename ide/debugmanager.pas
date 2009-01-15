@@ -53,7 +53,7 @@ uses
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
