@@ -43,7 +43,7 @@ uses
   { delphi }
   StdCtrls, ComCtrls, Graphics, TypInfo,
   { local }
-  JcfStringUtils;
+  JcfStringUtils, JcfSystemUtils;
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin

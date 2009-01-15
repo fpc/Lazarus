@@ -54,6 +54,7 @@ type
     cbIndentIfElse: TCheckBox;
     cbIndentCaseElse: TCheckBox;
     cbIndentLibraryProcs: TCheckBox;
+    cbIndentProcedureBody: TCheckBox;
     procedure cbIndentBeginEndClick(Sender: TObject);
     procedure cbHasFirstLevelIndentClick(Sender: TObject);
   private
@@ -103,6 +104,7 @@ begin
     cbKeepWithElsewhere.Checked  := KeepCommentsWithCodeElsewhere;
     cbIndentIfElse.Checked := IndentElse;
     cbIndentCaseElse.Checked := IndentCaseElse;
+    cbIndentProcedureBody.Checked := IndentProcedureBody;
   end;
 
   cbIndentBeginEndClick(nil);
@@ -129,6 +131,7 @@ begin
     KeepCommentsWithCodeElsewhere  := cbKeepWithElsewhere.Checked;
     IndentElse := cbIndentIfElse.Checked;
     IndentCaseElse := cbIndentCaseElse.Checked;
+    IndentProcedureBody := cbIndentProcedureBody.Checked;
 
   end;
 end;

@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  JcfMiscFunctions,
+  JcfStringUtils,
   Tokens, ParseTreeNodeType, JcfSettings, FormatFlags,
   TokenUtils, SettingsTypes;
 

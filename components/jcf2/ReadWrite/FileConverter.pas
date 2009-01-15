@@ -115,8 +115,8 @@ uses
   { delphi }
   {$ifndef fpc}Windows, {$endif} SysUtils, Dialogs, Controls, Forms,
   { local }
-  JcfStringUtils,
-  FileUtils, JcfMiscFunctions, JcfLog,
+  JcfStringUtils, JcfSystemUtils,
+  JcfFileUtils, JcfMiscFunctions, JcfLog,
   JcfRegistrySettings, JcfSettings, JcfUnicodeFiles;
 
 constructor TFileConverter.Create;

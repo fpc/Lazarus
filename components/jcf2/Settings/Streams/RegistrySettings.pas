@@ -38,8 +38,10 @@ interface
     this object serves as both the root and the section
   }
 uses
-  { delphi }Registry, Classes,
-  { local }SettingsStream;
+  { delphi }
+  Registry, Classes,
+  { local }
+  SettingsStream;
 
 type
 
@@ -93,8 +95,11 @@ type
 implementation
 
 uses
-  { delphi }SysUtils,
-  { local }JcfMiscFunctions;
+  { delphi }
+  SysUtils,
+  { local }
+  JcfMiscFunctions,
+  JcfStringUtils;
 
 {-------------------------------------------------------------------------------
   Settings Output Registry }

@@ -1,12 +1,12 @@
 inherited fClarifyIndent: TfClarifyIndent
   Width = 430
-  Height = 295
+  Height = 307
   Font.Charset = ANSI_CHARSET
   Font.Height = -15
   Font.Name = 'Segoe UI'
   ParentFont = False
   ExplicitWidth = 430
-  ExplicitHeight = 295
+  ExplicitHeight = 307
   object Label2: TLabel
     Left = 4
     Top = 6
@@ -30,14 +30,14 @@ inherited fClarifyIndent: TfClarifyIndent
   end
   object gbOptions: TGroupBox
     Left = 4
-    Top = 36
+    Top = 32
     Width = 417
-    Height = 240
+    Height = 257
     Caption = 'Options'
     TabOrder = 1
     object cbIndentBeginEnd: TCheckBox
       Left = 12
-      Top = 28
+      Top = 30
       Width = 317
       Height = 18
       Caption = 'Extra indent for begin/end inside procedures'
@@ -61,7 +61,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbHasFirstLevelIndent: TCheckBox
       Left = 12
-      Top = 51
+      Top = 52
       Width = 285
       Height = 18
       Caption = 'Different indent for first level'
@@ -89,7 +89,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbKeepWithInGlobals: TCheckBox
       Left = 12
-      Top = 97
+      Top = 96
       Width = 373
       Height = 18
       Caption = 'Keep single-line comments with code in globals'
@@ -97,7 +97,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbKeepWithInClassDef: TCheckBox
       Left = 12
-      Top = 120
+      Top = 118
       Width = 402
       Height = 18
       Caption = 'Keep single-line comments with code in class definitions'
@@ -105,7 +105,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbKeepWithElsewhere: TCheckBox
       Left = 12
-      Top = 143
+      Top = 140
       Width = 398
       Height = 18
       Caption = 'Keep single-line comments with code elsewhere'
@@ -113,7 +113,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbIndentIfElse: TCheckBox
       Left = 12
-      Top = 166
+      Top = 162
       Width = 366
       Height = 18
       Caption = 'Extra Indent for If...Else blocks'
@@ -121,7 +121,7 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbIndentCaseElse: TCheckBox
       Left = 12
-      Top = 188
+      Top = 184
       Width = 366
       Height = 18
       Caption = 'Extra Indent for Case...Else blocks'
@@ -129,11 +129,19 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbIndentLibraryProcs: TCheckBox
       Left = 12
-      Top = 208
+      Top = 206
       Width = 366
       Height = 18
       Caption = 'Indent for procedures in library'
       TabOrder = 10
+    end
+    object cbIndentProcedureBody: TCheckBox
+      Left = 12
+      Top = 228
+      Width = 366
+      Height = 18
+      Caption = 'Indent for procedure body'
+      TabOrder = 11
     end
   end
 end

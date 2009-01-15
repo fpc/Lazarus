@@ -31,7 +31,7 @@ interface
 
 uses
   JcfStringUtils,
-  VersionConsts;
+  JcfVersionConsts;
 
 const
   ABOUT_COMMANDLINE =

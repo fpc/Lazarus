@@ -162,8 +162,6 @@ implementation
 uses
   { delphi }
   ClipBrd,
-  { jcl }
-  JclStrings,
   { local }
   JcfStringUtils,
   JCFHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;

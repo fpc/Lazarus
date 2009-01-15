@@ -72,7 +72,7 @@ const
 implementation
 
 uses
-  {$ifndef fpc}Windows, FileUtils,{$endif}SysUtils, Forms;
+  {$ifndef fpc}Windows, JcfFileUtils,{$endif} SysUtils, Forms;
 
 function GetHelpFilePath: string;
 var

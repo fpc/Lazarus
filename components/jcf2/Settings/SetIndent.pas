@@ -40,9 +40,10 @@ type
     fbHasFirstLevelIndent: boolean;
 
     fbIndentBeginEnd: boolean;
-    fbIndentLibraryProcs: boolean;
-
     fiIndentBeginEndSpaces: integer;
+
+    fbIndentLibraryProcs: boolean;
+    fbIndentProcedureBody: boolean;
 
     fbKeepCommentsWithCodeInProcs: boolean;
     fbKeepCommentsWithCodeInGlobals: boolean;
@@ -67,10 +68,10 @@ type
       Write fbHasFirstLevelIndent;
 
     property IndentBeginEnd: boolean Read fbIndentBeginEnd Write fbIndentBeginEnd;
-    property IndentBeginEndSpaces: integer Read fiIndentBeginEndSpaces
-      Write fiIndentBeginEndSpaces;
+    property IndentBeginEndSpaces: integer Read fiIndentBeginEndSpaces Write fiIndentBeginEndSpaces;
 
     property IndentLibraryProcs: boolean Read fbIndentLibraryProcs Write fbIndentLibraryProcs;
+    property IndentProcedureBody: boolean Read fbIndentProcedureBody Write fbIndentProcedureBody;
 
     property KeepCommentsWithCodeInProcs: boolean
       Read fbKeepCommentsWithCodeInProcs Write fbKeepCommentsWithCodeInProcs;
@@ -98,6 +99,7 @@ const
   REG_INDENT_BEGIN_END_SPACES = 'IndentbeginEndSpaces';
 
   REG_INDENT_LIBRARY_PROCS = 'IndentLibraryProcs';
+  REG_INDENT_PROCEDURE_BODY = 'IndentProcedureBody';
 
   REG_KEEP_COMMENTS_WITH_CODE_CLASS_DEF  = 'KeepCommentsWithCodeInClassDef';
   REG_KEEP_COMMENTS_WITH_CODE_IN_PROCS   = 'KeepCommentsWithCodeInProcs';
@@ -126,6 +128,7 @@ begin
   fiIndentBeginEndSpaces := pcStream.Read(REG_INDENT_BEGIN_END_SPACES, 1);
 
   fbIndentLibraryProcs := pcStream.Read(REG_INDENT_LIBRARY_PROCS, True);
+  fbIndentProcedureBody := pcStream.Read(REG_INDENT_PROCEDURE_BODY, False);
 
   fbKeepCommentsWithCodeInGlobals  :=
     pcStream.Read(REG_KEEP_COMMENTS_WITH_CODE_IN_GLOBALS, True);
@@ -153,6 +156,7 @@ begin
   pcOut.Write(REG_INDENT_BEGIN_END_SPACES, fiIndentBeginEndSpaces);
 
   pcOut.Write(REG_INDENT_LIBRARY_PROCS, fbIndentLibraryProcs);
+  pcOut.Write(REG_INDENT_PROCEDURE_BODY, fbIndentProcedureBody);
 
   pcOut.Write(REG_KEEP_COMMENTS_WITH_CODE_IN_GLOBALS, fbKeepCommentsWithCodeInGlobals);
   pcOut.Write(REG_KEEP_COMMENTS_WITH_CODE_IN_PROCS, fbKeepCommentsWithCodeInProcs);

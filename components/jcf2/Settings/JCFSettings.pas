@@ -40,7 +40,7 @@ uses
   SetComments, SetCaps, SetWordList,
   SetAlign, SetReplace, SetUses, SetPreProcessor,
   SettingsStream, SetTransform,  SetAsm,
-  VersionConsts;
+  JcfVersionConsts;
 
 type
 

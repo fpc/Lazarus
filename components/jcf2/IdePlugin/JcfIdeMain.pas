@@ -81,9 +81,8 @@ implementation
 uses
   { delphi }
   Menus, Dialogs, Controls,
-  { jcl }
-  JclStrings,
   { local }
+  JcfStringUtils,
   fAllSettings, fAbout, JcfRegistrySettings, fRegistrySettings;
 
 

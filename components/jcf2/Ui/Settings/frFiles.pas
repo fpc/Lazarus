@@ -59,7 +59,7 @@ uses
     { jcl }
     JclFileUtils,
     { local }
-    FileUtils, JcfRegistrySettings, JcfSettings;
+    JcfFileUtils, JcfRegistrySettings, JcfSettings;
 
 {$ifdef FPC}
   {$R *.lfm}

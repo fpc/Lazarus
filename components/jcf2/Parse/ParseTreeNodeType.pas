@@ -185,7 +185,10 @@ const
   nTopLevelSections = [nTypeSection, nConstSection, nVarSection,
     nLabelDeclSection, nExports];
 
-
+  MethodDeclarations: TParseTreeNodeTypeSet =
+    [nProcedureDecl, nFunctionDecl, nConstructorDecl, nDestructorDecl];
+  MethodHeadings: TParseTreeNodeTypeSet =
+    [nFunctionHeading, nProcedureHeading, nConstructorHeading, nDestructorHeading];
 
 function NodeTypeToString(const pe: TParseTreeNodeType): string;
 

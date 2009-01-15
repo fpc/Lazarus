@@ -51,8 +51,6 @@ uses Classes;
 
 function GetApplicationFolder: string;
 
-function PadNumber(const pi: integer): string;
-function StrHasAlpha(const str: String): boolean;
 function GetLastDir(psPath: string): string;
 
 function Str2Float(s: string): double;
@@ -128,26 +126,6 @@ begin
   DecimalSeparator := OrgSep;
 end;
 
-function PadNumber(const pi: integer): string;
-begin
-  Result := IntToStrZeroPad(pi, 3);
-end;
-
-function StrHasAlpha(const str: String): boolean;
-var
-  liLoop: integer;
-begin
-  Result := False;
-
-  for liLoop := 1 to Length(str) do
-  begin
-    if CharIsAlpha(str[liLoop]) then
-    begin
-      Result := True;
-      break;
-    end;
-  end;
-end;
 
 function GetLastDir(psPath: string): string;
 var

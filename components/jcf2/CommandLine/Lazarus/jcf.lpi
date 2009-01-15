@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,16 +33,17 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="135">
+    <Units Count="137">
       <Unit0>
         <Filename Value="JCF.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="10" Y="38"/>
-        <TopLine Value="1"/>
+        <CursorPos X="33" Y="84"/>
+        <TopLine Value="67"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="94"/>
-        <Bookmarks Count="1">
-          <Item0 X="17" Y="155" ID="2"/>
+        <Bookmarks Count="2">
+          <Item0 X="54" Y="38" ID="1"/>
+          <Item1 X="17" Y="157" ID="2"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit0>
@@ -83,7 +86,6 @@
         <ComponentName Value="ExceptionDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="../Ui/fJcfErrorDisplay.lrs"/>
         <UnitName Value="fJcfErrorDisplay"/>
         <CursorPos X="44" Y="64"/>
         <TopLine Value="49"/>
@@ -94,7 +96,6 @@
         <ComponentName Value="frmShowParseTree"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="../Parse/UI/fShowParseTree.lrs"/>
         <UnitName Value="fShowParseTree"/>
         <CursorPos X="99" Y="296"/>
         <TopLine Value="282"/>
@@ -119,10 +120,12 @@
       <Unit10>
         <Filename Value="../../Utils/JcfMiscFunctions.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFMiscFunctions"/>
-        <CursorPos X="50" Y="241"/>
-        <TopLine Value="222"/>
+        <UnitName Value="JcfMiscFunctions"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="40"/>
+        <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="../../Parse/BuildTokenList.pas"/>
@@ -192,9 +195,9 @@
         <UsageCount Value="40"/>
       </Unit18>
       <Unit19>
-        <Filename Value="../../VersionConsts.pas"/>
+        <Filename Value="../../JcfVersionConsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="VersionConsts"/>
+        <UnitName Value="JcfVersionConsts"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="40"/>
@@ -203,9 +206,11 @@
         <Filename Value="../../Settings/JCFSettings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JCFSettings"/>
-        <CursorPos X="21" Y="138"/>
-        <TopLine Value="121"/>
+        <CursorPos X="19" Y="43"/>
+        <TopLine Value="25"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="40"/>
+        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="../../Parse/AsmKeywords.pas"/>
@@ -253,7 +258,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="../../Parse/UI/fShowParseTree.lrs"/>
         <UnitName Value="fShowParseTree"/>
         <CursorPos X="17" Y="94"/>
         <TopLine Value="77"/>
@@ -271,9 +275,9 @@
         <Filename Value="../../Process/FormatFlags.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FormatFlags"/>
-        <CursorPos X="24" Y="74"/>
-        <TopLine Value="61"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="40" Y="21"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit28>
@@ -470,7 +474,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="../../Ui/fJcfErrorDisplay.lrs"/>
         <UnitName Value="fJcfErrorDisplay"/>
         <CursorPos X="17" Y="62"/>
         <TopLine Value="38"/>
@@ -1088,9 +1091,11 @@
         <Filename Value="../../Settings/SetAsm.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SetAsm"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="1" Y="43"/>
+        <TopLine Value="25"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="39"/>
+        <Loaded Value="True"/>
       </Unit129>
       <Unit130>
         <Filename Value="../../Process/Returns/RemoveReturnsAfter.pas"/>
@@ -1114,7 +1119,7 @@
         <UnitName Value="JcfStringUtils"/>
         <CursorPos X="21" Y="26"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit132>
@@ -1132,8 +1137,28 @@
         <TopLine Value="1"/>
         <UsageCount Value="25"/>
       </Unit134>
+      <Unit135>
+        <Filename Value="../../Utils/JcfFileUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfFileUtils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit135>
+      <Unit136>
+        <Filename Value="../../Utils/JcfSystemUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfSystemUtils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit136>
     </Units>
-    <JumpHistory Count="9" HistoryIndex="8">
+    <JumpHistory Count="15" HistoryIndex="14">
       <Position1>
         <Filename Value="../../Process/FormatFlags.pas"/>
         <Caret Line="214" Column="39" TopLine="194"/>
@@ -1170,6 +1195,30 @@
         <Filename Value="JCF.lpr"/>
         <Caret Line="38" Column="10" TopLine="1"/>
       </Position9>
+      <Position10>
+        <Filename Value="../../Utils/JcfMiscFunctions.pas"/>
+        <Caret Line="241" Column="50" TopLine="222"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../Settings/SetAsm.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position11>
+      <Position12>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="166" Column="3" TopLine="146"/>
+      </Position12>
+      <Position13>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="14" Column="73" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="24" Column="36" TopLine="1"/>
+      </Position15>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

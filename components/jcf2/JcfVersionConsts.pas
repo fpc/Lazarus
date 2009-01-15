@@ -1,10 +1,10 @@
-unit VersionConsts;
+unit JcfVersionConsts;
 
 {(*}
 (*------------------------------------------------------------------------------
  Delphi Code formatter source code 
 
-The Original Code is VersionConsts, released May 2003.
+The Original Code is JcfVersionConsts, released May 2003.
 The Initial Developer of the Original Code is Anthony Steele. 
 Portions created by Anthony Steele are Copyright (C) 2003-2008 Anthony Steele.
 All Rights Reserved. 

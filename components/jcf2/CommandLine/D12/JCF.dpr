@@ -45,7 +45,7 @@ uses
   VisitSetXY in '..\..\Process\VisitSetXY.pas',
   BaseVisitor in '..\..\Process\BaseVisitor.pas',
   JcfMiscFunctions in '..\..\Utils\JcfMiscFunctions.pas',
-  FileUtils in '..\..\Utils\FileUtils.pas',
+  JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
   JcfLog in '..\..\Utils\JcfLog.pas',
   fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',
@@ -75,7 +75,7 @@ uses
   WarnDestroy in '..\..\Process\Warnings\WarnDestroy.pas',
   WarnEmptyBlock in '..\..\Process\Warnings\WarnEmptyBlock.pas',
   Warning in '..\..\Process\Warnings\Warning.pas',
-  VersionConsts in '..\..\VersionConsts.pas',
+  JcfVersionConsts in '..\..\JcfVersionConsts.pas',
   JcfRegistrySettings in '..\..\Settings\JcfRegistrySettings.pas',
   TokenUtils in '..\..\Parse\TokenUtils.pas',
   NoSpaceBefore in '..\..\Process\Spacing\NoSpaceBefore.pas',
@@ -156,7 +156,8 @@ uses
   CommandLineConstants in '..\CommandLineConstants.pas',
   StatusMessageReceiver in '..\StatusMessageReceiver.pas',
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
-  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
+  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas',
+  JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas';
 
 var
   feReturnCode: TJcfCommandLineReturnCode;

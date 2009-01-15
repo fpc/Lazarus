@@ -505,16 +505,16 @@
         <UnitName Value="JcfMiscFunctions"/>
       </Item120>
       <Item121>
-        <Filename Value="..\..\VersionConsts.pas"/>
-        <UnitName Value="VersionConsts"/>
-      </Item121>
-      <Item122>
         <Filename Value="..\..\Ui\fAbout.lfm"/>
         <Type Value="LFM"/>
-      </Item122>
-      <Item123>
+      </Item121>
+      <Item122>
         <Filename Value="..\..\Ui\fAbout.pas"/>
         <UnitName Value="fAbout"/>
+      </Item122>
+      <Item123>
+        <Filename Value="..\..\JcfVersionConsts.pas"/>
+        <UnitName Value="JcfVersionConsts"/>
       </Item123>
     </Files>
     <Type Value="RunAndDesignTime"/>

@@ -103,7 +103,7 @@ uses
  { delphi }
  Forms, SysUtils,
  { local }
- JcfStringUtils,
+ JcfStringUtils, JcfSystemUtils,
  JcfUnicode,
  JcfRegistrySettings;
 

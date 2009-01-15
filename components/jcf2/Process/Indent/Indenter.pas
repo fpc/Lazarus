@@ -119,7 +119,7 @@ begin
     exit;
   end;
 
-  if pt.HasParentNode([nProcedureDecl, nFunctionDecl, nConstructorDecl, nDestructorDecl]) then
+  if pt.HasParentNode(MethodDeclarations) then
   begin
     Result := False;
     exit;
@@ -603,6 +603,18 @@ begin
         end;
       end;
 
+    end;
+  end;
+
+  // indent all of procs except for the first line
+  if FormatSettings.Indent.IndentProcedureBody then
+  begin
+    if pt.HasParentNode(MethodDeclarations) then
+    begin
+      if not (pt.HasParentNode(MethodHeadings)) then
+      begin
+        inc(liIndentCount);
+      end;
     end;
   end;
 

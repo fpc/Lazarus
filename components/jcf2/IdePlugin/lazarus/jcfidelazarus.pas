@@ -33,8 +33,8 @@ uses
   SetClarify, SetComments, SetIndent, SetObfuscate, SetPreProcessor, 
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
   SetWordList, SettingsStream, fJcfErrorDisplay, Delay, FileUtils, IntList, 
-  JcfFontSetFunctions, JCFHelp, JcfLog, JcfMiscFunctions, VersionConsts, 
-  fAbout, LazarusPackageIntf;
+  JcfFontSetFunctions, JCFHelp, JcfLog, JcfMiscFunctions, fAbout, 
+  JcfVersionConsts, LazarusPackageIntf;
 
 implementation
 

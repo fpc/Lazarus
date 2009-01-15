@@ -70,7 +70,7 @@ uses
     LResources, HelpIntfs,
   {$endif}
   { local }
-  VersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
+  JcfVersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
 
 {$ifdef fpc}
 procedure ShowURL(const ps: string);

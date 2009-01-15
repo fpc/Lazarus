@@ -190,7 +190,7 @@ uses
   { delphi }
   {$ifndef fpc}Windows,{$endif} SysUtils, Dialogs,
   { jcf }
-  JcfStringUtils, JcfMiscFunctions;
+  JcfStringUtils, JcfSystemUtils, JcfMiscFunctions;
 
 const
   REG_GENERAL_SECTION = 'General';
