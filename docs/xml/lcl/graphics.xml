@@ -2161,18 +2161,22 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TFont.Assign" link="#rtl.Classes.TPersistent.Assign">
+      <element name="TFont.Assign">
+        <short>
+          <var>Assign</var> - copies the source settings to itself</short>
         <descr>
           <p>Method: <var>TFont.Assign</var>
           </p>
-          <p>Params: <var>ALogFont</var>: TLogFont or</p>
           <p>
             <var>Source</var>: another font</p>
           <p>Returns:  nothing</p>
 
 
-Copies the logfont or source settings to itself
+Copies the source settings to itself
 </descr>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.Assign.Source">
@@ -2180,8 +2184,17 @@ Copies the logfont or source settings to itself
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign">
-        <short/>
-        <descr/>
+        <short>
+          <var>Assign</var> - copies the LogFont settings to itself</short>
+        <descr>
+          <p>Method: <var>TFont.Assign</var>
+          </p>
+          <p>
+            <var>LogFont</var>: another font</p>
+          <p>Returns:  nothing</p>
+		
+		
+Copies the LogFont settings to itself</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2485,18 +2498,33 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPen.Create" link="#rtl.System.TObject.Create">
+      <element name="TPen.Create">
         <descr>Most of its properties are <b>inherited</b>
  from the parent class
 </descr>
+        <short>
+          <var>Create</var> - constructor for TPen: performs inherited <var>Create</var> then sets some local defaults, style, mode, width and colour</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPen.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TPen.Destroy">
         <descr>Most of its properties are <b>inherited</b> from the parent class
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TPen</var>: frees reference then performs inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TPen.Assign" link="#rtl.Classes.TPersistent.Assign"/>
+      <element name="TPen.Assign" link="#rtl.Classes.TPersistent.Assign">
+        <short>
+          <var>Assign</var> - copies settings from Source to itself (provided Source is another <var>TPen</var>), then performs inherited <var>Assign</var>
+        </short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source">
         <short/>
@@ -2688,13 +2716,19 @@ Default is psSolid
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TBrush.Assign" link="#rtlClasses.TPersistent.Assign">
+      <element name="TBrush.Assign">
         <descr>Method: TBrush.Assign<br/>
   Params: Source: Another brush<br/>
   Returns:  nothing<br/>
 
   Copies the source brush to itself
 </descr>
+        <short>
+          <var>Assign</var> - if <var>Source</var> is another <var>TBrush</var>, copies settings to itself, else performs inherited <var>Assign</var>
+        </short>
+        <seealso>
+          <link id="#rtlClasses.TPersistent.Assign"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBrush.Assign.Source">
@@ -2710,13 +2744,19 @@ Default is psSolid
         </short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TBrush.Create" link="#rtl.System.TObject.Create">
+      <element name="TBrush.Create">
         <descr>
           <b>Inherits</b> most of its properties from ancestor Classes
 </descr>
+        <short>
+          <var>Create</var> - constructor for <var>TBrush</var>: perform inherited <var>Create</var> then initialise some local variables and <var>SetStyle</var>
+        </short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TBrush.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TBrush.Destroy">
         <descr>
           <b>Inherits</b> properties to remove 
           
@@ -2734,6 +2774,12 @@ Default is psSolid
           
           <var>Handle</var>
         </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TBrush</var>: free reference then perform inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Bitmap">
@@ -3909,11 +3955,23 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPicture.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TPicture.Create">
+        <short>
+          <var>Create</var> - constructor for TPicture: performs inherited <var>Create</var> then loads file and clipboard formats</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
+      </element>
       <!-- destructor Visibility: public -->
-      <element name="TPicture.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TPicture.Destroy">
         <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TPicture</var>: frees graphic then performs inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromFile">
@@ -8552,7 +8610,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TBitmapImage.SaveStreamClass">
         <short>The class of stream for saving data</short>
       </element>
-      <element name="TJPEGImage.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TJPEGImage.Create">
+        <short>
+          <var>Create</var> - constructor for TJPEGImage: performs inherited <var>Create</var> then initialises local variables for performance, quality and encoding</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
+      </element>
       <element name="TJPEGImage.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions"/>
       <element name="TJPEGImage.GetDefaultFPReader"/>
       <element name="TJPEGImage.GetDefaultFPWriter"/>
@@ -10659,21 +10723,32 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomBitmap.Create" link="#rtl.System.TObject.Create">
+      <element name="TCustomBitmap.Create">
         <descr>
           <var>BitMap</var> constructor. The supplied code can 
           
           <b>override</b> the definition from ancestor classes
 </descr>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomBitmap</var>: performs inherited <var>Create</var> and initialises pixel format</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomBitmap.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TCustomBitmap.Destroy">
         <descr>
           <var>BitMap</var> destructor. The supplied code can
 
           
           <b>override</b> the method defined for ancestor classes
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomBitmap</var>: frees any Mask handles, then performs inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.Assign">
@@ -13248,17 +13323,24 @@ This function checks that the value in
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSharedIcon.Create" link="#rtl.System.TObject.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for <var>TSharedIcon</var>: performs inherited <var>Create</var> then creates a list of images</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TSharedIcon.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
+      <element name="TSharedIcon.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TSharedIcon</var>: frees the list of images and performs inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TSharedIcon.Clear">
@@ -14348,7 +14430,7 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>Whether the Pen is <var>Cosmetic</var>, ie non-geometric</short>
       </element>
       <element name="TPen.EndCap">
-        <short>The sort of <var>EndCap</var> used on th ePen</short>
+        <short>The sort of <var>EndCap</var> used on the Pen</short>
       </element>
       <element name="TPen.JoinStyle">
         <short>
