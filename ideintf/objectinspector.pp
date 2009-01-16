@@ -221,7 +221,9 @@ type
     pgsChangingItemIndex,
     pgsApplyingValue,
     pgsUpdatingEditControl,
-    pgsBuildPropertyListNeeded
+    pgsBuildPropertyListNeeded,
+    pgsGetComboItemsCalled,
+    pgsIdleEnabled
     );
   TOIPropertyGridStates = set of TOIPropertyGridState;
 
@@ -376,6 +378,8 @@ type
     procedure ValueButtonClick(Sender: TObject);
     procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
           ARect: TRect; State: TOwnerDrawState);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure SetIdleEvent(Enable: boolean);
 
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message
@@ -1029,6 +1033,7 @@ destructor TOICustomPropertyGrid.Destroy;
 var
   a: integer;
 begin
+  SetIdleEvent(false);
   Application.RemoveOnUserInputHandler(@OnUserInput);
   FItemIndex := -1;
   for a := 0 to FRows.Count - 1 do
@@ -1494,6 +1499,8 @@ begin
       // Just fill in some values and update the values, before the combobox
       // popups
       ValueComboBox.Items.Text:=NewValue;
+      Exclude(FStates,pgsGetComboItemsCalled);
+      SetIdleEvent(true);
       ValueComboBox.Text:=NewValue;
     end else begin
       FCurrentEdit:=ValueEdit;
@@ -1518,6 +1525,7 @@ begin
     if FCurrentButton<>nil then
       FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
+  //DebugLn(['TOICustomPropertyGrid.SetItemIndex Vis=',ValueComboBox.Visible,' Ena=',ValueComboBox.Enabled,' Items.Count=',ValueComboBox.Items.Count ,' Text=',ValueComboBox.Text]);
   Exclude(FStates, pgsChangingItemIndex);
   DoSelectionChange;
   Invalidate;
@@ -2767,6 +2775,7 @@ var
   NewItemIndex: LongInt;
   ExcludeUpdateFlag: boolean;
 begin
+  Include(FStates,pgsGetComboItemsCalled);
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     //debugln('TOICustomPropertyGrid.ValueComboBoxDropDown A');
     ExcludeUpdateFlag:=not (pgsUpdatingEditControl in FStates);
@@ -2836,6 +2845,28 @@ begin
     end;
     CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,
                                 AState);
+  end;
+end;
+
+procedure TOICustomPropertyGrid.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if (not (pgsGetComboItemsCalled in FStates))
+  and (FCurrentEdit=ValueComboBox)
+  and ValueComboBox.Enabled
+  then begin
+    ValueComboBoxGetItems(Self);
+  end;
+end;
+
+procedure TOICustomPropertyGrid.SetIdleEvent(Enable: boolean);
+begin
+  if (pgsIdleEnabled in FStates)=Enable then exit;
+  if Enable then begin
+    Application.AddOnIdleHandler(@OnIdle);
+    Include(FStates,pgsIdleEnabled);
+  end else begin
+    Application.RemoveOnIdleHandler(@OnIdle);
+    Exclude(FStates,pgsIdleEnabled);
   end;
 end;
 
