@@ -213,48 +213,43 @@ begin
     exit;
   end;
 
-  Defines:=nil;
+  // set our debug function, clear codetools cache and calculate the values
+  if FNodeValues<>nil then
+    FNodeValues.FreeAndClear;
+  DefineTree.ClearCache;// make sure the defines are reparsed
+
+  OldOnCalculate:=DefineTree.OnCalculate;
+  DefineTree.OnCalculate:=@DefineTreeCalculate;
   try
-
-    // set our debug function, clear codetools cache and calculate the values
-    if FNodeValues<>nil then
-      FNodeValues.FreeAndClear;
-    DefineTree.ClearCache;// make sure the defines are reparsed
-    OldOnCalculate:=DefineTree.OnCalculate;
-    DefineTree.OnCalculate:=@DefineTreeCalculate;
-    try
-      Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
-    finally
-      DefineTree.OnCalculate:=OldOnCalculate;
-    end;
-
-    // fill the ValuesListview
-    ValuesListview.BeginUpdate;
-    if Defines<>nil then begin
-      for i:=0 to Defines.Count-1 do begin
-        if ValuesListview.Items.Count<=i then
-          ListItem:=ValuesListview.Items.Add
-        else
-          ListItem:=ValuesListview.Items[i];
-        ListItem.Caption:=Defines.Names(i);
-        Value:=Defines.Values(i);
-        if length(Value)>100 then
-          Value:=copy(Value,1,100)+' ...';
-        if ListItem.SubItems.Count<1 then
-          ListItem.SubItems.Add(Value)
-        else
-          ListItem.SubItems[0]:=Value;
-      end;
-      while ValuesListview.Items.Count>Defines.Count do
-        ValuesListview.Items.Delete(ValuesListview.Items.Count-1);
-    end else begin
-      ValuesListview.Items.Clear;
-    end;
-    ValuesListview.EndUpdate;
-    UpdateValue;
+    Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
   finally
-    Defines.Free;
+    DefineTree.OnCalculate:=OldOnCalculate;
   end;
+
+  // fill the ValuesListview
+  ValuesListview.BeginUpdate;
+  if Defines<>nil then begin
+    for i:=0 to Defines.Count-1 do begin
+      if ValuesListview.Items.Count<=i then
+        ListItem:=ValuesListview.Items.Add
+      else
+        ListItem:=ValuesListview.Items[i];
+      ListItem.Caption:=Defines.Names(i);
+      Value:=Defines.Values(i);
+      if length(Value)>100 then
+        Value:=copy(Value,1,100)+' ...';
+      if ListItem.SubItems.Count<1 then
+        ListItem.SubItems.Add(Value)
+      else
+        ListItem.SubItems[0]:=Value;
+    end;
+    while ValuesListview.Items.Count>Defines.Count do
+      ValuesListview.Items.Delete(ValuesListview.Items.Count-1);
+  end else begin
+    ValuesListview.Items.Clear;
+  end;
+  ValuesListview.EndUpdate;
+  UpdateValue;
 end;
 
 procedure TCodeToolsDefinesDialog.UpdateValue;
