@@ -168,7 +168,7 @@ var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
-  Adjustment := PGtkAdjustment(gtk_adjustment_new(1, 1, 100, 1, 1, 1));
+  Adjustment := PGtkAdjustment(gtk_adjustment_new(1, 1, 100, 1,1,1));
   Widget := gtk_spin_button_new(Adjustment, 1, 0);
   gtk_widget_show_all(Widget);
   {$IFDEF DebugLCLComponents}
