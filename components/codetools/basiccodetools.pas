@@ -2114,14 +2114,18 @@ begin
           // comment)
           TestPos:=Result-1;
           OnlySpace:=true;
-          while (TestPos>SrcStart) do begin
+          repeat
+            if TestPos<=SrcStart then begin
+              // no comment, the line end is really there :)
+              exit;
+            end;
             if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
               // this is a comment line end -> search further
               while (TestPos>SrcStart) and (Source[TestPos]='/') do
                 dec(TestPos);
               break;
             end else if Source[TestPos] in [#10,#13] then begin
-              // no comment, the line end ist really there :)
+              // no comment, the line end is really there :)
               exit;
             end else if OnlySpace
             and ((Source[TestPos]='}')
@@ -2132,7 +2136,7 @@ begin
               if (Source[Result]>' ') then OnlySpace:=false;
               dec(TestPos);
             end;
-          end;
+          until false;
           Result:=TestPos;
         end;
 

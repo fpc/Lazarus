@@ -2163,7 +2163,8 @@ begin
   if MainBeginNode=nil then exit;
   FromPos:=-1;
   if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(AClassName),
-    UpperCaseStr(AVarName),OldPosition)=-1 then begin
+    UpperCaseStr(AVarName),OldPosition)=-1
+  then begin
     // does not exist -> create as last in front of 'Application.Run'
     MoveCursorToCleanPos(MainBeginNode.StartPos);
     repeat
@@ -2291,6 +2292,7 @@ var Position, InsertPos, i, ColonPos, Indent: integer;
   StatementPos: TAtomPosition;
   MainBeginNode: TCodeTreeNode;
   AClassName, AVarName: string;
+  LastEndPos: Integer;
 begin
   Result:= false;
   if (List = nil) or (SourceChangeCache = nil) then exit;
@@ -2298,23 +2300,29 @@ begin
 
   { first delete all CreateForm Statements }
   SourceChangeCache.MainScanner:= Scanner;
-  MainBeginNode:= FindMainBeginEndNode;
+  MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode = nil then exit;
-  Position:= MainBeginNode.StartPos;
-  InsertPos:= -1;
+  Position:=MainBeginNode.StartPos;
+  InsertPos:=-1;
+  LastEndPos:=-1;
   repeat
     if FindCreateFormStatement(Position, '*', '*', StatementPos) = -1 then break;
 
-    Position:= StatementPos.EndPos;
-    StatementPos.StartPos:= FindLineEndOrCodeInFrontOfPosition(StatementPos.StartPos);
+    Position:=StatementPos.EndPos;
+    StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(StatementPos.StartPos);
+    if (LastEndPos>0) and (StatementPos.StartPos<LastEndPos) then
+      StatementPos.StartPos:=LastEndPos;
     if InsertPos < 1 then InsertPos:= StatementPos.StartPos;
 
-    StatementPos.EndPos:= FindLineEndOrCodeAfterPosition(StatementPos.EndPos);
+    StatementPos.EndPos:=FindLineEndOrCodeAfterPosition(StatementPos.EndPos);
+    LastEndPos:=StatementPos.EndPos;
 
-    SourceChangeCache.Replace(gtNone,gtNone, StatementPos.StartPos, StatementPos.EndPos, '');
+    if not SourceChangeCache.Replace(gtNone,gtNone, StatementPos.StartPos, StatementPos.EndPos, '') then
+      exit;
   until false;
 
-  Result:= SourceChangeCache.Apply;
+  Result:=SourceChangeCache.Apply;
+  if not Result then exit;
 
   { then add all CreateForm Statements }
   if InsertPos < 1 then begin
