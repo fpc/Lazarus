@@ -262,23 +262,26 @@ const
 { pbRaised  } Windows.SBT_POPOUT
   );
 var
-  BevelType: integer;
   Text: string;
+  WParam: windows.WPARAM;
 begin
   Text := StatusPanel.Text;
   case StatusPanel.Alignment of
     taCenter: Text := #9 + Text;
     taRightJustify: Text := #9#9 + Text;
   end;
-  BevelType := StatusBevelMap[StatusPanel.Bevel];
-
+  if StatusPanel.Style=psOwnerDraw then
+    WParam := SBT_OWNERDRAW
+  else
+    WParam := StatusBevelMap[StatusPanel.Bevel];
+  WParam := WParam or StatusPanel.Index;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXTW, StatusPanel.Index or BevelType, LPARAM(PWideChar(Utf8Decode(Text))))
+      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(Utf8Decode(Text))))
     else
-      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Utf8ToAnsi(Text))));
+      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(Text))));
   {$else}
-    Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+    Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Text)));
   {$endif}
 end;
 

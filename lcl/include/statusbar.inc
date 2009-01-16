@@ -86,6 +86,13 @@ begin
     OnHint(Self);
 end;
 
+procedure TStatusBar.LMDrawItem(var Message: TLMDrawItems);
+begin
+  if assigned(FOnDrawPanel) then
+    with Message.DrawItemStruct^ do
+      FOnDrawPanel(Self,Panels[itemID],rcItem);
+end;
+
 procedure TStatusBar.BoundsChanged;
 begin
   inherited BoundsChanged;
@@ -217,6 +224,7 @@ begin
   else
     Result := inherited ExecuteAction(ExeAction);
 end;
+
 
 function TStatusBar.SizeGripEnabled: Boolean;
 begin

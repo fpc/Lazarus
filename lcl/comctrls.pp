@@ -113,6 +113,9 @@ type
   TSBCreatePanelClassEvent = procedure(Sender: TStatusBar;
     var PanelClass: TStatusPanelClass) of object;
 
+  TDrawPanelEvent = procedure(StatusBar: TStatusBar; Panel: TStatusPanel;
+    const Rect: TRect) of object;
+
   { TStatusBar }
 
   TStatusBar = class(TWinControl)
@@ -128,6 +131,7 @@ type
     FPanels: TStatusPanels;
     FSimpleText: String;
     FSimplePanel: Boolean;
+    FOnDrawPanel: TDrawPanelEvent;
     FOnHint: TNotifyEvent;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
@@ -151,6 +155,7 @@ type
 
     function DoSetApplicationHint(AHintStr: String): Boolean; virtual;
     function DoHint: Boolean; virtual;
+    procedure LMDrawItem(var Message: TLMDrawItems); message LM_DRAWITEM;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,6 +191,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawPanel: TDrawPanelEvent read FOnDrawPanel write FOnDrawPanel;
     property OnEndDock;
     property OnEndDrag;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
