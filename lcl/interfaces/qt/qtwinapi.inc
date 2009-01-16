@@ -36,13 +36,19 @@
   Returns: Boolean
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
   {$endif}
   Result := IsValidDC(DC);
+
   if Result then
-    QPainter_drawArc(TQtDeviceContext(DC).Widget, Left, Top, Right, Bottom, Angle1, Angle2);
+  begin
+    R := Rect(Left, Top, Right, Bottom);
+    QPainter_drawArc(TQtDeviceContext(DC).Widget, @R, Angle1, Angle2);
+  end;
 end;
 
 {------------------------------------------------------------------------------
