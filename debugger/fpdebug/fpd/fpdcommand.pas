@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- fpwdcommand.pas  -  FP standalone windows debugger - Command interpreter
+ fpdcommand.pas  -  FP standalone debugger - Command interpreter
  ---------------------------------------------------------------------------
 
  This unit contains handles all debugger commands
@@ -31,54 +31,54 @@
  *                                                                         *
  ***************************************************************************
 }
-unit FPWDCommand;
+unit FPDCommand;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  SysUtils, Classes, Windows, WinDExtra, WinDebugger, LCLProc;
+  SysUtils, Classes, Windows, DbgWinExtra, DbgClasses, LCLProc;
 
 procedure HandleCommand(ACommand: String);
 
 implementation
 
 uses
-  FPWDGlobal, FPWDLoop, FPWDPEImage;
+  FPDGlobal, FPDLoop, FPDPEImage;
 
 type
-  TMWDCommandHandler = procedure(AParams: String);
+  TFPDCommandHandler = procedure(AParams: String);
 
-  TMWDCommand = class
+  TFPDCommand = class
   private
     FCommand: String;
-    FHandler: TMWDCommandHandler;
+    FHandler: TFPDCommandHandler;
     FHelp: String;
   public
-    constructor Create(const AHandler: TMWDCommandHandler; const ACommand, AHelp: String);
+    constructor Create(const AHandler: TFPDCommandHandler; const ACommand, AHelp: String);
     property Command: String read FCommand;
-    property Handler: TMWDCommandHandler read FHandler;
+    property Handler: TFPDCommandHandler read FHandler;
     property Help: String read FHelp;
   end;
 
-  TMWDCommandList = class
+  TFPDCommandList = class
   private
     FCommands: TStringList;
-    function GetItem(const AIndex: Integer): TMWDCommand;
+    function GetItem(const AIndex: Integer): TFPDCommand;
   public
-    procedure AddCommand(const ACommands: array of String; const AHandler: TMWDCommandHandler; const AHelp: String);
+    procedure AddCommand(const ACommands: array of String; const AHandler: TFPDCommandHandler; const AHelp: String);
     function Count: Integer;
     constructor Create;
     destructor Destroy; override;
-    function FindCommand(const ACommand: String): TMWDCommand;
+    function FindCommand(const ACommand: String): TFPDCommand;
     procedure HandleCommand(ACommand: String);
-    property Items[const AIndex: Integer]: TMWDCommand read GetItem; default;
+    property Items[const AIndex: Integer]: TFPDCommand read GetItem; default;
   end;
 
 
 var
-  MCommands: TMWDCommandList;
-  MShowCommands: TMWDCommandList;
-  MSetCommands: TMWDCommandList;
+  MCommands: TFPDCommandList;
+  MShowCommands: TFPDCommandList;
+  MSetCommands: TFPDCommandList;
 
 procedure HandleCommand(ACommand: String);
 begin
@@ -89,7 +89,7 @@ end;
 procedure HandleHelp(AParams: String);
 var
   n: Integer;
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
 begin
   if AParams = ''
   then begin
@@ -115,7 +115,7 @@ end;
 
 procedure HandleShow(AParams: String);
 var
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
   S: String;
 begin
   S := GetPart([], [' ', #9], AParams);
@@ -128,7 +128,7 @@ end;
 
 procedure HandleSet(AParams: String);
 var
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
   S: String;
 begin
   S := GetPart([], [' ', #9], AParams);
@@ -432,7 +432,7 @@ end;
 procedure HandleShowHelp(AParams: String);
 var
   n: Integer;
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
 begin
   if AParams = ''
   then begin
@@ -532,7 +532,7 @@ end;
 procedure HandleSetHelp(AParams: String);
 var
   n: Integer;
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
 begin
   if AParams = ''
   then begin
@@ -551,7 +551,7 @@ end;
 
 procedure HandleSetMode(AParams: String);
 const
-  MODE: array[TMWDMode] of String = ('32', '64');
+  MODE: array[TFPDMode] of String = ('32', '64');
 begin
   if AParams = ''
   then WriteLN(' Mode: ', MODE[GMode])
@@ -573,7 +573,7 @@ end;
 
 procedure HandleSetImageInfo(AParams: String);
 const
-  MODE: array[TMWDImageInfo] of String = ('none', 'name', 'detail');
+  MODE: array[TFPDImageInfo] of String = ('none', 'name', 'detail');
 begin
   if AParams = ''
   then WriteLN(' Imageinfo: ', MODE[GImageInfo])
@@ -593,9 +593,9 @@ end;
 //=================
 //=================
 
-{ TMWDCommand }
+{ TFPDCommand }
 
-constructor TMWDCommand.Create(const AHandler: TMWDCommandHandler; const ACommand, AHelp: String);
+constructor TFPDCommand.Create(const AHandler: TFPDCommandHandler; const ACommand, AHelp: String);
 begin
   inherited Create;
   FCommand := ACommand;
@@ -603,22 +603,22 @@ begin
   FHelp := AHelp;
 end;
 
-{ TMWDCommandList }
+{ TFPDCommandList }
 
-procedure TMWDCommandList.AddCommand(const ACommands: array of String; const AHandler: TMWDCommandHandler; const AHelp: String);
+procedure TFPDCommandList.AddCommand(const ACommands: array of String; const AHandler: TFPDCommandHandler; const AHelp: String);
 var
   n: Integer;
 begin
   for n := Low(ACommands) to High(ACommands) do
-    FCommands.AddObject(ACommands[n], TMWDCommand.Create(AHandler, ACommands[n], AHelp));
+    FCommands.AddObject(ACommands[n], TFPDCommand.Create(AHandler, ACommands[n], AHelp));
 end;
 
-function TMWDCommandList.Count: Integer;
+function TFPDCommandList.Count: Integer;
 begin
   Result := FCommands.Count;
 end;
 
-constructor TMWDCommandList.Create;
+constructor TFPDCommandList.Create;
 begin
   inherited;
   FCommands := TStringList.Create;
@@ -626,7 +626,7 @@ begin
   FCommands.Sorted := True;
 end;
 
-destructor TMWDCommandList.Destroy;
+destructor TFPDCommandList.Destroy;
 var
   n: integer;
 begin
@@ -636,24 +636,24 @@ begin
   inherited;
 end;
 
-function TMWDCommandList.FindCommand(const ACommand: String): TMWDCommand;
+function TFPDCommandList.FindCommand(const ACommand: String): TFPDCommand;
 var
   idx: Integer;
 begin
   idx := FCommands.IndexOf(ACommand);
   if idx = -1
   then Result := nil
-  else Result := TMWDCommand(FCommands.Objects[idx]);
+  else Result := TFPDCommand(FCommands.Objects[idx]);
 end;
 
-function TMWDCommandList.GetItem(const AIndex: Integer): TMWDCommand;
+function TFPDCommandList.GetItem(const AIndex: Integer): TFPDCommand;
 begin
-  Result := TMWDCommand(FCommands.Objects[AIndex]);
+  Result := TFPDCommand(FCommands.Objects[AIndex]);
 end;
 
-procedure TMWDCommandList.HandleCommand(ACommand: String);
+procedure TFPDCommandList.HandleCommand(ACommand: String);
 var
-  cmd: TMWDCommand;
+  cmd: TFPDCommand;
   S: String;
 begin
   S := GetPart([], [' ', #9], ACommand);
@@ -669,7 +669,7 @@ end;
 
 procedure Initialize;
 begin
-  MCommands := TMWDCommandList.Create;
+  MCommands := TFPDCommandList.Create;
 
   MCommands.AddCommand(['help', 'h', '?'], @HandleHelp, 'help [<command>]: Shows help on a command, or this help if no command given');
   MCommands.AddCommand(['quit', 'q'], @HandleQuit,  'quit: Quits the debugger');
@@ -687,13 +687,13 @@ begin
   MCommands.AddCommand(['evaluate', 'eval', 'e'], @HandleEval,  'evaluate <symbol>: Evaluate <symbol>');
 
 
-  MShowCommands := TMWDCommandList.Create;
+  MShowCommands := TFPDCommandList.Create;
 
   MShowCommands.AddCommand(['help', 'h', '?'], @HandleShowHelp, 'show help [<info>]: Shows help for info or this help if none given');
   MShowCommands.AddCommand(['file', 'f'], @HandleShowFile, 'show file: Shows the info for the current file');
   MShowCommands.AddCommand(['callstack', 'c'], @HandleShowCallStack,  'show callstack: Shows the callstack');
 
-  MSetCommands := TMWDCommandList.Create;
+  MSetCommands := TFPDCommandList.Create;
 
   MSetCommands.AddCommand(['help', 'h', '?'], @HandleSetHelp, 'set help [<param>]: Shows help for param or this help if none given');
   MSetCommands.AddCommand(['mode', 'm'], @HandleSetMode, 'set mode 32|64: Set the mode for retrieving process info');

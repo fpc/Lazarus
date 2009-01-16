@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- winddwarfconst.pas  -  Windows debugger - Dwarf constants
+ dbgdwarfconst.pas  -  Freepascal debugger - Dwarf constants
  ---------------------------------------------------------------------------
 
  This unit contains the constants defined for the dward debugging format.
@@ -25,7 +25,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit WinDDwarfConst;
+unit DbgDwarfConst;
 
 {$mode objfpc}{$H+}
 

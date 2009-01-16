@@ -1,10 +1,12 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windutil.pp  -  Native windows debugger - Utilities
+ fpd  -  FP standalone windows debugger
  ---------------------------------------------------------------------------
 
- This unit contains utility functions
+ fpwd is a concept Free Pascal Windows Debugger. It is mainly used to thest
+ the windebugger classes, but it may grow someday to a fully functional
+ debugger written in pascal.
 
  ---------------------------------------------------------------------------
 
@@ -31,23 +33,62 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDUtil;
-
+program fpd;
 {$mode objfpc}{$H+}
-
-interface
-
+{$APPTYPE CONSOLE}
 uses
-  Classes, SysUtils; 
-  
-function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+  SysUtils,
+  Windows,
+  FPDCommand,
+  FPDGlobal,
+  FPDLoop,
+  FPDPEImage,
+  FPDType,
+  DbgClasses, DbgWinExtra, DbgPETypes, DbgDwarfConst, DbgDwarf;
 
-implementation
-
-function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin
-  Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
+  Result := False;
+  case CtrlType of
+    CTRL_C_EVENT,
+    CTRL_BREAK_EVENT: begin
+      if GState <> dsRun then Exit;
+      if GMainProcess = nil then Exit;
+      GMainProcess.Interrupt;
+
+      Result := True;
+    end;
+    CTRL_CLOSE_EVENT: begin
+      if (GState in [dsRun, dsPause]) and (GMainProcess <> nil)
+      then TerminateProcess(GMainProcess.Handle, 0);
+//      GState := dsQuit;
+    end;
+  end;
 end;
 
+var
+  S, Last: String;
+begin
+  Write('FPDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
+  WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
+  WriteLn('Copyright (c) 2006-2009 by Marc Weustink');
+  WriteLN('starting....');
+  
+  if ParamCount > 0
+  then begin
+    GFileName := ParamStr(1);
+    WriteLN('Using file: ', GFileName);
+  end;
+
+  SetConsoleCtrlHandler(@CtrlCHandler, True);
+  repeat
+    Write('FPD>');
+    ReadLn(S);
+    if S <> ''
+    then Last := S;
+    if Last = '' then Continue;
+    HandleCommand(Last);
+  until GState = dsQuit;
+  SetConsoleCtrlHandler(@CtrlCHandler, False);
 end.
 

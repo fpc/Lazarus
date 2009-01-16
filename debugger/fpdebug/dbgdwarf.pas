@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- winddwarf.pas  -  Native windows debugger - Dwarf symbol reader
+ dbgdwarf.pas  -  Native Freepascal debugger - Dwarf symbol reader
  ---------------------------------------------------------------------------
 
  This unit contains helper classes for loading and resolving of DWARF debug
@@ -32,15 +32,15 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDDwarf;
+unit DbgDwarf;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, Types, SysUtils, WinDebugger, WinDDwarfConst, Maps, Math,
-  WinDLoader, WindExtra, contnrs;
+  Classes, Types, SysUtils, DbgClasses, DbgDwarfConst, Maps, Math,
+  DbgLoader, DbgWinExtra, contnrs;
   
 type
   // compilation unit header

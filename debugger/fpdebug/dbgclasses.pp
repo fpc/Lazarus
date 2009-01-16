@@ -1,10 +1,10 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windebugger.pp  -  Native windows debugger
+ dbgclasses.pp  -  Native freepascal debugger
  ---------------------------------------------------------------------------
 
- This unit contains debugger classes for a native windows debugger
+ This unit contains debugger classes for a native freepascal debugger
 
  ---------------------------------------------------------------------------
 
@@ -31,14 +31,16 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDebugger;
+unit DbgClasses;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  Windows, Classes, Maps, WinDExtra, WinDLoader;
+  Windows, Classes, Maps, DbgUtil, DbgWinExtra, DbgLoader;
 
 type
+  TDbgPtr = QWord; // PtrUInt;
+
   TDbgProcess = class;
 
   TDbgThread = class(TObject)
@@ -264,7 +266,7 @@ type
 implementation
 
 uses
-  SysUtils, WinDDwarf;
+  SysUtils, DbgDwarf;
 
 procedure LogLastError;
 begin

@@ -1,7 +1,7 @@
 { $Id $ }
 {
  ---------------------------------------------------------------------------
- fpwdtype.pas  -  FP standalone windows debugger - Type definitions
+ fpdtype.pas  -  FP standalone debugger - Type definitions
  ---------------------------------------------------------------------------
 
  This unit contains types/consts not yet part of the RTL.
@@ -26,7 +26,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit FPWDType;
+unit FPDType;
 
 {$mode objfpc}{$H+}
 {$ALIGN ON}

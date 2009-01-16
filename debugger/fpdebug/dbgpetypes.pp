@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windpetypes.pp  -  Windows debugger - PE types
+ dbgpetypes.pp  -  Freepascal debugger - PE types
  ---------------------------------------------------------------------------
 
  This unit contains the types needed for reading PE images.
@@ -17,7 +17,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Project                                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -26,7 +26,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit WinDPETypes;
+unit DbgPETypes;
 {$mode objfpc}{$H+}{$inline on}
 interface
 

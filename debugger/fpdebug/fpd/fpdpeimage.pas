@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- fpwdpeimage.pas  -  FP standalone windows debugger - PE Image
+ fpdpeimage.pas  -  FP standalone debugger - PE Image
  ---------------------------------------------------------------------------
 
  This unit contains routines to access or dump the PE header of a executable
@@ -32,12 +32,12 @@
  *                                                                         *
  ***************************************************************************
 }
-unit FPWDPEImage;
+unit FPDPEImage;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  Windows, SysUtils, FPWDGLobal, WinDExtra, WinDPETypes;
+  Windows, SysUtils, FPDGLobal, DbgClasses, DbgPETypes;
 
 procedure DumpPEImage(const AProcessHandle: THandle; const AAddress: TDbgPtr);
 

@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windloader.pp  -  Native windows debugger - Section loader
+ dbgloader.pp  -  Native Freepascal debugger - Section loader
  ---------------------------------------------------------------------------
 
  This unit contains helper classes for loading secions form images.
@@ -31,7 +31,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDLoader;
+unit DbgLoader;
 
 {$mode objfpc}{$H+}
 
@@ -41,7 +41,7 @@ uses
   {$ifdef windows}
   Windows,
   {$endif}
-  Classes, SysUtils, WinDPETypes;
+  Classes, SysUtils, DbgPETypes;
 
 type
   TDbgImageSection = record

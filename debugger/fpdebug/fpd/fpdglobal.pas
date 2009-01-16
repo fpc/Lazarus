@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- fpwdglobal.pas  -  FP standalone windows debugger - Globals
+ fpdglobal.pas  -  FP standalone debugger - Globals
  ---------------------------------------------------------------------------
 
  This unit contains global types / vars
@@ -31,31 +31,31 @@
  *                                                                         *
  ***************************************************************************
 }
-unit FPWDGlobal;
+unit FPDGlobal;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  SysUtils, Windows, FPWDType, Maps, WinDebugger, WinDExtra;
+  SysUtils, Windows, FPDType, Maps, DbgUtil, DbgClasses, DbgWinExtra;
 
 type
-  TMWDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
-  TMWDMode = (dm32, dm64);
-  TMWDImageInfo = (iiNone, iiName, iiDetail);
+  TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
+  TFPDMode = (dm32, dm64);
+  TFPDImageInfo = (iiNone, iiName, iiDetail);
   
 const
-  DBGPTRSIZE: array[TMWDMode] of Integer = (4, 8);
+  DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
 
 var
-  GState: TMWDState;
+  GState: TFPDState;
   GFileName: String;
   {$ifdef cpui386}
-  GMode: TMWDMode = dm32;
+  GMode: TFPDMode = dm32;
   {$else}
-  GMode: TMWDMode = dm64;
+  GMode: TFPDMode = dm64;
   {$endif}
   GBreakOnLibraryLoad: Boolean = False;
-  GImageInfo: TMWDImageInfo = iiNone;
+  GImageInfo: TFPDImageInfo = iiNone;
   
   GCurrentContext: PContext;
 

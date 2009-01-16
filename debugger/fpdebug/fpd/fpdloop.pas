@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- fpwdloop.pas  -  FP standalone windows debugger - Debugger main loop
+ fpdloop.pas  -  FP standalone debugger - Debugger main loop
  ---------------------------------------------------------------------------
 
  This unit contains the main loop of the debugger. It waits for a debug
@@ -32,12 +32,12 @@
  *                                                                         *
  ***************************************************************************
 }
-unit FPWDLoop;
+unit FPDLoop;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  Windows, Classes, SysUtils, WinDebugger, WinDExtra, WinDisas;
+  Windows, Classes, SysUtils, FileUtil, DbgClasses, DbgWinExtra, DbgDisasX86;
 
 procedure DebugLoop;
 
@@ -45,7 +45,7 @@ procedure DebugLoop;
 implementation
 
 uses
-  FPWDGlobal, FPWDPEImage, FPWDType;
+  FPDGlobal, FPDPEImage, FPDType;
 
 var
   MDebugEvent: TDebugEvent;

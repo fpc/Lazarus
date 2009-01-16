@@ -1,12 +1,10 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- fpwd  -  FP standalone windows debugger
+ dbgutil.pp  -  Native freepascal debugger - Utilities
  ---------------------------------------------------------------------------
 
- fpwd is a concept Free Pascal Windows Debugger. It is mainly used to thest
- the windebugger classes, but it may grow someday to a fully functional
- debugger written in pascal.
+ This unit contains utility functions
 
  ---------------------------------------------------------------------------
 
@@ -33,62 +31,82 @@
  *                                                                         *
  ***************************************************************************
 }
-program fpwd;
+unit DbgUtil;
+
 {$mode objfpc}{$H+}
-{$APPTYPE CONSOLE}
+
+interface
+
 uses
-  SysUtils,
-  Windows,
-  FPWDCommand,
-  FPWDGlobal,
-  FPWDLoop,
-  FPWDPEImage,
-  FPWDType,
-  WinDebugger, WinDExtra, WinDPETypes, WinDDwarfConst, WinDDwarf;
+  Classes, SysUtils; 
 
-function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
+type
+  THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
+  THexValueFormatFlags = set of THexValueFormatFlag;
+
+  
+function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
+procedure Log(const AText: String; const AParams: array of const); overload;
+procedure Log(const AText: String); overload;
+
+
+implementation
+
+function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 begin
-  Result := False;
-  case CtrlType of
-    CTRL_C_EVENT,
-    CTRL_BREAK_EVENT: begin
-      if GState <> dsRun then Exit;
-      if GMainProcess = nil then Exit;
-      GMainProcess.Interrupt;
-
-      Result := True;
-    end;
-    CTRL_CLOSE_EVENT: begin
-      if (GState in [dsRun, dsPause]) and (GMainProcess <> nil)
-      then TerminateProcess(GMainProcess.Handle, 0);
-//      GState := dsQuit;
-    end;
-  end;
+  Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
 end;
 
+function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 var
-  S, Last: String;
+  i: Int64;
+  p: PByte;
 begin
-  Write('FPWDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
-  WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
-  WriteLn('Copyright (c) 2006 by Marc Weustink');
-  WriteLN('starting....');
-  
-  if ParamCount > 0
+  if ASize > 8
   then begin
-    GFileName := ParamStr(1);
-    WriteLN('Using file: ', GFileName);
+    Result := 'HexValue: size to large';
+    Exit;
+  end;
+  if ASize = 0
+  then begin
+    Result := '';
+    Exit;
   end;
 
-  SetConsoleCtrlHandler(@CtrlCHandler, True);
-  repeat
-    Write('FPWD>');
-    ReadLn(S);
-    if S <> ''
-    then Last := S;
-    if Last = '' then Continue;
-    HandleCommand(Last);
-  until GState = dsQuit;
-  SetConsoleCtrlHandler(@CtrlCHandler, False);
+  p := @AValue;
+  if p[ASize - 1] < $80
+  then Exclude(AFlags, hvfSigned);
+
+  if hvfSigned in AFlags
+  then i := -1
+  else i := 0;
+
+  Move(AValue, i, ASize);
+  if hvfSigned in AFlags
+  then begin
+    i := not i + 1;
+    Result := '-';
+  end
+  else begin
+    if hvfPrefixPositive in AFlags
+    then Result := '+';
+  end;
+  if hvfIncludeHexchar in AFlags
+  then Result := Result + '$';
+
+  Result := Result + HexStr(i, ASize * 2);
+end;
+
+procedure Log(const AText: String; const AParams: array of const); overload;
+begin
+  WriteLN(Format(AText, AParams));
+end;
+
+procedure Log(const AText: String); overload;
+begin
+  WriteLN(AText);
+end;
+
 end.
 

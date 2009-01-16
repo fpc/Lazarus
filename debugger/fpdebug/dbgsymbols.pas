@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windsymbols.pas  -  Native windows debugger - Symbol loader/resolver
+ dbgsymbols.pas  -  Native freepascal debugger - Symbol loader/resolver
  ---------------------------------------------------------------------------
 
  This unit contains helper classes for loading and resolving of debug symbols
@@ -31,14 +31,14 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDSymbols;
+unit DbgSymbols;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Windows, Classes, SysUtils, WinDebugger, WinDExtra, WinDPETypes, WinDDwarf;
+  Windows, Classes, SysUtils, DbgClasses, DbgWinExtra, DbgPETypes, DbgDwarf;
   
 
 procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);

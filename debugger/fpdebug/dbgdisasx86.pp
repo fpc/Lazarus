@@ -1,10 +1,10 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- windisas.pp  -  Native windows debugger - Disassembler
+ dbgdisasx86.pp  -  Native Freepascal debugger - x86 Disassembler
  ---------------------------------------------------------------------------
 
- This unit contains a disassembler for the Native windows debugger
+ This unit contains a x86 disassembler for the Native Freepascal debugger
 
  ---------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit WinDisas;
+unit DbgDisasX86;
 {$mode objfpc}{$H+}
 interface
 
@@ -39,7 +39,7 @@ interface
 {.$define verbose_string_instructions}
 
 uses
-  SysUtils, Windows, WindExtra;
+  SysUtils, Windows, DbgUtil, DbgWinExtra, DbgClasses;
 
 {                   
   The function Disassemble decodes the instruction at the given address.
