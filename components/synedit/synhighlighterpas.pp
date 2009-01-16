@@ -1379,17 +1379,21 @@ end;
 
 function TSynPasSyn.Func143: TtkTokenKind;
 begin
-  if KeyComp('Destructor') then begin
-    if not(rsAfterEqual in fRange) then begin
+  if KeyComp('Destructor') then
+  begin
+    if not(rsAfterEqual in fRange) then
+    begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
-      if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
+      if TopPascalCodeFoldBlockType = cfbtVarType then EndCodeFoldBlockLastLine;
       if not (rsInterface in fRange) and
-         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
-      then
+         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
         StartPascalCodeFoldBlock(cfbtProcedure);
     end;
     Result := tkKey;
   end else
+  if KeyComp('compilerproc') then // fpc modifier
+    Result := tkKey
+  else
     Result := tkIdentifier;
 end;
 
