@@ -7890,6 +7890,9 @@ function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
   FIcon := nil;
   Result := QMenu_create();
+  {$IFDEF USE_QT_44}
+  FDeleteLater := True;
+  {$ENDIF}
   FActionHandle := nil;;
 end;
 
