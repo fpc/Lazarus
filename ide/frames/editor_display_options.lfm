@@ -5,8 +5,8 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   ClientWidth = 501
   TabOrder = 0
   Visible = False
-  DesignLeft = 154
-  DesignTop = 203
+  DesignLeft = 371
+  DesignTop = 138
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -66,7 +66,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 6
       Height = 17
       Top = 6
-      Width = 151
+      Width = 154
       BorderSpacing.Around = 6
       Caption = 'VisibleRightMarginCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -79,7 +79,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 6
       Height = 17
       Top = 29
-      Width = 125
+      Width = 126
       BorderSpacing.Around = 6
       Caption = 'VisibleGutterCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -92,7 +92,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 6
       Height = 17
       Top = 52
-      Width = 152
+      Width = 156
       BorderSpacing.Around = 6
       Caption = 'ShowLineNumbersCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -103,12 +103,12 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MarginAndGutterGroupBox
-      Left = 232
+      Left = 226
       Height = 21
       Top = 6
-      Width = 50
+      Width = 56
       AutoComplete = False
-      BorderSpacing.Left = 50
+      BorderSpacing.Left = 44
       BorderSpacing.Around = 6
       Ctl3D = False
       ItemHeight = 13
@@ -142,10 +142,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = RightMarginComboBox
       AnchorSideTop.Control = RightMarginComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 232
+      Left = 226
       Height = 23
       Top = 33
-      Width = 50
+      Width = 56
       MaxValue = 4
       MinValue = -1
       OnChange = GeneralCheckBoxOnChange
@@ -268,6 +268,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '18'
       )
       ItemWidth = 0
+      OnChange = ComboboxOnChange
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 2
@@ -292,6 +293,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '2'
       )
       ItemWidth = 0
+      OnChange = ComboboxOnChange
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 4
@@ -314,6 +316,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
         '2'
       )
       ItemWidth = 0
+      OnChange = ComboboxOnChange
       OnExit = ComboboxOnExit
       OnKeyDown = ComboBoxOnKeyDown
       TabOrder = 3
@@ -325,7 +328,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Left = 6
       Height = 21
       Top = 60
-      Width = 153
+      Width = 155
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'DisableAntialiasingCheckBox'
@@ -356,7 +359,6 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     ParentFont = False
     TabOrder = 2
     BookMarkOptions.Xoffset = 30
-    BookMarkOptions.OnChange = nil
     Gutter.RightOffset = 0
     Gutter.LeftOffset = 0
     Gutter.ShowCodeFolding = True
@@ -689,6 +691,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       'DisplayPreview'
     )
     ReadOnly = True
+    SelectedColor.StartX = 0
+    SelectedColor.EndX = 0
+    SelectedColor.OnChange = nil
     BracketHighlightStyle = sbhsBoth
   end
 end
