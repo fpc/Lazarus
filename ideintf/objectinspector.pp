@@ -942,13 +942,13 @@ begin
         ValueComboBox.Items.Assign(FNewComboBoxItems);
       end;
       //debugln('TOICustomPropertyGrid.FillComboboxItems "',FNewComboBoxItems.Text,'" Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
-      FreeAndNil(FNewComboBoxItems);
     end else begin
       ValueComboBox.Items.Text:='';
       ValueComboBox.Items.Clear;
       //debugln('TOICustomPropertyGrid.FillComboboxItems FNewComboBoxItems=nil Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
     end;
   finally
+    FreeAndNil(FNewComboBoxItems);
     ValueComboBox.Items.EndUpdate;
     if ExcludeUpdateFlag then
       Exclude(FStates,pgsUpdatingEditControl);
