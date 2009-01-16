@@ -635,6 +635,8 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
     BufferWideString: widestring;
     BufferString: ansistring;
     {$ENDIF}
+    ScreenDC, MemDC: HDC;
+    OldBitmap, NewBitmap: HBitmap;
   begin
     DataStream := TMemoryStream.Create;
     BufferStream := TMemoryStream.Create;
@@ -645,10 +647,27 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
       CF_BITMAP:
         begin
           Bitmap:= TBitmap.Create;
-          Bitmap.TransparentColor := clNone;
-          Bitmap.LoadFromStream(DataStream);
-          Windows.SetClipboardData(FormatID, Bitmap.Handle);
-          Bitmap.Free;
+          try
+            Bitmap.LoadFromStream(DataStream);
+            ScreenDC := GetDC(0);
+            try
+              MemDC := Windows.CreateCompatibleDC(ScreenDC);
+              NewBitmap := Windows.CreateCompatibleBitmap(ScreenDC, Bitmap.Width, Bitmap.Height);
+              OldBitmap := Windows.SelectObject(MemDC, NewBitmap);
+              StretchMaskBlt(MemDC, 0, 0, Bitmap.Width, Bitmap.Height,
+                Bitmap.Canvas.Handle, 0, 0, Bitmap.Width, Bitmap.Height,
+                Bitmap.MaskHandle, 0, 0, SRCCOPY);
+              Windows.SelectObject(MemDC, OldBitmap);
+              Windows.DeleteDC(MemDC);
+              Windows.SetClipboardData(FormatID, NewBitmap);
+              // GDI objects count does not vary if we delete it or not
+              // DeleteObject(NewBitmap);
+            finally
+              ReleaseDC(0, ScreenDC);
+            end;
+          finally
+            Bitmap.Free;
+          end;
         end;
      {$IFDEF WindowsUnicodeSupport}
       Windows.CF_UNICODETEXT, Windows.CF_TEXT:
