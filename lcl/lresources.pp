@@ -289,7 +289,7 @@ type
     procedure HandleNumber;
     procedure HandleHexNumber;
     function HandleQuotedString : string;
-    function HandleDecimalString: string;
+    function HandleDecimalString(var ascii: Boolean): string;
     procedure HandleString;
     procedure HandleMinus;
     procedure HandleUnknown;
@@ -2526,14 +2526,12 @@ var
       Output.Write(s[1], Length(s));
   end;
 
-  {$IFDEF DisableWindowsUnicodeSupport}
   procedure WriteWideString(const s: WideString);
   begin
     WriteLRSInteger(Output,Length(s));
     if Length(s) > 0 then
       Output.Write(s[1], Length(s)*2);
   end;
-  {$ENDIF}
 
   procedure WriteInteger(value: LongInt);
   begin
@@ -2621,9 +2619,6 @@ var
     flt: Extended;
     stream: TMemoryStream;
     BinDataSize: LongInt;
-    {$IFDEF DisableWindowsUnicodeSupport}
-    toWideStringBuf: WideString;
-    {$ENDIF}
     toStringBuf: String;
   begin
     if parser.TokenSymbolIs('END') then exit;
@@ -2663,35 +2658,20 @@ var
             WriteLongString(toStringBuf);
           end;
         end;
-      {$IFDEF DisableWindowsUnicodeSupport}
       toWString:
         begin
-          toWideStringBuf := parser.TokenWideString;
-          //DebugLn(['ProcessValue toWideStringBuf="',toWideStringBuf,'" ',dbgstr(toWideStringBuf)]);
+          toStringBuf := parser.TokenString;
+          //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
           while ParserNextToken = '+' do
           begin
             ParserNextToken;   // Get next string fragment
             if not (parser.Token in [toString,toWString]) then
               parser.CheckToken(toString);
-            toWideStringBuf := toWideStringBuf + parser.TokenWideString;
+            toStringBuf := toStringBuf + parser.TokenString;
           end;
-          if WideStringNeeded(toWideStringBuf) then begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
-            Output.WriteByte(Ord(vaWString));
-            WriteWideString(toWideStringBuf);
-          end
-          else
-          if length(toStringBuf)<256 then begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
-            Output.WriteByte(Ord(vaString));
-            WriteShortString(WideStrToShortStrWithoutConversion(toWideStringBuf));
-          end else begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
-            Output.WriteByte(Ord(vaLString));
-            WriteLongString(WideStrToAnsiStrWithoutConversion(toWideStringBuf));
-          end;
+          Output.WriteByte(Ord(vaWString));
+          WriteWideString(UTF8Decode(toStringBuf));
         end;
-      {$ENDIF}
       toSymbol:
         begin
           if CompareText(parser.TokenString, 'True') = 0 then
@@ -5106,7 +5086,7 @@ begin
   end;
 end;
 
-function TUTF8Parser.HandleDecimalString: string;
+function TUTF8Parser.HandleDecimalString(var ascii: Boolean): string;
 var i : integer;
 begin
   Result:='';
@@ -5120,19 +5100,27 @@ begin
   end;
   if not TryStrToInt(Result,i) then
     i:=0;
+  if i > 127 then
+    ascii := False;
   Result:=UnicodeToUTF8(i);
 end;
 
 procedure TUTF8Parser.HandleString;
+var
+  ascii: Boolean;
 begin
   fLastTokenStr:='';
+  ascii := True;
   while true do
     case fBuf[fPos] of
       '''' : fLastTokenStr:=fLastTokenStr+HandleQuotedString;
-      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString
+      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString(ascii);
       else break;
     end;
-  fToken:=toString;
+  if ascii then
+    fToken:=toString
+  else
+    fToken:=toWString;
 end;
 
 procedure TUTF8Parser.HandleMinus;
