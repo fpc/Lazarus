@@ -1734,7 +1734,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
       ,fEditorFontHeight, SynDefaultFontHeight);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraCharSpacing'
-      ,fExtraCharSpacing, 1);
+      ,fExtraCharSpacing, 0);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
       ,fExtraLineSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/DisableAntialiasing'
