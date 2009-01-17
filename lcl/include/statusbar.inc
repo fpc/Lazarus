@@ -93,11 +93,18 @@ begin
 end;
 
 procedure TStatusBar.LMDrawItem(var Message: TLMDrawItems);
+var
+  OldHandle: HDC;
 begin
   with Message.DrawItemStruct^ do
   begin
+    if Canvas.HandleAllocated then
+      OldHandle := Canvas.Handle
+    else
+      OldHandle := 0;
     Canvas.Handle := _hDC;
     DrawPanel(Panels[itemID], rcItem);
+    Canvas.Handle := OldHandle;
   end;
 end;
 
