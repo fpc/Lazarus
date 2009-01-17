@@ -291,207 +291,207 @@
         <UnitName Value="ComponentList"/>
       </Unit35>
       <Unit36>
-        <Filename Value="frames/oi_options.pas"/>
-        <ComponentName Value="OIOptionsFrame"/>
-        <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="OI_options"/>
-      </Unit36>
-      <Unit37>
-        <Filename Value="frames/files_options.pas"/>
-        <ComponentName Value="FilesOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="files_options"/>
-      </Unit37>
-      <Unit38>
-        <Filename Value="frames/desktop_options.pas"/>
-        <ComponentName Value="DesktopOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="desktop_options"/>
-      </Unit38>
-      <Unit39>
-        <Filename Value="frames/window_options.pas"/>
-        <ComponentName Value="WindowOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="window_options"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="frames/formed_options.pas"/>
-        <ComponentName Value="FormEditorOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="formed_options"/>
-      </Unit40>
-      <Unit41>
-        <Filename Value="frames/backup_options.pas"/>
-        <ComponentName Value="BackupOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="backup_options"/>
-      </Unit41>
-      <Unit42>
-        <Filename Value="frames/naming_options.pas"/>
-        <ComponentName Value="NamingOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="naming_options"/>
-      </Unit42>
-      <Unit43>
-        <Filename Value="frames/fpdoc_options.pas"/>
-        <ComponentName Value="FpDocOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fpdoc_options"/>
-      </Unit43>
-      <Unit44>
         <Filename Value="frames/options_editor_general.pas"/>
         <ComponentName Value="EditorGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_general"/>
-      </Unit44>
-      <Unit45>
+      </Unit36>
+      <Unit37>
         <Filename Value="frames/options_editor_display.pas"/>
         <ComponentName Value="EditorDisplayOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_display"/>
-      </Unit45>
-      <Unit46>
+      </Unit37>
+      <Unit38>
         <Filename Value="frames/options_editor_keymapping.pas"/>
         <ComponentName Value="EditorKeymappingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_keymapping"/>
-      </Unit46>
-      <Unit47>
+      </Unit38>
+      <Unit39>
         <Filename Value="frames/options_editor_color.pas"/>
         <ComponentName Value="EditorColorOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_color"/>
-      </Unit47>
-      <Unit48>
+      </Unit39>
+      <Unit40>
         <Filename Value="frames/options_editor_codetools.pas"/>
         <ComponentName Value="EditorCodetoolsOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_codetools"/>
-      </Unit48>
-      <Unit49>
+      </Unit40>
+      <Unit41>
         <Filename Value="frames/options_editor_codefolding.pas"/>
         <ComponentName Value="EditorCodefoldingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_codefolding"/>
-      </Unit49>
-      <Unit50>
+      </Unit41>
+      <Unit42>
         <Filename Value="frames/options_codetools_general.pas"/>
         <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_general"/>
-      </Unit50>
-      <Unit51>
+      </Unit42>
+      <Unit43>
         <Filename Value="frames/options_codetools_codecreation.pas"/>
         <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_codecreation"/>
-      </Unit51>
-      <Unit52>
+      </Unit43>
+      <Unit44>
         <Filename Value="frames/options_codetools_wordpolicy.pas"/>
         <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_wordpolicy"/>
-      </Unit52>
-      <Unit53>
+      </Unit44>
+      <Unit45>
         <Filename Value="frames/options_codetools_linesplitting.pas"/>
         <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_linesplitting"/>
-      </Unit53>
-      <Unit54>
+      </Unit45>
+      <Unit46>
         <Filename Value="frames/options_codetools_space.pas"/>
         <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_space"/>
-      </Unit54>
-      <Unit55>
+      </Unit46>
+      <Unit47>
         <Filename Value="frames/options_codetools_identifiercompletion.pas"/>
         <ComponentName Value="CodetoolsIndentifierComplietionOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_codetools_identifiercompletion"/>
-      </Unit55>
-      <Unit56>
+      </Unit47>
+      <Unit48>
         <Filename Value="frames/options_editor_general_misc.pas"/>
         <ComponentName Value="EditorGeneralMiscOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_editor_general_misc"/>
-      </Unit56>
-      <Unit57>
+      </Unit48>
+      <Unit49>
         <Filename Value="../debugger/frames/options_debugger_general.pas"/>
         <ComponentName Value="DebuggerGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_general"/>
-      </Unit57>
-      <Unit58>
+      </Unit49>
+      <Unit50>
         <Filename Value="../debugger/frames/options_debugger_eventlog.pas"/>
         <ComponentName Value="DebuggerEventLogOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_eventlog"/>
-      </Unit58>
-      <Unit59>
+      </Unit50>
+      <Unit51>
         <Filename Value="../debugger/frames/options_debugger_language_exceptions.pas"/>
         <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_language_exceptions"/>
-      </Unit59>
-      <Unit60>
+      </Unit51>
+      <Unit52>
         <Filename Value="../debugger/frames/options_debugger_signals.pas"/>
         <ComponentName Value="DebuggerSignalsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_signals"/>
-      </Unit60>
-      <Unit61>
+      </Unit52>
+      <Unit53>
         <Filename Value="frames/options_compiler_conditionals.pas"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Options_Compiler_Conditionals"/>
-      </Unit61>
-      <Unit62>
+      </Unit53>
+      <Unit54>
         <Filename Value="frames/compiler_conditionals_options.pas"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Compiler_Conditionals_Options"/>
-      </Unit62>
-      <Unit63>
+      </Unit54>
+      <Unit55>
         <Filename Value="frames/options_compiler_buildmodes.pas"/>
         <ComponentName Value="CompOptBuildModesFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_compiler_buildmodes"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="frames/options_oi.pas"/>
+        <ComponentName Value="OIOptionsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_OI"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="frames/options_files.pas"/>
+        <ComponentName Value="FilesOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_files"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="frames/options_desktop.pas"/>
+        <ComponentName Value="DesktopOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_desktop"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="frames/options_window.pas"/>
+        <ComponentName Value="WindowOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_window"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="frames/options_formed.pas"/>
+        <ComponentName Value="FormEditorOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_formed"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="frames/options_backup.pas"/>
+        <ComponentName Value="BackupOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_backup"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="frames/options_naming.pas"/>
+        <ComponentName Value="NamingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_naming"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="frames/options_fpdoc.pas"/>
+        <ComponentName Value="FpDocOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="options_fpdoc"/>
       </Unit63>
     </Units>
   </ProjectOptions>
