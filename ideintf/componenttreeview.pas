@@ -182,8 +182,10 @@ begin
   begin
     AnObject := TObject(Node.Data);
     if (AnObject is TWinControl) and 
-       (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
-    begin
+       (csAcceptsControls in TWinControl(AnObject).ControlStyle)
+    and (TWinControl(AnObject).Owner<>nil) // TReader/TWriter only supports this
+    and (TWinControl(AnObject).Owner.Owner=nil) // TReader/TWriter only supports this
+    then begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
     end;
