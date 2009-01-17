@@ -86,14 +86,19 @@ begin
     OnHint(Self);
 end;
 
-procedure TStatusBar.LMDrawItem(var Message: TLMDrawItems);
+procedure TStatusBar.DrawPanel(Panel: TStatusPanel; const Rect: TRect);
 begin
   if Assigned(FOnDrawPanel) then
-    with Message.DrawItemStruct^ do
-    begin
-      Canvas.Handle := _hDC;
-      FOnDrawPanel(Self, Panels[itemID], rcItem);
-    end;
+    FOnDrawPanel(Self, Panel, Rect);
+end;
+
+procedure TStatusBar.LMDrawItem(var Message: TLMDrawItems);
+begin
+  with Message.DrawItemStruct^ do
+  begin
+    Canvas.Handle := _hDC;
+    DrawPanel(Panels[itemID], rcItem);
+  end;
 end;
 
 procedure TStatusBar.BoundsChanged;

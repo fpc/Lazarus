@@ -155,6 +155,7 @@ type
 
     function DoSetApplicationHint(AHintStr: String): Boolean; virtual;
     function DoHint: Boolean; virtual;
+    procedure DrawPanel(Panel: TStatusPanel; const Rect: TRect); dynamic;
     procedure LMDrawItem(var Message: TLMDrawItems); message LM_DRAWITEM;
   public
     constructor Create(TheOwner: TComponent); override;
