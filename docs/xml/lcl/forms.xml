@@ -161,23 +161,19 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPosition">
-        <short>Repre<b>sen</b>ts the Position and Size on Screen of an Form</short>
-        <descr>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer<br/>
-
-poDefault - The window manager decides how the form is to appear, in a default position and size<br/>
+        <short>Represents the Position and Size on Screen of an Form</short>
+        <descr>
+          <p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p>
+          <p>poDefault - The window manager decides how the form is to appear, in a default position and size</p>
 
 poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager<br/>
 
 poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager<br/>
-
-poScreenCenter - Centers the form on screen<br/>
-
-poDeskTopCenter - Centers the form on desktop<br/>
-
-poMainFormCenter - Centers the Form on the Main Form<br/>
-
-poOwnerFormCenter - Centers the Form on Owner form
-</descr>
+          <p>poScreenCenter - Centers the form on screen</p>
+          <p>poDeskTopCenter - Centers the form on desktop</p>
+          <p>poMainFormCenter - Centers the Form on the Main Form</p>
+          <p>poOwnerFormCenter - Centers the Form on Owner form</p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -215,11 +211,11 @@ poOwnerFormCenter - Centers the Form on Owner form
       <!-- enumeration type Visibility: default -->
       <element name="TWindowState">
         <short>Represents the actual State of the window on the screen</short>
-        <descr>wsNormal - The window appears normal<br/>
-
-wsMinimized - The window appears minimized<br/>
-
-wsMaximized - The window appears maximized</descr>
+        <descr>
+          <p>wsNormal - The window appears normal</p>
+          <p>wsMinimized - The window appears minimized</p>
+          <p>wsMaximized - The window appears maximized</p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -261,8 +257,8 @@ wsMaximized - The window appears maximized</descr>
       <!-- object Visibility: default -->
       <element name="TScrollingWinControl">
         <short>
-          <var>TScrollingWinControl</var> - a class of Window Contrl that has one or more scroll bars</short>
-        <descr>Scrolling Window Control: A window control with scroll bars.<br/>
+          <var>TScrollingWinControl</var> - a class of Window Control that has one or more scroll bars</short>
+        <descr>Scrolling Window Control: A window control with scroll bars.
 An ancestor class for many forms with scrolling windows
 </descr>
         <errors/>
@@ -678,10 +674,14 @@ This is an ancestor class for many form types and classes of windowed controls
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlScrollBar.Create" link="#rtl.System.TObject.Create">
+      <element name="TControlScrollBar.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TControlScrollBar</var>: performs inherited <var>Create</var> then initialises local flags for page, increment, position etc</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlScrollBar.Create.AControl">
@@ -692,12 +692,16 @@ This is an ancestor class for many form types and classes of windowed controls
         <short>Whether this is a horizontal or a vertical scrollbar</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlScrollBar.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TControlScrollBar.Assign">
+        <short>
+          <var>Assign</var> - if Source is a <var>TControlScrollBar</var>, copies properties to itself, else performs inherited <var>Assign</var>
+        </short>
         <descr>Assigns the contents of the source object to the current object; in particular finds the increment, position, range and whether smooth scrolling is to  be feature and whether the scroll bar is visible
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlScrollBar.Assign.Source">
@@ -895,11 +899,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TScrollingWinControl.CreateWnd">
+        <short>
+          <var>CreateWnd</var> - performs inherited <var>CreateWnd</var> then updates ScrollBars</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TScrollingWinControl.GetClientScrollOffset" link="#LCL.Controls.TControl.GetClientScrollOffset">
@@ -1017,22 +1024,31 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScrollingWinControl.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TScrollingWinControl.Create">
         <descr>This constructor can override the constructor of an ancestor class
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TScrollingWinControl</var>: performs inherited <var>Create</var> then creates and intiialises the scrollbars</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScrollingWinControl.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TScrollingWinControl.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TScrollingWinControl.Destroy">
         <descr>Can override destructor of parent class
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TScrollingWinControl</var>: frees the horizontal and vertical scrollbars, then performs inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScrollingWinControl.UpdateScrollbars">
@@ -1080,7 +1096,7 @@ If the indicators are valid, re-computes position etc</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScrollBox.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TScrollBox.Create" link="#LCL.Forms.TScrollingWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1426,11 +1442,14 @@ If the indicators are valid, re-computes position etc</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomFrame.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomFrame.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomFrame</var>: performs inherited <var>Create</var> then initialises styles, bounds etc</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TScrollingWinControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomFrame.Create.AOwner">
@@ -3054,12 +3073,15 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomForm.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomForm.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomForm</var>: checks for correct <var>ClassType</var>, looks for required resources then creates the Form</short>
         <descr>This constructor can override the constructor of an ancestor class
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TScrollingWinControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomForm.Create.AOwner">
@@ -3101,11 +3123,15 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomForm.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomForm.Destroy">
+        <short>
+          <var>Destroy</var> -  destructor for <var>TCustomForm</var>: frees all menus, icons, actionlists, screens and handlers, then performs inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TScrollingWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Close">
@@ -3785,7 +3811,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
+      <element name="TForm.CreateWnd" link="#LCL.Forms.TScrollingWinControl.CreateWnd">
         <descr/>
         <errors/>
         <seealso/>
@@ -4283,11 +4309,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDockForm.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomDockForm.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomDockForm</var>: performs <var>CreateNew</var> then initialises autoscroll and style properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TCustomForm.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomDockForm.Create.TheOwner">
@@ -4400,22 +4429,29 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="THintWindow.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="THintWindow.Create">
+        <short>
+          <var>Create</var> - constructor for <var>THintWindow</var>: performs inherited <var>Create</var> then initialises many properties including timers, styles, position, font and colour</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TCustomForm.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="THintWindow.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="THintWindow.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="THintWindow.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>THintWindow</var>: frees timers then performs inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TCustomForm.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="THintWindow.ActivateHint">
@@ -4993,20 +5029,29 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScreen.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TScreen.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TScreen</var>: performs inherited <var>Create</var> then creates and initialises lists of fonts, strings and forms</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreen.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TScreen.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TScreen.Destroy">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TForm</var>: frees various lists then performs inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormIndex">
@@ -6606,21 +6651,31 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TApplication.Create" link="#fcl.CustApp.TCustomApplication.Create">
+      <element name="TApplication.Create">
         <descr>This instance of the constructor performs most of the setting up of the environment for the application. The instances of Create that occur in some of the ancestor classes are place holders rather than actual instructions for constructing the object
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TApplication</var>: initialises a large number of local variables and properties, then calls inherited <var>Create</var>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.Create.AOwner">
         <short>The Owner object that invoked this instance of TApplication</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TApplication.Destroy" link="#fcl.CustApp.TCustomApplication.Destroy">
+      <element name="TApplication.Destroy">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TApplication</var>: frees various handles and flags, then cals inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlDestroyed">
@@ -8457,22 +8512,29 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TApplicationProperties.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TApplicationProperties.Create">
+        <short>
+          <var>Create</var> - constructor for TApplicationProperties: calls inherited <var>Create</var>, then sets some defaults if new application is being designed, or loads local values from existing application </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplicationProperties.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TApplicationProperties.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TApplicationProperties.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for TApplicationProperties: removes a number of handlers then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TApplicationProperties.CaptureExceptions">
@@ -9435,7 +9497,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
       <element name="TForm.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
-      <element name="TForm.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TForm.Create" link="#LCL.Forms.TCustomForm.Create"/>
       <element name="TScreen.DataModuleCount">
         <short>The number of data modules on the screen</short>
       </element>
@@ -9452,7 +9514,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TScrollBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
       <element name="TCustomFrame.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties"/>
       <element name="TFrame.LCLVersionIsStored"/>
-      <element name="TFrame.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TFrame.Create" link="#LCL.Forms.TCustomFrame.Create"/>
       <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
       <element name="TFrame.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TFrame.LCLVersion" link="#LCL.LCLVersion.lcl_version"/>
