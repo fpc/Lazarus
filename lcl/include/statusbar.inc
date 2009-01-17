@@ -88,9 +88,12 @@ end;
 
 procedure TStatusBar.LMDrawItem(var Message: TLMDrawItems);
 begin
-  if assigned(FOnDrawPanel) then
+  if Assigned(FOnDrawPanel) then
     with Message.DrawItemStruct^ do
-      FOnDrawPanel(Self,Panels[itemID],rcItem);
+    begin
+      Canvas.Handle := _hDC;
+      FOnDrawPanel(Self, Panels[itemID], rcItem);
+    end;
 end;
 
 procedure TStatusBar.BoundsChanged;

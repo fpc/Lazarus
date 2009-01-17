@@ -270,10 +270,9 @@ begin
     taCenter: Text := #9 + Text;
     taRightJustify: Text := #9#9 + Text;
   end;
-  if StatusPanel.Style=psOwnerDraw then
-    WParam := SBT_OWNERDRAW
-  else
-    WParam := StatusBevelMap[StatusPanel.Bevel];
+  WParam := StatusBevelMap[StatusPanel.Bevel];
+  if StatusPanel.Style = psOwnerDraw then
+    WParam := WParam or SBT_OWNERDRAW;
   WParam := WParam or StatusPanel.Index;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
