@@ -78,27 +78,34 @@ type
 
   TSynGutterPartBase = class(TPersistent)
   private
+    FSynEdit: TSynEditBase;
+
     FAutoSize : boolean;
     FColor : TColor;
+    FMarkupInfo: TSynSelectedColor;
     FCursor: TCursor;
     FVisible: Boolean;
     FWidth : integer;
     FOnChange: TNotifyEvent;
     FOnGutterClick: TGutterClickEvent;
+    procedure SetMarkupInfo(const AValue: TSynSelectedColor);
   protected
     procedure SetAutoSize(const AValue : boolean); virtual;
     procedure SetColor(const AValue : TColor); virtual;
     procedure SetVisible(const AValue : boolean); virtual;
     procedure SetWidth(const AValue : integer); virtual;
     procedure DoChange(Sender: TObject); virtual;
+    property SynEdit:TSynEditBase read FSynEdit;
   public
-    constructor Create;
+    constructor Create(AOwner : TSynEditBase);
+    destructor  Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       virtual abstract;
     function RealGutterWidth(CharWidth: integer): integer;  virtual; abstract;
     // X/Y are relative to the gutter, not the gutter part
     procedure DoOnGutterClick(X, Y: integer);  virtual;
+    property MarkupInfo: TSynSelectedColor read FMarkupInfo write SetMarkupInfo;
     property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
@@ -521,7 +528,7 @@ end;
 
 function TSynGutter.GetMarkupInfoCodeFoldingTree: TSynSelectedColor;
 begin
-  Result := TSynGutterCodeFolding(FCodeFoldGutter).MarkupInfoCodeFoldingTree;
+  Result := TSynGutterCodeFolding(FCodeFoldGutter).MarkupInfo;
 end;
 
 procedure TSynGutter.SetAllowSkipGutterSeparatorDraw(const AValue: Boolean);
@@ -562,7 +569,7 @@ end;
 
 function TSynGutter.GetMarkupInfoModifiedLine: TSynSelectedColor;
 begin
-  Result := TSynGutterChanges(FChangesGutter).MarkupInfoModifiedLine;
+  Result := TSynGutterChanges(FChangesGutter).MarkupInfo;
 end;
 
 procedure TSynGutter.SetAutoSize(const Value: boolean);
@@ -709,6 +716,11 @@ end;
 
 { TSynGutterPartBase }
 
+procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynSelectedColor);
+begin
+  FMarkupInfo.Assign(AValue);
+end;
+
 procedure TSynGutterPartBase.SetAutoSize(const AValue : boolean);
 begin
   if FAutoSize=AValue then exit;
@@ -743,12 +755,26 @@ begin
     FOnChange(Self);
 end;
 
-constructor TSynGutterPartBase.Create;
+constructor TSynGutterPartBase.Create(AOwner : TSynEditBase);
 begin
-  inherited Create;
+  Inherited Create;
   FColor := clBtnFace;
+  FSynEdit := TSynEdit(AOwner);
+
+  FMarkupInfo := TSynSelectedColor.Create;
+  FMarkupInfo.Background := clBtnFace;
+  FMarkupInfo.Foreground := clNone;
+  FMarkupInfo.FrameColor := clNone;
+  FMarkupInfo.OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
+
   FVisible := True;
   FWidth := 10;
+end;
+
+destructor TSynGutterPartBase.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FMarkupInfo);
 end;
 
 procedure TSynGutterPartBase.Assign(Source : TPersistent);
@@ -762,6 +788,7 @@ begin
     FVisible := Src.FVisible;
     FWidth := Src.FWidth;
     FAutoSize := Src.FAutoSize;
+    MarkupInfo.Assign(Src.MarkupInfo);
     DoChange(Self);
   end else
     inherited;
@@ -769,14 +796,15 @@ end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);
 begin
-  FOnGutterClick(Self, X, Y, 0, nil);
+  if Assigned(FOnGutterClick) then
+    FOnGutterClick(Self, X, Y, 0, nil);
 end;
 
 { Forward to Line Number }
 
 function TSynGutter.GetMarkupInfoLineNumber : TSynSelectedColor;
 begin
-  Result := TSynGutterLineNumber(FLineNumGutter).MarkupInfoLineNumber;
+  Result := TSynGutterLineNumber(FLineNumGutter).MarkupInfo;
 end;
 
 function TSynGutter.GetDigitCount : Integer;
@@ -866,7 +894,7 @@ end;
 
 constructor TSynGutterSeparator.Create(AOwner: TSynEditBase; AFoldView: TSynEditFoldedView);
 begin
-  Inherited Create;
+  Inherited Create(AOwner);
   Width := 2;
 end;
 

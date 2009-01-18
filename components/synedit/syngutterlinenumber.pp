@@ -14,10 +14,8 @@ type
 
   TSynGutterLineNumber = class(TSynGutterPartBase)
   private
-    FEdit: TSynEditBase;
     FFoldView: TSynEditFoldedView;
     FTextDrawer: TheTextDrawer;
-    FMarkupInfoLineNumber: TSynSelectedColor;
 
     FDigitCount: integer;
     FAutoSizeDigitCount: integer;
@@ -41,7 +39,6 @@ type
     procedure AutoSizeDigitCount(LinesCount: integer);
     function RealGutterWidth(CharWidth: integer): integer;  override;
   public
-    property MarkupInfoLineNumber: TSynSelectedColor read FMarkupInfoLineNumber;
     property DigitCount: integer read FDigitCount write SetDigitCount;
     property ShowOnlyLineNumbersMultiplesOf: integer
       read FShowOnlyLineNumbersMultiplesOf
@@ -59,8 +56,7 @@ uses
 constructor TSynGutterLineNumber.Create(AOwner : TSynEditBase;
   AFoldView : TSynEditFoldedView; ATextDrawer : TheTextDrawer);
 begin
-  inherited Create;
-  FEdit := AOwner;
+  inherited Create(AOwner);
   FFoldView := AFoldView;
   FTextDrawer := ATextDrawer;
 
@@ -69,15 +65,12 @@ begin
   FShowOnlyLineNumbersMultiplesOf := 1;
   FLeadingZeros := false;
   FZeroStart := False;
-  FMarkupInfoLineNumber := TSynSelectedColor.Create;
-  FMarkupInfoLineNumber.Background := clNone;
-  FMarkupInfoLineNumber.Foreground := clNone;
-  FMarkupInfoLineNumber.OnChange := @DoChange;
+  MarkupInfo.Background := clNone;
+  MarkupInfo.Foreground := clNone;
 end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
-  FMarkupInfoLineNumber.Free;
   inherited Destroy;
 end;
 
@@ -93,7 +86,6 @@ begin
     FDigitCount := Src.FDigitCount;
     FAutoSizeDigitCount := Src.FAutoSizeDigitCount;
     FShowOnlyLineNumbersMultiplesOf := Src.FShowOnlyLineNumbersMultiplesOf;
-    FMarkupInfoLineNumber.Assign(Src.MarkupInfoLineNumber);
   end;
   inherited;
 end;
@@ -201,27 +193,27 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TSynEdit(FEdit).LineHeight;
+  LineHeight := TSynEdit(SynEdit).LineHeight;
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
-  LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
+  LCLIntf.SetBkColor(dc, Canvas.Brush.Color);
   {$ENDIF}
   fTextDrawer.BeginDrawing(dc);
   try
-    if MarkupInfoLineNumber.Background <> clNone then
-      fTextDrawer.SetBackColor(MarkupInfoLineNumber.Background)
+    if MarkupInfo.Background <> clNone then
+      FTextDrawer.SetBackColor(MarkupInfo.Background)
     else
-      fTextDrawer.SetBackColor(Color);
-    if MarkupInfoLineNumber.Foreground <> clNone then
-      fTextDrawer.SetForeColor(MarkupInfoLineNumber.Foreground)
+      FTextDrawer.SetBackColor(Color);
+    if MarkupInfo.Foreground <> clNone then
+      fTextDrawer.SetForeColor(MarkupInfo.Foreground)
     else
-      fTextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
-    fTextDrawer.SetFrameColor(MarkupInfoLineNumber.FrameColor);
-    fTextDrawer.Style := MarkupInfoLineNumber.Style;
+      fTextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
+    fTextDrawer.SetFrameColor(MarkupInfo.FrameColor);
+    fTextDrawer.Style := MarkupInfo.Style;
     // prepare the rect initially
     rcLine := AClip;
     rcLine.Bottom := FirstLine * LineHeight;
@@ -234,8 +226,8 @@ begin
       // line number is not the first, the last, the current line
       // or a multiple of ShowOnlyLineNumbersMultiplesOf
       ShowDot := ((iLine mod ShowOnlyLineNumbersMultiplesOf) <> 0)
-          and (iLine <> TSynEdit(FEdit).CaretY) and (iLine <> 1)
-          and (iLine <> TSynEdit(FEdit).Lines.Count);
+          and (iLine <> TSynEdit(SynEdit).CaretY) and (iLine <> 1)
+          and (iLine <> TSynEdit(SynEdit).Lines.Count);
       // Get the formatted line number or dot
       s := FormatLineNumber(iLine, ShowDot);
       Inc(rcLine.Bottom, LineHeight);
@@ -254,7 +246,7 @@ begin
     end;
     // restore original style
     fTextDrawer.SetBackColor(Color);
-    fTextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
+    fTextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
     fTextDrawer.SetFrameColor(clNone);
     if AClip.Left < rcLine.Left then
     begin

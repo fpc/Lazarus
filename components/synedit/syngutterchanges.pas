@@ -13,18 +13,15 @@ type
 
   TSynGutterChanges = class(TSynGutterPartBase)
   private
-    FEdit: TSynEditBase;
     FFoldView: TSynEditFoldedView;
-    FMarkupInfoModifiedLine: TSynSelectedColor;
+
   public
     constructor Create(AOwner: TSynEditBase; AFoldView: TSynEditFoldedView);
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
-  public
-    property MarkupInfoModifiedLine: TSynSelectedColor read FMarkupInfoModifiedLine;
+
   end;
 
 implementation
@@ -35,35 +32,19 @@ uses
 
 constructor TSynGutterChanges.Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
 begin
-  inherited Create;
-  FEdit := AOwner;
+  inherited Create(AOwner);
   FFoldView := AFoldView;
 
-  FMarkupInfoModifiedLine := TSynSelectedColor.Create;
-  FMarkupInfoModifiedLine.Background := clNone;
-  FMarkupInfoModifiedLine.Foreground := clGreen;
-  FMarkupInfoModifiedLine.FrameColor := $00E9FC;
-  FMarkupInfoModifiedLine.OnChange := @DoChange;
+  MarkupInfo.Background := clNone;
+  MarkupInfo.Foreground := clGreen;
+  MarkupInfo.FrameColor := $00E9FC;
 
   Width := 6;
 end;
 
 destructor TSynGutterChanges.Destroy;
 begin
-  FMarkupInfoModifiedLine.Free;
   inherited Destroy;
-end;
-
-procedure TSynGutterChanges.Assign(Source : TPersistent);
-var
-  Src: TSynGutterChanges;
-begin
-  if Assigned(Source) and (Source is TSynGutterChanges) then
-  begin
-    Src := TSynGutterChanges(Source);
-    FMarkupInfoModifiedLine.Assign(Src.FMarkupInfoModifiedLine);
-  end;
-  inherited;
 end;
 
 function TSynGutterChanges.RealGutterWidth(CharWidth: integer): integer;
@@ -87,11 +68,11 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TSynEdit(FEdit).LineHeight;
+  LineHeight := TSynEdit(SynEdit).LineHeight;
 
-  if MarkupInfoModifiedLine.Background <> clNone then
+  if MarkupInfo.Background <> clNone then
   begin
-    Canvas.Brush.Color := MarkupInfoModifiedLine.Background;
+    Canvas.Brush.Color := MarkupInfo.Background;
     Canvas.FillRect(AClip);
   end;
 
@@ -108,16 +89,16 @@ begin
     rcLine.Top := rcLine.Bottom;
     Inc(rcLine.Bottom, LineHeight);
 
-    case TCustomSynEdit(FEdit).GetLineState(iLine) of
+    case TCustomSynEdit(SynEdit).GetLineState(iLine) of
       slsNone: ;
       slsSaved:
         begin
-          Canvas.Pen.Color := MarkupInfoModifiedLine.Foreground;
+          Canvas.Pen.Color := MarkupInfo.Foreground;
           Canvas.Line(rcLine.Left, rcLine.Top, rcLine.Left, rcLine.Bottom);
         end;
       slsUnsaved:
         begin
-          Canvas.Pen.Color := MarkupInfoModifiedLine.FrameColor;
+          Canvas.Pen.Color := MarkupInfo.FrameColor;
           Canvas.Line(rcLine.Left, rcLine.Top, rcLine.Left, rcLine.Bottom);
         end;
     end;

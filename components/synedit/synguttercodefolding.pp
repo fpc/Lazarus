@@ -14,9 +14,7 @@ type
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
-    FEdit: TSynEditBase;
     FFoldView: TSynEditFoldedView;
-    FMarkupInfoCodeFoldingTree: TSynSelectedColor;
   public
     constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
     destructor Destroy; override;
@@ -25,8 +23,6 @@ type
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
     procedure DoOnGutterClick(X, Y: integer); override;
-  public
-    property MarkupInfoCodeFoldingTree: TSynSelectedColor read FMarkupInfoCodeFoldingTree;
   end;
 
 implementation
@@ -38,22 +34,18 @@ uses
 constructor TSynGutterCodeFolding.Create(AOwner : TSynEditBase;
   AFoldView : TSynEditFoldedView);
 begin
-  inherited Create;
-  FEdit := AOwner;
+  inherited Create(AOwner);
   FFoldView := AFoldView;
 
-  FMarkupInfoCodeFoldingTree := TSynSelectedColor.Create;
-  FMarkupInfoCodeFoldingTree.Background := clNone;
-  FMarkupInfoCodeFoldingTree.Foreground := clDkGray;
-  FMarkupInfoCodeFoldingTree.FrameColor := clNone;
-  FMarkupInfoCodeFoldingTree.OnChange := @DoChange;
+  MarkupInfo.Background := clNone;
+  MarkupInfo.Foreground := clDkGray;
+  MarkupInfo.FrameColor := clNone;
 
   Width := 10;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;
 begin
-  FMarkupInfoCodeFoldingTree.Free;
   inherited Destroy;
 end;
 
@@ -69,9 +61,9 @@ procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
 var
   line  : integer;
 begin
-  line := TSynEdit(FEdit).PixelsToRowColumn(Point(X, Y)).Y;
-  if line <= TSynEdit(FEdit).Lines.Count then
-    TSynEdit(FEdit).CodeFoldAction(line);
+  line := TSynEdit(SynEdit).PixelsToRowColumn(Point(X, Y)).Y;
+  if line <= TSynEdit(SynEdit).Lines.Count then
+    TSynEdit(SynEdit).CodeFoldAction(line);
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
@@ -145,15 +137,15 @@ var
 
 begin
   if not Visible then exit;
-  LineHeight := TSynEdit(FEdit).LineHeight;
+  LineHeight := TSynEdit(SynEdit).LineHeight;
   LineOffset := 0;
   if (FirstLine > 0) and (FFoldView.FoldType[FirstLine-1] = cfEnd) then
     LineOffset := 2;
   BoxSize := Min(Width, LineHeight - cNodeOffset*2);
 
-  if MarkupInfoCodeFoldingTree.Background <> clNone then
+  if MarkupInfo.Background <> clNone then
   begin
-    Canvas.Brush.Color := MarkupInfoCodeFoldingTree.Background;
+    Canvas.Brush.Color := MarkupInfo.Background;
   {$IFDEF SYN_LAZARUS}
     LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
   {$ENDIF}
@@ -162,7 +154,7 @@ begin
 
   with Canvas do
   begin
-    Pen.Color := MarkupInfoCodeFoldingTree.Foreground;
+    Pen.Color := MarkupInfo.Foreground;
     Pen.Width := 1;
 
     rcLine.Bottom := FirstLine * LineHeight;

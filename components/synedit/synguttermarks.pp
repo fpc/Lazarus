@@ -14,7 +14,6 @@ type
 
   TSynGutterMarks = class(TSynGutterPartBase)
   private
-    FEdit: TSynEditBase;
     FFoldView: TSynEditFoldedView;
     FBookMarkOpt: TSynBookMarkOpt;
     FInternalImage: TSynInternalImage;
@@ -26,7 +25,6 @@ type
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
-  public
   end;
 
 implementation
@@ -39,8 +37,7 @@ uses
 constructor TSynGutterMarks.Create(AOwner : TSynEditBase;
   AFoldView : TSynEditFoldedView; ABookMarkOpt: TSynBookMarkOpt);
 begin
-  inherited Create;
-  FEdit := AOwner;
+  inherited Create(AOwner);
   FFoldView := AFoldView;
   FBookMarkOpt := ABookMarkOpt;
 
@@ -76,8 +73,8 @@ var
     CurMark: TSynEditMark;
   begin
     iTop := 0;
-    CurMark := TSynEdit(FEdit).Marks[iMark];
-    if (CurMark.Line<1) or (CurMark.Line>TSynEdit(FEdit).Lines.Count) then exit;
+    CurMark := TSynEdit(SynEdit).Marks[iMark];
+    if (CurMark.Line<1) or (CurMark.Line>TSynEdit(SynEdit).Lines.Count) then exit;
     if FFoldView.FoldedAtTextIndex[CurMark.Line-1] then exit;
     iLine := FFoldView.TextIndexToScreenLine(CurMark.Line-1);
 
@@ -114,7 +111,7 @@ var
 
 begin
   if not Visible then exit;
-  LineHeight := TSynEdit(FEdit).LineHeight;
+  LineHeight := TSynEdit(SynEdit).LineHeight;
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
@@ -123,7 +120,7 @@ begin
 
 
   // now the gutter marks
-  if FBookMarkOpt.GlyphsVisible and (TSynEdit(FEdit).Marks.Count > 0)
+  if FBookMarkOpt.GlyphsVisible and (TSynEdit(SynEdit).Marks.Count > 0)
     and (LastLine >= FirstLine)
   then begin
     aGutterOffs := AllocMem((LastLine+1{$IFNDEF SYN_LAZARUS}-TopLine{$ENDIF}) * SizeOf(integer));
@@ -131,7 +128,7 @@ begin
       // Instead of making a two pass loop we look while drawing the bookmarks
       // whether there is any other mark to be drawn
       bHasOtherMarks := FALSE;
-      for i := 0 to TSynEdit(FEdit).Marks.Count - 1 do with TSynEdit(FEdit).Marks[i] do
+      for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do with TSynEdit(SynEdit).Marks[i] do
         {$IFDEF SYN_LAZARUS}
         if Visible and (Line >= FFoldView.TextIndex[FirstLine]+1) and (Line <= FFoldView.TextIndex[LastLine]+1) then
         {$ELSE}
@@ -144,7 +141,7 @@ begin
             DrawMark(i);
         end;
       if bHasOtherMarks then
-        for i := 0 to TSynEdit(FEdit).Marks.Count - 1 do with TSynEdit(FEdit).Marks[i] do
+        for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do with TSynEdit(SynEdit).Marks[i] do
         begin
           if Visible and (IsBookmark <> FBookMarkOpt.DrawBookmarksFirst)     //mh 2000-10-12
             {$IFDEF SYN_LAZARUS}
