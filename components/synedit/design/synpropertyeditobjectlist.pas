@@ -264,8 +264,15 @@ procedure TSynObjectPartListPropertyEditorForm.UpdateButtons;
 var
   I: Integer;
 begin
+  if SynObjectPartList = nil then begin
+    AddButton.Enabled := False;
+    DeleteButton.Enabled := False;
+    MoveUpButton.Enabled := False;
+    MoveDownButton.Enabled := False;
+    exit;
+  end;
   I := SynObjectPartsListBox.ItemIndex;
-  AddButton.Enabled := SynObjectPartList <> nil;
+  AddButton.Enabled := True;
   DeleteButton.Enabled := I > -1;
   MoveUpButton.Enabled := I > 0;
   MoveDownButton.Enabled := (I >= 0) and (I < SynObjectPartList.Count - 1);
