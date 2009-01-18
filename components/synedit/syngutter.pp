@@ -196,12 +196,12 @@ type
     property Color: TColor read FColor write SetColor default clBtnFace;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property RightOffset: integer read FRightOffset write SetRightOffset
-      default 2;
+      default 0;
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
     // Forward to Marks (Bookmars / Breakpoints)
     property LeftOffset: integer read FLeftOffset write SetLeftOffset
-      default 16;
+      default 0;
     // Forward to Code Folding
     property ShowCodeFolding: boolean read GetShowCodeFolding
       write SetShowCodeFolding default False;
@@ -684,9 +684,6 @@ begin
   LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
   {$ENDIF}
 
-  // currently redraw full gutter
-  AClip.Left := FLeftOffset;
-
   // Clear all
   fTextDrawer.BeginDrawing(dc);
   fTextDrawer.SetBackColor(Color);
@@ -696,6 +693,7 @@ begin
      fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   fTextDrawer.EndDrawing;
 
+  AClip.Left := FLeftOffset;
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
   for i := 0 to FGutterPartList.Count -1 do
