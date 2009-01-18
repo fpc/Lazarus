@@ -18,8 +18,7 @@ type
     FBookMarkOpt: TSynBookMarkOpt;
     FInternalImage: TSynInternalImage;
   public
-    constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView;
-      ABookMarkOpt: TSynBookMarkOpt);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -34,12 +33,12 @@ uses
 
 { TSynGutterMarks }
 
-constructor TSynGutterMarks.Create(AOwner : TSynEditBase;
-  AFoldView : TSynEditFoldedView; ABookMarkOpt: TSynBookMarkOpt);
+constructor TSynGutterMarks.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFoldView := AFoldView;
-  FBookMarkOpt := ABookMarkOpt;
+  FFoldView := Gutter.FoldView;
+  FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
+  FInternalImage := nil;
 
   Width := 22;
 end;
@@ -112,7 +111,10 @@ var
 begin
   if not Visible then exit;
   LineHeight := TSynEdit(SynEdit).LineHeight;
-  Canvas.Brush.Color := Color;
+  if MarkupInfo.Background <> clNone then
+    Canvas.Brush.Color := MarkupInfo.Background
+  else
+    Canvas.Brush.Color := Gutter.Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc,Canvas.Brush.Color);

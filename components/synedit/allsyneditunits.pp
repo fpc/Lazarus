@@ -38,7 +38,8 @@ uses
   SynHighlighterTeX, 
   SynHighlighterUNIXShellScript, 
   SynHighlighterVB, 
-  SynHighlighterXML;
+  SynHighlighterXML,
+  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber, SynGutterMarks;
 
 implementation
 

@@ -1425,6 +1425,12 @@ begin
     AddFile('synhighlightervb.pas','SynHighlighterVB',pftUnit,[],cpBase);
     AddFile('synhighlighterany.pas','SynHighlighterAny',pftUnit,[],cpBase);
 
+    AddFile('syngutter.pas','SynGutter',pftUnit,[],cpBase);
+    AddFile('syngutterlinenumber.pas','SynGutterLineNumber',pftUnit,[],cpBase);
+    AddFile('synguttercodefolding.pas','SynGutterCodeFolding',pftUnit,[],cpBase);
+    AddFile('syngutterchanges.pas','SynGutterChanges',pftUnit,[],cpBase);
+    AddFile('synguttermarks.pas','SynGutterMarks',pftUnit,[],cpBase);
+
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
                      '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)');

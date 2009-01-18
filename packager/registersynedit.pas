@@ -38,7 +38,9 @@ unit RegisterSynEdit;
 interface
 
 uses
-  Classes, SysUtils, SynEditMiscClasses,
+  Classes, SysUtils,
+  SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
+  SynGutterMarks, SynEditMiscClasses,
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
@@ -156,6 +158,31 @@ begin
   RegisterComponents('SynEdit',[TSynVBSyn]);
 end;
 
+procedure RegisterSynGutter;
+begin
+  RegisterNoIcon([TSynGutterPartList, TSynGutterSeparator]);
+end;
+
+procedure RegisterSynGutterCodeFolding;
+begin
+  RegisterNoIcon([TSynGutterCodeFolding]);
+end;
+
+procedure RegisterSynGutterChanges;
+begin
+  RegisterNoIcon([TSynGutterChanges]);
+end;
+
+procedure RegisterSynGutterLineNumber;
+begin
+  RegisterNoIcon([TSynGutterLineNumber]);
+end;
+
+procedure RegisterSynGutterMarks;
+begin
+  RegisterNoIcon([TSynGutterMarks]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('SynEdit',@RegisterSynEditUnit);
@@ -181,9 +208,33 @@ begin
 
   RegisterUnit('SynHighlighterAny',@RegisterSynHighlighterAny);
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
+
+  RegisterUnit('SynGutter',@RegisterSynGutter);
+  RegisterUnit('SynGutterCodeFolding',@RegisterSynGutterCodeFolding);
+  RegisterUnit('SynGutterLineNumber',@RegisterSynGutterLineNumber);
+  RegisterUnit('SynGutterChanges',@RegisterSynGutterChanges);
+  RegisterUnit('SynGutterMarks',@RegisterSynGutterMarks);
+
+  RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
+                  TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
+
+
   RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'EndX', '', '');
+
+  RegisterPropertyToSkip(TSynGutter, 'ShowCodeFolding', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'CodeFoldingWidth', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'ShowChanges', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'ShowLineNumbers', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'ShowOnlyLineNumbersMultiplesOf', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'ZeroStart', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoLineNumber', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoModifiedLine', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoCodeFoldingTree', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'LeadingZeros', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'DigitCount', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'AllowSkipGutterSeparatorDraw', '', '');
 end;
 
 end.

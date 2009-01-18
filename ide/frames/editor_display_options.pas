@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
   Spin, LCLType, SynEdit, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
-  editor_general_options, IDEProcs;
+  editor_general_options, IDEProcs, SynGutterLineNumber, SynGutter;
 
 type
   { TEditorDisplayOptionsFrame }
@@ -205,9 +205,15 @@ begin
       if PreviewEdits[a] <> nil then
       begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
-        PreviewEdits[a].Gutter.ShowLineNumbers  := ShowLineNumbersCheckBox.Checked;
-        PreviewEdits[a].Gutter.ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
-        PreviewEdits[a].Gutter.SeparatorIndex := GutterSeparatorIndexSpinBox.Value;
+        PreviewEdits[a].Gutter.GutterPartVisibleByClass[TSynGutterLineNumber]
+          := ShowLineNumbersCheckBox.Checked;
+        if assigned(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterLineNumber, 0]) then
+          TSynGutterLineNumber(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterLineNumber, 0])
+            .ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
+
+        if assigned(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterSeparator, 0]) then
+          TSynGutterLineNumber(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterSeparator, 0])
+            .Index := GutterSeparatorIndexSpinBox.Value;
         if VisibleRightMarginCheckBox.Checked then
           PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80)
         else

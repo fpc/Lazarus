@@ -16,13 +16,15 @@ type
   private
     FFoldView: TSynEditFoldedView;
   public
-    constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
     procedure DoOnGutterClick(X, Y: integer); override;
+  published
+    property MarkupInfo;
   end;
 
 implementation
@@ -31,11 +33,10 @@ uses
 
 { TSynGutterCodeFolding }
 
-constructor TSynGutterCodeFolding.Create(AOwner : TSynEditBase;
-  AFoldView : TSynEditFoldedView);
+constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFoldView := AFoldView;
+  FFoldView := Gutter.FoldView;
 
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clDkGray;

@@ -79,7 +79,7 @@ uses
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
-  SynGutter,
+  SynGutter, SynGutterCodeFolding, SynGutterChanges,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
@@ -401,7 +401,7 @@ type
     fExtraLineSpacing: integer;
     FUseUTF8: boolean;
     fWantTabs: boolean;
-    fGutter: TSynGutter;
+    FGutter: TSynGutter;
     fTabWidth: integer;
     fTextDrawer: TheTextDrawer;
     fInvalidateRect: TRect;
@@ -466,9 +466,6 @@ type
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
-    function GetLineNumberColor: TSynSelectedColor;
-    function GetModifiedLineColor: TSynSelectedColor;
-    function GetCodeFoldingTreeColor: TSynSelectedColor;
     function GetOnGutterClick : TGutterClickEvent;
     function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
@@ -674,6 +671,8 @@ type
     BufferBitmap: TBitmap; // the double buffer
     {$ENDIF}
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
+    function GetChildOwner: TComponent; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
     procedure DoOnCommandProcessed(Command: TSynEditorCommand;
       AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
@@ -930,14 +929,10 @@ type
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
-    property LineNumberColor: TSynSelectedColor read GetLineNumberColor;
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
-    property ModifiedLineColor: TSynSelectedColor read GetModifiedLineColor;
-    property CodeFoldingTreeColor: TSynSelectedColor read GetCodeFoldingTreeColor;
     property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
-    //property Color: TSynSelectedColor read GetSelectedColor;
     {$ELSE}
     property SelectedColor: TSynSelectedColor
       read FSelectedColor write FSelectedColor;
@@ -1079,11 +1074,8 @@ type
     property HighlightAllColor;
     property BracketHighlightStyle;
     property BracketMatchColor;
-    property ModifiedLineColor;
-    property CodeFoldingTreeColor;
     property FoldedCodeColor;
     property MouseLinkColor;
-    property LineNumberColor;
     property LineHighlightColor;
     {$ENDIF}
     property SelectionMode;
@@ -1449,10 +1441,11 @@ begin
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
   fRightEdge := 80;
-  fGutter := TSynGutter.Create(self, FFoldedLinesView, fBookMarkOpt, fTextDrawer);
+  fGutter := TSynGutter.Create(self, FFoldedLinesView, FTextDrawer);
   fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   fGutterWidth := fGutter.Width;
   fTextOffset := fGutterWidth + 2;
+
   ControlStyle := ControlStyle + [csOpaque, csSetCaption
                     {$IFDEF SYN_LAZARUS}, csTripleClicks, csQuadClicks{$ENDIF}];
   Height := 150;
@@ -1548,6 +1541,16 @@ begin
   fScrollTimer.Interval := 100;
   fScrollTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
   fFirstLine := 1;
+end;
+
+function TCustomSynEdit.GetChildOwner: TComponent;
+begin
+  result := self;
+end;
+
+procedure TCustomSynEdit.GetChildren(Proc: TGetChildProc; Root: TComponent);
+begin
+  Proc(FGutter.GutterParts);
 end;
 
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
@@ -1742,16 +1745,6 @@ end;
 function TCustomSynEdit.GetLineHighlightColor: TSynSelectedColor;
 begin
   Result := fMarkupSpecialLine.MarkupLineHighlightInfo;
-end;
-
-function TCustomSynEdit.GetLineNumberColor: TSynSelectedColor;
-begin
-  Result := fGutter.MarkupInfoLineNumber;
-end;
-
-function TCustomSynEdit.GetModifiedLineColor: TSynSelectedColor;
-begin
-  Result := fGutter.MarkupInfoModifiedLine;
 end;
 
 function TCustomSynEdit.GetOnGutterClick : TGutterClickEvent;
@@ -2204,8 +2197,7 @@ begin
     {$ENDIF}
     InvalidateRect(Handle, @fInvalidateRect, False);
     FillChar(fInvalidateRect, SizeOf(TRect), 0);
-    if fGutter.ShowLineNumbers and fGutter.AutoSize then
-      fGutter.AutoSizeDigitCount(FTheLinesView.Count);
+    FGutter.AutoSizeDigitCount(FTheLinesView.Count); // Todo: Make the LineNumberGutterPart an observer
     if not (eoScrollPastEof in Options) then
       TopLine := TopLine;
   end;
@@ -3330,8 +3322,8 @@ var
       fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
 
       // codefold draw splitter line
-      if Gutter.ShowCodeFolding
-      and (FFoldedLinesView.DrawDivider[curLine]) then
+      if Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding]
+         and (FFoldedLinesView.DrawDivider[curLine]) then
       begin
         ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -3435,8 +3427,8 @@ begin
     end;
 
     // codefold draw splitter line
-    if Gutter.ShowCodeFolding
-    and (FFoldedLinesView.DrawDivider[LastLine]) then
+    if Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding]
+       and (FFoldedLinesView.DrawDivider[LastLine]) then
     begin
       ypos := rcToken.Bottom - 1;
       LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -4213,11 +4205,6 @@ begin
   Result := FFoldedLinesView.MarkupInfoFoldedCode;
 end;
 
-function TCustomSynEdit.GetCodeFoldingTreeColor: TSynSelectedColor;
-begin
-  Result := fGutter.MarkupInfoCodeFoldingTree;
-end;
-
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 var
@@ -4328,7 +4315,8 @@ begin
       end;
   end;
   DebugLn(Format('  TCustomSynEdit.SetFont E "%s" Height=%d AveCW=%d MaxCW=%d CharWidth=%d', [Font.Name, Font.Height, AveCW, MaxCW, CharWidth]));
-  if fGutter.ShowLineNumbers then GutterChanged(Self);
+  //if fGutter.ShowLineNumbers then
+  GutterChanged(Self); // Todo: Make the LineNumberGutterPart an observer
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -7844,8 +7832,8 @@ end;
 procedure TCustomSynEdit.MarkTextAsSaved;
 begin
   TSynEditStringList(fLines).MarkSaved;
-  if fGutter.Visible and fGutter.ShowChanges then
-    InvalidateGutter;
+  if fGutter.Visible and fGutter.GutterPartVisibleByClass[TSynGutterChanges] then
+    InvalidateGutter; // Todo: Make the ChangeGutterPart an observer
 end;
 
 procedure TCustomSynEdit.ClearUndo;
@@ -7864,8 +7852,7 @@ var
   nW: integer;
 begin
   if not (csLoading in ComponentState) then begin
-    if fGutter.ShowLineNumbers and fGutter.AutoSize then
-      fGutter.AutoSizeDigitCount(FTheLinesView.Count);
+    FGutter.AutoSizeDigitCount(FTheLinesView.Count);  // Todo: Make the LineNumberGutterPart an observer
     nW := fGutter.RealGutterWidth(fCharWidth);
     if nW = fGutterWidth then
       InvalidateGutter
@@ -8364,10 +8351,8 @@ begin
     fLinesInWindow := ClientHeight div fTextHeight;
     {$ENDIF}
     if bFont then begin
-      if Gutter.ShowLineNumbers then
-        GutterChanged(Self)
-      else
-        UpdateScrollbars;
+      GutterChanged(self); // Todo: Make the LineNumberGutterPart (and others) an observer
+      UpdateScrollbars;
       InitializeCaret;
       Exclude(fStateFlags, sfCaretChanged);
       Invalidate;

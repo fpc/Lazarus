@@ -50,7 +50,7 @@ uses
   // synedit
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
-  SynEditMarkupHighAll,
+  SynEditMarkupHighAll, SynGutterLineNumber,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -4009,7 +4009,8 @@ begin
 
     // Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
-    SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
+    SrcEditMenuShowLineNumbers.MenuItem.Checked :=
+      EditorComp.Gutter.GutterPartVisibleByClass[TSynGutterLineNumber];
     UpdateHighlightMenuItems;
     UpdateEncodingMenuItems;
 
@@ -5258,10 +5259,12 @@ var
 begin
   MenuItem := Sender as TIDEMenuCommand;
   ActEdit:=GetActiveSE;
-  MenuItem.Checked := not(ActEdit.EditorComponent.Gutter.ShowLineNumbers);
+  MenuItem.Checked :=
+    not(ActEdit.EditorComponent.Gutter.GutterPartVisibleByClass[TSynGutterLineNumber]);
   ShowLineNumbers:=MenuItem.Checked;
   for i:=0 to EditorCount-1 do
-    Editors[i].EditorComponent.Gutter.ShowLineNumbers := ShowLineNumbers;
+    Editors[i].EditorComponent.Gutter.GutterPartVisibleByClass[TSynGutterLineNumber]
+      := ShowLineNumbers;
   EditorOpts.ShowLineNumbers := ShowLineNumbers;
   EditorOpts.Save;
 end;

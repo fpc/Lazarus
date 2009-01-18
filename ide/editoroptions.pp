@@ -41,6 +41,7 @@ uses
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
   SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll,
+  SynGutter, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
@@ -2315,18 +2316,25 @@ procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEd
       SetMarkupColor(aSynEd.Highlighter, AddHilightAttr,
                      ASynEd.MarkupByClass[aClass].MarkupInfo);
   end;
+  procedure SetGutterColorByClass(AddHilightAttr: TAdditionalHilightAttribute;
+                                  aClass: TSynGutterPartBaseClass);
+  begin
+    if assigned(ASynEd.Gutter.GutterPartByClass[aClass, 0]) then
+      SetMarkupColor(aSynEd.Highlighter, AddHilightAttr,
+                     ASynEd.Gutter.GutterPartByClass[aClass, 0].MarkupInfo);
+  end;
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
   SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
-  SetMarkupColor(aSynEd.Highlighter, ahaLineNumber, aSynEd.LineNumberColor);
-  SetMarkupColor(aSynEd.Highlighter, ahaModifiedLine, aSynEd.ModifiedLineColor);
-  SetMarkupColor(aSynEd.Highlighter, ahaCodeFoldingTree, aSynEd.CodeFoldingTreeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaFoldedCode, aSynEd.FoldedCodeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
   SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
+  SetGutterColorByClass(ahaLineNumber, TSynGutterLineNumber);
+  SetGutterColorByClass(ahaModifiedLine, TSynGutterChanges);
+  SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
@@ -2365,6 +2373,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  GutterPart: TSynGutterPartBase;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2377,20 +2386,23 @@ begin
 
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;
-  ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
   ASynEdit.Gutter.AutoSize := true;
-  ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf := fShowOnlyLineNumbersMultiplesOf;
+  ASynEdit.Gutter.GutterPartVisibleByClass[TSynGutterLineNumber] := fShowLineNumbers;
+  GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterLineNumber, 0];
+  if GutterPart <> nil then
+    TSynGutterLineNumber(GutterPart).ShowOnlyLineNumbersMultiplesOf :=
+      fShowOnlyLineNumbersMultiplesOf;
 
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
-  if ASynEdit.Gutter.ShowCodeFolding <> FUseCodeFolding then
-  begin
-    ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
-    if not FUseCodeFolding then
-      ASynEdit.UnfoldAll;
-  end;
+  ASynEdit.Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding] := FUseCodeFolding;
+  if not FUseCodeFolding then
+    ASynEdit.UnfoldAll;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
-  ASynEdit.Gutter.SeparatorIndex := FGutterSeparatorIndex;
+
+  GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterSeparator, 0];
+  if GutterPart <> nil then
+    GutterPart.Index := FGutterSeparatorIndex;
   if fVisibleRightMargin then
     ASynEdit.RightEdge := fRightMargin
   else
@@ -2432,6 +2444,7 @@ procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 // copy settings from a synedit to the options
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  GutterPart: TSynGutterPartBase;
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -2444,12 +2457,20 @@ begin
 
   // Display options
   fVisibleGutter := ASynEdit.Gutter.Visible;
-  fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
-  fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf;
-  FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
+  fShowLineNumbers := ASynEdit.Gutter.GutterPartVisibleByClass[TSynGutterLineNumber];
+  GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterLineNumber, 0];
+  if GutterPart <> nil then
+    fShowOnlyLineNumbersMultiplesOf := TSynGutterLineNumber(GutterPart).ShowOnlyLineNumbersMultiplesOf
+  else
+    fShowOnlyLineNumbersMultiplesOf := -1;
+  FUseCodeFolding := ASynEdit.Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding];
   fGutterColor := ASynEdit.Gutter.Color;
   fGutterWidth := ASynEdit.Gutter.Width;
-  FGutterSeparatorIndex := ASynEdit.Gutter.SeparatorIndex;
+  GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterSeparator, 0];
+  if GutterPart <> nil then
+    FGutterSeparatorIndex := GutterPart.Index
+  else
+    FGutterSeparatorIndex := -1;
   fVisibleRightMargin := ASynEdit.RightEdge>0;
   if fVisibleRightMargin then
     fRightMargin:= ASynEdit.RightEdge;

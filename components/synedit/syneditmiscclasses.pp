@@ -64,6 +64,59 @@ type
     property Lines: TStrings read GetLines write SetLines;                      // No uncommited (trailing/trimmable) spaces
   end;
 
+  TSynObjectListItem = class;
+
+  { TSynObjectList }
+
+  TSynObjectList = class(TComponent)
+  private
+    FList: TList;
+    FOnChange: TNotifyEvent;
+    FOwner: TComponent;
+    function GetBasePart(Index: Integer): TSynObjectListItem;
+    procedure PutBasePart(Index: Integer; const AValue: TSynObjectListItem);
+  protected
+    function GetChildOwner: TComponent; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
+    procedure RegisterItem(AnItem: TSynObjectListItem); virtual;
+    procedure DoChange(Sender: TObject); virtual;
+    property List: TList read FList;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    Function  Add(AnItem: TSynObjectListItem): Integer;
+    Procedure Delete(Index: Integer);
+    Procedure Clear;
+    Function  Count: Integer;
+    Function  IndexOf(AnItem: TSynObjectListItem): Integer;
+    Procedure Move(AOld, ANew: Integer);
+    property Owner: TComponent read FOwner;
+    property BaseItems[Index: Integer]: TSynObjectListItem
+      read GetBasePart write PutBasePart; default;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  { TSynObjectListItem }
+
+  TSynObjectListItem = class(TComponent)
+  private
+    FOwner: TSynObjectList;
+    function GetIndex: Integer;
+    procedure SetIndex(const AValue: Integer);
+  protected
+    function GetDisplayName: String; virtual;
+    property Owner: TSynObjectList read FOwner;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+    property Index: Integer read GetIndex write SetIndex;
+    property DisplayName: String read GetDisplayName;
+  end;
+
+  TSynObjectListItemClass = class of TSynObjectListItem;
+
   { TSynSelectedColor }
 
   TSynSelectedColor = class(TPersistent)
@@ -564,6 +617,135 @@ begin
   end;
 end;
 {$ENDIF}
+
+{ TSynObjectList }
+
+constructor TSynObjectList.Create(AOwner: TComponent);
+begin
+  Inherited Create(AOwner);
+  FList := TList.Create;
+  FOwner := AOwner;
+end;
+
+destructor TSynObjectList.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FList);
+end;
+
+procedure TSynObjectList.Assign(Source: TPersistent);
+begin
+  FList.Assign(TSynObjectList(Source).FList);
+  DoChange(self);;
+end;
+
+function TSynObjectList.GetChildOwner: TComponent;
+begin
+  Result := self;
+end;
+
+procedure TSynObjectList.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i: Integer;
+begin
+  for i:= 0 to Count -1 do
+    Proc(BaseItems[i]);
+end;
+
+procedure TSynObjectList.SetChildOrder(Child: TComponent; Order: Integer);
+begin
+  (Child as TSynObjectListItem).Index := Order;
+  DoChange(self);;
+end;
+
+procedure TSynObjectList.RegisterItem(AnItem: TSynObjectListItem);
+begin
+  Add(AnItem);
+end;
+
+function TSynObjectList.GetBasePart(Index: Integer): TSynObjectListItem;
+begin
+  Result := TSynObjectListItem(FList[Index]);
+end;
+
+procedure TSynObjectList.PutBasePart(Index: Integer; const AValue: TSynObjectListItem);
+begin
+  FList[Index] := Pointer(AValue);
+  DoChange(self);
+end;
+
+procedure TSynObjectList.DoChange(Sender: TObject);
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+function TSynObjectList.Add(AnItem: TSynObjectListItem): Integer;
+begin
+  Result := FList.Add(Pointer(AnItem));
+  DoChange(self);
+end;
+
+procedure TSynObjectList.Delete(Index: Integer);
+begin
+  FList.Delete(Index);
+  DoChange(self);
+end;
+
+procedure TSynObjectList.Clear;
+begin
+  while FList.Count > 0 do
+    BaseItems[0].Free;
+  FList.Clear;
+  DoChange(self);
+end;
+
+function TSynObjectList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TSynObjectList.IndexOf(AnItem: TSynObjectListItem): Integer;
+begin
+  Result := Flist.IndexOf(Pointer(AnItem));
+end;
+
+procedure TSynObjectList.Move(AOld, ANew: Integer);
+begin
+  FList.Move(AOld, ANew);
+  DoChange(self);;
+end;
+
+{ TSynObjectListItem }
+
+function TSynObjectListItem.GetIndex: Integer;
+begin
+  Result := Owner.IndexOf(self);
+end;
+
+function TSynObjectListItem.GetDisplayName: String;
+begin
+  Result := Name + ' (' + ClassName + ')';
+end;
+
+procedure TSynObjectListItem.SetIndex(const AValue: Integer);
+begin
+  Owner.Move(GetIndex, AValue);
+end;
+
+constructor TSynObjectListItem.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOwner := AOwner as TSynObjectList;
+  FOwner.RegisterItem(self);
+end;
+
+destructor TSynObjectListItem.Destroy;
+begin
+  inherited Destroy;
+  FOwner.Delete(FOwner.IndexOf(self));
+end;
 
 end.
 

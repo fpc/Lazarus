@@ -9,19 +9,24 @@ uses
   SynEditMiscProcs, SynEditMiscClasses, SynTextDrawer, SynEditFoldedView;
 
 type
-  { TSynGuterChanges }
+  { TSynGutterChanges }
 
   TSynGutterChanges = class(TSynGutterPartBase)
   private
     FFoldView: TSynEditFoldedView;
-
+    function GetModifiedColor: TColor;
+    function GetSavedColor: TColor;
+    procedure SetModifiedColor(const AValue: TColor);
+    procedure SetSavedColor(const AValue: TColor);
   public
-    constructor Create(AOwner: TSynEditBase; AFoldView: TSynEditFoldedView);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
-
+  published
+    property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor;
+    property SavedColor: TColor read GetSavedColor write SetSavedColor;
   end;
 
 implementation
@@ -30,10 +35,10 @@ uses
 
 { TSynGutterChanges }
 
-constructor TSynGutterChanges.Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView);
+constructor TSynGutterChanges.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFoldView := AFoldView;
+  FFoldView := Gutter.FoldView;
 
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clGreen;
@@ -45,6 +50,26 @@ end;
 destructor TSynGutterChanges.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TSynGutterChanges.GetModifiedColor: TColor;
+begin
+  Result := MarkupInfo.FrameColor;
+end;
+
+function TSynGutterChanges.GetSavedColor: TColor;
+begin
+  Result := MarkupInfo.Foreground;
+end;
+
+procedure TSynGutterChanges.SetModifiedColor(const AValue: TColor);
+begin
+  MarkupInfo.FrameColor := AValue;
+end;
+
+procedure TSynGutterChanges.SetSavedColor(const AValue: TColor);
+begin
+  MarkupInfo.Foreground := AValue;
 end;
 
 function TSynGutterChanges.RealGutterWidth(CharWidth: integer): integer;

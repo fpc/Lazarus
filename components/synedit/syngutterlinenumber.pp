@@ -29,8 +29,7 @@ type
     procedure SetZeroStart(const AValue : boolean);
     function FormatLineNumber(Line: integer; IsDot: boolean): string;
   public
-    constructor Create(AOwner : TSynEditBase; AFoldView : TSynEditFoldedView;
-      ATextDrawer: TheTextDrawer);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
 
@@ -38,11 +37,11 @@ type
       override;
     procedure AutoSizeDigitCount(LinesCount: integer);
     function RealGutterWidth(CharWidth: integer): integer;  override;
-  public
+  published
+    property MarkupInfo;
     property DigitCount: integer read FDigitCount write SetDigitCount;
     property ShowOnlyLineNumbersMultiplesOf: integer
-      read FShowOnlyLineNumbersMultiplesOf
-      write SetShowOnlyLineNumbersMultiplesOf;
+      read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf;
     property ZeroStart: boolean read FZeroStart write SetZeroStart;
     property LeadingZeros: boolean read FLeadingZeros write SetLeadingZeros;
   end;
@@ -53,20 +52,17 @@ uses
 
 { TSynGutterLineNumber }
 
-constructor TSynGutterLineNumber.Create(AOwner : TSynEditBase;
-  AFoldView : TSynEditFoldedView; ATextDrawer : TheTextDrawer);
+constructor TSynGutterLineNumber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFoldView := AFoldView;
-  FTextDrawer := ATextDrawer;
+  FFoldView := Gutter.FoldView;
+  FTextDrawer := Gutter.TextDrawer;
 
   FDigitCount := 2;
   FAutoSizeDigitCount := FDigitCount;
   FShowOnlyLineNumbersMultiplesOf := 1;
   FLeadingZeros := false;
   FZeroStart := False;
-  MarkupInfo.Background := clNone;
-  MarkupInfo.Foreground := clNone;
 end;
 
 destructor TSynGutterLineNumber.Destroy;
@@ -197,17 +193,20 @@ begin
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
-  Canvas.Brush.Color := Color;
+  if MarkupInfo.Background <> clNone then
+    Canvas.Brush.Color := MarkupInfo.Background
+  else
+    Canvas.Brush.Color := Gutter.Color;
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc, Canvas.Brush.Color);
   {$ENDIF}
-  fTextDrawer.BeginDrawing(dc);
+  FTextDrawer.BeginDrawing(dc);
   try
     if MarkupInfo.Background <> clNone then
       FTextDrawer.SetBackColor(MarkupInfo.Background)
     else
-      FTextDrawer.SetBackColor(Color);
+      FTextDrawer.SetBackColor(Gutter.Color);
     if MarkupInfo.Foreground <> clNone then
       fTextDrawer.SetForeColor(MarkupInfo.Foreground)
     else
@@ -240,19 +239,6 @@ begin
     if AClip.Bottom > rcLine.Bottom then
     begin
       rcLine.Top := rcLine.Bottom;
-      rcLine.Bottom := AClip.Bottom;
-      with rcLine do
-        fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
-    end;
-    // restore original style
-    fTextDrawer.SetBackColor(Color);
-    fTextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
-    fTextDrawer.SetFrameColor(clNone);
-    if AClip.Left < rcLine.Left then
-    begin
-      rcLine.Right := rcLine.Left;
-      rcLine.Left := AClip.Left;
-      rcLine.Top := AClip.Top;
       rcLine.Bottom := AClip.Bottom;
       with rcLine do
         fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
