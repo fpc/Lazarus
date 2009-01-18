@@ -42,7 +42,7 @@ program EditTest;
 uses
   Interfaces,
   StdCtrls, Buttons, Classes, Forms, Controls, SysUtils, Graphics,
-  SynEdit, SynHighlighterPas;
+  SynEdit, SynHighlighterPas, SynGutterLineNumber;
 
 type
   TEditTestForm = class(TForm)
@@ -80,7 +80,7 @@ begin
 		Width := 300;
 		Height := 200;
     Gutter.Color := clBtnface;
-    Gutter.ShowLineNumbers := True;
+    Gutter.GutterPartVisibleByClass[TSynGutterLineNumber] := True;
     Color := clWindow;
     Visible := True;
     Font.Name := 'courier';
