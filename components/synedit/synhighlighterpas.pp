@@ -291,6 +291,8 @@ type
     procedure PointProc;
     procedure RoundOpenProc;
     procedure RoundCloseProc;
+    procedure SquareOpenProc;
+    procedure SquareCloseProc;
     procedure EqualSignProc;
     procedure SemicolonProc;                                                    //mh 2000-10-08
     procedure SlashProc;
@@ -850,6 +852,9 @@ end;
 function TSynPasSyn.Func37: TtkTokenKind;
 begin
   if KeyComp('Begin') then begin
+    // if we are in an include file, we may not know the state
+    if (fRange * [rsImplementation, rsInterface] = []) then
+      Include(fRange, rsImplementation);
     TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
     if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
     Result := tkKey;
@@ -1242,8 +1247,8 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if not (rsInterface in fRange) and
-         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+      if ((rsImplementation in fRange) and
+          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
     end;
@@ -1263,8 +1268,8 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if not (rsInterface in fRange) and
-         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+      if ((rsImplementation in fRange) and
+          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
     end;
@@ -1385,8 +1390,9 @@ begin
     begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType = cfbtVarType then EndCodeFoldBlockLastLine;
-      if not (rsInterface in fRange) and
-         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
+      if ((rsImplementation in fRange) and
+          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
+      then
         StartPascalCodeFoldBlock(cfbtProcedure);
     end;
     Result := tkKey;
@@ -1403,8 +1409,8 @@ begin
     if not(rsAfterEqual in fRange) then begin
       TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
-      if not (rsInterface in fRange) and
-         not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+      if ((rsImplementation in fRange) and
+          not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
     end;
@@ -1501,6 +1507,8 @@ begin
           case I of
             '(': fProcTable[I] := @RoundOpenProc;
             ')': fProcTable[I] := @RoundCloseProc;
+            '[': fProcTable[I] := @SquareOpenProc;
+            ']': fProcTable[I] := @SquareCloseProc;
             '=': fProcTable[I] := @EqualSignProc;
             '.': fProcTable[I] := @PointProc;
             ';': fProcTable[I] := @SemicolonProc;                                //mh 2000-10-08
@@ -1534,6 +1542,8 @@ begin
           case I of
             '(': fProcTable[I] := RoundOpenProc;
             ')': fProcTable[I] := RoundCloseProc;
+            '[': fProcTable[I] := SquareOpenProc;
+            ']': fProcTable[I] := SquareCloseProc;
             '=': fProcTable[I] := EqualSignProc;
             '.': fProcTable[I] := PointProc;
             ';': fProcTable[I] := SemicolonProc;                                //mh 2000-10-08
@@ -1897,6 +1907,20 @@ begin
   fRange := fRange + [rsAtClosingBracket];
 end;
 
+procedure TSynPasSyn.SquareOpenProc;
+begin
+  inc(Run);
+  fTokenID := tkSymbol;
+  TSynPasSynRange(CodeFoldRange).IncBracketNestLevel;
+end;
+
+procedure TSynPasSyn.SquareCloseProc;
+begin
+  inc(Run);
+  fTokenID := tkSymbol;
+  TSynPasSynRange(CodeFoldRange).DecBracketNestLevel;
+end;
+
 procedure TSynPasSyn.EqualSignProc;
 begin
   inc(Run);
@@ -1913,7 +1937,7 @@ begin
     EndCodeFoldBlock;
   if (TopPascalCodeFoldBlockType = cfbtClass) and (rsAfterClass in fRange) then
     EndCodeFoldBlock;
-  if rsProperty in fRange then
+  if (rsProperty in fRange) and (TSynPasSynRange(CodeFoldRange).BracketNestLevel = 0) then
     fRange := fRange - [rsProperty];
 end;
 
