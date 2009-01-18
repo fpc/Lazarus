@@ -312,7 +312,7 @@ procedure TWin32ListStringList.SetUpdateState(Updating: Boolean);
 begin
   Windows.SendMessage(FWin32List, WM_SETREDRAW, WPARAM(not Updating), 0);
   if not Updating then
-    Windows.InvalidateRect(FWin32List, nil, TRUE);
+    Windows.RedrawWindow(FWin32List, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE)
 end;
 
 { TWin32ComboBoxStringList }
