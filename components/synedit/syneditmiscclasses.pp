@@ -89,17 +89,17 @@ type
     procedure Assign(aSource: TPersistent); override;
     procedure Clear;
     function IsEnabled: boolean;
-  published
     function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor; var AStyle: TFontStyles);
+    property StartX: Integer read FStartX write FStartX;
+    property EndX: Integer read FEndX write FEndX;
+    property OnChange: TNotifyEvent read fOnChange write fOnChange;
+  published
     property Background: TColor read FBG write SetBG default clHighLight;
     property Foreground: TColor read FFG write SetFG default clHighLightText;
     property FrameColor: TColor read FFrameColor write SetFrameColor default clNone;
     property Style: TFontStyles read FStyle write SetStyle default [];
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
-    property StartX: Integer read FStartX write FStartX;
-    property EndX: Integer read FEndX write FEndX;
-    property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
   { TSynBookMarkOpt }

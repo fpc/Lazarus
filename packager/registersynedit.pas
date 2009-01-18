@@ -38,14 +38,14 @@ unit RegisterSynEdit;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, SynEditMiscClasses,
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
   SynHighlighterSQL, SynHighlighterPython, SynHighlighterVB, SynHighlighterAny,
-  LazarusPackageIntf;
+  LazarusPackageIntf, LResources;
 
 procedure Register;
 
@@ -181,6 +181,9 @@ begin
 
   RegisterUnit('SynHighlighterAny',@RegisterSynHighlighterAny);
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
+  RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
+  RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
+  RegisterPropertyToSkip(TSynSelectedColor, 'EndX', '', '');
 end;
 
 end.
