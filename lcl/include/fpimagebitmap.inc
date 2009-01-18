@@ -148,7 +148,7 @@ begin
   IntfImg := TLazIntfImage.Create(0,0,[]);
   try
     ImgWriter := GetWriterClass.Create;
-    IntfImg.LoadFromBitmap(Handle, FMaskHandle);
+    IntfImg.SetRawImage(GetRawImagePtr^, False);
     InitializeWriter(IntfImg, ImgWriter);
     IntfImg.SaveToStream(AStream, ImgWriter);
     FinalizeWriter(ImgWriter);
