@@ -563,6 +563,55 @@ begin
   inherited LoadFromMimeStream(AStream, AMimeType);
 end;
 
+procedure TRasterImage.LoadFromRawImage(const AImage: TRawImage; ADataOwner: Boolean);
+var
+  img: PRawImage;
+begin
+  BeginUpdate;
+  try
+    Clear;
+    img := GetRawImagePtr;
+    img^.Description := AImage.Description;
+    if ADataOwner
+    then begin
+      img^.DataSize := AImage.DataSize;
+      img^.Data := AImage.Data;
+      img^.MaskSize := AImage.MaskSize;
+      img^.Mask := AImage.Mask;
+      img^.PaletteSize := AImage.PaletteSize;
+      img^.Palette := AImage.Palette;
+    end
+    else begin
+      // copy needed
+      img^.DataSize := AImage.DataSize;
+      if img^.DataSize > 0
+      then begin
+        GetMem(img^.Data, img^.DataSize);
+        Move(AImage.Data^, img^.Data^, img^.DataSize);
+      end
+      else img^.Data := nil;
+
+      img^.MaskSize := AImage.MaskSize;
+      if img^.MaskSize > 0
+      then begin
+        GetMem(img^.Mask, img^.MaskSize);
+        Move(AImage.Mask^, img^.Mask^, img^.MaskSize);
+      end
+      else img^.Mask := nil;
+
+      img^.PaletteSize := AImage.PaletteSize;
+      if img^.PaletteSize > 0
+      then begin
+        GetMem(img^.Palette, img^.PaletteSize);
+        Move(AImage.Palette^, img^.Palette^, img^.PaletteSize);
+      end
+      else img^.Palette := nil;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
 procedure TRasterImage.SaveToStream(AStream: TStream);
   procedure Error;
   begin

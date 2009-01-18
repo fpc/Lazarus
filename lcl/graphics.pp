@@ -1271,7 +1271,7 @@ type
     procedure LoadFromStream(AStream: TStream); overload; override;
     procedure LoadFromStream(AStream: TStream; ASize: Cardinal); overload; virtual;
     procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); override;
-    //todo LoadFromRawImage
+    procedure LoadFromRawImage(const AIMage: TRawImage; ADataOwner: Boolean);
     procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
     procedure SaveToStream(AStream: TStream); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
