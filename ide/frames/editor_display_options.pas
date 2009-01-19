@@ -194,6 +194,7 @@ procedure TEditorDisplayOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
 var
   a: integer;
   AGeneralPage: TEditorGeneralOptionsFrame;
+  Separator: TSynGutterSeparator;
 begin
   AGeneralPage := GeneralPage;
 
@@ -207,13 +208,17 @@ begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
         PreviewEdits[a].Gutter.GutterPartVisibleByClass[TSynGutterLineNumber]
           := ShowLineNumbersCheckBox.Checked;
-        if assigned(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterLineNumber, 0]) then
+        if Assigned(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterLineNumber, 0]) then
           TSynGutterLineNumber(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterLineNumber, 0])
             .ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
 
-        if assigned(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterSeparator, 0]) then
-          TSynGutterLineNumber(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterSeparator, 0])
-            .Index := GutterSeparatorIndexSpinBox.Value;
+        Separator := TSynGutterSeparator(PreviewEdits[a].Gutter.GutterPartByClass[TSynGutterSeparator, 0]);
+        if Assigned(Separator) then
+        begin
+          Separator.Visible := GutterSeparatorIndexSpinBox.Value <> -1;
+          if Separator.Visible then
+            Separator.Index := GutterSeparatorIndexSpinBox.Value;
+        end;
         if VisibleRightMarginCheckBox.Checked then
           PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80)
         else

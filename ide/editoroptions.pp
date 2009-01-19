@@ -2402,7 +2402,11 @@ begin
 
   GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterSeparator, 0];
   if GutterPart <> nil then
-    GutterPart.Index := FGutterSeparatorIndex;
+  begin
+    GutterPart.Visible := FGutterSeparatorIndex <> -1;
+    if GutterPart.Visible then
+      GutterPart.Index := FGutterSeparatorIndex;
+  end;
   if fVisibleRightMargin then
     ASynEdit.RightEdge := fRightMargin
   else
@@ -2468,7 +2472,12 @@ begin
   fGutterWidth := ASynEdit.Gutter.Width;
   GutterPart := ASynEdit.Gutter.GutterPartByClass[TSynGutterSeparator, 0];
   if GutterPart <> nil then
-    FGutterSeparatorIndex := GutterPart.Index
+  begin
+    if GutterPart.Visible then
+      FGutterSeparatorIndex := GutterPart.Index
+    else
+      FGutterSeparatorIndex := -1;
+  end
   else
     FGutterSeparatorIndex := -1;
   fVisibleRightMargin := ASynEdit.RightEdge>0;
