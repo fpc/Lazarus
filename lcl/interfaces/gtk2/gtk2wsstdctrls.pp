@@ -101,6 +101,7 @@ type
     class procedure ReCreateCombo(const ACustomComboBox: TCustomComboBox; const AWithEntry: Boolean; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetCallbacks(const AWinControl: tWinControl; const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetSensetivity(AWinControl: TWinControl; AWidget: PGtkWidget);
   published
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -1002,6 +1003,7 @@ begin
     True : ComboWidget := gtk_combo_box_entry_new_with_model(Model, 0);
     False: ComboWidget := gtk_combo_box_new_with_model(Model);
   end;
+  SetSensetivity(ACustomCombobox, ComboWidget);
   // undone the above increase of the ref count
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
   g_object_unref (G_OBJECT(Model));
@@ -1205,6 +1207,19 @@ begin
   
   // g_signal_connect(ComboWidget, 'set-focus-child', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
+end;
+
+class procedure TGtk2WSCustomComboBox.SetSensetivity(AWinControl: TWinControl; AWidget: PGtkWidget);
+var
+  Value: TGValue;
+begin
+  if ((gtk_major_version = 2) and (gtk_minor_version < 14)) or
+     (csDesigning in AWinControl.ComponentState) then
+    Exit;
+  Value.g_type := G_TYPE_BOOLEAN;
+  Value.data[0].v_int := gTRUE;
+
+  g_object_set_property(PGObject(AWidget), 'button-sensitivity', @Value);
 end;
 
 class procedure TGtk2WSCustomComboBox.GetPreferredSize(
@@ -1534,6 +1549,8 @@ begin
     csOwnerDrawVariable :
       ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));
   end;
+
+  SetSensetivity(AWinControl, ComboWidget);
 
   g_object_unref (G_OBJECT (liststore));
 
