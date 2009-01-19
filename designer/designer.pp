@@ -485,24 +485,29 @@ procedure TDesigner.FreeDesigner(FreeComponent: boolean);
 var
   i: Integer;
 begin
-  Include(FFlags,dfDestroyingForm);
-  if FLookupRoot is TComponent then begin
+  Include(FFlags, dfDestroyingForm);
+  if FLookupRoot is TComponent then
+  begin
     // unselect
-    for i:=FLookupRoot.ComponentCount-1 downto 0 do
-      TheControlSelection.Remove(LookupRoot.Components[i]);
-    TheControlSelection.Remove(LookupRoot);
-    if GlobalDesignHook.LookupRoot=FLookupRoot then
-      GlobalDesignHook.LookupRoot:=nil;
-    if FreeComponent then begin
+    if TheControlSelection.LookupRoot = FLookupRoot then
+    begin
+      TheControlSelection.BeginUpdate;
+      TheControlSelection.Clear;
+      TheControlSelection.EndUpdate;
+    end;
+    if GlobalDesignHook.LookupRoot = FLookupRoot then
+      GlobalDesignHook.LookupRoot := nil;
+    if FreeComponent then
+    begin
       // tell hooks about deleting
-      for i:=FLookupRoot.ComponentCount-1 downto 0 do
+      for i := FLookupRoot.ComponentCount - 1 downto 0 do
         GlobalDesignHook.PersistentDeleting(FLookupRoot.Components[i]);
       GlobalDesignHook.PersistentDeleting(FLookupRoot);
     end;
     // delete
-    if Form<>nil then
-      Form.Designer:=nil;
-    TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
+    if Form <> nil then
+      Form.Designer := nil;
+    TheFormEditor.DeleteComponent(FLookupRoot, FreeComponent);
   end;
   Free;
 end;

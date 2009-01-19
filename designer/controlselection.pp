@@ -493,6 +493,7 @@ type
     property SelectionForm: TCustomForm read FForm;
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
+    property LookupRoot: TComponent read FLookupRoot;
   end;
 
 
