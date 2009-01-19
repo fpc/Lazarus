@@ -2312,11 +2312,13 @@ type
     procedure Delete(Node: TTreeNode); dynamic;
     procedure DestroyWnd; override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
-    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
-                       var Accept: Boolean); override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+                          MousePos: TPoint): Boolean; override;
     procedure DoPaint; virtual;
     procedure DoPaintNode(Node: TTreeNode); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept: Boolean); override;
     procedure EndEditing;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); dynamic;

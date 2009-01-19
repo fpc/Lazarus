@@ -3965,6 +3965,18 @@ begin
   FLastDropTarget := nil;
 end;
 
+function TCustomTreeView.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  if not Result then
+  begin
+    ScrolledTop := ScrolledTop -
+              (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
+    Result := true;
+  end;
+end;
+
 function TCustomTreeView.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
 begin
   Result:=inherited;
@@ -4767,8 +4779,8 @@ begin
     SB_TOP:        ScrolledTop := 0;
     SB_BOTTOM:     ScrolledTop := GetMaxScrollTop;
       // Scrolls one line up / down
-    SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefItemHeight div 2;
-    SB_LINEUP:     ScrolledTop := ScrolledTop - FDefItemHeight div 2;
+    SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefItemHeight;
+    SB_LINEUP:     ScrolledTop := ScrolledTop - FDefItemHeight;
       // Scrolls one page of lines up / down
     SB_PAGEDOWN:   ScrolledTop := ScrolledTop + (ClientHeight-ScrollBarWidth)
                                      - FDefItemHeight;
