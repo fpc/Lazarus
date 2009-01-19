@@ -51,6 +51,7 @@ type
   TProjectOptionsDialog = class(TForm)
     AdditionalInfoButton: TBitBtn;
     Bevel1: TBevel;
+    BuildSpinEdit : TSpinEdit;
     ButtonPanel: TButtonPanel;
     ClearIconButton: TBitBtn;
     IconTrackLabel: TLabel;
@@ -129,7 +130,6 @@ type
     VersionSpinEdit: TSpinEdit;
     MajorRevisionSpinEdit: TSpinEdit;
     MinorRevisionSpinEdit: TSpinEdit;
-    BuildEdit: TEdit;
     AutomaticallyIncreaseBuildCheckBox: TCheckBox;
     LanguageSettingsGroupBox: TGroupBox;
     LanguageSelectionLabel: TLabel;
@@ -465,7 +465,7 @@ begin
   VersionSpinEdit.Value := Project.Resources.VersionInfo.VersionNr;
   MajorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MajorRevNr;
   MinorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MinorRevNr;
-  BuildEdit.Text := IntToStr(Project.Resources.VersionInfo.BuildNr);
+  BuildSpinEdit.Value := Project.Resources.VersionInfo.BuildNr;
   
   EnableVersionInfo(Project.Resources.VersionInfo.UseVersionInfo);
 
@@ -555,7 +555,7 @@ begin
     Project.Resources.VersionInfo.VersionNr:=VersionSpinEdit.Value;
     Project.Resources.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
     Project.Resources.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
-    Project.Resources.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.Resources.VersionInfo.BuildNr);
+    Project.Resources.VersionInfo.BuildNr:=BuildSpinEdit.Value;
     Project.Resources.VersionInfo.DescriptionString:=DescriptionEdit.Text;
     Project.Resources.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
