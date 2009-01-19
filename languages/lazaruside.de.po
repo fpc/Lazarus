@@ -757,7 +757,7 @@ msgstr "Formulareditor"
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
-msgstr "&Ab Cursor"
+msgstr "Ab &Cursor"
 
 #: lazarusidestrconsts.dlgfropts
 msgctxt "lazarusidestrconsts.dlgfropts"
