@@ -996,6 +996,8 @@ begin
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
 
   gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag,nil);
+  gtk_event_box_set_above_child(PGtkEventBox(Box), false);
+  gtk_container_remove(PGtkContainer(Box), ComboWidget);
   gtk_widget_destroy(ComboWidget);
 
   // create the new widget with the old model
@@ -1021,9 +1023,11 @@ begin
 
   SetRenderer(ACustomComboBox, ComboWidget, AWidgetInfo);
   
-  gtk_container_add(PGtkContainer(AWidgetInfo^.ClientWidget), ComboWidget);
-  gtk_widget_show_all(AWidgetInfo^.ClientWidget);
-  
+  gtk_container_add(PGtkContainer(Box), ComboWidget);
+  gtk_widget_show_all(Box);
+  if csDesigning in ACustomComboBox.ComponentState then
+    gtk_event_box_set_above_child(PGtkEventBox(Box), true);
+
   SetCallbacks(ACustomComboBox, Box, AWidgetInfo);
 end;
 
@@ -1134,22 +1138,22 @@ begin
   //DebugLn(['TGtk2WSCustomComboBox.SetCallbacks ',dbgsName(AWinControl),' AButton=',GetWidgetClassName(PGtkWidget(AButton)),' ComboWidget=',GetWidgetClassName(PGtkWidget(ComboWidget))]);
 
   // we have to remove the handler gtk sets up to get the mouse down messages
-  BtnPressID := g_signal_lookup('button_press_event', GTK_TYPE_COMBO_BOX);
-  if AButton<>nil then begin
+  if AButton <> nil then
+  begin
+    BtnPressID := g_signal_lookup('button_press_event', GTK_TYPE_COMBO_BOX);
     HandlerID := g_signal_handler_find(AButton, G_SIGNAL_MATCH_ID, BtnPressID, 0, nil, nil, nil);
-    if HandlerID > 0 then begin
+    if HandlerID > 0 then
       g_signal_handler_disconnect(AButton, HandlerID);
-    end;
   end;
   
   g_signal_connect(ComboWidget, 'changed', TGCallback(@GtkChangedCB), AWidgetInfo);
 
   // First the combo (or the entry)
-  if gtk_is_combo_box_entry(ComboWidget) then begin
-    InputObject:=AEntry;
-  end else begin
-    InputObject:=AGTKObject;
-  end;
+  if gtk_is_combo_box_entry(ComboWidget) then
+    InputObject := AEntry
+  else
+    InputObject := AGtkObject;
+
   Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEMOVE, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONDOWN, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, InputObject, AWinControl);
@@ -1409,7 +1413,6 @@ var
   WidgetInfo: PWidgetInfo;
   p: PGtkWidget;
 begin
-  if csDesigning in ACustomComboBox.ComponentState then exit;
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
   p := WidgetInfo^.CoreWidget;
   case NewStyle of
@@ -1556,7 +1559,9 @@ begin
 
   gtk_container_add(PGtkContainer(Box), ComboWidget);
   gtk_widget_show_all(Box);
-  
+  if csDesigning in AWinControl.ComponentState then
+    gtk_event_box_set_above_child(PGtkEventBox(Box), true);
+
   SetRenderer(ACustomComboBox, ComboWidget, WidgetInfo);
 
   SetMainWidget(Box, ComboWidget);
