@@ -499,13 +499,19 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomActionList.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomActionList.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomActionList</var>: calls inherited <var>Create</var> then initialises some local variables</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomActionList.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomActionList.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCustomActionList.Destroy">
         <descr>
           <var>Destroy</var> sends a <var>opRemove</var> notification to all components 
 in the free-notification list. After that, all owned components are
@@ -514,6 +520,12 @@ destroyed by calling <link id="TComponent.DestroyComponents">DestroyComponents</
 is done, the component removes itself from its owner's child component list.
 After that, the parent's destroy method is called.
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomActionList</var>: frees various links then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomActionList.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction">
@@ -1083,13 +1095,26 @@ execution will end up at the <var>TPersistent</var> implementation of
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomAction.Create" link="#rtl.Classes.TBasicAction.Create"/>
+      <element name="TCustomAction.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomAction</var>: calls inherited <var>Create</var> then initialises some local variables</short>
+        <seealso>
+          <link id="#rtl.Classes.TBasicAction.Create"/>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomAction.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy"/>
+      <element name="TCustomAction.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomAction</var>: frees various lists and images, then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TBasicAction.Destroy"/>
+        </seealso>
+      </element>
       <!-- function Visibility: public -->
       <element name="TCustomAction.DoHint">
         <short>
@@ -1198,7 +1223,7 @@ execution will end up at the <var>TPersistent</var> implementation of
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TAction.Create" link="#rtl.Classes.TBasicAction.Create"/>
+      <element name="TAction.Create" link="#LCL.ActnList.TCustomAction.Create"/>
       <!-- argument Visibility: default -->
       <element name="TAction.Create.AOwner">
         <short/>

@@ -421,20 +421,28 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomScrollBar.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
+      <element name="TCustomScrollBar.CreateParams">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateParams"/>
+        </seealso>
+        <short>
+          <var>CreateParams</var> - calls inherited <var>CreateParams</var> then sets up style and alignment depending on whether horizontal or vertical</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.CreateParams.Params">
         <short>The paramaeter list</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomScrollBar.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
+      <element name="TCustomScrollBar.CreateWnd">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+        </seealso>
+        <short>
+          <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initialises various Scroll Info properties</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.Change">
@@ -459,10 +467,14 @@
         <short>The position of the scrolling device</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomScrollBar.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomScrollBar.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomScrollBar</var>: calls inherited <var>Create</var> then initialises size, style and various local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.Create.AOwner">
@@ -863,11 +875,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomGroupBox.Create" link="#LCL.Controls.TWinControl.Create">
-        <short/>
+      <element name="TCustomGroupBox.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomGroupBox</var>: calls inherited <var>Create</var> then initialises style and bounds</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGroupBox.Create.AOwner">
@@ -1728,16 +1743,25 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
+      <element name="TCustomComboBox.InitializeWnd">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd"/>
+        </seealso>
+        <short>
+          <var>InitializeWnd</var> - creates the underlying interface-object: calls inherited <var>InitializeWnd</var> then sets up several local lists and variables notably for style and size</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
+      <element name="TCustomComboBox.DestroyWnd">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DestroyWnd"/>
+        </seealso>
+        <short>
+          <var>DestroyWnd</var> - finds somewhere to store locally held variables then frees lists, cals inherited <var>DestroyWnd</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
@@ -2251,20 +2275,29 @@ False is set when the edit or combobox control loses focus.
 - whether the entries in the drop-down list have been sorted</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomComboBox.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomComboBox.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for TCustomComboBox: calls inherited <var>Create</var> then initialises styles, item lists, bounds and various other local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomComboBox.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TCustomComboBox.Destroy">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomComboBox</var>: frees handles, itemlists, canvas and items then calls inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.IntfGetItems">
@@ -3607,20 +3640,29 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListBox.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomListBox.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomListBox</var>: calls inherited <var>Create</var> then initialises style, canvas, item list and various other local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomListBox.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TCustomListBox.Destroy">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var>: destructor for <var>TCustomListBox</var>: frees canvas and item list, then calls inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomListBox.GetIndexAtY">
@@ -4719,11 +4761,13 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TCustomEdit.CreateWnd">
+        <short>CreateWnd - calls inherited <var>CreateWnd</var>, then initialises various properties relevant to the Widget Set in use</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.TextChanged" link="#LCL.Controls.TControl.TextChanged">
@@ -4947,10 +4991,14 @@ Indicates how text is displayed in a text editing control.</p>
         </descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomEdit.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomEdit.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomEdit</var>: calls inherite <var>Create</var> then initialises style, colour, size and various other local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.Create.AOwner">
@@ -5510,22 +5558,31 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomMemo.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomMemo.Create">
         <descr>Create the Custom memo widget
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomMemo</var>: calls inherited <var>Create</var> then initialises some variables, creates the stringlist and creates scrollbars</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomMemo.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TCustomMemo.Destroy">
         <descr>Destroy the CustomMemo widget when you have finished with it
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomMemo</var>: frees stringlist and scrollbars then calls inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMemo.Append">
@@ -6383,10 +6440,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomStaticText.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomStaticText.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomStaticText</var>: calls inherited <var>Create</var> the initialises style, alignment and bounds</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomStaticText.Create.AOwner">
@@ -6842,10 +6903,14 @@ is done automatically by the streaming system.
 - event handler for any change in properties of the control</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TButtonControl.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TButtonControl.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TButtonControl</var>: calls inherited <var>Create</var> then initialises style</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TButtonControl.Create.TheOwner">
@@ -7169,11 +7234,15 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomButton.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomButton.Create">
         <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomButton</var>: calls inherited <var>Create</var> then initialises style, colour, bounds, alignment and various other properties</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomButton.Create.TheOwner">
@@ -7770,11 +7839,14 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckBox.Create" link="#LCL.Controls.TWinControl.Create">
-        <short/>
+      <element name="TCustomCheckBox.Create">
+        <short>
+          <var>Create</var> - constructor for TCustomCheckBox: calls inherited <var>Create</var> then initialises style, and state, bounds, tabstop and autosize</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCheckBox.Create.TheOwner">
@@ -8043,10 +8115,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToggleBox.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TToggleBox.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TToggleBox</var>: calls inherited <var>Create</var> then initialises style and makes autosize False</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToggleBox.Create.TheOwner">
@@ -8312,11 +8388,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TRadioButton.Create" link="#LCL.Controls.TWinControl.Create">
-        <short/>
+      <element name="TRadioButton.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TRadioButton</var>: calls inherited <var>Create</var> then initialises style</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TRadioButton.Create.TheOwner">
@@ -8990,10 +9069,14 @@ is done automatically by the streaming system.
 - boolean. If True, font size is adjusted for optimal fill of available space</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomLabel.Create" link="#LCL.Controls.TGraphicControl.Create">
+      <element name="TCustomLabel.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomLabel</var>: calls inherited <var>Create</var> then initialises style, bounds, colour and some other properties</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomLabel.Create.TheOwner">
