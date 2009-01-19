@@ -858,7 +858,7 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
     Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
-  Result :=  Min(Entry^.current_pos, Entry^.selection_bound);
+  Result := Min(Entry^.current_pos, Entry^.selection_bound)
 end;
 
 class function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
@@ -919,7 +919,7 @@ begin
   Entry := PGtkEntry(ACustomEdit.Handle);
   if GetSelStart(ACustomEdit) = NewStart then exit;
 
-  if Entry^.text_max_length>0 then
+  if Entry^.text_max_length > 0 then
     NewPos := Min(NewStart, Entry^.text_max_length)
   else
     NewPos := Min(NewStart, Entry^.text_length);
@@ -930,13 +930,15 @@ class procedure TGtk2WSCustomEdit.SetSelLength(
   const ACustomEdit: TCustomEdit; NewLength: integer);
 var
   Entry: PGtkEntry;
+  SelStart: Integer;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
     Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
+  SelStart := GetSelStart(ACustomEdit);
   gtk_entry_select_region(Entry,
-    Entry^.current_pos,
-    Entry^.current_pos + NewLength);
+    SelStart,
+    SelStart + NewLength);
 end;
 
 class procedure TGtk2WSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
