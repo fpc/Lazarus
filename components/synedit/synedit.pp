@@ -79,7 +79,8 @@ uses
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
-  SynGutter, SynGutterCodeFolding, SynGutterChanges,
+  SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
+  SynGutterMarks,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
@@ -1102,6 +1103,7 @@ type
 {$IFDEF SYN_LAZARUS}
 function SynEditClipboardFormat: TClipboardFormat;
 {$ENDIF}
+procedure Register;
 
 implementation
 
@@ -1131,6 +1133,7 @@ begin
     fSynEditClipboardFormat := ClipboardRegisterFormat(SYNEDIT_CLIPBOARD_FORMAT);
   Result:=fSynEditClipboardFormat;
 end;
+
 {$ENDIF}
 
 function Roundoff(X: Extended): Longint;
@@ -9997,10 +10000,17 @@ begin
   inherited Destroy;
 end;
 
+procedure Register;
+begin
+  RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
+                  TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
+end;
+
 initialization
   {$IFNDEF SYN_LAZARUS}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
   {$ENDIF}
   SynDefaultBeautifier := TSynBeautifier.Create(Application);
+  Register;
 
 end.
