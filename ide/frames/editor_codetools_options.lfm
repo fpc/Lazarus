@@ -5,8 +5,8 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   ClientWidth = 496
   TabOrder = 0
   Visible = False
-  DesignLeft = 23
-  DesignTop = 23
+  DesignLeft = 161
+  DesignTop = 161
   object AutoDelayMaxLabel: TLabel[0]
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
@@ -87,7 +87,6 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   end
   object MarkupWordFullLenLabel: TLabel[6]
     AnchorSideLeft.Control = MarkupWordFullCheckBox
-    AnchorSideTop.Control = MarkupWordEnabledCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = MarkupWordFullLenSpin
     Left = 230
@@ -177,19 +176,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Ctl3D = False
     TabOrder = 5
   end
-  object MarkupWordEnabledCheckBox: TCheckBox[13]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = AutoDelayLabel
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 211
-    Width = 170
-    BorderSpacing.Top = 6
-    Caption = 'MarkupWordEnabledCheckBox'
-    TabOrder = 6
-  end
-  object MarkupWordTimeTrackBar: TTrackBar[14]
+  object MarkupWordTimeTrackBar: TTrackBar[13]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordNoKeyword
     AnchorSideTop.Side = asrBottom
@@ -206,11 +193,10 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Ctl3D = False
-    TabOrder = 7
+    TabOrder = 6
   end
-  object MarkupWordFullCheckBox: TCheckBox[15]
+  object MarkupWordFullCheckBox: TCheckBox[14]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MarkupWordEnabledCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
@@ -218,9 +204,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 147
     BorderSpacing.Top = 6
     Caption = 'MarkupWordFullCheckBox'
-    TabOrder = 8
+    TabOrder = 7
   end
-  object MarkupWordNoKeyword: TCheckBox[16]
+  object MarkupWordNoKeyword: TCheckBox[15]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordFullCheckBox
     AnchorSideTop.Side = asrBottom
@@ -230,12 +216,11 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 137
     BorderSpacing.Top = 6
     Caption = 'MarkupWordNoKeyword'
-    TabOrder = 9
+    TabOrder = 8
   end
-  object MarkupWordFullLenSpin: TSpinEdit[17]
+  object MarkupWordFullLenSpin: TSpinEdit[16]
     AnchorSideLeft.Control = MarkupWordFullLenLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = MarkupWordEnabledCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -245,22 +230,21 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 48
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    TabOrder = 10
+    TabOrder = 9
   end
-  object MarkupWordNoTimerCheckBox: TCheckBox[18]
-    AnchorSideLeft.Control = MarkupWordEnabledCheckBox
+  object MarkupWordNoTimerCheckBox: TCheckBox[17]
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AutoDelayLabel
     AnchorSideTop.Side = asrBottom
-    Left = 230
+    Left = 0
     Height = 19
     Top = 211
     Width = 171
-    BorderSpacing.Left = 230
     BorderSpacing.Top = 6
     Caption = 'MarkupWordNoTimerCheckBox'
-    TabOrder = 11
+    TabOrder = 10
   end
-  object MarkupWordTrim: TCheckBox[19]
+  object MarkupWordTrim: TCheckBox[18]
     AnchorSideLeft.Control = MarkupWordNoKeyword
     AnchorSideTop.Control = MarkupWordFullCheckBox
     AnchorSideTop.Side = asrBottom
@@ -271,6 +255,6 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 230
     BorderSpacing.Top = 6
     Caption = 'MarkupWordTrim'
-    TabOrder = 12
+    TabOrder = 11
   end
 end

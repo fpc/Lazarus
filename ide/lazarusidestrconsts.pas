@@ -1198,12 +1198,11 @@ resourcestring
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
-  dlgMarkupWordEnabled = 'Highlight Current Word/Block';
   dlgMarkupWordFull = 'Current Word match word boundaries';
   dlgMarkupWordFullLen = 'Only if shorter than';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
   dlgMarkupWordTrim = 'Trim Spaces';
-  dlgMarkupWordNoTimer = 'Disable Timer';
+  dlgMarkupWordNoTimer = 'Disable Timer for Markup Current Word';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';
   dlgTimeSecondUnit = 'sec';

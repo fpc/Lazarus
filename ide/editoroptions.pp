@@ -466,7 +466,6 @@ type
     fHighlighterList: TEditOptLangList;
 
     // Markup Current Word
-    FMarkupCurWordEnabled: Boolean;
     FMarkupCurWordTime: Integer;
     FMarkupCurWordFull: Boolean;
     FMarkupCurWordFullLen: Integer;
@@ -597,8 +596,6 @@ type
       read fHighlighterList write fHighlighterList;
 
     // Markup Current Word
-    property MarkupCurWordEnabled: Boolean
-      read FMarkupCurWordEnabled write FMarkupCurWordEnabled default True;
     property MarkupCurWordTime: Integer
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
     property MarkupCurWordFull: Boolean
@@ -1416,7 +1413,6 @@ begin
   // Color options
   fHighlighterList := TEditOptLangList.Create;
 
-  FMarkupCurWordEnabled := True;
   FMarkupCurWordTime := 1500;
   FMarkupCurWordFull := False;
   FMarkupCurWordFullLen := 3;
@@ -1590,9 +1586,6 @@ begin
       // color attributes are stored in the highlighters
     ;
 
-    FMarkupCurWordEnabled :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/Enabled', True);
     FMarkupCurWordTime :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
@@ -1759,8 +1752,6 @@ begin
     ;
 
 
-    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Enabled',
-      FMarkupCurWordEnabled, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Time',
       FMarkupCurWordTime, 1500);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord',
@@ -2427,7 +2418,6 @@ begin
 
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
-    MarkCaret.Enabled := FMarkupCurWordEnabled;
     if FMarkupCurWordNoTimer then
       MarkCaret.WaitTime := 0
     else
@@ -2493,7 +2483,6 @@ begin
 
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   if assigned(MarkCaret) then begin
-    FMarkupCurWordEnabled := MarkCaret.Enabled;
     FMarkupCurWordNoTimer := MarkCaret.WaitTime = 0;
     if FMarkupCurWordNoTimer then
       FMarkupCurWordTime := 1500
