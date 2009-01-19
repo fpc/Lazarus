@@ -1634,83 +1634,103 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ExpandRow(Index:integer);
-var a:integer;
-  CurPath:string;
-  AlreadyInExpandList:boolean;
+var
+  a: integer;
+  CurPath: string;
+  AlreadyInExpandList: boolean;
+  ActiveRow: TOIPropertyGridRow;
 begin
-  FExpandingRow:=Rows[Index];
-  if (FExpandingRow.Expanded)
-  or (not CanExpandRow(FExpandingRow))
-  then begin
-    FExpandingRow:=nil;
-    exit;
+  // Save ItemIndex
+  if ItemIndex <> -1 then
+    ActiveRow := Rows[ItemIndex]
+  else
+    ActiveRow := nil;
+  FExpandingRow := Rows[Index];
+  if (FExpandingRow.Expanded) or (not CanExpandRow(FExpandingRow)) then
+  begin
+    FExpandingRow := nil;
+    Exit;
   end;
   FExpandingRow.Editor.GetProperties(@AddSubEditor);
   SortSubEditors(FExpandingRow);
   SetItemsTops;
-  FExpandingRow.FExpanded:=true;
-  a:=0;
+  FExpandingRow.FExpanded := True;
+  a := 0;
   CurPath:=uppercase(PropertyPath(FExpandingRow.Index));
   AlreadyInExpandList:=false;
-  while a<FExpandedProperties.Count do begin
-    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a]))
-    then begin
-      if length(FExpandedProperties[a])=length(CurPath) then begin
-        AlreadyInExpandList:=true;
+  while a < FExpandedProperties.Count do
+  begin
+    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a])) then
+    begin
+      if Length(FExpandedProperties[a]) = Length(CurPath) then
+      begin
+        AlreadyInExpandList := True;
         inc(a);
-      end else begin
+      end
+      else
         FExpandedProperties.Delete(a);
-      end;
-    end else begin
+    end
+    else
       inc(a);
-    end;
   end;
   if not AlreadyInExpandList then
     FExpandedProperties.Add(CurPath);
-  FExpandingRow:=nil;
+  FExpandingRow := nil;
+  // restore ItemIndex
+  if ActiveRow <> nil then
+    FItemIndex := ActiveRow.Index
+  else
+    FItemIndex := -1;
   UpdateScrollBar;
   Invalidate;
 end;
 
 procedure TOICustomPropertyGrid.ShrinkRow(Index:integer);
-var CurRow, ARow:TOIPropertyGridRow;
-  StartIndex,EndIndex,a:integer;
-  CurPath:string;
+var
+  CurRow, ARow: TOIPropertyGridRow;
+  StartIndex, EndIndex, a: integer;
+  CurPath: string;
 begin
-  CurRow:=Rows[Index];
-  if (not CurRow.Expanded) then exit;
+  CurRow := Rows[Index];
+  if (not CurRow.Expanded) then
+    Exit;
   // calculate all childs (between StartIndex..EndIndex)
-  StartIndex:=CurRow.Index+1;
-  EndIndex:=FRows.Count-1;
-  ARow:=CurRow;
-  while ARow<>nil do begin
-    if ARow.NextBrother<>nil then begin
-      EndIndex:=ARow.NextBrother.Index-1;
+  StartIndex := CurRow.Index + 1;
+  EndIndex := FRows.Count - 1;
+  ARow := CurRow;
+  while ARow <> nil do
+  begin
+    if ARow.NextBrother <> nil then
+    begin
+      EndIndex := ARow.NextBrother.Index - 1;
       break;
     end;
-    ARow:=ARow.Parent;
+    ARow := ARow.Parent;
   end;
-  if (FItemIndex>=StartIndex) and (FItemIndex<=EndIndex) then
+  if (FItemIndex >= StartIndex) and (FItemIndex <= EndIndex) then
     // current row delete, set new current row
     ItemIndex:=0
-  else if FItemIndex>EndIndex then
+  else
+  if FItemIndex > EndIndex then
     // adjust current index for deleted rows
     FItemIndex := FItemIndex - (EndIndex - StartIndex + 1);
-  for a:=EndIndex downto StartIndex do begin
+  for a := EndIndex downto StartIndex do
+  begin
     Rows[a].Free;
     FRows.Delete(a);
   end;
   SetItemsTops;
-  CurRow.FExpanded:=false;
-  CurPath:=uppercase(PropertyPath(CurRow.Index));
-  a:=0;
-  while a<FExpandedProperties.Count do begin
-    if copy(FExpandedProperties[a],1,length(CurPath))=CurPath then
+  CurRow.FExpanded := False;
+  CurPath := UpperCase(PropertyPath(CurRow.Index));
+  a := 0;
+  while a < FExpandedProperties.Count do
+  begin
+    if copy(FExpandedProperties[a], 1, length(CurPath)) = CurPath then
       FExpandedProperties.Delete(a)
     else
       inc(a);
   end;
-  if CurRow.Parent<>nil then
+  if CurRow.Parent <> nil then
     FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
   UpdateScrollBar;
   Invalidate;
