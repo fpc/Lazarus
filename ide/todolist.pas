@@ -538,6 +538,7 @@ begin
   try
     fBuild:=True;
     CodeToolBoss.ActivateWriteLock;
+    fScannedFiles.Clear;
     lvTodo.Items.Clear;
 
     if MainSourceFilename='' then exit;
