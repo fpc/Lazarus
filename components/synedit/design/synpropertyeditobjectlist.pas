@@ -388,10 +388,12 @@ begin
   if ClassComboBox.Items.Count >0 then
     ClassComboBox.ItemIndex := 0;
 
-  if (assigned(NewOwnerPersistent)) and (NewOwnerPersistent  is TSynObjectList) then
-    FOwnerPersistent := (NewOwnerPersistent as TSynObjectList).Owner
+  // Can not use NewOwnerPersistent since it points to the SynGutter
+  if NewSynObjectPartList <> nil then
+    FOwnerPersistent := NewSynObjectPartList.Owner // The SynEdit
   else
-    FOwnerPersistent := NewOwnerPersistent;
+    FOwnerPersistent := nil;
+
   FPropertyName := NewPropName;
   //debugln('TSynObjectPartListPropertyEditorForm.SetSynObjectPartList A SynObjectPartList=',dbgsName(FSynObjectPartList),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
   if GlobalDesignHook <> nil then
