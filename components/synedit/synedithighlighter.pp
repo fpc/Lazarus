@@ -212,7 +212,6 @@ type
     FCapabilities: TSynHighlighterCapabilities;
     protected
     FMinimumCodeFoldBlockLevel: integer;
-    FLastLineCodeFoldLevelFix: integer;
     private
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
@@ -225,6 +224,7 @@ type
     {$IFDEF SYN_LAZARUS}
     fRanges: TSynCustomHighlighterRanges;
     {$ENDIF}
+    function GetLastLineCodeFoldLevelFix: integer; virtual;
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
@@ -295,7 +295,7 @@ type
     {$IFDEF SYN_LAZARUS}
     property MinimumCodeFoldBlockLevel: integer read FMinimumCodeFoldBlockLevel;
     function CurrentCodeFoldBlockLevel: integer;
-    property LastLineCodeFoldLevelFix: integer read FLastLineCodeFoldLevelFix;
+    property LastLineCodeFoldLevelFix: integer read GetLastLineCodeFoldLevelFix;
     {$ENDIF}
   public
     property AttrCount: integer read GetAttribCount;
@@ -1217,7 +1217,6 @@ begin
   {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Clear;
-    FLastLineCodeFoldLevelFix:=0;
   end;
   {$ENDIF}
 end;
@@ -1242,7 +1241,6 @@ begin
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
     FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
-    FLastLineCodeFoldLevelFix:=0;
   end;
   {$ENDIF}
 end;
@@ -1273,13 +1271,17 @@ begin
   end;
 end;
 
+function TSynCustomHighlighter.GetLastLineCodeFoldLevelFix: integer;
+begin
+  Result := 0;
+end;
+
 {$IFDEF SYN_LAZARUS}
 procedure TSynCustomHighlighter.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
   if (hcCodeFolding in Capabilities) then begin
     FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
-    FLastLineCodeFoldLevelFix := 0;
   end;
 end;
 

@@ -118,14 +118,18 @@ type
   private
     FMode: TPascalCompilerMode;
     FBracketNestLevel : Integer;
+    FLastLineCodeFoldLevelFix: integer;
   public
     procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
     procedure Assign(Src: TSynCustomHighlighterRange); override;
     procedure IncBracketNestLevel;
     procedure DecBracketNestLevel;
+    procedure DecLastLineCodeFoldLevelFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
+    property LastLineCodeFoldLevelFix: integer read FLastLineCodeFoldLevelFix
+      write FLastLineCodeFoldLevelFix;
   end;
   {$ENDIF}
 
@@ -310,6 +314,7 @@ type
     function GetRangeClass: TSynCustomHighlighterRangeClass; override;
     {$ENDIF}
     procedure EndCodeFoldBlockLastLine;
+    function GetLastLineCodeFoldLevelFix: integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -891,6 +896,7 @@ begin
        (rsAfterSemicolon in fRange) then begin
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtVarType);
+      Include(fRange, rsAtSemicolon);
     end;
     Result := tkKey;
   end
@@ -1044,6 +1050,7 @@ begin
        (rsAfterSemicolon in fRange) then begin
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtVarType);
+      Include(fRange, rsAtSemicolon);
     end;
     Result := tkKey;
   end
@@ -1066,6 +1073,7 @@ begin
        (rsAfterSemicolon in fRange) then begin
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtVarType);
+      Include(fRange, rsAtSemicolon);
     end;
     Result := tkKey;
   end
@@ -1608,6 +1616,7 @@ begin
   Run := 0;
   Inherited SetLine(NewValue,LineNumber);
   FStartCodeFoldBlockLevel := FMinimumCodeFoldBlockLevel;
+  TSynPasSynRange(CodeFoldRange).LastLineCodeFoldLevelFix := 0;
   {$ELSE}
   fLine := PChar(NewValue);
   Run := 0;
@@ -2219,9 +2228,14 @@ begin
   if (CurrentCodeFoldBlockLevel < FStartCodeFoldBlockLevel) and
     (FStartCodeFoldBlockLevel > 0)
   then begin
-    dec(FLastLineCodeFoldLevelFix);
+    TSynPasSynRange(CodeFoldRange).DecLastLineCodeFoldLevelFix;
     dec(FStartCodeFoldBlockLevel);
   end;
+end;
+
+function TSynPasSyn.GetLastLineCodeFoldLevelFix: integer;
+begin
+  Result := TSynPasSynRange(CodeFoldRange).LastLineCodeFoldLevelFix;
 end;
 
 {$endif}
@@ -2431,6 +2445,7 @@ procedure TSynPasSynRange.Clear;
 begin
   inherited Clear;
   FBracketNestLevel := 0;
+  FLastLineCodeFoldLevelFix := 0;
 end;
 
 function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
@@ -2440,6 +2455,8 @@ begin
   Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
   if Result<>0 then exit;
   Result := BracketNestLevel - TSynPasSynRange(Range).BracketNestLevel;
+  if Result<>0 then exit;
+  Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
 end;
 
 procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
@@ -2447,6 +2464,7 @@ begin
   inherited Assign(Src);
   FMode:=TSynPasSynRange(Src).FMode;
   FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
+  FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
 end;
 
 procedure TSynPasSynRange.IncBracketNestLevel;
@@ -2457,6 +2475,11 @@ end;
 procedure TSynPasSynRange.DecBracketNestLevel;
 begin
   dec(FBracketNestLevel);
+end;
+
+procedure TSynPasSynRange.DecLastLineCodeFoldLevelFix;
+begin
+  dec(FLastLineCodeFoldLevelFix)
 end;
 
 {$ENDIF}
