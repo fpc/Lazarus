@@ -3,10 +3,6 @@ object DirSelDlg: TDirSelDlg
   Height = 330
   Top = 231
   Width = 335
-  HorzScrollBar.Page = 334
-  HorzScrollBar.Range = 14
-  VertScrollBar.Page = 329
-  VertScrollBar.Range = 63
   ActiveControl = TV
   BorderStyle = bsDialog
   Caption = 'Select Directory'
@@ -15,7 +11,9 @@ object DirSelDlg: TDirSelDlg
   FormStyle = fsStayOnTop
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Panel1: TPanel
+    Left = 0
     Height = 41
     Top = 289
     Width = 335
@@ -58,7 +56,9 @@ object DirSelDlg: TDirSelDlg
     end
   end
   object DirectoryPanel: TPanel
+    Left = 0
     Height = 24
+    Top = 0
     Width = 335
     Align = alTop
     BevelOuter = bvNone
@@ -89,9 +89,10 @@ object DirSelDlg: TDirSelDlg
     DefaultItemHeight = 19
     ParentColor = True
     ParentCtl3D = False
-    ParentFont = True
+    ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 0
     OnExpanded = TVExpanded
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end
