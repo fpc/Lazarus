@@ -2874,7 +2874,8 @@ begin
   Node:=Selected;
   if (tvsIsEditing in FStates) or (Node=nil) then exit;
   if not CanEdit(Node) then exit;
-  Node.EditText;
+  // make node visible (this will cancel editing, so call this first)
+  EnsureNodeIsVisible(Node);
 
   Include(FStates,tvsIsEditing);
   if FEditor=nil then begin
@@ -2882,8 +2883,8 @@ begin
     FEditor.OnEditingDone:=@EditorEditingDone;
     FEditor.OnKeyDown:=@EditorKeyDown;
   end;
-  Node.GetAbsoluteIndex;
-  ARect:=Rect(Node.DisplayTextLeft,Node.Top,ClientWidth-BorderWidth,Node.Bottom);
+  ARect:=Rect(Node.DisplayTextLeft,Node.Top-ScrolledTop,
+              ClientWidth-BorderWidth,Node.Bottom-ScrolledTop);
   FEditor.BoundsRect:=ARect;
   FEditor.Visible:=true;
   FEditor.Parent:=Self;
@@ -4952,8 +4953,13 @@ end;
 { CustomDraw support }
 
 procedure TCustomTreeView.EditorEditingDone(Sender: TObject);
+var
+  WasFocused: Boolean;
 begin
+  WasFocused:=(FEditor<>nil) and FEditor.Focused;
   EndEditing;
+  if WasFocused then
+    SetFocus;
 end;
 
 procedure TCustomTreeView.EditorKeyDown(Sender: TObject; var Key: Word;
