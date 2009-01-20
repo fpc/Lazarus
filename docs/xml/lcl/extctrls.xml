@@ -106,13 +106,12 @@
         <descr>
           <p>
             <var>TPageFlag</var> - enumerated type containing possible values for page flags for notebook pages</p>
-          <pre/>
-
-    pfAdded,  // handle of page added to notebook handle
+          <pre>pfAdded,  // handle of page added to notebook handle
     pfAdding, // currently handle of page adding to notebook handle
     pfRemoving, // currently removing page handle from notebook handle
     pfInserting // currently inserting page into notebook
-</descr>
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -316,11 +315,14 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomPage.Create" link="#lcl.Controls.TControl.Create">
-        <short/>
+      <element name="TCustomPage.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initialises style, visibility, alignment and caption</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Controls.TControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomPage.Create.TheOwner">
@@ -505,10 +507,14 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TNBPages.Create" link="#rtl.System.TObject.Create">
+      <element name="TNBPages.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TNBPages</var>: calls inherited <var>Create</var> then sets up the list of pages on the notebook</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TNBPages.Create.thePageList">
@@ -1132,22 +1138,29 @@
           <var>Page</var> that is currently selected and is available for interaction</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomNotebook.Create" link="#LCL.Controls.TWinControl.Create">
-        <short/>
+      <element name="TCustomNotebook.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomNotebook</var>: calls inherited <var>Create</var> creates a pagelist, then sets initial bounds and default values for local variables and properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomNotebook.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomNotebook.Destroy" link="#LCL.Controls.TWinControl.Destroy">
-        <short/>
+      <element name="TCustomNotebook.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomNotebook</var>: clears and frees pages and list, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.TabIndexAtClientPos">
@@ -1576,7 +1589,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TNotebook.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TNotebook.Create" link="#LCL.ExtCtrls.TCustomNotebook.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1908,22 +1921,29 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TIdleTimer.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TIdleTimer.Create">
+        <short>
+          <var>Create</var>: constructor for <var>TIdleTimer</var>: calls inherited <var>Create</var> then sets up operating mode (autostart and autoend)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.CustomTimer.TCustomTimer.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TIdleTimer.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TIdleTimer.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TIdleTimer.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TIdleTimer</var>: turns off <var>AutoEnabled</var> then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.CustomTimer.TCustomTimer.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TIdleTimer.AutoEnabled">
@@ -2062,22 +2082,29 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TShape.Create" link="#LCL.Controls.TGraphicControl.Create">
-        <short/>
+      <element name="TShape.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TShape</var>: calls inherited <var>Create</var>, sets default styles and bounds, creates pen and brush</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TShape.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TShape.Destroy" link="#LCL.Controls.TGraphicControl.Destroy">
-        <short/>
+      <element name="TShape.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TShape</var>: frees pen and brush, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TShape.Paint" link="#LCL.Controls.TGraphicControl.Paint">
@@ -2626,11 +2653,14 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomSplitter.Create" link="#LCL.Controls.TCustomControl.Create">
-        <short/>
+      <element name="TCustomSplitter.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomSplitter</var>: calls inherited <var>Create</var> then sets initial alignment, size and style</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomSplitter.Create.TheOwner">
@@ -2868,11 +2898,14 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPaintBox.Create" link="#LCL.Controls.TGraphicControl.Create">
-        <short/>
+      <element name="TPaintBox.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TPaintBox</var>: calls inherited <var>Create</var> then sets initial bounds and style</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPaintBox.Create.AOwner">
@@ -3179,22 +3212,29 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomImage.Create" link="#LCL.Controls.TGraphicControl.Create">
-        <short/>
+      <element name="TCustomImage.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomImage</var>: calls inherited <var>Create</var> then sets default style, bounds and local variables: creates space for the picture</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomImage.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomImage.Destroy" link="#LCL.Controls.TGraphicControl.Destroy">
-        <short/>
+      <element name="TCustomImage.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomImage</var>: frees picture then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImage.Align" link="#LCL.Controls.TControl.Align">
@@ -3290,7 +3330,7 @@
 : a graphic image placed on the form; usually loaded from a picture file.</p>
           <p>The actual image is found in <var>Picture</var> or <var>Canvas</var>
           </p>
-          <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link>
+          <p>Inherits most of its properties from its ancestors, <link id="#lcl.ExtCtrls.TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link>
           </p>
         </descr>
         <seealso>
@@ -3486,7 +3526,7 @@
 
 
  - a bevel placed around the edge of buttons and other components.</p>
-          <p>Its appearance is governed by <link id="TBevelShape">TBevelShape</link>, <link id="TBevelStyle">TBevelStyle</link> and <link id="TBevelwidth">TBevelwidth</link>
+          <p>Its appearance is governed by <link id="#lcl.ExtCtrls.TBevelShape">TBevelShape</link>, <link id="#lcl.ExtCtrls.TBevelStyle">TBevelStyle</link> and <link id="#lcl.ExtCtrls.TBevelwidth">TBevelwidth</link>
           </p>
         </descr>
       </element>
@@ -3554,17 +3594,21 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TBevel.Create" link="Classes.TComponent.Create">
+      <element name="TBevel.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - cunstructor for <var>TBevel</var>: calls inherited <var>Create</var> then sets initial style, shape and bounds</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBevel.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TBevel.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TBevel.Destroy" link="#LCL.Controls.TGraphicControl.Destroy">
         <descr/>
         <errors/>
         <seealso/>
@@ -3942,22 +3986,29 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomRadioGroup.Create" link="#LCL.Controls.TWinControl.Create">
-        <short/>
+      <element name="TCustomRadioGroup.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomRadioGroup</var>: calls inherited <var>Create</var>, then sets list of buttons, and initialises layout and sizing properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomGroupBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomRadioGroup.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomRadioGroup.Destroy" link="#LCL.Controls.TWinControl.Destroy">
-        <short/>
+      <element name="TCustomRadioGroup.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomRadioGroup</var>: frees items and buttons, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomRadioGroup.CanModify">
@@ -4053,13 +4104,13 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.ColumnLayout" link="ExtCtrls.TCustomRadioGroup.ColumnLayout">
+      <element name="TRadioGroup.ColumnLayout" link="#lcl.ExtCtrls.TCustomRadioGroup.ColumnLayout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.Columns" link="ExtCtrls.TCustomRadioGroup.Columns">
+      <element name="TRadioGroup.Columns" link="#lcl.ExtCtrls.TCustomRadioGroup.Columns">
         <short/>
         <descr/>
         <seealso/>
@@ -4083,13 +4134,13 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.ItemIndex" link="ExtCtrls.TCustomRadioGroup.ItemIndex">
+      <element name="TRadioGroup.ItemIndex" link="#lcl.ExtCtrls.TCustomRadioGroup.ItemIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.Items" link="ExtCtrls.TCustomRadioGroup.Items">
+      <element name="TRadioGroup.Items" link="#lcl.ExtCtrls.TCustomRadioGroup.Items">
         <short>
           <var>Items</var> - a string list containing the captions of the radio boxes</short>
         <descr>
@@ -4470,22 +4521,29 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckGroup.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomCheckGroup.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomCheckGroup</var>: calls inherited <var>Create</var>, then sets styles, creates lists, initialises sizing and layout properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomGroupBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCheckGroup.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomCheckGroup.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomCheckGroup.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomCheckGroup</var>: frees items and buttons, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomCheckGroup.Rows">
@@ -5010,7 +5068,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
 : The base type for 
             
             <var>LabeledEdit</var>.</p>
-          <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
+          <p>Note particularly the <link id="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
@@ -5156,11 +5214,14 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomLabeledEdit.Create" link="#lcl.StdCtrls.TCustomEdit.Create">
-        <short/>
+      <element name="TCustomLabeledEdit.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomLabeledEdit</var>: calls inherited <var>Create</var> then sets initial position and label spacing</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.StdCtrls.TCustomEdit.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomLabeledEdit.Create.TheOwner">
@@ -5696,11 +5757,14 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomPanel.Create" link="#lcl.Controls.TCustomControl.Create">
-        <short/>
+      <element name="TCustomPanel.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomPanel</var>: calls inherited <var>Create</var> then sets initial style, bevel, colour, alignment and bounds</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Controls.TCustomControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomPanel.Create.TheOwner">
@@ -6111,17 +6175,28 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>
           <var>TTrayIcon</var> is a multiplatform System Tray component. It adds an icon to the tray and signifies an application that is inactive but ready to be activated. Under Windows the System tray is usually located on the bottom-right corner of the screen, but it may be elsewhere. On other operating systems this position varies.</short>
       </element>
-      <element name="TCustomTrayIcon.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomTrayIcon.Create">
         <descr>
           <var>Create</var> creates a new instance of a <var>TCustomTrayIcon</var> class.
           If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to insert itself in the list of owned components of the owner.
-        </descr>
+</descr>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTrayIcon</var>: performs inherited <var>Create</var> then creates icon, timer and initialises balloon timeout</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
       </element>
-      <element name="TCustomTrayIcon.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCustomTrayIcon.Destroy">
         <descr>
-          <var>Destroy</var> sends a <var>opRemove</var> notification to all components in the free-notification list. After that, all owned components are destroyed by calling <link id="TComponent.DestroyComponents">DestroyComponents</link> (and hence removed from the list of owned components). When this is done, the component removes itself from its owner's child component list.
+          <var>Destroy</var> sends a <var>opRemove</var> notification to all components in the free-notification list. After that, all owned components are destroyed by calling <link id="#rtl.Classes.TComponent.DestroyComponents">DestroyComponents</link> (and hence removed from the list of owned components). When this is done, the component removes itself from its owner's child component list.
 After that, the parent's destroy method is called.
-        </descr>
+</descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomTrayIcon</var>: frees icon and timer then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <element name="TCustomTrayIcon.Hide">
         <short>Hide - Removes the icon from the System Tray</short>
@@ -6210,7 +6285,7 @@ After that, the parent's destroy method is called.
 compatible.
 </p>
           <p>The <var>TPersistent</var> implementation of <var>Assign</var> does nothing
-but calling the <link id="TPersistent.AssignTo">AssignTo</link> method of
+but calling the <link id="#rtl.Classes.TPersistent.AssignTo">AssignTo</link> method of
 source. This means that if the destination class does not know how to assign
 the contents of the source class, the source class instance is asked to assign
 itself to the destination class. This means that it is necessary to
@@ -7041,7 +7116,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <descr/>
         <seealso/>
       </element>
-
       <!-- variable Visibility: private -->
       <element name="TCustomTrayIcon.FBalloonFlags">
         <short/>

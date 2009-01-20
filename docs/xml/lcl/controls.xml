@@ -348,7 +348,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TAnchorKind">
         <short>Enumerated type listing the possible positions for alignment of a control</short>
         <descr>
-          <printshort id="TAnchorKind"/>
+		<p>Enumerated type listing the possible positions for alignment of a control</p>
           <pre>akTop, 
   akLeft, 
   akRight, 
@@ -962,8 +962,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlCanvas">
         <short>The base class for the canvas property of several graphic controls, such as TGraphicControl and TCustomControl</short>
         <seealso>
-          <link id="TGraphicControl"/>
-          <link id="TCustomControl"/>
+          <link id="#lcl.Controls.TGraphicControl"/>
+          <link id="#lcl.Controls.TCustomControl"/>
           <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
@@ -1681,7 +1681,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragObject.HideDragImage">
         <short>Procedure for hiding the drag image during movement</short>
         <seealso>
-          <link id="TDragObject.ShowDragImage">ShowDragImage</link>
+          <link id="#lcl.Controls.TDragObject.ShowDragImage">ShowDragImage</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -1696,7 +1696,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragObject.ShowDragImage">
         <short>Procedure for keeping the image visible during movement</short>
         <seealso>
-          <link id="TDragObject.HideDragImage">HideDragImage</link>
+          <link id="#lcl.Controls.TDragObject.HideDragImage">HideDragImage</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -1753,7 +1753,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TBaseDragControlObject">
         <short>An ancestor class for many drag control objects</short>
         <seealso>
-          <link id="TDragObject"/>
+          <link id="#lcl.Controls.TDragObject"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -1818,7 +1818,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Assigns source object</short>
         <descr>Overrides definition in parent class</descr>
         <seealso>
-          <link id="TDragObject"/>
+          <link id="#lcl.Controls.TDragObject"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3423,7 +3423,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetHelpContext">
         <short>
-          <p>SetHelpContext</p> - specifies the context-based help variable to use</short>
+          <var>SetHelpContext</var> - specifies the context-based help variable to use</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4200,8 +4200,8 @@ mrLast=mrYesToAll=10</descr>
         <short>Function to get text-string associated with control</short>
         <descr>Uses RealGetText rather than GetTextBuf to avoid unnecessary read-writes to PChar buffers</descr>
         <seealso>
-          <link id="TControl.GetTextBuf">GetTextBuf</link>
-          <link id="RealGetText"/>
+          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lcl.Controls.TControl.RealGetText"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -4667,8 +4667,8 @@ mrLast=mrYesToAll=10</descr>
         <short>Stores text in buffer</short>
         <descr>Uses RealSetText rather than SetTextBuf to avoid unnecessary read-writes to PChar buffer</descr>
         <seealso>
-          <link id="TControl.RealSetText">RealSetText</link>
-          <link id="TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4709,7 +4709,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.FControlState">
         <short>Flag showing the set of states for this control</short>
         <seealso>
-          <link id="TControlState"/>
+          <link id="#lcl.Controls.TControlState"/>
         </seealso>
       </element>
       <!-- variable Visibility: protected -->
@@ -5647,40 +5647,40 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same 
           <var>Action</var> as that associated with the 
-          <link id="OnClick"/> event</short>
+          <link id="#lcl.Controls.TControl.OnClick"/> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>
           <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnDblClick"/>  event</short>
+	  <link id="#lcl.Controls.TControl.OnDblClick"/>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>
           <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnTripleClick"/> event</short>
+	  <link id="#lcl.Controls.TControl.OnTripleClick"/> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>
           <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnQuadClick"/>  event</short>
+	  <link id="#lcl.Controls.TControl.OnQuadClick"/>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
         <short>
           <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnMouseDown"/>  event</short>
+	  <link id="#lcl.Controls.TControl.OnMouseDown"/>  event</short>
         <descr>
           <p>
             <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same 
             <var>Action</var>  as that associated with the 
-            <link id="OnMouseDown"/>  event</p>
+	    <link id="#lcl.Controls.TControl.OnMouseDown"/>  event</p>
           <p>
             <var>Button</var> specifies which mouse button; 
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
@@ -5710,12 +5710,12 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnMouseMove"/>  event</short>
+	  <link id="#lcl.Controls.TControl.OnMouseMove"/>  event</short>
         <descr>
           <p>
             <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same 
             <var>Action</var>  as that associated with the 
-            <link id="OnMouseMove"/>  event</p>
+	    <link id="#lcl.Controls.TControl.OnMouseMove"/>  event</p>
           <p>
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
             <var>X, Y</var> show mouse position</p>
@@ -5740,12 +5740,12 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
           <var>Action</var>  as that associated with the 
-          <link id="OnMouseUp"/>  event</short>
+	  <link id="#lcl.Controls.TControl.OnMouseUp"/>  event</short>
         <descr>
           <p>
             <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
             <var>Action</var>  as that associated with the 
-            <link id="OnMouseUp"/>  event</p>
+	    <link id="#lcl.Controls.TControl.OnMouseUp"/>  event</p>
           <p>
             <var>Button</var> specifies which mouse button; 
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
@@ -5775,7 +5775,7 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>MouseEnter</var> - a procedure that allows the programmer to simulate a mouse entering the control, and initiates the same 
           <var>Action</var> as that associated with the 
-          <link id="OnMouseEnter"/> event</short>
+	  <link id="#lcl.Controls.TControl.OnMouseEnter"/> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5785,7 +5785,7 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>MouseLeave</var> - a procedure that allows the programmer to simulate a mouse leaving the control, and initiates the same 
           <var>Action</var> as that associated with the 
-          <link id="OnMouseLeave"/> event</short>
+	  <link id="#lcl.Controls.TControl.OnMouseLeave"/> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5930,9 +5930,9 @@ mrLast=mrYesToAll=10</descr>
         <descr>This is the function that is actually used by <var>GetTextBuf</var>, and loads a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-          <link id="TControl.GetTextBuf">GetTextBuf</link>
-          <link id="TControl.RealSetText">RealSetText</link>
-          <link id="TControl.SetTextBuf">SetTextBuf</link>
+		<link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+		<link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+		<link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -5945,9 +5945,9 @@ mrLast=mrYesToAll=10</descr>
         <descr>This is the procedure that is actually used by <var>SetTextBuf,</var> and stores text as a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-          <link id="TControl.SetTextBuf">SetTextBuf</link>
-          <link id="TControl.RealGetText">RealGetText</link>
-          <link id="TControl.GetTextBuf">GetTextBuf</link>
+		<link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+		<link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
+		<link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6500,7 +6500,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Remove a previously docked control and put a new control in its place</short>
         <descr>Checks to see whether there is a previously docked control, <br/>and removes it, then puts the new control in its place</descr>
         <seealso>
-          <link id="TControl.ManualDock">ManualDock</link>
+		<link id="#lcl.Controls.TControl.ManualDock">ManualDock</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -6654,7 +6654,7 @@ mrLast=mrYesToAll=10</descr>
         <descr>Checks that this is a new control, then calls SetBounds to set up coordinates defining its position
 </descr>
         <seealso>
-          <link id="TControl.SetBounds">SetBounds</link>
+		<link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6890,8 +6890,8 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>Hide </var>this control</short>
         <seealso>
-          <link id="TControl.Visible"/>
-          <link id="TControl.Show"/>
+		<link id="#lcl.Controls.TControl.Visible"/>
+		<link id="#lcl.Controls.TControl.Show"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -6975,8 +6975,8 @@ mrLast=mrYesToAll=10</descr>
 </pre>
         </descr>
         <seealso>
-          <link id="TControl.RealGetText">RealGetText</link>
-          <link id="TControl.GetText">GetText</link>
+		<link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
+		<link id="#lcl.Controls.TControl.GetText">GetText</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -7021,8 +7021,8 @@ mrLast=mrYesToAll=10</descr>
 </pre>
         </descr>
         <seealso>
-          <link id="TControl.RealSetText">RealSetText</link>
-          <link id="TControl.SetText">SetText</link>
+		<link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+		<link id="#lcl.Controls.TControl.SetText">SetText</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7107,8 +7107,8 @@ mrLast=mrYesToAll=10</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="TControl.Visible"/>
-          <link id="TControl.Hide"/>
+		<link id="#lcl.Controls.TControl.Visible"/>
+		<link id="#lcl.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -7258,7 +7258,7 @@ mrLast=mrYesToAll=10</descr>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso>
-          <link id="TAlign"/>
+		<link id="#lcl.Controls.TAlign"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7271,7 +7271,7 @@ mrLast=mrYesToAll=10</descr>
           </p>
         </descr>
         <seealso>
-          <link id="TAnchors"/>
+		<link id="#lcl.Controls.TAnchors"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7284,7 +7284,7 @@ mrLast=mrYesToAll=10</descr>
           </p>
         </descr>
         <seealso>
-          <link id="TAnchorSide"/>
+		<link id="#lcl.Controls.TAnchorSide"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7406,7 +7406,7 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso>
-          <link id="TSizeConstraints"/>
+		<link id="#lcl.Controls.TSizeConstraints"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7434,7 +7434,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
         </descr>
         <seealso>
-          <link id="TControlState"/>
+		<link id="#lcl.Controls.TControlState"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7449,7 +7449,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
         </descr>
         <seealso>
-          <link id="TControlStyle"/>
+		<link id="#lcl.Controls.TControlStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7522,8 +7522,8 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <short>Event Handler when a hint needs to be shown</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown</descr>
         <seealso>
-          <link id="THintInfo"/>
-          <link id="TControlShowHintEvent"/>
+		<link id="#lcl.Controls.THintInfo"/>
+		<link id="#lcl.Controls.TControlShowHintEvent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7532,7 +7532,7 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or writes a flag to find or store the identity of the parent for this control. The parent is of type TWincontrol</descr>
         <seealso>
-          <link id="TWinControl"/>
+		<link id="#lcl.Controls.TWinControl"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7552,7 +7552,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Flag to determine: Is hint to be displayed for this control?</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint</descr>
         <seealso>
-          <link id="TControl.OnShowHint">OnShowHint</link>
+		<link id="#lcl.Controls.TControl.OnShowHint">OnShowHint</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7568,9 +7568,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
         <seealso>
-          <link id="TControl.IsVisible"/>
-          <link id="TControl.Show"/>
-          <link id="TControl.Hide"/>
+		<link id="#lcl.Controls.TControl.IsVisible"/>
+		<link id="#lcl.Controls.TControl.Show"/>
+		<link id="#lcl.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7578,7 +7578,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Reads or writes a message associated with this window</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
         <seealso>
-          <link id="TWndMethod"/>
+		<link id="#lcl.Controls.TWndMethod"/>
           <link id="#lcl.LMessages.TLMessage"/>
         </seealso>
       </element>
@@ -8253,7 +8253,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <p>Defines procedures and functions related to windowed controls, some of which override virtual methods defined in ancestor classes.</p>
         </descr>
         <seealso>
-          <link id="TControl"/>
+		<link id="#lcl.Controls.TControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -10100,7 +10100,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>
           <var>CreateParams</var> - create parameters for this windowed class</short>
         <descr>
-          <printshort id="TWinControl.CreateParams"/>
+		<p><var>CreateParams</var> - create parameters for this windowed class</p>
           <p>Definition of parameters:</p>
           <pre>TCreateParams = record
     Caption: PChar;
@@ -10177,7 +10177,7 @@ End;
         <short>
           <var>InitializeWnd</var> - initialise the window for this control</short>
         <descr>
-          <printshort id="TWinControl.InitializeWnd"/>
+		<p><var>InitializeWnd</var> - initialise the window for this control</p>
           <p>Gets called after the Handle is created and before the child handles are created</p>
         </descr>
         <errors/>
@@ -10401,7 +10401,7 @@ End;
         <short>Definitions of how any child control is to be sized</short>
         <descr>Reads values from flag or stores values to flag. Most of the properties are inherited from TControlChildSizing, <br/>which you should read to find out more about this control</descr>
         <seealso>
-          <link id="TControlChildSizing"/>
+		<link id="#lcl.Controls.TControlChildSizing"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -10447,7 +10447,7 @@ End;
         <short>Property that actually controls the docking process</short>
         <descr>Reads or writes a flag. Derived from the parent class TDockManager</descr>
         <seealso>
-          <link id="TDockManager"/>
+		<link id="#lcl.Controls.TDockManager"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11246,7 +11246,7 @@ need the ability to accept keyboard input or contain other controls. </p>
             <var>Paint</var> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
-          <link id="TWinControl"/>
+		<link id="#lcl.Controls.TWinControl"/>
           <link id="#lcl.Graphics.TCanvas"/>
         </seealso>
       </element>
@@ -11336,8 +11336,8 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border
 </descr>
         <seealso>
-          <link id="TWinControl"/>
-          <link id="TControl"/>
+		<link id="#lcl.Controls.TWinControl"/>
+		<link id="#lcl.Controls.TControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -11369,7 +11369,7 @@ getting the parent control's Canvas dimensions.</p>
         <short>Paint handler plug-in</short>
         <descr>This is a plug-in in TWinControl to get the DC, <br/>assign it to our canvas and call the paint method for <br/>descendants to do the actual painting</descr>
         <seealso>
-          <link id="TWinControl.PaintWindow"/>
+		<link id="#lcl.Controls.TWinControl.PaintWindow"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11425,7 +11425,7 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Only a restricted series of options is available: none or a single border.
 </descr>
         <seealso>
-          <link id="TBorderStyle"/>
+		<link id="#lcl.Controls.TBorderStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11978,7 +11978,7 @@ getting the parent control's Canvas dimensions.</p>
 </pre>
         </descr>
         <seealso>
-          <link id="TDockManager"/>
+		<link id="#lcl.Controls.TDockManager"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12637,7 +12637,7 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Calls CursorToIdent to find correct entry in look-up table</descr>
         <errors/>
         <seealso>
-          <link id="CursorToIdent"/>
+		<link id="#lcl.Controls.CursorToIdent"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -12653,7 +12653,7 @@ getting the parent control's Canvas dimensions.</p>
         <short>
           <var>StringToCursor</var> - returns the cursor value corresponding to the name supplied</short>
         <descr>
-          <printshort id="StringToCursor"/>
+		<p><var>StringToCursor</var> - returns the cursor value corresponding to the name supplied</p>
           <p>Finds the numeric cursor value corresponding to the name <var>S</var> in the cursor look-up table</p>
         </descr>
       </element>
@@ -13476,7 +13476,7 @@ getting the parent control's Canvas dimensions.</p>
       <!-- property Visibility: public -->
       <element name="TDragManager.DragThreshold">
         <short>The threshold amount by which the mouse must move before the dragging process starts.</short>
-        <descr>The threshold amount by which the mouse must move before the dragging process starts. Default is 5 pixels - irrelevant if <link id="DragImmediate"/> is true
+        <descr>The threshold amount by which the mouse must move before the dragging process starts. Default is 5 pixels - irrelevant if <link id="#lcl.Controls.TDragManager.DragImmediate"/> is true
 </descr>
         <seealso/>
       </element>

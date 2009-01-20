@@ -7401,7 +7401,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="TToolButton"/>
+          <link id="#LCL.ComCtrls.TToolButton"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -8256,7 +8256,7 @@
         <short>Determines the style of the tool button.</short>
         <descr>See TToolButtonStyle for the possible Style values.</descr>
         <seealso>
-          <link id="TToolButtonStyle"/>
+          <link id="#LCL.ComCtrls.TToolButtonStyle"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -8362,7 +8362,7 @@
           <p>Typically, the tool buttons correspond to items in an application's menu and gives the user more direct access to the application's commands.</p>
         </descr>
         <seealso>
-          <link id="TToolButton"/>
+          <link id="#LCL.ComCtrls.TToolButton"/>
           <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
@@ -9011,7 +9011,7 @@
           <p>To add tool buttons to the toolbar at design time, select the toolbar, right-click, and choose New Button. To create a space (separator) between one button and the next, select New Separator. To create a divider between buttons, add a button and set its <var>Style</var> propery to <var>tbsDivider</var>. Other controls may be added to the toolbar directly from the Component palette. </p>
         </descr>
         <seealso>
-          <link id="TToolButton.Style"/>
+          <link id="#LCL.ComCtrls.TToolButton.Style"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -15715,7 +15715,7 @@ the comparision is case sensitive.
  to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
         <seealso>
           <link id="#lcl.stdctrls.HowToUseStdCtrls"/>
-          <link id="TCustomTreeView"/>
+          <link id="#LCL.ComCtrls.TCustomTreeView"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -16281,12 +16281,12 @@ the comparision is case sensitive.
       </element>
       <!-- function Visibility: default -->
       <element name="CompareExpandedNodes">
-        <short>Function to compare the node text two nodes.</short>
+        <short>Function to compare the node text of two nodes.</short>
         <descr>
           <p>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.</p>
           <p>-1: The nodetext from the first node is lower then the nodetext from the second.</p>
           <p>0: The nodetext-s from both nodes are equal.</p>
-          <var>1: The nodetext from the first node is higher then the nodetext from the second.</var>
+          <p>1: The nodetext from the first node is higher then the nodetext from the second.</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -16308,7 +16308,7 @@ the comparision is case sensitive.
           <p>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.</p>
           <p>-1: The given text is lower then the nodetext from the given node.</p>
           <p>0: The given text is equal to the nodetext from the given node.</p>
-          <var>1: The given text is higher then the nodetext from the given node.</var>
+          <p>1: The given text is higher then the nodetext from the given node.</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->

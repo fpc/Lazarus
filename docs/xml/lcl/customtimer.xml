@@ -141,22 +141,29 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTimer.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomTimer.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTimer</var>: calls inherited <var>Create</var>, sets up handle and initialises timer interval</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTimer.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTimer.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomTimer.Destroy">
+        <short>
+          <var>Destroy</var>: destructor for <var>TCustomTimer</var>: disables and kills timer then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTimer.Enabled">
