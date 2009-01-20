@@ -90,7 +90,7 @@ begin
   end;
 
   if AutoSize then
-    Width := 4;
+    RealWidth := 4;
   Result := Width;
 end;
 

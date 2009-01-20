@@ -136,7 +136,7 @@ begin
   end;
 
   if AutoSize then
-    FWidth := FAutoSizeDigitCount * CharWidth + 1;
+    RealWidth := FAutoSizeDigitCount * CharWidth + 1;
   Result := Width;
 end;
 
@@ -153,8 +153,12 @@ begin
       FAutoSizeDigitCount := nDigits;
       DoChange(Self);
     end;
-  end else
+  end
+  else
+  if FAutoSizeDigitCount <> FDigitCount then begin
     FAutoSizeDigitCount := FDigitCount;
+    DoChange(Self);
+  end;
 end;
 
 function TSynGutterLineNumber.FormatLineNumber(Line: integer; IsDot: boolean): string;

@@ -118,6 +118,7 @@ type
     FOnGutterClick: TGutterClickEvent;
     function GetGutterParts: TSynGutterPartList;
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
+    procedure SetRealWidth(const AValue: Integer);
   protected
     FWidth : integer;
     procedure SetAutoSize(const AValue : boolean); virtual;
@@ -127,6 +128,7 @@ type
     property GutterParts: TSynGutterPartList read GetGutterParts;
     property Gutter: TSynGutter read FGutter;
     property SynEdit:TSynEditBase read FSynEdit;
+    property RealWidth: Integer write SetRealWidth;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -600,8 +602,10 @@ end;
 
 procedure TSynGutter.SetWidth(Value: integer);
 begin
+  if FAutoSize then
+    Value := RealGutterWidth(FTextDrawer.CharWidth);
   Value := Max(0, Value);
-  if (FWidth <> Value) and not FAutoSize then
+  if (FWidth <> Value) then
   begin
     FWidth := Value;
     DoChange(Self);
@@ -726,6 +730,13 @@ end;
 procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynSelectedColor);
 begin
   FMarkupInfo.Assign(AValue);
+end;
+
+procedure TSynGutterPartBase.SetRealWidth(const AValue: Integer);
+begin
+  if FWidth = AValue then exit;
+  FWidth :=  AValue;
+  DoChange(self);
 end;
 
 procedure TSynGutterPartBase.SetAutoSize(const AValue : boolean);
