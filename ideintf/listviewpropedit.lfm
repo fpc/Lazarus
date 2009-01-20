@@ -11,16 +11,15 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
   Constraints.MinHeight = 200
   Constraints.MinWidth = 400
   OnCreate = FormCreate
-  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object BtnOK: TBitBtn
     AnchorSideRight.Control = BtnCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 184
-    Height = 26
-    Top = 214
+    Left = 183
+    Height = 36
+    Top = 204
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -37,10 +36,10 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideRight.Control = BtnApply
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 265
-    Height = 26
-    Top = 214
-    Width = 77
+    Left = 264
+    Height = 32
+    Top = 208
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -58,8 +57,8 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 348
-    Height = 25
-    Top = 215
+    Height = 29
+    Top = 211
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -77,8 +76,8 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 429
-    Height = 26
-    Top = 214
+    Height = 36
+    Top = 204
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -95,13 +94,13 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnOK
     Left = 6
-    Height = 202
+    Height = 192
     Top = 6
     Width = 295
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Items'
-    ClientHeight = 184
+    ClientHeight = 173
     ClientWidth = 291
     TabOrder = 4
     object TreeView1: TTreeView
@@ -110,18 +109,19 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 174
+      Height = 163
       Top = 5
       Width = 160
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Bottom = 5
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       HideSelection = False
+      ReadOnly = True
       TabOrder = 0
       OnSelectionChanged = TreeView1SelectionChanged
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
     object BtnNewItem: TButton
       Tag = 1
@@ -184,22 +184,22 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnOK
     Left = 307
-    Height = 202
+    Height = 192
     Top = 6
     Width = 197
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Item Properties'
-    ClientHeight = 184
+    ClientHeight = 173
     ClientWidth = 193
     TabOrder = 5
     object LabelCaption: TLabel
       AnchorSideLeft.Control = GroupBox2
       AnchorSideTop.Control = GroupBox2
       Left = 6
-      Height = 14
+      Height = 18
       Top = 6
-      Width = 42
+      Width = 54
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Caption:'
@@ -211,9 +211,9 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = edtText
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 14
-      Top = 51
-      Width = 66
+      Height = 18
+      Top = 55
+      Width = 83
       BorderSpacing.Top = 6
       Caption = 'Image Index:'
       FocusControl = edtIndexImg
@@ -224,9 +224,9 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = edtIndexImg
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 14
-      Top = 96
-      Width = 62
+      Height = 18
+      Top = 104
+      Width = 78
       BorderSpacing.Top = 6
       Caption = 'State Index:'
       FocusControl = edtIndexState
@@ -241,7 +241,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 22
+      Top = 26
       Width = 182
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
@@ -255,7 +255,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 67
+      Top = 75
       Width = 48
       BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
@@ -267,7 +267,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 112
+      Top = 124
       Width = 48
       BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone

@@ -1,39 +1,44 @@
 object ExploreIDEMenuForm: TExploreIDEMenuForm
+  Left = 434
+  Height = 336
+  Top = 427
+  Width = 468
   ActiveControl = TVIDEMenu
   Caption = 'Lazarus IDE menu'
   ClientHeight = 336
   ClientWidth = 468
   OnCreate = FormCreate
-  PixelsPerInch = 112
   Position = poDesktopCenter
-  HorzScrollBar.Page = 467
-  VertScrollBar.Page = 335
-  Left = 434
-  Height = 336
-  Top = 427
-  Width = 468
+  LCLVersion = '0.9.27'
   object LTree: TLabel
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 456
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Menu Tree'
-    Color = clNone
     ParentColor = False
-    Left = 6
-    Height = 13
-    Top = 6
-    Width = 456
   end
   object TVIDEMenu: TTreeView
+    Left = 0
+    Height = 223
+    Top = 30
+    Width = 468
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    DefaultItemHeight = 14
+    DefaultItemHeight = 19
+    ReadOnly = True
     TabOrder = 0
     OnChange = TVIDEMenuChange
-    Height = 228
-    Top = 25
-    Width = 468
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object LPAth: TMemo
+    AnchorSideBottom.Control = BCLose
+    Left = 0
+    Height = 36
+    Top = 258
+    Width = 468
     Align = alTop
     Anchors = [akBottom]
     BorderSpacing.Bottom = 6
@@ -42,36 +47,29 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
       'Path of selected item:'
     )
     TabOrder = 1
-    AnchorSideBottom.Control = BCLose
-    Height = 36
-    Top = 258
-    Width = 468
   end
   object Splitter1: TSplitter
-    Align = alTop
     Cursor = crVSplit
-    Height = 5
-    Width = 468
-    ResizeAnchor = akTop
-    Cursor = crVSplit
+    Left = 0
     Height = 5
     Top = 253
     Width = 468
+    Align = alTop
+    ResizeAnchor = akTop
   end
   object BCLose: TBitBtn
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Bottom = 6
-    
-    Caption = '&Close'
-    Kind = bkClose
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 2
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 392
     Height = 30
     Top = 300
     Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    Caption = '&Close'
+    Kind = bkClose
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
   end
 end

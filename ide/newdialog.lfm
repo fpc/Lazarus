@@ -8,31 +8,34 @@ object NewOtherDialog: TNewOtherDialog
   Caption = 'NewOtherDialog'
   ClientHeight = 395
   ClientWidth = 476
-  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Panel1: TPanel
     Left = 6
-    Height = 333
+    Height = 327
     Top = 6
     Width = 464
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 333
+    ClientHeight = 327
     ClientWidth = 464
     TabOrder = 0
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
-      Height = 333
+      Left = 0
+      Height = 327
+      Top = 0
       Width = 178
       Align = alClient
       DefaultItemHeight = 19
+      ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
       OnDblClick = OkButtonClick
       OnSelectionChanged = ItemsTreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
     object DescriptionGroupBox: TGroupBox
       AnchorSideLeft.Control = ItemsTreeView
@@ -41,11 +44,12 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideRight.Control = Owner
       AnchorSideRight.Side = asrBottom
       Left = 183
-      Height = 333
+      Height = 327
+      Top = 0
       Width = 281
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 314
+      ClientHeight = 308
       ClientWidth = 277
       TabOrder = 1
       object DescriptionLabel: TLabel
@@ -60,16 +64,19 @@ object NewOtherDialog: TNewOtherDialog
         WordWrap = True
       end
       object InheritableComponentsListView: TListView
-        Height = 284
+        Left = 0
+        Height = 278
         Top = 30
         Width = 277
         Align = alClient
         Columns = <        
           item
+            AutoSize = False
             Caption = 'Form'
             Width = 100
           end        
           item
+            AutoSize = False
             Caption = 'Unit'
             Width = 250
           end>
@@ -77,13 +84,16 @@ object NewOtherDialog: TNewOtherDialog
         ReadOnly = True
         RowSelect = True
         ScrollBars = ssAutoBoth
+        SortColumn = 0
+        SortType = stNone
         TabOrder = 0
         ViewStyle = vsReport
       end
     end
     object Splitter1: TSplitter
       Left = 178
-      Height = 333
+      Height = 327
+      Top = 0
       Width = 5
       Align = alRight
       ResizeAnchor = akRight
@@ -92,10 +102,8 @@ object NewOtherDialog: TNewOtherDialog
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 50
-    Top = 345
+    Top = 339
     Width = 464
-    Align = alBottom
-    AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

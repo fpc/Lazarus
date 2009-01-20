@@ -3,15 +3,17 @@ object ProjectInspectorForm: TProjectInspectorForm
   Height = 309
   Top = 399
   Width = 433
+  ActiveControl = ItemsTreeView
   BorderIcons = [biSystemMenu]
   Caption = 'ProjectInspectorForm'
   ClientHeight = 309
   ClientWidth = 433
   OnShow = ProjectInspectorFormShow
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object OpenBitBtn: TSpeedButton
+    Left = 0
     Height = 25
+    Top = 0
     Width = 80
     Caption = 'OpenBitBtn'
     Color = clBtnFace
@@ -22,6 +24,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideLeft.Side = asrBottom
     Left = 80
     Height = 25
+    Top = 0
     Width = 73
     Caption = 'AddBitBtn'
     Color = clBtnFace
@@ -32,6 +35,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideLeft.Side = asrBottom
     Left = 153
     Height = 25
+    Top = 0
     Width = 93
     Caption = 'RemoveBitBtn'
     Color = clBtnFace
@@ -42,6 +46,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideLeft.Side = asrBottom
     Left = 246
     Height = 25
+    Top = 0
     Width = 187
     Anchors = [akTop, akLeft, akRight]
     Caption = 'OptionsBitBtn'
@@ -51,20 +56,22 @@ object ProjectInspectorForm: TProjectInspectorForm
   end
   object ItemsTreeView: TTreeView
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 284
     Top = 25
     Width = 433
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 2
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     PopupMenu = ItemsPopupMenu
+    ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
     OnDblClick = ItemsTreeViewDblClick
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup

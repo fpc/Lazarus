@@ -19,8 +19,8 @@ object frmShowParseTree: TfrmShowParseTree
   LCLVersion = '0.9.27'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 532
+    Height = 21
+    Top = 534
     Width = 581
     Panels = <>
   end
@@ -40,7 +40,7 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 18
       Top = 31
-      Width = 115
+      Width = 108
       Caption = 'Tree has ? nodes'
       ParentColor = False
     end
@@ -48,15 +48,15 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 18
       Top = 55
-      Width = 167
+      Width = 161
       Caption = 'Tree has max depth of ??'
       ParentColor = False
     end
     object cbShowWhiteSpace: TCheckBox
       Left = 11
-      Height = 23
+      Height = 22
       Top = 5
-      Width = 141
+      Width = 133
       Caption = 'Show whitespace'
       OnClick = cbShowWhiteSpaceClick
       TabOrder = 0
@@ -65,7 +65,7 @@ object frmShowParseTree: TfrmShowParseTree
   object pnlBottom: TPanel
     Left = 0
     Height = 50
-    Top = 482
+    Top = 484
     Width = 581
     Align = alBottom
     BevelOuter = bvNone
@@ -107,22 +107,22 @@ object frmShowParseTree: TfrmShowParseTree
   end
   object pcPages: TPageControl
     Left = 0
-    Height = 397
+    Height = 399
     Top = 85
     Width = 581
-    ActivePage = tsTokens
+    ActivePage = tsTree
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 3
     object tsTokens: TTabSheet
       Caption = 'Tokens'
-      ClientHeight = 367
-      ClientWidth = 573
+      ClientHeight = 372
+      ClientWidth = 579
       object lvTokens: TListView
         Left = 0
-        Height = 367
+        Height = 372
         Top = 0
-        Width = 573
+        Width = 579
         Align = alClient
         Columns = <        
           item
@@ -138,7 +138,7 @@ object frmShowParseTree: TfrmShowParseTree
           item
             AutoSize = False
             Caption = 'Text'
-            Width = 271
+            Width = 313
           end>
         ReadOnly = True
         RowSelect = True
@@ -152,24 +152,24 @@ object frmShowParseTree: TfrmShowParseTree
     end
     object tsTree: TTabSheet
       Caption = 'Tree'
-      ClientHeight = 371
-      ClientWidth = 573
+      ClientHeight = 372
+      ClientWidth = 579
       ImageIndex = 1
       object tvParseTree: TTreeView
         Left = 0
-        Height = 371
+        Height = 372
         Top = 0
-        Width = 573
+        Width = 579
         Align = alClient
-        Ctl3D = False
-        DefaultItemHeight = 15
+        DefaultItemHeight = 19
         HideSelection = False
         Indent = 22
+        ReadOnly = True
         RightClickSelect = True
         TabOrder = 0
         OnChange = tvParseTreeChange
         OnDblClick = tvParseTreeDblClick
-        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
     end
   end

@@ -1,16 +1,16 @@
-object IDEOptionsDialog: TIDEOptionsDialog
+inherited IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
   Width = 700
+  ActiveControl = CategoryTree
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
   ClientWidth = 700
   Constraints.MinHeight = 300
   Constraints.MinWidth = 300
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel: TButtonPanel[0]
     Left = 6
     Height = 30
     Top = 464
@@ -20,7 +20,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
-  object CategoryTree: TTreeView
+  object CategoryTree: TTreeView[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
@@ -32,10 +32,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    Ctl3D = False
     Constraints.MinWidth = 206
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
+    ReadOnly = True
     TabOrder = 0
     OnChange = CategoryTreeChange
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end

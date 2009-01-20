@@ -8,21 +8,20 @@ object EdtTbConfigForm: TEdtTbConfigForm
   ClientHeight = 330
   ClientWidth = 651
   OnCreate = FormCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object lblMenuTree: TLabel
     Left = 16
-    Height = 17
+    Height = 18
     Top = 10
-    Width = 89
+    Width = 76
     Caption = 'lblMenuTree'
     ParentColor = False
   end
   object lblToolbar: TLabel
     Left = 456
-    Height = 17
+    Height = 18
     Top = 10
-    Width = 70
+    Width = 60
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -63,6 +62,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     OnClick = btnMoveDownClick
   end
   object pnlButtons: TPanel
+    Left = 0
     Height = 42
     Top = 288
     Width = 651
@@ -74,7 +74,9 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ParentColor = False
     TabOrder = 0
     object Bevel1: TBevel
+      Left = 0
       Height = 2
+      Top = 0
       Width = 651
       Align = alTop
     end
@@ -82,7 +84,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Control = btnCancel
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 477
+      Left = 480
       Height = 25
       Top = 11
       Width = 75
@@ -104,10 +106,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 558
+      Left = 561
       Height = 25
       Top = 11
-      Width = 87
+      Width = 84
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -123,10 +125,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     end
   end
   object btnAddDivider: TButton
-    Left = 492
+    Left = 497
     Height = 25
     Top = 256
-    Width = 115
+    Width = 110
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.InnerBorder = 4
@@ -142,6 +144,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 225
     Top = 28
     Width = 183
+    ItemHeight = 0
     TabOrder = 2
     TopIndex = -1
   end
@@ -150,9 +153,11 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 253
     Top = 28
     Width = 392
-    DefaultItemHeight = 18
+    DefaultItemHeight = 19
+    ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 3
     OnChange = TVChange
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end

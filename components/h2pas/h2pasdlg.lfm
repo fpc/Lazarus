@@ -3,9 +3,7 @@ object H2PasDialog: TH2PasDialog
   Height = 549
   Top = 205
   Width = 785
-  HorzScrollBar.Page = 784
-  VertScrollBar.Page = 548
-  ActiveControl = ConvertButton
+  ActiveControl = MainPageControl
   Caption = 'H2PasDialog'
   ClientHeight = 549
   ClientWidth = 785
@@ -15,9 +13,12 @@ object H2PasDialog: TH2PasDialog
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object MainPageControl: TPageControl
     AnchorSideBottom.Control = OpenSettingsButton
+    Left = 0
     Height = 502
+    Top = 0
     Width = 785
     ActivePage = FilesTabSheet
     Align = alTop
@@ -26,19 +27,22 @@ object H2PasDialog: TH2PasDialog
     TabOrder = 4
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
-      ClientHeight = 471
-      ClientWidth = 781
+      ClientHeight = 475
+      ClientWidth = 783
       object CHeaderFilesCheckTreeView: TTreeView
-        Height = 471
+        Left = 0
+        Height = 475
+        Top = 0
         Width = 255
         Align = alLeft
         DefaultItemHeight = 19
+        ReadOnly = True
         StateImages = FileStateImageList
         TabOrder = 0
         OnDblClick = CHeaderFilesCheckTreeViewDblClick
         OnMouseDown = CHeaderFilesCheckTreeViewMouseDown
         OnSelectionChanged = CHeaderFilesCheckTreeViewSelectionChanged
-        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
       object AddCHeadersButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
@@ -94,7 +98,8 @@ object H2PasDialog: TH2PasDialog
       end
       object CHeaderFilesSplitter1: TSplitter
         Left = 255
-        Height = 471
+        Height = 475
+        Top = 0
         Width = 5
         Beveled = True
       end
@@ -106,20 +111,20 @@ object H2PasDialog: TH2PasDialog
         AnchorSideBottom.Control = FilesTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 260
-        Height = 263
+        Height = 267
         Top = 208
-        Width = 521
+        Width = 523
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'FileInfoGroupBox'
-        ClientHeight = 244
-        ClientWidth = 517
+        ClientHeight = 248
+        ClientWidth = 519
         TabOrder = 5
         object AddIncludedCHeaderFilesButton: TButton
           AnchorSideBottom.Control = FileInfoGroupBox
           AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 37
-          Top = 201
+          Top = 205
           Width = 224
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -136,9 +141,10 @@ object H2PasDialog: TH2PasDialog
           AnchorSideRight.Control = FileInfoGroupBox
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = AddIncludedCHeaderFilesButton
-          Height = 176
+          Left = 0
+          Height = 180
           Top = 19
-          Width = 517
+          Width = 519
           Anchors = [akTop, akLeft, akRight, akBottom]
           Color = clNone
           ReadOnly = True
@@ -148,7 +154,7 @@ object H2PasDialog: TH2PasDialog
           Left = 8
           Height = 22
           Top = -3
-          Width = 146
+          Width = 147
           Caption = 'MergeFileCheckBox'
           OnEditingDone = MergeFileCheckBoxEditingDone
           TabOrder = 2
@@ -201,11 +207,13 @@ object H2PasDialog: TH2PasDialog
     end
     object PreH2PasTabSheet: TTabSheet
       Caption = 'PreH2PasTabSheet'
-      ClientHeight = 471
-      ClientWidth = 781
+      ClientHeight = 475
+      ClientWidth = 783
       object PreH2PasGroupBox: TGroupBox
-        Height = 471
-        Width = 781
+        Left = 0
+        Height = 475
+        Top = 0
+        Width = 783
         Align = alClient
         Caption = 'PreH2PasGroupBox'
         TabOrder = 0
@@ -213,15 +221,15 @@ object H2PasDialog: TH2PasDialog
     end
     object h2pasOptionsTabSheet: TTabSheet
       Caption = 'h2pasOptionsTabSheet'
-      ClientHeight = 471
-      ClientWidth = 781
+      ClientHeight = 475
+      ClientWidth = 783
       object LibNameLabel: TLabel
         AnchorSideTop.Control = LibnameEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 279
-        Width = 105
+        Height = 18
+        Top = 278
+        Width = 92
         BorderSpacing.Top = 10
         Caption = 'LibNameLabel'
         ParentColor = False
@@ -230,9 +238,9 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputExtEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 311
-        Width = 114
+        Height = 18
+        Top = 310
+        Width = 99
         Caption = 'OutputExtLabel'
         ParentColor = False
       end
@@ -240,9 +248,9 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputDirEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 340
-        Width = 110
+        Height = 18
+        Top = 339
+        Width = 97
         Caption = 'OutputDirLabel'
         ParentColor = False
       end
@@ -250,7 +258,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Control = LibNameLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Side = asrBottom
-        Left = 117
+        Left = 104
         Height = 23
         Top = 276
         Width = 113
@@ -264,7 +272,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Control = OutputExtLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Side = asrBottom
-        Left = 126
+        Left = 111
         Height = 23
         Top = 308
         Width = 80
@@ -279,7 +287,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = OutputExtEdit
         AnchorSideTop.Side = asrBottom
-        Left = 122
+        Left = 109
         Height = 23
         Top = 337
         Width = 397
@@ -295,7 +303,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputDirEdit
         AnchorSideBottom.Control = OutputDirEdit
         AnchorSideBottom.Side = asrBottom
-        Left = 519
+        Left = 506
         Height = 23
         Top = 337
         Width = 32
@@ -327,11 +335,13 @@ object H2PasDialog: TH2PasDialog
     end
     object PostH2PasTabSheet: TTabSheet
       Caption = 'PostH2PasTabSheet'
-      ClientHeight = 471
-      ClientWidth = 781
+      ClientHeight = 475
+      ClientWidth = 783
       object PostH2PasGroupBox: TGroupBox
-        Height = 471
-        Width = 781
+        Left = 0
+        Height = 475
+        Top = 0
+        Width = 783
         Align = alClient
         Caption = 'PostH2PasGroupBox'
         TabOrder = 0
@@ -339,32 +349,32 @@ object H2PasDialog: TH2PasDialog
     end
     object SettingsTabSheet: TTabSheet
       Caption = 'SettingsTabSheet'
-      ClientHeight = 471
-      ClientWidth = 781
+      ClientHeight = 475
+      ClientWidth = 783
       object H2PasFilenameLabel: TLabel
         AnchorSideTop.Control = H2PasFilenameEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 7
-        Width = 155
+        Height = 18
+        Top = 6
+        Width = 132
         Caption = 'H2PasFilenameLabel'
         ParentColor = False
       end
       object OpenLastProjectOnStartCheckBox: TCheckBox
         Left = 6
-        Height = 24
+        Height = 22
         Top = 42
-        Width = 277
+        Width = 242
         Caption = 'OpenLastProjectOnStartCheckBox'
         OnChange = OpenLastProjectOnStartCheckBoxChange
         TabOrder = 0
       end
       object SaveSettingsAsButton: TButton
         Left = 6
-        Height = 30
+        Height = 37
         Top = 82
-        Width = 177
+        Width = 164
         AutoSize = True
         BorderSpacing.InnerBorder = 4
         Caption = 'SaveSettingsAsButton'
@@ -374,7 +384,7 @@ object H2PasDialog: TH2PasDialog
       object H2PasFilenameEdit: TEdit
         AnchorSideLeft.Control = H2PasFilenameLabel
         AnchorSideLeft.Side = asrBottom
-        Left = 167
+        Left = 144
         Height = 23
         Top = 4
         Width = 352
@@ -390,7 +400,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = H2PasFilenameEdit
         AnchorSideBottom.Control = H2PasFilenameEdit
         AnchorSideBottom.Side = asrBottom
-        Left = 519
+        Left = 496
         Height = 23
         Top = 4
         Width = 35
@@ -402,9 +412,9 @@ object H2PasDialog: TH2PasDialog
       end
       object NewSettingsButton: TButton
         Left = 6
-        Height = 30
+        Height = 37
         Top = 124
-        Width = 154
+        Width = 143
         AutoSize = True
         BorderSpacing.InnerBorder = 4
         Caption = 'NewSettingsButton'
@@ -494,37 +504,75 @@ object H2PasDialog: TH2PasDialog
     TabOrder = 5
   end
   object FileStateImageList: TImageList
+    Masked = False
     left = 136
     top = 94
     Bitmap = {
-      6C69020000001000000010000000BF0100002F2A2058504D202A2F0A73746174
-      69632063686172202A20706B675F72656D6F76656466696C65735F78706D5B5D
-      203D207B0A2231342031332031302031222C0A22200963204E6F6E65222C0A22
-      2E09632023303030303434222C0A222B09632023303030303535222C0A224009
-      632023464631343134222C0A222309632023303030303834222C0A2224096320
-      23303030303333222C0A222509632023464646464646222C0A22260963202344
-      3544354546222C0A222A09632023434243424342222C0A223D09632023303030
-      303030222C0A2220202E2E2B2B2E2E2E2E20202020222C0A2220202E40402323
-      23232E20404020222C0A222020242540402525262E40402020222C0A22202024
-      2A2540402E2E40402E2E20222C0A2220203D25252E404040402E2E2E20222C0A
-      222E2E2E2B2B242540402525263D25222C0A222E2E2E2E2E244040404026263D
-      25222C0A222E252A2525404025254040263D25222C0A222E2A25254040252626
-      2640403D25222C0A222E252540403D3D3D3D3D3D404025222C0A222E25404026
-      26263D252525254025222C0A222E40403D3D3D3D3D252020202020222C0A2220
-      25252525252525252020202020227D3B0AA80100002F2A2058504D202A2F0A73
-      74617469632063686172202A20706B675F66696C65735F78706D5B5D203D207B
-      0A22313420313320392031222C0A22200963204E6F6E65222C0A222E09632023
-      303030303434222C0A222B09632023303030303535222C0A2240096320233030
-      30303834222C0A222309632023303030303333222C0A22240963202346464646
-      4646222C0A222509632023434243424342222C0A222609632023443544354546
-      222C0A222A09632023303030303030222C0A2220202E2E2B2B2E2E2E2E202020
-      20222C0A2220202E4040404040402E20202020222C0A22202023242524242426
-      2E24202020222C0A2220202325242E2E2E2E2E2E2E2E20222C0A2220202A2424
-      2E2E2E2E2E2E2E2E20222C0A222E2E2E2B2B232425242424262A24222C0A222E
-      2E2E2E2E232524242426262A24222C0A222E242524242A2424242624262A2422
-      2C0A222E252424242A2426262626262A24222C0A222E242424242A2A2A2A2A2A
-      2A2A24222C0A222E2426262626262A242424242424222C0A222E2A2A2A2A2A2A
-      2A242020202020222C0A222024242424242424242020202020227D3B0A
+      4C690200000010000000100000000000000000000000440000FF440000FF5500
+      00FF550000FF440000FF440000FF440000FF440000FF00000000000000000000
+      00000000000000000000000000000000000000000000440000FF1414FFFF1414
+      FFFF840000FF840000FF840000FF840000FF440000FF000000001414FFFF1414
+      FFFF0000000000000000000000000000000000000000330000FFFFFFFFFF1414
+      FFFF1414FFFFFFFFFFFFFFFFFFFFEFD5D5FF440000FF1414FFFF1414FFFF0000
+      00000000000000000000000000000000000000000000330000FFCBCBCBFFFFFF
+      FFFF1414FFFF1414FFFF440000FF440000FF1414FFFF1414FFFF440000FF4400
+      00FF0000000000000000000000000000000000000000000000FFFFFFFFFFFFFF
+      FFFF440000FF1414FFFF1414FFFF1414FFFF1414FFFF440000FF440000FF4400
+      00FF000000000000000000000000440000FF440000FF440000FF550000FF5500
+      00FF330000FFFFFFFFFF1414FFFF1414FFFFFFFFFFFFFFFFFFFFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FF440000FF440000FF440000FF4400
+      00FF330000FF1414FFFF1414FFFF1414FFFF1414FFFFEFD5D5FFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FFFFFFFFFFCBCBCBFFFFFFFFFFFFFF
+      FFFF1414FFFF1414FFFFFFFFFFFFFFFFFFFF1414FFFF1414FFFFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FFCBCBCBFFFFFFFFFFFFFFFFFF1414
+      FFFF1414FFFFFFFFFFFFEFD5D5FFEFD5D5FFEFD5D5FF1414FFFF1414FFFF0000
+      00FFFFFFFFFF0000000000000000440000FFFFFFFFFFFFFFFFFF1414FFFF1414
+      FFFF000000FF000000FF000000FF000000FF000000FF000000FF1414FFFF1414
+      FFFFFFFFFFFF0000000000000000440000FFFFFFFFFF1414FFFF1414FFFFEFD5
+      D5FFEFD5D5FFEFD5D5FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1414
+      FFFFFFFFFFFF0000000000000000440000FF1414FFFF1414FFFF000000FF0000
+      00FF000000FF000000FF000000FFFFFFFFFF0000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000440000FF440000FF5500
+      00FF550000FF440000FF440000FF440000FF440000FF00000000000000000000
+      00000000000000000000000000000000000000000000440000FF840000FF8400
+      00FF840000FF840000FF840000FF840000FF440000FF00000000000000000000
+      00000000000000000000000000000000000000000000330000FFFFFFFFFFCBCB
+      CBFFFFFFFFFFFFFFFFFFFFFFFFFFEFD5D5FF440000FFFFFFFFFF000000000000
+      00000000000000000000000000000000000000000000330000FFCBCBCBFFFFFF
+      FFFF440000FF440000FF440000FF440000FF440000FF440000FF440000FF4400
+      00FF0000000000000000000000000000000000000000000000FFFFFFFFFFFFFF
+      FFFF440000FF440000FF440000FF440000FF440000FF440000FF440000FF4400
+      00FF000000000000000000000000440000FF440000FF440000FF550000FF5500
+      00FF330000FFFFFFFFFFCBCBCBFFFFFFFFFFFFFFFFFFFFFFFFFFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FF440000FF440000FF440000FF4400
+      00FF330000FFCBCBCBFFFFFFFFFFFFFFFFFFFFFFFFFFEFD5D5FFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FFFFFFFFFFCBCBCBFFFFFFFFFFFFFF
+      FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFEFD5D5FFFFFFFFFFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FFCBCBCBFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000FFFFFFFFFFEFD5D5FFEFD5D5FFEFD5D5FFEFD5D5FFEFD5D5FF0000
+      00FFFFFFFFFF0000000000000000440000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FFFFFFFFFF0000000000000000440000FFFFFFFFFFEFD5D5FFEFD5D5FFEFD5
+      D5FFEFD5D5FFEFD5D5FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF0000000000000000440000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FFFFFFFFFF0000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000
     }
   end
 end

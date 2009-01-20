@@ -3,14 +3,12 @@ object RestrictionBrowserView: TRestrictionBrowserView
   Height = 340
   Top = 259
   Width = 660
-  HorzScrollBar.Page = 659
-  VertScrollBar.Page = 339
   ActiveControl = NameFilterEdit
   Caption = 'RestrictionBrowserView'
   ClientHeight = 340
   ClientWidth = 660
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object IssueMemo: TMemo
     Left = 264
     Height = 306
@@ -56,6 +54,7 @@ object RestrictionBrowserView: TRestrictionBrowserView
     DefaultItemHeight = 19
     HideSelection = False
     Indent = 2
+    ReadOnly = True
     RightClickSelect = True
     RowSelect = True
     ScrollBars = ssAutoBoth
@@ -63,6 +62,6 @@ object RestrictionBrowserView: TRestrictionBrowserView
     ShowLines = False
     TabOrder = 2
     OnSelectionChanged = IssueTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips]
   end
 end

@@ -1,40 +1,41 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TPkgGraphExplorerDlg','FORMDATA',[
-  'TPF0'#20'TPkgGraphExplorerDlg'#19'PkgGraphExplorerDlg'#13'ActiveControl'#7#8
-  +'InfoMemo'#7'Caption'#6#19'PkgGraphExplorerDlg'#12'ClientHeight'#3#157#1#11
-  +'ClientWidth'#3#206#1#10'KeyPreview'#9#6'OnShow'#7#20'PkgGraphExplorerShow'
-  +#13'PixelsPerInch'#2'p'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Pa'
-  +'ge'#3#205#1#18'VertScrollBar.Page'#3#156#1#4'Left'#3'q'#1#6'Height'#3#157#1
-  +#3'Top'#3#239#0#5'Width'#3#206#1#0#5'TMemo'#8'InfoMemo'#5'Align'#7#8'alBotto'
-  +'m'#13'Lines.Strings'#1#6#8'InfoMemo'#0#9'OnKeyDown'#7#15'InfoMemoKeyDown'#8
-  +'TabOrder'#2#0#6'Height'#3#144#0#3'Top'#3#13#1#5'Width'#3#206#1#0#0#9'TSplit'
-  +'ter'#16'VerticalSplitter'#5'Align'#7#8'alBottom'#6'Cursor'#7#8'crVSplit'#6
-  +'Height'#2#5#5'Width'#3#206#1#12'ResizeAnchor'#7#8'akBottom'#6'Cursor'#7#8'c'
-  +'rVSplit'#6'Height'#2#5#3'Top'#3#8#1#5'Width'#3#206#1#0#0#6'TPanel'#12'PkgLi'
-  +'stPanel'#5'Align'#7#7'alRight'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#3
-  +#8#1#11'ClientWidth'#3#229#0#8'TabOrder'#2#1#4'Left'#3#233#0#6'Height'#3#8#1
-  +#5'Width'#3#229#0#0#6'TLabel'#12'PkgListLabel'#5'Align'#7#5'alTop'#20'Border'
-  +'Spacing.Around'#2#6#7'Caption'#6#12'PkgListLabel'#5'Color'#7#6'clNone'#11'P'
-  +'arentColor'#8#4'Left'#2#6#6'Height'#2#13#3'Top'#2#6#5'Width'#3#217#0#0#0#8
-  +'TListBox'#10'PkgListBox'#5'Align'#7#8'alClient'#16'ClickOnSelChange'#8#7'On'
-  +'Click'#7#15'PkgListBoxClick'#10'OnDblClick'#7#18'PkgListBoxDblClick'#9'OnKe'
-  +'yDown'#7#15'InfoMemoKeyDown'#8'TabOrder'#2#0#8'TopIndex'#2#255#6'Height'#3
-  +#239#0#3'Top'#2#25#5'Width'#3#229#0#0#0#0#9'TSplitter'#18'HorizontalSplitter'
-  +#5'Align'#7#7'alRight'#6'Height'#3#8#1#5'Width'#2#4#12'ResizeAnchor'#7#7'akR'
-  +'ight'#6'Cursor'#7#8'crHSplit'#4'Left'#3#229#0#6'Height'#3#8#1#5'Width'#2#4#0
-  +#0#6'TPanel'#12'PkgTreePanel'#5'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNo'
-  +'ne'#12'ClientHeight'#3#8#1#11'ClientWidth'#3#229#0#8'TabOrder'#2#2#6'Height'
-  +#3#8#1#5'Width'#3#229#0#0#6'TLabel'#12'PkgTreeLabel'#5'Align'#7#5'alTop'#20
-  +'BorderSpacing.Around'#2#6#7'Caption'#6#12'PkgTreeLabel'#5'Color'#7#6'clNone'
-  +#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#13#3'Top'#2#6#5'Width'#3#217#0#0#0
-  +#9'TTreeView'#11'PkgTreeView'#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2
-  +#17#9'PopupMenu'#7#12'PkgPopupMenu'#16'RightClickSelect'#9#8'TabOrder'#2#0#10
-  +'OnDblClick'#7#19'PkgTreeViewDblClick'#11'OnExpanding'#7#20'PkgTreeViewExpan'
-  +'ding'#9'OnKeyDown'#7#15'InfoMemoKeyDown'#18'OnSelectionChanged'#7#27'PkgTre'
-  +'eViewSelectionChanged'#7'Options'#11#17'tvoAutoItemHeight'#16'tvoHideSelect'
-  +'ion'#21'tvoKeepCollapsedNodes'#19'tvoRightClickSelect'#14'tvoShowButtons'#12
-  +'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#6'Height'#3#239#0#3'Top'#2
-  +#25#5'Width'#3#229#0#0#0#0#10'TPopupMenu'#12'PkgPopupMenu'#7'OnPopup'#7#17'P'
-  +'kgPopupMenuPopup'#4'left'#2' '#3'top'#2'('#0#9'TMenuItem'#17'UninstallMenuI'
-  +'tem'#7'Caption'#6#9'New Item1'#7'OnClick'#7#22'UninstallMenuItemClick'#0#0#0
-  +#0
+  'TPF0'#20'TPkgGraphExplorerDlg'#19'PkgGraphExplorerDlg'#4'Left'#3'q'#1#6'Heig'
+  +'ht'#3#157#1#3'Top'#3#239#0#5'Width'#3#206#1#13'ActiveControl'#7#8'InfoMemo'
+  +#7'Caption'#6#19'PkgGraphExplorerDlg'#12'ClientHeight'#3#157#1#11'ClientWidt'
+  +'h'#3#206#1#10'KeyPreview'#9#6'OnShow'#7#20'PkgGraphExplorerShow'#8'Position'
+  +#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#5'TMemo'#8'InfoMemo'#4'Le'
+  +'ft'#2#0#6'Height'#3#144#0#3'Top'#3#13#1#5'Width'#3#206#1#5'Align'#7#8'alBot'
+  +'tom'#13'Lines.Strings'#1#6#8'InfoMemo'#0#9'OnKeyDown'#7#15'InfoMemoKeyDown'
+  +#8'TabOrder'#2#0#0#0#9'TSplitter'#16'VerticalSplitter'#6'Cursor'#7#8'crVSpli'
+  +'t'#4'Left'#2#0#6'Height'#2#5#3'Top'#3#8#1#5'Width'#3#206#1#5'Align'#7#8'alB'
+  +'ottom'#12'ResizeAnchor'#7#8'akBottom'#0#0#6'TPanel'#12'PkgListPanel'#4'Left'
+  +#3#233#0#6'Height'#3#8#1#3'Top'#2#0#5'Width'#3#229#0#5'Align'#7#7'alRight'#10
+  +'BevelOuter'#7#6'bvNone'#12'ClientHeight'#3#8#1#11'ClientWidth'#3#229#0#8'Ta'
+  +'bOrder'#2#1#0#6'TLabel'#12'PkgListLabel'#4'Left'#2#6#6'Height'#2#13#3'Top'#2
+  +#6#5'Width'#3#217#0#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Capti'
+  +'on'#6#12'PkgListLabel'#11'ParentColor'#8#0#0#8'TListBox'#10'PkgListBox'#4'L'
+  +'eft'#2#0#6'Height'#3#239#0#3'Top'#2#25#5'Width'#3#229#0#5'Align'#7#8'alClie'
+  +'nt'#16'ClickOnSelChange'#8#10'ItemHeight'#2#0#7'OnClick'#7#15'PkgListBoxCli'
+  +'ck'#10'OnDblClick'#7#18'PkgListBoxDblClick'#9'OnKeyDown'#7#15'InfoMemoKeyDo'
+  +'wn'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#0#9'TSplitter'#18'HorizontalSplit'
+  +'ter'#4'Left'#3#229#0#6'Height'#3#8#1#3'Top'#2#0#5'Width'#2#4#5'Align'#7#7'a'
+  +'lRight'#12'ResizeAnchor'#7#7'akRight'#0#0#6'TPanel'#12'PkgTreePanel'#4'Left'
+  +#2#0#6'Height'#3#8#1#3'Top'#2#0#5'Width'#3#229#0#5'Align'#7#8'alClient'#10'B'
+  +'evelOuter'#7#6'bvNone'#12'ClientHeight'#3#8#1#11'ClientWidth'#3#229#0#8'Tab'
+  +'Order'#2#2#0#6'TLabel'#12'PkgTreeLabel'#4'Left'#2#6#6'Height'#2#13#3'Top'#2
+  +#6#5'Width'#3#217#0#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Capti'
+  +'on'#6#12'PkgTreeLabel'#11'ParentColor'#8#0#0#9'TTreeView'#11'PkgTreeView'#4
+  +'Left'#2#0#6'Height'#3#239#0#3'Top'#2#25#5'Width'#3#229#0#5'Align'#7#8'alCli'
+  +'ent'#17'DefaultItemHeight'#2#19#9'PopupMenu'#7#12'PkgPopupMenu'#8'ReadOnly'
+  +#9#16'RightClickSelect'#9#8'TabOrder'#2#0#10'OnDblClick'#7#19'PkgTreeViewDbl'
+  +'Click'#11'OnExpanding'#7#20'PkgTreeViewExpanding'#9'OnKeyDown'#7#15'InfoMem'
+  +'oKeyDown'#18'OnSelectionChanged'#7#27'PkgTreeViewSelectionChanged'#7'Option'
+  +'s'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'
+  +#11'tvoReadOnly'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLines'
+  +#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#0#10'TPopupMenu'#12'PkgPopupMenu'#7'O'
+  +'nPopup'#7#17'PkgPopupMenuPopup'#4'left'#2' '#3'top'#2'('#0#9'TMenuItem'#17
+  +'UninstallMenuItem'#7'Caption'#6#9'New Item1'#7'OnClick'#7#22'UninstallMenuI'
+  +'temClick'#0#0#0#0
 ]);

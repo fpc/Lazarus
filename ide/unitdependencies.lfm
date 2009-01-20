@@ -9,22 +9,22 @@ object UnitDependenciesView: TUnitDependenciesView
   ClientWidth = 400
   KeyPreview = True
   OnClose = UnitDependenciesViewClose
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object ToolBar: TToolBar
+    Left = 0
     Height = 48
+    Top = 0
     Width = 400
     ButtonHeight = 46
     ButtonWidth = 47
     Caption = 'ToolBar'
-    Flat = True
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 0
     object ShowProjectButton: TToolButton
-      Left = 167
+      Left = 216
       Top = 2
       Caption = 'ShowProjectButton'
       OnClick = ShowProjectButtonClick
@@ -36,7 +36,7 @@ object UnitDependenciesView: TUnitDependenciesView
       OnClick = SelectUnitButtonClick
     end
     object RefreshButton: TToolButton
-      Left = 89
+      Left = 118
       Top = 2
       Caption = 'RefreshButton'
       OnClick = RefreshButtonClick
@@ -44,12 +44,14 @@ object UnitDependenciesView: TUnitDependenciesView
   end
   object UnitHistoryList: TComboBox
     Left = 6
-    Height = 21
+    Height = 29
     Top = 54
     Width = 388
     Align = alTop
+    AutoComplete = False
     BorderSpacing.Around = 6
-    ItemHeight = 13
+    ItemHeight = 0
+    ItemWidth = 0
     OnEditingDone = UnitHistoryListEditingDone
     TabOrder = 1
     Text = 'UnitHistoryList'
@@ -57,10 +59,10 @@ object UnitDependenciesView: TUnitDependenciesView
   object CloseButton: TBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 339
-    Height = 23
-    Top = 271
-    Width = 52
+    Left = 317
+    Height = 36
+    Top = 258
+    Width = 74
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -71,17 +73,20 @@ object UnitDependenciesView: TUnitDependenciesView
   end
   object UnitTreeView: TTreeView
     AnchorSideBottom.Control = CloseButton
-    Height = 184
-    Top = 81
+    Left = 0
+    Height = 163
+    Top = 89
     Width = 400
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
+    ReadOnly = True
     TabOrder = 3
     OnAdvancedCustomDrawItem = UnitTreeViewAdvancedCustomDrawItem
     OnCollapsing = UnitTreeViewCollapsing
     OnExpanding = UnitTreeViewExpanding
     OnMouseDown = UnitTreeViewMouseDown
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end

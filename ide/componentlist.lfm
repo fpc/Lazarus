@@ -3,7 +3,7 @@ object ComponentListForm: TComponentListForm
   Height = 556
   Top = 269
   Width = 224
-  ActiveControl = PatternEdit
+  ActiveControl = Panel6
   Caption = 'Components'
   ClientHeight = 556
   ClientWidth = 224
@@ -20,66 +20,65 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 469
+    Height = 463
     Top = 41
     Width = 212
-    ActivePage = TabSheetListBox
+    ActivePage = TabSheetInheritance
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object TabSheetListBox: TTabSheet
       Caption = 'List'
-      ClientHeight = 443
-      ClientWidth = 204
+      ClientHeight = 436
+      ClientWidth = 210
       object Panel7: TPanel
         Left = 0
-        Height = 443
+        Height = 436
         Top = 0
-        Width = 204
+        Width = 210
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 443
-        ClientWidth = 204
+        ClientHeight = 436
+        ClientWidth = 210
         TabOrder = 0
         object ListboxComponents: TListBox
           Left = 5
-          Height = 433
+          Height = 426
           Top = 5
-          Width = 194
+          Width = 200
           Align = alClient
           ItemHeight = 0
           OnDblClick = ListboxComponentsDblClick
           Sorted = True
           TabOrder = 0
-          TopIndex = 0
+          TopIndex = -1
         end
       end
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 449
-      ClientWidth = 216
+      ClientHeight = 436
+      ClientWidth = 210
       object Panel5: TPanel
         Left = 0
-        Height = 449
+        Height = 436
         Top = 0
-        Width = 216
+        Width = 210
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 449
-        ClientWidth = 216
+        ClientHeight = 436
+        ClientWidth = 210
         TabOrder = 0
         object TreePallette: TTreeView
           Left = 5
-          Height = 439
+          Height = 426
           Top = 5
-          Width = 206
+          Width = 200
           Align = alClient
-          Ctl3D = False
-          DefaultItemHeight = 15
+          DefaultItemHeight = 19
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
@@ -90,27 +89,26 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 449
-      ClientWidth = 216
+      ClientHeight = 436
+      ClientWidth = 210
       object Panel6: TPanel
         Left = 0
-        Height = 449
+        Height = 436
         Top = 0
-        Width = 216
+        Width = 210
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 449
-        ClientWidth = 216
+        ClientHeight = 436
+        ClientWidth = 210
         TabOrder = 0
         object TreeInheritance: TTreeView
           Left = 5
-          Height = 439
+          Height = 426
           Top = 5
-          Width = 206
+          Width = 200
           Align = alClient
-          Ctl3D = False
-          DefaultItemHeight = 15
+          DefaultItemHeight = 19
           ReadOnly = True
           TabOrder = 0
           OnDblClick = TreeInheritanceDblClick
@@ -165,10 +163,8 @@ object ComponentListForm: TComponentListForm
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 40
-    Top = 516
+    Top = 510
     Width = 212
-    Align = alBottom
-    AutoSize = True
     TabOrder = 2
     ShowButtons = [pbClose]
   end
