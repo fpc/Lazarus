@@ -1119,7 +1119,7 @@ type
   protected
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
-    property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
+    property Ctl3D: Boolean read FCtl3D write FCtl3D default false;//Is this needed for anything other than compatability?
                                                      // MWE: no and even on delphi it is deprecated. IMO we remove this
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
