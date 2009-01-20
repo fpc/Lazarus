@@ -17,6 +17,8 @@ type
     FFoldView: TSynEditFoldedView;
     FBookMarkOpt: TSynBookMarkOpt;
     FInternalImage: TSynInternalImage;
+  protected
+    procedure DoChange(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -33,6 +35,13 @@ uses
 
 { TSynGutterMarks }
 
+procedure TSynGutterMarks.DoChange(Sender: TObject);
+begin
+  if AutoSize then
+    FWidth := 22;
+  inherited DoChange(Sender);
+end;
+
 constructor TSynGutterMarks.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -40,7 +49,7 @@ begin
   FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
   FInternalImage := nil;
 
-  Width := 22;
+  FWidth := 22;
 end;
 
 destructor TSynGutterMarks.Destroy;

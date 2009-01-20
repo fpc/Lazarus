@@ -15,6 +15,8 @@ type
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
     FFoldView: TSynEditFoldedView;
+  protected
+    procedure DoChange(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -33,6 +35,13 @@ uses
 
 { TSynGutterCodeFolding }
 
+procedure TSynGutterCodeFolding.DoChange(Sender: TObject);
+begin
+  if AutoSize then
+    FWidth := 10;
+  inherited DoChange(Sender);
+end;
+
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -42,7 +51,7 @@ begin
   MarkupInfo.Foreground := clDkGray;
   MarkupInfo.FrameColor := clNone;
 
-  Width := 10;
+  FWidth := 10;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;

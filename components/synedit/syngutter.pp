@@ -99,7 +99,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     constructor Create(AOwner: TComponent; AGutter: TSynGutter);
-  //  destructor  Destroy; override;
+    destructor  Destroy; override;
     property Items[Index: Integer]: TSynGutterPartBase
       read GetPart write PutPart; default;
   end;
@@ -114,12 +114,12 @@ type
     FMarkupInfo: TSynSelectedColor;
     FCursor: TCursor;
     FVisible: Boolean;
-    FWidth : integer;
     FOnChange: TNotifyEvent;
     FOnGutterClick: TGutterClickEvent;
     function GetGutterParts: TSynGutterPartList;
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
   protected
+    FWidth : integer;
     procedure SetAutoSize(const AValue : boolean); virtual;
     procedure SetVisible(const AValue : boolean); virtual;
     procedure SetWidth(const AValue : integer); virtual;
@@ -476,7 +476,7 @@ begin
 
   Result := FLeftOffset + FRightOffset;
 
-  for i := FGutterPartList.Count-1 downto 0 do
+  for i := GutterPartCount-1 downto 0 do
     Result := Result + GutterPart[i].RealGutterWidth(CharWidth);
 end;
 
@@ -487,7 +487,10 @@ end;
 
 function TSynGutter.GetGutterPartCount: integer;
 begin
-  result := FGutterPartList.Count;
+  if FGutterPartList <> nil then
+    result := FGutterPartList.Count
+  else
+    Result := 0;
 end;
 
 function TSynGutter.GetGutterPartCountByClass(AClass: TSynGutterPartBaseClass): integer;
@@ -552,6 +555,7 @@ procedure TSynGutter.Clear;
 var
   i: Integer;
 begin
+  if FGutterPartList = nil then exit;
   for i := FGutterPartList.Count-1 downto 0 do
     GutterPart[i].Free;
   FGutterPartList.Clear;
@@ -597,7 +601,7 @@ end;
 procedure TSynGutter.SetWidth(Value: integer);
 begin
   Value := Max(0, Value);
-  if FWidth <> Value then
+  if (FWidth <> Value) and not FAutoSize then
   begin
     FWidth := Value;
     DoChange(Self);
@@ -606,6 +610,8 @@ end;
 
 procedure TSynGutter.DoChange(Sender: TObject);
 begin
+  If FAutoSize then
+    FWidth := RealGutterWidth(FTextDrawer.CharWidth);
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
@@ -654,7 +660,7 @@ var
 begin
   i := 0;
   x2 := x;
-  while i < FGutterPartList.Count-1 do begin
+  while i < GutterPartCount-1 do begin
     if GutterPart[i].Visible then begin
       if x2 >= GutterPart[i].Width then
         x2 := x2 - GutterPart[i].Width
@@ -690,12 +696,13 @@ begin
   AClip.Left := FLeftOffset;
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
-  for i := 0 to FGutterPartList.Count -1 do
+  for i := 0 to GutterPartCount -1 do
   begin
+    if rcLine.Right >= AClip.Right then break;
     if GutterPart[i].Visible then
     begin
       rcLine.Left := rcLine.Right;
-      rcLine.Right := rcLine.Left + GutterPart[i].Width;
+      rcLine.Right := min(rcLine.Left + GutterPart[i].Width, AClip.Right);
       GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
@@ -737,7 +744,7 @@ end;
 
 procedure TSynGutterPartBase.SetWidth(const AValue : integer);
 begin
-  if FWidth=AValue then exit;
+  if (FWidth=AValue) or (FAutoSize) then exit;
   FWidth:=AValue;
   DoChange(self);
 end;
@@ -798,7 +805,7 @@ end;
 constructor TSynGutterSeparator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width := 2;
+  FWidth := 2;
 end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -840,6 +847,13 @@ constructor TSynGutterPartList.Create(AOwner: TComponent; AGutter: TSynGutter);
 begin
   FGutter := AGutter;
   Create(AOwner);
+end;
+
+destructor TSynGutterPartList.Destroy;
+begin
+  FGutter.FGutterPartList := nil;
+  OnChange := nil;
+  inherited Destroy;
 end;
 
 procedure TSynGutterPartList.RegisterItem(AnItem: TSynObjectListItem);

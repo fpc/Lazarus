@@ -7857,7 +7857,8 @@ var
 begin
   if not (csLoading in ComponentState) then begin
     FGutter.AutoSizeDigitCount(FTheLinesView.Count);  // Todo: Make the LineNumberGutterPart an observer
-    nW := fGutter.RealGutterWidth(fCharWidth);
+    fGutter.RealGutterWidth(fCharWidth);
+    nW := fGutter.Width;
     if nW = fGutterWidth then
       InvalidateGutter
     else

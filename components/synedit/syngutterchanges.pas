@@ -18,6 +18,8 @@ type
     function GetSavedColor: TColor;
     procedure SetModifiedColor(const AValue: TColor);
     procedure SetSavedColor(const AValue: TColor);
+  protected
+    procedure DoChange(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -44,7 +46,7 @@ begin
   MarkupInfo.Foreground := clGreen;
   MarkupInfo.FrameColor := $00E9FC;
 
-  Width := 6;
+  FWidth := 4;
 end;
 
 destructor TSynGutterChanges.Destroy;
@@ -70,6 +72,13 @@ end;
 procedure TSynGutterChanges.SetSavedColor(const AValue: TColor);
 begin
   MarkupInfo.Foreground := AValue;
+end;
+
+procedure TSynGutterChanges.DoChange(Sender: TObject);
+begin
+  if AutoSize then
+    FWidth := 4;
+  inherited DoChange(Sender);
 end;
 
 function TSynGutterChanges.RealGutterWidth(CharWidth: integer): integer;

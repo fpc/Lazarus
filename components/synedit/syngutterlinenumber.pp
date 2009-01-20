@@ -28,6 +28,8 @@ type
     procedure SetShowOnlyLineNumbersMultiplesOf(const AValue : integer);
     procedure SetZeroStart(const AValue : boolean);
     function FormatLineNumber(Line: integer; IsDot: boolean): string;
+  protected
+    procedure DoChange(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -63,6 +65,7 @@ begin
   FShowOnlyLineNumbersMultiplesOf := 1;
   FLeadingZeros := false;
   FZeroStart := False;
+  FWidth := 25;
 end;
 
 destructor TSynGutterLineNumber.Destroy;
@@ -133,7 +136,7 @@ begin
   end;
 
   if AutoSize then
-    Width := FAutoSizeDigitCount * CharWidth + 1;
+    FWidth := FAutoSizeDigitCount * CharWidth + 1;
   Result := Width;
 end;
 
@@ -175,6 +178,13 @@ begin
         Result[i] := '0';
       end;
   end;
+end;
+
+procedure TSynGutterLineNumber.DoChange(Sender: TObject);
+begin
+  if AutoSize then
+    FWidth := RealGutterWidth(FTextDrawer.CharWidth);
+  inherited DoChange(Sender);
 end;
 
 procedure TSynGutterLineNumber.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
