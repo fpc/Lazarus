@@ -3270,13 +3270,12 @@ end;
 
 procedure TCustomTreeView.SetReadOnly(Value: Boolean);
 begin
-  if ReadOnly <> Value then begin
-    if Value then
-      Include(FOptions,tvoRightClickSelect)
-    else
-      Exclude(FOptions,tvoRightClickSelect);
-    if not Value then EndEditing;
-  end;
+  if ReadOnly = Value then exit;
+  if Value then
+    Include(FOptions,tvoReadOnly)
+  else
+    Exclude(FOptions,tvoReadOnly);
+  if not Value then EndEditing;
 end;
 
 procedure TCustomTreeView.SetRightClickSelect(Value: Boolean);
