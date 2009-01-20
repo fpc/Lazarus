@@ -2124,7 +2124,8 @@ type
     tvsDblClicked,
     tvsTripleClicked,
     tvsQuadClicked,
-    tvsSelectionChanged
+    tvsSelectionChanged,
+    tvsEditOnMouseUp
     );
   TTreeViewStates = set of TTreeViewState;
 
@@ -2167,11 +2168,9 @@ type
     FBottomItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
-    //FDefEditProc: Pointer;
     FDefItemHeight: integer;
     FDragImage: TDragImageList;
     FDragNode: TTreeNode;
-    //FEditHandle: THandle;
     FIndent: integer;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
@@ -2281,7 +2280,11 @@ type
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
+    FEditor: TEdit;
+    procedure EditorEditingDone(Sender: TObject); virtual;
+    procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;
+    procedure BeginEditing;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function CanChange(Node: TTreeNode): Boolean; dynamic;
     function CanCollapse(Node: TTreeNode): Boolean; dynamic;
@@ -2319,7 +2322,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
-    procedure EndEditing;
+    procedure EndEditing(Cancel: boolean = false);
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); dynamic;
     procedure GetImageIndex(Node: TTreeNode); virtual;

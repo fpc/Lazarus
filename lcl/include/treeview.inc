@@ -654,28 +654,32 @@ end;
 procedure TTreeNode.SetSelected(AValue: Boolean);
 var
   MultiSelect: Boolean;
+  TV: TCustomTreeView;
 begin
   if AValue=GetSelected then exit;
+  TV:=TreeView;
   if AValue then begin
     Include(FStates,nsSelected);
-    if (TreeView<>nil) then begin
-      MultiSelect:=tvoAllowMultiselect in TreeView.Options;
-      if MultiSelect then TreeView.LockSelectionChangeEvent;
+    if (TV<>nil) then begin
+      TV.EndEditing(true);
+      MultiSelect:=tvoAllowMultiselect in TV.Options;
+      if MultiSelect then TV.LockSelectionChangeEvent;
       try
-        TreeView.Selected:=Self;
-        if TreeView.Selected<>Self then
+        TV.Selected:=Self;
+        if TV.Selected<>Self then
           Exclude(FStates,nsSelected);
         if (nsSelected in FStates) and MultiSelect then
           MultiSelected:=true;
       finally
-        if MultiSelect then TreeView.UnlockSelectionChangeEvent;
+        if MultiSelect then TV.UnlockSelectionChangeEvent;
       end;
     end;
   end else begin
     Exclude(FStates,nsSelected);
-    if (TreeView<>nil) and (TreeView.Selected=Self) then begin
-      TreeView.Selected:=nil;
-      if TreeView.Selected=Self then
+    if (TV<>nil) and (TV.Selected=Self) then begin
+      TV.EndEditing(true);
+      TV.Selected:=nil;
+      if TV.Selected=Self then
         Include(FStates,nsSelected);
     end;
   end;
@@ -1086,11 +1090,12 @@ begin
 end;
 
 procedure TTreeNode.EndEdit(Cancel: Boolean);
+var
+  TV: TCustomTreeView;
 begin
-  // ToDo:
-  //TreeView_EndEditLabelNow(Handle, Cancel);
-  if Cancel then begin
-  end;
+  TV:=TreeView;
+  if TV=nil then exit;
+  TV.EndEditing(Cancel);
 end;
 
 procedure TTreeNode.Unbind;
@@ -1458,10 +1463,11 @@ begin
 end;
 
 function TTreeNode.EditText: Boolean;
+var
+  TV: TCustomTreeView;
 begin
-  // ToDo:
-  Result:=false;
-  //Result := TreeView_EditLabel(Handle, ItemId) <> 0;
+  TV:=TreeView;
+  Result:=(TV<>nil) and (tvsIsEditing in TreeView.FStates) and Selected;
 end;
 
 function TTreeNode.DisplayRect(TextOnly: Boolean): TRect;
@@ -1480,7 +1486,6 @@ begin
       if Result.Right<Result.Left then
         Result.Right:=Result.Left;
     end;
-    //TreeView_GetItemRect(Handle, ItemId, Result, TextOnly);
   end;
 end;
 
@@ -2860,6 +2865,33 @@ begin
   BeginDrag(False);
 end;
 
+procedure TCustomTreeView.BeginEditing;
+var
+  Node: TTreeNode;
+  ARect: TRect;
+begin
+  //DebugLn(['TCustomTreeView.BeginEditing tvsIsEditing=',tvsIsEditing in FStates,' Selected=',Selected<>nil]);
+  Node:=Selected;
+  if (tvsIsEditing in FStates) or (Node=nil) then exit;
+  if not CanEdit(Node) then exit;
+  Node.EditText;
+
+  Include(FStates,tvsIsEditing);
+  if FEditor=nil then begin
+    FEditor:=TEdit.Create(Self);
+    FEditor.OnEditingDone:=@EditorEditingDone;
+    FEditor.OnKeyDown:=@EditorKeyDown;
+  end;
+  Node.GetAbsoluteIndex;
+  ARect:=Rect(Node.DisplayTextLeft,Node.Top,ClientWidth-BorderWidth,Node.Bottom);
+  FEditor.BoundsRect:=ARect;
+  FEditor.Visible:=true;
+  FEditor.Parent:=Self;
+  FEditor.Text:=Node.Text;
+  FEditor.SelectAll;
+  FEditor.SetFocus;
+end;
+
 procedure TCustomTreeView.BeginUpdate;
 begin
   Items.BeginUpdate;
@@ -2956,6 +2988,7 @@ begin
   if AValue=FScrolledLeft then exit;
   if AValue>GetMaxScrollLeft then AValue:=GetMaxScrollLeft;
   if AValue=FScrolledLeft then exit;
+  EndEditing(true);
   FScrolledLeft:=AValue;
   Include(FStates,tvsScrollbarChanged);
   Invalidate;
@@ -2967,6 +3000,7 @@ begin
   if AValue<0 then AValue:=0;
   if AValue>GetMaxScrollTop then AValue:=GetMaxScrollTop;
   if AValue=FScrolledTop then exit;
+  EndEditing(true);
   FScrolledTop:=AValue;
   FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
                     tvsScrollbarChanged];
@@ -3531,6 +3565,9 @@ begin
 end;
 
 procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
+const
+  EditKey = VK_F2;
+  EditKeyShift = [];
 var
   I: Integer;
   lNode: TTreeNode;
@@ -3628,6 +3665,10 @@ begin
         else Break;
 
     end;
+
+  else
+    if (Key=EditKey) and (Shift=EditKeyShift) and (not ReadOnly) then
+      BeginEditing;
   end;
 
   if lNode <> nil then
@@ -3779,6 +3820,7 @@ begin
   if FSelectedNode=Value then exit;
   if not CanChange(FSelectedNode) then
     exit;
+  EndEditing(true); // end editing before FSelectedNode change
   OldNode:=FSelectedNode;
   FSelectedNode:=Value;
   if OldNode<>nil then begin
@@ -4514,14 +4556,31 @@ begin
   if Assigned(FOnEditing) then FOnEditing(Self, Node, Result);
 end;
 
-procedure TCustomTreeView.EndEditing;
+procedure TCustomTreeView.EndEditing(Cancel: boolean);
+var
+  NewText: String;
+  Node: TTreeNode;
 begin
+  //DebugLn(['TCustomTreeView.EndEditing ',DbgSName(Self),' ',tvsIsEditing in FStates,' ',DbgSName(FEditor)]);
   if not (tvsIsEditing in FStates) then exit;
-  // ToDo:
-  // restore value
-
-  // end editing
   Exclude(FStates,tvsIsEditing);
+  if FEditor<>nil then begin
+    // get new value fom edit control and hide it
+    NewText:='';
+    if not Cancel then
+      NewText:=FEditor.Text;
+    FEditor.Parent:=nil;
+
+    // commit new value
+    if not Cancel then begin
+      Node:=Selected;
+      if (Node<>nil) then begin
+        if Assigned(OnEdited) then
+          OnEdited(Self,Node,NewText);
+        Node.Text:=NewText;
+      end;
+    end;
+  end;
   Invalidate;
 end;
 
@@ -4564,6 +4623,7 @@ begin
   {$ENDIF}
   fMouseDownX := X;
   fMouseDownY := Y;
+  Exclude(FStates,tvsEditOnMouseUp);
   if Button=mbMiddle then begin
     if ([ssDouble,ssTriple,ssQuad]*Shift)<>[] then Exit;
     if tvsIsEditing in FStates then begin
@@ -4600,12 +4660,16 @@ begin
         {$ENDIF}
         if MouseCapture then
           Include(FStates,tvsMouseCapture);
+        if (Selected=CursorNode) then
+          Include(FStates,tvsEditOnMouseUp);
         if not (tvoAllowMultiselect in Options) then begin
           Selected:=CursorNode;
         end else begin
           if (ssShift in Shift) then begin
+            Exclude(FStates,tvsEditOnMouseUp);
             CursorNode.MultiSelectGroup;
           end else if (ssCtrl in Shift) then begin
+            Exclude(FStates,tvsEditOnMouseUp);
             CursorNode.MultiSelected:=not CursorNode.MultiSelected;
           end else begin
             if (Selected<>CursorNode) or Items.IsMultiSelection then begin
@@ -4640,6 +4704,7 @@ begin
       DebugLn('TCustomTreeView.MouseMove A Begindrag ',Name,':',ClassName,' ');
       {$ENDIF}
       Exclude(fStates, tvsWaitForDragging);
+      Exclude(fStates, tvsEditOnMouseUp);
       BeginDrag(false);
     end;
   end;
@@ -4661,8 +4726,10 @@ begin
     tvsWaitForDragging] = [])
   then begin
     //AquirePrimarySelection;
+    if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
+      BeginEditing;
   end;
-  fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked];
+  fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
 end;
 
 procedure TCustomTreeView.Notification(AComponent: TComponent;
@@ -4883,6 +4950,25 @@ begin
 end;
 
 { CustomDraw support }
+
+procedure TCustomTreeView.EditorEditingDone(Sender: TObject);
+begin
+  EndEditing;
+end;
+
+procedure TCustomTreeView.EditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  WasFocused: Boolean;
+begin
+  if Key=VK_ESCAPE then begin
+    WasFocused:=(FEditor<>nil) and FEditor.Focused;
+    EndEditing(true);
+    if WasFocused then
+      SetFocus;
+    Key:=0; // key was handled
+  end;
+end;
 
 procedure TCustomTreeView.CanvasChanged(Sender: TObject);
 begin
