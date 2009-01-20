@@ -217,24 +217,6 @@ begin
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
-
-
-  RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
-  RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
-  RegisterPropertyToSkip(TSynSelectedColor, 'EndX', '', '');
-
-  RegisterPropertyToSkip(TSynGutter, 'ShowCodeFolding', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'CodeFoldingWidth', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'ShowChanges', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'ShowLineNumbers', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'ShowOnlyLineNumbersMultiplesOf', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'ZeroStart', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoLineNumber', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoModifiedLine', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'MarkupInfoCodeFoldingTree', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'LeadingZeros', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'DigitCount', '', '');
-  RegisterPropertyToSkip(TSynGutter, 'AllowSkipGutterSeparatorDraw', '', '');
 end;
 
 end.
