@@ -794,7 +794,9 @@ begin
       TCN_SELCHANGE:
         begin
           // set the page from the NMHDR^.idfrom
-          if (not fAddingPages) then begin
+          if (not fAddingPages) and not
+          (csDestroyingHandle in ControlState) then
+          begin
             OldPageIndex:=FPageIndex;
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
@@ -814,7 +816,8 @@ begin
         end;
       TCN_SELCHANGING:
         begin
-          if CanChangePageIndex then
+          if CanChangePageIndex and not
+          (csDestroyingHandle in ControlState) then
             Result := 0
           else
             Result := 1;
