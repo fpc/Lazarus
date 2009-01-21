@@ -283,7 +283,7 @@ end;
 class procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods use ShowHide also, can't move code
-  TGtkWidgetSet(WidgetSet).ShowHide(AWinControl);
+  TGtkWidgetSet(WidgetSet).SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
 end;
 
 class procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;

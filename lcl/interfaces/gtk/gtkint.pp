@@ -243,7 +243,7 @@ type
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     // show, hide and invalidate
-    procedure ShowHide(Sender : TObject);virtual;
+    procedure SetVisible(Sender: TObject; const AVisible: Boolean); virtual;
     
     // Drag ImageLsit
     function DragImageList_BeginDrag(APixmap: PGdkPixmap; AMask: PGdkBitmap; AHotSpot: TPoint): Boolean;

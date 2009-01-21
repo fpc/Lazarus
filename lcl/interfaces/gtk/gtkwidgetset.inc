@@ -1413,7 +1413,7 @@ end;
 function TGtkWidgetSet.RecreateWnd(Sender: TObject): Integer;
 var
   aWinControl, aParent : TWinControl;
-Begin
+begin
   aWinControl:=TWinControl(Sender);
   aParent := aWinControl.Parent;
   if aParent<>nil then begin
@@ -1425,9 +1425,9 @@ Begin
   DebugLn(['TGtkWidgetSet.RecreateWnd ',DbgSName(Sender)]);
   ResizeChild(Sender,aWinControl.Left,aWinControl.Top,
                      aWinControl.Width,aWinControl.Height);
-  ShowHide(Sender);
-  Result:=0;
-End;
+  SetVisible(Sender, aWinControl.HandleObjectShouldBeVisible);
+  Result := 0;
+end;
 
 {------------------------------------------------------------------------------
   Function: CreateTimer
@@ -3971,7 +3971,7 @@ end;
        *Note: Show or hide a widget
 ------------------------------------------------------------------------------}
 {$IFDEF VerboseGtkToDos}{$note TODO: move to wsclass }{$ENDIF}
-procedure TGtkWidgetSet.ShowHide(Sender : TObject);
+procedure TGtkWidgetSet.SetVisible(Sender: TObject; const AVisible: Boolean);
 
   procedure RaiseWrongClass;
   begin
@@ -3988,9 +3988,9 @@ begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
   if (Sender is TCustomForm) then
-    ACustomForm:=TCustomForm(Sender)
+    ACustomForm := TCustomForm(Sender)
   else
-    ACustomForm:=nil;
+    ACustomForm := nil;
 
   LCLControl:=TWinControl(Sender);
   if not LCLControl.HandleAllocated then exit;
@@ -4000,8 +4000,8 @@ begin
   //    ' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget),
   //    ' GtkRealized=',gtk_widget_realized(SenderWidget),
   //    ' GtkMapped=',gtk_widget_mapped(SenderWidget),
-  //    ' Should=',LCLControl.HandleObjectShouldBeVisible);
-  if LCLControl.HandleObjectShouldBeVisible then
+  //    ' Should=',AVisible                           );
+  if AVisible then
   begin
     if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       // update shared accelerators
