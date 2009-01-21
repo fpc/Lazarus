@@ -763,7 +763,6 @@ begin
             ShowHint:= true;
             RowSelect := True;
             NewTreeView.Canvas.Brush.Color:= clWhite;
-            ReadOnly:=true;
           end;//with
         end;//if
       end;//else
