@@ -1733,7 +1733,8 @@ begin
 
   // update Screen object
   Screen.FActiveControl := Control;
-  if Control<>nil then begin
+  if Control <> nil then
+  begin
     Screen.FActiveCustomForm := Self;
     Screen.MoveFormToFocusFront(Self);
     if Self is TForm then
@@ -1741,6 +1742,7 @@ begin
     else
       Screen.FActiveForm := nil;
   end;
+  Screen.UpdateLastActive;
 
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.SetFocusedControl Self=',DbgSName(Self));
@@ -1749,7 +1751,7 @@ begin
   DebugLn();
   {$ENDIF}
 
-  Result:=true;
+  Result := True;
 
   if (Control<>nil) and (not (csFocusing in Control.ControlState)) then begin
     // prevent looping
