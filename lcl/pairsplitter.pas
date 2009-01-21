@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf, Controls;
+  LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf, Controls, ExtCtrls;
   
 type
   TCustomPairSplitter = class;
@@ -144,8 +144,9 @@ type
 procedure Register;
   
 implementation
+
 uses
-  WSPairSplitter, ExtCtrls;
+  WSPairSplitter;
   
 procedure Register;
 begin
