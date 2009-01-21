@@ -9015,33 +9015,39 @@ var
   OldPos: TPoint;
   NewPos: TPoint;
 begin
-  OldPos:=LogicalCaretXY;
-  NewPos:=OldPos;
+  OldPos := LogicalCaretXY;
+  NewPos := OldPos;
 
-  if not (eoEnhanceHomeKey in fOptions) and (CaretX>1) then begin
+  if not (eoEnhanceHomeKey in fOptions) and (CaretX > 1) then 
+  begin
     // not at start of line -> jump to start of line
-    NewPos.X:=1;
-  end else begin
+    NewPos.X := 1;
+  end else 
+  begin
     // calculate line start position
-    FirstNonBlank:=-1;
-    if CaretY<=FTheLinesView.Count then begin
-      s:=FTheLinesView[CaretXY.Y-1];
+    FirstNonBlank := -1;
+    if CaretY <= FTheLinesView.Count then 
+    begin
+      s := FTheLinesView[CaretXY.Y - 1];
 
       // search first non blank char pos
-      FirstNonBlank:=1;
-      while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [#32, #9]) do
+      FirstNonBlank := 1;
+      while (FirstNonBlank <= length(s)) and (s[FirstNonBlank] in [#32, #9]) do
         inc(FirstNonBlank);
-      if FirstNonBlank>length(s) then
-        FirstNonBlank:=-1;
+      if FirstNonBlank > length(s) then
+        FirstNonBlank := -1;
     end else
-      s:='';
-    if FirstNonBlank>=1 then begin
+      s := '';
+
+    if FirstNonBlank >= 1 then 
+    begin
       // this line is not blank
-      LineStart:=FirstNonBlank;
-    end else begin
+      LineStart := FirstNonBlank;
+    end else 
+    begin
       // this line is blank
       // -> use automatic line indent
-      LineStart:= FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], CaretXY);
+      LineStart := FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], CaretXY);
     end;
 
     NewPos.X:=LineStart;
