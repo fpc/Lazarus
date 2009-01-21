@@ -50,6 +50,7 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSCustomNotebook }
@@ -248,6 +249,11 @@ class procedure TGtkWSCustomPage.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   // ignore resizes from the LCL
+end;
+
+class procedure TGtkWSCustomPage.ShowHide(const AWinControl: TWinControl);
+begin
+  TGtkWidgetSet(WidgetSet).SetVisible(AWinControl, TCustomPage(AWinControl).TabVisible);
 end;
 
 { TGtkWSCustomNotebook }
