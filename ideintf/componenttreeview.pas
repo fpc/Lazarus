@@ -254,7 +254,7 @@ begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
   FComponentList:=TBackupComponentList.Create;
-  Options:=Options+[tvoAllowMultiselect,tvoAutoItemHeight,tvoKeepCollapsedNodes];
+  Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
   FImageList := TImageList.Create(nil);
   FImageList.AddLazarusResource('oi_form');
   FImageList.AddLazarusResource('oi_comp');
