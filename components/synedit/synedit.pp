@@ -1554,7 +1554,7 @@ end;
 
 procedure TCustomSynEdit.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
-  Proc(FGutter.GutterParts);
+  Proc(FGutter.PartList);
 end;
 
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
@@ -3326,7 +3326,7 @@ var
       fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
 
       // codefold draw splitter line
-      if Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding]
+      if Gutter.PartByClassVisible[TSynGutterCodeFolding]
          and (FFoldedLinesView.DrawDivider[curLine]) then
       begin
         ypos := rcToken.Bottom - 1;
@@ -3431,7 +3431,7 @@ begin
     end;
 
     // codefold draw splitter line
-    if Gutter.GutterPartVisibleByClass[TSynGutterCodeFolding]
+    if Gutter.PartByClassVisible[TSynGutterCodeFolding]
        and (FFoldedLinesView.DrawDivider[LastLine]) then
     begin
       ypos := rcToken.Bottom - 1;
@@ -7836,7 +7836,7 @@ end;
 procedure TCustomSynEdit.MarkTextAsSaved;
 begin
   TSynEditStringList(fLines).MarkSaved;
-  if fGutter.Visible and fGutter.GutterPartVisibleByClass[TSynGutterChanges] then
+  if fGutter.Visible and fGutter.PartByClassVisible[TSynGutterChanges] then
     InvalidateGutter; // Todo: Make the ChangeGutterPart an observer
 end;
 
@@ -10029,6 +10029,7 @@ begin
   RegisterPropertyToSkip(TSynGutter, 'LeadingZeros', '', '');
   RegisterPropertyToSkip(TSynGutter, 'DigitCount', '', '');
   RegisterPropertyToSkip(TSynGutter, 'AllowSkipGutterSeparatorDraw', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'GutterParts', '', '');
 end;
 
 initialization

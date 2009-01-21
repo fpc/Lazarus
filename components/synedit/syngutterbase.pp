@@ -27,12 +27,12 @@ type
     FColor: TColor;
     procedure SetColor(const Value: TColor);
     procedure SetGutterParts(const AValue: TSynGutterPartList);
-    function  GetGutterPartCount: integer;
-    function  GetGutterPartCountByClass(AClass: TSynGutterPartBaseClass): integer;
-    function  GetPartGutter(Index: Integer): TSynGutterPartBase;
-    function  GetPartGutterByClass(AClass: TSynGutterPartBaseClass; Index: Integer): TSynGutterPartBase;
-    function  GetGutterPartVisibleByClass(AClass: TSynGutterPartBaseClass): Boolean;
-    procedure SetGutterPartVisibleByClass(AClass: TSynGutterPartBaseClass; const AValue: Boolean);
+    function  GetPartCount: integer;
+    function  GetPartByClassCount(AClass: TSynGutterPartBaseClass): integer;
+    function  GetPart(Index: Integer): TSynGutterPartBase;
+    function  GetPartByClass(AClass: TSynGutterPartBaseClass; Index: Integer): TSynGutterPartBase;
+    function  GetPartByClassVisible(AClass: TSynGutterPartBaseClass): Boolean;
+    procedure SetPartByClassVisible(AClass: TSynGutterPartBaseClass; const AValue: Boolean);
   protected
     procedure DoChange(Sender: TObject); virtual;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -45,16 +45,16 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   public
-    property GutterParts: TSynGutterPartList read FGutterPartList write SetGutterParts;
-    property GutterPartCount: integer read GetGutterPartCount;
-    property GutterPartCountByClass[AClass: TSynGutterPartBaseClass]: integer
-      read GetGutterPartCountByClass;
-    property GutterPart[Index: Integer]: TSynGutterPartBase read GetPartGutter;
-    property GutterPartByClass[AClass: TSynGutterPartBaseClass; Index: Integer]:
-      TSynGutterPartBase read GetPartGutterByClass;
+    property PartList: TSynGutterPartList read FGutterPartList write SetGutterParts;
+    property PartCount: integer read GetPartCount;
+    property Part[Index: Integer]: TSynGutterPartBase read GetPart;
+    property PartByClassCount[AClass: TSynGutterPartBaseClass]: integer
+      read GetPartByClassCount;
+    property PartByClass[AClass: TSynGutterPartBaseClass; Index: Integer]:
+      TSynGutterPartBase read GetPartByClass;
     // Common PartProprties
-    property GutterPartVisibleByClass[AClass: TSynGutterPartBaseClass]: Boolean
-      read GetGutterPartVisibleByClass write SetGutterPartVisibleByClass;
+    property PartByClassVisible[AClass: TSynGutterPartBaseClass]: Boolean
+      read GetPartByClassVisible write SetPartByClassVisible;
   public
     // properties available for the GutterPartClasses
     property FoldView: TSynEditFoldedView read FFoldView;
@@ -174,12 +174,12 @@ begin
   FGutterPartList.Assign(AValue);
 end;
 
-function TSynGutterBase.GetPartGutter(Index: Integer): TSynGutterPartBase;
+function TSynGutterBase.GetPart(Index: Integer): TSynGutterPartBase;
 begin
   Result := TSynGutterPartBase(FGutterPartList[Index]);
 end;
 
-function TSynGutterBase.GetGutterPartCount: integer;
+function TSynGutterBase.GetPartCount: integer;
 begin
   if FGutterPartList <> nil then
     result := FGutterPartList.Count
@@ -187,46 +187,46 @@ begin
     Result := 0;
 end;
 
-function TSynGutterBase.GetGutterPartCountByClass(AClass: TSynGutterPartBaseClass): integer;
+function TSynGutterBase.GetPartByClassCount(AClass: TSynGutterPartBaseClass): integer;
 var
   i: Integer;
 begin
   Result := 0;
-  for i := 0 to GutterPartCount -1 do
-    if GutterPart[i] is AClass then
+  for i := 0 to PartCount -1 do
+    if Part[i] is AClass then
       inc(Result);
 end;
 
-function TSynGutterBase.GetPartGutterByClass(AClass: TSynGutterPartBaseClass; Index: Integer): TSynGutterPartBase;
+function TSynGutterBase.GetPartByClass(AClass: TSynGutterPartBaseClass; Index: Integer): TSynGutterPartBase;
 var
   i: Integer;
 begin
-  for i := 0 to GutterPartCount -1 do
-    if GutterPart[i] is AClass then begin
+  for i := 0 to PartCount -1 do
+    if Part[i] is AClass then begin
       if Index = 0 then
-        exit(GutterPart[i]);
+        exit(Part[i]);
       dec(Index);
     end;
   Result := nil;
 end;
 
-function TSynGutterBase.GetGutterPartVisibleByClass(AClass: TSynGutterPartBaseClass): Boolean;
+function TSynGutterBase.GetPartByClassVisible(AClass: TSynGutterPartBaseClass): Boolean;
 var
   i: Integer;
 begin
-  for i := 0 to GutterPartCount -1 do
-    if (GutterPart[i] is AClass) and (GutterPart[i].Visible) then
+  for i := 0 to PartCount -1 do
+    if (Part[i] is AClass) and (Part[i].Visible) then
       exit(True);
   Result := False;
 end;
 
-procedure TSynGutterBase.SetGutterPartVisibleByClass(AClass: TSynGutterPartBaseClass; const AValue: Boolean);
+procedure TSynGutterBase.SetPartByClassVisible(AClass: TSynGutterPartBaseClass; const AValue: Boolean);
 var
   i: Integer;
 begin
-  for i := 0 to GutterPartCount -1 do
-    if (GutterPart[i] is AClass) then
-      GutterPart[i].Visible := AValue;
+  for i := 0 to PartCount -1 do
+    if (Part[i] is AClass) then
+      Part[i].Visible := AValue;
 end;
 
 procedure TSynGutterBase.DoChange(Sender: TObject);

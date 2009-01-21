@@ -50,10 +50,10 @@ type
     property  OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    // Some Methods for convinience access to common GutterParts
+    // A Methods for access from the Gutter; to be replaced
     procedure AutoSizeDigitCount(LinesCount: integer); // Forward to Line Number
   public
-    // Access to well knonw parts
+    // Access to well known parts
     Function LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
     Function CodeFoldPart(Index: Integer = 0): TSynGutterCodeFolding;
     Function ChangesPart(Index: Integer = 0): TSynGutterChanges;
@@ -69,7 +69,7 @@ type
       default 0;
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
-    property GutterParts;
+    property PartList;
   end;
 
   { TSynGutterSeparator }
@@ -101,11 +101,11 @@ begin
   AutoSize := True;
 
   if not(csLoading in AOwner.ComponentState) then begin
-    TSynGutterMarks.Create(GutterParts);
-    TSynGutterLineNumber.Create(GutterParts);
-    TSynGutterChanges.Create(GutterParts);
-    TSynGutterSeparator.Create(GutterParts);
-    TSynGutterCodeFolding.Create(GutterParts);
+    TSynGutterMarks.Create(PartList);
+    TSynGutterLineNumber.Create(PartList);
+    TSynGutterChanges.Create(PartList);
+    TSynGutterSeparator.Create(PartList);
+    TSynGutterCodeFolding.Create(PartList);
   end;
 end;
 
@@ -144,8 +144,8 @@ begin
 
   Result := FLeftOffset + FRightOffset;
 
-  for i := GutterPartCount-1 downto 0 do
-    Result := Result + GutterPart[i].RealGutterWidth(CharWidth);
+  for i := PartCount-1 downto 0 do
+    Result := Result + Part[i].RealGutterWidth(CharWidth);
 end;
 
 procedure TSynGutter.SetLeftOffset(Value: integer);
@@ -240,16 +240,16 @@ var
 begin
   i := 0;
   x2 := x;
-  while i < GutterPartCount-1 do begin
-    if GutterPart[i].Visible then begin
-      if x2 >= GutterPart[i].Width then
-        x2 := x2 - GutterPart[i].Width
+  while i < PartCount-1 do begin
+    if Part[i].Visible then begin
+      if x2 >= Part[i].Width then
+        x2 := x2 - Part[i].Width
       else
         break;
     end;
     inc(i)
   end;
-  GutterPart[i].DoOnGutterClick(X, Y);
+  Part[i].DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutter.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -276,14 +276,14 @@ begin
   AClip.Left := FLeftOffset;
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
-  for i := 0 to GutterPartCount -1 do
+  for i := 0 to PartCount -1 do
   begin
     if rcLine.Right >= AClip.Right then break;
-    if GutterPart[i].Visible then
+    if Part[i].Visible then
     begin
       rcLine.Left := rcLine.Right;
-      rcLine.Right := min(rcLine.Left + GutterPart[i].Width, AClip.Right);
-      GutterPart[i].Paint(Canvas, rcLine, FirstLine, LastLine);
+      rcLine.Right := min(rcLine.Left + Part[i].Width, AClip.Right);
+      Part[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
 end;
@@ -292,33 +292,33 @@ procedure TSynGutter.AutoSizeDigitCount(LinesCount : integer);
 var
   i: Integer;
 begin
-  for i := 0 to GutterPartCountByClass[TSynGutterLineNumber] - 1 do
-    TSynGutterLineNumber(GutterPartByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
+  for i := 0 to PartByClassCount[TSynGutterLineNumber] - 1 do
+    TSynGutterLineNumber(PartByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
 end;
 
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
 begin
-  Result := TSynGutterLineNumber(GutterPartByClass[TSynGutterLineNumber, Index]);
+  Result := TSynGutterLineNumber(PartByClass[TSynGutterLineNumber, Index]);
 end;
 
 function TSynGutter.CodeFoldPart(Index: Integer = 0): TSynGutterCodeFolding;
 begin
-  Result := TSynGutterCodeFolding(GutterPartByClass[TSynGutterCodeFolding, Index]);
+  Result := TSynGutterCodeFolding(PartByClass[TSynGutterCodeFolding, Index]);
 end;
 
 function TSynGutter.ChangesPart(Index: Integer = 0): TSynGutterChanges;
 begin
-  Result := TSynGutterChanges(GutterPartByClass[TSynGutterChanges, Index]);
+  Result := TSynGutterChanges(PartByClass[TSynGutterChanges, Index]);
 end;
 
 function TSynGutter.MarksPart(Index: Integer = 0): TSynGutterMarks;
 begin
-  Result := TSynGutterMarks(GutterPartByClass[TSynGutterMarks, Index]);
+  Result := TSynGutterMarks(PartByClass[TSynGutterMarks, Index]);
 end;
 
 function TSynGutter.SeparatorPart(Index: Integer = 0): TSynGutterSeparator;
 begin
-  Result := TSynGutterSeparator(GutterPartByClass[TSynGutterSeparator, Index]);
+  Result := TSynGutterSeparator(PartByClass[TSynGutterSeparator, Index]);
 end;
 
 { TSynGutterSeparator }
