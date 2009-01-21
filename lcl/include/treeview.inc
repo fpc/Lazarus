@@ -2883,7 +2883,7 @@ begin
     FEditor.OnEditingDone:=@EditorEditingDone;
     FEditor.OnKeyDown:=@EditorKeyDown;
   end;
-  ARect:=Rect(Node.DisplayTextLeft,Node.Top-ScrolledTop,
+  ARect:=Rect(Max(BorderWidth,Node.DisplayTextLeft),Node.Top-ScrolledTop,
               ClientWidth-BorderWidth,Node.Bottom-ScrolledTop);
   FEditor.BoundsRect:=ARect;
   FEditor.Visible:=true;
