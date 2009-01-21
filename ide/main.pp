@@ -4259,9 +4259,9 @@ begin
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
-  if NewComponent is TControl then
-    TControl(NewComponent).Visible:=false;
-  NewUnitInfo.Component:=NewComponent;
+  if NewComponent is TCustomForm then
+    TControl(NewComponent).Visible := False;
+  NewUnitInfo.Component := NewComponent;
   CreateDesignerForComponent(NewComponent);
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
