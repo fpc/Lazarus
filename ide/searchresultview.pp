@@ -1054,6 +1054,7 @@ end;
 Constructor TLazSearchResultTV.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ReadOnly := True;
   fSearchObject:= TLazSearch.Create;
   fUpdating:= false;
   fUpdateCount:= 0;
