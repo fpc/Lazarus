@@ -4010,7 +4010,7 @@ begin
     // Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
     SrcEditMenuShowLineNumbers.MenuItem.Checked :=
-      EditorComp.Gutter.PartByClassVisible[TSynGutterLineNumber];
+      EditorComp.Gutter.LineNumberPart.Visible;
     UpdateHighlightMenuItems;
     UpdateEncodingMenuItems;
 
@@ -5260,10 +5260,10 @@ begin
   MenuItem := Sender as TIDEMenuCommand;
   ActEdit:=GetActiveSE;
   MenuItem.Checked :=
-    not(ActEdit.EditorComponent.Gutter.PartByClassVisible[TSynGutterLineNumber]);
+    not ActEdit.EditorComponent.Gutter.LineNumberPart.Visible;
   ShowLineNumbers:=MenuItem.Checked;
   for i:=0 to EditorCount-1 do
-    Editors[i].EditorComponent.Gutter.PartByClassVisible[TSynGutterLineNumber]
+    Editors[i].EditorComponent.Gutter.LineNumberPart.Visible
       := ShowLineNumbers;
   EditorOpts.ShowLineNumbers := ShowLineNumbers;
   EditorOpts.Save;

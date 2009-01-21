@@ -69,7 +69,7 @@ type
       default 0;
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
-    property PartList;
+    property Parts;
   end;
 
   { TSynGutterSeparator }
@@ -101,11 +101,11 @@ begin
   AutoSize := True;
 
   if not(csLoading in AOwner.ComponentState) then begin
-    TSynGutterMarks.Create(PartList);
-    TSynGutterLineNumber.Create(PartList);
-    TSynGutterChanges.Create(PartList);
-    TSynGutterSeparator.Create(PartList);
-    TSynGutterCodeFolding.Create(PartList);
+    TSynGutterMarks.Create(Parts);
+    TSynGutterLineNumber.Create(Parts);
+    TSynGutterChanges.Create(Parts);
+    TSynGutterSeparator.Create(Parts);
+    TSynGutterCodeFolding.Create(Parts);
   end;
 end;
 
@@ -145,7 +145,7 @@ begin
   Result := FLeftOffset + FRightOffset;
 
   for i := PartCount-1 downto 0 do
-    Result := Result + Part[i].RealGutterWidth(CharWidth);
+    Result := Result + Parts[i].RealGutterWidth(CharWidth);
 end;
 
 procedure TSynGutter.SetLeftOffset(Value: integer);
@@ -241,15 +241,15 @@ begin
   i := 0;
   x2 := x;
   while i < PartCount-1 do begin
-    if Part[i].Visible then begin
-      if x2 >= Part[i].Width then
-        x2 := x2 - Part[i].Width
+    if Parts[i].Visible then begin
+      if x2 >= Parts[i].Width then
+        x2 := x2 - Parts[i].Width
       else
         break;
     end;
     inc(i)
   end;
-  Part[i].DoOnGutterClick(X, Y);
+  Parts[i].DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutter.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -279,11 +279,11 @@ begin
   for i := 0 to PartCount -1 do
   begin
     if rcLine.Right >= AClip.Right then break;
-    if Part[i].Visible then
+    if Parts[i].Visible then
     begin
       rcLine.Left := rcLine.Right;
-      rcLine.Right := min(rcLine.Left + Part[i].Width, AClip.Right);
-      Part[i].Paint(Canvas, rcLine, FirstLine, LastLine);
+      rcLine.Right := min(rcLine.Left + Parts[i].Width, AClip.Right);
+      Parts[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
 end;
@@ -292,33 +292,33 @@ procedure TSynGutter.AutoSizeDigitCount(LinesCount : integer);
 var
   i: Integer;
 begin
-  for i := 0 to PartByClassCount[TSynGutterLineNumber] - 1 do
-    TSynGutterLineNumber(PartByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
+  for i := 0 to Parts.ByClassCount[TSynGutterLineNumber] - 1 do
+    TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
 end;
 
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
 begin
-  Result := TSynGutterLineNumber(PartByClass[TSynGutterLineNumber, Index]);
+  Result := TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, Index]);
 end;
 
 function TSynGutter.CodeFoldPart(Index: Integer = 0): TSynGutterCodeFolding;
 begin
-  Result := TSynGutterCodeFolding(PartByClass[TSynGutterCodeFolding, Index]);
+  Result := TSynGutterCodeFolding(Parts.ByClass[TSynGutterCodeFolding, Index]);
 end;
 
 function TSynGutter.ChangesPart(Index: Integer = 0): TSynGutterChanges;
 begin
-  Result := TSynGutterChanges(PartByClass[TSynGutterChanges, Index]);
+  Result := TSynGutterChanges(Parts.ByClass[TSynGutterChanges, Index]);
 end;
 
 function TSynGutter.MarksPart(Index: Integer = 0): TSynGutterMarks;
 begin
-  Result := TSynGutterMarks(PartByClass[TSynGutterMarks, Index]);
+  Result := TSynGutterMarks(Parts.ByClass[TSynGutterMarks, Index]);
 end;
 
 function TSynGutter.SeparatorPart(Index: Integer = 0): TSynGutterSeparator;
 begin
-  Result := TSynGutterSeparator(PartByClass[TSynGutterSeparator, Index]);
+  Result := TSynGutterSeparator(Parts.ByClass[TSynGutterSeparator, Index]);
 end;
 
 { TSynGutterSeparator }

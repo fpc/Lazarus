@@ -206,13 +206,13 @@ begin
       if PreviewEdits[a] <> nil then
       begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
-        PreviewEdits[a].Gutter.PartByClassVisible[TSynGutterLineNumber]
+        PreviewEdits[a].Gutter.LineNumberPart.Visible
           := ShowLineNumbersCheckBox.Checked;
-        if Assigned(PreviewEdits[a].Gutter.PartByClass[TSynGutterLineNumber, 0]) then
-          TSynGutterLineNumber(PreviewEdits[a].Gutter.PartByClass[TSynGutterLineNumber, 0])
+        if Assigned(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterLineNumber, 0]) then
+          TSynGutterLineNumber(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterLineNumber, 0])
             .ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
 
-        Separator := TSynGutterSeparator(PreviewEdits[a].Gutter.PartByClass[TSynGutterSeparator, 0]);
+        Separator := TSynGutterSeparator(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterSeparator, 0]);
         if Assigned(Separator) then
         begin
           Separator.Visible := GutterSeparatorIndexSpinBox.Value <> -1;
