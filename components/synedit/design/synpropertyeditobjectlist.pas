@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  SynGutter, SynEditMiscClasses,
+  SynGutter, SynGutterBase, SynEditMiscClasses,
   LResources, PropEdits, Forms, StdCtrls, ComCtrls, Dialogs,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo;
 

@@ -41,7 +41,7 @@ uses
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
   SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll,
-  SynGutter, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
+  SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,

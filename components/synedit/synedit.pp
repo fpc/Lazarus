@@ -74,13 +74,13 @@ uses
   Imm,
 {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
-  SynEditPointClasses, SynBeautifier,
+  SynEditPointClasses, SynBeautifier, SynEditMarks,
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
-  SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
-  SynGutterMarks,
+  SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
+  SynGutterLineNumber, SynGutterMarks,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer,
   LResources;
@@ -274,11 +274,11 @@ type
   TCustomSynEdit = class;
 
   { Make them visible for Units that use TSynEdit }
-  TSynEditMark = SynGutter.TSynEditMark;
-  TPlaceMarkEvent = SynGutter.TPlaceMarkEvent;
-  TSynEditMarks = SynGutter.TSynEditMarks;
-  TSynEditMarkList = SynGutter.TSynEditMarkList;
-  TGutterClickEvent = SynGutter.TGutterClickEvent;
+  TSynEditMark = SynEditMarks.TSynEditMark;
+  TPlaceMarkEvent = SynEditMarks.TPlaceMarkEvent;
+  TSynEditMarks = SynEditMarks.TSynEditMarks;
+  TSynEditMarkList = SynEditMarks.TSynEditMarkList;
+  TGutterClickEvent = SynGutterBase.TGutterClickEvent;
 
   TSynLineState = (slsNone, slsSaved, slsUnsaved);
 

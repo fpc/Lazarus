@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  SynGutter, SynGutterChanges,SynGutterCodeFolding, SynGutterLineNumber,
+  SynGutter, SynGutterBase, SynGutterChanges,SynGutterCodeFolding, SynGutterLineNumber,
   SynGutterMarks, SynPropertyEditObjectList, SynEdit, SynDesignStringConstants,
   LazarusPackageIntf, LResources, PropEdits;
 
