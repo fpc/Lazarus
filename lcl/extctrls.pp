@@ -145,7 +145,7 @@ type
     FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;
     FOnGetImageIndex: TTabGetImageEvent;
-    fOnPageChanged: TNotifyEvent;
+    FOnPageChanged: TNotifyEvent;
     FOptions: TNoteBookOptions;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;// needed for unique OnChange events

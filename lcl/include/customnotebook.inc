@@ -750,24 +750,22 @@ end;
   TCustomNotebook Change
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
-Begin
+begin
   //DebugLn(['TCustomNotebook.Change ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   ShowCurrentPage;
-  fPageIndexOnLastChange := fPageIndex;
-  if ([csLoading,csDestroying]*ComponentState=[])
-  and (not fAddingPages) then begin
-    if Assigned(fOnPageChanged) then fOnPageChanged(Self);
-  end;
+  FPageIndexOnLastChange := FPageIndex;
+  if ([csLoading,csDestroying]*ComponentState=[]) and (not FAddingPages) then
+    if Assigned(FOnPageChanged) then FOnPageChanged(Self);
 end;
 
 procedure TCustomNotebook.Loaded;
 begin
   inherited Loaded;
-  if FLoadedPageIndex>=0 then PageIndex:=FLoadedPageIndex;
-  FLoadedPageIndex:=-1;
+  if FLoadedPageIndex >= 0 then PageIndex := FLoadedPageIndex;
+  FLoadedPageIndex := -1;
   //DebugLn(['TCustomNotebook.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
-  fPageIndexOnLastChange:=PageIndex;
-  FPageIndexOnLastShow:=fPageIndexOnLastChange;
+  FPageIndexOnLastChange := PageIndex;
+  FPageIndexOnLastShow := FPageIndexOnLastChange;
   if HandleAllocated then DoCreateWnd;
 end;
 
@@ -794,18 +792,20 @@ begin
       TCN_SELCHANGE:
         begin
           // set the page from the NMHDR^.idfrom
-          if (not fAddingPages) and not
-          (csDestroyingHandle in ControlState) then
+          if (not FAddingPages) and not
+             (csDestroyingHandle in ControlState) then
           begin
-            OldPageIndex:=FPageIndex;
+            OldPageIndex := FPageIndex;
             FPageIndex := NMHDR^.idfrom;
-            if FPageIndex>=PageCount then
-              FPageIndex:=-1;
+            if FPageIndex >= PageCount then
+              FPageIndex := -1;
             //debugln(['TCustomNotebook.CNNotify ',DbgSName(Self),' A Old=',OldPageIndex,' fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex]);
             //if PageIndex>=0 then DebugLn(['TCustomNotebook.CNNotify Page=',DbgSName(Page[PageIndex]),' Visible=',Page[PageIndex].Visible]);
             UpdateAllDesignerFlags;
-            if ([csLoading,csDestroying]*ComponentState=[]) then begin
-              if OldPageIndex<>fPageIndex then begin
+            if ([csLoading,csDestroying]*ComponentState=[]) then
+            begin
+              if OldPageIndex <> FPageIndex then
+              begin
                 if csDesigning in ComponentState then
                   OwnerFormDesignerModified(Self);
                 //DebugLn(['TCustomNotebook.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);

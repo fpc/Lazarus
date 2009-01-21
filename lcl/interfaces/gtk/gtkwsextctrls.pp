@@ -259,7 +259,6 @@ var
   IsManual: Boolean;
 begin
   Result := CallBackDefaultReturn;
-
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
 
@@ -271,7 +270,6 @@ begin
     Exit;
 
   // gtkswitchpage is called before the switch
-
   if not IsManual then
   begin
     // send first the TCN_SELCHANGING to ask if switch is allowed
