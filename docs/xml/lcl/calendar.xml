@@ -286,10 +286,14 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCalendar.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomCalendar.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create"/>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomCalendar</var>: calls inherited <var>Create</var> and sets style, initial bounds, display settings; sets date and time to Now</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCalendar.Create.TheOwner">

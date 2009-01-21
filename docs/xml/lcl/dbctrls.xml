@@ -381,7 +381,7 @@
       <!-- object Visibility: default -->
       <element name="TDBEdit">
         <short>
-          <i>TDBEdit </i> - a data-aware edit box for processing a single text-string from a dataset</short>
+          <var>TDBEdit </var> - a data-aware edit box for processing a single text-string from a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -481,7 +481,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TDBEdit.GetReadOnly">
+      <element name="TDBEdit.GetReadOnly" link="#LCL.StdCtrls.TCustomEdit.GetReadOnly">
         <short/>
         <descr/>
         <errors/>
@@ -492,7 +492,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TDBEdit.SetReadOnly">
+      <element name="TDBEdit.SetReadOnly" link="#LCL.StdCtrls.TCustomEdit.SetReadOnly">
         <short/>
         <descr/>
         <errors/>
@@ -525,7 +525,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBEdit.KeyDown">
+      <element name="TDBEdit.KeyDown" link="#LCL.Controls.TWinControl.KeyDown">
         <short/>
         <descr/>
         <errors/>
@@ -540,14 +540,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBEdit.Loaded">
+      <element name="TDBEdit.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBEdit.Notification">
+      <element name="TDBEdit.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -562,7 +562,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TDBEdit.EditCanModify">
+      <element name="TDBEdit.EditCanModify" link="#LCL.MaskEdit.TCustomMaskEdit.EditCanModify">
         <short/>
         <descr/>
         <errors/>
@@ -573,14 +573,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBEdit.Change">
+      <element name="TDBEdit.Change" link="#LCL.StdCtrls.TCustomEdit.Change">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBEdit.Reset">
+      <element name="TDBEdit.Reset" link="#LCL.MaskEdit.TCustomMaskEdit.Reset">
         <short/>
         <descr/>
         <errors/>
@@ -602,10 +602,13 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBEdit.Create">
-        <short>Create a new instance of the Window Control</short>
+        <short>
+          <var>Create</var> - Constructor for <var>TDBEdit</var>: cals inherited <var>Create</var> then sets up data links and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBEdit.Create.AOwner">
@@ -613,10 +616,14 @@
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBEdit.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBEdit</var>: frees data links then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBEdit.Field">
@@ -639,7 +646,7 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.ReadOnly">
         <short>
-          <i>ReadOnly </i>- the contents of the edit box may only be read, not written or erased</short>
+          <var>ReadOnly </var>- the contents of the edit box may only be read, not written or erased</short>
         <descr/>
         <seealso/>
       </element>
@@ -649,7 +656,7 @@
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent control</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -667,7 +674,7 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.CharCase">
         <short>
-          <i>CharCase</i>  - rules for what case to use (upper or lower) to display text</short>
+          <var>CharCase</var>  - rules for what case to use (upper or lower) to display text</short>
         <descr>
           <p>Indicates how text is displayed in a text editing control in the following ways:</p>
           <ul>
@@ -691,10 +698,10 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
@@ -707,7 +714,7 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
@@ -720,16 +727,16 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
@@ -742,11 +749,11 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
@@ -754,14 +761,14 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.MaxLength">
         <short>
-          <i>MaxLength</i>: maximum length allowed for text string</short>
+          <var>MaxLength</var>: maximum length allowed for text string</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.ParentColor">
         <short>
-          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -774,24 +781,24 @@
       <!-- property Visibility: published -->
       <element name="TDBEdit.ParentFont">
         <short>
-          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.PasswordChar">
         <short>
-          <i>PasswordChar</i>: the character which appears in the Edit box replacing and masking the actual character typed</short>
+          <var>PasswordChar</var>: the character which appears in the Edit box replacing and masking the actual character typed</short>
         <descr>
           <p>
-            <i>PasswordChar</i>
+            <var>PasswordChar</var>
 
 
 
@@ -827,11 +834,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBEdit.TabStop">
         <short>
-          <i>TabStop</i> - determines if the user can tab to a control.</short>
+          <var>TabStop</var> - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
         <seealso/>
       </element>
@@ -844,7 +851,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBEdit.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -865,7 +872,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -900,26 +907,26 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBEdit.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
@@ -928,19 +935,19 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -973,7 +980,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBText">
         <short>
-          <i>TDBText</i> - a data-aware text component to display a single text-string from a dataset</short>
+          <var>TDBText</var> - a data-aware text component to display a single text-string from a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -1062,8 +1069,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBText.Loaded">
-        <short>Called when the component has finished loading.</short>
+      <element name="TDBText.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -1081,8 +1087,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBText.Notification">
-        <short>Called by components that are freed and which received a FreeNotification.</short>
+      <element name="TDBText.Notification" link="#rtl.Classes.TComponent.Notification">
         <descr>
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
@@ -1118,10 +1123,13 @@ consideration when overriding this method.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBText.Create">
-        <short>Create a new instance of a Graphic Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBText</var>: calls inherited <var>Create</var> then forms data links and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomLabel.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBText.Create.AOwner">
@@ -1129,10 +1137,14 @@ consideration when overriding this method.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBText.Destroy">
-        <short>Destroy this instance of a graphic control and return its resources</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBText</var>: frees data links then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBText.Field">
@@ -1145,7 +1157,7 @@ consideration when overriding this method.
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -1153,7 +1165,7 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBText.Alignment">
         <short>
-          <i>Alignment </i>- whether text is centered, left- or right-justified</short>
+          <var>Alignment </var>- whether text is centered, left- or right-justified</short>
         <descr/>
         <seealso/>
       </element>
@@ -1163,7 +1175,7 @@ consideration when overriding this method.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -1181,15 +1193,15 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBText.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso/>
@@ -1219,17 +1231,17 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBText.FocusControl">
         <short>
-          <i>FocusControl</i> - whether this control has focus</short>
+          <var>FocusControl</var> - whether this control has focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBText.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
@@ -1237,17 +1249,17 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBText.Layout">
         <short>
-          <i>Layout</i> - How the Text is to be laid out in the text rectangle: at the Bottom, Centre or Top</short>
+          <var>Layout</var> - How the Text is to be laid out in the text rectangle: at the Bottom, Centre or Top</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBText.ShowAccelChar">
         <short>
-          <i>ShowAccelChar</i> - underline the character in the label that acts as an accelerator with a shortcut key</short>
+          <var>ShowAccelChar</var> - underline the character in the label that acts as an accelerator with a shortcut key</short>
         <descr>
           <p>
-            <i>ShowAccelChar</i>
+            <var>ShowAccelChar</var>
 
 
 
@@ -1259,7 +1271,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBText.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -1272,10 +1284,10 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBText.WordWrap">
         <short>
-          <i>WordWrap</i> - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</short>
+          <var>WordWrap</var> - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</short>
         <descr>
           <p>
-            <i>WordWrap</i>
+            <var>WordWrap</var>
 
 
 
@@ -1287,7 +1299,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- object Visibility: default -->
       <element name="TDBListBox">
         <short>
-          <i>TDBListBox </i>- a data-aware version of <i>TListBox,</i> for displaying lists of entries from a field in a database</short>
+          <var>TDBListBox </var>- a data-aware version of <var>TListBox,</var> for displaying lists of entries from a field in a database</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -1300,7 +1312,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1431,7 +1444,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBListBox.KeyDown">
+      <element name="TDBListBox.KeyDown" link="#LCL.Controls.TWinControl.KeyDown">
         <short/>
         <descr/>
         <errors/>
@@ -1446,8 +1459,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBListBox.Loaded">
-        <short>Called when the component has finished loading.</short>
+      <element name="TDBListBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -1465,8 +1477,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBListBox.Notification">
-        <short>Called by components that are freed and which received a FreeNotification.</short>
+      <element name="TDBListBox.Notification" link="#rtl.Classes.TComponent.Notification">
         <descr>
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
@@ -1503,7 +1514,7 @@ consideration when overriding this method.
       <!-- procedure Visibility: protected -->
       <element name="TDBListBox.Click">
         <short>
-          <i>Click</i> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
+          <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <var>Action</var> as that associated with the <var>OnClick</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1511,10 +1522,10 @@ consideration when overriding this method.
       <!-- procedure Visibility: protected -->
       <element name="TDBListBox.EditingDone">
         <short>
-          <i>EditingDone</i> - what to do when you have finished editing</short>
+          <var>EditingDone</var> - what to do when you have finished editing</short>
         <descr>
           <p>
-            <i>TControl.EditingDone</i>
+            <var>TControl.EditingDone</var>
           </p>
           <p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
           <p>For example:</p>
@@ -1529,10 +1540,13 @@ consideration when overriding this method.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBListBox.Create">
-        <short>Create a new instance of the Window Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBListBox</var>: calls inherited <var>Create</var> then forms data links and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBListBox.Create.AOwner">
@@ -1540,10 +1554,14 @@ consideration when overriding this method.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBListBox.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBListBox</var>: frees data link then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBListBox.Field">
@@ -1572,7 +1590,7 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBListBox.ReadOnly">
         <short>
-          <i>ReadOnly</i> - if True, data can be seen and displayed but not writen or modified</short>
+          <var>ReadOnly</var> - if True, data can be seen and displayed but not writen or modified</short>
         <descr/>
         <seealso/>
       </element>
@@ -1581,7 +1599,7 @@ consideration when overriding this method.
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -1592,7 +1610,7 @@ consideration when overriding this method.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -1600,21 +1618,21 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBListBox.BorderStyle">
         <short>
-          <i>BorderStyle</i> - none, or single</short>
+          <var>BorderStyle</var> - none, or single</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.ExtendedSelect">
         <short>
-          <i>ExtendedSelect</i> - boolean. Whether extended selection is allowed. Default True</short>
+          <var>ExtendedSelect</var> - boolean. Whether extended selection is allowed. Default True</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.ItemHeight">
         <short>
-          <i>ItemHeight </i>- the height of the individual <i>Items</i>
+          <var>ItemHeight </var>- the height of the individual <var>Items</var>
         </short>
         <descr/>
         <seealso/>
@@ -1622,7 +1640,7 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBListBox.MultiSelect">
         <short>
-          <i>MultiSelect</i>  - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
+          <var>MultiSelect</var>  - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
         <descr/>
         <seealso/>
       </element>
@@ -1631,7 +1649,7 @@ consideration when overriding this method.
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1648,10 +1666,10 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBListBox.OnDrawItem">
         <short>
-          <i>OnDrawItem</i> - event handler for drawing an Item</short>
+          <var>OnDrawItem</var> - event handler for drawing an Item</short>
         <descr>
           <p>
-            <i>OnDrawItem</i>
+            <var>OnDrawItem</var>
 
 
 
@@ -1663,14 +1681,14 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBListBox.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -1679,31 +1697,31 @@ consideration when overriding this method.
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -1738,7 +1756,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBListBox.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -1753,14 +1771,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBListBox.Sorted">
         <short>
-          <i>Sorted</i>  - whether the selected <i>Items</i>  in the list have been arranged in alphabetical order</short>
+          <var>Sorted</var>  - whether the selected <var>Items</var>  in the list have been arranged in alphabetical order</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.Style">
         <short>
-          <i>Style </i>of List Box - normal, owner-draw fixed, or owner-draw variable</short>
+          <var>Style </var>of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <descr/>
         <seealso/>
       </element>
@@ -1774,25 +1792,25 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBListBox.TabStop">
         <short>
-          <i>TabStop</i> - determines if the user can tab to a control.</short>
+          <var>TabStop</var> - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.TopIndex">
         <short>
-          <i>Topindex </i>- the highest value of Index in this list</short>
+          <var>Topindex </var>- the highest value of Index in this list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -1805,7 +1823,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBRadioGroup">
         <short>
-          <i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select an entry to insert into a database field</short>
+          <var>TDBRadioGroup</var> - a data-aware version of <var>TRadioGroup,</var> providing a series of mutually exclusive buttons to select an entry to insert into a database field</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -2042,10 +2060,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBRadioGroup.Create">
-        <short>Create a new instance of the Window Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBRadioGroup</var>: calls inherited <var>Create</var> then forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBRadioGroup.Create.TheOwner">
@@ -2053,10 +2074,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBRadioGroup.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBRadioGroup</var>: frees links and items, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBRadioGroup.Field">
@@ -2081,7 +2106,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -2092,7 +2117,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -2100,15 +2125,15 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso/>
@@ -2116,7 +2141,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Columns">
         <short>
-          <i>Columns</i>  - the number of columns in which the <i>Items</i>  (radio buttons) are to be arranges</short>
+          <var>Columns</var>  - the number of columns in which the <var>Items</var>  (radio buttons) are to be arranges</short>
         <descr>
           <p>Don't confuse this with the Columns entity in a DBGrid, nor with the COLUMNS entity in a SQL database - it simply refers to the number of columns of radiobuttons to be displayed</p>
         </descr>
@@ -2136,10 +2161,10 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
@@ -2147,7 +2172,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Items">
         <short>
-          <i>Items</i> - a string list containing the captions for the radio boxes</short>
+          <var>Items</var> - a string list containing the captions for the radio boxes</short>
         <descr/>
         <seealso/>
       </element>
@@ -2171,7 +2196,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -2206,13 +2231,13 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.ReadOnly">
         <short>
-          <i>ReadOnly</i> - if True, data can only be read, not written or modified. (Doesn't really make sense for a RadioGroup!)</short>
+          <var>ReadOnly</var> - if True, data can only be read, not written or modified. (Doesn't really make sense for a RadioGroup!)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Values">
-        <short>The <i>values</i> of the strings in <i>Items</i>
+        <short>The <var>values</var> of the strings in <var>Items</var>
         </short>
         <descr/>
         <seealso/>
@@ -2220,7 +2245,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -2233,7 +2258,7 @@ Reads or Writes flag if control is re-sized.
       <!-- object Visibility: default -->
       <element name="TDBCheckBox">
         <short>
-          <i>TDBCheckBox</i> - a data-aware checkbox for use with logical fields in a database</short>
+          <var>TDBCheckBox</var> - a data-aware checkbox for use with logical fields in a database</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -2376,7 +2401,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- function Visibility: protected -->
       <element name="TDBCheckBox.GetFieldCheckState">
-        <short/>
+        <short>
+          <var>GetFieldCheckState</var> - returns the checkbox state for the current field</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2387,7 +2413,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - uses <var>GetFieldCheckState</var> to update the State</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2398,7 +2425,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.UpdateData">
-        <short/>
+        <short>
+          <var>UpdateData</var> - examines the <var>State</var> to see whether it has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2409,7 +2437,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.FocusRequest">
-        <short/>
+        <short>
+          <var>FocusRequest</var> - a request has been received, so Sets Focus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2419,7 +2448,7 @@ Reads or Writes flag if control is re-sized.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBCheckBox.Notification">
+      <element name="TDBCheckBox.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -2434,7 +2463,7 @@ Reads or Writes flag if control is re-sized.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBCheckBox.Loaded">
+      <element name="TDBCheckBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -2449,10 +2478,13 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBCheckBox.Create">
-        <short>Create a new instance of this component</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBCheckBox</var>: calls inherited <var>Create</var>, forms logical connections for checked and unchecked, sets initial style and state, forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBCheckBox.Create.TheOwner">
@@ -2460,10 +2492,14 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCheckBox.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBCheckBox</var>: frees links and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCheckBox.Checked">
@@ -2483,7 +2519,7 @@ Reads or Writes flag if control is re-sized.
       <element name="TDBCheckBox.State">
         <short>Indicates whether the check box is checked (selected), unchecked (deselected) or grayed.</short>
         <descr>
-          <p>See <link id="#lcl.StdCtrls.TCheckBoxState">TCheckBoxState</link> for possible values of <i>State</i>.</p>
+          <p>See <link id="#lcl.StdCtrls.TCheckBoxState">TCheckBoxState</link> for possible values of <var>State</var>.</p>
         </descr>
         <seealso/>
       </element>
@@ -2491,7 +2527,7 @@ Reads or Writes flag if control is re-sized.
       <element name="TDBCheckBox.AllowGrayed">
         <short>Determines whether the check box can be in a "grayed" state.</short>
         <descr>
-          <p>If <i>AllowGrayed</i> is set to True, the check box has three possible states: checked, unchecked and grayed. If <i>AllowGrayed</i> is set to False, the check box has only two possible states: checked and unchecked.</p>
+          <p>If <var>AllowGrayed</var> is set to True, the check box has three possible states: checked, unchecked and grayed. If <var>AllowGrayed</var> is set to False, the check box has only two possible states: checked and unchecked.</p>
         </descr>
         <seealso/>
       </element>
@@ -2501,7 +2537,7 @@ Reads or Writes flag if control is re-sized.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -2519,15 +2555,15 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso/>
@@ -2547,7 +2583,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
@@ -2560,16 +2596,16 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
@@ -2577,19 +2613,19 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.Hint">
         <short>
-          <i>Hint</i> - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
+          <var>Hint</var> - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
         <descr>
           <p>
-            <i>Hint</i>
+            <var>Hint</var>
  - a small informative pop-up box that appears when the mouse 'hovers' over a control</p>
-          <p>Requires <i>ShowHint</i> to be True</p>
+          <p>Requires <var>ShowHint</var> to be True</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.OnChange">
         <short>
-          <i>OnChange </i>- event handler for any change in properties of the control</short>
+          <var>OnChange </var>- event handler for any change in properties of the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -2598,7 +2634,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -2625,14 +2661,14 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -2663,7 +2699,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -2679,7 +2715,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.ReadOnly">
         <short>
-          <i>ReadOnly </i>- if True, data may be read but not written or modified (doesn't make much sense for a check-box unless the box is NOT Enabled!)</short>
+          <var>ReadOnly </var>- if True, data may be read but not written or modified (doesn't make much sense for a check-box unless the box is NOT Enabled!)</short>
         <descr/>
         <seealso/>
       </element>
@@ -2728,7 +2764,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -2741,13 +2777,13 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- object Visibility: default -->
       <element name="TDBComboBox">
         <short>
-          <i>TDBComboBox</i> - a data-aware version of <i>TComboBox</i> to allow selection of a value from a list of entries into a database field</short>
+          <var>TDBComboBox</var> - a data-aware version of <var>TComboBox</var> to allow selection of a value from a list of entries into a database field</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
         <descr>
           <p>
-            <i>TDBComboBox </i>has properties similar to <i>TComboBox</i> and <i>TCustomComboBox</i>. It consists of an Edit Box which is th eData-aware part of the component, and a drop-down list box.</p>
+            <var>TDBComboBox </var>has properties similar to <var>TComboBox</var> and <var>TCustomComboBox</var>. It consists of an Edit Box which is th eData-aware part of the component, and a drop-down list box.</p>
           <p>In a typical application a user would be presented with the drop-down list, would make a selection and then this would appear in the edit box and become the data value for that cell in the database. </p>
           <p>So for example a list of countries might be presented, and the selected value from the list would be used to populate the appropriate field ('Country') in that record of the database.</p>
         </descr>
@@ -2859,7 +2895,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - updates the text if it has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2870,7 +2907,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.EditingChange">
-        <short/>
+        <short>
+          <var>EditingChange</var> - (currently no action)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2880,7 +2918,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBComboBox.Notification">
+      <element name="TDBComboBox.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -2896,7 +2934,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.UpdateData">
-        <short/>
+        <short>
+          <var>UpdateData</var> - copies the new data via the datalink</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2907,7 +2946,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.FocusRequest">
-        <short/>
+        <short>
+          <var>FocusRequest</var> - a request has been received and Focus is set</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2917,7 +2957,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBComboBox.Loaded">
+      <element name="TDBComboBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -2932,10 +2972,13 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBComboBox.Create">
-        <short>Create a new instance of the Window Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBComboBox</var>: calls inherited <var>Create</var> then sets default style and forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBComboBox.Create.TheOwner">
@@ -2943,10 +2986,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBComboBox.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBComboBox</var>: frees datalinks then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBComboBox.Field">
@@ -2957,7 +3004,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- property Visibility: public -->
       <element name="TDBComboBox.Text">
         <short>
-          <i>Text</i> - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i>
+          <var>Text</var> - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <var>Text</var>
         </short>
         <descr/>
         <seealso/>
@@ -2965,10 +3012,10 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- property Visibility: public -->
       <element name="TDBComboBox.ItemIndex">
         <short>
-          <i>Index </i>- the number of the currently selected item (starting at zero)</short>
+          <var>Index </var>- the number of the currently selected item (starting at zero)</short>
         <descr>
           <p>
-            <i>Index </i>
+            <var>Index </var>
 
 
 
@@ -2985,7 +3032,7 @@ has value -1.</p>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -2993,17 +3040,17 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ArrowKeysTraverseList">
         <short>
-          <i>ArrowKeysTraverseList</i> - enables the operator to use the keyboard Arrow keys to move through the list as an alternative to using the mouse</short>
+          <var>ArrowKeysTraverseList</var> - enables the operator to use the keyboard Arrow keys to move through the list as an alternative to using the mouse</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.AutoDropDown">
         <short>
-          <i>AutoDropDown </i>- if True, the drop-down list appears as soon as the cursor moves over the text box</short>
+          <var>AutoDropDown </var>- if True, the drop-down list appears as soon as the cursor moves over the text box</short>
         <descr>
           <p>
-            <i>AutoDropDown </i>
+            <var>AutoDropDown </var>
 
 
 
@@ -3033,27 +3080,27 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.DropDownCount">
         <short>
-          <i>DropDownCount </i>- number of entries in the drop-down list</short>
+          <var>DropDownCount </var>- number of entries in the drop-down list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
@@ -3061,35 +3108,35 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ItemHeight">
         <short>
-          <i>ItemHeight</i>  - the height of the current item in the drop-down list</short>
+          <var>ItemHeight</var>  - the height of the current item in the drop-down list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Items">
         <short>
-          <i>Items </i>- an array  of strings that holds the entries of the drop-down list</short>
+          <var>Items </var>- an array  of strings that holds the entries of the drop-down list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ItemWidth">
         <short>
-          <i>ItemWidth </i>- the width of the current item in the drop-down list</short>
+          <var>ItemWidth </var>- the width of the current item in the drop-down list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.MaxLength">
         <short>
-          <i>MaxLength </i>- the maximum allowed length of a string</short>
+          <var>MaxLength </var>- the maximum allowed length of a string</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnChange">
         <short>
-          <i>OnChange</i> - event handler for any change in properties of the combo box</short>
+          <var>OnChange</var> - event handler for any change in properties of the combo box</short>
         <descr/>
         <seealso/>
       </element>
@@ -3098,7 +3145,7 @@ has value -1.</p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -3107,47 +3154,47 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnCloseUp">
         <short>
-          <i>OnCloseUp</i> - event handler for when the drop-down box is closed up again</short>
+          <var>OnCloseUp</var> - event handler for when the drop-down box is closed up again</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnDrawItem">
         <short>
-          <i>OnDrawItem</i> - event handler for when an entry is written to the <i>Items </i>list</short>
+          <var>OnDrawItem</var> - event handler for when an entry is written to the <var>Items </var>list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnDropDown">
         <short>
-          <i>OnDropDown </i>- event handler for when the drop-down list appears</short>
+          <var>OnDropDown </var>- event handler for when the drop-down list appears</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
@@ -3156,19 +3203,19 @@ has value -1.</p>
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -3183,21 +3230,21 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ParentFont">
         <short>
-          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.ReadOnly">
         <short>
-          <i>ReadOnly</i> - if True, data can only be read, not written or modified</short>
+          <var>ReadOnly</var> - if True, data can only be read, not written or modified</short>
         <descr/>
         <seealso/>
       </element>
@@ -3212,14 +3259,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Sorted">
         <short>
-          <i>Sorted </i>- whether the entries in the drop-down list have been sorted</short>
+          <var>Sorted </var>- whether the entries in the drop-down list have been sorted</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Style">
         <short>
-          <i>Style</i>: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner</short>
+          <var>Style</var>: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner</short>
         <descr/>
         <seealso/>
       </element>
@@ -3233,18 +3280,18 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBComboBox.TabStop">
         <short>
-          <i>TabStop</i> - determines if the user can tab to a control.</short>
+          <var>TabStop</var> - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -3257,7 +3304,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBMemo">
         <short>
-          <i>TDBMemo </i> - a data-aware Memo box to process the multi-line text of a single field in a dataset</short>
+          <var>TDBMemo </var> - a data-aware Memo box to process the multi-line text of a single field in a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -3320,8 +3367,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TDBMemo.GetReadOnly">
-        <short/>
+      <element name="TDBMemo.GetReadOnly" link="#LCL.StdCtrls.TCustomEdit.GetReadOnly">
         <descr/>
         <errors/>
         <seealso/>
@@ -3364,7 +3410,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TDBMemo.SetReadOnly">
+      <element name="TDBMemo.SetReadOnly" link="#LCL.StdCtrls.TCustomEdit.SetReadOnly">
         <short/>
         <descr/>
         <errors/>
@@ -3375,7 +3421,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TDBMemo.WordWrapIsStored">
+      <element name="TDBMemo.WordWrapIsStored" link="#LCL.StdCtrls.TCustomMemo.WordWrapIsStored">
         <short/>
         <descr/>
         <errors/>
@@ -3387,7 +3433,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - if Data changed, loads the new data into the appropriate part of the Field</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3408,7 +3455,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBMemo.Notification">
+      <element name="TDBMemo.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -3424,7 +3471,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.UpdateData">
-        <short/>
+        <short>
+          <var>UpdateData</var> - if data changed, copy new text via the datalink</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3435,7 +3483,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.FocusRequest">
-        <short/>
+        <short>
+          <var>FocusRequest</var> - a request has been received, so focus is given</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3445,7 +3494,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBMemo.Loaded">
+      <element name="TDBMemo.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -3460,10 +3509,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBMemo.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor fro <var>TDBMemo</var>: calls inherited <var>Create</var>, then sets style and forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomMemo.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBMemo.Create.TheOwner">
@@ -3471,10 +3523,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBMemo.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor fro <var>TDBMemo</var>: frees datalinks then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomMemo.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDBMemo.LoadMemo">
@@ -3618,7 +3674,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBGroupBox">
         <short>
-          <i>TDBGroupBox</i>  - a data-aware version of <i>TGroupBox,</i>  allowing a number of data-aware objects to be grouped together on a form</short>
+          <var>TDBGroupBox</var>  - a data-aware version of <var>TGroupBox,</var>  allowing a number of data-aware objects to be grouped together on a form</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -3686,7 +3742,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBGroupBox.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - if Data changed, loads the new data into the caption</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3696,8 +3753,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBGroupBox.Loaded">
-        <short>Called when the component has finished loading.</short>
+      <element name="TDBGroupBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -3715,8 +3771,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBGroupBox.Notification">
-        <short>Called by components that are freed and which received a FreeNotification.</short>
+      <element name="TDBGroupBox.Notification" link="#rtl.Classes.TComponent.Notification">
         <descr>
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
@@ -3752,10 +3807,13 @@ consideration when overriding this method.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBGroupBox.Create">
-        <short>Create a new instance of the Window Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBGroupBox</var>: calls inherited <var>Create</var> then sets up datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomGroupBox.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBGroupBox.Create.TheOwner">
@@ -3763,10 +3821,13 @@ consideration when overriding this method.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBGroupBox.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+        <short>Destroy - destructor for <var>TDBGroupBox</var>: frees datalinks then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGroupBox.Field">
@@ -3779,7 +3840,7 @@ consideration when overriding this method.
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -3790,7 +3851,7 @@ consideration when overriding this method.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -3798,15 +3859,15 @@ consideration when overriding this method.
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso/>
@@ -3814,7 +3875,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.ClientHeight">
         <short>
-          <i>ClientHeight</i> - determines the height of the client within which the control exists</short>
+          <var>ClientHeight</var> - determines the height of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Finds or sets the client height, and sets a flag if it has been stored</p>
@@ -3824,11 +3885,11 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.ClientWidth">
         <short>
-          <i>ClientWidth</i> - determines the width of the client within which the control exists</short>
+          <var>ClientWidth</var> - determines the width of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>
-            <i>ClientWidth</i>
+            <var>ClientWidth</var>
  - determines the width of the client within which the control exists; reads the width of the client control or sets the value. Sets flag if value is stored</p>
         </descr>
         <seealso/>
@@ -3845,10 +3906,10 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
@@ -3872,21 +3933,21 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
@@ -3896,7 +3957,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -3913,26 +3974,26 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
@@ -3941,19 +4002,19 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -3988,7 +4049,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.ParentColor">
         <short>
-          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -4001,14 +4062,14 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.ParentFont">
         <short>
-          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -4039,18 +4100,18 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.TabStop">
         <short>
-          <i>TabStop</i> - determines if the user can tab to a control.</short>
+          <var>TabStop</var> - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -4063,7 +4124,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBImage">
         <short>
-          <i>TDBImage </i>- a data-aware Image box to display a single image from a dataset</short>
+          <var>TDBImage </var>- a data-aware Image box to display a single image from a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -4182,7 +4243,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBImage.Notification">
+      <element name="TDBImage.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -4198,7 +4259,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.DataChange">
-        <short/>
+        <short>
+          <var>DataChange</var> - if data changed, load new picture</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4209,7 +4271,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.UpdateData">
-        <short/>
+        <short>
+          <var>UpdateData</var> - if data changed, save new picture</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4220,13 +4283,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.LoadPicture">
-        <short/>
+        <short>
+          <var>LoadPicture</var> - loads picture into the appropriate field for the graphic class of the caller</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBImage.Loaded">
+      <element name="TDBImage.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -4234,10 +4298,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBImage.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for <var>TDBImage</var>: cals inherited <var>Create</var> then sets style and display methods, forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomImage.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBImage.Create.TheOwner">
@@ -4245,10 +4312,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBImage.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBImage</var>: frees datalinks and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomImage.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBImage.Field">
@@ -4367,7 +4438,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBCalendar">
         <short>
-          <i>TDBCalendar</i> - a data-aware version of <i>TCalendar</i>, for selecting a date to put in a database field</short>
+          <var>TDBCalendar</var> - a data-aware version of <var>TCalendar</var>, for selecting a date to put in a database field</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
@@ -4512,14 +4583,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBCalendar.Loaded">
+      <element name="TDBCalendar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBCalendar.Notification">
+      <element name="TDBCalendar.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -4542,10 +4613,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBCalendar.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for <var>TDBCalendar</var>: calls inherited <var>Create</var> and forms datalinks and actions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Calendar.TCustomCalendar.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBCalendar.Create.TheOwner">
@@ -4553,10 +4627,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCalendar.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBCalendar</var>: frees datalinks and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCalendar.Field">
@@ -4652,7 +4730,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDBNavButtonType">
-        <short/>
+        <short>TDBNavButtonType</short>
         <descr/>
         <seealso/>
       </element>
@@ -4765,18 +4843,18 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBCustomNavigator">
         <short>
-          <i>TDBCustomNavigator</i> - the base class for <i>TDBNavigator</i>, a tool for navigating through the records of a dataset</short>
+          <var>TDBCustomNavigator</var> - the base class for <var>TDBNavigator</var>, a tool for navigating through the records of a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
         <descr>
           <p>
-            <i>TDBCustomNavigator</i> is the parent class for 
-<i>TDBNavigator</i>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.</p>
-          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cance</b>l the changes, and to <i>Refresh</i> the display from the database. The set of buttons for display can be customised in <i>VisibleButtons</i>, which allows display of individual buttons to be suppressed</p>
-          <p>If used in conjunction with a DataAware control such as <i>TDBGrid</i> or <i>TDBMemo</i> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
-          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <i>BtnClick</i> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
-          <p>The <i>DataSource</i> property must be set to link to the appropriate set of data.</p>
+            <var>TDBCustomNavigator</var> is the parent class for 
+<var>TDBNavigator</var>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.</p>
+          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cance</b>l the changes, and to <var>Refresh</var> the display from the database. The set of buttons for display can be customised in <var>VisibleButtons</var>, which allows display of individual buttons to be suppressed</p>
+          <p>If used in conjunction with a DataAware control such as <var>TDBGrid</var> or <var>TDBMemo</var> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
+          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <var>BtnClick</var> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
+          <p>The <var>DataSource</var> property must be set to link to the appropriate set of data.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4947,34 +5025,42 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.DataChanged">
-        <short/>
+        <short>
+          <var>DataChanged</var> - update status of all the buttons to reflect new data</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.EditingChanged">
-        <short/>
+        <short>
+          <var>EditingChanged</var> - the status of the buttons is set to <var>CanModify</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.ActiveChanged">
+        <short>
+          <var>ActiveChanged</var> - if datalink is active, calls <var>DataChanged</var> and <var>EditingChanged</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#lcl.DBCtrls.TDBCustomNavigator.DataChanged">DataChanged</link>
+          <link id="#lcl.DBCtrls.TDBCustomNavigator.EditingChanged">EditingChanged</link>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBCustomNavigator.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDBCustomNavigator.Loaded">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TDBCustomNavigator.Notification">
+      <element name="TDBCustomNavigator.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -4990,24 +5076,32 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.UpdateButtons">
-        <short/>
+        <short>
+          <var>UpdateButtons</var> - if the position of the buttons need to be changed, does this, then updates the status of the buttons (see <var>ActiveChanged</var>)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.DBCtrls.TDBCustomNavigator.ActiveChanged">ActiveChanged</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.UpdateHints">
-        <short/>
+        <short>
+          <var>UpdateHints</var> - reloads the default hints and modifies any that have been changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.HintsChanged">
-        <short/>
+        <short>
+          <var>HintsChanged</var> - calls <var>UpdateHints</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.DBCtrls.TDBCustomNavigator.UpdateHints">UpdateHints</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBCustomNavigator.HintsChanged.Sender">
@@ -5015,7 +5109,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.ButtonClickHandler">
-        <short/>
+        <short>
+          <var>ButtonClickHandler</var> - performs <var>BtnClick</var> for the appropriate button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5026,31 +5121,41 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.DoOnResize">
-        <short/>
+        <short>
+          <var>DoOnResize</var> - calls <var>UpdateButtons</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.DoOnResize"/>
+          <link id="#LCL.DBCtrls.TDBCustomNavigator.UpdateButtons">UpdateButtons</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.BeginUpdateButtons">
-        <short/>
+        <short>
+          <var>BeginUpdateButtons</var> - locks the buttons before updating them</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.EndUpdateButtons">
-        <short/>
+        <short>
+          <var>EndUpdateButtons</var> - unlocks each button in turn and updates it if needed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBCustomNavigator.Create">
-        <short>Create an instance of this control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TDBCustomNavigator</var>: locks the buttons, calls inherited <var>Create</var>, sets default size, style, forms datalinks, initialises hints, updates the buttons</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBCustomNavigator.Create.TheOwner">
@@ -5058,15 +5163,19 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCustomNavigator.Destroy">
-        <short>Destroy the control and returns its resources</short>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBCustomNavigator</var>: frees datalinks and hints, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDBCustomNavigator.BtnClick">
         <short>
-          <i>BtnClick</i> - procedure to respond to button clicks, and select an action from a list according to the value of the <i>Index</i> of the clicked button</short>
+          <var>BtnClick</var> - procedure to respond to button clicks, and select an action from a list according to the value of the <var>Index</var> of the clicked button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5088,7 +5197,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.BeforeAction">
-        <short/>
+        <short>
+          <var>BeforeAction</var> - code to be executed before an action is performed</short>
         <descr/>
         <seealso/>
       </element>
@@ -5163,7 +5273,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TDBNavButton.Destroy">
+      <element name="TDBNavButton.Destroy" link="#LCL.Buttons.TCustomSpeedButton.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -5171,7 +5281,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: public -->
       <element name="TDBNavButton.NavStyle">
-        <short/>
+        <short>
+          <var>NavStyle</var> - the style of Navigator Button</short>
         <descr/>
         <seealso/>
       </element>
@@ -5243,18 +5354,18 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBNavigator">
         <short>
-          <i>TDBNavigator </i>- a data-aware Button-Bar to facilitate navigating between records of a dataset</short>
+          <var>TDBNavigator </var>- a data-aware Button-Bar to facilitate navigating between records of a dataset</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
         <descr>
           <p>
-            <i>TDBNavigator</i> is an advanced tool for navigating through datasets held locally in response to a query sent to the database.</p>
+            <var>TDBNavigator</var> is an advanced tool for navigating through datasets held locally in response to a query sent to the database.</p>
           <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b> the changes, and to <b>Refresh</b> the display from the database.</p>
-          <p>The programmer may determine, at design time, which buttons are to be displayed or suppressed by adjusting the <i>VisibleButtons</i> property in the Object Inspector.</p>
+          <p>The programmer may determine, at design time, which buttons are to be displayed or suppressed by adjusting the <var>VisibleButtons</var> property in the Object Inspector.</p>
           <p>If used in conjunction with a DataAware control such as <link id="#lcl.DBGrids.TDBGrid">TDBGrid</link> or <link id="TDBMemo">TDBMemo</link> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
-          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure <link id="TDBCustomNavigator.BtnClick">TDBCustomNavigator.BtnClick</link> to which an argument can be sent with the <i>Index</i> value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
-          <p>The <i>DataSource</i> property must be set to link to the appropriate set of data.</p>
+          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure <link id="TDBCustomNavigator.BtnClick">TDBCustomNavigator.BtnClick</link> to which an argument can be sent with the <var>Index</var> value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
+          <p>The <var>DataSource</var> property must be set to link to the appropriate set of data.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -5570,24 +5681,24 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <topic name="HowToUseDataAwareControls">
         <short>
-          <i>HowToUseDataAwareControls</i>    - Hints for accessing databases</short>
+          <var>HowToUseDataAwareControls</var>    - Hints for accessing databases</short>
         <descr>
           <p>
-            <i>HowToUseDataAwareControls</i> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
-          <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDBf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <i>Components</i> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
-          <p>To make the connection with the database: first place a <i>DataBase Connection</i> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <i>TDataSource</i> from the Data Access tab of the Component Palette, and perhaps items such as <i>TSQLTransaction</i> and <i>TSQLQuery</i>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <i>Transaction</i> property of a database connector to the appropriate transaction component, and linking the <i>DataBase</i> property of the Transaction component back to the database connector; link the DataSource's <i>DataSet</i> property to the appropriate SQLQuery or other set of data, and its <i>Transaction</i> property to the transaction component</p>
-          <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, colour and font etc. But there are also special properties to define the data to be displayed or modified. These include the <i>DataSource</i> property which must be set to link to the defined set of data, and often a <i>Field</i> component to determine which of the columns in the database is to be displayed. </p>
-          <p>Most of the components operate on a single Row or record of the database, but the <i>TDBGrid</i> is capable of displaying and operating on multiple rows and columns, in a <i>StringGrid</i> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.</p>
-          <p>The <i>TDBNavigator</i> component is used in conjunction with the Data-Aware components. It consists of a series of buttons to allow browsing through the DataSet, displaying the first, previous, next or last record (or Row), inserting or deleting records, committing the changes back to the database or refreshing the DataSet from the database.</p>
+            <var>HowToUseDataAwareControls</var> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
+          <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDBf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <var>Components</var> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
+          <p>To make the connection with the database: first place a <var>DataBase Connection</var> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <var>TDataSource</var> from the Data Access tab of the Component Palette, and perhaps items such as <var>TSQLTransaction</var> and <var>TSQLQuery</var>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <var>Transaction</var> property of a database connector to the appropriate transaction component, and linking the <var>DataBase</var> property of the Transaction component back to the database connector; link the DataSource's <var>DataSet</var> property to the appropriate SQLQuery or other set of data, and its <var>Transaction</var> property to the transaction component</p>
+          <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, colour and font etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed. </p>
+          <p>Most of the components operate on a single Row or record of the database, but the <var>TDBGrid</var> is capable of displaying and operating on multiple rows and columns, in a <var>StringGrid</var> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.</p>
+          <p>The <var>TDBNavigator</var> component is used in conjunction with the Data-Aware components. It consists of a series of buttons to allow browsing through the DataSet, displaying the first, previous, next or last record (or Row), inserting or deleting records, committing the changes back to the database or refreshing the DataSet from the database.</p>
           <p>The way database programming works is typically as follows:</p>
           <ul>
             <li>a database is opened for access by the user (Database Connection)</li>
-            <li>a command is issued (eg by <i>TSQLQuery</i>) to select or extract some or all of the records which are then stored locally in the <i>DataSet</i>
+            <li>a command is issued (eg by <var>TSQLQuery</var>) to select or extract some or all of the records which are then stored locally in the <var>DataSet</var>
             </li>
-            <li>the contents of the <i>DataSet</i> are acted on by the Data-Aware components, displaying one Row or record at a time from selected Columns, or perhaps the whole DataSet in a <i>DBGrid</i>, editing records, inserting or deleting records, or using the data to perform statistical tests or calculations</li>
+            <li>the contents of the <var>DataSet</var> are acted on by the Data-Aware components, displaying one Row or record at a time from selected Columns, or perhaps the whole DataSet in a <var>DBGrid</var>, editing records, inserting or deleting records, or using the data to perform statistical tests or calculations</li>
             <li>at intervals usually prescribed by the user (sometimes after every change, sometimes after a whole series of changes), the contents of the local DataSet are sent back to the database, causing an update of the database's contents. This process is referred to as 'Commit' or 'Post' or sometimes as 'Update'</li>
           </ul>
-          <p>The programmer can determine which events are associated with a Commit action by supplying suitable event handlers for <i>OnClick</i>, <i>OnChange</i>, <i>OnFinishedEdit</i> etc.</p>
+          <p>The programmer can determine which events are associated with a Commit action by supplying suitable event handlers for <var>OnClick</var>, <var>OnChange</var>, <var>OnFinishedEdit</var> etc.</p>
           <p>The following table shows the approximate correspondence between conventional and data-aware control classes</p>
           <table>
             <th>
@@ -5666,11 +5777,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBText.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
       </element>
       <element name="TDBText.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
       </element>
       <element name="TDBText.OnDragDrop">
         <short>Event handler for the Drag-Drop manoeuvre</short>
@@ -5693,11 +5804,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBListBox.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
       </element>
       <element name="TDBListBox.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
       </element>
       <element name="TDBListBox.OnDragDrop">
         <short>Event handler for the Drag-Drop manoeuvre</short>
@@ -5723,11 +5834,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBRadioGroup.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
       </element>
       <element name="TDBRadioGroup.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
       </element>
       <element name="TDBRadioGroup.OnDragDrop">
         <short>Event handler for the Drag-Drop manoeuvre</short>
@@ -5761,7 +5872,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBCheckBox.ParentColor">
         <short>
-          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
       </element>
       <element name="TDBComboBox.BorderSpacing">
         <short>Determines the border spacing for this control</short>
@@ -5783,11 +5894,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBComboBox.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
       </element>
       <element name="TDBComboBox.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
       </element>
       <element name="TDBComboBox.OnChangeBounds">
         <short>Event handler for a change in bounds of the control</short>
@@ -5831,7 +5942,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBComboBox.ParentColor">
         <short>
-          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
       </element>
       <element name="TDBGroupBox.BorderSpacing">
         <short>Determines the border spacing for this control</short>
@@ -5845,11 +5956,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBGroupBox.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
       </element>
       <element name="TDBGroupBox.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
       </element>
       <element name="TDBGroupBox.OnDragDrop">
         <short>Event handler for the Drag-Drop manoeuvre</short>
@@ -5863,6 +5974,43 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBGroupBox.OnStartDrag">
         <short>Event handler for start of dragging process</short>
       </element>
+      <element name="TDBEdit.IsReadOnly">
+        <short>
+          <var>IsReadOnly</var> - returns True if ReadOnly status is True</short>
+      </element>
+      <element name="TDBEdit.CMGetDataLink">
+        <short>
+          <var>CMGetDataLink</var> - LCL Message method for getting data link</short>
+      </element>
+      <element name="TDBEdit.KeyPress" link="#LCL.Controls.TWinControl.KeyPress"/>
+      <element name="TDBEdit.GetEditText" link="#LCL.MaskEdit.TCustomMaskEdit.GetEditText"/>
+      <element name="TDBEdit.WMSetFocus" link="#LCL.Controls.TWinControl.WMSetFocus"/>
+      <element name="TDBEdit.WMKillFocus" link="#LCL.Controls.TWinControl.WMKillFocus"/>
+      <element name="TDBEdit.LMPasteFromClip" link="#LCL.MaskEdit.TCustomMaskEdit.LMPasteFromClip"/>
+      <element name="TDBEdit.LMCutToClip" link="#LCL.MaskEdit.TCustomMaskEdit.LMCutToClip"/>
+      <element name="TDBComboBox.ActiveChange">
+        <short>
+          <var>ActiveChange</var> - if the datalink is active then send the changes, otherwise set the data to null</short>
+      </element>
+      <element name="TDBComboBox.Change" link="#LCL.StdCtrls.TCustomComboBox.Change"/>
+      <element name="TDBComboBox.UpdateText">
+        <short>
+          <var>UpdateText</var> - copy the new text via the datalink</short>
+      </element>
+      <element name="TDBMemo.ActiveChange">
+        <short>
+          <var>ActiveChange</var> - if the data link is active, transmit the changed data to the sender</short>
+      </element>
+      <element name="TDBMemo.Change" link="#LCL.StdCtrls.TCustomEdit.Change"/>
+      <element name="TDBMemo.KeyPress" link="#LCL.Controls.TWinControl.KeyPress"/>
+      <element name="TDBMemo.WndProc" link="#LCL.Controls.TControl.WndProc"/>
+      <element name="TDBImage.ActiveChange">
+        <short>
+          <var>ActiveChange</var> - if datalink is active, send back new picture</short>
+      </element>
+      <element name="TDBImage.PictureChanged" link="#LCL.ExtCtrls.TCustomImage.PictureChanged"/>
+      <element name="TDBCustomNavigator.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TDBCustomNavigator.SetEnabled" link="#LCL.Controls.TControl.SetEnabled"/>
     </module>
     <!-- DbCtrls -->
   </package>
