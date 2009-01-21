@@ -4998,7 +4998,7 @@ Indicates how text is displayed in a text editing control.</p>
           <link id="#LCL.Controls.TWinControl.Create"/>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TCustomEdit</var>: calls inherite <var>Create</var> then initialises style, colour, size and various other local variables</short>
+          <var>Create</var> - constructor for <var>TCustomEdit</var>: calls inherited <var>Create</var> then initialises style, colour, size and various other local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.Create.AOwner">

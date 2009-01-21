@@ -4276,22 +4276,32 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomGrid.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TCustomGrid.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomGrid</var>: calls inherited <var>Create</var>, then creates lists of columns and rows, initialises many visual properties and options, creates the various editors and loads any bitmaps required for the display</short>
+        <descr>
+          <p>// Inherited create Calls SetBounds-&gt;WM_SIZE-&gt;VisualChange so</p>
+          <p>// fGrid needs to be created before that  </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomGrid.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomGrid.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomGrid</var>: frees various resources including editors, columns, rows, font then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.Invalidate" link="#LCL.Controls.TControl.Invalidate">
@@ -6705,22 +6715,29 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGridColumnTitle.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TGridColumnTitle.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TGridColumnTitle</var>: calls inherited <var>Create</var> then links the column, creates and configures the default font</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGridColumnTitle.Create.TheColumn">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TGridColumnTitle.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TGridColumnTitle.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TGridColumnTitle</var>: frees forn, disconnects alignments, disposes of captions and colours then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGridColumnTitle.FillTitleDefaultFont">
@@ -7459,22 +7476,29 @@ Segunda linea de texto</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGridColumn.Create" link="#rtl.Classes.TCollectionItem.Create">
-        <short/>
+      <element name="TGridColumn.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TGridColumn</var>: calls inherited <var>Create</var>, then creates a title and font, initialises a picklist and sets styles</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGridColumn.Create.ACollection">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TGridColumn.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
-        <short/>
+      <element name="TGridColumn.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TGridColumn</var>: disposes of various local variables, frees picklist, font and title, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGridColumn.FillDefaultFont">
@@ -7783,11 +7807,14 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGridColumns.Create" link="#rtl.Classes.TCollection.Create">
-        <short/>
+      <element name="TGridColumns.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TGridColumns</var>: calls inherited <var>Create</var> then loads the grid</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGridColumns.Create.AGrid">
@@ -10351,22 +10378,30 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDrawGrid.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomDrawGrid.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomDrawGrid</var>: attaches a virtual grid then calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Grids.TCustomGrid.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomDrawGrid.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomDrawGrid.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomDrawGrid.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomDrawGrid</var>: frees the grid then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Grids.TCustomGrid.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.DeleteColRow">
@@ -11306,11 +11341,14 @@ Segunda linea de texto</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStringGridStrings.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TStringGridStrings.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TStringGridStrings</var>: calls inherited <var>Create</var> and initialises some local variables</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStringGridStrings.Create.aGrid">
@@ -11808,22 +11846,29 @@ Segunda linea de texto</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomStringGrid.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomStringGrid.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomStringGrid</var>: calls inherited <var>Create</var> then sets up default styles, layout and alignment</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Grids.TCustomDrawGrid.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomStringGrid.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomStringGrid.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomStringGrid.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomStringGrid</var>: frees maps of columns and rows, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Grids.TCustomDrawGrid.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.AutoSizeColumn">
@@ -12427,15 +12472,15 @@ Segunda linea de texto</descr>
             </th>
             <tr>
               <td>AlternateColor</td>
-              <td>The user can change the background color appears on alternated rows. This is to allow easy reading of grid rows data.</td>
+              <td>The user can change the background color that appears on alternate rows. This is to allow easy reading of grid rows data.</td>
             </tr>
             <tr>
               <td>Color</td>
-              <td>Sets the primary color used to draw non fixed cells background.</td>
+              <td>Sets the primary color used to draw non fixed cells' background.</td>
             </tr>
             <tr>
               <td>FixedColor</td>
-              <td>The color used to draw fixed cells background.</td>
+              <td>The color used to draw fixed cells' background.</td>
             </tr>
             <tr>
               <td>Flat</td>
@@ -12487,11 +12532,11 @@ Segunda linea de texto</descr>
             </tr>
             <tr>
               <td>UseXORFeatures</td>
-              <td>If set, focus rect is drawn using XOR mode so it should make visible the focus rect in combination with any cell color ackground. It also affects the way that moving columns look.</td>
+              <td>If set, focus rect is drawn using XOR mode so it should make visible the focus rect in combination with any cell color background. It also affects the way that moving columns look.</td>
             </tr>
             <tr>
               <td>DefaultDrawing</td>
-              <td>(Boolean). Normally the grids prepare the grid canvas using some properties according to the kind of cell is being painted. If the user has written an <var>OnDrawCell</var> event handler, <var>DefaultDrawing</var> (if set) also paints the cell background; if the user is taking full responsibility for drawing the cell it is better to turn off this property so painting is not duplicated. In a StringGrid, if DefaultDrawing is set it draws the text in each cell.</td>
+              <td>(Boolean). Normally the grids prepare the grid canvas using some properties according to the kind of cell that is being painted. If the user has written an <var>OnDrawCell</var> event handler, <var>DefaultDrawing</var> (if set) also paints the cell background; if the user is taking full responsibility for drawing the cell it is better to turn off this property so painting is not duplicated. In a StringGrid, if DefaultDrawing is set it draws the text in each cell.</td>
             </tr>
             <tr>
               <td>AutoAdvance</td>
@@ -12519,7 +12564,7 @@ Segunda linea de texto</descr>
             <li>
               <var>goHeaderHotTracking</var>: if set, the grid will try to show a different look when the mouse cursor is overlying any fixed cell. In order for this to work, desired cell zone needs to be enabled with the property <var>HeaderHotZones</var>. Try combining this option with property <var>TitleStyle</var>=<var>tsNative</var> to get themed hot tracking look.</li>
             <li>
-              <var>goHeaderPushedLook</var>: if set, this opton enables a pushed look when clicking any fixed cell. The zone of "pushable" cells is enabled using <var>HeaderPusedZones</var> property.</li>
+              <var>goHeaderPushedLook</var>: if set, this option enables a pushed look when clicking any fixed cell. The zone of "pushable" cells is enabled using <var>HeaderPushedZones</var> property.</li>
           </ul>
           <p>
             <b>Description of grid's drawing process</b>
@@ -12577,7 +12622,7 @@ Segunda linea de texto</descr>
             <b>Grid's cell selection</b>
           </p>
           <p>The location of a grid's current (focused) cell (or row) can be changed using keyboard, mouse or through code. In order to change cell focus successfully to another position, we must test  the target position to see if it is allowed to receive cell focus. When using the keyboard, <var>AutoAdvance</var> performs part of the process by finding what should be the next focused cell. When using mouse clicks or moving by code, focus will not move from the current cell unless the target cell is permitted to receive focus.</p>
-          <p>The grid calls <var>SelectCell</var> to see if a cell is focusable: if this function returns true, then the target cell identified with arguments <var>aCol</var> and <var>aRow</var> is focusable (the current implementation of <var>TCustomGrid</var> simply returns true). <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and <var>TStringGrid</var> override this method and check first if  a cell is any wider than 0; normally you don't want a 0 width cell selected so a cell with this characteristics is skipped automatically in the process of finding a suitable cell. The the overriden method <var>SelectCell</var> also calls the user configurable event <var>OnSelectCell</var>: this event receives the cell coordinates as arguments and always returns a default result of True.</p>
+          <p>The grid calls <var>SelectCell</var> to see if a cell is focusable: if this function returns true, then the target cell identified with arguments <var>aCol</var> and <var>aRow</var> is focusable (the current implementation of <var>TCustomGrid</var> simply returns true). <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and <var>TStringGrid</var> override this method and check first if  a cell is any wider than 0; normally you don't want a 0 width cell selected so a cell with this characteristics is skipped automatically in the process of finding a suitable cell. The overriden method <var>SelectCell</var> also calls the user configurable event <var>OnSelectCell</var>: this event receives the cell coordinates as arguments and always returns a default result of True.</p>
           <p>Once a cell is known to be focusable and we are sure a movement will take place, the method <var>BeforeMoveSelection</var> is called; this in turns triggers the <var>OnBeforeSelection</var> event. This method's arguments are the coordinates for the new focused cell; at this point any visible editor is hidden too. The "before" word means that selection is not yet changed and current focused coordinates can be accessed with <var>grid.Col</var> and <var>grid.Row</var> properties. </p>
           <p>After that, the internal focused cell coordinates are changed and <var>MoveSelection</var> is called; this method's purpose (if set) is to trigger the <var>OnSelection</var> event (this is a notification that the focused cell has changed and the new cell coordinates are available through grid.row and grid.col properties).</p>
           <p>Note that is not good to use the <var>OnSelectCell</var> event to detect cell focus changes, as this event will be triggered several times even for the same cell in the process of finding a suitable cell. Is better to use <var>OnBeforeSelection</var> or <var>OnSelection</var> events for this purpose.</p>
