@@ -121,11 +121,12 @@ begin
 
   SpaceCount2 := 0;
   BackCounter := PhysCaret.Y - 1;
-  repeat
-    Dec(BackCounter);
-    Temp := Editor.RealLines[BackCounter];
-    SpaceCount2 := LeftSpaces(Editor, Temp, True);
-  until (BackCounter = 0) or (Temp <> '');
+  if BackCounter > 0 then
+    repeat
+      Dec(BackCounter);
+      Temp := Editor.RealLines[BackCounter];
+      SpaceCount2 := LeftSpaces(Editor, Temp, True);
+    until (BackCounter = 0) or (Temp <> '');
 
   case FIndentType of
     sbitSpace:
