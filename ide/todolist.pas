@@ -279,7 +279,7 @@ begin
   //DebugLn(['TfrmTodo.CreateToDoItem aFileName=',aFileName,' LineNumber=',LineNumber]);
   Result := nil;
   
-  ParsingString:= Trim(TokenString);
+  ParsingString:= TextToSingleLine(TokenString);
   
   // Remove the beginning comment chars from input string
   Delete(ParsingString, 1, Length(SComment));

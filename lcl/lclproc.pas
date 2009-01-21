@@ -268,6 +268,7 @@ function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgno
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
+function TextToSingleLine(const AText: string): string;
 
 // case..of utility functions
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
@@ -2928,6 +2929,46 @@ begin
 
   if AnUpdateSource
   then ASource := Source;
+end;
+
+{
+  Ensures the covenient look of multiline string
+  when displaying it in the single line
+  * Replaces CR and LF with spaces
+  * Removes duplicate spaces
+}
+function TextToSingleLine(const AText: string): string;
+var
+  str: string;
+  i, wstart, wlen: Integer;
+begin
+  str := Trim(AText);
+  wstart := 0;
+  wlen := 0;
+  i := 1;
+  while i < Length(str) - 1 do
+  begin
+    if (str[i] in [' ', #13, #10]) then
+    begin
+      if (wstart = 0) then
+      begin
+        wstart := i;
+        wlen := 1;
+      end else
+        Inc(wlen);
+    end else
+    begin
+      if wstart > 0 then
+      begin
+        str[wstart] := ' ';
+        Delete(str, wstart+1, wlen-1);
+        Dec(i, wlen-1);
+        wstart := 0;
+      end;
+    end;
+    Inc(i);
+  end;
+  Result := str;
 end;
 
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer;
