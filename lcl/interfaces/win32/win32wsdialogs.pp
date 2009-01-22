@@ -56,6 +56,10 @@ uses
   Win32Proc;
 
 type
+  TApplicationState = record
+    FocusedWindow: HWND;
+  end;
+
   TOpenFileDialogRec = record
     Dialog: TFileDialog;
     AnsiFolderName: string;
@@ -69,7 +73,7 @@ type
 
   TWin32WSCommonDialog = class(TWSCommonDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -83,7 +87,7 @@ type
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -99,14 +103,14 @@ type
 
   TWin32WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSColorDialog }
 
   TWin32WSColorDialog = class(TWSColorDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -121,13 +125,26 @@ type
 
   TWin32WSFontDialog = class(TWSFontDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
 
+function SaveApplicationState: TApplicationState;
+procedure RestoreApplicationState(AState: TApplicationState);
+
 implementation
+
+function SaveApplicationState: TApplicationState;
+begin
+  Result.FocusedWindow := Windows.GetFocus;
+end;
+
+procedure RestoreApplicationState(AState: TApplicationState);
+begin
+  Windows.SetFocus(AState.FocusedWindow);
+end;
 
 // The size of the OPENFILENAME record depends on the windows version
 // In the initialization section the correct size is determined.
@@ -315,15 +332,21 @@ class procedure TWin32WSColorDialog.ShowModal(const ACommonDialog: TCommonDialog
 var
   CC: PChooseColor;
   UserResult: WINBOOL;
+  State: TApplicationState;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
-    CC := PChooseColor(ACommonDialog.Handle);
+    State := SaveApplicationState;
+    try
+      CC := PChooseColor(ACommonDialog.Handle);
 
-    UserResult := ChooseColor(CC);
-    SetDialogResult(ACommonDialog, UserResult);
-    if UserResult then
-      TColorDialog(ACommonDialog).Color := CC^.RGBResult;
+      UserResult := ChooseColor(CC);
+      SetDialogResult(ACommonDialog, UserResult);
+      if UserResult then
+        TColorDialog(ACommonDialog).Color := CC^.RGBResult;
+    finally
+      RestoreApplicationState(State);
+    end;
   end;
 end;
 
@@ -647,40 +670,54 @@ begin
 end;
 
 class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  State: TApplicationState;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
-    else
+    State := SaveApplicationState;
+    try
+    {$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+          GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+      else
+        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+          GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+    {$else}
       ProcessFileDialogResult(TOpenDialog(ACommonDialog),
         GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$else}
-    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-      GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$endif}
+    {$endif}
+    finally
+      RestoreApplicationState(State);
+    end;
   end;
 end;
 
 { TWin32WSSaveDialog }
 
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  State: TApplicationState;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
-    else
+    State := SaveApplicationState;
+    try
+    {$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+          GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+      else
+        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+          GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+    {$else}
       ProcessFileDialogResult(TOpenDialog(ACommonDialog),
         GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$else}
-    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-      GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$endif}
+    {$endif}
+    finally
+      RestoreApplicationState(State);
+    end;
   end;
 end;
 
