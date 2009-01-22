@@ -15,11 +15,12 @@ object CharacterMapDialog: TCharacterMapDialog
   LCLVersion = '0.9.27'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 48
-    Top = 378
+    Height = 30
+    Top = 396
     Width = 472
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
+    ShowBevel = False
   end
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
@@ -28,7 +29,7 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 366
+    Height = 384
     Top = 6
     Width = 472
     ActivePage = TabSheet1
@@ -38,28 +39,34 @@ object CharacterMapDialog: TCharacterMapDialog
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 336
-      ClientWidth = 468
+      ClientHeight = 358
+      ClientWidth = 464
       object CharInfoLabel: TLabel
-        AnchorSideLeft.Control = Owner
+        AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 17
-        Top = 313
-        Width = 456
-        Align = alBottom
-        Anchors = [akLeft, akBottom]
+        Height = 14
+        Top = 338
+        Width = 452
+        Anchors = [akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'CharInfoLabel'
         ParentColor = False
       end
       object StringGrid1: TStringGrid
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Side = asrBottom
+        AnchorSideBottom.Control = CharInfoLabel
         Left = 0
-        Height = 288
+        Height = 332
         Top = 0
-        Width = 468
+        Width = 464
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 17
         DefaultColWidth = 16
@@ -72,29 +79,33 @@ object CharacterMapDialog: TCharacterMapDialog
     end
     object TabSheet2: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 336
-      ClientWidth = 468
+      ClientHeight = 358
+      ClientWidth = 464
       object UnicodeCharInfoLabel: TLabel
         AnchorSideLeft.Control = Owner
-        AnchorSideTop.Side = asrBottom
+        AnchorSideTop.Control = cbUniRange
+        AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 313
-        Width = 126
-        Anchors = [akLeft, akBottom]
+        Height = 14
+        Top = 334
+        Width = 107
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
         ParentColor = False
       end
       object StringGrid2: TStringGrid
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 288
+        Height = 325
         Top = 0
-        Width = 468
+        Width = 464
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 16
-        DefaultColWidth = 26
-        DefaultRowHeight = 26
+        DefaultColWidth = 16
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
         RowCount = 15
         TabOrder = 0
@@ -102,17 +113,22 @@ object CharacterMapDialog: TCharacterMapDialog
         OnMouseMove = StringGrid2MouseMove
       end
       object cbUniRange: TComboBox
-        Left = 253
-        Height = 24
-        Top = 305
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet2
+        AnchorSideBottom.Side = asrBottom
+        Left = 246
+        Height = 21
+        Top = 331
         Width = 212
         Anchors = [akRight, akBottom]
         AutoComplete = False
-        ItemHeight = 0
+        BorderSpacing.Around = 6
+        ItemHeight = 13
         ItemWidth = 0
         OnSelect = cbUniRangeSelect
+        Style = csDropDownList
         TabOrder = 1
-        Text = 'cbUniRange'
       end
     end
   end
