@@ -386,6 +386,9 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'Uses'+le
+    +'{$ifdef unix}'+le
+    +'  cthreads,'+le
+    +'{$endif}'+le
     +'  fpWeb,lazweb,httpd,fpApache;'+le
     +le
     +'Const'+le
@@ -404,9 +407,7 @@ begin
     +'Var'+le
     +'  DefaultModule : module; {$ifdef unix} public name ModuleName;{$endif unix}'+le
     +le
-    +'{$ifdef windows}'+le
     +'Exports defaultmodule name ModuleName;'+le
-    +'{$endif windows}'+le
     +le
     +'begin'+le
     +'  Application.Title:=''mod_apache1'';'+le
