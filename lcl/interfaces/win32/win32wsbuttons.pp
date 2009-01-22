@@ -212,7 +212,7 @@ var
       end;
     end;
     SetBkMode(hdcNewBitmap, TRANSPARENT);
-    SetTextColor(hdcNewBitmap, 0);
+    SetTextColor(hdcNewBitmap, ColorToRGB(BitBtn.Font.Color));
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
