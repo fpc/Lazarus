@@ -75,10 +75,12 @@
           <var>TWidgetSet</var> - a set of images and graphic tools for application programming, selected according to the operating system platform</short>
         <descr>
           <p>
-            <printshort id="TWidgetSet"/>
-          </p>
+            <var>TWidgetSet</var> - a set of images and graphic tools for application programming, selected according to the operating system platform
+</p>
           <p>The appropriate set of widgets will be selected according to the operating system, either WinAPI for Microsoft Windows or LCL for most other systems</p>
-          <var>The declaration contains very few properties, but large numbers of very specific methods for interfacing with the operating system</var>
+          <p>
+            <var>The declaration contains very few properties, but large numbers of very specific methods for interfacing with the operating system</var>
+          </p>
         </descr>
         <errors/>
         <seealso/>

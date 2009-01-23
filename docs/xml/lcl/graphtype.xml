@@ -161,7 +161,8 @@
       <element name="TRawImageDescription">
         <short>
           <var>TRawImageDescription</var> - a descriptor record for Raw Images</short>
-        <descr/>
+        <descr>Note: not all devices/images have all parts at any time. But if a part can be applied to the device/image, the 'Description' describes its structure.
+</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -838,8 +839,7 @@
           <var>Init_BPP24_B8G8R8_M1_BIO_TTB </var>- initiator for specfied format</short>
         <descr>
           <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specfied format</p>
-          <pre/>
-{ pf24bit:
+          <pre>{ pf24bit:
 
  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
@@ -847,7 +847,8 @@
  BitsPerPixel=24 LineEnd=rileDWordBoundary
  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
  Masked
-}</descr>
+}</pre>
+        </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8_BIO_TTB">
         <short>
@@ -873,9 +874,7 @@
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8_M1_BIO_TTB</var> - initiator for specified format</p>
-          <pre/>
-Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
-{ pf32bit:
+          <pre>{ pf32bit:
 
  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
@@ -884,7 +883,9 @@ Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
  no alpha
  with mask
-} </descr>
+}
+</pre>
+        </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_BIO_TTB">
         <short>
@@ -892,8 +893,7 @@ Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_BIO_TTB</var> - initiator for specified format</p>
-          <pre/>
-{ pf32bit:
+          <pre>{ pf32bit:
 
  Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
@@ -902,7 +902,9 @@ Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
  alpha
  no mask
-} </descr>
+}
+</pre>
+        </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB">
         <short>
@@ -910,7 +912,7 @@ Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_M1_BIO_TTB</var> - initiator for specified format</p>
-          <pre/>{ pf32bit:
+          <pre>{ pf32bit:
 
  Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
@@ -920,7 +922,8 @@ Init_BPP32_B8G8R8_M1_BIO_TTB(AWidth, AHeight: integer);
  alpha
  masked
 }
-</descr>
+</pre>
+        </descr>
       </element>
       <element name="TRawImageDescription.GetDescriptionFromMask">
         <short>

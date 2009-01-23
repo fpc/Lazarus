@@ -1782,7 +1782,8 @@ False is set when the edit or combobox control loses focus.
         <short>
           <var>DrawItem</var> - perform the action necessary to draw the specified indexed item at the specified position</short>
         <descr>
-          <printshort id="TCustomComboBox.DrawItem"/>
+          <p>
+            <var>DrawItem</var> - perform the action necessary to draw the specified indexed item at the specified position</p>
           <p>Software emulation of <var>OnDrawItem</var> event</p>
         </descr>
         <errors/>
@@ -3866,7 +3867,9 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <var>Count</var> - the number of entries in the list of <var>Items</var>
         </short>
         <descr>
-          <printshort id="TCustomListBox.Count"/>
+          <p>
+            <var>Count</var> - the number of entries in the list of <var>Items</var>
+          </p>
           <p>For Delphi compatability</p>
         </descr>
       </element>

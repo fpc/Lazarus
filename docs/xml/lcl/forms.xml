@@ -166,9 +166,9 @@
           <p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p>
           <p>poDefault - The window manager decides how the form is to appear, in a default position and size</p>
 
-poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager<br/>
+<p>poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager</p>
 
-poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager<br/>
+<p>poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager</p>
           <p>poScreenCenter - Centers the form on screen</p>
           <p>poDeskTopCenter - Centers the form on desktop</p>
           <p>poMainFormCenter - Centers the Form on the Main Form</p>
@@ -3519,7 +3519,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr>
           <p>Use borderstyle to get or set the appearance of the form's border. </p>
           <p>By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</p>
-          <p>This property is slightly different (has a differert base type) from the <i>TCustomControl.BorderStyle</i>
+          <p>This property is slightly different (has a differert base type) from the <var>TCustomControl.BorderStyle</var>
           </p>
         </descr>
         <seealso/>
@@ -4520,7 +4520,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <!-- property Visibility: public -->
       <element name="THintWindow.AutoHide">
         <short>Does the hint disappear (get hidden) after a while?</short>
-        <descr>If <i>AutoHide</i> is TRUE, the hint disappears afer an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>
+        <descr>If <var>AutoHide</var> is TRUE, the hint disappears afer an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>
         </descr>
         <seealso/>
       </element>
@@ -6941,24 +6941,24 @@ It also writes details of the exception to the appropriate place for debugging.
         <descr>
           <p>
             <var>MessageBox</var>: a useful function to display a message.</p>
-          <p>The function is used internally to display messages during the handling of <i>Exceptions</i>
-, but is also available to application programmers as an alternative to some of the message dialogs found in <i>Dialogs</i>
+          <p>The function is used internally to display messages during the handling of <var>Exceptions</var>
+, but is also available to application programmers as an alternative to some of the message dialogs found in <var>Dialogs</var>
           </p>
-          <p>The argument <i>Flags</i> is a long integer constructed by adding together various constants to define the contents and behaviour of the box, for example:</p>
+          <p>The argument <var>Flags</var> is a long integer constructed by adding together various constants to define the contents and behaviour of the box, for example:</p>
           <p>MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: </p>
           <p>ABORT RETRY IGNORE.</p>
-          <br/>
+         
           <p>The following button constants are available:</p>
-          <br/>
+         
           <p>MB_OK</p>
           <p>MB_OKCANCEL</p>
           <p>MB_ABORTRETRYIGNORE</p>
           <p>MB_YESNOCANCEL</p>
           <p>MB_YESNO</p>
           <p>MB_RETRYCANCEL</p>
-          <br/>
+      
           <p>And the following icon constants:</p>
-          <br/>
+         
           <p>MB_ICONHAND</p>
           <p>MB_ICONQUESTION</p>
           <p>MB_ICONEXCLAMATION</p>
@@ -6967,9 +6967,9 @@ It also writes details of the exception to the appropriate place for debugging.
           <p>MB_ICONERROR = MB_ICONHAND</p>
           <p>MB_ICONSTOP = MB_ICONHAND</p>
           <p>MB_ICONINFORMATION = MB_ICONASTERICK</p>
-          <br/>
+     
           <p>These constants are declared on the LCLType unit.</p>
-          <br/>
+        
           <p>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]</p>
           <p>It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</p>
         </descr>

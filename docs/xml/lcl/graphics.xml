@@ -2170,10 +2170,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
           <p>
             <var>Source</var>: another font</p>
           <p>Returns:  nothing</p>
-
-
-Copies the source settings to itself
-</descr>
+          <p>Copies the source settings to itself</p>
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign"/>
         </seealso>
@@ -2727,7 +2725,7 @@ Default is psSolid
           <var>Assign</var> - if <var>Source</var> is another <var>TBrush</var>, copies settings to itself, else performs inherited <var>Assign</var>
         </short>
         <seealso>
-          <link id="#rtlClasses.TPersistent.Assign"/>
+          <link id="#rtl.Classes.TPersistent.Assign"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11403,10 +11401,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names</short>
         <descr>
           <p>
-            <printshort id="IdentEntry"/>
-          </p>
+            <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names
+</p>
           <p>A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)</p>
-This function checks that the value in 
+          <p>This function checks that the value in 
           
           <var>Entry</var> is within the permitted range, and returns the data pair 
           
@@ -11415,11 +11413,11 @@ This function checks that the value in
           <var>Name</var> of the corresponding colour in 
           
           <var>MapEntry</var>.
-
-          
+</p>
           <p>If <var>Entry</var> is out of range the Result is False</p>
         </descr>
-        <errors>If <var>Entry</var> is out of the range [0..High(Colours)] the Result is returned as False</errors>
+        <errors>If <var>Entry</var> is out of the range [0..High(Colours)] the Result is returned as False
+</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="IdentEntry.Result">

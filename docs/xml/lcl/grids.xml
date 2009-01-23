@@ -12492,10 +12492,12 @@ Segunda linea de texto</descr>
             </tr>
             <tr>
               <td>TitleStyle</td>
-              <td>Changes the 3D look of fixed cells. There are 3 settings:<br/>
-                <var>tsLazarus</var> The default look<br/>
-                <var>tsNative</var> Tries to set a look that is in concordance with current widgetset theme.<br/>
-                <var>tsStandard</var> A more contrasted look, like Delphi grids.<br/>
+              <td>Changes the 3D look of fixed cells. There are 3 settings:
+		      <ul>
+                <li><var>tsLazarus</var> The default look</li>
+                <li><var>tsNative</var> Tries to set a look that is in concordance with current widgetset theme.</li>
+                <li><var>tsStandard</var> A more contrasted look, like Delphi grids.</li>
+	</ul>
               </td>
             </tr>
             <tr>
@@ -12547,7 +12549,7 @@ Segunda linea de texto</descr>
               <td>If true, the  user can resize columns, not just at the headers, but anywhere along the column's height.</td>
             </tr>
           </table>
-          <p>Other properties that also affect the grid's look:</p>
+          <p><b>Other properties that also affect the grid's look:</b></p>
           <p>
             <var>Options</var>: This property is a set of zero or more choices, with some elements that enable diverse functionality but others that are related directly with grid's look. Options can be set at designtime or runtime.</p>
           <ul>
@@ -12645,20 +12647,26 @@ Segunda linea de texto</descr>
             <li>
               <b>cbsAuto</b> This is the default editor style for TCustomGrid derived grids. The TStringCellEditor derived from TCustomMaskEdit is specialized to edit single line strings and is used by default in TStringGrid and TDrawGrid. When using Custom Columns, if the programmer filled the Column's PickList property, this behaves as if cbsPickList editor style was set. For a TCustomDBGrid that has a field of type boolean, it behaves as if cbsCheckBoxColumn editor style was specified. This is the recommended value for Custom Cell Editors.   TODO: related OnEditingDone.</li>
             <li>
-              <b>cbsEllipsis</b> This editor style is the most generic one. A button with ellipsis (...) appears in the editing cell and the programmer can use the OnEditButtonClick grid event to take any programmed action  when the user presses the button. For example a calendar dialog could pop up to allow the user to select a specific date,  a file open dialog could appear to find files, or a calculator could appear so the user could enter the numeric result of calculations, etc.<br/>
-				   OnEditButtonClick is just a notification, to find out in which cell a button has been clicked by taking  a look at the grid.Row and grid.Col properties.<br/>
-				   A DBGrid has specific properties to retrieve the active column or field and because this event occurs in the active record, it could update the information in the active field.<br/>
-				   This editor style is implemented using TButtonCellEditor, a direct descendant of TButton.</li>
+              <b>cbsEllipsis</b> This editor style is the most generic one. A button with ellipsis (...) appears in the editing cell and the programmer can use the OnEditButtonClick grid event to take any programmed action  when the user presses the button. For example a calendar dialog could pop up to allow the user to select a specific date,  a file open dialog could appear to find files, or a calculator could appear so the user could enter the numeric result of calculations, etc.
+	      <ul>
+				   <li>OnEditButtonClick is just a notification, to find out in which cell a button has been clicked by taking  a look at the grid.Row and grid.Col properties.</li>
+				   <li>A DBGrid has specific properties to retrieve the active column or field and because this event occurs in the active record, it could update the information in the active field.</li>
+				   <li>This editor style is implemented using TButtonCellEditor, a direct descendant of TButton.</li>
+			   </ul>
+		   </li>
             <li>
               <b>cbsNone</b> This editor style instructs the grid not to use any editor for a specific cell or column; it behaves then, as if the grid were readonly for such a cell or column.</li>
             <li>
               <b>cbsPickList</b> Used to present the user with a list of values that can be entered. This editor style is implemented using TPickListCellEditor, a component derived from TCustomComboBox. The list of values that are shown is filled in one of two ways depending on the method used to select the editor style.<br/>
 				   When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
             <li>
-              <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the apearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.<br/>
-				   If a columns' ButtonStyle property is set to cbsAuto and DBGrid detects that the field associated with the column is a boolean field, then the grid uses this editor style automatically. This automatic selection can be disabled or enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn element to false disables this feature.<br/>
-				   The values that are used to recognize the checked or unchecked states are set in a column's properties ValueChecked and ValueUnchecked.<br/>
-				   At any moment, the field value can be in one to three states: Unchecked, Checked or Grayed.</li>
+              <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the apearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
+	      <ul>
+				   <li>If a columns' ButtonStyle property is set to cbsAuto and DBGrid detects that the field associated with the column is a boolean field, then the grid uses this editor style automatically. This automatic selection can be disabled or enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn element to false disables this feature.</li>
+				   <li>The values that are used to recognize the checked or unchecked states are set in a column's properties ValueChecked and ValueUnchecked.</li>
+				   <li>At any moment, the field value can be in one to three states: Unchecked, Checked or Grayed.</li>
+			   </ul>
+		   </li>
           </ul>
         </descr>
       </topic>
