@@ -39,7 +39,6 @@ type
     Memo: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure MemoChange(Sender: TObject);
-    procedure BtnPanelClick(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public
     procedure AddButtons; virtual;
@@ -55,8 +54,8 @@ begin
   Caption := oisStringsEditorDialog;
   StatusLabel.Caption := ois0Lines0Chars;
   SortButton.Caption := oisSort;
-  OKButton.Caption:=oisOk2;
-  CancelButton.Caption:=oiStdActDataSetCancel1Hint;
+  OKButton.Caption := oisOk2;
+  CancelButton.Caption := oiStdActDataSetCancel1Hint;
 
   AddButtons;
 end;
@@ -73,11 +72,6 @@ begin
     StatusLabel.Caption := Format(ois1LineDChars, [NumChars])
   else
     StatusLabel.Caption := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
-end;
-
-procedure TStringsPropEditorFrm.BtnPanelClick(Sender: TObject);
-begin
-
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);

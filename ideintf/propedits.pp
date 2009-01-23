@@ -2324,9 +2324,9 @@ begin
   with FPropList^[Index] do Result:=LazGetMethodProp(Instance,PropInfo);
 end;
 
-function TPropertyEditor.GetEditLimit:Integer;
+function TPropertyEditor.GetEditLimit: Integer;
 begin
-  Result:=255;
+  Result := 255;
 end;
 
 function TPropertyEditor.GetName:shortstring;
@@ -3113,7 +3113,7 @@ begin
   if GetPropType^.Kind = tkSString then
     Result := GetTypeData(GetPropType)^.MaxLength
   else
-    Result := 255;
+    Result := $0FFF;
 end;
 
 function TStringPropertyEditor.GetValue: ansistring;
@@ -4959,10 +4959,9 @@ end;
 
 function TStringsPropertyEditor.CreateDlg(s: TStrings): TStringsPropEditorDlg;
 begin
-  if s=nil then ;
-  Result:=TStringsPropEditorDlg.Create(Application);
-  Result.Editor:=Self;
-  Result.Memo.Text:=s.Text;
+  Result := TStringsPropEditorDlg.Create(Application);
+  Result.Editor := Self;
+  Result.Memo.Text := s.Text;
   Result.MemoChange(nil); // force call OnChange event
 end;
 
@@ -4978,16 +4977,18 @@ var
   TheDialog : TStringsPropEditorDlg;
   AString : string;
 begin
-  AString:= GetStrValue;
-  TheDialog:= TStringsPropEditorDlg.Create(nil);
+  AString := GetStrValue;
+  TheDialog := TStringsPropEditorDlg.Create(nil);
   try
-    TheDialog.Editor:=Self;
-    TheDialog.Memo.Text:=AString;
-    if (TheDialog.ShowModal = mrOK) then begin
-      AString:=TheDialog.Memo.Text;
+    TheDialog.Editor := Self;
+    TheDialog.Memo.Text := AString;
+    TheDialog.MemoChange(nil);
+    if (TheDialog.ShowModal = mrOK) then
+    begin
+      AString := TheDialog.Memo.Text;
       //erase the last lineending if any
-      if copy(AString,length(AString)-length(LineEnding)+1,length(LineEnding))=LineEnding then
-        delete(AString, length(AString)-length(LineEnding)+1,length(LineEnding));
+      if Copy(AString, length(AString) - length(LineEnding) + 1, length(LineEnding)) = LineEnding then
+        Delete(AString, length(AString) - length(LineEnding) + 1, length(LineEnding));
       SetStrValue(AString);
     end;
   finally

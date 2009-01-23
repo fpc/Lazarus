@@ -3,8 +3,6 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Height = 302
   Top = 158
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 301
   ActiveControl = Memo
   Caption = 'StringsPropEditorFrm'
   ClientHeight = 302
@@ -13,25 +11,26 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Constraints.MinWidth = 180
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object TextGroupBox: TGroupBox
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 242
+    Height = 252
     Top = 6
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 223
+    ClientHeight = 234
     ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
       AnchorSideBottom.Control = TextGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 9
-      Height = 20
-      Top = 197
-      Width = 77
+      Height = 14
+      Top = 214
+      Width = 57
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
@@ -42,7 +41,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 185
+      Height = 202
       Top = 6
       Width = 291
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -58,7 +57,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Control = TextGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 303
-      Height = 37
+      Height = 23
       Top = 6
       Width = 75
       Anchors = [akTop, akRight]
@@ -71,23 +70,23 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 254
+    Left = 0
+    Height = 38
+    Top = 264
     Width = 400
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 400
     TabOrder = 1
-    OnClick = BtnPanelClick
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 316
-      Height = 36
+      Left = 317
+      Height = 26
       Top = 6
-      Width = 78
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -101,8 +100,8 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     end
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 235
-      Height = 36
+      Left = 236
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight
