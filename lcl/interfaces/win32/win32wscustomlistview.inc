@@ -677,6 +677,14 @@ begin
   ListView_SetItemCount(ALV.Handle, AValue);
 end;
 
+class procedure TWin32WSCustomListView.SetColor(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetColor') then
+    Exit;
+  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, AWinControl.Color);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, AWinControl.Color);
+end;
+
 class procedure TWin32WSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
