@@ -197,6 +197,8 @@ type
     property BiDiMode;
     property BorderStyle;
     property ChildSizing;
+    property ClientHeight;
+    property ClientWidth;
     property Constraints;
     property DockSite;
     property DragCursor;
