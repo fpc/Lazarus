@@ -303,7 +303,7 @@ var
 begin
   if HandleAllocated and (FControl is TScrollingWinControl) then
   begin
-    FillChar(ScrollInfo,SizeOf(ScrollInfo),0);
+    FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     ScrollInfo.nMin := 0;
@@ -311,15 +311,15 @@ begin
     ScrollInfo.nPos := FPosition;
     ScrollInfo.nPage := FPage;
     ScrollInfo.nTrackPos := FPosition;
-    if (not FOldScrollInfoValid) or (not CompareMem(@ScrollInfo,@FOldScrollInfo,SizeOf(TScrollInfo))) then
+    if (not FOldScrollInfoValid) or (not CompareMem(@ScrollInfo, @FOldScrollInfo, SizeOf(TScrollInfo))) then
     begin
-      FOldScrollInfo:=ScrollInfo;
-      FOldScrollInfoValid := true;
+      FOldScrollInfo := ScrollInfo;
+      FOldScrollInfoValid := True;
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
     if FOldHandleVisible <> FVisible then
     begin
-      FOldHandleVisible:=FVisible;
+      FOldHandleVisible := FVisible;
       ShowScrollBar(FControl.Handle, IntfBarKind[Kind], FVisible);
     end;
     {$IFDEF VerboseScrollingWinControl}
