@@ -6418,8 +6418,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
-  if (Message.DC<>0) and (wcfEraseBackground in FWinControlFlags) then
+  if (Message.DC <> 0) and (wcfEraseBackground in FWinControlFlags) then
+  begin
     EraseBackground(Message.DC);
+    Message.Result := 1;
+  end;
 end;
 
 {------------------------------------------------------------------------------
