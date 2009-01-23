@@ -1266,6 +1266,10 @@ begin
     begin
       LMessage.Msg := LM_CHANGED;
     end;
+    WM_CANCELMODE:
+    begin
+      LMessage.Msg := LM_CANCELMODE;
+    end;
     WM_CAPTURECHANGED:
     begin
       LMessage.Msg := LM_CAPTURECHANGED;

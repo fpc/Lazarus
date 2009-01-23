@@ -2569,6 +2569,11 @@ begin
   Result:=false;
 end;
 
+procedure TControl.WMCancelMode(var Message: TLMessage);
+begin
+  MouseCapture := False;
+end;
+
 function TControl.IsColorStored: Boolean;
 begin
   Result := not ParentColor;
