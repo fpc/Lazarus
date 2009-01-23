@@ -342,7 +342,7 @@ begin
 end;
 
 function GetCursorPos(var lpPoint:TPoint): Boolean;
-Begin
+begin
   Result := WidgetSet.GetCursorPos(lpPoint);
 end;
 
