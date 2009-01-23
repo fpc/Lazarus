@@ -636,7 +636,7 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
     BufferString: ansistring;
     {$ENDIF}
     ScreenDC, MemDC: HDC;
-    OldBitmap, NewBitmap: HBitmap;
+    OldBitmap, NewBitmap, Mask: HBitmap;
   begin
     DataStream := TMemoryStream.Create;
     BufferStream := TMemoryStream.Create;
@@ -654,9 +654,13 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
               MemDC := Windows.CreateCompatibleDC(ScreenDC);
               NewBitmap := Windows.CreateCompatibleBitmap(ScreenDC, Bitmap.Width, Bitmap.Height);
               OldBitmap := Windows.SelectObject(MemDC, NewBitmap);
+              if Bitmap.Masked then
+                Mask := Bitmap.MaskHandle
+              else
+                Mask := 0;
               StretchMaskBlt(MemDC, 0, 0, Bitmap.Width, Bitmap.Height,
                 Bitmap.Canvas.Handle, 0, 0, Bitmap.Width, Bitmap.Height,
-                Bitmap.MaskHandle, 0, 0, SRCCOPY);
+                Mask, 0, 0, SRCCOPY);
               Windows.SelectObject(MemDC, OldBitmap);
               Windows.DeleteDC(MemDC);
               Windows.SetClipboardData(FormatID, NewBitmap);
