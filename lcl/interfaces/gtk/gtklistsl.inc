@@ -418,6 +418,7 @@ begin
     ChildWidget := PPointer(PGTKBox(PGtkBin(AItem)^.child)^.Children^.Data)^;
     gtk_signal_disconnect_by_func(
       PGtkObject(ChildWidget), TGTKSignalFunc(@gtkListItemToggledCB), AItem);
+    FreeWidgetInfo(ChildWidget);
   end;
 end;
 
