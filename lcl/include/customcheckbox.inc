@@ -137,7 +137,7 @@ var
   OldState: TCheckBoxState;
 begin
   OldState := FState;
-  If Value then
+  if Value then
     FState := cbChecked
   else
     FState := cbUnChecked;

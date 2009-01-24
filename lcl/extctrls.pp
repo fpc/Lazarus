@@ -737,7 +737,6 @@ type
     property Columns: integer read FColumns write SetColumns default 1;
     property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-    property TabStop default True;
   end;
 
 

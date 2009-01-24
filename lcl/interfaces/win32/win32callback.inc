@@ -615,7 +615,8 @@ var
     i: Integer;
   begin
     Parent := RadioButton.Parent;
-    for i:= 0 to Parent.ControlCount - 1 do begin
+    for i:= 0 to Parent.ControlCount - 1 do
+    begin
       Sibling := Parent.Controls[i];
       if (Sibling is TRadioButton) and (Sibling<>RadioButton) and
          (TRadioButton(Sibling).HandleAllocated) then
@@ -1376,7 +1377,7 @@ begin
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
           lWinControl := GetWindowInfo(HWND(LParam))^.AWinControl;
-        if lWinControl is TCustomButton then
+        if lWinControl is TButtonControl then
           case HIWORD(WParam) of
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
@@ -2127,9 +2128,6 @@ begin
         MouseDownFocusWindow := Window;
       end;
       LMessage.Msg := LM_SETFOCUS;
-      // RadioButton functionality
-      if (lWinControl <> nil) and (lWinControl is TRadioButton) then
-        Windows.PostMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
     end;
     WM_SHOWWINDOW:
     begin
@@ -2365,7 +2363,7 @@ begin
     end;
     BM_SETCHECK:
     begin
-      if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
+      if (WParam = BST_CHECKED) and (lWinControl is TRadioButton) then
         ClearSiblingRadioButtons(TRadioButton(lWinControl));
     end;
     WM_ENDSESSION:

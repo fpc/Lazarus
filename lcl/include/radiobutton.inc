@@ -64,8 +64,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRadioButton.RealSetText(const Value: TCaption);
 begin
-  if Text=Value then exit;
-  Inherited RealSetText(Value);
+  if Text = Value then
+    Exit;
+  inherited RealSetText(Value);
   InvalidatePreferredSize;
   AdjustSize;
 end;
@@ -76,14 +77,27 @@ var
   Sibling: TControl;
 begin
   inherited ApplyChanges;
-  if (not (csLoading in ComponentState))
-  and (Parent<>nil) and (FState=cbChecked) then begin
-    for i:=0 to Parent.ControlCount-1 do begin
-      Sibling:=Parent.Controls[i];
-      if (Sibling is TRadioButton) and (Sibling<>Self) then
-        TRadioButton(Sibling).Checked:=false;
+  if not (csLoading in ComponentState) and (Parent <> nil) and (FState = cbChecked) then
+  begin
+    for i := 0 to Parent.ControlCount - 1 do
+    begin
+      Sibling := Parent.Controls[i];
+      if (Sibling is TRadioButton) and (Sibling <> Self) then
+        TRadioButton(Sibling).Checked := False;
     end;
   end;
+end;
+
+procedure TRadioButton.SetChecked(Value: Boolean);
+begin
+  inherited SetChecked(Value);
+  TabStop := Value;
+end;
+
+procedure TRadioButton.Click;
+begin
+  Checked := True;
+  inherited Click;
 end;
 
 function TRadioButton.DialogChar(var Message: TLMKey): boolean;

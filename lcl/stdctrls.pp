@@ -1008,6 +1008,7 @@ type
     FOnChange: TNotifyEvent;
     FClicksDisabled: Boolean;
     function IsCheckedStored: boolean;
+    procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     fLastCheckedOnChange: boolean;
     function GetChecked: Boolean; virtual;
@@ -1051,7 +1052,6 @@ type
     procedure SetDefault(Value: Boolean);
     procedure SetModalResult(const AValue: TModalResult);
     procedure CMUIActivate(var Message: TLMessage); message CM_UIACTIVATE;
-    procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure UpdateFocus(AFocused: Boolean);
@@ -1270,9 +1270,11 @@ type
 
   TRadioButton = class(TCustomCheckBox)
   protected
+    procedure Click; override;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; override;
+    procedure SetChecked(Value: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
   published

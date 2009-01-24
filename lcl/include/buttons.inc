@@ -225,18 +225,6 @@ begin
   UpdateFocus(True);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomButton.CMDefaultClicked
-  Params:  None
-  Returns: Nothing
-
-  Handles the event when the button Leaves
- ------------------------------------------------------------------------------}
-procedure TCustomButton.WMDefaultClicked(var Message: TLMessage);
-begin
-  Click;
-end;
-
 procedure TCustomButton.WMSetFocus(var Message: TLMSetFocus);
 begin
   inherited;

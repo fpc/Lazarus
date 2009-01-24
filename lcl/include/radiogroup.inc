@@ -51,7 +51,6 @@ begin
   ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
   ChildSizing.LeftRightSpacing:=6;
   ChildSizing.TopBottomSpacing:=6;
-  TabStop := True;
 end;
 
 

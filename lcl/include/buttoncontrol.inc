@@ -21,6 +21,11 @@ begin
   //  or not TButtonActionLink(ActionLink).IsCheckedLinked;
 end;
 
+procedure TButtonControl.WMDefaultClicked(var Message: TLMessage);
+begin
+  Click;
+end;
+
 function TButtonControl.GetChecked: Boolean;
 begin
   GetChecked := False;
