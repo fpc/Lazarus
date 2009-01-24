@@ -49,6 +49,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -383,6 +384,13 @@ class procedure TWin32WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; Pane
 begin
   UpdateStatusBarPanelWidths(AStatusBar);
   UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
+
+class procedure TWin32WSStatusBar.SetColor(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'TWin32WSStatusBar.SetColor') then
+    Exit;
+  Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
 end;
 
 class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;

@@ -682,8 +682,8 @@ class procedure TWin32WSCustomListView.SetColor(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetColor') then
     Exit;
-  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, AWinControl.Color);
-  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, AWinControl.Color);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, ColorToRGB(AWinControl.Color));
 end;
 
 class procedure TWin32WSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
@@ -700,7 +700,7 @@ begin
   // call inherited SetFont; need to do it this way,
   // because the compile time ancestor class is TWSCustomListView
   TWSWinControlClass(ClassParent).SetFont(AWinControl, AFont);
-  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, AFont.Color);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, ColorToRGB(AFont.Color));
 end;
 
 class procedure TWin32WSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
