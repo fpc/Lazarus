@@ -539,6 +539,7 @@ type
     procedure SetGutter(const Value: TSynGutter);
     procedure SetHideSelection(const Value: boolean);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
+    procedure RemoveHooksFromHighlighter;
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
@@ -1627,7 +1628,8 @@ begin
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   Beautifier:=nil;
   {$ENDIF}
-  Highlighter := nil;
+  RemoveHooksFromHighlighter;
+  FHighlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
     for i := 0 to fHookedCommandHandlers.Count - 1 do
@@ -6187,12 +6189,17 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.RemoveHooksFromHighlighter;
+begin
+  if Assigned(fHighlighter) then
+    fHighlighter.UnhookAttrChangeEvent
+    ({$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+end;
+
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
 begin
   if Value <> fHighlighter then begin
-    if Assigned(fHighlighter) then
-      fHighlighter.UnhookAttrChangeEvent(
-        {$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+    RemoveHooksFromHighlighter;
     if Assigned(Value) then begin
       Value.HookAttrChangeEvent(
         {$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
