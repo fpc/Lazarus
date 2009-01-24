@@ -113,7 +113,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TFieldDataLink">
-        <short/>
+        <short>
+          <var>TFieldDataLink</var> - forms a link between a database field and an action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -224,35 +225,47 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.ActiveChanged">
-        <short/>
-        <descr/>
+        <short>
+          <var>ActiveChanged</var> - method to process changes in the <var>Active</var> property</short>
+        <descr>
+          <p>
+            <var>ActiveChanged</var> - method to process changes in the <var>Active</var> property</p>
+          <p>Any change to the <var>Active</var> property triggers the <var>ActiveChanged</var> method.</p>
+          <p>If the method is triggered by a transition into an <var>Active</var> state, then <var>ActiveChanged</var> ensures that this <var>TFieldDataLink</var>'s Field is still valid before calling the event handler.</p>
+          <p>ActiveChanged calls an <var>OnActiveChange</var> event handler if one has been assigned.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.DataSetChanged">
-        <short/>
+        <short>
+          <var>DataSetChanged</var> - method to process a change in the <var>DataSet</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.EditingChanged">
-        <short/>
-        <descr/>
+        <short>
+          <var>EditingChanged</var> - method for processing changes in the <var>Editing</var> property</short>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.LayoutChanged">
-        <short/>
+        <short>
+          <var>LayoutChanged</var>- called if layout is changed: tests validity of field then calls <var>OnLayoutChange</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.RecordChanged">
-        <short/>
+        <short>
+          <var>RecordChanged</var> - triggered if the contents of the current record change; calls <var>Reset</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -263,14 +276,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.UpdateData">
-        <short/>
+        <short>
+          <var>UpdateData</var> - if there are any pending changes, calls <var>OnUpdateData</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.FocusControl">
-        <short/>
+        <short>
+          <var>FocusControl</var> - gives this control the input focus; calls the <var>OnFocusRequest</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -281,13 +296,16 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TFieldDataLink.Create">
-        <short/>
+        <short>
+          <var>Create</var> - calls inherited <var>Create</var> then initialises field information</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFieldDataLink.Destroy">
+      <element name="TFieldDataLink.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -295,7 +313,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TFieldDataLink.Edit">
-        <short/>
+        <short>
+          <var>Edit</var> - if the field can be modified, performs inherited Edit and shows editing status </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -306,75 +325,85 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFieldDataLink.Modified">
-        <short/>
+        <short>
+          <var>Modified</var> sets the <var>IsModified</var> property to True</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFieldDataLink.Reset">
-        <short/>
+        <short>
+          <var>Reset</var> - checks that link is active, calls the <var>OnDataChange</var> event handler then sets <var>IsModified</var> to False</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.Control">
-        <short/>
+        <short>The <var>Control</var> to which this datalink is attached</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.Field">
-        <short/>
+        <short>The <var>Field</var> to which the datalink is attached</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.FieldName">
-        <short/>
+        <short>
+          <var>FieldName</var> - the name of the attached field, stored as a string</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.CanModify">
-        <short/>
+        <short>
+          <var>CanModify</var> - True if the linked field is capable of being modified</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.Editing">
-        <short/>
+        <short>
+          <var>Editing</var> - True if the linked field is being edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.OnDataChange">
-        <short/>
+        <short>
+          <var>OnDataChange</var> - event handler for a change in the data</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.OnEditingChange">
-        <short/>
+        <short>
+          <var>OnEditingChange</var> - event handler for a changed in the <var>Editing</var> property</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.OnUpdateData">
-        <short/>
+        <short>
+          <var>OnUpdateData</var> - event handler for updating any pending changes in the data</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.OnActiveChange">
-        <short/>
+        <short>
+          <var>OnActiveChange</var> - event handler for a change in the <var>Active</var> property</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFieldDataLink.OnFocusRequest">
-        <short/>
+        <short>
+          <var>OnFocusRequest</var> - event handler for a request to give focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -6011,6 +6040,10 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBImage.PictureChanged" link="#LCL.ExtCtrls.TCustomImage.PictureChanged"/>
       <element name="TDBCustomNavigator.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TDBCustomNavigator.SetEnabled" link="#LCL.Controls.TControl.SetEnabled"/>
+      <element name="TFieldDataLink.OnLayoutChange">
+        <short>
+          <var>OnLayoutChange</var> - event handler for a change in the layout</short>
+      </element>
     </module>
     <!-- DbCtrls -->
   </package>
