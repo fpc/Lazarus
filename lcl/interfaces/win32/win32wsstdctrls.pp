@@ -148,13 +148,16 @@ type
 
   TWin32WSCustomEdit = class(TWSCustomEdit)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class function GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
@@ -174,7 +177,7 @@ type
 
   TWin32WSCustomMemo = class(TWSCustomMemo)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
 
@@ -1072,6 +1075,17 @@ begin
   Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
 end;
 
+class procedure TWin32WSCustomEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    PreferredWidth := 0;
+    Inc(PreferredHeight, 10);
+  end;
+end;
+
 class function TWin32WSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
 begin
   Result := AWinControl.HandleAllocated;
@@ -1357,7 +1371,8 @@ begin
   begin
     Inc(PreferredWidth, 20);
     Inc(PreferredHeight, 4);
-    if WithThemeSpace then begin
+    if WithThemeSpace then
+    begin
       Inc(PreferredWidth, 6);
       Inc(PreferredHeight, 6);
     end;
