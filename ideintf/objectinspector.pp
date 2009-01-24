@@ -1973,7 +1973,8 @@ begin
     // to check if the property text fits in its box, if not show a hint
     if ShowHint then begin
       Index := MouseToIndex(y,false);
-      if Index > -1 then begin
+      // do not show a hint for the current row to not hide the editor
+      if (Index > -1) and (Index<>ItemIndex) then begin
         fPropRow := GetRow(Index);
         if X < SplitterX then begin
           // Mouse is over property name...
@@ -1982,7 +1983,7 @@ begin
           >= SplitterX)
           and InitHints then begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fpoint := ClientToScreen(
+            fPoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
                                    fPropRow.Top - TopY-1));
             MoveRect(fHintRect,fPoint.x,fPoint.y);
@@ -2900,7 +2901,6 @@ var
   Window: TWinControl;
   HintType: TPropEditHint;
 begin
-  // ToDo: use LCL hintsystem
   if FHintTimer<>nil then
     FHintTimer.Enabled := False;
   if (not InitHints) then exit;
@@ -2922,9 +2922,8 @@ begin
   begin
     //IconX:=GetTreeIconX(Index);
     PointedRow:=Rows[Index];
-    if Assigned(PointedRow) then
-    Begin
-      if Assigned(PointedRow.Editor) then begin
+    if Assigned(PointedRow) and Assigned(PointedRow.Editor) then begin
+      if Index<>ItemIndex then begin
         HintType := GetHintTypeAt(Index,Position.X);
         if (HintType = pehName) and Assigned(OnPropertyHint) then begin
           if OnPropertyHint(Self,PointedRow,Position,FHintWindow,Rect,AHint) then
