@@ -487,7 +487,7 @@ begin
   begin
     pClassName := WC_LISTVIEW;
     WindowTitle := StrCaption;
-    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL;
+    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL or LVS_SHAREIMAGELISTS;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
   end;
   // create window
