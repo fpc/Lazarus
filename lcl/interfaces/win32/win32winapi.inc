@@ -206,9 +206,9 @@ var
     begin
       with TLMMouseEvent(Message) do
       begin
-        if Mouse.WheelScrollLines=-1 then
+        if Mouse.WheelScrollLines < 0 then
           // -1 means, scroll one page
-          ScrollOffset := (WheelDelta * ScrollInfo.nPage) div 120
+          ScrollOffset := (WheelDelta * integer(ScrollInfo.nPage)) div 120
         else
           ScrollOffset := (WheelDelta * Mouse.WheelScrollLines) div 120;
         WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);

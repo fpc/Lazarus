@@ -1480,7 +1480,7 @@ var
     Header: Windows.TBitmapInfoHeader;
     Colors: array[Byte] of TRGBQuad; // reserve extra colors for palette (256 max)
   end;
-  H: Integer;
+  H: Cardinal;
   R: TRect;
   SrcData: PByte;
   SrcSize: PtrUInt;
