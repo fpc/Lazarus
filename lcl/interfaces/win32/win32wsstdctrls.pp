@@ -208,6 +208,9 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -1327,6 +1330,29 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+class procedure TWin32WSCustomStaticText.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    Inc(PreferredHeight);
+    if TCustomStaticText(AWinControl).BorderStyle <> sbsNone then
+    begin
+      if ThemeServices.ThemesEnabled and (TCustomStaticText(AWinControl).BorderStyle = sbsSingle) then
+      begin
+        inc(PreferredWidth, 4);
+        inc(PreferredHeight, 4);
+      end
+      else
+      begin
+        inc(PreferredWidth, 2);
+        inc(PreferredHeight, 2);
+      end;
+    end;
+  end;
 end;
 
 class procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);

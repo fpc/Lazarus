@@ -135,7 +135,14 @@ begin
   begin
     FStaticBorderStyle := Value;
     if HandleAllocated then
+    begin
       TWSCustomStaticTextClass(WidgetsetClass).SetStaticBorderStyle(Self, Value);
+      if AutoSize then
+      begin
+        InvalidatePreferredSize;
+        AdjustSize;
+      end;
+    end;
   end;
 end;
 
