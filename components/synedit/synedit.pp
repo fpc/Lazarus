@@ -3296,28 +3296,32 @@ var
                    ' Range=', PtrInt(FFoldedLinesView.Ranges[CurLine])
                  ]);
           DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
-        end else begin
+        end
+        {$ELSE}
+        if (FFoldedLinesView.Ranges[CurLine] = nil) then begin
+          DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
+        end
         {$ENDIF}
-        fHighlighter.SetRange(FFoldedLinesView.Ranges[CurLine]);     //mh 2000-10-10
-        fHighlighter.SetLine(sLine, FFoldedLinesView.TextIndex[CurLine]);
-        // Try to concatenate as many tokens as possible to minimize the count
-        // of ExtTextOut calls necessary. This depends on the selection state
-        // or the line having special colors. For spaces the foreground color
-        // is ignored as well.
-        //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
-        while not fHighlighter.GetEol do begin
-          fHighlighter.GetTokenEx(sToken,nTokenLen);
-          attr := fHighlighter.GetTokenAttribute;
-          // Add Markup to the token and append it to the TokenAccu
-          // record. This will paint any chars already stored if there is
-          // a (visible) change in the attributes.
-          DrawHiLightMarkupToken(attr,sToken,nTokenLen);
-          // Let the highlighter scan the next token.
-          fHighlighter.Next;
+        else
+        begin
+          fHighlighter.SetRange(FFoldedLinesView.Ranges[CurLine]);     //mh 2000-10-10
+          fHighlighter.SetLine(sLine, FFoldedLinesView.TextIndex[CurLine]);
+          // Try to concatenate as many tokens as possible to minimize the count
+          // of ExtTextOut calls necessary. This depends on the selection state
+          // or the line having special colors. For spaces the foreground color
+          // is ignored as well.
+          //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
+          while not fHighlighter.GetEol do begin
+            fHighlighter.GetTokenEx(sToken,nTokenLen);
+            attr := fHighlighter.GetTokenAttribute;
+            // Add Markup to the token and append it to the TokenAccu
+            // record. This will paint any chars already stored if there is
+            // a (visible) change in the attributes.
+            DrawHiLightMarkupToken(attr,sToken,nTokenLen);
+            // Let the highlighter scan the next token.
+            fHighlighter.Next;
+          end;
         end;
-        {$IFDEF DEBUGSYNRANGE}
-        end;
-        {$ENDIF}
       end;
       // Draw anything that's left in the TokenAccu record. Fill to the end
       // of the invalid area with the correct colors.

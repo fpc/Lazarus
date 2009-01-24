@@ -1642,7 +1642,8 @@ end;
 (* Lines *)
 function TSynEditFoldedView.GetLines(index : Integer) : String;
 begin
-  if (index < 0) or (index > fLinesInWindow) then exit('');
+  if (index < 0) or (index > fLinesInWindow) then
+    exit(fLines[ScreenLineToTextIndex(Index)]);
   Result := fLines[fTextIndexList[index]];
 end;
 
@@ -1655,13 +1656,15 @@ end;
 
 function TSynEditFoldedView.GetRange(Index : integer) : TSynEditRange;
 begin
-  if (index < 0) or (index > fLinesInWindow) then exit(nil);
+  if (index < 0) or (index > fLinesInWindow) then
+    exit(fLines.Ranges[ScreenLineToTextIndex(Index)]);
   Result := fLines.Ranges[fTextIndexList[index]];
 end;
 
 function TSynEditFoldedView.GetTextIndex(index : Integer) : Integer;
 begin
-  if (index < 0) or (index > fLinesInWindow) then exit(-1);
+  if (index < 0) or (index > fLinesInWindow) then
+    exit(ScreenLineToTextIndex(Index));
   Result := fTextIndexList[index];
 end;
 
