@@ -364,9 +364,10 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert')
   then Exit;
 
-  lvi.Mask := LVIF_TEXT;
+  lvi.Mask := LVIF_TEXT or LVIF_PARAM;
   lvi.iItem := AIndex;
   lvi.iSubItem := 0;
+  lvi.lParam := LPARAM(AItem);
 
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
@@ -826,12 +827,21 @@ begin
   else UpdateStyle(ALV.Handle, LVS_NOSCROLL, 0);
 end;
 
+
+function ListCompare(lParam1, lParam2: LParam; lParamSort: LParam): Integer; stdcall;
+var
+  Item1: TListItem absolute lParam1;
+  Item2: TListItem absolute lParam2;
+begin
+  Result := CompareValue(Item1.Index, Item2.Index);
+end;
+
 class procedure TWin32WSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
 
-  // TODO: implement
+  ListView_SortItems(ALV.Handle, @ListCompare, 0);
 end;
 
 class procedure TWin32WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
