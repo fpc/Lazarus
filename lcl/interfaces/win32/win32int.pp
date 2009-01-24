@@ -187,6 +187,7 @@ type
     procedure AppTerminate; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
+    procedure AppSetVisible(const AVisible: Boolean); override;
 
     function  InitHintFont(HintFont: TObject): Boolean; Override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); Override;

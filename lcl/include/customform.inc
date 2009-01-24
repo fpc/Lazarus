@@ -352,6 +352,7 @@ begin
   else
   begin
     inherited SetVisible(Value);
+    Application.UpdateVisible;
   end;
   //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;

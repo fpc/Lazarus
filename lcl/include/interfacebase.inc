@@ -55,7 +55,10 @@ end;
 
 procedure TWidgetSet.AppSetTitle(const ATitle: string);
 begin
-  Debugln('TWidgetSet.AppSetTitle is not implemented by ', ClassName);
+end;
+
+procedure TWidgetSet.AppSetVisible(const AVisible: Boolean);
+begin
 end;
 
 function TWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;

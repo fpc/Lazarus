@@ -824,8 +824,24 @@ end;
   procedure TApplication.UpdateVisible;
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateVisible;
-begin
 
+  function HasVisibleForms: Boolean;
+  var
+    i: integer;
+  begin
+    Result := False;
+    for i := 0 to Screen.CustomFormCount - 1 do
+      if Screen.CustomForms[i].Visible and (Screen.CustomForms[i].Parent = nil) then
+      begin
+        Result := True;
+        break;
+      end;
+  end;
+
+begin
+  // if there are visible forms then application task bar item must be visible too
+  // else hide it
+  WidgetSet.AppSetVisible(HasVisibleForms);
 end;
 
 {------------------------------------------------------------------------------

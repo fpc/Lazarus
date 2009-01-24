@@ -440,6 +440,14 @@ begin
   {$endif}
 end;
 
+procedure TWin32WidgetSet.AppSetVisible(const AVisible: Boolean);
+begin
+  if AVisible then
+    ShowWindow(FAppHandle, SW_SHOW)
+  else
+    ShowWindow(FAppHandle, SW_HIDE);
+end;
+
 function TWin32WidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpWin32;

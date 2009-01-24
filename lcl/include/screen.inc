@@ -409,13 +409,14 @@ var
 begin
   FCustomForms.Add(AForm);
   FCustomFormsZOrdered.Add(AForm);
-  if AForm is TForm then begin
+  if AForm is TForm then
+  begin
     FFormList.Add(AForm);
     Application.UpdateVisible;
   end;
-  i:=FScreenHandlers[snFormAdded].Count;
+  i := FScreenHandlers[snFormAdded].Count;
   while FScreenHandlers[snFormAdded].NextDownIndex(i) do
-    TScreenFormEvent(FScreenHandlers[snFormAdded][i])(Self,AForm);
+    TScreenFormEvent(FScreenHandlers[snFormAdded][i])(Self, AForm);
 end;
 
 {------------------------------------------------------------------------------
@@ -493,9 +494,9 @@ procedure TScreen.RemoveForm(AForm: TCustomForm);
 var
   i: Integer;
 begin
-  i:=FScreenHandlers[snRemoveForm].Count;
+  i := FScreenHandlers[snRemoveForm].Count;
   while FScreenHandlers[snRemoveForm].NextDownIndex(i) do
-    TScreenFormEvent(FScreenHandlers[snRemoveForm][i])(Self,AForm);
+    TScreenFormEvent(FScreenHandlers[snRemoveForm][i])(Self, AForm);
   FCustomForms.Remove(AForm);
   FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
