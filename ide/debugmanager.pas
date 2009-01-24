@@ -876,6 +876,8 @@ begin
 {$endif}
 
   inherited;
+  if FManager.FCurrentBreakpoint = ABreakPoint
+  then FManager.FCurrentBreakpoint := nil;
 
   TManagedBreakPoint(ABreakpoint).SourceMark.Free;
 
