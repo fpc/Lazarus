@@ -2886,7 +2886,7 @@ begin
   ARect:=Rect(Max(BorderWidth,Node.DisplayTextLeft),Node.Top-ScrolledTop,
               ClientWidth-BorderWidth,Node.Bottom-ScrolledTop);
   FEditor.BoundsRect:=ARect;
-  FEditor.AnchorParallel(akLeft,BorderWidth,Self);
+  FEditor.AnchorParallel(akLeft,ARect.Left,Self);
   FEditor.AnchorParallel(akRight,BorderWidth,Self);
   FEditor.Visible:=true;
   FEditor.Parent:=Self;
