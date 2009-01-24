@@ -3327,7 +3327,7 @@ begin
   Src:=BeautifyCodeOptions.BeautifyStatement(Src,0);
   if UsedUnits<>'' then
     Src:=Src
-      +BreakString('uses'+e+UsedUnits+';',
+      +BreakString('uses'+e+GetIndentStr(BeautifyCodeOptions.Indent)+UsedUnits+';',
       BeautifyCodeOptions.LineLength,BeautifyCodeOptions.Indent)+e
       +e;
   Src:=Src+BeautifyCodeOptions.BeautifyStatement(
