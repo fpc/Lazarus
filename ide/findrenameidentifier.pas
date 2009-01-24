@@ -59,6 +59,7 @@ type
     procedure FindRenameIdentifierDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure FindRenameIdentifierDialogCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure RenameCheckBoxChange(Sender: TObject);
   private
     FAllowRename: boolean;
@@ -453,6 +454,15 @@ begin
   ScopeRadioGroup.Items[3]:=lisFRIinAllOpenPackagesAndProjects;
 
   LoadFromConfig;
+end;
+
+procedure TFindRenameIdentifierDialog.FormShow(Sender: TObject);
+begin
+  if NewEdit.CanFocus then
+  begin
+    NewEdit.SelectAll;
+    NewEdit.SetFocus;
+  end;
 end;
 
 procedure TFindRenameIdentifierDialog.RenameCheckBoxChange(Sender: TObject);

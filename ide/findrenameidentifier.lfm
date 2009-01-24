@@ -10,6 +10,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   ClientWidth = 452
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object CurrentGroupBox: TGroupBox
@@ -63,7 +64,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Top = 35
       Width = 424
       Align = alTop
-      AllowGrayed = True
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       Caption = 'RenameCheckBox'
