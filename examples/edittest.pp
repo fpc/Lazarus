@@ -80,7 +80,7 @@ begin
 		Width := 300;
 		Height := 200;
     Gutter.Color := clBtnface;
-    Gutter.GutterPartVisibleByClass[TSynGutterLineNumber] := True;
+    Gutter.LineNumberPart.Visible := True;
     Color := clWindow;
     Visible := True;
     Font.Name := 'courier';
