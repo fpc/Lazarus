@@ -5,8 +5,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientWidth = 459
   TabOrder = 0
   Visible = False
-  DesignLeft = 138
-  DesignTop = 138
+  DesignLeft = 230
+  DesignTop = 230
   object BlockIndentLabel: TLabel[0]
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -222,7 +222,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 73
     Width = 60
     Anchors = [akTop, akLeft, akRight]
-    OnChangeBounds = Bevel2aChangeBounds
   end
   object Bevel3a: TBevel[16]
     AnchorSideLeft.Control = Owner
@@ -235,7 +234,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 139
     Width = 60
     Anchors = [akTop, akLeft, akRight]
-    OnChangeBounds = Bevel2aChangeBounds
   end
   object Bevel4a: TBevel[17]
     AnchorSideLeft.Control = Owner
@@ -248,7 +246,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 253
     Width = 60
     Anchors = [akTop, akLeft, akRight]
-    OnChangeBounds = Bevel2aChangeBounds
   end
   object Bevel5a: TBevel[18]
     AnchorSideLeft.Control = Owner
@@ -261,7 +258,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Top = 319
     Width = 60
     Anchors = [akTop, akLeft, akRight]
-    OnChangeBounds = Bevel2aChangeBounds
   end
   object BlockIndentComboBox: TComboBox[19]
     AnchorSideLeft.Control = Owner
