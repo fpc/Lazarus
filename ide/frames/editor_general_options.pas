@@ -35,10 +35,15 @@ type
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     Bevel1: TBevel;
+    Bevel2a: TBevel;
     Bevel2: TBevel;
+    Bevel3a: TBevel;
     Bevel3: TBevel;
+    Bevel4a: TBevel;
+    Bevel5a: TBevel;
     Bevel4: TBevel;
     Bevel5: TBevel;
+    Bevel1a: TBevel;
     BlockIndentComboBox: TComboBox;
     BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
@@ -75,6 +80,7 @@ type
     UndoLimitLabel: TLabel;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
+    procedure Bevel2aChangeBounds(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -339,6 +345,11 @@ end;
 procedure TEditorGeneralOptionsFrame.AutoIndentCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(AutoIndentCheckBox.Checked, eoAutoIndent);
+end;
+
+procedure TEditorGeneralOptionsFrame.Bevel2aChangeBounds(Sender: TObject);
+begin
+
 end;
 
 procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(

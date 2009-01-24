@@ -1105,11 +1105,11 @@ resourcestring
   lisLazarusProjectSource = 'Lazarus project source';
   dlgAltSetClMode = 'Alt-Key sets column mode';
 
-  dlgUndoGroupOptions = 'Undo options:';
-  dlgScrollGroupOptions = 'Scroll options:';
-  dlgIndentsTabsGroupOptions = 'Indents/Tabs options:';
-  dlgMouseGroupOptions = 'Mouse options:';
-  dlgCursorGroupOptions = 'Cursor options:';
+  dlgUndoGroupOptions = 'Undo / Redo:';
+  dlgScrollGroupOptions = 'Scrolling:';
+  dlgIndentsTabsGroupOptions = 'Indent and Tabs:';
+  dlgMouseGroupOptions = 'Mouse:';
+  dlgCursorGroupOptions = 'Cursor:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
   dlgDragDropEd = 'Drag Drop editing';
@@ -1122,7 +1122,7 @@ resourcestring
   dlgRightMouseMovesCursor = 'Right mouse moves cursor';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
-  dlgScrollPastEndLine = 'Scroll past end of line';
+  dlgScrollPastEndLine = 'Caret past end of line';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
   dlgShowScrollHint = 'Show scroll hint';
