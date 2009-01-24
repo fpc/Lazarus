@@ -7513,7 +7513,14 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
       <element name="TControl.OnResize">
         <short>Event Handler for resize of control</short>
         <descr>This event is triggered whenever the Width, Height, ClientWidth or ClientHeight of the control has changed.
-During autosize the size can change multiple times and only the last change triggers the OnResize.</descr>
+During autosize the size can change multiple times and only the last change triggers the OnResize.
+Use OnResize to react to resizes or to put your custom aligning, positioning code into this.
+To react to moves use the OnChangeBounds event.
+
+Common mistake:
+Keep in mind that ClientWidth and ClientHeight can change even when Width, Height stays the same. For example when the theme or the font changes the Width, Height of a TForm, TGroupBox, TPageControl stays, but the frame changes and thus the ClientWidth, ClientHeight too. This does not happen that often under windows, but it happens quite often on other platforms.
+Especially it is not sufficient to write only a TForm.OnResize handler to resize all controls on the form. This is a common bug in Delphi applications.
+</descr>
         <seealso>
           <link id="#rtl.Classes.TNotifyEvent"/>
         </seealso>
