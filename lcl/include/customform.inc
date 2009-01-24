@@ -457,7 +457,7 @@ begin
     SetActive(Message.Active);
 
   Activate;
-  if Application<>nil then Application.Activate;
+  if Application <> nil then Application.Activate;
 end;
 
 {------------------------------------------------------------------------------

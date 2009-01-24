@@ -1687,7 +1687,7 @@ begin
     WM_KILLFOCUS:
     begin
 {$ifdef DEBUG_CARET}
-      DebugLn('WM_KILLFOCUS received for window ', IntToHex(Window, 8));
+      DebugLn(['WM_KILLFOCUS received for window ', IntToHex(Window, 8), ' NewFocus = ', IntToHex(WParam, 8), ' Text = ', WndText(WParam)]);
 {$endif}
       LMessage.Msg := LM_KILLFOCUS;
       LMessage.WParam := WParam;
