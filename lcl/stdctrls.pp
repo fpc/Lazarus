@@ -1052,7 +1052,9 @@ type
     procedure SetModalResult(const AValue: TModalResult);
     procedure CMUIActivate(var Message: TLMessage); message CM_UIACTIVATE;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure UpdateFocus(AFocused: Boolean);
   protected
     procedure Click; override;
     procedure CreateWnd; override;

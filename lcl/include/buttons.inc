@@ -201,31 +201,28 @@ var
   lForm: TCustomForm;
 begin
   lPrevActive := FActive;
+  lForm := GetParentForm(Self);
   if NewControl = Self then
   begin
-    FActive := true;
-    lForm := GetParentForm(Self);
+    FActive := True;
     if lForm <> nil then
       lForm.ActiveDefaultControl := Self;
   end else 
   if NewControl <> nil then
+    FActive := False
+  else
   begin
-    FActive := false;
-  end else begin
     FActive := FDefault;
+    if lForm.ActiveDefaultControl = Self then
+      lForm.ActiveDefaultControl := nil;
   end;
   if lPrevActive <> FActive then
     WSSetDefault;
 end;
 
 procedure TCustomButton.CMUIActivate(var Message: TLMessage);
-var
-  lForm: TCustomForm;
 begin
-  lForm := GetParentForm(Self);
-  if lForm = nil then exit;
-
-  ActiveDefaultControlChanged(lForm.ActiveControl);
+  UpdateFocus(True);
 end;
 
 {------------------------------------------------------------------------------
@@ -240,23 +237,33 @@ begin
   Click;
 end;
 
-procedure TCustomButton.WMKillFocus(var Message: TLMKillFocus);
-var
-  lForm: TCustomForm;
+procedure TCustomButton.WMSetFocus(var Message: TLMSetFocus);
 begin
   inherited;
 
-  if FActive then
-  begin
-    FActive := FDefault;
-    if not FActive then
-    begin
-      lForm := GetParentForm(Self);
-      if (lForm <> nil) and (lForm.ActiveDefaultControl = Self) then
-        lForm.ActiveDefaultControl := nil;
-      WSSetDefault;
-    end;
-  end;
+  UpdateFocus(True);
+end;
+
+procedure TCustomButton.WMKillFocus(var Message: TLMKillFocus);
+begin
+  inherited;
+
+  // if no change then exit
+  if Message.FocusedWnd <> Handle then
+    UpdateFocus(False);
+end;
+
+procedure TCustomButton.UpdateFocus(AFocused: Boolean);
+var
+  lForm: TCustomForm;
+begin
+  lForm := GetParentForm(Self);
+  if lForm = nil then exit;
+
+  if AFocused then
+    ActiveDefaultControlChanged(lForm.ActiveControl)
+  else
+    ActiveDefaultControlChanged(nil);
 end;
 
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
