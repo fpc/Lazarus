@@ -26,7 +26,7 @@ msgstr "Test"
 
 #: messagecomposer.skindofmessage
 msgid "KIND OF MESSAGE"
-msgstr ""
+msgstr "ART DER MELDUNG"
 
 #: messagecomposer.smaskinput
 msgid "Mask Input"
@@ -50,5 +50,5 @@ msgstr "Text um nach einer Eingabe zu fragen"
 
 #: messagecomposer.ssourcewrapper
 msgid "SOURCE WRAPPER"
-msgstr ""
+msgstr "QUELL-MANTEL"
 

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-25 21:26+0100\n"
+"PO-Revision-Date: 2009-01-23 19:15+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -297,7 +297,7 @@ msgstr "Durchsuchen..."
 
 #: ipconst.shtmldefresetcaption
 msgid "Reset"
-msgstr "Reset"
+msgstr "Zurücksetzen"
 
 #: ipconst.shtmldefsubmitcaption
 msgid "Submit"
@@ -537,7 +537,7 @@ msgstr "Lebensdauer beim Neuaufbau überschritten"
 
 #: ipconst.sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
-msgstr ""
+msgstr "Lebensdauer während Übertragung abgelaufen"
 
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
@@ -1466,11 +1466,11 @@ msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s kann bei der Transaktion nicht aufgerufen werden"
 
 #: ipconst.spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s kann bei der Authentifizierung nicht aufgerufen werden"
 
 #: ipconst.spop3okresp
 msgid "+OK"
@@ -2112,7 +2112,7 @@ msgstr "Widerrufe Zertifikat."
 
 #: ipconst.ssslservernohandshake
 msgid "Server cid not return a handshake message."
-msgstr ""
+msgstr "Server gab keine Handshake-Meldung zurück"
 
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
@@ -2283,7 +2283,7 @@ msgstr "Kann angeforderte Adresse nicht zuweisen"
 
 #: ipconst.swsaeafnosupport
 msgid "Address family not supported by protocol family"
-msgstr ""
+msgstr "Adressenfamilie nicht von der Protokollfamilie unterstützt"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"
@@ -2379,7 +2379,7 @@ msgstr "Netzwerk ist heruntergefahren"
 
 #: ipconst.swsaenetreset
 msgid "Network dropped connection on reset"
-msgstr "Netzwerk verwarf die Verbindung beim Reset"
+msgstr "Netzwerk verwarf die Verbindung beim Zurücksetzen"
 
 #: ipconst.swsaenetunreach
 msgid "Network is unreachable"

@@ -4051,6 +4051,7 @@ var
 
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
+
   try
     IDEOptionsDialog.OpenEditor(AEditor);
     // update EnvironmentOptions (save current window positions)

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-27 22:35+0100\n"
+"PO-Revision-Date: 2009-01-23 17:39+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -162,7 +162,7 @@ msgstr "Voreingestellter ppc386-Zielprozessor"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "Default-Eigenschaft nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -414,7 +414,7 @@ msgstr "Zirkuläres Include ermittelt"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "Eingebundene Ordner: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""

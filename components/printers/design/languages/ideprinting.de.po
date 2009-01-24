@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-20 21:00+0100\n"
+"PO-Revision-Date: 2009-01-23 17:40+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,17 +15,17 @@ msgstr "Drucken ..."
 
 #: ideprinting.sprintfile
 msgid "Complete file"
-msgstr ""
+msgstr "Datei abschlieﬂen"
 
 #: ideprinting.sprintselection
 msgid "Selected text"
-msgstr ""
+msgstr "Ausgew‰hlter Text"
 
 #: ideprinting.sprintsources
 msgid "Print sources"
-msgstr ""
+msgstr "Quellen drucken"
 
 #: ideprinting.sprintwhat
 msgid "What would you like to print ?"
-msgstr ""
+msgstr "Was soll gedruckt werden?"
 
