@@ -1527,7 +1527,6 @@ begin
   InputHistories.Save;
   PkgBoss.SaveSettings;
   if TheControlSelection<>nil then TheControlSelection.Clear;
-  if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
   FreeIDEWindows;
 end;
 

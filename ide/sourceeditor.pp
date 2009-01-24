@@ -172,6 +172,7 @@ type
 
     procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
+    procedure UnbindEditor;
   protected
     ErrorMsgs: TStrings;
     procedure ReParent(AParent: TWinControl);
@@ -502,7 +503,6 @@ type
     FOnViewJumpHistory: TNotifyEvent;
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
-    FUnUsedEditorComponents: TList; // list of TSynEdit
     FOnPopupMenu: TSrcEditPopupMenuEvent;
   private
     // colors for the completion form (popup form, e.g. word completion)
@@ -658,7 +658,6 @@ type
     function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
-    procedure ClearUnusedEditorComponents(Force: boolean);
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
 
@@ -1052,6 +1051,7 @@ Begin
   CreateEditor(AOwner,AParent);
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
+  // IMPORTANT: when you change below, don't forget updating UnbindEditor
   FEditPlugin.OnLinesInserted := @LinesInserted;
   FEditPlugin.OnLinesDeleted := @LinesDeleted;
 end;
@@ -1060,12 +1060,15 @@ destructor TSourceEditor.Destroy;
 begin
 //writeln('TSourceEditor.Destroy A ',FEditor.Name);
   if (FAOwner<>nil) and (FEditor<>nil) then begin
+    UnbindEditor;
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
     if SourceEditorMarks<>nil then
       SourceEditorMarks.DeleteAllForEditor(FEditor);
     TSourceNotebook(FAOwner).FSourceEditorList.Remove(Self);
-    TSourceNotebook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
+    FreeAndNil(FEditor);
+  end else begin
+    FEditor:=nil;
   end;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
@@ -2250,6 +2253,8 @@ Begin
       BookMarkOptions.EnableKeys := false;
       BookMarkOptions.LeftMargin:=1;
       WantTabs := true;
+
+      // IMPORTANT: when you change below, don't forget updating UnbindEditor
       OnStatusChange := @EditorStatusChanged;
       OnProcessCommand := @ProcessCommand;
       OnProcessUserCommand := @ProcessUserCommand;
@@ -2263,6 +2268,8 @@ Begin
       OnClickLink := @EditorClickLink;
       OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
+      // IMPORTANT: when you change above, don't forget updating UnbindEditor
+
     end;
     if FCodeTemplates<>nil then
       FCodeTemplates.AddEditor(FEditor);
@@ -2578,6 +2585,7 @@ Begin
   if aCompletion<>nil then
     aCompletion.RemoveEditor(FEditor);
   SourceEditorMarks.DeleteAllForEditor(FEditor);
+  UnbindEditor;
   FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
@@ -2975,6 +2983,30 @@ begin
   FVisible:=Value;
 end;
 
+procedure TSourceEditor.UnbindEditor;
+// disconnect all events
+begin
+  with EditorComponent do begin
+    OnStatusChange := nil;
+    OnProcessCommand := nil;
+    OnProcessUserCommand := nil;
+    OnCommandProcessed := nil;
+    OnReplaceText := nil;
+    OnGutterClick := nil;
+    OnSpecialLineMarkup := nil;
+    OnMouseMove := nil;
+    OnMouseWheel := nil;
+    OnMouseDown := nil;
+    OnClickLink := nil;
+    OnMouseLink := nil;
+    OnKeyDown := nil;
+  end;
+  if FEditPlugin<>nil then begin
+    FEditPlugin.OnLinesInserted := nil;
+    FEditPlugin.OnLinesDeleted := nil;
+  end;
+end;
+
 procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: word);
 begin
   EditorComponent.CommandProcessor(TSynEditorCommand(EditorCommand),' ',nil);
@@ -3003,7 +3035,6 @@ begin
   {$ENDIF}
 
   FSourceEditorList := TList.Create;
-  FUnUsedEditorComponents := TList.Create;
 
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
@@ -3079,8 +3110,6 @@ begin
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
-  ClearUnUsedEditorComponents(true);
-  FUnUsedEditorComponents.Free;
   if Notebook<>nil then begin
     FreeThenNil(Notebook);
   end;
@@ -3788,7 +3817,6 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
-  ClearUnUsedEditorComponents(false);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] A');
   {$ENDIF}
@@ -3851,15 +3879,6 @@ Begin
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] END ');
   {$ENDIF}
 End;
-
-Procedure TSourceNotebook.ClearUnUsedEditorComponents(Force: boolean);
-var i:integer;
-begin
-  if (not Force) and FProcessingCommand then exit;
-  for i:=FUnUsedEditorComponents.Count-1 downto 0 do
-    Application.ReleaseComponent(TSynEdit(FUnUsedEditorComponents[i]));
-  FUnUsedEditorComponents.Clear;
-end;
 
 procedure TSourceNotebook.EditorPropertiesClicked(Sender: TObject);
 begin
@@ -4362,10 +4381,10 @@ end;
 Procedure TSourceNotebook.EditorChanged(Sender: TObject);
 var SenderDeleted: boolean;
 Begin
-  SenderDeleted:=FUnUsedEditorComponents.IndexOf(Sender)>=0;
-  ClearUnUsedEditorComponents(false);
+  SenderDeleted:=(Sender as TControl).Parent=nil;
+  if SenderDeleted then exit;
   UpdateStatusBar;
-  if (not SenderDeleted) and Assigned(OnEditorChanged) then
+  if Assigned(OnEditorChanged) then
     OnEditorChanged(Sender);
 End;
 
@@ -4417,7 +4436,6 @@ function TSourceNotebook.FindSourceEditorWithPageIndex(
 var I: integer;
   TempEditor: TControl;
 begin
-  ClearUnUsedEditorComponents(false);
   Result := nil;
   if (FSourceEditorList=nil)
     or (Notebook=nil)

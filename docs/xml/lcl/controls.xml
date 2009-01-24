@@ -348,7 +348,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TAnchorKind">
         <short>Enumerated type listing the possible positions for alignment of a control</short>
         <descr>
-		<p>Enumerated type listing the possible positions for alignment of a control</p>
+          <p>Enumerated type listing the possible positions for alignment of a control</p>
           <pre>akTop, 
   akLeft, 
   akRight, 
@@ -5930,9 +5930,9 @@ mrLast=mrYesToAll=10</descr>
         <descr>This is the function that is actually used by <var>GetTextBuf</var>, and loads a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
-		<link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-		<link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -5945,9 +5945,9 @@ mrLast=mrYesToAll=10</descr>
         <descr>This is the procedure that is actually used by <var>SetTextBuf,</var> and stores text as a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
-		<link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-		<link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
+          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6500,7 +6500,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Remove a previously docked control and put a new control in its place</short>
         <descr>Checks to see whether there is a previously docked control, <br/>and removes it, then puts the new control in its place</descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.ManualDock">ManualDock</link>
+          <link id="#lcl.Controls.TControl.ManualDock">ManualDock</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -6654,7 +6654,7 @@ mrLast=mrYesToAll=10</descr>
         <descr>Checks that this is a new control, then calls SetBounds to set up coordinates defining its position
 </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
+          <link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6890,8 +6890,8 @@ mrLast=mrYesToAll=10</descr>
         <short>
           <var>Hide </var>this control</short>
         <seealso>
-		<link id="#lcl.Controls.TControl.Visible"/>
-		<link id="#lcl.Controls.TControl.Show"/>
+          <link id="#lcl.Controls.TControl.Visible"/>
+          <link id="#lcl.Controls.TControl.Show"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -6975,8 +6975,8 @@ mrLast=mrYesToAll=10</descr>
 </pre>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-		<link id="#lcl.Controls.TControl.GetText">GetText</link>
+          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
+          <link id="#lcl.Controls.TControl.GetText">GetText</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -7021,8 +7021,8 @@ mrLast=mrYesToAll=10</descr>
 </pre>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-		<link id="#lcl.Controls.TControl.SetText">SetText</link>
+          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lcl.Controls.TControl.SetText">SetText</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7107,8 +7107,8 @@ mrLast=mrYesToAll=10</descr>
         <descr/>
         <errors/>
         <seealso>
-		<link id="#lcl.Controls.TControl.Visible"/>
-		<link id="#lcl.Controls.TControl.Hide"/>
+          <link id="#lcl.Controls.TControl.Visible"/>
+          <link id="#lcl.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -7258,7 +7258,7 @@ mrLast=mrYesToAll=10</descr>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TAlign"/>
+          <link id="#lcl.Controls.TAlign"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7271,7 +7271,7 @@ mrLast=mrYesToAll=10</descr>
           </p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TAnchors"/>
+          <link id="#lcl.Controls.TAnchors"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7284,7 +7284,7 @@ mrLast=mrYesToAll=10</descr>
           </p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TAnchorSide"/>
+          <link id="#lcl.Controls.TAnchorSide"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7406,7 +7406,7 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TSizeConstraints"/>
+          <link id="#lcl.Controls.TSizeConstraints"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7434,7 +7434,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControlState"/>
+          <link id="#lcl.Controls.TControlState"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7449,7 +7449,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControlStyle"/>
+          <link id="#lcl.Controls.TControlStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7512,7 +7512,8 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
         <short>Event Handler for resize of control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes flag if control is re-sized.</descr>
+        <descr>This event is triggered whenever the Width, Height, ClientWidth or ClientHeight of the control has changed.
+During autosize the size can change multiple times and only the last change triggers the OnResize.</descr>
         <seealso>
           <link id="#rtl.Classes.TNotifyEvent"/>
         </seealso>
@@ -7522,8 +7523,8 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <short>Event Handler when a hint needs to be shown</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown</descr>
         <seealso>
-		<link id="#lcl.Controls.THintInfo"/>
-		<link id="#lcl.Controls.TControlShowHintEvent"/>
+          <link id="#lcl.Controls.THintInfo"/>
+          <link id="#lcl.Controls.TControlShowHintEvent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7532,7 +7533,7 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or writes a flag to find or store the identity of the parent for this control. The parent is of type TWincontrol</descr>
         <seealso>
-		<link id="#lcl.Controls.TWinControl"/>
+          <link id="#lcl.Controls.TWinControl"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7552,7 +7553,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Flag to determine: Is hint to be displayed for this control?</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint</descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.OnShowHint">OnShowHint</link>
+          <link id="#lcl.Controls.TControl.OnShowHint">OnShowHint</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7568,9 +7569,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl.IsVisible"/>
-		<link id="#lcl.Controls.TControl.Show"/>
-		<link id="#lcl.Controls.TControl.Hide"/>
+          <link id="#lcl.Controls.TControl.IsVisible"/>
+          <link id="#lcl.Controls.TControl.Show"/>
+          <link id="#lcl.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7578,7 +7579,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Reads or writes a message associated with this window</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
         <seealso>
-		<link id="#lcl.Controls.TWndMethod"/>
+          <link id="#lcl.Controls.TWndMethod"/>
           <link id="#lcl.LMessages.TLMessage"/>
         </seealso>
       </element>
@@ -8253,7 +8254,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <p>Defines procedures and functions related to windowed controls, some of which override virtual methods defined in ancestor classes.</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TControl"/>
+          <link id="#lcl.Controls.TControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -10100,7 +10101,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>
           <var>CreateParams</var> - create parameters for this windowed class</short>
         <descr>
-		<p><var>CreateParams</var> - create parameters for this windowed class</p>
+          <p>
+            <var>CreateParams</var> - create parameters for this windowed class</p>
           <p>Definition of parameters:</p>
           <pre>TCreateParams = record
     Caption: PChar;
@@ -10177,7 +10179,8 @@ End;
         <short>
           <var>InitializeWnd</var> - initialise the window for this control</short>
         <descr>
-		<p><var>InitializeWnd</var> - initialise the window for this control</p>
+          <p>
+            <var>InitializeWnd</var> - initialise the window for this control</p>
           <p>Gets called after the Handle is created and before the child handles are created</p>
         </descr>
         <errors/>
@@ -10401,7 +10404,7 @@ End;
         <short>Definitions of how any child control is to be sized</short>
         <descr>Reads values from flag or stores values to flag. Most of the properties are inherited from TControlChildSizing, <br/>which you should read to find out more about this control</descr>
         <seealso>
-		<link id="#lcl.Controls.TControlChildSizing"/>
+          <link id="#lcl.Controls.TControlChildSizing"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -10447,7 +10450,7 @@ End;
         <short>Property that actually controls the docking process</short>
         <descr>Reads or writes a flag. Derived from the parent class TDockManager</descr>
         <seealso>
-		<link id="#lcl.Controls.TDockManager"/>
+          <link id="#lcl.Controls.TDockManager"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11246,7 +11249,7 @@ need the ability to accept keyboard input or contain other controls. </p>
             <var>Paint</var> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TWinControl"/>
+          <link id="#lcl.Controls.TWinControl"/>
           <link id="#lcl.Graphics.TCanvas"/>
         </seealso>
       </element>
@@ -11336,8 +11339,8 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border
 </descr>
         <seealso>
-		<link id="#lcl.Controls.TWinControl"/>
-		<link id="#lcl.Controls.TControl"/>
+          <link id="#lcl.Controls.TWinControl"/>
+          <link id="#lcl.Controls.TControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -11369,7 +11372,7 @@ getting the parent control's Canvas dimensions.</p>
         <short>Paint handler plug-in</short>
         <descr>This is a plug-in in TWinControl to get the DC, <br/>assign it to our canvas and call the paint method for <br/>descendants to do the actual painting</descr>
         <seealso>
-		<link id="#lcl.Controls.TWinControl.PaintWindow"/>
+          <link id="#lcl.Controls.TWinControl.PaintWindow"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11425,7 +11428,7 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Only a restricted series of options is available: none or a single border.
 </descr>
         <seealso>
-		<link id="#lcl.Controls.TBorderStyle"/>
+          <link id="#lcl.Controls.TBorderStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11978,7 +11981,7 @@ getting the parent control's Canvas dimensions.</p>
 </pre>
         </descr>
         <seealso>
-		<link id="#lcl.Controls.TDockManager"/>
+          <link id="#lcl.Controls.TDockManager"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12637,7 +12640,7 @@ getting the parent control's Canvas dimensions.</p>
         <descr>Calls CursorToIdent to find correct entry in look-up table</descr>
         <errors/>
         <seealso>
-		<link id="#lcl.Controls.CursorToIdent"/>
+          <link id="#lcl.Controls.CursorToIdent"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -12653,7 +12656,8 @@ getting the parent control's Canvas dimensions.</p>
         <short>
           <var>StringToCursor</var> - returns the cursor value corresponding to the name supplied</short>
         <descr>
-		<p><var>StringToCursor</var> - returns the cursor value corresponding to the name supplied</p>
+          <p>
+            <var>StringToCursor</var> - returns the cursor value corresponding to the name supplied</p>
           <p>Finds the numeric cursor value corresponding to the name <var>S</var> in the cursor look-up table</p>
         </descr>
       </element>
