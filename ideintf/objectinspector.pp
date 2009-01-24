@@ -2900,6 +2900,7 @@ var
   PointedRow:TOIpropertyGridRow;
   Window: TWinControl;
   HintType: TPropEditHint;
+  ClientPosition: TPoint;
 begin
   if FHintTimer<>nil then
     FHintTimer.Enabled := False;
@@ -2911,13 +2912,13 @@ begin
   if not(Assigned(Window)) then Exit;
   If (Window<>Self) and (not IsParentOf(Window)) then exit;
 
-  Position := ScreenToClient(Position);
-  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
-  or (Position.Y >= Height)) then
+  ClientPosition := ScreenToClient(Position);
+  if ((ClientPosition.X <=0) or (ClientPosition.X >= Width)
+  or (ClientPosition.Y <= 0) or (ClientPosition.Y >= Height)) then
     Exit;
 
   AHint := '';
-  Index:=MouseToIndex(Position.Y,false);
+  Index:=MouseToIndex(ClientPosition.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
   begin
     //IconX:=GetTreeIconX(Index);
@@ -2939,7 +2940,6 @@ begin
 
   if AHint = '' then Exit;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Position := Mouse.CursorPos;
   Rect.Left := Position.X+10;
   Rect.Top := Position.Y+10;
   Rect.Right := Rect.Left + Rect.Right+3;
