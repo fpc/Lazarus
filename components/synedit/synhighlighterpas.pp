@@ -58,7 +58,7 @@ uses
   Windows, Messages,
   {$ENDIF}
   Classes, Registry, Controls,
-  SynEditTypes, SynEditHighlighter, SynEditTextBuffer;
+  SynEditTypes, SynEditHighlighter, SynEditTextBuffer, SynEditTextBase;
 
 type
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -103,6 +103,13 @@ type
     cfbtProgram,
     cfbtRecord
     );
+  TPascalWordTrippletRanges = set of TPascalCodeFoldBlockType;
+
+const
+  PascalWordTrippletRanges: TPascalWordTrippletRanges =
+    [cfbtBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord];
+type
+
   TPascalCompilerMode = (
     pcmObjFPC,
     pcmDelphi,
@@ -119,6 +126,7 @@ type
     FMode: TPascalCompilerMode;
     FBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
+    FMinimumCodeFoldBlockLevel: Integer;
   public
     procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
@@ -128,8 +136,14 @@ type
     procedure DecLastLineCodeFoldLevelFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
-    property LastLineCodeFoldLevelFix: integer read FLastLineCodeFoldLevelFix
-      write FLastLineCodeFoldLevelFix;
+    // Refers To LastLine while scanning
+    // stored as begining of the next line, it will refer to 2nd last line
+    property LastLineCodeFoldLevelFix: integer
+      read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
+    // Refers To this line while scanning
+    // stored as begining of the next line, it will refer to the last line
+    property MinimumCodeFoldBlockLevel: integer
+      read FMinimumCodeFoldBlockLevel write FMinimumCodeFoldBlockLevel;
   end;
   {$ENDIF}
 
@@ -179,6 +193,7 @@ type
     {$ENDIF}
     fD4syntax: boolean;
     {$IFDEF SYN_LAZARUS}
+    function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
@@ -315,6 +330,7 @@ type
     {$ENDIF}
     procedure EndCodeFoldBlockLastLine;
     function GetLastLineCodeFoldLevelFix: integer; override;
+    property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -347,6 +363,8 @@ type
     {$IFDEF SYN_LAZARUS}
     function TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
     {$ENDIF}
+    Function GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
+         out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean; override;
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -721,6 +739,11 @@ begin
   FNestedComments:=FCompilerMode in [pcmFPC,pcmObjFPC];
   TSynPasSynRange(CodeFoldRange).Mode:=FCompilerMode;
   //DebugLn(['TSynPasSyn.SetCompilerMode FCompilerMode=',ord(FCompilerMode),' FNestedComments=',FNestedComments]);
+end;
+
+function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
+begin
+  Result := TSynPasSynRange(CodeFoldRange);
 end;
 
 {$ENDIF}
@@ -2149,6 +2172,7 @@ begin
   // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  PasCodeFoldRange.MinimumCodeFoldBlockLevel := MinimumCodeFoldBlockLevel;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
   {$ELSE}
@@ -2173,6 +2197,7 @@ procedure TSynPasSyn.ResetRange;
 begin
   fRange:= [rsAfterSemicolon]; // Begin of file = new Statement
   FStartCodeFoldBlockLevel:=0;
+  FMinimumCodeFoldBlockLevel := 0;
   {$IFDEF SYN_LAZARUS}
   Inherited ResetRange;
   CompilerMode:=pcmDelphi;
@@ -2207,6 +2232,191 @@ end;
 function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
 begin
   Result:=TPascalCodeFoldBlockType(PtrUInt(inherited TopCodeFoldBlockType));
+end;
+
+// ToDO: pass in Max for the search lines (Begin must be found always)
+function TSynPasSyn.GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
+   out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean;
+
+  function GetLevelBeforeCaret: Integer;
+  var
+    l: Integer;
+  begin
+    SetRange(Lines.Ranges[LogicalCaret.Y - 1]);
+    FMinimumCodeFoldBlockLevel := CurrentCodeFoldBlockLevel;
+    l := CurrentCodeFoldBlockLevel;
+    SetLine(Lines[LogicalCaret.Y - 1], LogicalCaret.Y - 1);
+    if (MinimumCodeFoldBlockLevel < CurrentCodeFoldBlockLevel)
+    then Result := MinimumCodeFoldBlockLevel
+    else Result := l;
+    while (Run <= LogicalCaret.x - 1) and not GetEol do begin
+      if (Run = LogicalCaret.x-1) and (Result <> CurrentCodeFoldBlockLevel) then
+        break;
+      FMinimumCodeFoldBlockLevel := CurrentCodeFoldBlockLevel;
+      l := CurrentCodeFoldBlockLevel;
+      Next;
+      if (MinimumCodeFoldBlockLevel < CurrentCodeFoldBlockLevel)
+      then Result := MinimumCodeFoldBlockLevel
+      else Result := l;
+    end;
+  end;
+
+  function FindBegin(EndY, EndX, SeekLevel: Integer; out X1, X2: Integer;
+                     out FoldType: TPascalCodeFoldBlockType): integer; // Returns Line
+  var
+    MinLvl: Integer;
+  begin
+    Result := EndY;
+    MinLvl := 0; // Search the current line always
+    repeat
+      SetRange(Lines.Ranges[Result - 1]);
+      //PasCodeFoldRange.MinimumCodeFoldBlockLevel;
+      if (EndX > 0) and (MinLvl <= SeekLevel) then begin
+        // Search in current Line
+        X1 := -1;
+        // Use MinimumCodefoldlevel to detect theimplicit end of "var"/"type" blocks at the next "begin"
+        FMinimumCodeFoldBlockLevel := CurrentCodeFoldBlockLevel;
+        MinLvl := PasCodeFoldRange.MinimumCodeFoldBlockLevel;  // Before SetLine = LastLine's MinLvl
+        SetLine(Lines[Result - 1], Result - 1);
+        while (Run <= EndX) and not GetEol do begin
+          if (MinimumCodeFoldBlockLevel <= SeekLevel) then begin
+            X1 := fTokenPos;
+            X2 := Run;
+            FoldType := TopPascalCodeFoldBlockType;
+          end;
+          FMinimumCodeFoldBlockLevel := CurrentCodeFoldBlockLevel;
+          Next;
+        end;
+        if X1 >= 0 then exit;
+      end
+      else
+        MinLvl := PasCodeFoldRange.MinimumCodeFoldBlockLevel;  // Before SetLine = LastLine's MinLvl
+      // Search previous lines
+      EndX := MaxInt;
+      dec(Result);
+    until Result = 0; // should always exit before
+  end;
+
+  function FindEnd(BeginY, BeginX2, SeekLevel: Integer;
+                   out X1, X2, LvlBefore: Integer): integer; // Returns Line
+  var
+    c, MinLvl : Integer;
+  begin
+    Result := BeginY;
+    c := Lines.Count;
+    MinLvl := 0; // CurrentLine always has samller Minlevel
+    repeat
+      SetRange(Lines.Ranges[Result-1]);
+      if (MinLvl < SeekLevel) then begin
+        // Search in current Line
+        LvlBefore := CurrentCodeFoldBlockLevel;
+        SetLine(Lines[Result - 1], Result - 1);
+        if (FTokenPos < BeginX2) then
+        begin
+          while (FTokenPos < BeginX2) and not GetEol do
+            Next;
+          FMinimumCodeFoldBlockLevel := CurrentCodeFoldBlockLevel;
+        end;
+        while not GetEol do
+        begin
+          if CurrentCodeFoldBlockLevel < SeekLevel then
+          begin
+            X1 := fTokenPos;
+            X2 := Run;
+            exit
+          end
+          else if (MinimumCodeFoldBlockLevel < SeekLevel) or
+              (CurrentCodeFoldBlockLevel + LastLineCodeFoldLevelFix < SeekLevel)
+          then
+            exit(-1); // This block ended in the previous line (implicit end)
+          LvlBefore := CurrentCodeFoldBlockLevel;
+          Next;
+        end;
+      end;
+      // Search previous lines
+      BeginX2 := 0;
+      inc(Result);
+      if Result < c-1 then begin
+        SetRange(Lines.Ranges[Result]);
+        MinLvl := PasCodeFoldRange.MinimumCodeFoldBlockLevel;
+      end else begin
+        MinLvl := 0;
+      end;
+    until Result = c;
+    Result := -1;
+  end;
+
+var
+  CurStartLevel, CurEndLevel, CurStartPosX, CurEndPosX, CurPosY: Integer;
+  EndStartLevel: Integer;
+  ft, ft2: TPascalCodeFoldBlockType;
+begin
+  Result := False;
+
+  CurPosY := LogicalCaret.Y;
+  CurStartLevel := GetLevelBeforeCaret;
+  CurEndLevel := CurrentCodeFoldBlockLevel;
+  CurStartPosX := fTokenPos;                    // 0 based
+  CurEndPosX := Run;                            // 0 based
+
+  IF CurEndLevel > CurStartLevel then begin
+    // block open: begin or middle
+    if not (TopPascalCodeFoldBlockType in PascalWordTrippletRanges) then
+      exit;
+
+    Y1 := CurPosY;
+    XB1 := CurStartPosX;
+    XE1 := CurEndPosX;
+
+    Y3 := FindEnd(CurPosY, CurEndPosX, CurEndLevel, XB3, XE3, EndStartLevel);
+    if Y3 < 0 then exit(false);
+
+    Result := true;
+    if (EndStartLevel - CurrentCodeFoldBlockLevel = 1) then begin;
+      Y2:=-2;
+    end else begin
+      if CurStartLevel = CurrentCodeFoldBlockLevel
+      then Y2 := FindBegin(Y3, XB3, CurrentCodeFoldBlockLevel+1, XB2, XE2, ft)
+      else Y2 := FindBegin(Y3, XB3, CurrentCodeFoldBlockLevel, XB2, XE2, ft);
+      if not (ft in PascalWordTrippletRanges) then
+        Y2 := -1;
+    end;
+  end
+  else
+  if CurStartLevel - CurEndLevel = 1 then begin
+    // block end, 1 lvl
+    Y1 := FindBegin(CurPosY, CurStartPosX, CurEndLevel, XB1, XE1, ft);
+    if not (ft in PascalWordTrippletRanges) then
+      exit;
+    Y2 := CurPosY;
+    XB2 := CurStartPosX;
+    XE2 := CurEndPosX;
+    Y3 := -2;
+    Result := true;
+  end
+  else
+  if CurEndLevel < CurStartLevel then begin
+    // block end, 2 lvl
+    Y2 := FindBegin(CurPosY, CurStartPosX, CurEndLevel+1, XB2, XE2, ft);
+    Y1 := FindBegin(Y2, XB2, CurEndLevel,  XB1, XE1, ft2);
+    if not (ft in PascalWordTrippletRanges) then
+      Y2 := -1;
+    if not (ft2 in PascalWordTrippletRanges) then
+      Y1 := -1;
+    if (Y2 = -1) and (Y1 = -1) then
+      exit;
+    Y3 := CurPosY;
+    XB3 := CurStartPosX;
+    XE3 := CurEndPosX;
+    Result := true;
+  end;
+
+  inc(XB1);
+  inc(XE1);
+  inc(XB2);
+  inc(XE2);
+  inc(XB3);
+  inc(XE3);
 end;
 
 function TSynPasSyn.StartPascalCodeFoldBlock(
@@ -2446,6 +2656,7 @@ begin
   inherited Clear;
   FBracketNestLevel := 0;
   FLastLineCodeFoldLevelFix := 0;
+  FMinimumCodeFoldBlockLevel := 0;
 end;
 
 function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
@@ -2456,6 +2667,8 @@ begin
   if Result<>0 then exit;
   Result := BracketNestLevel - TSynPasSynRange(Range).BracketNestLevel;
   if Result<>0 then exit;
+  Result := FMinimumCodeFoldBlockLevel - TSynPasSynRange(Range).FMinimumCodeFoldBlockLevel;
+  if Result<>0 then exit;
   Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
 end;
 
@@ -2464,6 +2677,7 @@ begin
   inherited Assign(Src);
   FMode:=TSynPasSynRange(Src).FMode;
   FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
+  FMinimumCodeFoldBlockLevel := TSynPasSynRange(Src).FMinimumCodeFoldBlockLevel;
   FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
 end;
 

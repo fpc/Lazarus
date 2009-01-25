@@ -76,7 +76,7 @@ uses
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
 {$ifdef SYN_LAZARUS}
-  SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
+  SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
@@ -334,6 +334,7 @@ type
     fMarkupHighAll : TSynEditMarkupHighlightAll;
     fMarkupHighCaret : TSynEditMarkupHighlightAllCaret;
     fMarkupBracket : TSynEditMarkupBracket;
+    fMarkupWordGroup : TSynEditMarkupWordGroup;
     fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
@@ -1465,6 +1466,7 @@ begin
   fMarkupHighCaret.Selection := FBlockSelection;
   fMarkupHighAll   := TSynEditMarkupHighlightAll.Create(self);
   fMarkupBracket   := TSynEditMarkupBracket.Create(self);
+  fMarkupWordGroup := TSynEditMarkupWordGroup.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
   fMarkupSpecialLine := TSynEditMarkupSpecialLine.Create(self);
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
@@ -1475,6 +1477,7 @@ begin
   fMarkupManager.AddMarkUp(fMarkupHighAll);
   fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
   fMarkupManager.AddMarkUp(fMarkupBracket);
+  fMarkupManager.AddMarkUp(fMarkupWordGroup);
   fMarkupManager.AddMarkUp(fMarkupSelection);
   fMarkupManager.Lines := TSynEditStrings(FTheLinesView);
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
@@ -6218,6 +6221,7 @@ begin
     end;
     fHighlighter := Value;
     fMarkupHighCaret.Highlighter := Value;
+    fMarkupWordGroup.Highlighter := Value;
     {$IFDEF SYN_LAZARUS}
     if fHighlighter<>nil then begin
       fHighlighter.ResetRange;

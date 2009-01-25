@@ -49,7 +49,7 @@ uses
 {$ENDIF}
   SynEditTypes,
   SynEditMiscClasses,
-  SynEditTextBuffer;
+  SynEditTextBuffer, SynEditTextBase;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -288,6 +288,8 @@ type
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
+    Function GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
+         out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean; virtual;
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
@@ -1259,6 +1261,13 @@ begin
   fAttrChangeHooks.Remove(ANotifyEvent);
 end;
 
+function TSynCustomHighlighter.GetWordTriplet(LogicalCaret: TPoint;
+  Lines: TSynEditStrings; out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer
+  ): Boolean;
+begin
+  Result := False;
+end;
+
 procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
 begin
   if fEnabled <> Value then
@@ -1525,6 +1534,7 @@ begin
     // add a copy
     Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
+    if (FItems.Count mod 16) = 0 then DebugLn(['---------- TSynCustomHighlighterRanges  Nodes.Count = ', FItems.Count]);
   end;
   //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
 end;

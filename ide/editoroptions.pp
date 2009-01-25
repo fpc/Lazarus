@@ -40,7 +40,7 @@ uses
   Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
-  SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll,
+  SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
@@ -92,7 +92,7 @@ type
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
     ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
-    ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode);
+    ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode, ahaWordGroup);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
@@ -116,7 +116,8 @@ const
     'Modified line',
     'Code folding tree',
     'Highlight current word',
-    'Folded code'
+    'Folded code',
+    'Word-Brackets'
   );
 
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -171,7 +172,8 @@ const
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
       { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: $E6E6E6;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
-      { ahaFoldedCode         } (BG: clWhite;     FG: clSilver;   FC: clSilver; Styles: []; StylesMask: [])
+      { ahaFoldedCode         } (BG: clWhite;     FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -209,7 +211,8 @@ const
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: $303030;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
-      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: [])
+      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -247,7 +250,8 @@ const
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
-      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: [])
+      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -285,7 +289,8 @@ const
       { ahaModifiedLine       } (BG: clNone;      FG: clGreen;    FC: $00E9FC; Styles: []; StylesMask: []),
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
-      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: [])
+      { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -323,7 +328,8 @@ const
       { ahaModifiedLine       } (BG: $F4F4F4;     FG: clLime;      FC: clYellow;Styles: []; StylesMask: []),
       { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: []),
-      { ahaFoldedCode         } (BG: clDefault;   FG: $CC9999;     FC: $CC9999; Styles: []; StylesMask: [])
+      { ahaFoldedCode         } (BG: clDefault;   FG: $CC9999;     FC: $CC9999; Styles: []; StylesMask: []),
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -2323,6 +2329,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaFoldedCode, aSynEd.FoldedCodeColor);
   SetMarkupColor(aSynEd.Highlighter, ahaLineHighlight, aSynEd.LineHighlightColor);
   SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
+  SetMarkupColorByClass(ahaWordGroup, TSynEditMarkupWordGroup);
   SetGutterColorByClass(ahaLineNumber, TSynGutterLineNumber);
   SetGutterColorByClass(ahaModifiedLine, TSynGutterChanges);
   SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
