@@ -881,7 +881,7 @@ function TSynPasSyn.Func37: TtkTokenKind;
 begin
   if KeyComp('Begin') then begin
     // if we are in an include file, we may not know the state
-    if (fRange * [rsImplementation, rsInterface] = []) then begin
+    if (fRange * [rsImplementation, rsInterface] = []) then
       Include(fRange, rsImplementation);
     TSynPasSynRange(CodeFoldRange).BracketNestLevel := 0; // Reset in case of partial code
     if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
