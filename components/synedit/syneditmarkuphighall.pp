@@ -401,7 +401,7 @@ var
   Pos : Integer;
   ptStart, ptEnd, ptFoundStart, ptFoundEnd: TPoint;
 begin
-  if (fSearchString = '') then begin
+  if (fSearchString = '') or (not MarkupInfo.IsEnabled) then begin
     fMatches.Count := 0;
     exit;
   end;
