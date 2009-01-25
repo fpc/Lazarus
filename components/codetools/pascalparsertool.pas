@@ -467,7 +467,7 @@ var
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
-  DebugLn('TPascalParserTool.BuildTree A');
+  DebugLn('TPascalParserTool.BuildTree A ',MainFilename);
   {$ENDIF}
   ValidateToolDependencies;
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
@@ -482,7 +482,7 @@ begin
     exit;
   end;
   ClearLastError;
-//  DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
+  //DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
   //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(MemCheck_GetMem_Cnt));
   
   // scan code
