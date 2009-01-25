@@ -506,12 +506,15 @@ type
   { TQtGroupBox }
 
   TQtGroupBox = class(TQtWidget)
+  private
+    procedure setLayoutThemeMargins(ALayout: QLayoutH; AWidget: QWidgetH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     {$IFNDEF USE_QT_44}
     destructor Destroy; override;
     {$ENDIF}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
   end;
@@ -4450,6 +4453,49 @@ end;
 
 { TQtGroupBox }
 
+procedure TQtGroupBox.setLayoutThemeMargins(ALayout: QLayoutH; AWidget: QWidgetH);
+var
+  LeftMargin: Integer;
+  TopMargin: Integer;
+  RightMargin: Integer;
+  BottomMargin: Integer;
+  {$IFDEF LINUX}
+  {$IFNDEF QTOPIA}
+  Font: QFontH;
+  FontMetrics: QFontMetricsH;
+  FontHeight: Integer;
+  {$ENDIF}
+  {$ENDIF}
+begin
+  if ALayout = nil then
+    exit;
+
+  QWidget_getContentsMargins(AWidget,@LeftMargin, @TopMargin, @RightMargin, @BottomMargin);
+
+  {if contentsMargins TopMargin is huge then we must rethink about TopMargin
+   size (eg.oxygen theme have 32 top margin while plastique have 19
+   with same font height) }
+  {$IFDEF LINUX}
+  {$IFNDEF QTOPIA}
+
+  Font := QWidget_font(AWidget);
+  FontMetrics := QFontMetrics_create(Font);
+  try
+    FontHeight := QFontMetrics_height(FontMetrics);
+  finally
+    QFontMetrics_destroy(FontMetrics);
+  end;
+
+  {currently applies only to oxygen theme}
+  if (TopMargin - BottomMargin - 2) > FontHeight then
+    TopMargin := FontHeight + 2;
+
+  {$ENDIF}
+  {$ENDIF}
+  QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
+  QLayout_invalidate(ALayout);
+end;
+
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Layout: QBoxLayoutH;
@@ -4462,10 +4508,28 @@ begin
   Result := QGroupBox_create();
   FCentralWidget := QWidget_create(Result, 0);
   Layout := QVBoxLayout_create(Result);
+
   QLayout_addWidget(Layout, FCentralWidget);
-  QLayout_setSpacing(Layout, 0);
-  QLayout_setMargin(Layout, 0);
+
   QWidget_setLayout(Result, QLayoutH(Layout));
+  QWidget_setAttribute(Result, QtWA_LayoutOnEntireRect, True);
+  setLayoutThemeMargins(Layout, Result);
+end;
+
+function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+
+  case QEvent_type(Event) of
+    QEventFontChange,
+    QEventStyleChange: setLayoutThemeMargins(QWidget_layout(Widget), Widget);
+    else
+      Result := inherited EventFilter(Sender, Event);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4499,6 +4563,7 @@ end;
 procedure TQtGroupBox.setText(const W: WideString);
 begin
   QGroupBox_setTitle(QGroupBoxH(Widget), @W);
+  setLayoutThemeMargins(QWidget_Layout(Widget), Widget);
 end;
 
 { TQtFrame }
