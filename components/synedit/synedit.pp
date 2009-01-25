@@ -436,6 +436,7 @@ type
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 11926
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
+    fChangeStamp: int64;
     {$ENDIF}
 
     {$IFDEF SYN_LAZARUS}
@@ -596,6 +597,7 @@ type
     procedure Resize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
+    procedure IncreaseChangeStamp;
     {$ENDIF}
     procedure SetRealLines(const AValue : TStrings); override;
     function GetTheLinesView: TStrings; override;
@@ -877,6 +879,7 @@ type
     property UseUTF8: boolean read FUseUTF8;
     procedure Update; override;
     procedure Invalidate; override;
+    property ChangeStamp: int64 read fChangeStamp;
     {$ENDIF}
   public
     property OnKeyDown;
@@ -4441,6 +4444,14 @@ end;
 procedure TCustomSynEdit.RealSetText(const Value: TCaption);
 begin
   FLines.Text := Value; // Do not trim
+end;
+
+procedure TCustomSynEdit.IncreaseChangeStamp;
+begin
+  if fChangeStamp=High(fChangeStamp) then
+    fChangeStamp:=Low(fChangeStamp)
+  else
+    inc(fChangeStamp);
 end;
 {$ENDIF}
 
@@ -9169,6 +9180,8 @@ end;
 
 procedure TCustomSynEdit.SetModified(Value: boolean);
 begin
+  if Value then
+    IncreaseChangeStamp;
   if Value <> fModified then
   begin
     fModified := Value;
@@ -9802,6 +9815,7 @@ procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
 var
   Item: TSynEditUndoItem;
 begin
+  IncreaseChangeStamp;
   Item := TSynEditUndoList(Sender).PeekItem;
   if Item <> nil then
     TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,

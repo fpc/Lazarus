@@ -12113,7 +12113,8 @@ var i: integer;
     AnUnitInfo: TUnitInfo;
   begin
     GetUnitWithPageIndex(APageIndex,SrcEdit,AnUnitInfo);
-    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and (SrcEdit.Modified) then begin
+    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and SrcEdit.NeedsUpdateCodeBuffer then
+    begin
       SrcEdit.UpdateCodeBuffer;
       AnUnitInfo.Modified:=true;
     end;

@@ -109,6 +109,7 @@ type
     procedure IncreaseIgnoreCodeBufferLock; virtual; abstract;
     procedure DecreaseIgnoreCodeBufferLock; virtual; abstract;
     procedure UpdateCodeBuffer; virtual; abstract;// copy the source from EditorComponent to the codetools
+    function NeedsUpdateCodeBuffer: boolean; virtual; abstract;// needs UpdateCodeBuffer
 
     // search and replace
     function SearchReplace(const ASearch, AReplace: string;

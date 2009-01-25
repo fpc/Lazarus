@@ -119,6 +119,7 @@ type
 
     FCodeBuffer: TCodeBuffer;
     FIgnoreCodeBufferLock: integer;
+    FEditorStampCommitedToCodetools: int64;
 
     FPopUpMenu: TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
@@ -227,6 +228,7 @@ type
     procedure IncreaseIgnoreCodeBufferLock; override;
     procedure DecreaseIgnoreCodeBufferLock; override;
     procedure UpdateCodeBuffer; override;// copy the source from EditorComponent
+    function NeedsUpdateCodeBuffer: boolean; override;
 
     // find
     procedure StartFindAndReplace(Replace:boolean);
@@ -1697,10 +1699,6 @@ begin
 
   ecNone: ;
 
-  ecUndo:
-    if (FEditor.Modified=false) and (CodeBuffer<>nil) then
-      CodeBuffer.Assign(FEditor.Lines);
-
   else
     begin
       Handled:=false;
@@ -2299,6 +2297,7 @@ begin
       {$ENDIF}
       FEditor.BeginUpdate;
       FCodeBuffer.AssignTo(FEditor.Lines,true);
+      FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
       FEditor.EndUpdate;
     end;
     if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
@@ -2350,12 +2349,15 @@ procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
     end;
   end;
 
-var StartPos, EndPos, MoveToPos: TPoint;
+var
+  StartPos, EndPos, MoveToPos: TPoint;
+  CodeToolsInSync: Boolean;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
   {$ENDIF}
   if FIgnoreCodeBufferLock>0 then exit;
+  CodeToolsInSync:=FEditorStampCommitedToCodetools=FEditor.ChangeStamp;
   if SrcLogEntry<>nil then begin
     FEditor.BeginUpdate;
     FEditor.BeginUndoBlock;
@@ -2395,6 +2397,10 @@ begin
     FEditor.BeginUpdate;
     Sender.AssignTo(FEditor.Lines,false);
     FEditor.EndUpdate;
+  end;
+  if CodeToolsInSync then begin
+    // synedit and codetools were in sync -> mark as still in sync
+    FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
   end;
 end;
 
@@ -2443,22 +2449,27 @@ end;
 procedure TSourceEditor.UpdateCodeBuffer;
 // copy the source from EditorComponent to codetools
 begin
-  if not FEditor.Modified then exit;
+  if FEditor.ChangeStamp=FEditorStampCommitedToCodetools then exit;
   {$IFDEF IDE_DEBUG}
   if FCodeBuffer=nil then begin
-    writeln('');
-    writeln('*********** Oh, no: UpdateCodeBuffer ************');
-    writeln('');
+    debugln('');
+    debugln('*********** Oh, no: UpdateCodeBuffer ************ ');
+    debugln('');
   end;
   {$ENDIF}
   if FCodeBuffer=nil then exit;
+  DebugLn(['TSourceEditor.UpdateCodeBuffer ',FileName]);
   IncreaseIgnoreCodeBufferLock;
-  FModified:=FModified or FEditor.Modified;
   FEditor.BeginUpdate;
   FCodeBuffer.Assign(FEditor.Lines);
-  FEditor.Modified:=false;
+  FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
   FEditor.EndUpdate;
   DecreaseIgnoreCodeBufferLock;
+end;
+
+function TSourceEditor.NeedsUpdateCodeBuffer: boolean;
+begin
+  Result:=FEditor.ChangeStamp<>FEditorStampCommitedToCodetools;
 end;
 
 Function TSourceEditor.GetSource: TStrings;
@@ -2552,7 +2563,7 @@ end;
 
 Function TSourceEditor.GetModified: Boolean;
 Begin
-  Result := FEditor.Modified or FModified;
+  Result := FModified or FEditor.Modified;
 end;
 
 procedure TSourceEditor.SetModified(const NewValue: Boolean);
@@ -2563,8 +2574,9 @@ begin
   FModified := NewValue;
   if not FModified then
   begin
-    FEditor.Modified := False;
+    FEditor.Modified:=false; // needed for the undo stack
     FEditor.MarkTextAsSaved;
+    FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
   end;
   if OldModified <> Modified then
     UpdatePageName;
