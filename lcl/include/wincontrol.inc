@@ -3903,60 +3903,20 @@ begin
 end;
 
 function TWinControl.PerformTab(ForwardTab: boolean): boolean;
-
-  function GetHighestParent(TopControl : TControl) : TWinControl;
-  begin
-    Result := nil;
-    If TopControl = nil then exit;
-    If (TopControl.Parent=nil) then begin
-      if TopControl is TWinControl then
-        Result := TWinControl(TopControl)
-    end else
-      Result := GetHighestParent(TopControl.Parent);
-  end;
-
 var
-  I : Integer;
-  List : TFPList;
-  FirstFocus, OldFocus, NewFocus : TWinControl;
-  TopLevel : TWinControl;
+  NewFocus: TWinControl;
+  ParentForm: TCustomForm;
 begin
-  NewFocus := nil;
-  OldFocus := nil;
-  TopLevel := GetHighestParent(Self);
-  If TopLevel = nil then
-    exit;
-  try
-    List := TFPList.Create;
-    TopLevel.GetTabOrderList(List);
-    FirstFocus := nil;
-    for I := 0 to List.Count - 1 do
-      If List[I] <> nil then begin
-        If I = 0 then
-          FirstFocus := TWinControl(List[I]);
-        If TWinControl(List[I]).Focused then begin
-          OldFocus := TWinControl(List[I]);
-          Break;
-        end;
-      end;
-  finally
-    List.Free;
-  end;
+  Result := True;
+  ParentForm := GetParentForm(Self);
+  if ParentForm = nil then
+    Exit;
+  NewFocus := ParentForm.FindNextControl(Self, ForwardTab, True, False);
+  if NewFocus = nil then
+    Exit;
 
-  if OldFocus<>nil then
-    NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False);
-  //DebugLn('TControl.PerformTab A ',DbgSName(Self),' NewFocus=',DbgSName(NewFocus),' OldFocus=',DbgSName(OldFocus));
-
-  if (NewFocus = nil) then NewFocus:=FirstFocus;
-  if NewFocus = OldFocus then begin
-    Result := True;
-    exit;
-  end;
-  if NewFocus<>nil then begin
-    NewFocus.SetFocus;
-    Result := NewFocus.Focused;
-  end else
-    Result:=true;
+  NewFocus.SetFocus;
+  Result := NewFocus.Focused;
 end;
 
 {------------------------------------------------------------------------------
@@ -4045,56 +4005,61 @@ end;
 function TWinControl.FindNextControl(CurrentControl: TWinControl;
   GoForward, CheckTabStop, CheckParent: boolean): TWinControl;
 var
-  List : TFPList;
-  Next : TWinControl;
-  I, J : Longint;
+  List: TFPList;
+  Next: TWinControl;
+  I, J: Longint;
 begin
-  Try
+  try
     Result := nil;
     List := TFPList.Create;
     GetTabOrderList(List);
-    //for i:=0 to List.Count-1 do begin
-    //  debugln('TWinControl.FindNextControl TabOrderList ',dbgs(i),' ',DbgSName(TObject(List[i])));
-    //end;
-    If List.Count > 0 then begin
+    //for i:=0 to List.Count-1 do
+    //  debugln(['TWinControl.FindNextControl TabOrderList ',dbgs(i),' ',DbgSName(TObject(List[i]))]);
+    if List.Count > 0 then
+    begin
       J := List.IndexOf(CurrentControl);
-      if J<0 then begin
+      if J < 0 then
+      begin
         if GoForward then
           J := List.Count - 1
         else
           J := 0;
       end;
-      //DebugLn('TWinControl.FindNextControl A ',DbgSName(CurrentControl),' ',dbgs(J),
-      //  ' GoForward='+dbgs(GoForward)+' CheckTabStop='+dbgs(CheckTabStop)+' CheckParent='+dbgs(CheckParent));
+      //DebugLn(['TWinControl.FindNextControl A ',DbgSName(CurrentControl),' ',dbgs(J),
+      //  ' GoForward='+dbgs(GoForward)+' CheckTabStop='+dbgs(CheckTabStop)+' CheckParent='+dbgs(CheckParent)]);
       I := J;
-      Repeat
-        If GoForward then begin
+      repeat
+        if GoForward then
+        begin
           Inc(I);
-          if I>=List.Count then
-            I:=0;
-        end else begin
+          if I >= List.Count then
+            I := 0;
+        end else
+        begin
           Dec(I);
-          if I<0 then
-            I:=List.Count-1;
+          if I < 0 then
+            I := List.Count - 1;
         end;
 
         Next := TWinControl(List[I]);
-        if Next = CurrentControl then
-          Exit;
-        //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
-        //  +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
-        //  +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
-        //  +' Enabled='+dbgs(Next.Enabled)
-        //  +' TestTab='+dbgs(((Not CheckTabStop) or Next.TabStop))
-        //  +' TestPar='+dbgs(((not CheckParent) or (Next.Parent = Self)))
-        //  +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)
-        //  );
-        If (((not CheckTabStop) or Next.TabStop)
+{        DebugLn(['TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
+          ' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
+          +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
+          +' Enabled='+dbgs(Next.Enabled)
+          +' TestTab='+dbgs(((Not CheckTabStop) or Next.TabStop))
+          +' TestPar='+dbgs(((not CheckParent) or (Next.Parent = Self)))
+          +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)]);}
+        if (((not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.IsVisible) then
           Result := Next;
+
+        // if we reached the start then exit because we traversed the loop and
+        // did not find any control
+        if I = J then
+          break;
       until (Result <> nil);
-      //DebugLn('TWinControl.FindNextControl END ',DbgSName(Result),' I=',dbgs(I));
+      //DebugLn(['TWinControl.FindNextControl END ',DbgSName(Result),' I=',dbgs(I)]);
     end;
   finally
     List.Free;
@@ -4150,13 +4115,14 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.GetTabOrderList(List: TFPList);
 var
-  I : Integer;
-  lWinControl : TWinControl;
+  I: Integer;
+  lWinControl: TWinControl;
 begin
   if FTabList <> nil then
-    for I := 0 to FTabList.Count - 1 do begin
+    for I := 0 to FTabList.Count - 1 do
+    begin
       lWinControl := TWinControl(FTabList[I]);
-      if lWinControl.CanTab and lWinControl.TabStop then
+      if lWinControl.CanFocus then
         List.Add(lWinControl);
       lWinControl.GetTabOrderList(List);
     end;
