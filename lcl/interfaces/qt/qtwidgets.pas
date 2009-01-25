@@ -168,6 +168,7 @@ type
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
+    function getVisibleTo(AWidget: QWidgetH): Boolean; virtual;
     function getParent: QWidgetH;
     function getPos: TQtPoint;
     function getFrameSize: TSize;
@@ -2795,6 +2796,11 @@ end;
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
+end;
+
+function TQtWidget.getVisibleTo(AWidget: QWidgetH): Boolean;
+begin
+  Result := QWidget_isVisibleTo(Widget, AWidget);
 end;
 
 function TQtWidget.getParent: QWidgetH;
@@ -8716,10 +8722,10 @@ begin
 
   if not FFrameOnlyAroundContents then
   begin
-    if (verticalScrollBar.getVisible) then
+    if (verticalScrollBar.getVisibleTo(Widget)) then
         dec(Result.Right, verticalScrollBar.getWidth);
 
-    if (horizontalScrollBar.getVisible) then
+    if (horizontalScrollBar.getVisibleTo(Widget)) then
       dec(Result.Bottom, horizontalScrollBar.getHeight);
   end;
 end;
