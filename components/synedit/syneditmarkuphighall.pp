@@ -387,7 +387,7 @@ begin
   if fSearchString = '' then exit;
 
   FindInitialize(true);
-  ptStart := Point(1, 1);
+  ptStart := Point(1, Max(1, TopLine-100));
   ptEnd.Y := TopLine;
   ptEnd.X := 1;
   if fSearch.FindNextOne(Lines, ptStart, ptEnd, ptFoundStart, ptFoundEnd)
@@ -418,7 +418,7 @@ begin
   Pos := 0;
 
   FindInitialize(false);
-  ptEnd.Y:= Lines.Count;
+  ptEnd.Y:= min(TCustomSynEdit(SynEdit).ScreenRowToRow(LinesInWindow)+100, Lines.Count);
   ptEnd.X:= Length(Lines[ptEnd.y - 1]);
 
   While (true) do begin
