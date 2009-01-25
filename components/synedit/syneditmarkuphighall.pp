@@ -503,7 +503,6 @@ begin
   if (fSearchString = '') then
   exit;
 
-  ValidateMatches;
   if HideSingleMatch and (fMatches.Count <= 1) then exit;
 
   Pos:= 0;
@@ -538,7 +537,6 @@ begin
   if (fSearchString = '') then
   exit;
 
-  ValidateMatches;
   if HideSingleMatch and (fMatches.Count <= 1) then exit;
 
   Pos:= 0;
