@@ -1534,7 +1534,6 @@ begin
     // add a copy
     Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
-    if (FItems.Count mod 16) = 0 then DebugLn(['---------- TSynCustomHighlighterRanges  Nodes.Count = ', FItems.Count]);
   end;
   //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
 end;
