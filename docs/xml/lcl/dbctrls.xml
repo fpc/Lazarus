@@ -5330,7 +5330,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- object Visibility: default -->
       <element name="TDBNavDataLink">
-        <short/>
+        <short>
+          <var>TDBNavDataLink</var> - provides a link between a Database Navigator and a DataSet</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5343,31 +5344,37 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBNavDataLink.EditingChanged">
-        <short/>
+        <short>
+          <var>EditingChanged</var> - method to process a change in the <var>Editing</var> property of the navigator</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBNavDataLink.DataSetChanged">
-        <short/>
+        <short>
+          <var>DataSetChanged</var> - method to process a change in the data set attached to the navigator</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBNavDataLink.ActiveChanged">
-        <short/>
+        <short>
+          <var>ActiveChanged</var> - method to process a change in the <var>Active</var> property of the navigator</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBNavDataLink.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for TDBNavDataLink: calls inherited <var>Create</var>, attaches <var>Navigator</var> and sets <var>VisualControl</var> to True</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDBNavDataLink.Create.TheNavigator">
@@ -5375,10 +5382,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBNavDataLink.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBNavDataLink</var>: frees <var>Navigator</var> and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy"/>
+        </seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TDBNavigator">
