@@ -305,6 +305,7 @@ type
 
   TQtAbstractScrollArea = class(TQtFrame)
   private
+    FFrameOnlyAroundContents: Boolean;
     FCornerWidget: TQtWidget;
     FViewPortWidget: TQtViewPort;
     FHScrollbar: TQtScrollBar;
@@ -8409,6 +8410,10 @@ begin
   FHasPaint := True;
   FViewPortWidget := nil;
   Result := QLCLAbstractScrollArea_create();
+
+  FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
+    QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
+
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
 end;
@@ -8448,6 +8453,13 @@ begin
       Result := inherited EventFilter(Sender, Event)
     else
       Result := False;  
+  end else
+  if QEvent_type(Event) = QEventStyleChange then
+  begin
+    Result := False;
+    QEvent_accept(Event);
+    FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
+      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
   end else
     Result := inherited EventFilter(Sender, Event);
 end;
@@ -8702,11 +8714,14 @@ function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
   QWidget_contentsRect(Widget, @Result);
 
-  if (verticalScrollBar.getVisible) then
-    dec(Result.Right, verticalScrollBar.getWidth);
+  if not FFrameOnlyAroundContents then
+  begin
+    if (verticalScrollBar.getVisible) then
+        dec(Result.Right, verticalScrollBar.getWidth);
 
-  if (horizontalScrollBar.getVisible) then
-    dec(Result.Bottom, horizontalScrollBar.getHeight);
+    if (horizontalScrollBar.getVisible) then
+      dec(Result.Bottom, horizontalScrollBar.getHeight);
+  end;
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
