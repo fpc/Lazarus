@@ -8662,9 +8662,9 @@ begin
         DebugLn('  there is a modal form above -> focus forbidden');
         {$EndIf}
         exit;
-      end
+      end{
       else
-        SetForegroundWindow(NewForm.Handle);
+        SetForegroundWindow(NewForm.Handle)};
     end;
 
     NewFocusWidget := FindFocusWidget(Widget);
