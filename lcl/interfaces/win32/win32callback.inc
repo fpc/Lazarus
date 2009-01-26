@@ -1126,7 +1126,6 @@ var
   begin
     Result := false;
     UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
-    lWinControl := WindowInfo^.WinControl;
     if Assigned(lWinControl) then
     begin
       Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
