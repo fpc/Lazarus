@@ -825,22 +825,31 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateVisible;
 
+  function UseAppTaskbarItem(AForm: TCustomForm): Boolean; inline;
+  begin
+    Result := (AForm = MainForm) or (AForm.ShowInTaskBar in [stNever, stDefault]);
+  end;
+
   function HasVisibleForms: Boolean;
   var
     i: integer;
+    AForm: TCustomForm;
   begin
     Result := False;
     for i := 0 to Screen.CustomFormCount - 1 do
-      if Screen.CustomForms[i].Visible and (Screen.CustomForms[i].Parent = nil) then
+    begin
+      AForm := Screen.CustomForms[i];
+      if AForm.Visible and (AForm.Parent = nil) and UseAppTaskbarItem(AForm) then
       begin
         Result := True;
         break;
       end;
+    end;
   end;
 
 begin
-  // if there are visible forms then application task bar item must be visible too
-  // else hide it
+  // if there are visible forms wich shares application taskbar item then application
+  // task bar item must be visible too else hide it
   WidgetSet.AppSetVisible(HasVisibleForms);
 end;
 
