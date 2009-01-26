@@ -1196,22 +1196,28 @@ Descendent classes can override this method to provide a different result.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMenuItem.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TMenuItem.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TMenuItem</var>: calls inherited <var>Create</var> then intialises a large number of local variables</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TMenuItem.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TMenuItem.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TMenuItem.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TMenuItem</var>: releases bitmaps, handles, imagelists, actionlinks and parent controls, then calls inherited <var>Destroy</var> and </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.GetImageList">
@@ -1907,22 +1913,30 @@ Descendent classes can override this method to provide a different result.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMenu.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TMenu.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TMenu</var>: creates menuitems and links, sets some defaults then calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TMenu.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TMenu.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TMenu.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TMenu</var>: frees items and links, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMenu.DestroyHandle">
@@ -2066,11 +2080,15 @@ customise by choosing various menu items.</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMainMenu.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TMainMenu.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TMainMenu</var>: sets style to <var>MainMenu</var> then calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Menus.TMenu.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TMainMenu.Create.AOwner">
@@ -2159,22 +2177,29 @@ customise by choosing various menu items.</p>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPopupMenu.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TPopupMenu.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TPopupMenu</var>: calls inherited <var>Create</var>, sets style to <var>PopupMenu</var>, sets <var>AutoPopup</var> to True</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Menus.TMenu.Create"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPopupMenu.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPopupMenu.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TPopupMenu.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TPopupMenu</var>: closes window then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Menus.TMenu.Destroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPopupMenu.PopUp">
