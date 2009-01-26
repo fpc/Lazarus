@@ -71,6 +71,8 @@ type
   end;
 
 
+procedure UpdateFloatSpinEditControl(const Handle: HWND;
+  const AFloatSpinEdit: TCustomFloatSpinEdit);
 procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
   const ANewValue: Double);
 
@@ -100,6 +102,21 @@ begin
     if HWND(WPARAM)<>BuddyWindow then ;
       // for LCL controls this is done in win32callback.inc
       Windows.SendMessage(BuddyWindow, EM_SETSEL, 0, -1);
+  end;
+end;
+
+function SpinBuddyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  AWindowInfo: PWindowInfo;
+begin
+  Result := WindowProc(Window, Msg, WParam, LParam);
+  if Msg = WM_KILLFOCUS then
+  begin
+    AWindowInfo := GetWindowInfo(Window);
+    if AWindowInfo^.AWinControl is TCustomFloatSpinEdit then
+      UpdateFloatSpinEditControl(AWindowInfo^.AWinControl.Handle,
+        TCustomFloatSpinEdit(AWindowInfo^.AWinControl));
   end;
 end;
 
@@ -161,7 +178,7 @@ begin
   FinishCreateWindow(AWinControl, Params, true);
   UpdateFloatSpinEditControl(Params.Window, TCustomFloatSpinEdit(AWinControl));
   // init buddy
-  Params.SubClassWndProc := @WindowProc;
+  Params.SubClassWndProc := @SpinBuddyWindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
   Params.BuddyWindowInfo^.isChildEdit := true;
   // make possible LCL Wincontrol identification by Buddy handle
