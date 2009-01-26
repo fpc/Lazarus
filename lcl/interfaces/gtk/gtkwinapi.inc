@@ -8610,16 +8610,16 @@ var
   NewTopLevelObject: TObject;
   NewForm: TCustomForm;
 begin
-  if hWnd=0 then exit(0);
+  if hwnd = 0 then
+  begin
+    Result:=0;
+    exit;
+  end;
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
   debugln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
   {$EndIf}
-  if hwnd = 0 then begin
-    Result:=0;
-    exit;
-  end;
 
   // return the old focus handle
   Result := GetFocus;
@@ -8637,8 +8637,8 @@ begin
 
   if Result=hWnd then exit;
 
-  if GtkWidgetIsA(TopLevel, gtk_window_get_type)
-  then begin
+  if GtkWidgetIsA(TopLevel, gtk_window_get_type) then
+  begin
     // TopLevel is a gtkwindow
     {$IfDef VerboseFocus}
     AWinControl:=TWinControl(GetNearestLCLObject(PGtkWindow(TopLevel)^.focus_widget));
@@ -8652,16 +8652,19 @@ begin
     {$EndIf}
 
     NewTopLevelObject:=GetNearestLCLObject(TopLevel);
-    if (NewTopLevelObject is TCustomForm) then begin
-      NewForm:=TCustomForm(NewTopLevelObject);
-      if Screen.GetCurrentModalFormZIndex>Screen.CustomFormZIndex(NewForm) then
+    if (NewTopLevelObject is TCustomForm) then
+    begin
+      NewForm := TCustomForm(NewTopLevelObject);
+      if Screen.GetCurrentModalFormZIndex > Screen.CustomFormZIndex(NewForm) then
       begin
         // there is a modal form above -> focus forbidden
         {$IfDef VerboseFocus}
         DebugLn('  there is a modal form above -> focus forbidden');
         {$EndIf}
         exit;
-      end;
+      end
+      else
+        SetForegroundWindow(NewForm.Handle);
     end;
 
     NewFocusWidget := FindFocusWidget(Widget);
@@ -8778,7 +8781,7 @@ begin
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
-      {$IFDEF GTK1}
+{$IFDEF GTK1}
       FormWidget:=PGtkWidget(AForm.Handle);
       FormWindow:=PGdkWindowPrivate(FormWidget^.window);
       if FormWindow<>nil then begin
@@ -8796,11 +8799,10 @@ begin
           //       bringing the window to the current desktop
         end;
       end;
-      {$ENDIF}
-{$ifdef gtk2}
+{$ELSE}
       // this currently will bring the window to the current desktop and focus it
       gtk_window_present(PGtkWindow(hWnd));
-{$endif gtk2}
+{$ENDIF}
     end;
   end;
 end;
