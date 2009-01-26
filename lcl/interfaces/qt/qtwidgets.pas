@@ -653,6 +653,7 @@ type
     procedure SignalCurrentChanged(Index: Integer); cdecl;
     procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
   public
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
@@ -664,7 +665,6 @@ type
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
     procedure setCurrentWidget(APage: TQtWidget);
-    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: WideString);
     function tabAt(APoint: TPoint): Integer;
@@ -1380,7 +1380,7 @@ begin
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
     if LCLObject.TabStop then
-      setFocusPolicy(QtStrongFocus)
+      setFocusPolicy(QtClickFocus)
     else
       setFocusPolicy(QtNoFocus);
   end;
@@ -1423,7 +1423,7 @@ begin
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
     if LCLObject.TabStop then
-      setFocusPolicy(QtStrongFocus)
+      setFocusPolicy(QtClickFocus)
     else
       setFocusPolicy(QtNoFocus);
   end;
@@ -1724,7 +1724,10 @@ begin
       QEventKeyPress,
       QEventKeyRelease:
         begin
-          Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
+          {non-spontaneous key events are garbage}
+          Result := QEvent_spontaneous(Event);
+          if Result then
+            Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
         end;
 
       QEventMouseButtonPress,
@@ -5746,7 +5749,12 @@ begin
 
     case QEvent_type(Event) of
       QEventKeyPress,
-      QEventKeyRelease: SlotKey(Sender, Event);
+      QEventKeyRelease:
+      begin
+        Result := QEvent_spontaneous(Event);
+        if Result then
+          Result := SlotKey(Sender, Event);
+      end;
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
@@ -5837,11 +5845,6 @@ begin
   APage.setFocus;
 end;
 
-procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
-begin
-  QWidget_setFocusPolicy(TabBar, QtNoFocus);
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtTabWidget.setTabPosition
   Params:  None
@@ -5930,6 +5933,13 @@ begin
     end;
   end;
   SlotMouse(Sender, Event);
+end;
+
+procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  inherited setFocusPolicy(APolicy);
+  if FTabBar <> nil then
+    QWidget_setFocusPolicy(FTabBar, APolicy);
 end;
 
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
