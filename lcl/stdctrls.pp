@@ -1017,6 +1017,7 @@ type
     procedure Click; override;
     function ColorIsStored: boolean; override;
     procedure Loaded; override;
+    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;

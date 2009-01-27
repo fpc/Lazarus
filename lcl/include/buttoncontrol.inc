@@ -51,6 +51,12 @@ begin
   fLastCheckedOnChange:=Checked;
 end;
 
+procedure TButtonControl.CMWantSpecialKey(var Message: TLMessage);
+begin
+  // button controls dont want any special keys
+  Message.Result := 0;
+end;
+
 procedure TButtonControl.Click;
 begin
   DoOnChange;

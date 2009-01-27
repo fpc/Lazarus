@@ -118,7 +118,7 @@ begin
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;
   FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
-                  anoEscapeForCancelControl,anoF1ForHelp];
+                  anoEscapeForCancelControl,anoF1ForHelp,anoArrowToSelectNextInParent];
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
 
@@ -1445,19 +1445,20 @@ procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
 var
   AControl: TWinControl;
 begin
-  if Sender is TWinControl then begin
-    AControl:=TWinControl(Sender);
-    if AControl=nil then ;
+  if Sender is TWinControl then
+  begin
+    AControl := TWinControl(Sender);
     //debugln('TApplication.ControlKeyDown A ',DbgSName(AControl));
-    FLastKeyDownSender:=AControl;
+    FLastKeyDownSender := AControl;
 
     // handle navigation key
     DoTabKey(AControl, Key, Shift);
+    DoArrowKey(AControl, Key, Shift);
   end else
-    FLastKeyDownSender:=nil;
+    FLastKeyDownSender := nil;
   //DebugLn(['TApplication.ControlKeyDown Sender=',DbgSName(Sender),' Key=',Key,' Shift=',dbgs(Shift)]);
-  FLastKeyDownKey:=Key;
-  FLastKeyDownShift:=Shift;
+  FLastKeyDownKey := Key;
+  FLastKeyDownShift := Shift;
 end;
 
 procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
@@ -1730,6 +1731,20 @@ begin
     TDropFilesEvent(FApplicationHandlers[ahtDropFiles][i])(Self,Filenames);
 end;
 
+procedure TApplication.DoArrowKey(AControl: TWinControl; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) and (Shift = []) and
+     (anoArrowToSelectNextInParent in Navigation) and AControl.Focused and
+     (AControl.Parent <> nil) and
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) then
+  begin
+    // traverse controls inside parent
+    AControl.Parent.SelectNext(AControl, Key in [VK_RIGHT, VK_DOWN], False);
+    Key := VK_UNKNOWN;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 ------------------------------------------------------------------------------}
@@ -1823,12 +1838,13 @@ end;
 procedure TApplication.DoTabKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key=VK_Tab) and ((Shift-[ssShift])=[])
-  and (anoTabToSelectNext in Navigation)
-  and AControl.Focused then
+  if (Key = VK_TAB) and ((Shift - [ssShift]) = []) and
+     (anoTabToSelectNext in Navigation) and AControl.Focused and
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) then
   begin
-    Key:=VK_UNKNOWN;
+    // traverse tabstop controls inside form
     AControl.PerformTab(not (ssShift in Shift));
+    Key := VK_UNKNOWN;
   end;
 end;
 

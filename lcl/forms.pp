@@ -930,7 +930,8 @@ type
     anoTabToSelectNext,
     anoReturnForDefaultControl,
     anoEscapeForCancelControl,
-    anoF1ForHelp
+    anoF1ForHelp,
+    anoArrowToSelectNextInParent
     );
   TApplicationNavigationOptions = set of TApplicationNavigationOption;
 
@@ -1160,11 +1161,14 @@ type
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);
   public
+    procedure DoArrowKey(AControl: TWinControl; var Key: Word;
+      Shift: TShiftState);
     procedure DoEscapeKey(AControl: TWinControl; var Key: Word;
-                          Shift: TShiftState);
+      Shift: TShiftState);
     procedure DoReturnKey(AControl: TWinControl; var Key: Word;
-                          Shift: TShiftState);
-    procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
+      Shift: TShiftState);
+    procedure DoTabKey(AControl: TWinControl; var Key: Word;
+      Shift: TShiftState);
 
     property Active: boolean read GetActive;
     property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
