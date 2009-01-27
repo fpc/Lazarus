@@ -1082,7 +1082,7 @@ class procedure TWin32WSCustomEdit.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, 'Fj', PreferredWidth, PreferredHeight) then
   begin
     PreferredWidth := 0;
     Inc(PreferredHeight, 10);
