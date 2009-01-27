@@ -5749,12 +5749,7 @@ begin
 
     case QEvent_type(Event) of
       QEventKeyPress,
-      QEventKeyRelease:
-      begin
-        Result := QEvent_spontaneous(Event);
-        if Result then
-          Result := SlotKey(Sender, Event);
-      end;
+      QEventKeyRelease: SlotKey(Sender, Event);
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
@@ -5785,7 +5780,12 @@ begin
         end;
       end;
     end;
-    Result := inherited EventFilter(Sender, Event);
+    case QEvent_type(Event) of
+      QEventKeyPress,
+      QEventKeyRelease: QEvent_ignore(Event);
+      else
+        Result := inherited EventFilter(Sender, Event);
+    end;
   end;
 
   EndEventProcessing;
@@ -5938,8 +5938,6 @@ end;
 procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   inherited setFocusPolicy(APolicy);
-  if FTabBar <> nil then
-    QWidget_setFocusPolicy(FTabBar, APolicy);
 end;
 
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
