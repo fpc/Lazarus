@@ -412,7 +412,8 @@ type
     wwiNotOnParentsClientArea,
     wwiValidQueuedEvent,              // Mark this widgetinfo as valid queued proc
                                       // see gtkwsmenus.pp: gtkWSPopupMenuDeactivate
-    wwiDeactivating    // during gtk deactivate
+    wwiDeactivating,                  // during gtk deactivate
+    wwiActivating                     // during gtk activate
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
   tGtkStateEnumRange = 0..31;

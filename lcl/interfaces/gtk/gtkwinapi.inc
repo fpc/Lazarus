@@ -8603,6 +8603,7 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
 {off $DEFINE VerboseFocus}
 var
   Widget, TopLevel, NewFocusWidget: PGtkWidget;
+  Info: PWidgetInfo;
   {$IfDef VerboseFocus}
   AWinControl: TWinControl;
   {$EndIf}
@@ -8623,7 +8624,7 @@ begin
 
   // return the old focus handle
   Result := GetFocus;
-  NewFocusWidget:=nil;
+  NewFocusWidget := nil;
 
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
@@ -8662,9 +8663,7 @@ begin
         DebugLn('  there is a modal form above -> focus forbidden');
         {$EndIf}
         exit;
-      end{
-      else
-        SetForegroundWindow(NewForm.Handle)};
+      end;
     end;
 
     NewFocusWidget := FindFocusWidget(Widget);
@@ -8678,14 +8677,15 @@ begin
     write(' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel)));
     DebugLn('');
     {$EndIf}
-    if (NewFocusWidget<>nil) and GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then begin
-      if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
-      then begin
+    if (NewFocusWidget<>nil) and GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then
+    begin
+      if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget) then
+      begin
         {$IfDef VerboseFocus}
         DebugLn('  H SETTING NewFocusWidget=',dbgs(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
         {$EndIf}
         //DebugLn('TGtkWidgetSet.SetFocus TopLevel[',DebugGtkWidgets.GetInfo(TopLevel,false),'] NewFocusWidget=[',DebugGtkWidgets.GetInfo(NewFocusWidget,false),']');
-        gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
+        gtk_window_set_focus(PGtkWindow(TopLevel), NewFocusWidget);
         {$IfDef VerboseFocus}
         DebugLn('  I NewTopLevel FocusWidget=',DbgS(PGtkWindow(TopLevel)^.Focus_Widget),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
         {$EndIf}
@@ -8700,9 +8700,10 @@ begin
   begin
     // grab the focus to the parent window
     NewTopLevelWidget := gtk_widget_get_toplevel(NewFocusWidget);
+    NewTopLevelObject := GetNearestLCLObject(NewTopLevelWidget);
     if (Screen<>nil)
     and (Screen.GetCurrentModalForm<>nil)
-    and (GetNearestLCLObject(NewTopLevelWidget)<>Screen.GetCurrentModalForm)
+    and (NewTopLevelObject <>Screen.GetCurrentModalForm)
     then begin
       {$IFDEF VerboseFocus}
       DebugLn('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
@@ -8711,6 +8712,12 @@ begin
       {$IfDef VerboseFocus}
       DebugLn('  J Grabbing focus ',GetWidgetDebugReport(NewFocusWidget));
       {$EndIf}
+      if NewTopLevelObject is TCustomForm then
+      begin
+        Info := GetWidgetInfo(NewTopLevelWidget, False);
+        if (Info <> nil) and not (wwiActivating in  Info^.Flags) then
+          SetForegroundWindow(TCustomForm(NewTopLevelObject).Handle);
+      end;
       gtk_widget_grab_focus(NewFocusWidget);
     end;
   end;

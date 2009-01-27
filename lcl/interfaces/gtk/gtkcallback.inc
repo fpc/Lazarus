@@ -632,7 +632,8 @@ end;
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
-  Mess : TLMActivate;
+  Mess: TLMActivate;
+  Info: PWidgetInfo;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -677,14 +678,22 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  Mess.Msg := LM_ACTIVATE;
-  Mess.Active:=true;
-  Mess.Minimized:=false;
-  Mess.ActiveWindow:=0;
-  if GtkWidgetIsA(Widget, gtk_window_get_type) then
-    Mess.ActiveWindow:=HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
-  Mess.Result := 0;
-  DeliverMessage(Data, Mess); // send message directly (not Post)
+  Info := GetWidgetInfo(Widget, false);
+  try
+    if (Info <> nil) then
+      Include(Info^.Flags, wwiActivating);
+    Mess.Msg := LM_ACTIVATE;
+    Mess.Active := True;
+    Mess.Minimized := False;
+    Mess.ActiveWindow := 0;
+    if GtkWidgetIsA(Widget, gtk_window_get_type) then
+      Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
+    Mess.Result := 0;
+    DeliverMessage(Data, Mess); // send message directly (not Post)
+  finally
+    if Info <> nil then
+      Exclude(Info^.Flags, wwiActivating);
+  end;
 
   Result := CallBackDefaultReturn;
 end;
@@ -692,7 +701,7 @@ end;
 function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
-  Mess : TLMActivate;
+  Mess: TLMActivate;
   Info: PWidgetInfo;
 {$IFDEF VerboseFocus}
   LCLObject: TControl;
