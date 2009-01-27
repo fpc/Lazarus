@@ -3144,7 +3144,7 @@ end;
   TControl SetParentComponent
 ------------------------------------------------------------------------------}
 procedure TControl.SetParentComponent(NewParentComponent: TComponent);
-Begin
+begin
   if (NewParentComponent is TWinControl) then
     SetParent(TWinControl(NewParentComponent));
 end;

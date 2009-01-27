@@ -58,30 +58,9 @@ begin
   inherited ControlKeyDown(Key, Shift);
 end;
 
-procedure TCustomButton.ControlKeyUp(var Key: Word; Shift: TShiftState
-  );
+procedure TCustomButton.ControlKeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited ControlKeyUp(Key, Shift);
-end;
-
-{------------------------------------------------------------------------------
-  procedure TCustomButton.SetParent(AParent: TWinControl);
- ------------------------------------------------------------------------------}
-procedure TCustomButton.SetParent(AParent: TWinControl);
-var
-  Form: TCustomForm;
-begin
-  if Parent=AParent then exit;
-  inherited SetParent(AParent);
-  Form := GetParentForm(Self);
-  if Form <> nil then
-  begin
-    if FDefault then
-      Form.DefaultControl := Self;
-    if FCancel then
-      Form.CancelControl := Self;
-  end;
-  WSSetDefault;
 end;
 
 procedure TCustomButton.UpdateRolesForForm;
@@ -302,6 +281,23 @@ begin
     Parent.AdjustSize;
   AdjustSize;
   inherited TextChanged;
+end;
+
+procedure TCustomButton.Loaded;
+var
+  Form: TCustomForm;
+begin
+  inherited Loaded;
+
+  Form := GetParentForm(Self);
+  if Form <> nil then
+  begin
+    if FDefault then
+      Form.DefaultControl := Self;
+    if FCancel then
+      Form.CancelControl := Self;
+  end;
+  WSSetDefault;
 end;
 
 {------------------------------------------------------------------------------

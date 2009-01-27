@@ -61,7 +61,6 @@ type
     FSpacing: TSpacingSize;
     procedure CreateButton(AButton: TPanelButton);
     procedure DoDefaultButton;
-    procedure DoRestoreCancel;
     procedure DoShowButtons;
     procedure DoShowGlyphs;
     procedure SetButtonOrder(Value: TButtonOrder);
@@ -317,15 +316,6 @@ begin
   end;
 end;
 
-procedure TCustomButtonPanel.DoRestoreCancel;
-begin
-  if FButtons[pbCancel] = nil then Exit;
-
-  // to restore cancel button we need to do this hack
-  FButtons[pbCancel].Cancel := False;
-  FButtons[pbCancel].Cancel := True;
-end;
-
 procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButton);
 begin
   if FDefaultButton = Value then
@@ -359,7 +349,6 @@ procedure TCustomButtonPanel.Loaded;
 begin
   inherited Loaded;
 
-  DoRestoreCancel;
   Realign;
 end;
 

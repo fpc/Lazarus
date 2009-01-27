@@ -1060,7 +1060,6 @@ type
     procedure CreateWnd; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
-    procedure SetParent(AParent: TWinControl); override;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -1068,6 +1067,7 @@ type
     procedure WSSetDefault;
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
