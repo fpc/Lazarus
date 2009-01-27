@@ -1618,9 +1618,11 @@ end;
     AWinControl: TWinControl);
 
   Translate a gdk mouse release event into a LCL mouse up message and send it.
+
+  returns true, if message was handled by LCL
 -------------------------------------------------------------------------------}
-procedure DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
-  AWinControl: TWinControl);
+function DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
+  AWinControl: TWinControl): boolean;
 var
   MessI : TLMMouse;
   ShiftState: TShiftState;
@@ -1635,6 +1637,7 @@ var
  end;
 
 begin
+  Result:=false;
   if (Widget=nil) then ;
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
@@ -1681,6 +1684,7 @@ begin
       // handled by the LCL
       //DebugLn(['DeliverMouseUpMessage msg was handled by the LCL, Stopping signal ...']);
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
+      Result:=true;
     end;
   end;
 end;
@@ -1702,10 +1706,11 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-  DebugLn('[gtkMouseBtnRelease] A ',DbgSName(TObject(Data)),' ',
+  DebugLn(['[gtkMouseBtnRelease] A ',DbgSName(TObject(Data)),' ',
     ' Widget=',DbgS(Widget),
-    ' DSO=',dbgs(DesignOnlySignal),
-    ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
+    ' Event.time=',event^.time,
+    ' DSO=',DesignOnlySignal,
+    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),' Btn=',event^.Button]);
   {$ENDIF}
 
   //DebugLn('EEE1 MouseRelease Widget=',DbgS(Widget),
@@ -1729,10 +1734,12 @@ begin
     and (not (TControl(Data) is TCustomTabControl))
     then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
+      Result := not CallBackDefaultReturn;
     end;
   end;
 
-  DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
+  if DeliverMouseUpMessage(Widget,Event,TWinControl(Data)) then
+    Result := not CallBackDefaultReturn;
 end;
 
 {-------------------------------------------------------------------------------

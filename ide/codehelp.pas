@@ -1359,7 +1359,7 @@ begin
     and (not CheckIfInLazarus(Result))
     then begin
       // not found
-      DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource WARNING: file without owner: ',SrcFilename]);
+      DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename]);
     end;
 
     // save to cache
