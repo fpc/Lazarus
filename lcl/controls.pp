@@ -192,7 +192,7 @@ type
     csQuadClicks,            // control understands mouse quad clicks
     csFixedWidth,
     csFixedHeight,           // control cannot change it height (for example combobox)
-    csNoDesignVisible,
+    csNoDesignVisible,       // control is invisible in the designer
     csReplicatable,
     csNoStdEvents,
     csDisplayDragImage,      // display images from dragimagelist during drag operation over control

@@ -696,7 +696,7 @@ type
     FColumns: integer;
     FCreatingWnd: boolean;
     FHiddenButton: TRadioButton;
-    fIgnoreClicks: boolean;
+    FIgnoreClicks: boolean;
     FItemIndex: integer;
     FItems: TStrings;
     FLastClickedItemIndex: integer;

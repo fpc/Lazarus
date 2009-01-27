@@ -170,7 +170,7 @@ begin
       begin
         Name := 'HiddenRadioButton';
         Visible := False;
-        ControlStyle := ControlStyle + [csNoDesignSelectable];
+        ControlStyle := ControlStyle + [csNoDesignSelectable, csNoDesignVisible];
       end;
     end;
 
@@ -351,8 +351,8 @@ begin
       // Therefore there is a hidden button
       OldItemIndex:=FItemIndex;
       FItemIndex:=Value;
-      OldIgnoreClicks:=fIgnoreClicks;
-      fIgnoreClicks:=true;
+      OldIgnoreClicks:=FIgnoreClicks;
+      FIgnoreClicks:=true;
       try
         if (FItemIndex <> -1) then
           TRadioButton(FButtonList[FItemIndex]).Checked := true
@@ -365,7 +365,7 @@ begin
         end else
           FHiddenButton.Checked:=false;
       finally
-        fIgnoreClicks:=OldIgnoreClicks;
+        FIgnoreClicks:=OldIgnoreClicks;
       end;
       // this has automatically unset the old button. But they do not recognize
       // it. Update the states.
@@ -442,7 +442,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
-  if fIgnoreClicks then exit;
+  if FIgnoreClicks then exit;
   CheckItemIndexChanged;
 end;
 
