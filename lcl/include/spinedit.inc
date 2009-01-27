@@ -5,7 +5,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -102,6 +102,21 @@ procedure TCustomFloatSpinEdit.Loaded;
 begin
   inherited Loaded;
   if FUpdatePending then UpdateControl;
+end;
+
+procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
+{Disallow any key that is not a digit, decimalseparator, + or -
+ For ease of use translate any decimalpoint or comma to DecimalSeparator
+ Tab and backSpace ofcourse should be passed onto inherited KeyPress
+ If FDecimals = 0 (as in TSpinEdit), disallow decimalseparator also
+ We could make it more sophisticated and only allow +/- at front,
+ DecimalSeparator only if not already in text, but this way is Delphi compatible
+}
+begin
+  if (Key in ['.',',']) then Key := Decimalseparator;
+  if not (Key in ['0'..'9',DecimalSeparator,'+','-',#8,#9]) then Key := #0;
+  if (Key = DecimalSeparator) and (FDecimals = 0) then Key := #0;
+  inherited KeyPress(Key);
 end;
 
 class function TCustomFloatSpinEdit.GetControlClassDefaultSize: TPoint;

@@ -60,6 +60,7 @@ type
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
+    procedure KeyPress(var Key: char); override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
