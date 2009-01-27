@@ -4043,6 +4043,7 @@ lcl/lclproc.pas svneol=native#text/pascal
 lcl/lclrescache.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
+lcl/lclunicodedata.pas svneol=native#text/plain
 lcl/lclversion.pas svneol=native#text/plain
 lcl/lconvencoding.pas svneol=native#text/plain
 lcl/ldockctrl.pas svneol=native#text/plain
