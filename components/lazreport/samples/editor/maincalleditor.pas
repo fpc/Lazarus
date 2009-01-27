@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, LR_PGrid,
-  Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV;
+  Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet;
 
 type
 
@@ -45,6 +45,7 @@ type
     accExportToHtml: TAction;
     accOpenReport: TAction;
     accExportToCSV: TAction;
+    accThumbnails: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
     btnCallEditor: TButton;
@@ -53,12 +54,14 @@ type
     Button3: TButton;
     Button4: TButton;
     btnOpenReport: TButton;
+    btnImageList: TButton;
     comboIndex: TComboBox;
     Datasource1: TDatasource;
     Dbf1: TDbf;
     dbGrid1: TdbGrid;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
+    frUserDataset1: TfrUserDataset;
     lblExpr: TLabel;
     lblIndex: TLabel;
     MainMenu1: TMainMenu;
@@ -81,6 +84,7 @@ type
     procedure accExportToCSVExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
     procedure accExportToTextExecute(Sender: TObject);
+    procedure accThumbnailsExecute(Sender: TObject);
     procedure ApplicationProperties1ShowHint(var HintStr: string;
       var CanShow: Boolean; var HintInfo: THintInfo);
     procedure accCloseExecute(Sender: TObject);
@@ -93,8 +97,11 @@ type
     procedure comboIndexSelect(Sender: TObject);
     procedure dbGrid1TitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
+    procedure TheReportEnterRect(Memo: TStringList; View: TfrView);
   private
     { private declarations }
+    FImageList: TStringList;
+    FImageListIndex: Integer;
     procedure UpdateAppTranslation;
     procedure SetIndex(const aIndexName: string);
     procedure OpenReport(const aFileName:string);
@@ -132,6 +139,8 @@ resourcestring
   cerHintPrnReport  = 'Print directly the active report (i.e. without preview)';
   cerHintCloseApp   = 'Close application';
   cerAppCaption     = 'LazReport Test Suite';
+  cerHintThumbnails = 'This Action will Load and Preview a thumbnails Report';
+  cerThumbnails     = 'Thumbnails';
   
 
 { TfrmMain }
@@ -155,6 +164,9 @@ begin
   accClose.Hint := cerHintCloseApp;
 
   caption := cerAppCaption;
+
+  accThumbnails.Hint := cerHintThumbnails;
+  accThumbnails.Caption := cerThumbnails;
 end;
 
 procedure TfrmMain.ApplicationProperties1ShowHint(var HintStr: string;
@@ -173,6 +185,23 @@ begin
     //TheReport.ExportTo(TfrTextExportFilter, 'salida.txt')
   else
     ShowMessage(cerPrepareFailed);
+end;
+
+procedure TfrmMain.accThumbnailsExecute(Sender: TObject);
+begin
+  OpenReport(ExtractFilePath(ParamStrUTF8(0))+'thumbnails.lrf');
+  FImageListIndex := 0;
+  FImageList := FindAllFiles('../../../../images/components','*.png',false);
+  try
+    if FImageList.Count>0 then begin
+      frUserDataset1.RangeEndCount:=FImageList.Count;
+      TheReport.ShowReport;
+    end else
+      ShowMessage('png images not found');
+  finally
+    FImageList.Free;
+    FImageList:=nil;
+  end;
 end;
 
 procedure TfrmMain.accExportToHtmlExecute(Sender: TObject);
@@ -285,6 +314,14 @@ begin
   
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
     OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
+end;
+
+procedure TfrmMain.TheReportEnterRect(Memo: TStringList; View: TfrView);
+begin
+  if (FImageList<>nil) and (View.Name='thumbnail') then begin
+    TFrPictureView(View).Picture.LoadFromFile(FImageList[FImageListIndex]);
+    Inc(FImageListIndex);
+  end;
 end;
 
 procedure TfrmMain.SetIndex(const aIndexName: string);

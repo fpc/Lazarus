@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-22 03:05-0600\n"
-"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2009-01-27 16:09-0600\n"
+"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: maincalleditor.ceractivereport
@@ -25,7 +25,7 @@ msgstr "Editar Reporte"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr "Cerrar Aplicaci�n"
+msgstr "Cerrar Aplicación"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
@@ -51,13 +51,17 @@ msgstr "Vista previa del Reporte activo"
 msgid "Print directly the active report (i.e. without preview)"
 msgstr "Imprimir directamente el Reporte activo (o sea, sin vista previa)"
 
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr "Esta acción cargará y mostrará una vista preeliminar de un reporte de imágenes."
+
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr "Indice"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr "Campos del �ndice: %s"
+msgstr "Campos del índice: %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -69,7 +73,7 @@ msgstr "Ninguno"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
-msgstr "�Esta funci�n a�n no se ha implementado!"
+msgstr "¡Esta función aún no se ha implementado!"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
@@ -81,7 +85,7 @@ msgstr "Primero necesita abrir un Reporte"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr "�PrepareReport ha fallado!"
+msgstr "¡PrepareReport ha fallado!"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
@@ -94,6 +98,11 @@ msgstr "Imprimir Rejilla"
 #: maincalleditor.cerprintreport
 msgid "Print report"
 msgstr "Imprimir Reporte"
+
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr "Imágenes"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
@@ -135,6 +144,11 @@ msgstr "Imprimir Rejilla"
 #: TFRMMAIN.ACCPRINTREPORT.CAPTION
 msgid "Print Report"
 msgstr "Imprimir Reporte"
+
+#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
+msgid "Thumbnails"
+msgstr "Imágenes"
 
 #: TFRMMAIN.CAPTION
 msgctxt "TFRMMAIN.CAPTION"

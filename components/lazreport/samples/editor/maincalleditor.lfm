@@ -1,31 +1,76 @@
 object frmMain: TfrmMain
   Left = 277
-  Height = 405
+  Height = 433
   Top = 127
-  Width = 573
-  HorzScrollBar.Page = 572
-  VertScrollBar.Page = 384
+  Width = 569
   ActiveControl = btnCallEditor
+  Align = alNone
+  AllowDropFiles = False
+  AutoScroll = True
+  AutoSize = False
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
+  BorderStyle = bsSizeable
   Caption = 'LazReport Test Suite'
-  ClientHeight = 385
-  ClientWidth = 573
+  ClientHeight = 409
+  ClientWidth = 569
+  DockSite = False
+  DragKind = dkDrag
+  DragMode = dmManual
+  Enabled = True
+  FormStyle = fsNormal
   Menu = MainMenu1
   OnCreate = frmMainCreate
+  ParentBiDiMode = True
+  ParentFont = False
+  Position = poDesigned
   ShowHint = True
-  LCLVersion = '0.9.25'
+  ShowInTaskBar = stDefault
+  UseDockManager = False
+  LCLVersion = '0.9.27'
+  WindowState = wsNormal
   object lblIndex: TLabel
     Left = 12
-    Height = 14
+    Height = 16
     Top = 44
-    Width = 1
+    Width = 3
+    Align = alNone
+    Alignment = taLeftJustify
+    AutoSize = True
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    Layout = tlTop
+    ParentBidiMode = True
     ParentColor = False
+    ParentFont = True
+    ParentShowHint = True
+    ShowAccelChar = True
+    Transparent = True
+    Visible = True
+    WordWrap = False
+    OptimalFill = False
   end
   object lblExpr: TLabel
     Left = 235
-    Height = 14
+    Height = 16
     Top = 44
-    Width = 1
+    Width = 3
+    Align = alNone
+    Alignment = taLeftJustify
+    AutoSize = True
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    Layout = tlTop
+    ParentBidiMode = True
     ParentColor = False
+    ParentFont = True
+    ParentShowHint = True
+    ShowAccelChar = True
+    Transparent = True
+    Visible = True
+    WordWrap = False
+    OptimalFill = False
   end
   object btnCallEditor: TButton
     Left = 24
@@ -33,23 +78,50 @@ object frmMain: TfrmMain
     Top = 8
     Width = 80
     Action = accNewReport
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 0
+    TabStop = True
   end
   object dbGrid1: TDBGrid
-    Height = 294
+    Left = 0
+    Height = 321
     Top = 68
-    Width = 573
+    Width = 569
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoEdit = True
+    AutoFillColumns = False
+    BorderStyle = bsSingle
     Color = clWhite
     DataSource = Datasource1
+    DefaultDrawing = True
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
     FixedColor = clBtnFace
     FixedHotColor = cl3DLight
+    Flat = False
+    HeaderHotZones = [gzFixedCols]
+    HeaderPushZones = [gzFixedCols]
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
-    ParentColor = False
+    ParentFont = True
+    ReadOnly = False
     TabOrder = 5
+    TabStop = True
+    TitleStyle = tsLazarus
+    UseXORFeatures = False
+    Visible = True
     OnTitleClick = dbGrid1TitleClick
   end
   object Button1: TButton
@@ -58,8 +130,19 @@ object frmMain: TfrmMain
     Top = 8
     Width = 75
     Action = accPrintGrid
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 1
+    TabStop = True
   end
   object Button2: TButton
     Left = 290
@@ -67,17 +150,34 @@ object frmMain: TfrmMain
     Top = 8
     Width = 96
     Action = accPreviewReport
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 2
+    TabStop = True
   end
   object sbar: TStatusBar
-    Height = 23
-    Top = 362
-    Width = 573
+    Left = 0
+    Height = 20
+    Top = 389
+    Width = 569
+    DragCursor = crDrag
+    DragKind = dkDrag
+    DragMode = dmManual
+    Enabled = True
     Panels = <    
       item
         Width = 250
       end>
+    ParentShowHint = True
     SimplePanel = False
   end
   object Button3: TButton
@@ -86,8 +186,19 @@ object frmMain: TfrmMain
     Top = 8
     Width = 75
     Action = accEditReport
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 3
+    TabStop = True
   end
   object Button4: TButton
     Left = 391
@@ -95,8 +206,19 @@ object frmMain: TfrmMain
     Top = 8
     Width = 83
     Action = accPrintReport
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 4
+    TabStop = True
   end
   object btnOpenReport: TButton
     Left = 109
@@ -104,22 +226,79 @@ object frmMain: TfrmMain
     Top = 8
     Width = 96
     Action = accOpenReport
+    Align = alNone
+    AutoSize = False
     BorderSpacing.InnerBorder = 4
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 6
+    TabStop = True
   end
   object comboIndex: TComboBox
     Left = 76
     Height = 21
     Top = 40
     Width = 148
+    Align = alNone
+    ArrowKeysTraverseList = True
+    AutoComplete = False
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    AutoDropDown = False
+    AutoSelect = False
+    AutoSize = True
+    CharCase = ecNormal
+    Ctl3D = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    DropDownCount = 8
+    Enabled = True
+    ItemHeight = 0
+    ItemIndex = -1
+    ItemWidth = 0
+    MaxLength = 0
     OnSelect = comboIndexSelect
+    ParentBidiMode = True
+    ParentColor = False
+    ParentCtl3D = True
+    ParentFont = True
+    ParentShowHint = True
+    Sorted = False
+    Style = csDropDown
     TabOrder = 8
+    TabStop = True
+    Visible = True
+  end
+  object btnImageList: TButton
+    Left = 480
+    Height = 25
+    Top = 36
+    Width = 75
+    Action = accThumbnails
+    Align = alNone
+    AutoSize = False
+    Cancel = False
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    ParentBidiMode = True
+    ModalResult = 0
+    ParentFont = True
+    ParentShowHint = True
+    TabOrder = 9
+    TabStop = True
   end
   object TheReport: TfrReport
     Dataset = frDBDataSet1
+    InitialZoom = pzDefault
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnEnterRect = TheReportEnterRect
     left = 96
     top = 112
     ReportForm = {
@@ -129,6 +308,9 @@ object frmMain: TfrmMain
   object Dbf1: TDbf
     IndexDefs = <>
     TableLevel = 3
+    Active = False
+    Filtered = False
+    FilterOptions = []
     left = 128
     top = 72
   end
@@ -139,6 +321,9 @@ object frmMain: TfrmMain
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = Dbf1
+    RangeBegin = rbFirst
+    RangeEnd = reLast
+    RangeEndCount = 0
     left = 96
     top = 144
   end
@@ -205,73 +390,180 @@ object frmMain: TfrmMain
     HintHidePause = 2500
     HintPause = 10
     HintShortCuts = True
+    HintShortPause = 0
     ShowHint = True
     OnShowHint = ApplicationProperties1ShowHint
     left = 96
     top = 240
   end
   object ActionList1: TActionList
+    State = asNormal
     left = 48
     top = 96
     object accNewReport: TAction
       Category = 'Tests'
+      AutoCheck = False
       Caption = 'New Report'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accNewReportExecute
+      ShortCut = 0
+      Visible = True
     end
     object accEditReport: TAction
       Category = 'Tests'
+      AutoCheck = False
       Caption = 'Edit Report'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accEditReportExecute
+      ShortCut = 0
+      Visible = True
     end
     object accPreviewReport: TAction
       Category = 'Tests'
+      AutoCheck = False
       Caption = 'Preview Report'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accPreviewReportExecute
+      ShortCut = 0
+      Visible = True
     end
     object accPrintGrid: TAction
       Category = 'Tests'
+      AutoCheck = False
       Caption = 'Print Grid'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accPrintGridExecute
+      ShortCut = 0
+      Visible = True
     end
     object accPrintReport: TAction
       Category = 'Tests'
+      AutoCheck = False
       Caption = 'Print Report'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accPrintReportExecute
+      ShortCut = 0
+      Visible = True
     end
     object accClose: TAction
       Category = 'Files'
+      AutoCheck = False
       Caption = 'Close'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accCloseExecute
+      ShortCut = 0
+      Visible = True
     end
     object accExportToText: TAction
       Category = 'Export'
+      AutoCheck = False
       Caption = 'Export to text'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accExportToTextExecute
+      ShortCut = 0
+      Visible = True
     end
     object accExportToHtml: TAction
       Category = 'Export'
+      AutoCheck = False
       Caption = 'Export to html'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accExportToHtmlExecute
+      ShortCut = 0
+      Visible = True
     end
     object accOpenReport: TAction
       Category = 'Files'
+      AutoCheck = False
       Caption = 'Open Report'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accOpenReportExecute
+      ShortCut = 0
+      Visible = True
     end
     object accExportToCSV: TAction
       Category = 'Export'
+      AutoCheck = False
       Caption = 'Export to CSV'
+      Checked = False
       DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
       OnExecute = accExportToCSVExecute
+      ShortCut = 0
+      Visible = True
+    end
+    object accThumbnails: TAction
+      Category = 'Sample Reports'
+      AutoCheck = False
+      Caption = 'Thumbnails'
+      Checked = False
+      DisableIfNoHandler = True
+      Enabled = True
+      GroupIndex = 0
+      HelpContext = 0
+      HelpType = htContext
+      ImageIndex = -1
+      OnExecute = accThumbnailsExecute
+      ShortCut = 0
+      Visible = True
     end
   end
   object OpenDialog1: TOpenDialog
@@ -283,5 +575,12 @@ object frmMain: TfrmMain
   object frCSVExport1: TfrCSVExport
     left = 188
     top = 72
+  end
+  object frUserDataset1: TfrUserDataset
+    RangeBegin = rbFirst
+    RangeEnd = reCount
+    RangeEndCount = 0
+    left = 132
+    top = 144
   end
 end
