@@ -217,7 +217,8 @@ begin
   for i := 0 to ParentControl.ControlCount - 1 do
   begin
     AControl := ParentControl.Controls[i];
-    if not (AControl is TWinControl) then
+    // skip non TWinControls and ivisible for designer controls
+    if not (AControl is TWinControl) or (csNoDesignVisible in AControl.ControlStyle) then
       continue;
     AWinControl := TWinControl(AControl);
     CurTab      := AWinControl.TabOrder;
