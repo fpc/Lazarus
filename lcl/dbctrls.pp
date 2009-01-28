@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
-  Calendar, Chart;
+  Calendar, Chart, Variants;
 
 Type
   { TFieldDataLink }
@@ -112,6 +112,56 @@ Type
     property OnLayoutChange: TNotifyevent read FOnLayoutChange write FOnLayoutChange;
   end;
 
+
+
+  { TDBLookup }
+  {
+  TDBLookup component is typically owned by a Lookup control like
+  TDBLookupListBox or TDBLookupComboBox.
+  The ListSource is the other dataset TDataSource from which to retrieve the lookup data
+  The KeyField is the lookup key in the ListSource which corresponds to the DataField value
+  The ListField is the name of the field in the ListSource to list into the
+  Items property of the lookup control.
+  which  data
+  }
+
+  TDBLookup = class(TComponent)
+  private
+    FLinkBookMark: TBookMark;
+    FControlLink: TFieldDataLink;
+    FControlItems: TStrings;
+    FHasLookUpField: Boolean;
+    FListLink: TFieldDataLink;
+    FListSource: TDataSource;
+    FKeyFieldName: string;
+    FKeyFieldValue: string;
+    FListFieldName: string;
+    FListFieldValue: string;
+    FListFieldIndex: Integer;
+    FKeyField: TField;
+    FListField: TField;
+    procedure ActiveChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    procedure FetchLookupData;
+    procedure LinkGetBookMark;
+    procedure LinkGotoBookMark;
+    function GetKeyFieldName: string;
+    function GetListSource: TDataSource;
+    procedure SetKeyFieldName(const Value: string);
+    procedure SetListSource(Value: TDataSource);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
+    function KeyFieldValueOf(const AListFieldValue: string): string;
+    function ListFieldValueOf(const AKeyFieldValue: string): string;
+    // properties to be published by owner control
+    // these are not used where data control Field is dbLookup
+    property KeyField: string read GetKeyFieldName write SetKeyFieldName;
+    property ListField: string read FListFieldName write FListFieldName;
+    property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
+    property ListSource: TDataSource read GetListSource write SetListSource;
+  end;
 
   { TDBEdit }
 
@@ -257,12 +307,9 @@ Type
 
   { TDBListBox }
 
-  TDBListBox = class(TCustomListBox)
-    FDataLink: TFieldDataLink;
+  TCustomDBListBox = class(TCustomListBox)
 
-    procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
-    procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
 
     function GetDataField: string;
@@ -278,11 +325,14 @@ Type
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
+    FDataLink: TFieldDataLink;
+    procedure DataChange(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    procedure UpdateData(Sender: TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -290,7 +340,6 @@ Type
     procedure EditingDone; override;
 
     property Field: TField read GetField;
-  published
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
@@ -301,15 +350,25 @@ Type
 
     //same as dbedit need to match the datalink status
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+  end;
 
+
+  TDBListBox = class(TCustomDBListBox)
+  protected
+    procedure DataChange(Sender: TObject); override;
+    procedure UpdateData(Sender: TObject); override;
+  published
     property Align;
     property Anchors;
     property BorderSpacing;
     property BorderStyle;
+    property DataField;
+    property DataSource;
     property DragCursor;
     property DragMode;
     property ExtendedSelect;
     property ItemHeight;
+    property Items;
     property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -329,9 +388,76 @@ Type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentShowHint;
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+  end;
+
+
+  { TDBLookupListBox }
+
+  TDBLookupListBox = class(TCustomDBListBox)
+  private
+    FLookup: TDBLookup;
+    procedure ActiveChange(Sender: TObject);
+    function GetKeyField: string;
+    function GetListField: string;
+    function GetListFieldIndex: Integer;
+    function GetListSource: TDataSource;
+    procedure SetKeyField(const Value: string);
+    procedure SetListField(const Value: string);
+    procedure SetListFieldIndex(const Value: Integer);
+    procedure SetListSource(const Value: TDataSource);
+  protected
+    procedure DataChange(Sender: TObject); override;
+    procedure Loaded; override;
+    procedure UpdateData(Sender: TObject); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderStyle;
+    property DataField;
+    property DataSource;
+    property DragCursor;
+    property DragMode;
+//    property ExtendedSelect;
+//    property ItemHeight;
+    property KeyField: string read GetKeyField write SetKeyField;
+    property ListField: string read GetListField write SetListField;
+    property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
+    property ListSource: TDataSource read GetListSource write SetListSource;
+//    property MultiSelect;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+//    property OnDrawItem;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyPress;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnMouseMove;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Sorted;
+//    property Style;
     property TabOrder;
     property TabStop;
     property TopIndex;
@@ -478,9 +604,9 @@ Type
   end;
   
   
-  { TDBComboBox }
+  { TCustomDBComboBox }
 
-  TDBComboBox = class(TCustomComboBox)
+  TCustomDBComboBox = class(TCustomComboBox)
   private
     FDataLink: TFieldDataLink;
     function GetDataField: string;
@@ -501,7 +627,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
-    procedure UpdateText;
+    procedure UpdateText; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -509,6 +635,18 @@ Type
     property Field: TField read GetField;
     property Text;
     property ItemIndex;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+  end;
+
+
+     { TDBComboBox }
+
+  TDBComboBox = class(TCustomDBComboBox)
+  protected
+    procedure UpdateData(Sender: TObject); override;
+    procedure UpdateText; override;
   published
     property Anchors;
     property ArrowKeysTraverseList;
@@ -517,8 +655,8 @@ Type
     property BorderSpacing;
     property Color;
     property Ctl3D;
-    property DataField: string read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DataField;
+    property DataSource;
     property DragCursor;
     property DragMode;
     property DropDownCount;
@@ -554,7 +692,7 @@ Type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property Style;
@@ -562,8 +700,87 @@ Type
     property TabStop;
     property Visible;
   end;
-  
-  
+
+
+  { TDBLookupComboBox }
+
+  TDBLookupComboBox = class(TCustomDBComboBox)
+  private
+    FLookup: TDBLookup;
+    procedure ActiveChange(Sender: TObject);
+    function GetKeyField: string;
+    function GetListField: string;
+    function GetListFieldIndex: Integer;
+    function GetListSource: TDataSource;
+    procedure SetKeyField(const Value: string);
+    procedure SetListField(const Value: string);
+    procedure SetListFieldIndex(const Value: Integer);
+    procedure SetListSource(const Value: TDataSource);
+  protected
+    procedure Loaded; override;
+    procedure UpdateData(Sender: TObject); override;
+    procedure UpdateText; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Align;
+    property Anchors;
+    property ArrowKeysTraverseList;
+    property AutoDropDown;
+    property AutoSize;
+    property BorderSpacing;
+    property Color;
+    property Ctl3D;
+    property DataField;
+    property DataSource;
+    property DragCursor;
+    property DragMode;
+    property DropDownCount;
+    property Enabled;
+    property Font;
+//    property ItemHeight;
+//    property ItemWidth;
+    property KeyField: string read GetKeyField write SetKeyField;
+    property ListField: string read GetListField write SetListField;
+    property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
+    property ListSource: TDataSource read GetListSource write SetListSource;
+//    property MaxLength default -1;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnCloseUp;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnDrawItem;
+    property OnDropDown;
+    property OnEditingDone;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnSelect;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+    property ParentCtl3D;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+  end;
+
   { TDBMemo }
 
   TDBMemo = class(TCustomMemo)
@@ -1097,8 +1314,8 @@ end;
 procedure Register;
 begin
   RegisterComponents('Data Controls',[TDBNavigator,TDBText,TDBEdit,TDBMemo,
-    TDBImage,TDBListBox,TDBComboBox,TDBCheckBox,TDBRadioGroup,TDBCalendar,
-    TDBGroupBox]);
+    TDBImage,TDBListBox,TDBLookupListBox,TDBComboBox,TDBLookupComboBox,
+    TDBCheckBox, TDBRadioGroup, TDBCalendar,TDBGroupBox]);
   {$IFNDEF VER2_0}
   RegFields(DefaultFieldClasses);
   {$ENDIF}
@@ -1153,13 +1370,14 @@ procedure TFieldDataLink.SetFieldName(const Value: string);
 begin
   if FFieldName <> Value then
   begin
-    FFieldName :=  Value;
+    FFieldName := Value;
     If Assigned(FField) then begin
       FField := nil;
       EditingChanged;
       Reset;
     end;
-
+    if (Value = '') then
+      Exit;
     If Assigned(DataSource) and Assigned(DataSource.DataSet) then
       FField := DataSource.DataSet.FieldByName(FFieldName);
 
@@ -1439,17 +1657,23 @@ begin
   IsModified := False;
 end;
 
+{$Include dblookup.inc}
 {$Include dbedit.inc}
 {$Include dbtext.inc}
+{$Include customdblistbox.inc}
 {$Include dblistbox.inc}
+{$Include dblookuplistbox.inc}
 {$Include dbradiogroup.inc}
 {$Include dbcheckbox.inc}
+{$Include customdbcombobox.inc}
 {$Include dbcombobox.inc}
+{$Include dblookupcombobox.inc}
 {$Include dbmemo.inc}
 {$Include dbgroupbox.inc}
 {$Include dbimage.inc}
 {$Include dbcalendar.inc}
 {$Include dbcustomnavigator.inc}
+
 
 initialization
   {$I lcl_dbnav_images.lrs}

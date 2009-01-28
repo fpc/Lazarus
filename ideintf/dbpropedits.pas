@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, ObjInspStrConsts, PropEdits, Componenteditors, TypInfo, DB, SysUtils,
-  DBGrids;
+  DbCtrls, DBGrids;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -32,6 +32,13 @@ type
     function  GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure FillValues(const Values: TStringList); virtual;
+  end;
+
+  { TLookupFieldProperty }
+
+  TLookupFieldProperty = class(TFieldProperty)
+  public
+    procedure FillValues(const Values: TStringList); override;
   end;
 
   TDBGridFieldProperty = class(TFieldProperty)
@@ -120,8 +127,23 @@ begin
   if Assigned(Hook) then Hook.Modified(Self);
 end;
 
+{ TLookupFieldProperty }
+
+procedure TLookupFieldProperty.FillValues(const Values: TStringList);
+var
+  DataSource: TDataSource;
+begin
+  DataSource := GetObjectProp(GetComponent(0), 'ListSource') as TDataSource;
+  if (DataSource is TDataSource) and Assigned(DataSource.DataSet) then
+    DataSource.DataSet.GetFieldNames(Values);
+end;
+
 initialization
   RegisterPropertyEditor(TypeInfo(string), TComponent, 'DataField', TFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TDBLookupListBox, 'KeyField', TLookupFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TDBLookupListBox, 'ListField', TLookupFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TDBLookupComboBox, 'KeyField', TLookupFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TDBLookupComboBox, 'ListField', TLookupFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TColumn, 'FieldName', TDBGridFieldProperty);
   RegisterComponentEditor(TDBGrid,TDBGridComponentEditor);
 
