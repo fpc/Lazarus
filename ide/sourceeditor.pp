@@ -1306,6 +1306,12 @@ begin
   Result:=0;
   if SourceNotebook<>nil then
     SourceNotebook.AddJumpPointClicked(Self);
+  if (ssoReplace in LazFindReplaceDialog.Options)
+  and ReadOnly then begin
+    DebugLn(['TSourceEditor.DoFindAndReplace Rread only']);
+    exit;
+  end;
+
   OldCaretXY:=EditorComponent.CaretXY;
   if EditorComponent.SelAvail then begin
     if ssoBackwards in LazFindReplaceDialog.Options then
