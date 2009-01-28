@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-20 04:28+0300\n"
+"PO-Revision-Date: 2009-01-27 02:09+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -152,6 +152,30 @@ msgstr "Список полей недоступен, не могу провер
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr "Добавить"
+
+#: objinspstrconsts.liisaddvalue
+msgid "Add value"
+msgstr "Добавить значение"
+
+#: objinspstrconsts.liiselse
+msgid "Else"
+msgstr "Else"
+
+#: objinspstrconsts.liiselseif
+msgid "ElseIf"
+msgstr "ElseIf"
+
+#: objinspstrconsts.liisif
+msgid "If"
+msgstr "If"
+
+#: objinspstrconsts.liisifdef
+msgid "IfDef"
+msgstr "IfDef"
+
+#: objinspstrconsts.liisifndef
+msgid "IfNDef"
+msgstr "IfNDef"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -1077,6 +1101,10 @@ msgstr "Новый элемент"
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
 msgstr "Новый подэлемент"
+
+#: objinspstrconsts.sccsmaskeditor
+msgid "Edit Mask Editor..."
+msgstr "Редактор маски..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."

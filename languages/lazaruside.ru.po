@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-02 04:15+0300\n"
+"PO-Revision-Date: 2009-01-27 02:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -86,6 +86,10 @@ msgstr "Автосоздание форм при открытии модуля"
 msgid "Auto indent"
 msgstr "Автоматический отступ"
 
+#: lazarusidestrconsts.dlgautoremoveemptymethods
+msgid "Auto remove empty methods"
+msgstr "Автоматически удалять пустые методы"
+
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
 msgstr "Переименовать в нижний регистр"
@@ -117,6 +121,22 @@ msgstr "После методов"
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
 msgstr "Отступ блока"
+
+#: lazarusidestrconsts.dlgblockindenttype
+msgid "Indent method"
+msgstr "Метод создания отступов"
+
+#: lazarusidestrconsts.dlgblockindenttypecopy
+msgid "Space/tab as prev Line"
+msgstr "Пробел/ТАБ как на строке ранее"
+
+#: lazarusidestrconsts.dlgblockindenttypepos
+msgid "Position only"
+msgstr "По положению"
+
+#: lazarusidestrconsts.dlgblockindenttypespace
+msgid "Spaces"
+msgstr "Пробелы"
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
@@ -277,14 +297,30 @@ msgstr "Проверки"
 msgid "Compilation"
 msgstr "Компиляция"
 
+#: lazarusidestrconsts.dlgcoconditionals
+msgid "Conditionals"
+msgstr "Режимы сборки"
+
 #: lazarusidestrconsts.dlgcocops
 msgid "C Style Operators (*=, +=, /= and -=)"
 msgstr "Операторы в стиле C (*=, +=, /= и -=)"
+
+#: lazarusidestrconsts.dlgcocreatechildnode
+msgid "Create child node"
+msgstr "Создать элемент-потомок"
 
 #: lazarusidestrconsts.dlgcocreatemakefile
 msgctxt "lazarusidestrconsts.dlgcocreatemakefile"
 msgid "Create Makefile"
 msgstr "Создать Makefile"
+
+#: lazarusidestrconsts.dlgcocreatenodeabove
+msgid "Create node above"
+msgstr "Создать элемент выше"
+
+#: lazarusidestrconsts.dlgcocreatenodebelow
+msgid "Create node below"
+msgstr "Создать элемент ниже"
 
 #: lazarusidestrconsts.dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
@@ -309,10 +345,6 @@ msgstr "Код"
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "Параметры CodeTools"
-
-#: lazarusidestrconsts.dlgcodetoolstab
-msgid "Code Tools"
-msgstr "CodeTools"
 
 #: lazarusidestrconsts.dlgcofast
 msgid "Faster Code"
@@ -371,6 +403,22 @@ msgstr "Параметры командной строки"
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Параметры командной строки (без имени приложения)"
+
+#: lazarusidestrconsts.dlgcomovedown
+msgid "Move down"
+msgstr "Переместить вниз"
+
+#: lazarusidestrconsts.dlgcomoveleveldown
+msgid "Move level down"
+msgstr "Переместить на уровень вниз"
+
+#: lazarusidestrconsts.dlgcomovelevelup
+msgid "Move level up"
+msgstr "Переместить уровень вверх"
+
+#: lazarusidestrconsts.dlgcomoveup
+msgid "Move up"
+msgstr "Переместить вверх"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -459,7 +507,7 @@ msgid "Cursor beyond EOL"
 msgstr "Курсор вне конца строки"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor options:"
+msgid "Cursor:"
 msgstr "Параметры курсора:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -564,7 +612,8 @@ msgid "Code templates"
 msgstr "Шаблоны кода"
 
 #: lazarusidestrconsts.dlgedcolor
-msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
+msgid "Colors"
 msgstr "Цвет"
 
 #: lazarusidestrconsts.dlgedcustomext
@@ -644,6 +693,10 @@ msgstr "Цвет по умолчанию"
 msgid "Element Attributes"
 msgstr "Атрибуты элементов"
 
+#: lazarusidestrconsts.dlgendkeyjumpstoneareststart
+msgid "End key jumps to nearest end"
+msgstr "End переводит к концу текста в строке"
+
 #: lazarusidestrconsts.dlgentirescope
 msgid "&Entire Scope"
 msgstr "С начала &фрагмента"
@@ -661,6 +714,7 @@ msgid "Backup"
 msgstr "Резервирование"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Цвета"
 
@@ -809,6 +863,10 @@ msgstr "Вертикальный шаг сетки"
 msgid "Codetools"
 msgstr "CodeTools"
 
+#: lazarusidestrconsts.dlggroupdebugger
+msgid "Debugger"
+msgstr "Отладчик"
+
 #: lazarusidestrconsts.dlggroupeditor
 msgid "Editor"
 msgstr "Редактор"
@@ -837,6 +895,10 @@ msgstr "Цвет поля (лев)"
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
 msgstr "Цвет границы поля (лев)"
+
+#: lazarusidestrconsts.dlggutterseparatorindex
+msgid "Gutter separator index"
+msgstr "Положение разделителя поля (лев)"
 
 #: lazarusidestrconsts.dlggutterwidth
 msgid "Gutter width"
@@ -912,7 +974,7 @@ msgid "Indent code to"
 msgstr "Выровнять код по"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indents/Tabs options:"
+msgid "Indent and Tabs:"
 msgstr "Параметры отступа/табуляции:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -1048,6 +1110,26 @@ msgstr "Границы"
 msgid "Marker color"
 msgstr "Цвет маркера"
 
+#: lazarusidestrconsts.dlgmarkupwordfull
+msgid "Current Word match word boundaries"
+msgstr "Текущее слово задавать границами"
+
+#: lazarusidestrconsts.dlgmarkupwordfulllen
+msgid "Only if shorter than"
+msgstr "Только если короче, чем"
+
+#: lazarusidestrconsts.dlgmarkupwordnokeyword
+msgid "Ignore Keywords"
+msgstr "Игнорировать зарезервированные слова"
+
+#: lazarusidestrconsts.dlgmarkupwordnotimer
+msgid "Disable Timer for Markup Current Word"
+msgstr "Отключить подсветку текущего слова"
+
+#: lazarusidestrconsts.dlgmarkupwordtrim
+msgid "Trim Spaces"
+msgstr "Обрезать пробелы"
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Максимальный счетчик"
@@ -1077,7 +1159,7 @@ msgid "Mix methods and properties"
 msgstr "Смешивать методы и свойства"
 
 #: lazarusidestrconsts.dlgmousegroupoptions
-msgid "Mouse options:"
+msgid "Mouse:"
 msgstr "Параметры мыши:"
 
 #: lazarusidestrconsts.dlgmouselinks
@@ -1380,6 +1462,10 @@ msgstr "Параметры запуска"
 msgid "Save desktop settings to file"
 msgstr "Сохранить рабочий стол в файл"
 
+#: lazarusidestrconsts.dlgsavedlinecolor
+msgid "Saved line"
+msgstr "Сохранённая строка"
+
 #: lazarusidestrconsts.dlgsaveeditorinfo
 msgid "Save editor info for closed files"
 msgstr "Сохранять сведения о закрываемых файлах"
@@ -1397,7 +1483,7 @@ msgid "Scroll by one less"
 msgstr "Прокручивать на строку меньше"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scroll options:"
+msgid "Scrolling:"
 msgstr "Параметры прокрутки:"
 
 #: lazarusidestrconsts.dlgscrollpastendfile
@@ -1405,7 +1491,7 @@ msgid "Scroll past end of file"
 msgstr "Прокручивать за конец файла"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Scroll past end of line"
+msgid "Caret past end of line"
 msgstr "Прокручивать за конец строки"
 
 #: lazarusidestrconsts.dlgsearchabort
@@ -1642,6 +1728,22 @@ msgstr "Верх:"
 msgid "Template file name"
 msgstr "Имя файла шаблона"
 
+#: lazarusidestrconsts.dlgtrimspacetypecaption
+msgid "Trim Spaces Style"
+msgstr "Метод обрезки пробелов"
+
+#: lazarusidestrconsts.dlgtrimspacetypecaretmove
+msgid "Caret or Edit"
+msgstr "При курсоре или правке"
+
+#: lazarusidestrconsts.dlgtrimspacetypeeditline
+msgid "Line Edited"
+msgstr "При правке строки"
+
+#: lazarusidestrconsts.dlgtrimspacetypeleaveline
+msgid "Leave line"
+msgstr "Не изменять строку"
+
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Обрезать хвостовые пробелы"
@@ -1655,7 +1757,7 @@ msgid "Undo after save"
 msgstr "Список отмен после сохранения"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo options:"
+msgid "Undo / Redo:"
 msgstr "Параметры отмены:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -1679,6 +1781,10 @@ msgstr "Обновить"
 msgid "Unit output directory (-FU):"
 msgstr "Каталог вывода модулей (-FU):"
 
+#: lazarusidestrconsts.dlgunsavedlinecolor
+msgid "Unsaved line"
+msgstr "Несохранённая строка"
+
 #: lazarusidestrconsts.dlgupword
 msgctxt "lazarusidestrconsts.dlgupword"
 msgid "Up"
@@ -1689,7 +1795,7 @@ msgid "Code folding"
 msgstr "Сворачивание кода"
 
 #: lazarusidestrconsts.dlgusecustomconfig
-msgid "Use addional Compiler Config File"
+msgid "Use additional Compiler Config File"
 msgstr "Использовать дополнительный конфигурационный файл компилятора"
 
 #: lazarusidestrconsts.dlgusefpccfg
@@ -2156,6 +2262,10 @@ msgstr "%s не может содержать компоненты TControl.%sВ
 msgid "Acknowledgements"
 msgstr "Благодарности"
 
+#: lazarusidestrconsts.lisaction
+msgid "Action:"
+msgstr "Действие:"
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
@@ -2191,6 +2301,10 @@ msgstr "Добавить %s к проекту?"
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
 msgstr "Добавить к путям поиска модулей?"
+
+#: lazarusidestrconsts.lisaddvalue
+msgid "Add value:"
+msgstr "Добавить значение:"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -2356,6 +2470,10 @@ msgstr "Файл простой программы на Паскале.%sМож�
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "Спросить перед заменой каждого фрагмента"
+
+#: lazarusidestrconsts.lisautocontinue
+msgid "Auto Continue"
+msgstr "Продолжать автоматически"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -3557,6 +3675,10 @@ msgstr "Ошибка записи"
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
 msgstr "At"
+
+#: lazarusidestrconsts.liscodetoolsoptsbracket
+msgid "Bracket"
+msgstr "Скобка"
 
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
@@ -7092,6 +7214,10 @@ msgstr "Быстрая компиляция"
 msgid "Quick syntax check"
 msgstr "Быстрая проверка синтаксиса"
 
+#: lazarusidestrconsts.lismenuquicksyntaxcheckok
+msgid "Quick syntax check OK"
+msgstr "Быстрая проверка синтаксиса прошла успешно."
+
 #: lazarusidestrconsts.lismenuquit
 msgid "Quit"
 msgstr "Выход"
@@ -7304,6 +7430,7 @@ msgid "Open"
 msgstr "Открыть"
 
 #: lazarusidestrconsts.lismenutemplateopenrecent
+msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
 msgid "Open Recent"
 msgstr "Открыть недавнее"
 
@@ -7363,6 +7490,10 @@ msgstr "&Вид"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "View Anchor Editor"
 msgstr "Показать редактор привязок"
+
+#: lazarusidestrconsts.lismenuviewassembler
+msgid "Assembler"
+msgstr "Ассемблер"
 
 #: lazarusidestrconsts.lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -9382,6 +9513,10 @@ msgstr "Свойства макросов проекта"
 msgid "macro ProjectUnitPath"
 msgstr "макрос ProjectUnitPath"
 
+#: lazarusidestrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "Каталог вывода проекта (например, каталог с ppu)"
+
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
 msgstr "Путь к исходному коду проекта"
@@ -9451,6 +9586,10 @@ msgstr "Метка каталога с исходным кодом проект�
 msgid "Prompt for value"
 msgstr "Подсказка по значению"
 
+#: lazarusidestrconsts.lispropertiesofconditionalcompileroption
+msgid "Properties of conditional compiler option"
+msgstr "Свойства параметра режима сборки"
+
 #: lazarusidestrconsts.lisprotected
 msgid "Protected"
 msgstr "Protected"
@@ -9478,6 +9617,10 @@ msgstr "Неправильный фильтр исключений"
 #: lazarusidestrconsts.lispublprojinvalidincludefilter
 msgid "Invalid Include filter"
 msgstr "Неправильный фильтр включений"
+
+#: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
+msgid "Save .lrs files in the output directory"
+msgstr "Сохранять файлы .lrs в каталоге вывода"
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
@@ -9519,6 +9662,15 @@ msgstr "Новый проект"
 #: lazarusidestrconsts.lispwopenproject
 msgid "Open Project"
 msgstr "Открыть проект"
+
+#: lazarusidestrconsts.lispwopenrecentproject
+msgctxt "lazarusidestrconsts.lispwopenrecentproject"
+msgid "Open Recent"
+msgstr "Открыть недавний проект"
+
+#: lazarusidestrconsts.lispwrecentprojects
+msgid "Recent Projects"
+msgstr "Недавние проекты:"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -9610,6 +9762,10 @@ msgstr "Ошибка загрузки ресурса"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "Ошибка сохранения ресурса"
+
+#: lazarusidestrconsts.lisresult
+msgid "Result :="
+msgstr "Result :="
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -11022,6 +11178,10 @@ msgstr "Запускающее приложение"
 msgid "User's home directory"
 msgstr "Домашний каталог пользователя"
 
+#: lazarusidestrconsts.lisvalue
+msgid "Value:"
+msgstr "Значение:"
+
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
 msgstr "Вызовов методов"
@@ -11186,6 +11346,18 @@ msgstr "Копирайт:"
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
 msgstr "Создать новое определение"
+
+#: lazarusidestrconsts.rscreatingdirfailed
+msgid "Creating directory \"%s\" failed!"
+msgstr "Не удалось создать каталог \"%s\"!"
+
+#: lazarusidestrconsts.rscreatingsymlinkfailed
+msgid "Creating symbolic link \"%s\" failed!"
+msgstr "Не удалось создать символическую ссылку \"%s\"!"
+
+#: lazarusidestrconsts.rscreatingsymlinknotsupported
+msgid "Creating symbolic link is not supported on this platform!"
+msgstr "Создание символических ссылок не поддерживается на данной платформе!"
 
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
@@ -12115,6 +12287,10 @@ msgstr "Просмотр локальных переменных"
 #: lazarusidestrconsts.srkmectogglemarker
 msgid "Toggle Marker %d"
 msgstr "Переключить маркер %d"
+
+#: lazarusidestrconsts.srkmectogglemarkupword
+msgid "Toggle Current-Word highlight"
+msgstr "Переключение режима подсветки текущего слова"
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
