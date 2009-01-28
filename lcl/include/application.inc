@@ -836,9 +836,11 @@ procedure TApplication.UpdateVisible;
     AForm: TCustomForm;
   begin
     Result := False;
-    for i := 0 to Screen.CustomFormCount - 1 do
+    // how to count correct? Do we need to count TCustomForms exclude THintWindow
+    // or just count TForm descendants?
+    for i := 0 to Screen.FormCount - 1 do
     begin
-      AForm := Screen.CustomForms[i];
+      AForm := Screen.Forms[i];
       if AForm.Visible and (AForm.Parent = nil) and UseAppTaskbarItem(AForm) then
       begin
         Result := True;
