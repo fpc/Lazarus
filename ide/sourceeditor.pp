@@ -2411,7 +2411,9 @@ var
   TextS, TextS2: String;
   LogCaret: TPoint;
 begin
-  //debugln('TSourceEditor.StartIdentCompletion');
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceEditor.StartIdentCompletion JumpToError: ',JumpToError]);
+  {$ENDIF}
   if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
   SourceNotebook.fIdentCompletionJumpToError:=JumpToError;
   SourceNotebook.CreateCompletionForm;
@@ -2433,6 +2435,9 @@ begin
   end;
   aCompletion.Editor:=FEditor;
   aCompletion.Execute(TextS2,P.X,P.Y);
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceEditor.StartIdentCompletion END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);
+  {$ENDIF}
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -3160,6 +3165,9 @@ procedure TSourceNotebook.CreateCompletionForm;
 var
   i: Integer;
 begin
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.CreateCompletionForm START ',dbgsname(aCompletion)]);
+  {$ENDIF}
   // completion form
   if aCompletion<>nil then exit;
   aCompletion := TSynCompletion.Create(Self);
@@ -3676,7 +3684,10 @@ var
   Editor: TSynEdit;
   OldCompletionType: TCompletionType;
 Begin
-  if CurCompletionControl=nil then 
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.ccComplete START']);
+  {$ENDIF}
+  if CurCompletionControl=nil then
   begin
     Value := SourceValue;
     exit;
@@ -3756,6 +3767,10 @@ Procedure TSourceNotebook.ccCancel(Sender: TObject);
 // user cancels completion form
 begin
   if CurCompletionControl=nil then exit;
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.ccCancel START']);
+  //debugln(GetStackTrace(true));
+  {$ENDIF}
   DeactivateCompletionForm;
 end;
 
@@ -3769,6 +3784,9 @@ var
   NewStr: String;
   CurEdit: TSynEdit;
 Begin
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.ccExecute START']);
+  {$ENDIF}
   CurCompletionControl := Sender as TSynCompletion;
   S := TStringList.Create;
   Prefix := CurCompletionControl.CurrentString;

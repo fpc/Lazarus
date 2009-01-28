@@ -8620,6 +8620,7 @@ begin
   {$IfDef VerboseFocus}
   DebugLn('');
   debugln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
+  //DebugLn(getStackTrace(true));
   {$EndIf}
 
   // return the old focus handle

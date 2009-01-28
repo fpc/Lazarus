@@ -455,6 +455,8 @@ end;
 
 procedure TSynBaseCompletionForm.Deactivate;
 begin
+  // completion box lost focus
+  // this can happen when a hint window is clicked => ToDo
   Visible := False;
   {$IFDEF SYN_LAZARUS}
   FHint.Visible := False;

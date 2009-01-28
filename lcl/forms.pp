@@ -460,6 +460,7 @@ type
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
+    procedure DoShowWindow; dynamic;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
     procedure BeginFormUpdate;
@@ -724,6 +725,8 @@ type
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
+  protected
+    procedure DoShowWindow; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
