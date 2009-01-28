@@ -99,7 +99,7 @@ type
 
     fStartPoint : TPoint;        // First found position, before TopLine of visible area
     fMatches : TSynMarkupHighAllMatchList;
-    fInvalidating, fHasInvalidLines : Boolean;
+    fHasInvalidLines : Boolean;
     FHideSingleMatch: Boolean;
 
     Procedure FindStartPoint;
@@ -316,7 +316,6 @@ begin
   fSearch := TSynEditSearch.Create;
   fMatches := TSynMarkupHighAllMatchList.Create;
   fSearchString:='';
-  fInvalidating := false;
   fHasInvalidLines:=True;
   FHideSingleMatch := False;
 end;
@@ -444,28 +443,9 @@ procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
 var
   Pos: Integer;
 begin
-  if (fSearchString = '') or fInvalidating
-  then exit;
-
-  fInvalidating := True;
-  // Invalidate neighbouring lines, which have an overlapping match
-  Pos := 0;
-  while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y < StartLine)
-  do inc(Pos);
-  // curent Match ends in aFirstCodeLine or later
-  if fMatches.StartPoint[Pos].y < StartLine
-  then InvalidateSynLines(fMatches.StartPoint[Pos].y, StartLine - 1);
-
-  while (Pos < fMatches.Count)
-  and (fMatches.EndPoint[Pos].y = EndLine )
-  do inc(Pos);
-  // curent Match ends after aLastCodeLine
-  if fMatches.StartPoint[Pos].y <= EndLine
-  then InvalidateSynLines(EndLine + 1, fMatches.EndPoint[Pos].y);
-
-  fInvalidating := False;
-  fHasInvalidLines := true;
+  if (fSearchString = '') then exit;
+  Invalidate;
+  ValidateMatches;
 end;
 
 procedure TSynEditMarkupHighlightAll.Invalidate;
@@ -480,7 +460,6 @@ procedure TSynEditMarkupHighlightAll.SendLineInvalidation;
 var
   Pos: Integer;
 begin
-  fInvalidating := True;
   // Inform SynEdit which lines need repainting
   Pos := 0;
   while (Pos < fMatches.PointCount)
@@ -491,8 +470,6 @@ begin
       InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos+1].y);
     inc(pos,2);
   end;
-
-  fInvalidating := False;
 end;
 
 function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
