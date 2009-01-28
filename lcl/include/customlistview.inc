@@ -278,6 +278,7 @@ begin
   end;
   LVC.SetScrollBars(Self, FScrollBars);
   LVC.SetViewOrigin(Self, FViewOriginCache) ;
+  LVC.SetProperties(Self, FProperties);
   LVC.SetSort(Self, FSortType, FSortColumn);
 
   // add items
@@ -288,7 +289,6 @@ begin
   LVC.SetDefaultItemHeight(Self, FDefaultItemHeight);
   LVC.SetHotTrackStyles(Self, FHotTrackStyles);
   LVC.SetHoverTime(Self, FHoverTime);
-  LVC.SetProperties(Self, FProperties);
 
   if FSelected <> nil 
   then LVC.ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
