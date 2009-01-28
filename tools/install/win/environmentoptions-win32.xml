@@ -15,14 +15,5 @@
     <Debugger Class="TGDBMIDebugger"/>
     <DebuggerFilename Value="%LazDir%\mingw\bin\gdb.exe">
     </DebuggerFilename>
-    <Desktop>
-      <MainIDE>
-        <WindowPlacement Value="RestoreWindowGeometry"/>
-        <CustomPosition Width="720" Height="69"/>
-        <WindowState Value="Normal"/>
-        <DockMode Value="Default"/>
-        <Visible Value="True"/>
-      </MainIDE>
-    </Desktop>
   </EnvironmentOptions>
 </CONFIG>
