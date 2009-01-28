@@ -14,7 +14,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Notebook: TNotebook
+    Left = 0
     Height = 418
+    Top = 0
     Width = 473
     Align = alClient
     BorderSpacing.Bottom = 6
@@ -93,7 +95,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 17
           Top = 177
-          Width = 140
+          Width = 138
           BorderSpacing.Around = 6
           Caption = 'UseAppBundleCheckBox'
           TabOrder = 1
@@ -105,7 +107,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 17
           Top = 200
-          Width = 142
+          Width = 140
           BorderSpacing.Around = 6
           Caption = 'UseXPManifestCheckBox'
           TabOrder = 2
@@ -196,6 +198,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 100
           Max = 0
           OnChange = IconTrackChange
+          Position = 0
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 7
         end
@@ -339,6 +342,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Width = 194
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
+        ItemHeight = 0
         MultiSelect = True
         TabOrder = 0
       end
@@ -356,6 +360,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Width = 193
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
+        ItemHeight = 0
         MultiSelect = True
         TabOrder = 1
       end
@@ -500,6 +505,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 437
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
+          ItemHeight = 0
           TabOrder = 0
         end
         object LazDocPathEdit: TEdit
@@ -800,9 +806,11 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Height = 21
           Top = 26
           Width = 248
+          AutoComplete = False
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          ItemWidth = 0
           TabOrder = 0
           Text = 'U.S. English'
         end
@@ -816,9 +824,11 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Top = 26
           Width = 183
           Anchors = [akTop, akLeft, akRight]
+          AutoComplete = False
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          ItemWidth = 0
           TabOrder = 1
           Text = 'Multilingual'
         end
@@ -865,6 +875,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Side = asrBottom
           Left = 70
           Height = 21
+          Top = 0
           Width = 373
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
@@ -986,7 +997,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Top = 424
     Width = 461
     TabOrder = 1
-    Spacing = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
