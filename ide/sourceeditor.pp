@@ -5925,8 +5925,7 @@ begin
 
     If TempEditor.ReadOnly then
       if PanelFileMode <> '' then
-        PanelFileMode := Format(lisUEReadOnly, [StatusBar.Panels[1
-          ].Text])
+        PanelFileMode := Format(lisUEReadOnly, [PanelFileMode])
       else
         PanelFileMode := uepReadonly;
 
