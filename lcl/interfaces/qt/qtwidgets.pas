@@ -6380,21 +6380,7 @@ begin
           QEvent_accept(Event);
         end;
       end;
-      QEventFocusIn:
-      begin
-        if not (csDesigning in LCLObject.ComponentState) then
-          if QFocusEvent_reason(QFocusEventH(Event)) in
-            [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
-             QtShortcutFocusReason, QtOtherFocusReason] then
-          begin
-            if Assigned(LineEdit) and
-               LineEdit.getEnabled and
-               TComboBox(LCLObject).AutoSelect then
-              LineEdit.selectAll;
-          end;
-        TCustomComboBox(LCLObject).IntfGetItems;
-      end;
-
+      QEventFocusIn: TCustomComboBox(LCLObject).IntfGetItems;
       QEventKeyPress,
       QEventKeyRelease:
       begin
