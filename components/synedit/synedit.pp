@@ -4413,6 +4413,7 @@ Begin
     Include(fStatusChanges, scCaretY);
     Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
+    fMarkupManager.Caret := CaretXY;
   finally
     FTrimmedLinesView.UnLock;
     DecPaintLock;
