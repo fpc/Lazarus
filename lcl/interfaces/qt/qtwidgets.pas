@@ -584,8 +584,6 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
   end;
 
@@ -5214,38 +5212,6 @@ procedure TQtLineEdit.DetachEvents;
 begin
   QLineEdit_hook_destroy(FTextChanged);
   inherited DetachEvents;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtLineEdit.EventFilter
-  Params:  QObjectH, QEventH
-  Returns: boolean
-
-  Overrides TQtWidget EventFilter()
- ------------------------------------------------------------------------------}
-function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  case QEvent_type(Event) of
-    QEventFocusIn:
-    begin
-      if not (csDesigning in LCLObject.ComponentState) then
-      begin
-        if QFocusEvent_reason(QFocusEventH(Event)) in
-          [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
-           QtShortcutFocusReason, QtOtherFocusReason] then
-        begin
-          // it would be better if we have AutoSelect published from TCustomEdit
-          // then TMaskEdit also belongs here.
-          if (LCLObject is TEdit) and
-             getEnabled and
-             TEdit(LCLObject).AutoSelect and not
-             TEdit(LCLObject).ReadOnly then
-               QLineEdit_selectAll(QLineEditH(Widget));
-        end;
-      end;
-    end;
-  end;
-  Result := inherited EventFilter(Sender, Event);
 end;
 
 {------------------------------------------------------------------------------
