@@ -407,6 +407,10 @@ end;
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   Done:=false;
+  if fUpdateLock>0 then begin
+    DebugLn(['WARNING: TFPDocEditor.ApplicationIdle fUpdateLock>0']);
+    exit;
+  end;
   if fpdefChainNeedsUpdate in FFlags then
     UpdateChain
   else if fpdefCaptionNeedsUpdate in FFlags then

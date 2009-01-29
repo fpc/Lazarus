@@ -1411,9 +1411,11 @@ begin
 
   ARow := OI.GetActivePropertyRow;
 
-  if (ARow <> nil) and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
+  if (ARow <> nil)
+  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
   begin
-    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComplete], BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
+    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComplete],
+      BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
     begin
       HtmlHint := '';
       BaseURL := '';
