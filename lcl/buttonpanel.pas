@@ -269,7 +269,7 @@ end;
 
 procedure TCustomButtonPanel.UpdateButtonOrder;
 const
-  TABORDERS: array[TButtonOrder, 0..3] of TPanelButton = (
+  TabOrders: array[TButtonOrder, 0..3] of TPanelButton = (
     {$IFDEF UNIX}
     {boDefault      } (pbOK, pbCancel, pbClose, pbHelp),
     {$ELSE}
@@ -282,10 +282,10 @@ var
   i: Integer;
 begin
   //set taborder
-  for i := Low(TABORDERS[FButtonOrder]) to High(TABORDERS[FButtonOrder]) do
+  for i := Low(TabOrders[FButtonOrder]) to High(TabOrders[FButtonOrder]) do
   begin
-    if FButtons[TABORDERS[FButtonOrder, i]] = nil then Continue;
-    FButtons[TABORDERS[FButtonOrder, i]].Taborder := i;
+    if FButtons[TabOrders[FButtonOrder, i]] = nil then Continue;
+    FButtons[TabOrders[FButtonOrder, i]].TabOrder := High(TabOrders[FButtonOrder]) - i;
   end;
   Realign;
 end;
@@ -445,7 +445,7 @@ begin
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
 
-  Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder;
+  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
 end;
 
 procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
