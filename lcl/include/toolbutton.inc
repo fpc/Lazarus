@@ -620,6 +620,12 @@ begin
   invalidate;
 end;
 
+procedure TToolButton.CMVisibleChanged(var Message: TLMessage);
+begin
+  if FToolBar <> nil then
+    RefreshControl;
+end;
+
 procedure TToolButton.BeginUpdate;
 begin
   Inc(FUpdateCount);

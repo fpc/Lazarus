@@ -1402,6 +1402,7 @@ type
     procedure SetWrap(Value: Boolean);
     procedure SetMouseInControl(NewMouseInControl: Boolean);
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
+    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   protected
     FToolBar: TToolBar;

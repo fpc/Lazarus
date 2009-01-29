@@ -26,7 +26,7 @@ var
   Row2: Integer;
   HalfBtnHeight, BtnHeight: Integer;
 begin
-  Result:=0;
+  Result := 0;
   if not (Control1.Parent is TToolBar) then Exit;
 
   ToolBar := TToolBar(Control1.Parent);
@@ -36,27 +36,14 @@ begin
 
   Row1 := (Control1.Top + HalfBtnHeight) div BtnHeight;
   Row2 := (Control2.Top + HalfBtnHeight) div BtnHeight;
-  if Row1 < Row2 then
-    Result := -1
-  else
-  if Row1 > Row2 then
-    Result :=1
-  else
-  if Control1.Left < Control2.Left then
-    Result := -1
-  else
-  if Control1.Left > Control2.Left then
-    Result := 1
-  else
+  Result := CompareValue(Row1, Row2);
+  if Result = 0 then
+    Result := CompareValue(Control1.Left, Control2.Left);
+  if Result = 0 then
   begin
     Row1 := ToolBar.GetControlIndex(Control1);
     Row2 := ToolBar.GetControlIndex(Control2);
-    // buttons order is reversed, iow last addeted button will be first
-    if Row1 < Row2 then
-      Result := 1
-    else
-    if Row1 > Row2 then
-      Result := -1
+    Result := CompareValue(Row1, Row2);
   end;
 end;
 
@@ -580,11 +567,11 @@ begin
     StartX:=ARect.Left;
     x:=StartX;
     y:=ARect.Top;
-    i:=0;
-    while i<OrderedControls.Count do
+    for i := 0 to OrderedControls.Count - 1 do
     begin
       CurControl := TControl(OrderedControls[i]);
-
+      if not CurControl.Visible then
+        Continue;
       CalculatePosition;
       //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
       if ButtonHeight <= 0
@@ -622,8 +609,6 @@ begin
         x:=StartX;
         inc(y,ButtonHeight);
       end;
-
-      inc(i);
     end;
     FRealizedButtonHeight:=FButtonHeight;
   finally
