@@ -2888,7 +2888,8 @@ var
   HorizAlignment, VertAlignment: TComponentAlignment;
   HorizAlignID, VertAlignID: integer;
 begin
-  if ShowAlignComponentsDialog(HorizAlignID,VertAlignID)=mrOk then begin
+  if ShowAlignComponentsDialog(HorizAlignID,VertAlignID)=mrOk then 
+  begin
     case HorizAlignID of
      0: HorizAlignment:=csaNone;
      1: HorizAlignment:=csaSides1;
@@ -2910,30 +2911,31 @@ begin
      7: VertAlignment:=csaSide2SpaceEqually;
     end;
     ControlSelection.AlignComponents(HorizAlignment,VertAlignment);
+    Modified;
   end;
-  ControlSelection.SaveBounds;
 end;
 
 procedure TDesigner.OnMirrorHorizontalPopupMenuClick(Sender: TObject);
 begin
   ControlSelection.MirrorHorizontal;
-  ControlSelection.SaveBounds;
+  Modified;
 end;
 
 procedure TDesigner.OnMirrorVerticalPopupMenuClick(Sender: TObject);
 begin
   ControlSelection.MirrorVertical;
-  ControlSelection.SaveBounds;
+  Modified;
 end;
 
 procedure TDesigner.OnScalePopupMenuClick(Sender: TObject);
 var
   ScaleInPercent: integer;
 begin
-  if ShowScaleComponentsDialog(ScaleInPercent)=mrOk then begin
+  if ShowScaleComponentsDialog(ScaleInPercent)=mrOk then 
+  begin
     ControlSelection.ScaleComponents(ScaleInPercent);
+    Modified;
   end;
-  ControlSelection.SaveBounds;
 end;
 
 procedure TDesigner.OnSizePopupMenuClick(Sender: TObject);
@@ -2942,8 +2944,8 @@ var
   HorizSizingID, VertSizingID: integer;
   AWidth, AHeight: integer;
 begin
-  if ShowSizeComponentsDialog(HorizSizingID,AWidth,VertSizingID,AHeight)=mrOk
-  then begin
+  if ShowSizeComponentsDialog(HorizSizingID,AWidth,VertSizingID,AHeight) = mrOk then 
+  begin
     case HorizSizingID of
      0: HorizSizing:=cssNone;
      1: HorizSizing:=cssShrinkToSmallest;
@@ -2957,8 +2959,8 @@ begin
      3: VertSizing:=cssFixed;
     end;
     ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
+    Modified;
   end;
-  ControlSelection.SaveBounds;
 end;
 
 procedure TDesigner.OnOrderMoveToFrontMenuClick(Sender: TObject);
