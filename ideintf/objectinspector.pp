@@ -2223,7 +2223,7 @@ begin
     ParentRow:=ParentRow.Parent;
   end;
 
-  if (ItemIndex <> -1) and (Rows[ItemIndex] = ARow) then
+  if (ItemIndex <> -1) and (ItemIndex = ARow.Index) then
     Result := FHighlightFont.Color
   else if IsObjectSubProperty then
     Result := FSubPropertiesColor
