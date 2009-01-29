@@ -1011,9 +1011,22 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlCanvas.Create" link="#fcl.FPCanvas.TFPCustomCanvas.create"/>
+      <element name="TControlCanvas.Create">
+        <short>
+          <var>Create</var> - constructor for TControlCanvas: calls inherited <var>Create</var> then initialises local variables to show an empty control</short>
+        <seealso>
+          <link id="#fcl.FPCanvas.TFPCustomCanvas.create">TFPCustomCanvas.create</link>
+        </seealso>
+      </element>
       <!-- destructor Visibility: public -->
-      <element name="TControlCanvas.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
+      <element name="TControlCanvas.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TControlCanvas</var>: frees handle and calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControlCanvas.FreeHandle" link="#LCL.Graphics.TCanvas.FreeHandle">
         <descr/>
@@ -2565,11 +2578,14 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSizeConstraints.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TSizeConstraints.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TSizeConstraints</var>: calls inherited <var>Create</var> and sets some default (zero) constraints</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TSizeConstraints.Create.AControl">
@@ -2965,7 +2981,7 @@ mrLast=mrYesToAll=10</descr>
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6743,12 +6759,13 @@ mrLast=mrYesToAll=10</descr>
           <p>
             <var>Create</var>
  a new Control - Constructor. Overrides constructors of ancestor classes and sets a number of defaults. Often overridden by descendant classes.</p>
+          <p>Defaults set by the Constructor include ControlStyle, Constraints, BorderSpacing, Anchoring, alignment, CaptureMouseBottons, Color, Visibility, Hinting, Cursor, Font, The WindowProcedure to be used, the Help type, the FloatingDockSite and Enabled properties</p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TControl </var>and derived classes</short>
+          <var>Create</var> - constructor for <var>TControl </var>and derived classes: calls inherited <var>Create</var> and sets a number of defaults</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Create.TheOwner">
@@ -6763,7 +6780,7 @@ mrLast=mrYesToAll=10</descr>
           <p>Overrides destructors of ancestor classes, and in turn may be overridden by descendant classes.</p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - Destructor for <var>TControl</var>. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc</short>
@@ -8036,7 +8053,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10790,7 +10807,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- constructor Visibility: public -->
       <element name="TWinControl.Create">
         <seealso>
-          <link id="#rtl.Classes.TComponent"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TWinControl</var>: performs inherited <var>Create</var> and initialises some local variables</short>
@@ -10798,6 +10816,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
           <p>
             <var>Create</var> - Constructor for <var>TWinControl</var>: performs inherited <var>Create</var> and initialises some local variables</p>
           <p>Overrides ancestor constructor, and may in turn be overridden</p>
+          <p>Among additional variables initialised are: CompStyle, ChildSizing, Brush, TabOrder and TabStop</p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -11299,7 +11318,7 @@ need the ability to accept keyboard input or contain other controls. </p>
           <p>Overrides ancestor and may be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Create"/>
+          <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11317,6 +11336,9 @@ need the ability to accept keyboard input or contain other controls. </p>
           </p>
           <p>Overrides ancestor destructors, and may be overridden</p>
         </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
@@ -11391,7 +11413,7 @@ getting the parent control's Canvas dimensions.</p>
         <short>
           <var>Create</var> - constructor for <var>TCustomControl</var>: performs inherited <var>Create</var>, then creates local <var>Canvas</var> and sets <var>DoubleBuffered</var> to be False</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.Create"/>
+          <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11712,7 +11734,7 @@ getting the parent control's Canvas dimensions.</p>
           <var>Create</var> - constructor for <var>TDockZone</var>: sets local variables to show the <var>Tree</var> and the <var>ChildControl</var>, sets default bounds and then performs inherited <var>Create</var>
         </short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12258,7 +12280,7 @@ getting the parent control's Canvas dimensions.</p>
           <p>Overrides ancestor constructors, may be overridden</p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->

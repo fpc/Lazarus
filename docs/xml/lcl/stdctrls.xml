@@ -425,7 +425,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateParams"/>
+          <link id="#LCL.Controls.TWinControl.CreateParams">WinControl.CreateParams</link>
         </seealso>
         <short>
           <var>CreateParams</var> - calls inherited <var>CreateParams</var> then sets up style and alignment depending on whether horizontal or vertical</short>
@@ -439,7 +439,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
         <short>
           <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initialises various Scroll Info properties</short>
@@ -471,7 +471,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomScrollBar</var>: calls inherited <var>Create</var> then initialises size, style and various local variables</short>
@@ -881,7 +881,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1747,7 +1747,7 @@ False is set when the edit or combobox control loses focus.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.InitializeWnd"/>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
         </seealso>
         <short>
           <var>InitializeWnd</var> - creates the underlying interface-object: calls inherited <var>InitializeWnd</var> then sets up several local lists and variables notably for style and size</short>
@@ -1757,7 +1757,7 @@ False is set when the edit or combobox control loses focus.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.DestroyWnd"/>
+          <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
         </seealso>
         <short>
           <var>DestroyWnd</var> - finds somewhere to store locally held variables then frees lists, cals inherited <var>DestroyWnd</var>
@@ -2280,10 +2280,10 @@ False is set when the edit or combobox control loses focus.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for TCustomComboBox: calls inherited <var>Create</var> then initialises styles, item lists, bounds and various other local variables</short>
+          <var>Create</var> - constructor for <var>TCustomComboBox</var>: calls inherited <var>Create</var> then initialises styles, item lists, bounds and various other local variables</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.Create.TheOwner">
@@ -2294,7 +2294,7 @@ False is set when the edit or combobox control loses focus.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TCustomComboBox</var>: frees handles, itemlists, canvas and items then calls inherited <var>Destroy</var>
@@ -3645,7 +3645,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomListBox</var>: calls inherited <var>Create</var> then initialises style, canvas, item list and various other local variables</short>
@@ -3659,7 +3659,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var>: destructor for <var>TCustomListBox</var>: frees canvas and item list, then calls inherited <var>Destroy</var>
@@ -4769,7 +4769,7 @@ Indicates how text is displayed in a text editing control.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -4998,7 +4998,7 @@ Indicates how text is displayed in a text editing control.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomEdit</var>: calls inherited <var>Create</var> then initialises style, colour, size and various other local variables</short>
@@ -5566,7 +5566,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
 </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomMemo</var>: calls inherited <var>Create</var> then initialises some variables, creates the stringlist and creates scrollbars</short>
@@ -5581,7 +5581,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
 </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TCustomMemo</var>: frees stringlist and scrollbars then calls inherited <var>Destroy</var>
@@ -6447,7 +6447,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomStaticText</var>: calls inherited <var>Create</var> the initialises style, alignment and bounds</short>
@@ -6910,7 +6910,7 @@ is done automatically by the streaming system.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TButtonControl</var>: calls inherited <var>Create</var> then initialises style</short>
@@ -7242,7 +7242,7 @@ is done automatically by the streaming system.
 </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomButton</var>: calls inherited <var>Create</var> then initialises style, colour, bounds, alignment and various other properties</short>
@@ -7844,11 +7844,11 @@ is the ancestor of all check-box components.</short>
       <!-- constructor Visibility: public -->
       <element name="TCustomCheckBox.Create">
         <short>
-          <var>Create</var> - constructor for TCustomCheckBox: calls inherited <var>Create</var> then initialises style, and state, bounds, tabstop and autosize</short>
+          <var>Create</var> - constructor for <var>TCustomCheckBox</var>: calls inherited <var>Create</var> then initialises style, and state, bounds, tabstop and autosize</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -8122,7 +8122,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create">TCustomCheckBox.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TToggleBox</var>: calls inherited <var>Create</var> then initialises style and makes autosize False</short>
@@ -8397,7 +8397,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create">TCustomCheckBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9076,7 +9076,7 @@ is done automatically by the streaming system.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomLabel</var>: calls inherited <var>Create</var> then initialises style, bounds, colour and some other properties</short>

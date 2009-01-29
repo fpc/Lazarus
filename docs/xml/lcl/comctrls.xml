@@ -314,22 +314,28 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusPanel.Create" link="#rtl.Classes.TCollectionItem.Create">
-        <short/>
+      <element name="TStatusPanel.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TStatusPanel</var>: sets default width, alignment and bevel, calls inherited <var>Create</var> and loads into StatusBar</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStatusPanel.Create.aCollection">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TStatusPanel.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
-        <short/>
+      <element name="TStatusPanel.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TStatusPanel</var>: calls inherited <var>Destroy</var> and removes itself from the StatusBar</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Destroy">TCollectionItem.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStatusPanel.Assign" link="#rtl.Classes.TPersistent.Assign">
@@ -454,11 +460,14 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusPanels.Create" link="#rtl.Classes.TCollection.Create">
-        <short/>
+      <element name="TStatusPanels.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TStatusPanels</var>: calls inherited <var>Create</var> and attaches itself to StatusBar</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Create">TCollection.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStatusPanels.Create.TheStatusBar">
@@ -625,22 +634,36 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusBar.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TStatusBar.Create">
+        <short>
+          <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initialises a number of local variables</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initialises a number of local variables</p>
+          <p>Among the variables initialised are:</p>
+          <p>AutoHint (False), Canvas, ControlStyle, Colour, Align, AutoSize, and SimplePanel (True)</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.Controls.TWinControl.Create">TWinControl.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStatusBar.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TStatusBar.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TStatusBar.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TStatusBar</var>: frees canvas and panels, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#lcl.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStatusBar.InvalidatePanel">
@@ -870,22 +893,32 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabSheet.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TTabSheet.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TTabSheet</var>: calls inherited <var>Create</var> and zeroes <var>ImageIndex</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.ExtCtrls.TCustomPage.Create">TCustomPage.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabSheet.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTabSheet.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TTabSheet.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TTabSheet</var>: detaches from the Host Dock Site and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.ExtCtrls.TCustomPage.Destroy">TCustomPage.Destroy</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabSheet.PageControl">
@@ -1160,11 +1193,16 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPageControl.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TPageControl.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TPageControl</var>: sets <var>PageClass</var> to <var>TTabSheet</var> then calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.ExtCtrls.TCustomNotebook.Create">TCustomNotebook.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.Create.TheOwner">
@@ -1237,7 +1275,9 @@
         <short>
           <var>Pages</var> - the actual Pages (<var>TTabSheet</var>) that comprise the component</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TCustomNotebook.Pages">TCustomNotebook.Pages</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.Pages.Index">
@@ -1620,11 +1660,19 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabControlStrings.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TTabControlStrings.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TTabControlStrings</var>: calls inherited <var>Create</var> then sets many local defaults</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TTabControlStrings</var>: calls inherited <var>Create</var> then sets many local defaults</p>
+          <p>Among the defaults set are:</p>
+          <p>HotTrack, Multiline, MultiSelect, OwnerDraw, RaggedRight, ScrollOpposite - all False; Tab height and width to zero</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlStrings.Create.TheTabControl">
@@ -2053,21 +2101,36 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Create" link="#rtl.System.TObject.Create">
-        <descr/>
+      <element name="TTabControlNoteBookStrings.Create">
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TTabControlNoteBookStrings</var>: calls inherited <var>Create</var> then sets some default Actions</p>
+          <p>Among the actions set are:</p>
+          <p>OnGetImageIndex, OnChanging, OnPageChanged. Notebook is created with a nominated parent</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#LCL.ComCtrls.TTabControlStrings.Create">TTabControlStrings.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TTabControlNoteBookStrings</var>: calls inherited <var>Create</var> then sets some default Actions</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.Create.TheTabControl">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Destroy" link="#rtl.Classes.TStrings.Destroy">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TTabControlNoteBookStrings</var>: frees NoteBook then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Destroy">TStrings.Destroy</link>
+          <link id="#LCL.ComCtrls.TTabControlStrings.Destroy">TTabControlStrings.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTabControlNoteBookStrings.Clear" link="#rtl.Classes.TStrings.Clear">
@@ -2815,22 +2878,31 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTabControl.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomTabControl.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTabControl</var>: calls inherited <var>Create</var>, sets initial bounds, forms links and sets some defaults</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTabControl.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTabControl.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomTabControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomTabControl</var>: frees links and tabs, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.IndexOfTabAt">
@@ -4296,22 +4368,29 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListColumn.Create" link="#rtl.Classes.TCollectionItem.Create">
-        <short/>
+      <element name="TListColumn.Create">
+        <short>
+          <var>Create</var> - constructor for TListColumn: calls inherited <var>Create</var> then sets defaults for size, alignment and index</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListColumn.Create.ACollection">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListColumn.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
-        <short/>
+      <element name="TListColumn.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TListColumn</var>: if update allowed, updates columns then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Destroy">TCollectionItem.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListColumn.Assign" link="#rtl.Classes.TPersistent.Assign">
@@ -5765,17 +5844,28 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListView.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomListView.Create">
+        <short>
+          <var>Create</var> - constructor for TCustomListView: calls inherited <var>Create</var> then initialises columns, the list of items, the canvas and properties and some formats and styles</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.WinControl.Create">WinControl.Create</link>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Create.Aowner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomListView.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomListView.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomListView</var>: frees Canvas, calls inherited <var>Destroy</var> and frees columns, links and list items</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.Controls.WinControl.Destroy">WinControl.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListView.BeginUpdate">
@@ -6371,11 +6461,15 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomProgressBar.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomProgressBar.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomProgressBar</var>: calls inherited <var>Create</var>, initialises position, orientation and size</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TWinControlCreate">TWinControlCreate</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomProgressBar.Create.AOwner">
@@ -7172,22 +7266,31 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomUpDown.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomUpDown.Create">
+        <short>
+          <var>TWinControlCreate</var> - constructor for <var>TCustomUpDown</var>: calls inherited <var>Create</var>, initialises orientation, max and min, bounds, size and alignment</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.Controls.TCustomControl.Create">TCustomControl.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomUpDown.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomUpDown.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomUpDown.Destroy">
+        <short>
+          <var>Destroy</var> destructor for <var>TCustomUpDown</var>: removes connection with associate control and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+        </seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TUpDown">
@@ -8087,11 +8190,15 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToolButton.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TToolButton.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TToolButton</var>: calls inherited <var>Create</var> and sets initial bounds and style</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolButton.Create.TheOwner">
