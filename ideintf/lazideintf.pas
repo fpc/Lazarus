@@ -213,7 +213,8 @@ type
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
-    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
+    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;
+    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; // true if something was saved
     property OpenEditorsOnCodeToolChange: boolean
                  read FOpenEditorsOnCodeToolChange
                  write FOpenEditorsOnCodeToolChange;

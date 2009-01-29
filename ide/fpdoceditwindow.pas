@@ -50,6 +50,7 @@ uses
 type
   TFPDocEditorFlag = (
     fpdefWriting,
+    fpdefCodeCacheNeedsUpdate,
     fpdefChainNeedsUpdate,
     fpdefCaptionNeedsUpdate,
     fpdefValueControlsNeedsUpdate,
@@ -145,6 +146,7 @@ type
     procedure SetModified(const AValue: boolean);
     function WriteNode(Element: TCodeHelpElement; Values: TFPDocElementValues;
                        Interactive: Boolean): Boolean;
+    procedure UpdateCodeCache;
     procedure UpdateChain;
     procedure UpdateCaption;
     procedure UpdateLinkIdComboBox;
@@ -213,10 +215,10 @@ var
   Node: TDOMNode;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,fpdefLinkIDComboNeedsUpdate);
+    Include(FFlags,fpdefLinkIDComboNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,fpdefLinkIDComboNeedsUpdate);
+  Exclude(FFlags,fpdefLinkIDComboNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateLinkIdComboBox START']);
@@ -406,12 +408,15 @@ end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
-  Done:=false;
-  if fUpdateLock>0 then begin
+  if fUpdateLock>0 then
+  begin
     DebugLn(['WARNING: TFPDocEditor.ApplicationIdle fUpdateLock>0']);
     exit;
   end;
-  if fpdefChainNeedsUpdate in FFlags then
+  Done:=false;
+  if fpdefCodeCacheNeedsUpdate in FFlags then
+    UpdateCodeCache
+  else if fpdefChainNeedsUpdate in FFlags then
     UpdateChain
   else if fpdefCaptionNeedsUpdate in FFlags then
     UpdateCaption
@@ -571,10 +576,10 @@ var
   Element: TCodeHelpElement;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,fpdefValueControlsNeedsUpdate);
+    Include(FFlags,fpdefValueControlsNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,fpdefValueControlsNeedsUpdate);
+  Exclude(FFlags,fpdefValueControlsNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateValueControls START']);
@@ -593,10 +598,10 @@ var
   ShortDescr: String;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,fpdefInheritedControlsNeedsUpdate);
+    Include(FFlags,fpdefInheritedControlsNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,fpdefInheritedControlsNeedsUpdate);
+  Exclude(FFlags,fpdefInheritedControlsNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateInheritedControls START']);
@@ -630,15 +635,15 @@ var
 begin
   FreeAndNil(fChain);
   if fUpdateLock>0 then begin
-    Include(FFLags,fpdefChainNeedsUpdate);
+    Include(FFlags,fpdefChainNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,fpdefChainNeedsUpdate);
+  Exclude(FFlags,fpdefChainNeedsUpdate);
 
   if (fSourceFilename='') or (CaretXY.X<1) or (CaretXY.Y<1) then exit;
 
   {$IFDEF VerboseCodeHelp}
-  DebugLn(['TFPDocEditForm.UpdateChain START']);
+  DebugLn(['TFPDocEditForm.UpdateChain START ',fSourceFilename,' ',dbgs(CaretXY)]);
   {$ENDIF}
   NewChain:=nil;
   try
@@ -651,20 +656,25 @@ begin
 
     // start getting the lazdoc element chain
     LDResult:=CodeHelpBoss.GetElementChain(Code,CaretXY.X,CaretXY.Y,true,
-                                         NewChain,CacheWasUsed);
+                                           NewChain,CacheWasUsed);
     case LDResult of
     chprParsing:
       begin
-        Include(FFLags,fpdefChainNeedsUpdate);
+        Include(FFlags,fpdefChainNeedsUpdate);
         DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
     chprFailed:
       begin
-        //DebugLn(['TFPDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        {$IFDEF VerboseLazDocFails}
+        DebugLn(['TFPDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        {$ENDIF}
         exit;
       end;
     else
+      {$IFDEF VerboseCodeHelp}
+      NewChain.WriteDebugReport;
+      {$ENDIF}
       fChain:=NewChain;
       NewChain:=nil;
     end;
@@ -920,9 +930,9 @@ end;
 procedure TFPDocEditor.InvalidateChain;
 begin
   FreeAndNil(fChain);
-  FFlags:=FFlags+[fpdefChainNeedsUpdate,fpdefCaptionNeedsUpdate,
-      fpdefValueControlsNeedsUpdate,fpdefInheritedControlsNeedsUpdate,
-      fpdefLinkIDComboNeedsUpdate];
+  FFlags:=FFlags+[fpdefCodeCacheNeedsUpdate,fpdefChainNeedsUpdate,
+      fpdefCaptionNeedsUpdate,fpdefValueControlsNeedsUpdate,
+      fpdefInheritedControlsNeedsUpdate,fpdefLinkIDComboNeedsUpdate];
 end;
 
 procedure TFPDocEditor.UpdateFPDocEditor(const SrcFilename: string;
@@ -937,7 +947,8 @@ begin
   
   NewSrcFilename:=CleanAndExpandFilename(SrcFilename);
   if (NewSrcFilename=SourceFilename) and (CompareCaret(Caret,CaretXY)=0)
-  and (fChain<>nil) and fChain.IsValid then
+  and (fChain<>nil) and fChain.IsValid
+  and (not LazarusIDE.NeedSaveSourceEditorChangesToCodeCache(-1)) then
     exit;
 
   FCaretXY:=Caret;
@@ -1080,6 +1091,16 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+procedure TFPDocEditor.UpdateCodeCache;
+begin
+  if fUpdateLock>0 then begin
+    Include(FFlags,fpdefCodeCacheNeedsUpdate);
+    exit;
+  end;
+  Exclude(FFlags,fpdefCodeCacheNeedsUpdate);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
 end;
 
 procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);

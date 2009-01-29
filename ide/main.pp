@@ -852,7 +852,8 @@ type
                         AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
-    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
+    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
+    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -12105,7 +12106,7 @@ begin
   FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
 end;
 
-procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
+function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
 // save all open sources to code tools cache
 var i: integer;
 
@@ -12119,10 +12120,12 @@ var i: integer;
     begin
       SrcEdit.UpdateCodeBuffer;
       AnUnitInfo.Modified:=true;
+      SaveSourceEditorChangesToCodeCache:=true;
     end;
   end;
 
 begin
+  Result:=false;
   if PageIndex<0 then begin
     if (SourceNotebook.NoteBook<>nil) then begin
       for i:=0 to SourceNotebook.NoteBook.PageCount-1 do
@@ -12283,6 +12286,36 @@ begin
     PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
     SourceNotebook.FindSourceEditorWithPageIndex(PageIndex).PageName:=PageName;
   end;
+end;
+
+function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer
+  ): boolean;
+// check if any open source needs to be saved to code tools cache
+var i: integer;
+
+  function NeedSave(APageIndex: integer): boolean;
+  var
+    SrcEdit: TSourceEditor;
+    AnUnitInfo: TUnitInfo;
+  begin
+    GetUnitWithPageIndex(APageIndex,SrcEdit,AnUnitInfo);
+    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and SrcEdit.NeedsUpdateCodeBuffer then
+      Result:=true
+    else
+      Result:=false;
+  end;
+
+begin
+  Result:=true;
+  if PageIndex<0 then begin
+    if (SourceNotebook.NoteBook<>nil) then begin
+      for i:=0 to SourceNotebook.NoteBook.PageCount-1 do
+        if NeedSave(i) then exit;
+    end;
+  end else begin
+    if NeedSave(PageIndex) then exit;
+  end;
+  Result:=false;
 end;
 
 procedure TMainIDE.ApplyCodeToolChanges;

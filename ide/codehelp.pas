@@ -146,6 +146,7 @@ type
     ElementNode: TDOMNode;
     ElementNodeValid: boolean;
     FPDocFile: TLazFPDocFile;
+    procedure WriteDebugReport;
   end;
   
   { TCodeHelpElementChain - a list of TCodeHelpElement.
@@ -171,6 +172,7 @@ type
     function IsValid: boolean;
     procedure MakeValid;
     function DocFile: TLazFPDocFile;
+    procedure WriteDebugReport;
   end;
   
   TCodeHelpChangeEvent = procedure(Sender: TObject; LazFPDocFile: TLazFPDocFile) of object;
@@ -2090,12 +2092,30 @@ begin
     Result:=Items[0].FPDocFile;
 end;
 
+procedure TCodeHelpElementChain.WriteDebugReport;
+var
+  Line, Column: integer;
+  i: Integer;
+begin
+  CodePos.Code.AbsoluteToLineCol(CodePos.P,Line,Column);
+  DebugLn(['TCodeHelpElementChain.WriteDebugReport ',CodePos.Code.Filename,' X=',Column,' Y=',Line,' IDEChangeStep=',IDEChangeStep,' CodetoolsChangeStep=',CodetoolsChangeStep]);
+  for i:=0 to Count-1 do
+    Items[i].WriteDebugReport;
+end;
+
 { TLazFPDocNode }
 
 constructor TLazFPDocNode.Create(AFile: TLazFPDocFile; ANode: TDOMNode);
 begin
   Node:=ANode;
   DocFile:=AFile;
+end;
+
+{ TCodeHelpElement }
+
+procedure TCodeHelpElement.WriteDebugReport;
+begin
+  DebugLn(['  ',CodeXYPos.Code.Filename,' X=',CodeXYPos.X,' Y=',CodeXYPos.Y,' ElementOwnerName=',ElementOwnerName,' ElementUnitName=',ElementUnitName,' ElementUnitFileName=',ElementUnitFileName,' ElementName=',ElementName]);
 end;
 
 end.
