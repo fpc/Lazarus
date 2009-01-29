@@ -160,7 +160,7 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
     cd ${BinUtilsDir}
     for binutility in $(ls -B ${BinUtilsPrefix}*); do
       NewName=$(echo $binutility | sed -e "s#^$BinUtilsPrefix##")
-      NewFileName="fpc-${TargetCPU}-${TargetOS}-$NewName"
+      NewFileName="${TargetCPU}-${TargetOS}-$NewName"
       if [ $NewName = "windres" ]; then
         # windres needs two names:
         # - the Makefiles expects without prefix fpc-
@@ -216,7 +216,7 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
     chmod a+x $DebianRulezDir/postinst
   fi
 
-  # create postinst if needed
+  # create postrm if needed
   if [ -f "$ResourceDir/postrm" ]; then
     echo "creating DEBIAN/postrm file"
     cat $ResourceDir/postrm | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postrm
