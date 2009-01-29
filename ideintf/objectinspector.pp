@@ -1063,8 +1063,8 @@ begin
   Result := true;
   if FHintTimer = nil then 
   begin
-    FHintIndex:=-1;
-    FShowingLongHint:=false;
+    FHintIndex := -1;
+    FShowingLongHint := False;
     FHintTimer := TTimer.Create(nil);
     FHintTimer.Interval := 500;
     FHintTimer.Enabled := False;
@@ -2943,12 +2943,13 @@ begin
       if Index <> ItemIndex then 
       begin
         HintType := GetHintTypeAt(Index,Position.X);
-        if (HintType = pehName) and Assigned(OnPropertyHint) then begin
-          if OnPropertyHint(Self,PointedRow,Position,FHintWindow,Rect,AHint) then
+        if (HintType = pehName) and Assigned(OnPropertyHint) then 
+        begin
+          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, Rect, AHint) then
           begin
-            FHintIndex:=Index;
-            FShowingLongHint:=true;
-            FHintWindow.ActivateHint(Rect,AHint);
+            FHintIndex := Index;
+            FShowingLongHint := True;
+            FHintWindow.ActivateHint(Rect, AHint);
           end;
           exit;
         end;
@@ -2958,9 +2959,9 @@ begin
   end;
 
   if AHint = '' then Exit;
-  FHintIndex:=Index;
-  FShowingLongHint:=true;
-  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
+  FHintIndex := Index;
+  FShowingLongHint := True;
+  Rect := FHintWindow.CalcHintRect(0, AHint, nil);  //no maxwidth
   Rect.Left := Position.X + 10;
   Rect.Top := Position.Y + 10;
   Rect.Right := Rect.Left + Rect.Right + 3;
@@ -2982,10 +2983,10 @@ end;
 
 procedure TOICustomPropertyGrid.HideHint;
 begin
-  if FHintWindow=nil then exit;
-  FHintWindow.Visible:=false;
-  FHintIndex:=-1;
-  FShowingLongHint:=false;
+  if FHintWindow = nil then Exit;
+  FHintWindow.Visible := False;
+  FHintIndex := -1;
+  FShowingLongHint := False;
   while FHintWindow.ControlCount > 0 do
     FHintWindow.Controls[0].Free;
 end;
