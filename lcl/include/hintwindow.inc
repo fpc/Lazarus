@@ -80,12 +80,12 @@ end;
 
 
 procedure THintWindow.AutoHideHint(Sender : TObject);
-Begin
-  if FAutoHideTimer<>nil then
+begin
+  if FAutoHideTimer <> nil then
     TCustomTimer(FAutoHideTimer).Enabled := False;
   if Visible then
     Visible := False;//Hide;
-End;
+end;
 
 procedure THintWindow.Paint;
 var
