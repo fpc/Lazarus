@@ -293,6 +293,8 @@ type
     // hint stuff
     FHintTimer: TTimer;
     FHintWindow: THintWindow;
+    FHintIndex: integer;
+    FShowingLongHint: boolean; // last hint was activated by the hinttimer
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
@@ -301,6 +303,7 @@ type
 
     procedure HintTimer(Sender: TObject);
     procedure ResetHintTimer;
+    procedure HideHint;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
 
     procedure IncreaseChangeStep;
@@ -1060,6 +1063,8 @@ begin
   Result := true;
   if FHintTimer = nil then 
   begin
+    FHintIndex:=-1;
+    FShowingLongHint:=false;
     FHintTimer := TTimer.Create(nil);
     FHintTimer.Interval := 500;
     FHintTimer.Enabled := False;
@@ -1906,9 +1911,7 @@ begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
   inherited MouseDown(Button,Shift,X,Y);
 
-  //hide the hint
-  if FHintWindow <> nil then
-    FHintWindow.Visible := False;
+  HideHint;
 
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
@@ -1976,9 +1979,13 @@ begin
     if ShowHint then 
     begin
       Index := MouseToIndex(y,false);
-      // do not show a hint for the current row to not hide the editor
-      if (Index > -1) and (Index <> ItemIndex) then 
-      begin
+      if (Index > -1)
+      and (Index<>ItemIndex) // do not show a hint for the current row to not hide the editor
+      and ((FHintWindow=nil) or (not FHintWindow.Visible)
+           or (Index<>FHintIndex) or (not FShowingLongHint))
+      then begin
+        FHintIndex:=-1;
+        FShowingLongHint:=false;
         fPropRow := GetRow(Index);
         if X < SplitterX then 
         begin
@@ -1987,6 +1994,7 @@ begin
           if ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) and 
              InitHints then 
           begin
+            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fPoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
@@ -2003,6 +2011,7 @@ begin
           if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)) and 
              InitHints then 
           begin
+            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fpoint := ClientToScreen(Point(SplitterX, fPropRow.Top - TopY - 1));
             MoveRect(fHintRect, fPoint.x, fPoint.y);
@@ -2934,10 +2943,13 @@ begin
       if Index <> ItemIndex then 
       begin
         HintType := GetHintTypeAt(Index,Position.X);
-        if (HintType = pehName) and Assigned(OnPropertyHint) then 
-        begin
-          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, Rect, AHint) then
-            FHintWindow.ActivateHint(Rect, AHint);
+        if (HintType = pehName) and Assigned(OnPropertyHint) then begin
+          if OnPropertyHint(Self,PointedRow,Position,FHintWindow,Rect,AHint) then
+          begin
+            FHintIndex:=Index;
+            FShowingLongHint:=true;
+            FHintWindow.ActivateHint(Rect,AHint);
+          end;
           exit;
         end;
         AHint := PointedRow.Editor.GetHint(HintType, Position.X, Position.Y);
@@ -2946,6 +2958,8 @@ begin
   end;
 
   if AHint = '' then Exit;
+  FHintIndex:=Index;
+  FShowingLongHint:=true;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
   Rect.Left := Position.X + 10;
   Rect.Top := Position.Y + 10;
@@ -2959,20 +2973,27 @@ Procedure TOICustomPropertyGrid.ResetHintTimer;
 begin
   if FHintWindow = nil then exit;
 
-  if FHintWIndow.Visible then
-    FHintWindow.Visible := False;
+  HideHint;
 
   FHintTimer.Enabled := False;
   if RowCount > 0 then
     FHintTimer.Enabled := not FDragging;
 end;
 
+procedure TOICustomPropertyGrid.HideHint;
+begin
+  if FHintWindow=nil then exit;
+  FHintWindow.Visible:=false;
+  FHintIndex:=-1;
+  FShowingLongHint:=false;
+  while FHintWindow.ControlCount > 0 do
+    FHintWindow.Controls[0].Free;
+end;
+
 procedure TOICustomPropertyGrid.ValueControlMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
-  //hide the hint window!
-  if (FHintWindow<>nil) and FHintWindow.Visible then
-    FHintWindow.Visible := False;
+  HideHint;
   ScrollToActiveItem;
 end;
 

@@ -1308,7 +1308,7 @@ begin
     SourceNotebook.AddJumpPointClicked(Self);
   if (ssoReplace in LazFindReplaceDialog.Options)
   and ReadOnly then begin
-    DebugLn(['TSourceEditor.DoFindAndReplace Rread only']);
+    DebugLn(['TSourceEditor.DoFindAndReplace Read only']);
     exit;
   end;
 
