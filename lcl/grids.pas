@@ -8387,16 +8387,40 @@ procedure TCustomStringGrid.AutoAdjustColumn(aCol: Integer);
 var
   i,W: Integer;
   Ts: TSize;
+  TmpCanvas: TCanvas;
+  DC: HDC;
 begin
-  if (aCol<0)or(aCol>ColCount-1) then Exit;
-  W:=0;
-  For i:=0 to RowCount-1 do begin
-    Ts:=Canvas.TextExtent(Cells[aCol, i]);
-    if Ts.Cx>W then W:=Ts.Cx;
+  if (aCol<0) or (aCol>ColCount-1) then
+    Exit;
+
+  if not Canvas.HandleAllocated then begin
+    DC := GetDC(0);
+    TmpCanvas := TCanvas.Create;
+    TmpCanvas.Handle := DC;
+    TmpCanvas.Font.Assign(Font);
+  end else
+    TmpCanvas := Canvas;
+
+  try
+    W:=0;
+    for i := 0 to RowCount-1 do begin
+      Ts := TmpCanvas.TextExtent(Cells[aCol, i]);
+      if Ts.Cx>W then
+        W := Ts.Cx;
+    end;
+  finally
+    if not Canvas.HandleAllocated then begin
+      TmpCanvas.Free;
+      ReleaseDC(0, DC);
+    end;
   end;
-  if W=0 then W:=DefaultColWidth
-  else        W:=W + 8;
-  ColWidths[aCol]:=W;
+
+  if W=0 then
+    W := DefaultColWidth
+  else
+    W := W + 8;
+
+  ColWidths[aCol] := W;
 end;
 
 procedure TCustomStringGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
