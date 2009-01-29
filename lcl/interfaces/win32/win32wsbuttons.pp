@@ -157,6 +157,10 @@ var
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
+  { TODO: if we want to handle properly Windows settings about focus rect and
+    keyboard accelerator drawing we need to query control state using this method
+    if SendMessage(BitBtnHandle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEACCEL <> 0 then
+  }
     TextFlags := DST_PREFIXTEXT;
 
     if not UseThemes and (AState = bsDisabled) then

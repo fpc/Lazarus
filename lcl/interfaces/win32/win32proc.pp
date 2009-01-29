@@ -314,6 +314,9 @@ begin
     $0124: Result := 'WM_MENUGETOBJECT';
     $0125: Result := 'WM_UNINITMENUPOPUP';
     $0126: Result := 'WM_MENUCOMMAND';
+    $0127: Result := 'WM_CHANGEUISTATE';
+    $0128: Result := 'WM_UPDATEUISTATE';
+    $0129: Result := 'WM_QUERYUISTATE';
     $0132: Result := 'WM_CTLCOLORMSGBOX';
     $0133: Result := 'WM_CTLCOLOREDIT';
     $0134: Result := 'WM_CTLCOLORLISTBOX';
@@ -321,6 +324,7 @@ begin
     $0136: Result := 'WM_CTLCOLORDLG';
     $0137: Result := 'WM_CTLCOLORSCROLLBAR';
     $0138: Result := 'WM_CTLCOLORSTATIC';
+    $0164: Result := 'CB_GETCOMBOBOXINFO';
     $0200: Result := 'WM_MOUSEFIRST or WM_MOUSEMOVE';
     $0201: Result := 'WM_LBUTTONDOWN';
     $0202: Result := 'WM_LBUTTONUP';
