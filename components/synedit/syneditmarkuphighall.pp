@@ -440,8 +440,6 @@ begin
 end;
 
 procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
-var
-  Pos: Integer;
 begin
   if (fSearchString = '') then exit;
   Invalidate;
