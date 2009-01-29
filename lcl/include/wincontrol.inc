@@ -5295,7 +5295,7 @@ var
   ShiftState: TShiftState;
 begin
   //debugln('TWinControl.DoRemainingKeyUp ',DbgSName(Self));
-  Result:=true;
+  Result := True;
 
   ShiftState := KeyDataToShiftState(Message.KeyData);
 
@@ -5309,6 +5309,7 @@ begin
     if Message.CharCode=VK_UNKNOWN then exit;
     // Note: Message.CharCode can now be different or even 0
   end;
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
