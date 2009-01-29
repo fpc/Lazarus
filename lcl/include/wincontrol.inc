@@ -6566,6 +6566,7 @@ begin
         RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
       //debugln('TWinControl.CreateWnd ',DbgSName(Self));
       Constraints.UpdateInterfaceConstraints;
+      InvalidateClientRectCache(False);
       InvalidatePreferredSize;
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 
