@@ -2679,10 +2679,12 @@ end;
 procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
 begin
   inherited Assign(Src);
-  FMode:=TSynPasSynRange(Src).FMode;
-  FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
-  FMinimumCodeFoldBlockLevel := TSynPasSynRange(Src).FMinimumCodeFoldBlockLevel;
-  FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
+  if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
+    FMode:=TSynPasSynRange(Src).FMode;
+    FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
+    FMinimumCodeFoldBlockLevel := TSynPasSynRange(Src).FMinimumCodeFoldBlockLevel;
+    FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
+  end;
 end;
 
 procedure TSynPasSynRange.IncBracketNestLevel;

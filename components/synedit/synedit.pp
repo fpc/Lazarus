@@ -3305,13 +3305,8 @@ var
                  ]);
           DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
         end
-        {$ELSE}
-        if (FFoldedLinesView.Ranges[CurLine] = nil) then begin
-          DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
-        end
+        else begin
         {$ENDIF}
-        else
-        begin
           fHighlighter.SetRange(FFoldedLinesView.Ranges[CurLine]);     //mh 2000-10-10
           fHighlighter.SetLine(sLine, FFoldedLinesView.TextIndex[CurLine]);
           // Try to concatenate as many tokens as possible to minimize the count
@@ -3329,7 +3324,9 @@ var
             // Let the highlighter scan the next token.
             fHighlighter.Next;
           end;
+        {$IFDEF DEBUGSYNRANGE}
         end;
+        {$ENDIF}
       end;
       // Draw anything that's left in the TokenAccu record. Fill to the end
       // of the invalid area with the correct colors.
