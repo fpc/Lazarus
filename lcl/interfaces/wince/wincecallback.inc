@@ -1976,7 +1976,6 @@ begin
           if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
               or lWinControl.ClientRectNeedsInterfaceUpdate then
           begin
-            lWinControl.InvalidateClientRectCache(true);
             lWinControl.DoAdjustClientRectChange;
             if (lWinControl is TCustomPage)
             and (lWinControl.Parent is TCustomNotebook) then

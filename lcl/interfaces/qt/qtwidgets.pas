@@ -2505,7 +2505,6 @@ begin
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
   begin
-    LCLObject.InvalidateClientRectCache(true);
     LCLObject.DoAdjustClientRectChange;
   end;
 

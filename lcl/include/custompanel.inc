@@ -57,7 +57,6 @@ end;
 
 procedure TCustomPanel.UpdateBordersAndBevels;
 begin
-  InvalidateClientRectCache(True);
   DoAdjustClientRectChange;
   Invalidate;
 end;

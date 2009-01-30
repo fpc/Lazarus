@@ -3312,19 +3312,22 @@ end;
   and calls AlignControl(nil) on change.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAdjustClientRectChange;
-var r: TRect;
+var
+  R: TRect;
 begin
-  r:=GetClientRect;
-  AdjustClientRect(r);
+  InvalidateClientRectCache(True);
+  R := GetClientRect;
+  AdjustClientRect(R);
   //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' ',r.Right,',',r.Bottom,' ',CompareRect(@r,@FAdjustClientRectRealized)]);
-  if not CompareRect(@r,@FAdjustClientRectRealized) then begin
+  if not CompareRect(@R, @FAdjustClientRectRealized) then
+  begin
     // client rect changed since last AlignControl
     {$IFDEF VerboseClientRectBugFix}
     DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
     {$ENDIF}
-    FAdjustClientRectRealized:=r;
+    FAdjustClientRectRealized := R;
     ReAlign;
     Resize;
     AdjustSize;
@@ -6215,7 +6218,7 @@ begin
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
-  if (Message.SizeType and Size_SourceIsInterface)>0 then
+  if (Message.SizeType and Size_SourceIsInterface) > 0 then
   begin
     // interface widget has resized
     // -> update position and realized bounds
@@ -6234,6 +6237,10 @@ begin
   SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
   if ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
+
+  if ((Message.SizeType and Size_SourceIsInterface) > 0) and
+     (Parent <> nil) and Parent.AutoSize then
+    Parent.AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -6567,7 +6574,6 @@ begin
       //debugln('TWinControl.CreateWnd ',DbgSName(Self));
       Constraints.UpdateInterfaceConstraints;
       InvalidateClientRectCache(False);
-      InvalidatePreferredSize;
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 
       //WriteClientRect('A');
