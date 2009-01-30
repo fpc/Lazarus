@@ -4,8 +4,6 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   ClientHeight = 440
   ClientWidth = 496
   Visible = False
-  DesignLeft = 88
-  DesignTop = 116
   object AutoDelayMaxLabel: TLabel[0]
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
@@ -90,11 +88,11 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = MarkupWordFullCheckBox
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = MarkupWordFullLenSpin
-    Left = 205
+    Left = 190
     Height = 14
     Top = 223
     Width = 120
-    BorderSpacing.Left = 60
+    BorderSpacing.Left = 45
     BorderSpacing.Top = 6
     Caption = 'MarkupWordFullLenLabel'
     ParentColor = False
@@ -225,7 +223,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 331
+    Left = 316
     Height = 21
     Top = 220
     Width = 48
@@ -248,7 +246,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   object MarkupWordTrim: TCheckBox[18]
     AnchorSideLeft.Control = MarkupWordFullLenLabel
     AnchorSideTop.Control = MarkupWordNoKeyword
-    Left = 205
+    Left = 190
     Height = 17
     Top = 245
     Width = 100
