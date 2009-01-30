@@ -5850,6 +5850,7 @@ begin
   FParentCtl3D:=true;
   FTabOrder := -1;
   FTabStop := False;
+  FAdjustClientRectRealized := Rect(0,0,0,0);
   InvalidateClientRectCache(false);
 end;
 
@@ -6699,6 +6700,7 @@ begin
   if FColor<>clWindow then
     Include(FWinControlFlags,wcfColorChanged);
   RemoveProp(Handle,'WinControl');
+  FAdjustClientRectRealized := Rect(0,0,0,0);
 end;
 
 {------------------------------------------------------------------------------
