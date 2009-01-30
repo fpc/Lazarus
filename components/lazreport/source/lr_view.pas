@@ -82,6 +82,9 @@ type
     procedure MouseDown(Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
+
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
   end;
 
   TfrScaleMode = (mdNone, mdPageWidth, mdOnePage, mdTwoPages);
@@ -130,10 +133,6 @@ type
     ExitBtn: TBitBtn;
     procedure Bevel1ChangeBounds(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure ScrollBox1MouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure ScrollBox1MouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
     procedure PgUpClick(Sender: TObject);
@@ -187,6 +186,10 @@ type
     procedure Connect(ADoc: Pointer);
     procedure ConnectBack;
     procedure ScrollbarDelta(const VertDelta,HorzDelta: Integer);
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
   public
     { Public declarations }
     procedure Show_Modal(ADoc: Pointer);
@@ -486,6 +489,8 @@ begin
     Color := clGray;
     Preview := Self;
     Tag := 207;
+    OnMouseWheelDown := @MouseWheelDown;
+    OnMouseWheelUp   := @MouseWheelUp;
   end;
 
   N1.Caption := sPreviewFormPW;
@@ -631,6 +636,26 @@ begin
     HScrollBar.Position:=HScrollBar.Position + HorzDelta;
 end;
 
+procedure TfrPreviewForm.MouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if ssShift in Shift then
+    ScrollbarDelta(VScrollbar.SmallChange, 0)
+  else
+    ScrollBarDelta(VScrollbar.LargeChange, 0);
+  Handled := True;
+end;
+
+procedure TfrPreviewForm.MouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if ssShift in Shift then
+    ScrollbarDelta(-VScrollbar.SmallChange, 0)
+  else
+    ScrollBarDelta(-VScrollbar.LargeChange, 0);
+  Handled := True;
+end;
+
 {procedure TfrPreviewForm.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 begin
   with Msg.MinMaxInfo^ do
@@ -772,26 +797,6 @@ begin
   
   SetToCurPage;
   PaintAllowed := True;
-end;
-
-procedure TfrPreviewForm.ScrollBox1MouseWheelDown(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-  if ssShift in Shift then
-    ScrollbarDelta(VScrollbar.SmallChange, 0)
-  else
-    ScrollBarDelta(VScrollbar.LargeChange, 0);
-  Handled := True;
-end;
-
-procedure TfrPreviewForm.ScrollBox1MouseWheelUp(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-  if ssShift in Shift then
-    ScrollbarDelta(-VScrollbar.SmallChange, 0)
-  else
-    ScrollBarDelta(-VScrollbar.LargeChange, 0);
-  Handled := True;
 end;
 
 procedure TfrPreviewForm.Bevel1ChangeBounds(Sender: TObject);
