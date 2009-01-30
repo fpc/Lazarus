@@ -628,30 +628,38 @@ type
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
   end;
 
+  { TQtTabBar }
+  TQtTabBar = class(TQtWidget)
+  private
+    FTabBarChangedHook: QTabBar_hookH;
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
+    function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+  end;
+
   { TQtTabWidget }
 
   TQtTabWidget = class(TQtWidget)
   private
     FCurrentChangedHook: QTabWidget_hookH;
-    FTabBarEventHook: QWidget_hookH;
-    FTabBarChangedHook: QTabBar_hookH;
-    FTabBar: QTabBarH;
+    FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
     function getStackWidget: QWidgetH;
-    function getTabBar: QTabBarH;
+    function getTabBar: TQtTabBar;
     procedure setShowTabs(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
-    procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
-    function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
   public
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
@@ -668,7 +676,7 @@ type
     function tabAt(APoint: TPoint): Integer;
 
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
-    property TabBar: QTabBarH read getTabBar;
+    property TabBar: TQtTabBar read getTabBar;
     property StackWidget: QWidgetH read getStackWidget;
   end;
 
@@ -5580,23 +5588,115 @@ begin
   end;
 end;
 
+{ TQtTabBar }
+
+procedure TQtTabBar.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FTabBarChangedHook := QTabBar_hook_create(QTabBarH(Widget));
+  QTabBar_currentChanged_Event(Method) := @SignalTabBarCurrentChanged;
+  QTabBar_hook_hook_currentChanged(FTabBarChangedHook, Method);
+end;
+
+procedure TQtTabBar.DetachEvents;
+begin
+  QTabBar_hook_destroy(FTabBarChangedHook);
+  inherited DetachEvents;
+end;
+
+procedure TQtTabBar.SignalTabBarCurrentChanged(Index: Integer); cdecl;
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  if LCLObject = nil then
+    Exit;
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := LCLObject.Handle;
+  Hdr.Code := TCN_SELCHANGE;
+  Hdr.idFrom := TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(Index);
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  DeliverMessage(Msg);
+end;
+
+function TQtTabBar.SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+var
+  MousePos: TQtPoint;
+  NewIndex, CurIndex: Integer;
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  Result := False;
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
+  CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
+  if (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
+  begin
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.Msg := LM_NOTIFY;
+    FillChar(Hdr, SizeOf(Hdr), 0);
+
+    Hdr.hwndFrom := LCLObject.Handle;
+    Hdr.Code := TCN_SELCHANGING;
+    Hdr.idFrom := TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(CurIndex);
+    Msg.NMHdr := @Hdr;
+    Msg.Result := 0;
+    DeliverMessage(Msg);
+
+    if Msg.Result <> 0 then
+    begin
+      QEvent_accept(Event);
+      Result := True;
+      Exit;
+    end;
+  end;
+  SlotMouse(Sender, Event);
+end;
+
+function TQtTabBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+  BeginEventProcessing;
+  case QEvent_type(Event) of
+    QEventKeyPress,
+    QEventKeyRelease: SlotKey(Sender, Event);
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
+  else
+    QEvent_ignore(Event);
+  end;
+  EndEventProcessing;
+end;
+
 { TQtTabWidget }
 
-function TQtTabWidget.getTabBar: QTabBarH;
+function TQtTabWidget.getTabBar: TQtTabBar;
 begin
   if FTabBar = nil then
   begin
     {$note we can remove QLCLTabWidget, and get it like StackWidget,
      objectName is qt_tabwidget_tabbar.}
-    FTabBar := QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget));
-    QWidget_setFocusPolicy(FTabBar, QtNoFocus);
+    FTabBar := TQtTabBar.CreateFrom(LCLObject, QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget)));
+    FTabBar.AttachEvents;
   end;
   Result := FTabBar;
 end;
 
 function TQtTabWidget.getShowTabs: Boolean;
 begin
-  Result := QWidget_isVisible(TabBar);
+  Result := TabBar.getVisible;
 end;
 
 function TQtTabWidget.getStackWidget: QWidgetH;
@@ -5627,7 +5727,7 @@ end;
 
 procedure TQtTabWidget.setShowTabs(const AValue: Boolean);
 begin
-  QWidget_setVisible(TabBar, AValue);
+  TabBar.setVisible(AValue);
 end;
 
 function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -5644,6 +5744,12 @@ begin
   {$ifdef darwin}
   QTabWidget_setUsesScrollButtons(QTabWidgetH(Result), True);
   {$endif}
+end;
+
+destructor TQtTabWidget.Destroy;
+begin
+  FTabBar.Free;
+  inherited Destroy;
 end;
 
 function TQtTabWidget.GetLCLPageIndex(AIndex: Integer): Integer;
@@ -5670,23 +5776,17 @@ var
 begin
   inherited AttachEvents;
 
-  FCurrentChangedHook := QTabWidget_hook_create(Widget);
-  FTabBarEventHook := QWidget_hook_create(TabBar);
-  FTabBarChangedHook := QTabBar_hook_create(TabBar);
+  {initialize our tabbar}
+  TabBar;
 
+  FCurrentChangedHook := QTabWidget_hook_create(Widget);
   QTabWidget_currentChanged_Event(Method) := @SignalCurrentChanged;
   QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
-  QTabBar_currentChanged_Event(Method) := @SignalTabBarCurrentChanged;
-  QTabBar_hook_hook_currentChanged(FTabBarChangedHook, Method);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FTabBarEventHook, Method);
 end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
-  QTabBar_hook_destroy(FTabBarChangedHook);
   QTabWidget_hook_destroy(FCurrentChangedHook);
-  QWidget_hook_destroy(FTabBarEventHook);
   inherited DetachEvents;
 end;
 
@@ -5706,51 +5806,33 @@ begin
     exit;
 
   BeginEventProcessing;
-  if (Sender = TabBar) then
+  {qt doesn't call resize for inactive pages, so LCL don't know
+   about changes on inactive pages, we must send resizeEvent to
+   all pages except for active one.This is fix for #13018}
+  if QEvent_type(Event) = QEventResize then
   begin
-    Result := False;
-
-    QEvent_accept(Event);
-
-    case QEvent_type(Event) of
-      QEventKeyPress,
-      QEventKeyRelease: SlotKey(Sender, Event);
-      QEventMouseButtonPress,
-      QEventMouseButtonRelease,
-      QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
-    else
-      QEvent_ignore(Event);
-    end;
-  end else
-  begin
-    {qt doesn't call resize for inactive pages, so LCL don't know
-     about changes on inactive pages, we must send resizeEvent to
-     all pages except for active one.This is fix for #13018}
-    if QEvent_type(Event) = QEventResize then
+    w := QTabWidget_currentWidget(QTabWidgetH(Widget));
+    if w <> nil then
     begin
-      w := QTabWidget_currentWidget(QTabWidgetH(Widget));
-      if w <> nil then
+      QWidget_size(w, @NewSize);
+      OldSize.Cx := 0;
+      OldSize.Cy := 0;
+      for i := 0 to QTabWidget_count(QTabWidgetH(Widget)) - 1 do
       begin
-        QWidget_size(w, @NewSize);
-        OldSize.Cx := 0;
-        OldSize.Cy := 0;
-        for i := 0 to QTabWidget_count(QTabWidgetH(Widget)) - 1 do
+        w := QTabWidget_widget(QTabWidgetH(Widget), i);
+        if w <> QTabWidget_currentWidget(QTabWidgetH(Widget)) then
         begin
-          w := QTabWidget_widget(QTabWidgetH(Widget), i);
-          if w <> QTabWidget_currentWidget(QTabWidgetH(Widget)) then
-          begin
-            ResizeEvent := QResizeEvent_create(@NewSize, @OldSize);
-            QCoreApplication_postEvent(w, ResizeEvent, 1);
-          end;
+          ResizeEvent := QResizeEvent_create(@NewSize, @OldSize);
+          QCoreApplication_postEvent(w, ResizeEvent, 1);
         end;
       end;
     end;
-    case QEvent_type(Event) of
-      QEventKeyPress,
-      QEventKeyRelease: QEvent_ignore(Event);
-      else
-        Result := inherited EventFilter(Sender, Event);
-    end;
+  end;
+  case QEvent_type(Event) of
+    QEventKeyPress,
+    QEventKeyRelease: QEvent_ignore(Event);
+    else
+      Result := inherited EventFilter(Sender, Event);
   end;
 
   EndEventProcessing;
@@ -5846,65 +5928,6 @@ begin
   DeliverMessage(Msg);
 end;
 
-procedure TQtTabWidget.SignalTabBarCurrentChanged(Index: Integer); cdecl;
-var
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
-begin
-  if LCLObject = nil then
-    Exit;
-
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
-
-  Hdr.hwndFrom := LCLObject.Handle;
-  Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := GetLCLPageIndex(Index);
-  Msg.NMHdr := @Hdr;
-  Msg.Result := 0;
-  DeliverMessage(Msg);
-end;
-
-function TQtTabWidget.SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  MousePos: TQtPoint;
-  NewIndex, CurIndex: Integer;
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
-begin
-  Result := False;
-  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-  NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
-  CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
-  if (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
-  begin
-    FillChar(Msg, SizeOf(Msg), 0);
-    Msg.Msg := LM_NOTIFY;
-    FillChar(Hdr, SizeOf(Hdr), 0);
-
-    Hdr.hwndFrom := LCLObject.Handle;
-    Hdr.Code := TCN_SELCHANGING;
-    Hdr.idFrom := GetLCLPageIndex(CurIndex);
-    Msg.NMHdr := @Hdr;
-    Msg.Result := 0;
-    DeliverMessage(Msg);
-
-    if Msg.Result <> 0 then
-    begin
-      QEvent_accept(Event);
-      Result := True;
-      Exit;
-    end;
-  end;
-  SlotMouse(Sender, Event);
-end;
-
-procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
-begin
-  inherited setFocusPolicy(APolicy);
-end;
-
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
 begin
   Result := QTabWidget_indexOf(QTabWidgetH(Widget), AWidget);
@@ -5920,7 +5943,7 @@ var
   AQtPoint: TQtPoint;
 begin
   AQtPoint := QtPoint(APoint.x, APoint.y);
-  Result := QTabBar_tabAt(TabBar, @AQtPoint);
+  Result := QTabBar_tabAt(QTabBarH(TabBar.Widget), @AQtPoint);
 end;
 
 { TQtComboBox }
