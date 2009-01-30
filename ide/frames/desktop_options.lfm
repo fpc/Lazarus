@@ -4,8 +4,8 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
   ClientHeight = 382
   ClientWidth = 597
   Visible = False
-  DesignLeft = 449
-  DesignTop = 233
+  DesignLeft = 110
+  DesignTop = 145
   object LanguageGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -20,7 +20,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     Caption = 'LanguageGroupBox'
     ClientHeight = 33
     ClientWidth = 593
-    Ctl3D = False
     TabOrder = 0
     object LanguageComboBox: TComboBox
       AnchorSideLeft.Control = LanguageGroupBox
@@ -33,7 +32,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
-      Ctl3D = False
       ItemHeight = 13
       ItemWidth = 0
       Style = csDropDownList
@@ -56,7 +54,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     Caption = 'AutoSaveGroupBox'
     ClientHeight = 93
     ClientWidth = 593
-    Ctl3D = False
     TabOrder = 1
     object AutoSaveIntervalInSecsLabel: TLabel
       AnchorSideLeft.Control = AutoSaveGroupBox
@@ -111,7 +108,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
-      Ctl3D = False
       Enabled = False
       ItemHeight = 13
       Items.Strings = (
@@ -131,19 +127,19 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 88
+    Height = 82
     Top = 174
     Width = 597
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'DesktopFilesGroupBox'
-    ClientHeight = 70
+    ClientHeight = 64
     ClientWidth = 593
-    Ctl3D = False
     TabOrder = 2
     object SaveDesktopSettingsToFileButton: TButton
       AnchorSideLeft.Control = DesktopFilesGroupBox
+      AnchorSideTop.Control = DesktopFilesGroupBox
       AnchorSideRight.Control = DesktopFilesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
@@ -159,11 +155,13 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     end
     object LoadDesktopSettingsFromFileButton: TButton
       AnchorSideLeft.Control = DesktopFilesGroupBox
+      AnchorSideTop.Control = SaveDesktopSettingsToFileButton
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DesktopFilesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 41
+      Top = 35
       Width = 581
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -179,7 +177,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 268
+    Top = 262
     Width = 221
     BorderSpacing.Top = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
@@ -191,7 +189,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 285
+    Top = 279
     Width = 220
     Caption = 'ShowHintsForComponentPaletteCheckBox'
     TabOrder = 4
@@ -202,7 +200,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 302
+    Top = 296
     Width = 223
     Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
     TabOrder = 5
@@ -213,7 +211,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 319
+    Top = 313
     Width = 179
     Caption = 'MsgViewDblClickJumpsCheckBox'
     TabOrder = 6
@@ -224,7 +222,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 336
+    Top = 330
     Width = 139
     Caption = 'MsgViewFocusCheckBox'
     TabOrder = 7
