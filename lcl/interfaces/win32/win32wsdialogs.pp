@@ -526,9 +526,7 @@ const
 var
   DialogRec: POpenFileDialogRec;
   OpenFile: LPOPENFILENAME;
-  Filter: string;
-  FileName: string;
-  InitialDir: String;
+  Filter, FileName, InitialDir, DefaultExt: String;
   FileNameBuffer: PChar;
 {$ifdef WindowsUnicodeSupport}
   FileNameWide: WideString;
@@ -538,6 +536,7 @@ var
 begin
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
+  DefaultExt := AOpenDialog.DefaultExt;
   if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
   begin
     // if the filename contains a directory, set the initial directory
@@ -577,7 +576,7 @@ begin
     Filter:='All File Types(*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
 
   OpenFile := AllocMem(SizeOf(OpenFileName));
-  with OpenFile^ Do
+  with OpenFile^ do
   begin
     lStructSize := OpenFileNameSize;
     hWndOwner := GetOwnerHandle(AOpenDialog);
@@ -592,6 +591,7 @@ begin
       lpstrFilter:=PChar(UTF8StringToPWideChar(Filter));
       lpstrTitle:=PChar(UTF8StringToPWideChar(AOpenDialog.Title));
       lpstrInitialDir:=PChar(UTF8StringToPWideChar(InitialDir));
+      lpstrDefExt:=PChar(UTF8StringToPWideChar(DefaultExt))
     end
     else
     begin
@@ -599,6 +599,7 @@ begin
       lpstrFilter:=UTF8StringToPAnsiChar(Filter);
       lpstrTitle:=UTF8StringToPAnsiChar(AOpenDialog.Title);
       lpstrInitialDir:=UTF8StringToPAnsiChar(InitialDir);
+      lpstrDefExt:=UTF8StringToPAnsiChar(DefaultExt);
     end;
   {$else}
     lpStrFile := FileNameBuffer;
@@ -611,6 +612,9 @@ begin
 
     lpStrInitialDir := GetMem(Length(InitialDir)+1);
     StrPCopy(lpstrInitialDir, InitialDir);
+
+    lpstrDefExt := GetMem(Length(DefaultExt)+1);
+    StrPCopy(lpstrDefExt, DefaultExt);
   {$endif}
 
 
@@ -630,12 +634,16 @@ procedure ProcessFileDialogResult(AOpenDialog: TOpenDialog; UserResult: WordBool
 var
   OpenFile: LPOPENFILENAME;
 begin
-  OPENFILE := LPOPENFILENAME(AOpenDialog.Handle);
+  OpenFile := LPOPENFILENAME(AOpenDialog.Handle);
   if not UserResult and (CommDlgExtendedError = FNERR_BUFFERTOOSMALL) then
     UserResult := True;
   SetDialogResult(AOpenDialog, UserResult);
-  if  UserResult then
-    UpdateFileProperties(OPENFILE)
+  if UserResult then
+  begin
+    UpdateFileProperties(OpenFile);
+    AOpenDialog.IntfSetOption(ofExtensionDifferent, OpenFile^.Flags and OFN_EXTENSIONDIFFERENT <> 0);
+    AOpenDialog.IntfSetOption(ofReadOnly, OpenFile^.Flags and OFN_READONLY <> 0);
+  end
   else
   begin
     AOpenDialog.Files.Clear;
@@ -665,6 +673,7 @@ begin
     FreeMem(OpenFile^.lpStrFile);
     FreeMem(OpenFile^.lpStrTitle);
     FreeMem(OpenFile^.lpTemplateName);
+    FreeMem(OpenFile^.lpstrDefExt);
     FreeMem(OpenFile);
   end;
 end;

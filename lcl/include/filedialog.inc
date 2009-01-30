@@ -284,6 +284,15 @@ begin
   if Assigned(OnSelectionChange) then OnSelectionChange(Self);
 end;
 
+procedure TOpenDialog.IntfSetOption(const AOption: TOpenOption;
+  const AValue: Boolean);
+begin
+  if AValue then
+    Include(FOptions, AOption)
+  else
+    Exclude(FOptions, AOption);
+end;
+
 function TSaveDialog.DefaultTitle: string;
 begin
   Result:=rsfdFileSaveAs;

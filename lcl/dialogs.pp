@@ -196,6 +196,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure DoFolderChange; virtual;
     procedure DoSelectionChange; virtual;
+    procedure IntfSetOption(const AOption: TOpenOption; const AValue: Boolean);
   published
     property Options: TOpenOptions read FOptions write FOptions
       default DefaultOpenDialogOptions;
