@@ -917,7 +917,6 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.ExtCtrls.TCustomPage.Destroy">TCustomPage.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -2129,7 +2128,6 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TStrings.Destroy">TStrings.Destroy</link>
-          <link id="#LCL.ComCtrls.TTabControlStrings.Destroy">TTabControlStrings.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -5849,7 +5847,7 @@
           <var>Create</var> - constructor for TCustomListView: calls inherited <var>Create</var> then initialises columns, the list of items, the canvas and properties and some formats and styles</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Controls.WinControl.Create">WinControl.Create</link>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5864,7 +5862,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.WinControl.Destroy">WinControl.Destroy</link>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -6468,7 +6466,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Controls.TWinControlCreate">TWinControlCreate</link>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7268,7 +7266,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomUpDown.Create">
         <short>
-          <var>TWinControlCreate</var> - constructor for <var>TCustomUpDown</var>: calls inherited <var>Create</var>, initialises orientation, max and min, bounds, size and alignment</short>
+          <var>Create</var> - constructor for <var>TCustomUpDown</var>: calls inherited <var>Create</var>, initialises orientation, max and min, bounds, size and alignment</short>
         <descr/>
         <errors/>
         <seealso>
@@ -7283,7 +7281,7 @@
       <!-- destructor Visibility: public -->
       <element name="TCustomUpDown.Destroy">
         <short>
-          <var>Destroy</var> destructor for <var>TCustomUpDown</var>: removes connection with associate control and calls inherited <var>Destroy</var>
+          <var>Destroy</var>  - destructor for <var>TCustomUpDown</var>: removes connection with associate control and calls inherited <var>Destroy</var>
         </short>
         <descr/>
         <errors/>
