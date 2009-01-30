@@ -7284,8 +7284,9 @@ begin
         AText:=Format(lisSourceOfPageHasChangedSave, ['"',
           ActiveSrcEdit.PageName, '"']);
       ACaption:=lisSourceModified;
-      Result:=Messagedlg(ACaption, AText,
-                         mtConfirmation, [mbYes, mbNo, mbAbort], 0);
+      Result:=QuestionDlg(ACaption, AText,
+          mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
+            ], 0);
     end else
       Result:=mrYes;
     if Result=mrYes then begin
