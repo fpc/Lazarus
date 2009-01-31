@@ -123,21 +123,25 @@ var
   ParentForm: TCustomForm;
   Parent: TWinControl;
 begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    Parent:=TControl(Component).Parent;
-    if (Parent=nil) or (ParentForm=nil) then begin
-      Result:=Point(0,0);
-    end else begin
-      Result:=Parent.ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
+  if Component is TControl then
+  begin
+    ParentForm := GetParentForm(TControl(Component));
+    Parent := TControl(Component).Parent;
+    if (Parent = nil) or (ParentForm = nil) then
+    begin
+      Result := Point(0, 0);
+    end else
+    begin
+      Result := Parent.ClientOrigin;
+      FormOrigin := ParentForm.ClientOrigin;
       //DebugLn(['GetParentFormRelativeTopLeft Component=',dbgsName(Component),' Parent=',dbgsName(Parent),' ',dbgs(Result),' ParentForm=',dbgsName(ParentForm),' ',dbgs(FormOrigin)]);
-      Result.X:=Result.X-FormOrigin.X+TControl(Component).Left;
-      Result.Y:=Result.Y-FormOrigin.Y+TControl(Component).Top;
+      Result.X := Result.X - FormOrigin.X + TControl(Component).Left;
+      Result.Y := Result.Y - FormOrigin.Y + TControl(Component).Top;
     end;
-  end else begin
-    Result.X:=LongRec(Component.DesignInfo).Lo;
-    Result.Y:=LongRec(Component.DesignInfo).Hi;
+  end else
+  begin
+    Result.X := LongRec(Component.DesignInfo).Lo;
+    Result.Y := LongRec(Component.DesignInfo).Hi;
   end;
 end;
 
