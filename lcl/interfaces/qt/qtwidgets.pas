@@ -1408,8 +1408,10 @@ begin
   
   // apply initial position and size
   move(FParams.X, FParams.Y);
+  if GetContainerWidget <> Widget then
+    QWidget_resize(GetContainerWidget, FParams.Width, FParams.Height);
   resize(FParams.Width, FParams.Height);
-  
+
   FScrollX := 0;
   FScrollY := 0;
 
@@ -4006,7 +4008,7 @@ begin
     QWidget_setAttribute(Result, QtWA_DeleteOnClose);
     {$ENDIF}
   end;
-  
+
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
