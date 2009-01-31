@@ -683,9 +683,9 @@ function TPicture.FindGraphicClassWithFileExt(const Ext: string;
 var
   FileExt: String;
 begin
-  FileExt:=Ext;
-  if (FileExt<>'') and (FileExt[1]='.') then
-    FileExt:=copy(FileExt,2,length(FileExt));
+  FileExt := Ext;
+  if (FileExt <> '') and (FileExt[1] = '.') then
+    FileExt := Copy(FileExt, 2, length(FileExt));
   Result := GetPicFileFormats.FindExt(FileExt);
   if (Result = nil) and ExceptionOnNotFound then
     raise EInvalidGraphic.CreateFmt(rsUnknownPictureExtension, [Ext]);

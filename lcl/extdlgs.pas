@@ -76,8 +76,6 @@ type
     FPreviewFilename: string;
   protected
     function  IsFilterStored: Boolean; virtual;
-    procedure PreviewKeyDown(Sender: TObject; var Key: word); virtual;
-    procedure PreviewClick(Sender: TObject); virtual;
     property ImageCtrl: TImage read FImageCtrl;
     property PictureGroupBox: TGroupBox read FPictureGroupBox;
     procedure InitPreviewControl; override;
@@ -302,16 +300,6 @@ end;
 function TOpenPictureDialog.IsFilterStored: Boolean;
 begin
   Result := (Filter<>FDefaultFilter);
-end;
-
-procedure TOpenPictureDialog.PreviewKeyDown(Sender: TObject; var Key: word);
-begin
-  if Key = VK_ESCAPE then TForm(Sender).Close;
-end;
-
-procedure TOpenPictureDialog.PreviewClick(Sender: TObject);
-begin
-
 end;
 
 procedure TOpenPictureDialog.DoClose;
