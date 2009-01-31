@@ -83,7 +83,9 @@ type
 {$ENDIF}
     property Color;
   {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
     property Ctl3D;
+    {$ENDIF}
   {$ENDIF}
     property Enabled;
     property Font;
@@ -91,7 +93,9 @@ type
     property Name;
     property ParentColor;
   {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
     property ParentCtl3D;
+    {$ENDIF}
   {$ENDIF}
     property ParentFont;
     property ParentShowHint;

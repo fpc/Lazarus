@@ -420,7 +420,9 @@ begin
   BorderStyle := bsNone;
   Scroll := TScrollBar.Create(self);
   Scroll.Kind := sbVertical;
+  {$IFNDEF SYN_LAZARUS}
   Scroll.ParentCtl3D := False;
+  {$ENDIF}
   Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
   Scroll.Parent := Self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;

@@ -411,7 +411,6 @@ Type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -421,7 +420,6 @@ Type
     property Link;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -490,7 +488,6 @@ Type
     property ArrowKeysTraverseList;
     property AutoDropDown;
     property BorderSpacing;
-    property Ctl3D;
     property DropDownCount;
     property Enabled;
     property Font;
@@ -515,7 +512,6 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelect;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property ShowHint;
@@ -559,7 +555,6 @@ Type
     property ColumnLayout;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property Enabled;
     property ItemIndex;
     property Link;
@@ -577,7 +572,6 @@ Type
     property OnMouseUp;
     property OnResize;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -616,7 +610,6 @@ Type
     property ColumnLayout;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property Enabled;
     property Items;
     property Link;
@@ -635,7 +628,6 @@ Type
     property OnMouseUp;
     property OnResize;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -966,7 +958,6 @@ Type
     property ClientWidth;
     property Color;
     property Constraints;
-    property Ctl3D;
     property Enabled;
     property Font;
     property Link;
@@ -984,7 +975,6 @@ Type
     property OnMouseUp;
     property OnResize;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1297,7 +1287,6 @@ Type
     property Anchors;
     property BorderSpacing;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -1328,7 +1317,6 @@ Type
     property OnStartDrag;
     property Orientation;
     property PageSize;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ScalePos;

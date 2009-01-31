@@ -992,6 +992,10 @@ type
     property BlockIndent;
     property BorderSpacing;
 {$ENDIF}
+{$IFNDEF SYN_LAZARUS}
+    property Ctl3D;
+    property ParentCtl3D;
+{$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;
@@ -1001,13 +1005,11 @@ type
     property Cursor default crIBeam;
     property CFDividerDrawLevel;
     {$ENDIF}
-    property Ctl3D;
     property Enabled;
     property Font;
     property Height;
     property Name;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1578,7 +1580,7 @@ begin
     Style := Style or ScrollBar[FScrollBars] or BorderStyles[BorderStyle]
       or WS_CLIPCHILDREN;
     {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-    if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then begin
+    if NewStyleControls {$IFNDEF SYN_LAZARUS}and Ctl3D{$ENDIF} and (BorderStyle = bsSingle) then begin
       Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
