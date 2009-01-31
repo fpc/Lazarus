@@ -521,6 +521,14 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
       if AFilter[i] = '|' then AFilter[i]:=#0;
     AFilter:=AFilter + #0;
   end;
+
+  function GetDefaultExt: String;
+  begin
+    Result := AOpenDialog.DefaultExt;
+    if UTF8Pos('.', Result) = 1 then
+      UTF8Delete(Result, 1, 1);
+  end;
+
 const
   FileNameBufferLen = 1000;
 var
@@ -536,7 +544,6 @@ var
 begin
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
-  DefaultExt := AOpenDialog.DefaultExt;
   if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
   begin
     // if the filename contains a directory, set the initial directory
@@ -544,6 +551,8 @@ begin
     InitialDir := Copy(FileName,1, Length(FileName)-1);
     FileName := '';
   end;
+
+  DefaultExt := GetDefaultExt;
 
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
