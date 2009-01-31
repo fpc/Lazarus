@@ -1,0 +1,93 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'&'#1#6'Height'#3'%'#1#3'Top'#3'd'#1#5'Wid'
+  +'th'#3','#2#13'ActiveControl'#7#7'SynMemo'#7'Caption'#6#5'Form1'#12'ClientHe'
+  +'ight'#3'%'#1#11'ClientWidth'#3','#2#8'Position'#7#15'poDesktopCenter'#10'LC'
+  +'LVersion'#6#8'0.9.26.1'#0#6'TLabel'#6'Label1'#4'Left'#2','#6'Height'#2#14#3
+  +'Top'#3#180#0#5'Width'#2'/'#7'Caption'#6#8'Keywords'#11'ParentColor'#8#0#0#6
+  +'TLabel'#6'Label2'#4'Left'#3#176#0#6'Height'#2#14#3'Top'#3#180#0#5'Width'#2
+  +'%'#7'Caption'#6#7'Objects'#11'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'
+  +#3','#1#6'Height'#2#14#3'Top'#3#180#0#5'Width'#2'0'#7'Caption'#6#9'Constants'
+  +#11'ParentColor'#8#0#0#8'TSynMemo'#7'SynMemo'#6'Cursor'#7#7'crIBeam'#4'Left'
+  +#2#16#6'Height'#3#156#0#3'Top'#2#12#5'Width'#3#12#2#11'Font.Height'#2#240#9
+  +'Font.Name'#6#7'courier'#10'Font.Pitch'#7#7'fpFixed'#12'Font.Quality'#7#16'f'
+  +'qNonAntialiased'#11'ParentColor'#8#10'ParentFont'#8#8'TabOrder'#2#0#24'Book'
+  +'MarkOptions.OnChange'#13#18'Gutter.RightOffset'#2#0#17'Gutter.LeftOffset'#2
+  +#0#22'Gutter.ShowCodeFolding'#9#23'Gutter.CodeFoldingWidth'#2#10#18'Gutter.S'
+  +'howChanges'#9#22'Gutter.ShowLineNumbers'#9#11'Highlighter'#7#9'SynAnySyn'#10
+  +'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'#2'&'#0#1#7'Command'#2'g'#8'Shor'
+  +'tCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCut'#3'&@'#0#1#7'Command'#2#4#8'S'
+  +'hortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'#3'( '#0#1#7'Command'#3#212#0#8
+  +'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCut'#2'%'#0#1#7'Command'#2'e'#8'S'
+  +'hortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'#3'%@'#0#1#7'Command'#2'i'#8'S'
+  +'hortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2''''#0#1#7'Command'#2'f'#8'S'
+  +'hortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3'''@'#0#1#7'Command'#2'j'#8
+  +'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'#2'"'#0#1#7'Command'#2'n'#8
+  +'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3'"@'#0#1#7'Command'#2'r'#8
+  +'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2'!'#0#1#7'Command'#2'm'#8'S'
+  +'hortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3'!@'#0#1#7'Command'#2'q'#8
+  +'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2'$'#0#1#7'Command'#2'k'#8'S'
+  +'hortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3'$@'#0#1#7'Command'#2's'#8
+  +'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2'#'#0#1#7'Command'#2'l'#8'S'
+  +'hortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3'#@'#0#1#7'Command'#2't'#8
+  +'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'#2'-'#0#1#7'Command'#3#201
+  +#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'- '#0#1#7'Command'#3
+  +#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8'ShortCut'#3'. '#0#1#7'Comman'
+  +'d'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245#1#8'ShortCut'#3#8' '#0#1#7
+  +'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Command'#3'Y'#2#8'ShortCut'#4#8
+  +#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160#0#0#0#1#7'Command'#3#253#1
+  +#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortCut'#3'A@'#0#1#7'Command'#3
+  +#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8'ShortCut'#3'I`'#0#1#7'Comma'
+  +'nd'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3#254#1#8'ShortCut'#3'N@'#0#1#7
+  +'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Command'#3'c'#2#8'ShortCut'#3'U`'#0
+  +#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7'Command'#3'['#2#8'ShortCut'#3'X'
+  +'@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0#1#7'Command'#3#250#1#8'ShortC'
+  +'ut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3'Z@'#0#1#7'Command'#3'Z'#2#8'S'
+  +'hortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCut'#3'0@'#0#1#7'Command'#3'.'#1
+  +#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'ShortCut'#3'2@'#0#1#7'Command'#3
+  +'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1#8'ShortCut'#3'4@'#0#1#7'Comman'
+  +'d'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3'3'#1#8'ShortCut'#3'6@'#0#1#7'C'
+  +'ommand'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Command'#3'5'#1#8'ShortCut'#3'8@'#0#1
+  +#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'Command'#3'_'#1#8'ShortCut'#3'0`'
+  +#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1#7'Command'#3'a'#1#8'ShortCut'#3
+  +'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'#0#1#7'Command'#3'c'#1#8'ShortCu'
+  +'t'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3'5`'#0#1#7'Command'#3'e'#1#8'Sh'
+  +'ortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCut'#3'7`'#0#1#7'Command'#3'g'#1
+  +#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'ShortCut'#3'9`'#0#1#7'Command'#3
+  +#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232#0#8'ShortCut'#3'C`'#0#1#7'Comm'
+  +'and'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'#3'd'#2#8'ShortCut'#2#9#0#1#7
+  +'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Command'#3#250#0#8'ShortCut'#3'B`'
+  +#0#0#13'Lines.Strings'#1#6')This example shows, how the the Keywords,'#6'-Ob'
+  +'jects and Constants properties of the class'#6'(TSynAnySyn can be controlle'
+  +'d at runtime.'#6#0#6'#Objects: this is a simple test line'#6#31'Keys: this '
+  +'is another test line'#6#0#0#22'SelectedColor.OnChange'#13#0#0#13'TCheckList'
+  +'Box'#16'CheckListBoxKeys'#4'Left'#2#16#6'Height'#2'P'#3'Top'#3#200#0#5'Widt'
+  +'h'#2'd'#13'Items.Strings'#1#6#8'KEYWORDS'#6#7'OBJECTS'#6#4'TEST'#6#6'SIMPLE'
+  +#0#10'ItemHeight'#2#13#11'OnItemClick'#7#19'CheckListBoxHandler'#8'TabOrder'
+  ,#2#1#4'Data'#10#8#0#0#0#4#0#0#0#0#0#0#0#0#0#13'TCheckListBox'#19'CheckListBo'
+  +'xObjects'#4'Left'#3#144#0#6'Height'#2'P'#3'Top'#3#200#0#5'Width'#2'd'#13'It'
+  +'ems.Strings'#1#6#7'EXAMPLE'#6#10'CONTROLLED'#6#10'TSYNANYSYN'#6#7'ANOTHER'#0
+  +#10'ItemHeight'#2#13#11'OnItemClick'#7#19'CheckListBoxHandler'#8'TabOrder'#2
+  +#2#4'Data'#10#8#0#0#0#4#0#0#0#0#0#0#0#0#0#13'TCheckListBox'#21'CheckListBoxC'
+  +'onstants'#4'Left'#3#12#1#6'Height'#2'P'#3'Top'#3#200#0#5'Width'#2'd'#13'Ite'
+  +'ms.Strings'#1#6#5'CLASS'#6#4'LINE'#6#7'RUNTIME'#6#4'THIS'#0#10'ItemHeight'#2
+  +#13#11'OnItemClick'#7#19'CheckListBoxHandler'#8'TabOrder'#2#3#4'Data'#10#8#0
+  +#0#0#4#0#0#0#0#0#0#0#0#0#7'TButton'#14'ButtonCheckAll'#4'Left'#3#128#1#6'Hei'
+  +'ght'#2#25#3'Top'#3#200#0#5'Width'#2'K'#7'Caption'#6#9'Check All'#7'OnClick'
+  +#7#19'ButtonCheckAllClick'#8'TabOrder'#2#4#0#0#7'TButton'#16'ButtonUncheckAl'
+  +'l'#4'Left'#3#128#1#6'Height'#2#25#3'Top'#3#232#0#5'Width'#2'K'#7'Caption'#6
+  +#11'Uncheck All'#7'OnClick'#7#21'ButtonUncheckAllClick'#8'TabOrder'#2#5#0#0
+  +#10'TSynAnySyn'#9'SynAnySyn'#7'Enabled'#8#23'CommentAttri.FrameColor'#7#6'cl'
+  +'None'#26'IdentifierAttri.FrameColor'#7#6'clNone'#15'IdentifierChars'#6#134
+  +'!"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghij'
+  +'klmnopqrstuvwxyz{|}~'#130#131#133#134#139#160#161#162#163#164#165#166#167
+  +#168#169#170#171#172#173#174#175#176#177#178#179#180#181#182#183#184#185#186
+  +#187#188#189#190#191#194#195#19'KeyAttri.FrameColor'#7#6'clNone'#24'Constant'
+  +'Attri.FrameColor'#7#6'clNone'#22'ObjectAttri.FrameColor'#7#6'clNone'#22'Ent'
+  +'ityAttri.FrameColor'#7#6'clNone'#24'VariableAttri.FrameColor'#7#6'clNone'#19
+  +'DotAttri.FrameColor'#7#6'clNone'#15'Objects.Strings'#1#6#0#0#22'NumberAttri'
+  +'.FrameColor'#7#6'clNone'#28'PreprocessorAttri.FrameColor'#7#6'clNone'#21'Sp'
+  +'aceAttri.FrameColor'#7#6'clNone'#22'StringAttri.FrameColor'#7#6'clNone'#22
+  +'SymbolAttri.FrameColor'#7#6'clNone'#4'left'#3#0#2#3'top'#3#180#0#0#0#0
+]);
