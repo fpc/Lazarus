@@ -474,4 +474,5 @@ end;
 
 initialization
   {$I btn_icons.lrs}
+  RegisterPropertyToSkip(TBitBtn, 'Style', 'VCL compatibility property', '');
 end.

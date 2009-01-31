@@ -1651,6 +1651,7 @@ end;
 
 initialization
   {$INCLUDE cursors.lrs}
+  RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
