@@ -2345,7 +2345,7 @@ function TSynPasSyn.GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
       end else begin
         MinLvl := 0;
       end;
-    until Result = c;
+    until Result >= c;
     Result := -1;
   end;
 
