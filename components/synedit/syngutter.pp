@@ -5,7 +5,7 @@ unit SynGutter;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LCLType, LCLIntf, LCLProc, LCLClasses,
+  Classes, SysUtils, Controls, Graphics, LCLType, LCLIntf, LCLProc,
   SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges;

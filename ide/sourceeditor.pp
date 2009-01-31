@@ -50,7 +50,7 @@ uses
   // synedit
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
-  SynEditMarkupHighAll, SynGutterLineNumber,
+  SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,

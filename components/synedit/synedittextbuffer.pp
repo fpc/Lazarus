@@ -1268,12 +1268,7 @@ end;
 
 { TSynEditStringMemory }
 type
-  PString = ^String;
   PObject = ^TObject;
-  PByte = ^Byte;
-  PWord = ^Word;
-  PLong = ^LongWord;
-  PQLong = ^QWord;
 
 const
   AttributeOfset = SizeOf(String) + SizeOf(TObject);
@@ -1373,8 +1368,8 @@ begin
   case Size of
     1 : Result := Pointer(PtrUInt((PByte(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
     2 : Result := Pointer(PtrUInt((PWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
-    4 : Result := Pointer(PtrUInt((PLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
-    8 : Result := Pointer(PtrUInt((PQLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+    4 : Result := Pointer(PtrUInt((PLongWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
+    8 : Result := Pointer(PtrUInt((PQWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^));
   end;
 end;
 
@@ -1383,8 +1378,8 @@ begin
   case Size of
     1 : (PByte(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := Byte(PtrUInt(AValue));
     2 : (PWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := Word(PtrUInt(AValue));
-    4 : (PLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := LongWord(PtrUInt(AValue));
-    8 : (PQLong(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := QWord(PtrUInt(AValue));
+    4 : (PLongWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := LongWord(PtrUInt(AValue));
+    8 : (PQWord(FMem + Index * FAttributeSize + AttributeOfset + Pos))^ := QWord(PtrUInt(AValue));
   end;
 end;
 

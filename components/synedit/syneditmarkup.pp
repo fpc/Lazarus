@@ -26,7 +26,8 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTextBase, SynEditTextBuffer, SynEditMiscClasses, Controls, SynEditHighlighter;
+  Classes, SysUtils, Graphics, SynEditTextBase, SynEditTextBuffer,
+  SynEditMiscClasses, SynEditMiscProcs, Controls, SynEditHighlighter;
 
 type
 
@@ -146,7 +147,7 @@ type
 
   
 implementation
-uses SynEdit, SynEditMiscProcs;
+uses SynEdit;
 
 { TSynEditMarkup }
 

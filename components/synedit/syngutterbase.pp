@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, SynEditMarks,
-  SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView, SynTextDrawer;
+  SynEditMiscClasses, SynEditFoldedView, SynTextDrawer;
 
 type
 

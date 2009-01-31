@@ -44,7 +44,7 @@ unit SynBeautifierPas;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, SynEdit, SynBeautifier, SynEditTextBuffer,
+  Classes, SysUtils, LCLProc, SynEdit, SynBeautifier, SynEditTextBuffer,
   SynEditHighlighter, SynHighlighterPas;
   
 type

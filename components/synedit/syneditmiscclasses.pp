@@ -47,7 +47,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, Graphics, Controls, SysUtils, SynEditTypes;
+  Classes, Graphics, Controls, SysUtils, SynEditMiscProcs, SynEditTypes;
 
 type
 
@@ -260,9 +260,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditMiscProcs;
 
 { TSynSelectedColor }
 

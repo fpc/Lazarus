@@ -239,7 +239,7 @@ end;
 {***}
 
 // mh: Please don't change; no stack frame and efficient register use.
-function GetHasTabs(pLine: PChar; var CharsBefore: integer): boolean;
+function GetHasTabs(pLine: PChar; out CharsBefore: integer): boolean;
 begin
   CharsBefore := 0;
   if Assigned(pLine) then begin
@@ -254,7 +254,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function StringHasTabs(const Line: string; var CharsBefore: integer): boolean;
+function StringHasTabs(const Line: string; out CharsBefore: integer): boolean;
 var LineLen: integer;
 begin
   LineLen:=length(Line);

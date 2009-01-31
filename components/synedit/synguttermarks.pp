@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView;
+  SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView, SynEditMarks;
 
 type
 

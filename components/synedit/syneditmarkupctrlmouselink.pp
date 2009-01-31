@@ -52,7 +52,7 @@ type
   end;
 
 implementation
-uses SynEdit; //, SynEditTypes;
+uses SynEdit;
 
 { TSynEditMarkupCtrlMouseLink }
 

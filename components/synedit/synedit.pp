@@ -155,7 +155,7 @@ type
 
   ESynEditError = class(Exception);
 
-  TDropFilesEvent = procedure(Sender: TObject; X, Y: integer; AFiles: TStrings)
+  TSynDropFilesEvent = procedure(Sender: TObject; X, Y: integer; AFiles: TStrings)
     of object;
 
   THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
@@ -172,13 +172,6 @@ type
 
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
-
-  {$IFDEF SYN_LAZARUS}
-  TSpecialLineMarkupEvent = procedure(Sender: TObject; Line: integer;
-    var Special: boolean; Markup: TSynSelectedColor) of object;
-  {$ENDIF}
-  TSpecialLineColorsEvent = procedure(Sender: TObject; Line: integer;
-    var Special: boolean; var FG, BG: TColor) of object;
 
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
 
@@ -272,13 +265,6 @@ type
     of object;
 
   TCustomSynEdit = class;
-
-  { Make them visible for Units that use TSynEdit }
-  TSynEditMark = SynEditMarks.TSynEditMark;
-  TPlaceMarkEvent = SynEditMarks.TPlaceMarkEvent;
-  TSynEditMarks = SynEditMarks.TSynEditMarks;
-  TSynEditMarkList = SynEditMarks.TSynEditMarkList;
-  TGutterClickEvent = SynGutterBase.TGutterClickEvent;
 
   TSynLineState = (slsNone, slsSaved, slsUnsaved);
 
@@ -425,7 +411,7 @@ type
     fOnChange: TNotifyEvent;
     fOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
     fOnCommandProcessed: TProcessCommandEvent;
-    fOnDropFiles: TDropFilesEvent;
+    fOnDropFiles: TSynDropFilesEvent;
     fOnPaint: TPaintEvent;
     fOnPlaceMark: TPlaceMarkEvent;
     fOnProcessCommand: TProcessCommandEvent;
@@ -958,7 +944,7 @@ type
       write fOnClearMark;
     property OnCommandProcessed: TProcessCommandEvent
       read fOnCommandProcessed write fOnCommandProcessed;
-    property OnDropFiles: TDropFilesEvent read fOnDropFiles write fOnDropFiles;
+    property OnDropFiles: TSynDropFilesEvent read fOnDropFiles write fOnDropFiles;
     property OnGutterClick: TGutterClickEvent
       read GetOnGutterClick write SetOnGutterClick;
     property OnPaint: TPaintEvent read fOnPaint write fOnPaint;

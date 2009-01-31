@@ -31,7 +31,7 @@ interface
 uses
   LCLProc, Graphics,
   Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase,
-  SynEditMiscClasses, SynEditPointClasses;
+  SynEditMiscClasses, SynEditMiscProcs, SynEditPointClasses;
 
 type
 
@@ -293,8 +293,6 @@ type
 
   
 implementation
-uses
-  SynEditMiscProcs;
 
 { TSynTextFoldAVLNodeData }
 
