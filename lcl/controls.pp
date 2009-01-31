@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
-  UTrace, PropertyStorage, Menus, ActnList, LCLClasses;
+  UTrace, PropertyStorage, Menus, ActnList, LCLClasses, LResources;
 
 
 const
@@ -874,7 +874,6 @@ type
     FWindowProc: TWndMethod;
     //boolean fields
     FIsControl: Boolean;
-    FCtl3D: Boolean;
     FShowHint: Boolean;
     FParentColor: Boolean;
     FParentFont: Boolean;
@@ -1121,8 +1120,6 @@ type
   protected
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
-    property Ctl3D: Boolean read FCtl3D write FCtl3D default false;//Is this needed for anything other than compatability?
-                                                     // MWE: no and even on delphi it is deprecated. IMO we remove this
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
@@ -1569,7 +1566,6 @@ type
     FAlignLevel: Word;
     FTabStop: Boolean;
     FShowing: Boolean;
-    FParentCtl3D: Boolean;
     FDoubleBuffered: Boolean;
     FDockSite: Boolean;
     FUseDockManager: Boolean;
@@ -1587,7 +1583,6 @@ type
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
-    procedure SetParentCtl3D(Value: Boolean);
     procedure SetTabOrder(NewTabOrder: TTabOrder);
     procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
@@ -1783,7 +1778,6 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
-    property ParentCtl3D: Boolean read FParentCtl3D write SetParentCtl3d default True;
     property Showing: Boolean read FShowing;
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
@@ -3459,6 +3453,8 @@ end;
 
 initialization
   //DebugLn('controls.pp - initialization');
+  RegisterPropertyToSkip(TControl, 'Ctl3D', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ParentCtl3D', 'VCL compatibility property', '');
   Mouse := TMouse.Create;
   DefaultDockTreeClass := TDockTree;
   DragManager := TDragManagerDefault.Create(nil);

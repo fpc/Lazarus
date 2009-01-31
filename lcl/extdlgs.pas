@@ -120,7 +120,6 @@ type
     FValue: Double;
     FMemory: Double;
     FTitle: String;
-    FCtl3D: Boolean;
     FPrecision: Byte;
     FBeepOnError: Boolean;
     FHelpContext: THelpContext;
@@ -144,7 +143,6 @@ type
     property Memory: Double read FMemory;
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
-    property Ctl3D: Boolean read FCtl3D write FCtl3D default True;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
@@ -607,7 +605,6 @@ begin
   BevelOuter:=bvNone;
   BevelInner:=bvNone;
   ParentColor:=True;
-  ParentCtl3D:=True;
   for I:=cbNum0 to cbCancel do
   begin
     if BtnPos[ALayout, I].X > 0 then
@@ -966,7 +963,6 @@ constructor TCalculatorDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTitle:=rsCalculator;
-  FCtl3D:=True;
   FPrecision:=DefCalcPrecision;
   FBeepOnError:=True;
 end;
@@ -1020,7 +1016,6 @@ begin
   FCalc:=CreateCalculatorForm(Self, FLayout, HelpContext);
   with FCalc do
   try
-    Ctl3D:=FCtl3D;
     Caption:=Self.Title;
     TCalculatorPanel(FCalcPanel).FMemory:=Self.FMemory;
     TCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
@@ -1093,7 +1088,6 @@ begin
     Parent:=FMainPanel;
     BevelOuter:=bvLowered;
     Color:=clWhite;
-    Ctl3D:=False;
     Font:=Self.Font;
   end;
   FDisplayLabel:=TLabel.Create(Self);

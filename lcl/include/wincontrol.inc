@@ -4981,21 +4981,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl SetParentCtl3D
-------------------------------------------------------------------------------}
-procedure TWinControl.SetParentCtl3D(value : Boolean);
-begin
-  if FParentCtl3D <> Value then
-  begin
-    FParentCtl3D := Value;
-    if FParent <> nil then
-    begin
-      // Sendmessage to do something?
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   TWinControl KeyDown
 ------------------------------------------------------------------------------}
 procedure TWinControl.KeyDown(var Key: Word; shift : TShiftState);
@@ -5637,11 +5622,10 @@ begin
     AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
     AControl.ParentFontChanged;
     if AControl is TWinControl then
-    begin
-      AControl.Perform(CM_PARENTCTL3DCHANGED, 0, 0);
-      TWinControl(AControl).UpdateControlState;
-    end else
-      if HandleAllocated then AControl.Invalidate;
+      TWinControl(AControl).UpdateControlState
+    else
+    if HandleAllocated then 
+      AControl.Invalidate;
     //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
   end;
   if not (csDestroying in ComponentState) then
@@ -5845,7 +5829,6 @@ begin
   FChildSizing:=TControlChildSizing.Create(Self);
   FChildSizing.OnChange:=@DoChildSizingChange;
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
-  FParentCtl3D:=true;
   FTabOrder := -1;
   FTabStop := False;
   FAdjustClientRectRealized := Rect(0,0,0,0);

@@ -757,7 +757,6 @@ type
     property ColumnLayout;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -785,7 +784,6 @@ type
     property OnUTF8KeyPress;
     property ParentFont;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -859,7 +857,6 @@ type
     property ColumnLayout;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property Enabled;
     property Font;
     property Items;
@@ -881,7 +878,6 @@ type
     property OnUTF8KeyPress;
     property ParentFont;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;

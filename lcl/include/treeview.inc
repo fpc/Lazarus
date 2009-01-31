@@ -2820,7 +2820,8 @@ begin
     Style := Style or ScrollBar[FScrollBars] or BorderStyles[BorderStyle]
       or WS_CLIPCHILDREN;
     {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-    if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then begin
+    if NewStyleControls and (BorderStyle = bsSingle) then
+    begin
       Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;

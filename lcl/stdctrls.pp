@@ -121,7 +121,6 @@ type
     property BidiMode;
     property BorderSpacing;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -132,7 +131,6 @@ type
     property Min;
     property PageSize;
     property ParentBidiMode;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property Position;
@@ -182,7 +180,6 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DockSite;
     property DragCursor;
     property DragKind;
@@ -191,7 +188,6 @@ type
     property Font;
     property ParentBidiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -407,7 +403,6 @@ type
     property BorderSpacing;
     property CharCase;
     property Color;
-    property Ctl3D;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -446,7 +441,6 @@ type
     property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

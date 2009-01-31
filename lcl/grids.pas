@@ -1166,7 +1166,6 @@ type
     property ColCount;
     property Columns;
     property Constraints;
-    //property Ctl3D; // Deprecated
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
@@ -1184,7 +1183,6 @@ type
     property Options;
     //property ParentBiDiMode;
     //property ParentColor;
-    //property ParentCtl3D; // Deprecated
     //property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1258,7 +1256,6 @@ type
     property ColCount;
     property Columns;
     //property Constraints;
-    //property Ctl3D; // Deprecated
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
@@ -1279,7 +1276,6 @@ type
     property Options;
     //property ParentBiDiMode;
     property ParentColor default false;
-    //property ParentCtl3D; // Deprecated
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1451,7 +1447,6 @@ type
     property ColCount;
     property Columns;
     //property Constraints;
-    //property Ctl3D; // Deprecated
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
@@ -1472,7 +1467,6 @@ type
     property Options;
     //property ParentBiDiMode;
     property ParentColor default false;
-    //property ParentCtl3D; // Deprecated
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1576,7 +1570,6 @@ begin
         CM_MOUSEENTER:            exit; //Result := 'CM_MOUSEENTER';
         CM_MOUSELEAVE:            exit; //Result := 'CM_MOUSELEAVE';
         CM_TEXTCHANGED:           Result := 'CM_TEXTCHANGED';
-        CM_PARENTCTL3DCHANGED:    Result := 'CM_PARENTCTL3DCHANGED';
         CM_UIACTIVATE:            Result := 'CM_UIACTIVATE';
         CM_CONTROLLISTCHANGE:     Result := 'CM_CONTROLLISTCHANGE';
 

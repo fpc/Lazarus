@@ -1501,7 +1501,6 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   ParentColor := False;
   ParentFont := False;
-  Ctl3D := True;
   FWindowState := wsNormal;
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;

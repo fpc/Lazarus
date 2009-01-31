@@ -494,7 +494,6 @@ type
     property OptionsExtra;
     //property ParentBiDiMode;
     property ParentColor default false;
-    //property ParentCtl3D;
     property ParentFont;
     //property ParentShowHint;
     property PopupMenu;

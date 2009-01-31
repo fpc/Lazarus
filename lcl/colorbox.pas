@@ -101,7 +101,6 @@ type
     property BidiMode;
     property BorderSpacing;
     property Color;
-    property Ctl3D;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -134,7 +133,6 @@ type
     property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

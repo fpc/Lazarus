@@ -74,14 +74,12 @@ type
     property BorderStyle;
     property BorderWidth;
     property Color;
-    property Ctl3D;
     property Constraints;
     property Enabled;
     property ExpandSignType;
     property Font;
     //property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

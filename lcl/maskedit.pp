@@ -234,7 +234,6 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -243,7 +242,6 @@ type
     property MaxLength;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

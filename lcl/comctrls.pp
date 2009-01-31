@@ -1587,7 +1587,6 @@ type
     property ChildSizing;
     property Constraints;
     property Color;
-    property Ctl3D;
     //property Customizable: Boolean read FCustomizable write SetCustomizable default False;
     property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
     property DragCursor;
@@ -1703,7 +1702,6 @@ type
     property Anchors;
     property BorderSpacing;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -1737,7 +1735,6 @@ type
     property OnUTF8KeyPress;
     property Orientation;
     property PageSize;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property Position;
@@ -2469,7 +2466,6 @@ type
     property BorderStyle;
     property BorderWidth;
     property Color;
-    property Ctl3D;
     property Constraints;
     property DefaultItemHeight;
     property DragKind;
@@ -2484,7 +2480,6 @@ type
     property Indent;
     //property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

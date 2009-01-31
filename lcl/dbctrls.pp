@@ -220,7 +220,6 @@ Type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -229,7 +228,6 @@ Type
     property Font;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -654,7 +652,6 @@ Type
     property AutoSize;
     property BorderSpacing;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragCursor;
@@ -688,7 +685,6 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentCtl3D;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -730,7 +726,6 @@ Type
     property AutoSize;
     property BorderSpacing;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragCursor;
@@ -767,7 +762,6 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentCtl3D;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -879,7 +873,6 @@ Type
     property ClientWidth;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
@@ -903,7 +896,6 @@ Type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
