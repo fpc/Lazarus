@@ -1617,8 +1617,6 @@ type
     function CanTab: Boolean; override;
     function IsClientHeightStored: boolean; override;
     function IsClientWidthStored: boolean; override;
-    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
-    procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure DoSendShowHideToInterface; virtual;
     procedure ControlsAligned; virtual;// called by AlignControls after aligning controls
     procedure DoSendBoundsToInterface; virtual;
@@ -1639,9 +1637,12 @@ type
     procedure CreateBrush; virtual;
   protected
     // messages
-    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
-    procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMBorderChanged(var Message: TLMessage); message CM_BORDERCHANGED;
+    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
+    procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
+    procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;

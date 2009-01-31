@@ -508,6 +508,11 @@ begin
 
 end;
 
+procedure TCustomForm.AdjustClientRect(var Rect: TRect);
+begin
+  InflateRect(Rect, -BorderWidth, -BorderWidth);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.Deactivate
   Params: none

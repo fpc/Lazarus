@@ -55,18 +55,12 @@ begin
   end;
 end;
 
-procedure TCustomPanel.UpdateBordersAndBevels;
-begin
-  DoAdjustClientRectChange;
-  Invalidate;
-end;
-
 procedure TCustomPanel.SetBevelWidth(const Value: TBevelWidth);
 begin
   if FBevelWidth <> Value then
   begin
     FBevelWidth := Value;
-    UpdateBordersAndBevels;
+    Perform(CM_BORDERCHANGED, 0, 0);
   end;
 end;
 
@@ -75,7 +69,7 @@ begin
   if BevelInner <> Value then
   begin
     FBevelInner := Value;
-    UpdateBordersAndBevels;
+    Perform(CM_BORDERCHANGED, 0, 0);
   end;
 end;
 
@@ -84,16 +78,7 @@ begin
   if BevelOuter <> Value then
   begin
     FBevelOuter := Value;
-    UpdateBordersAndBevels;
-  end;
-end;
-
-procedure TCustomPanel.SetBorderWidth(const Value: TBorderWidth);
-begin
-  if FBorderWidth <> Value then
-  begin
-    FBorderWidth := Value;
-    UpdateBordersAndBevels;
+    Perform(CM_BORDERCHANGED, 0, 0);
   end;
 end;
 

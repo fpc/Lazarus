@@ -3683,9 +3683,7 @@ procedure TWinControl.SetBorderWidth(value : TBorderWidth);
 begin
   if FBorderWidth = Value then exit;
   FBorderWidth := Value;
-  Invalidate;
-  InvalidatePreferredSize;
-  AdjustSize;
+  Perform(CM_BORDERCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -6003,6 +6001,13 @@ begin
   NotifyControls(CM_PARENTBIDIMODECHANGED);
   if HandleAllocated and (Message.wParam = 0) then
     TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self, UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
+end;
+
+procedure TWinControl.CMBorderChanged(var Message: TLMessage);
+begin
+  DoAdjustClientRectChange;
+  AdjustSize;
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------

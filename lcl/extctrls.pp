@@ -1015,15 +1015,12 @@ type
   private
     FBevelInner, FBevelOuter : TPanelBevel;
     FBevelWidth : TBevelWidth;
-    FBorderWidth : TBorderWidth;
     FAlignment : TAlignment;
     FFullRepaint: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
-    procedure SetBorderWidth(const Value: TBorderWidth);
-    procedure UpdateBordersAndBevels;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -1040,7 +1037,6 @@ type
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
-    property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property Color default clBtnFace;
     property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;

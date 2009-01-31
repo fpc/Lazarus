@@ -463,6 +463,7 @@ type
     procedure DoShowWindow; dynamic;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
+    procedure AdjustClientRect(var Rect: TRect); override;
     procedure BeginFormUpdate;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -626,6 +627,7 @@ type
     property BiDiMode;
     property BorderIcons;
     property BorderStyle;
+    property BorderWidth;
     property Caption;
     property ChildSizing;
     property ClientHeight;
