@@ -1604,7 +1604,7 @@ gbAbout := TGroupBox.Create(Self);
     Top := 5;
     Width := 407;
     Height := 160;
-    Ctl3D := False;
+  //Ctl3D := False;
     Caption := ' About this application ';
     Visible := True;
   end;
@@ -2222,7 +2222,7 @@ begin
       Top    := 10;
       Width  := 300;
       Height := 100;
-      Ctl3D  := False;
+    //Ctl3D  := False;
       Caption := 'Panel1';
       Visible := True;
       Align   := alNone;
