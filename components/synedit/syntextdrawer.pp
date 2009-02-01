@@ -83,6 +83,7 @@ type
   PheFontData = ^TheFontData;
   TheFontData = record
     Style: TFontStyles;
+    Font: TFont;
     Handle: HFont;
     CharAdv: Integer;       // char advance of single-byte code
     DBCharAdv: Integer;     // char advance of double-byte code
@@ -99,7 +100,6 @@ type
     LockCount: Integer;
     // font information
     BaseFont: TFont;
-    BaseLF: TLogFont;
     IsDBCSFont: Boolean;
     IsTrueType: Boolean;
     FontsData: TheFontsData;
@@ -107,15 +107,14 @@ type
 
   { TheStockFontManager }
 
+  { TheFontsInfoManager }
+
   TheFontsInfoManager = class
   private
     FFontsInfo: TList;
-    function FindFontsInfo(const LF: TLogFont
-      {$IFDEF SYN_LAZARUS}; const FontName: string{$ENDIF}): PheSharedFontsInfo;
-    function CreateFontsInfo(ABaseFont: TFont;
-      const LF: TLogFont): PheSharedFontsInfo;
+    function CreateFontsInfo(ABaseFont: TFont): PheSharedFontsInfo;
+    function FindFontsInfo(const BFont: TFont): PheSharedFontsInfo;
     procedure DestroyFontHandles(pFontsInfo: PheSharedFontsInfo);
-    procedure RetrieveLogFontForComparison(ABaseFont: TFont; var LF: TLogFont);
   public
     constructor Create;
     destructor Destroy; override;
@@ -148,7 +147,6 @@ type
     FCrntStyle: TFontStyles;
     FpCrntFontData: PheFontData;
     // local font info
-    FBaseLF: TLogFont;
     {$IFDEF SYN_LAZARUS}
     FBaseFontName: string;
     {$ENDIF}
@@ -158,7 +156,6 @@ type
   protected
     function InternalGetDC: HDC; virtual;
     procedure InternalReleaseDC(Value: HDC); virtual;
-    function InternalCreateFont(AStyle: TFontStyles): HFONT; virtual;
     function CalcFontAdvance(DC: HDC;
       pCharHeight, pDBCharAdvance: PInteger): Integer; virtual;
     function GetCharAdvance: Integer; virtual;
@@ -266,16 +263,6 @@ type
     property UseUTF8: boolean read GetUseUTF8;
     property MonoSpace: boolean read GetMonoSpace;
     {$ENDIF}
-  end;
-
-  { TheTextDrawer2 }
-
-  TheTextDrawer2 = class(TheTextDrawer)
-  private
-    FFonts: array[TheStockFontPatterns] of HFONT;
-  public
-    procedure SetStyle(Value: TFontStyles); override;
-    procedure SetBaseFont(Value: TFont); override;
   end;
 
   { TheTextDrawerEx }
@@ -429,34 +416,6 @@ begin
   FFontsInfo := TList.Create;
 end;
 
-function TheFontsInfoManager.CreateFontsInfo(ABaseFont: TFont;
-  const LF: TLogFont): PheSharedFontsInfo;
-var
-  DC: HDC;
-  hOldFont: HFont;
-begin
-  New(Result);
-  FillChar(Result^, SizeOf(TheSharedFontsInfo), 0);
-  with Result^ do
-    try
-      BaseFont := TFont.Create;
-      BaseFont.Assign(ABaseFont);
-      BaseLF := LF;
-      IsTrueType := (0 <> (TRUETYPE_FONTTYPE and LF.lfPitchAndFamily));
-      // find out whether the font `IsDBCSFont'
-      DC := GetDC(0);
-      hOldFont := SelectObject(DC, ABaseFont.Reference.Handle);
-      IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
-      //debugln('TheFontsInfoManager.CreateFontsInfo IsDBCSFont=',IsDBCSFont);
-      SelectObject(DC, hOldFont);
-      ReleaseDC(0, DC);
-    except
-      Result^.BaseFont.Free;
-      Dispose(Result);
-      raise;
-    end;
-end;
-
 procedure TheFontsInfoManager.UnlockFontsInfo(
   pFontsInfo: PheSharedFontsInfo);
 begin
@@ -505,39 +464,59 @@ begin
       with FontsData[i] do
         if Handle <> 0 then
         begin
-          DeleteObject(Handle);
+          FreeAndNil(Font);
           Handle := 0;
         end;
 end;
 
-function TheFontsInfoManager.FindFontsInfo(
-  const LF: TLogFont
-  {$IFDEF SYN_LAZARUS}; const FontName: string{$ENDIF}): PheSharedFontsInfo;
+function TheFontsInfoManager.CreateFontsInfo(ABaseFont: TFont): PheSharedFontsInfo;
+var
+  DC: HDC;
+  hOldFont: HFont;
+begin
+  New(Result);
+  FillChar(Result^, SizeOf(TheSharedFontsInfo), 0);
+  with Result^ do
+    try
+      BaseFont := TFont.Create;
+      BaseFont.Assign(ABaseFont);
+      IsTrueType := False; // TODO: The old code returned always false too: (0 <> (TRUETYPE_FONTTYPE and LF.lfPitchAndFamily));
+      // find out whether the font `IsDBCSFont'
+      DC := GetDC(0);
+      hOldFont := SelectObject(DC, ABaseFont.Reference.Handle);
+      IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
+      //debugln('TheFontsInfoManager.CreateFontsInfo IsDBCSFont=',IsDBCSFont);
+      SelectObject(DC, hOldFont);
+      ReleaseDC(0, DC);
+    except
+      Result^.BaseFont.Free;
+      Dispose(Result);
+      raise;
+    end;
+end;
+
+function TheFontsInfoManager.FindFontsInfo(const BFont: TFont):
+  PheSharedFontsInfo;
 var
   i: Integer;
 begin
   for i := 0 to FFontsInfo.Count - 1 do
   begin
     Result := PheSharedFontsInfo(FFontsInfo[i]);
-    if CompareMem(@(Result^.BaseLF), @LF, SizeOf(TLogFont))
-    {$IFDEF SYN_LAZARUS}and (Result^.BaseFont.Name=FontName){$ENDIF}
-    then
+    if Result^.BaseFont.IsEqual(BFont) then
       Exit;
   end;
   Result := nil;
 end;
 
 function TheFontsInfoManager.GetFontsInfo(ABaseFont: TFont): PheSharedFontsInfo;
-var
-  LF: TLogFont;
 begin
   ASSERT(Assigned(ABaseFont));
 
-  RetrieveLogFontForComparison(ABaseFont, LF);
-  Result := FindFontsInfo(LF{$IFDEF SYN_LAZARUS},ABaseFont.Name{$ENDIF});
+  Result := FindFontsInfo(ABaseFont);
   if not Assigned(Result) then
   begin
-    Result := CreateFontsInfo(ABaseFont, LF);
+    Result := CreateFontsInfo(ABaseFont);
     FFontsInfo.Add(Result);
   end;
 
@@ -575,57 +554,6 @@ begin
     // and this object is not used anymore -> destroy it
     Free;
   {$ENDIF}
-end;
-
-procedure TheFontsInfoManager.RetrieveLogFontForComparison(ABaseFont: TFont;
-  var LF: TLogFont);
-
-  procedure SetLogFontName(const NewName: string);
-  var l: integer;
-    aName: string;
-  begin
-    if IsFontNameXLogicalFontDesc(NewName) then
-      aName:=ExtractFamilyFromXLFDName(NewName)
-    else
-      aName:=NewName;
-    l:=High(LF.lfFaceName)-Low(LF.lfFaceName);
-    if l>length(aName) then l:=length(aName);
-    if l>0 then
-      Move(aName[1],LF.lfFaceName[Low(LF.lfFaceName)],l);
-    LF.lfFaceName[Low(LF.lfFaceName)+l]:=#0;
-  end;
-
-  
-begin
-  with LF do
-  begin
-    FillChar(LF,SizeOf(LF),0);
-    lfHeight := ABaseFont.Height;
-    lfWidth := 0;
-    lfEscapement := 0;
-    lfOrientation := 0;
-
-    if fsBold in ABaseFont.Style then lfWeight:=FW_BOLD
-                                 else lfWeight:=FW_NORMAL;
-    lfCharSet := Byte(ABaseFont.Charset);
-    SetLogFontName(aBaseFont.Name);
-    {$IFDEF SYN_LAZARUS}
-    lfQuality := Byte(aBaseFont.Quality);
-    {$ELSE}
-    lfQuality := DEFAULT_QUALITY;
-    {$ENDIF}
-    lfOutPrecision := OUT_DEFAULT_PRECIS;
-    lfClipPrecision := CLIP_DEFAULT_PRECIS;
-    case ABaseFont.Pitch of
-      fpVariable: lfPitchAndFamily := VARIABLE_PITCH;
-      fpFixed: lfPitchAndFamily := FIXED_PITCH;
-    else
-      lfPitchAndFamily := DEFAULT_PITCH;
-    end;
-    lfItalic := 0;
-    lfUnderline := 0;
-    lfStrikeOut := 0;
-  end;
 end;
 
 { TheFontStock }
@@ -776,32 +704,6 @@ begin
   Result := FpInfo^.IsTrueType
 end;
 
-function TheFontStock.InternalCreateFont(AStyle: TFontStyles): HFONT;
-const
-  Bolds: array[Boolean] of Integer = (400, 700);
-begin
-  with FBaseLF do
-  begin
-    lfWeight := Bolds[fsBold in AStyle];
-    {$IFNDEF FPC}
-    lfItalic := Ord(BOOL(fsItalic in AStyle));
-    lfUnderline := Ord(BOOL(fsUnderline in AStyle));
-    lfStrikeOut := Ord(BOOL(fsStrikeOut in AStyle));
-    {$ELSE}
-    if fsItalic in AStyle then lfItalic:=1 else lfItalic:=0;
-    if fsUnderline in AStyle then lfUnderline:=1 else lfUnderline:=0;
-    if fsStrikeOut in AStyle then lfStrikeOut:=1 else lfStrikeOut:=0;
-    {$ENDIF}
-  end;
-  {$IFDEF SYN_LAZARUS}
-  //debugln('TheFontStock.InternalCreateFont ------------------------------');
-  //debugln('TheFontStock.InternalCreateFont A ',FBaseFontName,' ',dbgs(AStyle));
-  Result := CreateFontIndirectEx(FBaseLF,FBaseFontName);
-  {$ELSE}
-  Result := CreateFontIndirect(FBaseLF);
-  {$ENDIF}
-end;
-
 function TheFontStock.InternalGetDC: HDC;
 begin
   if FDCRefCount = 0 then
@@ -868,7 +770,6 @@ begin
     end else begin
       ReleaseFontsInfo;
       FpInfo := pInfo;
-      FBaseLF := FpInfo^.BaseLF;
       {$IFDEF SYN_LAZARUS}
       FBaseFontName := FpInfo^.BaseFont.Name;
       if IsFontNameXLogicalFontDesc(FBaseFontName) then begin
@@ -921,7 +822,11 @@ begin
     end;
 
   // create font
-  FCrntFont := InternalCreateFont(Value);
+  FpCrntFontData^.Font := TFont.Create;
+  FpCrntFontData^.Font.Assign(BaseFont);
+  FpCrntFontData^.Font.Style := Value;
+  FCrntFont := FpCrntFontData^.Font.Reference.Handle;
+
   DC := InternalGetDC;
   hOldFont := SelectObject(DC, FCrntFont);
 
@@ -1270,38 +1175,6 @@ end;
 procedure TheTextDrawer.ReleaseTemporaryResources;
 begin
   FFontStock.ReleaseFontHandles;
-end;
-
-{ TheTextDrawer2 }
-
-procedure TheTextDrawer2.SetStyle(Value: TFontStyles);
-var
-  idx: Integer;
-begin
-  {$IFDEF SYN_LAZARUS}
-  idx := GetStyleIndex(Value);
-  {$ELSE}
-  idx := PByte(@Value)^;
-  {$ENDIF}
-  if FFonts[idx] <> 0 then
-  begin
-    FCrntFont := FFonts[idx];
-    AfterStyleSet;
-  end
-  else
-  begin
-    inherited;
-    FFonts[idx] := FCrntFont;
-  end;
-end;
-
-procedure TheTextDrawer2.SetBaseFont(Value: TFont);
-var
-  i: Integer;
-begin
-  for i := Low(FFonts) to High(FFonts) do
-    FFonts[i] := 0;
-  inherited;
 end;
 
 { TheTextDrawerEx }
