@@ -134,7 +134,8 @@ procedure TCalendarPopupForm.ReturnDate;
 begin
   if assigned(FOnReturnDate) then
     FOnReturnDate(Self, Calendar.DateTime);
-  Close;
+  if not FClosed then
+    Close;
 end;
 
 procedure TCalendarPopupForm.Paint;
