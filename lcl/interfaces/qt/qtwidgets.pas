@@ -5794,12 +5794,6 @@ end;
 
 function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
-var
-  w: QWidgetH;
-  ResizeEvent: QResizeEventH;
-  i: Integer;
-  NewSize: TSize;
-  OldSize: TSize;
 begin
 
   Result := False;
@@ -5808,28 +5802,6 @@ begin
     exit;
 
   BeginEventProcessing;
-  {qt doesn't call resize for inactive pages, so LCL don't know
-   about changes on inactive pages, we must send resizeEvent to
-   all pages except for active one.This is fix for #13018}
-  if QEvent_type(Event) = QEventResize then
-  begin
-    w := QTabWidget_currentWidget(QTabWidgetH(Widget));
-    if w <> nil then
-    begin
-      QWidget_size(w, @NewSize);
-      OldSize.Cx := 0;
-      OldSize.Cy := 0;
-      for i := 0 to QTabWidget_count(QTabWidgetH(Widget)) - 1 do
-      begin
-        w := QTabWidget_widget(QTabWidgetH(Widget), i);
-        if w <> QTabWidget_currentWidget(QTabWidgetH(Widget)) then
-        begin
-          ResizeEvent := QResizeEvent_create(@NewSize, @OldSize);
-          QCoreApplication_postEvent(w, ResizeEvent, 1);
-        end;
-      end;
-    end;
-  end;
   case QEvent_type(Event) of
     QEventKeyPress,
     QEventKeyRelease: QEvent_ignore(Event);
