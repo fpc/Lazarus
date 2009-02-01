@@ -41,7 +41,7 @@ constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
 begin
   inherited Create;
   if List = HWND(nil) then
-    Raise Exception.Create('Unspecified list window');
+    raise Exception.Create('Unspecified list window');
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
   FSender := TheOwner;
@@ -78,13 +78,13 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.SetSorted(Val: Boolean);
-Begin
-  If Val <> FSorted Then
-  Begin
+begin
+  if Val <> FSorted then
+  begin
     FSorted:= Val;
     Sort;
-  End;
-End;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Sort
@@ -112,8 +112,8 @@ var
   Counter: Integer;
   AnIndex: LongInt;
 begin
-  For Counter := 0 To TheStrings.Count - 1 Do
-  Begin
+  for Counter := 0 To TheStrings.Count - 1 Do
+  begin
     {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
      AnIndex := Windows.SendMessageW(FWin32List, FFlagAddString, 0,
@@ -157,13 +157,14 @@ Var
 {$else}
   Item: PChar;
 {$endif}
-Begin
-  If (Index < 0) Or (Index >= Count) Then
-    Raise Exception.Create('Out of bounds.')
-  Else
-  Begin
+begin
+  if (Index < 0) Or (Index >= Count) then
+    raise Exception.Create('Out of bounds.')
+  else
+  begin
     {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then begin
+    if UnicodeEnabledOS then
+    begin
       SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
       Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
       Result := UTF8Encode(w);
@@ -180,8 +181,8 @@ Begin
     Result := Item;
     FreeMem(Item);
     {$endif}
-  End;
-End;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.GetCount
@@ -190,9 +191,9 @@ End;
 
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.GetCount: Integer;
-Begin
+begin
   Result := Windows.SendMessage(FWin32List, FFlagGetCount, 0, 0);
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Clear
@@ -201,9 +202,9 @@ End;
 
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Clear;
-Begin
+begin
   Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Delete
@@ -212,9 +213,9 @@ End;
 
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Delete(Index: Integer);
-Begin
+begin
   Windows.SendMessage(FWin32List, FFlagDeleteString, Index, 0);
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.GetObject
@@ -223,9 +224,9 @@ End;
 
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.GetObject(Index: Integer): TObject;
-Begin
+begin
   Result := TObject(PtrInt(Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0)));
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Insert
