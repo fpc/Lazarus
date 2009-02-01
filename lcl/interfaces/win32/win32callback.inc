@@ -685,8 +685,11 @@ var
   begin
     Info.cbSize := SizeOf(Info);
     Win32Extra.GetComboBoxInfo(Combobox.Handle, @Info);
-    Buddy := Info.hwndItem;
-    if Buddy <> HWND(nil) then
+    if Info.hwndItem <> Info.hwndCombo then
+      Buddy := Info.hwndItem
+    else
+      Buddy := 0;
+    if Buddy <> 0 then
       DisposeWindowInfo(Buddy);
   end;
 

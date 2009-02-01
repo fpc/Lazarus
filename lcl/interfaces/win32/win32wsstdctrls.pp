@@ -341,19 +341,19 @@ begin
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
   // also don't pass WM_SETFOCUS to the lcl,
   // it will get one from the edit control
-
-  Info.cbSize := SizeOf(Info);
-  Win32Extra.GetComboBoxInfo(Window, @Info);
-  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
-     ((HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList)) then
+  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) then
   begin
-    // continue normal processing, don't send to lcl
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end else
-  begin
-    // normal processing
-    Result := WindowProc(Window, Msg, WParam, LParam);
+    Info.cbSize := SizeOf(Info);
+    Win32Extra.GetComboBoxInfo(Window, @Info);
+    if (HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList) then
+    begin
+      // continue normal processing, don't send to lcl
+      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+      Exit;
+    end;
   end;
+  // normal processing
+  Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 { TWin32WSScrollBar }
