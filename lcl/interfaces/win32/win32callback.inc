@@ -1416,10 +1416,6 @@ begin
               SendSimpleMessage(lWinControl, LM_CHANGED);
               LMessage.Msg := LM_SELCHANGE;
             end;
-            { closeup message is sent before text is actually changed... *sigh*
-              itemindex is updated, so set text manually }
-            CBN_CLOSEUP:
-              UpdateComboBoxText(TCustomComboBox(lWinControl));
           end;
       end;
 
