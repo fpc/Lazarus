@@ -77,7 +77,7 @@ begin
     Param := ParamStrUTF8(i);
     if Param=LazarusDebugOpt then begin
       aCmdLineParams.Add('--debug-log=' +
-                         AppendPathDelim(GetPrimaryConfigPath) + 'debug.log');
+                         AppendPathDelim(UTF8ToSys(GetPrimaryConfigPath)) + 'debug.log');
     end;
     if LeftStr(Param,length(LazarusPidOpt))=LazarusPidOpt then begin
       try
