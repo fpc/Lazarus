@@ -407,9 +407,15 @@ begin
 end;
 
 procedure TWin32ComboBoxStringList.Clear;
+var
+  SaveText: String;
 begin
+  if not TCustomComboBox(FSender).ReadOnly then
+    SaveText := TCustomComboBox(FSender).Text;
   inherited;
   UpdateComboHeight;
+  if not TCustomComboBox(FSender).ReadOnly then
+    TCustomComboBox(FSender).Text := SaveText;
 end;
 
 procedure TWin32ComboBoxStringList.Delete(Index: integer); 
