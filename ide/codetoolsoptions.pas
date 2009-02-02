@@ -493,7 +493,7 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExistsUTF8(ConfFileName)) then begin
-    debugln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
+    debugln(UTF8ToConsole(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults));
   end;
   FFilename:=ConfFilename;
 end;

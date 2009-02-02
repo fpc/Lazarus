@@ -11772,10 +11772,12 @@ procedure TMainIDE.InitCodeToolBoss;
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
     const ErrorMsg: string);
   begin
-    if ADefTempl=nil then begin
+    if ADefTempl = nil then 
+    begin
       DebugLn('');
-      DebugLn(ErrorMsg);
-    end else begin;
+      DebugLn(UTF8ToConsole(ErrorMsg));
+    end else 
+    begin
       if AddToPool then
         CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false,true,true));
       CodeToolBoss.DefineTree.Add(ADefTempl);
