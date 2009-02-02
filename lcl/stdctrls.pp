@@ -912,8 +912,10 @@ type
     property ParentBidiMode;
     property ParentFont;
     property PopupMenu;
+    property ParentShowHint;
     property ReadOnly;
     property ScrollBars;
+    property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
