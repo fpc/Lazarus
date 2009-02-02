@@ -392,7 +392,7 @@ begin
   else if AnsiCompareText(Item,'P')=0 then
     Result.lfPitchAndFamily:=VARIABLE_PITCH
   else if AnsiCompareText(Item,'C')=0 then
-    Result.lfPitchAndFamily:=VARIABLE_PITCH;
+    Result.lfPitchAndFamily:=FIXED_PITCH;
 
   GetNextItem; // 13. read AverageWidth
   AverageWidth := StrToIntDef(Item,0);
