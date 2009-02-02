@@ -9033,22 +9033,33 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToolBar.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TToolBar.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TToolBar</var>: calls inherited <var>Create</var> and sets many formatting and size defaults</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TToolBar</var>: calls inherited <var>Create</var> and sets many formatting and size defaults</p>
+          <p>Among the variables initialised and defaults set are the list of buttons, button width and height, style, indentation, alignment, links for image change, the bounds and the edge borders</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolBar.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TToolBar.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TToolBar.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TToolBar</var>: frees buttons and links then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TToolBar.FlipChildren" link="#LCL.Controls.TWinControl.FlipChildren">
@@ -9796,11 +9807,14 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTrackBar.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomTrackBar.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTrackBar</var>: calls inherited <var>Create</var> then initialises style, position, size and bounds</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTrackBar.Create.AOwner">
@@ -11425,11 +11439,17 @@ Const
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTreeNode.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TTreeNode.Create">
+        <short>
+          <var>
+            <var>
+              <var>Create</var> - constructor for TTreeNode:</var> calls inherited <var>Create</var> then itntialises indexes and sets subtree count to 1</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNode.Create.AnOwner">
@@ -11541,11 +11561,16 @@ the comparision is case sensitive.
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTreeNode.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TTreeNode.Destroy">
+        <short>
+          <var>
+            <var>Destroy</var> - destructor for <var>TTreeNode</var>: unbinds all references, frees data and calls inherited Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayExpandSignLeft">
@@ -15366,22 +15391,37 @@ the comparision is case sensitive.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTreeView.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TCustomTreeView.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTreeView</var>: calls inherited <var>Create</var> then sets defaults for style, size, etc</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TCustomTreeView</var>: calls inherited <var>Create</var> then sets defaults for style, size, etc</p>
+          <p>Among the variables initialised and defaults set are:</p>
+          <var>size, colour, the symbols for expansion etc, the border style and width, scroll bars, options, indentation, timers, action links</var>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTreeView.Create.AnOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTreeView.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomTreeView.Destroy">
+        <short>
+          <var>
+            <var>Destroy</var> - destructor for <var>TCustomTreeView</var>: frees images, nodes and links, then calls inherited Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.AlphaSort">
@@ -16493,8 +16533,24 @@ the comparision is case sensitive.
       </element>
       <element name="TCustomHeaderControl.DblClick" link="#LCL.Controls.TControl.DblClick"/>
       <element name="TCustomHeaderControl.Click" link="#LCL.Controls.TControl.Click"/>
-      <element name="TCustomHeaderControl.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
-      <element name="TCustomHeaderControl.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomHeaderControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomHeaderControl</var>: frees sections then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+        </seealso>
+      </element>
+      <element name="TCustomHeaderControl.Create">
+        <short>
+          <var>
+            <var>Create</var> - constructoer for TCustomHeaderControl:</var> calls inherited <var>Create</var>, creates the sections and initialises style and bounds</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+        </seealso>
+      </element>
       <element name="TCustomHeaderControl.DragReorder">
         <short>
           <var>DragReorder</var> - find out if the sections are allowed to be re-ordered by dragging</short>
@@ -16592,7 +16648,14 @@ the comparision is case sensitive.
         <short>
           <var>THeaderSection</var> - the individual sections of a THeaderControl, each of which can be used to control its own option, selection etc</short>
       </element>
-      <element name="THeaderSection.Create" link="#rtl.Classes.TCollectionItem.Create"/>
+      <element name="THeaderSection.Create">
+        <short>
+          <var>
+            <var>Create</var> - constructor for THeaderSection:</var> calls inherited <var>Create</var> then initialises state, visibility, alignment, size and Index</short>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
+        </seealso>
+      </element>
       <element name="THeaderSection.Assign" link="#rtl.Classes.TPersistent.Assign"/>
       <element name="THeaderSection.Left">
         <short>The position of the left boundary of the section</short>

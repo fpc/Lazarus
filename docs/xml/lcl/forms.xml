@@ -165,10 +165,8 @@
         <descr>
           <p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p>
           <p>poDefault - The window manager decides how the form is to appear, in a default position and size</p>
-
-<p>poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager</p>
-
-<p>poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager</p>
+          <p>poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager</p>
+          <p>poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager</p>
           <p>poScreenCenter - Centers the form on screen</p>
           <p>poDeskTopCenter - Centers the form on desktop</p>
           <p>poMainFormCenter - Centers the Form on the Main Form</p>
@@ -678,7 +676,7 @@ This is an ancestor class for many form types and classes of windowed controls
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TControlScrollBar</var>: performs inherited <var>Create</var> then initialises local flags for page, increment, position etc</short>
@@ -1029,7 +1027,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
 </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl.Create"/>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TScrollingWinControl</var>: performs inherited <var>Create</var> then creates and intiialises the scrollbars</short>
@@ -1448,7 +1446,7 @@ If the indicators are valid, re-computes position etc</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TScrollingWinControl.Create"/>
+          <link id="#LCL.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1457,7 +1455,9 @@ If the indicators are valid, re-computes position etc</descr>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TCustomFrameClass">
-        <short/>
+        <short>
+          <var>TCustomFrameClass</var> - class of <var>TCustomFrame</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3080,7 +3080,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
 </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TScrollingWinControl.Create"/>
+          <link id="#LCL.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3130,7 +3130,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TScrollingWinControl.Destroy"/>
+          <link id="#LCL.Forms.TScrollingWinControl.Destroy">TScrollingWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -4315,7 +4315,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Create"/>
+          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4435,7 +4435,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Create"/>
+          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4450,7 +4450,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Destroy"/>
+          <link id="#LCL.Forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -5033,7 +5033,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TScreen</var>: performs inherited <var>Create</var> then creates and initialises lists of fonts, strings and forms</short>
@@ -5047,7 +5047,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TForm</var>: frees various lists then performs inherited <var>Destroy</var>
@@ -6656,7 +6656,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
 </descr>
         <errors/>
         <seealso>
-          <link id="#fcl.CustApp.TCustomApplication.Create"/>
+          <link id="#fcl.CustApp.TCustomApplication.Create">TCustomApplication.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TApplication</var>: initialises a large number of local variables and properties, then calls inherited <var>Create</var>
@@ -6671,7 +6671,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.CustApp.TCustomApplication.Destroy"/>
+          <link id="#fcl.CustApp.TCustomApplication.Destroy">TCustomApplication.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TApplication</var>: frees various handles and flags, then cals inherited <var>Destroy</var>
@@ -6947,18 +6947,14 @@ It also writes details of the exception to the appropriate place for debugging.
           <p>The argument <var>Flags</var> is a long integer constructed by adding together various constants to define the contents and behaviour of the box, for example:</p>
           <p>MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: </p>
           <p>ABORT RETRY IGNORE.</p>
-         
           <p>The following button constants are available:</p>
-         
           <p>MB_OK</p>
           <p>MB_OKCANCEL</p>
           <p>MB_ABORTRETRYIGNORE</p>
           <p>MB_YESNOCANCEL</p>
           <p>MB_YESNO</p>
           <p>MB_RETRYCANCEL</p>
-      
           <p>And the following icon constants:</p>
-         
           <p>MB_ICONHAND</p>
           <p>MB_ICONQUESTION</p>
           <p>MB_ICONEXCLAMATION</p>
@@ -6967,9 +6963,7 @@ It also writes details of the exception to the appropriate place for debugging.
           <p>MB_ICONERROR = MB_ICONHAND</p>
           <p>MB_ICONSTOP = MB_ICONHAND</p>
           <p>MB_ICONINFORMATION = MB_ICONASTERICK</p>
-     
           <p>These constants are declared on the LCLType unit.</p>
-        
           <p>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]</p>
           <p>It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</p>
         </descr>
@@ -8518,7 +8512,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -8533,7 +8527,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->

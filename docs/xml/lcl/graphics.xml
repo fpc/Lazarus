@@ -1701,7 +1701,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- variable Visibility: public -->
       <element name="TFontHandleCacheDescriptor.LongFontName">
         <short>
-          <var>LongFontName</var> - he long name for the Font</short>
+          <var>LongFontName</var> - the long name for the Font</short>
         <descr/>
         <seealso/>
       </element>
@@ -2143,12 +2143,13 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- constructor Visibility: public -->
       <element name="TFont.Create">
         <descr>
-          <var>Create</var> - constructor for TFont: Opens a new instance of the class and sets defaults for character set, colour, size etc
-</descr>
+          <p>
+            <var>Create</var> - constructor for <var>TFont</var>: Opens a new instance of the class , calling inherited <var>Create</var> and sets defaults for character set, colour, size etc</p>
+        </descr>
         <short>
-          <var>Create</var> - constructor for TFont: Opens a new instance of the class</short>
+          <var>Create</var> - constructor for <var>TFont</var>: Opens a new instance of the class, calling inherited <var>Create</var> and setting some defaults</short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -2157,7 +2158,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
           <var>Destroy</var> - destructor for <var>TFont</var>: frees reference then performs inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2503,7 +2504,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <short>
           <var>Create</var> - constructor for TPen: performs inherited <var>Create</var> then sets some local defaults, style, mode, width and colour</short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -2514,7 +2515,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
           <var>Destroy</var> - destructor for <var>TPen</var>: frees reference then performs inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2750,7 +2751,7 @@ Default is psSolid
           <var>Create</var> - constructor for <var>TBrush</var>: perform inherited <var>Create</var> then initialise some local variables and <var>SetStyle</var>
         </short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -2776,7 +2777,7 @@ Default is psSolid
           <var>Destroy</var> - destructor for <var>TBrush</var>: free reference then perform inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3957,7 +3958,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>Create</var> - constructor for TPicture: performs inherited <var>Create</var> then loads file and clipboard formats</short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -3968,7 +3969,7 @@ If the file is not of the right format, an exception will be generated.</descr>
           <var>Destroy</var> - destructor for <var>TPicture</var>: frees graphic then performs inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -4665,16 +4666,28 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCanvas.Create" link="#fcl.FPCanvas.TFPCustomCanvas.create">
+      <element name="TCanvas.Create">
         <descr>
-          <var>TCanvas</var>
+          <p>
+            <var>Create</var> - constructor for <var>TCanvas</var>: calls inherited <var>Create</var> and sets defaults for many properties and actions</p>
+          <p>Initialises Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity</p>
         </descr>
+        <short>
+          <var>Create</var> - constructor for <var>TCanvas</var>: calls inherited <var>Create</var> and sets defaults for many properties and actions</short>
+        <seealso>
+          <link id="#fcl.FPCanvas.TFPCustomCanvas.Create">TFPCustomCanvas.Create</link>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCanvas.Destroy" link="#fcl.FPCanvas.TFPCustomCanvas.destroy">
+      <element name="TCanvas.Destroy">
         <descr>
           <var>TCanvas</var> and makes its resources available
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCanvas</var>: frees handles and region, calls inherited <var>Destroy</var>, sets font, pen and brush resources to nil</short>
+        <seealso>
+          <link id="#fcl.FPCanvas.TFPCustomCanvas.Destroy">TFPCustomCanvas.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Lock">
@@ -8612,7 +8625,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>Create</var> - constructor for TJPEGImage: performs inherited <var>Create</var> then initialises local variables for performance, quality and encoding</short>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TJPEGImage.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions"/>
@@ -13320,13 +13333,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSharedIcon.Create" link="#rtl.System.TObject.Create">
+      <element name="TSharedIcon.Create">
         <short>
           <var>Create</var> - constructor for <var>TSharedIcon</var>: performs inherited <var>Create</var> then creates a list of images</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -13337,7 +13350,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Destroy"/>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -13438,12 +13451,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TIconImage.Create" link="#rtl.System.TObject.Create">
+      <element name="TIconImage.Create">
         <short>
           <var>Create</var> - Specifies a Raw image to be used, then used Inherited Create</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TIconImage.Create.AFormat">
