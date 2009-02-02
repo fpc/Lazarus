@@ -105,8 +105,6 @@ type
     FontsData: TheFontsData;
   end;
 
-  { TheStockFontManager }
-
   { TheFontsInfoManager }
 
   TheFontsInfoManager = class
@@ -147,9 +145,6 @@ type
     FCrntStyle: TFontStyles;
     FpCrntFontData: PheFontData;
     // local font info
-    {$IFDEF SYN_LAZARUS}
-    FBaseFontName: string;
-    {$ENDIF}
     function GetBaseFont: TFont;
     function GetIsDBCSFont: Boolean;
     function GetIsTrueType: Boolean;
@@ -770,15 +765,7 @@ begin
     end else begin
       ReleaseFontsInfo;
       FpInfo := pInfo;
-      {$IFDEF SYN_LAZARUS}
-      FBaseFontName := FpInfo^.BaseFont.Name;
-      if IsFontNameXLogicalFontDesc(FBaseFontName) then begin
-        // clear styles and height
-        FBaseFontName:=ClearXLFDStyle(FBaseFontName);
-        FBaseFontName:=ClearXLFDHeight(FBaseFontName);
-      end;
       // clear styles
-      {$ENDIF}
       SetStyle(Value.Style);
     end;
   end
