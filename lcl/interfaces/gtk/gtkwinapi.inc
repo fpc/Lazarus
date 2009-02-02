@@ -1319,20 +1319,29 @@ var
   function LoadFontExCharset: boolean;
   var
     i: Integer;
-    aSlant,head,tail: string;
+    aSlant, aSpacing,head, mid, tail: string;
   begin
     Result := False;
     Head := FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-';
-    Tail := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
-           +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing
-           +'-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
+    Mid  := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
+           +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-';
+    Tail := '-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
     //debugln('LoadFontExCharset Head=',Head,' Tail=',Tail);
     for i:=0 to WeightList.Count-1 do begin
       aSlant := Slant;
       repeat
-        result := LoadFontXLFD(Head+WeightList[i]+'-'+aSlant+Tail);
-        if result then
-          exit;
+        aSpacing:=Spacing;
+        repeat
+          result := LoadFontXLFD(Head+WeightList[i]+'-'+aSlant+Mid+aSpacing+Tail);
+          if result then
+            exit;
+
+          if aSpacing = 'm' then
+            aSpacing := 'c'
+          else
+            break;
+        until false;
+
         if aSlant='i' then
           aSlant:='o'
         else
@@ -1341,7 +1350,7 @@ var
     end;
     //debugln('LoadFontExCharset END');
   end;
-  
+
   function LoadFontEx: boolean;
   var
     j: integer;
