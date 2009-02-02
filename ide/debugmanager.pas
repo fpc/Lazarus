@@ -1241,7 +1241,9 @@ end;
 
 procedure TDebugManager.DebuggerException(Sender: TObject; const AExceptionClass, AExceptionText: String);
 var
+  ExceptMsg: string;
   msg: String;
+
 begin
   if Destroying then exit;
 
@@ -1249,9 +1251,15 @@ begin
   then
     msg := Format('Project %s raised exception class ''%s''.',
                   [Project1.Title, AExceptionClass])
-  else
+  else begin
+    ExceptMsg := AExceptionText;
+    // if AExceptionText is not a valid UTF8 string,
+    // then assume it has the ansi encoding and convert it
+    if FindInvalidUTF8Character(pchar(ExceptMsg),length(ExceptMsg), False) > 0 then
+      ExceptMsg := AnsiToUtf8(ExceptMsg);
     msg := Format('Project %s raised exception class ''%s'' with message:%s%s',
-                  [Project1.Title, AExceptionClass, #13, AExceptionText]);
+                  [Project1.Title, AExceptionClass, #13, ExceptMsg]);
+  end;
 
   MessageDlg('Error', msg, mtError,[mbOk],0);
 end;
