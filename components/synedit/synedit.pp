@@ -447,7 +447,6 @@ type
     function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
-    function GetFont: TFont;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     {$IFDEF SYN_LAZARUS}
@@ -523,7 +522,6 @@ type
     procedure SetCaretX(Value: Integer);
     procedure SetCaretY(Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
-    procedure SetFont(const Value: TFont);
     procedure SetGutter(const Value: TSynGutter);
     procedure SetHideSelection(const Value: boolean);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
@@ -844,7 +842,6 @@ type
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     {$ENDIF}
-    property Font: TFont read GetFont write SetFont;
     property GutterWidth: Integer read fGutterWidth;
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
@@ -1709,11 +1706,6 @@ procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);
-end;
-
-function TCustomSynEdit.GetFont: TFont;
-begin
-  Result := inherited Font;
 end;
 
 function TCustomSynEdit.GetLines: TStrings;
@@ -4271,53 +4263,6 @@ begin
   {$IFDEF SYN_LAZARUS}
   fLastCaretX:=CaretX;
   {$ENDIF}
-end;
-
-procedure TCustomSynEdit.SetFont(const Value: TFont);
-var
-  DC: HDC;
-  Save: THandle;
-  Metrics: TTextMetric;
-  AveCW, MaxCW: Integer;
-begin
-  DebugLn('TCustomSynEdit.SetFont--------------------------------------------');
-  DebugLn('  TCustomSynEdit.SetFont A1',Value.Name);
-  DC := GetDC(0);
-  Save := SelectObject(DC, Value.Reference.Handle);
-  DebugLn('  TCustomSynEdit.SetFont A2',Value.Name);
-  GetTextMetrics(DC, Metrics);
-  SelectObject(DC, Save);
-  ReleaseDC(0, DC);
-  with Metrics do begin
-    AveCW := tmAveCharWidth;
-    MaxCW := tmMaxCharWidth;
-  end;
-  DebugLn(Format('  TCustomSynEdit.SetFont B %d,%d,%s', [AveCW,MaxCW, Value.Name]));
-  case AveCW = MaxCW of
-    True: inherited Font := Value;
-    False:
-      begin
-        with fFontDummy do begin
-          {$IFDEF SYN_LAZARUS}
-          BeginUpdate;
-          {$ENDIF}
-          DebugLn('  TCustomSynEdit.SetFont C fFontDummy="',fFontDummy.Name,'"');
-          Color := Value.Color;
-          Pitch := fpFixed;
-          Size := Value.Size;
-          Style := Value.Style;
-          {$IFDEF SYN_LAZARUS}
-          Quality := Value.Quality;
-          EndUpdate;
-          {$ENDIF}
-        end;
-        DebugLn(Format('  TCustomSynEdit.SetFont D AveCW=%d MaxCW=%d Value="%s" Value.Size=%d Value.Height=%d DummyHeight=%d fFontDummy="%s"', [AveCW, MaxCW, Value.Name, Value.Size, Value.Height, fFontDummy.Height, fFontDummy.Name]));
-        inherited Font := fFontDummy;
-      end;
-  end;
-  DebugLn(Format('  TCustomSynEdit.SetFont E "%s" Height=%d AveCW=%d MaxCW=%d CharWidth=%d', [Font.Name, Font.Height, AveCW, MaxCW, CharWidth]));
-  //if fGutter.ShowLineNumbers then
-  GutterChanged(Self); // Todo: Make the LineNumberGutterPart an observer
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -8636,10 +8581,19 @@ const
   BoldStyles: array[boolean] of TFontStyles = ([], [fsBold]);
   ItalicStyles: array[boolean] of TFontStyles = ([], [fsItalic]);
 begin
+  FFontDummy.Assign(Font);
+  with FFontDummy do begin
+    // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
+    Pitch := fpVariable;
+    Style := [fsBold];
+    Pitch := fpDefault; // maybe Fixed
+    // TODO: Clear style only, if Highlighter uses styles
+    Style := [];        // Reserved for Highlighter
+  end;
   with fTextDrawer do begin
     //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
     //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
-    BaseFont := Self.Font;
+    BaseFont := FFontDummy;
     BaseStyle := ItalicStyles[UsesFontStyle(fsItalic)];
     //debugln('TCustomSynEdit.RecalcCharExtent B CharHeight=',dbgs(CharHeight));
     fTextHeight := CharHeight + fExtraLineSpacing;
@@ -8652,6 +8606,7 @@ begin
   TSynEditStrings(fLines).IsUtf8 := FUseUTF8;
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
   {$ENDIF}
+  GutterChanged(Self);
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
