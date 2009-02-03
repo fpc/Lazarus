@@ -4915,15 +4915,11 @@ end;
 function TQtWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var
   Widget: QWidgetH;
-  APoint: TQtPoint;
 begin
-  APoint := QtPoint(Point.x, Point.y);
-  Widget := QApplication_widgetAt(@APoint);
+  Widget := QApplication_topLevelAt(Point.x, Point.y);
   if Widget <> nil then
-  begin
-    Widget := QWidget_window(Widget);
-    Result := HWND(QtObjectFromWidgetH(Widget));
-  end else
+    Result := HWND(QtObjectFromWidgetH(Widget))
+  else
     Result := 0;
 end;
 
