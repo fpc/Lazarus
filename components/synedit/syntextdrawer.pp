@@ -167,12 +167,17 @@ type
     constructor Create(InitialFont: TFont); virtual;
     destructor Destroy; override;
     procedure ReleaseFontHandles; virtual;
-    property BaseFont: TFont read GetBaseFont;
+  public
+    // Info from the current font (per Style)
+    function MonoSpace: Boolean;
     property Style: TFontStyles read FCrntStyle write SetStyle;
     property FontHandle: HFONT read FCrntFont;
     property CharAdvance: Integer read GetCharAdvance;
     property CharHeight: Integer read GetCharHeight;
     property DBCharAdvance: Integer read GetDBCharAdvance;
+  public
+    // Info from the BaseFont
+    property BaseFont: TFont read GetBaseFont;
     property IsDBCSFont: Boolean read GetIsDBCSFont;
     property IsTrueType: Boolean read GetIsTrueType;
   end;
@@ -732,6 +737,12 @@ begin
     end;
 end;
 
+function TheFontStock.MonoSpace: Boolean;
+begin
+  FpCrntFontData^.Font.Reference;
+  Result := FpCrntFontData^.Font.IsMonoSpace;
+end;
+
 procedure TheFontStock.ReleaseFontsInfo;
 begin
   if Assigned(FpInfo) then
@@ -1116,7 +1127,8 @@ var
   old : TPoint;
 begin
   {$IFDEF SYN_LAZARUS}
-  NeedDistArray:= (FCharExtra > 0) or not MonoSpace;
+  NeedDistArray:= (FCharExtra > 0) or (not MonoSpace)
+    or (not FFontStock.MonoSpace) or (FBaseCharWidth <> FFontStock.CharAdvance);
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
   if NeedDistArray then begin
     if (FETOSizeInChar < Length) then
