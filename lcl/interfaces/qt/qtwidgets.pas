@@ -280,8 +280,6 @@ type
   { TQtScrollBar }
 
   TQtScrollBar = class(TQtAbstractSlider)
-  private
-    FRealParentCtl: TWinControl;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -4931,62 +4929,22 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  FRealParentCtl := nil;
   Result := QScrollBar_create();
+  QWidget_setFocusPolicy(Result, QtNoFocus);
   FHasPaint := True;
 end;
 
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
-var
-  QtWidget: TQtWidget;
-  AParent: TWinControl;
 begin
-  beginEventProcessing;
+  Result := False;
+  QEvent_accept(Event);
 
-  {fixes #11601 -
-   TODO: Real qt apps behaviour: when we click onto scrollbar
-   it focuses control eg. treeview (if it isn't focused yet)
-   but seem that we cannot get it via LCL.
-   For now we use FRealParentCtl variable to get around this !
-  }
-  if QWidget_focusProxy(QWidgetH(Sender)) = nil then
-  begin
-    if not (csDesigning in LCLObject.ComponentState) then
-    begin
-      AParent := LCLObject.Parent;
-      if Assigned(AParent) then
-      begin
-        if AParent.HandleAllocated then
-        begin
-          QtWidget := TQtWidget(AParent.Handle);
-          if Assigned(QtWidget) and (QtWidget.Widget <> nil) then
-          begin
-            while Assigned(AParent.Parent) do
-            begin
-              AParent := AParent.Parent;
-              QtWidget := TQtWidget(AParent.Handle);
-            end;
-            if (QtWidget <> nil) and Assigned(AParent) then
-              QWidget_setFocusProxy(QWidgetH(Sender), QtWidget.Widget);
-          end;
-        end;
-      end;
-    end;
-  end;
+  if LCLObject = nil then
+    exit;
 
   case QEvent_type(Event) of
     {if any of those events returs TRUE our scrollbar becomes invisible.}
-    QEventMouseButtonPress,
-    QEventMouseButtonRelease,
-    QEventMouseButtonDblClick:
-    begin
-      if (FRealParentCtl <> nil)
-      and (FRealParentCtl.CanFocus)
-      and not FRealParentCtl.Focused then
-        FRealParentCtl.SetFocus;
-      Result := False;
-    end;
     QEventMouseMove,
     QEventWheel,
     QEventPaint,
@@ -4996,7 +4954,6 @@ begin
     if FOwnWidget then
       Result := inherited EventFilter(Sender, Event);
   end;
-  endEventProcessing;
 end;
 
 procedure TQtScrollBar.AttachEvents;
@@ -8687,8 +8644,8 @@ begin
   if FHScrollBar = nil then
   begin
     FHScrollBar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+    FHScrollBar.setFocusPolicy(QtNoFocus);
     FHScrollBar.AttachEvents;
-    FHScrollBar.FRealParentCtl := LCLObject;
   end;
   Result := FHScrollBar;
 end;
@@ -8706,8 +8663,8 @@ begin
   if FVScrollBar = nil then
   begin
     FVScrollbar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    FVScrollBar.setFocusPolicy(QtNoFocus);
     FVScrollbar.AttachEvents;
-    FVScrollBar.FRealParentCtl := LCLObject;
   end;
   Result := FVScrollBar;
 end;
