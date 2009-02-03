@@ -189,6 +189,7 @@ type
     function Count: integer;
     function GetFilteredCount: integer;
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
+    function FindIdentifier(Identifier: PChar; const ParamList: string): TIdentifierListItem;
     function FindCreatedIdentifier(const Ident: string): integer;
     function CreateIdentifier(const Ident: string): PChar;
     function StartUpAtomInFrontIs(const s: string): boolean;
@@ -654,9 +655,23 @@ function TIdentifierList.HasIdentifier(Identifier: PChar;
   const ParamList: string): boolean;
 begin
   FIdentSearchItem.Identifier:=Identifier;
-  FIdentSearchItem.ParamList:='';
+  FIdentSearchItem.ParamList:=ParamList;
   Result:=FIdentView.FindKey(FIdentSearchItem,
                              @CompareIdentListSearchWithItems)<>nil;
+end;
+
+function TIdentifierList.FindIdentifier(Identifier: PChar;
+  const ParamList: string): TIdentifierListItem;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  FIdentSearchItem.Identifier:=Identifier;
+  FIdentSearchItem.ParamList:=ParamList;
+  AVLNode:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItems);
+  if AVLNode<>nil then
+    Result:=TIdentifierListItem(AVLNode.Data)
+  else
+    Result:=nil;
 end;
 
 function TIdentifierList.FindCreatedIdentifier(const Ident: string): integer;
@@ -871,19 +886,23 @@ begin
   
   ctnTypeDefinition,ctnGenericType:
     begin
-      Node:=FoundContext.Tool.FindTypeNodeOfDefinition(FoundContext.Node);
-      if (Node<>nil)
-      and (Node.Desc in [ctnClass,ctnClassInterface])
-      and ((ctnsForwardDeclaration and Node.SubDesc)>0)
-      then
-        // skip forward definition
-        exit;
+      Node:=FoundContext.Node.FirstChild;
       if FoundContext.Node.Desc=ctnTypeDefinition then
         Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos]
       else begin
         // generic
-        if FoundContext.Node.FirstChild=nil then exit;
-        Ident:=@FoundContext.Tool.Src[FoundContext.Node.FirstChild.StartPos];
+        if Node=nil then exit;
+        Ident:=@FoundContext.Tool.Src[Node.StartPos];
+      end;
+      if (Node<>nil)
+      and (Node.Desc in [ctnClass,ctnClassInterface])
+      and ((ctnsForwardDeclaration and Node.SubDesc)>0)
+      then begin
+        // forward definition of a class
+        if CurrentIdentifierList.FindIdentifier(Ident,'')<>nil then begin
+          // the real class is already in the list => skip forward
+          exit;
+        end;
       end;
     end;
   
