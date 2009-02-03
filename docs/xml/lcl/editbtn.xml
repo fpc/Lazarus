@@ -411,18 +411,27 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomEditButton.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TCustomEditButton.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomEditutton</var>: calls inherited <var>Create</var> then sets some defaults and initialises some variables</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TCustomEditutton</var>: calls inherited <var>Create</var> then sets some defaults and initialises some variables</p>
+          <p>Initialises height and width, cursor, glyph, style, checks visibility, event handler for click</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomEditButton.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomEditButton.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCustomEditButton.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -899,7 +908,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFileNameEdit.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TFileNameEdit.Create" link="#LCL.EditBtn.TCustomEditButton.Create">
         <short/>
         <descr/>
         <errors/>
@@ -910,7 +919,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFileNameEdit.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TFileNameEdit.Destroy" link="#LCL.EditBtn.TCustomEditButton.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1751,9 +1760,14 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDateEdit.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
+      <element name="TDateEdit.Create" link="#LCL.EditBtn.TCustomEditButton.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TDateEdit</var>: calls inherited <var>Create</var> and sets defaults</short>
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TDateEdit</var>: calls inherited <var>Create</var> and sets defaults</p>
+          <p>Initialises dialog title, captions, display settings and default date</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -2179,7 +2193,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCalcEdit.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCalcEdit.Create" link="#LCL.EditBtn.TCustomEditButton.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2190,7 +2204,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCalcEdit.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCalcEdit.Destroy" link="#LCL.EditBtn.TCustomEditButton.Destroy">
         <short/>
         <descr/>
         <errors/>

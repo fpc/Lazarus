@@ -374,7 +374,13 @@ and the "Close" method to release it and free the used resources.</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCommonDialog.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCommonDialog.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCommonDialog</var>: calls inherited <var>Create</var> and adds default Title</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCommonDialog.Create.TheOwner">
         <short>The owner of the dialog: the component that called it</short>
@@ -641,17 +647,27 @@ and then check the result to see if the user made a valid choice and pressed the
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFileDialog.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TFileDialog.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TFileDialog</var>: calls inherited <var>Create</var>, makes stringlists for files and history, initialises filter index</short>
+        <seealso>
+          <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TFileDialog.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFileDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TFileDialog.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TFileDialog</var>: frees file and history lists then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Dialogs.TCommonDialog.Destroy">TCommonDialog.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFileDialog.DoTypeChange">
@@ -978,7 +994,13 @@ If the required file is not in the current directory, another directory can be s
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TOpenDialog.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TOpenDialog.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TOpenDialog</var>: calls inherited <var>Create</var> then loads default options</short>
+        <seealso>
+          <link id="#LCL.Dialogs.TFileDialog.Create">TFileDialog.Create</link>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TOpenDialog.Create.TheOwner">
         <short/>
@@ -1034,7 +1056,7 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
 </descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSaveDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TSaveDialog.Create" link="#LCL.Dialogs.TOpenDialog.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1070,7 +1092,7 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSelectDirectoryDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TSelectDirectoryDialog.Create" link="#LCL.Dialogs.TOpenDialog.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1099,10 +1121,14 @@ Call the Execute function to show the color dialog.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TColorDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TColorDialog.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TColorDialog</var>: calls inherited <var>Create</var>, makes stringlist for colours and gets colour values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorDialog.Create.TheOwner">
@@ -1307,11 +1333,14 @@ Call the Execute function to show the color dialog.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TColorButton.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TColorButton.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TColorButton</var>; calls inherited <var>Create</var> , sets initial bounds, size and pattern</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Buttons.TCustomSpeedButton.Create">TCustomSpeedButton.create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorButton.Create.AnOwner">
@@ -2121,18 +2150,22 @@ you need to use TReplaceDialog to do that<br/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFindDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TFindDialog.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TFindDialog</var>: calls inherited <var>Create</var> and sets initial options for Find only</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFindDialog.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFindDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TFindDialog.Destroy" link="#LCL.Dialogs.TCommonDialog.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -2264,11 +2297,14 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TReplaceDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TReplaceDialog.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TReplaceDialog</var>: calls inherited <var>Create</var> and sets options for find and replace</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Dialogs.TFindDialog.Create">TFindDialog.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TReplaceDialog.Create.AOwner">
@@ -3062,7 +3098,14 @@ If a valid directory is given, the selected directory in the tree will be set to
       <element name="TSaveDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
       <element name="TSelectDirectoryDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
       <element name="TColorDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
-      <element name="TColorDialog.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
+      <element name="TColorDialog.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TColorDialog</var>: frees custom colours then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#LCL.Dialogs.TCommonDialog.Destroy">TCommonDialog.Destroy</link>
+        </seealso>
+      </element>
       <element name="TColorDialog.CustomColors">
         <short>
           <var>CustomColors</var> - a customised list of colours that can be used instead of the system-supplied list</short>

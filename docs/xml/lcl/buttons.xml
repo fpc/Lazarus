@@ -1399,15 +1399,21 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomSpeedButton.Create" link="#rtl.Classes.TComponent.Create">
-        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
-
-However, if you create the component by code don´t forget to free it when it is no longer needed.
-
-Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.
-</descr>
+      <element name="TCustomSpeedButton.Create">
+        <descr>
+          <p>
+            <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</p>
+          <p>Among the properties set are Glyph, initial bounds, control style, layout, colour, caption and mouse responses</p>
+          <p>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.</p>
+          <p>However, if you create the component by code don´t forget to free it when it is no longer needed.</p>
+          <p>Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomSpeedButton.Create.AOwner">
