@@ -371,6 +371,7 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
+    procedure initializeWidget; override;
     function getIconSize: TSize;
     function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
@@ -476,7 +477,6 @@ type
     {$ENDIF}
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
-    procedure setColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -495,7 +495,6 @@ type
     {$IFNDEF USE_QT_44}
     destructor Destroy; override;
     {$ENDIF}
-    procedure setColor(const Value: PQColor); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -3673,6 +3672,12 @@ begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
 end;
 
+procedure TQtAbstractButton.initializeWidget;
+begin
+  inherited initializeWidget;
+  setAutoFillBackground(True);
+end;
+
 function TQtAbstractButton.getIconSize: TSize;
 begin
   QAbstractButton_iconSize(QAbstractButtonH(Widget), @Result);
@@ -4359,14 +4364,6 @@ begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
 end;
 
-procedure TQtCheckBox.setColor(const Value: PQColor);
-var
-  W: WideString;
-begin
-  W := Format('background-color: rgb(%d, %d, %d);', [Value^.r shr 8, Value^.g  shr 8, Value^.b  shr 8]);
-  QWidget_setStyleSheet(Widget, @W);
-end;
-
 procedure TQtCheckBox.AttachEvents;
 var
   Method: TMethod;
@@ -4433,14 +4430,6 @@ begin
   inherited Destroy;
 end;
 {$ENDIF}
-
-procedure TQtRadioButton.setColor(const Value: PQColor);
-var
-  W: WideString;
-begin
-  W := Format('background-color: rgb(%d, %d, %d);', [Value^.r shr 8, Value^.g  shr 8, Value^.b  shr 8]);
-  QWidget_setStyleSheet(Widget, @W);
-end;
 
 procedure TQtRadioButton.AttachEvents;
 var
