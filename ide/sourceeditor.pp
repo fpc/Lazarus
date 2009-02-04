@@ -1068,10 +1068,10 @@ begin
     if SourceEditorMarks<>nil then
       SourceEditorMarks.DeleteAllForEditor(FEditor);
     TSourceNotebook(FAOwner).FSourceEditorList.Remove(Self);
-    FreeAndNil(FEditor);
-  end else begin
-    FEditor:=nil;
+    // free the synedit control after processing the events
+    Application.ReleaseComponent(FEditor);
   end;
+  FEditor:=nil;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
 //writeln('TSourceEditor.Destroy END ');
