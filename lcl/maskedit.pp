@@ -1059,14 +1059,18 @@ begin
     Inherited TextChanged;
     Exit;
   end;
-  if FChangeAllowed then Inherited TextChanged;
-  if not FChangeAllowed then
+  if FChangeAllowed then
+  begin
+    Inherited TextChanged
+  end
+  else
+  //if not FChangeAllowed then
   begin
     SetInheritedText(CurrentText);
     //Reset cursor to last known position
     SetCursorPos;
   end;
-  if inherited Text = '' then Clear;
+  if (inherited Text = '') then Clear;
 end;
 
 procedure TCustomMaskEdit.Loaded;
@@ -1276,6 +1280,7 @@ begin
       end
       else if (Shift = []) then
       begin//Plain Delete
+        //DeleteChars also works if SelLength = 0
         DeleteChars(True);
       end;
       Key := 0;
@@ -1392,10 +1397,10 @@ begin
   // Insert a char
   if (Key In [#32..#255]) then
   begin
-    //DeleteSelected;
     InsertChar(Key);
-    //TDBEdit needs the value of Key to decide if Datasource is in Edit state
-    //Key:= #0;
+    //We really need to "eat" all keys we handle ourselves
+    //(or widgetset will insert char second time)
+    Key:= #0;
   end;
 end;
 
@@ -1494,23 +1499,25 @@ var
   S: String;
   _MaskSave: Boolean;
 begin
-  {
-    if FMaskSave = False then literal and spaces are trimmed from Text
-    and TextIsValid might wrongly return False
-    We need the text with literals and FSpaceChar translated to #32
-  }
-  //Somehow TDBEdit calls ValidateEdit even no mask is set!!
-  if not IsMasked then Exit;
-  _MaskSave := FMaskSave;
-  FMaskSave := True;
-  S := Text;
-  FMaskSave := _MaskSave;
-  if not TextIsValid(S) then
+  //Only validate if IsMasked
+  if IsMasked then
   begin
-    SetFocus;
-    SetCursorPos;
-    Raise EDBEditError.Create(SMaskEditNoMatch);
-    //DebugLn('TCustomMaskEdit.Validate: The current text does not match the the specified mask');
+    {
+     if FMaskSave = False then literal and spaces are trimmed from Text
+     and TextIsValid might wrongly return False
+     We need the text with literals and FSpaceChar translated to #32
+    }
+    _MaskSave := FMaskSave;
+    FMaskSave := True;
+    S := Text;
+    FMaskSave := _MaskSave;
+    if not TextIsValid(S) then
+    begin
+      SetFocus;
+      SetCursorPos;
+      Raise EDBEditError.Create(SMaskEditNoMatch);
+      //DebugLn('TCustomMaskEdit.Validate: The current text does not match the the specified mask');
+    end;
   end;
 end;
 

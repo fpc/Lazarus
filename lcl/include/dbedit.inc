@@ -170,20 +170,39 @@ procedure TDBEdit.KeyPress(var Key: char);
       end;
     end;
   end;
+var
+  SavedKey: Char;
 begin
+  SavedKey := Key;
   inherited KeyPress(Key);
-  case key of
-    #8: // special keys
-      if not IsReadOnly then
-        FDatalink.Edit
-      else
-        Key:=#0;
+  //TCustomMaskEdit sets all normal Keys (and BackSpace) to #0 if IsMasked
+  //but not if control is ReadOnly
+  if (not IsMasked) or (inherited ReadOnly) then
+  begin
+    case Key of
+      #8: // special keys
+        if not IsReadOnly then
+          FDatalink.Edit
+        else
+          Key:=#0;
 
-    #32..#255: //standard keys
-      if CanAcceptKey and not IsReadOnly then
-        FDatalink.Edit
-      else
-        Key:=#0;
+      #32..#255: //standard keys
+        if CanAcceptKey and not IsReadOnly then
+          FDatalink.Edit
+        else
+          Key:=#0;
+    end;//case
+  end
+  else
+  begin
+    case SavedKey of
+      #8: // special keys
+        if not IsReadOnly then
+          FDatalink.Edit;
+      #32..#255: //standard keys
+        if CanAcceptKey and not IsReadOnly then
+          FDatalink.Edit;
+    end;//case
   end;
 end;
 
