@@ -1381,12 +1381,7 @@ begin
   
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
-  begin
-    if LCLObject.TabStop then
-      setFocusPolicy(QtClickFocus)
-    else
-      setFocusPolicy(QtNoFocus);
-  end;
+    setFocusPolicy(QtClickFocus);
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -1426,12 +1421,7 @@ begin
 
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
-  begin
-    if LCLObject.TabStop then
-      setFocusPolicy(QtClickFocus)
-    else
-      setFocusPolicy(QtNoFocus);
-  end;
+    setFocusPolicy(QtClickFocus);
 
   // Set context menus to custom so LCL can better handle our popup menus
   if Supports(Self, IQtEdit, QtEdit) then
@@ -5232,6 +5222,8 @@ end;
 procedure TQtLineEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QLineEdit_setReadOnly(QLineEditH(Widget), AReadOnly);
+  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
+    setFocusPolicy(QtNoFocus);
 end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
@@ -5396,6 +5388,8 @@ end;
 procedure TQtTextEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QTextEdit_setReadOnly(QTextEditH(Widget), AReadOnly);
+  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
+    setFocusPolicy(QtNoFocus);
 end;
 
 procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
