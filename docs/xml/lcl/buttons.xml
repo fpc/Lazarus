@@ -203,7 +203,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TButtonGlyph.Create" link="#rtl.System.TObject.Create">
+      <element name="TButtonGlyph.Create">
         <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
 
 However, if you create the component by code don´t forget to free it when it is no longer needed.
@@ -212,9 +212,11 @@ Constructors allocate memory and system resources needed by the object. They als
 </descr>
         <errors/>
         <seealso/>
+        <short>
+          <var>Create</var> - constructor for <var>TButtonGlyph</var>: frees the Images cache then creates a Glyph Bitmap</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TButtonGlyph.Destroy" link="#rtl.System.TObject.Destroy">
+      <element name="TButtonGlyph.Destroy">
         <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
@@ -228,7 +230,12 @@ Take the following precautions when creating your own Destroy method:
 * Remember to call Free for all objects created on the constructor.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TButtonGlyph</var>: frees caches and calls inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TButtonGlyph.Draw">
@@ -571,7 +578,7 @@ bkYesToAll
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomBitBtn.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomBitBtn.Create">
         <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
 
 However, if you create the component by code don´t forget to free it when it is no longer needed.
@@ -579,14 +586,19 @@ However, if you create the component by code don´t forget to free it when it is
 Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.StdCtrls.TCustomButton.Create">TCustomButton.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomBitBtn</var>: calls inherited <var>Create</var> then initialises layout, style and spacing, creates the Button Glyph</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitBtn.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomBitBtn.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCustomBitBtn.Destroy">
         <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
@@ -600,7 +612,13 @@ Take the following precautions when creating your own Destroy method:
 * Remember to call Free for all objects created on the constructor.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.StdCtrls.TCustomButton.Destroy">TCustomButton.Destroy</link>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomBitBtn</var>: frees Button Glyph then calls inherited <var>Destroy</var>
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Glyph">
@@ -1404,9 +1422,6 @@ is done automatically by the streaming system.
           <p>
             <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</p>
           <p>Among the properties set are Glyph, initial bounds, control style, layout, colour, caption and mouse responses</p>
-          <p>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.</p>
-          <p>However, if you create the component by code don´t forget to free it when it is no longer needed.</p>
-          <p>Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</p>
         </descr>
         <errors/>
         <seealso>
@@ -1420,11 +1435,15 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomSpeedButton.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short>Destroy this instance of a graphic control and return its resources</short>
+      <element name="TCustomSpeedButton.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomSpeedButton</var>: frees Glyph then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomSpeedButton.Click" link="#LCL.Controls.TControl.Click">

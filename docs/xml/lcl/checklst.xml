@@ -158,10 +158,14 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckListBox.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomCheckListBox.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Create">TCustomListBox.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TCustomCheckListBox</var>: calls inherited <var>Create</var>, finds the data size</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCheckListBox.Create.AOwner">

@@ -991,7 +991,13 @@
       </element>
       <element name="TCustomColorBox.SetStyle" link="#LCL.StdCtrls.TCustomComboBox.SetStyle"/>
       <element name="TCustomColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem"/>
-      <element name="TCustomColorBox.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomColorBox.Create">
+        <short>
+          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colours and colour list, ReadOnly and Selected properties</short>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomCombobox.Create">TCustomCombobox.Create</link>
+        </seealso>
+      </element>
       <element name="TCustomColorBox.SetColorList">
         <short>
           <var>SetColorList</var> - specifies the list of colours to be presented in the drop-down</short>
@@ -1016,7 +1022,13 @@
           <var>SetStyle</var> - specify the Style</short>
       </element>
       <element name="TCustomColorListBox.DrawItem" link="#LCL.StdCtrls.TCustomListBox.DrawItem"/>
-      <element name="TCustomColorListBox.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomColorListBox.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomColorListBox</var>: calls inherited <var>Create</var>, initialises style, default colours and sets colour list</short>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Create">TCustomListBox.Create</link>
+        </seealso>
+      </element>
       <element name="TCustomColorListBox.SetColorList">
         <short>
           <var>SetColorList</var> - specifies the list of colours</short>

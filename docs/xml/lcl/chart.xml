@@ -129,22 +129,31 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomBarChart.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TCustomBarChart.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomBarChart</var>: calls inherited <var>Create</var> and creates the bars, sets initial bounds and label position</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Create">TCustomPanel.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBarChart.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomBarChart.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
+      <element name="TCustomBarChart.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomBarChart</var>: frees the bars and calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Destroy">TCustomPanel.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBarChart.Clear">
@@ -502,7 +511,14 @@
         <short>
           <var>TBarChartItems</var> - the collection of items defining the bars in this barchart</short>
       </element>
-      <element name="TBarChartItems.Create" link="#rtl.Classes.TCollection.Create"/>
+      <element name="TBarChartItems.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TBarChartItems</var>: calls inherited <var>Create</var> and attaches itself to the nominated <var>BarChart</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Create">TCollection.Create</link>
+        </seealso>
+      </element>
       <element name="TCustomBarChart.Bars">
         <short>
           <var>Bars</var> - the collection of bars that comprise the BarChart</short>
