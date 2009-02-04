@@ -206,10 +206,10 @@ begin
 
   fCompStyle := csNoteBook;
 
-  fPageList := TListWithEvent.Create;
+  FPageList := TListWithEvent.Create;
 
   fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
-  fPageIndex := -1;
+  FPageIndex := -1;
   FLoadedPageIndex:=-1;
   FPageIndexOnLastShow:=-1;
 
@@ -846,6 +846,7 @@ begin
     CurPage := Page[FPageIndex];
     // first make the new page visible
     //DebugLn(['TCustomNotebook.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
+    CurPage.UpdateControlState;
     if CurPage.Visible then
     begin
       if FPageIndexOnLastShow <> FPageIndex then
