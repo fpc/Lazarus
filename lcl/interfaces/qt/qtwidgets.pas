@@ -8199,6 +8199,7 @@ begin
     WriteLn('TQProgressBar.Create');
   {$endif}
   Result := QProgressBar_create();
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation, True);
 end;
 
 procedure TQtProgressBar.AttachEvents;
