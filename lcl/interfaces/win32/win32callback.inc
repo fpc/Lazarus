@@ -2365,8 +2365,9 @@ begin
     WM_ENDSESSION:
     begin
       if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
-         (WParam>0) and (LParam=0) then
+         (WParam>0) then
       begin
+        // look at WM_QUERYENDSESSION about LParam
         LMessage.Msg := LM_NULL; // no need to go through delivermessage
         Application.IntfEndSession();
         LMessage.Result := 0;
@@ -2375,11 +2376,13 @@ begin
 
     WM_QUERYENDSESSION:
     begin
-      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
-         (LParam=0) then
+      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) then
       begin
         LMessage.Msg := LM_NULL; // no need to go through delivermessage
         CancelEndSession := LMessage.Result=0;
+        // it is possible to pass whether user LogOff or Shutdonw through a flag
+        // but seems there is no way to do this in a cross-platform way =>
+        // skip it for now
         Application.IntfQueryEndSession(CancelEndSession);
         if CancelEndSession
           then LMessage.Result := 0
