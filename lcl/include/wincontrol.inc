@@ -5587,7 +5587,8 @@ end;
   TWinControl UpdateControlState
 ------------------------------------------------------------------------------}
 procedure TWinControl.UpdateControlState;
-var AWinControl: TWinControl;
+var
+  AWinControl: TWinControl;
 begin
   AWinControl:= Self;
   { If any of the parent is not visible, exit }
@@ -5607,7 +5608,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.InsertControl(AControl: TControl);
 begin
-  InsertControl(AControl,ControlCount);
+  InsertControl(AControl, ControlCount);
 end;
 
 procedure TWinControl.InsertControl(AControl: TControl; Index: integer);

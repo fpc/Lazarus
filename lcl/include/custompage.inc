@@ -22,9 +22,9 @@ constructor TCustomPage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  fImageIndex:=-1;
-  fCompStyle := csPage;
-  fTabVisible := True;
+  FImageIndex:=-1;
+  FCompStyle := csPage;
+  FTabVisible := True;
   ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds,csNoDesignVisible,csNoFocus];
 
   // height and width depends on parent, align to client rect
