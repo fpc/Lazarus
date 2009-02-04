@@ -47,6 +47,7 @@ type
     procedure BuildModeTVPopupMenuPopup(Sender: TObject);
     procedure DeleteBuildModeClick(Sender: TObject);
     procedure NewBuildModeClick(Sender: TObject);
+    procedure NewValueClick(Sender: TObject);
   private
     FBuildModes: TIDEBuildModes;
     fModeImgID: LongInt;
@@ -56,8 +57,11 @@ type
     procedure SetBuildModes(const AValue: TIDEBuildModes);
     procedure RebuildTreeView;
     procedure TreeViewAddBuildMode(BuildMode: TLazBuildMode);
+    procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
     function GetSelectedNode(out BuildMode: TLazBuildMode;
                              out NodeType: TCBMNodeType): TTreeNode;
+    function GetBuildModeTVNode(BuildMode: TLazBuildMode): TTreeNode;
+    function GetValuesTVNode(BuildMode: TLazBuildMode): TTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -80,12 +84,36 @@ begin
   BuildModesTreeView.EndUpdate;
 end;
 
+procedure TCompOptBuildModesFrame.NewValueClick(Sender: TObject);
+var
+  BuildMode: TLazBuildMode;
+  NodeType: TCBMNodeType;
+  i: Integer;
+  NewValueStr: String;
+  ValuesTVNode: TTreeNode;
+begin
+  GetSelectedNode(BuildMode,NodeType);
+  if BuildMode=nil then exit;
+  i:=1;
+  repeat
+    NewValueStr:='Value'+IntToStr(i);
+    if BuildMode.Values.IndexOf(NewValueStr)<0 then break;
+    inc(i);
+  until false;
+  BuildMode.Values.Add(NewValueStr);
+  BuildModesTreeView.BeginUpdate;
+  ValuesTVNode:=GetValuesTVNode(BuildMode);
+  TreeViewAddValue(ValuesTVNode,NewValueStr);
+  ValuesTVNode.Expand(true);
+  BuildModesTreeView.EndUpdate;
+end;
+
 procedure TCompOptBuildModesFrame.DeleteBuildModeClick(Sender: TObject);
 var
   BuildMode: TIDEBuildMode;
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
-  i: LongInt; 
+  i: LongInt;
 begin
   SelTVNode:=GetSelectedNode(BuildMode,NodeType);
   if BuildMode=nil then exit;
@@ -127,7 +155,7 @@ begin
   GetSelectedNode(BuildMode,NodeType);
 
   if NodeType in [cbmntBuildMode,cbmntValues,cbmntValue] then
-    Add('New value',nil);
+    Add('New value',@NewValueClick);
   if NodeType in [cbmntValue] then
     Add('Delete value ...',nil);
   AddSeparator;
@@ -165,7 +193,6 @@ var
   Values: TStrings;
   i: Integer;
   DefValueTVNode: TTreeNode;
-  ValueTVNode: TTreeNode;
 begin
   // create node for the build mode
   TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildMode.Identifier,BuildMode);
@@ -181,12 +208,8 @@ begin
     ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
     // a node for each value
     Values:=BuildMode.Values;
-    for i:=0 to Values.Count-1 do begin
-      ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,Values[i]);
-      ValueTVNode.ImageIndex:=fValueImgID;
-      ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
-      ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
-    end;
+    for i:=0 to Values.Count-1 do
+      TreeViewAddValue(ValuesTVNode,Values[i]);
     // a node for the default value
     DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,
       lisDefaultValue);
@@ -196,6 +219,17 @@ begin
     // ToDo: add default value nodes
   end;
   TVNode.Expand(true);
+end;
+
+procedure TCompOptBuildModesFrame.TreeViewAddValue(ValuesTVNode: TTreeNode;
+  aValue: string);
+var
+  ValueTVNode: TTreeNode;
+begin
+  ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,aValue);
+  ValueTVNode.ImageIndex:=fValueImgID;
+  ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
+  ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 
 function TCompOptBuildModesFrame.GetSelectedNode(out
@@ -231,6 +265,26 @@ begin
   BuildMode:=nil;
   Result:=BuildModesTreeView.Selected;
   NodeType:=GetNodeType(Result);
+end;
+
+function TCompOptBuildModesFrame.GetBuildModeTVNode(BuildMode: TLazBuildMode
+  ): TTreeNode;
+begin
+  Result:=BuildModesTreeView.Items.GetFirstNode;
+  while (Result<>nil) and (TObject(Result.Data)<>BuildMode) do
+    Result:=Result.GetNextSibling;
+end;
+
+function TCompOptBuildModesFrame.GetValuesTVNode(BuildMode: TLazBuildMode
+  ): TTreeNode;
+var
+  BuildModeTVNode: TTreeNode;
+begin
+  BuildModeTVNode:=GetBuildModeTVNode(BuildMode);
+  if (BuildModeTVNode<>nil) then
+    Result:=BuildModeTVNode.GetFirstChild
+  else
+    Result:=nil;
 end;
 
 constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);
