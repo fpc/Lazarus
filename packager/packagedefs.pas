@@ -3418,8 +3418,15 @@ end;
 
 function TLazPackage.IndexOfPkgFile(PkgFile: TPkgFile): integer;
 begin
-  Result:=FileCount-1;
-  while (Files[Result]<>PkgFile) do dec(Result);
+  Result := FileCount - 1;
+  if Result < 0 then
+    Exit;
+  while (Files[Result] <> PkgFile) do
+  begin
+    dec(Result);
+    if Result < 0 then
+      Exit;
+  end;
 end;
 
 function TLazPackage.SearchShortFilename(const ShortFilename: string;
