@@ -1443,7 +1443,9 @@ begin
   if (csDesigning in LCLObject.ComponentState) and not
      (Self is TQtMainWindow) and
      HasPaint and
-     getAutoFillBackground then
+     getAutoFillBackground or
+     ((csDesigning in LCLObject.ComponentState) and
+      (ClassType = TQtTabWidget)) then
     setAutoFillBackground(False);
 
   // Set mouse move messages policy
@@ -4063,9 +4065,12 @@ end;
 function TQtMainWindow.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 begin
-  BeginEventProcessing;
   Result := False;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
 
+  BeginEventProcessing;
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
   else
@@ -4504,10 +4509,11 @@ begin
   FHasPaint := True;
   Result := QGroupBox_create();
   FCentralWidget := QWidget_create(Result, 0);
+
+  QWidget_setAutoFillBackground(Result, True);
+
   Layout := QVBoxLayout_create(Result);
-
   QLayout_addWidget(Layout, FCentralWidget);
-
   QWidget_setLayout(Result, QLayoutH(Layout));
   QWidget_setAttribute(Result, QtWA_LayoutOnEntireRect, True);
   setLayoutThemeMargins(Layout, Result);
@@ -4920,6 +4926,7 @@ begin
   {$endif}
   Result := QScrollBar_create();
   QWidget_setFocusPolicy(Result, QtNoFocus);
+  QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
 end;
 
@@ -5692,6 +5699,7 @@ begin
   {$ifdef darwin}
   QTabWidget_setUsesScrollButtons(QTabWidgetH(Result), True);
   {$endif}
+  QWidget_setAutoFillBackground(Result, True);
 end;
 
 destructor TQtTabWidget.Destroy;
@@ -8130,9 +8138,9 @@ end;
 
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  BeginEventProcessing;
   Result := False;
-
+  QEvent_accept(Event);
+  BeginEventProcessing;
   case QEvent_type(Event) of
     LCLQt_PopupMenuClose:
       begin
@@ -9022,6 +9030,7 @@ begin
   FHasPaint := True;
   Result := QWidget_create;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+  QWidget_setAutoFillBackground(Result, True);
 end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -9637,22 +9646,22 @@ end;
 
 function TQtDesignWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  BeginEventProcessing;
   Result := False;
-  if LCLObject <> nil then
-  begin
-    QEvent_accept(Event);
-    case QEvent_type(Event) of
-      QEventChildAdded,
-      QEventChildRemoved: BringDesignerToFront;
-      QEventResize:
-        begin
-          Result := inherited EventFilter(Sender, Event);
-          ResizeDesigner;
-        end;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+
+  BeginEventProcessing;
+  case QEvent_type(Event) of
+    QEventChildAdded,
+    QEventChildRemoved: BringDesignerToFront;
+    QEventResize:
+      begin
+        Result := inherited EventFilter(Sender, Event);
+        ResizeDesigner;
+      end;
     else
       Result := inherited EventFilter(Sender, Event);
-    end;
   end;
   EndEventProcessing;
 end;
@@ -9798,6 +9807,8 @@ begin
   {we'll need it later. QMessageBox uses it's own eventLoop !}
   Result := False;
   QEvent_accept(Event);
+  if LCLObject <> nil then
+    Result := inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
