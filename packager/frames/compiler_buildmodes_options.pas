@@ -92,7 +92,6 @@ var
   SelTVNode: TTreeNode;
 begin
   SelTVNode:=BuildModesTreeView.Selected;
-  BuildModeTVPopupMenu.Items.Clear;
 
   if SelTVNode=nil then begin
     // no node selected
@@ -126,23 +125,33 @@ begin
     // first level: build modes
     for i:=0 to BuildModes.Count-1 do begin
       BuildMode:=BuildModes.Items[i];
+      // create node for the build mode
       TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildMode.Identifier,BuildMode);
       TVNode.ImageIndex:=fModeImgID;
       TVNode.StateIndex:=TVNode.ImageIndex;
-      // second level: values and default values
-      ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Values');
-      ValuesTVNode.ImageIndex:=fValuesImgID;
-      ValuesTVNode.StateIndex:=ValuesTVNode.ImageIndex;
-      Values:=BuildMode.Values;
-      for j:=0 to Values.Count-1 do begin
-        ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,Values[j]);
-        ValueTVNode.ImageIndex:=fValueImgID;
-        ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
+      TVNode.SelectedIndex:=TVNode.ImageIndex;
+      // second level
+      begin
+        // parent node for values
+        ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Values');
+        ValuesTVNode.ImageIndex:=fValuesImgID;
+        ValuesTVNode.StateIndex:=ValuesTVNode.ImageIndex;
+        ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
+        // a node for each value
+        Values:=BuildMode.Values;
+        for j:=0 to Values.Count-1 do begin
+          ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,Values[j]);
+          ValueTVNode.ImageIndex:=fValueImgID;
+          ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
+          ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
+        end;
+        // a node for the default value
+        DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Default value');
+        DefValueTVNode.ImageIndex:=fDefValueImgID;
+        DefValueTVNode.StateIndex:=DefValueTVNode.ImageIndex;
+        DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
+        // ToDo: add default value nodes
       end;
-      DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Default value');
-      DefValueTVNode.ImageIndex:=fDefValueImgID;
-      DefValueTVNode.StateIndex:=DefValueTVNode.ImageIndex;
-      // ToDo: add default value nodes
       TVNode.Expand(true);
     end;
   end;
