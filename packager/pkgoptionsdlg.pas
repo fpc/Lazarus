@@ -269,6 +269,7 @@ end;
 
 procedure TPackageOptionsDialog.FormCreate(Sender: TObject);
 begin
+  NoteBook.PageIndex := 0;
   {$IFNDEF EnableBuildModes}
   Usage2Page.TabVisible:=false;
   {$ENDIF}
@@ -397,10 +398,11 @@ end;
 procedure TPackageOptionsDialog.SetupComponents;
 begin
   Notebook.Page[0].Caption:=lisPckOptsUsage;
-  Notebook.Page[1].Caption:=lisToDoLDescription;
-  Notebook.Page[2].Caption:=lisPckOptsIDEIntegration;
-  Notebook.Page[3].Caption:=lisPckOptsProvides;
-  Notebook.Page[4].Caption:=dlgPOI18n;
+  Notebook.Page[1].Caption:=lisPckOptsUsage; // todo: add new caption
+  Notebook.Page[2].Caption:=lisToDoLDescription;
+  Notebook.Page[3].Caption:=lisPckOptsIDEIntegration;
+  Notebook.Page[4].Caption:=lisPckOptsProvides;
+  Notebook.Page[5].Caption:=dlgPOI18n;
 
   OKButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
