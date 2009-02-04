@@ -219,7 +219,7 @@ type
   TWSCustomCheckBox = class(TWSButtonControl)
   published
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); virtual;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); virtual;
   end;
@@ -453,12 +453,10 @@ end;
 class procedure TWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
   const AAlignment: TAlignment);
 begin
-
 end;
 
 class procedure TWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
 begin
-
 end;
 
 class procedure TWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);

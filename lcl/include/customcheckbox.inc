@@ -88,7 +88,7 @@ end;
 
   Constructor for custom checkbox.
  ------------------------------------------------------------------------------}
-constructor TCustomCheckBox.Create(TheOwner : TComponent);
+constructor TCustomCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csCheckbox;

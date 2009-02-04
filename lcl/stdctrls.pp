@@ -677,6 +677,7 @@ type
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
+    procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;
     function GetModified: Boolean;
     procedure SetCharCase(Value: TEditCharCase);
@@ -696,7 +697,6 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
-    procedure SetAlignment(const AValue: TAlignment);
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetReadOnly(Value: Boolean); virtual;
@@ -1330,6 +1330,7 @@ type
     FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     FLayout: TTextLayout;
+    procedure SetAlignment(Value: TAlignment);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
     function  CanTab: boolean; override;
@@ -1353,7 +1354,6 @@ type
     function  GetAlignment: TAlignment;
     function  GetLabelText: string; virtual;
     function  GetTransparent: boolean;
-    procedure SetAlignment(Value: TAlignment);
     procedure SetColor(NewColor: TColor); override;
     procedure SetFocusControl(Value: TWinControl);
     procedure SetLayout(Value: TTextLayout);

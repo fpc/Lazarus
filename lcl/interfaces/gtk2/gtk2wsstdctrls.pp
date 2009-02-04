@@ -329,7 +329,8 @@ function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 
 implementation
 
-uses GtkWSControls, Gtk2WSControls, LCLMessageGlue, Forms;
+uses
+  GtkWSControls, Gtk2WSControls, LCLMessageGlue, Forms;
 
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 begin

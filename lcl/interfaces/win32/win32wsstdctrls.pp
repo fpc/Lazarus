@@ -245,12 +245,12 @@ type
 
   TWin32WSCustomCheckBox = class(TWSCustomCheckBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
@@ -268,7 +268,7 @@ type
 
   TWin32WSToggleBox = class(TWSToggleBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
 
@@ -276,7 +276,7 @@ type
 
   TWin32WSRadioButton = class(TWSRadioButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
 
@@ -294,25 +294,27 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 implementation
 
 const
-  AlignmentMap: array[TAlignment] of DWord =
+  AlignmentToEditFlags: array[TAlignment] of DWord =
   (
-{taLeftJustify } ES_LEFT,
-{taRightJustify} ES_RIGHT,
-{taCenter      } ES_CENTER
+{ taLeftJustify  } ES_LEFT,
+{ taRightJustify } ES_RIGHT,
+{ taCenter       } ES_CENTER
   );
 
   AlignmentToStaticTextFlags: array[TAlignment] of DWord =
   (
-    SS_LEFT,
-    SS_RIGHT,
-    SS_CENTER
+{ taLeftJustify  } SS_LEFT,
+{ taRightJustify } SS_RIGHT,
+{ taCenter       } SS_CENTER
   );
+
   BorderToStaticTextFlags: array[TStaticBorderStyle] of DWord =
   (
     0,
     WS_BORDER, // generic border
     SS_SUNKEN  // the only one special border for text static controls
   );
+
   AccelCharToStaticTextFlags: array[Boolean] of LONG =
   (
     SS_NOPREFIX,
@@ -1031,7 +1033,7 @@ begin
     begin
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      Flags := Flags or AlignmentMap[TCustomEdit(AWinControl).Alignment];
+      Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
     end;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
@@ -1103,7 +1105,7 @@ var
   CurrentStyle: DWord;
 begin
   CurrentStyle := GetWindowLong(ACustomEdit.Handle, GWL_STYLE);
-  if (CurrentStyle and 3) = AlignmentMap[AAlignment] then
+  if (CurrentStyle and 3) = AlignmentToEditFlags[AAlignment] then
     Exit;
   RecreateWnd(ACustomEdit);
 end;
@@ -1179,7 +1181,7 @@ begin
     Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
     if ACustomMemo.ReadOnly then
       Flags := Flags or ES_READONLY;
-    Flags := Flags or AlignmentMap[ACustomMemo.Alignment];
+    Flags := Flags or AlignmentToEditFlags[ACustomMemo.Alignment];
     case ACustomMemo.ScrollBars of
       ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
@@ -1464,9 +1466,9 @@ begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     if TCustomCheckBox(AWinControl).AllowGrayed then
-      Flags := Flags Or BS_AUTO3STATE
+      Flags := Flags or BS_AUTO3STATE
     else
-      Flags := Flags Or BS_AUTOCHECKBOX;
+      Flags := Flags or BS_AUTOCHECKBOX;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1572,7 +1574,7 @@ begin
     WindowTitle := StrCaption;
     // BS_AUTORADIOBUTTON may hang the application,
     // if the radiobuttons are not consecutive controls.
-    Flags := Flags Or BS_RADIOBUTTON;
+    Flags := Flags or BS_RADIOBUTTON;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
