@@ -66,6 +66,7 @@ Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
 Joerg Braun - german translation
+Johannes Muller
 Jonas Maebe
 Joost van der Sluis
 Jose Alonso Cardenas M.
