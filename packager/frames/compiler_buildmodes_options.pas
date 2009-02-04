@@ -30,6 +30,13 @@ uses
   Compiler_Conditionals_Options, LazarusIDEStrConsts, CompOptsModes;
 
 type
+  TCBMNodeType = (
+    cbmntNone,
+    cbmntBuildMode,
+    cbmntValues,
+    cbmntValue,
+    cbmntDefaultValue
+    );
 
   { TCompOptBuildModesFrame }
 
@@ -48,6 +55,8 @@ type
     fDefValueImgID: LongInt;
     procedure SetBuildModes(const AValue: TIDEBuildModes);
     procedure RebuildTreeView;
+    function GetSelectedNode(out BuildMode: TLazBuildMode;
+                             out NodeType: TCBMNodeType): TTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -89,16 +98,36 @@ end;
 
 procedure TCompOptBuildModesFrame.BuildModeTVPopupMenuPopup(Sender: TObject);
 var
-  SelTVNode: TTreeNode;
-begin
-  SelTVNode:=BuildModesTreeView.Selected;
+  BuildMode: TLazBuildMode;
+  NodeType: TCBMNodeType;
 
-  if SelTVNode=nil then begin
-    // no node selected
-
-  end else begin
-
+  function Add(const aCaption: string; const OnClickEvent: TNotifyEvent): TMenuItem;
+  begin
+    Result:=TMenuItem.Create(Self);
+    Result.Caption:=aCaption;
+    Result.OnClick:=OnClickEvent;
+    BuildModeTVPopupMenu.Items.Add(Result);
   end;
+
+  function AddSeparator: TMenuItem;
+  begin
+    Result:=TMenuItem.Create(Self);
+    Result.Caption:='-';
+    BuildModeTVPopupMenu.Items.Add(Result);
+  end;
+
+begin
+  BuildModeTVPopupMenu.Items.Clear;
+  GetSelectedNode(BuildMode,NodeType);
+
+  if NodeType in [cbmntBuildMode,cbmntValues,cbmntValue] then
+    Add('New value',nil);
+  if NodeType in [cbmntValue] then
+    Add('Delete value ...',nil);
+  AddSeparator;
+  Add('New build mode',nil);
+  if NodeType in [cbmntBuildMode] then
+    Add('Delete build mode ...',nil);
 end;
 
 procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
@@ -133,7 +162,7 @@ begin
       // second level
       begin
         // parent node for values
-        ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Values');
+        ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode, lisValues);
         ValuesTVNode.ImageIndex:=fValuesImgID;
         ValuesTVNode.StateIndex:=ValuesTVNode.ImageIndex;
         ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
@@ -146,7 +175,8 @@ begin
           ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
         end;
         // a node for the default value
-        DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,'Default value');
+        DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,
+          lisDefaultValue);
         DefValueTVNode.ImageIndex:=fDefValueImgID;
         DefValueTVNode.StateIndex:=DefValueTVNode.ImageIndex;
         DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
@@ -156,6 +186,41 @@ begin
     end;
   end;
   BuildModesTreeView.EndUpdate;
+end;
+
+function TCompOptBuildModesFrame.GetSelectedNode(out
+  BuildMode: TLazBuildMode; out NodeType: TCBMNodeType): TTreeNode;
+
+  function GetNodeType(Node: TTreeNode): TCBMNodeType;
+  var
+    ParentType: TCBMNodeType;
+  begin
+    if Node=nil then
+      Result:=cbmntNone
+    else if TObject(Node.Data) is TLazBuildMode then begin
+      BuildMode:=TLazBuildMode(Node.Data);
+      Result:=cbmntBuildMode;
+    end else begin
+      ParentType:=GetNodeType(Node.Parent);
+      case ParentType of
+      cbmntBuildMode:
+        if Node.Text=lisValues then
+          Result:=cbmntValues
+        else if Node.Text=lisDefaultValue then
+          Result:=cbmntDefaultValue;
+      cbmntValues:
+        Result:=cbmntValue;
+      cbmntDefaultValue:
+        // ToDo
+        ;
+      end;
+    end;
+  end;
+
+begin
+  BuildMode:=nil;
+  Result:=BuildModesTreeView.Selected;
+  NodeType:=GetNodeType(Result);
 end;
 
 constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);

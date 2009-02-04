@@ -5,11 +5,10 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   Width = 492
   ClientHeight = 229
   ClientWidth = 488
-  Ctl3D = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 339
-  DesignTop = 472
+  DesignLeft = 344
+  DesignTop = 496
   object BuildModesGroupBox: TGroupBox
     Left = 0
     Height = 229
@@ -19,7 +18,6 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
     Caption = 'BuildModesGroupBox'
     ClientHeight = 210
     ClientWidth = 484
-    Ctl3D = False
     TabOrder = 0
     object BuildModesTreeView: TTreeView
       Left = 0
@@ -27,10 +25,11 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       Top = 0
       Width = 484
       Align = alClient
-      Ctl3D = False
       DefaultItemHeight = 19
       PopupMenu = BuildModeTVPopupMenu
+      RightClickSelect = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
   end
   object BuildModeTVPopupMenu: TPopupMenu

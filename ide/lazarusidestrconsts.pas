@@ -4032,6 +4032,8 @@ resourcestring
     +'compiler option';
   lisAction = 'Action:';
   lisValue = 'Value:';
+  lisValues = 'Values';
+  lisDefaultValue = 'Default value';
 
 implementation
 
