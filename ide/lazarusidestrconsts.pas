@@ -4036,6 +4036,8 @@ resourcestring
   lisDefaultValue = 'Default value';
   lisConfirmDelete = 'Confirm delete';
   lisDeleteBuildMode = 'Delete build mode %s%s%s?';
+  lisValue2 = 'Value%s';
+  lisDeleteValue = 'Delete value %s%s%s';
 
 implementation
 

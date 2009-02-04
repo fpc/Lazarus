@@ -48,6 +48,7 @@ type
     procedure DeleteBuildModeClick(Sender: TObject);
     procedure NewBuildModeClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
+    procedure DeleteValueClick(Sender: TObject);
   private
     FBuildModes: TIDEBuildModes;
     fModeImgID: LongInt;
@@ -96,7 +97,7 @@ begin
   if BuildMode=nil then exit;
   i:=1;
   repeat
-    NewValueStr:='Value'+IntToStr(i);
+    NewValueStr:=Format(lisValue2, [IntToStr(i)]);
     if BuildMode.Values.IndexOf(NewValueStr)<0 then break;
     inc(i);
   until false;
@@ -105,6 +106,28 @@ begin
   ValuesTVNode:=GetValuesTVNode(BuildMode);
   TreeViewAddValue(ValuesTVNode,NewValueStr);
   ValuesTVNode.Expand(true);
+  BuildModesTreeView.EndUpdate;
+end;
+
+procedure TCompOptBuildModesFrame.DeleteValueClick(Sender: TObject);
+var
+  BuildMode: TLazBuildMode;
+  NodeType: TCBMNodeType;
+  SelTVNode: TTreeNode;
+  aValue: String;
+  i: LongInt;
+begin
+  SelTVNode:=GetSelectedNode(BuildMode,NodeType);
+  if NodeType<>cbmntValue then exit;
+  aValue:=SelTVNode.Text;
+  if MessageDlg(lisConfirmDelete,
+    Format(lisDeleteValue, ['"', aValue, '"']),
+    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+  then exit;
+  i:=BuildMode.Values.IndexOf(aValue);
+  if i>=0 then BuildMode.Values.Delete(i);
+  BuildModesTreeView.BeginUpdate;
+  SelTVNode.Delete;
   BuildModesTreeView.EndUpdate;
 end;
 
@@ -157,7 +180,7 @@ begin
   if NodeType in [cbmntBuildMode,cbmntValues,cbmntValue] then
     Add('New value',@NewValueClick);
   if NodeType in [cbmntValue] then
-    Add('Delete value ...',nil);
+    Add('Delete value ...',@DeleteValueClick);
   AddSeparator;
   Add('New build mode',@NewBuildModeClick);
   if NodeType in [cbmntBuildMode] then
