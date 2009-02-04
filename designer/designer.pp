@@ -549,12 +549,27 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
-  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
-
-  if ControlSelection.LookupRootSelected then begin
-    SelectOnlyThisComponent(FLookupRoot);
-    exit;
+  if ControlSelection.ActiveGrabber <> nil then
+  begin
+    ControlSelection.ActiveGrabber := nil;
+    if ControlSelection.RubberbandActive then
+      ControlSelection.RubberbandActive := False;
+    LastMouseMovePos.X:=-1;
+    Exclude(FFlags, dfHasSized);
+    MouseDownComponent := nil;
+    MouseDownSender := nil;
+    Exit;
   end;
+
+  if ControlSelection.OnlyInvisiblePersistentsSelected then
+    Exit;
+
+  if ControlSelection.LookupRootSelected then
+  begin
+    SelectOnlyThisComponent(FLookupRoot);
+    Exit;
+  end;
+
   i:=ControlSelection.Count-1;
   while (i>=0)
   and (   (ControlSelection[i].ParentInSelection)
