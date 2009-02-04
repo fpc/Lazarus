@@ -1004,6 +1004,7 @@ begin
   // many algorithms uses the last sibling, so we check that first for speed
   if (Parent<>nil) and (Parent[Parent.Count-1]=Self) then begin
     Result:=Parent.Count-1;
+    FIndex:=Result;
     exit;
   end;
   // count previous siblings
@@ -1011,8 +1012,13 @@ begin
   ANode := Self;
   while ANode <> nil do begin
     Inc(Result);
+    if ANode.FIndex>=0 then begin
+      inc(Result,ANode.FIndex);
+      break;
+    end;
     ANode := ANode.GetPrevSibling;
   end;
+  FIndex:=Result;
 end;
 
 function TTreeNode.GetItems(AnIndex: Integer): TTreeNode;
