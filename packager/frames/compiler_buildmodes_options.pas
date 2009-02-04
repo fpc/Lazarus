@@ -45,7 +45,7 @@ type
     BuildModesTreeView: TTreeView;
     BuildModeTVPopupMenu: TPopupMenu;
     procedure BuildModeTVPopupMenuPopup(Sender: TObject);
-    procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure DeleteBuildModeClick(Sender: TObject);
     procedure NewBuildModeClick(Sender: TObject);
   private
     FBuildModes: TIDEBuildModes;
@@ -80,22 +80,24 @@ begin
   BuildModesTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.DeleteSpeedButtonClick(Sender: TObject);
-{var
+procedure TCompOptBuildModesFrame.DeleteBuildModeClick(Sender: TObject);
+var
   BuildMode: TIDEBuildMode;
-  i: LongInt;}
+  SelTVNode: TTreeNode;
+  NodeType: TCBMNodeType;
+  i: LongInt; 
 begin
-{  if not GetSelectedBuildMode(BuildMode) then exit;
-  i:=ModesGrid.Row;
-  if MessageDlg('Confirm delete',
-    'Delete build mode "'+BuildMode.Identifier+'"?',
+  SelTVNode:=GetSelectedNode(BuildMode,NodeType);
+  if BuildMode=nil then exit;
+  if MessageDlg(lisConfirmDelete,
+    Format(lisDeleteBuildMode, ['"', BuildMode.Identifier, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
+  i:=BuildModes.IndexOfIdentifier(BuildMode.Identifier);
   BuildModes.Delete(i);
-  ModesGrid.DeleteColRow(false,i);
-  if i=ModesGrid.RowCount then
-    dec(i);
-  ModesGrid.Row:=i;}
+  BuildModesTreeView.BeginUpdate;
+  SelTVNode.Delete;
+  BuildModesTreeView.EndUpdate;
 end;
 
 procedure TCompOptBuildModesFrame.BuildModeTVPopupMenuPopup(Sender: TObject);
@@ -131,7 +133,7 @@ begin
   AddSeparator;
   Add('New build mode',@NewBuildModeClick);
   if NodeType in [cbmntBuildMode] then
-    Add('Delete build mode ...',nil);
+    Add('Delete build mode ...',@DeleteBuildModeClick);
 end;
 
 procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
@@ -163,7 +165,7 @@ var
   Values: TStrings;
   i: Integer;
   DefValueTVNode: TTreeNode;
-  ValueTVNode: TTreeNode; 
+  ValueTVNode: TTreeNode;
 begin
   // create node for the build mode
   TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildMode.Identifier,BuildMode);
