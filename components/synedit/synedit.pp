@@ -6426,9 +6426,9 @@ begin
   {$ENDIF}
   // first the program event handler gets a chance to process the command
   DoOnProcessCommand(Command, AChar, Data);
-  try
-    BeginUndoBlock;
-    if Command <> ecNone then begin
+  if Command <> ecNone then begin
+    try
+      BeginUndoBlock;
       // notify hooked command handlers before the command is executed inside of
       // the class
       NotifyHookedCommandHandlers(FALSE, Command, AChar, Data);
@@ -6437,17 +6437,13 @@ begin
         ExecuteCommand(Command, AChar, Data);
       // notify hooked command handlers after the command was executed inside of
       // the class
-      {$IFDEF SYN_LAZARUS}
       if Command <> ecNone then
-      {$ENDIF}
         NotifyHookedCommandHandlers(TRUE, Command, AChar, Data);
+      if Command <> ecNone then
+        DoOnCommandProcessed(Command, AChar, Data);
+    finally
+      EndUndoBlock;
     end;
-    {$IFDEF SYN_LAZARUS}
-    if Command <> ecNone then
-    {$ENDIF}
-    DoOnCommandProcessed(Command, AChar, Data);
-  finally
-    EndUndoBlock;
   end;
 end;
 
