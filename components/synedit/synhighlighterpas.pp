@@ -799,7 +799,7 @@ begin
       end
       else if TopPascalCodeFoldBlockType = cfbtUnitSection then begin
         EndCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType = cfbtBeginEnd then // "Unit".."end."
+        if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
           EndCodeFoldBlock;
       end else begin
         if TopPascalCodeFoldBlockType = cfbtClassSection then
