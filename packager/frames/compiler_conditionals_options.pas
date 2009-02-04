@@ -46,6 +46,8 @@ type
     MoveDownMenuItem: TMenuItem;
     MoveUpMenuItem: TMenuItem;
     procedure COCPopupMenuPopup(Sender: TObject);
+    procedure COCTreeViewEditing(Sender: TObject; Node: TTreeNode; 
+      var AllowEdit: Boolean);
     procedure DeleteMenuItemClick(Sender: TObject);
     procedure InsertAboveMenuItemClick(Sender: TObject);
     procedure InsertBelowMenuItemClick(Sender: TObject);
@@ -96,6 +98,12 @@ begin
   MoveLvlUpMenuItem.Enabled:=NormalNodeIsSelectd and (COCNode.Parent.Parent<>nil);
   MoveDownMenuItem.Enabled:=NormalNodeIsSelectd and (TVNode.GetNextSibling<>nil);
   MoveUpMenuItem.Enabled:=NormalNodeIsSelectd and (TVNode.GetPrevSibling<>nil);
+end;
+
+procedure TCompOptsConditionalsFrame.COCTreeViewEditing(Sender: TObject; 
+  Node: TTreeNode; var AllowEdit: Boolean);
+begin
+
 end;
 
 procedure TCompOptsConditionalsFrame.DeleteMenuItemClick(Sender: TObject);

@@ -5,7 +5,6 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
   Width = 385
   ClientHeight = 166
   ClientWidth = 381
-  Ctl3D = False
   TabOrder = 0
   Visible = False
   DesignLeft = 439
@@ -17,12 +16,12 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     Width = 381
     Align = alClient
     AutoExpand = True
-    Ctl3D = False
     DefaultItemHeight = 19
     PopupMenu = COCPopupMenu
     ReadOnly = True
     RowSelect = True
     TabOrder = 0
+    OnEditing = COCTreeViewEditing
     Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
   end
   object COCPopupMenu: TPopupMenu
@@ -31,56 +30,38 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     top = 48
     object InsertAboveMenuItem: TMenuItem
       Caption = 'InsertAboveMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = InsertAboveMenuItemClick
     end
     object InsertBelowMenuItem: TMenuItem
       Caption = 'InsertBelowMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = InsertBelowMenuItemClick
     end
     object InsertChildMenuItem: TMenuItem
       Caption = 'InsertChildMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = InsertChildMenuItemClick
     end
     object DeleteMenuItem: TMenuItem
       Caption = 'DeleteMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = DeleteMenuItemClick
     end
     object MoveUpMenuItem: TMenuItem
       Caption = 'MoveUpMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = MoveUpMenuItemClick
     end
     object MoveDownMenuItem: TMenuItem
       Caption = 'MoveDownMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = MoveDownMenuItemClick
     end
     object MoveLvlUpMenuItem: TMenuItem
       Caption = 'MoveLvlUpMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = MoveLvlUpMenuItemClick
     end
     object MoveLvlDownMenuItem: TMenuItem
       Caption = 'MoveLvlDownMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = MoveLvlDownMenuItemClick
     end
     object PropertiesMenuItem: TMenuItem
       Caption = 'PropertiesMenuItem'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = PropertiesMenuItemClick
     end
   end

@@ -29,6 +29,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       PopupMenu = BuildModeTVPopupMenu
       RightClickSelect = True
       TabOrder = 0
+      OnEdited = BuildModesTreeViewEdited
+      OnEditing = BuildModesTreeViewEditing
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
   end

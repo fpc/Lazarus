@@ -44,6 +44,10 @@ type
     BuildModesGroupBox: TGroupBox;
     BuildModesTreeView: TTreeView;
     BuildModeTVPopupMenu: TPopupMenu;
+    procedure BuildModesTreeViewEdited(Sender: TObject; Node: TTreeNode;
+      var S: string);
+    procedure BuildModesTreeViewEditing(Sender: TObject; Node: TTreeNode;
+      var AllowEdit: Boolean);
     procedure BuildModeTVPopupMenuPopup(Sender: TObject);
     procedure DeleteBuildModeClick(Sender: TObject);
     procedure NewBuildModeClick(Sender: TObject);
@@ -59,6 +63,7 @@ type
     procedure RebuildTreeView;
     procedure TreeViewAddBuildMode(BuildMode: TLazBuildMode);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
+    function GetNodeInfo(Node: TTreeNode; out BuildMode: TLazBuildMode): TCBMNodeType;
     function GetSelectedNode(out BuildMode: TLazBuildMode;
                              out NodeType: TCBMNodeType): TTreeNode;
     function GetBuildModeTVNode(BuildMode: TLazBuildMode): TTreeNode;
@@ -187,6 +192,65 @@ begin
     Add('Delete build mode ...',@DeleteBuildModeClick);
 end;
 
+procedure TCompOptBuildModesFrame.BuildModesTreeViewEditing(Sender: TObject;
+  Node: TTreeNode; var AllowEdit: Boolean);
+var
+  BuildMode: TLazBuildMode;
+  NodeType: TCBMNodeType;
+begin
+  NodeType:=GetNodeInfo(Node,BuildMode);
+  AllowEdit:=NodeType in [cbmntBuildMode,cbmntValue];
+end;
+
+procedure TCompOptBuildModesFrame.BuildModesTreeViewEdited(Sender: TObject;
+  Node: TTreeNode; var S: string);
+var
+  BuildMode: TLazBuildMode;
+  NodeType: TCBMNodeType;
+  ConflictBuildMode: TIDEBuildMode;
+  Index: LongInt;
+begin
+  NodeType:=GetNodeInfo(Node,BuildMode);
+  case NodeType of
+
+  cbmntBuildMode:
+    if S<>BuildMode.Identifier then begin
+      // rename build mode
+      if (S='') or (not IsValidIdent(S)) then begin
+        MessageDlg('Error',
+          'Invalid build mode "'+S+'". The build mode must be a pascal identifier.',
+          mtError,[mbCancel],0);
+        S:=BuildMode.Identifier;
+        exit;
+      end;
+      ConflictBuildMode:=BuildModes.ModeWithIdentifier(S);
+      if (ConflictBuildMode<>nil) and (ConflictBuildMode<>BuildMode) then
+      begin
+        MessageDlg('Error',
+          'There is already a build mode with the name "'+S+'".',
+          mtError,[mbCancel],0);
+        S:=BuildMode.Identifier;
+        exit;
+      end;
+      BuildMode.Identifier:=S;
+    end;
+
+  cbmntValue:
+    begin
+      Index:=Node.Index;
+      Index:=BuildMode.Values.IndexOf(S);
+      if (Index>=0) and (Index<>Node.Index) then begin
+        MessageDlg('Error',
+          'Duplicate found of value "'+S+'".',
+          mtError,[mbCancel],0);
+        S:=BuildMode.Values[Node.Index];
+        exit;
+      end;
+      BuildMode.Values[Node.Index]:=S;
+    end;
+  end;
+end;
+
 procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
 begin
   if FBuildModes=AValue then exit;
@@ -255,25 +319,25 @@ begin
   ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 
-function TCompOptBuildModesFrame.GetSelectedNode(out
-  BuildMode: TLazBuildMode; out NodeType: TCBMNodeType): TTreeNode;
+function TCompOptBuildModesFrame.GetNodeInfo(Node: TTreeNode; out
+  BuildMode: TLazBuildMode): TCBMNodeType;
 
-  function GetNodeType(Node: TTreeNode): TCBMNodeType;
+  function GetNodeType(CurNode: TTreeNode): TCBMNodeType;
   var
     ParentType: TCBMNodeType;
   begin
-    if Node=nil then
+    if CurNode=nil then
       Result:=cbmntNone
-    else if TObject(Node.Data) is TLazBuildMode then begin
-      BuildMode:=TLazBuildMode(Node.Data);
+    else if TObject(CurNode.Data) is TLazBuildMode then begin
+      BuildMode:=TLazBuildMode(CurNode.Data);
       Result:=cbmntBuildMode;
     end else begin
-      ParentType:=GetNodeType(Node.Parent);
+      ParentType:=GetNodeType(CurNode.Parent);
       case ParentType of
       cbmntBuildMode:
-        if Node.Text=lisValues then
+        if CurNode.Text=lisValues then
           Result:=cbmntValues
-        else if Node.Text=lisDefaultValue then
+        else if CurNode.Text=lisDefaultValue then
           Result:=cbmntDefaultValue;
       cbmntValues:
         Result:=cbmntValue;
@@ -286,8 +350,14 @@ function TCompOptBuildModesFrame.GetSelectedNode(out
 
 begin
   BuildMode:=nil;
+  Result:=GetNodeType(Node);
+end;
+
+function TCompOptBuildModesFrame.GetSelectedNode(out
+  BuildMode: TLazBuildMode; out NodeType: TCBMNodeType): TTreeNode;
+begin
   Result:=BuildModesTreeView.Selected;
-  NodeType:=GetNodeType(Result);
+  NodeType:=GetNodeInfo(Result,BuildMode);
 end;
 
 function TCompOptBuildModesFrame.GetBuildModeTVNode(BuildMode: TLazBuildMode

@@ -10,9 +10,10 @@ LazarusResources.Add('TCompOptBuildModesFrame','FORMDATA',[
   +'er'#2#0#0#9'TTreeView'#18'BuildModesTreeView'#4'Left'#2#0#6'Height'#3#210#0
   +#3'Top'#2#0#5'Width'#3#228#1#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2
   +#19#9'PopupMenu'#7#20'BuildModeTVPopupMenu'#16'RightClickSelect'#9#8'TabOrde'
-  +'r'#2#0#7'Options'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepC'
-  +'ollapsedNodes'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLines'
-  +#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#0#10'TPopupMenu'#20'BuildModeTVPopupM'
-  +'enu'#7'OnPopup'#7#25'BuildModeTVPopupMenuPopup'#4'left'#2'c'#3'top'#2'M'#0#0
-  +#0
+  +'r'#2#0#8'OnEdited'#7#24'BuildModesTreeViewEdited'#9'OnEditing'#7#25'BuildMo'
+  +'desTreeViewEditing'#7'Options'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'
+  +#21'tvoKeepCollapsedNodes'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvo'
+  +'ShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#0#10'TPopupMenu'#20'BuildM'
+  +'odeTVPopupMenu'#7'OnPopup'#7#25'BuildModeTVPopupMenuPopup'#4'left'#2'c'#3't'
+  +'op'#2'M'#0#0#0
 ]);
