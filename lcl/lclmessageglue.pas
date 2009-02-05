@@ -31,7 +31,7 @@ unit LCLMessageGlue;
 
 interface
 
-uses Classes, Forms, LCLProc, Controls, LMessages, LCLType;
+uses Classes, Forms, LCLClasses, LCLProc, Controls, LMessages, LCLType;
 
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
 function SendSimpleMessage(const Target: TControl; Msg: Cardinal): PtrInt;
@@ -86,6 +86,8 @@ function LCLSendCloseUpMsg(const Target: TControl): PtrInt;
 implementation
 
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
+var
+  RefCounted: Boolean;
 begin
   if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
@@ -93,17 +95,27 @@ begin
     and (TLMessage(AMessage).Msg <>LM_PAINT)
     and (TLMessage(AMessage).Msg <>LM_KEYDOWN)
     and (TLMessage(AMessage).Msg <>LM_KEYUP)
-    and (TLMessage(AMessage).Msg <  CN_KEYDOWN ) then
+    and (TLMessage(AMessage).Msg < CN_KEYDOWN ) then
     DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
+  RefCounted:=false;
   try
-    if Target is TControl
-    then TControl(Target).WindowProc(TLMessage(AMessage))
-    else Target.Dispatch(TLMessage(AMessage));
-  except
-    Application.HandleException(nil);
+    if Target is TLCLComponent then begin
+      TLCLComponent(Target).IncLCLRefCount;
+      RefCounted:=true;
+    end;
+    try
+      if Target is TControl
+      then TControl(Target).WindowProc(TLMessage(AMessage))
+      else Target.Dispatch(TLMessage(AMessage));
+    except
+      Application.HandleException(nil);
+    end;
+  finally
+    if RefCounted then
+      TLCLComponent(Target).DecLCLRefCount;
   end;
   Result := TLMessage(AMessage).Result;
 end;

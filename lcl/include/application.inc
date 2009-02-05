@@ -317,6 +317,7 @@ procedure TApplication.Idle(Wait: boolean);
 var
   Done: Boolean;
 begin
+  ReleaseComponents;
   ProcessAsyncCallQueue;
   UpdateMouseHint(GetControlAtMouse);
 
@@ -1937,16 +1938,51 @@ begin
 end;
 
 procedure TApplication.FreeComponent(Data: PtrInt);
-var
-  OldComponents: TAvgLvlTree;
 begin
-  //DebugLn(['TApplication.FreeComponent ',DbgSName(TComponent(Data))]);
-  TComponent(Data).Free;
+  if Data<>0 then
+    DebugLn(['HINT: TApplication.FreeComponent Data<>0 ignored']);
+  ReleaseComponents;
+end;
+
+procedure TApplication.ReleaseComponents;
+var
+  List: TFPList;
+  Node: TAvgLvlTreeNode;
+  Component: TComponent;
+  i: Integer;
+begin
   if FComponentsToRelease<>nil then begin
-    OldComponents:=FComponentsToRelease;
-    FComponentsToRelease:=nil;
-    OldComponents.FreeAndClear;
-    OldComponents.Free;
+    // free components
+    // Notes:
+    //   - check TLCLComponent.LCLRefCount=0
+    //   - during freeing new components can be added to the FComponentsToRelease
+    List:=nil;
+    try
+      // collect all components that can be freed
+      Node:=FComponentsToRelease.FindLowest;
+      while Node<>nil do begin
+        Component:=TComponent(Node.Data);
+        if (not (Component is TLCLComponent))
+        or (TLCLComponent(Component).LCLRefCount=0) then begin
+          if List=nil then
+            List:=TFPList.Create;
+          List.Add(Component);
+        end;
+        Node:=FComponentsToRelease.FindSuccessor(Node);
+      end;
+      // free components
+      if List<>nil then
+        for i:=0 to List.Count-1 do begin
+          Component:=TComponent(List[i]);
+          FComponentsToRelease.Remove(Component);
+          //DebugLn(['TApplication.ReleaseComponents ',DbgSName(Component)]);
+          Component.Free;
+        end;
+    finally
+      List.Free;
+    end;
+    if FComponentsToRelease.Count=0 then
+      FreeAndNil(FComponentsToRelease);
   end;
 end;
 

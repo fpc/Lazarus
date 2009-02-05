@@ -1071,6 +1071,7 @@ type
     procedure MenuPopupHandler(Sender: TObject);
     procedure ProcessAsyncCallQueue;
     procedure FreeComponent(Data: PtrInt);
+    procedure ReleaseComponents;
     procedure DoBeforeFinalization;
     function GetParams(Index: Integer): string; override;
   public

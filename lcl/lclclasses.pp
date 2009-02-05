@@ -38,6 +38,7 @@ type
   TLCLComponent = class(TComponent)
   private
     FWidgetSetClass: TWSLCLComponentClass;
+    FLCLRefCount: integer;
   protected
   public
     constructor Create(TheOwner: TComponent); override;
@@ -45,6 +46,9 @@ type
     procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
+    procedure IncLCLRefCount;
+    procedure DecLCLRefCount;
+    property LCLRefCount: integer read FLCLRefCount;
     property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
   end;
   
@@ -89,6 +93,8 @@ end;
 
 destructor TLCLComponent.Destroy;
 begin
+  if FLCLRefCount>0 then
+    DebugLn(['WARNING: TLCLComponent.Destroy with LCLRefCount>0. Hint: Maybe the component is processing an event?']);
   {$IFDEF DebugLCLComponents}
   //DebugLn('TLCLComponent.Destroy ',DbgSName(Self));
   DebugLCLComponents.MarkDestroyed(Self);
@@ -117,6 +123,16 @@ end;
 
 procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);
 begin
+end;
+
+procedure TLCLComponent.IncLCLRefCount;
+begin
+  inc(FLCLRefCount);
+end;
+
+procedure TLCLComponent.DecLCLRefCount;
+begin
+  dec(FLCLRefCount);
 end;
 
 { TLCLReferenceComponent }
