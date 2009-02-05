@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Controls, LResources, Forms, StdCtrls, Grids,
-  Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
+  Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
   IDEImagesIntf, ProjectIntf, CompilerOptions,
   Compiler_Conditionals_Options, LazarusIDEStrConsts, CompOptsModes;
 
@@ -61,6 +61,7 @@ type
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
+    FEditors: TFPList;
     procedure SetBuildModes(const AValue: TIDEBuildModes);
     procedure RebuildTreeView;
     procedure TreeViewAddBuildMode(BuildMode: TLazBuildMode);
@@ -70,6 +71,8 @@ type
                              out NodeType: TCBMNodeType): TTreeNode;
     function GetBuildModeTVNode(BuildMode: TLazBuildMode): TTreeNode;
     function GetValuesTVNode(BuildMode: TLazBuildMode): TTreeNode;
+    procedure FreeEditors;
+    function GetEditor(BuildMode: TLazBuildMode): TCompOptsExprEditor;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -385,10 +388,32 @@ begin
     Result:=nil;
 end;
 
+procedure TCompOptBuildModesFrame.FreeEditors;
+var
+  i: Integer;
+begin
+  for i:=0 to FEditors.Count-1 do
+    TObject(FEditors[i]).Free;
+  FEditors.Clear;
+end;
+
+function TCompOptBuildModesFrame.GetEditor(BuildMode: TLazBuildMode
+  ): TCompOptsExprEditor;
+var
+  i: Integer;
+begin
+  for i:=0 to FEditors.Count-1 do begin
+    Result:=TCompOptsExprEditor(FEditors[i]);
+    if Result.Conditionals=BuildMode.DefaultValue then exit;
+  end;
+  Result:=nil;
+end;
+
 constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  FEditors:=TFPList.Create;
   BuildModesTreeView.Images := IDEImages.Images_24;
   fModeImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
@@ -399,7 +424,8 @@ end;
 
 destructor TCompOptBuildModesFrame.Destroy;
 begin
-
+  FreeEditors;
+  FreeAndNil(FEditors);
   inherited Destroy;
 end;
 
