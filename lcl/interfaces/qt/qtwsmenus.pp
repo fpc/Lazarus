@@ -221,7 +221,10 @@ begin
 
   Widget := TQtWidget(AMenuItem.Handle);
   if Widget is TQtMenu then
+  begin
+    TQtMenu(Widget).setSeparator(ACaption = cLineCaption);
     TQtMenu(Widget).setText(GetUtf8String(ACaption));
+  end;
 end;
 
 {------------------------------------------------------------------------------
