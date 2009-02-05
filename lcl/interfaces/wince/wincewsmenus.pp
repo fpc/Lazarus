@@ -121,6 +121,12 @@ type
 const
   SPI_GETPLATFORMTYPE = 257;//roozbeh : should be moved to windows unit
 
+  EnabledToStateFlag: array[Boolean] of DWord =
+  (
+    MF_GRAYED,
+    MF_ENABLED
+  );
+
 function WStrCmp( W1, W2: PWideChar ): Integer;
 var
   counter: Integer;
@@ -413,13 +419,15 @@ var
   wCaption: WideString;
 begin
   wCaption := UTF8Decode(ACaption);
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   with MenuInfo do
   begin
     cbsize := menuiteminfosize;
-    if ACaption <> '-' then
+    fMask := MIIM_TYPE or MIIM_STATE;
+    if ACaption <> cLineCaption then
     begin
       fType := MFT_STRING;
-      fMask := MIIM_TYPE;
+      fState := EnabledToStateFlag[AMenuItem.Enabled];
       {$ifdef win32}
       dwTypeData:=PChar(PWideChar(wCaption));
       {$else}
@@ -428,7 +436,10 @@ begin
       cch := Length(aCaption);
     end
     else
+    begin
       fType := MFT_SEPARATOR;
+      fState := MFS_DISABLED;
+   end;
   end;
   if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
@@ -469,11 +480,7 @@ begin
     end;
   end;
 
-  fState := MF_STRING or MF_BYPOSITION;
-  if AMenuItem.Enabled then
-    fState := fState or MF_ENABLED
-  else
-    fstate := fState or MF_GRAYED;
+  fState := MF_STRING or MF_BYPOSITION or EnabledToStateFlag[AMenuItem.Enabled];
   if AMenuItem.Checked then
     fState := fState or MF_CHECKED;
 
@@ -548,11 +555,7 @@ class function TWinCEWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enab
 var
   EnableFlag: Integer;
 begin
-  if Enabled then
-    EnableFlag := MF_ENABLED
-  else
-    EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  EnableFlag := MF_BYCOMMAND or EnabledToStateFlag[Enabled];
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;

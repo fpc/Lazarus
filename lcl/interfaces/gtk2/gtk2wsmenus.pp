@@ -173,7 +173,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   // create the menuitem widget (normal, check or radio)
-  if AMenuItem.Caption='-' then // create separator
+  if AMenuItem.Caption = cLineCaption then // create separator
     Widget := gtk_menu_item_new
   else
   if AMenuItem.RadioItem and not AMenuItem.HasIcon then
@@ -208,7 +208,7 @@ begin
 
   // set attributes (enabled and rightjustify)
   gtk_widget_set_sensitive(Widget,
-                           AMenuItem.Enabled and (AMenuItem.Caption<>'-'));
+                           AMenuItem.Enabled and (AMenuItem.Caption <> cLineCaption));
   if AMenuItem.RightJustify then
     gtk_menu_item_right_justify(PGtkMenuItem(Widget));
 
@@ -328,7 +328,7 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
   gtk_widget_set_sensitive(PGtkWidget(AMenuItem.Handle),
-                           Enabled and (AMenuItem.Caption<>'-'));
+                           Enabled and (AMenuItem.Caption <> cLineCaption));
   Result := True;
 end;
 

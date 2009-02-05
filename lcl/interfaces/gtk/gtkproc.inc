@@ -6104,7 +6104,8 @@ begin
   HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
   if HBoxWidget=nil then begin
     // create inner widgets
-    if LCLMenuItem.Caption='-' then begin
+    if LCLMenuItem.Caption = cLineCaption then 
+    begin
       // a separator is an empty gtkmenuitem
       exit;
     end;
@@ -6117,7 +6118,8 @@ begin
     gtk_widget_show(HBoxWidget);
   end else begin
     // there are already inner widgets
-    if LCLMenuItem.Caption='-' then begin
+    if LCLMenuItem.Caption = cLineCaption then 
+    begin
       // a separator is an empty gtkmenuitem -> delete the inner widgets
       DestroyWidget(HBoxWidget);
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
