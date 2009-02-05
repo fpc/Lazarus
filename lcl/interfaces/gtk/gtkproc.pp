@@ -427,7 +427,8 @@ procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
 function KeyEventWasHandledByLCL(Event: PGdkEventKey;
                                  BeforeEvent: boolean): boolean;
 function HandleGTKKeyUpDown(AWidget: PGtkWidget; AEvent: PGdkEventKey;
-  AData: gPointer; ABeforeEvent, AHandleDown: Boolean) : GBoolean;
+  AData: gPointer; ABeforeEvent, AHandleDown: Boolean; const AEventName: PGChar
+  ) : GBoolean;
 
 // ----
 

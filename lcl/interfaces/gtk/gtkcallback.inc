@@ -746,22 +746,22 @@ end;
 
 function GTKKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer) : GBoolean; cdecl;
 begin
-  Result := HandleGtkKeyUpDown(Widget,Event,Data,true, True);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,true,True,'key-press-event');
 end;
 
 function GTKKeyPressAfter(Widget: PGtkWidget; Event: pgdkeventkey; Data: gPointer): GBoolean; cdecl;
 begin
-  Result := HandleGtkKeyUpDown(Widget,Event,Data,false, True);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,false,True,'key-press-event');
 end;
 
 function GTKKeyRelease(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer) : GBoolean; cdecl;
 begin
-  Result := HandleGtkKeyUpDown(Widget,Event,Data,true, False);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,true,False,'key-release-event');
 end;
 
 function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey; Data: gPointer): GBoolean; cdecl;
 begin
-  Result := HandleGtkKeyUpDown(Widget,Event,Data,false, False);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,false,False,'key-release-event');
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;

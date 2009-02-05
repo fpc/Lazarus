@@ -65,28 +65,28 @@ function GTK2KeyDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
   //debugln('GTK2KeyDown ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, True);
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, True, 'key-press-event');
 end;
 
 function GTK2KeyDownAfter(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
   //debugln('GTK2KeyDownAfter ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, True);
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, True, 'key-press-event');
 end;
 
 function GTK2KeyUp(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
   //debugln('GTK2KeyUp ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, False);
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, False, 'key-release-event');
 end;
 
 function GTK2KeyUpAfter(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
   //debugln('GTK2KeyUpAfter ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, False);
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, False, 'key-release-event');
 end;
 
 function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;

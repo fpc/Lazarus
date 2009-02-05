@@ -1858,7 +1858,9 @@ begin
 end;
 
 function HandleGTKKeyUpDown(AWidget: PGtkWidget; AEvent: PGdkEventKey;
-  AData: gPointer; ABeforeEvent, AHandleDown: Boolean) : GBoolean;
+  AData: gPointer; ABeforeEvent, AHandleDown: Boolean;
+  const AEventName: PGChar) : GBoolean;
+// returns CallBackDefaultReturn if event can continue in gtk's message system
 {off $DEFINE VerboseKeyboard}
 const
   KEYUP_MAP: array[Boolean {syskey}, Boolean {before}] of Cardinal = (
@@ -1898,7 +1900,7 @@ var
   TargetObj: gPointer;
   KeyPressesChar: char;
 
-  procedure StopKeyEvent(const AEventName: PChar);
+  procedure StopKeyEvent;
   begin
     {$IFDEF VerboseKeyboard}
     DebugLn('StopKeyEvent AEventName="',AEventName,'" ABeforeEvent=',dbgs(ABeforeEvent));
@@ -1920,6 +1922,12 @@ var
     ResetDefaultIMContext;
 
     AEvent^.KeyVal := 0;
+  end;
+
+  function DeliverKeyMessage(const Target: Pointer; var AMessage): boolean;
+  begin
+    Result:=DeliverMessage(Target,AMessage)=0;
+    if not Result then StopKeyEvent;
   end;
 
   function CanSendChar: Boolean;
@@ -2081,7 +2089,7 @@ var
           {debugln('KeyActivatedAccelerator call TControl.DialogChar');
           if TControl(AComponent).DialogChar(Msg.CharCode) then begin
             debugln('KeyActivatedAccelerator C handled by LCL');
-            StopKeyEvent('key_press_event');
+            StopKeyEvent;
             Result:=true;
           end;}
         end;
@@ -2116,7 +2124,7 @@ var
 
       // send the (Sys)KeyDown message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetObj, Msg) = 0;
+      DeliverKeyMessage(TargetObj, Msg);
     end;
     {$ENDIF}
   end;
@@ -2261,13 +2269,9 @@ begin
       then begin
         // send the (Sys)KeyDown message directly to the LCL
         NotifyApplicationUserInput(Msg.Msg);
-        Result := DeliverMessage(TargetObj, Msg) = 0;
-      end;
-
-      if Msg.CharCode <> Vkey
-      then begin
-        // key was changed by LCL
-        StopKeyEvent('key_press_event');
+        if DeliverKeyMessage(TargetObj, Msg)
+        and (Msg.CharCode <> Vkey) then
+          StopKeyEvent;
       end;
 
       if (not EventStopped) and aBeforeEvent
@@ -2288,12 +2292,12 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetObj, Msg) = 0;
 
-      if Msg.CharCode <> VKey
+      if DeliverKeyMessage(TargetObj, Msg)
+      and (Msg.CharCode <> VKey)
       then begin
         // key was handled by LCL
-        StopKeyEvent('key_release_event');
+        StopKeyEvent;
       end;
     end;
   end;
@@ -2329,7 +2333,7 @@ begin
           // send the key after navigation keys were handled
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
           if Result or (Character = '')
-          then StopKeyEvent('key_press_event')
+          then StopKeyEvent
           else if (Length(Character) = 1)
           {$IFDEF Gtk1}
           // GTK1 only supports normal ASCII characters (Note: #127 is delete)
@@ -2369,15 +2373,14 @@ begin
         // send the (Sys)Char message directly (not queued) to the LCL
         Msg.Result:=0;
         Msg.CharCode := Ord(KeyPressesChar);
-        Result := DeliverMessage(TargetObj, Msg) = 0;
-
-        if Ord(KeyPressesChar) <> Msg.CharCode
+        if DeliverKeyMessage(TargetObj, Msg)
+        and (Ord(KeyPressesChar) <> Msg.CharCode)
         then begin
           // key was changed by lcl
           if (Msg.CharCode=0) or (Msg.CharCode>=128)
           then begin
             // key set to invalid => just stop
-            StopKeyEvent('key_press_event');
+            StopKeyEvent;
           end
           else begin
             // try to change the key
@@ -3533,7 +3536,7 @@ begin
     and (TLMessage(AMessage).Msg <>LM_PAINT)
     and (TLMessage(AMessage).Msg <>LM_KEYDOWN)
     and (TLMessage(AMessage).Msg <>LM_KEYUP)
-    and (TLMessage(AMessage).Msg <  CN_KEYDOWN ) then
+    and (TLMessage(AMessage).Msg <CN_KEYDOWN ) then
     DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
