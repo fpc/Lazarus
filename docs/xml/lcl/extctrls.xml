@@ -321,7 +321,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.Controls.TControl.Create"/>
+          <link id="#lcl.Controls.TControl.Create">TControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -511,7 +511,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TNBPages</var>: calls inherited <var>Create</var> then sets up the list of pages on the notebook</short>
@@ -1144,7 +1144,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1159,7 +1159,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -1927,7 +1927,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.CustomTimer.TCustomTimer.Create"/>
+          <link id="#LCL.CustomTimer.TCustomTimer.Create">TCustomTimer.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1942,7 +1942,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.CustomTimer.TCustomTimer.Destroy"/>
+          <link id="#LCL.CustomTimer.TCustomTimer.Destroy">TCustomTimer.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -2088,7 +2088,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2103,7 +2103,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+          <link id="#LCL.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2659,7 +2659,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl.Create"/>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2904,7 +2904,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3218,7 +3218,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3233,7 +3233,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+          <link id="#LCL.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3598,10 +3598,10 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - cunstructor for <var>TBevel</var>: calls inherited <var>Create</var> then sets initial style, shape and bounds</short>
+          <var>Create</var> - constructor for <var>TBevel</var>: calls inherited <var>Create</var> then sets initial style, shape and bounds</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBevel.Create.AOwner">
@@ -3992,7 +3992,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomGroupBox.Create"/>
+          <link id="#LCL.StdCtrls.TCustomGroupBox.Create">TCustomGroupBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4007,7 +4007,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -4527,7 +4527,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomGroupBox.Create"/>
+          <link id="#LCL.ExtCtrls.TCustomGroupBox.Create">TCustomGroupBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4542,7 +4542,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -4906,10 +4906,13 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBoundLabel.Create">
-        <short>Create a new instance of a Graphic Control</short>
+        <short>
+          <var>Create</var> - constructor for <var>TBoundLabel</var>: calls inherited <var>Create</var>, makes itself a SubComponent to the Owner, and sets its caption to the owner name</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomLabel.Create">TCustomLabel.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBoundLabel.Create.TheOwner">
@@ -5220,7 +5223,8 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.StdCtrls.TCustomEdit.Create"/>
+          <link id="#lcl.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
+          <link id="#lcl.ExtCtrls.TBoundLabel.Create">TBoundLabel.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5763,7 +5767,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.Controls.TCustomControl.Create"/>
+          <link id="#lcl.Controls.TCustomControl.Create">TCustomControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6183,7 +6187,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>
           <var>Create</var> - constructor for <var>TCustomTrayIcon</var>: performs inherited <var>Create</var> then creates icon, timer and initialises balloon timeout</short>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomTrayIcon.Destroy">
@@ -6195,7 +6199,7 @@ After that, the parent's destroy method is called.
           <var>Destroy</var> - destructor for <var>TCustomTrayIcon</var>: frees icon and timer then calls inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <element name="TCustomTrayIcon.Hide">

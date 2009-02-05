@@ -84,7 +84,8 @@
       <!-- object Visibility: default -->
       <element name="TMenu">
         <short>
-          <var>TMenu</var> - a menu appearing in a form. Ancestor class for TMainMenu or TPopupMeny</short>
+          <var>TMenu</var> - a menu appearing in a form. Base class for <var>TMainMenu</var> or <var>TPopupMenu</var>
+        </short>
         <descr>
           <p>
             <var>TMenu</var> : The base class for all menus</p>
@@ -1202,7 +1203,7 @@ Descendent classes can override this method to provide a different result.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1216,7 +1217,7 @@ Descendent classes can override this method to provide a different result.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -1920,7 +1921,7 @@ Descendent classes can override this method to provide a different result.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1935,7 +1936,7 @@ Descendent classes can override this method to provide a different result.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2087,7 +2088,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Create"/>
+          <link id="#LCL.Menus.TMenu.Create">TMenu.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2183,7 +2184,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Create"/>
+          <link id="#LCL.Menus.TMenu.Create">TMenu.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2198,7 +2199,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Destroy"/>
+          <link id="#LCL.Menus.TMenu.Destroy">TMenu.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->

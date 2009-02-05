@@ -301,11 +301,12 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#fcl.db.TDataLink.Create">TDataLink.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFieldDataLink.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+      <element name="TFieldDataLink.Destroy" link="#lcl.db.TDataLink.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -632,11 +633,11 @@
       <!-- constructor Visibility: public -->
       <element name="TDBEdit.Create">
         <short>
-          <var>Create</var> - Constructor for <var>TDBEdit</var>: cals inherited <var>Create</var> then sets up data links and actions</short>
+          <var>Create</var> - Constructor for <var>TDBEdit</var>: calls inherited <var>Create</var> then sets up data links and actions</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.Create"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -651,7 +652,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -1157,7 +1158,7 @@ consideration when overriding this method.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomLabel.Create"/>
+          <link id="#LCL.StdCtrls.TCustomLabel.Create">TCustomLabel.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1172,7 +1173,7 @@ consideration when overriding this method.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Destroy"/>
+          <link id="#LCL.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -2094,7 +2095,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Create"/>
+          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Create">TCustomRadioGroup.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2109,7 +2110,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Destroy"/>
+          <link id="#LCL.ExtCtrls.TCustomRadioGroup.Destroy">TCustomRadioGroup.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -2512,7 +2513,7 @@ Reads or Writes flag if control is re-sized.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomCheckBox.Create"/>
+          <link id="#LCL.StdCtrls.TCustomCheckBox.Create">TCustomCheckBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2527,7 +2528,7 @@ Reads or Writes flag if control is re-sized.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3539,11 +3540,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- constructor Visibility: public -->
       <element name="TDBMemo.Create">
         <short>
-          <var>Create</var> - constructor fro <var>TDBMemo</var>: calls inherited <var>Create</var>, then sets style and forms datalinks and actions</short>
+          <var>Create</var> - constructor for <var>TDBMemo</var>: calls inherited <var>Create</var>, then sets style and forms datalinks and actions</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomMemo.Create"/>
+          <link id="#LCL.StdCtrls.TCustomMemo.Create">TCustomMemo.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3553,12 +3554,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- destructor Visibility: public -->
       <element name="TDBMemo.Destroy">
         <short>
-          <var>Destroy</var> - destructor fro <var>TDBMemo</var>: frees datalinks then calls inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for <var>TDBMemo</var>: frees datalinks then calls inherited <var>Destroy</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomMemo.Destroy"/>
+          <link id="#LCL.StdCtrls.TCustomMemo.Destroy">TCustomMemo.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -3841,7 +3842,7 @@ consideration when overriding this method.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomGroupBox.Create"/>
+          <link id="#LCL.StdCtrls.TCustomGroupBox.Create">TCustomGroupBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3850,12 +3851,13 @@ consideration when overriding this method.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBGroupBox.Destroy">
-        <short>Destroy - destructor for <var>TDBGroupBox</var>: frees datalinks then calls inherited <var>Destroy</var>
+        <short>
+          <var>Destroy</var> - destructor for <var>TDBGroupBox</var>: frees datalinks then calls inherited <var>Destroy</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4332,7 +4334,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomImage.Create"/>
+          <link id="#LCL.ExtCtrls.TCustomImage.Create">TCustomImage.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4347,7 +4349,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomImage.Destroy"/>
+          <link id="#LCL.ExtCtrls.TCustomImage.Destroy">TCustomImage.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4647,7 +4649,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Calendar.TCustomCalendar.Create"/>
+          <link id="#LCL.Calendar.TCustomCalendar.Create">TCustomCalendar.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4662,7 +4664,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -5183,7 +5185,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomPanel.Create"/>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Create">TCustomPanel.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5198,7 +5200,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl.Destroy"/>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -5369,11 +5371,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- constructor Visibility: public -->
       <element name="TDBNavDataLink.Create">
         <short>
-          <var>Create</var> - constructor for TDBNavDataLink: calls inherited <var>Create</var>, attaches <var>Navigator</var> and sets <var>VisualControl</var> to True</short>
+          <var>Create</var> - constructor for <var>TDBNavDataLink</var>: calls inherited <var>Create</var>, attaches <var>Navigator</var> and sets <var>VisualControl</var> to True</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5388,7 +5390,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- object Visibility: default -->
