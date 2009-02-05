@@ -34,8 +34,8 @@ uses
   // Free Pascal
   Classes, SysUtils, Types, Math,
   // LCL
-  LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls,
-  ExtCtrls, StdCtrls, CheckLst, Menus, Dialogs;
+  LCLType, LCLProc, LCLIntf, LMessages, Graphics, Buttons, Forms, Controls,
+  ComCtrls, ExtCtrls, StdCtrls, CheckLst, Menus, Dialogs;
 
 type
   // forward declarations
@@ -328,7 +328,7 @@ type
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure SetColor(const Value: PQColor); override;
+    procedure setColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setCursor(const ACursor: QCursorH); override;
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
@@ -371,7 +371,6 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
-    procedure initializeWidget; override;
     function getIconSize: TSize;
     function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
@@ -513,6 +512,7 @@ type
     {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
+    procedure setColor(const Value: PQColor); override;
     procedure setText(const W: WideString); override;
   end;
   
@@ -3610,6 +3610,7 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+  setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
 end;
 
 procedure TQtAbstractButton.setTextColor(const Value: PQColor);
@@ -3662,12 +3663,6 @@ end;
 procedure TQtAbstractButton.SetText(const W: WideString);
 begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
-end;
-
-procedure TQtAbstractButton.initializeWidget;
-begin
-  inherited initializeWidget;
-  setAutoFillBackground(True);
 end;
 
 function TQtAbstractButton.getIconSize: TSize;
@@ -4500,8 +4495,6 @@ begin
   Result := QGroupBox_create();
   FCentralWidget := QWidget_create(Result, 0);
 
-  QWidget_setAutoFillBackground(Result, True);
-
   Layout := QVBoxLayout_create(Result);
   QLayout_addWidget(Layout, FCentralWidget);
   QWidget_setLayout(Result, QLayoutH(Layout));
@@ -4551,6 +4544,12 @@ end;
 function TQtGroupBox.getText: WideString;
 begin
   QGroupBox_title(QGroupBoxH(Widget), @Result);
+end;
+
+procedure TQtGroupBox.setColor(const Value: PQColor);
+begin
+  inherited setColor(Value);
+  setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
 end;
 
 procedure TQtGroupBox.setText(const W: WideString);
