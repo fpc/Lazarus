@@ -7,8 +7,8 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
   ClientWidth = 381
   TabOrder = 0
   Visible = False
-  DesignLeft = 439
-  DesignTop = 353
+  DesignLeft = 449
+  DesignTop = 401
   object COCTreeView: TTreeView
     Left = 0
     Height = 166
@@ -18,51 +18,15 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     AutoExpand = True
     DefaultItemHeight = 19
     PopupMenu = COCPopupMenu
-    ReadOnly = True
     RowSelect = True
     TabOrder = 0
+    OnEdited = COCTreeViewEdited
     OnEditing = COCTreeViewEditing
-    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
   end
   object COCPopupMenu: TPopupMenu
     OnPopup = COCPopupMenuPopup
     left = 48
     top = 48
-    object InsertAboveMenuItem: TMenuItem
-      Caption = 'InsertAboveMenuItem'
-      OnClick = InsertAboveMenuItemClick
-    end
-    object InsertBelowMenuItem: TMenuItem
-      Caption = 'InsertBelowMenuItem'
-      OnClick = InsertBelowMenuItemClick
-    end
-    object InsertChildMenuItem: TMenuItem
-      Caption = 'InsertChildMenuItem'
-      OnClick = InsertChildMenuItemClick
-    end
-    object DeleteMenuItem: TMenuItem
-      Caption = 'DeleteMenuItem'
-      OnClick = DeleteMenuItemClick
-    end
-    object MoveUpMenuItem: TMenuItem
-      Caption = 'MoveUpMenuItem'
-      OnClick = MoveUpMenuItemClick
-    end
-    object MoveDownMenuItem: TMenuItem
-      Caption = 'MoveDownMenuItem'
-      OnClick = MoveDownMenuItemClick
-    end
-    object MoveLvlUpMenuItem: TMenuItem
-      Caption = 'MoveLvlUpMenuItem'
-      OnClick = MoveLvlUpMenuItemClick
-    end
-    object MoveLvlDownMenuItem: TMenuItem
-      Caption = 'MoveLvlDownMenuItem'
-      OnClick = MoveLvlDownMenuItemClick
-    end
-    object PropertiesMenuItem: TMenuItem
-      Caption = 'PropertiesMenuItem'
-      OnClick = PropertiesMenuItemClick
-    end
   end
 end

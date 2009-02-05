@@ -31,23 +31,9 @@ uses
 
 type
 
-  { TCompOptsConditionalsFrame }
+  { TCompOptsExprEditor }
 
-  TCompOptsConditionalsFrame = class(TFrame)
-    COCTreeView: TTreeView;
-    COCPopupMenu: TPopupMenu;
-    InsertAboveMenuItem: TMenuItem;
-    InsertBelowMenuItem: TMenuItem;
-    InsertChildMenuItem: TMenuItem;
-    DeleteMenuItem: TMenuItem;
-    PropertiesMenuItem: TMenuItem;
-    MoveLvlDownMenuItem: TMenuItem;
-    MoveLvlUpMenuItem: TMenuItem;
-    MoveDownMenuItem: TMenuItem;
-    MoveUpMenuItem: TMenuItem;
-    procedure COCPopupMenuPopup(Sender: TObject);
-    procedure COCTreeViewEditing(Sender: TObject; Node: TTreeNode; 
-      var AllowEdit: Boolean);
+  TCompOptsExprEditor = class(TComponent)
     procedure DeleteMenuItemClick(Sender: TObject);
     procedure InsertAboveMenuItemClick(Sender: TObject);
     procedure InsertBelowMenuItemClick(Sender: TObject);
@@ -60,19 +46,54 @@ type
   private
     FAllowedValueTypes: TCOCValueTypes;
     FConditionals: TCompOptConditionals;
+    FRootNode: TTreeNode;
+    FTreeView: TTreeView;
     FNodeTypeImageIDs: array[TCOCNodeType] of integer;
     procedure SetAllowedValueTypes(const AValue: TCOCValueTypes);
     procedure SetConditionals(const AValue: TCompOptConditionals);
+    procedure SetRootNode(const AValue: TTreeNode);
+    procedure SetTreeView(const AValue: TTreeView);
+    procedure ClearTreeView;
+    function NodeToCaption(Node: TCompOptCondNode): string;
     procedure FillTreeView;
     procedure ConsistencyCheck;
-    function NodeToCaption(Node: TCompOptCondNode): string;
     function GetSelectedNode(out COCNode: TCompOptCondNode;
                         out TVNode: TTreeNode; RootAsDefault: boolean): boolean;
     procedure CreateNewNode(AttachMode: TNodeAttachMode);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure FillPopupMenu(aPopupMenu: TPopupMenu);
+    procedure TreeViewEditing(Sender: TObject; Node: TTreeNode;
+                              var AllowEdit: Boolean);
+    procedure TreeViewEdited(Sender: TObject; Node: TTreeNode; var S: string);
+    property TreeView: TTreeView read FTreeView write SetTreeView;
+    property RootNode: TTreeNode read FRootNode write SetRootNode;
     property Conditionals: TCompOptConditionals read FConditionals write SetConditionals;
     property AllowedValueTypes: TCOCValueTypes read FAllowedValueTypes write SetAllowedValueTypes;
+  end;
+
+  { TCompOptsConditionalsFrame }
+
+  TCompOptsConditionalsFrame = class(TFrame)
+    COCTreeView: TTreeView;
+    COCPopupMenu: TPopupMenu;
+    procedure COCPopupMenuPopup(Sender: TObject);
+    procedure COCTreeViewEdited(Sender: TObject; Node: TTreeNode; var S: string
+      );
+    procedure COCTreeViewEditing(Sender: TObject; Node: TTreeNode; 
+      var AllowEdit: Boolean);
+  private
+    FEditor: TCompOptsExprEditor;
+    function GetAllowedValueTypes: TCOCValueTypes;
+    function GetConditionals: TCompOptConditionals;
+    procedure SetAllowedValueTypes(const AValue: TCOCValueTypes);
+    procedure SetConditionals(const AValue: TCompOptConditionals);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property Conditionals: TCompOptConditionals read GetConditionals write SetConditionals;
+    property AllowedValueTypes: TCOCValueTypes read GetAllowedValueTypes write SetAllowedValueTypes;
+    property Editor: TCompOptsExprEditor read FEditor;
   end;
 
 implementation
@@ -80,33 +101,55 @@ implementation
 { TCompOptsConditionalsFrame }
 
 procedure TCompOptsConditionalsFrame.COCPopupMenuPopup(Sender: TObject);
-var
-  COCNode: TCompOptCondNode;
-  TVNode: TTreeNode;
-  HasSelection: Boolean;
-  NormalNodeIsSelectd: Boolean;
 begin
-  GetSelectedNode(COCNode,TVNode,false);
-  HasSelection:=COCNode<>nil;
-  NormalNodeIsSelectd:=HasSelection and (COCNode<>Conditionals.Root);
-  InsertAboveMenuItem.Enabled:=NormalNodeIsSelectd;
-  InsertBelowMenuItem.Enabled:=NormalNodeIsSelectd;
-  InsertChildMenuItem.Enabled:=true;
-  DeleteMenuItem.Enabled:=NormalNodeIsSelectd;
-  PropertiesMenuItem.Enabled:=NormalNodeIsSelectd;
-  MoveLvlDownMenuItem.Enabled:=NormalNodeIsSelectd and (TVNode.GetPrevSibling<>nil);
-  MoveLvlUpMenuItem.Enabled:=NormalNodeIsSelectd and (COCNode.Parent.Parent<>nil);
-  MoveDownMenuItem.Enabled:=NormalNodeIsSelectd and (TVNode.GetNextSibling<>nil);
-  MoveUpMenuItem.Enabled:=NormalNodeIsSelectd and (TVNode.GetPrevSibling<>nil);
+  COCPopupMenu.Items.Clear;
+  Editor.FillPopupMenu(COCPopupMenu);
+end;
+
+procedure TCompOptsConditionalsFrame.COCTreeViewEdited(Sender: TObject;
+  Node: TTreeNode; var S: string);
+begin
+  Editor.TreeViewEdited(Sender,Node,S);
 end;
 
 procedure TCompOptsConditionalsFrame.COCTreeViewEditing(Sender: TObject; 
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
-
+  Editor.TreeViewEditing(Sender,Node,AllowEdit);
 end;
 
-procedure TCompOptsConditionalsFrame.DeleteMenuItemClick(Sender: TObject);
+procedure TCompOptsConditionalsFrame.SetConditionals(
+  const AValue: TCompOptConditionals);
+begin
+  Editor.Conditionals:=AValue;
+end;
+
+procedure TCompOptsConditionalsFrame.SetAllowedValueTypes(
+  const AValue: TCOCValueTypes);
+begin
+  Editor.AllowedValueTypes:=AValue;
+end;
+
+function TCompOptsConditionalsFrame.GetConditionals: TCompOptConditionals;
+begin
+  Result:=Editor.Conditionals;
+end;
+
+function TCompOptsConditionalsFrame.GetAllowedValueTypes: TCOCValueTypes;
+begin
+  Result:=Editor.AllowedValueTypes;
+end;
+
+constructor TCompOptsConditionalsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FEditor:=TCompOptsExprEditor.Create(Self);
+  FEditor.TreeView:=COCTreeView;
+end;
+
+{ TCompOptsExprEditor }
+
+procedure TCompOptsExprEditor.DeleteMenuItemClick(Sender: TObject);
 var
   COCNode: TCompOptCondNode;
   TVNode: TTreeNode;
@@ -122,35 +165,36 @@ begin
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.InsertAboveMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.InsertAboveMenuItemClick(Sender: TObject);
 begin
   CreateNewNode(naInsert);
 end;
 
-procedure TCompOptsConditionalsFrame.InsertBelowMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.InsertBelowMenuItemClick(Sender: TObject);
 begin
   CreateNewNode(naInsertBehind);
 end;
 
-procedure TCompOptsConditionalsFrame.InsertChildMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.InsertChildMenuItemClick(Sender: TObject);
 begin
   CreateNewNode(naAddChildFirst);
 end;
 
-procedure TCompOptsConditionalsFrame.MoveDownMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.MoveDownMenuItemClick(Sender: TObject);
 // move selected node below sibling
 var
   COCNode: TCompOptCondNode;
   TVNode: TTreeNode;
 begin
   if not GetSelectedNode(COCNode,TVNode,false) then exit;
+  if Conditionals.Root=COCNode then exit;
   if TVNode.GetNextSibling=nil then exit;
   TVNode.MoveTo(TVNode.GetNextSibling,naInsertBehind);
   COCNode.Index:=COCNode.Index+1;
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.MoveLvlDownMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.MoveLvlDownMenuItemClick(Sender: TObject);
 // make selected node a child of previous sibling
 var
   COCNode: TCompOptCondNode;
@@ -166,7 +210,7 @@ begin
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.MoveLvlUpMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.MoveLvlUpMenuItemClick(Sender: TObject);
 // make selected node a sibling of its parent (below parent)
 var
   COCNode: TCompOptCondNode;
@@ -180,20 +224,21 @@ begin
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.MoveUpMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.MoveUpMenuItemClick(Sender: TObject);
 // move selected node above sibling
 var
   COCNode: TCompOptCondNode;
   TVNode: TTreeNode;
 begin
   if not GetSelectedNode(COCNode,TVNode,false) then exit;
+  if Conditionals.Root=COCNode then exit;
   if TVNode.GetPrevSibling=nil then exit;
   TVNode.MoveTo(TVNode.GetPrevSibling,naInsert);
   COCNode.Index:=COCNode.Index-1;
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.PropertiesMenuItemClick(Sender: TObject);
+procedure TCompOptsExprEditor.PropertiesMenuItemClick(Sender: TObject);
 var
   COCNode: TCompOptCondNode;
   TVNode: TTreeNode;
@@ -205,22 +250,93 @@ begin
   TVNode.SelectedIndex:=TVNode.ImageIndex;
 end;
 
-procedure TCompOptsConditionalsFrame.SetConditionals(
-  const AValue: TCompOptConditionals);
+procedure TCompOptsExprEditor.SetAllowedValueTypes(const AValue: TCOCValueTypes
+  );
+begin
+  if FAllowedValueTypes=AValue then exit;
+  FAllowedValueTypes:=AValue;
+end;
+
+procedure TCompOptsExprEditor.SetConditionals(const AValue: TCompOptConditionals
+  );
 begin
   if FConditionals=AValue then exit;
   FConditionals:=AValue;
   FillTreeView;
 end;
 
-procedure TCompOptsConditionalsFrame.SetAllowedValueTypes(
-  const AValue: TCOCValueTypes);
+procedure TCompOptsExprEditor.SetRootNode(const AValue: TTreeNode);
 begin
-  if FAllowedValueTypes=AValue then exit;
-  FAllowedValueTypes:=AValue;
+  if FRootNode=AValue then exit;
+  if TreeView<>nil then begin
+    TreeView.BeginUpdate;
+    ClearTreeView;
+  end;
+  FRootNode:=AValue;
+  if TreeView<>nil then begin
+    FillTreeView;
+    TreeView.EndUpdate;
+  end;
 end;
 
-procedure TCompOptsConditionalsFrame.FillTreeView;
+procedure TCompOptsExprEditor.SetTreeView(const AValue: TTreeView);
+begin
+  if FTreeView=AValue then exit;
+  ClearTreeView;
+  FTreeView:=AValue;
+  if (FTreeView<>nil) and (FTreeView.Images=nil) then
+    FTreeView.Images := IDEImages.Images_24;
+  FillTreeView;
+end;
+
+procedure TCompOptsExprEditor.ClearTreeView;
+begin
+  if TreeView=nil then exit;
+  TreeView.BeginUpdate;
+  try
+    if RootNode<>nil then begin
+      while RootNode.GetLastChild<>nil do
+        RootNode.GetLastChild.Delete;
+    end else begin
+      TreeView.Items.Clear;
+    end;
+  finally
+    TreeView.EndUpdate;
+  end;
+end;
+
+function TCompOptsExprEditor.NodeToCaption(Node: TCompOptCondNode): string;
+begin
+  case Node.NodeType of
+  cocntNone: Result:='Noop';
+  cocntIf: Result:='If '+Node.Value;
+  cocntIfdef: Result:='IfDef '+Node.Value;
+  cocntIfNdef: Result:='IfNDef '+Node.Value;
+  cocntElseIf: Result:='ElseIf '+Node.Value;
+  cocntElse: Result:='Else';
+  cocntAddValue:
+    begin
+      case Node.ValueType of
+      cocvtNone: Result:='Result:='+Node.Value;
+      cocvtUnitPath: Result:='Add unit path: '+Node.Value;
+      cocvtSrcPath: Result:='Add unit source path: '+Node.Value;
+      cocvtIncludePath: Result:='Add include path: '+Node.Value;
+      cocvtObjectPath: Result:='Add object path: '+Node.Value;
+      cocvtLibraryPath: Result:='Add library path: '+Node.Value;
+      cocvtDebugPath: Result:='Add debug path: '+Node.Value;
+      cocvtLinkerOptions: Result:='Add linker options: '+Node.Value;
+      cocvtCustomOptions: Result:='Add custom options: '+Node.Value;
+      else
+        Result:='(unknown ValueType)';
+      end;
+    end;
+  else
+    Result:='(unknown NodeType)';
+  end;
+  Result:=ValidUTF8String(Result);
+end;
+
+procedure TCompOptsExprEditor.FillTreeView;
 
   procedure Add(COCNode: TCompOptCondNode; ParentTVNode: TTreeNode);
   var
@@ -228,7 +344,7 @@ procedure TCompOptsConditionalsFrame.FillTreeView;
     i: Integer;
   begin
     if COCNode=nil then exit;
-    TVNode:=COCTreeView.Items.AddChildObject(ParentTVNode,NodeToCaption(COCNode),COCNode);
+    TVNode:=TreeView.Items.AddChildObject(ParentTVNode,NodeToCaption(COCNode),COCNode);
     TVNode.ImageIndex:=FNodeTypeImageIDs[COCNode.NodeType];
     TVNode.SelectedIndex:=TVNode.ImageIndex;
     for i:=0 to COCNode.Count-1 do
@@ -238,18 +354,19 @@ procedure TCompOptsConditionalsFrame.FillTreeView;
 var
   i: Integer;
 begin
-  COCTreeView.BeginUpdate;
-  COCTreeView.Items.Clear;
+  if TreeView=nil then exit;
+  TreeView.BeginUpdate;
+  TreeView.Items.Clear;
   if (Conditionals<>nil) and (Conditionals.Root<>nil)
   and (Conditionals.Root.Count>0) then begin
     for i:=0 to Conditionals.Root.Count-1 do
-      Add(Conditionals.Root.Childs[i],nil);
+      Add(Conditionals.Root.Childs[i],RootNode);
   end;
-  COCTreeView.EndUpdate;
+  TreeView.EndUpdate;
   ConsistencyCheck;
 end;
 
-procedure TCompOptsConditionalsFrame.ConsistencyCheck;
+procedure TCompOptsExprEditor.ConsistencyCheck;
 
   procedure CheckChilds(COCNode: TCompOptCondNode; ChildTVNode: TTreeNode); forward;
 
@@ -285,69 +402,132 @@ procedure TCompOptsConditionalsFrame.ConsistencyCheck;
       RaiseCatchableException('');
   end;
 
+var
+  TVNode: TTreeNode;
 begin
+  if Conditionals=nil then exit;
   Conditionals.WriteDebugReport;
-  COCTreeView.WriteDebugReport('  ',true);
-  if (Conditionals=nil) or (Conditionals.Root=nil)
-  or (Conditionals.Root.Count=0) then begin
-    if COCTreeView.Items.Count>0 then
-      RaiseCatchableException('');
-  end else begin
-    CheckChilds(Conditionals.Root,COCTreeView.Items.GetFirstNode);
-  end;
-end;
-
-function TCompOptsConditionalsFrame.NodeToCaption(Node: TCompOptCondNode
-  ): string;
-begin
-  case Node.NodeType of
-  cocntNone: Result:='Noop';
-  cocntIf: Result:='If '+Node.Value;
-  cocntIfdef: Result:='IfDef '+Node.Value;
-  cocntIfNdef: Result:='IfNDef '+Node.Value;
-  cocntElseIf: Result:='ElseIf '+Node.Value;
-  cocntElse: Result:='Else';
-  cocntAddValue:
-    begin
-      case Node.ValueType of
-      cocvtNone: Result:='Result:='+Node.Value;
-      cocvtUnitPath: Result:='Add unit path: '+Node.Value;
-      cocvtSrcPath: Result:='Add unit source path: '+Node.Value;
-      cocvtIncludePath: Result:='Add include path: '+Node.Value;
-      cocvtObjectPath: Result:='Add object path: '+Node.Value;
-      cocvtLibraryPath: Result:='Add library path: '+Node.Value;
-      cocvtDebugPath: Result:='Add debug path: '+Node.Value;
-      cocvtLinkerOptions: Result:='Add linker options: '+Node.Value;
-      cocvtCustomOptions: Result:='Add custom options: '+Node.Value;
+  if TreeView<>nil then begin
+    TreeView.WriteDebugReport('  ',true);
+    if (Conditionals=nil) or (Conditionals.Root=nil)
+    or (Conditionals.Root.Count=0) then begin
+      if (RootNode=nil) and (TreeView.Items.Count>0) then
+        RaiseCatchableException('');
+    end else begin
+      if RootNode=nil then
+        TVNode:=TreeView.Items.GetFirstNode
       else
-        Result:='(unknown ValueType)';
-      end;
+        TVNode:=RootNode.GetFirstChild;
+      CheckChilds(Conditionals.Root,TVNode);
     end;
-  else
-    Result:='(unknown NodeType)';
   end;
-  Result:=ValidUTF8String(Result);
 end;
 
-function TCompOptsConditionalsFrame.GetSelectedNode(out
-  COCNode: TCompOptCondNode; out TVNode: TTreeNode;
-  RootAsDefault: boolean): boolean;
+constructor TCompOptsExprEditor.Create(TheOwner: TComponent);
+var
+  nt: TCOCNodeType;
+begin
+  inherited Create(TheOwner);
+  FAllowedValueTypes:=[low(TCOCValueType)..high(TCOCValueType)];
+
+  for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
+    FNodeTypeImageIDs[nt]:=-1;
+  FNodeTypeImageIDs[cocntNone]:=-1;
+  FNodeTypeImageIDs[cocntIf]:=IDEImages.LoadImage(24,'da_if');
+  FNodeTypeImageIDs[cocntIfdef]:=IDEImages.LoadImage(24,'da_ifdef');
+  FNodeTypeImageIDs[cocntIfNdef]:=IDEImages.LoadImage(24,'da_ifndef');
+  FNodeTypeImageIDs[cocntElseIf]:=IDEImages.LoadImage(24,'da_elseif');
+  FNodeTypeImageIDs[cocntElse]:=IDEImages.LoadImage(24,'da_else');
+  FNodeTypeImageIDs[cocntAddValue]:=IDEImages.LoadImage(24,'da_define');
+end;
+
+destructor TCompOptsExprEditor.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCompOptsExprEditor.FillPopupMenu(aPopupMenu: TPopupMenu);
+
+  function Add(aCaption: string; OnClickEvent: TNotifyEvent): TMenuItem;
+  begin
+    Result:=TMenuItem.Create(Self);
+    Result.Caption:=aCaption;
+    Result.OnClick:=OnClickEvent;
+    aPopupMenu.Items.Add(Result);
+  end;
+
+  function AddSeparator: TMenuItem;
+  begin
+    if aPopupMenu.Items.Count=0 then exit;
+    Result:=TMenuItem.Create(Self);
+    Result.Caption:='-';
+    aPopupMenu.Items.Add(Result);
+  end;
+
+var
+  COCNode: TCompOptCondNode;
+  TVNode: TTreeNode;
+  HasSelection: Boolean;
+  NormalNodeIsSelected: Boolean;
+  InConditionalNodes: Boolean;
+begin
+  GetSelectedNode(COCNode,TVNode,false);
+  HasSelection:=COCNode<>nil;
+  NormalNodeIsSelected:=HasSelection and (COCNode<>Conditionals.Root);
+  InConditionalNodes:=(RootNode=nil)
+                          or ((TVNode<>nil) and (TVNode.HasAsParent(RootNode)));
+  if NormalNodeIsSelected or InConditionalNodes then
+    AddSeparator;
+  if NormalNodeIsSelected then
+    Add('Insert new node above',@InsertAboveMenuItemClick);
+  if NormalNodeIsSelected then
+    Add('Insert new node below',@InsertBelowMenuItemClick);
+  if InConditionalNodes then
+    Add('Insert new child node',@InsertChildMenuItemClick);
+  if NormalNodeIsSelected then
+    Add('Delete node ...',@DeleteMenuItemClick);
+  if NormalNodeIsSelected then
+    Add('Properties ...',@PropertiesMenuItemClick);
+  if NormalNodeIsSelected and (TVNode.GetPrevSibling<>nil) then
+    Add('Move node one level down',@MoveLvlDownMenuItemClick);
+  if NormalNodeIsSelected and (COCNode.Parent.Parent<>nil) then
+    Add('Move node one level up',@MoveLvlUpMenuItemClick);
+  if NormalNodeIsSelected and (TVNode.GetNextSibling<>nil) then
+    Add('Move node down',@MoveDownMenuItemClick);
+  if NormalNodeIsSelected and (TVNode.GetPrevSibling<>nil) then
+    Add('Move node up',@MoveUpMenuItemClick);
+end;
+
+procedure TCompOptsExprEditor.TreeViewEditing(Sender: TObject; Node: TTreeNode;
+  var AllowEdit: Boolean);
+begin
+  AllowEdit:=false;
+end;
+
+procedure TCompOptsExprEditor.TreeViewEdited(Sender: TObject; Node: TTreeNode;
+  var S: string);
+begin
+  S:=Node.Text;
+end;
+
+function TCompOptsExprEditor.GetSelectedNode(out COCNode: TCompOptCondNode; out
+  TVNode: TTreeNode; RootAsDefault: boolean): boolean;
 begin
   COCNode:=nil;
-  TVNode:=COCTreeView.Selected;
-  if TVNode=nil then begin
+  TVNode:=TreeView.Selected;
+  if (TVNode=nil) then begin
     if RootAsDefault then begin
-      TVNode:=nil;
+      TVNode:=RootNode;
       COCNode:=Conditionals.Root;
     end;
   end else begin
-    COCNode:=TCompOptCondNode(TVNode.Data);
+    if (RootNode=nil) or TVNode.HasAsParent(RootNode) then
+      COCNode:=TCompOptCondNode(TVNode.Data);
   end;
   Result:=COCNode<>nil;
 end;
 
-procedure TCompOptsConditionalsFrame.CreateNewNode(AttachMode: TNodeAttachMode
-  );
+procedure TCompOptsExprEditor.CreateNewNode(AttachMode: TNodeAttachMode);
 var
   TVNode: TTreeNode;
   COCNode: TCompOptCondNode;
@@ -358,7 +538,7 @@ begin
   if not GetSelectedNode(COCNode,TVNode,true) then exit;
   NewCOCNode:=TCompOptCondNode.Create(COCNode.Owner);
   s:=NodeToCaption(NewCOCNode);
-  NewTVNode:=COCTreeView.Items.AddObject(TVNode,s,NewCOCNode);
+  NewTVNode:=TreeView.Items.AddObject(TVNode,s,NewCOCNode);
   if TVNode<>nil then
     NewTVNode.MoveTo(TVNode,AttachMode);
   NewTVNode.ImageIndex:=FNodeTypeImageIDs[NewCOCNode.NodeType];
@@ -374,36 +554,6 @@ begin
   if TVNode<>nil then
     TVNode.Expanded:=true;
   ConsistencyCheck;
-end;
-
-constructor TCompOptsConditionalsFrame.Create(TheOwner: TComponent);
-var
-  nt: TCOCNodeType;
-begin
-  inherited Create(TheOwner);
-  FAllowedValueTypes:=[low(TCOCValueType)..high(TCOCValueType)];
-
-  COCTreeView.Images := IDEImages.Images_24;
-
-  for nt:=Low(TCOCNodeType) to High(TCOCNodeType) do
-    FNodeTypeImageIDs[nt]:=-1;
-  FNodeTypeImageIDs[cocntNone]:=-1;
-  FNodeTypeImageIDs[cocntIf]:=IDEImages.LoadImage(24,'da_if');
-  FNodeTypeImageIDs[cocntIfdef]:=IDEImages.LoadImage(24,'da_ifdef');
-  FNodeTypeImageIDs[cocntIfNdef]:=IDEImages.LoadImage(24,'da_ifndef');
-  FNodeTypeImageIDs[cocntElseIf]:=IDEImages.LoadImage(24,'da_elseif');
-  FNodeTypeImageIDs[cocntElse]:=IDEImages.LoadImage(24,'da_else');
-  FNodeTypeImageIDs[cocntAddValue]:=IDEImages.LoadImage(24,'da_define');
-
-  InsertAboveMenuItem.Caption:=dlgCOCreateNodeAbove;
-  InsertBelowMenuItem.Caption:=dlgCOCreateNodeBelow;
-  InsertChildMenuItem.Caption:=dlgCOCreateChildNode;
-  DeleteMenuItem.Caption:=lisCodeToolsDefsDeleteNode;
-  PropertiesMenuItem.Caption:=lisCEProperties;
-  MoveLvlDownMenuItem.Caption:=dlgCOMoveLevelDown;
-  MoveLvlUpMenuItem.Caption:=dlgCOMoveLevelUp;
-  MoveDownMenuItem.Caption:=dlgCOMoveDown;
-  MoveUpMenuItem.Caption:=dlgCOMoveUp;
 end;
 
 initialization

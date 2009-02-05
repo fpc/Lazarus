@@ -293,14 +293,12 @@ begin
   // create node for the build mode
   TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildMode.Identifier,BuildMode);
   TVNode.ImageIndex:=fModeImgID;
-  TVNode.StateIndex:=TVNode.ImageIndex;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   // second level
   begin
     // parent node for values
     ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode, lisValues);
     ValuesTVNode.ImageIndex:=fValuesImgID;
-    ValuesTVNode.StateIndex:=ValuesTVNode.ImageIndex;
     ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
     // a node for each value
     Values:=BuildMode.Values;
@@ -310,7 +308,6 @@ begin
     DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,
       lisDefaultValue);
     DefValueTVNode.ImageIndex:=fDefValueImgID;
-    DefValueTVNode.StateIndex:=DefValueTVNode.ImageIndex;
     DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
     // ToDo: add default value nodes
   end;
@@ -324,7 +321,6 @@ var
 begin
   ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,aValue);
   ValueTVNode.ImageIndex:=fValueImgID;
-  ValueTVNode.StateIndex:=ValueTVNode.ImageIndex;
   ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 

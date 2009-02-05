@@ -3,27 +3,14 @@
 LazarusResources.Add('TCompOptsConditionalsFrame','FORMDATA',[
   'TPF0'#26'TCompOptsConditionalsFrame'#25'CompOptsConditionalsFrame'#4'Left'#2
   +#0#6'Height'#3#170#0#3'Top'#2#0#5'Width'#3#129#1#12'ClientHeight'#3#166#0#11
-  +'ClientWidth'#3'}'#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#183#1#9'D'
-  +'esignTop'#3'a'#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Height'#3#166
+  +'ClientWidth'#3'}'#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#193#1#9'D'
+  +'esignTop'#3#145#1#0#9'TTreeView'#11'COCTreeView'#4'Left'#2#0#6'Height'#3#166
   +#0#3'Top'#2#0#5'Width'#3'}'#1#5'Align'#7#8'alClient'#10'AutoExpand'#9#17'Def'
-  +'aultItemHeight'#2#19#9'PopupMenu'#7#12'COCPopupMenu'#8'ReadOnly'#9#9'RowSel'
-  +'ect'#9#8'TabOrder'#2#0#9'OnEditing'#7#18'COCTreeViewEditing'#7'Options'#11
-  +#13'tvoAutoExpand'#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepColl'
-  +'apsedNodes'#11'tvoReadOnly'#12'tvoRowSelect'#14'tvoShowButtons'#12'tvoShowL'
-  +'ines'#11'tvoShowRoot'#17'tvoShowSeparators'#11'tvoToolTips'#0#0#0#10'TPopup'
-  +'Menu'#12'COCPopupMenu'#7'OnPopup'#7#17'COCPopupMenuPopup'#4'left'#2'0'#3'to'
-  +'p'#2'0'#0#9'TMenuItem'#19'InsertAboveMenuItem'#7'Caption'#6#19'InsertAboveM'
-  +'enuItem'#7'OnClick'#7#24'InsertAboveMenuItemClick'#0#0#9'TMenuItem'#19'Inse'
-  +'rtBelowMenuItem'#7'Caption'#6#19'InsertBelowMenuItem'#7'OnClick'#7#24'Inser'
-  +'tBelowMenuItemClick'#0#0#9'TMenuItem'#19'InsertChildMenuItem'#7'Caption'#6
-  +#19'InsertChildMenuItem'#7'OnClick'#7#24'InsertChildMenuItemClick'#0#0#9'TMe'
-  +'nuItem'#14'DeleteMenuItem'#7'Caption'#6#14'DeleteMenuItem'#7'OnClick'#7#19
-  +'DeleteMenuItemClick'#0#0#9'TMenuItem'#14'MoveUpMenuItem'#7'Caption'#6#14'Mo'
-  +'veUpMenuItem'#7'OnClick'#7#19'MoveUpMenuItemClick'#0#0#9'TMenuItem'#16'Move'
-  +'DownMenuItem'#7'Caption'#6#16'MoveDownMenuItem'#7'OnClick'#7#21'MoveDownMen'
-  +'uItemClick'#0#0#9'TMenuItem'#17'MoveLvlUpMenuItem'#7'Caption'#6#17'MoveLvlU'
-  +'pMenuItem'#7'OnClick'#7#22'MoveLvlUpMenuItemClick'#0#0#9'TMenuItem'#19'Move'
-  +'LvlDownMenuItem'#7'Caption'#6#19'MoveLvlDownMenuItem'#7'OnClick'#7#24'MoveL'
-  +'vlDownMenuItemClick'#0#0#9'TMenuItem'#18'PropertiesMenuItem'#7'Caption'#6#18
-  +'PropertiesMenuItem'#7'OnClick'#7#23'PropertiesMenuItemClick'#0#0#0#0
+  +'aultItemHeight'#2#19#9'PopupMenu'#7#12'COCPopupMenu'#9'RowSelect'#9#8'TabOr'
+  +'der'#2#0#8'OnEdited'#7#17'COCTreeViewEdited'#9'OnEditing'#7#18'COCTreeViewE'
+  +'diting'#7'Options'#11#13'tvoAutoExpand'#17'tvoAutoItemHeight'#16'tvoHideSel'
+  +'ection'#21'tvoKeepCollapsedNodes'#12'tvoRowSelect'#14'tvoShowButtons'#12'tv'
+  +'oShowLines'#11'tvoShowRoot'#17'tvoShowSeparators'#11'tvoToolTips'#0#0#0#10
+  +'TPopupMenu'#12'COCPopupMenu'#7'OnPopup'#7#17'COCPopupMenuPopup'#4'left'#2'0'
+  +#3'top'#2'0'#0#0#0
 ]);

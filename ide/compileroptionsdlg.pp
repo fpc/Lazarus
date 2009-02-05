@@ -1165,6 +1165,7 @@ var
   i: Integer;
   ChildData: PInheritedNodeData;
 begin
+  if InhTreeView=nil then exit;
   InhTreeView.BeginUpdate;
   // dispose all child data
   if InheritedChildDatas<>nil then begin
