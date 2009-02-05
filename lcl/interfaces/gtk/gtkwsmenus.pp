@@ -222,6 +222,8 @@ begin
     Exit;
   MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
+  gtk_widget_set_sensitive(PGtkWidget(AMenuItem.Handle),
+                           AMenuItem.Enabled and (ACaption <> cLineCaption));
 end;
 
 class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
