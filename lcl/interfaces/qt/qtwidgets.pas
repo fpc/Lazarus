@@ -9024,7 +9024,6 @@ begin
   FHasPaint := True;
   Result := QWidget_create;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
-  QWidget_setAutoFillBackground(Result, True);
 end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
