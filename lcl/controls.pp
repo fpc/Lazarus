@@ -1680,6 +1680,7 @@ type
     procedure ReloadDockedControl(const AControlName: string;
                                   var AControl: TControl); dynamic;
     function CreateDockManager: TDockManager; dynamic;
+    procedure SetDockManager(AMgr: TDockManager);
     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
     procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   protected
@@ -1760,7 +1761,7 @@ type
     property DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property DockClientCount: Integer read GetDockClientCount;
     property DockClients[Index: Integer]: TControl read GetDockClients;
-    property DockManager: TDockManager read FDockManager write FDockManager;
+    property DockManager: TDockManager read FDockManager write SetDockManager;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
     property Handle: HWND read GetHandle write SetHandle;

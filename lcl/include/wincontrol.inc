@@ -4288,8 +4288,8 @@ begin
     end;
     // paint controls
     //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' PaintControls ...');
-    if FDockSite and FUseDockManager and Assigned(FDockManager) then
-      FDockManager.PaintSite(DC);
+    if FDockSite and FUseDockManager and Assigned(DockManager) then
+      DockManager.PaintSite(DC);
     PaintControls(DC, nil);
   finally
     if TheMessage.DC = 0 then
@@ -4753,8 +4753,8 @@ begin
            Exit
          else
          begin
-           if FDockSite and FUseDockManager and Assigned(FDockManager) then
-             FDockManager.MouseMessage(Message);
+           if FDockSite and FUseDockManager and Assigned(DockManager) then
+             DockManager.MouseMessage(Message);
          end;
          {$IFDEF VerboseMouseBugfix}
          DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
@@ -4772,8 +4772,8 @@ begin
     CM_MOUSEENTER,
     CM_MOUSELEAVE:
       begin
-        if FDockSite and FUseDockManager and Assigned(FDockManager) then
-          FDockManager.MouseMessage(Message);
+        if FDockSite and FUseDockManager and Assigned(DockManager) then
+          DockManager.MouseMessage(Message);
       end;
   end;
 
@@ -4905,11 +4905,20 @@ end;
  ------------------------------------------------------------------------------}
 function TWinControl.CreateDockManager: TDockManager;
 begin
-  if (FDockManager = nil) and DockSite and UseDockManager then
+  if (DockManager = nil) and DockSite and UseDockManager then
     // this control can dock other controls, so it needs a TDockManager
     Result := DefaultDockTreeClass.Create(Self)
   else
-    Result := FDockManager;
+    Result := DockManager;
+end;
+
+procedure TWinControl.SetDockManager(AMgr: TDockManager);
+begin
+  //use FDockManager only here!
+  if Assigned(DockManager) and (DockManager <> AMgr) then
+    if FDockManager.AutoFreeByControl then
+      FDockManager.Free;
+  FDockManager := AMgr; //can be nil
 end;
 
 {------------------------------------------------------------------------------
@@ -4920,7 +4929,7 @@ begin
   if FUseDockManager=AValue then exit;
   FUseDockManager:=AValue;
   if FUseDockManager and ([csDesigning,csDestroying]*ComponentState=[]) then
-    FDockManager := CreateDockManager;
+    DockManager := CreateDockManager;
 end;
 
 procedure TWinControl.DoFloatMsg(ADockSource: TDragDockObject);
@@ -7008,11 +7017,11 @@ begin
     if not NewDockSite then begin
       FreeAndNil(FDockClients);
       FDockClients := nil;
-      FDockManager := nil;
+      DockManager := nil;
     end
     else begin
       if FDockClients = nil then FDockClients := TFPList.Create;
-      FDockManager := CreateDockManager;
+      DockManager := CreateDockManager;
     end;
   end;
 end;
@@ -7028,8 +7037,8 @@ begin
     DisableAlign;
     try
       DragDockObject.Control.Dock(Self, DestRect);
-      if FUseDockManager and (FDockManager <> nil) then
-        FDockManager.InsertControl(DragDockObject.Control,
+      if FUseDockManager and (DockManager <> nil) then
+        DockManager.InsertControl(DragDockObject.Control,
           DragDockObject.DropAlign, DragDockObject.DropOnControl);
     finally
       EnableAlign;
@@ -7044,8 +7053,8 @@ function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   Result := true;
   DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' ',DbgSName(Client),' ',DbgSName(Client.Parent)]);
-  if FUseDockManager and (FDockManager <> nil) then
-    FDockManager.RemoveControl(Client);
+  if FUseDockManager and (DockManager <> nil) then
+    DockManager.RemoveControl(Client);
 end;
 
 {------------------------------------------------------------------------------
@@ -7107,7 +7116,8 @@ begin
       ' -> New=',Dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-      //NewBounds:=Bounds(Left, Top, Width, Height);
+      if FUseDockManager and (DockManager <> nil) then
+        DockManager.ResetBounds(False);
     finally
       UnlockRealizeBounds;
     end;
