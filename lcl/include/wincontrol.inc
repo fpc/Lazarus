@@ -4420,7 +4420,12 @@ end;
 function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
   RepeatCount: integer; SystemKey: boolean): boolean;
 begin
-  Result:=(RepeatCount>0) and (not SystemKey) and DoUTF8KeyPress(UTF8Key);
+  IncLCLRefCount;
+  try
+    Result:=(RepeatCount>0) and (not SystemKey) and DoUTF8KeyPress(UTF8Key);
+  finally
+    DecLCLRefCount;
+  end;
 end;
 
 procedure TWinControl.PaintTo(DC: HDC; X, Y: Integer);
