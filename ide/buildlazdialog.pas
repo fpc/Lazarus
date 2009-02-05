@@ -517,13 +517,8 @@ begin
         // On platforms other than windows, ExtractShortPathName is implemented
         // too and simply returns the passed file name, so there is no need
         // for $IFDEF.
-        {$IFNDEF VER2_2_0}
-        // ExtractShortPathName is only available in fpc 2.2.1
-        // fortunately, we don't support a PCP with space on windows for
-        // fpc 2.2.0
         if pos(' ',MakeIDECfgFilename)>0 then
           MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
-        {$ENDIF}
         ExtraOptions:='@'+MakeIDECfgFilename;
         exit;
       end;
