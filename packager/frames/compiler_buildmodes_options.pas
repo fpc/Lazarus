@@ -48,6 +48,8 @@ type
       var S: string);
     procedure BuildModesTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
+    procedure BuildModesTreeViewStartDrag(Sender: TObject;
+      var DragObject: TDragObject);
     procedure BuildModeTVPopupMenuPopup(Sender: TObject);
     procedure DeleteBuildModeClick(Sender: TObject);
     procedure NewBuildModeClick(Sender: TObject);
@@ -202,6 +204,12 @@ begin
   AllowEdit:=NodeType in [cbmntBuildMode,cbmntValue];
 end;
 
+procedure TCompOptBuildModesFrame.BuildModesTreeViewStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+
+end;
+
 procedure TCompOptBuildModesFrame.BuildModesTreeViewEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 var
@@ -217,8 +225,9 @@ begin
     if S<>BuildMode.Identifier then begin
       // rename build mode
       if (S='') or (not IsValidIdent(S)) then begin
-        MessageDlg('Error',
-          'Invalid build mode "'+S+'". The build mode must be a pascal identifier.',
+        MessageDlg(lisCCOErrorCaption,
+          Format(lisInvalidBuildModeTheBuildModeMustBeAPascalIdentifie, ['"',
+            S, '"']),
           mtError,[mbCancel],0);
         S:=BuildMode.Identifier;
         exit;
@@ -226,8 +235,8 @@ begin
       ConflictBuildMode:=BuildModes.ModeWithIdentifier(S);
       if (ConflictBuildMode<>nil) and (ConflictBuildMode<>BuildMode) then
       begin
-        MessageDlg('Error',
-          'There is already a build mode with the name "'+S+'".',
+        MessageDlg(lisCCOErrorCaption,
+          Format(lisThereIsAlreadyABuildModeWithTheName, ['"', S, '"']),
           mtError,[mbCancel],0);
         S:=BuildMode.Identifier;
         exit;
@@ -240,8 +249,8 @@ begin
       Index:=Node.Index;
       Index:=BuildMode.Values.IndexOf(S);
       if (Index>=0) and (Index<>Node.Index) then begin
-        MessageDlg('Error',
-          'Duplicate found of value "'+S+'".',
+        MessageDlg(lisCCOErrorCaption,
+          Format(lisDuplicateFoundOfValue, ['"', S, '"']),
           mtError,[mbCancel],0);
         S:=BuildMode.Values[Node.Index];
         exit;

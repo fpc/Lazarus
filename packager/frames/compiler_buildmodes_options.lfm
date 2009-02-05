@@ -7,8 +7,8 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
   ClientWidth = 488
   TabOrder = 0
   Visible = False
-  DesignLeft = 344
-  DesignTop = 496
+  DesignLeft = 349
+  DesignTop = 520
   object BuildModesGroupBox: TGroupBox
     Left = 0
     Height = 229
@@ -31,6 +31,7 @@ object CompOptBuildModesFrame: TCompOptBuildModesFrame
       TabOrder = 0
       OnEdited = BuildModesTreeViewEdited
       OnEditing = BuildModesTreeViewEditing
+      OnStartDrag = BuildModesTreeViewStartDrag
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
   end
