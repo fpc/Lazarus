@@ -505,7 +505,7 @@ end;
 function NewLine: TMenuItem;
 begin
   Result := TMenuItem.Create(nil);
-  Result.Caption := '-';
+  Result.Caption := cLineCaption;
 end;
 
 procedure Register;

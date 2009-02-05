@@ -98,6 +98,12 @@ const
   // Since W98 the size is 48 (hbmpItem was added)
   W95_MENUITEMINFO_SIZE = 44;
 
+  EnabledToStateFlag: array[Boolean] of DWord =
+  (
+    MF_GRAYED,
+    MF_ENABLED
+  );
+
 var
   menuiteminfosize : DWORD = 0;
 
@@ -629,17 +635,24 @@ var
 begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
     exit;
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   with MenuInfo do
   begin
     cbsize := menuiteminfosize;
-    if ACaption <> '-' then
+    fMask := MIIM_TYPE or MIIM_STATE;
+    // change enabled too since we can change from '-' to normal caption and vice versa
+    if ACaption <> cLineCaption then
     begin
       fType := MFT_STRING;
-      fMask:=MIIM_TYPE;
-      dwTypeData:=LPSTR(ACaption);
+      fState := EnabledToStateFlag[AMenuItem.Enabled];
+      dwTypeData := LPSTR(ACaption);
       cch := StrLen(dwTypeData);
     end
-    else fType := MFT_SEPARATOR;
+    else
+    begin
+      fType := MFT_SEPARATOR;
+      fState := MFS_DISABLED;
+    end;
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   with MenuInfo do
@@ -647,7 +660,7 @@ begin
     cbsize := menuiteminfosize;
     fMask := MIIM_TYPE;
     fType := MFT_OWNERDRAW;
-    dwTypeData:=LPSTR(ACaption);
+    dwTypeData := LPSTR(ACaption);
     cch := StrLen(dwTypeData);
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
@@ -701,10 +714,11 @@ begin
       hSubMenu := 0;
     if not AMenuItem.IsLine then
     begin
-      fType:=MFT_OWNERDRAW;
-    end else begin
-      fType:=MFT_OWNERDRAW or MFT_SEPARATOR;
-      fState:=fState or MFS_DISABLED;
+      fType := MFT_OWNERDRAW;
+    end else
+    begin
+      fType := MFT_OWNERDRAW or MFT_SEPARATOR;
+      fState := fState or MFS_DISABLED;
     end;
     dwTypeData := PChar(AMenuItem);
     if AMenuItem.RadioItem then
@@ -758,11 +772,9 @@ end;
 
 class function TWin32WSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 var
-  EnableFlag: Integer;
+  EnableFlag: DWord;
 begin
-  if Enabled then EnableFlag := MF_ENABLED
-  else EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  EnableFlag := MF_BYCOMMAND or EnabledToStateFlag[Enabled];
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;
