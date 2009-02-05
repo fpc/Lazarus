@@ -1094,6 +1094,8 @@ type
     property MultiSelect;
 //    property OwnerData;
 //    property OwnerDraw;
+    property ParentColor;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
