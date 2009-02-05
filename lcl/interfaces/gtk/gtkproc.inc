@@ -6759,7 +6759,7 @@ begin
       FFixWidgetsResized.Remove(FixWidget);
       MainWidget:=GetMainWidget(FixWidget);
       LCLControl:=TWinControl(GetLCLObject(MainWidget));
-      LCLControl.DoAdjustClientRectChange;
+      LCLControl.DoAdjustClientRectChange(False);
     end else begin
       break;
     end;

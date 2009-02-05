@@ -3311,11 +3311,12 @@ end;
   Asks the interface if clientrect has changed since last AlignControl
   and calls AlignControl(nil) on change.
 -------------------------------------------------------------------------------}
-procedure TWinControl.DoAdjustClientRectChange;
+procedure TWinControl.DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
 var
   R: TRect;
 begin
-  InvalidateClientRectCache(True);
+  if InvalidateRect then
+    InvalidateClientRectCache(True);
   R := GetClientRect;
   AdjustClientRect(R);
   //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' ',r.Right,',',r.Bottom,' ',CompareRect(@r,@FAdjustClientRectRealized)]);

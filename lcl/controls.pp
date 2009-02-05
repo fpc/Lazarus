@@ -1795,7 +1795,7 @@ type
                           AllowDisabled, AllowWinControls: Boolean): TControl;
     function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl;
     function  ContainsControl(Control: TControl): Boolean;
-    procedure DoAdjustClientRectChange;
+    procedure DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
