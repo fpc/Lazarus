@@ -1422,7 +1422,7 @@ begin
   FMarkupCurWordTime := 1500;
   FMarkupCurWordFull := False;
   FMarkupCurWordFullLen := 3;
-  FMarkupCurWordNoKeyword := False;
+  FMarkupCurWordNoKeyword := True;
   FMarkupCurWordTrim := True;
   FMarkupCurWordNoTimer := False;
 
@@ -1603,7 +1603,7 @@ begin
       'EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
     FMarkupCurWordNoKeyword :=
       XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/NoKeyword', False);
+      'EditorOptions/Display/MarkupCurrentWord/NoKeyword', True);
     FMarkupCurWordTrim :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/Trim', True);
@@ -1765,7 +1765,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullLen',
       FMarkupCurWordFullLen, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword',
-      FMarkupCurWordNoKeyword, False);
+      FMarkupCurWordNoKeyword, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Trim',
       FMarkupCurWordTrim, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoTimer',
