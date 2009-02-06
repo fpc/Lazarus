@@ -1635,7 +1635,8 @@ begin
         end;
       end else
       begin
-        SendPaintMessage(HDC(WParam));
+        if not ThemeServices.ThemesEnabled then
+          SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
       end;
       WinProcess := False;
