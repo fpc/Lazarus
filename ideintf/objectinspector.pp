@@ -595,6 +595,9 @@ type
     StatusBar: TStatusBar;
     UndoPropertyPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
+    procedure ComponentTreeDblClick(Sender: TObject);
+    procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -3769,6 +3772,8 @@ begin
     Height:=ComponentTreeHeight;
     Parent:=Self;
     Align:=alTop;
+    OnDblClick := @ComponentTreeDblClick;
+    OnKeyDown := @ComponentTreeKeyDown;
     OnSelectionChanged := @ComponentTreeSelectionChanged;
     Visible := FShowComponentTree;
     Scrollbars := ssAutoBoth;
@@ -4118,6 +4123,38 @@ begin
     end;
   end;
 end;
+
+procedure TObjectInspectorDlg.ComponentTreeDblClick(Sender: TObject);
+var
+  AComponent: TComponent;
+  CompEditor: TBaseComponentEditor;
+  ADesigner: TIDesigner;
+begin
+  if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then
+    Exit;
+  if not FSelection.IsEqual(ComponentTree.Selection) then
+    ComponentTreeSelectionChanged(Sender);
+  if not Assigned(ComponentTree.Selected) then
+    Exit;
+  AComponent := TComponent(ComponentTree.Selected.Data);
+  ADesigner := FindRootDesigner(AComponent);
+  if not (ADesigner is TComponentEditorDesigner) then
+    Exit;
+  CompEditor := GetComponentEditor(AComponent, TComponentEditorDesigner(ADesigner));
+  if Assigned(CompEditor) then
+    CompEditor.Edit;
+end;
+
+procedure TObjectInspectorDlg.ComponentTreeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Shift = []) and (Key = VK_DELETE) and
+     (Selection.Count > 0) and (Selection[0] is TComponent) and
+     (MessageDlg(oisDeleteComponents, mtConfirmation,[mbYes, mbNo],0) = mrYes) then
+  begin
+    OnDeletePopupmenuItemClick(nil);
+  end;
+end;        
 
 procedure TObjectInspectorDlg.ComponentTreeSelectionChanged(Sender: TObject);
 begin
