@@ -318,7 +318,9 @@
           <var>Edit</var> - if the field can be modified, performs inherited Edit and shows editing status </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#FCL.db.TDataLink.Edit">TDataLink.Edit</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TFieldDataLink.Edit.Result">
@@ -327,7 +329,7 @@
       <!-- procedure Visibility: public -->
       <element name="TFieldDataLink.Modified">
         <short>
-          <var>Modified</var> sets the <var>IsModified</var> property to True</short>
+          <var>Modified</var> sets the <var>IsModified</var> local variable to True</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1341,9 +1343,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
-      <element name="TDBListBox.DataChange">
-        <short>
-          <var>DataChange</var> - </short>
+      <element name="TDBListBox.DataChange" link="#LCL.DbCtrls.TCustomDBListBox.DataChange">
         <descr/>
         <errors/>
         <seealso/>
@@ -1364,7 +1364,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short/>
       </element>
       <!-- procedure Visibility: default -->
-      <element name="TDBListBox.UpdateData">
+      <element name="TDBListBox.UpdateData" link="#LCL.DbCtrls.TCustomDBListBox.UpdateData">
         <short/>
         <descr/>
         <errors/>
@@ -1600,33 +1600,27 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.DataField">
-        <short>The name (as a string) of the Field for which data are to be displayed</short>
+      <element name="TDBListBox.DataField" link="#LCL.DbCtrls.TCustomDBListBox.DataField">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.DataSource">
-        <short>The DataSource from which Field data are to be displayed - usually the results of a database query</short>
+      <element name="TDBListBox.DataSource" link="#LCL.DbCtrls.TCustomDBListBox.DataSource">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Items">
-        <short>The array of strings representing the list of entries in the list box</short>
+      <element name="TDBListBox.Items" link="#LCL.DbCtrls.TCustomDBListBox.Items">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.ReadOnly">
-        <short>
-          <var>ReadOnly</var> - if True, data can be seen and displayed but not writen or modified</short>
+      <element name="TDBListBox.ReadOnly" link="#LCL.DbCtrls.TCustomDBListBox.ReadOnly">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TDBListBox.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -1635,8 +1629,7 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TDBListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -1646,37 +1639,27 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TDBListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.ExtendedSelect">
-        <short>
-          <var>ExtendedSelect</var> - boolean. Whether extended selection is allowed. Default True</short>
+      <element name="TDBListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.ItemHeight">
-        <short>
-          <var>ItemHeight </var>- the height of the individual <var>Items</var>
-        </short>
+      <element name="TDBListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.MultiSelect">
-        <short>
-          <var>MultiSelect</var>  - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
+      <element name="TDBListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TDBListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -1686,17 +1669,14 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TDBListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnDrawItem">
-        <short>
-          <var>OnDrawItem</var> - event handler for drawing an Item</short>
+      <element name="TDBListBox.OnDrawItem" link="#LCL.StdCtrls.TCustomListBox.OnDrawItem">
         <descr>
           <p>
             <var>OnDrawItem</var>
@@ -1709,22 +1689,17 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
+      <element name="TDBListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
+      <element name="TDBListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TDBListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -1734,9 +1709,7 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TDBListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -1746,9 +1719,7 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TDBListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -1758,71 +1729,57 @@ consideration when overriding this method.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TDBListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TDBListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TDBListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TDBListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TDBListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TDBListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Sorted">
-        <short>
-          <var>Sorted</var>  - whether the selected <var>Items</var>  in the list have been arranged in alphabetical order</short>
+      <element name="TDBListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Style">
-        <short>
-          <var>Style </var>of List Box - normal, owner-draw fixed, or owner-draw variable</short>
+      <element name="TDBListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TDBListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TDBListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -1831,16 +1788,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.TopIndex">
-        <short>
-          <var>Topindex </var>- the highest value of Index in this list</short>
+      <element name="TDBListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDBListBox.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TDBListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -5834,8 +5787,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBText.OnStartDrag">
         <short>Event handler for start of dragging process</short>
       </element>
-      <element name="TDBListBox.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TDBListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -5844,26 +5796,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           </p>
         </descr>
       </element>
-      <element name="TDBListBox.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
-      </element>
-      <element name="TDBListBox.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
-      </element>
-      <element name="TDBListBox.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
-      </element>
-      <element name="TDBListBox.OnDragOver">
+      <element name="TDBListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TDBListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TDBListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TDBListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short>Event handler for the case when a control is dragged over another control</short>
       </element>
-      <element name="TDBListBox.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
-      </element>
-      <element name="TDBListBox.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
-      </element>
+      <element name="TDBListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TDBListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TDBRadioGroup.BorderSpacing">
         <short>Determines the border spacing for this control</short>
         <descr>
@@ -6057,6 +5997,240 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>
           <var>OnLayoutChange</var> - event handler for a change in the layout</short>
       </element>
+      <element name="TDBLookup">
+        <short>
+          <var>TDBLookup</var> - used as source of data by <var>TDBLookupListBox</var> or <var>TDBLookupComboBox</var>, to find data from a lookup table</short>
+        <descr>
+          <p>
+            <var>TDBLookup</var> component is typically owned by a Lookup control like <var>TDBLookupListBox</var> or <var>TDBLookupComboBox</var>.</p>
+          <p>The <var>ListSource</var> is the other dataset <var>TDataSource</var> from which to retrieve the lookup data</p>
+          <p>The <var>KeyField</var> is the lookup key in the <var>ListSource</var> which corresponds to the <var>DataField</var> value</p>
+          <p>The <var>ListField</var> is the name of the field in the <var>ListSource</var> to list into the <var>Items</var> property of the lookup control.</p>
+        </descr>
+      </element>
+      <element name="TDBLookup.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TDBLookup</var>: calls inherited <var>Create</var>, creates links with fields and data source, initialises ActiveChange and Editing properties</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
+      </element>
+      <element name="TDBLookup.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for TDBLookup: frees links and calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
+      </element>
+      <element name="TDBLookup.Initialize">
+        <short>
+          <var>Initialize</var> makes links between local Fields and the appropriate fields in the remote data source, then fetches the lookup data</short>
+      </element>
+      <element name="TDBLookup.KeyFieldValueOf">
+        <short>
+          <var>KeyFieldValueOf</var> - returns a key field value as a string from the given list field</short>
+      </element>
+      <element name="TDBLookup.ListFieldValueOf">
+        <short>
+          <var>ListFieldValueOf</var> - returns a listfield value as a string, given the key field value</short>
+      </element>
+      <element name="TDBLookup.KeyField">
+        <short>The name of the <var>KeyField</var> used in the lookup search</short>
+      </element>
+      <element name="TDBLookup.ListField">
+        <short>
+          <var>ListField</var> - the name of the list field used in the lookup search</short>
+      </element>
+      <element name="TDBLookup.ListFieldIndex">
+        <short>
+          <var>ListFieldIndex</var> - the index value of the list field</short>
+      </element>
+      <element name="TDBLookup.ListSource">
+        <short>
+          <var>ListSource</var> - the data source that contains the lookup list</short>
+      </element>
+      <element name="TCustomDBListBox">
+        <short>
+          <var>TCustomDBListBox</var> - base class for TDBListBox, a data-aware listbox for presenting list information from a database</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
+      </element>
+      <element name="TCustomDBListBox.EditingChange">
+        <short>
+          <var>EditingChange</var> - method for responding to a change in the <var>Editing</var> property</short>
+      </element>
+      <element name="TCustomDBListBox.FocusRequest">
+        <short>
+          <var>FocusRequest</var> - method for responding to a request to give this control focus</short>
+      </element>
+      <element name="TCustomDBListBox.GetDataField">
+        <short>
+          <var>GetDataField</var> - returns the name of the data field as a string</short>
+      </element>
+      <element name="TCustomDBListBox.GetDataSource">
+        <short>
+          <var>GetDataSource</var> - returns the identity of the data source</short>
+      </element>
+      <element name="TCustomDBListBox.GetField">
+        <short>
+          <var>GetField</var> - returns the identity of the field</short>
+      </element>
+      <element name="TCustomDBListBox.SetItems">
+        <short>
+          <var>SetItems</var> - places the specified Values into the Items property</short>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.SetItems">TCustomListBox.SetItems</link>
+        </seealso>
+      </element>
+      <element name="TCustomDBListBox.GetReadOnly">
+        <short>
+          <var>GetReadOnly</var> - fetches the ReadOnly status from the field datalink rather than using the inherited ReadOnly status</short>
+      </element>
+      <element name="TCustomDBListBox.SetReadOnly">
+        <short>
+          <var>SetReadOnly</var> - changes the datalink ReadOnly property as well as the local property, to that specified by <var>Value</var>
+        </short>
+      </element>
+      <element name="TCustomDBListBox.SetDataField">
+        <short>
+          <var>SetDataField</var> - links to the field in the datalink with the given name</short>
+      </element>
+      <element name="TCustomDBListBox.SetDataSource">
+        <short>
+          <var>SetDataSource</var> - changes the attached data source to the one specified by AValue</short>
+      </element>
+      <element name="TCustomDBListBox.CMGetDataLink">
+        <short>
+          <var>CMGetDataLink</var> - control message method for obtaining the data link</short>
+      </element>
+      <element name="TCustomDBListBox.FDataLink">
+        <short>
+          <var>FDataLink</var> - local variable holding the identity of the field data link</short>
+      </element>
+      <element name="TCustomDBListBox.DataChange">
+        <short>
+          <var>DataChange</var> - method for dealing with a change in the data</short>
+      </element>
+      <element name="TCustomDBListBox.KeyDown" link="#LCL.Controls.TWinControl.KeyDown"/>
+      <element name="TCustomDBListBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomDBListBox.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TCustomDBListBox.UpdateData">
+        <short>
+          <var>UpdateData</var> - method for applying any pending changes to the data</short>
+      </element>
+      <element name="TCustomDBListBox.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomDBListBox</var>: calls inherited <var>Create</var>, makes links and sets up event handlers for data change, change in <var>Editing</var> status and updating data</short>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Create">CustomListBox.Create</link>
+        </seealso>
+      </element>
+      <element name="TCustomDBListBox.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomEBListbox</var>: frees data links then calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Destroy">CustomListBox.Destroy</link>
+        </seealso>
+      </element>
+      <element name="TCustomDBListBox.Click" link="#LCL.Controls.TControl.Click"/>
+      <element name="TCustomDBListBox.EditingDone" link="#LCL.Controls.TControl.EditingDone"/>
+      <element name="TCustomDBListBox.Field">
+        <short>The <var>Field</var> to which the listbox belongs</short>
+      </element>
+      <element name="TCustomDBListBox.DataField">
+        <short>The name of the <var>DataField</var> to which the listbox belongs</short>
+      </element>
+      <element name="TCustomDBListBox.DataSource">
+        <short>The <var>DataSource</var> from which the lookup data will be fetched</short>
+      </element>
+      <element name="TCustomDBListBox.Items">
+        <short>
+          <var>Items</var> - the data that form the list in the box</short>
+        <descr>
+          <p>
+            <var>Items</var> - the data that form the list in the box</p>
+          <p>We need to overrride the write method for db aware.</p>
+          <p>The Read isn't an issue since the list will be updated on data change anyway</p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items">TCustomListBox.Items</link>
+        </seealso>
+      </element>
+      <element name="TCustomDBListBox.ReadOnly">
+        <short>
+          <var>ReadOnly</var> - if True, the data can only be read but not written or edited</short>
+      </element>
+      <element name="TDBListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDBLookupListBox">
+        <short>
+          <var>TDBLookupListBox</var>, a data-aware listbox for presenting lookup list information from a database</short>
+      </element>
+      <element name="TDBLookupListBox.DataChange">
+        <short>
+          <var>DataChange</var> - triggered by a change in the data: finds the index of the field containing th changed value</short>
+        <seealso>
+          <link id="#LCL.DbCtrls.TCustomDBListBox.DataChange">TCustomDBListBox.DataChange</link>
+        </seealso>
+      </element>
+      <element name="TDBLookupListBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TDBLookupListBox.UpdateData" link="#LCL.DbCtrls.TCustomDBListBox.UpdateData"/>
+      <element name="TDBLookupListBox.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TDBLookupListBox</var>: calls inherited <var>Create</var> then creates lookup and forms linkd</short>
+        <seealso>
+          <link id="#LCL.DbCtrls.TCustomDBListBox.Create">TCustomDBListBox.Create</link>
+        </seealso>
+      </element>
+      <element name="TDBLookupListBox.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TDBLookupListBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TDBLookupListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TDBLookupListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TDBLookupListBox.DataField" link="#LCL.DbCtrls.TCustomDBListBox.DataField"/>
+      <element name="TDBLookupListBox.DataSource" link="#LCL.DbCtrls.TCustomDBListBox.DataSource"/>
+      <element name="TDBLookupListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TDBLookupListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TDBLookupListBox.KeyField">
+        <short>The <var>KeyField</var> holding the data</short>
+      </element>
+      <element name="TDBLookupListBox.ListField">
+        <short>The <var>ListField</var> for the data</short>
+      </element>
+      <element name="TDBLookupListBox.ListFieldIndex">
+        <short>
+          <var>ListFieldIndex</var> - the index value for the listfield</short>
+      </element>
+      <element name="TDBLookupListBox.ListSource">
+        <short>
+          <var>ListSource</var> - the data source from which the list is obtained</short>
+      </element>
+      <element name="TDBLookupListBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TDBLookupListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TDBLookupListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TDBLookupListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TDBLookupListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TDBLookupListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TDBLookupListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TDBLookupListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TDBLookupListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TDBLookupListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TDBLookupListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TDBLookupListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TDBLookupListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TDBLookupListBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TDBLookupListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TDBLookupListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDBLookupListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TDBLookupListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TDBLookupListBox.ReadOnly" link="#LCL.DbCtrls.TCustomDBListBox.ReadOnly"/>
+      <element name="TDBLookupListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TDBLookupListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
+      <element name="TDBLookupListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TDBLookupListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TDBLookupListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex"/>
+      <element name="TDBLookupListBox.Visible" link="#LCL.Controls.TControl.Visible"/>
     </module>
     <!-- DbCtrls -->
   </package>
