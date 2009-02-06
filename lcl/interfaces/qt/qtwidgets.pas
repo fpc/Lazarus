@@ -3610,7 +3610,8 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
-  setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
+  if not (csDesigning in LCLObject.ComponentState) then
+    setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
 end;
 
 procedure TQtAbstractButton.setTextColor(const Value: PQColor);
@@ -4549,7 +4550,8 @@ end;
 procedure TQtGroupBox.setColor(const Value: PQColor);
 begin
   inherited setColor(Value);
-  setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
+  if not (csDesigning in LCLObject.ComponentState) then
+    setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
 end;
 
 procedure TQtGroupBox.setText(const W: WideString);
