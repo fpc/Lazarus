@@ -208,6 +208,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
 
+    procedure CheckCursor;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -1415,6 +1416,12 @@ begin
     FCursorPos := GetSelStart;
     if not HasSelection then SetCursorPos;
   end;
+end;
+
+procedure TCustomMaskEdit.CheckCursor;
+begin
+  if IsMasked then
+    SetCursorPos;
 end;
 
 procedure TCustomMaskEdit.CutToClipBoard;

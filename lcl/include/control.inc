@@ -2158,7 +2158,7 @@ end;
 {------------------------------------------------------------------------------
        TControl SetAutoSize
 ------------------------------------------------------------------------------}
-procedure TControl.SetAutoSize(const value : Boolean);
+procedure TControl.SetAutoSize(value : Boolean);
 Begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
@@ -4436,7 +4436,7 @@ end;
    Method:  TControl.SetBiDiMode
  ------------------------------------------------------------------------------}
 
-procedure TControl.SetBiDiMode(const AValue: TBiDiMode);
+procedure TControl.SetBiDiMode(AValue: TBiDiMode);
 begin
   if FBiDiMode=AValue then exit;
   FBiDiMode:=AValue;
@@ -4448,7 +4448,7 @@ end;
    Method:  TControl.SetParentBiDiMode
  ------------------------------------------------------------------------------}
 
-procedure TControl.SetParentBiDiMode(const AValue: Boolean);
+procedure TControl.SetParentBiDiMode(AValue: Boolean);
 begin
   if FParentBiDiMode=AValue then exit;
   FParentBiDiMode:=AValue;

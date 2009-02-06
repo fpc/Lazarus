@@ -1043,7 +1043,7 @@ begin
     inherited DoAutoSize;
 end;
 
-procedure TCustomForm.SetAutoSize(const Value: Boolean);
+procedure TCustomForm.SetAutoSize(Value: Boolean);
 begin
   if Value=AutoSize then exit;
   if Value=true then

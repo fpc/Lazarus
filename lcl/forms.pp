@@ -487,7 +487,7 @@ type
     function VisibleIsStored: boolean;
     procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
-    procedure SetAutoSize(const Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); override;
   protected
     // drag and dock
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;

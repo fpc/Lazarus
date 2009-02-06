@@ -1435,7 +1435,7 @@ type
     procedure UpdateVisibleToolbar;
     function GroupAllUpAllowed: boolean;
     function DialogChar(var Message: TLMKey): boolean; override;
-    procedure SetAutoSize(const Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;

@@ -729,7 +729,7 @@ end;
 
   Assigns items for ComboBox from a stringlist.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.SetItems(Value : TStrings);
+procedure TCustomComboBox.SetItems(const Value : TStrings);
 begin
   if (Value <> FItems) then begin
     FItems.Assign(Value);
@@ -917,7 +917,7 @@ end;
 
   Sets ths index of the currently selected item in the combobox.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.SetItemIndex(Val : integer);
+procedure TCustomComboBox.SetItemIndex(const Val : integer);
 begin
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex A ',DbgSName(Self),' Text="',Text,'"');

@@ -386,7 +386,7 @@ begin
   CopyPropertiesFromMenuItem(FMenuItem);
 end;
 
-procedure TToolButton.SetAutoSize(const Value: Boolean);
+procedure TToolButton.SetAutoSize(Value: Boolean);
 begin
   if Value = AutoSize then exit;
   inherited SetAutoSize(Value);

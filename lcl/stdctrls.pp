@@ -282,7 +282,6 @@ type
     function GetItemWidth: Integer;
     procedure SetAutoComplete(const AValue: boolean);
     procedure SetItemWidth(const AValue: Integer);
-    procedure SetItems(Value: TStrings);
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
@@ -305,6 +304,7 @@ type
     procedure Select; dynamic;
     procedure DropDown; dynamic;
     procedure GetItems; dynamic;
+    procedure SetItems(const Value: TStrings); virtual;
     procedure CloseUp; dynamic;
     procedure AdjustDropDown; virtual;
 
@@ -319,7 +319,7 @@ type
     procedure SetDropDownCount(const AValue: Integer); virtual;
     procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
-    procedure SetItemIndex(Val: integer); virtual;
+    procedure SetItemIndex(const Val: integer); virtual;
     procedure SetMaxLength(AValue: integer); virtual;
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;

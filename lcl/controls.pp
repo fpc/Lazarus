@@ -955,7 +955,7 @@ type
                                        Operation: TAnchorSideChangeOperation); virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
-    procedure SetAutoSize(const Value: Boolean); virtual;
+    procedure SetAutoSize(Value: Boolean); virtual;
     procedure BoundsChanged; dynamic;
     function CreateControlBorderSpacing: TControlBorderSpacing; virtual;
     procedure DoConstraintsChange(Sender: TObject); virtual;
@@ -979,8 +979,8 @@ type
     procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetBiDiMode(const AValue: TBiDiMode); virtual;
-    procedure SetParentBiDiMode(const AValue: Boolean); virtual;
+    procedure SetBiDiMode(AValue: TBiDiMode); virtual;
+    procedure SetParentBiDiMode(AValue: Boolean); virtual;
     function IsAParentAligning: boolean;
     function GetClientOrigin: TPoint; virtual;
     function GetClientRect: TRect; virtual;// visual size of client area
