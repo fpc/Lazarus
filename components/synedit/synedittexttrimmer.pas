@@ -78,7 +78,6 @@ type
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     procedure Exchange(Index1, Index2: integer); override;
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
     procedure Lock;

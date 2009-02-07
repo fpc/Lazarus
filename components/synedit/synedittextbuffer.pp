@@ -202,10 +202,7 @@ type
                 AHandler: TStringListLineCountEvent); override;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
-{begin}                                                                         //mh 2000-10-19
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
-{end}                                                                           //mh 2000-10-19
     property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;

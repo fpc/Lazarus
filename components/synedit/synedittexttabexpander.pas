@@ -60,7 +60,6 @@ TSynEditStringTabExpander = class(TSynEditStringsLinked)
     constructor Create(ASynStringSource: TSynEditStrings);
     destructor Destroy; override;
 
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
 
     // TODO: maybe use inherited for utf8?
