@@ -142,7 +142,7 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure Loaded; override;
-    procedure UpdateHandleObject(PanelIndex: integer); virtual;
+    procedure UpdateHandleObject(PanelIndex: integer; PanelParts: TPanelParts); virtual;
     procedure CalculatePreferredSize(
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -2786,7 +2786,8 @@ uses
   WSComCtrls;
 
 const
-  ScrollBarWidth=0;
+  ScrollBarWidth = 0;
+  AllPanelsParts = [Low(TPanelPart)..High(TPanelPart)];
 
 { Toolbar menu support }
 

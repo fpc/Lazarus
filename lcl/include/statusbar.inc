@@ -53,7 +53,7 @@ begin
   begin
     FSimplePanel := Value;
     //debugln('TStatusBar.SetSimplePanel FSimplePanel=',dbgs(FSimplePanel),' ',dbgsName(Self));
-    UpdateHandleObject(-1);
+    UpdateHandleObject(-1, AllPanelsParts);
   end;
 end;
 
@@ -134,7 +134,7 @@ procedure TStatusBar.CreateWnd;
 begin
   inherited CreateWnd;
   if FHandleObjectNeedsUpdate then
-    UpdateHandleObject(FHandleUpdatePanelIndex);
+    UpdateHandleObject(FHandleUpdatePanelIndex, AllPanelsParts);
 end;
 
 procedure TStatusBar.DestroyWnd;
@@ -148,10 +148,10 @@ procedure TStatusBar.Loaded;
 begin
   inherited Loaded;
   if FHandleObjectNeedsUpdate then
-    UpdateHandleObject(FHandleUpdatePanelIndex);
+    UpdateHandleObject(FHandleUpdatePanelIndex, AllPanelsParts);
 end;
 
-procedure TStatusBar.UpdateHandleObject(PanelIndex: integer);
+procedure TStatusBar.UpdateHandleObject(PanelIndex: integer; PanelParts: TPanelParts);
 begin
   if (not HandleAllocated) or (csDestroying in ComponentState) or
      ((PanelIndex>0) and SimplePanel) then
@@ -226,7 +226,7 @@ begin
   dec(FUpdateLock);
   if (FUpdateLock=0) then begin
     if FHandleObjectNeedsUpdate then
-      UpdateHandleObject(FHandleUpdatePanelIndex);
+      UpdateHandleObject(FHandleUpdatePanelIndex, AllPanelsParts);
   end;
 end;
 
@@ -262,7 +262,7 @@ procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
   PanelParts: TPanelParts);
 begin
   if (PanelParts=[]) then exit;
-  UpdateHandleObject(PanelIndex);
+  UpdateHandleObject(PanelIndex, PanelParts);
 end;
 
 {------------------------------------------------------------------------------
