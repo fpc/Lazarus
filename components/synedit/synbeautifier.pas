@@ -68,7 +68,7 @@ begin
       Inc(Result);
     end;
     if Physical and (Result>0) then
-      Result := TSynEdit(Editor).LogicalToPhysicalCol(Line, Result+1)-1;
+      Result := TSynEdit(Editor).LogicalToPhysicalCol(Line, -1, Result+1)-1; // TODO, Need the real index of the line
   end else
     Result := 0;
 end;
@@ -98,7 +98,7 @@ begin
   if SpaceCount2 = SpaceCount1 then
     SpaceCount2 := 0;
   // remove visible spaces
-  LogSpacePos := TSynEdit(Editor).PhysicalToLogicalCol(Line, SpaceCount2 + 1);
+  LogSpacePos := TSynEdit(Editor).PhysicalToLogicalCol(Line, PhysCaret.y-1, SpaceCount2 + 1);
   CaretNewX :=  SpaceCount2 + 1;
   DelChars := copy(Line, LogSpacePos, PhysCaret.X - LogSpacePos);
   InsChars := ''; // TODO: if tabs were removed, maybe fill-up with spaces
@@ -132,7 +132,8 @@ begin
     sbitSpace:
       InsChars := StringOfChar(' ', SpaceCount2);
     sbitCopySpaceTab:
-      InsChars := copy(Temp, 1, TSynEdit(Editor).PhysicalToLogicalCol(Temp, SpaceCount2+1)-1);
+      InsChars := copy(Temp, 1, TSynEdit(Editor).PhysicalToLogicalCol(Temp,
+                                                 BackCounter, SpaceCount2+1)-1);
     sbitPositionCaret:
       if Line <> '' then
         InsChars := StringOfChar(' ', SpaceCount2)
@@ -140,7 +141,7 @@ begin
         InsChars := '';
   end;
   Result := InsChars + Line;
-  CaretNewX := TSynEdit(Editor).LogicalToPhysicalCol(Result, SpaceCount2+1);
+  CaretNewX := TSynEdit(Editor).LogicalToPhysicalCol(Result, PhysCaret.y - 1, SpaceCount2+1);
 end;
 
 function TSynBeautifier.GetIndentForLine(Editor: TSynEditBase; const Line: string; const PhysCaret: TPoint): Integer;

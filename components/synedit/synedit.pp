@@ -471,7 +471,6 @@ type
     function GetLineText: string;
     {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
-    function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetCFDividerDrawLevel(const AValue: Integer);
     function  GetCFDividerDrawLevel : Integer;
@@ -756,18 +755,13 @@ type
     {$IFDEF SYN_LAZARUS}
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
-    function LogicalToPhysicalCol(const Line: string;
-                                  LogicalPos: integer): integer;
-    function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
-                  LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    function LogicalToPhysicalCol(const Line: String; Index, LogicalPos
+                              : integer): integer;
     // Char to Byte
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
-                                  PhysicalPos: integer): integer;
-    function PhysicalToLogicalCol(const Line: string;
-                 PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-    function PhysicalLineLength(Line: PChar; LineLen: integer;
-                                WithTabs: boolean): integer;
+                                  Index, PhysicalPos: integer): integer;
+    function PhysicalLineLength(Line: String; Index: integer): integer;
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
@@ -1815,22 +1809,6 @@ begin
     Result:=UTF8CharacterLength(@Line[CharStartPos])
   else
     Result:=1;
-end;
-
-function TCustomSynEdit.AdjustPhysPosToCharacterStart(Line: integer;
-  PhysPos: integer): integer;
-var
-  s: string;
-  BytePos: LongInt;
-begin
-  Result:=PhysPos;
-  if Result<1 then
-    Result:=1
-  else if (Line>=1) and (Line<=FTheLinesView.Count) then begin
-    s:=FTheLinesView[Line-1];
-    BytePos:=PhysicalToLogicalCol(s,Result);
-    Result:=LogicalToPhysicalCol(s,BytePos);
-  end;
 end;
 
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
@@ -3685,7 +3663,7 @@ begin
     if not (eoScrollPastEol in fOptions) then begin
       {$IFDEF SYN_LAZARUS}
       Line:=FTheLinesView[Value.Y-1];
-      nMaxX := PhysicalLineLength(PChar(Line),length(Line),true)+1;
+      nMaxX := PhysicalLineLength(Line, Value.Y-1) + 1;
       {$ELSE}
       nMaxX := Length(FTheLinesView[Value.Y - 1]) + 1;                                  //abc 2000-09-30
       {$ENDIF}
@@ -6158,12 +6136,8 @@ begin
               // join this line with the last line if possible
               if CaretY > 1 then begin
                 CaretY := CaretY - 1;
-                {$IFDEF SYN_LAZARUS}
-                CaretX := LogicalToPhysicalCol(FTheLinesView[CaretY - 1],
-                                               Length(FTheLinesView[CaretY - 1]) + 1);
-                {$ELSE}
-                CaretX := Length(Lines[CaretY - 1]) + 1;
-                {$ENDIF}
+                CaretX := PhysicalLineLength(FTheLinesView[CaretY - 1],
+                                             CaretY - 1) + 1;
                 FTheLinesView.Delete(CaretY);
                 DoLinesDeleted(CaretY, 1);
                 {$IFNDEF SYN_LAZARUS}
@@ -6194,9 +6168,9 @@ begin
                   Helper := Copy(Temp, CaretX, counter);
                   VDelete(Temp, CaretX, counter, drLTR);
                   {$ELSE USE_UTF8BIDI_LCL}
-                  LogCaretXY.X:=PhysicalToLogicalCol(Temp,CaretX-counter);
+                  LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX-counter);
                   LogCounter:=GetCharLen(Temp,LogCaretXY.X);
-                  CaretX := LogicalToPhysicalCol(Temp,LogCaretXY.X);
+                  CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
                   Helper := Copy(Temp, LogCaretXY.X, LogCounter);
                   System.Delete(Temp, LogCaretXY.X, LogCounter);
                   //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
@@ -6263,7 +6237,7 @@ begin
               {$IFDEF SYN_LAZARUS}
                 Counter:=GetCharLen(Temp,LogCaretXY.X);
                 Helper := Copy(Temp, LogCaretXY.X, Counter);
-                Caret.X := LogicalToPhysicalCol(Temp,LogCaretXY.X+Counter);
+                Caret.X := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X+Counter);
                 Caret.Y := CaretY;
 {$IFDEF USE_UTF8BIDI_LCL}
                 VDelete(Temp, LogCaretXY.X, Counter, drLTR);
@@ -6307,7 +6281,7 @@ begin
         end;
       ecDeleteWord, ecDeleteEOL:
         if not ReadOnly then begin
-          Len := LogicalToPhysicalCol(LineText,Length(LineText)+1)-1;
+          Len := LogicalToPhysicalCol(LineText, CaretY-1,Length(LineText)+1)-1;
           Helper := '';
           Caret := CaretXY;
           if Command = ecDeleteWord then begin
@@ -8114,17 +8088,17 @@ begin
           Dec(iLine);
           if iLine < 0 then break;
           PrevLine := FTheLinesView[iLine];
-        until PhysicalLineLength(PChar(PrevLine),length(PrevLine),true) > OldCaretX - 1;
+        until PhysicalLineLength(PrevLine, iLine) > OldCaretX - 1;
 
         if iLine >= 0 then begin
-          p := @PrevLine[PhysicalToLogicalCol(PrevLine,OldCaretX)];
+          p := @PrevLine[PhysicalToLogicalCol(PrevLine, iLine, OldCaretX)];
           // scan over non-whitespaces
           while not (p^ in [#0, #9, #32]) do
             inc(p);
           // scan over whitespaces
           while (p^ in [#9, #32]) do
             inc(p);
-          i := LogicalToPhysicalCol(PrevLine, p-@PrevLine[1]+1) - CaretX;
+          i := LogicalToPhysicalCol(PrevLine, iLine, p-@PrevLine[1]+1) - CaretX;
         end;
       end;
     end;
@@ -9304,28 +9278,18 @@ end;
 {$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
-  LogicalPos: integer): integer;
+function TCustomSynEdit.LogicalToPhysicalCol(const Line: String;
+  Index, LogicalPos: integer): integer;
+// LogicalPos is 1-based
+// Index 0-based LineNumber
 begin
-  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalCol(PChar(Pointer(Line)),
-    length(Line),LogicalPos,1,1);
+  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalCol(Line, Index,
+                                                                LogicalPos);
 end;
 
-function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
-  LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-// Note: LogicalPos, StartBytePos, StartPhysicalPos start at 1
+function TCustomSynEdit.PhysicalLineLength(Line: String; Index: integer): integer;
 begin
-  Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalCol(Line, LineLen, LogicalPos,
-                                        StartBytePos, StartPhysicalPos);
-end;
-
-function TCustomSynEdit.PhysicalLineLength(Line: PChar; LineLen: integer;
-  WithTabs: boolean): integer;
-begin
-  if WithTabs then
-    Result:=LogicalToPhysicalCol(Line,LineLen,LineLen+1,1,1)-1
-  else
-    Result:=UTF8Length(Line,LineLen);
+  Result:=LogicalToPhysicalCol(Line, Index, length(Line)+1) - 1
 end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
@@ -9334,16 +9298,10 @@ begin
 end;
 
 function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
-  PhysicalPos: integer): integer;
+  Index, PhysicalPos: integer): integer;
 begin
-  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalCol(Line,PhysicalPos,1,1);
-end;
-
-function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
-  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-begin
-  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalCol(Line, PhysicalPos,
-    StartBytePos, StartPhysicalPos);
+  Result := TSynEditStrings(FTheLinesView).PhysicalToLogicalCol(Line, Index,
+                                                                PhysicalPos);
 end;
 
 function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;

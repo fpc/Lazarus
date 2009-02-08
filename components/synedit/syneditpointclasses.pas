@@ -644,7 +644,8 @@ var
           else begin
             TempString := FLines[FCaret.LinePos - 1];
             Len := Length(TempString);
-            LogicalInsertPos := FLines.PhysicalToLogicalCol(TempString,InsertPos);
+            LogicalInsertPos := FLines.PhysicalToLogicalCol(TempString,
+                                                 FCaret.LinePos - 1, InsertPos);
             if Len < LogicalInsertPos
             then begin
               TempString :=

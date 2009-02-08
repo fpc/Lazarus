@@ -41,8 +41,6 @@ type
 TSynEditStringTabExpander = class(TSynEditStringsLinked)
   private
     FTabWidth: integer;
-    FConvertTabsProc: TConvertTabsProcEx;
-    FSimulateConvertTabsProc: TSimulateConvertTabsProcEx;
     FIndexOfLongestLine: Integer;
     function GetLengthOfLine(Index: Integer): integer;
     procedure SetLengthOfLine(Index: Integer; const AValue: integer);
@@ -53,6 +51,7 @@ TSynEditStringTabExpander = class(TSynEditStringsLinked)
     function  GetTabWidth : integer;
     procedure SetTabWidth(const AValue : integer);
     function  GetExpandedString(Index: integer): string; override;
+    function  GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     function  GetLengthOfLongestLine: integer; override;
     property LengthOfLine[Index: Integer]: integer
       read GetLengthOfLine write SetLengthOfLine;
@@ -61,20 +60,24 @@ TSynEditStringTabExpander = class(TSynEditStringsLinked)
     destructor Destroy; override;
 
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
-
-    // TODO: maybe use inherited for utf8?
-    function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
-                  LogicalPos, StartBytePos,
-                  StartPhysicalPos: integer): integer; override;
-    function PhysicalToLogicalCol(const Line: string;
-                  PhysicalPos, StartBytePos,
-                  StartPhysicalPos: integer): integer; override;
   public
     property TabWidth: integer read GetTabWidth write SetTabWidth;
   end;
 
 
 implementation
+
+function GetHasTabs(pLine: PChar): boolean;
+begin
+  if Assigned(pLine) then begin
+    while (pLine^ <> #0) do begin
+      if (pLine^ = #9) then break;
+      Inc(pLine);
+    end;
+    Result := (pLine^ = #9);
+  end else
+    Result := FALSE;
+end;
 
 { TSynEditStringTabExpander }
 
@@ -117,8 +120,6 @@ begin
   if FTabWidth = AValue then exit;
 
   FTabWidth := AValue;
-  FConvertTabsProc := GetBestConvertTabsProcEx(fTabWidth);
-  FSimulateConvertTabsProc := GetBestSimulateConvertTabsProcEx(fTabWidth);
   FIndexOfLongestLine := -1;
   for i := 0 to Count - 1 do
     if not(LengthOfLine[i] >= NoTabLengthOffset) then
@@ -136,33 +137,54 @@ end;
 
 function TSynEditStringTabExpander.ExpandedString(Index: integer): string;
 var
-  HasTabs: boolean;
+  Line: String;
+  CharWidths: TPhysicalCharWidths;
+  i, j, l: Integer;
 begin
-  if fSynStrings[Index] = '' then begin
-    Result := '';
-    LengthOfLine[Index] := 0 + NoTabLengthOffset;
+  Line := fSynStrings[Index];
+  if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
+    Result := Line;
+    LengthOfLine[Index] := length(Result) + NoTabLengthOffset;
   end else begin
-    Result := fConvertTabsProc(fSynStrings[Index], fTabWidth, HasTabs);
-    if HasTabs then
-      LengthOfLine[Index] := length(Result)
-    else
-      LengthOfLine[Index] := length(Result) + NoTabLengthOffset;
+    CharWidths := GetPhysicalCharWidths(Line, Index);
+    l := 0;
+    for i := 0 to length(CharWidths)-1 do
+      l := l + CharWidths[i];
+    SetLength(Result, l);
+
+    l := 1;
+    for i := 1 to length(CharWidths) do begin
+      if Line[i] <> #9 then begin
+        Result[l] := Line[i];
+        inc(l);
+      end else begin
+        for j := 1 to CharWidths[i-1] do begin
+          Result[l] := ' ';
+          inc(l);
+        end;
+      end;
+    end;
+    LengthOfLine[Index] := length(Result);
   end;
 end;
 
 function TSynEditStringTabExpander.ExpandedStringLength(Index: integer): Integer;
 var
-  HasTabs: boolean;
+  Line: String;
+  CharWidths: TPhysicalCharWidths;
+  i, j, l: Integer;
 begin
-  if fSynStrings[Index] = '' then begin
+  Line := fSynStrings[Index];
+  if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
     Result := 0;
-    LengthOfLine[Index] := 0 + NoTabLengthOffset;
+    LengthOfLine[Index] := Length(Line) + NoTabLengthOffset;
   end else begin
-    Result := fSimulateConvertTabsProc(fSynStrings[Index], fTabWidth, HasTabs);
-    if HasTabs then
-      LengthOfLine[Index] := Result
-    else
-      LengthOfLine[Index] := Result + NoTabLengthOffset;
+    CharWidths := GetPhysicalCharWidths(Line, Index);
+    Result := 0;
+    for i := 0 to length(CharWidths)-1 do
+      Result := Result + CharWidths[i];
+
+    LengthOfLine[Index] := Result;
   end;
 end;
 
@@ -175,6 +197,21 @@ begin
       Result := ExpandedString(Index);
   end else
     Result := '';
+end;
+
+function TSynEditStringTabExpander.GetPhysicalCharWidths(const Line: String;
+  Index: Integer): TPhysicalCharWidths;
+var
+  i, p: Integer;
+begin
+  Result := inherited GetPhysicalCharWidths(Line, Index);
+  p := 0;
+  for i := 0 to length(Line) -1 do begin
+    if Result[i] = 0 then continue;
+    if Line[i+1] = #9 then
+      Result[i] := FTabWidth - p mod FTabWidth;
+    p := p + Result[i];
+  end
 end;
 
 function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
@@ -202,75 +239,6 @@ begin
     if Result >= NoTabLengthOffset then Result := Result -  NoTabLengthOffset;
   end else
     Result := 0;
-end;
-
-function TSynEditStringTabExpander.LogicalToPhysicalCol(Line: PChar;
-  LineLen: integer; LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-var
-  BytePos, ByteLen: integer;
-  ScreenPos: integer;
-begin
-  ByteLen := LineLen;
-  // map UTF8 and Tab chars
-  ScreenPos := StartPhysicalPos;
-  BytePos:= StartBytePos;
-  while BytePos<LogicalPos do begin
-    if (BytePos <= ByteLen) then begin
-      if Line[BytePos-1] = #9 then begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
-        inc(BytePos);
-      end else begin
-        inc(ScreenPos);
-        if IsUTF8 then
-          inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
-        else
-          inc(BytePos);
-      end;
-    end else begin
-      // beyond end of line
-      inc(ScreenPos,LogicalPos-BytePos);
-      break;
-    end;
-  end;
-  if (BytePos>LogicalPos) and (ScreenPos>StartPhysicalPos) then
-    dec(ScreenPos);
-  Result := ScreenPos;
-end;
-
-function TSynEditStringTabExpander.PhysicalToLogicalCol(const Line: string;
-  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-var
-  BytePos, ByteLen: integer;
-  ScreenPos: integer;
-  PLine: PChar;
-begin
-  ByteLen := Length(Line);
-  ScreenPos := StartPhysicalPos;
-  BytePos := StartBytePos;
-  PLine := PChar(Line);
-  // map utf and tab chars
-  while ScreenPos < PhysicalPos do begin
-    if (BytePos <= ByteLen) then begin
-      if (PLine[BytePos-1] <> #9) then begin
-        inc(ScreenPos);
-        if IsUTF8 then
-          inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
-        else
-          inc(BytePos);
-      end else begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
-        inc(BytePos);
-      end;
-    end else begin
-      // beyond end of line
-      inc(BytePos,PhysicalPos-ScreenPos);
-      break;
-    end;
-  end;
-  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos-2<ByteLen)
-  and (PLine[BytePos-2]=#9) then
-    dec(BytePos);
-  Result := BytePos;
 end;
 
 end.

@@ -109,7 +109,7 @@ begin
         and ((IndentLen>length(s)) or (s[IndentLen] in [#9,' '])) do
           inc(IndentLen);
       end;
-      IndentLen:=AEditor.LogicalToPhysicalCol(s,IndentLen);// consider tabs
+      IndentLen:=AEditor.LogicalToPhysicalCol(s, p.y - 1, IndentLen);// consider tabs
       dec(IndentLen);
     end;
     p := AEditor.BlockBegin;

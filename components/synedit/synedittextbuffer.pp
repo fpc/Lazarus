@@ -200,6 +200,7 @@ type
                 AHandler: TStringListLineCountEvent); override;
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); override;
+    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -707,6 +708,29 @@ begin
   else
     Result := 0;
 end;
+
+// Maps the Physical Width (ScreenCells) to each character
+// Multibyte Chars have thw width on the first byte, and a 0 Width for all other bytes
+function TSynEditStringList.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
+var
+  i, j: Integer;
+begin
+  SetLength(Result, Length(Line));
+  i := 0;
+  j := 0;
+  while i < length(Line) do begin
+    if j > 0 then begin
+      Result[i] := 0;
+      dec(j);
+    end else begin
+      Result[i] := 1;
+      if IsUtf8 then
+        j := UTF8CharacterLength(@Line[i+1]) - 1;
+    end;
+    inc(i);
+  end;
+end;
+
 {end}                                                                           //mh 2000-10-19
 
 function TSynEditStringList.GetObject(Index: integer): TObject;
