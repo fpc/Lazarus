@@ -24,6 +24,7 @@ of this file under either the MPL or the GPL.
 unit SynEditFoldedView;
 
 {$mode objfpc}{$H+}
+{$coperators on}
 {$IFDEF CPUPOWERPC} {$INLINE OFF} {$ENDIF} (* Workaround for bug 12576 (fpc) see bugs.freepascal.org/view.php?id=12576 *)
 
 interface
