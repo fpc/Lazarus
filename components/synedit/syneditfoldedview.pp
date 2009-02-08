@@ -786,9 +786,9 @@ procedure TSynTextFoldAVLTree.debug;
     if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
     Result := debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
     If Result <> ANode.LeftCount then  debugln([ind,'   ***** Leftcount was ',Result, ' but should be ', ANode.LeftCount]);
-    Result += debug2(ind+'   ', 'R', ANode.Right, ANode, offset+ANode.LineOffset);
+    Result := Result + debug2(ind+'   ', 'R', ANode.Right, ANode, offset+ANode.LineOffset);
     debug2(ind+'  #', 'N', ANode.Nested, nil, offset+ANode.LineOffset);
-    Result += ANode.LineCount;
+    Result := Result + ANode.LineCount;
   end;
 begin
   debug2('', '-', fRoot, nil, 0);
