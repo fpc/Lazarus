@@ -278,7 +278,7 @@ begin
   WParam := WParam or StatusPanel.Index;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(Utf8Decode(Text))))
+      Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(Utf8Decode(Text))))
     else
       Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(Text))));
   {$else}
@@ -292,7 +292,8 @@ var
   PanelIndex: integer;
   CurrentRight: integer;
 begin
-  if StatusBar.Panels.Count=0 then begin
+  if StatusBar.Panels.Count=0 then
+  begin
     // SETPARTS 0,0 does not work :S
     Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
     Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PChar('')));
@@ -301,7 +302,8 @@ begin
   Getmem(Rights, StatusBar.Panels.Count * SizeOf(integer));
   try
     CurrentRight := 0;
-    for PanelIndex := 0 to StatusBar.Panels.Count-2 do begin
+    for PanelIndex := 0 to StatusBar.Panels.Count - 2 do
+    begin
       CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
       Rights[PanelIndex] := CurrentRight;
     end;
