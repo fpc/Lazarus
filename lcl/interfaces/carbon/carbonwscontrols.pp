@@ -280,7 +280,7 @@ class procedure TCarbonWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
   
-  TCarbonWidget(AWinControl.Handle).ShowHide(AWinControl.Visible);
+  TCarbonWidget(AWinControl.Handle).ShowHide(AWinControl.HandleObjectShouldBeVisible);
 end;
 
 {------------------------------------------------------------------------------
