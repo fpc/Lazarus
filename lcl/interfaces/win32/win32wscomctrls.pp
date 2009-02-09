@@ -44,6 +44,11 @@ type
   { TWin32WSStatusBar }
 
   TWin32WSStatusBar = class(TWSStatusBar)
+  public
+    class procedure DoUpdate(const AStatusBar: TStatusBar);
+    class procedure DoSetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+    class function GetUpdated(const AStatusBar: TStatusBar): Boolean;
+    class procedure SetUpdated(const AStatusBar: TStatusBar; const Value: Boolean);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
@@ -213,6 +218,9 @@ type
 
 implementation
 
+type
+  TStatusPanelAccess = class(TStatusPanel);
+
 {$I win32wscustomlistview.inc }
 
 
@@ -292,7 +300,7 @@ var
   PanelIndex: integer;
   CurrentRight: integer;
 begin
-  if StatusBar.Panels.Count=0 then
+  if StatusBar.Panels.Count = 0 then
   begin
     // SETPARTS 0,0 does not work :S
     Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
@@ -330,30 +338,67 @@ begin
   else
     Control := Info^.WinControl;
 
-  // Paul: next is a slightly modified code of TThemeManager.StatusBarWindowProc
-  // of Mike Lischke Theme manager library (Mike granted us permition to use his code)
-  
-  case Msg of
-    WM_NCCALCSIZE:
-      begin
-        // We need to override the window class' CS_HREDRAW and CS_VREDRAW styles but the following
-        // does the job very well too.
-        // Note: this may produce trouble with embedded controls (e.g. progress bars).
-        if WParam <> 0 then
-          Result := CallDefaultWindowProc(Window, Msg, WParam, LParam) or WVR_REDRAW;
-      end;
-    WM_ERASEBKGND:
-      begin
-        Details := ThemeServices.GetElementDetails(tsStatusRoot);
-        ThemeServices.DrawElement(HDC(WParam), Details, Control.ClientRect);
-        Result := 1;
-      end;
-    else
-      Result := WindowProc(Window, Msg, WParam, LParam);
-  end;
+  if Msg = WM_PAINT then
+  begin
+    TWin32WSStatusBar.DoUpdate(TStatusBar(Control));
+    Result := WindowProc(Window, Msg, WParam, LParam);
+  end
+  else
+  if ThemeServices.ThemesEnabled then
+  begin
+    // Paul: next is a slightly modified code of TThemeManager.StatusBarWindowProc
+    // of Mike Lischke Theme manager library (Mike granted us permition to use his code)
+    case Msg of
+      WM_NCCALCSIZE:
+        begin
+          // We need to override the window class' CS_HREDRAW and CS_VREDRAW styles but the following
+          // does the job very well too.
+          // Note: this may produce trouble with embedded controls (e.g. progress bars).
+          if WParam <> 0 then
+            Result := CallDefaultWindowProc(Window, Msg, WParam, LParam) or WVR_REDRAW;
+        end;
+      WM_ERASEBKGND:
+        begin
+          Details := ThemeServices.GetElementDetails(tsStatusRoot);
+          ThemeServices.DrawElement(HDC(WParam), Details, Control.ClientRect);
+          Result := 1;
+        end;
+      else
+        Result := WindowProc(Window, Msg, WParam, LParam);
+    end;
+  end
+  else
+    Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 { TWin32WSStatusBar }
+
+class procedure TWin32WSStatusBar.DoUpdate(const AStatusBar: TStatusBar);
+var
+  PanelIndex: integer;
+begin
+  // if we catch WM_PAINT and no update is needed then skip processing or we will
+  // do endless repaint
+
+  if GetUpdated(AStatusBar) then
+    Exit;
+
+  if AStatusBar.SimplePanel then
+    DoSetPanelText(AStatusBar, 0)
+  else
+  begin
+    // we store a flag that we need to update panel in the IntfFlag property
+    for PanelIndex := 0 to AStatusBar.Panels.Count - 1 do
+      if TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag <> 1 then
+      begin
+        UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+        TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag := 1;
+      end;
+  end;
+
+  // update is done => set the flag
+  SetUpdated(AStatusBar, True);
+end;
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -370,8 +415,7 @@ begin
       Flags := Flags or SBARS_SIZEGRIP;
     pClassName := STATUSCLASSNAME;
     WindowTitle := StrCaption;
-    if ThemeServices.ThemesEnabled then
-      SubClassWndProc := @StatusBarWndProc;
+    SubClassWndProc := @StatusBarWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -383,9 +427,15 @@ begin
 end;
 
 class procedure TWin32WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+var
+  ARect: TRect;
 begin
   UpdateStatusBarPanelWidths(AStatusBar);
-  UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+  TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag := 0;
+  SetUpdated(AStatusBar, False);
+  // request invalidate of only panel rectange
+  SendMessage(AStatusBar.Handle, SB_GETRECT, PanelIndex, LParam(@ARect));
+  InvalidateRect(AStatusBar.Handle, ARect, False);
 end;
 
 class procedure TWin32WSStatusBar.SetColor(const AWinControl: TWinControl);
@@ -404,12 +454,12 @@ begin
   PreferredHeight := PreferredStatusBarHeight;
 end;
 
-class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TWin32WSStatusBar.DoSetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
   if AStatusBar.SimplePanel then
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(Utf8Decode(AStatusBar.SimpleText))))
+      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(Utf8Decode(AStatusBar.SimpleText))))
     else
       Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
   {$else}
@@ -417,6 +467,28 @@ begin
   {$endif}
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
+
+class function TWin32WSStatusBar.GetUpdated(const AStatusBar: TStatusBar): Boolean;
+begin
+  Result := GetProp(AStatusBar.Handle, 'lcl-statusbar-updated') = 1;
+end;
+
+class procedure TWin32WSStatusBar.SetUpdated(const AStatusBar: TStatusBar;
+  const Value: Boolean);
+begin
+  SetProp(AStatusBar.Handle, 'lcl-statusbar-updated', Ord(Value));
+end;
+
+class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+  if AStatusBar.SimplePanel then
+  begin
+    SetUpdated(AStatusBar, False);
+    AStatusBar.Invalidate;
+  end
+  else
+    PanelUpdate(AStatusBar, PanelIndex);
 end;
 
 class procedure TWin32WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
@@ -439,17 +511,23 @@ end;
 
 class procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
 var
-  PanelIndex: integer;
+  i: integer;
 begin
   Windows.SendMessage(AStatusBar.Handle, SB_SIMPLE, WPARAM(AStatusBar.SimplePanel), 0);
-  if AStatusBar.SimplePanel then
-    SetPanelText(AStatusBar, 0)
-  else
+  if not AStatusBar.SimplePanel then
   begin
     UpdateStatusBarPanelWidths(AStatusBar);
-    for PanelIndex := 0 to AStatusBar.Panels.Count - 1 do
-      UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+    for i := 0 to AStatusBar.Panels.Count - 1 do
+      TStatusPanelAccess(AStatusBar.Panels[i]).FIntfFlag := 0;
   end;
+
+  // To reduce statusbar flickering it is suggested to wait for WM_PAINT message and
+  // to set text there (http://msdn.microsoft.com/en-us/library/bb760728(VS.85).aspx)
+  // Lets do so. But changing text on WM_PAINT cause another invalidate. So to
+  // prevent endless repaint we need to check whether we already updated statusbar
+
+  SetUpdated(AStatusBar, False);
+  AStatusBar.Invalidate;
 end;
 
 { TWin32WSProgressBar }
