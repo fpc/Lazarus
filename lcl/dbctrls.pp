@@ -576,6 +576,7 @@ Type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property OnChange;
     property OnClick;
