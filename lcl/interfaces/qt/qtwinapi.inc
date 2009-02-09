@@ -3799,6 +3799,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean;
+var
+  QtPoints: PQtPoint;
+  i: integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
@@ -3806,13 +3809,17 @@ begin
   Result := IsValidDC(DC);
   if Result then
   begin
+    GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
+    for i := 0 to NumPts - 1 do
+      QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
     {TODO: discuss with other developers about antialiasing by default}
     // QPainter_setRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing, True);
     if Winding
     then
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts, QtWindingFill)
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
     else
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts, QtOddEvenFill);
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
+    FreeMem(QtPoints);
   end;
 end;
 
