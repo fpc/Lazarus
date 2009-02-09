@@ -3541,7 +3541,7 @@ begin
   Result:=mrCancel;
   if (not AProject.EnableI18N) or AProject.IsVirtual then exit(mrOk);
 
-  POFilename := MainBuildBoss.GetProjectTargetFilename;
+  POFilename := MainBuildBoss.GetProjectTargetFilename(AProject);
   if POFilename='' then begin
     DebugLn(['TMainIDE.UpdateProjectPOFile unable to get project target filename']);
     exit;
@@ -4645,7 +4645,7 @@ begin
         try
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-          //used to save lrt files
+          // used to save lrt files
           HasI18N:=AnUnitInfo.IsPartOfProject and AnUnitInfo.Project.EnableI18N;
           if (not HasI18N) and (UnitOwners<>nil) then begin
             for i:=0 to UnitOwners.Count-1 do begin
@@ -9523,7 +9523,7 @@ begin
   then Exit;
 
   // Check project build
-  ProgramFilename := MainBuildBoss.GetProjectTargetFilename;
+  ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
   if not FileExistsUTF8(ProgramFilename)
   then begin
     MessageDlg(lisFileNotFound,

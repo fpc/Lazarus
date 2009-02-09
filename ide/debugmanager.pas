@@ -2018,7 +2018,7 @@ begin
     exit;
   end;
   if NewWorkingDir='' then begin
-    NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename);
+    NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
     if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
       MessageDlg(lisUnableToRun,
         Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',

@@ -119,9 +119,9 @@ type
     function GetRunCommandLine: string; override;
 
     function GetProjectPublishDir: string; override;
-    function GetProjectTargetFilename: string; override;
+    function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
-    function GetTestProjectFilename: string; override;
+    function GetTestProjectFilename(aProject: TProject): string; override;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
     function GetTestBuildDirectory: string; override;
     function IsTestUnitFilename(const AFilename: string): boolean; override;
@@ -343,7 +343,7 @@ var
   
   function GetTargetFilename: String;
   begin
-    Result := GetProjectTargetFilename;
+    Result := GetProjectTargetFilename(Project1);
     
     if GetProjectUsesAppBundle then
     begin
@@ -392,18 +392,18 @@ begin
   end;
 end;
 
-function TBuildManager.GetProjectTargetFilename: string;
+function TBuildManager.GetProjectTargetFilename(aProject: TProject): string;
 begin
   Result:='';
-  if Project1=nil then exit;
-  Result:=Project1.RunParameterOptions.HostApplicationFilename;
+  if aProject=nil then exit;
+  Result:=aProject.RunParameterOptions.HostApplicationFilename;
   if Result='' then begin
-    if Project1.IsVirtual then
-      Result:=GetTestProjectFilename
+    if aProject.IsVirtual then
+      Result:=GetTestProjectFilename(aProject)
     else begin
-      if Project1.MainUnitID>=0 then begin
+      if aProject.MainUnitID>=0 then begin
         Result :=
-          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+          aProject.CompilerOptions.CreateTargetFilename(aProject.MainFilename);
       end;
     end;
   end;
@@ -415,14 +415,14 @@ begin
     (GetTargetOS(False) = 'darwin') and Project1.UseAppBundle;
 end;
 
-function TBuildManager.GetTestProjectFilename: string;
+function TBuildManager.GetTestProjectFilename(aProject: TProject): string;
 begin
   Result:='';
-  if Project1=nil then exit;
-  if (Project1.MainUnitID<0) then exit;
-  Result:=GetTestUnitFilename(Project1.MainUnitInfo);
+  if aProject=nil then exit;
+  if (aProject.MainUnitID<0) then exit;
+  Result:=GetTestUnitFilename(aProject.MainUnitInfo);
   if Result='' then exit;
-  Result:=Project1.CompilerOptions.CreateTargetFilename(Result);
+  Result:=aProject.CompilerOptions.CreateTargetFilename(Result);
 end;
 
 function TBuildManager.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -1190,7 +1190,7 @@ function TBuildManager.MacroFuncTargetFile(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   if Project1<>nil then
-    Result:=GetProjectTargetFilename
+    Result:=GetProjectTargetFilename(Project1)
   else
     Result:='';
 end;
@@ -1201,9 +1201,9 @@ begin
   if Project1<>nil then begin
     Result:=Project1.RunParameterOptions.CmdLineParams;
     if Result='' then
-      Result:=GetProjectTargetFilename
+      Result:=GetProjectTargetFilename(Project1)
     else
-      Result:=GetProjectTargetFilename+' '+Result;
+      Result:=GetProjectTargetFilename(Project1)+' '+Result;
   end else
     Result:='';
 end;
