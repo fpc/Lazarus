@@ -25,6 +25,7 @@ begin
   FBevel := pbLowered;
   FParentBiDiMode := True;
   FAlignment := taLeftJustify;
+  FIntfFlag := 0;
   inherited Create(aCollection);
   
   AStatusBar:=StatusBar;
