@@ -147,6 +147,7 @@ begin
 
   StringGrid1.AutoSizeColumns;
 
+  cbUniRange.Items.Clear;
   for i:=0 to MaxUnicodeBlocks do cbUniRange.Items.Add(UnicodeBlocks[i].PG);
   cbUniRange.ItemIndex:=0;
   cbUniRangeSelect(nil);
