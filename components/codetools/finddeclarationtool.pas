@@ -5381,7 +5381,8 @@ var
           ProcNode:=ProcNode.Parent;
         ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
                                                       FuncResultNode);
-        if (FuncResultNode<>nil) or NodeIsConstructor(ProcNode) then begin
+        if (FuncResultNode<>nil) or ExprType.Context.Tool.NodeIsConstructor(ProcNode)
+        then begin
           // it is function or a constructor
           // -> use the result type instead of the function
           if IsIdentifierEndOfVariable then begin
