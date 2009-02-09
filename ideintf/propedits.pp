@@ -1908,7 +1908,8 @@ procedure TPropInfoList.Sort;
     until I >= R;
   end;
 begin
-  QuickSort(0, Count - 1);
+  if Count > 0 then
+    QuickSort(0, Count - 1);
 end;
 
 //------------------------------------------------------------------------------
