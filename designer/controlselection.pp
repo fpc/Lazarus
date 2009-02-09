@@ -2887,6 +2887,7 @@ function TControlSelection.CheckForLCLChanges(Update: boolean): boolean;
 
 var
   i: Integer;
+  PropsChanged: Boolean;
 begin
   Result:=false;
   if FControls.Count>=1 then begin
@@ -2897,6 +2898,7 @@ begin
       end;
     end;
   end;
+  PropsChanged:=false;
   if Update then
     begin
     if Result then begin
@@ -2904,11 +2906,8 @@ begin
       for i:=0 to FControls.Count-1 do
         if Items[i].IsTComponent and BoundsChanged(Items[i]) then
           InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
-      if not IsResizing then begin
-        UpdateBounds;
-        DoChangeProperties;
-      end;
       InvalidateGuideLinesCache;
+      PropsChanged:=not IsResizing;
     end else if LookupRootSelected and (FLookupRoot is TControl) then
     begin
       // check for form moves
@@ -2918,14 +2917,16 @@ begin
         begin
           if (Items[i].UsedLeft<>GetComponentLeft(FLookupRoot))
           or (Items[i].UsedTop<>GetComponentTop(FLookupRoot)) then
-          begin
-            UpdateBounds;
-            DoChangeProperties;
-          end;
+            PropsChanged:=not IsResizing;
           break;
         end;
       end;
     end;
+  end;
+  if PropsChanged then
+  begin
+    UpdateBounds;
+    DoChangeProperties;
   end;
 end;
 
