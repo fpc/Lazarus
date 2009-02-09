@@ -1721,9 +1721,11 @@ begin
       QEventKeyPress,
       QEventKeyRelease:
         begin
-          {non-spontaneous key events are garbage}
+          {non-spontaneous key events are garbage in Qt >= 4.4}
+          {$IFDEF USE_QT_44}
           Result := QEvent_spontaneous(Event);
           if Result then
+          {$ENDIF}
             Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
         end;
 
