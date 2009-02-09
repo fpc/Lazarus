@@ -362,7 +362,6 @@ type
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
-    FTabChar: char;
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
@@ -482,9 +481,6 @@ type
     function GetSelText: string;
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
-    {$IFDEF SYN_LAZARUS}
-    procedure SetTabChar(const AValue: Char);
-    {$ENDIF}
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
@@ -924,7 +920,6 @@ type
     property SelectionMode: TSynSelectionMode
       read GetSelectionMode write SetSelectionMode default smNormal;
     {$IFDEF SYN_LAZARUS}
-    property TabChar: char read FTabChar write SetTabChar;
     property CFDividerDrawLevel: Integer
         read GetCFDividerDrawLevel write SetCFDividerDrawLevel;
     {$ENDIF}
@@ -1470,7 +1465,6 @@ begin
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
   fBlockIndent := 2;
-  FTabChar := {$IFDEF DebugShowTabs}'%'{$ELSE}' '{$ENDIF};
 {$ELSE}
   Color := clWindow;
   fFontDummy.Name := 'Courier New';
@@ -1863,13 +1857,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.SetTabChar(const AValue: Char);
-begin
-  if FTabChar=AValue then exit;
-  FTabChar:=AValue;
-  Invalidate;
-end;
-
 function TCustomSynEdit.RealGetText: TCaption;
 begin
   if FLines<>nil then
@@ -2655,7 +2642,7 @@ var
     // painting the background and the text
   rcLine, rcToken: TRect;
   CurLine: integer;         // line index for the loop
-  CurPhysPos : Integer; // Physical Start Position of next token in current Line
+  CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
   TokenAccu: record
     Len, MaxLen: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
@@ -2666,6 +2653,7 @@ var
   dc: HDC;
 
   ExpandedPaintToken: string; // used to create the string sent to TextDrawer
+  CharWidths: TPhysicalCharWidths;
 
 { local procedures }
 
@@ -2675,121 +2663,87 @@ var
     TokenAccu.p[TokenAccu.MaxLen]:=#0;
   end;
 
-  procedure ExpandSpecialChars(var p: PChar; var Count: integer;
-    PhysicalStartPos: integer);
+  function ExpandSpecialChars(var p: PChar; var Count: integer;
+    PhysicalStartPos: integer): Integer;
   // if there are no tabs or special chars: keep p and Count untouched
   // if there are special chars: copy p into ExpandedPaintToken buffer,
   //                             convert tabs to spaces, and return the buffer
+  // Return DisplayCell-Count in Buffer
   var
     i: integer;
-    TabCount, LengthNeeded: Integer;
+    LengthNeeded: Integer;
     DestPos: Integer;
     SrcPos: Integer;
     Dest: PChar;
     c: Char;
-    ScreenPos: Integer;
-    SpaceCount: Integer;
     CharLen: Integer;
     Special: boolean;
+    Fill: Integer;
   begin
-    TabCount:=0;
-    for i:=0 to Count-1 do
-      if p[i]=#9 then inc(TabCount);
+      LengthNeeded := 0;
+    Result := 0;
+    for i := CurLogIndex to CurLogIndex + Count -1 do begin
+      Result := Result + CharWidths[i];
+      if CharWidths[i] > 1 then
+        LengthNeeded := LengthNeeded + CharWidths[i] - 1;
+    end;
     Special:=eoShowSpecialChars in Options;
-    if (not Special) and (TabCount=0)
+    if (not Special) and (LengthNeeded=0)
     and (FindInvalidUTF8Character(p,Count)<0) then
       exit;
-    LengthNeeded:=(Count+TabCount*TabWidth);
+    LengthNeeded := LengthNeeded + Count;
     if Special then LengthNeeded:=LengthNeeded*2;
     if length(ExpandedPaintToken)<LengthNeeded then
       SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
     //DebugLn(['ExpandSpecialChars Count=',Count,' TabCount=',TabCount,' Special=',Special,' LengthNeeded=',LengthNeeded]);
     SrcPos:=0;
     DestPos:=0;
-    ScreenPos:=PhysicalStartPos;
     Dest:=PChar(Pointer(ExpandedPaintToken));
     if UseUTF8 then begin
       while SrcPos<Count do begin
         c:=p[SrcPos];
-        case c of
-        #128..#191:
-          begin
-            // non UTF-8 character
+        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
+        if c = #9 then begin
+          // tab char, fill spaces at start
+          for i := 0 to Fill do begin
+            Dest[DestPos]:= ' ';
+            inc(DestPos);
+          end;
+          if Special then begin
+            // #194#187 looks like >>
+            Dest[DestPos-1] := #194;
+            Dest[DestPos]   := #187;
+            inc(DestPos);
+          end;
+          inc(SrcPos);
+        end
+        else begin
+          // could be UTF8 char
+          if c in [#128..#255]
+          then CharLen := UTF8CharacterStrictLength(@p[SrcPos])
+          else CharLen := 1;
+          if CharLen=0 then begin
+            // invalid character
             Dest[DestPos]:='?';
             inc(DestPos);
             inc(SrcPos);
-            inc(ScreenPos);
-          end;
-
-        #192..#255:
-          begin
-            // could be UTF8 char
-            CharLen:=UTF8CharacterStrictLength(@p[SrcPos]);
-            if CharLen=0 then begin
-              // invalid character
-              Dest[DestPos]:='?';
+          end else begin
+            // normal UTF-8 character
+            for i:=1 to CharLen do begin
+              Dest[DestPos]:=p[SrcPos];
               inc(DestPos);
               inc(SrcPos);
-            end else begin
-              // normal UTF-8 character
-              for i:=1 to CharLen do begin
-                Dest[DestPos]:=p[SrcPos];
-                inc(DestPos);
-                inc(SrcPos);
-              end;
             end;
-            inc(ScreenPos);
-          end;
-
-        #9:
-          begin
-            // tab char
-            SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
-            //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
-            if not Special then begin
-              for i:=1 to SpaceCount do begin
-                Dest[DestPos]:=FTabChar;
-                inc(DestPos);
-                inc(ScreenPos);
-              end;
-            end else begin
-              for i:=1 to SpaceCount do begin
-                // #194#187 looks like >>
-                Dest[DestPos]:=#194;
-                inc(DestPos);
-                Dest[DestPos]:=#187;
-                inc(DestPos);
-                inc(ScreenPos);
-              end;
+            if (c = #32) and Special then begin
+              // #194#183 looks like .
+              Dest[DestPos-1] := #194;
+              Dest[DestPos]   := #183;
+              inc(DestPos);
             end;
-            inc(SrcPos);
-          end;
-
-        #32:
-          // space
-          if not Special then begin
-            // normal space
-            Dest[DestPos]:=p[SrcPos];
-            inc(DestPos);
-            inc(SrcPos);
-            inc(ScreenPos);
-          end else begin
-            // #194#183 looks like .
-            Dest[DestPos]:=#194;
-            inc(DestPos);
-            Dest[DestPos]:=#183;
-            inc(DestPos);
-            inc(SrcPos);
-            inc(ScreenPos);
-          end;
-
-        else
-          begin
-            // normal char
-            Dest[DestPos]:=p[SrcPos];
-            inc(DestPos);
-            inc(SrcPos);
-            inc(ScreenPos);
+            for i := 1 to Fill do begin
+              Dest[DestPos]:= ' ';
+              inc(DestPos);
+            end;
           end;
         end;
       end;
@@ -2797,28 +2751,16 @@ var
       // non UTF-8
       while SrcPos<Count do begin
         c:=p[SrcPos];
-        case c of
-        #9:
-          begin
-            // tab char
-            SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
-            //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
-            for i:=1 to SpaceCount do begin
-              Dest[DestPos]:=FTabChar;
-              inc(DestPos);
-              inc(ScreenPos);
-            end;
-            inc(SrcPos);
-          end;
-
+        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
+        if c = #9 then // tab char
+          Dest[DestPos] := ' '
         else
-          begin
-            // normal char
-            Dest[DestPos]:=p[SrcPos];
-            inc(DestPos);
-            inc(SrcPos);
-            inc(ScreenPos);
-          end;
+          Dest[DestPos] := p[SrcPos];
+        inc(DestPos);
+        inc(SrcPos);
+        for i := 1 to Fill do begin
+          Dest[DestPos]:= ' ';
+          inc(DestPos);
         end;
       end;
     end;
@@ -3092,8 +3034,10 @@ var
     if CurPhysPos > LastCol then exit;
 
     PhysicalStartPos := CurPhysPos;
-    ExpandSpecialChars(sToken, nTokenByteLen, PhysicalStartPos);
-    TokenCharLen := UTF8Length(sToken, nTokenByteLen);
+    len := nTokenByteLen;
+    TokenCharLen := ExpandSpecialChars(sToken, nTokenByteLen, PhysicalStartPos);
+//    TokenCharLen := UTF8Length(sToken, nTokenByteLen); // XXX TODO
+    CurLogIndex := CurLogIndex + len;
     // Prepare position for next token
     inc(CurPhysPos, TokenCharLen);
     if CurPhysPos <= FirstCol then exit;
@@ -3155,7 +3099,7 @@ var
 
       SubTokenByteLen := UTF8CharToByteIndex(sToken,nTokenByteLen,SubCharLen);
       if SubTokenByteLen < 0 then begin
-        debugln('ERROR: Can not find pso in SubToken ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        debugln('ERROR: Can not find ByteLen for SubToken ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
         SubTokenByteLen := nTokenByteLen; // Draw the rest
       end;
       PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
@@ -3226,6 +3170,7 @@ var
       FTextDrawer.FrameEndX := -1;
       LastFSX := -1;
       LastFEX := -1;
+      CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
 
       fMarkupManager.PrepareMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
       // Get the line.
@@ -3238,6 +3183,7 @@ var
       TokenAccu.Len := 0;
       TokenAccu.PhysicalEndPos := FirstCol - 1; // in case of an empty line
       CurPhysPos := 1;
+      CurLogIndex := 0;
 
       if not Assigned(fHighlighter) then begin
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
@@ -9244,40 +9190,11 @@ begin
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
 begin
   Result := TSynEditStrings(FTheLinesView).LogicalToPhysicalPos(p);
 end;
-{$ELSE}
-function TCustomSynEdit.LogicalToPhysicalPos(p: TPoint): TPoint;
-// LogicalToPhysicalPos takes a position in the text and transforms it into
-// the row and column it appears to be on the screen
-var
-  s: string;
-  i, L: integer;
-  x: integer;
-begin
-  if p.Y - 1 < Lines.Count then begin
-    s := Lines[p.Y - 1];
-    if UseUTF8 then begin
-    end else begin
-      l := Length(s);
-      x := 0;
-      for i := 1 to p.x - 1 do begin
-        if (i <= l) and (s[i] = #9) then
-          inc(x, TabWidth - (x mod TabWidth))
-        else
-          inc(x);
-      end;
-      p.x := x + 1;
-    end;
-  end;
-  Result := p;
-end;
-{$ENDIF}
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.LogicalToPhysicalCol(const Line: String;
   Index, LogicalPos: integer): integer;
 // LogicalPos is 1-based
@@ -9308,8 +9225,6 @@ function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;
 begin
   Result := fTextOffset + Pred(Col) * fCharWidth;
 end;
-
-{$ENDIF}
 
 procedure TCustomSynEdit.DoLinesDeleted(FirstLine, Count: integer);
 var

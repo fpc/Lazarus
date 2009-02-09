@@ -76,7 +76,7 @@ type
     // Char to Byte
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
-                                  Index, PhysicalPos: integer): integer;
+                                  Index, PhysicalPos: integer): integer; virtual;
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;

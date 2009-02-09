@@ -280,6 +280,8 @@ type
     function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
     function ExpandedLineForBlockAtLine(ALine : Integer) : Integer;
 
+    function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
+
     property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
 
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
@@ -1957,6 +1959,11 @@ begin
     dec(i);
   if (FoldEndLevel[i] > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
+end;
+
+function TSynEditFoldedView.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
+begin
+  Result := fLines.GetPhysicalCharWidths(ScreenLineToTextIndex(Index));
 end;
 
 function TSynEditFoldedView.CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
