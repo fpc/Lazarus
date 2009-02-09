@@ -382,7 +382,7 @@ begin
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
-  DebugLn(['TSimpleHTMLControl.GetPreferredControlSize Caption="',Caption,'" ',AWidth,'x',AHeight]);
+  //DebugLn(['TSimpleHTMLControl.GetPreferredControlSize Caption="',Caption,'" ',AWidth,'x',AHeight]);
 end;
 
 { TLazIDEHTMLProvider }
