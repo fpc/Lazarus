@@ -464,6 +464,7 @@ begin
   inherited Create;
   Name:='custom program';
   DefaultFilename:='project.pas';
+  IsPascalUnit:=false;
 end;
 
 function TFileDescSimplePascalProgram.GetLocalizedName: string;

@@ -1269,6 +1269,7 @@ begin
   Name:=FileDescNamePascalUnit;
   DefaultFilename:='unit.pas';
   DefaultSourceName:='Unit1';
+  IsPascalUnit:=true;
 end;
 
 function TFileDescPascalUnit.CreateSource(const Filename, SourceName,

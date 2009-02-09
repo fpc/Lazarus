@@ -6974,6 +6974,7 @@ begin
   if OldUnitIndex<0 then begin
     Project1.AddFile(NewUnitInfo,
                      NewFileDescriptor.AddToProject
+                     and NewFileDescriptor.IsPascalUnit
                      and NewUnitInfo.IsPartOfProject);
   end;
 
