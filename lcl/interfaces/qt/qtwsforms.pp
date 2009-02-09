@@ -80,6 +80,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
@@ -191,6 +192,18 @@ end;
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   inherited CloseModal(ACustomForm);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetAllowDropFiles
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+begin
+  if AForm.HandleAllocated then
+    TQtMainWindow(AForm.Handle).setAcceptDropFiles(AValue);
 end;
 
 {------------------------------------------------------------------------------

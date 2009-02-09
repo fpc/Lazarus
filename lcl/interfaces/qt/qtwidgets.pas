@@ -435,7 +435,10 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function IsMdiChild: Boolean;
     procedure OffsetMousePos(APoint: PQtPoint); override;
-    procedure SlotWindowStateChange; cdecl;
+    function getAcceptDropFiles: Boolean;
+    procedure setAcceptDropFiles(AValue: Boolean);
+    function slotDropFiles(Sender: QObjectH; Event: QEventH): Boolean;
+    procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
   public
     procedure AttachEvents; override;
@@ -4061,6 +4064,14 @@ begin
   BeginEventProcessing;
   case QEvent_type(Event) of
     QEventWindowStateChange: SlotWindowStateChange;
+    QEventDrop,
+    QEventDragMove,
+    QEventDragEnter:
+    begin
+      Result := getAcceptDropFiles;
+      if (Result) and (QEvent_type(Event) = QEventDrop) then
+        Result := slotDropFiles(Sender, Event);
+    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -4078,6 +4089,75 @@ procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);
 begin
   if not IsMdiChild then
     inherited OffsetMousePos(APoint);
+end;
+
+function TQtMainWindow.getAcceptDropFiles: Boolean;
+begin
+  Result := QWidget_acceptDrops(Widget);
+end;
+
+procedure TQtMainWindow.setAcceptDropFiles(AValue: Boolean);
+begin
+  QWidget_setAcceptDrops(Widget, AValue);
+end;
+
+function TQtMainWindow.slotDropFiles(Sender: QObjectH; Event: QEventH
+  ): Boolean;
+var
+  MimeData: QMimeDataH;
+  QStrList: QStringListH;
+  ByteArr: QByteArrayH;
+  i: Integer;
+  WStr: WideString;
+  GotFiles: Boolean;
+  FilesList: TStrings;
+  Files: Array of String;
+begin
+  Result := False;
+  GotFiles := False;
+  MimeData := QDropEvent_mimeData(QDropEventH(Event));
+  QStrList := QStringList_create();
+  try
+    QMimeData_formats(MimeData, QStrList);
+    for i := 0 to QStringList_size(QStrList) - 1 do
+    begin
+      QStringList_at(QStrList, @WStr, i);
+      GotFiles := WStr = 'text/uri-list';
+      if GotFiles then
+        break;
+    end;
+  finally
+    QStringList_destroy(QStrList);
+  end;
+  if not GotFiles then
+    exit;
+  ByteArr := QByteArray_create();
+  try
+    QMimeData_data(MimeData, ByteArr, @WStr);
+    if not QByteArray_isNull(ByteArr) then
+    begin
+      WStr := '';
+      for i := 0 to QByteArray_size(ByteArr) - 1 do
+        WStr := WStr + QByteArray_at(ByteArr, i);
+      FilesList := TStringList.Create;
+      try
+        FilesList.Text := UTF8Encode(WStr);
+        {last member of TStringList always contains empty string
+         since QMimeData always have #13#10#0 at the end.So we cut it here.}
+        SetLength(Files, FilesList.Count - 1);
+        for i := 0 to High(Files) do
+          Files[i] := FilesList.Strings[i];
+      finally
+        FilesList.Free;
+      end;
+      QDropEvent_setDropAction(QDropEventH(Event), QtCopyAction);
+      QDropEvent_acceptProposedAction(QDropEventH(Event));
+      TCustomForm(LCLOBject).IntfDropFiles(Files);
+      Result := True;
+    end;
+  finally
+    QByteArray_destroy(ByteArr);
+  end;
 end;
 
 {------------------------------------------------------------------------------
