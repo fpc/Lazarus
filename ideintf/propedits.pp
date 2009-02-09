@@ -1410,6 +1410,7 @@ type
     function Contains(P: PPropInfo): Boolean;
     procedure Delete(Index: Integer);
     procedure Intersect(List: TPropInfoList);
+    procedure Sort;
     property Count: Integer read FCount;
     property Items[Index: Integer]: PPropInfo read Get; default;
   end;
@@ -1830,6 +1831,7 @@ begin
   GetMem(FList,FSize);
   Move(BigList^,FList^,FSize);
   FreeMem(BigList);
+  Sort;
 end;
 
 destructor TPropInfoList.Destroy;
@@ -1839,18 +1841,20 @@ end;
 
 function TPropInfoList.Contains(P:PPropInfo):Boolean;
 var
-  I:Integer;
+  I: Integer;
 begin
-  for I:=0 to FCount-1 do begin
-    with FList^[I]^ do begin
-      if (PropType^.Kind=P^.PropType^.Kind)
-      and (CompareText(Name,P^.Name)=0) then begin
-        Result:=True;
+  for I := 0 to FCount - 1 do
+  begin
+    with FList^[I]^ do
+    begin
+      if (PropType^.Kind=P^.PropType^.Kind) and (CompareText(Name,P^.Name)=0) then
+      begin
+        Result := True;
         Exit;
       end;
     end;
   end;
-  Result:=False;
+  Result := False;
 end;
 
 procedure TPropInfoList.Delete(Index:Integer);
@@ -1874,6 +1878,38 @@ begin
     if not List.Contains(FList^[I]) then Delete(I);
 end;
 
+procedure TPropInfoList.Sort;
+  procedure QuickSort(L, R: Integer);
+  var
+    I, J: Longint;
+    P, Q: PPropInfo;
+  begin
+    repeat
+      I := L;
+      J := R;
+      P := FList^[(L + R) div 2];
+      repeat
+        while CompareText(P^.Name, FList^[i]^.Name) > 0 do
+          inc(I);
+        while CompareText(P^.Name, FList^[J]^.Name) < 0 do
+          dec(J);
+        if I <= J then
+        begin
+          Q := FList^[I];
+          Flist^[I] := FList^[J];
+          FList^[J] := Q;
+          inc(I);
+          dec(J);
+        end;
+      until I > J;
+      if L < J then
+        QuickSort(L, J);
+      L := I;
+    until I >= R;
+  end;
+begin
+  QuickSort(0, Count - 1);
+end;
 
 //------------------------------------------------------------------------------
 
