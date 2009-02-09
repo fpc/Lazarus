@@ -2897,16 +2897,35 @@ begin
       end;
     end;
   end;
-  if Result and Update then begin
-    //debugln('TControlSelection.CheckForLCLChanges');
-    for i:=0 to FControls.Count-1 do
-      if Items[i].IsTComponent and BoundsChanged(Items[i]) then
-        InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
-    if not IsResizing then begin
-      UpdateBounds;
-      DoChangeProperties;
+  if Update then
+    begin
+    if Result then begin
+      //debugln('TControlSelection.CheckForLCLChanges');
+      for i:=0 to FControls.Count-1 do
+        if Items[i].IsTComponent and BoundsChanged(Items[i]) then
+          InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
+      if not IsResizing then begin
+        UpdateBounds;
+        DoChangeProperties;
+      end;
+      InvalidateGuideLinesCache;
+    end else if LookupRootSelected and (FLookupRoot is TControl) then
+    begin
+      // check for form moves
+      for i:=0 to FControls.Count-1 do
+      begin
+        if Items[i].Persistent=FLookupRoot then
+        begin
+          if (Items[i].UsedLeft<>GetComponentLeft(FLookupRoot))
+          or (Items[i].UsedTop<>GetComponentTop(FLookupRoot)) then
+          begin
+            UpdateBounds;
+            DoChangeProperties;
+          end;
+          break;
+        end;
+      end;
     end;
-    InvalidateGuideLinesCache;
   end;
 end;
 
