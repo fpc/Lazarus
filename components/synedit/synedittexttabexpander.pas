@@ -172,7 +172,7 @@ function TSynEditStringTabExpander.ExpandedStringLength(Index: integer): Integer
 var
   Line: String;
   CharWidths: TPhysicalCharWidths;
-  i, j, l: Integer;
+  i: Integer;
 begin
   Line := fSynStrings[Index];
   if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
