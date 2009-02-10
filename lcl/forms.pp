@@ -851,6 +851,9 @@ type
     procedure RemoveHandlerActiveFormChanged(
                             OnActiveFormChanged: TScreenActiveFormChangedEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+
+    function DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
+    procedure EnableForms(var AFormList: TList);
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;

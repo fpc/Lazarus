@@ -72,8 +72,9 @@ end;
  ------------------------------------------------------------------------------}
 function TScreen.CustomFormIndex(AForm: TCustomForm): integer;
 begin
-  Result:=FCustomForms.Count-1;
-  while (Result>=0) and (CustomForms[Result]<>AForm) do dec(Result);
+  Result := FCustomForms.Count - 1;
+  while (Result >= 0) and (CustomForms[Result] <> AForm) do
+    Dec(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -81,8 +82,9 @@ end;
  ------------------------------------------------------------------------------}
 function TScreen.FormIndex(AForm: TForm): integer;
 begin
-  Result:=FFormList.Count-1;
-  while (Result>=0) and (Forms[Result]<>AForm) do dec(Result);
+  Result := FFormList.Count - 1;
+  while (Result >= 0) and (Forms[Result] <> AForm) do
+    Dec(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -246,6 +248,56 @@ begin
   for HandlerType:=Low(TScreenNotification) to High(TScreenNotification) do
     FScreenHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
   inherited RemoveAllHandlersOfObject(AnObject);
+end;
+
+{
+  Disable all forms except SkipForm. If DisabledList is available then add forms
+  to that list and return it, otherwise return new list. Used to show forms and
+  other dialogs modal
+}
+function TScreen.DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
+var
+  i: integer;
+  AForm: TCustomForm;
+begin
+  Result := DisabledList;
+  if Result = nil then
+    Result := TList.Create;
+  for i := 0 to CustomFormCount - 1 do
+  begin
+    AForm := CustomForms[i];
+    if (AForm <> SkipForm) and AForm.HandleAllocated then
+    begin
+      // we cannot use AForm.Enabled := False; since it checks csDesigning
+      // but we need this for IDE too. We also cannot check AForm.Visible -
+      // it returns wrong info for the forms opened in the designer
+      if IsWindowEnabled(AForm.Handle) and IsWindowVisible(AForm.Handle) then
+      begin
+        EnableWindow(AForm.Handle, False);
+        Result.Add(AForm);
+      end;
+    end;
+  end;
+end;
+
+{
+  Enable all forms from AFormList and destroy list. Used to restore state after
+  DisableForms
+}
+procedure TScreen.EnableForms(var AFormList: TList);
+var
+  i: integer;
+  AForm: TCustomForm;
+begin
+  if AFormList = nil then
+    Exit;
+  for i := AFormList.Count - 1 downto 0 do
+  begin
+    AForm := TCustomForm(AFormList[i]);
+    if (CustomFormIndex(AForm) <> -1) and AForm.HandleAllocated then
+      EnableWindow(AForm.Handle, True);
+  end;
+  FreeAndNil(AFormList);
 end;
 
 function EnumFontsNoDups(

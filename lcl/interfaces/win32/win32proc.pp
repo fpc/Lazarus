@@ -46,7 +46,6 @@ Type
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
-    DisabledWindowList: TList;// a list of windows that were disabled when showing modal
     StayOnTopList: TList;     // a list of windows that were normalized when showing modal
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
@@ -102,10 +101,7 @@ function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
 
-procedure DisableApplicationWindows(Window: HWND);
-procedure EnableApplicationWindows(Window: HWND);
 procedure RemoveStayOnTopFlags(Window: HWND);
 procedure RestoreStayOnTopFlags(Window: HWND);
 
@@ -1082,7 +1078,6 @@ begin
   Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom)))<>0;
   if Result then
   begin
-    WindowInfo^.DisabledWindowList.Free;
     WindowInfo^.StayOnTopList.Free;
     Dispose(WindowInfo);
   end;
@@ -1093,80 +1088,6 @@ begin
   Result := PWindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
-end;
-
-{-----------------------------------------------------------------------------
-  function: DisableWindowsProc
-  Params: Window - handle of toplevel windows to be disabled
-          Data   - handle of current window form
-  Returns: Whether the enumeration should continue
-
-  Used in LM_SHOWMODAL to disable the windows of application thread
-  except the current form.
- -----------------------------------------------------------------------------}
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
-var
-  Buffer: array[0..15] of Char;
-begin
-  Result:=true;
-
-  // Don't disable the current window form
-  if Window = PDisableWindowsInfo(Data)^.NewModalWindow then exit;
-
-  // Don't disable any ComboBox listboxes
-  if (GetClassName(Window, @Buffer[0], sizeof(Buffer))<sizeof(Buffer))
-    and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
-
-  if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
-
-  PDisableWindowsInfo(Data)^.DisabledWindowList.Add(Pointer(Window));
-  EnableWindow(Window,False);
-
-  if (Application <> nil) and (Application.MainForm <> nil) and
-    Application.MainForm.HandleAllocated and (Window = Application.MainForm.Handle)
-  then
-    // In our windowproc we ignore WM_NCACTIVATE for the main form,
-    // if it is not disabled.
-    // Now we disable the mainform, so send WM_NCACTIVATE message;
-    // when we showed the modal form, the mainform was not yet disabled
-    Windows.SendMessage(Window, WM_NCACTIVATE, 0, 0)
-end;
-
-var
-  InDisableApplicationWindows: boolean = false;
-
-procedure DisableApplicationWindows(Window: HWND);
-var
-  DisableWindowsInfo: PDisableWindowsInfo;
-  WindowInfo: PWindowInfo;
-begin
-  // prevent recursive calling when the AppHandle window is disabled
-  If InDisableApplicationWindows then
-    exit;
-  InDisableApplicationWindows:=true;
-  New(DisableWindowsInfo);
-  DisableWindowsInfo^.NewModalWindow := Window;
-  DisableWindowsInfo^.DisabledWindowList := TList.Create;
-  WindowInfo := GetWindowInfo(DisableWindowsInfo^.NewModalWindow);
-  WindowInfo^.DisabledWindowList := DisableWindowsInfo^.DisabledWindowList;
-  EnumThreadWindows(GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil),
-    @DisableWindowsProc, LPARAM(DisableWindowsInfo));
-  Dispose(DisableWindowsInfo);
-  InDisableApplicationWindows := false;
-end;
-
-procedure EnableApplicationWindows(Window: HWND);
-var
-  WindowInfo: PWindowInfo;
-  I: integer;
-begin
-  WindowInfo := GetWindowInfo(Window);
-  if WindowInfo^.DisabledWindowList <> nil then
-  begin
-    for I := 0 to WindowInfo^.DisabledWindowList.Count - 1 do
-      EnableWindow(HWND(WindowInfo^.DisabledWindowList.Items[I]), true);
-    FreeAndNil(WindowInfo^.DisabledWindowList);
-  end;
 end;
 
 function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;

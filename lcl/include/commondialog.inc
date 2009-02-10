@@ -90,7 +90,8 @@ begin
 end;
 
 function TCommonDialog.DoExecute : boolean;
-var CanClose: boolean;
+var
+  CanClose: boolean;
 begin
   FCanCloseCalled := False;
   if Assigned(FOnShow) then
@@ -119,5 +120,5 @@ end;
 
 function TCommonDialog.DefaultTitle: string;
 begin
-  result := '';
+  Result := '';
 end;

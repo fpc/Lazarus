@@ -2050,7 +2050,7 @@ function TCustomForm.ShowModal: Integer;
   end;
 
 var
-  //WindowList: Pointer;
+  DisabledList: TList;
   SavedFocusState: TFocusState;
   //SaveCursor: TCursor;
   //SaveCount: Integer;
@@ -2079,6 +2079,7 @@ begin
   Screen.FFocusedForm := Self;
   Screen.MoveFormToFocusFront(Self);
   Screen.MoveFormToZFront(Self);
+  DisabledList := Screen.DisableForms(Self);
   ModalResult := 0;
 
   try
@@ -2120,6 +2121,7 @@ begin
       DestroyHandle;
     end;
   finally
+    Screen.EnableForms(DisabledList);
     if Screen.FSaveFocusedList.Count > 0 then
     begin
       Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);

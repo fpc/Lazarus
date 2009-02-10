@@ -184,6 +184,7 @@ type
 
 var
   CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
+  DisabledForms: TList = nil;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -1569,12 +1570,12 @@ begin
         if WParam = 0 then
         begin
           RemoveStayOnTopFlags(Window);
-          DisableApplicationWindows(Window);
+          DisabledForms := Screen.DisableForms(nil, DisabledForms);
         end
         else
         begin
           RestoreStayOnTopFlags(Window);
-          EnableApplicationWindows(Window);
+          Screen.EnableForms(DisabledForms);
         end;
         
       // disable child windows of for example groupboxes, but not of forms

@@ -72,7 +72,6 @@ type
 
   TWin32WSCustomForm = class(TWSCustomForm)
   published
-    class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons); override;
@@ -321,11 +320,6 @@ begin
   Result := Params.Window;
 end;
 
-class procedure TWin32WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
-begin
-  EnableApplicationWindows(ACustomForm.Handle);
-end;
-
 class procedure TWin32WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
   AValue: Boolean);
 begin
@@ -425,7 +419,6 @@ end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);
   BringWindowToTop(ACustomForm.Handle);
 end;

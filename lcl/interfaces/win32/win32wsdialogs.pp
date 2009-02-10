@@ -58,6 +58,7 @@ uses
 type
   TApplicationState = record
     FocusedWindow: HWND;
+    DisabledWindows: TList;
   end;
 
   TOpenFileDialogRec = record
@@ -139,10 +140,12 @@ implementation
 function SaveApplicationState: TApplicationState;
 begin
   Result.FocusedWindow := Windows.GetFocus;
+  Result.DisabledWindows := Screen.DisableForms(nil);
 end;
 
 procedure RestoreApplicationState(AState: TApplicationState);
 begin
+  Screen.EnableForms(AState.DisabledWindows);
   Windows.SetFocus(AState.FocusedWindow);
 end;
 
