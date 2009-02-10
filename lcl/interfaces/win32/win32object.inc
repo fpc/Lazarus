@@ -457,6 +457,7 @@ function TWin32WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
     lcAsyncProcess: Result := 1;
+    lcModalWindow: Result := 0;
   else
     Result := inherited;
   end;

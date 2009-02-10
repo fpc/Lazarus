@@ -67,7 +67,8 @@ begin
     lcCanDrawOutsideOnPaint,
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
-    lcFormIcon:
+    lcFormIcon,
+    lcModalWindow:
       Result := 1;
   else
     Result := 0;

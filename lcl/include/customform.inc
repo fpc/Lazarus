@@ -2079,7 +2079,10 @@ begin
   Screen.FFocusedForm := Self;
   Screen.MoveFormToFocusFront(Self);
   Screen.MoveFormToZFront(Self);
-  DisabledList := Screen.DisableForms(Self);
+  if WidgetSet.GetLCLCapability(lcModalWindow) = 0 then
+    DisabledList := Screen.DisableForms(Self)
+  else
+    DisabledList := nil;
   ModalResult := 0;
 
   try

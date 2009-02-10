@@ -74,7 +74,8 @@ type
     lcNeedMininimizeAppWithMainForm,
                              // When main form is minimized, then minimize also app
     lcApplicationTitle,      // Can change application title in runtime
-    lcFormIcon               // Forms have icon
+    lcFormIcon,              // Forms have icon
+    lcModalWindow
   );
 
   { TWidgetSet }
