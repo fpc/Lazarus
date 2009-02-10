@@ -12968,7 +12968,7 @@ Segunda linea de texto</descr>
       </element>
       <element name="TCustomGrid.DrawGridCheckboxBitmaps">
         <short>
-          <var>DrawGridCheckboxBitmaps</var> - draws checkbox bitmaps in th enominated rectangle with the specified checkbox state</short>
+          <var>DrawGridCheckboxBitmaps</var> - draws checkbox bitmaps in the nominated rectangle with the specified checkbox state</short>
       </element>
       <element name="TCustomGrid.OnUserCheckboxBitmap">
         <short>
