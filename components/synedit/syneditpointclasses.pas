@@ -133,9 +133,11 @@ type
   { TSynEditCaret }
 
   TSynEditCaret = class(TSynEditPointBase)
+  private
     fLinePos: Integer; // 1 based
     fCharPos: Integer; // 1 based
-  private
+    FAdjustToNextChar: Boolean;
+    procedure AdjustToChar;
     procedure setCharPos(const AValue: Integer);
     procedure setLinePos(const AValue: Integer);
     function  GetLineCharPos: TPoint;
@@ -154,6 +156,7 @@ type
     property BytePos: Integer read GetBytePos write SetBytePos;
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
+    property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
   end;
 
 implementation
@@ -200,13 +203,44 @@ procedure TSynEditCaret.setLinePos(const AValue : Integer);
 begin
   if fLinePos = AValue then exit;
   fLinePos:= AValue;
+  AdjustToChar;
   fOnChangeList.CallNotifyEvents(self);
+end;
+
+procedure TSynEditCaret.AdjustToChar;
+var
+  CharWidths: TPhysicalCharWidths;
+  LogLen: Integer;
+  ScreenPos: Integer;
+  LogPos: Integer;
+  L: String;
+begin
+  L := LineText;
+  CharWidths := FLines.GetPhysicalCharWidths(L, FLinePos-1);
+  LogLen := Length(CharWidths);
+  ScreenPos := 1;
+  LogPos := 0;
+
+  while LogPos < LogLen do begin
+    if ScreenPos = FCharPos then exit;
+    if ScreenPos + CharWidths[LogPos] > FCharPos then begin
+      if L[LogPos+1] = #9 then exit;
+      if FAdjustToNextChar then
+        FCharPos := ScreenPos + CharWidths[LogPos]
+      else
+        FCharPos := ScreenPos;
+      exit;
+    end;
+    ScreenPos := ScreenPos + CharWidths[LogPos];
+    inc(LogPos);
+  end;
 end;
 
 procedure TSynEditCaret.setCharPos(const AValue : Integer);
 begin
   if fCharPos = AValue then exit;
   fCharPos:= AValue;
+  AdjustToChar;
   fOnChangeList.CallNotifyEvents(self);
 end;
 
@@ -220,6 +254,7 @@ begin
   if (fCharPos = AValue.X) and (fLinePos = AValue.Y) then exit;
   fCharPos:= AValue.X;
   fLinePos:= AValue.Y;
+  AdjustToChar;
   fOnChangeList.CallNotifyEvents(self);
 end;
 

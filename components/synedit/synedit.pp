@@ -79,6 +79,7 @@ uses
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
+  SynEditTextDoubleWidthChars,
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks,
 {$ENDIF}
@@ -315,6 +316,7 @@ type
     FBlockSelection: TSynEditSelection;
     {$IFDEF SYN_LAZARUS}
     fCaret: TSynEditCaret;
+    fInternalCaret: TSynEditCaret;
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
@@ -351,6 +353,7 @@ type
     {$ENDIF}
     FFoldedLinesView:  TSynEditFoldedView;
     FTrimmedLinesView: TSynEditStringTrimmingList;
+    FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
     FTheLinesView: TStrings;
     fLines: TStrings;  // The real (un-mapped) line-buffer
@@ -1366,13 +1369,17 @@ begin
 
   fLines := TSynEditStringList.Create;
   fCaret := TSynEditCaret.Create;
+  fInternalCaret := TSynEditCaret.Create;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create
                          (TSynEditStrings(fLines), fCaret);
 
+  FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
+                                           (TSynEditStrings(FTrimmedLinesView));
+
   FTabbedLinesView := TSynEditStringTabExpander.Create
-                        (TSynEditStrings(FTrimmedLinesView));
+                        (TSynEditStrings(FDoubleWidthChrLinesView));
 
   FFoldedLinesView := TSynEditFoldedView.Create
                         (TSynEditStrings(FTabbedLinesView), fCaret);
@@ -1383,6 +1390,7 @@ begin
   FTheLinesView := FTabbedLinesView;
 
   fCaret.Lines := TSynEditStrings(FTheLinesView);
+  fInternalCaret.Lines := TSynEditStrings(FTheLinesView);
   TSynEditStringList(fLines).AddChangeHandler(senrLineCount,
                      {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   TSynEditStringList(fLines).AddChangeHandler(senrLineChange,
@@ -1636,8 +1644,10 @@ begin
   fBlockSelection.Free;
   FTabbedLinesView.Free;
   FTrimmedLinesView.Free;
+  FDoubleWidthChrLinesView.Free;
   Lines.Free;
   fCaret.Free;
+  fInternalCaret.Free;
   {$ELSE}
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
@@ -1656,8 +1666,10 @@ begin
   FreeAndNil(fBlockSelection);
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView);
+  FreeAndNil(FDoubleWidthChrLinesView);
   FreeAndNil(fLines);
   FreeAndNil(fCaret);
+  FreeAndNil(fInternalCaret);
   {$ENDIF}
   inherited Destroy;
 end;
@@ -7741,6 +7753,8 @@ begin
       NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
     end;
   end;
+  FInternalCaret.AdjustToNextChar := DX > 0;
+  FInternalCaret.LineCharPos := NewCaret;
 
   // adjust selection
   IncPaintLock;
@@ -7749,13 +7763,13 @@ begin
   if SelectionCommand then begin
     //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
     if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-    SetBlockEnd(PhysicalToLogicalPos(NewCaret));
+    SetBlockEnd(FInternalCaret.LineBytePos);
     //debugln('TCustomSynEdit.MoveCaretHorz B BB=',dbgs(BlockBegin),' BE=',dbgs(BlockEnd));
     AquirePrimarySelection;
   end else
-    SetBlockBegin(PhysicalToLogicalPos(NewCaret));
+    SetBlockBegin(FInternalCaret.LineBytePos);
   // commit new caret
-  CaretXY := NewCaret;
+  CaretXY := FInternalCaret.LineCharPos;
   if eol then
     Exclude(fOptions, eoScrollPastEol);
   DecPaintLock;
