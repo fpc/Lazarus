@@ -59,7 +59,7 @@ end;
   Returns: Nothing
 
   Starts the dragging of a control. If the Immediate flag is set, dragging
-  starts immediately.
+  starts immediately. A drag-dock should not normally start immediately!
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 begin
@@ -71,6 +71,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
+{ TODO -cdocking : Automatic drag-dock never should start immediately.
+A docked control should not try to undock itself, at least not immediately.
+A docked control also should stay docked until it is really dropped into a different location,
+so that a docking mangager can detect and handle (abort) an drop into the old place.
+ }
   BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 
@@ -1313,6 +1318,8 @@ end;
 
 procedure TControl.VisibleChanged;
 begin
+{ TODO -cdocking : For docked controls, the docking manager must receive a notification!
+ }
   DoCallNotifyHandler(chtOnVisibleChanged);
 end;
 
@@ -3540,6 +3547,8 @@ begin
       // undock from old HostSite
       // - this only undocks from the DockManager
       // - this control still uses the DockSite as parent control
+      { TODO -cdocking : Combine with ManualFloat, for consistent handling
+ }
       DebugLn('TControl.ManualDock UNDOCKING ',Name);
       Result:=HostDockSite.DoUndock(NewDockSite,Self);
     end;

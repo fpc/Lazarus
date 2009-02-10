@@ -451,6 +451,10 @@ type
   { TDockManager is an abstract class for managing a dock site's docked
     controls. See TDockTree below for the more info.
     }
+{ TODO -cdocking : More (flexible) event handlers are required, for:
+- all docking related messages, based on a TDragDockObject parameter
+- changed visibility of docked controls (and more?)
+ }
   TDockManager = class(TPersistent)
   public
     procedure BeginUpdate; virtual; abstract;
@@ -3440,6 +3444,8 @@ end;
 
 constructor TDragManager.Create(TheOwner: TComponent);
 begin
+{ TODO -cdocking : DragImmediate should apply to drag-drop only, while drag-dock never should start immediately
+ }
   inherited Create(TheOwner);
   FDragImmediate := True;
   FDragThreshold := 5;

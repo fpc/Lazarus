@@ -3453,6 +3453,19 @@ function TWinControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; AD
 var
   TargetControl: TControl;
 begin
+{ TODO -cdocking : All docking related messages should be handled here!
+The base class (TControl) cannot be involved in docking, lacking an docking manager.
+
+The messages could be sent immediately to the docking manager, if this is a dock site.
+ }
+{ if ADocking and UseDockManger then //...we always have an DockManger!
+    DockManger.Dock/DragMsg(...)
+//or:
+    case ADragMessage of
+    ...
+    end
+  else //drag-drop
+}
   case ADragMessage of
     dmFindTarget:
       begin
@@ -4856,6 +4869,12 @@ begin
     if not Result then
       Exit;
   end;
+{ TODO -cdocking : Also ask docking manager!
+In case of a drop into the old location the undock operation should be aborted,
+because then the docking manager (DragDockObject) would refer to an invalid (no more
+existing) target.
+ }
+
   if not KeepDockSiteSize then begin
     NewBounds:=BoundsRect;
     case Client.Align of
