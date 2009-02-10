@@ -615,16 +615,18 @@ procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
 var
   ALeftTop: TPoint;
 begin
-  if FIsTComponent then begin
-    GetComponentBounds(TComponent(FPersistent),ALeft,ATop,AWidth,AHeight);
-    ALeftTop:=GetParentFormRelativeTopLeft(TComponent(FPersistent));
-    ALeft:=ALeftTop.X;
-    ATop:=ALeftTop.Y;
-  end else begin
-    ALeft:=0;
-    ATop:=0;
-    AWidth:=0;
-    AHeight:=0;
+  if FIsTComponent then
+  begin
+    GetComponentBounds(TComponent(FPersistent), ALeft, ATop, AWidth, AHeight);
+    ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
+    ALeft := ALeftTop.X;
+    ATop := ALeftTop.Y;
+  end else
+  begin
+    ALeft := 0;
+    ATop := 0;
+    AWidth := 0;
+    AHeight := 0;
   end;
 end;
 
@@ -636,8 +638,7 @@ begin
     SetUsedBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TSelectedControl.SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer
-  );
+procedure TSelectedControl.SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   FUsedLeft:=ALeft;
   FUsedTop:=ATop;
