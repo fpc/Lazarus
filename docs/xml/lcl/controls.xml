@@ -4896,8 +4896,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnChangeBounds">
-        <short>Calls <var>OnChangeBounds</var>
-        </short>
+        <short>Calls the <var>OnChangeBounds</var> event handler</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Resize">
