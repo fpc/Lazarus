@@ -1270,7 +1270,14 @@ begin
   Sender.Dispatch(TheMessage);
   //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
   if ControlSelection.SelectionForm=Form then begin
-    ControlSelection.CheckForLCLChanges(true);
+    if (not ControlSelection.CheckForLCLChanges(true))
+    and (Sender=Form)
+    and ControlSelection.LookupRootSelected then begin
+      // the selected form was moved (nothing else has changed)
+      // ControlSelection does not need an update, but properties like
+      // Form.Left/Top have to be updated in the OI
+      OnPropertiesChanged(Self);
+    end;
   end;
 end;
 

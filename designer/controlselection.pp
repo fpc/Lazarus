@@ -167,8 +167,8 @@ type
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint read FOldFormRelativeLeftTop
                                             write FOldFormRelativeLeftTop;
-    property UsedLeft: integer read FUsedLeft write FUsedLeft;
-    property UsedTop: integer read FUsedTop write FUsedTop;
+    property UsedLeft: integer read FUsedLeft write FUsedLeft;// form relative (not Left)
+    property UsedTop: integer read FUsedTop write FUsedTop;// form relative (not Top)
     property UsedWidth: integer read FUsedWidth write FUsedWidth;
     property UsedHeight: integer read FUsedHeight write FUsedHeight;
     property Flags: TSelectedControlFlags read FFlags write FFlags;
@@ -617,10 +617,11 @@ var
 begin
   if FIsTComponent then
   begin
-    GetComponentBounds(TComponent(FPersistent), ALeft, ATop, AWidth, AHeight);
     ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
     ALeft := ALeftTop.X;
     ATop := ALeftTop.Y;
+    AWidth := GetComponentWidth(TComponent(FPersistent));
+    AHeight := GetComponentHeight(TComponent(FPersistent));
   end else
   begin
     ALeft := 0;
@@ -2888,7 +2889,6 @@ function TControlSelection.CheckForLCLChanges(Update: boolean): boolean;
 
 var
   i: Integer;
-  PropsChanged: Boolean;
 begin
   Result:=false;
   if FControls.Count>=1 then begin
@@ -2899,35 +2899,17 @@ begin
       end;
     end;
   end;
-  PropsChanged:=false;
-  if Update then
-    begin
-    if Result then begin
-      //debugln('TControlSelection.CheckForLCLChanges');
-      for i:=0 to FControls.Count-1 do
-        if Items[i].IsTComponent and BoundsChanged(Items[i]) then
-          InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
-      InvalidateGuideLinesCache;
-      PropsChanged:=not IsResizing;
-    end else if LookupRootSelected and (FLookupRoot is TControl) then
-    begin
-      // check for form moves
-      for i:=0 to FControls.Count-1 do
-      begin
-        if Items[i].Persistent=FLookupRoot then
-        begin
-          if (Items[i].UsedLeft<>GetComponentLeft(FLookupRoot))
-          or (Items[i].UsedTop<>GetComponentTop(FLookupRoot)) then
-            PropsChanged:=not IsResizing;
-          break;
-        end;
-      end;
-    end;
-  end;
-  if PropsChanged then
+  if Update and Result then
   begin
-    UpdateBounds;
-    DoChangeProperties;
+    //debugln('TControlSelection.CheckForLCLChanges');
+    for i:=0 to FControls.Count-1 do
+      if Items[i].IsTComponent and BoundsChanged(Items[i]) then
+        InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
+    InvalidateGuideLinesCache;
+    if not IsResizing then begin
+      UpdateBounds;
+      DoChangeProperties;
+    end;
   end;
 end;
 
