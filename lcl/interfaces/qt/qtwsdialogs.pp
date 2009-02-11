@@ -230,7 +230,8 @@ begin
 
           if Pos(strExtensions, TmpFilter) = 0 then
           begin
-            List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
+            if List.Count > 0 then
+              List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
             TmpFilter := TmpFilter + ' ' + strExtensions;
           end;
 
@@ -243,16 +244,22 @@ begin
           Position := i + 1;
       end;
     end;
+
+    strExtensions := GetExtensionString(AFileDialog.Filter, Position, i + 1 - Position);
+
+    if Pos(strExtensions, TmpFilter) = 0 then
+    begin
+      if List.Count > 0 then
+        List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
+      TmpFilter := TmpFilter + ' ' + strExtensions;
+    end;
+
     if (AFileDialog.FilterIndex >= 0) and (List.Count > AFileDialog.FilterIndex) then
       ASelectedFilter := GetUTF8String(List.Strings[AFileDialog.FilterIndex]);
+
   finally
     List.Free;
   end;
-
-  strExtensions := GetExtensionString(AFileDialog.Filter, Position, i + 1 - Position);
-
-  if Pos(strExtensions, TmpFilter) = 0 then
-    TmpFilter := TmpFilter + ' ' + strExtensions;
     
   if (AFileDialog is TSaveDialog) and (trim(TmpFilter)='()') then
     Result := ''
