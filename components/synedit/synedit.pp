@@ -2177,13 +2177,10 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   bWasSel: boolean;
   bStartDrag: boolean;
-  {$IFDEF SYN_LAZARUS}
   PrimarySelText: string;
   LogCaretXY: TPoint;
-  {$ENDIF}
 begin
 //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-  {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     inherited MouseDown(Button, Shift, X, Y);
@@ -2192,7 +2189,6 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
-  {$ENDIF}
   Exclude(fStateFlags, sfPossibleGutterClick);
   if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
     exit;
@@ -2205,76 +2201,64 @@ begin
       bWasSel := true;
     end;
   end;
-  {$IFDEF SYN_LAZARUS}
   if Button=mbMiddle then begin
     if ssDouble in Shift then Exit;
     PrimarySelText:=PrimarySelection.AsText;
   end;
-  {$ENDIF}
   inherited MouseDown(Button, Shift, X, Y);
-  ComputeCaret(X, Y);
-  {$IFDEF SYN_LAZARUS}
-  LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-  {$ENDIF}
-  fLastCaretX := CaretX;                                                       //mh 2000-10-19
-  if Button = mbLeft then begin
-    //DebugLn('TCustomSynEdit.MouseDown ',DbgSName(Self),' START CAPTURE');
-    MouseCapture := True;
-    //if mousedown occured in selected block then begin drag operation
-    Exclude(fStateFlags, sfWaitForDragging);
-    if bWasSel and (eoDragDropEditing in fOptions) and (X >= fGutterWidth + 2)
-      and (SelectionMode = smNormal)
-      and IsPointInSelection({$IFDEF SYN_LAZARUS}LogCaretXY{$ELSE}CaretXY{$ENDIF})
-    then
-      bStartDrag := TRUE;
-    //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag),' MouseCapture=',dbgs(MouseCapture));
-  end;
-  if (Button = mbLeft) and bStartDrag then
-    Include(fStateFlags, sfWaitForDragging)
-  else begin
-    {$IFDEF SYN_LAZARUS}
-    if ((Button=mbLeft)
-        or ((eoRightMouseMovesCursor in Options) and (Button=mbRight)))
-    and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
-    {$ELSE}
-    if (sfDblClicked in fStateFlags)
-    {$ENDIF}
-    then begin
-      if ssShift in Shift then
-        SetBlockEnd({$IFDEF SYN_LAZARUS}LogCaretXY
-                    {$ELSE}CaretXY{$ENDIF})
-      else begin
-        SetBlockBegin({$IFDEF SYN_LAZARUS}LogCaretXY
-                      {$ELSE}CaretXY{$ENDIF});
-        if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
-          FBlockSelection.ActiveSelectionMode := smColumn
+
+  IncPaintLock;
+  try
+    ComputeCaret(X, Y);
+    LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+    fLastCaretX := CaretX;                                                       //mh 2000-10-19
+    if Button = mbLeft then begin
+      //DebugLn('TCustomSynEdit.MouseDown ',DbgSName(Self),' START CAPTURE');
+      MouseCapture := True;
+      //if mousedown occured in selected block then begin drag operation
+      Exclude(fStateFlags, sfWaitForDragging);
+      if bWasSel and (eoDragDropEditing in fOptions) and (X >= fGutterWidth + 2)
+        and (SelectionMode = smNormal)
+        and IsPointInSelection(LogCaretXY)
+      then
+        bStartDrag := TRUE;
+      //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag),' MouseCapture=',dbgs(MouseCapture));
+    end;
+    if (Button = mbLeft) and bStartDrag then
+      Include(fStateFlags, sfWaitForDragging)
+    else begin
+      if ((Button=mbLeft)
+          or ((eoRightMouseMovesCursor in Options) and (Button=mbRight)))
+      and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
+      then begin
+        if ssShift in Shift then
+          SetBlockEnd(LogCaretXY)
+        else begin
+          SetBlockBegin(LogCaretXY);
+          if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
+            FBlockSelection.ActiveSelectionMode := smColumn
+        end;
+      end;
+      if (Button=mbMiddle)
+      and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
+      and ((PrimarySelText<>'') or SelAvail)
+      then begin
+        FBlockSelection.StartLineBytePos := LogCaretXY;
+        FBlockSelection.EndLineBytePos := LogCaretXY;
+        //debugln('TCustomSynEdit.MouseDown Old SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
+        SelText:=PrimarySelText;
+        //debugln('TCustomSynEdit.MouseDown New SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
       end;
     end;
-    {$IFDEF SYN_LAZARUS}
-    if (Button=mbMiddle)
-    and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
-    and ((PrimarySelText<>'') or SelAvail)
-    then begin
-      FBlockSelection.StartLineBytePos := LogCaretXY;
-      FBlockSelection.EndLineBytePos := LogCaretXY;
-      //debugln('TCustomSynEdit.MouseDown Old SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
-      SelText:=PrimarySelText;
-      //debugln('TCustomSynEdit.MouseDown New SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
-    end;
-    {$ENDIF}
+  finally
+    DecPaintLock;
   end;
-  {$IFDEF SYN_LAZARUS}
   if (X < fGutterWidth) and (Button=mbLeft) then begin
     Include(fStateFlags, sfPossibleGutterClick);
     fGutter.DoOnGutterClick(X, Y);
   end;
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
-  {$ELSE}
-  if (fMouseDownX < fGutterWidth) then
-    Include(fStateFlags, sfPossibleGutterClick);
-  Windows.SetFocus(Handle);
-  {$ENDIF}
   //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
 end;
 
