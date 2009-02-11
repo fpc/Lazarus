@@ -56,7 +56,8 @@ type
   TQtWSFileDialog = class(TWSFileDialog)
   private
   protected
-    class function GetQtFilterString(const AFileDialog: TFileDialog): WideString;
+    class function GetQtFilterString(const AFileDialog: TFileDialog;
+      var ASelectedFilter: WideString): WideString;
     class procedure UpdateProperties(const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
@@ -163,7 +164,8 @@ end;
 
 { TQtWSFileDialog }
 
-class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog): WideString;
+class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog;
+  var ASelectedFilter: WideString): WideString;
 
   function GetExtensionString(ASource: String; AStart, ALength: Integer): String; inline;
   begin
@@ -174,6 +176,7 @@ class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog)
 var
   TmpFilter, strExtensions: string;
   ParserState, Position, i: Integer;
+  List: TStrings;
 begin
     {------------------------------------------------------------------------------
     This is a parser that converts LCL filter strings to Qt filter strings
@@ -206,31 +209,44 @@ begin
   ParserState := 0;
   Position := 1;
   TmpFilter := '';
-  
-  for i := 1 to Length(AFileDialog.Filter) do
-  begin
-    if Copy(AFileDialog.Filter, i, 1) = '|' then
+  ASelectedFilter := '';
+
+  List := TStringList.Create;
+  try
+    for i := 1 to Length(AFileDialog.Filter) do
     begin
-      ParserState := ParserState + 1;
-
-      if ParserState = 1 then
-        TmpFilter := TmpFilter + Copy(AFileDialog.Filter, Position, i - Position)
-      else
-      if ParserState = 2 then
+      if Copy(AFileDialog.Filter, i, 1) = '|' then
       begin
-        strExtensions := GetExtensionString(AFileDialog.Filter, Position, i - Position);
+        ParserState := ParserState + 1;
 
-        if Pos(strExtensions, TmpFilter) = 0 then
-          TmpFilter := TmpFilter + ' ' + strExtensions;
+        if ParserState = 1 then
+        begin
+          List.Add(Copy(AFileDialog.Filter, Position, i - Position));
+          TmpFilter := TmpFilter + Copy(AFileDialog.Filter, Position, i - Position);
+        end else
+        if ParserState = 2 then
+        begin
+          strExtensions := GetExtensionString(AFileDialog.Filter, Position, i - Position);
 
-        TmpFilter := TmpFilter + ';;';
+          if Pos(strExtensions, TmpFilter) = 0 then
+          begin
+            List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
+            TmpFilter := TmpFilter + ' ' + strExtensions;
+          end;
 
-        ParserState := 0;
+          TmpFilter := TmpFilter + ';;';
+
+          ParserState := 0;
+        end;
+
+        if i <> Length(AFileDialog.Filter) then
+          Position := i + 1;
       end;
-
-      if i <> Length(AFileDialog.Filter) then
-        Position := i + 1;
     end;
+    if (AFileDialog.FilterIndex >= 0) and (List.Count > AFileDialog.FilterIndex) then
+      ASelectedFilter := GetUTF8String(List.Strings[AFileDialog.FilterIndex]);
+  finally
+    List.Free;
   end;
 
   strExtensions := GetExtensionString(AFileDialog.Filter, Position, i + 1 - Position);
@@ -253,7 +269,8 @@ begin
   QtFileDialog.setWindowTitle(@ATitle);
   QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
   QtFileDialog.setHistory(AFileDialog.HistoryList);
-  QtFileDialog.setFilter(GetQtFilterString(AFileDialog));
+  QtFileDialog.setFilter(GetQtFilterString(AFileDialog, ATitle));
+  QtFileDialog.setSelectedFilter(ATitle);
   QtFileDialog.setConfirmOverwrite(ofOverwritePrompt in TOpenDialog(AFileDialog).Options);
   QtFileDialog.setReadOnly(ofReadOnly in TOpenDialog(AFileDialog).Options);
   QtFileDialog.setSizeGripEnabled(ofEnableSizing in TOpenDialog(AFileDialog).Options);
@@ -292,7 +309,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  {selectedFilter, }ReturnText,
+  selectedFilter, ReturnText,
   saveFileName, saveTitle, saveFilter: WideString;
   FileDialog: TFileDialog;
   ReturnList: QStringListH;
@@ -303,7 +320,6 @@ begin
     Initialization of variables
    ------------------------------------------------------------------------------}
   ReturnText := '';
-  //selectedFilter := '';
   saveFileName := '';
   saveTitle := '';
 
@@ -326,10 +342,10 @@ begin
 
   if ACommonDialog is TSaveDialog then
   begin
-    saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog));
+    saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
     saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
     saveTitle := GetUTF8String(FileDialog.Title);
-    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, {selectedFilter} nil, 0);
+    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, @selectedFilter, 0);
     if ReturnText <> '' then
     begin
       FileDialog.FileName := UTF8Encode(ReturnText);

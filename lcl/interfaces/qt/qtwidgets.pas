@@ -1186,6 +1186,7 @@ type
     procedure setFilter(const AFilter: WideString);
     procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
     procedure setReadOnly(const AReadOnly: Boolean);
+    procedure setSelectedFilter(const ASelFilter: WideString);
     procedure setViewMode(const AMode: QFileDialogViewMode);
   end;
 
@@ -9545,6 +9546,15 @@ end;
 procedure TQtFileDialog.setReadOnly(const AReadOnly: Boolean);
 begin
   QFileDialog_setReadOnly(QFileDialogH(Widget), AReadOnly);
+end;
+
+procedure TQtFileDialog.setSelectedFilter(const ASelFilter: WideString);
+begin
+  {$IFDEF USE_QT_44}
+  QFileDialog_selectNameFilter(QFileDialogH(Widget), @ASelFilter);
+  {$ELSE}
+  QFileDialog_selectFilter(QFileDialogH(Widget), @ASelFilter);
+  {$ENDIF}
 end;
 
 procedure TQtFileDialog.setViewMode(const AMode: QFileDialogViewMode);
