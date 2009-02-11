@@ -157,7 +157,42 @@ type
     property Stream: TStream read FStream;
   end;
   TLRSObjectReaderClass = class of TLRSObjectReader;
-  
+
+  { TLRSOWStackItem
+    The TLRSObjectWriter can find empty entries and omit writing them to stream.
+    For example:
+        inline ConditionalOptionsFrame: TCompOptsConditionalsFrame
+          inherited COCTreeView: TTreeView
+          end
+          inherited COCPopupMenu: TPopupMenu
+          end
+        end
+
+    The empty inherited child components will not be written if
+      WriteEmptyInheritedChilds = false (default).
+
+    Reason:
+      This allows to delete/rename controls in ancestors without the need
+      to update all descendants.
+  }
+
+  TLRSOWStackItemState = (
+    lrsowsisStarted,       // now writing header
+    lrsowsisHeaderWritten, // header saved on stack, not yet written to stream, waiting for data
+    lrsowsisDataWritten    // header written to stream, data written
+    );
+
+  TLRSOWStackItem = record
+    Name: string;
+    Instance: TPersistent;
+    PushCount: integer; // waiting for this number of Pop
+    SkipIfEmpty: boolean;
+    State: TLRSOWStackItemState;
+    Buffer: Pointer;
+    BufCount: PtrInt;
+    BufCapacity: PtrInt;
+  end;
+  PLRSOWStackItem = ^TLRSOWStackItem;
 
   { TLRSObjectWriter }
 
@@ -167,8 +202,19 @@ type
     FBuffer: Pointer;
     FBufSize: Integer;
     FBufPos: Integer;
-    FInstanceStack: TStringList;
     FSignatureWritten: Boolean;
+    FStack: PLRSOWStackItem;
+    FStackPointer: integer;
+    FStackCapacity: integer;
+    FWriteEmptyInheritedChilds: boolean;
+    function GetInstanceStack(Index: integer): TPersistent;
+    procedure Push(const AName: string = ''; Instance: TPersistent = nil;
+                   PushCount: integer = 1; SkipIfEmpty: boolean = false);
+    procedure EndHeader;
+    procedure Pop(WriteNull: boolean);
+    procedure ClearStack;
+    procedure FlushStackToStream;
+    procedure WriteToStream(const Buffer; Count: Longint);
   protected
     procedure FlushBuffer;
     procedure WriteValue(Value: TValueType);
@@ -216,8 +262,10 @@ type
     {$ifndef VER2_2}
     procedure WriteUnicodeString(const Value: UnicodeString); override;
     {$endif}
- 
-    property InstanceStack: TStringList read FInstanceStack write FInstanceStack;// list of TPersistent
+
+    property InstanceStackPointer: integer read FStackPointer;
+    property InstanceStack[Index: integer]: TPersistent read GetInstanceStack;
+    property WriteEmptyInheritedChilds: boolean read FWriteEmptyInheritedChilds write FWriteEmptyInheritedChilds;
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
   
@@ -1403,6 +1451,7 @@ begin
     for I := P - 1 downto 0 do
     begin
       Result := TLResource(FList[I]);
+      // ToDo
       if (Result.Name = Name) and (Result.ValueType = ValueType) then
         Exit;
     end;
@@ -4045,17 +4094,107 @@ end;
 
 { TLRSObjectWriter }
 
-procedure TLRSObjectWriter.FlushBuffer;
+function TLRSObjectWriter.GetInstanceStack(Index: integer): TPersistent;
 begin
-  FStream.WriteBuffer(FBuffer^, FBufPos);
-  FBufPos := 0;
+  Result:=FStack[Index].Instance;
 end;
 
-procedure TLRSObjectWriter.Write(const Buffer; Count: LongInt);
+procedure TLRSObjectWriter.Push(const AName: string; Instance: TPersistent;
+  PushCount: integer; SkipIfEmpty: boolean);
+begin
+  if FStackPointer=FStackCapacity then begin
+    FStackCapacity:=FStackCapacity*2+10;
+    ReAllocMem(FStack,SizeOf(TLRSOWStackItem)*FStackCapacity);
+    FillByte(FStack[FStackPointer],SizeOf(TLRSOWStackItem)*(FStackCapacity-FStackPointer),0);
+  end;
+  //if AName<>'' then DebugLn(['TLRSObjectWriter.Push AName=',AName,' Instance=',DbgsName(Instance),' PushCount=',PushCount,' SkipIfEmpty=',SkipIfEmpty]);
+  FStack[FStackPointer].Name:=AName;
+  FStack[FStackPointer].Instance:=Instance;
+  FStack[FStackPointer].PushCount:=PushCount;
+  FStack[FStackPointer].SkipIfEmpty:=SkipIfEmpty;
+  FStack[FStackPointer].BufCount:=0;
+  if SkipIfEmpty then
+    FStack[FStackPointer].State:=lrsowsisStarted
+  else begin
+    FlushStackToStream;
+    FStack[FStackPointer].State:=lrsowsisDataWritten;
+  end;
+  inc(FStackPointer);
+end;
+
+procedure TLRSObjectWriter.EndHeader;
+var
+  Item: PLRSOWStackItem;
+begin
+  Item:=@FStack[FStackPointer-1];
+  if Item^.State=lrsowsisStarted then
+    Item^.State:=lrsowsisHeaderWritten;
+end;
+
+procedure TLRSObjectWriter.Pop(WriteNull: boolean);
+var
+  Item: PLRSOWStackItem;
+begin
+  if FStackPointer=0 then
+    raise Exception.Create('Error: TLRSObjectWriter.Pop stack is empty');
+  Item:=@FStack[FStackPointer-1];
+  if Item^.PushCount>1 then begin
+    // stack item still needs more EndList
+    dec(Item^.PushCount);
+    if WriteNull then begin
+      if Item^.State=lrsowsisHeaderWritten then begin
+        // no data yet, append EndList to header
+        Item^.State:=lrsowsisStarted;
+        WriteValue(vaNull);
+        // wait again for data
+        Item^.State:=lrsowsisHeaderWritten;
+      end else begin
+        // write EndList to stream
+        WriteValue(vaNull);
+      end;
+    end;
+  end else begin
+    // stack item is complete
+    dec(FStackPointer);
+    //if Item^.BufCount>0 then DebugLn(['TLRSObjectWriter.Pop SKIPPED: ',Item^.Name]);
+    if (Item^.State=lrsowsisDataWritten) and WriteNull then
+      WriteValue(vaNull);
+  end;
+end;
+
+procedure TLRSObjectWriter.ClearStack;
+var
+  i: Integer;
+begin
+  for i:=0 to FStackCapacity-1 do begin
+    FStack[i].Name:='';
+    ReAllocMem(FStack[i].Buffer,0);
+  end;
+  ReAllocMem(FStack,0);
+end;
+
+procedure TLRSObjectWriter.FlushStackToStream;
+var
+  i: Integer;
+  Item: PLRSOWStackItem;
+begin
+  for i:=0 to FStackPointer-1 do begin
+    Item:=@FStack[i];
+    if Item^.State<>lrsowsisDataWritten then begin
+      //DebugLn(['TLRSObjectWriter.Write FLUSH from stack to stream']);
+      Item^.State:=lrsowsisDataWritten;
+      WriteToStream(Item^.Buffer^,Item^.BufCount);
+      Item^.BufCount:=0;
+    end;
+  end;
+end;
+
+procedure TLRSObjectWriter.WriteToStream(const Buffer; Count: Longint);
 var
   CopyNow: LongInt;
   SourceBuf: PChar;
 begin
+  //DebugLn(['TLRSObjectWriter.WriteToStream ',dbgMemRange(@Buffer,Count,80)]);
   if Count<2*FBufSize then begin
     // write a small amount of data
     SourceBuf:=@Buffer;
@@ -4077,6 +4216,45 @@ begin
       FlushBuffer;
     FStream.WriteBuffer(Buffer, Count);
   end;
+end;
+
+procedure TLRSObjectWriter.FlushBuffer;
+begin
+  FStream.WriteBuffer(FBuffer^, FBufPos);
+  FBufPos := 0;
+end;
+
+procedure TLRSObjectWriter.Write(const Buffer; Count: LongInt);
+var
+  Item: PLRSOWStackItem;
+begin
+  if Count=0 then exit;
+  if (FStackPointer>0) then
+  begin
+    Item:=@FStack[FStackPointer-1];
+    case Item^.State of
+    lrsowsisStarted:
+      begin
+        // store data on stack
+        //DebugLn(['TLRSObjectWriter.Write STORE data on stack']);
+        if Item^.BufCount+Count>Item^.BufCapacity then
+        begin
+          Item^.BufCapacity:=Item^.BufCount+Count+10;
+          ReAllocMem(Item^.Buffer,Item^.BufCapacity);
+        end;
+        System.Move(Buffer,PByte(Item^.Buffer)[Item^.BufCount],Count);
+        inc(Item^.BufCount,Count);
+        exit;
+      end;
+    lrsowsisHeaderWritten:
+      begin
+        // flush header(s) from stack to stream
+        FlushStackToStream;
+      end;
+    end;
+  end;
+  // write data to stream
+  WriteToStream(Buffer,Count);
 end;
 
 procedure TLRSObjectWriter.WriteValue(Value: TValueType);
@@ -4205,8 +4383,6 @@ begin
   FStream := Stream;
   FBufSize := BufSize;
   GetMem(FBuffer, BufSize);
-  FInstanceStack:=TStringList.Create;
-  FInstanceStack.Add('');
 end;
 
 destructor TLRSObjectWriter.Destroy;
@@ -4220,15 +4396,15 @@ begin
     FBuffer:=nil;
   end;
 
-  FreeAndNil(FInstanceStack);
+  ClearStack;
 
   inherited Destroy;
 end;
 
 procedure TLRSObjectWriter.BeginCollection;
 begin
-  //DebugLn(['TLRSObjectWriter.BeginCollection ',FInstanceStack.Count]);
-  FInstanceStack.Add('');
+  //DebugLn(['TLRSObjectWriter.BeginCollection ',FStackPointer]);
+  Push;
   WriteValue(vaCollection);
 end;
 
@@ -4236,10 +4412,14 @@ procedure TLRSObjectWriter.BeginComponent(Component: TComponent;
   Flags: TFilerFlags; ChildPos: Integer);
 var
   Prefix: Byte;
+  CanBeOmitted: boolean;
 begin
-  //DebugLn(['TLRSObjectWriter.BeginComponent ',FInstanceStack.Count]);
-  FInstanceStack.AddObject(Component.Name,Component);
-  FInstanceStack.Add('');// start list of properties
+  //DebugLn(['TLRSObjectWriter.BeginComponent ',FStackPointer]);
+  // an inherited child component can be omitted if empty
+  CanBeOmitted:=(not WriteEmptyInheritedChilds)
+            and (FStackPointer>0) and (ffInherited in Flags);
+  // a component has two lists: properties and childs
+  Push(Component.Name,Component,2,CanBeOmitted);
 
   if not FSignatureWritten then
   begin
@@ -4264,33 +4444,35 @@ begin
 
   WriteStr(Component.ClassName);
   WriteStr(Component.Name);
+
+  EndHeader;
 end;
 
 procedure TLRSObjectWriter.BeginList;
 begin
-  //DebugLn(['TLRSObjectWriter.BeginList ',FInstanceStack.Count]);
-  FInstanceStack.Add('');
+  //DebugLn(['TLRSObjectWriter.BeginList ',FStackPointer]);
+  Push;
   WriteValue(vaList);
 end;
 
 procedure TLRSObjectWriter.EndList;
 begin
-  //DebugLn(['TLRSObjectWriter.EndList ',FInstanceStack.Count]);
-  WriteValue(vaNull);
-  FInstanceStack.Delete(FInstanceStack.Count-1);
+  //DebugLn(['TLRSObjectWriter.EndList ',FStackPointer]);
+  Pop(true);
+  //WriteValue(vaNull);
 end;
 
 procedure TLRSObjectWriter.BeginProperty(const PropName: String);
 begin
-  //DebugLn(['TLRSObjectWriter.BeginProperty ',FInstanceStack.Count,' ',PropName]);
-  FInstanceStack.Add(PropName);
+  //DebugLn(['TLRSObjectWriter.BeginProperty ',FStackPointer,' ',PropName]);
+  Push(PropName);
   WriteStr(PropName);
 end;
 
 procedure TLRSObjectWriter.EndProperty;
 begin
-  //DebugLn(['TLRSObjectWriter.EndProperty ',FInstanceStack.Count]);
-  FInstanceStack.Delete(FInstanceStack.Count-1);
+  //DebugLn(['TLRSObjectWriter.EndProperty ',FStackPointer]);
+  Pop(false);
 end;
 
 function TLRSObjectWriter.GetStackPath(Root: TComponent): string;
@@ -4301,8 +4483,8 @@ var
   CurName: string;
 begin
   Result:='';
-  for i:=0 to InstanceStack.Count-1 do begin
-    CurInstance:=TPersistent(InstanceStack.Objects[i]);
+  for i:=0 to FStackPointer-1 do begin
+    CurInstance:=FStack[i].Instance;
     if (CurInstance is TComponent) and (Root<>nil) then begin
       CurComponent:=TComponent(CurInstance);
       if CurComponent=Root then begin
@@ -4314,7 +4496,7 @@ begin
         continue;
       end;
     end;
-    CurName:=InstanceStack[i];
+    CurName:=FStack[i].Name;
     if CurName<>'' then begin
       if Result<>'' then Result:=Result+'.';
       Result:=Result+CurName;

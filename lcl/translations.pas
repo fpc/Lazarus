@@ -141,10 +141,10 @@ var
 
 // translate resource strings for one unit
 procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
-  Lang, FallbackLang: string);
+  Lang, FallbackLang: string); overload;
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
-  ): boolean;
-function TranslateUnitResourceStrings(const ResUnitName:string; po: TPOFile): boolean;
+  ): boolean; overload;
+function TranslateUnitResourceStrings(const ResUnitName:string; po: TPOFile): boolean; overload;
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
 function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
