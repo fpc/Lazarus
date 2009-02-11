@@ -127,7 +127,21 @@ begin
         Word3.Y, Word3.X, Word3. X2,
         Word2.Y, Word2.X, Word2. X2
        ) then
+  begin
+    if Word1.Y > 0 then begin
+      Word1.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
+      Word1.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
+    end;
+    if Word2.Y > 0 then begin
+      Word2.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
+      Word2.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
+    end;
+    if Word3.Y > 0 then begin
+      Word3.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
+      Word3.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
+    end;
     exit;
+  end;
 
   // In Case GetWordTriplet did set them
   Word1.Y := -1;
