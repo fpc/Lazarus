@@ -83,6 +83,7 @@ function TSynBeautifier.UnIndentLine(const Editor: TSynEditBase; const Line: str
 var
   SpaceCount1, SpaceCount2: Integer;
   BackCounter, LogSpacePos: Integer;
+  LogCaret: TPoint;
 begin
   SpaceCount1 := LeftSpaces(Editor, Line, true);
   SpaceCount2 := 0;
@@ -99,10 +100,11 @@ begin
     SpaceCount2 := 0;
   // remove visible spaces
   LogSpacePos := TSynEdit(Editor).PhysicalToLogicalCol(Line, PhysCaret.y-1, SpaceCount2 + 1);
+  LogCaret := TSynEdit(Editor).PhysicalToLogicalPos(PhysCaret);
   CaretNewX :=  SpaceCount2 + 1;
-  DelChars := copy(Line, LogSpacePos, PhysCaret.X - LogSpacePos);
+  DelChars := copy(Line, LogSpacePos, LogCaret.X - LogSpacePos);
   InsChars := ''; // TODO: if tabs were removed, maybe fill-up with spaces
-  Result :=copy(Line, 1, LogSpacePos-1) + copy(Line, PhysCaret.X, MaxInt);
+  Result :=copy(Line, 1, LogSpacePos-1) + copy(Line, LogCaret.X, MaxInt);
 end;
 
 function TSynBeautifier.IndentLine(const Editor: TSynEditBase; Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String; out
