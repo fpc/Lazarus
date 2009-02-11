@@ -5865,6 +5865,7 @@ var
   Helper: string;
   StartOfBlock: TPoint;
   bChangeScroll: boolean;
+  bCaretAdjust: Boolean;
   moveBkm: boolean;
   WP: TPoint;
   Caret: TPoint;
@@ -5886,6 +5887,7 @@ var
 
 begin
   IncPaintLock;
+  bCaretAdjust := FCaret.AdjustToNextChar;
   try
     case Command of
 // horizontal caret movement or selection
@@ -6424,7 +6426,6 @@ begin
 // character which will be overwritten with the typed character.  If we put the
 // extra space in in insert mode, it would be left at the end of the line and
 // cause problems unless eoTrimTrailingSpaces is set.
-            {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
             {debugln('ecChar CaretXY=',dbgs(CaretXY),
                     ' LogCaretXY=',dbgs(PhysicalToLogicalPos(CaretXY)),
@@ -6445,15 +6446,18 @@ begin
                   Temp := Temp + StringOfChar(' ', CaretX - Len);
                 end;
                 CaretX := InsertChar(aChar, Temp, CaretX, drLTR);
+                FTheLinesView[CaretY - 1] := Temp;
                 {$ELSE}
                 Len := Length(Temp);
                 if Len < LogCaretXY.X - 1 then
                   Temp := Temp + StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 System.Insert(AChar, Temp, LogCaretXY.X);
                 //debugln('ecChar Temp=',DbgStr(Temp),' AChar=',DbgStr(AChar));
-                CaretX := CaretX + 1;
-                {$ENDIF}
                 FTheLinesView[CaretY - 1] := Temp;
+                FCaret.AdjustToNextChar := True;
+                CaretX := CaretX + 1;
+                FCaret.AdjustToNextChar := bCaretAdjust;
+                {$ENDIF}
                 fUndoList.AddChange(crInsert, StartOfBlock,
                   PhysicalToLogicalPos(CaretXY), '', smNormal);
               end else begin
@@ -6473,60 +6477,19 @@ begin
                 else
                   Temp:=Temp+StringOfChar(' ', LogCaretXY.X-1-Len)+AChar;
                 {$ENDIF}
-                CaretNew := Point((CaretX + 1), CaretY);
                 FTheLinesView[CaretY - 1] := Temp;
+                FCaret.AdjustToNextChar := True;
+                CaretX := CaretX + 1;
+                FCaret.AdjustToNextChar := bCaretAdjust;
                 fUndoList.AddChange(crInsert,
-                  StartOfBlock, PhysicalToLogicalPos(CaretNew),
+                  StartOfBlock, FCaret.LineBytePos,
                   Helper, smNormal);
-                CaretX := CaretX + 1;
               end;
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
             finally
               if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
             end;
-            {$ELSE below for NOT SYN_LAZARUS ----------------------------------}
-            bChangeScroll := not (eoScrollPastEol in fOptions);
-            try
-              if bChangeScroll then Include(fOptions, eoScrollPastEol);
-              StartOfBlock := CaretXY;
-              if fInserting then begin
-                Len := Length(Temp);
-                if Len < CaretX then
-//              Temp := Temp + StringOfChar(' ', CaretX - Len);
-                  Temp := Temp + StringOfChar(' ', CaretX - Len - Ord(fInserting)); //JGF 2000-09-23
-                System.Insert(AChar, Temp, CaretX);
-                CaretX := CaretX + 1;
-                TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
-                fUndoList.AddChange(crInsert, StartOfBlock,
-                  CaretXY, '', smNormal);
-              end else begin
-// Processing of case character covers on LeadByte.
-                counter := 1;
-{$IFDEF SYN_MBCSSUPPORT}
-                if (ByteType(Temp, CaretX) = mbLeadByte) then begin
-                  Inc(counter);
-                end;
-{$ENDIF}
-                Helper := Copy(Temp, CaretX, counter);
-                Temp[CaretX] := AChar;
-{$IFDEF SYN_MBCSSUPPORT}
-                if (counter > 1) then begin
-                  Temp[CaretX + 1] := ' ';
-                end;
-{$ENDIF}
-                CaretNew := Point((CaretX + counter), CaretY);
-                TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
-                fUndoList.AddChange(crInsert, StartOfBlock, CaretNew,
-                  Helper, smNormal);
-                CaretX := CaretX + 1;
-              end;
-              if CaretX >= LeftChar + fCharsInWindow then
-                LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
-            finally
-              if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
-            end;
-            {$ENDIF}
           end;
         end;
       ecUndo:
