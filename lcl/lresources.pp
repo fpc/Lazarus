@@ -1451,21 +1451,22 @@ begin
     for I := P - 1 downto 0 do
     begin
       Result := TLResource(FList[I]);
-      // ToDo
-      if (Result.Name = Name) and (Result.ValueType = ValueType) then
+      if AnsiCompareText(Result.Name,Name)<>0 then
+        break;
+      if Result.ValueType = ValueType then
         Exit;
     end;
-    // look from position
+    // look behind position
     for I := P to FList.Count - 1 do
     begin
       Result := TLResource(FList[I]);
-      if (Result.Name = Name) and (Result.ValueType = ValueType) then
+      if AnsiCompareText(Result.Name,Name)<>0 then
+        break;
+      if Result.ValueType = ValueType then
         Exit;
     end;
-    Result := nil;
-  end
-  else
-    Result := nil;
+  end;
+  Result := nil;
 end;
 
 function TLResourceList.FindPosition(const Name: AnsiString): Integer;
