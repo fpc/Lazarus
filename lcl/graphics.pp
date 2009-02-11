@@ -38,7 +38,7 @@ uses
   FPImgCmn, FPImage, FPCanvas,
   FPReadPNG, FPWritePNG, PNGComn,  // png support
   FPReadBMP, FPWriteBMP,   // bmp support
-  FPReadPNM, FPWritePNM,   // png support
+  FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
   FPReadJpeg, FPWriteJpeg, // jpg support
   IntfGraphics,
   AvgLvlTree,
