@@ -47,7 +47,7 @@ type
     Sender: TComponent; IndexSerie, Index, Xi, Yi: Integer;
     Xg, Yg: Double) of object;
 
-  TCustomChart = class(TGraphicControl);
+  TCustomChart = class(TCustomControl);
 
   TChartPen = class(TPen)
   private
@@ -265,6 +265,7 @@ type
       IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double); virtual;
     procedure DoDrawReticule(
       IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double); virtual;
+    procedure EraseBackground(DC: HDC); override;
   public
     XImageMin, YImageMin: Integer;                // Image coordinates of limits
     XImageMax, YImageMax: Integer;
@@ -735,6 +736,11 @@ begin
   FFrame.Destroy;
 
   inherited Destroy;
+end;
+
+procedure TChart.EraseBackground(DC: HDC);
+begin
+  // do not erase, since we will paint over it anyway
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);
