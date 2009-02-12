@@ -1713,6 +1713,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.IntfAppRestore;
 begin
+  Screen.RestoreLastActive;
   if Assigned(FOnRestore) then FOnRestore(Self);
   FApplicationHandlers[ahtRestore].CallNotifyEvents(Self);
 end;

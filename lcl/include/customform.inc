@@ -460,31 +460,14 @@ begin
 end;
 
 procedure TCustomForm.DoShowWindow;
-var
-  NewFocusControl: TWinControl;
 begin
-  if (ActiveControl = nil) and (not (csDesigning in ComponentState))
-  and (Parent=nil) then begin
+  if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then
+  begin
     // automatically choose a control to focus
     {$IFDEF VerboseFocus}
     DebugLn('TCustomForm.DoShowWindow ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
     {$ENDIF}
     ActiveControl := FindDefaultForActiveControl;
-  end;
-  if ([csLoading,csDestroying]*ComponentState=[])
-  and (Parent=nil) then begin
-    NewFocusControl:=FActiveControl;
-    if (NewFocusControl=nil)
-    or (not NewFocusControl.CanFocus)
-    then
-      NewFocusControl:=Self;
-    if NewFocusControl.HandleAllocated and NewFocusControl.IsVisible
-    then begin
-      {$IFDEF VerboseFocus}
-      DebugLn('TCustomForm.DoShowWindow ',DbgSName(Self),' SetFocus NewFocusControl=',DbgSName(NewFocusControl),' FActiveControl=',DbgSName(FActiveControl));
-      {$ENDIF}
-      LCLIntf.SetFocus(NewFocusControl.Handle);
-    end;
   end;
 end;
 

@@ -811,6 +811,7 @@ type
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
+    procedure RestoreLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TScreenNotification;

@@ -864,40 +864,42 @@ var
       SC_MINIMIZE:
         begin
 
-          if (Application <> nil) and (lWinControl <> nil)
-              and (Application.MainForm <> nil)
-              and (Application.MainForm = lWinControl) then
-                Window := TWin32WidgetSet(WidgetSet).AppHandle;//redirection
+          if (Application <> nil) and (lWinControl <> nil) and
+             (Application.MainForm <> nil) and
+             (Application.MainForm = lWinControl) then
+            Window := TWin32WidgetSet(WidgetSet).AppHandle;//redirection
 
-         if (Window = TWin32WidgetSet(WidgetSet).AppHandle)
-              and (Application <> nil)
-              and (Application.MainForm<>nil) then
+          if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
+             (Application <> nil) then
           begin
+            if (Application.MainForm <> nil) then
+            begin
               Windows.SetWindowPos(Window, HWND_TOP,
                 Application.MainForm.Left, Application.MainForm.Top,
                 Application.MainForm.Width, 0, SWP_NOACTIVATE);
-                if Application.MainForm.HandleAllocated then
-                 Windows.ShowWindow(Application.MainForm.Handle, SW_HIDE);
+              if Application.MainForm.HandleAllocated then
+                Windows.ShowWindow(Application.MainForm.Handle, SW_HIDE);
+            end;
 
-              Application.IntfAppMinimize;
+            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+            WinProcess := False;
+            Application.IntfAppMinimize;
           end;
         end;
 
       SC_RESTORE:
         begin
 
-         if (Window = TWin32WidgetSet(WidgetSet).AppHandle)
-              and (Application <> nil)
-              and (Application.MainForm<>nil)
-              and Application.MainForm.HandleAllocated then
+         if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
+            (Application <> nil) then
           begin
             PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            if Application.MainForm.HandleObjectShouldBeVisible then
-              Windows.ShowWindow(Application.MainForm.Handle, SW_SHOW);
-            if Windows.IsWindowEnabled(Application.MainForm.Handle) then
-              Windows.SetActiveWindow(Application.MainForm.Handle);
-            WinProcess := false;
-
+            WinProcess := False;
+            if (Application.MainForm <> nil) and Application.MainForm.HandleAllocated then
+            begin
+              if Application.MainForm.HandleObjectShouldBeVisible then
+                Windows.ShowWindow(Application.MainForm.Handle, SW_SHOWNOACTIVATE);
+            end;
             Application.IntfAppRestore;
           end;
         end;
@@ -1229,39 +1231,6 @@ begin
         WA_INACTIVE:
         begin
           LMessage.Msg := LM_DEACTIVATE;
-        end;
-      end;
-    end;
-    WM_ACTIVATEAPP:
-    begin
-      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
-      begin
-        if WParam <> 0 then // activated
-        begin
-          //WriteLn('Restore');
-          RestoreStayOnTopFlags(Window);
-          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP,
-            0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-        end
-        else
-        begin // deactivated
-          //WriteLn('Remove');
-          RemoveStayOnTopFlags(Window);
-          // this is workarond. After RemoveStayOnTopFlags previously stay on top windows are
-          // stil on top. So if you switch application they will be on top before second switch
-          TargetWindow := GetNextWindow(TWin32WidgetSet(WidgetSet).AppHandle, GW_HWNDNEXT);
-          if TargetWindow = 0 then
-            TargetWindow := HWND_BOTTOM;
-          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, TargetWindow,
-            0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-        end;
-
-        // activate/deactivate main window
-        if (Application <> nil) and (Application.MainForm <> nil) and
-            Application.MainForm.HandleAllocated then
-        begin
-          //WriteLn('Activate/Deactivate main window');
-          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
         end;
       end;
     end;
@@ -2279,6 +2248,22 @@ begin
   end;
 
   case Msg of
+    WM_ACTIVATEAPP:
+    begin
+      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+      begin
+        if WParam <> 0 then // activated
+        begin
+          //WriteLn('Restore');
+          RestoreStayOnTopFlags(Window);
+        end
+        else
+        begin // deactivated
+          //WriteLn('Remove');
+          RemoveStayOnTopFlags(Window);
+        end;
+      end;
+    end;
     WM_MOVE:
     begin
       PLMsg:=@LMMove;

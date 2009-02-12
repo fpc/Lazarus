@@ -633,6 +633,15 @@ begin
   end;
 end;
 
+procedure TScreen.RestoreLastActive;
+begin
+  if FLastActiveControl <> nil then
+    FLastActiveControl.SetFocus
+  else
+  if FLastActiveCustomForm <> nil then
+    FLastActiveCustomForm.SetFocus;
+end;
+
 {------------------------------------------------------------------------------
   procedure TScreen.AddHandler(HandlerType: TScreenNotification;
     const Handler: TMethod);
