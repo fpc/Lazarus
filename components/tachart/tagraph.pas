@@ -236,8 +236,6 @@ type
 
     FAxisVisible: Boolean;
     
-    FNumBarSeries: Integer;
-
     procedure SetAutoUpdateXMin(Value: Boolean);
     procedure SetAutoUpdateXMax(Value: Boolean);
     procedure SetAutoUpdateYMin(Value: Boolean);
@@ -328,7 +326,6 @@ type
     property Canvas;
 
     property SeriesCount: Integer read GetSeriesCount;
-    property NumBarSeries: Integer read FNumBarSeries;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
     property Series: TFPList read FSeries write FSeries;
@@ -730,8 +727,6 @@ begin
   FFrame :=  TChartPen.Create;
   FFrame.Visible := true;
   FFrame.OnChange := StyleChanged;
-  
-  FNumBarSeries := 0;
 end;
 
 destructor TChart.Destroy;
@@ -1250,11 +1245,7 @@ begin
   end;
   Series.Add(Serie);
   TBasicChartSeries(Serie).ParentChart := Self;
-   
-  if Serie is TBarSeries then begin
-    (Serie as TBarSeries).SeriesNumber := FNumBarSeries;
-    Inc(FNumBarSeries); //FIXME: this is never decremented when series is deleted
-  end;
+
 end;
 
 procedure TChart.DeleteSerie(Serie: TComponent);

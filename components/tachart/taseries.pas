@@ -159,11 +159,11 @@ type
     FBarBrush: TBrush;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
-    FSeriesNumber: Integer;
 
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
+    procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
   protected
     procedure StyleChanged(Sender: TObject);
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
@@ -175,12 +175,12 @@ type
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
-    property BarWidthPercent:Integer read FBarWidthPercent write SetBarWidthPercent default 70;
+    property BarWidthPercent: Integer
+      read FBarWidthPercent write SetBarWidthPercent default 70;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property Title;
     property Active;
-    property SeriesNumber: Integer read FSeriesNumber write FSeriesNumber;
   end;
 
   { TPieSeries }
@@ -1128,7 +1128,7 @@ var
   graphCoordTop: ChartCoord;
   graphCoordBottom: ChartCoord;
   topX, topY, bottomY: Integer;
-  barWidth, TotalbarWidth: Integer;
+  barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
   bx1, by1, bx2, by2: Integer;
 
   function BarInViewPort(cTop, cBottom: ChartCoord): Boolean;
@@ -1156,10 +1156,10 @@ begin
   ACanvas.Brush.Assign(FBarBrush);
 
   //calc the single bar width
-  TotalbarWidth :=
+  totalbarWidth :=
     Round((FBarWidthPercent * 0.01) * ParentChart.ChartWidth / FCoordList.Count);
-  //to use with multibar -- with is on by default
-  barWidth := TotalbarWidth div ParentChart.NumBarSeries;
+  ExamineAllBarSeries(totalBarSeries, myPos);
+  barWidth := totalbarWidth div totalBarSeries;
 
   for i := 0 to FCoordList.Count - 1 do begin
     //get the top and bottom points
@@ -1188,9 +1188,9 @@ begin
       bx2 := topX+(barWidth div 2);
       by2 := bottomY;
 }
-      bx1 := topX - (TotalbarWidth div 2) + SeriesNumber * barWidth;
+      bx1 := topX - (TotalbarWidth div 2) +  myPos * barWidth;
       by1 := topY;
-      bx2 := topX - (TotalbarWidth div 2) + SeriesNumber * barWidth + barWidth;
+      bx2 := topX - (TotalbarWidth div 2) +  myPos * barWidth + barWidth;
       by2 := bottomY;
 
       //FIXME only draw if bar inside image coord (get a better way of doing this)
@@ -1212,6 +1212,21 @@ begin
   ACanvas.Pen.Color := clBlack;
   ACanvas.Brush.Assign(BarBrush);
   ACanvas.Rectangle(ARect);
+end;
+
+procedure TBarSeries.ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
+var
+  i: Integer;
+begin
+  ATotalNumber := 0;
+  AMyPos := -1;
+  for i := 0 to ParentChart.SeriesCount - 1 do begin
+    if ParentChart.Series[i] = Self then
+      AMyPos := ATotalNumber;
+    if TBasicChartSeries(ParentChart.Series[i]) is TBarSeries then
+      Inc(ATotalNumber);
+  end;
+  Assert(AMyPos >= 0);
 end;
 
 constructor TPieSeries.Create(AOwner: TComponent);
