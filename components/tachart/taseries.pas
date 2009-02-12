@@ -37,9 +37,6 @@ uses
   {$ENDIF}
   Classes, Dialogs, Graphics, sysutils, TAGraph;
 
-const
-  clTAColor = clScrollBar;
-
 type
 
   //not completetly implemented (only TPieSeries - not all)
@@ -74,7 +71,6 @@ type
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
-    FSeriesColor: TColor;
     FTitle: String;
     FCoordList: TList;
     FActive: Boolean;
@@ -87,9 +83,15 @@ type
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
   protected
+    property Coord: TList read FCoordList;
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    function GetLegendCount: Integer; override;
+    function IsInLegend: Boolean; override;
+    procedure UpdateBounds(
+      var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
   public
-    ParentChart: TChart;
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
 
     constructor Create(AOwner: TComponent); override;
@@ -99,16 +101,14 @@ type
     property YGraphMin: Double read FYGraphMin write FYGraphMin;
     property XGraphMax: Double read FXGraphMax write FXGraphMax;
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
-    property SeriesColor: TColor read FSeriesColor write FSeriesColor default clTAColor;
     property Title: String read FTitle write FTitle;
 
-    function Count: Integer;
+    function Count: Integer; override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     procedure Delete(Index: Integer); virtual;
     procedure Clear;
 
-    property Coord: TList read FCoordList;
   published
     property MarksStyle: TSeriesMarksStyle read FMarks write SetMarks; //this should be an object
     property Active: Boolean read FActive write SetActive;
@@ -152,6 +152,8 @@ type
 
   TLineStyle = (lsVertical, lsHorizontal);
 
+  { TBarSeries }
+
   TBarSeries = class(TChartSeries)
   private
     FBarBrush: TBrush;
@@ -164,6 +166,7 @@ type
     procedure SetBarPen(Value: TPen);
   protected
     procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -180,6 +183,8 @@ type
     property SeriesNumber: Integer read FSeriesNumber write FSeriesNumber;
   end;
 
+  { TPieSeries }
+
   TPieSeries = class(TChartSeries)
   private
     ColorIndex: Integer;
@@ -187,6 +192,9 @@ type
     procedure SetPiePen(Value: TPen);
   protected
     procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendCount: Integer; override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -201,6 +209,8 @@ type
     property Active;
   end;
 
+  { TAreaSeries }
+
   TAreaSeries = class(TChartSeries)
   private
     FAreaLinesPen: TChartPen;
@@ -213,6 +223,7 @@ type
     procedure SetInvertedStairs(Value: Boolean);
   protected
     procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -229,9 +240,16 @@ type
      property Active;
   end;
 
+  { TBasicLineSeries }
+
+  TBasicLineSeries  = class(TChartSeries)
+  protected
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+  end;
+
   { TSerie }
 
-  TSerie = class(TChartSeries)
+  TSerie = class(TBasicLineSeries)
   private
     FPointer: TSeriesPointer;
     FStyle: TPenStyle;
@@ -282,7 +300,7 @@ type
     property Pointer: TSeriesPointer read FPointer write SetPointer;
   end;
 
-  TLine = class(TChartSeries)
+  TLine = class(TBasicLineSeries)
   private
     FStyle: TLineStyle;
 
@@ -311,7 +329,7 @@ type
 implementation
 
 uses
-  math,
+  math, types,
   TAChartUtils;
 
 constructor TChartSeries.Create(AOwner: TComponent);
@@ -345,6 +363,21 @@ begin
   inherited Destroy;
 end;
 
+procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
+end;
+
+function TChartSeries.GetLegendCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+begin
+  Result := ACanvas.TextWidth(Title);
+end;
+
 function TChartSeries.GetXMinVal: Integer;
 begin
   if Count > 0 then
@@ -366,6 +399,11 @@ begin
     Exchange(XMin, XMax);
   if YMin > YMax then
     Exchange(YMin, YMax);
+end;
+
+function TChartSeries.IsInLegend: Boolean;
+begin
+  Result := Active and ShowInLegend;
 end;
 
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -435,6 +473,17 @@ procedure TChartSeries.SetShowInLegend(Value: Boolean);
 begin
   FShowInLegend := Value;
   UpdateParentChart;
+end;
+
+procedure TChartSeries.UpdateBounds(
+  var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
+begin
+  if not Active or (Count = 0) then exit;
+  ANumPoints += Count;
+  if XGraphMin < AXMin then AXMin := XGraphMin;
+  if YGraphMin < AYMin then AYMin := YGraphMin;
+  if XGraphMax > AXMax then AXMax := XGraphMax;
+  if YGraphMax > AYMax then AYMax := YGraphMax;
 end;
 
 procedure TChartSeries.UpdateParentChart;
@@ -1034,7 +1083,7 @@ end;
 
 procedure TBarSeries.SetBarBrush(Value: TBrush);
 begin
-  FSeriesColor := Value.Color;
+  SeriesColor := Value.Color;
   FBarBrush.Assign(Value);
 end;
 
@@ -1155,6 +1204,14 @@ begin
           ACanvas.Rectangle( bx1, by1, bx2, by2);
     end;
   end; // for
+end;
+
+procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := clBlack;
+  ACanvas.Brush.Assign(BarBrush);
+  ACanvas.Rectangle(ARect);
 end;
 
 constructor TPieSeries.Create(AOwner: TComponent);
@@ -1323,6 +1380,43 @@ begin
   end; // for
 end;
 
+procedure TPieSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+var
+  i: Integer;
+  pc, bc: TColor;
+  r: TRect;
+begin
+  r := ARect;
+  pc := ACanvas.Pen.Color;
+  bc := ACanvas.Brush.Color;
+  for i := 0 to Count - 1 do begin
+    ACanvas.Pen.Color := pc;
+    ACanvas.Brush.Color := bc;
+    with PChartCoord(Coord.Items[i])^ do begin
+      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [y, Text]));
+      ACanvas.Pen.Color := clBlack;
+      ACanvas.Brush.Color := Color;
+    end;
+    ACanvas.Rectangle(r);
+    OffsetRect(r, 0, r.Bottom - r.Top + LEGEND_SPACING);
+  end;
+end;
+
+function TPieSeries.GetLegendCount: Integer;
+begin
+  Result := Count;
+end;
+
+function TPieSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do
+    with PChartCoord(Coord.Items[i])^ do
+      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
+end;
+
 
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
@@ -1482,6 +1576,27 @@ begin
     end;
     DrawPart;
   end;
+end;
+
+procedure TAreaSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := clBlack;
+  ACanvas.Brush.Color := SeriesColor;
+  ACanvas.Rectangle(ARect);
+end;
+
+{ TBasicLineSeries }
+
+procedure TBasicLineSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+var
+  y: Integer;
+begin
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := SeriesColor;
+  y := (ARect.Top + ARect.Bottom) div 2;
+  ACanvas.MoveTo(ARect.Left, ARect.Top + 5);
+  ACanvas.LineTo(ARect.Right, ARect.Top + 5);
 end;
 
 end.

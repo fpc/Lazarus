@@ -74,7 +74,6 @@ var
   i: integer;
 begin
   if FArea = nil then InitArea;
-
   for i := 1 to edAddCount.Value do begin
     X3 := X3 + 1;
     if random(2) >= 0.7 then Y3 := Y3 + random(5)
@@ -194,6 +193,7 @@ begin
   FArea := TAreaSeries.Create(Chart1);
   Chart1.AddSerie(FArea);
   FArea.SeriesColor := clFuchsia;
+  FArea.Title := 'area';
   //FArea.Stairs := true;
   FArea.InvertedStairs := false;
 end;

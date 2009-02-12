@@ -38,6 +38,10 @@ uses
   SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, Clipbrd,
   TAChartUtils;
 
+const
+  clTAColor = clScrollBar;
+  LEGEND_SPACING = 5;
+
 type
 
   TDrawVertReticule = procedure(
@@ -164,7 +168,25 @@ type
     property Grid: TChartPen read FGrid write SetGrid;
   end;
 
+  TChart = class;
+
+  { TBasicChartSeries }
+
   TBasicChartSeries = class(TComponent)
+  private
+    FSeriesColor: TColor;
+  protected
+    ParentChart: TChart;
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
+    function GetLegendCount: Integer; virtual; abstract;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
+    function IsInLegend: Boolean; virtual; abstract;
+    procedure UpdateBounds(
+      var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
+      virtual; abstract;
+  public
+    function Count: Integer; virtual; abstract;
+    property SeriesColor: TColor read FSeriesColor write FSeriesColor default clTAColor;
   end;
 
   { TChart }
@@ -254,9 +276,6 @@ type
 
     function GetSeriesCount: Integer;
 
-    function OnlyPie: Boolean;
-    function GetPie: Pointer;
-    function SeriesInLegendCount: Integer;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -720,7 +739,7 @@ var
   i: Integer;
 begin
   for i := 0 to FSeries.Count - 1 do
-    with TChartSeries(FSeries.Items[i]) do begin
+    with TBasicChartSeries(FSeries.Items[i]) do begin
       ParentChart := nil; // Prevent auto-update of the chart by series.
       Free;
     end;
@@ -1086,25 +1105,24 @@ end;
 
 procedure TChart.DrawLegend(ACanvas: TCanvas; ARect: TRect);
 var
-  w, h, x1, y1, x2, y2, i, j, TH: Integer;
-  MySerie: TChartSeries;
+  w, h, x1, y1, x2, y2, i, TH: Integer;
   pbf: TPenBrushFontRecall;
+  r: TRect;
 begin
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
 
   try
     w := GetLegendWidth(ACanvas);
     TH := ACanvas.TextHeight('I');
-
-    if OnlyPie then begin //if only one pie show diferent legend
-      MySerie := GetPie;
-      h := 5 + MySerie.Count * (TH + 5);
-    end else
-      h := 5 + SeriesInLegendCount * (TH + 5);
+    h := 0;
+    for i := 0 to SeriesCount - 1 do
+      with TBasicChartSeries(Series[i]) do
+        if IsInLegend then
+          Inc(h, GetLegendCount);
     x1 := ARect.Right - w - 5;
     y1 := YImageMax;
     x2 := x1 + w;
-    y2 := y1 + h;
+    y2 := y1 + LEGEND_SPACING + h * (TH + LEGEND_SPACING);
 
     // Border
     ACanvas.Brush.Assign(FGraphBrush);
@@ -1112,53 +1130,15 @@ begin
     ACanvas.Font.Assign(FLegend.Font);
     ACanvas.Rectangle(x1, y1, x2, y2);
 
-    // Lines and Series titles
-    if OnlyPie then begin //if only one pie show diferent legend
-      MySerie := GetPie;
-      for i := 0 to MySerie.Count - 1 do begin //clean this coord should not be published
-        ACanvas.Pen.Color := FLegend.Frame.Color;
-        ACanvas.Brush.Color := FGraphBrush.Color;
-        ACanvas.TextOut(x1 + 25, y1 + 5 + i * (TH + 5),
-          Format('%1.2g', [PChartCoord(MySerie.Coord.Items[i])^.y]) + ' ' +
-            PChartCoord(MySerie.Coord.Items[i])^.Text);
-        ACanvas.Pen.Color := clBlack;
-        ACanvas.Brush.Color := PChartCoord(MySerie.Coord.Items[i])^.Color;
-        ACanvas.Rectangle(
-          x1 + 5, y1 + i * (TH + 5) + TH div 2,
-          x1 + 22, y1 + 10 + i * (TH + 5) + TH div 2);
-      end;
-    end
-    else begin
-      j := 0;
-      for i := 0 to SeriesCount - 1 do begin
-        MySerie := Series[i];
-        if MySerie.Active and MySerie.ShowInLegend then begin
+    r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
+    for i := 0 to SeriesCount - 1 do
+      with TBasicChartSeries(Series[i]) do
+        if IsInLegend then begin
+          ACanvas.Pen.Color := FLegend.Frame.Color;
           ACanvas.Brush.Assign(FGraphBrush);
-          ACanvas.TextOut(x1 + 25, y1 + 5 + j * (TH + 5), MySerie.Title);
-          ACanvas.Pen.Color := MySerie.SeriesColor;
-          if MySerie is TBarSeries then begin
-            ACanvas.Pen.Color := clBlack;
-            ACanvas.Brush.Assign((MySerie as TBarSeries).BarBrush);
-            ACanvas.Rectangle(
-              x1 + 5, y1 + j * (TH + 5) + TH div 2,
-              x1 + 22, y1 + 10 + j * (TH + 5) + TH div 2);
-          end
-          else if MySerie is TAreaSeries then begin
-            ACanvas.Pen.Color := clBlack;
-            ACanvas.Brush.Color := MySerie.SeriesColor;;
-            ACanvas.Rectangle(
-              x1 + 5, y1 + j * (TH + 5) + TH div 2,
-              x1 + 22, y1 + 10 + j * (TH + 5) + TH div 2);
-          end
-          else if (MySerie is TLine) or (MySerie is TSerie)  then begin
-            ACanvas.MoveTo(x1 + 5, y1 + 5 + j * (TH + 5) + TH div 2);
-            ACanvas.LineTo(x1 + 22, y1 + 5 + j * (TH + 5) + TH div 2);
-          end
-          else if MySerie is TPieSeries then begin end; //don't draw
-          j += 1;
+          DrawLegend(ACanvas, r);
+          OffsetRect(r, 0, GetLegendCount * (TH + LEGEND_SPACING));
         end;
-      end;
-    end;
   finally
     pbf.Free;
   end;
@@ -1239,36 +1219,19 @@ end;
 
 function TChart.GetLegendWidth(ACanvas: TCanvas): Integer;
 var
-  i, j, k: Integer;
-  MySerie: TSerie;
+  i: Integer;
 begin
-  if not FLegend.Visible or (SeriesInLegendCount = 0) then begin
-    Result := 0;
+  Result := 0;
+  if not FLegend.Visible then
     exit;
-  end;
 
-  if OnlyPie then begin //if only one pie show diferent legend
-    MySerie := GetPie;
-    j := 0;
-    for i := 0 to MySerie.Count - 1 do begin //clean this coord should not be published
-      k := ACanvas.TextWidth(
-        Format('%1.2g', [PChartCoord(MySerie.Coord.Items[i])^.y]) + ' ' +
-          PChartCoord(MySerie.Coord.Items[i])^.Text) ;
-      if k > j then j := k;
-    end;
-    Result := j + 20 + 10;
-  end
-  else begin
-    j := 0;
-    for i := 0 to SeriesCount-1 do begin
-      MySerie := Series[i];
-      if MySerie.Active and MySerie.ShowInLegend then begin
-        k := ACanvas.TextWidth(MySerie.Title);
-        if k > j then j := k;
-      end;
-    end;
-    Result := j + 20 + 10;
+  for i := 0 to SeriesCount - 1 do begin
+    with TBasicChartSeries(Series[i]) do
+      if IsInLegend then
+        Result := Max(GetLegendWidth(ACanvas), Result);
   end;
+  if Result > 0 then
+    Result += 20 + 10;
 end;
 
 procedure TChart.SetGraphBrush(Value: TBrush);
@@ -1286,7 +1249,7 @@ begin
     BottomAxis.Visible := false;
   end;
   Series.Add(Serie);
-  TChartSeries(Serie).ParentChart := Self;
+  TBasicChartSeries(Serie).ParentChart := Self;
    
   if Serie is TBarSeries then begin
     (Serie as TBarSeries).SeriesNumber := FNumBarSeries;
@@ -1345,7 +1308,6 @@ var
   Tolerance, Valeur: Double;
   i: Integer;
   NBPointsMax: Integer;
-  Serie: TChartSeries;
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
   LeftAxisScale, BottomAxisScale: TAxisScale;
 begin
@@ -1375,16 +1337,9 @@ begin
     YMinSeries := MaxDouble;
     YMaxSeries := MinDouble;
     NBPointsMax := 0;
-    for i := 0 to Series.Count - 1 do begin
-      Serie := Series[i];
-      if Serie.Active and (TChartSeries(Serie).Count > 0) then begin
-        NBPointsMax := NBPointsMax + TChartSeries(Serie).Count;
-        if TChartSeries(Serie).XGraphMin < XMinSeries then XMinSeries := TChartSeries(Serie).XGraphMin;
-        if TChartSeries(Serie).YGraphMin < YMinSeries then YMinSeries := TChartSeries(Serie).YGraphMin;
-        if TChartSeries(Serie).XGraphMax > XMaxSeries then XMaxSeries := TChartSeries(Serie).XGraphMax;
-        if TChartSeries(Serie).YGraphMax > YMaxSeries then YMaxSeries := TChartSeries(Serie).YGraphMax;
-      end;
-    end;
+    for i := 0 to Series.Count - 1 do
+      TBasicChartSeries(Series[i]).UpdateBounds(
+        NBPointsMax, XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
     if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
     if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
     if XMaxSeries < MinDouble / 10 then XMaxSeries := 0;
@@ -1908,14 +1863,12 @@ end;
 function TChart.GetNewColor: TColor;
 var
   i, j: Integer;
-  MySerie: TSerie;
   ColorFound: Boolean;
 begin
   for i := 1 to MaxColor do begin
     ColorFound := false;
     for j := 0 to SeriesCount - 1 do begin
-      MySerie := Series[j];
-      if MySerie.GetColor(0) = Colors[i] then
+      if TBasicChartSeries(Series[j]).SeriesColor = Colors[i] then
         ColorFound := true;
     end;
     if not ColorFound then begin
@@ -1923,7 +1876,6 @@ begin
       exit;
     end;
   end;
-  Randomize;
   Result := RGB(Random(255), Random(255), Random(255));
 end;
 
@@ -1982,64 +1934,8 @@ begin
 end; 
 
 function TChart.GetSeriesCount: Integer;
-{var
-  i: Integer;}
 begin
-  {Result := 0;
-  for i := 0 to FSeries.Count -1 do
-    if TChartSeries(FSeries.Items[i]).Active then
-      Inc(Result);}
   Result := FSeries.Count;
-end;
-
-//UTIL: should clean a bit eventually
-//checks if only a pie chart is enabled
-function TChart.OnlyPie: Boolean;
-var
-  i, cpie, cother: Integer;
-begin
-  cpie := 0; cother := 0;
-  for i := 0 to FSeries.Count - 1 do begin
-    if
-      (TChartSeries(Series.Items[i]) is TPieSeries) and
-      TChartSeries(FSeries.Items[i]).Active
-    then
-      Inc(cpie);
-    if
-      not (TChartSeries(Series.Items[i]) is TPieSeries) and
-      TChartSeries(FSeries.Items[i]).Active
-    then
-      Inc( cother );
-    //more than one so not only a pie, can exit loop
-    if (cpie > 1) or (cother >= 1) then break;
-  end;
-  Result := (cpie = 1) and (cother = 0);
-end;
-
-//get enabled pie chart
-function TChart.GetPie: Pointer;
-var
-  i: Integer;
-begin
-  Result := nil;
-  for i := 0 to FSeries.count - 1 do
-    if
-      ((TChartSeries(Series.Items[i]) is TPieSeries)) and
-      TChartSeries(FSeries.Items[i]).Active
-    then begin
-      Result := TChartSeries(Series.Items[i]);
-      break;
-    end;
-end;
-
-function TChart.SeriesInLegendCount: Integer;
-var
-  i: integer;
-begin
-  Result := 0;
-  for i := 0 to SeriesCount - 1 do
-    if TChartSeries(Series[i]).Active and TChartSeries(Series[i]).ShowInLegend then
-      Inc(Result);
 end;
 
 procedure TChart.ZoomFull;
