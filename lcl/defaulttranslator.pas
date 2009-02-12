@@ -80,19 +80,19 @@ begin
 
  if LANG<>'' then begin
   //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+LANG+
+  Result:=ExtractFilePath(ParamStrUTF8(0))+LANG+
     DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'languages'+DirectorySeparator+LANG+
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+LANG+
     DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
     +LANG+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
     +LANG+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
     ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
@@ -106,19 +106,19 @@ begin
   //Let us search for reducted files
   lng:=copy(LANG,1,2);
   //At first, check all was checked
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+lng+
+  Result:=ExtractFilePath(ParamStrUTF8(0))+lng+
     DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'languages'+DirectorySeparator+lng+
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+lng+
     DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
     +lng+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
     +LANG+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
     ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
   if FileExistsUTF8(Result) then exit;
@@ -129,10 +129,10 @@ begin
     Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
     if FileExistsUTF8(Result) then exit;
    //Common location (like in Lazarus)
-    Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
+    Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
     if FileExistsUTF8(Result) then exit;
 
-    Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
+    Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
     if FileExistsUTF8(Result) then exit;
   except
     Result:='';//Or do something else (useless)
@@ -145,10 +145,10 @@ begin
   Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
   if FileExistsUTF8(Result) then exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+DirectorySeparator+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
+  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
   if FileExistsUTF8(Result) then exit;
  end;
  Result:=ChangeFileExt(ParamStrUTF8(0),'.mo');
@@ -163,7 +163,7 @@ var lcfn:string;
 constructor TDefaultTranslator.Create(MOFileName: string);
 begin
   inherited Create;
-  FMOFile:=TMOFile.Create(MOFileName);
+  FMOFile:=TMOFile.Create(UTF8ToSys(MOFileName));
 end;
 
 destructor TDefaultTranslator.Destroy;
@@ -205,7 +205,7 @@ initialization
 
   if lcfn<>'' then
   begin
-    TranslateResourceStrings(lcfn);
+    TranslateResourceStrings(UTF8ToSys(lcfn));
     LCLPath:=ExtractFileName(lcfn);
     Dot1:=pos('.',LCLPath);
     if Dot1>1 then
@@ -213,7 +213,7 @@ initialization
       Delete(LCLPath,1,Dot1-1);
       LCLPath:=ExtractFilePath(lcfn)+'lcl'+LCLPath;
       if FileExistsUTF8(LCLPath) then
-        TranslateResourceStrings(LCLPath);
+        TranslateResourceStrings(UTF8ToSys(LCLPath));
     end;
 
     LRSTranslator:=TDefaultTranslator.Create(lcfn);
