@@ -220,6 +220,7 @@ initialization
 
   end;
 finalization
+  LRSTranslator.Free;
 end.
 {
 No revision (not in LOG)
