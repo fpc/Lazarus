@@ -2062,13 +2062,13 @@ begin
   Screen.FFocusedForm := Self;
   Screen.MoveFormToFocusFront(Self);
   Screen.MoveFormToZFront(Self);
-  if WidgetSet.GetLCLCapability(lcModalWindow) = 0 then
-    DisabledList := Screen.DisableForms(Self)
-  else
-    DisabledList := nil;
   ModalResult := 0;
 
   try
+    if WidgetSet.GetLCLCapability(lcModalWindow) = 0 then
+      DisabledList := Screen.DisableForms(Self)
+    else
+      DisabledList := nil;
     Show;
     try
       TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
@@ -2097,6 +2097,7 @@ begin
       if HandleAllocated and (GetActiveWindow <> Handle) then
         ActiveWindow := 0;
     finally
+      Screen.EnableForms(DisabledList);
       { guarantee execution of widgetset CloseModal }
       TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
       Hide;
@@ -2107,7 +2108,6 @@ begin
       DestroyHandle;
     end;
   finally
-    Screen.EnableForms(DisabledList);
     if Screen.FSaveFocusedList.Count > 0 then
     begin
       Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
