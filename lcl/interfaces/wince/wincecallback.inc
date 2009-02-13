@@ -130,6 +130,7 @@ var
   DoubleBufferBitmap: HBITMAP = 0;
   DoubleBufferBitmapWidth: integer = 0;
   DoubleBufferBitmapHeight: integer = 0;
+  DisabledForms: TList = nil;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -1301,15 +1302,15 @@ begin
     end;
     WM_ENABLE:
     begin
-      If WParam <> 0 Then
+      if WParam <> 0 then
         LMessage.Msg := LM_SETEDITABLE;
-      If Window=TWinCEWidgetSet(WidgetSet).FAppHandle then
-        if WParam=0 then
-          DisableApplicationWindows(Window)
+      if Window = TWinCEWidgetSet(WidgetSet).FAppHandle then
+        if WParam = 0 then
+          DisabledForms := Screen.DisableForms(nil, DisabledForms)
         else
-          EnableApplicationWindows(Window);
+          Screen.EnableForms(DisabledForms);
 
-      If (lWinControl is TCustomFloatSpinEdit) then
+      if (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);
     end;
     WM_ERASEBKGND:

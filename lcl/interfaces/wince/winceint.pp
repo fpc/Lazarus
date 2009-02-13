@@ -168,7 +168,7 @@ type
 
     function WinRegister: Boolean;
 
-  Public
+  public
     { Creates a callback of Lazarus message Msg for Sender }
     procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
@@ -180,6 +180,7 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
+    function GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;

@@ -443,6 +443,15 @@ begin
   Result:= lpWinCE;
 end;
 
+function TWinCEWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcModalWindow: Result := 0;
+  else
+    Result := inherited;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function: CreateTimer
   Params: Interval:

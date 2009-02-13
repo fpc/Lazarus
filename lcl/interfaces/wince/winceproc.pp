@@ -32,7 +32,6 @@ type
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
-    DisabledWindowList: TList;// a list of windows that were disabled when showing modal
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
@@ -90,9 +89,6 @@ function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
-procedure DisableApplicationWindows(Window: HWND);
-procedure EnableApplicationWindows(Window: HWND);
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
@@ -105,14 +101,6 @@ function WideStrCmp(W1, W2: PWideChar): Integer;
 
 { Automatic detection of platform }
 function GetWinCEPlatform: TApplicationType;
-
-type
-  PDisableWindowsInfo = ^TDisableWindowsInfo;
-  TDisableWindowsInfo = record
-    NewModalWindow: HWND;
-    ProcessID: DWORD;
-    DisabledWindowList: TList;
-  end;
 
 var
   DefaultWindowInfo: TWindowInfo;
@@ -1232,10 +1220,7 @@ begin
   WindowInfo := PWindowInfo(WinCEExtra.GetProp(Window{, PChar(dword(WindowInfoAtom))}));
   Result := WinCEExtra.RemoveProp(Window{, PChar(dword(WindowInfoAtom))})<>0;
   if Result then
-  begin
-    WindowInfo^.DisabledWindowList.Free;
     Dispose(WindowInfo);
-  end;
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
@@ -1286,80 +1271,6 @@ begin
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
     'Window = ' + IntToStr(Window) + ' ClassName = ' + WndClassName(Window) + ' Thread id = ' + IntToStr(GetWindowThreadProcessId(Window, nil)));
 end;}
-
-{-----------------------------------------------------------------------------
-  Function: DisableWindowsProc
-  Params: Window - handle of toplevel windows to be disabled
-          Data   - handle of current window form
-  Returns: True if the enumeration should continue, False otherwise
-
-  Used in LM_SHOWMODAL to disable the windows of application thread
-  except the current form.
- -----------------------------------------------------------------------------}
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
-var
-  DisableWindowsInfo: PDisableWindowsInfo absolute Data;
-begin
-  Result := True;
-
-  // Only disable windows from our application
-  if DisableWindowsInfo^.ProcessID <> GetWindowThreadProcessId(Window, nil) then
-    Exit;
-
-  // Don't disable the current window form or menu of that form
-  if (Window = DisableWindowsInfo^.NewModalWindow) then
-    Exit;
-
-  if not IsWindowVisible(Window) or
-     not IsWindowEnabled(Window) or
-     IsAlienWindow(Window) then
-    Exit;
-
-  DisableWindowsInfo^.DisabledWindowList.Add(Pointer(Window));
-  //LogWindow(Window);
-  EnableWindow(Window, False);
-end;
-
-var
-  InDisableApplicationWindows: boolean = false;
-
-procedure DisableApplicationWindows(Window: HWND);
-var
-  DisableWindowsInfo: PDisableWindowsInfo;
-  WindowInfo: PWindowInfo;
-begin
-  // prevent recursive calling when the AppHandle window is disabled
-  if InDisableApplicationWindows then exit;
-  InDisableApplicationWindows := True;
-  
-  New(DisableWindowsInfo);
-  DisableWindowsInfo^.NewModalWindow := Window;
-  DisableWindowsInfo^.DisabledWindowList := TList.Create;
-  WindowInfo := GetWindowInfo(DisableWindowsInfo^.NewModalWindow);
-  WindowInfo^.DisabledWindowList := DisableWindowsInfo^.DisabledWindowList;
-
-  // EnumThreadWindows isn't available for WinCE, so we
-  // improvise with EnumWindows
-  DisableWindowsInfo^.ProcessID := GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil);
-  EnumWindows(@DisableWindowsProc, LPARAM(DisableWindowsInfo));
-  
-  Dispose(DisableWindowsInfo);
-  InDisableApplicationWindows := false;
-end;
-
-procedure EnableApplicationWindows(Window: HWND);
-var
-  WindowInfo: PWindowInfo;
-  I: integer;
-begin
-  WindowInfo := GetWindowInfo(Window);
-  if WindowInfo^.DisabledWindowList <> nil then
-  begin
-    for I := 0 to WindowInfo^.DisabledWindowList.Count - 1 do
-      EnableWindow(HWND(WindowInfo^.DisabledWindowList.Items[I]), true);
-    FreeAndNil(WindowInfo^.DisabledWindowList);
-  end;
-end;
 
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 var

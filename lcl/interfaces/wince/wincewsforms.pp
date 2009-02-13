@@ -74,7 +74,6 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
 
-    class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
@@ -339,11 +338,6 @@ begin
   {$endif}
 end;
 
-class procedure TWinCEWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
-begin
-  EnableApplicationWindows(ACustomForm.Handle);
-end;
-
 class procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
  const ABorderIcons: TBorderIcons);
 begin
@@ -370,6 +364,8 @@ begin
   SizeRect.Bottom := ATop + AHeight;
   SizeRect.Right := ALeft + AWidth;
 
+  BorderStyle := TCustomForm(AWinControl).BorderStyle;
+
   { Verifies if the size should be overriden, acording to the ApplicationType }
   if (Application.ApplicationType in [atPDA, atSmartphone, atDefault]) then
   begin
@@ -392,7 +388,6 @@ begin
   { the LCL defines the size of a form without border, winceapi with.
     -> adjust size according to BorderStyle
     Must be done after setting sizeRect }
-  BorderStyle := TCustomForm(AWinControl).BorderStyle;
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
       BorderStyle), false, BorderStyleToWinAPIFlagsEx(TCustomForm(AWinControl), BorderStyle));
 
@@ -422,7 +417,6 @@ end;
 
 class procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);
   BringWindowToTop(ACustomForm.Handle);
 end;
