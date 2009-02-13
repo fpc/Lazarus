@@ -3022,6 +3022,17 @@ var
     LastFSX, LastFEX: integer;
   procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
     sToken: PChar; nTokenByteLen: integer);
+
+    function CharToByteLen(aCharLen: Integer) : Integer;
+    begin
+      if not UseUTF8 then exit(aCharLen);
+      Result := UTF8CharToByteIndex(sToken, nTokenByteLen, aCharLen);
+      if Result < 0 then begin
+        debugln('ERROR: Could not convert CharLen (',dbgs(aCharLen),') to byteLen (maybe invalid UTF8?)',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        Result := aCharLen;
+      end;
+    end;
+
   var
     DefaultFGCol, DefaultBGCol, DefaultFCCol: TColor;
     DefaultStyle: TFontStyles;
@@ -3039,7 +3050,6 @@ var
     PhysicalStartPos := CurPhysPos;
     len := nTokenByteLen;
     TokenCharLen := ExpandSpecialChars(sToken, nTokenByteLen, PhysicalStartPos);
-//    TokenCharLen := UTF8Length(sToken, nTokenByteLen); // XXX TODO
     CurLogIndex := CurLogIndex + len;
     // Prepare position for next token
     inc(CurPhysPos, TokenCharLen);
@@ -3048,11 +3058,7 @@ var
     // Remove any Part of the Token that is before FirstCol
     if PhysicalStartPos < FirstCol then begin
       SubCharLen := FirstCol - PhysicalStartPos;
-      len := UTF8CharToByteIndex(sToken, nTokenByteLen, SubCharLen);
-      if len < 0 then begin
-        debugln('ERROR: Could not find PhysStart in token (maybe invalid UTF8?',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
-        exit;
-      end;
+      len := CharToByteLen(SubCharLen);
       dec(TokenCharLen, SubCharLen);
       inc(PhysicalStartPos, SubCharLen);
       dec(nTokenByteLen, len);
@@ -3063,11 +3069,7 @@ var
     SubCharLen := PhysicalStartPos + TokenCharLen - (LastCol + 1);
     if SubCharLen > 0 then begin
       dec(TokenCharLen, SubCharLen);
-      nTokenByteLen := UTF8CharToByteIndex(sToken, nTokenByteLen, TokenCharLen);
-      if nTokenByteLen < 0 then begin
-        debugln('ERROR: Could not find PhysEnd in token (maybe invalid UTF8?',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
-        exit;
-      end;
+      nTokenByteLen := CharToByteLen(TokenCharLen);
     end;
 
     if Assigned(attr) then
@@ -3100,11 +3102,7 @@ var
         SubCharLen:=1;
       end;
 
-      SubTokenByteLen := UTF8CharToByteIndex(sToken,nTokenByteLen,SubCharLen);
-      if SubTokenByteLen < 0 then begin
-        debugln('ERROR: Can not find ByteLen for SubToken ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
-        SubTokenByteLen := nTokenByteLen; // Draw the rest
-      end;
+      SubTokenByteLen := CharToByteLen(SubCharLen);
       PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
 
       // Calculate Markup
