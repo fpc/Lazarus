@@ -134,6 +134,7 @@ resourcestring
   liisElseIf = 'ElseIf';
   liisElse = 'Else';
   liisAddValue = 'Add value';
+  liisSetValue = 'Set value';
   sccsILEdtStretch     = 'Stretch';
   sccsILEdtCrop        = 'Crop';
   sccsILEdtCenter      = 'Center';

@@ -46,6 +46,9 @@ type
   private
     FAllowedValueTypes: TCOCValueTypes;
     FConditionals: TCompOptConditionals;
+    FDefaultNodeType: TCOCNodeType;
+    FDefaultValue: string;
+    FDefaultValueType: TCOCValueType;
     FRootNode: TTreeNode;
     FTreeView: TTreeView;
     FNodeTypeImageIDs: array[TCOCNodeType] of integer;
@@ -67,10 +70,15 @@ type
     procedure TreeViewEditing(Sender: TObject; Node: TTreeNode;
                               var AllowEdit: Boolean);
     procedure TreeViewEdited(Sender: TObject; Node: TTreeNode; var S: string);
+    procedure Setup(NewTreeView: TTreeView; NewRootNode: TTreeNode;
+      NewConditionals: TCompOptConditionals; NewAllowedValueTypes: TCOCValueTypes);
     property TreeView: TTreeView read FTreeView write SetTreeView;
     property RootNode: TTreeNode read FRootNode write SetRootNode;
     property Conditionals: TCompOptConditionals read FConditionals write SetConditionals;
     property AllowedValueTypes: TCOCValueTypes read FAllowedValueTypes write SetAllowedValueTypes;
+    property DefaultNodeType: TCOCNodeType read FDefaultNodeType write FDefaultNodeType;
+    property DefaultValueType: TCOCValueType read FDefaultValueType write FDefaultValueType;
+    property DefaultValue: string read FDefaultValue write FDefaultValue;
   end;
 
   { TCompOptsConditionalsFrame }
@@ -252,9 +260,19 @@ end;
 
 procedure TCompOptsExprEditor.SetAllowedValueTypes(const AValue: TCOCValueTypes
   );
+var
+  v: TCOCValueType;
 begin
   if FAllowedValueTypes=AValue then exit;
   FAllowedValueTypes:=AValue;
+  if not (FDefaultValueType in FAllowedValueTypes) then begin
+    for v:=Low(TCOCValueTypes) to High(TCOCValueTypes) do begin
+      if v in FAllowedValueTypes then begin
+        DefaultValueType:=v;
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TCompOptsExprEditor.SetConditionals(const AValue: TCompOptConditionals
@@ -308,7 +326,7 @@ end;
 function TCompOptsExprEditor.NodeToCaption(Node: TCompOptCondNode): string;
 begin
   case Node.NodeType of
-  cocntNone: Result:='Noop';
+  cocntNone: Result:='Comment: '+Node.Value;
   cocntIf: Result:='If '+Node.Value;
   cocntIfdef: Result:='IfDef '+Node.Value;
   cocntIfNdef: Result:='IfNDef '+Node.Value;
@@ -317,7 +335,8 @@ begin
   cocntAddValue:
     begin
       case Node.ValueType of
-      cocvtNone: Result:='Result:='+Node.Value;
+      cocvtNone: Result:='None';
+      cocvtResult: Result:='Result:=Result+'+Node.Value;
       cocvtUnitPath: Result:='Add unit path: '+Node.Value;
       cocvtSrcPath: Result:='Add unit source path: '+Node.Value;
       cocvtIncludePath: Result:='Add include path: '+Node.Value;
@@ -326,6 +345,23 @@ begin
       cocvtDebugPath: Result:='Add debug path: '+Node.Value;
       cocvtLinkerOptions: Result:='Add linker options: '+Node.Value;
       cocvtCustomOptions: Result:='Add custom options: '+Node.Value;
+      else
+        Result:='(unknown ValueType)';
+      end;
+    end;
+  cocntSetValue:
+    begin
+      case Node.ValueType of
+      cocvtNone: Result:='None';
+      cocvtResult: Result:='Result:='+Node.Value;
+      cocvtUnitPath: Result:='Set unit path: '+Node.Value;
+      cocvtSrcPath: Result:='Set unit source path: '+Node.Value;
+      cocvtIncludePath: Result:='Set include path: '+Node.Value;
+      cocvtObjectPath: Result:='Set object path: '+Node.Value;
+      cocvtLibraryPath: Result:='Set library path: '+Node.Value;
+      cocvtDebugPath: Result:='Set debug path: '+Node.Value;
+      cocvtLinkerOptions: Result:='Set linker options: '+Node.Value;
+      cocvtCustomOptions: Result:='Set custom options: '+Node.Value;
       else
         Result:='(unknown ValueType)';
       end;
@@ -356,7 +392,7 @@ var
 begin
   if TreeView=nil then exit;
   TreeView.BeginUpdate;
-  TreeView.Items.Clear;
+  ClearTreeView;
   if (Conditionals<>nil) and (Conditionals.Root<>nil)
   and (Conditionals.Root.Count>0) then begin
     for i:=0 to Conditionals.Root.Count-1 do
@@ -475,7 +511,8 @@ begin
   HasSelection:=COCNode<>nil;
   NormalNodeIsSelected:=HasSelection and (COCNode<>Conditionals.Root);
   InConditionalNodes:=(RootNode=nil)
-                          or ((TVNode<>nil) and (TVNode.HasAsParent(RootNode)));
+                          or ((TVNode<>nil) and (TVNode.HasAsParent(RootNode)))
+                          or (TVNode=RootNode);
   if NormalNodeIsSelected or InConditionalNodes then
     AddSeparator;
   if NormalNodeIsSelected then
@@ -510,6 +547,18 @@ begin
   S:=Node.Text;
 end;
 
+procedure TCompOptsExprEditor.Setup(NewTreeView: TTreeView;
+  NewRootNode: TTreeNode; NewConditionals: TCompOptConditionals;
+  NewAllowedValueTypes: TCOCValueTypes);
+begin
+  TreeView:=nil;
+  RootNode:=NewRootNode;
+  Conditionals:=NewConditionals;
+  AllowedValueTypes:=NewAllowedValueTypes;
+  // activate
+  TreeView:=NewTreeView;
+end;
+
 function TCompOptsExprEditor.GetSelectedNode(out COCNode: TCompOptCondNode; out
   TVNode: TTreeNode; RootAsDefault: boolean): boolean;
 begin
@@ -522,7 +571,11 @@ begin
     end;
   end else begin
     if (RootNode=nil) or TVNode.HasAsParent(RootNode) then
-      COCNode:=TCompOptCondNode(TVNode.Data);
+      COCNode:=TCompOptCondNode(TVNode.Data)
+    else if (RootNode=TVNode) then begin
+      TVNode:=RootNode;
+      COCNode:=Conditionals.Root;
+    end;
   end;
   Result:=COCNode<>nil;
 end;
@@ -537,6 +590,9 @@ var
 begin
   if not GetSelectedNode(COCNode,TVNode,true) then exit;
   NewCOCNode:=TCompOptCondNode.Create(COCNode.Owner);
+  NewCOCNode.NodeType:=DefaultNodeType;
+  NewCOCNode.ValueType:=DefaultValueType;
+  NewCOCNode.Value:=DefaultValue;
   s:=NodeToCaption(NewCOCNode);
   NewTVNode:=TreeView.Items.AddObject(TVNode,s,NewCOCNode);
   if TVNode<>nil then

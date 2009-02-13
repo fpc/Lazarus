@@ -4043,6 +4043,7 @@ resourcestring
   lisThereIsAlreadyABuildModeWithTheName = 'There is already a build mode '
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';  
+  lisSetValue = 'Set value';
 
 implementation
 

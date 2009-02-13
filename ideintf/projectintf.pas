@@ -52,11 +52,13 @@ type
     cocntIfNdef,
     cocntElseIf,
     cocntElse,
-    cocntAddValue
+    cocntAddValue,
+    cocntSetValue
   );
   TCOCNodeTypes = set of TCOCNodeType;
   TCOCValueType = (
     cocvtNone,
+    cocvtResult,
     cocvtUnitPath,
     cocvtSrcPath,
     cocvtIncludePath,
@@ -76,10 +78,12 @@ const
     'IfNdef',
     'ElseIf',
     'Else',
-    'AddValue'
+    'AddValue',
+    'SetValue'
     );
   COCValueTypeNames: array[TCOCValueType] of string = (
     'None',
+    'Result',
     'UnitPath',
     'SrcPath',
     'IncludePath',
@@ -862,6 +866,7 @@ begin
   cocntElseIf: Result:=liisElseIf;
   cocntElse:   Result:=liisElse;
   cocntAddValue: Result:=liisAddValue;
+  cocntSetValue: Result:=liisSetValue;
   else         Result:='?';
   end;
 end;
@@ -877,14 +882,15 @@ function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
 begin
   case vt of
   cocvtNone:          Result:='None';
-  cocvtUnitPath:      Result:='unit search path';
-  cocvtSrcPath:       Result:='unit source search path';
-  cocvtIncludePath:   Result:='include search path';
-  cocvtObjectPath:    Result:='object search path';
-  cocvtLibraryPath:   Result:='library search path';
-  cocvtDebugPath:     Result:='debug search path';
-  cocvtLinkerOptions: Result:='linker options';
-  cocvtCustomOptions: Result:='custom options';
+  cocvtResult:        Result:='Result';
+  cocvtUnitPath:      Result:='Unit search path';
+  cocvtSrcPath:       Result:='Unit source search path';
+  cocvtIncludePath:   Result:='Include search path';
+  cocvtObjectPath:    Result:='Object search path';
+  cocvtLibraryPath:   Result:='Library search path';
+  cocvtDebugPath:     Result:='Debug search path';
+  cocvtLinkerOptions: Result:='Linker options';
+  cocvtCustomOptions: Result:='Custom options';
   else                Result:='?';
   end;
 end;

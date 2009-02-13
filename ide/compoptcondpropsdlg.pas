@@ -238,7 +238,7 @@ begin
   ValueTypeComboBox.ItemIndex:=ValueTypeComboBox.Items.IndexOf(s);
   ValueTypeComboBox.Text:=s;
   ValueLabel.Enabled:=fNodeType in [cocntNone,cocntIf,
-                              cocntIfdef,cocntIfNdef,cocntElseIf,cocntAddValue];
+                cocntIfdef,cocntIfNdef,cocntElseIf,cocntAddValue,cocntSetValue];
   ValueEdit.Enabled:=ValueLabel.Enabled;
   ValueButton.Enabled:=ValueLabel.Enabled;
   case fNodeType of
@@ -246,6 +246,7 @@ begin
   cocntIf, cocntElseIf: ValueLabel.Caption:=lisExpression;
   cocntIfdef, cocntIfNdef: ValueLabel.Caption:=lisCodeToolsDefsVariable;
   cocntAddValue: ValueLabel.Caption:=lisAddValue;
+  cocntSetValue: ValueLabel.Caption:=lisSetValue;
   else ValueLabel.Caption:='?';
   end;
   ValueEdit.Text:=FValue;

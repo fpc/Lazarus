@@ -83,6 +83,7 @@ type
     function GetValues(const ValueType: TCOCValueType): string;
     procedure SetEvaluator(const AValue: TExpressionEvaluator);
     procedure AddValue(const ValueType: TCOCValueType; Value: string);
+    procedure SetValue(const ValueType: TCOCValueType; Value: string);
   public
     constructor Create(TheEvaluator: TExpressionEvaluator);
     destructor Destroy; override;
@@ -186,6 +187,12 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
           inc(Index);
         end;
 
+      cocntSetValue:
+        begin
+          SetValue(Node.ValueType,Node.Value);
+          inc(Index);
+        end;
+
       else
         fErrorNode:=Node;
         FErrorMsg:='unexpected node of type '+COCNodeTypeNames[Node.NodeType];
@@ -232,13 +239,21 @@ begin
     begin
       FValues[ValueType]:=MergeSearchPaths(FValues[ValueType],Value);
     end;
-  else
+  cocvtLinkerOptions,cocvtCustomOptions:
     begin
       if FValues[ValueType]<>'' then
         FValues[ValueType]:=FValues[ValueType]+' ';
       FValues[ValueType]:=FValues[ValueType]+Value;
     end;
+  else
+    FValues[ValueType]:=FValues[ValueType]+Value;
   end;
+end;
+
+procedure TCompOptConditionals.SetValue(const ValueType: TCOCValueType;
+  Value: string);
+begin
+  FValues[ValueType]:=Trim(Value);
 end;
 
 constructor TCompOptConditionals.Create(TheEvaluator: TExpressionEvaluator);

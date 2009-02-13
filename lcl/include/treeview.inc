@@ -604,7 +604,6 @@ begin
     try
       if DoCanExpand(ExpandIt) then
         DoExpand(ExpandIt);
-      //if Flag <> 0 then TreeView_Expand(Handle, ItemId, Flag);
     finally
       if TreeView<>nil then
         Exclude(TreeView.FStates,tvsManualNotify);
