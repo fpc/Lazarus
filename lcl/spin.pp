@@ -87,6 +87,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property DecimalPlaces;
     property Enabled;
@@ -153,6 +154,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property Enabled;
     property Font;
