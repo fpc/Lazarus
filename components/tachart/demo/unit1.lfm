@@ -1,15 +1,15 @@
 object Form1: TForm1
   Left = 341
-  Height = 499
+  Height = 494
   Top = 225
   Width = 585
   Caption = 'Form1'
-  ClientHeight = 499
+  ClientHeight = 494
   ClientWidth = 585
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
-    Height = 408
+    Height = 400
     Width = 585
     Legend.Alignment = laRight
     Legend.Font.Height = -11
@@ -57,11 +57,11 @@ object Form1: TForm1
     ParentColor = False
   end
   object Panel1: TPanel
-    Height = 91
-    Top = 408
+    Height = 94
+    Top = 400
     Width = 585
     Align = alBottom
-    ClientHeight = 91
+    ClientHeight = 94
     ClientWidth = 585
     TabOrder = 0
     object lblAdd: TLabel
@@ -130,18 +130,18 @@ object Form1: TForm1
     end
     object cbLegend: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 8
-      Width = 61
+      Width = 56
       Caption = 'Legend'
       OnChange = cbLegendChange
       TabOrder = 4
     end
     object cbBottomAxis: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 24
-      Width = 83
+      Width = 75
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
@@ -150,9 +150,9 @@ object Form1: TForm1
     end
     object cbLeftAxis: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 40
-      Width = 68
+      Width = 60
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
@@ -161,9 +161,9 @@ object Form1: TForm1
     end
     object cbTitle: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 8
-      Width = 46
+      Width = 40
       Caption = 'Title'
       Checked = True
       OnChange = cbTitleChange
@@ -172,18 +172,18 @@ object Form1: TForm1
     end
     object cbFooter: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 24
-      Width = 58
+      Width = 50
       Caption = 'Footer'
       OnChange = cbFooterChange
       TabOrder = 8
     end
     object cbInverted: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 40
-      Width = 68
+      Width = 59
       Caption = 'Inverted'
       OnChange = cbInvertedChange
       TabOrder = 9
@@ -238,28 +238,43 @@ object Form1: TForm1
       TabOrder = 14
       Value = 1
     end
-    object edShowGridCheckBox: TCheckBox
-      AnchorSideLeft.Control = cbLeftAxis
-      AnchorSideTop.Control = cbLeftAxis
-      AnchorSideTop.Side = asrBottom
+    object cbShowGridCheckBox: TCheckBox
       Left = 384
-      Height = 19
-      Top = 59
-      Width = 76
+      Height = 17
+      Top = 56
+      Width = 70
       Caption = 'Show grid '
       Checked = True
-      OnChange = edShowGridCheckBoxChange
+      OnChange = cbShowGridCheckBoxChange
       State = cbChecked
       TabOrder = 15
     end
     object cbShowAxisTitles: TCheckBox
       Left = 496
-      Height = 19
-      Top = 59
-      Width = 72
+      Height = 17
+      Top = 56
+      Width = 63
       Caption = 'Axis titles'
       OnChange = cbShowAxisTitlesChange
       TabOrder = 16
+    end
+    object cbShowVertReticule: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 72
+      Width = 76
+      Caption = 'Vert reticule'
+      OnChange = cbShowVertReticuleChange
+      TabOrder = 17
+    end
+    object cbShowReticule: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 72
+      Width = 59
+      Caption = 'Reticule'
+      OnChange = cbShowReticuleChange
+      TabOrder = 18
     end
   end
 end
