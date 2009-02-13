@@ -383,6 +383,10 @@ begin
   if GetUpdated(AStatusBar) then
     Exit;
 
+  // set updated flag here since SB_SETTEXT can call WM_PAINT on some
+  // windowses (win98) and we will have endless update
+  SetUpdated(AStatusBar, True);
+
   if AStatusBar.SimplePanel then
     DoSetPanelText(AStatusBar, 0)
   else
@@ -391,13 +395,10 @@ begin
     for PanelIndex := 0 to AStatusBar.Panels.Count - 1 do
       if TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag <> 1 then
       begin
-        UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
         TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag := 1;
+        UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
       end;
   end;
-
-  // update is done => set the flag
-  SetUpdated(AStatusBar, True);
 end;
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
