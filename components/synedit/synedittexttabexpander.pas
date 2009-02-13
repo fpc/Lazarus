@@ -176,8 +176,8 @@ var
 begin
   Line := fSynStrings[Index];
   if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
-    Result := 0;
-    LengthOfLine[Index] := Length(Line) + NoTabLengthOffset;
+    Result := Length(Line);
+    LengthOfLine[Index] := Result + NoTabLengthOffset;
   end else begin
     CharWidths := GetPhysicalCharWidths(Line, Index);
     Result := 0;
