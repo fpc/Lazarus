@@ -54,6 +54,9 @@ var
   i: Integer;
 begin
   Result := inherited GetPhysicalCharWidths(Line, Index);
+  if not IsUtf8 then
+    exit;
+
   for i := 0 to length(Line) -1 do begin
     if Result[i] = 0 then continue;
     case Line[i+1] of
