@@ -327,6 +327,7 @@ end;
 
 procedure TSynEditStringTrimmingList.ForceTrim;
 begin
+  DoCaretChanged(fCaret); // Caret May be locked
   TrimAfterLock;
 end;
 

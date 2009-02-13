@@ -43,7 +43,7 @@ uses
 type
 
   TInvalidateLines = procedure(FirstLine, LastLine: integer) of Object;
-  TLinesCountChanged = procedure (FirstLine, Count: integer) of Object;
+  TLinesCountChanged = procedure(FirstLine, Count: integer) of Object;
 
   { TSynEditPointBase }
 
@@ -51,13 +51,20 @@ type
   protected
     FLines: TSynEditStrings;
     FOnChangeList: TMethodList;
+    FLockCount: Integer;
+    FMaxLeftChar: PInteger;
+    procedure DoLock; virtual;
+    Procedure DoUnlock; virtual;
   public
     constructor Create;
     constructor Create(Lines: TSynEditStrings);
     destructor Destroy; override;
     procedure AddChangeHandler(AHandler: TNotifyEvent);
     procedure RemoveChangeHandler(AHandler: TNotifyEvent);
+    procedure Lock;
+    Procedure Unlock;
     property  Lines: TSynEditStrings read FLines write FLines;
+    property  MaxLeftChar: PInteger write FMaxLeftChar;
   end;
 
   TSynEditCaret = class;
@@ -93,7 +100,6 @@ type
     function  GetSelText: string;
     procedure SetSelText(const Value: string);
   public
-    FMaxLeftChar: Integer;
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
     procedure AdjustAfterTrimming; // TODO: Move into TrimView
@@ -134,22 +140,33 @@ type
 
   TSynEditCaret = class(TSynEditPointBase)
   private
-    fLinePos: Integer; // 1 based
-    fCharPos: Integer; // 1 based
+    FAllowPastEOL: Boolean;
+    FForcePastEOL: Boolean;
+    FLinePos: Integer; // 1 based
+    FCharPos: Integer; // 1 based
+    FOldLinePos: Integer; // 1 based
+    FOldCharPos: Integer; // 1 based
     FAdjustToNextChar: Boolean;
     procedure AdjustToChar;
+    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer);
     procedure setCharPos(const AValue: Integer);
+    procedure SetAllowPastEOL(const AValue: Boolean);
     procedure setLinePos(const AValue: Integer);
     function  GetLineCharPos: TPoint;
-    procedure SetLineCharPos(const AValue: TPoint);
+    procedure SetLineCharPos(AValue: TPoint);
     function  GetBytePos: Integer;
     procedure SetBytePos(const AValue: Integer);
     function  GetLineBytePos: TPoint;
     procedure SetLineBytePos(const AValue: TPoint);
     function  GetLineText: string;
     procedure SetLineText(const AValue : string);
+  protected
+    procedure DoLock; override;
+    Procedure DoUnlock; override;
   public
     constructor Create;
+    property OldLinePos: Integer read FOldLinePos;
+    property OldCharPos: Integer read FOldCharPos;
     property LinePos: Integer read fLinePos write setLinePos;
     property CharPos: Integer read fCharPos write setCharPos;
     property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
@@ -157,11 +174,21 @@ type
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
+    property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
+    property ForcePastEOL: Boolean read FForcePastEOL write FForcePastEOL;
   end;
 
 implementation
 
 { TSynEditPointBase }
+
+procedure TSynEditPointBase.DoLock;
+begin
+end;
+
+procedure TSynEditPointBase.DoUnlock;
+begin
+end;
 
 constructor TSynEditPointBase.Create;
 begin
@@ -190,6 +217,20 @@ begin
   FOnChangeList.Remove(TMethod(AHandler));
 end;
 
+procedure TSynEditPointBase.Lock;
+begin
+  if FLockCount = 0 then
+    DoLock;
+  inc(FLockCount);
+end;
+
+procedure TSynEditPointBase.Unlock;
+begin
+  dec(FLockCount);
+  if FLockCount = 0 then
+    DoUnLock;
+end;
+
 { TSynEditCaret }
 
 constructor TSynEditCaret.Create;
@@ -197,14 +238,14 @@ begin
   inherited Create;
   fLinePos:= 1;
   fCharPos:= 1;
+  FAllowPastEOL := True;
+  FForcePastEOL := False;
 end;
 
 procedure TSynEditCaret.setLinePos(const AValue : Integer);
 begin
   if fLinePos = AValue then exit;
-  fLinePos:= AValue;
-  AdjustToChar;
-  fOnChangeList.CallNotifyEvents(self);
+  InternalSetLineCharPos(AValue, FCharPos);
 end;
 
 procedure TSynEditCaret.AdjustToChar;
@@ -239,9 +280,15 @@ end;
 procedure TSynEditCaret.setCharPos(const AValue : Integer);
 begin
   if fCharPos = AValue then exit;
-  fCharPos:= AValue;
-  AdjustToChar;
-  fOnChangeList.CallNotifyEvents(self);
+  InternalSetLineCharPos(FLinePos, AValue);
+end;
+
+procedure TSynEditCaret.SetAllowPastEOL(const AValue: Boolean);
+begin
+  if FAllowPastEOL = AValue then exit;
+  FAllowPastEOL := AValue;
+  if not FAllowPastEOL then
+    InternalSetLineCharPos(FLinePos, FCharPos);
 end;
 
 function TSynEditCaret.GetLineCharPos : TPoint;
@@ -249,13 +296,44 @@ begin
   Result := Point(fCharPos, fLinePos);
 end;
 
-procedure TSynEditCaret.SetLineCharPos(const AValue : TPoint);
+procedure TSynEditCaret.SetLineCharPos(AValue : TPoint);
 begin
   if (fCharPos = AValue.X) and (fLinePos = AValue.Y) then exit;
-  fCharPos:= AValue.X;
-  fLinePos:= AValue.Y;
-  AdjustToChar;
-  fOnChangeList.CallNotifyEvents(self);
+  InternalSetLineCharPos(AValue.y, AValue.X);
+end;
+
+procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer);
+var
+  nMaxX: Integer;
+  Line: string;
+begin
+  Lock;
+  try
+    nMaxX := FMaxLeftChar^;
+    if NewLine > FLines.Count then
+      NewLine := FLines.Count;
+    if NewLine < 1 then begin
+      // this is just to make sure if Lines stringlist should be empty
+      NewLine := 1;
+      if not (FAllowPastEOL or FForcePastEOL) then
+        nMaxX := 1;
+    end else begin
+      if not (FAllowPastEOL or FForcePastEOL) then begin
+        Line := Lines[NewLine - 1];
+        nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
+      end;
+    end;
+    if NewCharPos > nMaxX then
+      NewCharPos := nMaxX;
+    if NewCharPos < 1 then
+      NewCharPos := 1;
+
+    fCharPos:= NewCharPos;
+    fLinePos:= NewLine;
+    AdjustToChar;
+  finally
+    Unlock;
+  end;
 end;
 
 function TSynEditCaret.GetBytePos: Integer;
@@ -292,12 +370,23 @@ begin
     FLines[LinePos - 1] := AValue;
 end;
 
+procedure TSynEditCaret.DoLock;
+begin
+  FOldCharPos := FCharPos;
+  FOldLinePos := FLinePos;
+end;
+
+procedure TSynEditCaret.DoUnlock;
+begin
+  if (FOldCharPos <> FCharPos) or (FOldLinePos <> FLinePos) then
+    fOnChangeList.CallNotifyEvents(self);
+end;
+
 { TSynEditSelection }
 
 constructor TSynEditSelection.Create(ALines : TSynEditStrings);
 begin
   Inherited Create(ALines);
-  fMaxLeftChar := 1024;
   FActiveSelectionMode := smNormal;
   FStartLinePos := 1;
   FStartBytePos := 1;
@@ -858,7 +947,7 @@ var
   nInval1, nInval2: integer;
   SelChanged: boolean;
 begin
-  Value.x := MinMax(Value.x, 1, fMaxLeftChar);
+  Value.x := MinMax(Value.x, 1, FMaxLeftChar^);
   Value.y := MinMax(Value.y, 1, fLines.Count);
   if (ActiveSelectionMode = smNormal) then
     if (Value.y >= 1) and (Value.y <= FLines.Count) then
@@ -902,7 +991,7 @@ var
   {$ENDIF}
 begin
   if FEnabled then begin
-    Value.x := MinMax(Value.x, 1, fMaxLeftChar);
+    Value.x := MinMax(Value.x, 1, FMaxLeftChar^);
     Value.y := MinMax(Value.y, 1, fLines.Count);
     if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then

@@ -315,8 +315,8 @@ type
     fBlockIndent: integer;
     FBlockSelection: TSynEditSelection;
     {$IFDEF SYN_LAZARUS}
-    fCaret: TSynEditCaret;
-    fInternalCaret: TSynEditCaret;
+    FCaret: TSynEditCaret;
+    FInternalCaret: TSynEditCaret;
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
@@ -643,6 +643,7 @@ type
     procedure RecalcCharExtent;
     procedure RedoItem;                                                         //sbs 2000-11-19
     procedure SetCaretXY(Value: TPoint); virtual;
+    procedure CaretChanged(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
     procedure SetReadOnly(Value: boolean); virtual;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
@@ -1368,8 +1369,11 @@ begin
   fBeautifier := SynDefaultBeautifier;
 
   fLines := TSynEditStringList.Create;
-  fCaret := TSynEditCaret.Create;
-  fInternalCaret := TSynEditCaret.Create;
+  FCaret := TSynEditCaret.Create;
+  FCaret.MaxLeftChar := @FMaxLeftChar;
+  FCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}CaretChanged);
+  FInternalCaret := TSynEditCaret.Create;
+  FInternalCaret.MaxLeftChar := @FMaxLeftChar;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create
@@ -1389,8 +1393,9 @@ begin
   // TODO: this should be Folded...
   FTheLinesView := FTabbedLinesView;
 
-  fCaret.Lines := TSynEditStrings(FTheLinesView);
-  fInternalCaret.Lines := TSynEditStrings(FTheLinesView);
+  FCaret.Lines := TSynEditStrings(FTheLinesView);
+  FInternalCaret.Lines := TSynEditStrings(FTheLinesView);
+
   TSynEditStringList(fLines).AddChangeHandler(senrLineCount,
                      {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   TSynEditStringList(fLines).AddChangeHandler(senrLineChange,
@@ -1410,6 +1415,7 @@ begin
   FTrimmedLinesView.UndoList := fUndoList;
 
   FBlockSelection := TSynEditSelection.Create(TSynEditStrings(FTheLinesView));
+  FBlockSelection.MaxLeftChar := @FMaxLeftChar;
   FBlockSelection.Caret := FCaret;
   FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -1525,6 +1531,7 @@ begin
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
   FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
+  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
   {$IFDEF SYN_LAZARUS}
   fOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
   {$ENDIF}
@@ -1592,9 +1599,9 @@ begin
     end;
     {$ENDIF}
   end;
-  {$IFDEF SYN_LAZARUS}
+  FCaret.Unlock; // Maybe after FFoldedLinesView;
+  FTrimmedLinesView.UnLock; // Must be unlocked after caret
   FFoldedLinesView.UnLock; // after ScanFrom, but before UpdateCaret
-  {$ENDIF}
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
     if sfScrollbarChanged in fStateFlags then
@@ -1938,9 +1945,9 @@ end;
 procedure TCustomSynEdit.IncPaintLock;
 begin
   inc(fPaintLock);
-  {$IFDEF SYN_LAZARUS}
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
-  {$ENDIF}
+  FTrimmedLinesView.Lock; // Lock before caret
+  FCaret.Lock;
 end;
 
 procedure TCustomSynEdit.InvalidateGutter;
@@ -3587,69 +3594,28 @@ end;
 
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
-var
-  nMaxX: integer;
-  {$IFDEF SYN_LAZARUS}
-  Line: string;
-  {$ENDIF}
 begin
-  nMaxX := fMaxLeftChar;
-  if Value.Y > FTheLinesView.Count then
-    Value.Y := FTheLinesView.Count;
-  if Value.Y < 1 then begin
-    // this is just to make sure if Lines stringlist should be empty
-    Value.Y := 1;
-    if not (eoScrollPastEol in fOptions) then
-      nMaxX := 1;
-  end else begin
-    if not (eoScrollPastEol in fOptions) then begin
-      {$IFDEF SYN_LAZARUS}
-      Line:=FTheLinesView[Value.Y-1];
-      nMaxX := PhysicalLineLength(Line, Value.Y-1) + 1;
-      {$ELSE}
-      nMaxX := Length(FTheLinesView[Value.Y - 1]) + 1;                                  //abc 2000-09-30
-      {$ENDIF}
-    end;
-  end;
-  if Value.X > nMaxX then
-    Value.X := nMaxX;
-  if Value.X < 1 then
-    Value.X := 1;
-  if (Value.X <> CaretX) or (Value.Y <> CaretY) then begin
-    IncPaintLock;
-    try
-      // simply include the flags, fPaintLock is > 0
-      if CaretX <> Value.X then begin
-        {$IFNDEF SYN_LAZARUS}
-        fCaretX := Value.X;
-        {$ENDIF}
-        Include(fStatusChanges, scCaretX);
-      end;
-      if CaretY <> Value.Y then begin
-        {$IFDEF SYN_LAZARUS}
-        InvalidateGutterLines(CaretY, CaretY);
-        InvalidateGutterLines(Value.Y, Value.Y);
-        {$ELSE}
-        fCaretY := Value.Y;
-        {$ENDIF}
-        Include(fStatusChanges, scCaretY);
-      end;
-      {$IFDEF SYN_LAZARUS}
-      fCaret.LineCharPos:= Value;
-      fMarkupManager.Caret := Value;
-      {$ENDIF}
-      EnsureCursorPosVisible;
-      Include(fStateFlags, sfCaretChanged);
-      {$IFNDEF SYN_LAZARUS}
-      Include(fStateFlags, sfScrollbarChanged);
-      {$ENDIF}
-    finally
-      DecPaintLock;
-    end;
-  end;
-  {$IFDEF SYN_LAZARUS}
+  fCaret.LineCharPos:= Value;
   fLastCaretX:=CaretX;
-  {$ENDIF}
+end;
+
+procedure TCustomSynEdit.CaretChanged(Sender: TObject);
+begin
+  IncPaintLock;
+  try
+    Include(fStateFlags, sfCaretChanged);
+    if FCaret.OldCharPos <> FCaret.CharPos then
+      Include(fStatusChanges, scCaretX);
+    if FCaret.OldLinePos <> FCaret.LinePos then begin
+      Include(fStatusChanges, scCaretY);
+      InvalidateGutterLines(FCaret.OldLinePos, FCaret.OldLinePos);
+      InvalidateGutterLines(FCaret.LinePos, FCaret.LinePos);
+    end;
+    EnsureCursorPosVisible;
+    FMarkupManager.Caret := FCaret.LineCharPos;
+  finally
+    DecPaintLock;
+  end;
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -3720,19 +3686,15 @@ procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
   ChangeReason: TSynChangeReason = crInsert);
 Begin
   IncPaintLock;
-  FTrimmedLinesView.Lock;
   try
     FBlockSelection.SetSelTextPrimitive(PasteMode, Value, AddToUndoList,
                                         ChangeReason);
     // Force caret reset
     CaretXY := CaretXY;
     fLastCaretX := CaretX;
-    Include(fStatusChanges, scCaretY);
-    Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
     fMarkupManager.Caret := CaretXY;
   finally
-    FTrimmedLinesView.UnLock;
     DecPaintLock;
   end;
 end;
@@ -3741,17 +3703,13 @@ procedure TCustomSynEdit.SetSelTextExternal(const Value: string);
 begin
   // undo entry added
   BeginUndoBlock;
-  FTrimmedLinesView.Lock;
   try
     FBlockSelection.SelText := Value;
     // Force caret reset
     CaretXY := CaretXY;
     fLastCaretX := CaretX;
-    Include(fStatusChanges, scCaretY);
-    Include(fStatusChanges, scCaretX);
     EnsureCursorPosVisible;
   finally
-    FTrimmedLinesView.UnLock;
     EndUndoBlock;
   end;
 end;
@@ -4814,7 +4772,6 @@ var
   Len, x : integer;
   TempString: string;
   CaretPt: TPoint;
-  ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
   {$IFDEF SYN_LAZARUS}
   PhysStartPos: TPoint;
   {$ELSE}
@@ -4822,12 +4779,11 @@ var
   {$ENDIF}
 begin
   OldSelMode := FBlockSelection.SelectionMode;
-  ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
   Item := fRedoList.PopItem;
   if Assigned(Item) then try
     SelectionMode := Item.fChangeSelMode;
     IncPaintLock;
-    Include(fOptions, eoScrollPastEol);                                         //mh 2000-10-30
+    FCaret.ForcePastEOL := True;
     Include(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
     {$IFDEF SYN_LAZARUS}
     PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
@@ -4997,8 +4953,7 @@ begin
     FBlockSelection.SelectionMode       := OldSelMode;
     FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
     Exclude(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
-    if ChangeScrollPastEol then                                                 //mh 2000-10-30
-      Exclude(fOptions, eoScrollPastEol);
+    FCaret.ForcePastEOL := False;
     Item.Free;
     DecPaintLock;
     {$IFDEF SYN_LAZARUS}
@@ -5065,18 +5020,16 @@ var
   OldSelMode: TSynSelectionMode;
   TmpPos: TPoint;
   TmpStr: string;
-  ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
   {$IFDEF SYN_LAZARUS}
   PhysStartPos: TPoint;
   {$ENDIF}
 begin
   OldSelMode := FBlockSelection.SelectionMode;
-  ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
   Item := fUndoList.PopItem;
   if Assigned(Item) then try
     FBlockSelection.SelectionMode := Item.fChangeSelMode; // Default and Active SelectionMode
     IncPaintLock;
-    Include(fOptions, eoScrollPastEol);                                         //mh 2000-10-30
+    FCaret.ForcePastEOL := True;
     {$IFDEF SYN_LAZARUS}
     PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
     {$ENDIF}
@@ -5137,7 +5090,6 @@ begin
         begin
           // If there's no selection, we have to set
           // the Caret's position manualy.
-          Include(fOptions, eoScrollPastEol); // old state has been stored above
           CaretXY := PhysStartPos;
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, '', Item.fChangeSelMode);
@@ -5198,8 +5150,7 @@ begin
     FTrimmedLinesView.UndoTrimmedSpaces := False;
     FBlockSelection.SelectionMode       := OldSelMode;
     FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
-    if ChangeScrollPastEol then                                                 //mh 2000-10-30
-      Exclude(fOptions, eoScrollPastEol);
+    FCaret.ForcePastEOL := False;
     Item.Free;
     DecPaintLock;
     {$IFDEF SYN_LAZARUS}
@@ -5379,7 +5330,6 @@ var
   BB, BE: TPoint;
   DragDropText: string;
   Adjust: integer;
-  ChangeScrollPastEOL: boolean;
 begin
   if not ReadOnly  and (Source is TCustomSynEdit)
     and TCustomSynEdit(Source).SelAvail
@@ -5428,10 +5378,8 @@ begin
             end;
           end;
           // insert the selected text
-          ChangeScrollPastEOL := not (eoScrollPastEol in fOptions);
+          FCaret.ForcePastEOL := True;
           try
-            if ChangeScrollPastEOL then
-              Include(fOptions, eoScrollPastEol);
             CaretXY := NewCaret;
             BlockBegin := NewCaret;
             if Source = Self then
@@ -5439,8 +5387,7 @@ begin
             else
               SetSelTextPrimitive(smNormal, PChar(DragDropText), true, crInsert);
           finally
-            if ChangeScrollPastEOL then
-              Exclude(fOptions, eoScrollPastEol);
+            FCaret.ForcePastEOL := False;
           end;
           BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
                         {$ELSE}NewCaret{$ENDIF};
@@ -5652,7 +5599,6 @@ begin
   Value := MinMax(Value, 1, MAX_SCROLL); // horz scrolling is only 16 bit
   if fMaxLeftChar <> Value then begin
     fMaxLeftChar := Value;
-    fBlockSelection.FMaxLeftChar := Value;
     Invalidate;
   end;
 end;
@@ -5848,7 +5794,6 @@ var
   Temp2: string;
   Helper: string;
   StartOfBlock: TPoint;
-  bChangeScroll: boolean;
   bCaretAdjust: Boolean;
   moveBkm: boolean;
   WP: TPoint;
@@ -6067,11 +6012,9 @@ begin
             then begin
               // only move caret one column
               Helper := ' ';
-              bChangeScroll := not (eoScrollPastEol in fOptions);
-              Include(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := True;
               CaretX := CaretX - 1;
-              if bChangeScroll then
-                Exclude(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := False;
               {$IFDEF SYN_LAZARUS}
               // behind EOL, there was no char to delete, this wa a simple cursor move, do not undo
               Caret := CaretXY;
@@ -6371,11 +6314,9 @@ begin
               CX := 1;
             FTheLinesView.Insert(CaretY, Temp);
             if Command = ecLineBreak then begin
-              bChangeScroll := not (eoScrollPastEol in fOptions);
-              Include(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := True;
               CaretXY := Point(CX, CaretY + 1);
-              if bChangeScroll then
-                Exclude(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := False;
             end;
           end;
           DoLinesInserted(CaretY - InsDelta, 1);
@@ -6417,9 +6358,8 @@ begin
                     ' fInserting=',dbgs(fInserting),
                     ' Temp=',dbgstr(Temp),
                     '" UseUTF8=',dbgs(UseUTF8));}
-            bChangeScroll := not (eoScrollPastEol in fOptions);
             try
-              if bChangeScroll then Include(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := True;
               StartOfBlock := LogCaretXY;
               if fInserting then begin
                 // insert mode
@@ -6472,7 +6412,7 @@ begin
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
             finally
-              if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := False;
             end;
           end;
         end;
@@ -6588,9 +6528,8 @@ begin
             Len := Length(Temp);
             if Len < CaretX then
               Temp := Temp + StringOfChar(' ', CaretX - Len);
-            bChangeScroll := not (eoScrollPastEol in fOptions);
             try
-              if bChangeScroll then Include(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := True;
               StartOfBlock := CaretXY;
 // Processing of case character covers on LeadByte.
               Len := Length(s);
@@ -6618,7 +6557,7 @@ begin
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + min(25, fCharsInWindow - 1);
             finally
-              if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
+              FCaret.ForcePastEOL := False;
             end;
           end;
         end;
@@ -6927,7 +6866,6 @@ begin
   aList.BeginBlock;
   IncPaintLock;
   FFoldedLinesView.Lock;
-  FTrimmedLinesView.Lock;
 end;
 {end}                                                                           //sbs 2000-11-19
 
@@ -6942,7 +6880,6 @@ begin
   if aList = nil then aList := fUndoList;
   // Write all trimming info to the end of the undo block,
   // so it will be undone first, and other UndoItems do see the expected spaces
-  FTrimmedLinesView.UnLock;
   FFoldedLinesView.UnLock;
    // must be last => May call MoveCaretToVisibleArea, which must only happen
    // after unfold
@@ -7569,9 +7506,9 @@ begin
     bSetDrag := (eoDropFiles in fOptions) <> (eoDropFiles in Value);
     fOptions := Value;
     FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
-    // Reset column position in case Cursor is past EOL.
-    if not (eoScrollPastEol in fOptions) then
-      CaretX := CaretX;
+    FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
+    if not (eoScrollPastEol in Options) then
+      LeftChar := LeftChar;
     // (un)register HWND as drop target
     if bSetDrag and not (csDesigning in ComponentState) and HandleAllocated then
       {$IFDEF SYN_LAZARUS}
@@ -7611,14 +7548,12 @@ procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
 begin
   if (Value <> (Flag in fOptions)) then begin
     if Value then Include(fOptions, Flag) else Exclude(fOptions, Flag);
-    if (Flag = eoScrollPastEol) and not Value then
-      CaretX := CaretX;
-{begin}                                                                         //mh 2000-10-19
+    FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
+    FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
       TopLine := TopLine;
-{end}                                                                           //mh 2000-10-19
     if (Flag = eoDropFiles) then begin
       if not (csDesigning in ComponentState) and HandleAllocated then
         {$IFDEF SYN_LAZARUS}
@@ -7678,7 +7613,6 @@ var
   NewCaret: TPoint;
   s: String;
   PhysicalLineLen: Integer;
-  eol: Boolean;
 begin
   NewCaret:=Point(CaretX+DX,CaretY);
   if NewCaret.X<1 then begin
@@ -7705,8 +7639,7 @@ begin
 
   // adjust selection
   IncPaintLock;
-  eol := not (eoScrollPastEol in fOptions);
-  Include(fOptions, eoScrollPastEol);
+  FCaret.ForcePastEOL := True;
   if SelectionCommand then begin
     //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
     if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
@@ -7717,8 +7650,7 @@ begin
     SetBlockBegin(FInternalCaret.LineBytePos);
   // commit new caret
   CaretXY := FInternalCaret.LineCharPos;
-  if eol then
-    Exclude(fOptions, eoScrollPastEol);
+  FCaret.ForcePastEOL := False;
   DecPaintLock;
 end;
 {$ELSE}
