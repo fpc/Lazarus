@@ -397,16 +397,20 @@ var
 begin
   with ANotebook do
   begin
-    TCI.Mask := TCIF_TEXT or TCIF_PARAM;
-    {$ifdef Win32}
-    TCI.pszText := PChar(PWideChar(UTF8Decode((AChild.Caption))));
-    {$else}
-    TCI.pszText := PWideChar(UTF8Decode(AChild.Caption));
-    {$endif}
-    // store object as extra, so we can verify we got the right page later
-    TCI.lParam := PtrUInt(AChild);
-    Windows.SendMessageW(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
-    FreeMem(TCI.pszText);
+    AChild.HandleNeeded;
+    if ShowTabs then
+    begin
+      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+      {$ifdef Win32}
+      TCI.pszText := PChar(PWideChar(UTF8Decode((AChild.Caption))));
+      {$else}
+      TCI.pszText := PWideChar(UTF8Decode(AChild.Caption));
+      {$endif}
+      // store object as extra, so we can verify we got the right page later
+      TCI.lParam := PtrUInt(AChild);
+      Windows.SendMessageW(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
+      FreeMem(TCI.pszText);
+    end;
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
     // send it ourselves

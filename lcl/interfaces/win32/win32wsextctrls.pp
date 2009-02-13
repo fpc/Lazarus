@@ -446,10 +446,10 @@ begin
       TCI.pszText := PChar(AChild.Caption);
       Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
   {$endif}
-      // clientrect possible changed, adding first tab, or deleting last
-      // windows should send a WM_SIZE message because of this, but it doesn't
-      // send it ourselves
     end;
+    // clientrect possible changed, adding first tab, or deleting last
+    // windows should send a WM_SIZE message because of this, but it doesn't
+    // send it ourselves
     LCLControlSizeNeedsUpdate(ANotebook, True);
   end;
 end;
