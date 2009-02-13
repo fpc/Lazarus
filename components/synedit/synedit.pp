@@ -5753,7 +5753,6 @@ begin
   {$IFDEF VerboseKeys}
   DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
     ,' AChar=',AChar,' Data=',DbgS(Data)]);
-  DumpStack;
   {$ENDIF}
   // first the program event handler gets a chance to process the command
   DoOnProcessCommand(Command, AChar, Data);
