@@ -635,10 +635,10 @@ end;
 
 procedure TScreen.RestoreLastActive;
 begin
-  if FLastActiveControl <> nil then
+  if (FLastActiveControl <> nil) and FLastActiveControl.CanFocus then
     FLastActiveControl.SetFocus
   else
-  if FLastActiveCustomForm <> nil then
+  if (FLastActiveCustomForm <> nil) and FLastActiveCustomForm.CanFocus then
     FLastActiveCustomForm.SetFocus;
 end;
 
