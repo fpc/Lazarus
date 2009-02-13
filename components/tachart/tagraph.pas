@@ -184,8 +184,10 @@ type
     procedure UpdateBounds(
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
       virtual; abstract;
+    procedure AfterAdd; virtual;
   public
     function Count: Integer; virtual; abstract;
+    procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
     property SeriesColor: TColor read FSeriesColor write FSeriesColor default clTAColor;
   end;
 
@@ -297,7 +299,7 @@ type
     procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
     procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
 
-    procedure AddSerie(Serie: TComponent);
+    procedure AddSerie(ASerie: TBasicChartSeries);
     procedure DeleteSerie(Serie: TComponent);
     function  GetSerie(AIndex: Integer): TComponent;
     procedure SetAutoXMin(Auto: Boolean);
@@ -395,6 +397,8 @@ const
   MinDouble = -1.7e308;
   MaxDouble = 1.7e308;
 
+{ TChartPen }
+
 procedure TChartPen.SetVisible(Value: Boolean);
 begin
   FVisible := Value;
@@ -409,7 +413,7 @@ begin
   inherited Assign( Source );
 end;
 
-///////////////////////////////////////////////////////////////////////////////
+{ TChartAxis }
 
 constructor TChartAxis.Create(AOwner: TCustomChart);
 begin
@@ -467,7 +471,7 @@ begin
   FOwner.invalidate;
 end;
 
-///////////////////////////////////////////////////////////////////////////////
+{ TChartAxisTitle }
 
 constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
@@ -517,7 +521,7 @@ begin
   inherited Assign(Source);
 end;
 
-///////////////////////////////////////////////////////////////////////////////
+{ TChartLegend }
 
 constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
@@ -580,7 +584,7 @@ begin
   FOwner.Invalidate;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+{ TChartTitle }
 
 constructor TChartTitle.Create(AOwner: TCustomChart);
 begin
@@ -665,6 +669,7 @@ begin
   FOwner.Invalidate;
 end;
 
+{ TChart }
 
 constructor TChart.Create(AOwner: TComponent);
 begin
@@ -1234,29 +1239,22 @@ begin
   FGraphBrush.Assign(Value);
 end;
 
-procedure TChart.AddSerie(Serie: TComponent);
+procedure TChart.AddSerie(ASerie: TBasicChartSeries);
 begin
   if FShowVerticalReticule then DrawVerticalReticule(Canvas, XVMarkOld);
   if FShowReticule then DrawReticule(Canvas, XMarkOld, YMarkOld);
-  //disable axis when we have TPie series
-  if Serie is TPieSeries then begin
-    LeftAxis.Visible := false;
-    BottomAxis.Visible := false;
-  end;
-  Series.Add(Serie);
-  TBasicChartSeries(Serie).ParentChart := Self;
-
+  Series.Add(ASerie);
+  ASerie.ParentChart := Self;
+  ASerie.AfterAdd;
 end;
 
 procedure TChart.DeleteSerie(Serie: TComponent);
 var
   i: Integer;
-  MySerie: TComponent;
 begin
   i := 0;
   while i < SeriesCount do begin
-    MySerie := Series[i];
-    if Serie = MySerie then begin
+    if Serie = Series[i] then begin
       Series.Delete(i);
       Invalidate;
     end
@@ -1560,12 +1558,9 @@ begin
   PaintOnCanvas(ACanvas, Rect);
 end;
 
-
-
 procedure TChart.DisplaySeries(ACanvas: TCanvas);
 var
   i: Integer;
-  Serie: TChartSeries;
 begin
   if FSeries.Count = 0 then exit;
 
@@ -1573,11 +1568,8 @@ begin
   IntersectClipRect(ACanvas.Handle, XImageMin, YImageMax, XImageMax, YImageMin);
 
   // Update all series
-  for i := 0 to FSeries.Count-1 do begin
-    Serie:= TChartSeries( Series[i] );
-    if Serie.Active then
-      Serie.Draw(ACanvas);
-  end;
+  for i := 0 to FSeries.Count - 1 do
+    TBasicChartSeries(Series[i]).DrawIfActive(ACanvas);
 
   //now disable clipping
   SelectClipRgn(ACanvas.Handle, 0);
@@ -1712,7 +1704,7 @@ begin
   end;
 end;
 
-procedure TChart.DrawReticule(ACanvas : TCanvas; X, Y: Integer);
+procedure TChart.DrawReticule(ACanvas: TCanvas; X, Y: Integer);
 begin
   ACanvas.Pen.Style := psSolid;
   ACanvas.Pen.Mode := pmXor;
@@ -1936,12 +1928,19 @@ begin
   Invalidate;
 end;
 
+{ TBasicChartSeries }
+
+procedure TBasicChartSeries.AfterAdd;
+begin
+end;
+
 procedure Register;
 begin
   RegisterComponents('Additional', [TChart]);
 end;
 
 {$IFDEF fpc}
+
 initialization
   {$I tagraph.lrs}
 {$ENDIF}

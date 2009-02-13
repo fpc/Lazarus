@@ -92,8 +92,6 @@ type
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
   public
-    procedure Draw(ACanvas: TCanvas); virtual; abstract;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -104,6 +102,8 @@ type
     property Title: String read FTitle write FTitle;
 
     function Count: Integer; override;
+    procedure Draw(ACanvas: TCanvas); virtual; abstract;
+    procedure DrawIfActive(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     procedure Delete(Index: Integer); virtual;
@@ -195,6 +195,7 @@ type
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure AfterAdd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -363,6 +364,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TChartSeries.DrawIfActive(ACanvas: TCanvas);
+begin
+  if Active then
+    Draw(ACanvas);
+end;
+
 procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
 begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
@@ -497,7 +504,7 @@ begin
   UpdateParentChart;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+{ TSeriesPointer }
 
 procedure TSeriesPointer.SetVisible(Value: Boolean);
 begin
@@ -626,7 +633,7 @@ begin
   inherited Assign(Source);
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+{ TSerie }
 
 constructor TSerie.Create(AOwner: TComponent);
 begin
@@ -1188,9 +1195,9 @@ begin
       bx2 := topX+(barWidth div 2);
       by2 := bottomY;
 }
-      bx1 := topX - (TotalbarWidth div 2) +  myPos * barWidth;
+      bx1 := topX - (totalbarWidth div 2) + myPos * barWidth;
       by1 := topY;
-      bx2 := topX - (TotalbarWidth div 2) +  myPos * barWidth + barWidth;
+      bx2 := topX - (totalbarWidth div 2) + myPos * barWidth + barWidth;
       by2 := bottomY;
 
       //FIXME only draw if bar inside image coord (get a better way of doing this)
@@ -1268,6 +1275,13 @@ begin
   Result := inherited AddXY(X, Y, XLabel, Color);
 
   UpdateParentChart;
+end;
+
+procedure TPieSeries.AfterAdd;
+begin
+  // disable axis when we have TPie series
+  ParentChart.LeftAxis.Visible := false;
+  ParentChart.BottomAxis.Visible := false;
 end;
 
 function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
