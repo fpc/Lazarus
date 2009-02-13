@@ -31,7 +31,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Width = 275
     Align = alTop
     AutoComplete = False
-    Ctl3D = False
     ItemHeight = 13
     ItemWidth = 0
     OnCloseUp = AvailComboBoxCloseUp

@@ -291,6 +291,8 @@ type
     // hint stuff
     FHintTimer: TTimer;
     FHintWindow: THintWindow;
+    FHintIndex: integer;
+    FShowingLongHint: boolean; // last hint was activated by the hinttimer
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
@@ -299,6 +301,7 @@ type
 
     procedure HintTimer(Sender: TObject);
     procedure ResetHintTimer;
+    procedure HideHint;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
 
     procedure IncreaseChangeStep;
@@ -681,6 +684,7 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure RefreshSelection;
+    procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
     procedure FillPersistentComboBox;
@@ -941,13 +945,13 @@ begin
         ValueComboBox.Items.Assign(FNewComboBoxItems);
       end;
       //debugln('TOICustomPropertyGrid.FillComboboxItems "',FNewComboBoxItems.Text,'" Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
-      FreeAndNil(FNewComboBoxItems);
     end else begin
       ValueComboBox.Items.Text:='';
       ValueComboBox.Items.Clear;
       //debugln('TOICustomPropertyGrid.FillComboboxItems FNewComboBoxItems=nil Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
     end;
   finally
+    FreeAndNil(FNewComboBoxItems);
     ValueComboBox.Items.EndUpdate;
     if ExcludeUpdateFlag then
       Exclude(FStates,pgsUpdatingEditControl);
@@ -1051,8 +1055,11 @@ function TOICustomPropertyGrid.InitHints: boolean;
 begin
   if not ShowHint then exit(false);
 
-  Result:=true;
-  if FHintTimer=nil then begin
+  Result := true;
+  if FHintTimer = nil then 
+  begin
+    FHintIndex:=-1;
+    FShowingLongHint:=false;
     FHintTimer := TTimer.Create(nil);
     FHintTimer.Interval := 500;
     FHintTimer.Enabled := False;
@@ -1064,7 +1071,7 @@ begin
     FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
     FHintWindow.HideInterval := 4000;
     FHintWindow.AutoHide := True;
-  end;
+  end
 end;
 
 function TOICustomPropertyGrid.IsCurrentEditorAvailable: Boolean;
@@ -1625,83 +1632,103 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ExpandRow(Index:integer);
-var a:integer;
-  CurPath:string;
-  AlreadyInExpandList:boolean;
+var
+  a: integer;
+  CurPath: string;
+  AlreadyInExpandList: boolean;
+  ActiveRow: TOIPropertyGridRow;
 begin
-  FExpandingRow:=Rows[Index];
-  if (FExpandingRow.Expanded)
-  or (not CanExpandRow(FExpandingRow))
-  then begin
-    FExpandingRow:=nil;
-    exit;
+  // Save ItemIndex
+  if ItemIndex <> -1 then
+    ActiveRow := Rows[ItemIndex]
+  else
+    ActiveRow := nil;
+  FExpandingRow := Rows[Index];
+  if (FExpandingRow.Expanded) or (not CanExpandRow(FExpandingRow)) then
+  begin
+    FExpandingRow := nil;
+    Exit;
   end;
   FExpandingRow.Editor.GetProperties(@AddSubEditor);
   SortSubEditors(FExpandingRow);
   SetItemsTops;
-  FExpandingRow.FExpanded:=true;
-  a:=0;
+  FExpandingRow.FExpanded := True;
+  a := 0;
   CurPath:=uppercase(PropertyPath(FExpandingRow.Index));
   AlreadyInExpandList:=false;
-  while a<FExpandedProperties.Count do begin
-    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a]))
-    then begin
-      if length(FExpandedProperties[a])=length(CurPath) then begin
-        AlreadyInExpandList:=true;
+  while a < FExpandedProperties.Count do
+  begin
+    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a])) then
+    begin
+      if Length(FExpandedProperties[a]) = Length(CurPath) then
+      begin
+        AlreadyInExpandList := True;
         inc(a);
-      end else begin
+      end
+      else
         FExpandedProperties.Delete(a);
-      end;
-    end else begin
+    end
+    else
       inc(a);
-    end;
   end;
   if not AlreadyInExpandList then
     FExpandedProperties.Add(CurPath);
-  FExpandingRow:=nil;
+  FExpandingRow := nil;
+  // restore ItemIndex
+  if ActiveRow <> nil then
+    FItemIndex := ActiveRow.Index
+  else
+    FItemIndex := -1;
   UpdateScrollBar;
   Invalidate;
 end;
 
 procedure TOICustomPropertyGrid.ShrinkRow(Index:integer);
-var CurRow, ARow:TOIPropertyGridRow;
-  StartIndex,EndIndex,a:integer;
-  CurPath:string;
+var
+  CurRow, ARow: TOIPropertyGridRow;
+  StartIndex, EndIndex, a: integer;
+  CurPath: string;
 begin
-  CurRow:=Rows[Index];
-  if (not CurRow.Expanded) then exit;
+  CurRow := Rows[Index];
+  if (not CurRow.Expanded) then
+    Exit;
   // calculate all childs (between StartIndex..EndIndex)
-  StartIndex:=CurRow.Index+1;
-  EndIndex:=FRows.Count-1;
-  ARow:=CurRow;
-  while ARow<>nil do begin
-    if ARow.NextBrother<>nil then begin
-      EndIndex:=ARow.NextBrother.Index-1;
+  StartIndex := CurRow.Index + 1;
+  EndIndex := FRows.Count - 1;
+  ARow := CurRow;
+  while ARow <> nil do
+  begin
+    if ARow.NextBrother <> nil then
+    begin
+      EndIndex := ARow.NextBrother.Index - 1;
       break;
     end;
-    ARow:=ARow.Parent;
+    ARow := ARow.Parent;
   end;
-  if (FItemIndex>=StartIndex) and (FItemIndex<=EndIndex) then
+  if (FItemIndex >= StartIndex) and (FItemIndex <= EndIndex) then
     // current row delete, set new current row
     ItemIndex:=0
-  else if FItemIndex>EndIndex then
+  else
+  if FItemIndex > EndIndex then
     // adjust current index for deleted rows
     FItemIndex := FItemIndex - (EndIndex - StartIndex + 1);
-  for a:=EndIndex downto StartIndex do begin
+  for a := EndIndex downto StartIndex do
+  begin
     Rows[a].Free;
     FRows.Delete(a);
   end;
   SetItemsTops;
-  CurRow.FExpanded:=false;
-  CurPath:=uppercase(PropertyPath(CurRow.Index));
-  a:=0;
-  while a<FExpandedProperties.Count do begin
-    if copy(FExpandedProperties[a],1,length(CurPath))=CurPath then
+  CurRow.FExpanded := False;
+  CurPath := UpperCase(PropertyPath(CurRow.Index));
+  a := 0;
+  while a < FExpandedProperties.Count do
+  begin
+    if copy(FExpandedProperties[a], 1, length(CurPath)) = CurPath then
       FExpandedProperties.Delete(a)
     else
       inc(a);
   end;
-  if CurRow.Parent<>nil then
+  if CurRow.Parent <> nil then
     FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
   UpdateScrollBar;
   Invalidate;
@@ -1844,25 +1871,26 @@ begin
   SetRowValue;
 end;
 
-function TOICustomPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer
-  ): TPropEditHint;
+function TOICustomPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
 var
   IconX: integer;
 begin
-  Result:=pehNone;
-  if (RowIndex<0) or (RowIndex>=RowCount) then exit;
-  if SplitterX<=X then begin
-    if (FCurrentButton<>nil)
-    and (FCurrentButton.Left<=X) then
-      Result:=pehEditButton
+  Result := pehNone;
+  if (RowIndex < 0) or (RowIndex >= RowCount) then 
+    Exit;
+  if SplitterX <= X then 
+  begin
+    if (FCurrentButton <> nil) and (FCurrentButton.Left <= X) then
+      Result := pehEditButton
     else
-      Result:=pehValue;
-  end else begin
-    IconX:=GetTreeIconX(RowIndex);
-    if IconX+Indent>X then
-      Result:=pehTree
+      Result := pehValue;
+  end else 
+  begin
+    IconX := GetTreeIconX(RowIndex);
+    if IconX + Indent > X then
+      Result := pehTree
     else
-      Result:=pehName;
+      Result := pehName;
   end;
 end;
 
@@ -1875,9 +1903,7 @@ begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
   inherited MouseDown(Button,Shift,X,Y);
 
-  //hide the hint
-  if FHintWindow<>nil then
-    FHintWindow.Visible := False;
+  HideHint;
 
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
@@ -1942,35 +1968,46 @@ begin
     end;
 
     // to check if the property text fits in its box, if not show a hint
-    if ShowHint then begin
+    if ShowHint then 
+    begin
       Index := MouseToIndex(y,false);
-      if Index > -1 then begin
+      if (Index > -1)
+      and (Index<>ItemIndex) // do not show a hint for the current row to not hide the editor
+      and ((FHintWindow=nil) or (not FHintWindow.Visible)
+           or (Index<>FHintIndex) or (not FShowingLongHint))
+      then begin
+        FHintIndex:=-1;
+        FShowingLongHint:=false;
         fPropRow := GetRow(Index);
-        if X < SplitterX then begin
+        if X < SplitterX then 
+        begin
           // Mouse is over property name...
           fHint := fPropRow.Name;
-          if ((Canvas.TextWidth(fHint)+BorderWidth+GetTreeIconX(Index)+Indent)
-          >= SplitterX)
-          and InitHints then begin
+          if ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) and 
+             InitHints then 
+          begin
+            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fpoint := ClientToScreen(
+            fPoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
                                    fPropRow.Top - TopY-1));
             MoveRect(fHintRect,fPoint.x,fPoint.y);
             FHintWindow.ActivateHint(fHintRect,fHint);
           end;
         end
-        else begin
+        else 
+        begin
           // Mouse is over property value...
           fHint := fPropRow.LastPaintedValue;
-          if length(fHint)>100 then fHint:=copy(fHint,1,100)+'...';
-          if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX))
-          and InitHints
-          then begin
+          if length(fHint) > 100 then fHint := copy(fHint, 1, 100) + '...';
+          if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)) and 
+             InitHints then 
+          begin
+            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fpoint := ClientToScreen(Point(SplitterX,fPropRow.Top - TopY-1));
-            MoveRect(fHintRect,fPoint.x,fPoint.y);
-            FHintWindow.ActivateHint(fHintRect,fHint);
+            fpoint := ClientToScreen(Point(SplitterX, fPropRow.Top - TopY - 1));
+            MoveRect(fHintRect, fPoint.x, fPoint.y);
+            FHintWindow.ActivateHint(fHintRect, fHint);
           end;
         end;
       end;
@@ -2193,7 +2230,7 @@ begin
     ParentRow:=ParentRow.Parent;
   end;
 
-  if (ItemIndex <> -1) and (Rows[ItemIndex] = ARow) then
+  if (ItemIndex <> -1) and (ItemIndex = ARow.Index) then
     Result := FHighlightFont.Color
   else if IsObjectSubProperty then
     Result := FSubPropertiesColor
@@ -2847,74 +2884,85 @@ var
   PointedRow:TOIpropertyGridRow;
   Window: TWinControl;
   HintType: TPropEditHint;
+  ClientPosition: TPoint;
 begin
-  // ToDo: use LCL hintsystem
-  if FHintTimer<>nil then
+  if FHintTimer <> nil then
     FHintTimer.Enabled := False;
   if (not InitHints) then exit;
 
   Position := Mouse.CursorPos;
 
   Window := FindLCLWindow(Position);
-  if not(Assigned(Window)) then Exit;
-  If (Window<>Self) and (not IsParentOf(Window)) then exit;
+  if not Assigned(Window) then Exit;
+  If (Window <> Self) and (not IsParentOf(Window)) then exit;
 
-  Position := ScreenToClient(Position);
-  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
-  or (Position.Y >= Height)) then
+  ClientPosition := ScreenToClient(Position);
+  if ((ClientPosition.X <=0) or (ClientPosition.X >= Width) or
+     (ClientPosition.Y <= 0) or (ClientPosition.Y >= Height)) then
     Exit;
 
   AHint := '';
-  Index:=MouseToIndex(Position.Y,false);
-  if (Index>=0) and (Index<FRows.Count) then
+  Index := MouseToIndex(ClientPosition.Y, False);
+  if (Index >= 0) and (Index < FRows.Count) then
   begin
     //IconX:=GetTreeIconX(Index);
-    PointedRow:=Rows[Index];
-    if Assigned(PointedRow) then
-    Begin
-      if Assigned(PointedRow.Editor) then begin
+    PointedRow := Rows[Index];
+    if Assigned(PointedRow) and Assigned(PointedRow.Editor) then 
+    begin
+      if Index <> ItemIndex then 
+      begin
         HintType := GetHintTypeAt(Index,Position.X);
         if (HintType = pehName) and Assigned(OnPropertyHint) then begin
           if OnPropertyHint(Self,PointedRow,Position,FHintWindow,Rect,AHint) then
           begin
+            FHintIndex:=Index;
+            FShowingLongHint:=true;
             FHintWindow.ActivateHint(Rect,AHint);
           end;
           exit;
         end;
-        AHint := PointedRow.Editor.GetHint(HintType,Position.X,Position.Y);
+        AHint := PointedRow.Editor.GetHint(HintType, Position.X, Position.Y);
       end;
     end;
   end;
 
   if AHint = '' then Exit;
+  FHintIndex:=Index;
+  FShowingLongHint:=true;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Position := Mouse.CursorPos;
-  Rect.Left := Position.X+10;
-  Rect.Top := Position.Y+10;
-  Rect.Right := Rect.Left + Rect.Right+3;
-  Rect.Bottom := Rect.Top + Rect.Bottom+3;
+  Rect.Left := Position.X + 10;
+  Rect.Top := Position.Y + 10;
+  Rect.Right := Rect.Left + Rect.Right + 3;
+  Rect.Bottom := Rect.Top + Rect.Bottom + 3;
 
-  FHintWindow.ActivateHint(Rect,AHint);
+  FHintWindow.ActivateHint(Rect, AHint);
 end;
 
 Procedure TOICustomPropertyGrid.ResetHintTimer;
 begin
-  if FHintWindow=nil then exit;
+  if FHintWindow = nil then exit;
 
-  if FHintWIndow.Visible then
-    FHintWindow.Visible := False;
+  HideHint;
 
   FHintTimer.Enabled := False;
   if RowCount > 0 then
     FHintTimer.Enabled := not FDragging;
 end;
 
+procedure TOICustomPropertyGrid.HideHint;
+begin
+  if FHintWindow=nil then exit;
+  FHintWindow.Visible:=false;
+  FHintIndex:=-1;
+  FShowingLongHint:=false;
+  while FHintWindow.ControlCount > 0 do
+    FHintWindow.Controls[0].Free;
+end;
+
 procedure TOICustomPropertyGrid.ValueControlMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
-  //hide the hint window!
-  if (FHintWindow<>nil) and FHintWindow.Visible then
-    FHintWindow.Visible := False;
+  HideHint;
   ScrollToActiveItem;
 end;
 
@@ -2947,7 +2995,7 @@ var
 begin
   if not CanEditRowValue then exit;
 
-  if FHintTimer<>nil then
+  if FHintTimer <> nil then
     FHintTimer.Enabled := False;
 
   if (FCurrentEdit = ValueComboBox) then 
@@ -3968,6 +4016,15 @@ begin
     Visible:=true;
 end;
 
+procedure TObjectInspectorDlg.SaveChanges;
+var
+  Page: TObjectInspectorPage;
+begin
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].SaveChanges;
+end;
+
 procedure TObjectInspectorDlg.RefreshPropertyValues;
 var
   Page: TObjectInspectorPage;
@@ -4217,9 +4274,9 @@ function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
   PointedRow: TOIPropertyGridRow; ScreenPos: TPoint; aHintWindow: THintWindow;
   out HintWinRect: TRect; out AHint: string): boolean;
 begin
-  Result:=false;
+  Result := False;
   if Assigned(FOnPropertyHint) then
-    Result:=FOnPropertyHint(Sender,PointedRow,ScreenPos,aHintWindow,HintWinRect,AHint);
+    Result := FOnPropertyHint(Sender, PointedRow, ScreenPos, aHintWindow, HintWinRect, AHint);
 end;
 
 procedure TObjectInspectorDlg.SetAvailComboBoxText;
@@ -4602,9 +4659,9 @@ procedure TObjectInspectorDlg.OnShowHintPopupMenuItemClick(Sender : TObject);
 var
   Page: TObjectInspectorPage;
 begin
-  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-    if GridControl[Page]<>nil then
-      GridControl[Page].ShowHint:=not GridControl[Page].ShowHint;
+  for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page] <> nil then
+      GridControl[Page].ShowHint := not GridControl[Page].ShowHint;
 end;
 
 procedure TObjectInspectorDlg.OnShowOptionsPopupMenuItemClick(Sender: TObject);
