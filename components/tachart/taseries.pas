@@ -35,7 +35,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, Dialogs, Graphics, sysutils, TAGraph;
+  Classes, Dialogs, Graphics, sysutils, TAGraph, TAChartUtils;
 
 type
 
@@ -263,6 +263,11 @@ type
     procedure SetShowPoints(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
     procedure SetPointer(Value: TSeriesPointer);
+  protected
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -330,8 +335,7 @@ type
 implementation
 
 uses
-  math, types,
-  TAChartUtils;
+  math, types;
 
 constructor TChartSeries.Create(AOwner: TComponent);
 begin
@@ -915,6 +919,28 @@ procedure TSerie.GetMin(var X, Y: Double);
 begin
   X := XOfYGraphMin;
   Y := YGraphMin;
+end;
+
+function TSerie.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+var
+  dist, minDist, i: Integer;
+  pt: TPoint;
+begin
+  Result := Count > 0;
+  minDist := MaxInt;
+  for i := 0 to Count - 1 do begin
+    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    dist := ADistFunc(APoint, pt);
+    if dist >= minDist then
+      Continue;
+    minDist := dist;
+    AIndex := i;
+    AImg := pt;
+    AValue.X := GetXValue(i);
+    AValue.Y := GetYValue(i);
+  end;
 end;
 
 procedure TSerie.SetColor(Index: Integer; AColor: TColor);
@@ -1624,8 +1650,8 @@ begin
   inherited DrawLegend(ACanvas, ARect);
   ACanvas.Pen.Color := SeriesColor;
   y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.MoveTo(ARect.Left, ARect.Top + 5);
-  ACanvas.LineTo(ARect.Right, ARect.Top + 5);
+  ACanvas.MoveTo(ARect.Left, y);
+  ACanvas.LineTo(ARect.Right, y);
 end;
 
 end.

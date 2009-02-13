@@ -185,6 +185,10 @@ type
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
       virtual; abstract;
     procedure AfterAdd; virtual;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      virtual;
   public
     function Count: Integer; virtual; abstract;
     procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
@@ -221,7 +225,6 @@ type
     Zoom: Boolean;
     Fixed: Boolean;
     XDown, YDown, XOld, YOld: Integer;
-    XVMarkOld, XMarkOld, YMarkOld: Integer;
     ZoomRect: TRect;
 
     FShowReticule: Boolean;
@@ -230,7 +233,8 @@ type
     FDrawVertReticule: TDrawVertReticule;
     FDrawReticule: TDrawReticule;
 
-    XReticule, YReticule: Integer;
+    FReticulePos: TPoint;
+    FVertReticuleX: Integer;
 
     FFrame: TChartPen;
 
@@ -238,6 +242,7 @@ type
 
     FAxisVisible: Boolean;
     
+    procedure PrepareXorPen;
     procedure SetAutoUpdateXMin(Value: Boolean);
     procedure SetAutoUpdateXMax(Value: Boolean);
     procedure SetAutoUpdateYMin(Value: Boolean);
@@ -251,16 +256,11 @@ type
     procedure SetTitle(Value: TChartTitle);
     procedure SetFoot(Value: TChartTitle);
     function  GetLegendWidth(ACanvas: TCanvas): Integer;
-    procedure GetPointNextTo(
-      X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-    procedure GetXPointNextTo(
-      X, Y: Integer; out SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-    procedure GetYPointNextTo(
-      X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-    procedure DrawReticule(ACanvas: TCanvas; X, Y: Integer);
-    procedure DrawVerticalReticule(ACanvas: TCanvas; X: Integer);
-    procedure SetShowVerticalReticule(Value: Boolean);
-    procedure SetShowReticule(Value: Boolean);
+    procedure MaybeDrawReticules;
+    procedure DrawReticule(ACanvas: TCanvas; const APos: TPoint);
+    procedure DrawVerticalReticule(ACanvas: TCanvas; AX: Integer);
+    procedure SetShowVerticalReticule(AValue: Boolean);
+    procedure SetShowReticule(AValue: Boolean);
 
     procedure SetLegend(Value: TChartLegend);
     procedure SetLeftAxis(Value: TChartAxis);
@@ -281,9 +281,9 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DoDrawVertReticule(
-      IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double); virtual;
+      IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double); virtual;
     procedure DoDrawReticule(
-      IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double); virtual;
+      IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double); virtual;
     procedure EraseBackground(DC: HDC); override;
   public
     XImageMin, YImageMin: Integer;                // Image coordinates of limits
@@ -391,7 +391,7 @@ procedure Register;
 implementation
 
 uses
-  Math, TASeries;
+  Math;
 
 const
   MinDouble = -1.7e308;
@@ -681,9 +681,8 @@ begin
   Width := 400;
   Height := 300;
 
-  XVMarkOld := -1;
-  XMarkOld := -1;
-  YMarkOld := -1;
+  FVertReticuleX := -1;
+  FReticulePos := Point(-1, -1);
 
   Series := TFPList.Create;
 
@@ -816,6 +815,16 @@ begin
     XImageMax := ARect.Right - 10 - GetLegendWidth(ACanvas);
   end;
   Refresh(ACanvas, ARect);
+end;
+
+procedure TChart.PrepareXorPen;
+begin
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Mode := pmXor;
+  Canvas.Pen.Color := clWhite;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Width := 1;
 end;
 
 procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
@@ -1241,8 +1250,7 @@ end;
 
 procedure TChart.AddSerie(ASerie: TBasicChartSeries);
 begin
-  if FShowVerticalReticule then DrawVerticalReticule(Canvas, XVMarkOld);
-  if FShowReticule then DrawReticule(Canvas, XMarkOld, YMarkOld);
+  MaybeDrawReticules;
   Series.Add(ASerie);
   ASerie.ParentChart := Self;
   ASerie.AfterAdd;
@@ -1300,8 +1308,7 @@ var
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
   LeftAxisScale, BottomAxisScale: TAxisScale;
 begin
-  if FShowVerticalReticule then DrawVerticalReticule(ACanvas, XVMarkOld);
-  if FShowReticule then DrawReticule(ACanvas, XMarkOld, YMarkOld);
+  MaybeDrawReticules;
   // Check AxisScale for both axes
   case LeftAxis.Inverted of
     true : LeftAxisScale := asDecreasing;
@@ -1417,8 +1424,7 @@ begin
   DisplaySeries(ACanvas);
   DrawTitleFoot(ACanvas, ARect);
   if FLegend.Visible then DrawLegend(ACanvas, ARect);
-  if FShowVerticalReticule then DrawVerticalReticule(ACanvas, XVMarkOld);
-  if FShowReticule then DrawReticule(ACanvas, XMarkOld, YMarkOld);
+  MaybeDrawReticules;
 end;
 
 procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
@@ -1519,6 +1525,12 @@ begin
   end;
 end;
 
+procedure TChart.MaybeDrawReticules;
+begin
+  if FShowVerticalReticule then DrawVerticalReticule(Canvas, FVertReticuleX);
+  if FShowReticule then DrawReticule(Canvas, FReticulePos);
+end;
+
 procedure TChart.SaveToBitmapFile(const FileName: String);
 var
   tmpR: TRect;
@@ -1575,119 +1587,22 @@ begin
   SelectClipRgn(ACanvas.Handle, 0);
 end;
 
-procedure TChart.SetShowVerticalReticule(Value: Boolean);
+procedure TChart.SetShowVerticalReticule(AValue: Boolean);
 begin
   if FShowVerticalReticule then begin
-    DrawVerticalReticule(Canvas, XVMarkOld);
+    DrawVerticalReticule(Canvas, FVertReticuleX);
     FShowVerticalReticule := false;
   end;
-  FShowVerticalReticule := Value;
+  FShowVerticalReticule := AValue;
   Invalidate;
 end;
 
-procedure TChart.SetShowReticule(Value: Boolean);
+procedure TChart.SetShowReticule(AValue: Boolean);
 begin
-  if not Value then
-    DrawReticule(Canvas, XVMarkOld, YMarkOld);
-  FShowReticule := Value;
+  if not AValue then
+    DrawReticule(Canvas, FReticulePos);
+  FShowReticule := AValue;
   Invalidate;
-end;
-
-procedure TChart.GetPointNextTo(
-  X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-var
-  XPoint, YPoint, SerieNumber, PointNumber: Integer;
-  Mini, Dist, XgOut, YgOut: Double;
-  Serie: TComponent;
-  TASerie: TSerie;
-  T1, T2: Double;
-begin
-  Mini := MaxDouble;
-  for SerieNumber := 0 to Series.Count - 1 do begin
-    Serie := Series[SerieNumber];
-    if Serie is TSerie then begin
-      TASerie := TSerie(Serie);
-      for PointNumber := 0 to TASerie.Count - 1 do begin
-        XPoint := TASerie.GetXImgValue(PointNumber);
-        YPoint := TASerie.GetYImgValue(PointNumber);
-        T1 := X - XPoint;
-        T2 := Y - YPoint;
-        Dist := Sqrt(Sqr(T1) + Sqr(T2));
-        if Dist <= Mini then begin
-          Mini := Dist;
-          SerieNumberOut := SerieNumber;
-          PointNumberOut := PointNumber;
-          XOut := XPoint;
-          YOut := YPoint;
-          XgOut := TASerie.GetXValue(PointNumber);
-          YgOut := TASerie.GetYValue(PointNumber);
-        end;
-      end;
-      if SerieNumberOut = SerieNumber then
-        DoDrawReticule(SerieNumberOut, PointNumberOut, XOut, YOut, XgOut, YgOut);
-    end;
-  end;
-end;
-
-procedure TChart.GetXPointNextTo(
-  X, Y: Integer; out SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-var
-  XPoint, SerieNumber, PointNumber: Integer;
-  Mini, Dist, Xg, Yg: Double;
-  Serie: TComponent;
-  TASerie: TSerie;
-begin
-  Mini := MaxDouble;
-  SerieNumberOut := -1;
-  for SerieNumber := 0 to Series.Count-1 do begin
-    Serie := Series[SerieNumber];
-    if Serie is TSerie then begin
-      TASerie := TSerie(Serie);
-      for PointNumber := 0 to TASerie.Count - 1 do begin
-        XPoint := TASerie.GetXImgValue(PointNumber);
-        Dist := Abs(X - XPoint);
-        if Dist <= Mini then begin
-          Mini := Dist;
-          SerieNumberOut := SerieNumber;
-          PointNumberOut := PointNumber;
-          XOut := XPoint;
-          YOut := TASerie.GetYImgValue(PointNumber);
-          Xg := TASerie.GetXValue(PointNumber);
-          Yg := TASerie.GetYValue(PointNumber);
-        end;
-      end;
-      if SerieNumberOut = SerieNumber then
-        DoDrawVertReticule(SerieNumberOut, PointNumberOut, XOut, YOut, Xg, Yg);
-    end;
-  end;
-end;
-
-procedure TChart.GetYPointNextTo(
-  X, Y: Integer; var SerieNumberOut, PointNumberOut, XOut, YOut: Integer);
-var
-  XPoint, YPoint, SerieNumber, PointNumber: Integer;
-  Mini, Dist: Double;
-  Serie: TComponent;
-  TASerie: TSerie;
-begin
-  Mini := MaxDouble;
-  for SerieNumber := 0 to Series.Count-1 do begin
-    Serie := Series[SerieNumber];
-    if Serie is TSerie then begin
-      TASerie := TSerie(Serie);
-      for PointNumber := 0 to TASerie.Count-1 do begin
-        YPoint := TASerie.GetYImgValue(PointNumber);
-        Dist := Abs(Y - YPoint);
-        if Dist <= Mini then begin
-          Mini := Dist;
-          SerieNumberOut := SerieNumber;
-          PointNumberOut := PointNumber;
-          XOut := XPoint;
-          YOut := YPoint;
-        end;
-      end;
-    end;
-  end;
 end;
 
 procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -1704,44 +1619,32 @@ begin
   end;
 end;
 
-procedure TChart.DrawReticule(ACanvas: TCanvas; X, Y: Integer);
+procedure TChart.DrawReticule(ACanvas: TCanvas; const APos: TPoint);
 begin
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Mode := pmXor;
-  ACanvas.Pen.Color := ClWhite;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Width := 1;
-
-  ACanvas.MoveTo(X, YImageMin);
-  ACanvas.LineTo(X, YImageMax);
-  ACanvas.MoveTo(XImageMin, Y);
-  ACanvas.LineTo(XImageMax, Y);
+  PrepareXorPen;
+  ACanvas.MoveTo(APos.X, YImageMin);
+  ACanvas.LineTo(APos.X, YImageMax);
+  ACanvas.MoveTo(XImageMin, APos.Y);
+  ACanvas.LineTo(XImageMax, APos.Y);
 end;
 
-procedure TChart.DrawVerticalReticule(ACanvas: TCanvas; X: Integer);
+procedure TChart.DrawVerticalReticule(ACanvas: TCanvas; AX: Integer);
 begin
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Mode := pmXor;
-  ACanvas.Pen.Color := clWhite;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Width := 1;
-
-  ACanvas.MoveTo(X, YImageMin);
-  ACanvas.LineTo(X, YImageMax);
+  PrepareXorPen;
+  ACanvas.MoveTo(AX, YImageMin);
+  ACanvas.LineTo(AX, YImageMax);
 end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  i, SerieNumber, PointNumber, XMin, Xmax, YMin, YMax: Integer;
+  i, pointIndex: Integer;
+  r: TRect;
+  pt, newRetPos: TPoint;
+  serie: TBasicChartSeries;
+  value: TDoublePoint;
 begin
   if Down then begin
-    Canvas.Brush.Style := bsClear;
-    Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Mode := pmXor;
-    Canvas.Pen.Color := clWhite;
-    Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Width := 1;
-
+    PrepareXorPen;
     Canvas.Rectangle(XDown, YDown, XOld, YOld);
     Canvas.Rectangle(XDown, YDown, X, Y);
 
@@ -1749,40 +1652,35 @@ begin
     YOld := Y;
     exit;
   end;
-  XMin := XImageMin;
-  XMax := XImageMax;
-  YMin := YImageMin;
-  YMax := YImageMax;
-  if XMin > XMax then
-    Exchange(Xmin, Xmax);
-  if YMin > YMax then
-    Exchange(YMin, YMax);
+  r := Rect(XImageMin, YImageMin, XImageMax, YImageMax);
+  if r.Top > r.Bottom then
+    Exchange(r.Top, r.Bottom);
+  if r.Left > r.Right then
+    Exchange(r.Left, r.Right);
 
+  pt := Point(X, Y);
   for i := 0 to SeriesCount - 1 do begin
-    if FShowVerticalReticule then begin
-      GetXPointNextTo(X, Y, SerieNumber, PointNumber, XReticule, YReticule);
-      if
-        (XReticule <> XVMarkOld) and (XReticule > XMin) and (XReticule < XMax)
-      then begin
-        DrawVerticalReticule(Canvas, XVMarkOld);
-        DrawVerticalReticule(Canvas, XReticule);
-        FShowVerticalReticule := True;
-        XVMarkOld := XReticule;
-      end;
+    serie := TBasicChartSeries(Series[i]);
+    if
+      FShowVerticalReticule and
+      serie.GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
+      (newRetPos.X <> FVertReticuleX) and
+      InRange(newRetPos.X, r.Left, r.Right)
+    then begin
+      DoDrawVertReticule(i, pointIndex, newRetPos, value.X, value.Y);
+      DrawVerticalReticule(Canvas, FVertReticuleX);
+      DrawVerticalReticule(Canvas, newRetPos.X);
+      FVertReticuleX := newRetPos.X;
     end;
-    if FShowReticule then begin
-      GetPointNextTo(X, Y, SerieNumber, PointNumber, XReticule, YReticule);
-      if (XReticule <> XMarkOld) or (YReticule <> YMarkOld) then
-        if
-          (XReticule >= XMin) and (XReticule <= XMax) and
-          (YReticule >= YMin) and (YReticule <= YMax)
-        then begin
-          DrawReticule(Canvas, XMarkOld, YMarkOld);
-          DrawReticule(Canvas, XReticule, YReticule);
-          FShowReticule := true;
-          XMarkOld := XReticule;
-          YMarkOld := YReticule;
-        end;
+    if
+      FShowReticule and
+      serie.GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
+      not EqualPoints(newRetPos, FReticulePos) and PtInRect(r, newRetPos)
+    then begin
+      DoDrawReticule(i, pointIndex, newRetPos, value.X, value.Y);
+      DrawReticule(Canvas, FReticulePos);
+      DrawReticule(Canvas, newRetPos);
+      FReticulePos := newRetPos;
     end;
   end;
 end;
@@ -1790,16 +1688,9 @@ end;
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if not Down then exit;
-  XMarkOld := X;
-  YMarkOld := Y;
+  FReticulePos := Point(X, Y);
 
-  Canvas.Brush.Style := bsClear;
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Mode := pmXor;
-  Canvas.Pen.Color := clWhite;
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Width := 1;
-
+  PrepareXorPen;
   Canvas.Rectangle(XDown, YDown, XOld, YOld);
 
   Down := false;
@@ -1830,17 +1721,17 @@ begin
 end;
 
 procedure TChart.DoDrawVertReticule(
-  IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double);
+  IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double);
 begin
   if Assigned(FDrawVertReticule) then
-    FDrawVertReticule(Self, IndexSerie, Index, Xi, Yi, Xg, Yg);
+    FDrawVertReticule(Self, IndexSerie, Index, APoint.X, APoint.Y, Xg, Yg);
 end;
 
 procedure TChart.DoDrawReticule(
-  IndexSerie, Index, Xi, Yi: Integer; Xg, Yg: Double);
+  IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double);
 begin
   if Assigned(FDrawReticule) then
-    FDrawReticule(Self, IndexSerie, Index, Xi, Yi, Xg, Yg);
+    FDrawReticule(Self, IndexSerie, Index, APoint.X, APoint.Y, Xg, Yg);
 end;
 
 function TChart.GetNewColor: TColor;
@@ -1932,6 +1823,13 @@ end;
 
 procedure TBasicChartSeries.AfterAdd;
 begin
+end;
+
+function TBasicChartSeries.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+begin
+  Result := false;
 end;
 
 procedure Register;

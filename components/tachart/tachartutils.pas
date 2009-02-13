@@ -29,7 +29,7 @@ unit TAChartUtils;
 interface
 
 uses
-  Graphics;
+  Graphics, Types;
 
 const
   MaxColor = 15;
@@ -38,6 +38,12 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
+  TDoublePoint = record
+    X, Y: Double;
+  end;
+
+  TPointDistFunc = function (const A, B: TPoint): Integer;
+
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
   TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
@@ -59,8 +65,13 @@ type
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
+function EqualPoints(const A, B: TPoint): Boolean; inline;
+
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
+
+function PointDist(const A, B: TPoint): Integer; inline;
+function PointDistX(const A, B: TPoint): Integer; inline;
 
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
@@ -139,6 +150,11 @@ begin
   end; {case AxisScale}
 end;
 
+function EqualPoints(const A, B: TPoint): Boolean;
+begin
+  Result := (A.X = B.X) and (A.Y = B.Y);
+end;
+
 procedure Exchange(var A, B: Integer); overload;
 var
   t: Integer;
@@ -155,6 +171,16 @@ begin
   t := A;
   A := B;
   B := t;
+end;
+
+function PointDist(const A, B: TPoint): Integer;
+begin
+  Result := Sqr(A.X - B.X) + Sqr(A.Y - B.Y);
+end;
+
+function PointDistX(const A, B: TPoint): Integer;
+begin
+  Result := Abs(A.X - B.X);
 end;
 
 procedure RotateLabel(
