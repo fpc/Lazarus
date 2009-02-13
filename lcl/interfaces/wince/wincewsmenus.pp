@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -41,9 +41,7 @@ type
   { TWinCEWSMenuItem }
 
   TWinCEWSMenuItem = class(TWSMenuItem)
-  private
-  protected
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -58,9 +56,7 @@ type
   { TWinCEWSMenu }
 
   TWinCEWSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
@@ -75,9 +71,7 @@ type
   { TWinCEWSPopupMenu }
 
   TWinCEWSPopupMenu = class(TWSPopupMenu)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;

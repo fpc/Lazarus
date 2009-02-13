@@ -41,9 +41,7 @@ type
   { TWinCEWSCustomPage }
 
   TWinCEWSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -54,9 +52,7 @@ type
   { TWinCEWSCustomNotebook }
 
   TWinCEWSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);

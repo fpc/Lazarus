@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -26,9 +26,9 @@
   {$H+}
 {$ENDIF}
 
-Type
-  TWinCEListStringList = Class(TStrings)
-  Private
+type
+  TWinCEListStringList = class(TStrings)
+  private
     FWinCEList: HWND;
     FSorted: Boolean;
     FSender: TWinControl;
@@ -49,25 +49,25 @@ Type
     FFlagSetItemIndex: cardinal;
     FFlagGetSelected: cardinal;
     FFlagsetSelected: cardinal;
-  Protected
-    function Add(const S: string): Integer; override;
-    function Get(Index: Integer): String; Override;
-    function GetCount: Integer; Override;
-    function GetObject(Index: Integer): TObject; Override;
+  protected
+    function Get(Index: Integer): String; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
-    procedure PutObject(Index: Integer; AObject: TObject); Override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
 
     procedure InitFlags; virtual;
     procedure SetSorted(Val: Boolean); Virtual;
-  Public
+  public
     Constructor Create(List : HWND; TheOwner: TWinControl);
     procedure Assign(Source: TPersistent); Override;
+    function Add(const S: string): Integer; override;
     procedure Clear; Override;
     procedure Delete(Index: Integer); Override;
     procedure Insert(Index: Integer; Const S: String); Override;
     procedure Sort; Virtual;
-    Property Sorted: Boolean Read FSorted Write SetSorted;
-  End;
+    property Sorted: Boolean Read FSorted Write SetSorted;
+  end;
 
   TWinCEComboBoxStringList = class(TWinCEListStringList)
   private

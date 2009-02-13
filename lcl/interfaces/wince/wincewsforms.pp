@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,     *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -39,9 +39,7 @@ type
   { TWinCEWSScrollingWinControl }
 
   TWinCEWSScrollingWinControl = class(TWSScrollingWinControl)
-  private
-  protected
-  public
+  published
     class procedure ScrollBy(const AWinControl: TScrollingWinControl;
       const DeltaX, DeltaY: integer); override;
   end;
@@ -49,9 +47,7 @@ type
   { TWinCEWSScrollBox }
 
   TWinCEWSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
@@ -75,9 +71,7 @@ type
   { TWinCEWSCustomForm }
 
   TWinCEWSCustomForm = class(TWSCustomForm)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;

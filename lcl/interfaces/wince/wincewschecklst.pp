@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -43,9 +43,7 @@ type
   { TWinCEWSCustomCheckListBox }
 
   TWinCEWSCustomCheckListBox = class(TWSCustomCheckListBox)
-  private
-  protected
-  public
+  published
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; override;

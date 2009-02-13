@@ -42,9 +42,7 @@ type
   { TWinCEWSStatusBar }
 
   TWinCEWSStatusBar = class(TWSStatusBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -82,8 +80,7 @@ type
     class procedure PositionHeader(const AHandle: THandle);
     class procedure UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
     class procedure UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
-  protected
-  public
+  published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -148,9 +145,7 @@ type
   { TWinCEWSProgressBar }
 
   TWinCEWSProgressBar = class(TWSProgressBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
@@ -192,9 +187,7 @@ type
   { TWinCEWSTrackBar }
 
   TWinCEWSTrackBar = class(TWSTrackBar)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;

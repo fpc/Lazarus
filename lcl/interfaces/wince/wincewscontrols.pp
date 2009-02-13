@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -41,9 +41,7 @@ type
   { TWinCEWSDragImageList }
 
   TWinCEWSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
+  published
     class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND;
       AIndex, X, Y: Integer): Boolean; override;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
@@ -75,9 +73,7 @@ type
   { TWinCEWSWinControl }
 
   TWinCEWSWinControl = class(TWSWinControl)
-  private
-  protected
-  public
+  published
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
