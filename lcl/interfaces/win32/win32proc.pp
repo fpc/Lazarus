@@ -126,13 +126,7 @@ function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cToleran
 { String functions that may be moved to the RTL in the future }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
 
-type
-  PDisableWindowsInfo = ^TDisableWindowsInfo;
-  TDisableWindowsInfo = record
-    NewModalWindow: HWND;
-    DisabledWindowList: TList;
-  end;
-  
+type 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
   TStayOnTopWindowsInfo = record
     AppWindow: HWND;
