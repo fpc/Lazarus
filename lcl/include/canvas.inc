@@ -1166,7 +1166,7 @@ begin
   Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
   Flags := 0;
-  if TextStyle.Opaque then
+  If TextStyle.Opaque then
     Flags := ETO_Opaque;
   ExtUTF8Out(FHandle, X, Y, Flags, nil, PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);

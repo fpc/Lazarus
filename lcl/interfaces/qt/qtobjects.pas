@@ -1607,7 +1607,9 @@ begin
   {$endif}
 
   // Creates the widget
-  if CreateHandle then Widget := QRegion_create(X1,Y1,X2,Y2, RegionType);
+  // Note that QRegion_create expects a width and a height,
+  // and not a X2, Y2 bottom-right point
+  if CreateHandle then Widget := QRegion_create(X1,Y1,X2-X1,Y2-Y1, RegionType);
 end;
 
 constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;

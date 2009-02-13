@@ -177,6 +177,7 @@ function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;

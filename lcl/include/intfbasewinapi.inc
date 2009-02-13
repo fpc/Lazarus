@@ -1472,6 +1472,12 @@ begin
   Result:=false;
 end;
 
+function TWidgetset.SetWindowRgn(hWnd: HWND;
+ hRgn: HRGN; bRedraw: Boolean):longint;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := False;

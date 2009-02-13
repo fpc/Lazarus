@@ -493,7 +493,10 @@ end;
 
 {------------------------------------------------------------------------------
   Function: CreateEllipticRgn
-  Params:  p1, p2, p3, p4: Integer
+  Params:  p1 - X position of the top-left corner
+           p2 - Y position of the top-left corner
+           p3 - X position of the bottom-right corner
+           p4 - Y position of the bottom-right corner
   Returns: HRGN
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
@@ -4447,6 +4450,43 @@ begin
     TQtDeviceContext(DC).translate(-NewX, -NewY);
     Result := True;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetWindowRgn
+  Params:  hWnd    - handle of the widget
+           hRgn    - handle of the region
+           bRedraw - ?
+  Returns: 0 if the call failed, any other value if it was successful
+
+  Makes the region specifyed in hRgn be the only part of the window which is
+  visible.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetWindowRgn(hWnd: HWND;
+ hRgn: HRGN; bRedraw: Boolean):longint;
+var
+  w: TQtWidget;
+  r: TQtRegion;
+begin
+  Result := 0;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetWindowRgn] Handle: ', dbghex(hWnd));
+  {$endif}
+
+  // Basic checks
+
+  if (hWnd = 0) then Exit;
+
+  w := TQtWidget(hWnd);
+
+  r := TQtRegion(hRgn);
+
+  // Now set the mask in the widget
+
+  w.setMask(r.Widget);
+
+  Result := 1;
 end;
 
 function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;

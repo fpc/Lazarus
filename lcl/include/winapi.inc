@@ -820,6 +820,11 @@ begin
   Result := WidgetSet.SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 end;
 
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint;
+begin
+  Result := WidgetSet.SetWindowRgn(hWnd, hRgn, bRedraw);
+end;
+
 function ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := WidgetSet.ShowCaret(hWnd)

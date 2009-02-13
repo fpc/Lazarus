@@ -202,7 +202,8 @@ type
     procedure setGeometry(ARect: TRect); overload;
     procedure setLayoutDirection(ADirection: QtLayoutDirection);
     procedure setMaximumSize(AWidth, AHeight: Integer);
-    procedure setMask(AMask: QBitmapH);
+    procedure setMask(AMask: QBitmapH); overload;
+    procedure setMask(AMask: QRegionH); overload;
     procedure setMinimumSize(AWidth, AHeight: Integer);
     procedure setParent(parent: QWidgetH); virtual;
     procedure setText(const W: WideString); virtual;
@@ -3009,6 +3010,11 @@ begin
 end;
 
 procedure TQtWidget.setMask(AMask: QBitmapH);
+begin
+  QWidget_setMask(Widget, AMask);
+end;
+
+procedure TQtWidget.setMask(AMask: QRegionH);
 begin
   QWidget_setMask(Widget, AMask);
 end;
