@@ -4466,7 +4466,7 @@ end;
 
 procedure TWinControl.SetShape(AShape: TRegion);
 begin
-  LCLIntf.SetWindowRgn(Handle, AShape.Handle, True);
+  LCLIntf.SetWindowRgn(Handle, AShape.Reference.Handle, True);
 end;
 
 {------------------------------------------------------------------------------

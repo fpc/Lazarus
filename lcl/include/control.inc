@@ -3243,7 +3243,6 @@ begin
   begin
     P := ClientToScreen(Point(X,Y));
     DragManager.MouseDown(Button, Shift, P.X, P.Y);
-    exit;
   end;
 
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
@@ -3260,7 +3259,6 @@ begin
   begin
     P := ClientToScreen(Point(X, Y));
     DragManager.MouseMove(Shift, P.X, P.Y);
-    exit;
   end;
 
   if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
@@ -3278,7 +3276,6 @@ begin
   begin
     P := ClientToScreen(Point(X, Y));
     DragManager.MouseUp(Button, Shift, P.X, P.Y);
-    exit;
   end;
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
