@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -31,10 +31,10 @@ uses
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL
-  ExtCtrls, Classes, Controls, LCLType, LCLIntf,
+  ExtCtrls, Classes, Controls, LCLType, LCLIntf, ImgList,
   // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
-  WinCEWSControls;
+  WinCEWSControls, WSProc;
 
 type
 
@@ -71,6 +71,7 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -273,7 +274,6 @@ begin
   end;
 end;
 
-
 { TWinCEWSCustomPage }
 
 class function TWinCEWSCustomPage.CreateHandle(const AWinControl: TWinControl;
@@ -351,8 +351,28 @@ begin
 end;
 
 class procedure TWinCEWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+var
+  TCI: TC_ITEM;
+  PageIndex: integer;
+  NotebookHandle: HWND;
 begin
-  // TODO: implement me!
+  PageIndex := ACustomPage.PageIndex;
+  NotebookHandle := ACustomPage.Parent.Handle;
+  // Check for valid page index
+  if (PageIndex>=0) and
+    (PageIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
+  begin
+    // retrieve page handle from tab as extra check (in case page isn't added yet).
+    TCI.mask := TCIF_PARAM;
+    Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
+    if PtrUInt(TCI.lParam)=PtrUInt(ACustomPage) then
+    begin
+      TCI.mask := TCIF_IMAGE;
+      TCI.iImage := TCustomNotebook(ACustomPage.Parent).GetImageIndex(PageIndex);
+
+      Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
+    end;
+  end;
 end;
 
 { TWinCEWSCustomNotebook }
@@ -381,6 +401,9 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
   
+  if TCustomNoteBook(AWinControl).Images <> nil then
+    SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomNoteBook(AWinControl).Images.Reference._Handle);
+
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
   Params.WindowInfo^.needParentPaint := false;
@@ -400,7 +423,7 @@ begin
     AChild.HandleNeeded;
     if ShowTabs then
     begin
-      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+      TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       {$ifdef Win32}
       TCI.pszText := PChar(PWideChar(UTF8Decode((AChild.Caption))));
       {$else}
@@ -408,6 +431,7 @@ begin
       {$endif}
       // store object as extra, so we can verify we got the right page later
       TCI.lParam := PtrUInt(AChild);
+      TCI.iImage := ANotebook.GetImageIndex(GetPageRealIndex(ANotebook, AIndex));
       Windows.SendMessageW(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
       FreeMem(TCI.pszText);
     end;
@@ -546,6 +570,18 @@ begin
   hittestInfo.pt.X := AClientPos.X;
   hittestInfo.pt.Y := AClientPos.Y;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
+end;
+
+class procedure TWinCEWSCustomNotebook.SetImageList(
+  const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
+begin
+  if not WSCheckHandleAllocated(ANotebook, 'SetImageList') then
+    Exit;
+
+  if AImageList <> nil then
+    SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference._Handle)
+  else
+    SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, 0);
 end;
 
 class procedure TWinCEWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
