@@ -114,7 +114,7 @@ begin
   // use the carbon window.
   // TODO: find a way to use only the control for the context
   aglSetDrawable(aglContext,
-    GetWindowPort(TCarbonWindow(GetParentForm(AWinControl).Handle).Widget));
+    GetWindowPort(TCarbonWindow(GetParentForm(AWinControl).Handle).Window));
 
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
