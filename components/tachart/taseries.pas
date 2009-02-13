@@ -83,6 +83,7 @@ type
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
   protected
+    procedure StyleChanged(Sender: TObject);
     property Coord: TList read FCoordList;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
@@ -165,7 +166,6 @@ type
     procedure SetBarPen(Value: TPen);
     procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
   protected
-    procedure StyleChanged(Sender: TObject);
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -191,7 +191,6 @@ type
     FPiePen: TPen;
     procedure SetPiePen(Value: TPen);
   protected
-    procedure StyleChanged(Sender: TObject);
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
@@ -223,7 +222,6 @@ type
     procedure SetStairs(Value: Boolean);
     procedure SetInvertedStairs(Value: Boolean);
   protected
-    procedure StyleChanged(Sender: TObject);
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -272,7 +270,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure StyleChanged(Sender: TObject);
     procedure Draw(ACanvas: TCanvas); override;
     function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function  GetXValue(Index: Integer): Double;
@@ -323,7 +320,6 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    procedure StyleChanged(Sender:TObject);
 
     property  LineStyle: TLineStyle read FStyle write SetStyle;
   published
@@ -483,6 +479,11 @@ end;
 procedure TChartSeries.SetShowInLegend(Value: Boolean);
 begin
   FShowInLegend := Value;
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.StyleChanged(Sender: TObject);
+begin
   UpdateParentChart;
 end;
 
@@ -659,11 +660,6 @@ destructor TSerie.Destroy;
 begin
   FPointer.Free;
   inherited Destroy;
-end;
-
-procedure TSerie.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
 end;
 
 procedure TSerie.SetPointer(Value: TSeriesPointer);
@@ -1011,11 +1007,6 @@ begin
   FPen.Free;
 end;
 
-procedure TLine.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
 procedure TLine.SetPen(Value: TPen);
 begin
   FPen.Assign(Value);
@@ -1107,11 +1098,6 @@ begin
   FBarPen.Free;
   FBarBrush.Free;
   inherited Destroy;
-end;
-
-procedure TBarSeries.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetBarBrush(Value: TBrush);
@@ -1280,11 +1266,6 @@ destructor TPieSeries.Destroy;
 begin
   FPiePen.Free;
   inherited Destroy;
-end;
-
-procedure TPieSeries.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
 end;
 
 procedure TPieSeries.SetPiePen(Value: TPen);
@@ -1520,13 +1501,6 @@ begin
   FInvertedStairs := Value;
   UpdateParentChart;
 end;
-
-
-procedure TAreaSeries.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
