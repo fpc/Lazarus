@@ -751,21 +751,22 @@ begin
 end;
 
 class procedure TWinCEWSCustomListView.UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
-var
-  OldStyle, NewStyle: Integer;
+{var
+  OldStyle, NewStyle: Integer;}
 begin
-///  OldStyle := ListView_GetExtendedListViewStyle(AHandle);
+{
+  OldStyle := ListView_GetExtendedListViewStyle(AHandle);
   
   NewStyle := (OldStyle and not AMask) or AStyle;
 
   if OldStyle = NewStyle then Exit;
   
-{
   roozbeh:not suppoerted!
   ListView_SetExtendedListViewStyle(AHandle, NewStyle);
 
  //Invalidate Listview, so that changes are made visible
-  Windows.InvalidateRect(AHandle, nil, true);}
+  Windows.InvalidateRect(AHandle, nil, true);
+}
 end;
 
 

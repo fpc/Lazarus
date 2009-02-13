@@ -196,9 +196,7 @@ type
   { TWinCEWSCustomPanel }
 
   TWinCEWSCustomPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
