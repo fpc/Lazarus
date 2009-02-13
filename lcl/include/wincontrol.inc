@@ -5163,7 +5163,7 @@ begin
     if DragManager.IsDragging then
     begin
       DragManager.KeyDown(CharCode, ShiftState);
-      Exit;
+      if CharCode = VK_UNKNOWN then Exit;
     end;
 
     // let user handle the key
@@ -5399,7 +5399,7 @@ begin
     if DragManager.IsDragging then
     begin
       DragManager.KeyUp(CharCode, ShiftState);
-      exit;
+      if CharCode = VK_UNKNOWN then Exit;
     end;
     
     if not (csNoStdEvents in ControlStyle)

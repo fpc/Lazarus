@@ -663,15 +663,19 @@ end;
 procedure TDragManagerDefault.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
+  begin
     DragStop(False);
-  Key := 0;
+    Key := 0;
+  end;
 end;
 
 procedure TDragManagerDefault.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
+  begin
     DragStop(False);
-  Key := 0;
+    Key := 0;
+  end;
 end;
 
 procedure TDragManagerDefault.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
