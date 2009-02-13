@@ -674,7 +674,7 @@
       <!-- object Visibility: default -->
       <element name="TComponentDataLink">
         <short>
-          <var>TComponentDataLink</var> - </short>
+          <var>TComponentDataLink</var> - forms a link between a component and a DataSet and contains event handlers to operate on the records</short>
         <descr/>
         <errors/>
         <seealso/>

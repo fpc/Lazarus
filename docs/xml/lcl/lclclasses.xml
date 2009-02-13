@@ -78,8 +78,22 @@
       <element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
-      <element name="TLCLComponent.Create" link="#rtl.Classes.TComponent.Create"/>
-      <element name="TLCLComponent.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
+      <element name="TLCLComponent.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TLCLComponent</var>: calls inherited <var>Create</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
+      </element>
+      <element name="TLCLComponent.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TLCLComponent</var>: calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
+      </element>
       <element name="TLCLReferenceComponent">
         <short>
           <var>TLCLReferenceComponent</var> - A base class for all components having a handle</short>
@@ -105,17 +119,46 @@
         <short>
           <var>CreateParams</var> - create parameters</short>
       </element>
-      <element name="TLCLReferenceComponent.GetReferenceHandle"/>
+      <element name="TLCLReferenceComponent.GetReferenceHandle">
+        <short>
+          <var>GetReferenceHandle</var> - returns the Handle for this reference</short>
+      </element>
       <element name="TLCLReferenceComponent.DestroyReference">
         <short>
           <var>DestroyReference</var> - destroys the reference if it has been allocated and adjusts the pointers</short>
       </element>
       <element name="TLCLReferenceComponent.ReferenceDestroying">
         <short>
-          <var>ReferenceDestroying</var> - the reference is being destroyed</short>
+          <var>ReferenceDestroying</var> - the reference is being destroyed;  gets called before the Handle is destroyed</short>
       </element>
       <element name="TLCLReferenceComponent.ReferenceNeeded">
         <short>If <var>ReferenceNeeded</var> and not yet allocated, creates a reference using the correct widgetset and parameters</short>
+      </element>
+      <element name="TLCLComponent.IncLCLRefCount">
+        <short>
+          <var>IncLCLRefCount</var> - method for incrementing the reference count</short>
+      </element>
+      <element name="TLCLComponent.DecLCLRefCount">
+        <short>
+          <var>DecLCLRefCount</var> - method for decrementing the reference count</short>
+      </element>
+      <element name="TLCLComponent.LCLRefCount">
+        <short>
+          <var>LCLRefCount</var> - the number of references to this component</short>
+      </element>
+      <element name="TLCLReferenceComponent.ReferenceCreated">
+        <short>
+          <var>ReferenceCreated</var> - gets called after the Handle is created</short>
+      </element>
+      <element name="TLCLReferenceComponent.WSCreateReference">
+        <short>
+          <var>WSCreateReference</var> - returns a widget set reference</short>
+        <descr>this function returns nil and should be overriden in derrived class
+</descr>
+      </element>
+      <element name="TLCLReferenceComponent.WSDestroyReference">
+        <short>
+          <var>WSDestroyReference</var> - destroys widget set reference</short>
       </element>
     </module>
     <!-- LCLClasses -->
