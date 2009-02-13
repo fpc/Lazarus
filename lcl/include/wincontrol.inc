@@ -4464,6 +4464,11 @@ begin
     TWSWinControlClass(WidgetSetClass).SetShape(Self, 0)
 end;
 
+procedure TWinControl.SetShape(AShape: TRegion);
+begin
+  LCLIntf.SetWindowRgn(Handle, AShape.Handle, True);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint
