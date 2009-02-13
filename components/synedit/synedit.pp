@@ -2088,8 +2088,8 @@ end;
 procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   {$IFDEF VerboseKeys}
-  DebugLn('[TCustomSynEdit.KeyUp] ',Key
-    ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  DebugLn(['[TCustomSynEdit.KeyUp] ',Key
+    ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
   if fLastControlIsPressed<>(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]) then
