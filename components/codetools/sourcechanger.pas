@@ -90,10 +90,14 @@ type
     LastSrcLineStart: integer;// last line start, not added by splitting
     CurAtomType, LastAtomType: TAtomType;
     CurPos, AtomStart, AtomEnd, SrcLen, CurIndent, HiddenIndent: integer;
+    CommentLvl: integer;
+    CommentStartPos: array of integer;
     Src, UpperSrc: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
     procedure ReadTilDirectiveEnd;
+    procedure StartComment(p: integer);
+    procedure EndComment(CommentStart: char; p: integer);
   public
     LineLength: integer;
     LineEnd: string; // default: #13#10
@@ -1072,6 +1076,7 @@ begin
         end;
       #10,#13: // line break
         begin
+          EndComment('/',CurPos);
           CurAtomType:=atNewLine;
           inc(CurPos);
           if (CurPos<=SrcLen) and (IsLineEndChar[Src[CurPos]])
@@ -1112,7 +1117,7 @@ begin
           end;
         end;
       '''','#': // string constant
-        begin
+        if CommentLvl=0 then begin
           CurAtomType:=atStringConstant;
           while (CurPos<=SrcLen) do begin
             case (Src[CurPos]) of
@@ -1135,6 +1140,10 @@ begin
               break;
             end;
           end;
+        end else begin
+          // normal character
+          inc(CurPos);
+          CurAtomType:=atSymbol;
         end;
       '%': // binary number
         begin
@@ -1152,6 +1161,7 @@ begin
         end;
       '{': // curly bracket comment or directive
         begin
+          StartComment(CurPos);
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
             inc(CurPos);
@@ -1166,6 +1176,7 @@ begin
         end;
       '}': // curly bracket comment end
         begin
+          EndComment('{',CurPos);
           inc(CurPos);
           CurAtomType:=atCommentEnd;
         end;
@@ -1173,6 +1184,7 @@ begin
         begin
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='*') then begin
+            StartComment(CurPos-1);
             inc(CurPos);
             if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
               inc(CurPos);
@@ -1197,6 +1209,7 @@ begin
         begin
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]=')') then begin
+            EndComment('(',CurPos-1);
             inc(CurPos);
             CurAtomType:=atCommentEnd;
           end else begin
@@ -1207,6 +1220,7 @@ begin
         begin
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='/') then begin
+            StartComment(CurPos-1);
             inc(CurPos);
             if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
               inc(CurPos);
@@ -1270,6 +1284,21 @@ begin
   until CurAtomType=atNone;
 end;
 
+procedure TBeautifyCodeOptions.StartComment(p: integer);
+begin
+  inc(CommentLvl);
+  if length(CommentStartPos)<CommentLvl then
+    SetLength(CommentStartPos,length(CommentStartPos)*2+10);
+  CommentStartPos[CommentLvl-1]:=p;
+end;
+
+procedure TBeautifyCodeOptions.EndComment(CommentStart: char; p: integer);
+begin
+  if (CommentLvl>0)
+  and (Src[CommentStartPos[CommentLvl-1]]=CommentStart) then
+    dec(CommentLvl);
+end;
+
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;
   IndentSize: integer; AddBeginEnd: boolean): string;
 begin
@@ -1328,6 +1357,7 @@ begin
     LastSrcLineStart:=1;
     CurLineLen:=length(Result);
     LastAtomType:=atNone;
+    CommentLvl:=0;
     // read atoms
     while (CurPos<=SrcLen) do begin
       repeat
