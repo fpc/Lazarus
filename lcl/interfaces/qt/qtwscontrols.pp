@@ -165,6 +165,12 @@ end;
   Shows or hides a widget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomControl.ShowHide(const AWinControl: TWinControl);
+const
+  LCLToQtWindowState: array[TWindowState] of QtWindowState = (
+ { wsNormal    } QtWindowNoState,
+ { wsMinimized } QtWindowMinimized,
+ { wsMaximized } QtWindowMaximized
+  );
 var
   Widget: TQtWidget;
   R: TRect;
@@ -204,9 +210,7 @@ begin
       end;
     end;
 
-    if TCustomForm(AWinControl).WindowState in [wsMaximized] then
-      TQtMainWindow(Widget).setWindowState(QtWindowMaximized);
-
+    TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
