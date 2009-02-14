@@ -2777,6 +2777,7 @@ var
   CalcRect: TRect;
   s: String;
   n: Integer;
+  DTFlags: Cardinal;
 begin
   {$IFDEF DebugLR}
   DbgOut('TfrMemoView.CalcWidth: text=',dbgstr(aMemo.Text),
@@ -2790,13 +2791,18 @@ begin
   DbgOut(' Canvas.Font.PPI=',dbgs(Canvas.Font.PixelsPerInch),
   ' Canvas.Font.Size=',dbgs(Canvas.Font.Size));
   {$ENDIF}
+
+  DTFlags := DT_CALCRECT;
+  if Flags and flWordBreak <> 0 then
+    DTFlags := DT_CALCRECT or DT_WORDBREAK;
+
   s := aMemo.Text;
   n := Length(s);
   if n > 2 then
     if (s[n - 1] = #13) and (s[n] = #10) then
       SetLength(s, n - 2);
   SetTextCharacterExtra(Canvas.Handle, Round(CharacterSpacing * ScaleX));
-  DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DT_CALCRECT);
+  DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DTFlags);
   Result := CalcRect.Right + Round(2 * FrameWidth) + 2;
   {$IFDEF DebugLR}
   DebugLn('RR Width=', dbgs(Result),' Rect=', dbgs(CalcRect));
