@@ -63,7 +63,6 @@ Type
     FOnFocusRequest: TNotifyEvent;
     FOnLayoutChange: TNotifyEvent;
 
-    function FieldCanModify: Boolean;
     function GetCanModify: Boolean;
 
     // set current field
@@ -1316,19 +1315,6 @@ end;
 
 
 {TFieldDataLink  Private Methods}
-
-{hack around broken Field method by using this instead}
-function TFieldDataLink.FieldCanModify: Boolean;
-begin
-  Result:=Not FField.ReadOnly;
-  If Result then
-    begin
-    Result:=Assigned(FField.DataSet);
-    If Result then
-      Result:=FField.DataSet.CanModify;
-    end;
-end;
-
 {
   If the field exists and can be modified, then
   we CanModify as long as this hasn't been set
@@ -1336,7 +1322,7 @@ end;
 }
 function TFieldDataLink.GetCanModify: Boolean;
 begin
-  if Assigned(FField) and (FieldCanModify) then
+  if Assigned(FField) and (FField.CanModify) then
      Result := not ReadOnly
   else
     Result := False;
