@@ -3599,21 +3599,18 @@ end;
 
 procedure TCustomSynEdit.CaretChanged(Sender: TObject);
 begin
-  IncPaintLock;
-  try
-    Include(fStateFlags, sfCaretChanged);
-    if FCaret.OldCharPos <> FCaret.CharPos then
-      Include(fStatusChanges, scCaretX);
-    if FCaret.OldLinePos <> FCaret.LinePos then begin
-      Include(fStatusChanges, scCaretY);
-      InvalidateGutterLines(FCaret.OldLinePos, FCaret.OldLinePos);
-      InvalidateGutterLines(FCaret.LinePos, FCaret.LinePos);
-    end;
-    EnsureCursorPosVisible;
-    FMarkupManager.Caret := FCaret.LineCharPos;
-  finally
-    DecPaintLock;
+  Include(fStateFlags, sfCaretChanged);
+  if FCaret.OldCharPos <> FCaret.CharPos then
+    Include(fStatusChanges, scCaretX);
+  if FCaret.OldLinePos <> FCaret.LinePos then begin
+    Include(fStatusChanges, scCaretY);
+    InvalidateGutterLines(FCaret.OldLinePos, FCaret.OldLinePos);
+    InvalidateGutterLines(FCaret.LinePos, FCaret.LinePos);
   end;
+  EnsureCursorPosVisible;
+  FMarkupManager.Caret := FCaret.LineCharPos;
+  if fPaintLock = 0 then
+    fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
