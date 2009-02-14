@@ -1196,7 +1196,6 @@ type
   TQtMessageBox = class(TQtWidget)
   private
     FMBEventHook: QObject_hookH;
-    FButtons: Array of QPushButtonH;
     FTitle: WideString;
     function getDetailText: WideString;
     function getMessageStr: WideString;
@@ -1209,7 +1208,6 @@ type
     function CreateWidget(AParent: QWidgetH):QWidgetH; overload;
   public
     constructor Create(AParent: QWidgetH); overload;
-    destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -9845,7 +9843,6 @@ end;
 
 function TQtMessageBox.CreateWidget(AParent: QWidgetH): QWidgetH;
 begin
-  Initialize(FButtons);
   FHasPaint := False;
   Result := QMessageBox_create(AParent);
   QMessageBox_setWindowModality(QMessageBoxH(Result), QtApplicationModal);
@@ -9861,20 +9858,6 @@ begin
   FKeysToEat := [];
   FHasPaint := False;
   Widget := CreateWidget(AParent);
-end;
-
-destructor TQtMessageBox.Destroy;
-var
-  i: Integer;
-begin
-  for i := 0 to High(FButtons) do
-  begin
-    QMessageBox_removeButton(QMessageBoxH(Widget), FButtons[i]);
-    FButtons[i] := nil;
-  end;
-  Finalize(FButtons);
-  FButtons := nil;
-  inherited Destroy;
 end;
 
 procedure TQtMessageBox.AttachEvents;
@@ -9908,7 +9891,6 @@ procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
 var
   ABtn: QPushButtonH;
   Str: WideString;
-  i: Integer;
   v: QVariantH;
 begin
   ABtn := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
@@ -9921,9 +9903,6 @@ begin
   if AEscapeBtn then
     QMessageBox_setEscapeButton(QMessageBoxH(Widget), ABtn);
 
-  i := length(FButtons);
-  SetLength(FButtons, i + 1);
-
   v := QVariant_create(Int64(PtrUInt(ABtnType)));
   try
     QObject_setProperty(ABtn, 'lclmsgboxbutton', v);
@@ -9931,7 +9910,6 @@ begin
     QVariant_destroy(v);
   end;
 
-  FButtons[i] := ABtn;
 end;
 
 function TQtMessageBox.exec: QMessageBoxStandardButton;
