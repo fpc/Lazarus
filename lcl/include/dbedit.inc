@@ -126,9 +126,14 @@ end;
 
 function TDBEdit.IsReadOnly: boolean;
 begin
-  result := true;
-  if FDatalink.Active and not Self.ReadOnly then
-    result := (Field=nil) or Field.ReadOnly;
+  // This function in unneccesary for fpc versions > 2.2.4.
+  // In those versions FDatalink.CanModify already checks if the dataset is active.
+  // So this temporary method should be removed in the future, and the calls to
+  // 'not IsReadOnly' should then be replaced by calls to FDatalink.CanModify.
+  If FDatalink.Active then
+    Result := not FDatalink.CanModify
+  else
+    Result := False;
 end;
 
 procedure TDBEdit.CMGetDataLink(var Message: TLMessage);
@@ -158,17 +163,9 @@ end;
 
 procedure TDBEdit.KeyPress(var Key: char);
   function CanAcceptKey: boolean;
-  var
-    aField: TField;
   begin
-    result := False;
-    if FDataLink.Active then begin
-      aField := Field;
-      if aField<>nil then begin
-        Result := aField.IsValidChar(Key) and not aField.Calculated and
-          (aField.DataType<>ftAutoInc);
-      end;
-    end;
+    Result := Field.IsValidChar(Key) and
+              (Field.DataType<>ftAutoInc);
   end;
 var
   SavedKey: Char;
@@ -187,7 +184,7 @@ begin
           Key:=#0;
 
       #32..#255: //standard keys
-        if CanAcceptKey and not IsReadOnly then
+        if not IsReadOnly and CanAcceptKey then
           FDatalink.Edit
         else
           Key:=#0;
@@ -200,7 +197,7 @@ begin
         if not IsReadOnly then
           FDatalink.Edit;
       #32..#255: //standard keys
-        if CanAcceptKey and not IsReadOnly then
+        if not IsReadOnly and CanAcceptKey then
           FDatalink.Edit;
     end;//case
   end;
