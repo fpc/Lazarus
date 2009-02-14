@@ -1025,6 +1025,7 @@ mrLast=mrYesToAll=10</descr>
         </short>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#LCL.Graphics.TCanvas.Destroy">TCanvas.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2519,11 +2520,15 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TSizeConstraints.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
-        <short/>
+      <element name="TSizeConstraints.AssignTo">
+        <short>
+          <var>AssignTo</var> - copies constraints to destination if it is of the same type and has different values, else calls inherited <var>AssignTo</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TSizeConstraints.AssignTo.Dest">
@@ -2989,22 +2994,29 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlBorderSpacing.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TControlBorderSpacing.Assign">
+        <short>
+          <var>Assign</var> the contents of <var>Source</var> to the current control. If it is of the same type, copies selected spacing properties, otherwise calls inherited <var>Assign</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlBorderSpacing.Assign.Source">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlBorderSpacing.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
-        <short/>
+      <element name="TControlBorderSpacing.AssignTo">
+        <short>
+          <var>AssignTo</var> - calls the <var>Assign</var> procedure for the Destination control</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlBorderSpacing.AssignTo.Dest">
@@ -3253,11 +3265,15 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TAnchorSide.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TAnchorSide.Assign">
+        <short>
+          <var>Assign</var> - copies anchoring information from <var>Source</var> if it is of the same type as the current control, otherwise calls inherited <var>Assign</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TAnchorSide.Assign.Source">
@@ -3302,7 +3318,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TControlActionLink.FClient">
-        <short>Identifies the client control that is to be linked to the action</short>
+        <short>Local variable that identifies the client control that is to be linked to the action</short>
         <descr/>
         <seealso/>
       </element>
@@ -3406,7 +3422,9 @@ mrLast=mrYesToAll=10</descr>
           <var>SetCaption</var> - specifies the caption for the control</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ActnList.TActionLink.SetCaption">TActionLink.SetCaption</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlActionLink.SetCaption.Value">
@@ -5441,7 +5459,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetFloatingDockSiteClass">
-        <short/>
+        <short>Returns the class of the floating dock site</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5471,7 +5489,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DockTrackNoTarget">
-        <short/>
+        <short>Track the docking process when no target has been specified</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5660,37 +5678,27 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
         <short>
-          <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same 
-          <var>Action</var> as that associated with the 
-          <link id="#lcl.Controls.TControl.OnClick"/> event</short>
+          <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same           <var>Action</var> as that associated with the           <link id="#lcl.Controls.TControl.OnClick">OnClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>
-          <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnDblClick"/>  event</short>
+          <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>
-          <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnTripleClick"/> event</short>
+          <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>
-          <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnQuadClick"/>  event</short>
+          <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnQuadClick">OnQuadClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
         <short>
-          <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnMouseDown"/>  event</short>
+          <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnMouseDown">OnMouseDown</link>  event</short>
         <descr>
           <p>
             <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same 
@@ -5723,9 +5731,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseMove">
         <short>
-          <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnMouseMove"/>  event</short>
+          <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnMouseMove">OnMouseMove</link>  event</short>
         <descr>
           <p>
             <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same 
@@ -5753,9 +5759,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseUp">
         <short>
-          <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
-          <var>Action</var>  as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnMouseUp"/>  event</short>
+          <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same           <var>Action</var>  as that associated with the 	  <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link>  event</short>
         <descr>
           <p>
             <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
@@ -5788,9 +5792,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseEnter">
         <short>
-          <var>MouseEnter</var> - a procedure that allows the programmer to simulate a mouse entering the control, and initiates the same 
-          <var>Action</var> as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnMouseEnter"/> event</short>
+          <var>MouseEnter</var> - a procedure that allows the programmer to simulate a mouse entering the control, and initiates the same           <var>Action</var> as that associated with the 	  <link id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5798,9 +5800,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseLeave">
         <short>
-          <var>MouseLeave</var> - a procedure that allows the programmer to simulate a mouse leaving the control, and initiates the same 
-          <var>Action</var> as that associated with the 
-	  <link id="#lcl.Controls.TControl.OnMouseLeave"/> event</short>
+          <var>MouseLeave</var> - a procedure that allows the programmer to simulate a mouse leaving the control, and initiates the same           <var>Action</var> as that associated with the 	  <link id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5858,25 +5858,55 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TControl.Loaded">
+        <short>
+          <var>Loaded</var> - called when the component has finished loading. Calls inherited <var>Loaded</var> then copies various properties from client and parent</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties">
-        <short/>
+      <element name="TControl.DefineProperties">
+        <short>
+          <var>DefineProperties</var> - declare any properties not specified elsewhere</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
+          <link id="#rtl.Classes.TPersistent.DefineProperties">TPersistent.DefineProperties</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DefineProperties.Filer">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.AssignTo" link="#rtl.Classes.TPersistent.AssignTo"/>
+      <element name="TControl.AssignTo">
+        <short>
+          <var>AssignTo</var> - if the Destination is a CustomAction, copies some specified properties to the Destination, otherwise calls inherited <var>AssignTo</var>
+        </short>
+        <descr>
+          <p>
+            <var>AssignTo</var> - if the Destination is a CustomAction, copies some specified properties to the Destination, otherwise calls inherited <var>AssignTo</var>
+          </p>
+          <p>The copied properties are:</p>
+          <ul>
+            <li>Enabled</li>
+            <li>Hint</li>
+            <li>Caption</li>
+            <li>Visible</li>
+            <li>OnExecute (copied to OnClick)</li>
+            <li>HelpContext</li>
+            <li>HelpKeyword</li>
+            <li>HelpType</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+        </seealso>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AssignTo.Dest">
         <short/>
@@ -5899,7 +5929,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.InvalidateControl">
-        <short/>
+        <short>
+          <var>InvalidateControl</var> - method to render the Control non-valid; visibility and opacity are specified and instructions can be given to ignore Window Controls</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6082,11 +6113,19 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
-        <descr/>
+      <element name="TControl.Notification">
+        <short>
+          <var>Notification</var> - calls inherited <var>Notification</var>, then takes action depending on Operation</short>
+        <descr>
+          <p>
+            <var>Notification</var> - calls inherited <var>Notification</var>, then takes action depending on Operation</p>
+          <p>If Operation is removal, then nullifies any popupmenus or actions.</p>
+          <p>Disconnects all anchors.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.Notification.AComponent">
@@ -6152,7 +6191,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnShowHint">
         <short>
-          <var>DoOnShowHint</var> - perform the codde for the <var>OnShowHint</var> event handler</short>
+          <var>DoOnShowHint</var> - perform the code for the <var>OnShowHint</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6762,6 +6801,7 @@ mrLast=mrYesToAll=10</descr>
         </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TControl </var>and derived classes: calls inherited <var>Create</var> and sets a number of defaults</short>
@@ -6780,6 +6820,7 @@ mrLast=mrYesToAll=10</descr>
         </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - Destructor for <var>TControl</var>. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc</short>
@@ -6787,8 +6828,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short>
-          <var>EditingDone</var>
- - what to do when you have finished editing</short>
+          <var>EditingDone</var> - what to do when you have finished editing; calls the <var>OnEditingDone</var> event handler if assigned</short>
         <descr>
           <p>
             <var>TControl.EditingDone</var>
@@ -6819,8 +6859,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
         <short>
-          <var>BeginDrag </var>
-- starts the dragging of a control</short>
+          <var>BeginDrag</var> - starts the dragging of a control</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   Method: TControl.BeginDrag
@@ -6845,7 +6884,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
-        <short/>
+	      <short>
+          <var>BeginDrag</var> - starts the dragging of a control. In this version BringToFront applies</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6867,7 +6907,18 @@ mrLast=mrYesToAll=10</descr>
         <short>Function returns True if colour has been stored</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TControl.HasParent" link="#rtl.Classes.TComponent.HasParent"/>
+      <element name="TControl.HasParent">
+        <short>
+          <var>HasParent</var> - returns True if there is a parent component responsible for streaming</short>
+        <descr>
+          <p>
+            <var>HasParent</var> - returns True if there is a parent component responsible for streaming</p>
+          <p>This function will be called during streaming to decide if a component has to be streamed by its owner or parent</p>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.HasParent">TComponent.HasParent</link>
+        </seealso>
+      </element>
       <!-- function result Visibility: default -->
       <element name="TControl.HasParent.Result">
         <short>Function returns True if there is a parent</short>
@@ -7267,14 +7318,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Align">
-        <short>Used to align the control in one of four directions.</short>
+        <short>Used to align the control to the top, bottom, left or right of its client.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAlign"/>
+          <link id="#lcl.Controls.TAlign">TAlign</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7600,10 +7651,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TControl.WindowProc">
         <short>Reads or writes a message associated with this window</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads message from flag area, or stores a message
+</descr>
         <seealso>
-          <link id="#lcl.Controls.TWndMethod"/>
-          <link id="#lcl.LMessages.TLMessage"/>
+          <link id="#lcl.Controls.TWndMethod">TWndMethod</link>
+          <link id="#lcl.LMessages.TLMessage">TLMessage</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8277,7 +8330,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <p>Defines procedures and functions related to windowed controls, some of which override virtual methods defined in ancestor classes.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl"/>
+          <link id="#lcl.Controls.TControl">TControl</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -9054,11 +9107,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
-        <short/>
+      <element name="TWinControl.GetChildren">
+        <short>
+          <var>GetChildren</var> - makes a list of all the child components for this control</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.GetChildren.Proc">
@@ -10210,11 +10266,15 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TWinControl.Loaded">
+        <short>
+          <var>Loaded</var> makes a number of checks, using client size if specified, and copying appropriate flags, fonts, text etc, makes list of child controls to notify them of any changes, then calls inherited <var>Loaded</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Loaded">TControl.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.MainWndProc">
@@ -10229,11 +10289,13 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ParentFormHandleInitialized" link="#LCL.Controls.TControl.ParentFormHandleInitialized">
-        <short/>
+      <element name="TWinControl.ParentFormHandleInitialized">
+        <short>Called after all childs handles of the ParentForm are created. Tells all wincontrols about the final end of the handle creation phase</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.ParentFormHandleInitialized">TControl.ParentFormHandleInitialized</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ChildHandlesCreated">
@@ -10370,11 +10432,20 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.WndProc" link="#LCL.Controls.TControl.WndProc">
-        <short/>
-        <descr/>
+      <element name="TWinControl.WndProc">
+        <short>
+          <var>WndProc</var> - makes specific reactions according to the message passed, then calls inherited <var>WndProc</var>
+        </short>
+        <descr>
+          <p>LM_SETFOCUS: gets parent form and show this control as focused</p>
+          <p>LM_KILLFOCUS: removes focus fromthis control</p>
+          <p>LM_NCHITTEST: check transparency etc</p>
+          <p>Mouse and Button messages: process any docking instructions</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.WndProc.Message">
@@ -10656,7 +10727,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.EndUpdateBounds">
-        <short/>
+        <short>
+          <var>EndUpdateBounds</var> - finishes updating the bounds setting</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10693,7 +10765,10 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.ControlAtPos.Pos">
-        <short/>
+	      <short>
+		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+		      <var>Pos</var>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.ControlAtPos.AllowDisabled">
@@ -10701,7 +10776,10 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
-        <short/>
+	      <short>
+		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+		      <var>Pos</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10724,7 +10802,10 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
-        <short/>
+	      <short>
+		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+		      <var>Pos</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10853,7 +10934,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- destructor Visibility: public -->
       <element name="TWinControl.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TWinControl</var> and derived classes</short>
+          <var>Destroy</var> - destructor for <var>TWinControl</var> and derived classes. Removes handles and docked controls, frees resources, then calls inherited <var>Destroy</var>
+        </short>
         <descr>
           <p>
             <var>Destroy</var> - destructor for <var>TWinControl</var> and derived classes</p>
@@ -10861,6 +10943,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
           </p>
           <p>Overrides ancestor destructors, and may in turn be overridden</p>
         </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
@@ -11017,11 +11102,15 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.DefaultHandler" link="#rtl.System.TObject.DefaultHandler">
-        <short/>
+      <element name="TWinControl.DefaultHandler">
+        <short>
+          <var>DefaultHandler</var> - performs <var>CallDefaultWndHandler</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.DefaultHandler">TObject.DefaultHandler</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DefaultHandler.AMessage">
@@ -11351,7 +11440,7 @@ getting the parent control's Canvas dimensions.</p>
           <p>To get the dimensions of the <var>TGraphicControl,</var> you must query the <var>ClientRect</var>.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.TCanvas"/>
+          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11364,11 +11453,12 @@ getting the parent control's Canvas dimensions.</p>
       <element name="TCustomControl">
         <short>
           <var>TCustomControl </var>- a base class for many window controls</short>
-        <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border
-</descr>
+        <descr>
+          <p>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</p>
+        </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl"/>
-          <link id="#lcl.Controls.TControl"/>
+          <link id="#lcl.Controls.TWinControl">TWinControl</link>
+          <link id="#lcl.Controls.TControl">TControl</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -11396,11 +11486,14 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomControl.PaintWindow">
+      <element name="TCustomControl.PaintWindow" link="#LCL.Controls.TWinControl.PaintWindow">
         <short>Paint handler plug-in</short>
-        <descr>This is a plug-in in TWinControl to get the DC, <br/>assign it to our canvas and call the paint method for <br/>descendants to do the actual painting</descr>
+        <descr>This is a plug-in in TWinControl to get the DC, <br/>
+assign it to our canvas and call the paint method for <br/>
+descendants to do the actual painting
+</descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl.PaintWindow"/>
+          <link id="#lcl.Controls.TWinControl.PaintWindow">TWinControl.PaintWindow</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11413,6 +11506,7 @@ getting the parent control's Canvas dimensions.</p>
           <var>Create</var> - constructor for <var>TCustomControl</var>: performs inherited <var>Create</var>, then creates local <var>Canvas</var> and sets <var>DoubleBuffered</var> to be False</short>
         <seealso>
           <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11432,6 +11526,7 @@ getting the parent control's Canvas dimensions.</p>
         </descr>
         <seealso>
           <link id="#LCL.Controls.TControl.Destroy"/>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -11446,9 +11541,12 @@ getting the parent control's Canvas dimensions.</p>
       <!-- property Visibility: public -->
       <element name="TCustomControl.Canvas">
         <short>The area of a control on which its components are drawn or painted</short>
-        <descr>The Canvas is the area of screen on which the various components are drawn. <br/>This inherits its properties from TCanvas, <br/>and that description should be read to understand their definitions more fully.</descr>
+        <descr>The Canvas is the area of screen on which the various components are drawn. <br/>
+This inherits its properties from TCanvas, <br/>
+and that description should be read to understand their definitions more fully.
+</descr>
         <seealso>
-          <link id="#lcl.Graphics.TCanvas"/>
+          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -12298,7 +12396,7 @@ getting the parent control's Canvas dimensions.</p>
           <p>Overrides ancestor destructors, and may be overridden</p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -12321,8 +12419,10 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TMouse">
-        <short>Some properties of the current Mouse</short>
-        <descr>Contains information about current mouse position, whether it has captured an object, whether it is dragging the object, and how far the mouse is allowed to move before the captured object is made to move.</descr>
+        <short>
+          <var>TMouse</var> - some properties of the current Mouse</short>
+        <descr>Contains information about current mouse position, whether it has captured an object, whether it is dragging the object, and how far the mouse is allowed to move before the captured object is made to move.
+</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TMouse.FCapture">
@@ -13022,7 +13122,9 @@ getting the parent control's Canvas dimensions.</p>
           <var>Initialize</var> the list of images for dragging</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ImgList.TCustomImageList.Initialize">TCustomImageList.Initialize</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.BeginDrag">
@@ -14848,11 +14950,14 @@ getting the parent control's Canvas dimensions.</p>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.FormEndUpdated" link="#LCL.Controls.TControl.FormEndUpdated">
-        <short/>
+      <element name="TWinControl.FormEndUpdated">
+        <short>
+          <var>FormEndUpdated</var> - calls inherited <var>FormEndUpdated</var> then informs each child control</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.FormEndUpdated">TControl.FormEndUpdated</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SetChildZPosition">
@@ -15437,6 +15542,43 @@ getting the parent control's Canvas dimensions.</p>
           <var>DoMouseWheelUp</var> - performs the action for an upward movement of the mouse wheel; returns True if successful</short>
       </element>
       <element name="TDockTree.MouseMessage" link="#LCL.Controls.TDockManager.MouseMessage"/>
+      <element name="TControl.CreateControlBorderSpacing">
+        <short>
+          <var>CreateControlBorderSpacing</var> - calls <var>TControlBorderSpacing.Create</var> to create the border spacing for this control</short>
+        <seealso>
+          <link id="TControlBorderSpacing.Create">TControlBorderSpacing.Create</link>
+        </seealso>
+      </element>
+      <element name="TControl.WMCancelMode">
+        <short>Protected message to system for CancelMode</short>
+      </element>
+      <element name="TControl.CMWantSpecialKey">
+        <short>Control Message when a special key is needed</short>
+      </element>
+      <element name="TWinControl.CustomAlignInsertBefore">
+        <short>
+          <var>CustomAlignInsertBefore</var> - returns True if the <var>OnAlignInsertBefore</var> event handler has been assigned and executes successfully</short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition">
+        <short>
+          <var>CustomAlignPosition</var> calls the <var>OnAlignPosition</var> event handler to make a highly specified alignment</short>
+      </element>
+      <element name="TWinControl.CMBorderChanged">
+        <short>
+          <var>CMBorderChanged</var> - ControlMessage for a change in the <var>Border</var> property</short>
+      </element>
+      <element name="TWinControl.OnAlignInsertBefore">
+        <short>
+          <var>OnAlignInsertBefore</var> - event handler for an aligned insertion before action</short>
+      </element>
+      <element name="TWinControl.OnAlignPosition">
+        <short>
+          <var>OnAlignPosition</var> - event handler for supplying align position</short>
+      </element>
+      <element name="TDockZone.AddSibling">
+        <short>
+          <var>AddSibling</var> - insers a new sibling control into the dock zone</short>
+      </element>
     </module>
     <!-- Controls -->
   </package>
