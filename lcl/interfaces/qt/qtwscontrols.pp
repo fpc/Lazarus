@@ -210,7 +210,8 @@ begin
       end;
     end;
 
-    TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
+    if TForm(AWinControl).FormStyle <> fsMDIChild then
+      TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
