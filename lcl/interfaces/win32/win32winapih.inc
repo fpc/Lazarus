@@ -190,6 +190,7 @@ function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; override;
 function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
 function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; override;
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
 function ShowCaret(HWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;

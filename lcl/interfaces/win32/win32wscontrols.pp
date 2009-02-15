@@ -498,7 +498,7 @@ begin
     Rgn := BitmapToRegion(AShape)
   else
     Rgn := 0;
-  SetWindowRgn(AWinControl.Handle, Rgn, True);
+  Windows.SetWindowRgn(AWinControl.Handle, Rgn, True);
   if Rgn <> 0 then
     DeleteObject(Rgn);
 end;

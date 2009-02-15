@@ -3108,6 +3108,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  SetWindowRgn
+  Params:  HWnd - handle of window with caret
+  Returns: 0 if failed, another number otherwise
+
+  Defines the part of the window which is visible and received input
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint;
+begin
+  Result := Windows.SetWindowRgn(hWnd, hRgn, bRedraw);
+end;
+
+{------------------------------------------------------------------------------
   Method:  ShowCaret
   Params:  HWnd - handle of window with caret
   Returns: if the function succeeds
