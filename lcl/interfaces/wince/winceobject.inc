@@ -113,7 +113,7 @@ procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   Handle: HWND;
   DC: HDC;
-  Flags : integer;
+//  Flags : integer;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWidgetSet.AppInit');
@@ -354,8 +354,8 @@ end;
 procedure TWinCEWidgetSet.CheckPipeEvents;
 var
   lHandler: PPipeEventInfo;
-  lBytesAvail: dword;
-  SomethingChanged: Boolean;
+//  lBytesAvail: dword;
+//  SomethingChanged: Boolean;
   ChangedCount:integer;
 begin
   lHandler := FWaitPipeHandlers;
@@ -571,7 +571,7 @@ end;
 procedure TWinCEWidgetSet.ShowHide(Sender: TObject);
 var
   Handle: HWND;
-  ParentPanel: HWND;
+//  ParentPanel: HWND;
   Flags: dword;
 begin
   //if (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;

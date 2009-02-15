@@ -153,7 +153,6 @@ var
     );
   var
     Enabled, Selected: Boolean;
-    lgBrush: LOGBRUSH;
     Brush: HBRUSH;
     Rect: Windows.Rect;
     Details: TThemedElementDetails;
@@ -1206,16 +1205,16 @@ function TWinCEWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHead
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
 var
-  hbit,htargetbit : HBITMAP;
+  hbit{,htargetbit} : HBITMAP;
   lpDestBits : PChar;
   dwLen : longint;
   lpH:TBitmapInfoHeader;
   orig_bitcount,nPadWidth,pad:integer;
-  i,dwError:longint;
+  i, dwError: longint;
   d:PByte;
-  s,s0:PWord;
-  pixel:word;
-  dc2:HDC;
+  s{,s0}:PWord;
+//  pixel:word;
+//  dc2:HDC;
 begin
   nPadWidth := 4;
   lpH := InfoHeader;
@@ -1632,10 +1631,10 @@ var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
-  WindowInfo: PWindowInfo;
+//  WindowInfo: PWindowInfo;
 begin
   Result:=false;
-  WindowInfo := GetWindowInfo(Handle);
+//  WindowInfo := GetWindowInfo(Handle);
 //  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
 //    Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
   if not Windows.GetWindowRect(Handle,@R) then exit;
@@ -1930,8 +1929,8 @@ end;
   specifying the first point a second time at the end.
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean;
-var
-  PFMode : Longint;
+//var
+//  PFMode : Longint;
 begin
   Assert(False, Format('Trace:TWinCEWidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
 //  if Winding then
