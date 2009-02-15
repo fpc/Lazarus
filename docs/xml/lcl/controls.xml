@@ -962,8 +962,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlCanvas">
         <short>The base class for the canvas property of several graphic controls, such as TGraphicControl and TCustomControl</short>
         <seealso>
-          <link id="#lcl.Controls.TGraphicControl"/>
-          <link id="#lcl.Controls.TCustomControl"/>
+          <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link>
+          <link id="#lcl.Controls.TCustomControl">TCustomControl</link>
           <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
@@ -997,11 +997,15 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TControlCanvas.CreateFont" link="#fcl.FPCanvas.TFPCustomCanvas.CreateFont">
-        <short/>
+      <element name="TControlCanvas.CreateFont">
+        <short>
+          <var>CreateFont</var> - creates font by calling inherited <var>CreateFont</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.FPCanvas.TFPCustomCanvas.CreateFont">TFPCustomCanvas.CreateFont</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlCanvas.CreateHandle" link="#LCL.Graphics.TCanvas.CreateHandle">
@@ -1902,11 +1906,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragDockObject">
-        <short>
-          <var>TDragDockObject</var> - a drag object that is destined for docking</short>
         <descr/>
         <errors/>
         <seealso/>
+        <short>
+          <var>TDragDockObject</var> - a drag object that is destined for docking</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDockOrientation">
@@ -3230,11 +3234,14 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TAnchorSide.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TAnchorSide.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TAnchorSide</var>: calls inherited <var>Create</var>, copies arguments to local variables and sets default anchor to Top</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TAnchorSide.Create.TheOwner">
@@ -3613,8 +3620,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>
-          <var>TControl</var>
- - the main ancestor class for visual controls.</short>
+          <var>TControl</var> - the main ancestor class for visual controls.</short>
         <descr>
           <p>
             <var>TControl</var>
@@ -3634,8 +3640,8 @@ mrLast=mrYesToAll=10</descr>
           <p>Properties defined here can be overridden by descendant classes.</p>
         </descr>
         <seealso>
-          <link id="#lcl.lclClasses.TLCLComponent"/>
-          <link id="#rtl.Classes.TComponent"/>
+          <link id="#lcl.lclClasses.TLCLComponent">TLCLComponent</link>
+          <link id="#rtl.Classes.TComponent">TComponent</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -6884,7 +6890,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
-	      <short>
+        <short>
           <var>BeginDrag</var> - starts the dragging of a control. In this version BringToFront applies</short>
         <descr/>
         <errors/>
@@ -8113,22 +8119,29 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlChildSizing.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TControlChildSizing.Assign">
+        <short>
+          <var>Assign</var> - if source is the same type as current control, copies a large number of explicit properties from source, else calls inherited <var>Assign</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlChildSizing.Assign.Source">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlChildSizing.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
-        <short/>
+      <element name="TControlChildSizing.AssignTo">
+        <short>
+          <var>AssignTo</var> - calls the <var>Assign</var> method for the destination control</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControlChildSizing.AssignTo.Dest">
@@ -10765,8 +10778,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.ControlAtPos.Pos">
-	      <short>
-		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+        <short>
+          <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      <var>Pos</var>
         </short>
       </element>
@@ -10776,8 +10789,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
-	      <short>
-		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+        <short>
+          <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      <var>Pos</var>
         </short>
         <descr/>
@@ -10802,8 +10815,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
-	      <short>
-		      <var>ControlAtPos</var> - the identity of the control located at the specified point 
+        <short>
+          <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      <var>Pos</var>
         </short>
         <descr/>
@@ -11525,7 +11538,7 @@ descendants to do the actual painting
           <p>Overrides ancestor destructors, may be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Destroy"/>
+          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
           <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
@@ -12107,7 +12120,7 @@ and that description should be read to understand their definitions more fully.
 </pre>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TDockManager"/>
+          <link id="#lcl.Controls.TDockManager">TDockManager</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12487,11 +12500,24 @@ and that description should be read to understand their definitions more fully.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TMouse.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TMouse.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TMouse</var>: calls inherited <var>Create</var>
+        </short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
       <!-- destructor Visibility: public -->
-      <element name="TMouse.Destroy" link="#rtl.System.TObject.Destroy">
+      <element name="TMouse.Destroy">
         <descr>Can be a locally defined method to override the method specified by the parent object
 </descr>
+        <short>
+          <var>Destroy</var> - destructor for <var>TMouse</var>: calls inherited <var>Destroy</var>
+        </short>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.Capture">
@@ -13317,11 +13343,14 @@ and that description should be read to understand their definitions more fully.
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDragObject.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TDragObject.Create">
+        <short>
+          <var>Create</var> - constructor fro <var>TDragObject</var>: copies <var>AControl</var> to local variable</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragObject.Create.AControl">
@@ -13504,11 +13533,14 @@ and that description should be read to understand their definitions more fully.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDragManager.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+      <element name="TDragManager.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TDragManager</var>: calls inherited <var>Create</var> and sets default drag threshold; sets <var>DragImmediate</var> True</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragManager.Create.TheOwner">
@@ -13580,7 +13612,8 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragManager.DragMove">
-        <short/>
+        <short>
+          <var>DragMove</var> - method for dragging to specified position (virtual method - needs to be supplied by user)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13769,11 +13802,15 @@ and that description should be read to understand their definitions more fully.
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TAnchorSide.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TAnchorSide.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TAnchorSide</var>: removes all anchoring links then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlFlag.cfAutoSizeNeeded">
@@ -15578,6 +15615,34 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZone.AddSibling">
         <short>
           <var>AddSibling</var> - insers a new sibling control into the dock zone</short>
+      </element>
+      <element name="TDockTree.DumpLayout">
+        <short>
+          <var>DumpLayout</var> - stores layout in a file</short>
+      </element>
+      <element name="TDockZone.SetLimitBegin">
+        <short>
+          <var>SetLimitBegin</var> - specifies the limit for the beginning of the zone</short>
+      </element>
+      <element name="TDockZone.SetLimitSize">
+        <short>
+          <var>SetLimitSize</var> - specifies the limit for the size of the zone</short>
+      </element>
+      <element name="TDockZone.SetHeight">
+        <short>
+          <var>SetHeight</var> - specifies the height of the zone</short>
+      </element>
+      <element name="TDockZone.SetLeft">
+        <short>
+          <var>SetLeft</var> - specifies the left side of the zone</short>
+      </element>
+      <element name="TDockZone.SetTop">
+        <short>
+          <var>SetTop</var> - specifies the top of the zone</short>
+      </element>
+      <element name="TDockZone.SetWidth">
+        <short>
+          <var>SetWidth</var> - specifies the width of the zone</short>
       </element>
     </module>
     <!-- Controls -->

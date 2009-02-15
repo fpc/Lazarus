@@ -49,7 +49,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroying"/>
+          <link id="#rtl.Classes.TComponent.Destroying">TComponent.Destroying</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -59,7 +59,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TObject.NewInstance"/>
+          <link id="#rtl.Classes.TObject.NewInstance">TObject.NewInstance</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -102,6 +102,9 @@
         <short>
           <var>Destroy</var> the reference, then perform inherited <var>Destroy</var>
         </short>
+        <seealso>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+        </seealso>
       </element>
       <element name="TLCLReferenceComponent.Handle">
         <short>
