@@ -366,6 +366,7 @@ type
     property Align;
     property Anchors;
     property Color;
+    property DoubleBuffered;
     property DragCursor;
     property DragMode;
     property Enabled;
