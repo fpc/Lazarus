@@ -301,6 +301,8 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
+  //Params.WindowInfo^.needParentPaint := True;
+  //Params.WindowInfo^.isTabPage := True;
 end;
 
 class procedure TWinCEWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
@@ -412,7 +414,7 @@ begin
 
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
-  Params.WindowInfo^.needParentPaint := false;
+  Params.WindowInfo^.needParentPaint := False;
 
   // The Windows CE tab controls are backwards compatible with older versions
   // so we need to specify if we desire the more modern flat style manually

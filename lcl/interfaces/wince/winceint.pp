@@ -225,7 +225,7 @@ type
 
 
 const
-  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
+  BOOL_RESULT: Array[Boolean] of String = ('False', 'True');
   ClsName: array[0..6] of WideChar = ('W','i','n','d','o','w',#0);
   EditClsName: array[0..4] of WideChar = ('E','D','I','T',#0);
   ButtonClsName: array[0..6] of WideChar = ('B','U','T','T','O','N',#0);

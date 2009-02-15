@@ -41,6 +41,14 @@ begin
   Assert(False, 'Trace:PropEnumProc - Exit');
 end;
 
+function WndClassName(Wnd: HWND): WideString; inline;
+var
+  winClassName: array[0..19] of WideChar;
+begin
+  GetClassName(Wnd, @winClassName, 20);
+  Result := winClassName;
+end;
+
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
  Params: Window - The window that receives a message
@@ -125,11 +133,16 @@ begin
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
+type
+  TDoubleBuffer = record
+    DC: HDC;
+    Bitmap: HBITMAP;
+    BitmapWidth: integer;
+    BitmapHeight: integer;
+  end;
+
 var
-  DoubleBufferDC: HDC = 0;
-  DoubleBufferBitmap: HBITMAP = 0;
-  DoubleBufferBitmapWidth: integer = 0;
-  DoubleBufferBitmapHeight: integer = 0;
+  CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
   DisabledForms: TList = nil;
 
 function CheckMouseMovement: boolean;
@@ -190,7 +203,6 @@ Var
   OverlayWindow: HWND;
   TargetWindow: HWND;
   eraseBkgndCommand: TEraseBkgndCommand;
-  winClassName: array[0..19] of pWideChar;
   WindowInfo: PWindowInfo;
   Flags: dword;
   ChildWindowInfo: PWindowInfo;
@@ -274,8 +286,13 @@ Var
     end;
     {$endif}
   end;
-  
-  procedure SendPaintMessage;
+
+  function GetIsNativeControl(AWindow: HWND): Boolean;
+  begin
+    Result := WndClassName(AWindow) <> ClsName;
+  end;
+
+  procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
     DoubleBufferBitmapOld: HBITMAP;
@@ -295,6 +312,8 @@ Var
     isNativeControl: boolean;
     needParentPaint: boolean;
     lNotebookFound: boolean;
+    BufferWasSaved: Boolean;
+    BackupBuffer: TDoubleBuffer;
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -305,15 +324,14 @@ Var
     end;
 
     // create a paint message
-    GetClassName(Window, @winClassName, 20);
-    isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
+    isNativeControl := GetIsNativeControl(Window);
     ParentPaintWindow := 0;
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
     // if needParentPaint and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
     if WindowInfo^.isTabPage or (needParentPaint
-      and (not isNativeControl or (WParam <> 0))) then
+      and (not isNativeControl or (ControlDC <> 0))) then
     begin
       ParentPaintWindow := Window;
       lNotebookFound := false;
@@ -342,20 +360,30 @@ Var
 {$endif}
     if useDoubleBuffer then
     begin
-      DoubleBufferDC := Windows.CreateCompatibleDC(0);
+      if CurDoubleBuffer.DC <> 0 then
+      begin
+        // we've been called from another paint handler. To prevent killing of
+        // not own DC and HBITMAP lets save then and restore on exit
+        BackupBuffer := CurDoubleBuffer;
+        FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+        BufferWasSaved := True;
+      end
+      else
+        BufferWasSaved := False;
+      CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
       GetWindowSize(Window, WindowWidth, WindowHeight);
-      if (DoubleBufferBitmapWidth < WindowWidth) or (DoubleBufferBitmapHeight < WindowHeight) then
+      if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
       begin
         DC := Windows.GetDC(0);
-        if DoubleBufferBitmap <> 0 then
-          Windows.DeleteObject(DoubleBufferBitmap);
-        DoubleBufferBitmapWidth := WindowWidth;
-        DoubleBufferBitmapHeight := WindowHeight;
-        DoubleBufferBitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+        if CurDoubleBuffer.Bitmap <> 0 then
+          Windows.DeleteObject(CurDoubleBuffer.Bitmap);
+        CurDoubleBuffer.BitmapWidth := WindowWidth;
+        CurDoubleBuffer.BitmapHeight := WindowHeight;
+        CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
         Windows.ReleaseDC(0, DC);
       end;
-      DoubleBufferBitmapOld := Windows.SelectObject(DoubleBufferDC, DoubleBufferBitmap);
-      PaintMsg.DC := DoubleBufferDC;
+      DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
+      PaintMsg.DC := CurDoubleBuffer.DC;
     end;
 
 {$ifdef MSG_DEBUG}
@@ -367,7 +395,7 @@ Var
 
     WinProcess := false;
     try
-      if WParam = 0 then
+      if ControlDC = 0 then
       begin
         // ignore first erase background on themed control, paint will do everything
         DC := Windows.BeginPaint(Window, @PS);
@@ -405,7 +433,7 @@ Var
           Windows.DeleteObject(PaintRegion);
         end;
       end else begin
-        DC := WParam;
+        DC := ControlDC;
         PaintRegion := 0;
       end;
       if ParentPaintWindow <> 0 then
@@ -420,10 +448,10 @@ Var
         PaintMsg.DC := DC;
       if not needParentPaint then
       begin
-        // send through message to allow message override
-        //lWinControl.EraseBackground(PaintMsg.DC);
+        // send through message to allow message override, moreover use SendMessage
+        // to allow subclass window proc override this message too
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        lWinControl.Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+        Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
       end;
       if ParentPaintWindow <> 0 then
@@ -435,10 +463,10 @@ Var
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessageW(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
+        Windows.SendMessageW(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
-      if (WParam = 0) or not needParentPaint then
+      if (ControlDC = 0) or not needParentPaint then
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
@@ -452,15 +480,21 @@ Var
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if useDoubleBuffer then
-        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, DoubleBufferDC, 0, 0, SRCCOPY);
-      if WParam = 0 then
+        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, CurDoubleBuffer.DC, 0, 0, SRCCOPY);
+      if ControlDC = 0 then
         Windows.EndPaint(Window, @PS);
     finally
       if useDoubleBuffer then
       begin
-        SelectObject(DoubleBufferDC, DoubleBufferBitmapOld);
-        DeleteDC(DoubleBufferDC);
-        DoubleBufferDC := 0;
+        SelectObject(CurDoubleBuffer.DC, DoubleBufferBitmapOld);
+        DeleteDC(CurDoubleBuffer.DC);
+        CurDoubleBuffer.DC := 0;
+        if BufferWasSaved then
+        begin
+          if CurDoubleBuffer.Bitmap <> 0 then
+            DeleteObject(CurDoubleBuffer.Bitmap);
+          CurDoubleBuffer := BackupBuffer;
+        end;
 {$ifdef DEBUG_DOUBLEBUFFER}
         if CopyBitmapToClipboard then
         begin
@@ -473,6 +507,14 @@ Var
 {$endif}
       end;
     end;
+  end;
+
+  procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
+  begin
+    GetWin32ControlPos(Window, Parent, P.X, P.Y);
+    MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
+    SendPaintMessage(ControlDC);
+    MoveWindowOrgEx(ControlDC, P.X, P.Y);
   end;
 
   procedure CheckListBoxLButtonDown;
@@ -1183,10 +1225,7 @@ begin
           if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
           begin
             // need to draw transparently, draw background
-            GetWin32ControlPos(LParam, Window, P.X, P.Y);
-            MoveWindowOrgEx(WParam, -P.X, -P.Y);
-            SendPaintMessage;
-            MoveWindowOrgEx(WParam, P.X, P.Y);
+            SendParentPaintMessage(HWND(LParam), Window, HDC(WParam));
             LMessage.Result := GetStockObject(HOLLOW_BRUSH);
             SetBkMode(WParam, TRANSPARENT);
             WinProcess := false;
@@ -1203,7 +1242,7 @@ begin
         begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
-          LMessage.Result := LResult(ChildWinControl.Brush.Handle);
+          LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;
@@ -1318,15 +1357,16 @@ begin
       case eraseBkgndCommand of
         ecDefault: DebugLn(MessageStackDepth, ' *command: default');
         ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
+        ecDoubleBufferNoRemove: DebugLn(MessageStackDepth, ' *command: use double buffer');
       end;
       DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
 {$endif}
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
-        if DoubleBufferDC <> 0 then
-          WParam := DoubleBufferDC;
+        if CurDoubleBuffer.DC <> 0 then
+          WParam := Windows.WParam(CurDoubleBuffer.DC);
         if WindowInfo^.isTabPage then
-          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1)) 
+          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
             or dword(ecDiscardNoRemove);
       end
       else
@@ -1344,7 +1384,7 @@ begin
         LMessage.LParam := LParam;
       end else
       begin
-        SendPaintMessage;
+        SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
       end;
       WinProcess := False;
@@ -1685,8 +1725,13 @@ begin
     end;
     WM_PAINT:
     begin
-      SendPaintMessage;
+      SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
+    end;
+    WM_PRINTCLIENT:
+    begin
+      if ((LParam and PRF_CLIENT) = PRF_CLIENT) and (lWinControl <> nil) then
+        SendPaintMessage(HDC(WParam));
     end;
     WM_PASTE:
     begin
@@ -2162,8 +2207,7 @@ begin
         if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A'))
           and (GetKeyState(VK_CONTROL) < 0) and (GetKeyState(VK_MENU) >= 0) then
         begin
-          GetClassName(Window, @winClassName, 20);
-          if CompareMem(@winClassName, @EditClsName, High(EditClsName)+1) then
+          if WndClassName(Window) = EditClsName then
           begin
             // select all
             Windows.SendMessage(Window, EM_SETSEL, 0, -1);
