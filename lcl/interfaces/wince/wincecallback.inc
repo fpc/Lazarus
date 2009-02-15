@@ -350,7 +350,7 @@ Var
       PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered);
+    useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered);
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer and (DoubleBufferDC <> 0) then
     begin
