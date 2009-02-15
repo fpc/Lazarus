@@ -5,28 +5,31 @@ LazarusResources.Add('TProjectInspectorForm','FORMDATA',[
   +'eight'#3'5'#1#3'Top'#3#143#1#5'Width'#3#177#1#13'ActiveControl'#7#13'ItemsT'
   +'reeView'#11'BorderIcons'#11#12'biSystemMenu'#0#7'Caption'#6#20'ProjectInspe'
   +'ctorForm'#12'ClientHeight'#3'5'#1#11'ClientWidth'#3#177#1#6'OnShow'#7#24'Pr'
-  +'ojectInspectorFormShow'#10'LCLVersion'#6#6'0.9.27'#0#12'TSpeedButton'#10'Op'
-  +'enBitBtn'#4'Left'#2#0#6'Height'#2#25#3'Top'#2#0#5'Width'#2'P'#7'Caption'#6
-  +#10'OpenBitBtn'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#15'Ope'
-  +'nBitBtnClick'#0#0#12'TSpeedButton'#9'AddBitBtn'#19'AnchorSideLeft.Side'#7#9
-  +'asrBottom'#4'Left'#2'P'#6'Height'#2#25#3'Top'#2#0#5'Width'#2'I'#7'Caption'#6
-  +#9'AddBitBtn'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#14'AddBi'
-  +'tBtnClick'#0#0#12'TSpeedButton'#12'RemoveBitBtn'#19'AnchorSideLeft.Side'#7#9
-  +'asrBottom'#4'Left'#3#153#0#6'Height'#2#25#3'Top'#2#0#5'Width'#2']'#7'Captio'
-  +'n'#6#12'RemoveBitBtn'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7
-  +#17'RemoveBitBtnClick'#0#0#12'TSpeedButton'#13'OptionsBitBtn'#19'AnchorSideL'
-  +'eft.Side'#7#9'asrBottom'#4'Left'#3#246#0#6'Height'#2#25#3'Top'#2#0#5'Width'
-  +#3#187#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#13'Optio'
-  +'nsBitBtn'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#18'OptionsB'
-  +'itBtnClick'#0#0#9'TTreeView'#13'ItemsTreeView'#18'AnchorSideTop.Side'#7#9'a'
-  +'srBottom'#4'Left'#2#0#6'Height'#3#28#1#3'Top'#2#25#5'Width'#3#177#1#5'Align'
-  +#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17
-  +'BorderSpacing.Top'#2#2#17'DefaultItemHeight'#2#19#9'PopupMenu'#7#14'ItemsPo'
-  +'pupMenu'#8'ReadOnly'#9#16'RightClickSelect'#9#8'TabOrder'#2#0#10'OnDblClick'
-  +#7#21'ItemsTreeViewDblClick'#9'OnKeyDown'#7#20'ItemsTreeViewKeyDown'#18'OnSe'
-  +'lectionChanged'#7#29'ItemsTreeViewSelectionChanged'#7'Options'#11#17'tvoAut'
-  +'oItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoReadOnly'
-  +#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'
-  +#11'tvoToolTips'#0#0#0#10'TPopupMenu'#14'ItemsPopupMenu'#7'OnPopup'#7#19'Ite'
-  +'msPopupMenuPopup'#4'left'#2'('#3'top'#2';'#0#0#0
+  +'ojectInspectorFormShow'#10'LCLVersion'#6#6'0.9.27'#0#9'TTreeView'#13'ItemsT'
+  +'reeView'#21'AnchorSideTop.Control'#7#10'OpenBitBtn'#18'AnchorSideTop.Side'#7
+  +#9'asrBottom'#4'Left'#2#0#6'Height'#3#28#1#3'Top'#2#25#5'Width'#3#177#1#5'Al'
+  +'ign'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0
+  +#17'BorderSpacing.Top'#2#2#17'DefaultItemHeight'#2#15#9'PopupMenu'#7#14'Item'
+  +'sPopupMenu'#8'ReadOnly'#9#16'RightClickSelect'#9#8'TabOrder'#2#0#10'OnDblCl'
+  +'ick'#7#21'ItemsTreeViewDblClick'#9'OnKeyDown'#7#20'ItemsTreeViewKeyDown'#18
+  +'OnSelectionChanged'#7#29'ItemsTreeViewSelectionChanged'#7'Options'#11#17'tv'
+  +'oAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoReadO'
+  +'nly'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShow'
+  +'Root'#11'tvoToolTips'#0#0#0#7'TBitBtn'#10'OpenBitBtn'#4'Left'#2#0#6'Height'
+  +#2#23#3'Top'#2#0#5'Width'#2'P'#8'AutoSize'#9#7'Caption'#6#10'OpenBitBtn'#7'O'
+  +'nClick'#7#15'OpenBitBtnClick'#8'TabOrder'#2#1#0#0#7'TBitBtn'#9'AddBitBtn'#22
+  +'AnchorSideLeft.Control'#7#10'OpenBitBtn'#19'AnchorSideLeft.Side'#7#9'asrBot'
+  +'tom'#21'AnchorSideTop.Control'#7#10'OpenBitBtn'#4'Left'#2'P'#6'Height'#2#23
+  +#3'Top'#2#0#5'Width'#2'I'#8'AutoSize'#9#7'Caption'#6#9'AddBitBtn'#7'OnClick'
+  +#7#14'AddBitBtnClick'#8'TabOrder'#2#2#0#0#7'TBitBtn'#12'RemoveBitBtn'#22'Anc'
+  +'horSideLeft.Control'#7#9'AddBitBtn'#19'AnchorSideLeft.Side'#7#9'asrBottom'
+  +#21'AnchorSideTop.Control'#7#10'OpenBitBtn'#4'Left'#3#153#0#6'Height'#2#23#3
+  +'Top'#2#0#5'Width'#2']'#8'AutoSize'#9#7'Caption'#6#12'RemoveBitBtn'#7'OnClic'
+  +'k'#7#17'RemoveBitBtnClick'#8'TabOrder'#2#3#0#0#7'TBitBtn'#13'OptionsBitBtn'
+  +#22'AnchorSideLeft.Control'#7#12'RemoveBitBtn'#19'AnchorSideLeft.Side'#7#9'a'
+  +'srBottom'#21'AnchorSideTop.Control'#7#10'OpenBitBtn'#4'Left'#3#246#0#6'Heig'
+  +'ht'#2#23#3'Top'#2#0#5'Width'#2'['#8'AutoSize'#9#7'Caption'#6#13'OptionsBitB'
+  +'tn'#7'OnClick'#7#18'OptionsBitBtnClick'#8'TabOrder'#2#4#0#0#10'TPopupMenu'
+  +#14'ItemsPopupMenu'#7'OnPopup'#7#19'ItemsPopupMenuPopup'#4'left'#2'('#3'top'
+  +#2';'#0#0#0
 ]);

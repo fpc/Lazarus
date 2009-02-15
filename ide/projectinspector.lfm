@@ -10,51 +10,8 @@ object ProjectInspectorForm: TProjectInspectorForm
   ClientWidth = 433
   OnShow = ProjectInspectorFormShow
   LCLVersion = '0.9.27'
-  object OpenBitBtn: TSpeedButton
-    Left = 0
-    Height = 25
-    Top = 0
-    Width = 80
-    Caption = 'OpenBitBtn'
-    Color = clBtnFace
-    NumGlyphs = 0
-    OnClick = OpenBitBtnClick
-  end
-  object AddBitBtn: TSpeedButton
-    AnchorSideLeft.Side = asrBottom
-    Left = 80
-    Height = 25
-    Top = 0
-    Width = 73
-    Caption = 'AddBitBtn'
-    Color = clBtnFace
-    NumGlyphs = 0
-    OnClick = AddBitBtnClick
-  end
-  object RemoveBitBtn: TSpeedButton
-    AnchorSideLeft.Side = asrBottom
-    Left = 153
-    Height = 25
-    Top = 0
-    Width = 93
-    Caption = 'RemoveBitBtn'
-    Color = clBtnFace
-    NumGlyphs = 0
-    OnClick = RemoveBitBtnClick
-  end
-  object OptionsBitBtn: TSpeedButton
-    AnchorSideLeft.Side = asrBottom
-    Left = 246
-    Height = 25
-    Top = 0
-    Width = 187
-    Anchors = [akTop, akLeft, akRight]
-    Caption = 'OptionsBitBtn'
-    Color = clBtnFace
-    NumGlyphs = 0
-    OnClick = OptionsBitBtnClick
-  end
   object ItemsTreeView: TTreeView
+    AnchorSideTop.Control = OpenBitBtn
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 284
@@ -63,7 +20,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 2
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -72,6 +29,55 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object OpenBitBtn: TBitBtn
+    Left = 0
+    Height = 23
+    Top = 0
+    Width = 80
+    AutoSize = True
+    Caption = 'OpenBitBtn'
+    OnClick = OpenBitBtnClick
+    TabOrder = 1
+  end
+  object AddBitBtn: TBitBtn
+    AnchorSideLeft.Control = OpenBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = OpenBitBtn
+    Left = 80
+    Height = 23
+    Top = 0
+    Width = 73
+    AutoSize = True
+    Caption = 'AddBitBtn'
+    OnClick = AddBitBtnClick
+    TabOrder = 2
+  end
+  object RemoveBitBtn: TBitBtn
+    AnchorSideLeft.Control = AddBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = OpenBitBtn
+    Left = 153
+    Height = 23
+    Top = 0
+    Width = 93
+    AutoSize = True
+    Caption = 'RemoveBitBtn'
+    OnClick = RemoveBitBtnClick
+    TabOrder = 3
+  end
+  object OptionsBitBtn: TBitBtn
+    AnchorSideLeft.Control = RemoveBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = OpenBitBtn
+    Left = 246
+    Height = 23
+    Top = 0
+    Width = 91
+    AutoSize = True
+    Caption = 'OptionsBitBtn'
+    OnClick = OptionsBitBtnClick
+    TabOrder = 4
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
