@@ -511,7 +511,7 @@ var
         // send through message to allow message override, moreover use SendMessage
         // to allow subclass window proc override this message too
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        SendMessage(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
+        Windows.SendMessage(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
       end;
       if ParentPaintWindow <> 0 then
@@ -1582,7 +1582,9 @@ begin
         if WindowInfo^.isTabPage then
           EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
             or dword(ecDiscardNoRemove);
-      end else if eraseBkgndCommand <> ecDiscardNoRemove then
+      end
+      else
+      if eraseBkgndCommand <> ecDiscardNoRemove then
         EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
       if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
       begin
@@ -2217,9 +2219,12 @@ begin
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled
-      ThemeServices.UpdateThemes;
-      Graphics.UpdateHandleObjects;
-      ThemeServices.IntfDoOnThemeChange;
+      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+      begin
+        ThemeServices.UpdateThemes;
+        Graphics.UpdateHandleObjects;
+        ThemeServices.IntfDoOnThemeChange;
+      end;
     end;
 
     { >= WM_USER }

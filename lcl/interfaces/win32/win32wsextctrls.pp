@@ -36,7 +36,7 @@ uses
 // rtl
   Windows, CommCtrl, SysUtils, Classes,
 // lcl
-  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, Themes,
+  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, Themes, LCLMessageGlue,
 // ws
   WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
   InterfaceBase, Win32WSControls;
@@ -46,6 +46,8 @@ type
   { TWin32WSCustomPage }
 
   TWin32WSCustomPage = class(TWSCustomPage)
+  public
+    class procedure ThemeChange(Wnd: HWND);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
@@ -264,6 +266,17 @@ begin
   end;
 end;
 
+function PageWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  if Msg = WM_THEMECHANGED then
+  begin
+    ThemeServices.UpdateThemes;
+    TWin32WSCustomPage.ThemeChange(Window);
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 { TWin32WSCustomPage }
 
 class function TWin32WSCustomPage.CreateHandle(const AWinControl: TWinControl;
@@ -278,18 +291,13 @@ begin
   begin
     pClassName := @ClsName[0];
     Flags := Flags and not WS_VISIBLE;
-    SubClassWndProc := nil;
+    SubClassWndProc := @PageWindowProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
-  if ThemeServices.ThemesEnabled then
-    with Params.WindowInfo^ do
-    begin
-      needParentPaint := true;
-      isTabPage := true;
-    end;
+  ThemeChange(Result);
 end;
 
 class procedure TWin32WSCustomPage.DestroyHandle(const AWinControl: TWinControl);
@@ -310,6 +318,21 @@ begin
         Windows.WPARAM(RealIndex), 0);
   end;
   TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
+end;
+
+class procedure TWin32WSCustomPage.ThemeChange(Wnd: HWnd);
+var
+  WindowInfo: PWindowInfo;
+begin
+  WindowInfo := GetWindowInfo(Wnd);
+  if WindowInfo <> nil then
+  begin
+    with WindowInfo^ do
+    begin
+      needParentPaint := ThemeServices.ThemesEnabled;
+      isTabPage := ThemeServices.ThemesEnabled;
+    end;
+  end;
 end;
 
 class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
