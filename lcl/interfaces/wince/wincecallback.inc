@@ -223,7 +223,7 @@ Var
   begin
     Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
     PageIndex := Windows.SendMessageW(NotebookHandle, TCM_GETCURSEL, 0, 0);
-    //PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
+    PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
     if Showing then
@@ -232,8 +232,6 @@ Var
       Flags := SW_HIDE;
     Windows.ShowWindow(PageHandle, Flags);
     Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
-    if Showing then
-      NotebookFocusNewControl(Notebook, PageIndex);
     Result := PageIndex;
   end;
 
@@ -2088,6 +2086,8 @@ begin
           TCN_SELCHANGING:
             if LMNotify.Result = 0 then
               ShowHideTabPage(HWndFrom, False);
+          TCN_SELCHANGE:
+            NotebookFocusNewControl(GetWindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
         end;
     end;
 
@@ -2098,8 +2098,6 @@ begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
       end;
-      
-
       WM_NCDESTROY:
       begin
         //roozbeh : test this....
