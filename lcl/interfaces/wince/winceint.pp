@@ -283,7 +283,7 @@ Uses
  WinCEWSStdCtrls,
 // WinCEWSToolwin,
 ////////////////////////////////////////////////////
-  Arrow, Spin, CheckLst, LclProc;
+  Arrow, Spin, CheckLst, LclProc, LCLMessageGlue;
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 

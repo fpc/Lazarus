@@ -31,7 +31,7 @@ uses
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL
-  ExtCtrls, Classes, Controls, ImgList, Forms, LCLType, LCLIntf,
+  ExtCtrls, Classes, Controls, ImgList, Forms, LCLType, LCLIntf, LCLMessageGlue,
   // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
   WinCEWSControls, WSProc;

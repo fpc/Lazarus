@@ -15,7 +15,7 @@ uses
   // compatibility
   // RTL, LCL
   Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
-  WinCEExtra, GraphType;
+  WinCEExtra, GraphType, LCLMessageGlue;
   
 type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -58,8 +58,6 @@ procedure AssertEx(const Message: String; const PassErr: Boolean;
 procedure AssertEx(const PassErr: Boolean; const Message: String);
 procedure AssertEx(const Message: String);
 function GetShiftState: TShiftState;
-function DeliverMessage(const Target: Pointer; var Message): Integer;
-function DeliverMessage(const Target: TObject; var Message: TLMessage): Integer;
 function ObjectToHWND(Const AObject: TObject): HWND;
 
 function BytesPerLine(nWidth, nBitsPerPixel: Integer): PtrUInt;
@@ -510,55 +508,6 @@ Begin
   Toggle := Lo(GetKeyState(VirtualKey)) = 1;
 End;
 }
-{------------------------------------------------------------------------------
-  Function: DeliverMessage
-  Params:    Message - The message to process
-  Returns:   True If handled
-
-  Generic function which calls the WindowProc if defined, otherwise the
-  dispatcher
- ------------------------------------------------------------------------------}
-function DeliverMessage(Const Target: Pointer; Var Message): Integer;
-Begin
-  If Target = Nil Then
-  begin
-    DebugLn('[DeliverMessage Target: Pointer] Nil');
-    Exit;
-  end;
-  If TObject(Target) Is TControl Then
-  Begin
-    TControl(Target).WinDowProc(TLMessage(Message));
-  End
-  Else
-  Begin
-    TObject(Target).Dispatch(TLMessage(Message));
-  End;
-
-  Result := TLMessage(Message).Result;
-End;
-
-{------------------------------------------------------------------------------
-  Function: DeliverMessage
-  Params: Target  - The target object
-          Message - The message to process
-  Returns: Message result
-
-  Generic function which calls the WindowProc if defined, otherwise the
-  dispatcher
- ------------------------------------------------------------------------------}
-function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
-Begin
-  If Target = Nil Then
-  begin
-    DebugLn('[DeliverMessage (Target: TObject)] Nil');
-    Exit;
-  end;
-  If Target Is TControl Then
-    TControl(Target).WindowProc(Message)
-  Else
-    Target.Dispatch(Message);
-  Result := Message.Result;
-End;
 
 {------------------------------------------------------------------------------
   Function: ObjectToHWND

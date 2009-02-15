@@ -871,9 +871,9 @@ Var
     end;
   begin
     if (lWinControl=nil) or not (lWinControl is TCustomForm) then exit;
-    with lWinControl.Constraints do begin
+    with lWinControl.Constraints do
+    begin
       SetWin32SizePoint(MinWidth, MinHeight, MinMaxInfo.ptMinTrackSize);
-      SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxSize);
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
@@ -1948,7 +1948,7 @@ begin
     end;
   end;
 
-  If WinProcess Then
+  if WinProcess Then
   begin
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
     WinProcess := false;
