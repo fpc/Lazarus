@@ -89,13 +89,13 @@ begin
   OldHeight:=Height;
   Constraints.UpdateInterfaceConstraints;
 
-  // switch width and height, but not when loading, because we assume that
-  // the lfm contains a consistent combination of kind and (width, height)
-  if csLoading in ComponentState then Exit;
-
   // TODO: Remove RecreateWnd
   if HandleAllocated
   then RecreateWnd(Self);
+
+  // switch width and height, but not when loading, because we assume that
+  // the lfm contains a consistent combination of kind and (width, height)
+  if (csLoading in ComponentState) then Exit;
 
   SetBounds(Left,Top,OldHeight,OldWidth);
 end;
