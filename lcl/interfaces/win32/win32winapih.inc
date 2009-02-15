@@ -53,6 +53,7 @@ function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; overr
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; override;
+function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;

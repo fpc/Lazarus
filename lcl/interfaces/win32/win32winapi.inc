@@ -1796,6 +1796,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  CreateEllipticRgn
+  Params:  p1, p2 = X1 and Y1 top-left position of the ellipse
+  Params:  p3, p4 = X2 and Y2 bottom-right position of the ellipse
+  Returns: The handle of the region created
+
+  Creates an elliptic region.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+begin
+  Result := Windows.CreateEllipticRgn(p1, p2, p3, p4);
+end;
+
+{------------------------------------------------------------------------------
   Method:  GetFocus
   Params:  none
   Returns: The handle of the window with focus
