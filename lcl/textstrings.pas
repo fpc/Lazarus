@@ -22,12 +22,6 @@
 
   TTextStrings is a TStrings descendent that is optimized for handling the
   complete text as whole (instead of as line by line as in TStringList).
-  
-  UNDER CONSTRUCTION by Mattias Gaertner
-  
-  ToDo:
-    - Move
-    - replace raise with Error
 }
 unit TextStrings;
 
@@ -387,27 +381,6 @@ begin
 end;
 
 procedure TTextStrings.Exchange(Index1, Index2: Integer);
-
-  procedure RaiseIndex1Neg;
-  begin
-    raise Exception.Create('TTextStrings.Exchange Index1<=0');
-  end;
-
-  procedure RaiseIndex2Neg;
-  begin
-    raise Exception.Create('TTextStrings.Exchange Index2<=0');
-  end;
-
-  procedure RaiseIndex1Big;
-  begin
-    raise Exception.Create('TTextStrings.Exchange Index1>=FLineCount');
-  end;
-
-  procedure RaiseIndex2Big;
-  begin
-    raise Exception.Create('TTextStrings.Exchange Index2>=FLineCount');
-  end;
-
 var
   LineLen1: Integer;
   LineLen2: Integer;
@@ -424,11 +397,15 @@ var
 begin
   // check values
   if Index1=Index2 then exit;
-  if Index1<=0 then RaiseIndex1Neg;
-  if Index2<=0 then RaiseIndex2Neg;
+  if Index1<=0 then
+    Error(rsListIndexExceedsBounds, Index1);
+  if Index2<=0 then
+    Error(rsListIndexExceedsBounds, Index2);
   if not FArraysValid then BuildArrays;
-  if Index1>=FLineCount then RaiseIndex1Big;
-  if Index2>=FLineCount then RaiseIndex2Big;
+  if Index1>=FLineCount then
+    Error(rsListIndexExceedsBounds, Index1);
+  if Index2>=FLineCount then
+    Error(rsListIndexExceedsBounds, Index2);
 
   // make sure Index1<Index2
   if Index1>Index2 then begin
@@ -491,27 +468,6 @@ begin
 end;
 
 procedure TTextStrings.Move(CurIndex, NewIndex: Integer);
-
-  procedure RaiseCurIndexNeg;
-  begin
-    raise Exception.Create('TTextStrings.Move CurIndex<=0');
-  end;
-
-  procedure RaiseNewIndexNeg;
-  begin
-    raise Exception.Create('TTextStrings.Move NewIndex<=0');
-  end;
-
-  procedure RaiseCurIndexBig;
-  begin
-    raise Exception.Create('TTextStrings.Move CurIndex>=FLineCount');
-  end;
-
-  procedure RaiseNewIndexBig;
-  begin
-    raise Exception.Create('TTextStrings.Move NewIndex>=FLineCount');
-  end;
-
 var
   SrcPos1: LongInt;
   SrcPos2: LongInt;
@@ -522,11 +478,15 @@ var
 begin
   // check values
   if CurIndex=NewIndex then exit;
-  if CurIndex<=0 then RaiseCurIndexNeg;
-  if NewIndex<=0 then RaiseNewIndexNeg;
+  if CurIndex<=0 then
+    Error(rsListIndexExceedsBounds, CurIndex);
+  if NewIndex<=0 then
+    Error(rsListIndexExceedsBounds, NewIndex);
   if not FArraysValid then BuildArrays;
-  if CurIndex>=FLineCount then RaiseCurIndexBig;
-  if NewIndex>=FLineCount then RaiseNewIndexBig;
+  if CurIndex>=FLineCount then
+    Error(rsListIndexExceedsBounds, CurIndex);
+  if NewIndex>=FLineCount then
+    Error(rsListIndexExceedsBounds, NewIndex);
 
   // adjust text
   MakeTextBufferUnique;
