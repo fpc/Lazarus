@@ -30,8 +30,8 @@ const
   lcl_major = 0;
   lcl_minor = 9;
   lcl_release = 26;
-  lcl_patch = 2;
-  lcl_version = '0.9.26.2';
+  lcl_patch = 3;
+  lcl_version = '0.9.26.3';
 
 implementation
 
