@@ -3071,11 +3071,26 @@ var
     begin
       // ignore word and line breaks
       TextExtentPoint(Str, Count, AP);
+      theRect.Bottom := theRect.Top + TM.tmHeight;
       if (Flags and DT_CALCRECT)<>0 then
         theRect.Right := theRect.Left +  AP.cX
       else
+      begin
         theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
-      theRect.Bottom := theRect.Top + TM.tmHeight;
+        if (Flags and DT_VCENTER) > 0 then
+        begin
+          OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top)) div 2);
+          {$ifdef Gtk1}
+          //gtk1 overestimate TM.tmHeight leading to wrong calculation of the center offset
+          OffsetRect(theRect, 0, 1);
+          {$endif}
+        end
+        else
+        if (Flags and DT_BOTTOM) > 0 then
+        begin
+          OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top));
+        end;
+      end;
     end
     else
     begin
