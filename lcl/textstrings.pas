@@ -504,9 +504,14 @@ begin
 end;
 
 procedure TTextStrings.EndUpdate;
-begin
-  if FUpdateCount<=0 then
+
+  procedure RaiseUpdateCount;
+  begin
     raise Exception.Create('TTextStrings.EndUpdate');
+  end;
+
+begin
+  if FUpdateCount<=0 then RaiseUpdateCount;
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
     if FChangedWhileUpdate then
