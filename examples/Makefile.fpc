@@ -59,6 +59,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
   scrollbar \
   speedtest \
   synedit1 \
+  taborder \
   testall \
   toolbar \
   trackbar
