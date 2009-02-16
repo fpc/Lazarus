@@ -67,6 +67,8 @@ type
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer; inline;
     function GetLineEnd(Index: integer; IncludeNewLineChars: boolean): integer;
+    function HasObjects: boolean;
+    function CountLineEndings(const s: string): integer;
   public
     destructor Destroy; override;
     procedure Clear; override;
@@ -81,6 +83,7 @@ type
     function GetText: PChar; override;
     function IndexOf(const S: string): Integer; override;
     function Add(const S: string): Integer; override;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
     procedure AddStrings(TheStrings: TStrings); override;
   public
     property Text: string read FText write SetTextStr;
@@ -114,21 +117,8 @@ begin
   ClearArrays;
   FArraysValid:=true;
   // count line ends
-  FLineCount:=0;
+  FLineCount:=CountLineEndings(FText);
   l:=length(FText);
-  p:=1;
-  while (p<=l) do begin
-    if (not (FText[p] in [#10,#13])) then begin
-      inc(p);
-    end else begin
-      // new line
-      inc(FLineCount);
-      inc(p);
-      if (p<=l) and (FText[p] in [#10,#13])
-      and (FText[p]<>FText[p-1]) then
-        inc(p);
-    end;
-  end;
   if (FText<>'') and (not (FText[l] in [#10,#13])) then
     inc(FLineCount);
   FLineCapacity:=FLineCount;
@@ -282,6 +272,38 @@ begin
     Result:=length(FText)
   else
     Result:=FLineRanges[Index+1].StartPos;
+end;
+
+function TTextStrings.HasObjects: boolean;
+var
+  i: Integer;
+begin
+  if FArraysValid then
+    for i:=0 to FLineCount-1 do
+      if FLineRanges[i].TheObject<>nil then
+        exit(true);
+  Result:=false;
+end;
+
+function TTextStrings.CountLineEndings(const s: string): integer;
+var
+  p: Integer;
+  l: Integer;
+begin
+  Result:=0;
+  l:=length(FText);
+  p:=1;
+  while p<=l do begin
+    if s[p] in [#10,#13] then
+    begin
+      inc(Result);
+      inc(p);
+      if (p<=l) and (s[p] in [#10,#13]) and (s[p-1]<>s[p]) then
+        inc(p);
+    end else begin
+      inc(p);
+    end;
+  end;
 end;
 
 destructor TTextStrings.Destroy;
@@ -609,26 +631,86 @@ begin
 end;
 
 function TTextStrings.Add(const S: string): Integer;
+begin
+  Result:=AddObject(S,nil);
+end;
+
+function TTextStrings.AddObject(const S: string; AObject: TObject): Integer;
 var
   e: String;
+  NewLineCount: Integer;
+  OldTxtLen: Integer;
+  p: Integer;
+  l: Integer;
 begin
   Result:=Count;
   if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
     e:=LineEnding
   else
     e:='';
-  Text:=Text+e+S;
+  OldTxtLen:=length(FText);
+  FText:=Text+e+S;
+  if AObject<>nil then
+    BuildArrays;
+  if FArraysValid then
+  begin
+    // update FLineRanges
+    NewLineCount:=FLineCount+1+CountLineEndings(S);
+    if NewLineCount>FLineCapacity then begin
+      FLineCapacity:=FLineCapacity*2+10;
+      if FLineCapacity<NewLineCount then
+        FLineCapacity:=NewLineCount;
+      ReAllocMem(FLineRanges,SizeOf(TTextLineRange)*FLineCapacity);
+      FillByte(FLineRanges[FLineCount],SizeOf(TTextLineRange)*(FLineCapacity-FLineCount),0);
+    end;
+    FLineRanges[FLineCount].TheObject:=AObject;
+    p:=OldTxtLen+length(e);
+    l:=length(FText);
+    while FLineCount<NewLineCount do begin
+      FLineRanges[FLineCount].StartPos:=p;
+      while (p<=l) and (not (FText[p] in [#10,#13])) do
+        inc(p);
+      FLineRanges[FLineCount].EndPos:=p;
+      inc(p);
+      if (p<=l) and (FText[p] in [#10,#13]) and (FText[p]<>FText[p-1]) then
+        inc(p);
+      inc(FLineCount);
+    end;
+  end;
 end;
 
 procedure TTextStrings.AddStrings(TheStrings: TStrings);
+
+  function MustAddObjects: boolean;
+  var
+    i: Integer;
+  begin
+    if TheStrings is TTextStrings then
+      Result:=TTextStrings(TheStrings).HasObjects
+    else
+      for i:=0 to TheStrings.Count-1 do
+        if TheStrings.Objects[i]<>nil then
+          exit(true);
+    Result:=false;
+  end;
+
 var
   s: String;
+  i: Integer; 
 begin
-  if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
-    s:=LineEnding
-  else
-    s:='';
-  Text:=Text+s+TheStrings.Text;
+  if TheStrings.Count=0 then exit;
+  if MustAddObjects then
+  begin
+    for i:=0 to TheStrings.Count-1 do
+      AddObject(TheStrings[i],TheStrings.Objects[i]);
+  end else begin
+    if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
+      s:=LineEnding
+    else
+      s:='';
+    FArraysValid:=false;
+    FText:=FText+s+TheStrings.Text;
+  end;
 end;
 
 end.
