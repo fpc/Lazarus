@@ -391,9 +391,11 @@ var
   BetweenLength: Integer;
   StartPos1: LongInt;
   StartPos2: LongInt;
-  DummyRange: TTextLineRange;
   i: Integer;
   Movement: Integer;
+  Obj: TObject;
+  LineShortLen1: LongInt;
+  LineShortLen2: LongInt;
 begin
   // check values
   if Index1=Index2 then exit;
@@ -414,13 +416,23 @@ begin
     Index2:=Dummy;
   end;
 
+  // adjust text
+  MakeTextBufferUnique;
+
+  if (Index2=FLineCount-1) and (FLineRanges[Index2].EndPos=length(FText))
+  then begin
+    // The last line should be exchanged,
+    // but Text has no new line character(s) at the end
+    // => add LineEnding
+    FText:=FText+LineEnding;
+  end;
+
   // get line lengths including new line chars
   LineLen1:=GetLineLen(Index1,true);
   LineLen2:=GetLineLen(Index2,true);
   if (LineLen1<1) and (LineLen2<1) then exit;
-
-  // adjust text
-  MakeTextBufferUnique;
+  LineShortLen1:=GetLineLen(Index1,false);
+  LineShortLen2:=GetLineLen(Index2,false);
 
   // save the bigger line
   StartPos1:=FLineRanges[Index1].StartPos;
@@ -450,18 +462,21 @@ begin
   end;
 
   // adjust line ranges
-  if LineLen1<>LineLen2 then begin
-    System.Move(FLineRanges[Index1],DummyRange,SizeOf(TTextLineRange));
-    System.Move(FLineRanges[Index2],FLineRanges[Index1],SizeOf(TTextLineRange));
-    System.Move(DummyRange,FLineRanges[Index2],SizeOf(TTextLineRange));
-    if (BetweenLength>0) and (OldBetweenStart<>NewBetweenStart) then begin
-      Movement:=NewBetweenStart-OldBetweenStart;
-      for i:=Index1+1 to Index2-1 do begin
-        inc(FLineRanges[i].StartPos,Movement);
-        inc(FLineRanges[i].EndPos,Movement);
-      end;
+  Movement:=NewBetweenStart-OldBetweenStart;
+  FLineRanges[Index1].EndPos:=FLineRanges[Index1].StartPos+LineShortLen2;
+  inc(FLineRanges[Index2].StartPos,Movement);
+  FLineRanges[Index2].EndPos:=FLineRanges[Index2].StartPos+LineShortLen1;
+  if (BetweenLength>0) and (OldBetweenStart<>NewBetweenStart) then begin
+    for i:=Index1+1 to Index2-1 do begin
+      inc(FLineRanges[i].StartPos,Movement);
+      inc(FLineRanges[i].EndPos,Movement);
     end;
   end;
+
+  // exchange TheObject
+  Obj:=FLineRanges[Index1].TheObject;
+  FLineRanges[Index1].TheObject:=FLineRanges[Index2].TheObject;
+  FLineRanges[Index2].TheObject:=Obj;
 
   // clean up
   FreeMem(buf);
@@ -475,6 +490,7 @@ var
   LineStr: String;
   LineLen: Integer;
   i: LongInt;
+  Obj: TObject;
 begin
   // check values
   if CurIndex=NewIndex then exit;
@@ -507,6 +523,7 @@ begin
     // store current line with line end
     LineLen:=SrcPos2-SrcPos1;
     LineStr:=copy(FText,SrcPos1,LineLen);
+    Obj:=FLineRanges[CurIndex].TheObject;
     // move lines up
     System.Move(FText[SrcPos2],FText[SrcPos1],SrcPos3-SrcPos2);
     for i:=CurIndex+1 to NewIndex do begin
@@ -520,6 +537,7 @@ begin
     FLineRanges[NewIndex].StartPos:=SrcPos3-LineLen;
     FLineRanges[NewIndex].EndPos:=SrcPos3;
     FLineRanges[NewIndex].Line:=''; // this will be updated on demand
+    FLineRanges[NewIndex].TheObject:=Obj;
   end else begin
     // move up
     if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos=length(FText))
@@ -535,6 +553,7 @@ begin
     // store current line with line end
     LineLen:=SrcPos3-SrcPos2;
     LineStr:=copy(FText,SrcPos2,LineLen);
+    Obj:=FLineRanges[CurIndex].TheObject;
     // move lines down
     System.Move(FText[SrcPos1],FText[SrcPos1+LineLen],SrcPos2-SrcPos1);
     for i:=CurIndex-1 downto NewIndex do begin
@@ -548,6 +567,7 @@ begin
     FLineRanges[NewIndex].StartPos:=SrcPos1;
     FLineRanges[NewIndex].EndPos:=SrcPos1+LineLen;
     FLineRanges[NewIndex].Line:=''; // this will be updated on demand
+    FLineRanges[NewIndex].TheObject:=Obj;
   end;
 end;
 
