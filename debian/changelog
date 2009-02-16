@@ -1,3 +1,9 @@
+lazarus (0.9.26.2-0) unstable; urgency=low
+
+  * New release.
+
+ -- Vincent Snijders <vincents@freepascal.org>  Mon, 16 Feb 2009 20:25:00 +0100
+
 lazarus (0.9.26.1-0) unstable; urgency=low
 
   * Snapshot building.
