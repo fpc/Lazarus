@@ -27,7 +27,7 @@
   
   ToDo:
     - Move
-    - IndexOf
+    - replace raise with Error
 }
 unit TextStrings;
 
@@ -71,7 +71,8 @@ type
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
-    function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer;
+    function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer; inline;
+    function GetLineEnd(Index: integer; IncludeNewLineChars: boolean): integer;
   public
     destructor Destroy; override;
     procedure Clear; override;
@@ -273,17 +274,20 @@ end;
 
 function TTextStrings.GetLineLen(Index: integer; IncludeNewLineChars: boolean
   ): integer;
-var
-  LineEndPos: Integer;
+begin
+  Result:=GetLineEnd(Index,IncludeNewLineChars)-FLineRanges[Index].StartPos;
+end;
+
+function TTextStrings.GetLineEnd(Index: integer; IncludeNewLineChars: boolean
+  ): integer;
 begin
   if not FArraysValid then BuildArrays;
   if not IncludeNewLineChars then
-    LineEndPos:=FLineRanges[Index].EndPos
+    Result:=FLineRanges[Index].EndPos
   else if Index=FLineCount-1 then
-    LineEndPos:=length(FText)
+    Result:=length(FText)
   else
-    LineEndPos:=FLineRanges[Index+1].StartPos;
-  Result:=LineEndPos-FLineRanges[Index].StartPos;
+    Result:=FLineRanges[Index+1].StartPos;
 end;
 
 destructor TTextStrings.Destroy;
@@ -422,6 +426,7 @@ begin
   if Index1=Index2 then exit;
   if Index1<=0 then RaiseIndex1Neg;
   if Index2<=0 then RaiseIndex2Neg;
+  if not FArraysValid then BuildArrays;
   if Index1>=FLineCount then RaiseIndex1Big;
   if Index2>=FLineCount then RaiseIndex2Big;
 
@@ -433,7 +438,6 @@ begin
   end;
 
   // get line lengths including new line chars
-  if not FArraysValid then BuildArrays;
   LineLen1:=GetLineLen(Index1,true);
   LineLen2:=GetLineLen(Index2,true);
   if (LineLen1<1) and (LineLen2<1) then exit;
@@ -487,9 +491,104 @@ begin
 end;
 
 procedure TTextStrings.Move(CurIndex, NewIndex: Integer);
+
+  procedure RaiseCurIndexNeg;
+  begin
+    raise Exception.Create('TTextStrings.Move CurIndex<=0');
+  end;
+
+  procedure RaiseNewIndexNeg;
+  begin
+    raise Exception.Create('TTextStrings.Move NewIndex<=0');
+  end;
+
+  procedure RaiseCurIndexBig;
+  begin
+    raise Exception.Create('TTextStrings.Move CurIndex>=FLineCount');
+  end;
+
+  procedure RaiseNewIndexBig;
+  begin
+    raise Exception.Create('TTextStrings.Move NewIndex>=FLineCount');
+  end;
+
+var
+  SrcPos1: LongInt;
+  SrcPos2: LongInt;
+  SrcPos3: LongInt;
+  LineStr: String;
+  LineLen: Integer;
+  i: LongInt;
 begin
-  // TODO
-  inherited Move(CurIndex, NewIndex);
+  // check values
+  if CurIndex=NewIndex then exit;
+  if CurIndex<=0 then RaiseCurIndexNeg;
+  if NewIndex<=0 then RaiseNewIndexNeg;
+  if not FArraysValid then BuildArrays;
+  if CurIndex>=FLineCount then RaiseCurIndexBig;
+  if NewIndex>=FLineCount then RaiseNewIndexBig;
+
+  // adjust text
+  MakeTextBufferUnique;
+
+  if CurIndex<NewIndex then
+  begin
+    // move down
+    if (NewIndex=FLineCount-1) and (FLineRanges[NewIndex].EndPos=length(FText))
+    then begin
+      // CurIndex should be moved to the end,
+      // but Text has no new line character(s) at the end
+      // => add LineEnding
+      FText:=FText+LineEnding;
+    end;
+    SrcPos1:=FLineRanges[CurIndex].StartPos;
+    SrcPos2:=FLineRanges[CurIndex+1].StartPos;
+    SrcPos3:=GetLineEnd(NewIndex,true);
+    // store current line with line end
+    LineLen:=SrcPos2-SrcPos1;
+    LineStr:=copy(FText,SrcPos1,LineLen);
+    // move lines up
+    System.Move(FText[SrcPos2],FText[SrcPos1],SrcPos3-SrcPos2);
+    for i:=CurIndex+1 to NewIndex do begin
+      dec(FLineRanges[i].StartPos,LineLen);
+      dec(FLineRanges[i].EndPos,LineLen);
+    end;
+    System.Move(FLineRanges[CurIndex+1],FLineRanges[CurIndex],
+                SizeOf(TTextLineRange)*(NewIndex-CurIndex));
+    // put current line at new position
+    System.Move(LineStr[1],FText[SrcPos3-LineLen],LineLen);
+    FLineRanges[NewIndex].StartPos:=SrcPos3-LineLen;
+    FLineRanges[NewIndex].EndPos:=SrcPos3;
+    FLineRanges[NewIndex].Line:=''; // this will be updated on demand
+  end else begin
+    // move up
+    if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos=length(FText))
+    then begin
+      // CurIndex should be moved from the end,
+      // but Text has no new line character(s) at the end
+      // => add LineEnding
+      FText:=FText+LineEnding;
+    end;
+    SrcPos1:=FLineRanges[NewIndex].StartPos;
+    SrcPos2:=FLineRanges[CurIndex].StartPos;
+    SrcPos3:=GetLineEnd(CurIndex,true);
+    // store current line with line end
+    LineLen:=SrcPos3-SrcPos2;
+    LineStr:=copy(FText,SrcPos2,LineLen);
+    // move lines down
+    System.Move(FText[SrcPos1],FText[SrcPos1+LineLen],SrcPos2-SrcPos1);
+    for i:=CurIndex-1 downto NewIndex do begin
+      inc(FLineRanges[i].StartPos,LineLen);
+      inc(FLineRanges[i].EndPos,LineLen);
+    end;
+    System.Move(FLineRanges[NewIndex],FLineRanges[NewIndex+1],
+                SizeOf(TTextLineRange)*(CurIndex-NewIndex));
+    // put current line at new position
+    System.Move(LineStr[1],FText[SrcPos1],LineLen);
+    FLineRanges[NewIndex].StartPos:=SrcPos1;
+    FLineRanges[NewIndex].EndPos:=SrcPos1+LineLen;
+    FLineRanges[NewIndex].Line:=''; // this will be updated on demand
+  end;
 end;
 
 procedure TTextStrings.MakeTextBufferUnique;
@@ -526,7 +625,6 @@ end;
 
 function TTextStrings.IndexOf(const S: string): Integer;
 begin
-  // TODO
   Result:=inherited IndexOf(S);
 end;
 
