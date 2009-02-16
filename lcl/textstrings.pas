@@ -291,7 +291,7 @@ var
   l: Integer;
 begin
   Result:=0;
-  l:=length(FText);
+  l:=length(s);
   p:=1;
   while p<=l do begin
     if s[p] in [#10,#13] then
@@ -649,13 +649,14 @@ begin
   else
     e:='';
   OldTxtLen:=length(FText);
-  FText:=Text+e+S;
+  FText:=Text+e+S+LineEnding;
   if AObject<>nil then
     BuildArrays;
   if FArraysValid then
   begin
     // update FLineRanges
-    NewLineCount:=FLineCount+1+CountLineEndings(S);
+    NewLineCount:=FLineCount+CountLineEndings(S)+1;
+    writeln('TTextStrings.AddObject OldLineCount=',FLineCount,' NewLineCount=',NewLineCount);
     if NewLineCount>FLineCapacity then begin
       FLineCapacity:=FLineCapacity*2+10;
       if FLineCapacity<NewLineCount then
@@ -664,9 +665,10 @@ begin
       FillByte(FLineRanges[FLineCount],SizeOf(TTextLineRange)*(FLineCapacity-FLineCount),0);
     end;
     FLineRanges[FLineCount].TheObject:=AObject;
-    p:=OldTxtLen+length(e);
+    p:=OldTxtLen+length(e)+1;
     l:=length(FText);
     while FLineCount<NewLineCount do begin
+      WriteLn('TTextStrings.AddObject AAA1 p=',p,' l=',l);
       FLineRanges[FLineCount].StartPos:=p;
       while (p<=l) and (not (FText[p] in [#10,#13])) do
         inc(p);
@@ -696,7 +698,7 @@ procedure TTextStrings.AddStrings(TheStrings: TStrings);
 
 var
   s: String;
-  i: Integer; 
+  i: Integer;
 begin
   if TheStrings.Count=0 then exit;
   if MustAddObjects then
