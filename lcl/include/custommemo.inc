@@ -137,8 +137,7 @@ end;
 
 procedure TCustomMemo.DestroyHandle;
 var
-  NewStrings : TStringList;
-
+  NewStrings : TStrings;
 begin
   if Assigned(FLines) then begin
     // create internal item list
