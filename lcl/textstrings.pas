@@ -269,7 +269,7 @@ begin
   if not IncludeNewLineChars then
     Result:=FLineRanges[Index].EndPos
   else if Index=FLineCount-1 then
-    Result:=length(FText)
+    Result:=length(FText)+1
   else
     Result:=FLineRanges[Index+1].StartPos;
 end;
@@ -421,9 +421,9 @@ var
 begin
   // check values
   if Index1=Index2 then exit;
-  if Index1<=0 then
+  if Index1<0 then
     Error(rsListIndexExceedsBounds, Index1);
-  if Index2<=0 then
+  if Index2<0 then
     Error(rsListIndexExceedsBounds, Index2);
   if not FArraysValid then BuildArrays;
   if Index1>=FLineCount then
@@ -516,9 +516,9 @@ var
 begin
   // check values
   if CurIndex=NewIndex then exit;
-  if CurIndex<=0 then
+  if CurIndex<0 then
     Error(rsListIndexExceedsBounds, CurIndex);
-  if NewIndex<=0 then
+  if NewIndex<0 then
     Error(rsListIndexExceedsBounds, NewIndex);
   if not FArraysValid then BuildArrays;
   if CurIndex>=FLineCount then
@@ -532,7 +532,7 @@ begin
   if CurIndex<NewIndex then
   begin
     // move down
-    if (NewIndex=FLineCount-1) and (FLineRanges[NewIndex].EndPos=length(FText))
+    if (NewIndex=FLineCount-1) and (FLineRanges[NewIndex].EndPos>length(FText))
     then begin
       // CurIndex should be moved to the end,
       // but Text has no new line character(s) at the end
@@ -562,7 +562,7 @@ begin
     FLineRanges[NewIndex].TheObject:=Obj;
   end else begin
     // move up
-    if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos=length(FText))
+    if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos>length(FText))
     then begin
       // CurIndex should be moved from the end,
       // but Text has no new line character(s) at the end
@@ -656,7 +656,6 @@ begin
   begin
     // update FLineRanges
     NewLineCount:=FLineCount+CountLineEndings(S)+1;
-    writeln('TTextStrings.AddObject OldLineCount=',FLineCount,' NewLineCount=',NewLineCount);
     if NewLineCount>FLineCapacity then begin
       FLineCapacity:=FLineCapacity*2+10;
       if FLineCapacity<NewLineCount then
@@ -668,7 +667,6 @@ begin
     p:=OldTxtLen+length(e)+1;
     l:=length(FText);
     while FLineCount<NewLineCount do begin
-      WriteLn('TTextStrings.AddObject AAA1 p=',p,' l=',l);
       FLineRanges[FLineCount].StartPos:=p;
       while (p<=l) and (not (FText[p] in [#10,#13])) do
         inc(p);
