@@ -167,6 +167,8 @@ type
     procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -195,6 +197,8 @@ type
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     procedure AfterAdd; override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -223,6 +227,8 @@ type
     procedure SetInvertedStairs(Value: Boolean);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -252,6 +258,7 @@ type
   private
     FPointer: TSeriesPointer;
     FStyle: TPenStyle;
+    FSeriesColor: TColor;
 
     XOfYGraphMin, XOfYGraphMax: Double;          // X max value of points
     FShowPoints: Boolean;
@@ -266,6 +273,8 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -303,6 +312,8 @@ type
     property Pointer: TSeriesPointer read FPointer write SetPointer;
   end;
 
+  { TLine }
+
   TLine = class(TBasicLineSeries)
   private
     FStyle: TLineStyle;
@@ -315,6 +326,9 @@ type
     procedure SetPos(Value: Double);
     procedure SetPen(Value: TPen);
     procedure SetStyle(Value: TLineStyle);
+  protected
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -668,6 +682,11 @@ begin
   UpdateParentChart;
 end;
 
+procedure TSerie.SetSeriesColor(const AValue: TColor);
+begin
+  FSeriesColor := AValue;
+end;
+
 procedure TSerie.Draw(ACanvas: TCanvas);
 var
   xi1, yi1, xi2, yi2: Integer;
@@ -939,6 +958,11 @@ begin
   end;
 end;
 
+function TSerie.GetSeriesColor: TColor;
+begin
+  Result := FSeriesColor;
+end;
+
 procedure TSerie.SetColor(Index: Integer; AColor: TColor);
 begin
   PChartCoord(FCoordList.items[Index])^.Color := AColor;
@@ -1052,7 +1076,12 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLine.Draw;
+procedure TLine.SetSeriesColor(const AValue: TColor);
+begin
+  FPen.Color := AValue;
+end;
+
+procedure TLine.Draw(ACanvas: TCanvas);
 var
   XMin, XMax, YMin, YMax: Integer;
 begin
@@ -1074,6 +1103,11 @@ begin
         ACanvas.LineTo(PosImage, YMax);
       end;
   end;
+end;
+
+function TLine.GetSeriesColor: TColor;
+begin
+  Result := FPen.Color;
 end;
 
 constructor TBarSeries.Create(AOwner: TComponent);
@@ -1102,7 +1136,6 @@ end;
 
 procedure TBarSeries.SetBarBrush(Value: TBrush);
 begin
-  SeriesColor := Value.Color;
   FBarBrush.Assign(Value);
 end;
 
@@ -1117,6 +1150,11 @@ begin
     raise BarException.Create('Wrong BarWidth Percent')
   else
     FBarWidthPercent := Value;
+end;
+
+procedure TBarSeries.SetSeriesColor(const AValue: TColor);
+begin
+  FBarBrush.Color := AValue;
 end;
 
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -1248,6 +1286,11 @@ begin
   Assert(AMyPos >= 0);
 end;
 
+function TBarSeries.GetSeriesColor: TColor;
+begin
+  Result := FBarBrush.Color;
+end;
+
 constructor TPieSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1271,6 +1314,11 @@ end;
 procedure TPieSeries.SetPiePen(Value: TPen);
 begin
   FPiePen.Assign(Value);
+end;
+
+procedure TPieSeries.SetSeriesColor(const AValue: TColor);
+begin
+  // SeriesColor is meaningless for PieSeries
 end;
 
 function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -1453,6 +1501,11 @@ begin
       Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
 end;
 
+function TPieSeries.GetSeriesColor: TColor;
+begin
+  Result := clBlack; // SeriesColor is meaningless for PieSeries
+end;
+
 
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
@@ -1500,6 +1553,11 @@ procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
 begin
   FInvertedStairs := Value;
   UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetSeriesColor(const AValue: TColor);
+begin
+  FAreaBrush.Color := AValue;
 end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
@@ -1613,6 +1671,11 @@ begin
   ACanvas.Pen.Color := clBlack;
   ACanvas.Brush.Color := SeriesColor;
   ACanvas.Rectangle(ARect);
+end;
+
+function TAreaSeries.GetSeriesColor: TColor;
+begin
+  Result := FAreaBrush.Color;
 end;
 
 { TBasicLineSeries }

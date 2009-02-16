@@ -173,8 +173,6 @@ type
   { TBasicChartSeries }
 
   TBasicChartSeries = class(TComponent)
-  private
-    FSeriesColor: TColor;
   protected
     ParentChart: TChart;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
@@ -189,10 +187,13 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
+    function GetSeriesColor: TColor; virtual; abstract;
+    procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
   public
     function Count: Integer; virtual; abstract;
     procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
-    property SeriesColor: TColor read FSeriesColor write FSeriesColor default clTAColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
   end;
 
   { TChart }

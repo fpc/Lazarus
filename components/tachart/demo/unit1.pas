@@ -217,7 +217,7 @@ begin
   FBar := TBarSeries.Create(Chart1);
   Chart1.AddSerie(FBar);
   FBar.Title := 'bars';
-  FBar.SeriesColor := clRed;
+  FBar.SeriesColor := clGreen;
 end;
 
 procedure TForm1.InitLine;
