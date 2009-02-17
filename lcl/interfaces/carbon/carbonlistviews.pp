@@ -497,7 +497,7 @@ begin
     kDataBrowserItemIsSelectableProperty:
       Result := SetDataBrowserItemDataBooleanValue(Data, ALCLDataBrowser.Enabled);
     kDataBrowserItemIsEditableProperty:
-      Result := SetDataBrowserItemDataBooleanValue(Data, ACarbonDataBrowser.GetReadOnly);
+      Result := SetDataBrowserItemDataBooleanValue(Data, not ACarbonDataBrowser.GetReadOnly);
     kDataBrowserItemIsContainerProperty:
       Result := SetDataBrowserItemDataBooleanValue(Data, False);
     CheckPropertyID:
@@ -1089,7 +1089,7 @@ begin
   if not AMultiSelect then
     Flags := Flags or kDataBrowserSelectOnlyOne or kDataBrowserResetSelection;
   if AExtendedSelect then
-    Flags := Flags or kDataBrowserAlwaysExtendSelection;
+    Flags := Flags{; or kDataBrowserAlwaysExtendSelection};
   
   OSError(
     SetDataBrowserSelectionFlags(Widget, Flags),

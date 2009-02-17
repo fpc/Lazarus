@@ -535,7 +535,7 @@ begin
   //lvpGridLines
   //lvpHideSelection
   //lvpHotTrack
-    lvpMultiSelect: TCarbonListView(ALV.Handle).SetSelectionMode(AIsSet, False);
+    lvpMultiSelect: TCarbonListView(ALV.Handle).SetSelectionMode(AIsSet, AIsSet);
     lvpOwnerDraw: TCarbonListView(ALV.Handle).SetOwnerDraw(AIsSet);
   //lvpReadOnly
     lvpRowSelect: TCarbonListView(ALV.Handle).SetRowSelect(AIsSet);
