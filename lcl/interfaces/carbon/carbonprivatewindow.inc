@@ -888,7 +888,7 @@ function CarbonWindow_ActivateProc(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Msg: TLMessage;
+  DoActivate: Boolean;
   EventKind: UInt32;
   Control: ControlRef;
   FocusWidget: TCarbonControl;
@@ -898,23 +898,21 @@ begin
   {$ENDIF}
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  FillChar(Msg, SizeOf(Msg), 0);
-  
   EventKind := GetEventKind(AEvent);
   case EventKind of
     kEventWindowActivated:
       begin
-        Msg.msg := LM_ACTIVATE;
+        DoActivate:=true;
         if (AWidget.LCLObject is TCustomForm) then
           CarbonWidgetSet.SetRootMenu((AWidget.LCLObject as TCustomForm).Menu);
       end;
-    kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
+    kEventWindowDeactivated: DoActivate:=false;
   else
     DebugLn('CarbonWindow_ActivateProc invalid event kind: ' + DbgS(EventKind));
     Exit;
   end;
-  
-  DeliverMessage(AWidget.LCLObject, Msg);
+
+  LCLSendActivateMsg(AWidget.LCLObject, DoActivate, false);
 
   // force set and kill focus of focused control
   Control := nil;
@@ -924,10 +922,8 @@ begin
     FocusWidget := GetCarbonControl(Control);
 
     if FocusWidget <> nil then
-      case Msg.msg of
-        LM_ACTIVATE: FocusWidget.FocusSet;
-        LM_DEACTIVATE: FocusWidget.FocusKilled;
-      end;
+      if DoActivate then FocusWidget.FocusSet
+      else FocusWidget.FocusKilled;
   end;
 end;
 
