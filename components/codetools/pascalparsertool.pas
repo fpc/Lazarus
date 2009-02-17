@@ -2657,8 +2657,10 @@ begin
       ReadNextAtom;
     if UpAtomIs('NAME') then begin
       // for example 'var a: char; public name 'b' ;'
+      // for example 'var a: char; public name test;'
       ReadNextAtom;
-      if not AtomIsStringConstant then
+      if (not AtomIsStringConstant)
+      and (not AtomIsIdentifier(false)) then
         RaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
     end;
@@ -2838,6 +2840,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
       var a:b;
         a:b; cvar;
         a:b; public name 'string constant';
+        a:b; public name <id>;
         a:b; external name 'string constant';
         a:b; cvar; external;
 
