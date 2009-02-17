@@ -1205,12 +1205,17 @@ end;
   Returns: The preffered size of status bar for autosizing or (0, 0)
  ------------------------------------------------------------------------------}
 function TCarbonStatusBar.GetPreferredSize: TPoint;
+const
+  CarbonStatusBarHeight = 20; // should statusbar height be evaluated of the default font's height?
 begin
   Result := inherited GetPreferredSize;
   
   // stretch status bar to whole window width
   if LCLObject.Parent <> nil then
+  begin
     Result.X := LCLObject.Parent.ClientWidth;
+    REsult.Y := CarbonStatusBarHeight;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1257,7 +1262,7 @@ begin
   else
   begin
     X := 0;
-    
+
     for I := 0 to StatusBar.Panels.Count - 1 do
     begin
       if I >= FPanels.Count then // create new panel
