@@ -2490,10 +2490,16 @@ begin
 end;
 
 function TCustomDBGrid.EditorIsReadOnly: boolean;
+var
+  AField : TField;
 begin
   Result := inherited EditorIsReadOnly;
   if not Result then begin
-    Result := not FDataLink.Edit;
+    AField := GetFieldFromGridColumn(Col);
+    if assigned(AField) then
+      Result := not AField.CanModify;
+    if not result then
+      Result := not FDataLink.Edit;
     EditingColumn(Col, not Result);
   end;
 end;
