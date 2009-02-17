@@ -236,7 +236,8 @@ begin
   FPie := TPieSeries.Create(Chart1);
   Chart1.AddSerie(FPie);
   FPie.Title := 'pie';
-  FPie.SeriesColor := clRed;
+  FPie.LabelBackgroundColor := $80FFFF;
+  FPie.LabelToPieLinkColor := clCream;
   FPie.MarksStyle := smsLabelPercent;
 end;
 

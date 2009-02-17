@@ -190,6 +190,9 @@ type
   TPieSeries = class(TChartSeries)
   private
     ColorIndex: Integer;
+    FMiscColors: array [1..3] of TColor;
+    function GetMiscColor(AIndex: integer): TColor;
+    procedure SetMiscColor(AIndex: integer; const AValue: TColor);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
@@ -207,6 +210,12 @@ type
   published
     property Title;
     property Active;
+    property LabelTextColor: TColor index 1
+      read GetMiscColor write SetMiscColor default clBlack;
+    property LabelBackgroundColor: TColor index 2
+      read GetMiscColor write SetMiscColor default clYellow;
+    property LabelToPieLinkColor: TColor index 3
+      read GetMiscColor write SetMiscColor default clWhite;
   end;
 
   { TAreaSeries }
@@ -1382,17 +1391,17 @@ begin
     b := LineEndPoint(center, prevAngle + angleStep / 2, radius + MARKS_DIST);
 
     // line from mark to pie
-    ACanvas.Pen.Color := clWhite;
+    ACanvas.Pen.Color := LabelToPieLinkColor;
     ACanvas.MoveTo(a.x, a.y);
     ACanvas.LineTo(b.x, b.y);
-    ACanvas.Pen.Color := clBlack;
 
     if b.x < center.x then
       b.x -= labelWidths[i];
     if b.y < center.y then
       b.y -= labelHeights[i];
 
-    ACanvas.Brush.Color := clYellow;
+    ACanvas.Pen.Color := LabelTextColor;
+    ACanvas.Brush.Color := LabelBackgroundColor;
     ACanvas.Rectangle(
       b.x - MarkXMargin, b.y - MarkYMargin,
       b.x + labelWidths[i] + MarkXMargin, b.y + labelHeights[i] + MarkYMargin);
@@ -1439,9 +1448,21 @@ begin
       Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
 end;
 
+function TPieSeries.GetMiscColor(AIndex: integer): TColor;
+begin
+  Result := FMiscColors[AIndex];
+end;
+
 function TPieSeries.GetSeriesColor: TColor;
 begin
   Result := clBlack; // SeriesColor is meaningless for PieSeries
+end;
+
+procedure TPieSeries.SetMiscColor(AIndex: integer; const AValue: TColor);
+begin
+  if FMiscColors[AIndex] = AValue then exit;
+  FMiscColors[AIndex] := AValue;
+  UpdateParentChart;
 end;
 
 
