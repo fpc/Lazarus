@@ -2009,7 +2009,7 @@ begin
 
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
-    UTF8Text := UTF8Encode(Text);
+    UTF8Text := UTF16ToUTF8(Text);
     UTF8Char := UTF8Text;
   {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
@@ -2062,7 +2062,7 @@ begin
   begin
     // data was changed
     if UTF8Char <> UTF8Text then
-      Text := UTF8Decode(Utf8Char)
+      Text := UTF8ToUTF16(Utf8Char)
     else
     if Word(AChar) <> CharMsg.CharCode then
       Text := Char(CharMsg.CharCode);
@@ -4146,7 +4146,7 @@ begin
         WStr := WStr + QByteArray_at(ByteArr, i);
       FilesList := TStringList.Create;
       try
-        FilesList.Text := UTF8Encode(WStr);
+        FilesList.Text := UTF16ToUTF8(WStr);
         {last member of TStringList always contains empty string
          since QMimeData always have #13#10#0 at the end.So we cut it here.}
         SetLength(Files, FilesList.Count - 1);
@@ -6422,7 +6422,7 @@ begin
         (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier) and
         (FLineEdit <> nil) and (FLineEdit.hasFocus) then
         begin
-          Str := UTF8Encode(getText);
+          Str := UTF16ToUTF8(getText);
           if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
             TCustomComboBox(LCLObject).AddItem(Str, nil);
         end;
@@ -9575,7 +9575,7 @@ begin
   begin
     List := TQtStringList.Create;
     getFilters(List.Handle);
-    index := List.IndexOf(Utf8Encode(filter^));
+    index := List.IndexOf(UTF16ToUTF8(filter^));
     if index <> -1 then
       TFileDialog(FDialog).IntfFileTypeChanged(index + 1);
     List.Free;
@@ -9586,7 +9586,7 @@ procedure TQtFileDialog.CurrentChangedEvent(path: PWideString); cdecl;
 begin
   if FDialog is TOpenDialog then
   begin
-    TOpenDialog(FDialog).FileName := Utf8Encode(path^);
+    TOpenDialog(FDialog).FileName := UTF16ToUTF8(path^);
     TOpenDialog(FDialog).DoSelectionChange;
   end;
 end;
@@ -9808,7 +9808,7 @@ var
   Str: WideString;
 begin
   QMessageBox_text(QMessageBoxH(Widget), @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 function TQtMessageBox.getDetailText: WideString;
@@ -9816,7 +9816,7 @@ var
   Str: WideString;
 begin
   QMessageBox_detailedText(QMessageBoxH(Widget), @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 procedure TQtMessageBox.setMessageStr(const AValue: WideString);

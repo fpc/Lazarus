@@ -1386,7 +1386,7 @@ var
       for j := 0 to Result - 1 do
       begin
         QStringList_at(StrLst, @Str, j);
-        List.Add(Utf8Encode(Str));
+        List.Add(UTF16ToUTF8(Str));
       end;
     finally
       QFontDatabase_destroy(FontDB);
@@ -2323,7 +2323,7 @@ begin
       else
         ALogFont^.lfQuality := DEFAULT_QUALITY;
       end;
-      ALogFont^.lfFaceName := UTF8Encode(AFont.getFamily);
+      ALogFont^.lfFaceName := UTF16ToUTF8(AFont.getFamily);
     end;
   end
   {------------------------------------------------------------------------------

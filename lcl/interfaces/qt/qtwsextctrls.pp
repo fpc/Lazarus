@@ -33,7 +33,7 @@ uses
   qt4,
   qtwidgets, qtobjects, qtproc, QtWSControls,
   // LCL
-  LMessages, LCLMessageGlue,
+  LMessages, LCLMessageGlue, LCLProc,
   SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
   ImgList,
   // Widgetset
@@ -473,7 +473,7 @@ begin
 
   ATrayIcon.Handle := PtrInt(SystemTrayIcon);
 
-  Text := UTF8Decode(ATrayIcon.Hint);
+  Text := UTF8ToUTF16(ATrayIcon.Hint);
   SystemTrayIcon.setToolTip(Text);
 
   if Assigned(ATrayIcon.PopUpMenu) then

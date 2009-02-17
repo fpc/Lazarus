@@ -2848,7 +2848,7 @@ begin
     QMimeData_hasURLS(TempMimeData)) then
   begin
     QMimeData_text(TempMimeData, @Str);
-    Str := UTF8Encode(Str);
+    Str := UTF16ToUTF8(Str);
     
     {we must check for null terminator}
     if Copy(Str, length(Str), 1) = #0 then
@@ -2964,7 +2964,7 @@ begin
     for i := 0 to Count - 1 do
     begin
       QStringList_at(QtList, @Str, i);
-      Str := UTF8Encode(Str);
+      Str := UTF16ToUTF8(Str);
       List[i] := RegisterFormat(Str);
     end;
 
@@ -3086,7 +3086,7 @@ var
   Str: WideString;
 begin
   QPrinter_creator(FHandle, @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 function TQtPrinter.getDevType: Integer;
@@ -3099,7 +3099,7 @@ var
   Str: WideString;
 begin
   QPrinter_docName(FHandle, @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 function TQtPrinter.getDoubleSidedPrinting: Boolean;
@@ -3142,7 +3142,7 @@ var
   Str: WideString;
 begin
   QPrinter_printProgram(FHandle, @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 function TQtPrinter.getPrintRange: QPrinterPrintRange;
@@ -3204,7 +3204,7 @@ var
   Str: WideString;
 begin
   QPrinter_printerName(FHandle, @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 procedure TQtPrinter.setOutputFileName(const AValue: WideString);
@@ -3220,7 +3220,7 @@ var
   Str: WideString;
 begin
   QPrinter_outputFileName(FHandle, @Str);
-  Result := UTF8Encode(Str);
+  Result := UTF16ToUTF8(Str);
 end;
 
 procedure TQtPrinter.setOrientation(const AValue: QPrinterOrientation);
@@ -3449,7 +3449,7 @@ var
   W: Widestring;
 begin
   QStringList_at(FHandle, @W, Index);
-  Result := Utf8Encode(W);
+  Result := UTF16ToUTF8(W);
 end;
 
 function TQtStringList.GetCount: Integer;

@@ -33,7 +33,8 @@ interface
 
 uses
   qt4,
-  GraphType;
+  GraphType,
+  LCLProc;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 function GetPixelsPerInch: Integer;
@@ -84,7 +85,7 @@ end;
 
 function GetUtf8String(S: String): WideString;
 begin
-  Result := Utf8Decode(S);
+  Result := UTF8ToUTF16(S);
   if (Result = '') and (S <> '') then
     Result := S;
 end;

@@ -130,7 +130,7 @@ var
   Astr: WideString;
 begin
   QTextEdit_toPlainText(FQtTextEdit,@Astr); // get the memo content
-  FStringList.Text := UTF8Encode(Astr);
+  FStringList.Text := UTF16ToUTF8(Astr);
   FTextChanged := False;
 end;
 

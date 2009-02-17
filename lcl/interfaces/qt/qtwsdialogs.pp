@@ -33,7 +33,7 @@ uses
   qt4,
   qtobjects, qtwidgets, qtproc,
   // RTL + LCL
-  SysUtils, Classes, LCLType, Dialogs, Controls, Forms, Graphics,
+  SysUtils, Classes, LCLType, LCLProc, Dialogs, Controls, Forms, Graphics,
   // Widgetset
   WSDialogs, WSLCLClasses;
 
@@ -355,7 +355,7 @@ begin
     QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, @selectedFilter, 0);
     if ReturnText <> '' then
     begin
-      FileDialog.FileName := UTF8Encode(ReturnText);
+      FileDialog.FileName := UTF16ToUTF8(ReturnText);
       FileDialog.UserChoice := mrOK;
     end else
       FileDialog.UserChoice := mrCancel;
@@ -368,9 +368,9 @@ begin
       for i := 0 to QStringList_size(ReturnList) - 1 do
       begin
         QStringList_at(ReturnList, @ReturnText, i);
-        FileDialog.Files.Add(UTF8Encode(ReturnText));
+        FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
         if i = 0 then
-          FileDialog.FileName := UTF8Encode(ReturnText);
+          FileDialog.FileName := UTF16ToUTF8(ReturnText);
       end;
       ReturnText := FileDialog.Files.Text;
     finally
@@ -445,7 +445,7 @@ begin
   QFileDialog_getExistingDirectory(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
   if ReturnText <> '' then
   begin
-    FileDialog.FileName := UTF8Encode(ReturnText);
+    FileDialog.FileName := UTF16ToUTF8(ReturnText);
     FileDialog.UserChoice := mrOK;
   end else
     FileDialog.UserChoice := mrCancel;
@@ -542,7 +542,7 @@ begin
       TQtWSCommonDialog.GetDialogParent(ACommonDialog));
    
     QFont_family(ReturnFont, @Str);
-    TFontDialog(ACommonDialog).Font.Name := UTF8Encode(Str);
+    TFontDialog(ACommonDialog).Font.Name := UTF16ToUTF8(Str);
    
     if QFont_pixelSize(ReturnFont) = -1 then
       TFontDialog(ACommonDialog).Font.Size := QFont_pointSize(ReturnFont)

@@ -340,7 +340,7 @@ begin
 
   Result := not TQtWidget(AWinControl.Handle).getTextStatic;
   if Result then
-    AText := UTF8Encode(TQtWidget(AWinControl.Handle).getText);
+    AText := UTF16ToUTF8(TQtWidget(AWinControl.Handle).getText);
 end;
 
 class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
