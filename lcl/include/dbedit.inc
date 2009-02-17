@@ -151,9 +151,11 @@ begin
     SelectAll;
     Key := VK_UNKNOWN;
   end else
-  if Key=VK_DELETE then begin
+  if Key in [VK_DELETE, VK_BACK] then begin
     if not IsReadOnly then
-      FDatalink.Edit;
+      FDatalink.Edit
+    else
+      Key := VK_UNKNOWN;
   end else
   if Key=VK_TAB then begin
     if FDataLink.CanModify and FDatalink.Editing then
