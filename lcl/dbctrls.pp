@@ -1584,7 +1584,7 @@ end;
 }
 function TFieldDataLink.Edit: Boolean;
 begin
-  if CanModify then
+  if (not FEditing) and CanModify then
     inherited Edit;
 
   Result := FEditing;
