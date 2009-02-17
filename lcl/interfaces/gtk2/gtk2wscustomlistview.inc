@@ -413,6 +413,9 @@ var
 begin
   column := gtk_tree_view_get_column(PGtkTreeView(WidgetInfo^.CoreWidget), 0);
 
+  if column = nil then
+    Exit;
+
   renderers := gtk_tree_view_column_get_cell_renderers(column);
   textrenderer := PGtkCellRenderer(g_list_last(renderers)^.data);
   pixrenderer := PGtkCellRenderer(g_list_last(renderers)^.prev^.data);
@@ -448,8 +451,7 @@ begin
   if G_IS_OBJECT(pixrenderer) then
     g_object_unref(G_OBJECT(pixrenderer));
   if G_IS_OBJECT(textrenderer) then
-  g_object_unref(G_OBJECT(textrenderer));
-
+    g_object_unref(G_OBJECT(textrenderer));
 end;
 
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
