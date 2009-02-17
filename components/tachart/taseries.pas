@@ -190,8 +190,6 @@ type
   TPieSeries = class(TChartSeries)
   private
     ColorIndex: Integer;
-    FPiePen: TPen;
-    procedure SetPiePen(Value: TPen);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
@@ -201,14 +199,12 @@ type
     procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
 
     {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
   published
-    property PiePen: TPen read FPiePen write SetPiePen;
     property Title;
     property Active;
   end;
@@ -345,7 +341,7 @@ type
 implementation
 
 uses
-  math, types;
+  GraphMath, Math, Types;
 
 constructor TChartSeries.Create(AOwner: TComponent);
 begin
@@ -1291,34 +1287,11 @@ begin
   Result := FBarBrush.Color;
 end;
 
-constructor TPieSeries.Create(AOwner: TComponent);
+{ TPieSeries }
+
+function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
 begin
-  inherited Create(AOwner);
-
-  ColorIndex := 1;
-
-  FPiePen := TPen.Create;
-  FPiePen.OnChange := StyleChanged;
-  FPiePen.Mode := pmCopy;
-  FPiePen.Style := psSolid;
-  FPiePen.Width := 1;
-  FPiePen.Color := clBlack;
-end;
-
-destructor TPieSeries.Destroy;
-begin
-  FPiePen.Free;
-  inherited Destroy;
-end;
-
-procedure TPieSeries.SetPiePen(Value: TPen);
-begin
-  FPiePen.Assign(Value);
-end;
-
-procedure TPieSeries.SetSeriesColor(const AValue: TColor);
-begin
-  // SeriesColor is meaningless for PieSeries
+  Result := AddXY(getXMinVal + 1, Value, Text, Color);
 end;
 
 function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -1339,129 +1312,94 @@ begin
   ParentChart.BottomAxis.Visible := false;
 end;
 
-function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
+constructor TPieSeries.Create(AOwner: TComponent);
 begin
-  Result := AddXY(getXMinVal + 1, Value, Text, Color);
-end;
-
-procedure conv_angle(nOrigoX, nOrigoY, nLen: Integer; Angle: Double; out PX, PY: Integer);
-begin
-  PX := nOrigoX + round(Cos(Angle) * nLen);
-  PY := nOrigoY - round(Sin(Angle) * nLen);
+  inherited Create(AOwner);
+  ColorIndex := 1;
 end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
-  nOrigoX, nOrigoY: LongInt;
-  nLen: Integer;
-  n100Sum: Double;
-  i, AX, AY, BX, BY: Integer;
-  curangle, prevangle, midleangle, prop: Double;
-  maxtextw: Integer;
-  CircleRect: TRect;
-  markrect: TRect;
-  W: Integer;
+  i, radius: Integer;
+  yTotal, prevAngle, angleStep: Double;
   graphCoord: PChartCoord;
-  MarkTxtWidth: Integer;
-  SPACE_InMarks: integer;
-  labelText: String;
+  labelWidths, labelHeights: TIntegerDynArray;
+  labelTexts: TStringDynArray;
+  a, b, center: TPoint;
 const
-  TAGSMargin = 20;
+  MARGIN = 8;
+  MARKS_DIST = 32;
   MarkYMargin = 2;
   MarkXMargin = 4;
 begin
-  SPACE_InMarks := 40;
-  //no elements to draw
   if FCoordList.Count = 0 then exit;
 
-  //center the ParentChart on the canvas
-  if ParentChart.XImageMax - ParentChart.XImageMin > ParentChart.YImageMin - ParentChart.YImageMax then begin
-    W := ParentChart.YImageMin - ParentChart.YImageMax;
-    nOrigoX := (ParentChart.XImageMax - ParentChart.XImageMin) div 2 + ParentChart.XImageMin;
-    nOrigoY := Round((W - 1.01) / 2) + ParentChart.YImageMax;
-  end
-  else begin
-    W := ParentChart.XImageMax - ParentChart.XImageMin;
-    nOrigoX := Round((W - 1.01) / 2) + ParentChart.XImageMin;
-    nOrigoY := (ParentChart.YImageMin - ParentChart.YImageMax) div 2 + ParentChart.YImageMax;
+  yTotal := 0;
+  for i := 0 to FCoordList.Count - 1 do
+    yTotal += PChartCoord(FCoordList[i])^.y;
+
+  SetLength(labelWidths, FCoordList.Count);
+  SetLength(labelHeights, FCoordList.Count);
+  SetLength(labelTexts, FCoordList.Count);
+  for i := 0 to FCoordList.Count - 1 do
+    with PChartCoord(FCoordList[i])^ do begin
+      case MarksStyle of
+        smsLabel:
+          labelTexts[i] := Text;
+        smsLabelPercent:
+          labelTexts[i] := Text + Format(' %1.3g%%', [y / yTotal * 100]);
+      end;
+      with ACanvas.TextExtent(labelTexts[i]) do begin
+        labelWidths[i] := cx;
+        labelHeights[i] := cy;
+      end;
+    end;
+
+  with ParentChart do begin
+    center.x := (XImageMin + XImageMax) div 2;
+    center.y := (YImageMin + YImageMax) div 2;
+    // Reserve space for labels.
+    radius := Min(
+      XImageMax - center.x - MaxIntValue(labelWidths),
+      YImageMin - center.y - MaxIntValue(labelHeights));
   end;
+  radius := Max(radius - MARKS_DIST - MARGIN, 0);
 
-  prevangle := 0;
-  maxtextw := 0;
-  n100Sum := 0;
-
+  prevAngle := 0;
   for i := 0 to FCoordList.Count - 1 do begin
+    // if y < 0 then y := -y;
+    // if y = 0 then y := 0.1; // just to simulate tchart when y=0
+
     graphCoord := FCoordList[i];
-    n100Sum  := n100Sum + graphCoord^.y;
-    if ACanvas.TextWidth(graphCoord^.Text) > maxtextw then
-      maxtextw := ACanvas.TextWidth(graphCoord^.Text);
-  end;
-
-  //we can only draw if enought space for text is saved
-  //so we remove maxtextw and MarkXMargin
-  nLen := Round((W - maxtextw * 2) / 2);
-  CircleRect.Left   := nOrigoX - nLen - TAGSMargin;
-  CircleRect.Top    := nOrigoY - nLen - TAGSMargin;
-  CircleRect.Right  := nOrigoX + nlen + TAGSMargin;
-  CircleRect.Bottom := nOrigoY + nlen + TAGSMargin;
-
-  // ACanvas.Rectangle(CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom);
-
-  for i := 0 to FCoordList.Count - 1 do begin
-    graphCoord := FCoordList[i];
-    if graphCoord^.y < 0 then graphCoord^.y := -graphCoord^.y;
-    //if graphCoord^.y = 0 then graphCoord^.y := 0.1; //just to simulate tchart when y=0
-
-    conv_angle(nOrigoX, nOrigoY, nLen, prevangle, AX, AY);
-    prop := graphCoord^.y / n100Sum;
-    curangle := prop * (2 * pi);
-    conv_angle(nOrigoX, nOrigoY, nLen, prevangle+curangle, BX, BY);
-
+    angleStep := graphCoord^.y / yTotal * 360 * 16;
     ACanvas.Brush.Color := graphCoord^.Color;
-    ACanvas.Pie(
-      CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom,
-      AX, AY, BX, BY);
 
-    if nLen < SPACE_InMarks then
-       SPACE_InMarks := nLen;
+    ACanvas.RadialPie(
+      center.x - radius, center.y - radius,
+      center.x + radius, center.y + radius, round(prevAngle), round(angleStep));
 
-    //marks
-    midleangle := prevangle + curangle / 2;
-    conv_angle(nOrigoX, nOrigoY, nLen + SPACE_InMarks, midleangle, BX, BY);
-    conv_angle(nOrigoX, nOrigoY, nLen, midleangle, aX, aY);
+    a := LineEndPoint(center, prevAngle + angleStep / 2, radius);
+    b := LineEndPoint(center, prevAngle + angleStep / 2, radius + MARKS_DIST);
 
+    // line from mark to pie
     ACanvas.Pen.Color := clWhite;
-    ACanvas.MoveTo(ax, ay);
-    ACanvas.LineTo(bx, by);
+    ACanvas.MoveTo(a.x, a.y);
+    ACanvas.LineTo(b.x, b.y);
     ACanvas.Pen.Color := clBlack;
 
-    case MarksStyle of
-      smsLabel:
-        labelText := graphCoord^.Text;
-      smsLabelPercent:
-        labelText := graphCoord^.Text + Format(' %1.3g%%', [prop * 100]);
-    end;
-    MarkTxtWidth := ACanvas.TextWidth(labelText);
-
-    //line from mark to pie
-    if Bx < nOrigoX then
-      markrect.Left := BX - MarkTxtWidth - MarkXMargin
-    else
-      markrect.Left := BX - MarkXMargin;
-    markrect.Right := markrect.Left + MarkTxtWidth + MarkXMargin * 2;
-
-    markrect.Top := BY - MarkYMargin;
-    markrect.Bottom := BY + ACanvas.TextHeight(graphCoord^.Text) + MarkYMargin;
+    if b.x < center.x then
+      b.x -= labelWidths[i];
+    if b.y < center.y then
+      b.y -= labelHeights[i];
 
     ACanvas.Brush.Color := clYellow;
-    ACanvas.Rectangle(markrect);
+    ACanvas.Rectangle(
+      b.x - MarkXMargin, b.y - MarkYMargin,
+      b.x + labelWidths[i] + MarkXMargin, b.y + labelHeights[i] + MarkYMargin);
+    ACanvas.TextOut(b.x, b.y, labelTexts[i]);
 
-    if Bx < nOrigoX then BX := BX - MarkTxtWidth;
-    ACanvas.Brush.Color := clYellow;
-    ACanvas.TextOut(BX, BY, labelText);
-
-    prevangle := prevangle + curangle;
-  end; // for
+    prevAngle += angleStep;
+  end;
 end;
 
 procedure TPieSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
@@ -1506,6 +1444,13 @@ begin
   Result := clBlack; // SeriesColor is meaningless for PieSeries
 end;
 
+
+procedure TPieSeries.SetSeriesColor(const AValue: TColor);
+begin
+  // SeriesColor is meaningless for PieSeries
+end;
+
+{ TAreaSeries }
 
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
