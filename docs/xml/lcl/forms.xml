@@ -882,11 +882,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.AlignControls" link="#LCL.Controls.TWinControl.AlignControls">
-        <short/>
+      <element name="TScrollingWinControl.AlignControls">
+        <short>
+          <var>AlignControls</var> - calls inherited <var>AlignControls</var>, then calculates sizes for the scrollbars if required</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScrollingWinControl.AlignControls.AControl">
@@ -907,40 +910,52 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetClientScrollOffset" link="#LCL.Controls.TControl.GetClientScrollOffset">
-        <short/>
+      <element name="TScrollingWinControl.GetClientScrollOffset">
+        <short>
+          <var>GetClientScrollOffset</var> - finds the position for scrollbars from the client, if any, otherwise sets default postiions</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetClientScrollOffset">TControl.GetClientScrollOffset</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TScrollingWinControl.GetClientScrollOffset.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetLogicalClientRect" link="#LCL.Controls.TControl.GetLogicalClientRect">
-        <short/>
+      <element name="TScrollingWinControl.GetLogicalClientRect">
+        <short>
+          <var>GetLogicalClientRect</var> - adjusts client rect to allow for size of scrollbars</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TScrollingWinControl.GetLogicalClientRect.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.DoOnResize" link="#LCL.Controls.TControl.DoOnResize">
-        <short/>
+      <element name="TScrollingWinControl.DoOnResize">
+        <short>
+          <var>DoOnResize</var> - performs inherited <var>DoOnResize</var> then updates scrollbars if needed</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.DoOnResize">TControl.DoOnResize</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TScrollingWinControl.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> inserts its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TScrollingWinControl.GetControlClassDefaultSize.Result">
@@ -1015,11 +1030,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TScrollingWinControl.Loaded">
+        <short>
+          <var>Loaded</var> - calls inherited <var>Loaded</var> and updates scroll bars</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TScrollingWinControl.Loaded">TScrollingWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TScrollingWinControl.Create">
@@ -1388,11 +1406,15 @@ If the indicators are valid, re-computes position etc</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
-        <short/>
+      <element name="TCustomFrame.GetChildren">
+        <short>
+          <var>GetChildren</var> - calls inherited <var>GetChildren</var> then accepts ownership of all owned components that have no parent</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
+          <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomFrame.GetChildren.Proc">
@@ -1403,11 +1425,15 @@ If the indicators are valid, re-computes position etc</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
+      <element name="TCustomFrame.Notification">
+        <short>
+          <var>Notification</var> calls inherited Notification then add or removes the component's action list (depending on what Operation specifies)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
+          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomFrame.Notification.AComponent">
@@ -1418,22 +1444,28 @@ If the indicators are valid, re-computes position etc</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.SetParent" link="#LCL.Controls.TControl.SetParent">
-        <short/>
+      <element name="TCustomFrame.SetParent">
+        <short>
+          <var>SetParent</var> - calls inherited <var>Setparent</var> after validity checks, then updates the action lists </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.SetParent">TControl.SetParent</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomFrame.SetParent.AParent">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomFrame.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomFrame.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - returns its own defaults for frame design, overriding the inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
@@ -2666,22 +2698,29 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
-        <short/>
+      <element name="TCustomForm.CreateParams">
+        <short>
+          <var>CreateParams</var> calls inherited <var>CreateParams</var>, and specifically copies style from parent</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomForm.CreateParams.Params">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TCustomForm.CreateWnd">
+        <short>
+          <var>CreateWnd</var> calls inherited <var>CreateWnd, </var>signals if a handle is required and attaches a menu to the window if one does not yet exist; activates focus if visible</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#LCL.Forms.TScrollingWinControl.CreateWnd">TScrollingWinControl.CreateWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Deactivate">
@@ -2752,11 +2791,15 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
-        <short/>
+      <element name="TCustomForm.GetChildren">
+        <short>
+          <var>GetChildren</var> calls inherited <var>GetChildren</var> then takes ownership of all components, including those  without parents</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
+          <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomForm.GetChildren.Proc">
@@ -2767,11 +2810,15 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TCustomForm.Loaded">
+        <short>
+          <var>Loaded</var> - calls inherited <var>Loaded</var>, makes this the active control and gives it focus</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+          <link id="#LCL.Forms.TScrollingWinControl.Loaded">TScrollingWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.ChildHandlesCreated">
@@ -2779,14 +2826,19 @@ biHelp - When you click this button a Question Cursor appears and the help routi
           <var>ChildHandlesCreated</var> - method for use when handles have been created for descendants</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
+      <element name="TCustomForm.Notification">
+        <short>
+          <var>Notification</var> calls inherited Notification then add or removes the component's action list (depending on what Operation specifies)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomForm.Notification.AComponent">
@@ -2843,7 +2895,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
           <var>UpdateShowing</var> - method to update the <var>Visible</var> property</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.UpdateShowing">TWinControl.UpdateShowing</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible">
@@ -2881,11 +2935,22 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.WndProc" link="#LCL.Controls.TControl.WndProc">
-        <short/>
-        <descr/>
+      <element name="TCustomForm.WndProc">
+        <short>
+          <var>WndProc</var> - performs actions specific to the message then calls inherited <var>WndProc</var>
+        </short>
+        <descr>
+          <p>
+            <var>WndProc</var> - performs actions specific to the message then calls inherited <var>WndProc</var>
+          </p>
+          <p>Specific messages include:</p>
+          <p>Activate, SetFocus. KillFocus; Exit, Enter; Window Position Changing; Draw Item</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
+          <link id="#LCL.Controls.TWinControl.WndProc">TWinControl.WndProc</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomForm.WndProc.TheMessage">
@@ -3799,7 +3864,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso>
           <link id="TCustomForm"/>
           <link id="TScrollingWinControl"/>
-          <link id="#lcl.Controls.TCustomControl"/>
+          <link id="#lcl.Controls.TCustomControl">TCustomControl</link>
           <link id="#lcl.Controls.TWinControl"/>
           <link id="#lcl.Controls.TControl"/>
         </seealso>
@@ -4302,7 +4367,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomDockForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -5034,6 +5099,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TScreen</var>: performs inherited <var>Create</var> then creates and initialises lists of fonts, strings and forms</short>
@@ -5048,6 +5114,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TForm</var>: frees various lists then performs inherited <var>Destroy</var>
@@ -6759,11 +6826,15 @@ If it is a form it will be added to the application's forms list</descr>
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TApplication.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction">
+      <element name="TApplication.ExecuteAction">
         <descr>This is a function that should be supplied by the application programmer, to override the placeholders declared in ancestor classes
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
+        </seealso>
+        <short>
+          <var>ExecuteAction</var> - calls the <var>OnActionExecute</var> event hndler if it is assigned</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.ExecuteAction.Result">
@@ -6774,11 +6845,14 @@ If it is a form it will be added to the application's forms list</descr>
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TApplication.UpdateAction" link="#rtl.Classes.TComponent.UpdateAction">
-        <short/>
+      <element name="TApplication.UpdateAction">
+        <short>
+          <var>UpdateAction</var> - calls the OnUpdateAction event handler if it is assigned</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.UpdateAction">TComponent.UpdateAction</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.UpdateAction.Result">
@@ -6789,7 +6863,7 @@ If it is a form it will be added to the application's forms list</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TApplication.HandleException" link="#fcl.CustApp.TCustomApplication.HandleException">
+      <element name="TApplication.HandleException">
         <descr>Individual exception handler methods should be supplied by the application programmer, to override place-holder entries declared in ancestor classes.<br/>
 
 This method checks whether the application is required to halt if an exception occurs, or invokes the appropriate handler. <br/>
@@ -6798,7 +6872,11 @@ This method checks whether the application is required to halt if an exception o
 It also writes details of the exception to the appropriate place for debugging.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.HandleException">TCustomApplication.HandleException</link>
+        </seealso>
+        <short>
+          <var>HandleException</var> method for handling an exception; attempts to maintain program execution if possible, otherwise exits gracefully</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.HandleException.Sender">
@@ -6928,11 +7006,15 @@ It also writes details of the exception to the appropriate place for debugging.
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TApplication.Initialize" link="#fcl.CustApp.TCustomApplication.Initialize">
+      <element name="TApplication.Initialize">
         <descr>Finds the appropriate widget set, reads the application's icon (if any) from the Lazarus Resource file, initialises the screen, and leaves it ready for processing.
 </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.Initialize">TCustomApplication.Initialize</link>
+        </seealso>
+        <short>
+          <var>Initialize</var> - calls inherited Initialize, then initialises widget set, loads icons from Laz resources and updates screen</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
@@ -7074,11 +7156,15 @@ These constants are declared on the LCLType unit.
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TApplication.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
+      <element name="TApplication.Notification">
+        <short>
+          <var>Notification</var> if Operation is Remove, then sets any Component to nil, otherwise calls inherited <var>Notification</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.Notification.AComponent">
@@ -8513,6 +8599,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -8528,6 +8615,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -9490,7 +9578,11 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
-      <element name="TForm.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+        </seealso>
+      </element>
       <element name="TForm.Create" link="#LCL.Forms.TCustomForm.Create"/>
       <element name="TScreen.DataModuleCount">
         <short>The number of data modules on the screen</short>
@@ -9506,7 +9598,14 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TScrollBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
       <element name="TScrollBox.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TScrollBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TCustomFrame.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties"/>
+      <element name="TCustomFrame.DefineProperties">
+        <short>
+          <var>DefineProperties</var>- calculates low and high values for frame design from ancestor class</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
+          <link id="#LCL.Controls.TControl.DefineProperties">TControl.DefineProperties</link>
+        </seealso>
+      </element>
       <element name="TFrame.LCLVersionIsStored"/>
       <element name="TFrame.Create" link="#LCL.Forms.TCustomFrame.Create"/>
       <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
@@ -9549,6 +9648,31 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TApplication.BidiMode">
         <short>
           <var>BidiMode</var> - whether bi-directional mode is available</short>
+      </element>
+      <element name="TCustomForm.DoShowWindow">
+        <short>
+          <var>DoShowWindow</var> automatically choose a control to focus</short>
+      </element>
+      <element name="TCustomForm.AdjustClientRect">
+        <short>
+          <var>AdjustClientRect</var> - adjusts window size to accommodate borders</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
+        </seealso>
+      </element>
+      <element name="THintWindow.DoShowWindow" link="#LCL.Forms.TCustomForm.DoShowWindow"/>
+      <element name="TScreen.DisableForms">
+        <short>
+          <var>DisableForms</var> - disable all forms except <var>SkipForm</var>. If <var>DisabledList</var> is available then add forms to that list and return it, otherwise return new list. Used to show forms and other dialogs modal        </short>
+      </element>
+      <element name="TScreen.EnableForms">
+        <short>
+          <var>EnableForms</var> - enable all forms from <var>AFormList</var> and destroy list. Used to restore state after <var>DisableForms</var>
+        </short>
+      </element>
+      <element name="TApplication.DoArrowKey">
+        <short>
+          <var>DoArrowKey</var> - method for processing an arrow key</short>
       </element>
     </module>
     <!-- Forms -->
