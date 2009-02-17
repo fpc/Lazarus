@@ -488,7 +488,8 @@ begin
     pClassName := WC_LISTVIEW;
     WindowTitle := StrCaption;
     Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL or LVS_SHAREIMAGELISTS;
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if TCustomListView(AWinControl).BorderStyle = bsSingle then
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -676,6 +677,22 @@ begin
   then Exit;
 
   ListView_SetItemCount(ALV.Handle, AValue);
+end;
+
+class procedure TWin32WSCustomListView.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  Handle: HWND;
+  StyleEx: PtrInt;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetBorder') then
+    Exit;
+  Handle := AWinControl.Handle;
+  StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
+  if ABorderStyle = TBorderStyle(bsSingle) Then
+    StyleEx := StyleEx or WS_EX_CLIENTEDGE
+  else
+    StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
+  SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
 end;
 
 class procedure TWin32WSCustomListView.SetColor(const AWinControl: TWinControl);

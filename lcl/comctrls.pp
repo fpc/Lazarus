@@ -1002,7 +1002,6 @@ type
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
-    property BorderStyle default bsSingle;
     property Columns: TListColumns read FColumns write SetColumns;
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
@@ -1044,6 +1043,7 @@ type
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
     function GetItemAt(x,y: integer): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
+    property BorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty default False;
     property Column[AIndex: Integer]: TListColumn read GetColumnFromIndex;
@@ -1071,7 +1071,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-//    property BorderStyle;
+    property BorderStyle;
     property BorderWidth;
     property Checkboxes;
     property Color default clWindow;

@@ -130,6 +130,7 @@ type
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
