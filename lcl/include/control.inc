@@ -856,9 +856,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.ColorIsStored: boolean;
 begin
-  Result := (Color <> clWindow);
-  if Result and ParentColor and (Parent <> nil) then
-    Result := False;
+  Result := not ParentColor or (Parent = nil);
 end;
 
 {------------------------------------------------------------------------------

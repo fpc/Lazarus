@@ -148,7 +148,6 @@ type
     procedure CalculatePreferredSize(
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
-    function ColorIsStored: boolean; override;
 
     //added.
     function CreatePanel: TStatusPanel; virtual;

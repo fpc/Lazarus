@@ -99,7 +99,7 @@ type
     Control: TControl;
     Inserting: Boolean;
     Result: LRESULT;
-  End;
+  end;
 
   TCMDialogChar = TLMKEY;
   TCMDialogKey = TLMKEY;
@@ -2253,6 +2253,8 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect);
 
+function IsColorDefault(AControl: TControl): Boolean;
+
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
@@ -2339,6 +2341,21 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 begin
   AdjustBorderSpace(RemainingClientRect,CurBorderSpace,Space.Left,Space.Top,
                     Space.Right,Space.Bottom);
+end;
+
+function IsColorDefault(AControl: TControl): Boolean;
+const
+  NoDefaultValue = Longint($80000000);
+var
+  Info: PPropInfo;
+begin
+  Result := not AControl.ColorIsStored;
+  if not Result then
+  begin
+    Info := GetPropInfo(AControl, 'Color');
+    if Info <> nil then
+      Result := (Info^.Default <> NoDefaultValue) and (Info^.Default = AControl.Color);
+  end;
 end;
 
 function DbgS(a: TAnchorKind): string;

@@ -1005,7 +1005,7 @@ end;
 
 function TCustomForm.ColorIsStored: boolean;
 begin
-  Result:=(Color<>clBtnFace);
+  Result:=(Color <> clBtnFace);
 end;
 
 procedure TCustomForm.DoSendBoundsToInterface;

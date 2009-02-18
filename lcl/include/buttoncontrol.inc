@@ -63,13 +63,6 @@ begin
   inherited Click;
 end;
 
-function TButtonControl.ColorIsStored: boolean;
-begin
-  Result:=(Color<>clBtnFace);
-  if Result and ParentColor and (Parent<>nil) then
-    Result:=false;
-end;
-
 constructor TButtonControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

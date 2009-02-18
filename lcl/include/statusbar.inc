@@ -201,13 +201,6 @@ begin
     PreferredHeight := 25;
 end;
 
-function TStatusBar.ColorIsStored: boolean;
-begin
-  Result:=(Color<>clBtnFace);
-  if Result and ParentColor and (Parent<>nil) then
-    Result:=false;
-end;
-
 procedure TStatusBar.BeginUpdate;
 begin
   inc(FUpdateLock);

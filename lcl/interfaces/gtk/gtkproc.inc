@@ -8922,7 +8922,8 @@ begin
   FreeFontSetName:=false;
   try
     // set default background
-    if (AWinControl.Color=clNone) then begin
+    if (AWinControl.Color=clNone) then 
+    begin
       // clNone => remove default background
       if (FixWidget<>nil) and (FixWidget^.Window<>nil) then
       begin
@@ -8930,8 +8931,8 @@ begin
       end;
     end
     else
-    if TWinControlAccess(AWinControl).ColorIsStored
-    and ((AWinControl.Color and SYS_COLOR_BASE)=0) then begin
+    if not IsColorDefault(AWinControl) and ((AWinControl.Color and SYS_COLOR_BASE)=0) then 
+    begin
       // set background to user defined color
 
       // don't set background for custom controls, which paint themselves

@@ -1014,7 +1014,6 @@ type
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
     procedure Click; override;
-    function ColorIsStored: boolean; override;
     procedure Loaded; override;
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   protected
