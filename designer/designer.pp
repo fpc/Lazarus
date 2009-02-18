@@ -2755,15 +2755,17 @@ end;
 
 procedure TDesigner.BuildPopupMenu;
 begin
-  if DesignerPopupMenu<>nil then exit;
-  
-  DesignerPopupMenu:=TPopupMenu.Create(nil);
-  with DesignerPopupMenu do 
+  if DesignerPopupMenu = nil then
   begin
-    Name := 'DesignerPopupmenu';
-    OnPopup := @DesignerPopupMenuPopup;
-    Images := IDEImages.Images_16;
+    DesignerPopupMenu:=TPopupMenu.Create(nil);
+    with DesignerPopupMenu do
+    begin
+      Name := 'DesignerPopupmenu';
+      OnPopup := @DesignerPopupMenuPopup;
+      Images := IDEImages.Images_16;
+    end;
   end;
+  
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -2771,7 +2773,7 @@ begin
   DesignerPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   DesignerMenuRoot.ConsistencyCheck;
   {$ENDIF}
-  DesignerMenuRoot.MenuItem:=DesignerPopupMenu.Items;
+  DesignerMenuRoot.MenuItem := DesignerPopupMenu.Items;
 
   DesignerMenuAlign.OnClick := @OnAlignPopupMenuClick;
   DesignerMenuMirrorHorizontal.OnClick := @OnMirrorHorizontalPopupMenuClick;
