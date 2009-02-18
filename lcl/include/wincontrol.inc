@@ -6254,16 +6254,16 @@ begin
     NewLeft := FBoundsRealized.Left;
     NewTop := FBoundsRealized.Top;
     if HandleAllocated then
-      GetWindowRelativePosition(Handle,NewLeft,NewTop);
+      GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
-    NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized) and
+    NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
+    if CompareRect(@NewBoundsRealized, @FBoundsRealized) and
        (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
-    FBoundsRealized:=NewBoundsRealized;
+    FBoundsRealized := NewBoundsRealized;
     InvalidatePreferredSize;
   end;
 
-  SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
+  SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
   if ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
 

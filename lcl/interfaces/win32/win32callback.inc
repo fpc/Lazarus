@@ -2339,12 +2339,12 @@ begin
             ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
             ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
-          if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
-              or lWinControl.ClientRectNeedsInterfaceUpdate then
+          if (lWinControl.Width <> Width) or
+             (lWinControl.Height <> Height) or
+             lWinControl.ClientRectNeedsInterfaceUpdate then
           begin
             lWinControl.DoAdjustClientRectChange;
-            if (lWinControl is TCustomPage)
-            and (lWinControl.Parent is TCustomNotebook) then
+            if (lWinControl is TCustomPage) and (lWinControl.Parent is TCustomNotebook) then
             begin
               // the TCustomPage size is the ClientRect size of the parent
               // => invalidate the Parent.ClientRect
