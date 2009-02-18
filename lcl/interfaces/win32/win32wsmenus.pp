@@ -536,7 +536,6 @@ var
   FreeImageList: Boolean;
   AImageIndex: Integer;
   ImageRect: TRect;
-  Brush: HBRUSH;
 begin
   AImageList := aMenuItem.GetImageList;
   if AImageList = nil then
@@ -571,9 +570,9 @@ begin
       
   if aChecked then // draw rectangle around
   begin
-    Brush := CreateSolidBrush(GetSysColor(COLOR_HIGHLIGHT));
-    FrameRect(aHDC, Rect(ImageRect.Left - 1, ImageRect.Top - 1, ImageRect.Left + ImageRect.Right + 1, ImageRect.Top + ImageRect.Bottom + 1), Brush);
-    DeleteObject(Brush);
+    FrameRect(aHDC,
+      Rect(ImageRect.Left - 1, ImageRect.Top - 1, ImageRect.Left + ImageRect.Right + 1, ImageRect.Top + ImageRect.Bottom + 1),
+      GetSysColorBrush(COLOR_HIGHLIGHT));
   end;
   
   if AImageIndex < AImageList.Count then
