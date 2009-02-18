@@ -8788,19 +8788,26 @@ begin
     DebugLn(' LCLObject=nil');
   {$ENDIF}
   Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
-  if Result then begin
-    GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
-    if GdkWindow<>nil then begin
-      AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
-      if (AForm<>nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
+  if Result then
+  begin
+    GdkWindow := GetControlWindow(PgtkWidget(hwnd));
+    if GdkWindow <> nil then
+    begin
+      if not gdk_window_is_visible(GdkWindow) then
       begin
-        if Screen.CustomFormZIndex(AForm)<Screen.GetCurrentModalFormZIndex then
+        Result := False;
+        Exit;
+      end;
+      AForm := TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
+      if (AForm <> nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
+      begin
+        if Screen.CustomFormZIndex(AForm) < Screen.GetCurrentModalFormZIndex then
         begin
           debugln('TGtkWidgetSet.SetForegroundWindow Form=',DbgSName(AForm),
                   ' can not be raised, because ',
                   DbgSName(Screen.GetCurrentModalForm),
                   ' is modal and above.');
-          Result:=false;
+          Result := False;
           exit;
         end;
         Screen.MoveFormToZFront(AForm);
