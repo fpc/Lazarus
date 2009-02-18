@@ -51,7 +51,7 @@ type
   private
     FVisible: Boolean;
     procedure SetVisible(Value: Boolean);
-  protected
+  public
     procedure Assign(Source: TPersistent); override;
   published
     property Visible: Boolean read FVisible write SetVisible;
@@ -72,11 +72,10 @@ type
     procedure SetFont(Value: TFont);
     procedure SetFrame(Value: TChartPen);
     procedure StyleChanged(Sender: TObject);
-  protected
-    procedure Assign(Source: TPersistent); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Visible: Boolean read FVisible write SetVisible;
     property Alignment: TLegendAlignment read FAlignment write SetAlignment;
@@ -101,11 +100,10 @@ type
     procedure SetText(Value: TStrings);
     procedure SetAlignment(Value: TAlignment);
     procedure StyleChanged(Sender: TObject);
-  protected
-    procedure Assign(Source: TPersistent); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Visible: Boolean read FVisible write SetVisible;
     property Brush: TBrush read FBrush write SetBrush;
@@ -126,11 +124,10 @@ type
     procedure SetAngle(Value: Integer);
     procedure SetFont(Value: TFont);
     procedure StyleChanged(Sender: TObject);
-  protected
-    procedure Assign(Source: TPersistent); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Caption: String read FCaption write SetCaption;
     property Angle: Integer read FAngle write SetAngle;
@@ -150,11 +147,10 @@ type
     procedure SetGrid(Value: TChartPen);
     procedure SetInverted(Value: Boolean);
     procedure StyleChanged(Sender: TObject);
-  protected
-    procedure Assign(Source: TPersistent); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Visible: boolean read FVisible write SetVisible;
     property Inverted: boolean read FInverted write SetInverted;
@@ -281,7 +277,6 @@ type
       IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double); virtual;
     procedure DoDrawReticule(
       IndexSerie, Index: Integer; const APoint: TPoint; Xg, Yg: Double); virtual;
-    procedure EraseBackground(DC: HDC); override;
   public
     XImageMin, YImageMin: Integer;                // Image coordinates of limits
     XImageMax, YImageMax: Integer;
@@ -289,6 +284,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
     procedure Paint; override;
+    procedure EraseBackground(DC: HDC); override;
+
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure Refresh(ACanvas: TCanvas; ARect: TRect);
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
