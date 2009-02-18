@@ -206,7 +206,7 @@ Var
   WindowInfo: PWindowInfo;
   Flags: dword;
   ChildWindowInfo: PWindowInfo;
-  
+
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
   LMChar: TLMChar; // used by WM_CHAR
@@ -220,7 +220,7 @@ Var
 
   OrgCharCode: word; // used in WM_CHAR handling
 
-  
+
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
   {$ifndef win32}
@@ -264,7 +264,7 @@ Var
     if PopupMenu <> nil then //processing popup menu
     begin
       WindowInfo^.PopupMenu := nil;
-      Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
+      Result := PopupMenu.FindItem(LOWORD(WParam) - StartMenuItem , fkCommand);
     end;
     {$ifndef win32}
     if Result = nil then //if Result is still nil, process main menu
@@ -277,7 +277,7 @@ Var
     {
       This way returns False for GetMenuItemInfo(W) - extended error is so:
       This function is only valid in win32 mode
-      
+
       if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
         Result := TObject(MenuInfo.dwItemData)
       else
@@ -717,7 +717,7 @@ Var
       if ACursor = crDefault then
       begin
         // statictext controls do not get WM_SETCURSOR messages...
-        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas, 
+        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
           capfAllowWinControls, capfHasScrollOffset, capfRecursive]);
         if lControl = nil then
           lControl := lWinControl;
@@ -767,7 +767,7 @@ Var
             end;
           end;
         end;
-        
+
      //roozbeh : we dont have these in wince!
      { SC_MINIMIZE:
         begin
@@ -786,7 +786,7 @@ Var
                 Application.MainForm.Width, 0, SWP_NOACTIVATE);
                 if Application.MainForm.HandleAllocated then
                  Windows.ShowWindow(Application.MainForm.Handle,SW_HIDE);
-                 
+
               Application.IntfAppMinimize;
           end;
         end;}
@@ -804,7 +804,7 @@ Var
             if Windows.IsWindowEnabled(Application.MainForm.Handle)
              then Windows.SetActiveWindow(Application.MainForm.Handle);
             WinProcess := false;
-            
+
             Application.IntfAppRestore;
           end;
         end;}
@@ -877,7 +877,7 @@ Var
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
-  
+
   procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
     function ConvState(const State: uint): TCustomDrawState;
     begin
@@ -892,8 +892,8 @@ Var
       if state and CDIS_MARKED <> 0 then Include(Result, cdsMarked);
       if state and CDIS_SELECTED <> 0 then Include(Result, cdsSelected);
     end;
- 
-  const 
+
+  const
     CDRFRESULT: array[TCustomDrawResultFlag] of Integer = (
       CDRF_SKIPDEFAULT,
       CDRF_NOTIFYPOSTPAINT,
@@ -902,7 +902,7 @@ Var
       CDRF_NOTIFYPOSTERASE,
       CDRF_NOTIFYITEMERASE
     );
-  var 
+  var
     DrawInfo: PNMLVCustomDraw absolute NMHdr;
     Stage: TCustomDrawStage;
     DrawResult: TCustomDrawResult;
@@ -913,12 +913,12 @@ Var
     case DrawInfo^.dwDrawStage and $7 of //Get drawing state
       CDDS_PREPAINT:  Stage := cdPrePaint;
       CDDS_POSTPAINT: Stage := cdPostPaint;
-      CDDS_PREERASE:  Stage := cdPreErase; 
+      CDDS_PREERASE:  Stage := cdPreErase;
       CDDS_POSTERASE: Stage := cdPostErase;
     else
       Exit;
-    end;  
-    
+    end;
+
     case DrawInfo^.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of
       0: begin //Whole control
         DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.rc);
@@ -931,7 +931,7 @@ Var
         if DrawInfo^.iSubItem = 0 then Exit;
         DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.dwItemSpec, DrawInfo^.iSubItem, ConvState(DrawInfo^.uItemState), nil);
       end;
-    else 
+    else
       Exit;
     end;
 
@@ -941,7 +941,7 @@ Var
       then lmNotify.result := lmNotify.result or CDRFRESULT[ResultFlag];
     end;
   end;
-  
+
   function HandleUnicodeChar(AChar: Word): boolean;
   var
     UTF8Char: TUTF8Char;
@@ -1130,15 +1130,23 @@ begin
       else
       begin
         { Handles other reasons for WM_COMMAND }
+
         if Hi(WParam) < 2 then //1 for accelerator 0 for menu
-          TargetObject := GetMenuItemObject else // menuitem or shortcut
+        begin
+          TargetObject := GetMenuItemObject
+        end
+        else // menuitem or shortcut
+        begin
           TargetObject := nil;
+        end;
+
         if TargetObject is TMenuItem then
         begin
           LMessage.Msg := LM_ACTIVATE;
           TargetObject.Dispatch(LMessage);
           lWinControl := nil;
-        end else
+        end
+        else
         begin
           lWinControl := GetWindowInfo(LParam)^.WinControl;
           // buddy controls use 'awincontrol' to designate associated wincontrol
@@ -1235,7 +1243,7 @@ begin
           WinProcess := false;
         end;
       end;
-        
+
       if WinProcess then
       begin
         if ChildWinControl <> nil then
@@ -1478,7 +1486,7 @@ begin
       begin
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
       end;
-      
+
       {$ifndef win32}
       // Gesture recognition process to enable popup menus.
       if (lWinControl.PopupMenu <> nil) then
@@ -1687,6 +1695,7 @@ begin
     WM_NOTIFY:
     begin
       WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+
 {$ifdef MSG_DEBUG}
       DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
 {$endif}
@@ -2106,7 +2115,7 @@ begin
       if PLMsg^.Result = 0 then
         WinProcess := true;
     end;
-    
+
     CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
@@ -2293,17 +2302,17 @@ begin
   {$endif}
 
   Result := 0;
- 
+
   LMessage.Result := 0;
   LMessage.Msg := LM_NULL;
 
   case Msg of
-  
+
     WM_CLOSE:
     begin
       DestroyWindow(Window);
     end;
-    
+
     WM_DESTROY :
     begin
       PostQuitMessage(0);
@@ -2370,12 +2379,3 @@ begin
     end;
   end;
 end;
-
-
-
-
-
-
-
-
-

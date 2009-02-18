@@ -85,7 +85,7 @@ const
   );
   MenuBarID_L = 40052;
   MenuBarID_R = 40053;
-
+  StartMenuItem = 200;
 var
   MenuItemsList : TStringList;
 
@@ -175,7 +175,7 @@ begin
       fState:=fState or MF_GRAYED;
     if mi.fState and MFS_CHECKED <> 0 then
       fState:=fState or MF_CHECKED;
-    uIDNewItem := mi.wID;
+    uIDNewItem := mi.wID + StartMenuItem;
     if mi.hSubMenu <>  0 then
     begin
       uIDNewItem  := mi.hSubMenu;
@@ -390,7 +390,7 @@ begin
   MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
@@ -401,7 +401,7 @@ begin
   {$else}
   MenuInfo.dwTypeData := PWideChar(wCaption);
   {$endif}
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -435,7 +435,7 @@ begin
       fState := MFS_DISABLED;
    end;
   end;
-  if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
+  if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
   TriggerFormUpdate(AMenuItem);
 end;
@@ -462,7 +462,7 @@ begin
       cbSize := menuiteminfosize;
       fMask := MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
+    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command + StartMenuItem,
                     False, @MenuInfo);
     if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
     begin
@@ -478,7 +478,7 @@ begin
   if AMenuItem.Checked then
     fState := fState or MF_CHECKED;
 
-  cmd := AMenuItem.Command; {value may only be 16 bit wide!}
+  cmd := AMenuItem.Command + StartMenuItem; {value may only be 16 bit wide!}
   if (AMenuItem.Count > 0) then
   begin
     fState := fState or MF_POPUP;
@@ -501,11 +501,10 @@ begin
   //GetMenuItemInfo(ParentMenuHandle, Index, True, @MenuInfo);
   MenuInfo.dwItemData := PtrInt(AMenuItem);
   //MenuInfo.wID := AMenuItem.Command;
-  
   if not SetMenuItemInfoW(ParentMenuHandle, Index, True, @MenuInfo) then
     DebugLn(['SetMenuItemInfoW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError)]);
 
-  MenuItemsList.AddObject(IntToStr(AMenuItem.Command), AMenuItem);
+  MenuItemsList.AddObject(IntToStr(AMenuItem.Command + StartMenuItem), AMenuItem);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -517,7 +516,7 @@ end;
 class procedure TWinCEWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   if Assigned(AMenuItem.Parent) then
-    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, MF_BYCOMMAND);
   DestroyMenu(AMenuItem.Handle);
   TriggerFormUpdate(AMenuItem);
 end;
@@ -536,7 +535,7 @@ begin
     uCheck := MF_CHECKED
   else
     uCheck := MF_UNCHECKED;
-  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, uCheck));
+  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, uCheck));
 end;
 
 class procedure TWinCEWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
@@ -550,7 +549,7 @@ var
   EnableFlag: Integer;
 begin
   EnableFlag := MF_BYCOMMAND or EnabledToStateFlag[Enabled];
-  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;
 

@@ -106,6 +106,9 @@ const
      
   WM_LCL_SOCK_ASYNC = WM_USER;
 
+  StartMenuItem = 200;
+
+
 type
 
   { Policy for using the "OK" close button in the title instead of
