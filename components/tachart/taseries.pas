@@ -372,8 +372,7 @@ var
   i: Integer;
 begin
   if ParentChart <> nil then
-    ParentChart.Series.Remove(Self);
-  UpdateParentChart;
+    ParentChart.DeleteSerie(Self);
   ParentChart := nil;
 
   for i := 0 to FCoordList.Count - 1 do
@@ -1285,7 +1284,7 @@ begin
   for i := 0 to ParentChart.SeriesCount - 1 do begin
     if ParentChart.Series[i] = Self then
       AMyPos := ATotalNumber;
-    if TBasicChartSeries(ParentChart.Series[i]) is TBarSeries then
+    if ParentChart.Series[i] is TBarSeries then
       Inc(ATotalNumber);
   end;
   Assert(AMyPos >= 0);

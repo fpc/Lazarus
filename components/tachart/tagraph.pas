@@ -243,6 +243,7 @@ type
 
     FAxisVisible: Boolean;
     
+    function GetSeries(AIndex: Integer): TBasicChartSeries;
     procedure PrepareXorPen;
     procedure SetAutoUpdateXMin(Value: Boolean);
     procedure SetAutoUpdateXMax(Value: Boolean);
@@ -302,7 +303,6 @@ type
 
     procedure AddSerie(ASerie: TBasicChartSeries);
     procedure DeleteSerie(Serie: TComponent);
-    function  GetSerie(AIndex: Integer): TComponent;
     procedure SetAutoXMin(Auto: Boolean);
     procedure SetAutoXMax(Auto: Boolean);
     procedure SetAutoYMin(Auto: Boolean);
@@ -328,10 +328,10 @@ type
 
     property Canvas;
 
+    property Series[AIndex: Integer]: TBasicChartSeries read GetSeries;
     property SeriesCount: Integer read GetSeriesCount;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
-    property Series: TFPList read FSeries write FSeries;
   published
     procedure StyleChanged(Sender: TObject);
     property AutoUpdateXMin: Boolean read FAutoUpdateXMin write SetAutoUpdateXMin default true;
@@ -646,7 +646,6 @@ begin
   StyleChanged(Self);
 end;
 
-
 procedure TChartTitle.SetBrush(Value: TBrush);
 begin
   FBrush.Assign(Value);
@@ -664,7 +663,6 @@ begin
   FAlignment := Value;
   StyleChanged(Self);
 end;
-
 
 procedure TChartTitle.StyleChanged(Sender: TObject);
 begin
@@ -686,7 +684,7 @@ begin
   FVertReticuleX := -1;
   FReticulePos := Point(-1, -1);
 
-  Series := TFPList.Create;
+  FSeries := TFPList.Create;
 
   YMarkWidth := 10;
 
@@ -740,7 +738,7 @@ var
   i: Integer;
 begin
   for i := 0 to FSeries.Count - 1 do
-    with TBasicChartSeries(FSeries.Items[i]) do begin
+    with Series[i] do begin
       ParentChart := nil; // Prevent auto-update of the chart by series.
       Free;
     end;
@@ -1127,9 +1125,8 @@ begin
     TH := ACanvas.TextHeight('I');
     h := 0;
     for i := 0 to SeriesCount - 1 do
-      with TBasicChartSeries(Series[i]) do
-        if IsInLegend then
-          Inc(h, GetLegendCount);
+      if Series[i].IsInLegend then
+        Inc(h, Series[i].GetLegendCount);
     x1 := ARect.Right - w - 5;
     y1 := YImageMax;
     x2 := x1 + w;
@@ -1143,7 +1140,7 @@ begin
 
     r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
     for i := 0 to SeriesCount - 1 do
-      with TBasicChartSeries(Series[i]) do
+      with Series[i] do
         if IsInLegend then begin
           ACanvas.Pen.Color := FLegend.Frame.Color;
           ACanvas.Brush.Assign(FGraphBrush);
@@ -1236,11 +1233,9 @@ begin
   if not FLegend.Visible then
     exit;
 
-  for i := 0 to SeriesCount - 1 do begin
-    with TBasicChartSeries(Series[i]) do
-      if IsInLegend then
-        Result := Max(GetLegendWidth(ACanvas), Result);
-  end;
+  for i := 0 to SeriesCount - 1 do
+    if Series[i].IsInLegend then
+      Result := Max(Series[i].GetLegendWidth(ACanvas), Result);
   if Result > 0 then
     Result += 20 + 10;
 end;
@@ -1253,7 +1248,7 @@ end;
 procedure TChart.AddSerie(ASerie: TBasicChartSeries);
 begin
   MaybeDrawReticules;
-  Series.Add(ASerie);
+  FSeries.Add(ASerie);
   ASerie.ParentChart := Self;
   ASerie.AfterAdd;
 end;
@@ -1265,7 +1260,7 @@ begin
   i := 0;
   while i < SeriesCount do begin
     if Serie = Series[i] then begin
-      Series.Delete(i);
+      FSeries.Delete(i);
       Invalidate;
     end
     else
@@ -1273,9 +1268,9 @@ begin
   end;
 end;
 
-function TChart.GetSerie(AIndex: Integer): TComponent;
+function TChart.GetSeries(AIndex: Integer): TBasicChartSeries;
 begin
-  Result := Series[AIndex];
+  Result := TBasicChartSeries(FSeries[AIndex]);
 end;
 
 procedure TChart.SetAutoXMin(Auto: Boolean);
@@ -1335,8 +1330,8 @@ begin
     YMinSeries := MaxDouble;
     YMaxSeries := MinDouble;
     NBPointsMax := 0;
-    for i := 0 to Series.Count - 1 do
-      TBasicChartSeries(Series[i]).UpdateBounds(
+    for i := 0 to SeriesCount - 1 do
+      Series[i].UpdateBounds(
         NBPointsMax, XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
     if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
     if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
@@ -1583,7 +1578,7 @@ begin
 
   // Update all series
   for i := 0 to FSeries.Count - 1 do
-    TBasicChartSeries(Series[i]).DrawIfActive(ACanvas);
+    Series[i].DrawIfActive(ACanvas);
 
   //now disable clipping
   SelectClipRgn(ACanvas.Handle, 0);
@@ -1642,7 +1637,6 @@ var
   i, pointIndex: Integer;
   r: TRect;
   pt, newRetPos: TPoint;
-  serie: TBasicChartSeries;
   value: TDoublePoint;
 begin
   if Down then begin
@@ -1662,10 +1656,9 @@ begin
 
   pt := Point(X, Y);
   for i := 0 to SeriesCount - 1 do begin
-    serie := TBasicChartSeries(Series[i]);
     if
       FShowVerticalReticule and
-      serie.GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
+      Series[i].GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
       (newRetPos.X <> FVertReticuleX) and
       InRange(newRetPos.X, r.Left, r.Right)
     then begin
@@ -1676,7 +1669,7 @@ begin
     end;
     if
       FShowReticule and
-      serie.GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
+      Series[i].GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
       not EqualPoints(newRetPos, FReticulePos) and PtInRect(r, newRetPos)
     then begin
       DoDrawReticule(i, pointIndex, newRetPos, value.X, value.Y);
@@ -1744,7 +1737,7 @@ begin
   for i := 1 to MaxColor do begin
     ColorFound := false;
     for j := 0 to SeriesCount - 1 do begin
-      if TBasicChartSeries(Series[j]).SeriesColor = Colors[i] then
+      if Series[j].SeriesColor = Colors[i] then
         ColorFound := true;
     end;
     if not ColorFound then begin
