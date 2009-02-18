@@ -24,17 +24,11 @@ Authors: Luís Rodrigues and Philippe Martinole
 
 unit TASeries;
 
-{$IFDEF fpc}
-{$MODE DELPHI}{$H+}
-{$ENDIF}
+{$H+}
 
 interface
 
 uses
-  {$IFDEF fpc}
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   Classes, Dialogs, Graphics, sysutils, TAGraph, TAChartUtils;
 
 type
@@ -664,7 +658,7 @@ begin
 
   FPointer := TSeriesPointer.Create(Self);
   FPointer.FStyle := psCross;
-  FPointer.OnChange := StyleChanged;
+  FPointer.OnChange := @StyleChanged;
 
   FStyle := psSolid;
 
@@ -1025,7 +1019,7 @@ begin
   inherited Create(AOwner);
 
   FPen := TPen.Create;
-  FPen.OnChange := StyleChanged;
+  FPen.OnChange := @StyleChanged;
   LineStyle := lsHorizontal;
 end;
 
@@ -1120,10 +1114,10 @@ begin
   FBarWidthPercent := 70; //70%
 
   FBarBrush := TBrush.Create;
-  FBarBrush.OnChange := StyleChanged;
+  FBarBrush.OnChange := @StyleChanged;
 
   FBarPen := TPen.Create;
-  FBarPen.OnChange := StyleChanged;
+  FBarPen.OnChange := @StyleChanged;
   FBarPen.Mode := pmCopy;
   FBarPen.Style := psSolid;
   FBarPen.Width := 1;

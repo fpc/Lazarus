@@ -23,18 +23,12 @@ Authors: Luís Rodrigues and Philippe Martinole
 }
 unit TAGraph;
 
-{$IFDEF fpc}
-{$MODE DELPHI}{$H+}
-{$ENDIF}
+{$H+}
 
 interface
 
 uses
-  {$IFDEF fpc}
   LCLIntF, LCLType, LResources,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, Clipbrd,
   TAChartUtils;
 
@@ -424,7 +418,7 @@ begin
   FOwner := AOwner;
   FTitle := TChartAxisTitle.Create(AOwner);
   FGrid := TChartPen.Create;
-  FGrid.OnChange := StyleChanged;
+  FGrid.OnChange := @StyleChanged;
 end;
 
 destructor TChartAxis.Destroy;
@@ -481,7 +475,7 @@ begin
   inherited Create;
   FOwner := AOwner;
   FFont := TFont.Create;
-  FFont.OnChange := StyleChanged;
+  FFont.OnChange := @StyleChanged;
 end;
 
 destructor TChartAxisTitle.Destroy;
@@ -534,9 +528,9 @@ begin
   FAlignment := laRight;
 
   FFont := TFont.Create;
-  FFont.OnChange := StyleChanged;
+  FFont.OnChange := @StyleChanged;
   FFrame := TChartPen.Create;
-  FFrame.OnChange := StyleChanged;
+  FFrame.OnChange := @StyleChanged;
 end;
 
 destructor TChartLegend.Destroy;
@@ -596,12 +590,12 @@ begin
 
   FFont := TFont.Create;
   FFont.Color := clBlue;
-  FFont.OnChange := StyleChanged;
+  FFont.OnChange := @StyleChanged;
   FFrame := TChartPen.Create;
-  FFrame.OnChange := StyleChanged;
+  FFrame.OnChange := @StyleChanged;
   FBrush := TBrush.Create;
   FBrush.Color := FOwner.Color;
-  FBrush.OnChange := StyleChanged;
+  FBrush.OnChange := @StyleChanged;
   FText := TStringList.Create;
 end;
 
@@ -710,7 +704,7 @@ begin
   FBackColor := Color;
 
   FGraphBrush := TBrush.Create;
-  FGraphBrush.OnChange := StyleChanged;
+  FGraphBrush.OnChange := @StyleChanged;
 
   FLegend := TChartLegend.Create(Self);
   FTitle := TChartTitle.Create(Self);
@@ -731,7 +725,7 @@ begin
 
   FFrame :=  TChartPen.Create;
   FFrame.Visible := true;
-  FFrame.OnChange := StyleChanged;
+  FFrame.OnChange := @StyleChanged;
 end;
 
 destructor TChart.Destroy;
@@ -1798,10 +1792,7 @@ begin
   RegisterComponents('Additional', [TChart]);
 end;
 
-{$IFDEF fpc}
-
 initialization
   {$I tagraph.lrs}
-{$ENDIF}
 
 end.
