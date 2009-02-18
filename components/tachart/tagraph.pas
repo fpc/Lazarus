@@ -220,7 +220,7 @@ type
 
     FGraphBrush: TBrush;
     AxisColor: TColor;                // Axis color
-    ax, bx, ay, by: Double;           // Image<->Graphe conversion coefs
+    FScale, FOffset: TDoublePoint;    // Coordinates transformation
 
     Down: Boolean;
     Zoom: Boolean;
@@ -243,6 +243,7 @@ type
 
     FAxisVisible: Boolean;
     
+    procedure CalculateTransformationCoeffs;
     function GetSeries(AIndex: Integer): TBasicChartSeries;
     procedure PrepareXorPen;
     procedure SetAutoUpdateXMin(Value: Boolean);
@@ -483,7 +484,7 @@ begin
   FFont.OnChange := StyleChanged;
 end;
 
-Destructor TChartAxisTitle.Destroy;
+destructor TChartAxisTitle.Destroy;
 begin
   FFont.Destroy;
   inherited;
@@ -827,6 +828,36 @@ begin
   Canvas.Pen.Width := 1;
 end;
 
+procedure TChart.CalculateTransformationCoeffs;
+var
+  lo, hi: Integer;
+begin
+  if FXGraphMax <> FXGraphMin then begin
+    lo := XImageMin;
+    hi := XImageMax;
+    if BottomAxis.Inverted then
+      Exchange(lo, hi);
+    FScale.X := (hi - lo) / (FXGraphMax - FXGraphMin);
+    FOffset.X := hi - FScale.X * FXGraphMax;
+  end
+  else begin
+    FScale.X := 1;
+    FOffset.X := 0;
+  end;
+  if FYGraphMax <> FYGraphMin then begin
+    lo := YImageMin;
+    hi := YImageMax;
+    if LeftAxis.Inverted then
+      Exchange(lo, hi);
+    FScale.Y := (hi - lo) / (FYGraphMax - FYGraphMin);
+    FOffset.Y := hi - FScale.Y * FYGraphMax;
+  end
+  else begin
+    FScale.Y := 1;
+    FOffset.Y := 0;
+  end;
+end;
+
 procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
 begin
   ACanvas.Pen.Mode := pmCopy;
@@ -984,15 +1015,11 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
 
 var
   leftAxisWidth, maxWidth: Integer;
-  LeftAxisScale, BottomAxisScale: TAxisScale;
+  leftAxisScale, bottomAxisScale: TAxisScale;
   step, mark: Double;
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
 begin
-  // Check AxisScale for both axes
-  LeftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
-  BottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
-
   // Find max mark width
   maxWidth := 0;
   if FYGraphMin <> FYGraphMax then begin
@@ -1031,29 +1058,7 @@ begin
       XImageMax := ARect.Right - 10 - GetLegendWidth(ACanvas);
     end;
 
-    // Update coefs
-    if (FXGraphMax <> FXGraphMin) and (FYGraphMax <> FYGraphMin) then begin
-      case BottomAxisScale of
-        asIncreasing: begin
-          ax := (XImageMax - XImageMin) / (FXGraphMax - FXGraphMin);
-          bx := XImageMax - ax * FXGraphMax;
-        end;
-        asDecreasing: begin
-          ax := (XImageMax - XImageMin) / (FXGraphMin - FXGraphMax);
-          bx := XImageMin - ax * FXGraphMax;
-        end;
-      end;
-      case LeftAxisScale of
-        asIncreasing: begin
-          ay := (YImageMax - YImageMin) / (FYGraphMax - FYGraphMin);
-          by := YImageMax - ay * FYGraphMax;
-        end;
-        asDecreasing: begin
-          ay := (YImageMax - YImageMin) / (FYGraphMin - FYGraphMax);
-          by := YImageMin - ay * FYGraphMax;
-        end;
-      end;
-    end;
+    CalculateTransformationCoeffs;
   end;
 
   // Background
@@ -1073,10 +1078,13 @@ begin
 
   DrawAxisLabels;
 
+  // Check AxisScale for both axes
+  leftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
+  bottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
   // X graduations
   if FBottomAxis.Visible and FAxisVisible and (FXGraphMin <> FXGraphMax) then begin
-    CalculateIntervals(FXGraphMin, FXGraphMax, BottomAxisScale, mark, step);
-    case BottomAxisScale of
+    CalculateIntervals(FXGraphMin, FXGraphMax, bottomAxisScale, mark, step);
+    case bottomAxisScale of
       asIncreasing:
         while mark <= FXGraphMax + step * 10e-10 do begin
           if mark >= FXGraphMin then
@@ -1094,8 +1102,8 @@ begin
 
   // Y graduations
   if FLeftAxis.Visible and AxisVisible and (FYGraphMin <> FYGraphMax) then begin
-    CalculateIntervals(FYGraphMin, FYGraphMax, LeftAxisScale, mark, step);
-    case LeftAxisScale of
+    CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
+    case leftAxisScale of
       asIncreasing:
         while mark <= FYGraphMax + step * 10e-10 do begin
           if mark >= FYGraphMin then
@@ -1303,18 +1311,8 @@ var
   i: Integer;
   NBPointsMax: Integer;
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
-  LeftAxisScale, BottomAxisScale: TAxisScale;
 begin
   MaybeDrawReticules;
-  // Check AxisScale for both axes
-  case LeftAxis.Inverted of
-    true : LeftAxisScale := asDecreasing;
-    false: LeftAxisScale := asIncreasing;
-  end;
-  case BottomAxis.Inverted of
-    true : BottomAxisScale := asDecreasing;
-    false: BottomAxisScale := asIncreasing;
-  end;
   // Search # of points, min and max of all series
   if Zoom then begin
     Zoom := false;
@@ -1383,39 +1381,7 @@ begin
       if FAutoUpdateYMax then FYGraphMax := 0;
     end;
   end;
-  // Image <-> Graph coeff calculation
-  if FXGraphMax <> FXGraphMin then begin
-    case BottomAxisScale of
-      asIncreasing: begin
-        ax := (XImageMax - XImageMin) / (FXGraphMax - FXGraphMin);
-        bx := XImageMax - ax * FXGraphMax;
-      end;
-      asDecreasing: begin
-        ax := (XImageMax - XImageMin)/(FXGraphMin - FXGraphMax);
-        bx := XImageMin - ax * FXGraphMax;
-      end;
-    end;
-  end
-  else begin
-    ax := 1;
-    bx := 0;
-  end;
-  if FYGraphMax <> FYGraphMin then begin
-    case LeftAxisScale of
-      asIncreasing: begin
-        ay := (YImageMax - YImageMin) / (FYGraphMax - FYGraphMin);
-        by := YImageMax - ay * FYGraphMax;
-      end;
-      asDecreasing: begin
-        ay := (YImageMax - YImageMin) / (FYGraphMin - FYGraphMax);
-        by := YImageMin - ay * FYGraphMax;
-      end;
-    end;
-  end
-  else begin
-    ay := 1;
-    by := 0;
-  end;
+  CalculateTransformationCoeffs;
   Clean(ACanvas, ARect);
   DrawAxis(ACanvas, ARect);
   DisplaySeries(ACanvas);
@@ -1426,12 +1392,12 @@ end;
 
 procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
 begin
-  XOut := Round(ax * XIn + bx);
+  XOut := Round(FScale.X * XIn + FOffset.X);
 end;
 
 procedure TChart.YGraphToImage(Yin: Double; out YOut: Integer);
 begin
-  YOut := Round(ay * YIn + by);
+  YOut := Round(FScale.Y * YIn + FOffset.Y);
 end;
 
 procedure TChart.GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
@@ -1442,12 +1408,12 @@ end;
 
 procedure TChart.XImageToGraph(XIn: Integer; var XOut: Double);
 begin
-  XOut := (XIn - bx) / ax;
+  XOut := (XIn - FOffset.X) / FScale.X;
 end;
 
 procedure TChart.YImageToGraph(YIn: Integer; var YOut: Double);
 begin
-  YOut := (YIn - by) / ay;
+  YOut := (YIn - FOffset.Y) / FScale.Y;
 end;
 
 procedure TChart.ImageToGraph(XIn, YIn: Integer; var XOut, YOut: Double);
