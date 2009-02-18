@@ -6004,6 +6004,7 @@ var
   DetailCount          : Integer;
   BooksBkUp            : array of TBookRecord;
   CurGroupValue        : variant;
+  BookPrev             : pointer;
   
   procedure AddToStack(b: TfrBand);
   begin
@@ -6142,43 +6143,55 @@ var
             else
               ShowStack;
 
-            b.DataSet.Next;
-
             if (Level = 1) and HasGroups then
             begin
-              b1 := Bands[btGroupHeader];
-              while b1 <> nil do
-              begin
-                curGroupValue := frParser.Calc(b1.GroupCondition);
-                {$IFDEF DebugLR}
-                DebugLn('%sGroupCondition=%s curGroupValue=%s LastGroupValue=%s',
-                  [sspc,b1.GroupCondition,string(b1.LastGroupValue),string(curGroupValue)]);
-                {$ENDIF}
-                if (curGroupValue <> b1.LastGroupValue) or
-                  b.Dataset.Eof then
+              // get a bookmark to current record it will be used in case
+              // a group change is detected and there are remaining group
+              // footers.
+              BookPrev := b.DataSet.GetBookMark;
+              try
+                b.DataSet.Next;
+                b1 := Bands[btGroupHeader];
+                while b1 <> nil do
                 begin
-                  ShowBand(b.FooterBand);
-                  b2 := Bands[btGroupHeader].LastBand;
-                  while b2 <> b1 do
+                  curGroupValue := frParser.Calc(b1.GroupCondition);
+                  {$IFDEF DebugLR}
+                  DebugLn('%sGroupCondition=%s LastGroupValue=%s curGroupValue=%s',
+                    [sspc,b1.GroupCondition,string(b1.LastGroupValue),string(curGroupValue)]);
+                  {$ENDIF}
+                  if (curGroupValue <> b1.LastGroupValue) or
+                    b.Dataset.Eof then
                   begin
-                    ShowBand(b2.FooterBand);
-                    b2.Positions[psLocal] := 0;
-                    b2 := b2.Prev;
+                    // next bands should be printed on the previous record context
+                    b.DataSet.GotoBookMark(BookPrev);
+                    ShowBand(b.FooterBand);
+                    b2 := Bands[btGroupHeader].LastBand;
+                    while b2 <> b1 do
+                    begin
+                      ShowBand(b2.FooterBand);
+                      b2.Positions[psLocal] := 0;
+                      b2 := b2.Prev;
+                    end;
+                    ShowBand(b1.FooterBand);
+                    // advance to the actual current record
+                    b.DataSet.Next;
+                    if not b.Dataset.Eof then
+                    begin
+                      if b1.NewPageAfter then NewPage;
+                      InitGroups(b1);
+                      ShowBand(b.HeaderBand);
+                      b.Positions[psLocal] := 0;
+                    end;
+                    b.ResetLastValues;
+                    break;
                   end;
-                  ShowBand(b1.FooterBand);
-                  if not b.DataSet.Eof then
-                  begin
-                    if b1.NewPageAfter then NewPage;
-                    InitGroups(b1);
-                    ShowBand(b.HeaderBand);
-                    b.Positions[psLocal] := 0;
-                  end;
-                  b.ResetLastValues;
-                  break;
+                  b1 := b1.Next;
                 end;
-                b1 := b1.Next;
+              finally
+                b.DataSet.FreeBookMark(BookPrev);
               end;
-            end;
+            end else
+              b.DataSet.Next;
 
             if Mode = pmBuildList then
               AddRecord(b, rtNext)

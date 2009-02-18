@@ -5,17 +5,17 @@
     <Name Value="lazreport"/>
     <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
-        <CustomOptions Value="
-"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
