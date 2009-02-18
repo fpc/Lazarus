@@ -3114,7 +3114,7 @@ begin
       if ((ord(p[1]) and %11000000) = %10000000)
       and ((ord(p[2]) and %11000000) = %10000000)
       and ((ord(p[3]) and %11000000) = %10000000) then begin
-        Result:=((ord(p^) and %00011111) shl 18)
+        Result:=((ord(p^) and %00001111) shl 18)
                 or ((ord(p[1]) and %00111111) shl 12)
                 or ((ord(p[2]) and %00111111) shl 6)
                 or (ord(p[3]) and %00111111);
@@ -3162,7 +3162,7 @@ begin
         Buf[1]:=char(byte((u shr 6) and $3f) or $80);
         Buf[2]:=char(byte(u and $3f) or $80);
       end;
-    $10000..$1fffff:
+    $10000..$10ffff:
       begin
         Result:=4;
         Buf[0]:=char(byte($f0 or (u shr 18)));
