@@ -17,6 +17,7 @@ type
     procedure TestUTF16ToUTF8;
     procedure TestUTF16ToUnicode;
     procedure TestUnicodeToUTF16;
+    procedure TestUTF8CharacterToUnicode;
   end; 
   
 const
@@ -123,6 +124,20 @@ begin
   AssertEquals(#$D800#$DC00, UnicodeToUTF16($10000));
   AssertEquals(#$D800#$DC01, UnicodeToUTF16($10001));
   AssertEquals(#$DBFF#$DFFD, UnicodeToUTF16($10FFFD));
+end;
+
+procedure TTestUnicode.TestUTF8CharacterToUnicode;
+var
+  i,u: cardinal;
+  s: String;
+  dum: integer;
+begin
+  for i:=0 to $10FFFF do
+  begin
+    s:=UnicodeToUTF8(i);
+    u:=UTF8CharacterToUnicode(PChar(s), dum);
+    AssertEquals('got (hexidecimal): ' + InttoHex(u,6), i, u);
+  end;
 end;
 
 initialization
