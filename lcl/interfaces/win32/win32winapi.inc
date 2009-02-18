@@ -3425,9 +3425,14 @@ end;
   selected font.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
+{$ifdef WindowsUnicodeSupport}
+var
+  ws: widestring;
+{$endif}
 begin
 {$ifdef WindowsUnicodeSupport}
-  Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(Utf8Decode(Str)), Count));
+  ws := UTF8ToUTF16(copy(str,1,Count));
+  Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(ws), length(ws)));
 {$else}
   Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
 {$endif}
