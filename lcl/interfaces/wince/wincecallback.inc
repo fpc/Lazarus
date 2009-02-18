@@ -1176,19 +1176,25 @@ begin
             end
           else if lWinControl is TCustomCombobox then
             case Hi(WParam) of
+              CBN_DROPDOWN: (lWinControl as TCustomCombobox).IntfGetItems;
               CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
               { CBN_EDITCHANGE is only sent after the user changes the edit box.
                 CBN_SELCHANGE is sent when the user changes the text by
                 selecting in the list, but before text is actually changed.
                 itemindex is updated, so set text manually }
-              CBN_SELCHANGE: begin
+              CBN_SELCHANGE:
+              begin
                 UpdateComboBoxText(TCustomComboBox(lWinControl));
+                SendSimpleMessage(lWinControl, LM_CHANGED);
                 LMessage.Msg := LM_SELCHANGE;
               end;
-              { closeup message is sent before text is actually changed... *sigh*
-                itemindex is updated, so set text manually }
               CBN_CLOSEUP:
-                UpdateComboBoxText(TCustomComboBox(lWinControl));
+              begin
+                // according to msdn CBN_CLOSEUP can happen before CBN_SELCHANGE and
+                // unfortunately it is simple truth. but we need correct order in the LCL
+                PostMessage(lWinControl.Handle, CN_COMMAND, WParam, LParam);
+                Exit;
+              end;
             end;
         end;
 
