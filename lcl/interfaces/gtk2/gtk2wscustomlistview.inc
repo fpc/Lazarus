@@ -1000,7 +1000,6 @@ var
   ScrollWidget: PGtkScrolledWindow;
   PtrType: GType;
 begin
-
   Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   if Result = 0 then Exit;
 
@@ -1009,6 +1008,8 @@ begin
   gtk_widget_unset_flags(ScrollWidget^.hscrollbar, GTK_CAN_FOCUS);
   gtk_widget_unset_flags(ScrollWidget^.vscrollbar, GTK_CAN_FOCUS);
   gtk_scrolled_window_set_policy(ScrollWidget, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type(ScrollWidget,
+    BorderStyleShadowMap[TCustomListView(AWinControl).BorderStyle]);
 
   gtk_widget_show(PGtkWidget(ScrollWidget));
 

@@ -35,7 +35,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSControls, GtkDef, GtkProc,
+  GtkWSControls, GtkDef, GtkGlobals, GtkProc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
   
