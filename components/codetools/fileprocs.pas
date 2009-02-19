@@ -1986,7 +1986,7 @@ begin
     AsteriskPos:=0;
     BracketMaskPos:=0;
     while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
-      //debugl('FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
+      //debugln('FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
       case Mask[DirStartMask] of
       '?':
         begin
