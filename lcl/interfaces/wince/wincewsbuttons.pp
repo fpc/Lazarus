@@ -251,7 +251,7 @@ begin
     else
       Flags := Flags or BS_PUSHBUTTON;
     Flags := Flags or BS_OWNERDRAW; // Draw bitmap on WM_DRAWITEM
-    WindowTitle := nil;
+    WindowTitle := '';
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

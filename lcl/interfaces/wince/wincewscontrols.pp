@@ -126,7 +126,7 @@ type
     MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
-    WindowTitle, StrCaption: PChar;
+    WindowTitle, StrCaption: String;
     pClassName: PWideChar;
   end;
 
@@ -161,9 +161,8 @@ begin
       Parent := TWinCEWidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
-    WindowTitle := nil;
-    StrCaption := PChar(AWinControl.Caption);
-
+    StrCaption := AWinControl.Caption;
+    WindowTitle := '';
     Height := AWinControl.Height;
     Left := AWinControl.Left;
     //Parent := AWinControl.Parent;

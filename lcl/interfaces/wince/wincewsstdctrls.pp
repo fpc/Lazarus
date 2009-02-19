@@ -1009,7 +1009,6 @@ begin
 
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 end;
 
