@@ -2939,13 +2939,19 @@ end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; UsePathDelim: TPathDelimSwitch);
+
+  function f(const AFilename: string): string;
+  begin
+    Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
+
 begin
-  XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',fCustomOptions,'');
-  XMLConfig.SetDeleteValue(Path+'IncludePath/Value',FIncludePath,'');
-  XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',FLibraryPath,'');
-  XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',fLinkerOptions,'');
-  XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',FObjectPath,'');
-  XMLConfig.SetDeleteValue(Path+'UnitPath/Value',FUnitPath,'');
+  XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',f(fCustomOptions),'');
+  XMLConfig.SetDeleteValue(Path+'IncludePath/Value',f(FIncludePath),'');
+  XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',f(FLibraryPath),'');
+  XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',f(fLinkerOptions),'');
+  XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',f(FObjectPath),'');
+  XMLConfig.SetDeleteValue(Path+'UnitPath/Value',f(FUnitPath),'');
   FConditionals.SaveToXMLConfig(XMLConfig,Path+'Conditionals/',UsePathDelim);
 end;
 
