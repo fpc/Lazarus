@@ -1776,7 +1776,8 @@ resourcestring
   fdmOrderMoveToback='Move to back';
   fdmOrderForwardOne='Forward one';
   fdmOrderBackOne='Back one';
-  fdmDeleteSelection='Delete selection';
+  fdmDeleteSelection='Delete Selection';
+  fdmSelectAll='Select All';
   lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';
   lisViewSourceLfm = 'View Source (.lfm)';

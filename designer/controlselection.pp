@@ -483,6 +483,8 @@ type
     property RubberbandSelectionColor: TColor read GetRubberbandSelectionColor;
     property RubberbandCreationColor: TColor read GetRubberbandCreationColor;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
+
+    procedure SelectAll(ALookupRoot: TComponent);
     procedure SelectWithRubberBand(ALookupRoot: TComponent;
                                    ClearBefore, ExclusiveOr: boolean;
                                    var SelectionChanged: boolean;
@@ -2367,10 +2369,24 @@ begin
     DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
 
+procedure TControlSelection.SelectAll(ALookupRoot: TComponent);
+var
+  i: integer;
+  AComponent: TComponent;
+begin
+  for i := 0 to ALookupRoot.ComponentCount - 1 do
+  begin
+    AComponent := ALookupRoot.Components[i];
+    if not IsSelected(AComponent) then
+      Add(AComponent);
+  end;
+end;
+
 procedure TControlSelection.SelectWithRubberBand(ALookupRoot: TComponent;
   ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean;
   MaxParentControl: TControl);
-var i:integer;
+var
+  i: integer;
   AComponent: TComponent;
 
   function ControlInRubberBand(AComponent: TComponent): boolean;

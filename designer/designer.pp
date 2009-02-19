@@ -160,6 +160,7 @@ type
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
     function DoDeleteSelectedPersistents: boolean;
+    procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
     function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
@@ -204,6 +205,7 @@ type
     procedure OnCutMenuClick(Sender: TObject);
     procedure OnPasteMenuClick(Sender: TObject);
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
+    procedure OnSelectAllMenuClick(Sender: TObject);
     procedure OnChangeClassMenuClick(Sender: TObject);
     procedure OnChangeParentMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
@@ -342,6 +344,7 @@ var
   DesignerMenuCopy: TIDEMenuCommand;
   DesignerMenuPaste: TIDEMenuCommand;
   DesignerMenuDeleteSelection: TIDEMenuCommand;
+  DesignerMenuSelectAll: TIDEMenuCommand;
 
   DesignerMenuChangeClass: TIDEMenuCommand;
   DesignerMenuChangeParent: TIDEMenuSection;
@@ -420,7 +423,9 @@ begin
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                             'Paste',lisMenuPaste, nil, nil, nil, 'laz_paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                         'Delete selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
+                                         'Delete Selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
+    DesignerMenuSelectAll:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
+                                         'Select All',fdmSelectAll, nil, nil, nil, 'menu_select_all');
 
   // register miscellaneous section
   DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,
@@ -1853,8 +1858,8 @@ var
     if (ssShift in Shift) then
       NudgeSize(x, y);
   end;
-  
-Begin
+
+begin
   {$IFDEF VerboseDesigner}
   DebugLn(['TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData]);
   {$ENDIF}
@@ -1870,7 +1875,7 @@ Begin
 
   if not Handled then
   begin
-    Handled:=true;
+    Handled := True;
     case TheMessage.CharCode of
       VK_DELETE:
         if not ControlSelection.OnlyInvisiblePersistentsSelected then
@@ -1888,6 +1893,11 @@ Begin
       VK_LEFT:
         Nudge(-1,0);
 
+      VK_A:
+        if Shift = [ssCtrl] then
+          DoSelectAll
+        else
+          Handled := False;
       else
         Handled:=false;
     end;
@@ -1972,6 +1982,15 @@ begin
     Modified;
   end;
   Result:=true;
+end;
+
+procedure TDesigner.DoSelectAll;
+begin
+  ControlSelection.BeginUpdate;
+  ControlSelection.Clear;
+  ControlSelection.SelectAll(FLookupRoot);
+  ControlSelection.EndUpdate;
+  Form.Invalidate;
 end;
 
 procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
@@ -2277,6 +2296,11 @@ end;
 procedure TDesigner.OnDeleteSelectionMenuClick(Sender: TObject);
 begin
   DoDeleteSelectedPersistents;
+end;
+
+procedure TDesigner.OnSelectAllMenuClick(Sender: TObject);
+begin
+  DoSelectAll;
 end;
 
 procedure TDesigner.OnChangeClassMenuClick(Sender: TObject);
@@ -2803,6 +2827,7 @@ begin
   DesignerMenuCopy.OnClick:=@OnCopyMenuClick;
   DesignerMenuPaste.OnClick:=@OnPasteMenuClick;
   DesignerMenuDeleteSelection.OnClick:=@OnDeleteSelectionMenuClick;
+  DesignerMenuSelectAll.OnClick:=@OnSelectAllMenuClick;
 
   DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
   DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
