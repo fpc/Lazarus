@@ -217,6 +217,8 @@ type
   TCarbonHintWindow = class(TCarbonWindow)
   protected
     procedure CreateWindow(const AParams: TCreateParams); override;
+  public
+    procedure ShowHide(AVisible: Boolean); override;
   end;
 
   { TCarbonDesignWindow }
@@ -393,6 +395,14 @@ begin
     Self, SCreateWidget, SSetControlProp);
   
   SetColor(LCLObject.Color);
+end;
+
+procedure TCarbonHintWindow.ShowHide(AVisible: Boolean);
+begin
+  if Assigned(fWindowRef) then
+    MacOSAll.ShowHide(fWindowRef, AVisible or (csDesigning in LCLobject.ComponentState))
+  else
+    inherited ShowHide(AVisible);
 end;
 
 { TCarbonDesignWindow }
