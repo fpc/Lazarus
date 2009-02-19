@@ -1834,20 +1834,24 @@ end;
 }
 Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage:TLMKEY);
 var
-  Shift : TShiftState;
+  Shift: TShiftState;
   Command: word;
   Handled: boolean;
   
   procedure Nudge(x, y: integer);
   begin
-    if (ssCtrl in Shift) then begin
-      if ssShift in Shift then begin
-        x:=x*GetGridSizeX;
-        y:=y*GetGridSizeY;
+    if (ssCtrl in Shift) then
+    begin
+      if ssShift in Shift then
+      begin
+        x := x * GetGridSizeX;
+        y := y * GetGridSizeY;
       end;
-      NudgePosition(x,y)
-    end else if (ssShift in Shift) then
-      NudgeSize(x,y);
+      NudgePosition(x, y)
+    end
+    else
+    if (ssShift in Shift) then
+      NudgeSize(x, y);
   end;
   
 Begin
@@ -1857,40 +1861,40 @@ Begin
 
   Shift := KeyDataToShiftState(TheMessage.KeyData);
 
-  Handled:=false;
-  Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                     TheMessage.CharCode,Shift);
+  Handled := False;
+  Command := FTheFormEditor.TranslateKeyToDesignerCommand(
+                                                     TheMessage.CharCode, Shift);
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
-  DoProcessCommand(Self,Command,Handled);
+  DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
 
-  if not Handled then begin
+  if not Handled then
+  begin
     Handled:=true;
     case TheMessage.CharCode of
-    VK_DELETE:
-      if not ControlSelection.OnlyInvisiblePersistentsSelected then
-        DoDeleteSelectedPersistents;
+      VK_DELETE:
+        if not ControlSelection.OnlyInvisiblePersistentsSelected then
+          DoDeleteSelectedPersistents;
 
-    VK_UP:
-      Nudge(0,-1);
+      VK_UP:
+        Nudge(0,-1);
 
-    VK_DOWN:
-      Nudge(0,1);
+      VK_DOWN:
+        Nudge(0,1);
 
-    VK_RIGHT:
-      Nudge(1,0);
+      VK_RIGHT:
+        Nudge(1,0);
 
-    VK_LEFT:
-      Nudge(-1,0);
+      VK_LEFT:
+        Nudge(-1,0);
 
-    else
-      Handled:=false;
+      else
+        Handled:=false;
     end;
   end;
 
-  if Handled then begin
-    TheMessage.CharCode:=0;
-  end;
+  if Handled then
+    TheMessage.CharCode := 0;
 end;
 
 
