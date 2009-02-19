@@ -105,7 +105,6 @@ end;
 class procedure TWinCEWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
 var
   lvc: TLvColumn;
-  tmpCaption: PWideChar;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
   then Exit;
@@ -194,7 +193,6 @@ end;
 class procedure TWinCEWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
   lvc: TLvColumn;
-  tmpACaption : PWideChar;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption')
   then Exit;
