@@ -135,6 +135,7 @@ Vasily I. Volchenko
 Vincent Beuselinck
 Vincent Snijders
 Vladimir Zhirov
+Vladimir Serotyukov
 Wanderlan Santos dos Anjos
 Wojciech Malinowski
 Yuriy Yeroshkin
