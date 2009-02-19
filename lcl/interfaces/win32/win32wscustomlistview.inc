@@ -680,19 +680,11 @@ begin
 end;
 
 class procedure TWin32WSCustomListView.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
-var
-  Handle: HWND;
-  StyleEx: PtrInt;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetBorder') then
     Exit;
-  Handle := AWinControl.Handle;
-  StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
-  if ABorderStyle = TBorderStyle(bsSingle) Then
-    StyleEx := StyleEx or WS_EX_CLIENTEDGE
-  else
-    StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
-  SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
+  // changing border style by changing EXSTYLE here does not work correctly
+  RecreateWnd(AWinControl);
 end;
 
 class procedure TWin32WSCustomListView.SetColor(const AWinControl: TWinControl);
