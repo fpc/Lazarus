@@ -906,7 +906,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateWnd"/>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
       <!-- function Visibility: protected -->
@@ -1036,7 +1036,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Forms.TScrollingWinControl.Loaded">TScrollingWinControl.Loaded</link>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
