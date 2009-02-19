@@ -181,7 +181,6 @@ var
     nTokenLen: integer;
     Attr: TSynHighlightElement;
     CurForeground: Integer;
-    CurBackground: Integer;
   begin
     if MeasureOnly then begin
       Inc(Result.X,ACanvas.TextWidth(s));
@@ -197,11 +196,8 @@ var
           System.Move(sToken^,s[1],nTokenLen);
           attr := Highlighter.GetTokenAttribute;
           CurForeground:=Attr.Foreground;
-          CurBackground:=Attr.Background;
           if CurForeground=clNone then CurForeground:=clBlack;
-          if CurBackground=clNone then CurBackground:=BackgroundColor;
           ACanvas.Font.Color:=CurForeground;
-          ACanvas.Brush.Color:=CurBackground;
           ACanvas.TextOut(x,y,s);
           inc(x,ACanvas.TextWidth(s));
         end;
