@@ -7185,7 +7185,7 @@ begin
     //       the component is not yet implemented.
     Result:=RemoveEmptyMethods(ActiveUnitInfo.Source,
                    ActiveUnitInfo.Component.ClassName,0,0,false,[pcsPublished]);
-    if Result<>mrOk then exit;
+    if Result=mrAbort then exit;
   end;
 
   // b) do actual save
