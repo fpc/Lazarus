@@ -51,7 +51,11 @@
       <element name="TFPCustomCanvas">
         <short>
           <var>TFPCustomCanvas</var> - FreePascal base class for Canvas</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TFPCustomCanvas</var> - FreePascal base class for Canvas</p>
+          <p>Many of the methods are virtual and/or abstract; there is often no supplied code for the method, but the entries act as place-holders for programmers of descendant components to provide overriding methods</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -259,18 +263,25 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFPCanvasHelper.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TFPCanvasHelper.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TFPCanvasHelper</var>: calls inherited <var>Create</var> then sets properties <var>Canvas</var> to nil, <var>FixedCanvas</var> and <var>Allocated</var> to False</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFPCanvasHelper.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TFPCanvasHelper.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TFPCanvasHelper</var>: de-allocates resources then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPCanvasHelper.AllocateResources">
@@ -1130,11 +1141,14 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMitchelInterpolation.Filter" link="#fcl.FPCanvas.TFPBaseInterpolation.Filter">
-        <short/>
+      <element name="TMitchelInterpolation.Filter">
+        <short>
+          <var>Filter</var> uses specific constants as coefficients in a polynomial interpolation</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.FPCanvas.TFPBaseInterpolation.Filter">TFPBaseInterpolation.Filter</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TMitchelInterpolation.Filter.Result">
@@ -1960,7 +1974,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -1976,7 +1990,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
