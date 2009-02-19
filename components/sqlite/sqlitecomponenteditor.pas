@@ -18,13 +18,16 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs, StdCtrls,
-  Buttons, customsqliteds, ComponentEditors, LazarusPackageIntf, LazIdeIntf;
+  Buttons, customsqliteds, ComponentEditors, LazarusPackageIntf, LazIdeIntf,
+  fieldseditor;
 
 type
 
   {TSqliteEditor}
   
-  TSqliteEditor = class(TComponentEditor)
+  TSqliteEditor = class(TFieldsComponentEditor)
+  private
+    FVerbOffset: Integer;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -69,9 +72,6 @@ implementation
 uses
   db;
 
-var
-  IsAddingField:Boolean;//hack to avoid LCL bug 1428
-
 function StringListHasDuplicates(const List:TStrings):boolean;
 var
   i,j:Integer;
@@ -90,33 +90,35 @@ end;
 
 procedure TSqliteEditor.ExecuteVerb(Index: Integer);
 begin
-  case Index of
-    0:Edit;
+  case Index - FVerbOffset of
+    0: Edit;
+  else
+    inherited ExecuteVerb(Index);
   end;
 end;
 
 function TSqliteEditor.GetVerb(Index: Integer): string;
 begin
-  case Index of
+  case Index - FVerbOffset of
     0:
     begin
-      if not TCustomSqliteDataset(GetComponent).TableExists then
-        Result:='Create Table'
-      else
-        Result:='Edit Table';
+      Result := 'Create/Edit Table'
     end;
+    else
+     Result := inherited GetVerb(Index);
   end;
 end;
 
 function TSqliteEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
+  FVerbOffset := inherited GetVerbCount;
+  Result := FVerbOffset + 1;
 end;
 
 procedure TSqliteEditor.Edit;
 var
   ADataSet:TCustomSqliteDataSet;
-  OldDir:String;
+  OldDir, ProjectDir:String;
 begin
   ADataSet:=TCustomSqliteDataSet(GetComponent);
   if ADataSet.Filename = '' then
@@ -135,10 +137,11 @@ begin
     try
       // In case Filename is a relative one, change dir to project dir
       // so the datafile will be created in the right place
-      OldDir:=GetCurrentDirUTF8;
-      if ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName) <> '' then
-        SetCurrentDirUTF8(ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName));
-      Dataset:=ADataset;
+      OldDir := GetCurrentDirUTF8;
+      ProjectDir := ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName);
+      if ProjectDir <> '' then
+        SetCurrentDirUTF8(ProjectDir);
+      Dataset := ADataset;
       ShowModal;
     finally
       SetCurrentDirUTF8(OldDir);
@@ -154,9 +157,7 @@ begin
   //In the case there's no items
   editFieldName.Enabled:=True;
   comboFieldType.Enabled:=True;
-  IsAddingField:=True; //to be removed
   listFields.Items.AddObject('AFieldName',TObject(ftString));
-  IsAddingField:=False;
   listFields.ItemIndex:=listFields.Items.Count-1;
   editFieldName.Text:='AFieldName';
   editFieldName.SetFocus;
@@ -208,7 +209,6 @@ procedure TSqliteTableEditorForm.SetComboValue(AObject: TObject);
 var
   AIndex:Integer;
 begin
-  //warning: using inline in this function causes a crash with fpc 2.0.0
   AIndex:=comboFieldType.Items.IndexOfObject(AObject);
 
   if AIndex <> -1 then
@@ -317,7 +317,7 @@ end;
 procedure TSqliteTableEditorForm.listFieldsSelectionChange(Sender: TObject;
   User: boolean);
 begin
-  if (listFields.ItemIndex <> -1) and not IsAddingField then //remove when LCL is fixed
+  if (listFields.ItemIndex <> -1) then
   begin
     editFieldName.Text:=listFields.Items[listFields.ItemIndex];
     SetComboValue(listFields.Items.Objects[listFields.ItemIndex]);

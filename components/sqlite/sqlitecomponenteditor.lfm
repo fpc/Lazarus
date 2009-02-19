@@ -1,120 +1,112 @@
 object SqliteTableEditorForm: TSqliteTableEditorForm
+  Left = 373
+  Height = 269
+  Top = 244
+  Width = 290
   ActiveControl = butAdd
   Caption = 'Sqlite Table Editor'
   ClientHeight = 269
   ClientWidth = 290
   OnShow = SqliteTableEditorFormShow
-  PixelsPerInch = 83
-  HorzScrollBar.Page = 289
-  VertScrollBar.Page = 268
-  Left = 373
-  Height = 269
-  Top = 244
-  Width = 290
+  LCLVersion = '0.9.27'
   object Label1: TLabel
-    Caption = 'Field Name'
-    Color = clNone
-    ParentColor = False
     Left = 147
-    Height = 13
+    Height = 14
     Top = 64
-    Width = 67
+    Width = 53
+    Caption = 'Field Name'
+    ParentColor = False
   end
   object Label2: TLabel
-    Caption = 'Field Type'
-    Color = clNone
-    ParentColor = False
     Left = 147
-    Height = 13
+    Height = 14
     Top = 120
-    Width = 59
+    Width = 50
+    Caption = 'Field Type'
+    ParentColor = False
   end
   object lblFilePath: TLabel
-    Caption = 'lblFilePath'
-    Color = clNone
-    ParentColor = False
     Left = 8
-    Height = 13
+    Height = 14
     Top = 4
-    Width = 61
+    Width = 49
+    Caption = 'lblFilePath'
+    ParentColor = False
   end
   object Label3: TLabel
-    Caption = 'Label3'
-    Color = clNone
-    ParentColor = False
     Left = 8
-    Height = 13
+    Height = 14
     Top = 20
-    Width = 40
+    Width = 32
+    Caption = 'Label3'
+    ParentColor = False
   end
   object listFields: TListBox
-    OnSelectionChange = listFieldsSelectionChange
-    TabOrder = 6
-    TopIndex = -1
     Left = 8
     Height = 192
     Top = 64
     Width = 124
+    ItemHeight = 0
+    OnSelectionChange = listFieldsSelectionChange
+    TabOrder = 6
   end
   object butCreate: TButton
-    
-    Caption = 'Create Table'
-    OnClick = butOkClick
-    TabOrder = 1
-    TabStop = False
     Left = 147
     Height = 25
     Top = 192
     Width = 136
+    Caption = 'Create Table'
+    OnClick = butOkClick
+    TabOrder = 1
+    TabStop = False
   end
   object butClose: TButton
-    
-    Caption = 'Close'
-    OnClick = butCancelClick
-    TabOrder = 2
-    TabStop = False
     Left = 147
     Height = 25
     Top = 232
     Width = 136
+    Caption = 'Close'
+    OnClick = butCancelClick
+    TabOrder = 2
+    TabStop = False
   end
   object editFieldName: TEdit
-    OnEditingDone = editFieldNameEditingDone
-    TabOrder = 4
     Left = 147
     Height = 23
     Top = 80
     Width = 136
+    OnEditingDone = editFieldNameEditingDone
+    TabOrder = 4
   end
   object comboFieldType: TComboBox
-    DropDownCount = 12
-    MaxLength = 0
-    OnChange = comboFieldTypeChange
-    Style = csDropDownList
-    TabOrder = 5
     Left = 147
     Height = 21
     Top = 136
     Width = 136
+    AutoComplete = False
+    DropDownCount = 12
+    ItemHeight = 13
+    ItemWidth = 0
+    OnChange = comboFieldTypeChange
+    Style = csDropDownList
+    TabOrder = 5
   end
   object butAdd: TButton
-    
-    Caption = 'Add'
-    OnClick = butAddClick
-    TabOrder = 0
     Left = 8
     Height = 25
     Top = 40
     Width = 64
+    Caption = 'Add'
+    OnClick = butAddClick
+    TabOrder = 0
   end
   object butDelete: TButton
-    
-    Caption = 'Delete'
-    OnClick = butDeleteClick
-    TabOrder = 3
     Left = 72
     Height = 25
     Top = 40
     Width = 60
+    Caption = 'Delete'
+    OnClick = butDeleteClick
+    TabOrder = 3
   end
 end
