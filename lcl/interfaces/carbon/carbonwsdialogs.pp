@@ -105,7 +105,7 @@ var
   FilterIndex: Integer;
 
 function FilterCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
- callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; stdcall;
+ callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; mwpascal;
  {Custom filter callback function. Pointer to this function is passed as
    inFilterProc to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
   If theItem file should be highlighted in file dialog, return True;
@@ -159,7 +159,7 @@ begin
 end;  {FilterCallback}
 
 procedure NavDialogCallback(CallBackSelector: NavEventCallbackMessage;
-  CallBackParms: NavCBRecPtr; CallBackUD: UnivPtr); stdcall;
+  CallBackParms: NavCBRecPtr; CallBackUD: UnivPtr); mwpascal;
 var
   Dir: AEDesc;
   DirRef: FSRef;
