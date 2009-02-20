@@ -3,7 +3,7 @@
   <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="TAChartLazarusPkg"/>
-    <Author Value="Luís Rodrigues (lr@neei.uevora.pt)"/>
+    <Author Value="Luís Rodrigues (lr@neei.uevora.pt), Philippe Martinole, Alexander Klenin"/>
     <CompilerOptions>
       <Version Value="8"/>
       <PathDelim Value="\"/>
