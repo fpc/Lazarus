@@ -28,7 +28,7 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits, Menus,
+  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits,
   ExtCtrls, LResources;
   
 type
@@ -71,7 +71,24 @@ type
     Parent: TComponent;
     Added: boolean;
   end;
-  
+
+  { TComponentWalker }
+
+  TComponentWalker = class
+    FTreeView: TComponentTreeView;
+    FCandidates: TAvgLvlTree;
+    FRootComponent: TComponent;
+    FNode: TTreeNode;
+  public
+    constructor Create(
+      ATreeView: TComponentTreeView; ACandidates: TAvgLvlTree;
+      ARootComponent: TComponent; ANode: TTreeNode);
+
+    procedure Walk(AComponent: TComponent);
+  end;
+
+  TComponentAccessor = class(TComponent);
+
 function CompareComponentCandidates(
   Candidate1, Candidate2: TComponentCandidate): integer;
 begin
@@ -84,6 +101,42 @@ begin
   Result := ComparePointers(APersistent, Candidate.APersistent);
 end;
 
+{ TComponentWalker }
+
+constructor TComponentWalker.Create(ATreeView: TComponentTreeView;
+  ACandidates: TAvgLvlTree; ARootComponent: TComponent; ANode: TTreeNode);
+begin
+  FTreeView := ATreeView;
+  FCandidates := ACandidates;
+  FRootComponent := ARootComponent;
+  FNode := ANode;
+end;
+
+procedure TComponentWalker.Walk(AComponent: TComponent);
+var
+  oldNode: TTreeNode;
+  candidate: TComponentCandidate;
+  avlNode: TAvgLvlTreeNode;
+begin
+  if GetLookupRootForComponent(AComponent) <> FRootComponent then exit;
+  avlNode := FCandidates.FindKey(
+    AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
+  if avlNode = nil then exit;
+  candidate := TComponentCandidate(avlNode.Data);
+  if candidate.Added then exit;
+  candidate.Added := true;
+
+  oldNode := FNode;
+  FNode := FTreeView.Items.AddChild(FNode, FTreeView.CreateNodeCaption(AComponent));
+  FNode.Data := AComponent;
+  FNode.ImageIndex := FTreeView.GetImageFor(AComponent);
+  FNode.SelectedIndex := FNode.ImageIndex;
+  FNode.MultiSelected := FTreeView.Selection.IndexOf(AComponent) >= 0;
+  TComponentAccessor(AComponent).GetChildren(@Walk, FRootComponent);
+  FNode := oldNode;
+  FNode.Expanded := true;
+end;
+  
 { TComponentTreeView }
 
 procedure TComponentTreeView.SetSelection(
@@ -275,62 +328,18 @@ var
   Candidates: TAvgLvlTree;
   RootComponent: TComponent;
 
-  procedure AddChildControls(AControl: TWinControl; ANode: TTreeNode);
+  procedure AddChildren(AComponent: TComponent; ANode: TTreeNode);
   var
-    i: Integer;
-    CurControl: TControl;
-    NewNode: TTreeNode;
-    Candidate: TComponentCandidate;
-    AVLNode: TAvgLvlTreeNode;
+    walker: TComponentWalker;
   begin
-    if AControl=nil then exit;
-    for i:=0 to AControl.ControlCount-1 do begin
-      CurControl:=AControl.Controls[i];
-      if GetLookupRootForComponent(CurControl)<>RootComponent then continue;
-      AVLNode:=Candidates.FindKey(CurControl,
-                    TListSortCompare(@ComparePersistentWithComponentCandidate));
-      if AVLNode=nil then continue;
-      Candidate:=TComponentCandidate(AVLNode.Data);
-      if Candidate.Added then continue;
-      Candidate.Added:=true;
-      NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurControl));
-      NewNode.Data:=CurControl;
-      NewNode.ImageIndex:=GetImageFor(CurControl);
-      NewNode.SelectedIndex:=NewNode.ImageIndex;
-      NewNode.MultiSelected:=Selection.IndexOf(CurControl)>=0;
-      if CurControl is TWinControl then
-        AddChildControls(TWinControl(CurControl),NewNode);
+    walker := TComponentWalker.Create(Self, Candidates, RootComponent, ANode);
+    try
+      TComponentAccessor(AComponent).GetChildren(@walker.Walk, RootComponent);
+    finally
+      walker.Free;
     end;
-    ANode.Expanded:=true;
   end;
 
-  procedure AddMenuItemChilds(AMenuItem: TMenuItem; ANode: TTreeNode);
-  var
-    i: Integer;
-    CurMenuItem: TMenuItem;
-    NewNode: TTreeNode;
-    Candidate: TComponentCandidate;
-    AVLNode: TAvgLvlTreeNode;
-  begin
-    if AMenuItem=nil then exit;
-    for i:=0 to AMenuItem.Count-1 do begin
-      CurMenuItem:=AMenuItem.Items[i];
-      if CurMenuItem.Owner<>RootComponent then continue;
-      AVLNode:=Candidates.FindKey(CurMenuItem,
-                    TListSortCompare(@ComparePersistentWithComponentCandidate));
-      Candidate:=TComponentCandidate(AVLNode.Data);
-      if Candidate.Added then continue;
-      Candidate.Added:=true;
-      NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurMenuItem));
-      NewNode.Data:=CurMenuItem;
-      NewNode.ImageIndex:=1;
-      NewNode.SelectedIndex:=NewNode.ImageIndex;
-      NewNode.MultiSelected:=Selection.IndexOf(CurMenuItem)>=0;
-      AddMenuItemChilds(CurMenuItem,NewNode);
-    end;
-    ANode.Expanded:=true;
-  end;
-  
   procedure AddCandidates(OwnerComponent: TComponent);
   var
     AComponent: TComponent;
@@ -360,9 +369,7 @@ var
   i: Integer;
   AComponent: TComponent;
   RootNode: TTreeNode;
-  AControl: TControl;
   AVLNode: TAvgLvlTreeNode;
-  AMenu: TMenu;
   Candidate: TComponentCandidate;
 begin
   BeginUpdate;
@@ -397,31 +404,18 @@ begin
           AVLNode:=Candidates.FindKey(AComponent,
                      TListSortCompare(@ComparePersistentWithComponentCandidate));
           Candidate:=TComponentCandidate(AVLNode.Data);
-          if Candidate.Added then
+          if Candidate.Added or
+             AComponent.HasParent and
+             (AComponent.GetParentComponent <> nil) and
+             (AComponent.GetParentComponent <> RootComponent) then
             continue;
-          if AComponent is TControl then begin
-            AControl:=TControl(AComponent);
-            if (AControl.Parent<>nil) and (AControl.Parent<>RootComponent) then
-              // grand child controls will be added recursively, not here
-              continue;
-          end
-          else if (AComponent is TMenuItem) then begin
-            AMenu:=TMenuItem(AComponent).GetParentMenu;
-            if (AMenu<>nil) and (AMenu.Owner=RootComponent) then
-              // child menuitems will be added recursively, not here
-              continue;
-          end;
           Candidate.Added:=true;
           NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
           NewNode.Data:=AComponent;
           NewNode.ImageIndex:=GetImageFor(AComponent);
           NewNode.SelectedIndex:=NewNode.ImageIndex;
           NewNode.MultiSelected:=Selection.IndexOf(AComponent)>=0;
-          if AComponent is TWinControl then
-            AddChildControls(TWinControl(AComponent),NewNode)
-          else if (AComponent is TMenu) then begin
-            AddMenuItemChilds(TMenu(AComponent).Items,NewNode);
-          end;
+          AddChildren(AComponent, NewNode);
         end;
       end;
     finally
