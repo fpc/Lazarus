@@ -81,7 +81,11 @@ type
     iliIsAbstractMethodValid,
     iliParamListValid,
     iliNodeValid,
-    iliNodeHashValid
+    iliNodeHashValid,
+    iliIsConstructor,
+    iliIsConstructorValid,
+    iliIsDestructor,
+    iliIsDestructorValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -131,6 +135,8 @@ type
     procedure UpdateBaseContext;
     function HasChilds: boolean;
     function IsFunction: boolean;
+    function IsContructor: boolean;
+    function IsDestructor: boolean;
     function IsAbstractMethod: boolean;
     function TryIsAbstractMethod: boolean;
     procedure Clear;
@@ -2046,13 +2052,42 @@ function TIdentifierListItem.IsFunction: boolean;
 var
   ANode: TCodeTreeNode;
 begin
-  if not (iliIsFunctionValid in Flags) then begin
-    ANode:=Node;
-    if (ANode<>nil) and Tool.NodeIsFunction(ANode) then
-      Include(Flags,iliIsFunction);
-    Include(Flags,iliIsFunctionValid);
+  if not (iliIsFunctionValid in Flags) then
+  begin
+    ANode := Node;
+    if (ANode <> nil) and Tool.NodeIsFunction(ANode) then
+      Include(Flags, iliIsFunction);
+    Include(Flags, iliIsFunctionValid);
   end;
-  Result:=iliIsFunction in Flags;
+  Result := iliIsFunction in Flags;
+end;
+
+function TIdentifierListItem.IsContructor: boolean;
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliIsConstructorValid in Flags) then
+  begin
+    ANode := Node;
+    if (ANode <> nil) and Tool.NodeIsConstructor(ANode) then
+      Include(Flags, iliIsConstructor);
+    Include(Flags, iliIsConstructorValid);
+  end;
+  Result := iliIsConstructor in Flags;
+end;
+
+function TIdentifierListItem.IsDestructor: boolean;
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliIsDestructorValid in Flags) then
+  begin
+    ANode := Node;
+    if (ANode <> nil) and Tool.NodeIsDestructor(ANode) then
+      Include(Flags, iliIsDestructor);
+    Include(Flags, iliIsDestructorValid);
+  end;
+  Result := iliIsDestructor in Flags;
 end;
 
 function TIdentifierListItem.IsAbstractMethod: boolean;

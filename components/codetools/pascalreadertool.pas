@@ -108,6 +108,7 @@ type
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;
 
     // classes
@@ -1546,6 +1547,18 @@ begin
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
   Result:=UpAtomIs('CONSTRUCTOR');
+end;
+
+function TPascalReaderTool.NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (ProcNode=nil) then exit;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if ProcNode.Desc<>ctnProcedure then exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  Result:=UpAtomIs('DESTRUCTOR');
 end;
 
 function TPascalReaderTool.NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;

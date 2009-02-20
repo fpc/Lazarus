@@ -256,12 +256,21 @@ begin
       
     ctnProcedure:
       begin
-        if IdentItem.IsFunction then begin
+        if IdentItem.IsFunction then
+        begin
           AColor:=clTeal;
           s:='function';
-        end else begin
+        end
+        else
+        begin
           AColor:=clNavy;
-          s:='procedure';
+          if IdentItem.IsContructor then
+            s := 'constructor'
+          else
+          if IdentItem.IsDestructor then
+            s := 'destructor'
+          else
+            s:='procedure';
         end;
         if IdentItem.TryIsAbstractMethod then
           AColor:=clRed;
@@ -292,10 +301,10 @@ begin
 
     SetFontColor(AColor);
     if MeasureOnly then
-      Inc(Result.X, ACanvas.TextWidth('procedure '))
+      Inc(Result.X, ACanvas.TextWidth('constructor '))
     else
       ACanvas.TextOut(x+1,y,s);
-    inc(x,ACanvas.TextWidth('procedure '));
+    inc(x,ACanvas.TextWidth('constructor '));
     if x>MaxX then exit;
 
     // paint the identifier
