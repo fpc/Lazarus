@@ -103,9 +103,12 @@ type
     procedure Clear;
 
   published
-    property MarksStyle: TSeriesMarksStyle read FMarks write SetMarks; //this should be an object
-    property Active: Boolean read FActive write SetActive;
-    property ShowInLegend: Boolean read FShowInLegend write SetShowInLegend;
+    property Active: Boolean read FActive write SetActive default true;
+    property MarksStyle: TSeriesMarksStyle
+      read FMarks write SetMarks default smsLabel; //this should be an object
+    property ShowInLegend: Boolean
+      read FShowInLegend write SetShowInLegend default true;
+    property Title;
   end;
 
   TSeriesPointer = class(TPersistent)
@@ -134,16 +137,13 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property Brush: TBrush read FBrush write SetBrush;
-    property Pen: TChartPen read FPen write SetPen;
-    property Style: TSeriesPointerStyle read FStyle write SetStyle;
-    property Visible: Boolean read FVisible write SetVisible;
-    property OnChange: TNotifyEvent read FChanged write FChanged;
     property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
+    property OnChange: TNotifyEvent read FChanged write FChanged;
+    property Pen: TChartPen read FPen write SetPen;
+    property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
     property VertSize: Integer read FVertSize write SetVertSize default 4;
-
+    property Visible: Boolean read FVisible write SetVisible;
   end;
-
-  TLineStyle = (lsVertical, lsHorizontal);
 
   { TBarSeries }
 
@@ -165,16 +165,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
-    property BarWidthPercent: Integer
-      read FBarWidthPercent write SetBarWidthPercent default 70;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
-    property Title;
-    property Active;
+    property BarWidthPercent: Integer
+      read FBarWidthPercent write SetBarWidthPercent default 70;
+    property SeriesColor;
   end;
 
   { TPieSeries }
@@ -199,8 +197,6 @@ type
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
   published
-    property Title;
-    property Active;
     property LabelTextColor: TColor index 1
       read GetMiscColor write SetMiscColor default clBlack;
     property LabelBackgroundColor: TColor index 2
@@ -229,16 +225,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
-     property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
-     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-     property Stairs: boolean read FStairs write SetStairs;
-     property InvertedStairs: boolean read FInvertedStairs write SetInvertedStairs;
-     property Title;
-     property Active;
+    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
+    property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
+    property InvertedStairs: Boolean read FInvertedStairs write SetInvertedStairs;
+    property SeriesColor;
+    property Stairs: Boolean read FStairs write SetStairs;
   end;
 
   { TBasicLineSeries }
@@ -300,13 +294,13 @@ type
     property XGraphMax;
     property YGraphMax;
   published
-    property Title;
-    property Active;
-
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
-    property ShowLines: Boolean read FShowLines write SetShowLines default true;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
+    property SeriesColor;
+    property ShowLines: Boolean read FShowLines write SetShowLines default true;
+    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
   end;
+
+  TLineStyle = (lsVertical, lsHorizontal);
 
   { TLine }
 
@@ -331,11 +325,11 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
 
-    property  LineStyle: TLineStyle read FStyle write SetStyle;
   published
+    property LineStyle: TLineStyle read FStyle write SetStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read PosGraph write SetPos;
-    property Active;
+    property SeriesColor;
   end;
 
 implementation
@@ -1312,6 +1306,8 @@ constructor TPieSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ColorIndex := 1;
+  LabelBackgroundColor := clYellow;
+  LabelToPieLinkColor := clWhite;
 end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
@@ -1465,7 +1461,6 @@ begin
   inherited Create(AOwner);
   FAreaLinesPen := TChartPen.Create;
   FAreaBrush := TBrush.Create;
-  FStairs := false;
 end;
 
 destructor TAreaSeries.Destroy;
