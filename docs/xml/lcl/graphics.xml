@@ -4670,7 +4670,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.RealizeAutoRedraw">
         <short>
-          <var>RealizeAutoRedraw</var> - implement th eAutoDraaw feature</short>
+          <var>RealizeAutoRedraw</var> - implement the AutoDraw feature</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13183,7 +13183,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomBitmap.InternalReleaseMaskHandle">
+      <element name="TCustomBitmap.InternalReleaseMaskHandle" link="#LCL.Graphics.TRasterImage.InternalReleaseMaskHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14170,7 +14170,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomIcon.Create" link="#rtl.System.TObject.Create">
+      <element name="TCustomIcon.Create" link="#LCL.Graphics.TGraphic.Create">
         <short/>
         <descr/>
         <errors/>
@@ -14787,6 +14787,10 @@ be carefull with this, modify only within a begin/endupdate</descr>
       <element name="TCanvas.AntialiasingMode">
         <short>
           <var>AntialiasingMode</var> - anti-aliasing on, off or don't care</short>
+      </element>
+      <element name="TCanvas.RealizeAntialiasing">
+        <short>
+          <var>RealizeAntialiasing</var> - implement the Anti-aliasing feature</short>
       </element>
     </module>
     <!-- Graphics -->
