@@ -513,6 +513,7 @@ var
   LineLen: Integer;
   i: LongInt;
   Obj: TObject;
+  LineShortLen: LongInt;
 begin
   // check values
   if CurIndex=NewIndex then exit;
@@ -531,7 +532,7 @@ begin
 
   if CurIndex<NewIndex then
   begin
-    // move down
+    // move to higher index
     if (NewIndex=FLineCount-1) and (FLineRanges[NewIndex].EndPos>length(FText))
     then begin
       // CurIndex should be moved to the end,
@@ -544,9 +545,10 @@ begin
     SrcPos3:=GetLineEnd(NewIndex,true);
     // store current line with line end
     LineLen:=SrcPos2-SrcPos1;
+    LineShortLen:=GetLineLen(CurIndex,false);
     LineStr:=copy(FText,SrcPos1,LineLen);
     Obj:=FLineRanges[CurIndex].TheObject;
-    // move lines up
+    // move lines -1
     System.Move(FText[SrcPos2],FText[SrcPos1],SrcPos3-SrcPos2);
     for i:=CurIndex+1 to NewIndex do begin
       dec(FLineRanges[i].StartPos,LineLen);
@@ -555,13 +557,14 @@ begin
     System.Move(FLineRanges[CurIndex+1],FLineRanges[CurIndex],
                 SizeOf(TTextLineRange)*(NewIndex-CurIndex));
     // put current line at new position
-    System.Move(LineStr[1],FText[SrcPos3-LineLen],LineLen);
-    FLineRanges[NewIndex].StartPos:=SrcPos3-LineLen;
-    FLineRanges[NewIndex].EndPos:=SrcPos3;
+    i:=SrcPos3-LineLen;
+    System.Move(LineStr[1],FText[i],LineLen);
+    FLineRanges[NewIndex].StartPos:=i;
+    FLineRanges[NewIndex].EndPos:=i+LineShortLen;
     FLineRanges[NewIndex].Line:=''; // this will be updated on demand
     FLineRanges[NewIndex].TheObject:=Obj;
   end else begin
-    // move up
+    // move to lower index
     if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos>length(FText))
     then begin
       // CurIndex should be moved from the end,
@@ -574,9 +577,10 @@ begin
     SrcPos3:=GetLineEnd(CurIndex,true);
     // store current line with line end
     LineLen:=SrcPos3-SrcPos2;
+    LineShortLen:=GetLineLen(CurIndex,false);
     LineStr:=copy(FText,SrcPos2,LineLen);
     Obj:=FLineRanges[CurIndex].TheObject;
-    // move lines down
+    // move lines +1
     System.Move(FText[SrcPos1],FText[SrcPos1+LineLen],SrcPos2-SrcPos1);
     for i:=CurIndex-1 downto NewIndex do begin
       inc(FLineRanges[i].StartPos,LineLen);
@@ -587,7 +591,7 @@ begin
     // put current line at new position
     System.Move(LineStr[1],FText[SrcPos1],LineLen);
     FLineRanges[NewIndex].StartPos:=SrcPos1;
-    FLineRanges[NewIndex].EndPos:=SrcPos1+LineLen;
+    FLineRanges[NewIndex].EndPos:=SrcPos1+LineShortLen;
     FLineRanges[NewIndex].Line:=''; // this will be updated on demand
     FLineRanges[NewIndex].TheObject:=Obj;
   end;
@@ -685,6 +689,7 @@ procedure TTextStrings.AddStrings(TheStrings: TStrings);
   var
     i: Integer;
   begin
+    if HasObjects then exit(true);
     if TheStrings is TTextStrings then
       Result:=TTextStrings(TheStrings).HasObjects
     else
