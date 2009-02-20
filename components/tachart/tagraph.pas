@@ -198,6 +198,8 @@ type
     property Title: String read FTitle write FTitle;
   end;
 
+  TSeriesClass = class of TBasicChartSeries;
+
   { TChartSeriesList }
 
   TChartSeriesList = class(TPersistent)
@@ -412,15 +414,25 @@ type
   end;
 
 procedure Register;
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string);
+
+var
+  SeriesClassRegistry: TStringList;
 
 implementation
 
 uses
-  Clipbrd, Math;
+  Clipbrd, LCLProc, Math;
 
 const
   MinDouble = -1.7e308;
   MaxDouble = 1.7e308;
+
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string);
+begin
+  if SeriesClassRegistry.IndexOfObject(TObject(ASeriesClass)) < 0 then
+    SeriesClassRegistry.AddObject(ACaption, TObject(ASeriesClass));
+end;
 
 { TChartPen }
 
@@ -1836,8 +1848,10 @@ end;
 procedure TBasicChartSeries.ReadState(Reader: TReader);
 begin
   inherited ReadState(Reader);
-  if Reader.Parent is TChart then
-    (AParent as TChart).AddSeries(Self);
+  if Reader.Parent is TChart then begin
+    (Reader.Parent as TChart).AddSeries(Self);
+    //DebugLn('TAChart %s: %d series', [Reader.Parent.Name, (Reader.Parent as TChart).SeriesCount]);
+  end;
 end;
 
 procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
@@ -1847,8 +1861,16 @@ begin
 end;
 
 procedure Register;
+var
+  i: Integer;
+  sc: TSeriesClass;
 begin
   RegisterComponents('Additional', [TChart]);
+  for i := 0 to SeriesClassRegistry.Count - 1 do begin
+    sc := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    RegisterClass(sc);
+    RegisterNoIcon([sc]);
+  end;
 end;
 
 { TChartSeriesList }
@@ -1884,10 +1906,14 @@ end;
 procedure TChartSeriesList.SetItem(
   AIndex: Integer; const AValue: TBasicChartSeries);
 begin
-  FList.Items[AIndex] := AValue;
+  GetItem(AIndex).Assign(AValue);
 end;
 
 initialization
   {$I tagraph.lrs}
+  SeriesClassRegistry := TStringList.Create;
+
+finalization
+  SeriesClassRegistry.Free;
 
 end.

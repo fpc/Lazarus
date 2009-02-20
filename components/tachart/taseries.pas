@@ -1644,4 +1644,11 @@ begin
   ACanvas.LineTo(ARect.Right, y);
 end;
 
+initialization
+  RegisterSeriesClass(TSerie, 'Line series');
+  RegisterSeriesClass(TAreaSeries, 'Area series');
+  RegisterSeriesClass(TBarSeries, 'Bar series');
+  RegisterSeriesClass(TPieSeries, 'Pie series');
+  RegisterSeriesClass(TLine, 'Line');
+
 end.

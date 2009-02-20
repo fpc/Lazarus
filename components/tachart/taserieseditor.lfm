@@ -15,6 +15,7 @@ object SeriesEditorForm: TSeriesEditorForm
     Width = 325
     Align = alClient
     MultiSelect = True
+    OnClick = SeriesListBoxClick
     TabOrder = 0
   end
   object MainMenu1: TMainMenu
@@ -22,10 +23,10 @@ object SeriesEditorForm: TSeriesEditorForm
     top = 132
     object miAdd: TMenuItem
       Caption = 'Add'
-      object miAddSeries: TMenuItem
-        Caption = 'Series'
-        OnClick = miAddSeriesClick
-      end
+    end
+    object miDelete: TMenuItem
+      Caption = 'Delete'
+      OnClick = miDeleteClick
     end
   end
 end
