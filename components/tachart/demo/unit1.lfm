@@ -55,6 +55,19 @@ object Form1: TForm1
     Align = alClient
     Color = clBtnFace
     ParentColor = False
+    object Chart1LineHor: TLine
+      ShowInLegend = False
+      Pen.Cosmetic = True
+      Pen.Style = psDot
+      SeriesColor = clBlack
+    end
+    object Chart1LineVert: TLine
+      ShowInLegend = False
+      LineStyle = lsVertical
+      Pen.Cosmetic = True
+      Pen.Style = psDot
+      SeriesColor = clBlack
+    end
   end
   object Panel1: TPanel
     Height = 94

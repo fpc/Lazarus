@@ -306,16 +306,14 @@ type
 
   TLine = class(TBasicLineSeries)
   private
+    FPen: TPen;
+    FPosGraph: Double;                      // Graph coordinates of line
     FStyle: TLineStyle;
 
-    PosImage: Integer;                     // Image coordinates of line
-    PosGraph: Double;                      // Graph coordinates of line
-
-    FPen: TPen;
-
-    procedure SetPos(Value: Double);
-    procedure SetPen(Value: TPen);
-    procedure SetStyle(Value: TLineStyle);
+    procedure SetPen(AValue: TPen);
+    procedure SetPos(AValue: Double);
+    procedure SetStyle(AValue: TLineStyle);
+    procedure Changed;
   protected
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
@@ -328,7 +326,7 @@ type
   published
     property LineStyle: TLineStyle read FStyle write SetStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
-    property Position: Double read PosGraph write SetPos;
+    property Position: Double read FPosGraph write SetPos;
     property SeriesColor;
   end;
 
@@ -1002,41 +1000,10 @@ begin
   UpdateParentChart;
 end;
 
-constructor TLine.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
+{ TLine }
 
-  FPen := TPen.Create;
-  FPen.OnChange := @StyleChanged;
-  LineStyle := lsHorizontal;
-end;
-
-destructor TLine.Destroy;
+procedure TLine.Changed;
 begin
-  inherited Destroy;
-  FPen.Free;
-end;
-
-procedure TLine.SetPen(Value: TPen);
-begin
-  FPen.Assign(Value);
-end;
-
-procedure TLine.SetStyle(Value: TLineStyle);
-begin
-  if FStyle <> Value then begin
-    FStyle := Value;
-    case LineStyle of
-      lsHorizontal: begin YGraphMin := PosGraph; YGraphMax := PosGraph; end;
-      lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
-    end;
-    UpdateParentChart;
-  end;
-end;
-
-procedure TLine.SetPos(Value: Double);
-begin
-  PosGraph := Value;
   //FIXME: not the best way of doing this
   {if Visible then begin
      NBPointsMax:=NBPointsMax+1;
@@ -1055,11 +1022,44 @@ begin
      end;
   end;}
   case LineStyle of
-    lsHorizontal: begin YGraphMin := PosGraph; YGraphMax := PosGraph; end;
-    lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
+    lsHorizontal: begin YGraphMin := FPosGraph; YGraphMax := FPosGraph; end;
+    lsVertical: begin XGraphMin := FPosGraph; XGraphMax := FPosGraph; end;
   end;
-
   UpdateParentChart;
+end;
+
+constructor TLine.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FPen := TPen.Create;
+  FPen.OnChange := @StyleChanged;
+  LineStyle := lsHorizontal;
+end;
+
+destructor TLine.Destroy;
+begin
+  inherited Destroy;
+  FPen.Free;
+end;
+
+procedure TLine.SetPen(AValue: TPen);
+begin
+  FPen.Assign(AValue);
+end;
+
+procedure TLine.SetStyle(AValue: TLineStyle);
+begin
+  if FStyle = AValue then exit;
+  FStyle := AValue;
+  Changed;
+end;
+
+procedure TLine.SetPos(AValue: Double);
+begin
+  if FPosGraph = AValue then exit;
+  FPosGraph := AValue;
+  Changed;
 end;
 
 procedure TLine.SetSeriesColor(const AValue: TColor);
@@ -1069,24 +1069,24 @@ end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
 var
-  XMin, XMax, YMin, YMax: Integer;
+  xmin, xmax, ymin, ymax, posImage: Integer;
 begin
-  InitBounds(XMin, YMin, XMax, YMax);
+  InitBounds(xmin, ymin, xmax, ymax);
 
   ACanvas.Pen.Assign(FPen);
 
   case LineStyle of
     lsHorizontal:
-      if (PosGraph < ParentChart.XGraphMax) and (PosGraph > ParentChart.XGraphMin) then begin
-        ParentChart.YGraphToImage(PosGraph, PosImage);
-        ACanvas.MoveTo(XMin, PosImage);
-        ACanvas.LineTo(XMax, PosImage);
+      if InRange(FPosGraph, ParentChart.XGraphMin, ParentChart.XGraphMax) then begin
+        ParentChart.YGraphToImage(FPosGraph, posImage);
+        ACanvas.MoveTo(xmin, posImage);
+        ACanvas.LineTo(xmax, posImage);
       end;
     lsVertical:
-      if (PosGraph < ParentChart.YGraphMax) and (PosGraph > ParentChart.YGraphMin) then begin
-        ParentChart.XGraphToImage(PosGraph, PosImage);
-        ACanvas.MoveTo(PosImage, YMin);
-        ACanvas.LineTo(PosImage, YMax);
+      if InRange(FPosGraph, ParentChart.YGraphMin, ParentChart.YGraphMax) then begin
+        ParentChart.XGraphToImage(FPosGraph, posImage);
+        ACanvas.MoveTo(posImage, ymin);
+        ACanvas.LineTo(posImage, ymax);
       end;
   end;
 end;
@@ -1095,6 +1095,8 @@ function TLine.GetSeriesColor: TColor;
 begin
   Result := FPen.Color;
 end;
+
+{ TBarSeries }
 
 constructor TBarSeries.Create(AOwner: TComponent);
 begin

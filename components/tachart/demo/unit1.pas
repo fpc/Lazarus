@@ -31,6 +31,8 @@ type
     cbLegend: TCheckBox;
     cbShowGridCheckBox: TCheckBox;
     cbShowVertReticule: TCheckBox;
+    Chart1LineHor: TLine;
+    Chart1LineVert: TLine;
     lblAddCount: TLabel;
     lblAdd: TLabel;
     lblClear: TLabel;
