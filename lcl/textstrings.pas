@@ -688,10 +688,12 @@ procedure TTextStrings.AddStrings(TheStrings: TStrings);
     if TheStrings is TTextStrings then
       Result:=TTextStrings(TheStrings).HasObjects
     else
+    begin
       for i:=0 to TheStrings.Count-1 do
         if TheStrings.Objects[i]<>nil then
           exit(true);
-    Result:=false;
+      Result:=false;
+    end;
   end;
 
 var
