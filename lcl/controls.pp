@@ -1221,6 +1221,7 @@ type
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
     procedure BringToFront;
     function HasParent: Boolean; override;
+    function GetParentComponent: TComponent; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
     function IsVisible: Boolean; virtual;// checks parents too

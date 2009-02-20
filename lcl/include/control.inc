@@ -3921,6 +3921,11 @@ begin
   Result := (FParent <> nil);
 end;
 
+function TControl.GetParentComponent: TComponent;
+begin
+  Result := Parent;
+end;
+
 {------------------------------------------------------------------------------
   function TControl.IsParentOf(AControl: TControl): boolean;
 
