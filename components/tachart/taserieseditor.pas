@@ -66,6 +66,8 @@ implementation
 
 procedure Register;
 begin
+  RegisterPropertyEditor(
+    TypeInfo(TChartSeriesList), TChart, 'Series', TSeriesPropertyEditor);
   RegisterComponentEditor(TChart, TSeriesComponentEditor);
 end;
 

@@ -65,7 +65,6 @@ type
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
-    FTitle: String;
     FCoordList: TList;
     FActive: Boolean;
     FMarks: TSeriesMarksStyle;
@@ -94,14 +93,13 @@ type
     property YGraphMin: Double read FYGraphMin write FYGraphMin;
     property XGraphMax: Double read FXGraphMax write FXGraphMax;
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
-    property Title: String read FTitle write FTitle;
 
     function Count: Integer; override;
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
     procedure DrawIfActive(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
-    procedure Delete(Index: Integer); virtual;
+    procedure Delete(AIndex: Integer); virtual;
     procedure Clear;
 
   published
@@ -197,7 +195,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
@@ -280,20 +277,20 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
     function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
-    function  GetXValue(Index: Integer): Double;
-    function  GetYValue(Index: Integer): Double;
-    procedure SetXValue(Index: Integer; Value: Double);
-    procedure SetYValue(Index: Integer; Value: Double);
-    function  GetXImgValue(Index: Integer): Integer;
-    function  GetYImgValue(Index: Integer): Integer;
+    function  GetXValue(AIndex: Integer): Double;
+    function  GetYValue(AIndex: Integer): Double;
+    procedure SetXValue(AIndex: Integer; Value: Double);
+    procedure SetYValue(AIndex: Integer; Value: Double);
+    function  GetXImgValue(AIndex: Integer): Integer;
+    function  GetYImgValue(AIndex: Integer): Integer;
     procedure GetMin(var X, Y: Double);
     procedure GetMax(var X, Y: Double);
     function  GetXMin: Double;
     function  GetXMax: Double;
     function  GetYMin: Double;
     function  GetYMax: Double;
-    procedure SetColor(Index: Integer; AColor: TColor);
-    function  GetColor(Index: Integer): TColor;
+    procedure SetColor(AIndex: Integer; AColor: TColor);
+    function  GetColor(AIndex: Integer): TColor;
 
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -365,13 +362,10 @@ destructor TChartSeries.Destroy;
 var
   i: Integer;
 begin
-  if ParentChart <> nil then
-    ParentChart.DeleteSerie(Self);
-  ParentChart := nil;
-
   for i := 0 to FCoordList.Count - 1 do
     Dispose(PChartCoord(FCoordList.Items[i]));
   FCoordList.Free;
+  UpdateParentChart;
 
   inherited Destroy;
 end;
@@ -458,10 +452,10 @@ begin
 end;
 
 
-procedure TChartSeries.Delete(Index:Integer);
+procedure TChartSeries.Delete(AIndex:Integer);
 begin
-  Dispose(PChartCoord(FCoordList.Items[Index]));
-  FCoordList.Delete(Index);
+  Dispose(PChartCoord(FCoordList.Items[AIndex]));
+  FCoordList.Delete(AIndex);
   UpdateParentChart;
 end;
 
@@ -808,17 +802,17 @@ begin
   UpdateParentChart;
 end;
 
-function TSerie.GetXValue(Index: Integer): Double;
+function TSerie.GetXValue(AIndex: Integer): Double;
 begin
-  Result := PChartCoord(FCoordList.Items[Index])^.x;
+  Result := PChartCoord(FCoordList.Items[AIndex])^.x;
 end;
 
-function TSerie.GetYValue(Index: Integer): Double;
+function TSerie.GetYValue(AIndex: Integer): Double;
 begin
-  Result := PChartCoord(FCoordList.Items[Index])^.y;
+  Result := PChartCoord(FCoordList.Items[AIndex])^.y;
 end;
 
-procedure TSerie.SetXValue(Index: Integer; Value: Double);
+procedure TSerie.SetXValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -827,22 +821,22 @@ begin
      if Value < XGraphMin then XGraphMin := Value
      else if Value > XGraphMax then XGraphMax := Value
      else begin
-       if PChartCoord(FCoordList.Items[Index])^.x = XGraphMax then begin
-         PChartCoord(FCoordList.Items[Index])^.x := Value;
+       if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMax then begin
+         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
          if Value < XGraphMax then begin
            XGraphMax := MinDouble;
            for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[Index])^.x;
+             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
              if Val > XGraphMax then XGraphMax := Val;
            end;
          end;
        end
-       else if PChartCoord(FCoordList.Items[Index])^.x = XGraphMin then begin
-         PChartCoord(FCoordList.Items[Index])^.x := Value;
+       else if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMin then begin
+         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
          if Value > XGraphMin then begin
            XGraphMin := MaxDouble;
            for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[Index])^.x;
+             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
              if Val < XGraphMin then XGraphMin := Val;
            end;
          end;
@@ -850,12 +844,12 @@ begin
      end;
   end;
 
-  PChartCoord(FCoordList.Items[Index])^.x := Value;
+  PChartCoord(FCoordList.Items[AIndex])^.x := Value;
 
   UpdateParentChart;
 end;
 
-procedure TSerie.SetYValue(Index: Integer; Value: Double);
+procedure TSerie.SetYValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -864,22 +858,22 @@ begin
     if Value<YGraphMin then YGraphMin:=Value
     else if Value>YGraphMax then YGraphMax:=Value
     else begin
-      if PChartCoord(FCoordList.Items[Index])^.y=YGraphMax then begin
-        PChartCoord(FCoordList.Items[Index])^.y:=Value;
+      if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMax then begin
+        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
         if Value<YGraphMax then begin
           YGraphMax:=MinDouble;
           for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[Index])^.y;
+            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
             if Val>YGraphMax then YGraphMax:=Val;
           end;
         end;
       end
-      else if PChartCoord(FCoordList.Items[Index])^.y=YGraphMin then begin
-        PChartCoord(FCoordList.Items[Index])^.y:=Value;
+      else if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMin then begin
+        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
         if Value>YGraphMin then begin
           YGraphMin:=MaxDouble;
           for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[Index])^.y;
+            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
             if Val<YGraphMin then YGraphMin:=Val;
           end;
         end;
@@ -887,19 +881,19 @@ begin
     end;
   end;
 
-  PChartCoord(FCoordList.Items[Index])^.y := Value;
+  PChartCoord(FCoordList.Items[AIndex])^.y := Value;
 
   UpdateParentChart;
 end;
 
-function TSerie.GetXImgValue(Index: Integer): Integer;
+function TSerie.GetXImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[Index])^.x, Result);
+  ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x, Result);
 end;
 
-function TSerie.GetYImgValue(Index: Integer): Integer;
+function TSerie.GetYImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[Index])^.y, Result);
+  ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y, Result);
 end;
 
 function TSerie.GetXMin: Double;
@@ -961,14 +955,14 @@ begin
   Result := FSeriesColor;
 end;
 
-procedure TSerie.SetColor(Index: Integer; AColor: TColor);
+procedure TSerie.SetColor(AIndex: Integer; AColor: TColor);
 begin
-  PChartCoord(FCoordList.items[Index])^.Color := AColor;
+  PChartCoord(FCoordList.items[AIndex])^.Color := AColor;
 end;
 
-function TSerie.GetColor(Index: Integer): TColor;
+function TSerie.GetColor(AIndex: Integer): TColor;
 begin
-  Result := PChartCoord(FCoordList.items[Index])^.Color;
+  Result := PChartCoord(FCoordList.items[AIndex])^.Color;
 end;
 
 procedure TSerie.SetShowPoints(Value: Boolean);

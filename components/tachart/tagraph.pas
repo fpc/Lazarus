@@ -29,7 +29,7 @@ interface
 
 uses
   LCLIntF, LCLType, LResources,
-  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls, Clipbrd,
+  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls,
   TAChartUtils;
 
 const
@@ -164,7 +164,9 @@ type
 
   TBasicChartSeries = class(TComponent)
   protected
-    ParentChart: TChart;
+    FTitle: String;
+    FChart: TChart;
+
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
     function GetLegendCount: Integer; virtual; abstract;
     function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
@@ -179,18 +181,46 @@ type
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
+
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
+    procedure ReadState(Reader: TReader); override;
+    procedure SetParentComponent(AParent: TComponent); override;
   public
+    destructor Destroy; override;
+
     function Count: Integer; virtual; abstract;
     procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
+
+    property ParentChart: TChart read FChart;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
+    property Title: String read FTitle write FTitle;
+  end;
+
+  { TChartSeriesList }
+
+  TChartSeriesList = class(TPersistent)
+  private
+    FChart: TChart;
+    FList: TFPList;
+    function GetItem(AIndex: Integer): TBasicChartSeries;
+    procedure SetItem(AIndex: Integer; const AValue: TBasicChartSeries);
+  public
+    constructor Create(AOwner: TChart);
+    destructor Destroy; override;
+
+    function Count: Integer;
+    property Chart: TChart read FChart;
+    property Items[AIndex: Integer]: TBasicChartSeries
+      read GetItem write SetItem; default;
   end;
 
   { TChart }
 
   TChart = class(TCustomChart)
   private
-    FSeries: TFPList;                 // List of series
+    FSeries: TChartSeriesList;
     FMirrorX: Boolean;                // From right to left ?
     YMarkWidth: Integer;              // Depend on Y marks
     FXGraphMin, FYGraphMin: Double;   // Graph coordinates of limits
@@ -234,7 +264,6 @@ type
     FAxisVisible: Boolean;
     
     procedure CalculateTransformationCoeffs;
-    function GetSeries(AIndex: Integer): TBasicChartSeries;
     procedure PrepareXorPen;
     procedure SetAutoUpdateXMin(Value: Boolean);
     procedure SetAutoUpdateXMax(Value: Boolean);
@@ -285,6 +314,8 @@ type
     destructor  Destroy; override;
     procedure Paint; override;
     procedure EraseBackground(DC: HDC); override;
+    procedure GetChildren(AProc: TGetChildProc; ARoot: TComponent); override;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure Refresh(ACanvas: TCanvas; ARect: TRect);
@@ -293,8 +324,8 @@ type
     procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
     procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
 
-    procedure AddSerie(ASerie: TBasicChartSeries);
-    procedure DeleteSerie(Serie: TComponent);
+    procedure AddSeries(ASeries: TBasicChartSeries);
+    procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure SetAutoXMin(Auto: Boolean);
     procedure SetAutoXMax(Auto: Boolean);
     procedure SetAutoYMin(Auto: Boolean);
@@ -320,7 +351,6 @@ type
 
     property Canvas;
 
-    property Series[AIndex: Integer]: TBasicChartSeries read GetSeries;
     property SeriesCount: Integer read GetSeriesCount;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
@@ -338,6 +368,7 @@ type
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
     property ShowVerticalReticule: Boolean read FShowVerticalReticule write SetShowVerticalReticule;
     property ShowReticule: Boolean read FShowReticule write SetShowReticule;
+    property Series: TChartSeriesList read FSeries;
 
     property OnDrawVertReticule: TDrawVertReticule read FDrawVertReticule write FDrawVertReticule;
     property OnDrawReticule: TDrawReticule read FDrawReticule write FDrawReticule;
@@ -385,7 +416,7 @@ procedure Register;
 implementation
 
 uses
-  Math;
+  Clipbrd, Math;
 
 const
   MinDouble = -1.7e308;
@@ -676,7 +707,7 @@ begin
   FVertReticuleX := -1;
   FReticulePos := Point(-1, -1);
 
-  FSeries := TFPList.Create;
+  FSeries := TChartSeriesList.Create(Self);
 
   YMarkWidth := 10;
 
@@ -726,15 +757,7 @@ begin
 end;
 
 destructor TChart.Destroy;
-var
-  i: Integer;
 begin
-  for i := 0 to FSeries.Count - 1 do
-    with Series[i] do begin
-      ParentChart := nil; // Prevent auto-update of the chart by series.
-      Free;
-    end;
-
   FSeries.Free;
   FGraphBrush.Free;
 
@@ -1011,10 +1034,13 @@ var
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
 begin
+  // Check AxisScale for both axes
+  leftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
+  bottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
   // Find max mark width
   maxWidth := 0;
   if FYGraphMin <> FYGraphMax then begin
-    CalculateIntervals(FYGraphMin, FYGraphMax, LeftAxisScale, mark, step);
+    CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
     case LeftAxisScale of
       asIncreasing:
         while mark <= FYGraphMax + step * 10e-10 do begin
@@ -1069,9 +1095,6 @@ begin
 
   DrawAxisLabels;
 
-  // Check AxisScale for both axes
-  leftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
-  bottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
   // X graduations
   if FBottomAxis.Visible and FAxisVisible and (FXGraphMin <> FXGraphMax) then begin
     CalculateIntervals(FXGraphMin, FXGraphMax, bottomAxisScale, mark, step);
@@ -1244,32 +1267,22 @@ begin
   FGraphBrush.Assign(Value);
 end;
 
-procedure TChart.AddSerie(ASerie: TBasicChartSeries);
+procedure TChart.AddSeries(ASeries: TBasicChartSeries);
 begin
   MaybeDrawReticules;
-  FSeries.Add(ASerie);
-  ASerie.ParentChart := Self;
-  ASerie.AfterAdd;
+  Series.FList.Add(ASeries);
+  ASeries.FChart := Self;
+  ASeries.AfterAdd;
 end;
 
-procedure TChart.DeleteSerie(Serie: TComponent);
+procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
 var
   i: Integer;
 begin
-  i := 0;
-  while i < SeriesCount do begin
-    if Serie = Series[i] then begin
-      FSeries.Delete(i);
-      Invalidate;
-    end
-    else
-      Inc(i);
-  end;
-end;
-
-function TChart.GetSeries(AIndex: Integer): TBasicChartSeries;
-begin
-  Result := TBasicChartSeries(FSeries[AIndex]);
+  i := FSeries.FList.IndexOf(ASeries);
+  if i < 0 then exit;
+  FSeries.FList.Delete(i);
+  Invalidate;
 end;
 
 procedure TChart.SetAutoXMin(Auto: Boolean);
@@ -1528,13 +1541,13 @@ procedure TChart.DisplaySeries(ACanvas: TCanvas);
 var
   i: Integer;
 begin
-  if FSeries.Count = 0 then exit;
+  if SeriesCount = 0 then exit;
 
   //set cliping region so we don't draw outsite
   IntersectClipRect(ACanvas.Handle, XImageMin, YImageMax, XImageMax, YImageMin);
 
   // Update all series
-  for i := 0 to FSeries.Count - 1 do
+  for i := 0 to SeriesCount - 1 do
     Series[i].DrawIfActive(ACanvas);
 
   //now disable clipping
@@ -1731,6 +1744,15 @@ begin
   Invalidate;
 end;
 
+procedure TChart.SetChildOrder(Child: TComponent; Order: Integer);
+var
+  i: Integer;
+begin
+  i := Series.FList.IndexOf(Child);
+  if i >= 0 then
+    Series.FList.Move(i, Order);
+end;
+
 procedure TChart.SetFrame(Value: TChartPen);
 begin
   FFrame.Assign(Value);
@@ -1757,11 +1779,20 @@ end;
 function TChart.GetChartWidth: Integer;
 begin
   Result := XImageMax - XImageMin;
-end; 
+end;
+
+procedure TChart.GetChildren(AProc: TGetChildProc; ARoot: TComponent);
+var
+  i: Integer;
+begin
+  for i := 0 to SeriesCount - 1 do
+   if Series[i].Owner = ARoot then
+     AProc(Series[i]);
+end;
 
 function TChart.GetSeriesCount: Integer;
 begin
-  Result := FSeries.Count;
+  Result := FSeries.FList.Count;
 end;
 
 procedure TChart.ZoomFull;
@@ -1775,6 +1806,14 @@ end;
 
 procedure TBasicChartSeries.AfterAdd;
 begin
+  // nothing
+end;
+
+destructor TBasicChartSeries.Destroy;
+begin
+  if FChart <> nil then
+    FChart.DeleteSeries(Self);
+  inherited Destroy;
 end;
 
 function TBasicChartSeries.GetNearestPoint(
@@ -1784,9 +1823,68 @@ begin
   Result := false;
 end;
 
+function TBasicChartSeries.GetParentComponent: TComponent;
+begin
+  Result := FChart;
+end;
+
+function TBasicChartSeries.HasParent: Boolean;
+begin
+  Result := true;
+end;
+
+procedure TBasicChartSeries.ReadState(Reader: TReader);
+begin
+  inherited ReadState(Reader);
+  if Reader.Parent is TChart then
+    (AParent as TChart).AddSeries(Self);
+end;
+
+procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
+begin
+  if not (csLoading in ComponentState) then
+    (AParent as TChart).AddSeries(Self);
+end;
+
 procedure Register;
 begin
   RegisterComponents('Additional', [TChart]);
+end;
+
+{ TChartSeriesList }
+
+function TChartSeriesList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+constructor TChartSeriesList.Create(AOwner: TChart);
+begin
+  FChart := AOwner;
+  FList := TFPList.Create;
+end;
+
+destructor TChartSeriesList.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count - 1 do begin
+    Items[i].FChart := nil;
+    Items[i].Free;
+  end;
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
+begin
+  Result := TBasicChartSeries(FList.Items[AIndex]);
+end;
+
+procedure TChartSeriesList.SetItem(
+  AIndex: Integer; const AValue: TBasicChartSeries);
+begin
+  FList.Items[AIndex] := AValue;
 end;
 
 initialization

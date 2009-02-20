@@ -205,19 +205,19 @@ end;
 procedure TForm1.InitArea;
 begin
   FArea := TAreaSeries.Create(Chart1);
-  Chart1.AddSerie(FArea);
   FArea.SeriesColor := clFuchsia;
   FArea.Title := 'area';
   //FArea.Stairs := true;
   FArea.InvertedStairs := false;
+  Chart1.AddSeries(FArea);
 end;
 
 procedure TForm1.InitBar;
 begin
   FBar := TBarSeries.Create(Chart1);
-  Chart1.AddSerie(FBar);
   FBar.Title := 'bars';
   FBar.SeriesColor := clGreen;
+  Chart1.AddSeries(FBar);
 end;
 
 procedure TForm1.InitLine;
@@ -228,17 +228,17 @@ begin
   FLine.Pointer.Style := psRectangle;
   FLine.Title := 'line';
   FLine.SeriesColor := clRed;
-  Chart1.AddSerie(FLine);
+  Chart1.AddSeries(FLine);
 end;
 
 procedure TForm1.InitPie;
 begin
   FPie := TPieSeries.Create(Chart1);
-  Chart1.AddSerie(FPie);
   FPie.Title := 'pie';
   FPie.LabelBackgroundColor := $80FFFF;
   FPie.LabelToPieLinkColor := clCream;
   FPie.MarksStyle := smsLabelPercent;
+  Chart1.AddSeries(FPie);
 end;
 
 initialization
