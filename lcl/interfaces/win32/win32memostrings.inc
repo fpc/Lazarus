@@ -96,7 +96,7 @@ begin
     PWord(@WideBuffer[1])^ := len+1;
     len := SendMessageW(fHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
 
-    Result := Utf8Encode(WideBuffer);
+    Result := UTF16ToUTF8(WideBuffer);
   end
   else
   begin
@@ -175,7 +175,7 @@ begin
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
+    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
     else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
 {$else}
     SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
@@ -192,7 +192,7 @@ begin
       NewLine := S+LineEnding;
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
+    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
     else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
 {$else}
     SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
@@ -204,7 +204,7 @@ procedure TWin32MemoStrings.SetTextStr(const Value: string);
 begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS
-  then Windows.SetWindowTextW(fHandle, PWideChar(UTF8Decode(Value)))
+  then Windows.SetWindowTextW(fHandle, PWideChar(UTF8ToUTF16(Value)))
   else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(Value)));
 {$else}
   SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));

@@ -211,7 +211,7 @@ begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    WideBuffer := Utf8Decode(aCaption);
+    WideBuffer := UTF8ToUTF16(aCaption);
     DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @TmpRect, DT_CALCRECT);
   end
   else
@@ -467,7 +467,7 @@ begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    WideBuffer := Utf8Decode(aMenuItem.Caption);
+    WideBuffer := UTF8ToUTF16(aMenuItem.Caption);
     DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @WorkRect, DT_CALCRECT);
   end
   else
@@ -511,7 +511,7 @@ begin
     {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
-        WideBuffer := Utf8Decode(shortCutText);
+        WideBuffer := UTF8ToUTF16(shortCutText);
         DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags);
       end
       else

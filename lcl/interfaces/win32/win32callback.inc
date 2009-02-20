@@ -1079,7 +1079,7 @@ var
           SetLength(WideBuffer, L);
           L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
           SetLength(WideBuffer, L);
-          Files[I] := UTF8Encode(WideBuffer);
+          Files[I] := UTF16ToUTF8(WideBuffer);
         end
         else
         begin
@@ -1131,7 +1131,7 @@ var
     UTF8Char: TUTF8Char;
   begin
     Result := false;
-    UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
+    UTF8Char := UTF16ToUTF8(widestring(WideChar(AChar)));
     if Assigned(lWinControl) then
     begin
       Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);

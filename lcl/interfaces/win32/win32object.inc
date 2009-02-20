@@ -127,7 +127,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     FAppHandle := CreateWindowW(@ClsNameW,
-      PWideChar(Utf8Decode(Application.Title)),
+      PWideChar(UTF8ToUTF16(Application.Title)),
       WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
       0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
       0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
@@ -433,7 +433,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    Windows.SetWindowTextW(FAppHandle, PWideChar(Utf8Decode(ATitle)));
+    Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)));
   end else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
   {$else}
   Windows.SetWindowText(FAppHandle, PChar(ATitle));

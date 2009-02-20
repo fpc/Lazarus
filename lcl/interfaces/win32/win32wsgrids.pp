@@ -35,7 +35,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, LCLType, Controls, Grids, Win32Proc,
+  Windows, LCLType, LCLProc, Controls, Grids, Win32Proc,
 ////////////////////////////////////////////////////
   WSGrids, WSLCLClasses;
 
@@ -81,7 +81,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then begin
     if Length(Ch)>1 then begin
-      S := UTF8Decode(Ch);
+      S := UTF8ToUTF16(Ch);
       if S='' then WChar := WPARAM(Ord('?'))
       else         WChar := WPARAM(S[1]);
     end;

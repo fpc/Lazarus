@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, CommCtrl,
   StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
-  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, InterfaceBase,
+  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, LCLProc, InterfaceBase,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra;
 
 type
@@ -931,7 +931,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    WideBuffer := UTF8Decode(AText);
+    WideBuffer := UTF8ToUTF16(AText);
 
     if TCustomComboBox(AWinControl).ReadOnly then
       Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(WideBuffer)))
@@ -1279,7 +1279,7 @@ class procedure TWin32WSCustomMemo.SetText(const AWinControl: TWinControl; const
 begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(Utf8Decode(AText))))
+      SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(UTF8ToUTF16(AText))))
     else
       SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(Utf8ToAnsi(AText))));
   {$else}

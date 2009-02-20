@@ -37,7 +37,7 @@ uses
   CommCtrl, Windows, Classes, Buttons, Graphics, GraphType, Controls,
 ////////////////////////////////////////////////////
   WSProc, WSControls, WSButtons, WSLCLClasses,
-  Win32WSControls, Win32WSImgList, LCLType, Themes;
+  Win32WSControls, Win32WSImgList, LCLType, LCLProc, Themes;
 
 type
 
@@ -218,7 +218,7 @@ var
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      ButtonCaptionW := UTF8Decode(ButtonCaption);
+      ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
       DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
     end
     else begin

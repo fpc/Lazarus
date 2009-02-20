@@ -287,7 +287,7 @@ begin
   WParam := WParam or StatusPanel.Index;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(Utf8Decode(Text))))
+      Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(Text))))
     else
       Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(Text))));
   {$else}
@@ -461,7 +461,7 @@ begin
   if AStatusBar.SimplePanel then
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(Utf8Decode(AStatusBar.SimpleText))))
+      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(UTF8ToUTF16(AStatusBar.SimpleText))))
     else
       Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
   {$else}

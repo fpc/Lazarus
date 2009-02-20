@@ -279,7 +279,7 @@ var
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      WideBuffer := Utf8Decode(CheckListBox.Items[Data^.ItemID]);
+      WideBuffer := UTF8ToUTF16(CheckListBox.Items[Data^.ItemID]);
       Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
        Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end
@@ -516,7 +516,7 @@ begin
               begin;
                 SetLength(BufferWideString, Size div 2);
                 BufferStream.Read(BufferWideString[1], Size);
-                BufferString := Utf8Encode(BufferWideString);
+                BufferString := UTF16ToUTF8(BufferWideString);
               end
               else
               begin
@@ -683,7 +683,7 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
             DataStream.Read(BufferString[1], DataStream.Size);
             if FormatID=Windows.CF_UNICODETEXT then
             begin
-              BufferWideString := Utf8Decode(BufferString);
+              BufferWideString := UTF8ToUTF16(BufferString);
               if BufferWideString<>'' then  // bufferstring may contain invalid UTF8
                 BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
             end
@@ -1216,7 +1216,7 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
   begin
-    W := Utf8Decode(s);
+    W := UTF8ToUTF16(s);
     Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
   end
   else
@@ -1395,7 +1395,7 @@ begin
   then
   begin
     // TODO: use the real number of chars (and not the lenght)
-    W := Utf8Decode(S);
+    W := UTF8ToUTF16(S);
     Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
   end                                        
   else
@@ -2002,7 +2002,7 @@ begin
   if UnicodeEnabledOS then
   begin
     // TODO: use the real number of chars (and not the length)
-    w := Utf8Decode(S);
+    w := UTF8ToUTF16(S);
     Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
   end else
   begin
@@ -2361,8 +2361,8 @@ var
 {$endif}
 begin
   {$ifdef WindowsUnicodeSupport}
-  WideLPText := UTF8Decode(string(LPText));
-  WideLPCaption := UTF8Decode(string(LPCaption));
+  WideLPText := UTF8ToUTF16(string(LPText));
+  WideLPCaption := UTF8ToUTF16(string(LPCaption));
 
   Result := Windows.MessageBoxW(HWnd, PWideChar(WideLPText),
     PWideChar(WideLPCaption), UType);

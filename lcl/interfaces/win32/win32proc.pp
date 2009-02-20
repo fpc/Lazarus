@@ -1189,7 +1189,7 @@ begin
     If TextLen > 0 // Never give Windows the chance to write to System.emptychar
     Then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
     SetLength(WideBuffer, TextLen);
-    Result := Utf8Encode(WideBuffer);
+    Result := UTF16ToUTF8(WideBuffer);
   end
   else
   begin

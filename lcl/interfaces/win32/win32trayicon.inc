@@ -214,7 +214,7 @@ begin
     tnidw.uCallbackMessage := WM_USER + uIDTrayIcon;
     tnidw.hIcon := ATrayIcon.Icon.Handle;
 
-    WideBuffer := UTF8Decode(ATrayIcon.Hint);
+    WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
     WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
 
     Result := Shell_NotifyIconW(NIM_ADD, @tnidw);
@@ -288,7 +288,7 @@ begin
     tnidw.hIcon := ATrayIcon.Icon.Handle;
     tnidw.uFlags := NIF_TIP or NIF_ICON;
 
-    WideBuffer := UTF8Decode(ATrayIcon.Hint);
+    WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
     WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
 
     if not Shell_NotifyIconW(NIM_MODIFY, @tnidw) then
@@ -353,9 +353,9 @@ begin
   NotifyData.uID := uIDTrayIcon;
   NotifyData.uFlags:=NIF_INFO;
   NotifyData.u.uTimeout:=ATrayIcon.BalloonTimeout;
-  w:=UTF8Decode(ATrayIcon.BalloonHint);
+  w:=UTF8ToUTF16(ATrayIcon.BalloonHint);
   WideStrLCopy(@NotifyData.szInfo, PWideChar(w), High(NotifyData.szInfo));
-  w:=UTF8Decode(ATrayIcon.BalloonTitle);
+  w:=UTF8ToUTF16(ATrayIcon.BalloonTitle);
   WideStrLCopy(@NotifyData.szInfoTitle, PWideChar(w), High(NotifyData.szInfoTitle));
   NotifyData.dwInfoFlags:=FlagsMap[ATrayIcon.BalloonFlags];
 

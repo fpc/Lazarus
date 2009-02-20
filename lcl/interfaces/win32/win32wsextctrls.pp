@@ -36,7 +36,7 @@ uses
 // rtl
   Windows, CommCtrl, SysUtils, Classes,
 // lcl
-  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, Themes, LCLMessageGlue,
+  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, LCLProc, Themes, LCLMessageGlue,
 // ws
   WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
   InterfaceBase, Win32WSControls;
@@ -358,7 +358,7 @@ begin
 {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
-        TCI.pszText := PChar(PWideChar(Utf8Decode(AText)));
+        TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
         Windows.SendMessage(NotebookHandle, TCM_SETITEMW, RealIndex, LPARAM(@TCI));
       end
       else
@@ -458,7 +458,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
-        TCI.pszText := PChar(PWideChar(Utf8Decode(AChild.Caption)));
+        TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AChild.Caption)));
         Windows.SendMessage(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
       end
       else
@@ -523,7 +523,7 @@ begin
 {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
-        TCI.pszText := PChar(PWideChar(UTF8Decode(APage.Caption)));
+        TCI.pszText := PChar(PWideChar(UTF8ToUTF16(APage.Caption)));
         Windows.SendMessage(WinHandle, TCM_INSERTITEMW, RealIndex, LPARAM(@TCI));
       end
       else

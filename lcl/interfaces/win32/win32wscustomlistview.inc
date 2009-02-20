@@ -115,7 +115,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      lvc.pszText := PChar(PWideChar(Utf8Decode(AColumn.Caption)));
+      lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
       SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
     end
     else
@@ -211,7 +211,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      lvc.pszText := PChar(PWideChar(Utf8Decode(AColumn.Caption)));
+      lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
       SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
     end
     else
@@ -372,7 +372,7 @@ begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      lvi.pszText := PChar(PWideChar(Utf8Decode(AItem.Caption)));
+      lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AItem.Caption)));
       SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
     end
     else
@@ -449,7 +449,7 @@ begin
     if UnicodeEnabledOS then
     begin
       _gnu_lvi.iSubItem := ASubIndex;
-      _gnu_lvi.pszText := PChar(PWideChar(Utf8Decode(AText)));
+      _gnu_lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
 
       SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
     end

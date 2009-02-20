@@ -196,8 +196,8 @@ var
     {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
-      FolderName := UTF8Encode(DialogRec^.UnicodeFolderName);
-      FileNames := UTF8Encode(DialogRec^.UnicodeFileNames);
+      FolderName := UTF16ToUTF8(DialogRec^.UnicodeFolderName);
+      FileNames := UTF16ToUTF8(DialogRec^.UnicodeFileNames);
     end
     else
     begin
@@ -236,7 +236,7 @@ var
   begin
     {$ifdef WindowsUnicodeSupport}
        if UnicodeEnabledOS then
-         SelectedStr:=UTF8Encode(widestring(PWideChar(OpenFile^.lpStrFile)))
+         SelectedStr:=UTF16ToUTF8(widestring(PWideChar(OpenFile^.lpStrFile)))
        else
          SelectedStr:=AnsiToUtf8(OpenFile^.lpStrFile);
     {$else}
@@ -561,7 +561,7 @@ begin
     if UnicodeEnabledOS then
     begin
       FileNameWideBuffer := AllocMem(FileNameBufferLen * 2 + 2);
-      FileNameWide := UTF8Decode(FileName);
+      FileNameWide := UTF8ToUTF16(FileName);
 
       if Length(FileNameWide) > FileNameBufferLen then
         FileNameBufferSize := FileNameBufferLen
@@ -892,13 +892,13 @@ begin
   if UnicodeEnabledOS then
   begin
     Buffer := CoTaskMemAlloc(MAX_PATH*2);
-    InitialDirW:=UTF8Decode(InitialDir);
+    InitialDirW:=UTF8ToUTF16(InitialDir);
     with biw do
     begin
       hwndOwner := GetOwnerHandle(ACommonDialog);
       pidlRoot := nil;
       pszDisplayName := BufferW;
-      Title :=  UTF8Decode(ACommonDialog.Title);
+      Title :=  UTF8ToUTF16(ACommonDialog.Title);
       lpszTitle := PWideChar(Title);
       ulFlags := BIF_RETURNONLYFSDIRS;
       if not (ofOldStyleDialog in Options) then
@@ -914,7 +914,7 @@ begin
     begin
       SHGetPathFromIDListW(iidl, BufferW);
       CoTaskMemFree(iidl);
-      TSelectDirectoryDialog(ACommonDialog).FileName := UTF8Encode(widestring(BufferW));
+      TSelectDirectoryDialog(ACommonDialog).FileName := UTF16ToUTF8(widestring(BufferW));
     end;
   end
   else begin

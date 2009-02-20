@@ -11,7 +11,7 @@ uses
   // rtl
   Classes, SysUtils,
   // lcl
-  Controls, Graphics, ImgList, Themes;
+  Controls, Graphics, ImgList, Themes, LCLProc;
   
 type
 
@@ -297,7 +297,7 @@ begin
     with Details do
 {$IFDEF WindowsUnicodeSupport}
     begin
-      w := UTF8Decode(S);
+      w := UTF8ToUTF16(S);
       DrawThemeText(Theme[Element], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
     end
 {$ELSE}

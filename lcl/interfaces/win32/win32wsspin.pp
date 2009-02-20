@@ -35,7 +35,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Win32Extra,
-  Spin, Controls, StdCtrls, LCLType,
+  Spin, Controls, StdCtrls, LCLType, LCLProc,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
@@ -158,7 +158,7 @@ begin
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
       Buddy := CreateWindowExW(WS_EX_CLIENTEDGE, PWideChar(WideString(EditClsName)),
-                  PWideChar(UTF8Decode(StrCaption)), Flags or ES_AUTOHSCROLL,
+                  PWideChar(UTF8ToUTF16(StrCaption)), Flags or ES_AUTOHSCROLL,
                   Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil)
     else
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0],
@@ -263,7 +263,7 @@ class procedure TWin32WSCustomFloatSpinEdit.SetText(const AWinControl: TWinContr
 begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then Windows.SetWindowTextW(GetBuddyWindow(AWinControl.Handle), PWideChar(Utf8Decode(AText)))
+    then Windows.SetWindowTextW(GetBuddyWindow(AWinControl.Handle), PWideChar(UTF8ToUTF16(AText)))
     else Windows.SetWindowText(GetBuddyWindow(AWinControl.Handle), PChar(Utf8ToAnsi(AText)));
   {$else}
     Windows.SetWindowText(GetBuddyWindow(AWinControl.Handle), PChar(AText));
