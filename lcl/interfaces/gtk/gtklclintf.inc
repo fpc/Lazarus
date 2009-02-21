@@ -260,84 +260,80 @@ begin
     // create Pixmap from data
     Bitmap := nil;
 
-    case ImgDepth of
-      1: begin
-        // create a GdkBitmap
-        if ImgData <> nil
-        then Drawable := gdk_bitmap_create_from_data(nil, ImgData, ImgWidth, ImgHeight)
-        else Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
+    if ImgDepth = 1
+    then begin
+      // create a GdkBitmap
+      if ImgData <> nil
+      then Drawable := gdk_bitmap_create_from_data(nil, ImgData, ImgWidth, ImgHeight)
+      else Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
 
-        GdiObject^.GDIBitmapObject := Drawable;
-        GdiObject^.GDIBitmapType := gbBitmap;
-      end;
-      32: begin
-        if ImgData = nil
+      GdiObject^.GDIBitmapObject := Drawable;
+      GdiObject^.GDIBitmapType := gbBitmap;
+    end
+    else begin
+      if (ImgData <> nil) and (ImgDepth = 32)
+      then begin
+        case Desc.LineEnd of
+          rileQWordBoundary: begin
+            RowStride := ImgWidth;
+            if ImgWidth and 1 <> 0 then Inc(RowStride);
+            RowStride := RowStride shl 2;
+          end;
+          rileDQWordBoundary: begin
+            RowStride := ImgWidth shr 1;
+            if ImgWidth and 3 <> 0 then Inc(RowStride);
+            RowStride := RowStride shl 3;
+          end;
+        else
+          RowStride := ImgWidth shl 2;
+        end;
+
+        // check if the pixels are in order, pixbuf expects them in R-G-B-A
+        Ridx := (Desc.RedShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
+        Gidx := (Desc.GreenShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
+        Bidx := (Desc.BlueShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
+        Aidx := (Desc.AlphaShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
+
+        if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)
         then begin
-          Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, ImgDepth);
+          // put components in right order
+          GetMem(Data, ImgDataSize);
+          DstRowPtr := Data;
+          SrcRowPtr := ImgData;
+          y := ImgHeight;
+          while y > 0 do
+          begin
+            Src := SrcRowPtr;
+            Dst := DstRowPtr;
+            x := ImgWidth;
+            while x > 0 do
+            begin
+              Dst[0] := Src[Ridx];
+              Dst[1] := Src[Gidx];
+              Dst[2] := Src[Bidx];
+              Dst[3] := Src[Aidx];
+
+              Inc(Src, 4);
+              Inc(Dst, 4);
+              Dec(x);
+            end;
+            Inc(SrcRowPtr, Rowstride);
+            Inc(DstRowPtr, Rowstride);
+            Dec(y);
+          end;
+
         end
         else begin
-          case Desc.LineEnd of
-            rileQWordBoundary: begin
-              RowStride := ImgWidth;
-              if ImgWidth and 1 <> 0 then Inc(RowStride);
-              RowStride := RowStride shl 2;
-            end;
-            rileDQWordBoundary: begin
-              RowStride := ImgWidth shr 1;
-              if ImgWidth and 3 <> 0 then Inc(RowStride);
-              RowStride := RowStride shl 3;
-            end;
-          else
-            RowStride := ImgWidth shl 2;
-          end;
-          
-          // check if the pixels are in order, pixbuf expects them in R-G-B-A
-          Ridx := (Desc.RedShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-          Gidx := (Desc.GreenShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-          Bidx := (Desc.BlueShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-          Aidx := (Desc.AlphaShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-          
-          if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)
-          then begin
-            // put components in right order
-            GetMem(Data, ImgDataSize);
-            DstRowPtr := Data;
-            SrcRowPtr := ImgData;
-            y := ImgHeight;
-            while y > 0 do
-            begin
-              Src := SrcRowPtr;
-              Dst := DstRowPtr;
-              x := ImgWidth;
-              while x > 0 do
-              begin
-                Dst[0] := Src[Ridx];
-                Dst[1] := Src[Gidx];
-                Dst[2] := Src[Bidx];
-                Dst[3] := Src[Aidx];
-
-                Inc(Src, 4);
-                Inc(Dst, 4);
-                Dec(x);
-              end;
-              Inc(SrcRowPtr, Rowstride);
-              Inc(DstRowPtr, Rowstride);
-              Dec(y);
-            end;
-
-          end
-          else begin
-            // components are in place
-            Data := ImgData;
-          end;
-
-          Pixbuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
-          // DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
-          gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Drawable, Bitmap, $80);
-          gdk_pixbuf_unref(Pixbuf);
-          if Data <> ImgData
-          then FreeMem(Data);
+          // components are in place
+          Data := ImgData;
         end;
+
+        Pixbuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
+        // DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
+        gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Drawable, Bitmap, $80);
+        gdk_pixbuf_unref(Pixbuf);
+        if Data <> ImgData
+        then FreeMem(Data);
 
         GdiObject^.GDIPixmapObject.Image := Drawable;
         GdiObject^.GDIPixmapObject.Mask := Bitmap;
@@ -346,55 +342,58 @@ begin
         
         //DbgDumpPixmap(Drawable, 'CreateBitmaps (32)');
         //DbgDumpBitmap(Bitmap, 'CreateBitmaps (32)');
-      end;
-    else
-      // create a GdkPixmap
-      if ImgData <> nil
-      then begin
-        { The gdk_pixmap_create_from_data creates only a two-color pixmap so we cant use it }
-
-        Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, ImgDepth);
-        // Create a GdkImage, copy our data into it and create a pixmap from it
-        Visual := gdk_visual_get_best_with_depth(ImgDepth);
-        if Visual = nil
-        then Exit; // this depth is not supported
-        
-        GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
-
-        {$ifdef VerboseRawImage}
-        //DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
-        //  ' BytesPerLine=',dbgs(GdkImage^.bpl),
-        //  ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
-        //  ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
-        //  '');
-        {$endif}
-
-        if ARawImage.Description.BitsPerPixel <> GetGdkImageBitsPerPixel(GdkImage)
-        then begin
-          RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
-        end;
-        if ImgDataSize <> GdkImage^.bpl * ImgHeight
-        then begin
-          RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
-        end;
-
-        System.Move(ImgData^, GdkImage^.mem^, ImgDataSize);
-        if ImgDepth = 1
-        then CheckGdkImageBitOrder(GdkImage, GdkImage^.mem, ImgDataSize);
-        GC := gdk_gc_new(Drawable);
-        gdk_draw_image(Drawable, GC, GdkImage, 0, 0, 0, 0, ImgWidth, ImgHeight);
-        gdk_gc_unref(GC);
-        gdk_image_destroy(GdkImage);
-        
-        //DbgDumpPixmap(Drawable, 'CreateBitmaps');
       end
       else begin
-        Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, ImgDepth);
-      end;
+        // check if the depth is supported
+        Visual := gdk_visual_get_best_with_depth(Min(ImgDepth, 24));
+        // try some alternative (I'm not sure if we should fail here instead)
+        // if we don't have a visual we cannot draw anyway
+        //if Visual = nil
+        //then Visual := gdk_visual_get_best;
+        if Visual = nil
+        then Exit; // this depth is not supported
 
-      GdiObject^.GDIPixmapObject.Image := Drawable;
-      GdiObject^.Visual := gdk_window_get_visual(Drawable);
-      gdk_visual_ref(GdiObject^.Visual);
+        Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, Visual^.depth);
+
+        // create a GdkPixmap
+        if ImgData <> nil
+        then begin
+          { The gdk_pixmap_create_from_data creates only a two-color pixmap so we cant use it }
+
+          GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
+
+          {$ifdef VerboseRawImage}
+          //DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
+          //  ' BytesPerLine=',dbgs(GdkImage^.bpl),
+          //  ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
+          //  ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
+          //  '');
+          {$endif}
+
+          if ARawImage.Description.BitsPerPixel <> GetGdkImageBitsPerPixel(GdkImage)
+          then begin
+            RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
+          end;
+          if ImgDataSize <> GdkImage^.bpl * ImgHeight
+          then begin
+            RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
+          end;
+
+          System.Move(ImgData^, GdkImage^.mem^, ImgDataSize);
+          if ImgDepth = 1
+          then CheckGdkImageBitOrder(GdkImage, GdkImage^.mem, ImgDataSize);
+          GC := gdk_gc_new(Drawable);
+          gdk_draw_image(Drawable, GC, GdkImage, 0, 0, 0, 0, ImgWidth, ImgHeight);
+          gdk_gc_unref(GC);
+          gdk_image_destroy(GdkImage);
+
+          //DbgDumpPixmap(Drawable, 'CreateBitmaps');
+        end;
+
+        GdiObject^.GDIPixmapObject.Image := Drawable;
+        GdiObject^.Visual := gdk_window_get_visual(Drawable);
+        gdk_visual_ref(GdiObject^.Visual);
+      end;
     end;
     
     if ASkipMask
