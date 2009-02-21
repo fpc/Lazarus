@@ -4757,7 +4757,8 @@ begin
             ResourceCode.Source:=CompResourceCode;
           end;
         end;
-        if (not (sfSaveToTestDir in Flags)) then begin
+        if (not (sfSaveToTestDir in Flags)) and (not AnUnitInfo.IsVirtual) then
+        begin
           // save lfm file
           LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
           if LFMCode=nil then begin
@@ -4771,7 +4772,7 @@ begin
               if Result<>mrIgnore then exit;
             end;
           end;
-          if LFMCode<>nil then begin
+          if (LFMCode<>nil) then begin
             {$IFDEF IDE_DEBUG}
             writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
             {$ENDIF}
@@ -4823,7 +4824,8 @@ begin
       // the component
       if ComponentSavingOk
       and (Grubber<>nil) and (Grubber.Grubbed.Count>0)
-      and not (sfSaveToTestDir in Flags) then begin
+      and (not (sfSaveToTestDir in Flags))
+      and (not AnUnitInfo.IsVirtual) then begin
         LRTFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrt');
         DebugLn(['TMainIDE.DoSaveUnitComponent save lrt: ',LRTFilename]);
         Result:=SaveStringToFile(LRTFilename,Grubber.Grubbed.Text,
@@ -4851,7 +4853,8 @@ begin
   {$ENDIF}
   // save binary stream (.lrs)
   if ResourceCode<>nil then begin
-    if not (sfSaveToTestDir in Flags) then begin
+    if (not (sfSaveToTestDir in Flags)) and (not ResourceCode.IsVirtual) then
+    begin
       if (ResourceCode.Modified) then begin
         Result:=SaveCodeBufferToFile(ResourceCode,ResourceCode.Filename);
         if not Result=mrOk then exit;
