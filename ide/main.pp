@@ -6764,6 +6764,11 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
+
+  {$IFDEF EnableBuildModes}
+  TIDEBuildModes(Project1.CompilerOptions.BuildModes).BuildModeSet:=GlobalBuildModeSet;
+  {$ENDIF}
+
   MainBuildBoss.RescanCompilerDefines(true,true);
 
   // load required packages
@@ -8530,6 +8535,9 @@ begin
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
+  // deactivate project build modes
+  if Project1<>nil then
+    TIDEBuildModes(Project1.CompilerOptions.BuildModes).BuildModeSet:=nil;
   IncreaseCompilerParseStamp;
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;

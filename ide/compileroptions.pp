@@ -107,6 +107,7 @@ type
   private
     FEvaluator: TExpressionEvaluator;
     FFirstBuildModes: TIDEBuildModes;
+    procedure Changed;
   public
     constructor Create;
     destructor Destroy; override;
@@ -3284,6 +3285,11 @@ end;
 
 { TBuildModeSet }
 
+procedure TBuildModeSet.Changed;
+begin
+  IncreaseCompilerParseStamp;
+end;
+
 constructor TBuildModeSet.Create;
 begin
   FEvaluator:=TExpressionEvaluator.Create;
@@ -3428,17 +3434,21 @@ end;
 procedure TIDEBuildModes.SetBuildModeSet(const AValue: TBuildModeSet);
 begin
   if FBuildModeSet=AValue then exit;
-  FBuildModeSet:=AValue;
   if FBuildModeSet<>nil then begin
-    fNextModes:=GlobalBuildModeSet.FFirstBuildModes;
-    GlobalBuildModeSet.FFirstBuildModes:=Self;
-  end else begin
-    if GlobalBuildModeSet.FFirstBuildModes=Self then
-      GlobalBuildModeSet.FFirstBuildModes:=fNextModes;
+    if FBuildModeSet.FFirstBuildModes=Self then
+      FBuildModeSet.FFirstBuildModes:=fNextModes;
     if fNextModes<>nil then fNextModes.fPrevModes:=fPrevModes;
     if fPrevModes<>nil then fPrevModes.fNextModes:=fNextModes;
     fPrevModes:=nil;
     fNextModes:=nil;
+    FBuildModeSet.Changed;
+  end;
+  FBuildModeSet:=AValue;
+  if FBuildModeSet<>nil then begin
+    fNextModes:=FBuildModeSet.FFirstBuildModes;
+    FBuildModeSet.FFirstBuildModes:=Self;
+    if fNextModes<>nil then fNextModes.fPrevModes:=Self;
+    FBuildModeSet.Changed;
   end;
 end;
 
