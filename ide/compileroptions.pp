@@ -68,6 +68,7 @@ type
                               UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherMode: TLazBuildMode; Tool: TCompilerDiffTool);
     procedure Assign(Source: TIDEBuildMode);
+    procedure SetDefaultValue(const AValue: string); override;
   end;
 
   TBuildModeSet = class;
@@ -86,7 +87,7 @@ type
     function Add(Identifier: string): TLazBuildMode; override;
     procedure Clear; override;
     function Count: integer; override;
-    constructor Create;
+    constructor Create(TheOwner: TObject); override;
     procedure Delete(Index: integer); override;
     destructor Destroy; override;
     function IndexOfIdentifier(Identifier: string): integer; override;
@@ -114,6 +115,7 @@ type
     function FindModeWithIdentifier(Identifier: string; out BuildModes: TIDEBuildModes;
       out BuildMode: TIDEBuildMode): boolean;
     function GetUniqueModeName(CheckToo: TIDEBuildModes): string;
+    procedure AddStandardModes;
     property Evaluator: TExpressionEvaluator read FEvaluator;
   end;
 
@@ -850,7 +852,7 @@ begin
   FParsedOpts := TParsedCompilerOptions.Create(TCompOptConditionals(FConditionals));
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
-  fBuildModes := TIDEBuildModes.Create;
+  fBuildModes := TIDEBuildModes.Create(Self);
 
   Clear;
 end;
@@ -3296,7 +3298,17 @@ begin
 end;
 
 destructor TBuildModeSet.Destroy;
+var
+  BuildMode: TIDEBuildModes;
+  NextMode: TIDEBuildModes;
 begin
+  BuildMode:=FFirstBuildModes;
+  while BuildMode<>nil do begin
+    NextMode:=BuildMode.fNextModes;
+    if BuildMode.Owner=Self then
+      BuildMode.Free;
+    BuildMode:=NextMode;
+  end;
   FreeAndNil(FEvaluator);
   inherited Destroy;
 end;
@@ -3326,6 +3338,25 @@ begin
     Result:='Mode'+IntToStr(i);
   until (not FindModeWithIdentifier(Result,BuildModes,BuildMode))
     and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
+end;
+
+procedure TBuildModeSet.AddStandardModes;
+var
+  StdModes: TIDEBuildModes;
+  MainMode: TLazBuildMode;
+begin
+  StdModes:=TIDEBuildModes.Create(Self);
+  MainMode:=StdModes.Add('BuildMode');
+  MainMode.Description:='Main build mode';
+  MainMode.Values.Text:='Default'+LineEnding
+                       +'Debug'+LineEnding
+                       +'Release'+LineEnding
+                       +'Mode1'+LineEnding
+                       +'Mode2'+LineEnding
+                       +'Mode3'+LineEnding
+                       +'Mode4'+LineEnding;
+  MainMode.SetDefaultValue('Default');
+  StdModes.BuildModeSet:=Self;
 end;
 
 { TIDEBuildMode }
@@ -3429,6 +3460,18 @@ begin
   ValueDescriptions:=Source.ValueDescriptions;
 end;
 
+procedure TIDEBuildMode.SetDefaultValue(const AValue: string);
+var
+  Node: TCompOptCondNode;
+begin
+  DefaultValue.Root.ClearNodes;
+  Node:=TCompOptCondNode.Create(DefaultValue);
+  Node.NodeType:=cocntSetValue;
+  Node.ValueType:=cocvtResult;
+  Node.Value:=AValue;
+  DefaultValue.Root.AddLast(Node);
+end;
+
 { TIDEBuildModes }
 
 procedure TIDEBuildModes.SetBuildModeSet(const AValue: TBuildModeSet);
@@ -3480,8 +3523,9 @@ begin
   Result:=FItems.Count;
 end;
 
-constructor TIDEBuildModes.Create;
+constructor TIDEBuildModes.Create(TheOwner: TObject);
 begin
+  inherited Create(TheOwner);
   FItems:=TFPList.Create;
 end;
 

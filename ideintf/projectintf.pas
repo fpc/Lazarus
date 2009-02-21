@@ -167,6 +167,7 @@ type
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
     procedure Assign(Source: TLazBuildMode); virtual; abstract;
+    procedure SetDefaultValue(const AValue: string); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property Description: string read FDescription write SetDescription;
     property Values: TStrings read FValues write SetValues;
@@ -177,9 +178,12 @@ type
   { TLazBuildModes }
 
   TLazBuildModes = class
+  private
+    FOwner: TObject;
   protected
     function GetItems(Index: integer): TLazBuildMode; virtual; abstract;
   public
+    constructor Create(TheOwner: TObject); virtual;
     function Add(Identifier: string): TLazBuildMode; virtual; abstract;
     procedure Delete(Index: integer); virtual; abstract;
     procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
@@ -188,6 +192,7 @@ type
     function Count: integer; virtual; abstract;
     procedure Clear; virtual; abstract;
     property Items[Index: integer]: TLazBuildMode read GetItems; default;
+    property Owner: TObject read FOwner;
   end;
 
   { TLazCompilerOptions }
@@ -1619,6 +1624,13 @@ destructor TLazCompOptConditionals.Destroy;
 begin
   FreeAndNil(FRoot);
   inherited Destroy;
+end;
+
+{ TLazBuildModes }
+
+constructor TLazBuildModes.Create(TheOwner: TObject);
+begin
+  FOwner:=TheOwner
 end;
 
 initialization

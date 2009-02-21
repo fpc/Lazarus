@@ -206,6 +206,7 @@ begin
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
   GlobalBuildModeSet:=TBuildModeSet.Create;
+  GlobalBuildModeSet.AddStandardModes;
 end;
 
 destructor TBuildManager.Destroy;
