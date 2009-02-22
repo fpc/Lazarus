@@ -75,6 +75,7 @@ uses
     {$IFDEF Linux}
       SQLDBLaz, DBFLaz,
     {$ENDIF}
+	SynEditDesign,
   {$ENDIF}
   MainBase;
 

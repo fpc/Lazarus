@@ -1344,6 +1344,8 @@ components/sqlite/sqlitelaz.pas svneol=native#text/plain
 components/sqlite/tsqlite3dataset.png -text
 components/sqlite/tsqlitedataset.png -text
 components/synedit/allsyneditunits.pp svneol=native#text/pascal
+components/synedit/design/Makefile svneol=native#text/plain
+components/synedit/design/Makefile.fpc svneol=native#text/plain
 components/synedit/design/README.txt svneol=native#text/plain
 components/synedit/design/syndesignstringconstants.pas svneol=native#text/plain
 components/synedit/design/syneditdesign.lpk svneol=native#text/plain
