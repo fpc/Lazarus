@@ -1043,6 +1043,7 @@ begin
   end;
 end;
 
+// Only needed if the Selection is set from External
 function TSynEditSelection.AdjustBytePosToCharacterStart(Line : integer; BytePos : integer) : integer;
 var
   s: string;
@@ -1053,7 +1054,7 @@ begin
   else if (Line >= 1) and (Line <= FLines.Count) then begin
     s := FLines[Line-1];
     if (Result <= length(s)) and FLines.IsUtf8 then
-      Result:=UTF8FindNearestCharStart(PChar(Pointer(s)),length(s),Result);
+      Result:=UTF8FindNearestCharStart(PChar(Pointer(s)),length(s),Result - 1) + 1;
   end;
   if Result <> BytePos then debugln(['Selection needed byte adjustment  Line=', Line, ' BytePos=', BytePos, ' Result=', Result]);
 end;
