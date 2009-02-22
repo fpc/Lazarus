@@ -1070,9 +1070,11 @@ end;
 function TSynPasSyn.Func66: TtkTokenKind;
 begin
   if KeyComp('Type') then begin
-    if (TSynPasSynRange(CodeFoldRange).BracketNestLevel = 0) and
-        (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtNone, cfbtProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection]) then begin
+    if (TSynPasSynRange(CodeFoldRange).BracketNestLevel = 0)
+       and (TopPascalCodeFoldBlockType in
+        [cfbtVarType, cfbtNone, cfbtProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
+       and not(rsAfterEqual in fRange)
+    then begin
       if TopPascalCodeFoldBlockType=cfbtVarType then EndCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtVarType);
     end;
