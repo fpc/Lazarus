@@ -52,6 +52,7 @@ type
 
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }
+    smsNone,           { no labels }
     smsValue,          { 1234 }
     smsPercent,        { 12 % }
     smsLabel,          { Cars }
@@ -79,7 +80,7 @@ type
 const
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
-    '',
+    '', '',
     '%0:g', // smsValue
     '%1:.2f%%', // smsPercent
     '%2:s', // smsLabel

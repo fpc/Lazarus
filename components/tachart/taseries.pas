@@ -50,19 +50,21 @@ type
 
   TChartSeries = class(TBasicChartSeries)
   private
+    FMarksFormat: String;
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
     FCoordList: TList;
     FActive: Boolean;
-    FMarks: TSeriesMarksStyle;
+    FMarksStyle: TSeriesMarksStyle;
     FShowInLegend: Boolean;
     FValuesTotal: Double;
     FValuesTotalValid: Boolean;
 
-    procedure SetActive(Value: Boolean);
-    procedure SetMarks(Value: TSeriesMarksStyle);
     function GetXMinVal: Integer;
+    procedure SetActive(Value: Boolean);
+    procedure SetMarksFormat(const AValue: String);
+    procedure SetMarksStyle(AValue: TSeriesMarksStyle);
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
   protected
@@ -96,8 +98,9 @@ type
 
   published
     property Active: Boolean read FActive write SetActive default true;
+    property MarksFormat: String read FMarksFormat write SetMarksFormat;
     property MarksStyle: TSeriesMarksStyle
-      read FMarks write SetMarks default smsLabel; //this should be an object
+      read FMarksStyle write SetMarksStyle default smsNone;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title;
@@ -338,7 +341,7 @@ begin
 
   FActive := true;
   FShowInLegend := true;
-  FMarks := smsLabel;
+  FMarksStyle := smsNone;
   FCoordList := TList.Create;
 end;
 
@@ -366,11 +369,17 @@ begin
 end;
 
 function TChartSeries.FormattedMark(AIndex: integer): String;
+var
+  total, percent: Double;
 begin
-  with PChartCoord(FCoordList[AIndex])^ do
-    Result := Format(
-      SERIES_MARK_FORMATS[MarksStyle],
-      [y, y / GetValuesTotal * 100, Text, GetValuesTotal, x]);
+  total := GetValuesTotal;
+  with PChartCoord(FCoordList[AIndex])^ do begin
+    if total = 0 then
+      percent := 0
+    else
+      percent := y / total * 100;
+    Result := Format(FMarksFormat, [y, percent, Text, total, x]);
+  end;
 end;
 
 function TChartSeries.GetLegendCount: Integer;
@@ -491,6 +500,26 @@ begin
   UpdateParentChart;
 end;
 
+procedure TChartSeries.SetMarksFormat(const AValue: String);
+begin
+  if FMarksFormat = AValue then exit;
+  FMarksFormat := AValue;
+  FMarksStyle := High(TSeriesMarksStyle);
+  while
+    (FMarksStyle > smsCustom) and (SERIES_MARK_FORMATS[FMarksStyle] <> AValue)
+  do
+    Dec(FMarksStyle);
+end;
+
+procedure TChartSeries.SetMarksStyle(AValue: TSeriesMarksStyle);
+begin
+  if FMarksStyle = AValue then exit;
+  FMarksStyle := AValue;
+  if FMarksStyle <> smsCustom then
+    FMarksFormat := SERIES_MARK_FORMATS[FMarksStyle];
+  UpdateParentChart;
+end;
+
 procedure TChartSeries.SetShowInLegend(Value: Boolean);
 begin
   FShowInLegend := Value;
@@ -516,12 +545,6 @@ end;
 procedure TChartSeries.UpdateParentChart;
 begin
   if ParentChart <> nil then ParentChart.Invalidate;
-end;
-
-procedure TChartSeries.SetMarks(Value: TSeriesMarksStyle);
-begin
-  FMarks := Value;
-  UpdateParentChart;
 end;
 
 { TSeriesPointer }
@@ -1332,7 +1355,7 @@ end;
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
   i, radius: Integer;
-  yTotal, prevAngle, angleStep: Double;
+  prevAngle, angleStep: Double;
   graphCoord: PChartCoord;
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
@@ -1345,21 +1368,16 @@ const
 begin
   if FCoordList.Count = 0 then exit;
 
-  yTotal := 0;
-  for i := 0 to FCoordList.Count - 1 do
-    yTotal += PChartCoord(FCoordList[i])^.y;
-
   SetLength(labelWidths, FCoordList.Count);
   SetLength(labelHeights, FCoordList.Count);
   SetLength(labelTexts, FCoordList.Count);
-  for i := 0 to FCoordList.Count - 1 do
-    with PChartCoord(FCoordList[i])^ do begin
-      labelTexts[i] := FormattedMark(i);
-      with ACanvas.TextExtent(labelTexts[i]) do begin
-        labelWidths[i] := cx;
-        labelHeights[i] := cy;
-      end;
+  for i := 0 to FCoordList.Count - 1 do begin
+    labelTexts[i] := FormattedMark(i);
+    with ACanvas.TextExtent(labelTexts[i]) do begin
+      labelWidths[i] := cx;
+      labelHeights[i] := cy;
     end;
+  end;
 
   with ParentChart do begin
     center.x := (XImageMin + XImageMax) div 2;
@@ -1369,7 +1387,9 @@ begin
       XImageMax - center.x - MaxIntValue(labelWidths),
       YImageMin - center.y - MaxIntValue(labelHeights));
   end;
-  radius := Max(radius - MARKS_DIST - MARGIN, 0);
+  if FMarksStyle <> smsNone then
+    radius -= MARKS_DIST;
+  radius := Max(radius - MARGIN, 0);
 
   prevAngle := 0;
   for i := 0 to FCoordList.Count - 1 do begin
@@ -1377,15 +1397,19 @@ begin
     // if y = 0 then y := 0.1; // just to simulate tchart when y=0
 
     graphCoord := FCoordList[i];
-    angleStep := graphCoord^.y / yTotal * 360 * 16;
+    angleStep := graphCoord^.y / GetValuesTotal * 360 * 16;
     ACanvas.Brush.Color := graphCoord^.Color;
 
     ACanvas.RadialPie(
       center.x - radius, center.y - radius,
       center.x + radius, center.y + radius, round(prevAngle), round(angleStep));
 
-    a := LineEndPoint(center, prevAngle + angleStep / 2, radius);
-    b := LineEndPoint(center, prevAngle + angleStep / 2, radius + MARKS_DIST);
+    prevAngle += angleStep;
+
+    if MarksStyle = smsNone then continue;
+
+    a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
+    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + MARKS_DIST);
 
     // line from mark to pie
     ACanvas.Pen.Color := LabelToPieLinkColor;
@@ -1404,7 +1428,6 @@ begin
       b.x + labelWidths[i] + MarkXMargin, b.y + labelHeights[i] + MarkYMargin);
     ACanvas.TextOut(b.x, b.y, labelTexts[i]);
 
-    prevAngle += angleStep;
   end;
 end;
 

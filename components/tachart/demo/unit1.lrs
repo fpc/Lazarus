@@ -82,9 +82,9 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'Box'#14'cbShowReticule'#4'Left'#3#240#1#6'Height'#2#17#3'Top'#2'H'#5'Width'
   +#2';'#7'Caption'#6#8'Reticule'#8'OnChange'#7#20'cbShowReticuleChange'#8'TabO'
   +'rder'#2#18#0#0#9'TComboBox'#11'cbMarkStyle'#4'Left'#3#240#0#6'Height'#2#21#3
-  +'Top'#2'D'#5'Width'#3#136#0#10'ItemHeight'#2#13#9'ItemIndex'#2#4#13'Items.St'
-  +'rings'#1#6#9'smsCustom'#6#8'smsValue'#6#10'smsPercent'#6#8'smsLabel'#6#15's'
-  +'msLabelPercent'#6#13'smsLabelValue'#6#9'smsLegend'#6#15'smsPercentTotal'#6
-  +#20'smsLabelPercentTotal'#6#9'smsXValue'#0#5'Style'#7#14'csDropDownList'#8'T'
-  +'abOrder'#2#19#4'Text'#6#15'smsLabelPercent'#0#0#0#0
+  +'Top'#2'D'#5'Width'#3#136#0#10'ItemHeight'#2#13#9'ItemIndex'#2#5#13'Items.St'
+  +'rings'#1#6#9'smsCustom'#6#7'smsNone'#6#8'smsValue'#6#10'smsPercent'#6#8'sms'
+  +'Label'#6#15'smsLabelPercent'#6#13'smsLabelValue'#6#9'smsLegend'#6#15'smsPer'
+  +'centTotal'#6#20'smsLabelPercentTotal'#6#9'smsXValue'#0#5'Style'#7#14'csDrop'
+  +'DownList'#8'TabOrder'#2#19#4'Text'#6#15'smsLabelPercent'#0#0#0#0
 ]);
