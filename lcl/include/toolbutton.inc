@@ -39,7 +39,8 @@ end;
 
 procedure TToolButtonActionLink.SetChecked(Value: Boolean);
 begin
-  if IsCheckedLinked then TToolButton(FClient).Down := Value;
+  if IsCheckedLinked then
+    TToolButton(FClient).Down := Value;
 end;
 
 procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
@@ -608,8 +609,6 @@ begin
   //DebugLn('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
   if FMouseInControl=NewMouseInControl then exit;
   FMouseInControl:=NewMouseInControl;
-  if (Style in [tbsDropDown,tbsButton]) and (not FMouseInControl) then
-    Down:=false;
   //DebugLn('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
   Invalidate;
 end;
