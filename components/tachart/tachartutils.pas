@@ -18,6 +18,8 @@
  *                                                                           *
  *****************************************************************************
 
+Authors: Luнs Rodrigues, Philippe Martinole, Alexander Klenin
+
 }
 
 unit TAChartUtils;
@@ -48,6 +50,18 @@ type
 
   TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
 
+  TSeriesMarksStyle = (
+    smsCustom,         { user-defined }
+    smsValue,          { 1234 }
+    smsPercent,        { 12 % }
+    smsLabel,          { Cars }
+    smsLabelPercent,   { Cars 12 % }
+    smsLabelValue,     { Cars 1234 }
+    smsLegend,         { ? }
+    smsPercentTotal,   { 12 % of 1234 }
+    smsLabelPercentTotal, { Cars 12 % of 1234 }
+    smsXValue);        { 21/6/1996 }
+
   { TPenBrushFontRecall }
 
   TPenBrushFontRecall = class
@@ -61,6 +75,21 @@ type
     destructor Destroy; override;
     procedure Recall;
   end;
+
+const
+  // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
+  SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
+    '',
+    '%0:g', // smsValue
+    '%1:.2f%%', // smsPercent
+    '%2:s', // smsLabel
+    '%2:s %1:.2f%%', // smsLabelPercent
+    '%2:s %0:g', // smsLabelValue
+    '%2:s', // smsLegend: not sure what it means, left for Delphi compatibility
+    '%1:.2f%% of %3:g', // smsPercentTotal
+    '%1:.2f%% of %3:g', // smsLabelPercentTotal
+    '%4:g' // smsXValue
+  );
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -79,7 +108,7 @@ procedure RotateLabel(
 implementation
 
 uses
-  Math, SysUtils, LCLIntF, LCLType;
+  Math, SysUtils, LCLIntf, LCLType;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);

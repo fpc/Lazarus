@@ -33,18 +33,6 @@ uses
 
 type
 
-  //not completetly implemented (only TPieSeries - not all)
-  TSeriesMarksStyle = (
-    smsValue,          { 1234 }
-    smsPercent,        { 12 % }
-    smsLabel,          { Cars }
-    smsLabelPercent,   { Cars 12 % }
-    smsLabelValue,     { Cars 1234 }
-    smsLegend,         { ? }
-    smsPercentTotal,   { 12 % of 1234 }
-    smsLabelPercentTotal, { Cars 12 % of 1234 }
-    smsXValue);        { 21/6/1996 }
-
   TChartCoord = record
     x, y: Double;
     Color: TColor;
@@ -69,6 +57,8 @@ type
     FActive: Boolean;
     FMarks: TSeriesMarksStyle;
     FShowInLegend: Boolean;
+    FValuesTotal: Double;
+    FValuesTotalValid: Boolean;
 
     procedure SetActive(Value: Boolean);
     procedure SetMarks(Value: TSeriesMarksStyle);
@@ -85,6 +75,7 @@ type
     procedure UpdateBounds(
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
+    function GetValuesTotal: Double;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -101,6 +92,7 @@ type
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     procedure Delete(AIndex: Integer); virtual;
     procedure Clear;
+    function FormattedMark(AIndex: integer): String;
 
   published
     property Active: Boolean read FActive write SetActive default true;
@@ -373,6 +365,14 @@ begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
 end;
 
+function TChartSeries.FormattedMark(AIndex: integer): String;
+begin
+  with PChartCoord(FCoordList[AIndex])^ do
+    Result := Format(
+      SERIES_MARK_FORMATS[MarksStyle],
+      [y, y / GetValuesTotal * 100, Text, GetValuesTotal, x]);
+end;
+
 function TChartSeries.GetLegendCount: Integer;
 begin
   Result := 1;
@@ -381,6 +381,19 @@ end;
 function TChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
 begin
   Result := ACanvas.TextWidth(Title);
+end;
+
+function TChartSeries.GetValuesTotal: Double;
+var
+  i: Integer;
+begin
+  if not FValuesTotalValid then begin
+    FValuesTotal := 0;
+    for i := 0 to FCoordList.Count - 1 do
+      FValuesTotal += PChartCoord(FCoordList[i])^.y;
+    FValuesTotalValid := true;
+  end;
+  Result := FValuesTotal;
 end;
 
 function TChartSeries.GetXMinVal: Integer;
@@ -430,6 +443,8 @@ begin
   while (Result > 0) and (PChartCoord(FCoordList.Items[Result - 1])^.x > X) do
     Dec(Result);
   FCoordList.Insert(Result, pcc);
+  if FValuesTotalValid then
+    FValuesTotal += Y;
 end;
 
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
@@ -448,6 +463,7 @@ procedure TChartSeries.Delete(AIndex:Integer);
 begin
   Dispose(PChartCoord(FCoordList.Items[AIndex]));
   FCoordList.Delete(AIndex);
+  FValuesTotalValid := false;
   UpdateParentChart;
 end;
 
@@ -459,6 +475,7 @@ begin
   YGraphMin := MaxDouble;
   XGraphMax := MinDouble;
   YGraphMax := MinDouble;
+  FValuesTotalValid := false;
 
   UpdateParentChart;
 end;
@@ -1337,12 +1354,7 @@ begin
   SetLength(labelTexts, FCoordList.Count);
   for i := 0 to FCoordList.Count - 1 do
     with PChartCoord(FCoordList[i])^ do begin
-      case MarksStyle of
-        smsLabel:
-          labelTexts[i] := Text;
-        smsLabelPercent:
-          labelTexts[i] := Text + Format(' %1.3g%%', [y / yTotal * 100]);
-      end;
+      labelTexts[i] := FormattedMark(i);
       with ACanvas.TextExtent(labelTexts[i]) do begin
         labelWidths[i] := cx;
         labelHeights[i] := cy;

@@ -33,8 +33,10 @@ type
     cbShowVertReticule: TCheckBox;
     Chart1LineHor: TLine;
     Chart1LineVert: TLine;
+    cbMarkStyle: TComboBox;
     lblAddCount: TLabel;
     lblAdd: TLabel;
+    lblMarkStyle: TLabel;
     lblClear: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
@@ -72,6 +74,9 @@ var
   Form1: TForm1; 
 
 implementation
+
+uses
+  TAChartUtils;
 
 { TForm1 }
 
@@ -121,6 +126,7 @@ var
   i: integer;
 begin
   if FPie = nil then InitPie;
+  FPie.MarksStyle := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
     FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);
@@ -239,7 +245,6 @@ begin
   FPie.Title := 'pie';
   FPie.LabelBackgroundColor := $80FFFF;
   FPie.LabelToPieLinkColor := clCream;
-  FPie.MarksStyle := smsLabelPercent;
   Chart1.AddSeries(FPie);
 end;
 

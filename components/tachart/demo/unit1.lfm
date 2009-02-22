@@ -96,9 +96,17 @@ object Form1: TForm1
     object lblAddCount: TLabel
       Left = 288
       Height = 14
-      Top = 16
+      Top = 8
       Width = 58
       Caption = 'Multiple add'
+      ParentColor = False
+    end
+    object lblMarkStyle: TLabel
+      Left = 152
+      Height = 14
+      Top = 68
+      Width = 78
+      Caption = 'Add with marks:'
       ParentColor = False
     end
     object btnAddPie: TButton
@@ -244,7 +252,7 @@ object Form1: TForm1
     object edAddCount: TSpinEdit
       Left = 288
       Height = 21
-      Top = 41
+      Top = 24
       Width = 90
       MaxValue = 1000000
       MinValue = 1
@@ -288,6 +296,29 @@ object Form1: TForm1
       Caption = 'Reticule'
       OnChange = cbShowReticuleChange
       TabOrder = 18
+    end
+    object cbMarkStyle: TComboBox
+      Left = 240
+      Height = 21
+      Top = 68
+      Width = 136
+      ItemHeight = 13
+      ItemIndex = 4
+      Items.Strings = (
+        'smsCustom'
+        'smsValue'
+        'smsPercent'
+        'smsLabel'
+        'smsLabelPercent'
+        'smsLabelValue'
+        'smsLegend'
+        'smsPercentTotal'
+        'smsLabelPercentTotal'
+        'smsXValue'
+      )
+      Style = csDropDownList
+      TabOrder = 19
+      Text = 'smsLabelPercent'
     end
   end
 end
