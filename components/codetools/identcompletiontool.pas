@@ -1600,7 +1600,7 @@ begin
         or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
                    cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
                    cafEdgedBracketOpen, cafEdgedBracketClose])
-        or ((CurPos.Flag=cafWord)
+        or ((CurPos.Flag in [cafWord,cafNone])
             and (UpAtomIs('ELSE')
                  or UpAtomIs('THEN')
                  or UpAtomIs('DO')
