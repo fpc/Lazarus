@@ -205,7 +205,7 @@ begin
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
-  GlobalBuildModeSet:=TBuildModeSet.Create;
+  GlobalBuildModeSet:=TGlobalBuildModeSet.Create;
   GlobalBuildModeSet.AddStandardModes;
 end;
 

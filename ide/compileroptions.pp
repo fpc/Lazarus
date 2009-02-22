@@ -115,8 +115,21 @@ type
     function FindModeWithIdentifier(Identifier: string; out BuildModes: TIDEBuildModes;
       out BuildMode: TIDEBuildMode): boolean;
     function GetUniqueModeName(CheckToo: TIDEBuildModes): string;
-    procedure AddStandardModes;
     property Evaluator: TExpressionEvaluator read FEvaluator;
+  end;
+
+  { TGlobalBuildModeSet }
+
+  TGlobalBuildModeSet = class(TBuildModeSet)
+  private
+    FMainMode: TIDEBuildMode;
+    FStdModes: TIDEBuildModes;
+    FTargetOS: TIDEBuildMode;
+  public
+    procedure AddStandardModes;
+    property StdModes: TIDEBuildModes read FStdModes;
+    property MainMode: TIDEBuildMode read FMainMode;
+    property TargetOS: TIDEBuildMode read FTargetOS;
   end;
 
   { TGlobalCompilerOptions - compiler options overrides }
@@ -521,7 +534,7 @@ type
   TCompilerOptions = TBaseCompilerOptions;
 
 var
-  GlobalBuildModeSet: TBuildModeSet;
+  GlobalBuildModeSet: TGlobalBuildModeSet;
 
 const
   CompileReasonNames: array[TCompileReason] of string = (
@@ -3340,25 +3353,6 @@ begin
     and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
 end;
 
-procedure TBuildModeSet.AddStandardModes;
-var
-  StdModes: TIDEBuildModes;
-  MainMode: TLazBuildMode;
-begin
-  StdModes:=TIDEBuildModes.Create(Self);
-  MainMode:=StdModes.Add('BuildMode');
-  MainMode.Description:='Main build mode';
-  MainMode.Values.Text:='Default'+LineEnding
-                       +'Debug'+LineEnding
-                       +'Release'+LineEnding
-                       +'Mode1'+LineEnding
-                       +'Mode2'+LineEnding
-                       +'Mode3'+LineEnding
-                       +'Mode4'+LineEnding;
-  MainMode.SetDefaultValue('Default');
-  StdModes.BuildModeSet:=Self;
-end;
-
 { TIDEBuildMode }
 
 procedure TIDEBuildMode.SetIdentifier(const AValue: string);
@@ -3616,6 +3610,59 @@ begin
     Item:=Add(Source[i].Identifier);
     TIDEBuildMode(Item).Assign(Source[i]);
   end;
+end;
+
+{ TGlobalBuildModeSet }
+
+procedure TGlobalBuildModeSet.AddStandardModes;
+begin
+  fStdModes:=TIDEBuildModes.Create(Self);
+
+  fMainMode:=TIDEBuildMode(StdModes.Add('BuildMode'));
+  MainMode.Description:='Main build mode';
+  MainMode.Values.Text:='Default'+LineEnding
+                        +'Debug'+LineEnding
+                        +'Release'+LineEnding
+                        +'Mode1'+LineEnding
+                        +'Mode2'+LineEnding
+                        +'Mode3'+LineEnding
+                        +'Mode4'+LineEnding;
+  MainMode.SetDefaultValue('Default');
+
+  FTargetOS:=TIDEBuildMode(StdModes.Add('TargetOS'));
+  TargetOS.Description:='Target operating system';
+  TargetOS.Values.Text:=
+       'darwin'+LineEnding
+      +'freebsd'+LineEnding
+      +'linux'+LineEnding
+      +'netbsd'+LineEnding
+      +'openbsd'+LineEnding
+      +'solaris'+LineEnding
+      +'win32'+LineEnding
+      +'win64'+LineEnding
+      +'winCE'+LineEnding
+      +'go32v2'+LineEnding
+      +'os2'+LineEnding
+      +'beos'+LineEnding
+      +'haiku'+LineEnding
+      +'qnx'+LineEnding
+      +'netware'+LineEnding
+      +'wdosx'+LineEnding
+      +'emx'+LineEnding
+      +'watcom'+LineEnding
+      +'netwlibc'+LineEnding
+      +'amiga'+LineEnding
+      +'atari'+LineEnding
+      +'palmos'+LineEnding
+      +'gba'+LineEnding
+      +'nds'+LineEnding
+      +'macos'+LineEnding
+      +'morphos'+LineEnding
+      +'embedded'+LineEnding
+      +'symbian';
+  TargetOS.SetDefaultValue(GetDefaultTargetOS);
+
+  StdModes.BuildModeSet:=Self;
 end;
 
 initialization
