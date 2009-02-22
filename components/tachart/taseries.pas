@@ -45,12 +45,12 @@ type
     smsLabelPercentTotal, { Cars 12 % of 1234 }
     smsXValue);        { 21/6/1996 }
 
-  ChartCoord = record
+  TChartCoord = record
     x, y: Double;
     Color: TColor;
     Text: String;
   end;
-  PChartCoord = ^ChartCoord;
+  PChartCoord = ^TChartCoord;
 
   TSeriesPointerStyle = (
     psRectangle, psCircle, psCross, psDiagCross, psStar,
@@ -1170,13 +1170,13 @@ procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
   XMin, XMax: Integer;
   i: Integer;
-  graphCoordTop: ChartCoord;
-  graphCoordBottom: ChartCoord;
+  graphCoordTop: TChartCoord;
+  graphCoordBottom: TChartCoord;
   topX, topY, bottomY: Integer;
   barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
   bx1, by1, bx2, by2: Integer;
 
-  function BarInViewPort(cTop, cBottom: ChartCoord): Boolean;
+  function BarInViewPort(cTop, cBottom: TChartCoord): Boolean;
   begin //FIXME make cleaner?
     Result :=
       ((cTop.x >= ParentChart.XGraphMin) and (cTop.x <= ParentChart.XGraphMax)) and
@@ -1208,12 +1208,12 @@ begin
 
   for i := 0 to FCoordList.Count - 1 do begin
     //get the top and bottom points
-    if ChartCoord(FCoordList.Items[i]^).y >= 0 then begin
-      graphCoordTop := ChartCoord(FCoordList.Items[i]^);
+    if TChartCoord(FCoordList.Items[i]^).y >= 0 then begin
+      graphCoordTop := TChartCoord(FCoordList.Items[i]^);
       graphCoordBottom.x := graphCoordTop.x;
       graphCoordBottom.y := 0;
     end else begin
-      graphCoordBottom := ChartCoord(FCoordList.Items[i]^);
+      graphCoordBottom := TChartCoord(FCoordList.Items[i]^);
       graphCoordTop.x := graphCoordBottom.x;
       graphCoordTop.y := 0;
     end;
