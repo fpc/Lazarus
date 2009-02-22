@@ -3227,6 +3227,7 @@ begin
       if (BytePos<0) then exit;
       inc(Result,CharLen);
       if (BytePos=0) then exit;
+      inc(UTF8Str,CharLen);
     end;
   end;
 end;
