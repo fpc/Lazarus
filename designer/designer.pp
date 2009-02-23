@@ -2472,59 +2472,63 @@ var
   Icon: TBitmap;
   AComponent: TComponent;
 begin
-  for i:=0 to FLookupRoot.ComponentCount-1 do begin
-    AComponent:=FLookupRoot.Components[i];
-    if ComponentIsNonVisual(AComponent) then begin
-      Diff:=aDDC.FormOrigin;
+  for i := 0 to FLookupRoot.ComponentCount - 1 do
+  begin
+    AComponent := FLookupRoot.Components[i];
+    if ComponentIsNonVisual(AComponent) then 
+    begin
+      Diff := aDDC.FormOrigin;
       //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
       // non-visual component
-      ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
-      ItemLeft:=ItemLeftTop.X-Diff.X;
-      ItemTop:=ItemLeftTop.Y-Diff.Y;
-      ItemRight:=ItemLeft+NonVisualCompWidth;
-      ItemBottom:=ItemTop+NonVisualCompWidth;
-      if not aDDC.RectVisible(ItemLeft,ItemTop,ItemRight,ItemBottom) then
-        continue;
+      ItemLeftTop := NonVisualComponentLeftTop(AComponent);
+      ItemLeft := ItemLeftTop.X - Diff.X;
+      ItemTop := ItemLeftTop.Y-Diff.Y;
+      ItemRight := ItemLeft+NonVisualCompWidth;
+      ItemBottom := ItemTop+NonVisualCompWidth;
+      if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
+        Continue;
       aDDC.Save;
-      with aDDC.Canvas do begin
-        Pen.Width:=1;
-        Pen.Color:=clWhite;
-        for j:=0 to NonVisualCompBorder-1 do begin
-          MoveTo(ItemLeft+j,ItemBottom-j);
-          LineTo(ItemLeft+j,ItemTop+j);
-          LineTo(ItemRight-j,ItemTop+j);
+      with aDDC.Canvas do 
+      begin
+        Pen.Width := 1;
+        Pen.Color := clWhite;
+        for j := 0 to NonVisualCompBorder - 1 do 
+        begin
+          MoveTo(ItemLeft + j, ItemBottom - j);
+          LineTo(ItemLeft + j, ItemTop + j);
+          LineTo(ItemRight - j, ItemTop + j);
         end;
-        Pen.Color:=clBlack;
-        for j:=0 to NonVisualCompBorder-1 do begin
-          MoveTo(ItemLeft+j,ItemBottom-j);
-          LineTo(ItemRight-j,ItemBottom-j);
-          MoveTo(ItemRight-j,ItemTop+j);
-          LineTo(ItemRight-j,ItemBottom-j+1);
+        Pen.Color := clBlack;
+        for j := 0 to NonVisualCompBorder - 1 do 
+        begin
+          MoveTo(ItemLeft + j, ItemBottom - j);
+          LineTo(ItemRight - j, ItemBottom - j);
+          MoveTo(ItemRight - j, ItemTop + j);
+          LineTo(ItemRight - j, ItemBottom - j + 1);
         end;
-        IconRect:=Rect(ItemLeft+NonVisualCompBorder,ItemTop+NonVisualCompBorder,
-             ItemRight-NonVisualCompBorder,ItemBottom-NonVisualCompBorder);
-        Brush.Color:=clBtnFace;
+        IconRect := Rect(ItemLeft + NonVisualCompBorder, ItemTop + NonVisualCompBorder,
+             ItemRight - NonVisualCompBorder, ItemBottom - NonVisualCompBorder);
+        Brush.Color := clBtnFace;
         //writeln('TDesigner.DrawNonVisualComponents A ',IconRect.Left,',',IconRect.Top,',',IconRect.Right,',',IconRect.Bottom);
-        FillRect(Rect(IconRect.Left,IconRect.Top,
-           IconRect.Right+1,IconRect.Bottom+1));
+        FillRect(Rect(IconRect.Left, IconRect.Top,
+           IconRect.Right + 1, IconRect.Bottom + 1));
       end;
-      if Assigned(FOnGetNonVisualCompIcon)
-      then begin
+      if Assigned(FOnGetNonVisualCompIcon) then 
+      begin
         Icon := nil;
         FOnGetNonVisualCompIcon(Self, AComponent, Icon);
         if Icon <> nil then 
         begin
-          inc(IconRect.Left,(NonVisualCompIconWidth-Icon.Width) div 2);
-          inc(IconRect.Top,(NonVisualCompIconWidth-Icon.Height) div 2);
-          IconRect.Right:=IconRect.Left+Icon.Width;
-          IconRect.Bottom:=IconRect.Top+Icon.Height;
+          inc(IconRect.Left, (NonVisualCompIconWidth - Icon.Width) div 2);
+          inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
+          IconRect.Right := IconRect.Left + Icon.Width;
+          IconRect.Bottom := IconRect.Top + Icon.Height;
           aDDC.Canvas.StretchDraw(IconRect, Icon);
         end;
       end;
-      if (ControlSelection.Count>1)
-      and (ControlSelection.IsSelected(AComponent)) then
+      if (ControlSelection.Count > 1) and (ControlSelection.IsSelected(AComponent)) then
         ControlSelection.DrawMarkerAt(aDDC,
-          ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
+          ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
     end;
   end;
 end;
