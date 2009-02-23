@@ -34,7 +34,7 @@ interface
   successful compilation.
 }
 uses
-  Windows, Classes, Translations, ComCtrls, Controls, Buttons, Dialogs,
+  Windows, ActiveX, Classes, Translations, ComCtrls, Controls, Buttons, Dialogs,
   DynHashArray, ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   Themes, Win32Debug, Maps;
