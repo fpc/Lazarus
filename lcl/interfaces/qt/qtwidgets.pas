@@ -828,7 +828,7 @@ type
 
   { TQtAbstractItemView }
 
-  TQtAbstractItemView = class(TQtAbstractScrollArea)
+  TQtAbstractItemView = class(TQtFrame)
   private
     FOldDelegate: QAbstractItemDelegateH;
     FNewDelegate: QLCLItemDelegateH;
