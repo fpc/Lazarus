@@ -4367,10 +4367,10 @@ begin
     Area.Y:=ARect.Top+DCOrigin.Y;
     Area.Width:=ARect.Right-ARect.Left;
     Area.Height:=ARect.Bottom-ARect.Top;
-    if FrameWidth=1 then
-      ShadowType:=GTKThinShadowType[Style]
+    if FrameWidth = 1 then
+      ShadowType := GTKThinShadowType[Style]
     else
-      ShadowType:=GTKStrongShadowType[Style];
+      ShadowType := GTKStrongShadowType[Style];
     //DebugLn('ShadowType ',ShadowType,
     //' dark_gc=',DbgS(TheStyle^.dark_gc[GTK_STATE_NORMAL]),
     //' light_gc=',DbgS(TheStyle^.light_gc[GTK_STATE_NORMAL]),
