@@ -951,15 +951,22 @@ end;
           Style      - frame style
   Returns: Whether the function was successful
 
-  Draws a 3D border in GTK native style.
+  Draws a 3D border in native style.
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.Frame3D(DC: HDC; var ARect: TRect;
   const FrameWidth: Integer; const Style: TBevelCut): Boolean;
 const
-  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDINNER, 0);
+  Edge: array[TBevelCut] of Integer =
+  (
+{bvNone   } 0,
+{bvLowered} BDR_SUNKENOUTER,
+{bvRaised } BDR_RAISEDINNER,
+{bvSpace  } 0
+  );
 begin
   Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT));
+  InflateRect(Rect, -FrameWidth, -FrameWidth);
 end;
 
 function TWinCEWidgetSet.FrameRect(DC: HDC; const ARect: TRect;

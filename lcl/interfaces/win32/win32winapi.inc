@@ -1487,7 +1487,7 @@ end;
           Style      - frame style
   Returns: Whether the function was successful
 
-  Draws a 3D border in GTK native style.
+  Draws a 3D border in win32 native style.
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
@@ -1502,6 +1502,7 @@ const
   );
 begin
   Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
+  InflateRect(Rect, -FrameWidth, -FrameWidth);
 end;
 
 function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
