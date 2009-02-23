@@ -2466,7 +2466,7 @@ end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
-  i, j, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
+  i, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
   IconRect: TRect;
   Icon: TBitmap;
@@ -2482,36 +2482,22 @@ begin
       // non-visual component
       ItemLeftTop := NonVisualComponentLeftTop(AComponent);
       ItemLeft := ItemLeftTop.X - Diff.X;
-      ItemTop := ItemLeftTop.Y-Diff.Y;
-      ItemRight := ItemLeft+NonVisualCompWidth;
-      ItemBottom := ItemTop+NonVisualCompWidth;
+      ItemTop := ItemLeftTop.Y - Diff.Y;
+      ItemRight := ItemLeft + NonVisualCompWidth;
+      ItemBottom := ItemTop + NonVisualCompWidth;
       if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
         Continue;
       aDDC.Save;
       with aDDC.Canvas do 
       begin
         Pen.Width := 1;
-        Pen.Color := clWhite;
-        for j := 0 to NonVisualCompBorder - 1 do 
-        begin
-          MoveTo(ItemLeft + j, ItemBottom - j);
-          LineTo(ItemLeft + j, ItemTop + j);
-          LineTo(ItemRight - j, ItemTop + j);
-        end;
-        Pen.Color := clBlack;
-        for j := 0 to NonVisualCompBorder - 1 do 
-        begin
-          MoveTo(ItemLeft + j, ItemBottom - j);
-          LineTo(ItemRight - j, ItemBottom - j);
-          MoveTo(ItemRight - j, ItemTop + j);
-          LineTo(ItemRight - j, ItemBottom - j + 1);
-        end;
-        IconRect := Rect(ItemLeft + NonVisualCompBorder, ItemTop + NonVisualCompBorder,
-             ItemRight - NonVisualCompBorder, ItemBottom - NonVisualCompBorder);
+        IconRect := Rect(ItemLeft, ItemTop, ItemRight, ItemBottom);
+        Frame3D(IconRect, 1, bvRaised);
         Brush.Color := clBtnFace;
-        //writeln('TDesigner.DrawNonVisualComponents A ',IconRect.Left,',',IconRect.Top,',',IconRect.Right,',',IconRect.Bottom);
         FillRect(Rect(IconRect.Left, IconRect.Top,
-           IconRect.Right + 1, IconRect.Bottom + 1));
+           IconRect.Right, IconRect.Bottom));
+        if NonVisualCompBorder > 1 then
+          InflateRect(IconRect, -NonVisualCompBorder + 1, - NonVisualCompBorder + 1);
       end;
       if Assigned(FOnGetNonVisualCompIcon) then 
       begin
