@@ -1426,7 +1426,8 @@ begin
     ControlSelection.ActiveGrabber:=nil;
   end;
 
-  Form.Invalidate;
+  if not ControlSelection.OnlyVisualComponentsSelected then
+    Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
@@ -1611,6 +1612,7 @@ var
     {$IFDEF VerboseDesigner}
     DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
     {$ENDIF}
+    Form.Invalidate;
   end;
 
   procedure PointSelect;
@@ -1706,7 +1708,8 @@ Begin
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-  Form.Invalidate;
+  if not ControlSelection.OnlyVisualComponentsSelected then
+    Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseLeftUpOnControl] END');
   {$ENDIF}
