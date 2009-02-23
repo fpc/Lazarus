@@ -93,7 +93,7 @@ const
   ScrollBarWidth=0;
   {$UNDEF SynDefaultFont}
   {$IFDEF LCLgtk}
-  SynDefaultFontName = '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+  SynDefaultFontName = '-adobe-courier-*-*-*-*-*-*-*-*-m-*-iso8859-1';
   SynDefaultFontHeight = 14;
   {$DEFINE SynDefaultFont}
   {$ENDIF}
