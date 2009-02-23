@@ -1753,8 +1753,7 @@ begin
       ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
   end;
 
-  if Style <> bvNone then
-    InflateRect(ARect, -FrameWidth, -FrameWidth);
+  InflateRect(ARect, -FrameWidth, -FrameWidth);
   Result := True;
 end;
 

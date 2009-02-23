@@ -1919,7 +1919,7 @@ begin
     Palette := QWidget_palette(Parent);
   // since q_DrawWinPanel doesnot supports lineWidth we should do it ourself
 
-  for i := 1 to lineWidth - 1 do
+  for i := 1 to lineWidth - 2 do
   begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken);
     inc(x);
@@ -1927,7 +1927,10 @@ begin
     dec(w, 2);
     dec(h, 2);
   end;
-  q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush);
+  if lineWidth > 1 then
+    q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush)
+  else
+    q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
 end;
 
 {------------------------------------------------------------------------------
