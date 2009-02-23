@@ -108,6 +108,7 @@ type
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); virtual;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); virtual;
+    class procedure ItemUpdate(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
     
     // LV
     class procedure BeginUpdate(const ALV: TCustomListView); virtual;
@@ -357,6 +358,11 @@ end;
 
 class procedure TWSCustomListView.ItemShow(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+begin
+end;
+
+class procedure TWSCustomListView.ItemUpdate(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem);
 begin
 end;
 

@@ -5,7 +5,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -988,6 +988,22 @@ begin
     Result.Y := Arect.y;
   end;
   gtk_tree_path_free(Path);
+end;
+
+class procedure TGtk2WSCustomListView.ItemUpdate(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem);
+var
+  Widgets: PTVWidgets;
+  Iter: TGtkTreeIter;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemUpdate')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+
+  with Widgets^ do
+    if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
+      gtk_list_store_set(PGtkListStore(TreeModel), @Iter, [0, Pointer(AItem), -1]);
 end;
 
 class function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl;

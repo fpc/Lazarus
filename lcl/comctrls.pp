@@ -733,6 +733,7 @@ type
     FCacheItem: TListItem; //
     procedure WSCreateCacheItem;
     function WSUpdateAllowed: Boolean;
+    procedure WSUpdateItem(const AIndex:Integer; const AValue: TListItem);
     procedure ItemDestroying(const AItem: TListItem); //called by TListItem when freed
     procedure ReadData(Stream: TStream); // read data in a Delphi compatible way
     procedure ReadLazData(Stream: TStream); // read data in a 64 bits safe way

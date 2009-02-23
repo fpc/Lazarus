@@ -69,7 +69,10 @@ begin
   FItems.Items[AIndex] := AValue;
   FCacheIndex := AIndex;
   FCacheItem := AValue;
-  
+
+  if WSUpdateAllowed then
+    WSUpdateItem(AIndex, AValue);
+
   if AValue.WSUpdateAllowed
   then begin
     AValue.WSUpdateText;
@@ -167,6 +170,11 @@ begin
   Result := (FOwner <> nil)
     and FOwner.HandleAllocated
     and not (csDestroying in FOwner.ComponentState);
+end;
+
+procedure TListItems.WSUpdateItem(const AIndex: Integer; const AValue: TListItem);
+begin
+  TWSCustomListViewClass(FOwner.WidgetSetClass).ItemUpdate(FOwner, AIndex, AValue);
 end;
 
 {------------------------------------------------------------------------------}
