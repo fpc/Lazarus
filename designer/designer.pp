@@ -37,7 +37,7 @@ interface
 
 uses
   // FCL + LCL
-  Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
+  Types, Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
   ClipBrd,
   // IDEIntf
@@ -1426,6 +1426,7 @@ begin
     ControlSelection.ActiveGrabber:=nil;
   end;
 
+  Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
@@ -1610,7 +1611,6 @@ var
     {$IFDEF VerboseDesigner}
     DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
     {$ENDIF}
-    Form.Invalidate;
   end;
 
   procedure PointSelect;
@@ -1706,6 +1706,7 @@ Begin
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
+  Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseLeftUpOnControl] END');
   {$ENDIF}
@@ -2147,7 +2148,7 @@ Begin
 end;
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
-Begin
+begin
   if Operation = opInsert then begin
     {$IFDEF VerboseDesigner}
     DebugLn('opInsert ',dbgsName(AComponent),' ',DbgS(AComponent));
@@ -2466,11 +2467,13 @@ end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
+  AComponent: TComponent;
+  Icon: TBitmap;
   i, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
-  IconRect: TRect;
-  Icon: TBitmap;
-  AComponent: TComponent;
+  IconRect, TextRect: TRect;
+  TextSize: TSize;
+  IsSelected: Boolean;
 begin
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
@@ -2487,9 +2490,12 @@ begin
       ItemBottom := ItemTop + NonVisualCompWidth;
       if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
         Continue;
+
+      IsSelected := ControlSelection.IsSelected(AComponent);
       aDDC.Save;
       with aDDC.Canvas do 
       begin
+        // draw component frame
         Pen.Width := 1;
         IconRect := Rect(ItemLeft, ItemTop, ItemRight, ItemBottom);
         Frame3D(IconRect, 1, bvRaised);
@@ -2497,8 +2503,20 @@ begin
         FillRect(Rect(IconRect.Left, IconRect.Top,
            IconRect.Right, IconRect.Bottom));
         if NonVisualCompBorder > 1 then
-          InflateRect(IconRect, -NonVisualCompBorder + 1, - NonVisualCompBorder + 1);
+          InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
       end;
+      // draw component Name
+      if ((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected then
+      begin
+        TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
+        TextRect.Left := (IconRect.Left + IconRect.Right - TextSize.cx) div 2;
+        TextRect.Top := IconRect.Bottom + NonVisualCompBorder + 2;
+        TextRect.Right := TextRect.Left + TextSize.cx;
+        TextRect.Bottom := TextRect.Top + TextSize.cy;
+        DrawText(aDDC.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
+          DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
+      end;
+      // draw component icon
       if Assigned(FOnGetNonVisualCompIcon) then 
       begin
         Icon := nil;
@@ -2512,7 +2530,7 @@ begin
           aDDC.Canvas.StretchDraw(IconRect, Icon);
         end;
       end;
-      if (ControlSelection.Count > 1) and (ControlSelection.IsSelected(AComponent)) then
+      if (ControlSelection.Count > 1) and IsSelected then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
     end;
