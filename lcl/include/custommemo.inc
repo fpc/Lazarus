@@ -34,11 +34,7 @@ begin
   FWantTabs := false;
   FWordWrap := True;
   //FLines := TMemoStrings.Create(Self);
-  {$IFDEF EnableMemoTextStrings}
   FLines := TTextStrings.Create;
-  {$ELSE}
-  FLines := TStringList.Create;
-  {$ENDIF}
   //TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
@@ -141,11 +137,7 @@ var
 begin
   if Assigned(FLines) then begin
     // create internal item list
-    {$IFDEF EnableMemoTextStrings}
     NewStrings := TTextStrings.Create;
-    {$ELSE}
-    NewStrings := TStringList.Create;
-    {$ENDIF}
 
     // copy items (text+objects) from the interface items list
     NewStrings.Assign(Lines);

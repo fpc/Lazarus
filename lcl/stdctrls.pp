@@ -31,10 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
-  {$IFDEF EnableMemoTextStrings}
-  TextStrings,
-  {$ENDIF}
-  Forms, Menus, LResources;
+  TextStrings, Forms, Menus, LResources;
 
 type
 
