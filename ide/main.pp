@@ -3094,6 +3094,7 @@ begin
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
+    ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
   // set component and designer form into design mode (csDesigning)
@@ -4030,6 +4031,7 @@ var
           if ADesigner <> nil then
           begin
             ADesigner.ShowEditorHints := EnvironmentOptions.ShowEditorHints;
+            ADesigner.ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
             ADesigner.ShowComponentCaptionHints := EnvironmentOptions.ShowComponentCaptions;
           end;
         end;

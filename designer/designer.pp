@@ -71,6 +71,7 @@ type
     dfHasSized,
     dfDuringPaintControl,
     dfShowEditorHints,
+    dfShowComponentCaptions,
     dfShowComponentCaptionHints,
     dfDestroyingForm,
     dfDeleting,
@@ -116,6 +117,7 @@ type
     function GetGridSizeY: integer;
     function GetIsControl: Boolean;
     function GetShowBorderSpacing: boolean;
+    function GetShowComponentCaptions: boolean;
     function GetShowComponentCaptionHints: boolean;
     function GetShowEditorHints: boolean;
     function GetShowGrid: boolean;
@@ -128,6 +130,7 @@ type
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
     procedure SetShowBorderSpacing(const AValue: boolean);
+    procedure SetShowComponentCaptions(const AValue: boolean);
     procedure SetShowComponentCaptionHints(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
     procedure SetShowGrid(const AValue: boolean);
@@ -314,6 +317,9 @@ type
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean
                                read GetShowEditorHints write SetShowEditorHints;
+    property ShowComponentCaptions: boolean
+                                           read GetShowComponentCaptions
+                                           write SetShowComponentCaptions;
     property ShowComponentCaptionHints: boolean
                                              read GetShowComponentCaptionHints
                                              write SetShowComponentCaptionHints;
@@ -1154,10 +1160,23 @@ begin
   Form.Invalidate;
 end;
 
+procedure TDesigner.SetShowComponentCaptions(const AValue: boolean);
+begin
+  if AValue=ShowComponentCaptions then exit;
+  if AValue then
+    Include(FFlags, dfShowComponentCaptions)
+  else
+    Exclude(FFlags, dfShowComponentCaptions);
+  Form.Invalidate;
+end;
+
 procedure TDesigner.SetShowComponentCaptionHints(const AValue: boolean);
 begin
   if AValue=ShowComponentCaptionHints then exit;
-  Include(FFlags,dfShowComponentCaptionHints);
+  if AValue then
+    Include(FFlags, dfShowComponentCaptionHints)
+  else
+    Exclude(FFlags, dfShowComponentCaptionHints);
 end;
 
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
@@ -1426,7 +1445,7 @@ begin
     ControlSelection.ActiveGrabber:=nil;
   end;
 
-  if not ControlSelection.OnlyVisualComponentsSelected then
+  if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
@@ -1708,7 +1727,7 @@ Begin
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-  if not ControlSelection.OnlyVisualComponentsSelected then
+  if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseLeftUpOnControl] END');
@@ -2401,6 +2420,11 @@ begin
   Result:=EnvironmentOptions.ShowBorderSpacing;
 end;
 
+function TDesigner.GetShowComponentCaptions: boolean;
+begin
+  Result:=dfShowComponentCaptions in FFlags;
+end;
+
 function TDesigner.GetShowComponentCaptionHints: boolean;
 begin
   Result:=dfShowComponentCaptionHints in FFlags;
@@ -2458,14 +2482,17 @@ begin
 end;
 
 procedure TDesigner.SetIsControl(Value: Boolean);
-Begin
+begin
 
 end;
 
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);
 begin
   if AValue=ShowEditorHints then exit;
-  Include(FFlags,dfShowEditorHints);
+  if AValue then
+    Include(FFlags, dfShowEditorHints)
+  else
+    Exclude(FFlags, dfShowEditorHints);
 end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
@@ -2509,7 +2536,7 @@ begin
           InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
       end;
       // draw component Name
-      if ((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected then
+      if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
       begin
         TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
         TextRect.Left := (IconRect.Left + IconRect.Right - TextSize.cx) div 2;
