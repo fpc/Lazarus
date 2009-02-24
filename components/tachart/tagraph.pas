@@ -244,11 +244,10 @@ type
     AxisColor: TColor;                // Axis color
     FScale, FOffset: TDoublePoint;    // Coordinates transformation
 
-    Down: Boolean;
-    Zoom: Boolean;
-    Fixed: Boolean;
-    XDown, YDown, XOld, YOld: Integer;
-    ZoomRect: TRect;
+    FIsMouseDown: Boolean;
+    FIsZoomed: Boolean;
+    FSelectionRect: TRect;
+    FCurrentExtent: TDoubleRect;
 
     FShowReticule: Boolean;
     FShowVerticalReticule: Boolean;
@@ -736,11 +735,10 @@ begin
   FYGraphMax := 0;
   FYGraphMin := 0;
 
-  MirrorX := False;
-  Fixed := False;
-  Zoom := False;
-  FShowReticule := False;
-  FShowVerticalReticule := False;
+  MirrorX := false;
+  FIsZoomed := false;
+  FShowReticule := false;
+  FShowVerticalReticule := false;
   FBackColor := Color;
 
   FGraphBrush := TBrush.Create;
@@ -1329,16 +1327,14 @@ var
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
 begin
   MaybeDrawReticules;
-  // Search # of points, min and max of all series
-  if Zoom then begin
-    Zoom := false;
-    Fixed := true;
-    XImageToGraph(ZoomRect.Left, FXGraphMin);
-    XImageToGraph(ZoomRect.Right, FXGraphMax);
-    YImageToGraph(ZoomRect.Bottom, FYGraphMin);
-    YImageToGraph(ZoomRect.Top, FYGraphMax);
+  if FIsZoomed then begin
+    FXGraphMin := FCurrentExtent.a.X;
+    FYGraphMin := FCurrentExtent.a.Y;
+    FXGraphMax := FCurrentExtent.b.X;
+    FYGraphMax := FCurrentExtent.b.Y;
   end
-  else if not Fixed then begin
+  else begin
+    // Search # of points, min and max of all series
     XMinSeries := MaxDouble;
     XMaxSeries := MinDouble;
     YMinSeries := MaxDouble;
@@ -1584,20 +1580,6 @@ begin
   Invalidate;
 end;
 
-procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if
-    (X < XImageMax) and (X > XImageMin) and
-    (Y < YImageMin) and (Y > YImageMax) and FAllowZoom
-  then begin
-    Down := True;
-    XDown := X;
-    YDown := Y;
-    XOld := X;
-    YOld := Y;
-  end;
-end;
-
 procedure TChart.DrawReticule(ACanvas: TCanvas; const APos: TPoint);
 begin
   PrepareXorPen;
@@ -1614,6 +1596,17 @@ begin
   ACanvas.LineTo(AX, YImageMax);
 end;
 
+procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if
+    (X < XImageMax) and (X > XImageMin) and
+    (Y < YImageMin) and (Y > YImageMax) and FAllowZoom
+  then begin
+    FIsMouseDown := true;
+    FSelectionRect := Rect(X, Y, X, Y);
+  end;
+end;
+
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   i, pointIndex: Integer;
@@ -1621,13 +1614,11 @@ var
   pt, newRetPos: TPoint;
   value: TDoublePoint;
 begin
-  if Down then begin
+  if FIsMouseDown then begin
     PrepareXorPen;
-    Canvas.Rectangle(XDown, YDown, XOld, YOld);
-    Canvas.Rectangle(XDown, YDown, X, Y);
-
-    XOld := X;
-    YOld := Y;
+    Canvas.Rectangle(FSelectionRect);
+    FSelectionRect.BottomRight := Point(X, Y);
+    Canvas.Rectangle(FSelectionRect);
     exit;
   end;
   r := Rect(XImageMin, YImageMin, XImageMax, YImageMax);
@@ -1664,34 +1655,20 @@ end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if not Down then exit;
+  if not FIsMouseDown then exit;
   FReticulePos := Point(X, Y);
 
   PrepareXorPen;
-  Canvas.Rectangle(XDown, YDown, XOld, YOld);
+  Canvas.Rectangle(FSelectionRect);
 
-  Down := false;
-  if (XDown < XOld) and (YDown < YOld) then
-    Zoom := true
-  else begin
-    Zoom := false;
-    Fixed := false;
-  end;
-  if XDown < XOld then begin
-    ZoomRect.Left := XDown;
-    ZoomRect.Right := XOld;
-  end
-  else begin
-    ZoomRect.Left := XOld;
-    ZoomRect.Right := XDown;
-  end;
-  if YDown < YOld then begin
-    ZoomRect.Bottom := YOld;
-    ZoomRect.Top := YDown;
-  end
-  else begin
-    ZoomRect.Bottom := YDown;
-    ZoomRect.Top := YOld;
+  FIsMouseDown := false;
+
+  with FSelectionRect do begin
+    FIsZoomed := (Left < Right) and (Top < Bottom);
+    if FIsZoomed then begin
+      ImageToGraph(Left, Bottom, FCurrentExtent.a.X, FCurrentExtent.a.Y);
+      ImageToGraph(Right, Top, FCurrentExtent.b.X, FCurrentExtent.b.Y);
+    end;
   end;
 
   Invalidate;
@@ -1809,8 +1786,7 @@ end;
 
 procedure TChart.ZoomFull;
 begin
-  Zoom := false;
-  Fixed := false;
+  FIsZoomed := false;
   Invalidate;
 end;
 

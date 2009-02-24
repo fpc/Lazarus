@@ -44,6 +44,10 @@ type
     X, Y: Double;
   end;
 
+  TDoubleRect = record
+    a, b: TDoublePoint;
+  end;
+
   TPointDistFunc = function (const A, B: TPoint): Integer;
 
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
