@@ -2543,6 +2543,7 @@ begin
         TextRect.Top := IconRect.Bottom + NonVisualCompBorder + 2;
         TextRect.Right := TextRect.Left + TextSize.cx;
         TextRect.Bottom := TextRect.Top + TextSize.cy;
+        aDDC.Canvas.FillRect(TextRect);
         DrawText(aDDC.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
           DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
       end;
