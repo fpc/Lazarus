@@ -4,6 +4,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Top = 304
   Width = 700
   ActiveControl = CategoryTree
+  BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
   ClientWidth = 700
