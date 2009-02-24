@@ -4337,54 +4337,43 @@ const GTKStrongShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT, GTK_SHADOW_NONE);
 
 var
-  ClientWidget: PGtkWidget;
-  i : integer;
-  DCOrigin: TPoint;
+  StyleWidget: PGtkWidget;
   TheStyle: PGtkStyle;
+  i: integer;
   Area: TGdkRectangle;
   ShadowType: Integer;
-  AWindow: PGdkWindow;
 begin
   Result := IsValidDC(DC);
   if not Result then exit;
-  if FrameWidth=0 then exit;
-  TheStyle:=GetStyle(lgsButton);
-  //DebugLn('TGtkWidgetSet.Frame3d A ',DbgS(TheStyle));
-  if TheStyle=nil then exit;
+  if FrameWidth = 0 then exit;
+  StyleWidget := GetStyleWidget(lgsButton);
+  TheStyle := gtk_widget_get_style(StyleWidget);
+  if TheStyle = nil then exit;
 
   with TGtkDeviceContext(DC) do
   begin
-    if Widget = nil
-    then ClientWidget :=nil
-    else begin
-      ClientWidget := GetFixedWidget(Widget);
-      if ClientWidget = nil
-      then ClientWidget := Widget;
-    end;
-    AWindow:=Drawable;
-    DCOrigin := Offset;
-    Area.X:=ARect.Left+DCOrigin.X;
-    Area.Y:=ARect.Top+DCOrigin.Y;
-    Area.Width:=ARect.Right-ARect.Left;
-    Area.Height:=ARect.Bottom-ARect.Top;
+    {DebugLn(['Frame3D: Drawable = ', dbgs(Drawable),
+      ' StyleWidget = ', dbgs(StyleWidget), ' Style = ', dbgs(TheStyle),
+      ' Offset = ', dbgs(Offset), ' ARect = ', dbgs(ARect)]);}
+    Area.X := ARect.Left + Offset.X;
+    Area.Y := ARect.Top + Offset.Y;
+    Area.Width := ARect.Right - ARect.Left;
+    Area.Height := ARect.Bottom - ARect.Top;
     if FrameWidth = 1 then
       ShadowType := GTKThinShadowType[Style]
     else
       ShadowType := GTKStrongShadowType[Style];
-    //DebugLn('ShadowType ',ShadowType,
-    //' dark_gc=',DbgS(TheStyle^.dark_gc[GTK_STATE_NORMAL]),
-    //' light_gc=',DbgS(TheStyle^.light_gc[GTK_STATE_NORMAL]),
-    //'');
 
-    for i:= 1 to FrameWidth do begin
-      gtk_paint_shadow(theStyle,
-                       AWindow, GTK_STATE_NORMAL,
+    for i := 1 to FrameWidth do
+    begin
+      gtk_paint_shadow(TheStyle,
+                       Drawable, GTK_STATE_NORMAL,
                        ShadowType,
                        @Area,
-                       ClientWidget,
+                       StyleWidget,
                        'button',
-                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                       ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+                       Area.X, Area.Y,
+                       Area.Width, Area.Height);
       // inflate the rectangle (! ARect will be returned to the user with this)
       InflateRect(ARect, -1, -1);
     end;
