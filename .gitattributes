@@ -3,6 +3,7 @@
 /COPYING.LGPL.txt svneol=native#text/plain
 /COPYING.modifiedLGPL.txt -text svneol=unset#application/octet-stream
 /COPYING.txt svneol=native#text/plain
+/JCFSettings.cfg svneol=native#text/xml
 /README.txt svneol=native#text/plain
 components/README.txt svneol=native#text/plain
 components/cgi/Makefile svneol=native#text/plain
@@ -3327,7 +3328,6 @@ install/man/man1/lrstolfm.1 svneol=native#text/plain
 install/man/man1/startlazarus.1 svneol=native#text/plain
 install/man/man1/svn2revisioninc.1 svneol=native#text/plain
 install/man/man1/updatepofiles.1 svneol=native#text/plain
-/jcfsettings.cfg svneol=native#text/xml
 languages/README.txt svneol=native#text/plain
 languages/installerstrconsts.de.po svneol=native#text/plain
 languages/installerstrconsts.es.po svneol=native#text/plain
