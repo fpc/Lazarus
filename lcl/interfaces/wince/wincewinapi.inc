@@ -966,7 +966,7 @@ const
   );
 begin
   Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT));
-  InflateRect(Rect, -FrameWidth, -FrameWidth);
+  InflateRect(ARect, -FrameWidth, -FrameWidth);
 end;
 
 function TWinCEWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
