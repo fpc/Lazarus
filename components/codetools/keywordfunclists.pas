@@ -1018,6 +1018,7 @@ begin
     Add('+',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('-',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('*',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
