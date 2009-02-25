@@ -277,7 +277,6 @@ procedure TGtkMemoStrings.Insert(Index: integer; const S: string);
 var
   LineStart: Integer;
   NewLine: String;
-  NeedMoveCursor: Boolean;
   LocalFreeze: Boolean;
 begin
   LocalFreeze:=FGtkText^.freeze_count = 0;
@@ -286,13 +285,10 @@ begin
 
   LockOnChange(PGtkObject(FGtkText),+1);
 
-  NeedMoveCursor := False;
-
   if Index < FCachedCount then begin
     //insert with LineEnding
     LineStart := FLineStartPos[Index];
     NewLine := S+LineEnding;
-    NeedMoveCursor := LineStart = gtk_editable_get_position(PGtkEditable(FGtkText));
     gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart);
   end
   else begin
@@ -302,14 +298,13 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    NeedMoveCursor := LineStart = gtk_editable_get_position(PGtkEditable(FGtkText));
     gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart);
   end;
 
   // when we are thawed out we will move the cursor
   if LocalFreeze then begin
     gtk_text_thaw(FGtkText);
-    if NeedMoveCursor and (LineStart <> -1) then
+    if (LineStart <> -1) then
       gtk_editable_set_position(PGtkEditable(FGtkText), LineStart);
   end;
 
