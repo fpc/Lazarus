@@ -30,17 +30,15 @@
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
 begin
   {
-    erase backgound of not csOpaque custom controls
-    
+    erase backgound of custom controls
     use only for real custom controls for gtk1 - that are GTKAPIWidget
   }
 
-  if (TObject(Target) is TCustomControl) and
+  if (TObject(Target) is TCustomControl)
   {$ifdef gtk1}
-     GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_Type) and
+     and GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_Type)
   {$endif}
-     not (csOpaque in TWinControl(Target).ControlStyle) then
-  begin
+  then begin
     //DebugLn('LM_ERASEBKGND for: ', dbgsName(TCustomControl(Target)));
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
