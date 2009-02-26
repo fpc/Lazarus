@@ -597,6 +597,7 @@ procedure TSynHighlighterAttributes.InternalSaveDefaultValues;
 begin
   fForegroundDefault := fForeground;
   fBackgroundDefault := fBackground;
+  FFrameColorDefault := FFrameColor;
   fStyleDefault := fStyle;
   {$IFDEF SYN_LAZARUS}
   fStyleMaskDefault := fStyleMask;
