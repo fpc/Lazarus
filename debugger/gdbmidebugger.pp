@@ -849,7 +849,10 @@ end;
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
 begin
   if State in [dsStop, dsError]
-  then FAsmCache.Clear;
+  then begin
+    FAsmCache.Clear;
+    FPauseWaitState := pwsNone;
+  end;
 
   inherited DoState(OldState);
 end;
