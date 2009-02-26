@@ -1369,14 +1369,12 @@ type
     private
       FModified: boolean;
       FColsMap,FRowsMap: TMap;
-      function  GetCells(ACol, ARow: Integer): string;
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
       function  GetRows(index: Integer): TStrings;
       procedure MapFree(var aMap: TMap);
       function  MapGetColsRows(IsCols: boolean; Index:Integer; var AMap:TMap):TStrings;
       procedure ReadCells(Reader: TReader);
-      procedure SetCells(ACol, ARow: Integer; const AValue: string);
       procedure SetCols(index: Integer; const AValue: TStrings);
       procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
       procedure SetRows(index: Integer; const AValue: TStrings);
@@ -1394,6 +1392,7 @@ type
       procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
+      function  GetCells(ACol, ARow: Integer): string; virtual;
       procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); override;
       function  GetEditText(aCol, aRow: Integer): string; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
@@ -1402,6 +1401,7 @@ type
       //procedure DrawInteriorCells; override;
       //procedure SelectEditor; override;
       procedure SelectionSetText(TheText: String);
+      procedure SetCells(ACol, ARow: Integer; const AValue: string); virtual;
       procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
