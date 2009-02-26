@@ -27,7 +27,7 @@
 {------------------------------------------------------------------------------
   constructor TCustomPanel.Create (TheOwner : TComponent);
  ------------------------------------------------------------------------------}
-constructor TCustomPanel.Create (TheOwner : TComponent);
+constructor TCustomPanel.Create(TheOwner : TComponent);
 begin
   inherited Create (TheOwner);
   FCompStyle:= csPanel;
@@ -39,9 +39,9 @@ begin
   FBevelInner := bvNone;
   FBevelWidth := 1;
   FAlignment := taCenter;
-  FFullRepaint := true;
-  Color:=clBtnFace;// clBackground;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  FFullRepaint := True;
+  Color := clBtnFace;
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   ParentColor := True;
   UseDockManager := True;
 end;

@@ -501,12 +501,13 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor')
   then Exit;
 
-  if  ((csOpaque in AWinControl.ControlStyle)
-  and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
-    exit;
+  if ((csOpaque in AWinControl.ControlStyle) and
+      GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
+    Exit;
+
   //DebugLn('TGtkWSWinControl.SetColor ',DbgSName(AWinControl));
   GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
-                              AWinControl.font.color, AWinControl.color,
+                              AWinControl.Font.Color, AWinControl.Color,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 //    GtkWidgetSet.setWidgetFont(pGtkWidget(AWinControl.handle),aWinControl.font);

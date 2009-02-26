@@ -374,17 +374,18 @@ function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
 var
   WClient: PGTKAPIWidgetClient;
 begin
-  WClient:=PGTKAPIWidgetClient(Client);
-  if WClient^.Caret.Timer<=0 then begin
-    Result := gtk_False;
+  WClient := PGTKAPIWidgetClient(Client);
+  if WClient^.Caret.Timer <= 0 then
+  begin
+    Result := gtk_false;
     exit;
   end;
-  WClient^.Caret.BlinkHide:=not WClient^.Caret.BlinkHide;
+  WClient^.Caret.BlinkHide := not WClient^.Caret.BlinkHide;
   GTKAPIWidgetClient_DrawCaret(Client,true);
-  if WClient^.Caret.Timer<>0 then
-    Result := gtk_True
+  if WClient^.Caret.Timer <> 0 then
+    Result := gtk_true
   else
-    Result := gtk_False;
+    Result := gtk_false;
 end;
 
 procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl;

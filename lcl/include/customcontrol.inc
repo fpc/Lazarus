@@ -120,7 +120,7 @@ procedure TCustomControl.PaintWindow(DC: HDC);
 var
   DCChanged: boolean;
 begin
-  DCChanged:=(not FCanvas.HandleAllocated) or (FCanvas.Handle<>DC);
+  DCChanged := (not FCanvas.HandleAllocated) or (FCanvas.Handle <> DC);
   if DCChanged then
     FCanvas.Handle := DC;
   try
