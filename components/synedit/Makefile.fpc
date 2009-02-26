@@ -28,7 +28,9 @@ export LCL_PLATFORM
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
+        .
 options=-gl -dlcl$(LCL_PLATFORM)
 
 [target]
@@ -39,7 +41,8 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \
   synhighlighterposition synhighlighterjava synhighlightercss \
   synhighlighterphp synhighlightertex synhighlighterhashentries \
-  synhighlightersql synhighlightervb
+  synhighlightersql synhighlightervb \
+  synpropertyeditobjectlist syndesignstringconstants
 
 [require]
 # Adding lcl does not work, because it adds the source path.

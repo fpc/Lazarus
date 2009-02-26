@@ -1403,16 +1403,6 @@ begin
     'LCL',lisLCL,'lcl',mmCleanBuild);
   FItems.Add(FItemLCL);
 
-  // SynEdit
-  FItemSynEdit:=TBuildLazarusItem.Create(
-    'SynEdit',lisSynEdit,'components/synedit',mmBuild);
-  FItems.Add(FItemSynEdit);
-
-  // CodeTools
-  FItemCodeTools:=TBuildLazarusItem.Create(
-    'CodeTools',lisCodeTools,'components/codetools',mmBuild);
-  FItems.Add(FItemCodeTools);
-
   // package registration units
   FItemPkgReg:=TBuildLazarusItem.Create(
     'PackageRegistration',lisPkgReg,'packager/registration',
@@ -1423,6 +1413,16 @@ begin
   FItemIDEIntf:=TBuildLazarusItem.Create(
     'IDEIntf',lisIDEIntf,'ideintf',mmBuild);
   FItems.Add(FItemIDEIntf);
+
+  // SynEdit
+  FItemSynEdit:=TBuildLazarusItem.Create(
+    'SynEdit',lisSynEdit,'components/synedit',mmBuild);
+  FItems.Add(FItemSynEdit);
+
+  // CodeTools
+  FItemCodeTools:=TBuildLazarusItem.Create(
+    'CodeTools',lisCodeTools,'components/codetools',mmBuild);
+  FItems.Add(FItemCodeTools);
 
   // IDE
   FItemIDE:=TBuildLazarusItem.Create('IDE',lisIDE,'',mmBuild);
@@ -1554,10 +1554,10 @@ begin
     FItems.Add(NewItem);
   end;
   FItemLCL:=FindName('LCL');
-  FItemSynEdit:=FindName('SynEdit');
-  FItemCodeTools:=FindName('CodeTools');
   FItemPkgReg:=FindName('PkgReg');
   FItemIDEIntf:=FindName('IDEIntf');
+  FItemSynEdit:=FindName('SynEdit');
+  FItemCodeTools:=FindName('CodeTools');
   FItemIDE:=FindName('IDE');
   FItemExamples:=FindName('Examples');
 end;

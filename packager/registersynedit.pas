@@ -47,7 +47,8 @@ uses
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
   SynHighlighterSQL, SynHighlighterPython, SynHighlighterVB, SynHighlighterAny,
-  LazarusPackageIntf, LResources;
+  SynPropertyEditObjectList, SynDesignStringConstants,
+  LazarusPackageIntf, LResources, PropEdits;
 
 procedure Register;
 
@@ -217,6 +218,16 @@ begin
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
+
+  RegisterPropertyEditor(ClassTypeInfo(TSynGutterPartList), nil,
+    '', TSynPropertyEditGutterPartList);
+
+  RegisterGutterPartClass(TSynGutterLineNumber, syndsLineNumbers);
+  RegisterGutterPartClass(TSynGutterCodeFolding, syndsCodeFolding);
+  RegisterGutterPartClass(TSynGutterChanges, syndsChangeMarker);
+  RegisterGutterPartClass(TSynGutterMarks, syndsBookmarks);
+  RegisterGutterPartClass(TSynGutterSeparator, syndsSeparator);
+
 end;
 
 end.

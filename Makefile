@@ -274,178 +274,178 @@ else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_DIRS+=lcl components packager/registration ideintf packager
+override TARGET_DIRS+=lcl packager/registration ideintf packager components
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
@@ -3473,7 +3473,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
+.PHONY: lcl packager/registration ideintf packager components bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
 ide: 
 	$(MAKE) -C ide ide
 idepkg:
@@ -3493,7 +3493,7 @@ lazbuilder:
 tools: lcl components
 	$(MAKE) -C tools
 examples: lcl components
-all: lcl components packager/registration ideintf packager ide starter lazbuilder
+all: lcl packager/registration ideintf packager components ide starter lazbuilder
 cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide

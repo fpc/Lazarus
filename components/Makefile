@@ -2056,7 +2056,6 @@ ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
 endif
-	$(MAKE) -C synedit/design
 cleanlaz: clean
 cleanall: clean bigideclean
 bigideclean:
@@ -2078,4 +2077,3 @@ ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf clean
 	$(MAKE) -C sqldb clean
 endif
-	$(MAKE) -C synedit/design

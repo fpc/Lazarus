@@ -1384,6 +1384,7 @@ begin
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(IDEIntfPackage.CreateDependencyWithOwner(Result));
 
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
@@ -1430,6 +1431,9 @@ begin
     AddFile('synguttercodefolding.pas','SynGutterCodeFolding',pftUnit,[],cpBase);
     AddFile('syngutterchanges.pas','SynGutterChanges',pftUnit,[],cpBase);
     AddFile('synguttermarks.pas','SynGutterMarks',pftUnit,[],cpBase);
+
+    AddFile('syndesignstringconstants.pas','SynDesignStringConstants',pftUnit,[],cpBase);
+    AddFile('synpropertyeditobjectlist.pas','SynPropertyEditObjectList',pftUnit,[],cpBase);
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
@@ -1713,9 +1717,9 @@ procedure TLazPackageGraph.AddStaticBasePackages;
 begin
   AddStaticBasePackage(CreateFCLPackage,FFCLPackage);
   AddStaticBasePackage(CreateLCLPackage,FLCLPackage);
+  AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
   AddStaticBasePackage(CreateSynEditPackage,FSynEditPackage);
   AddStaticBasePackage(CreateCodeToolsPackage,FCodeToolsPackage);
-  AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
 end;
@@ -3584,8 +3588,8 @@ begin
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
-  RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
   RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
+  RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
 
   // register custom IDE components
   RegistrationPackage:=DefaultPackage;

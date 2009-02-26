@@ -39,7 +39,8 @@ uses
   SynHighlighterUNIXShellScript, 
   SynHighlighterVB, 
   SynHighlighterXML,
-  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber, SynGutterMarks;
+  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber, SynGutterMarks,
+  SynPropertyEditObjectList, SynDesignStringConstants;
 
 implementation
 
