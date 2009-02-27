@@ -613,8 +613,8 @@ var
   Orect: TRect;
 begin
   GetLCLClientBoundsOffset(ANotebook, ORect);
-  hittestInfo.pt.x:= AClientPos.x + ORect.Left;
-  hittestInfo.pt.y:= AClientPos.y + ORect.Top;
+  hittestInfo.pt.x := AClientPos.x + ORect.Left;
+  hittestInfo.pt.y := AClientPos.y + ORect.Top;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
@@ -626,9 +626,12 @@ end;
 class function TWin32WSCustomNotebook.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 var
+  hittestInfo: TC_HITTESTINFO;
   AIndex, ACurIndex: Integer;
 begin
-  AIndex := GetTabIndexAtPos(TCustomNoteBook(AWinControl), AClientPos);
+  hittestInfo.pt.x := AClientPos.x;
+  hittestInfo.pt.y := AClientPos.y;
+  AIndex := Windows.SendMessage(AWinControl.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
   ACurIndex := SendMessage(AWinControl.Handle, TCM_GETCURSEL, 0, 0);
   Result := (AIndex <> -1) and (AIndex <> ACurIndex);
 end;
