@@ -1438,6 +1438,7 @@ end;
 procedure TSynEditFoldedView.LinesInsertedAtTextIndex(AStartIndex, ALineCount : Integer; SkipFixFolding : Boolean);
 var top : Integer;
 begin
+  if ALineCount = 0 then exit;
   top := TopTextIndex;
   fFoldTree.AdjustForLinesInserted(AStartIndex+1, ALineCount);
   if AStartIndex < top then

@@ -4287,6 +4287,7 @@ begin
   Dec(Result);
 end;
 
+// Called with (0, 0) => to invalidate all lines => redraw
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
   ScanFrom(AIndex - 1, Min(AIndex, AIndex + ACount));

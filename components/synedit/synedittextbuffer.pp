@@ -969,6 +969,8 @@ begin
   finally
     Writer.Free;
   end;
+  MarkSaved;
+  FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, 0);
 end;
 
 {$IFDEF SYN_LAZARUS}
