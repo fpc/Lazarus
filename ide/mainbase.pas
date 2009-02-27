@@ -883,6 +883,7 @@ begin
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
     itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
+    itmViewToDoList.Command:=GetCommand(ecViewTodoList);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);
     itmViewForms.Command:=GetCommand(ecViewForms);
