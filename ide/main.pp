@@ -2873,6 +2873,7 @@ begin
     DebugBoss.ProcessCommand(Command,Handled);
     if Handled then exit;
     PkgBoss.ProcessCommand(Command,Handled);
+    if Handled then exit;
     // custom commands
     IDECmd:=IDECommandList.FindIDECommand(Command);
     //DebugLn('TMainIDE.OnProcessIDECommand Command=',dbgs(Command),' ',dbgs(IDECmd));
