@@ -527,13 +527,23 @@ var
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   NotebookPos: TPoint;
+  Window: PGdkWindow;
+  WindowOrg,ClientOrg: TPoint;
   Count: guint;
 begin
   Result:=-1;
   NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
   if (NotebookWidget=nil) then exit;
   //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
+  {$IFDEF GTK2}
+  Window := GetControlWindow(NoteBookWidget);
+  gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
+  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
+  NotebookPos.X:= AClientPos.X + (ClientOrg.X-WindowOrg.X);
+  NotebookPos.Y:= AClientPos.Y + (ClientOrg.Y-WindowOrg.Y);
+  {$ELSE}
   NotebookPos:=AClientPos;
+  {$ENDIF}
   // go through all tabs
   Count:=g_list_length(NoteBookWidget^.Children);
   for i:=0 to Count-1 do begin

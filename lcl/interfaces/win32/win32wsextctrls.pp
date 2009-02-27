@@ -610,8 +610,11 @@ class function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomN
   const AClientPos: TPoint): integer;
 var
   hittestInfo: TC_HITTESTINFO;
+  Orect: TRect;
 begin
-  hittestInfo.pt := AClientPos;
+  GetLCLClientBoundsOffset(ANotebook, ORect);
+  hittestInfo.pt.x:= AClientPos.x + ORect.Left;
+  hittestInfo.pt.y:= AClientPos.y + ORect.Top;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
