@@ -1316,52 +1316,54 @@ var
   DesignSender: TControl;
 begin
   FHintTimer.Enabled := False;
-  Exclude(FFLags,dfHasSized);
+  Exclude(FFLags, dfHasSized);
   SetCaptureControl(nil);
-  DesignSender:=GetDesignControl(Sender);
-  ParentForm:=GetParentForm(DesignSender);
+  DesignSender := GetDesignControl(Sender);
+  ParentForm := GetParentForm(DesignSender);
   //DebugLn(['TDesigner.MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
-  if (ParentForm=nil) then exit;
+  if (ParentForm = nil) then exit;
   
-  MouseDownPos:=GetFormRelativeMousePosition(Form);
-  LastMouseMovePos:=MouseDownPos;
+  MouseDownPos := GetFormRelativeMousePosition(Form);
+  LastMouseMovePos := MouseDownPos;
 
-  MouseDownComponent:=nil;
-  MouseDownSender:=nil;
+  MouseDownComponent := nil;
+  MouseDownSender := nil;
 
-  NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
-  if NonVisualComp<>nil then begin
-    MouseDownComponent:=NonVisualComp;
+  NonVisualComp := NonVisualComponentAtPos(MouseDownPos.X, MouseDownPos.Y);
+  if NonVisualComp<>nil then
+  begin
+    MouseDownComponent := NonVisualComp;
     MoveNonVisualComponentIntoForm(NonVisualComp);
   end;
 
-  if (MouseDownComponent=nil) then begin
-    MouseDownComponent:=ComponentAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
-    if (MouseDownComponent=nil) then exit;
+  if (MouseDownComponent = nil) then
+  begin
+    MouseDownComponent := ComponentAtPos(MouseDownPos.X, MouseDownPos.Y, True, True);
+    if (MouseDownComponent = nil) then exit;
   end;
-  MouseDownSender:=DesignSender;
+  MouseDownSender := DesignSender;
 
   case TheMessage.Msg of
-  LM_LBUTTONDOWN,LM_MBUTTONDOWN,LM_RBUTTONDOWN:
-    MouseDownClickCount:=1;
+    LM_LBUTTONDOWN, LM_MBUTTONDOWN, LM_RBUTTONDOWN:
+      MouseDownClickCount := 1;
 
-  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
-    MouseDownClickCount:=2;
+    LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
+      MouseDownClickCount := 2;
 
-  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
-    MouseDownClickCount:=3;
+    LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
+      MouseDownClickCount := 3;
 
-  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
-    MouseDownClickCount:=4;
+    LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
+      MouseDownClickCount := 4;
   else
-    MouseDownClickCount:=1;
+    MouseDownClickCount := 1;
   end;
 
   Shift := [];
   if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Include(Shift,ssShift);
+    Include(Shift, ssShift);
   if (TheMessage.keys and MK_Control) = MK_Control then
-    Include(Shift,ssCtrl);
+    Include(Shift, ssCtrl);
 
 
   {$IFDEF VerboseDesigner}
@@ -1383,14 +1385,14 @@ begin
     DebugLn(', No CTRL down');
   {$ENDIF}
 
-  SelectedCompClass:=GetSelectedComponentClass;
+  SelectedCompClass := GetSelectedComponentClass;
 
 
   if (TheMessage.Keys and MK_LButton) > 0 then begin
     // left button
     // -> check if a grabber was activated
     ControlSelection.ActiveGrabber:=
-      ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y);
+      ControlSelection.GrabberAtPos(MouseDownPos.X, MouseDownPos.Y);
     SetCaptureControl(ParentForm);
 
     if SelectedCompClass = nil then begin
@@ -1438,7 +1440,7 @@ begin
         // the sizing is handled in mousemove and mouseup
       end;
     end else begin
-      // add component mode  -> handled in mousemove and mouseup
+      // add component mode -> handled in mousemove and mouseup
     end;
   end else begin
     // not left button
@@ -1636,15 +1638,16 @@ var
 
   procedure PointSelect;
   begin
-    if (not (ssShift in Shift)) then begin
+    if not (ssShift in Shift) then
+    begin
       // select only the mouse down component
       ControlSelection.AssignPersistent(MouseDownComponent);
-      if (MouseDownClickCount=2)
-      and (ControlSelection.SelectionForm=Form) then begin
+      if (MouseDownClickCount = 2) and (ControlSelection.SelectionForm = Form) then
+      begin
         // Double Click -> invoke 'Edit' of the component editor
-        FShiftState:=Shift;
-        InvokeComponentEditor(MouseDownComponent,-1);
-        FShiftState:=[];
+        FShiftState := Shift;
+        InvokeComponentEditor(MouseDownComponent, -1);
+        FShiftState := [];
       end;
     end;
   end;

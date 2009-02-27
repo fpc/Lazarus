@@ -2133,22 +2133,26 @@ begin
 end;
 
 function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
-var g:TGrabIndex;
+var
+  g: TGrabIndex;
 begin
-  if FControls.Count>0 then begin
+  if FControls.Count > 0 then
+  begin
     {$IFDEF VerboseDesigner}
     DebugLn('[TControlSelection.GrabberAtPos] ',Dbgs(x),',',Dbgs(y),'  '
     ,Dbgs(FGrabbers[4].Left),',',DbgS(FGrabbers[4].Top));
     {$ENDIF}
-    for g:=Low(TGrabIndex) to High(TGrabIndex) do
-      if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
-      and (FGrabbers[g].Left+FGrabbers[g].Width>x)
-      and (FGrabbers[g].Top+FGrabbers[g].Height>y) then begin
-        Result:=FGrabbers[g];
-        exit;
+    for g := Low(TGrabIndex) to High(TGrabIndex) do
+      if (FGrabbers[g].Left <= x) and
+         (FGrabbers[g].Top <= y) and
+         (FGrabbers[g].Left + FGrabbers[g].Width > x) and
+         (FGrabbers[g].Top + FGrabbers[g].Height > y) then
+      begin
+        Result := FGrabbers[g];
+        Exit;
       end;
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
 procedure TControlSelection.DrawGrabbers(DC: TDesignerDeviceContext);
