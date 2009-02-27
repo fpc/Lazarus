@@ -41,10 +41,6 @@ var
 begin
   with Canvas do
   begin
-
-    Brush.Color := clRed;
-    FillRect(Rect(0,0,Width,Height));
-
     Pen := FPen;
     Brush := FBrush;
 
