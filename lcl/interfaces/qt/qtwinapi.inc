@@ -1263,7 +1263,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).drawEllipse(x1, y1, X2 - X1, Y2 - Y1);
+  TQtDeviceContext(DC).drawEllipse(x1, y1, X2 - X1 - 1, Y2 - Y1 - 1);
 
   Result := True;
 end;
