@@ -583,6 +583,9 @@ type
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
+    procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
+          Shift: TShiftState; X,Y: Integer);
+
     // hintwindow stuff
     FHintWindow: THintWindow;
     FHintTimer: TTimer;
@@ -3893,6 +3896,7 @@ Begin
             Options:=Options-[nboShowCloseButtons];
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseTabClicked;
+          OnMouseDown:=@NotebookMouseDown;
           ShowHint:=true;
           OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
@@ -6003,6 +6007,18 @@ begin
     if CompareFilenames(Result.Filename,Filename)=0 then exit;
   end;
   Result:=nil;
+end;
+
+procedure TSourceNotebook.NotebookMouseDown(Sender: TObject;
+  Button: TMouseButton;  Shift: TShiftState; X,Y: Integer);
+var
+  TabIndex: Integer;
+begin
+  if Button=mbMiddle then begin
+    TabIndex := Notebook.TabIndexAtClientPos(point(X,Y));
+    if TabIndex>=0 then
+      CloseClicked(Notebook.Page[TabIndex]);
+  end;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
