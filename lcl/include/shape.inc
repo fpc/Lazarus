@@ -37,14 +37,21 @@ var
   PaintRect: TRect;
   MinSize: Longint;
   P: array[0..3] of TPoint;
+  PenInc, PenDec: Integer;
 begin
   with Canvas do
   begin
+
+    Brush.Color := clRed;
+    FillRect(Rect(0,0,Width,Height));
+
     Pen := FPen;
     Brush := FBrush;
 
-    PaintRect := Rect(0, 0, Self.Width - 1, Self.Height - 1);
-    InflateRect(PaintRect, -(Pen.Width div 2), -(Pen.Width div 2));
+    PenInc := Pen.Width div 2;
+    PenDec := (Pen.Width - 1) div 2;
+
+    PaintRect := Rect(PenInc, PenInc, Self.Width - PenDec, Self.Height - PenDec);
     with PaintRect do
     begin
       MinSize := Min(Right - Left, Bottom - Top);
@@ -66,16 +73,16 @@ begin
         Ellipse(PaintRect);
       stSquaredDiamond, stDiamond:
       begin
-        with PaintRect do
+        with Self do
         begin
-          P[0].x := Left;
-          P[0].y := Top + (Bottom - Top) div 2;
-          P[1].x := Left + (Right - Left) div 2;
-          P[1].y := Bottom;
-          P[2].x := Right;
+          P[0].x := 0;
+          P[0].y := (Height - 1) div 2;
+          P[1].x := (Width - 1) div 2;
+          P[1].y := 0;
+          P[2].x := Width - 1;
           P[2].y := P[0].y;
           P[3].x := P[1].x;
-          P[3].y := Top;
+          P[3].y := Height - 1;
           Polygon(P);
         end;
       end;
