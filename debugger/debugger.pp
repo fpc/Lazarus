@@ -225,7 +225,7 @@ type
     property Line: Integer read GetLine;
     property Source: String read GetSource;
     property SourceLine: Integer read GetSourceLine; // the current line of this breakpoint in the source
-                                                     // this may differ from th location set
+                                                     // this may differ from the location set
                                                      // todo: move to manager ?
     property Valid: TValidState read GetValid;
   end;
