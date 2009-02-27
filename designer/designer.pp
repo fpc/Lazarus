@@ -1441,6 +1441,9 @@ begin
       end;
     end else begin
       // add component mode -> handled in mousemove and mouseup
+      // but check if we pressed mouse on the form which is not selected
+      if (ControlSelection.SelectionForm <> Form) then
+        ControlSelection.AssignPersistent(MouseDownComponent);
     end;
   end else begin
     // not left button
