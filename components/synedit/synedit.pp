@@ -3239,7 +3239,7 @@ var
       fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
 
       // codefold draw splitter line
-      if Gutter.CodeFoldPart.Visible
+      if assigned(Gutter.CodeFoldPart) and  Gutter.CodeFoldPart.Visible
          and (FFoldedLinesView.DrawDivider[curLine]) then
       begin
         ypos := rcToken.Bottom - 1;
@@ -3344,7 +3344,7 @@ begin
     end;
 
     // codefold draw splitter line
-    if Gutter.CodeFoldPart(0).Visible
+    if assigned(Gutter.CodeFoldPart) and  Gutter.CodeFoldPart(0).Visible
        and (FFoldedLinesView.DrawDivider[LastLine]) then
     begin
       ypos := rcToken.Bottom - 1;
