@@ -999,6 +999,7 @@ var
 begin
   if FIndex>=0 then begin
     Result:=FIndex;
+    exit;
   end;
   // many algorithms uses the last sibling, so we check that first for speed
   if (Parent<>nil) and (Parent[Parent.Count-1]=Self) then begin
