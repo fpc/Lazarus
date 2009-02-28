@@ -1419,6 +1419,7 @@ components/synedit/synedithighlighter.pp svneol=native#text/pascal
 components/synedit/syneditkeycmds.pp svneol=native#text/pascal
 components/synedit/syneditlazdsgn.lrs svneol=native#text/pascal
 components/synedit/syneditlazdsgn.pas svneol=native#text/pascal
+components/synedit/syneditlines.pas svneol=native#text/plain
 components/synedit/syneditmarks.pp svneol=native#text/plain
 components/synedit/syneditmarkup.pp svneol=native#text/plain
 components/synedit/syneditmarkupbracket.pp svneol=native#text/plain
