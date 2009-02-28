@@ -5,7 +5,7 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, SynEditMiscClasses;
+  Classes, SysUtils, SynEditMiscClasses, SynEditTextBase;
 
 type
   { TSynCustomBeautifier }
@@ -15,14 +15,16 @@ type
     function CanUnindent(const Editor: TSynEditBase;  const Line: string;
                          const PhysCaretX: Integer): Boolean; virtual; abstract;
     function UnIndentLine(const Editor: TSynEditBase;  const Line: string;
-                          const PhysCaret: TPoint; out DelChars, InsChars: String;
+                          const Lines: TSynEditStrings; const PhysCaret: TPoint;
+                          out DelChars, InsChars: String;
                           out CaretNewX: Integer): String; virtual; abstract;   // Todo InsChar are not supprted for undo
     function IndentLine(const Editor: TSynEditBase; Line: string;
-                        const PhysCaret: TPoint; out DelChars, InsChars: String;
-                        out CaretNewX: Integer;
+                        const Lines: TSynEditStrings; const PhysCaret: TPoint;
+                        out DelChars, InsChars: String; out CaretNewX: Integer;
                         RemoveCurrentIndent: Boolean = False): String;
                         virtual; abstract;                                      // Todo DelChar are not supprted for undo
     function GetIndentForLine(Editor: TSynEditBase; const Line: string;
+                              const Lines: TSynEditStrings;
                               const PhysCaret: TPoint): Integer; virtual; abstract;
   end;
 
@@ -39,13 +41,15 @@ type
     function CanUnindent(const Editor: TSynEditBase;  const Line: string;
                          const PhysCaretX: Integer): Boolean; override;
     function UnIndentLine(const Editor: TSynEditBase;  const Line: string;
-                          const PhysCaret: TPoint; out DelChars, InsChars: String;
+                          const Lines: TSynEditStrings; const PhysCaret: TPoint;
+                          out DelChars, InsChars: String;
                           out CaretNewX: Integer): String; override;            // Todo InsChar are not supprted for undo
     function IndentLine(const Editor: TSynEditBase; Line: string;
-                        const PhysCaret: TPoint; out DelChars, InsChars: String;
-                        out CaretNewX: Integer;
+                        const Lines: TSynEditStrings; const PhysCaret: TPoint;
+                        out DelChars, InsChars: String; out CaretNewX: Integer;
                         RemoveCurrentIndent: Boolean = False): String; override; // Todo DelChar are not supprted for undo
     function GetIndentForLine(Editor: TSynEditBase; const Line: string;
+                              const Lines: TSynEditStrings;
                               const PhysCaret: TPoint): Integer; override;
   published
     property IndentType: TSynBeautifierIndentType read FIndentType write FIndentType;
@@ -73,13 +77,16 @@ begin
     Result := 0;
 end;
 
-function TSynBeautifier.CanUnindent(const Editor: TSynEditBase; const Line: string; const PhysCaretX: Integer): Boolean;
+function TSynBeautifier.CanUnindent(const Editor: TSynEditBase;
+  const Line: string; const PhysCaretX: Integer): Boolean;
 begin
   Result := (LeftSpaces(Editor, Line, True) = PhysCaretX - 1);
 end;
 
-function TSynBeautifier.UnIndentLine(const Editor: TSynEditBase; const Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String; out
-  CaretNewX: Integer): String;
+function TSynBeautifier.UnIndentLine(const Editor: TSynEditBase;
+// XXXXX viewed
+  const Line: string; const Lines: TSynEditStrings; const PhysCaret: TPoint;
+  out DelChars, InsChars: String; out CaretNewX: Integer): String;
 var
   SpaceCount1, SpaceCount2: Integer;
   BackCounter, LogSpacePos: Integer;
@@ -90,7 +97,7 @@ begin
   if (SpaceCount1 > 0) then begin
     BackCounter := PhysCaret.Y - 2;
     while BackCounter >= 0 do begin
-      SpaceCount2 := LeftSpaces(Editor, Editor.RealLines[BackCounter], true);
+      SpaceCount2 := LeftSpaces(Editor, Lines[BackCounter], true);
       if SpaceCount2 < SpaceCount1 then
         break;
       Dec(BackCounter);
@@ -107,8 +114,10 @@ begin
   Result :=copy(Line, 1, LogSpacePos-1) + copy(Line, LogCaret.X, MaxInt);
 end;
 
-function TSynBeautifier.IndentLine(const Editor: TSynEditBase; Line: string; const PhysCaret: TPoint; out DelChars, InsChars: String; out
-  CaretNewX: Integer; RemoveCurrentIndent: Boolean): String;
+function TSynBeautifier.IndentLine(const Editor: TSynEditBase; Line: string;
+// XXXXX viewed
+  const Lines: TSynEditStrings; const PhysCaret: TPoint; out DelChars,
+  InsChars: String; out CaretNewX: Integer; RemoveCurrentIndent: Boolean): String;
 var
   SpaceCount1, SpaceCount2: Integer;
   BackCounter: Integer;
@@ -126,7 +135,7 @@ begin
   if BackCounter > 0 then
     repeat
       Dec(BackCounter);
-      Temp := Editor.RealLines[BackCounter];
+      Temp := Lines[BackCounter];
       SpaceCount2 := LeftSpaces(Editor, Temp, True);
     until (BackCounter = 0) or (Temp <> '');
 
@@ -146,11 +155,12 @@ begin
   CaretNewX := TSynEdit(Editor).LogicalToPhysicalCol(Result, PhysCaret.y - 1, SpaceCount2+1);
 end;
 
-function TSynBeautifier.GetIndentForLine(Editor: TSynEditBase; const Line: string; const PhysCaret: TPoint): Integer;
+function TSynBeautifier.GetIndentForLine(Editor: TSynEditBase;
+  const Line: string; const Lines: TSynEditStrings; const PhysCaret: TPoint): Integer;
 var
   s1, s2: string;
 begin
-  IndentLine(Editor, Line, PhysCaret, s1, s2, Result, False);
+  IndentLine(Editor, Line, Lines, PhysCaret, s1, s2, Result, False);
 end;
 
 end.

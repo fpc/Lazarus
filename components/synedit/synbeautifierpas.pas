@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, SynEdit, SynBeautifier, SynEditTextBuffer,
-  SynEditHighlighter, SynHighlighterPas;
+  SynEditHighlighter, SynHighlighterPas, SynEditTextBase;
   
 type
 
@@ -54,18 +54,19 @@ type
   TSynBeautifierPas = class(TSynBeautifier)
   public
     function TokenKindIsComment(Kind: integer): boolean;
-    function InComment(Editor: TCustomSynEdit; XY: TPoint): boolean;
-    procedure ReadPriorToken(Editor: TCustomSynEdit; var Y, StartX, EndX: integer);
+    function InComment(Editor: TCustomSynEdit; Lines: TSynEditStrings;
+                       XY: TPoint): boolean;
+    procedure ReadPriorToken(Editor: TCustomSynEdit; Lines: TSynEditStrings;
+                             var Y, StartX, EndX: integer);
   end;
 
 implementation
 
 { TSynBeautifierPas }
 
-procedure TSynBeautifierPas.ReadPriorToken(Editor: TCustomSynEdit; var Y,
-  StartX, EndX: integer);
+procedure TSynBeautifierPas.ReadPriorToken(Editor: TCustomSynEdit;
+  Lines: TSynEditStrings; var Y, StartX, EndX: integer);
 var
-  Lines: TSynEditStringList;
   TokenStart: Integer;
   Line: string;
   Highlighter: TSynCustomHighlighter;
@@ -77,7 +78,6 @@ begin
     exit;
   end;
 
-  Lines:=TSynEditStringList(Editor.Lines);
   if Y>Lines.Count then begin
     // cursor after end of code
     // => move to end of last line
@@ -120,11 +120,10 @@ begin
   Result:=(ord(tkComment)=Kind) or (ord(tkDirective)=Kind);
 end;
 
-function TSynBeautifierPas.InComment(Editor: TCustomSynEdit; XY: TPoint
-  ): boolean;
+function TSynBeautifierPas.InComment(Editor: TCustomSynEdit;
+  Lines: TSynEditStrings; XY: TPoint): boolean;
 var
   Highlighter: TSynPasSyn;
-  Lines: TSynEditStringList;
   Line: string;
   Start: Integer;
   Token: String;
@@ -137,7 +136,6 @@ begin
     exit(false);
   end;
 
-  Lines:=TSynEditStringList(Editor.Lines);
   if Lines.Count=0 then begin
     DebugLn(['TSynBeautifierPas.InComment Lines empty']);
     exit(false); // no code

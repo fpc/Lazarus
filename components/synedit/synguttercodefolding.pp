@@ -72,7 +72,7 @@ var
   line  : integer;
 begin
   line := TSynEdit(SynEdit).PixelsToRowColumn(Point(X, Y)).Y;
-  if line <= TSynEdit(SynEdit).Lines.Count then
+  if line <= SynEdit.Lines.Count then
     TSynEdit(SynEdit).CodeFoldAction(line);
 end;
 

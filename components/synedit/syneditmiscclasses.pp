@@ -47,7 +47,8 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, Graphics, Controls, SysUtils, SynEditMiscProcs, SynEditTypes;
+  Classes, Graphics, Controls, SysUtils, SynEditMiscProcs, SynEditTypes,
+  SynEditTextBase;
 
 type
 
@@ -55,13 +56,14 @@ type
   // in places where TCustomSynEdit can not be used due to circular unit refs
   TSynEditBase = class(TCustomControl)
   protected
-    function GetTheLinesView: TStrings; virtual; abstract;
-    procedure SetRealLines(const AValue : TStrings); virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
+    function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
+    function GetTextBuffer: TSynEditStrings; virtual; abstract;
+    property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property TextBuffer: TSynEditStrings read GetTextBuffer;                    // No uncommited (trailing/trimmable) spaces
   public
-    property RealLines: TStrings read GetTheLinesView write SetRealLines;       // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
-    property Lines: TStrings read GetLines write SetLines;                      // No uncommited (trailing/trimmable) spaces
+    property Lines: TStrings read GetLines write SetLines;
   end;
 
   TSynObjectListItem = class;

@@ -82,7 +82,7 @@ var
   begin
     iTop := 0;
     CurMark := TSynEdit(SynEdit).Marks[iMark];
-    if (CurMark.Line<1) or (CurMark.Line>TSynEdit(SynEdit).Lines.Count) then exit;
+    if (CurMark.Line<1) or (CurMark.Line > SynEdit.Lines.Count) then exit;
     if FFoldView.FoldedAtTextIndex[CurMark.Line-1] then exit;
     iLine := FFoldView.TextIndexToScreenLine(CurMark.Line-1);
 

@@ -610,7 +610,7 @@ var
             TempString := Copy(FLines[BB.Y - 1], 1, BB.X - 1) +
               Copy(FLines[BE.Y - 1], BE.X, MaxInt);
             // Delete all FLines in the selection range.
-            TSynEditStrings(FLines).DeleteLines(BB.Y-1, BE.Y - BB.Y);
+            FLines.DeleteLines(BB.Y-1, BE.Y - BB.Y);
             FLines[BB.Y - 1] := TempString;
           end;
           UpdateMarks := TRUE;
@@ -713,7 +713,7 @@ var
       P := GetEOL(Start);
       if P^ <> #0 then begin
         SetString(Str, Value, P - Start);
-        TSynEditStrings(FLines).InsertLines(FCaret.LinePos - 1, CountLines(P));
+        FLines.InsertLines(FCaret.LinePos - 1, CountLines(P));
         FLines[FCaret.LinePos - 1] := sLeftSide + Str;
       end else begin
         FLines[FCaret.LinePos - 1] := sLeftSide + Value + sRightSide;

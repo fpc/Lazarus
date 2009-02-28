@@ -214,7 +214,7 @@ var
   allmrk: TSynEditMarks;
 begin
   line := TSynEdit(FEdit).PixelsToRowColumn(Point(X, Y)).Y;
-  if line <= TSynEdit(FEdit).Lines.Count then begin
+  if line <= FEdit.Lines.Count then begin
     mark := nil;
     TSynEdit(FEdit).Marks.GetMarksForLine(line, allmrk);
     offs := 0;

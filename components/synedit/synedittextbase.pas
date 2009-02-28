@@ -121,7 +121,6 @@ type
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
-    procedure Exchange(Index1, Index2: integer); override;
 
     procedure ClearRanges(ARange: TSynEditRange); override;
 
@@ -301,11 +300,6 @@ end;
 procedure TSynEditStringsLinked.InsertStrings(Index: integer; NewStrings: TStrings);
 begin
   fSynStrings.InsertStrings(Index, NewStrings);
-end;
-
-procedure TSynEditStringsLinked.Exchange(Index1, Index2: integer);
-begin
-  fSynStrings.Exchange(Index1, Index2);
 end;
 
 function TSynEditStringsLinked.GetIsUtf8: Boolean;

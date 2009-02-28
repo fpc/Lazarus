@@ -183,14 +183,11 @@ type
     procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     procedure DeleteLines(Index, NumLines: integer);                            // DJLP 2000-11-01
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
-    procedure Exchange(Index1, Index2: integer); override;
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer);                            // DJLP 2000-11-01
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure InsertStrings(Index: integer; NewStrings: TStrings);              // DJLP 2000-11-01
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
-    procedure LoadFromFile(const FileName: string); override;
-    procedure SaveToFile(const FileName: string); override;
     {$IFDEF SYN_LAZARUS}
     procedure ClearRanges(ARange: TSynEditRange); override;
     procedure MarkModified(AFirst, ALast: Integer; AUndo: Boolean; AReason: TSynChangeReason);
@@ -296,206 +293,6 @@ const
 const
 {$ENDIF}
   SListIndexOutOfBounds = 'Invalid stringlist index %d';
-
-{ TSynEditFiler }
-
-type
-  TSynEditFiler = class(TObject)
-  protected
-    fBuffer: PChar;
-    fBufPtr: Cardinal;
-    fBufSize: Cardinal;
-    fDosFile: boolean;
-    fFiler: TFileStream;
-    procedure Flush; virtual;
-    procedure SetBufferSize(NewSize: Cardinal);
-  public
-    constructor Create;
-    destructor Destroy; override;
-  public
-    property DosFile: boolean read fDosFile write fDosFile;
-  end;
-
-constructor TSynEditFiler.Create;
-const
-  kByte = 1024;
-begin
-  inherited Create;
-  fDosFile := FALSE;
-  SetBufferSize(16 * kByte);
-  fBuffer[0] := #0;
-end;
-
-destructor TSynEditFiler.Destroy;
-begin
-  Flush;
-  fFiler.Free;
-  SetBufferSize(0);
-  inherited Destroy;
-end;
-
-procedure TSynEditFiler.Flush;
-begin
-end;
-
-procedure TSynEditFiler.SetBufferSize(NewSize: Cardinal);
-begin
-  if NewSize <> fBufSize then begin
-    ReallocMem(fBuffer, NewSize);
-    fBufSize := NewSize;
-  end;
-end;
-
-{ TSynEditFileReader }
-
-type
-  TSynEditFileReader = class(TSynEditFiler)
-  protected
-    {$IFDEF SYN_LAZARUS}
-    fFilePos: TStreamSeekType;
-    fFileSize: TStreamSeekType;
-    {$ELSE}
-    fFilePos: Cardinal;
-    fFileSize: Cardinal;
-    {$ENDIF}
-    procedure FillBuffer;
-  public
-    constructor Create(const FileName: string);
-    function EOF: boolean;
-    function ReadLine: string;
-  end;
-
-constructor TSynEditFileReader.Create(const FileName: string);
-begin
-  inherited Create;
-  fFiler := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead{ ToDo: or fmShareDenyWrite});
-  fFileSize := fFiler.Size;
-  fFiler.Seek(0, soFromBeginning);
-end;
-
-function TSynEditFileReader.EOF: boolean;
-begin
-  Result := (fBuffer[fBufPtr] = #0) and (fFilePos >= fFileSize);
-end;
-
-procedure TSynEditFileReader.FillBuffer;
-var
-  Count: Cardinal;
-begin
-  if fBufPtr >= fBufSize - 1 then
-    fBufPtr := 0;
-  Count := fFileSize - fFilePos;
-  if Count >= fBufSize - fBufPtr then
-    Count := fBufSize - fBufPtr - 1;
-  fFiler.ReadBuffer(fBuffer[fBufPtr], Count);
-  fBuffer[fBufPtr + Count] := #0;
-  fFilePos := fFilePos + Count;
-  fBufPtr := 0;
-end;
-
-function TSynEditFileReader.ReadLine: string;
-var
-  E, P, S: PChar;
-begin
-  Result := '';
-  repeat
-    S := PChar(@fBuffer[fBufPtr]);
-    if S[0] = #0 then begin
-      FillBuffer;
-      S := PChar(@fBuffer[0]);
-    end;
-    E := PChar(@fBuffer[fBufSize]);
-    P := S;
-    while P + 2 < E do begin
-      case P[0] of
-        #10, #13:
-          begin
-            SetString(Result, S, P - S);
-            {$IFDEF SYN_LAZARUS}
-            // a single #13 is used in Mac OS files
-            if (P[0] = #13) and (P[1] = #10) then begin
-            {$ELSE}
-            if P[0] = #13 then begin
-            {$ENDIF}
-              fDosFile := TRUE;
-              Inc(P);
-            end;
-            Inc(P);
-            fBufPtr := P - fBuffer;
-            exit;
-          end;
-        #0:
-          if fFilePos >= fFileSize then begin
-            fBufPtr := P - fBuffer;
-            SetString(Result, S, P - S);
-            exit;
-          end;
-      end;
-      Inc(P);
-    end;
-    // put the partial string to the start of the buffer, and refill the buffer
-    Inc(P);
-    if S > fBuffer then
-      StrLCopy(fBuffer, S, P - S);
-    fBufPtr := P - S;
-    fBuffer[fBufPtr] := #0;
-    // if line is longer than half the buffer then grow it first
-    if 2 * Cardinal(P - S) > fBufSize then
-      SetBufferSize(fBufSize + fBufSize);
-  until FALSE;
-end;
-
-{ TSynEditFileWriter }
-
-type
-  TSynEditFileWriter = class(TSynEditFiler)
-  protected
-    procedure Flush; override;
-  public
-    constructor Create(const FileName: string);
-    procedure WriteLine(const S: string);
-  end;
-
-constructor TSynEditFileWriter.Create(const FileName: string);
-begin
-  inherited Create;
-  fFiler := TFileStream.Create(UTF8ToSys(FileName), fmCreate);
-  fFiler.Seek(0, soFromBeginning);
-end;
-
-procedure TSynEditFileWriter.Flush;
-begin
-  if fBufPtr > 0 then begin
-    fFiler.WriteBuffer(fBuffer[0], fBufPtr);
-    fBufPtr := 0;
-  end;
-end;
-
-procedure TSynEditFileWriter.WriteLine(const S: string);
-var
-  L, NL: Cardinal;
-begin
-  L := Length(S);
-  NL := 1 + Ord(fDosFile);
-  repeat
-    if fBufPtr + L + NL <= fBufSize then begin
-      if L > 0 then begin
-        Move(S[1], fBuffer[fBufPtr], L);
-        fBufPtr := fBufPtr + L;
-      end;
-      if fDosFile then begin
-        fBuffer[fBufPtr] := #13;
-        Inc(fBufPtr);
-      end;
-      fBuffer[fBufPtr] := #10;
-      Inc(fBufPtr);
-      exit;
-    end;
-    Flush;
-    if L + NL > fBufSize then
-      SetBufferSize(L + NL);
-  until FALSE;
-end;
 
 { TSynEditStringList }
 
@@ -625,25 +422,6 @@ begin
   end;
 end;
 {end}                                                                           // DJLP 2000-11-01
-
-procedure TSynEditStringList.Exchange(Index1, Index2: integer);
-begin
-  if (Index1 < 0) or (Index1 >= Count) then
-    ListIndexOutOfBounds(Index1);
-  if (Index2 < 0) or (Index2 >= Count) then
-    ListIndexOutOfBounds(Index2);
-  BeginUpdate;
-  If Count+1 >= Capacity then Grow;
-  FList.Move(Index1, Count, 1);
-  FList.Move(Index2, Index1, 1);
-  FList.Move(Count, Index2, 1);
-  FList.Move(Count+1, Count, 1); // clean it
-  if fIndexOfLongestLine = Index1 then
-    fIndexOfLongestLine := Index2
-  else if fIndexOfLongestLine = Index2 then
-    fIndexOfLongestLine := Index1;
-  EndUpdate;
-end;
 
 {$IFDEF SYN_LAZARUS}
 function TSynEditStringList.GetFlags(Index: Integer): TSynEditStringFlags;
@@ -830,26 +608,6 @@ begin
 end;
 {end}                                                                           // DJLP 2000-11-01
 
-procedure TSynEditStringList.LoadFromFile(const FileName: string);
-var
-  Reader: TSynEditFileReader;
-begin
-  Reader := TSynEditFileReader.Create(FileName);
-  try
-    BeginUpdate;
-    try
-      Clear;
-      while not Reader.EOF do
-        Add(Reader.ReadLine);
-      fDosFileFormat := Reader.DosFile;
-    finally
-      EndUpdate;
-    end;
-  finally
-    Reader.Free;
-  end;
-end;
-
 procedure TSynEditStringList.Put(Index: integer; const S: string);
 begin
   if (Index = 0) and (Count = 0) then
@@ -954,23 +712,6 @@ end;
 procedure TSynEditStringList.SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
 begin
   SetAttribute(TSynEditFlagsClass, Index, Pointer(PtrUInt(Integer(AValue))));
-end;
-
-procedure TSynEditStringList.SaveToFile(const FileName: string);
-var
-  Writer: TSynEditFileWriter;
-  i: integer;
-begin
-  Writer := TSynEditFileWriter.Create(FileName);
-  try
-    Writer.DosFile := fDosFileFormat;
-    for i := 0 to Count - 1 do
-      Writer.WriteLine(Get(i));
-  finally
-    Writer.Free;
-  end;
-  MarkSaved;
-  FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, 0);
 end;
 
 {$IFDEF SYN_LAZARUS}

@@ -240,7 +240,7 @@ begin
       // or a multiple of ShowOnlyLineNumbersMultiplesOf
       ShowDot := ((iLine mod ShowOnlyLineNumbersMultiplesOf) <> 0)
           and (iLine <> TSynEdit(SynEdit).CaretY) and (iLine <> 1)
-          and (iLine <> TSynEdit(SynEdit).Lines.Count);
+          and (iLine <> SynEdit.Lines.Count);
       // Get the formatted line number or dot
       s := FormatLineNumber(iLine, ShowDot);
       Inc(rcLine.Bottom, LineHeight);

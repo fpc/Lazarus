@@ -204,8 +204,8 @@ begin
   e:=LineEnding;
   LineEndLen:=length(e);
   Chars := 0;
-  while y < Lines.Count do begin
-    x := Length(Lines[y]);
+  while y < TextBuffer.Count do begin
+    x := Length(TextBuffer[y]);
     if Chars + x + LineEndLen > Index then begin
       x := Index - Chars;
       break;
@@ -224,11 +224,11 @@ var
   LineEndLen: Integer;
 begin
   Result := 0;
-  RowCol.y := Min(Lines.Count, RowCol.y) - 1;
+  RowCol.y := Min(TextBuffer.Count, RowCol.y) - 1;
   e:=LineEnding;
   LineEndLen:=length(e);
   for i := 0 to RowCol.y - 1 do
-    Result := Result + Length(Lines[i]) + LineEndLen;
+    Result := Result + Length(TextBuffer[i]) + LineEndLen;
   Result := Result + RowCol.x;
 end;
 
