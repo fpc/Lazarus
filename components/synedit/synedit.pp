@@ -430,9 +430,8 @@ type
     fChangeStamp: int64;
     {$ENDIF}
 
-    {$IFDEF SYN_LAZARUS}
     procedure AquirePrimarySelection;
-    {$ENDIF}
+    procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
     procedure DoBlockIndent;
@@ -1161,7 +1160,6 @@ end;
 
 { TCustomSynEdit }
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.AquirePrimarySelection;
 var
   FormatList: TClipboardFormat;
@@ -1175,7 +1173,12 @@ begin
   except
   end;
 end;
-{$ENDIF}
+
+procedure TCustomSynEdit.SurrenderPrimarySelection;
+begin
+  if PrimarySelection.OnRequest=@PrimarySelectionRequest then
+    PrimarySelection.OnRequest:=nil;
+end;
 
 function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
 // converts the client area coordinate
@@ -1619,6 +1622,7 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
+  SurrenderPrimarySelection;
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   Beautifier:=nil;
@@ -7978,10 +7982,7 @@ begin
   {$IFDEF EnableDoubleBuf}
   FreeAndNil(BufferBitmap);
   {$ENDIF}
-  {$IFDEF SYN_LAZARUS}
-  if PrimarySelection.OnRequest=@PrimarySelectionRequest then
-    PrimarySelection.OnRequest:=nil;
-  {$ENDIF}
+  SurrenderPrimarySelection;
   inherited DestroyWnd;
 end;
 
