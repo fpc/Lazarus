@@ -99,6 +99,7 @@ var
   i: integer;
 begin
   if FBar = nil then InitBar;
+  FBar.MarksStyle := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FBar.AddXY(x, y, '', clRed);
     X := X + 1;

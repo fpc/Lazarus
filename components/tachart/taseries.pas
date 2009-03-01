@@ -1208,29 +1208,54 @@ end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
-  i: Integer;
   barX, barTopY, barBottomY: Double;
-  barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
+  i, barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
   r: TRect;
-begin
-  if FCoordList.Count = 0 then exit;
+  prevLabelRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 
-  // Calculate the single bar width.
-  totalbarWidth :=
-    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / FCoordList.Count);
-  ExamineAllBarSeries(totalBarSeries, myPos);
-  barWidth := totalbarWidth div totalBarSeries;
+  procedure DrawLabel;
+  const
+    DIST = 10;
+  var
+    labelRect: TRect;
+    dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+    labelText: String;
+    labelSize: TSize;
+    xc: Integer;
+    labelPos: TPoint;
+  begin
+    labelText := FormattedMark(i);
+    if labelText = '' then exit;
 
-  ACanvas.Brush.Assign(BarBrush);
-  if barWidth > 2 then
-    ACanvas.Pen.Assign(BarPen)
-  else begin
-    // Bars are too narrow to distinguish border from interior.
-    ACanvas.Pen.Color := BarBrush.Color;
-    ACanvas.Pen.Style := psSolid;
+    labelSize := ACanvas.TextExtent(labelText);
+    xc := (r.Left + r.Right) div 2;
+    labelPos.X := xc - labelSize.cx div 2;
+    labelPos.Y :=
+      ifthen(barTopY = 0, r.Bottom + DIST, r.Top - DIST - labelSize.cy);
+    labelRect := Bounds(labelPos.X, labelPos.Y, labelSize.cx, labelSize.cy);
+    InflateRect(labelRect, 4, 2);
+    if
+      not IsRectEmpty(prevLabelRect) and
+      IntersectRect(dummy, labelRect, prevLabelRect)
+    then
+      exit;
+    prevLabelRect := labelRect;
+
+    // Link between the label and the bar.
+    ACanvas.Pen.Color := clWhite;
+    if barTopY = 0 then
+      ACanvas.Line(xc, r.Bottom, xc, labelRect.Top)
+    else
+      ACanvas.Line(xc, r.Top - 1, xc, labelRect.Bottom - 1);
+
+    ACanvas.Pen.Color := clBlack;
+    ACanvas.Brush.Color := clYellow;
+    ACanvas.Rectangle(labelRect);
+    ACanvas.TextOut(labelPos.X, labelPos.Y, labelText);
   end;
 
-  for i := 0 to FCoordList.Count - 1 do begin
+  function PrepareBar: Boolean;
+  begin
     with PChartCoord(FCoordList.Items[i])^ do begin
       barX := x;
       barTopY := y;
@@ -1241,11 +1266,10 @@ begin
 
     with ParentChart do begin
       // Check if bar is in view port.
-      if
-        not InRange(barX, XGraphMin, XGraphMax) or
-        not FloatRangesOverlap(barBottomY, barTopY, YGraphMin, YGraphMax)
-      then
-        continue;
+      Result :=
+        InRange(barX, XGraphMin, XGraphMax) and
+        FloatRangesOverlap(barBottomY, barTopY, YGraphMin, YGraphMax);
+      if not Result then exit;
 
       // Only draw to the limits.
       if barTopY > YGraphMax then barTopY := YGraphMax;
@@ -1259,12 +1283,38 @@ begin
     // Adjust for multiple bar series.
     r.Left += myPos * barWidth - totalbarWidth div 2;
     r.Right := r.Left + barWidth;
+  end;
 
+begin
+  if FCoordList.Count = 0 then exit;
+
+  totalbarWidth :=
+    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / FCoordList.Count);
+  ExamineAllBarSeries(totalBarSeries, myPos);
+  barWidth := totalbarWidth div totalBarSeries;
+
+  ACanvas.Brush.Assign(BarBrush);
+  for i := 0 to FCoordList.Count - 1 do begin
+    if not PrepareBar then continue;
     // Draw a line instead of an empty rectangle.
     if r.Bottom = r.Top then Inc(r.Bottom);
     if r.Left = r.Right then Inc(r.Right);
+
+    if (barWidth > 2) and (r.Bottom - r.Top > 2) then
+      ACanvas.Pen.Assign(BarPen)
+    else begin
+      // Bars are too small to distinguish border from interior.
+      ACanvas.Pen.Color := BarBrush.Color;
+      ACanvas.Pen.Style := psSolid;
+    end;
+
     ACanvas.Rectangle(r);
   end;
+
+  if MarksStyle = smsNone then exit;
+  for i := 0 to FCoordList.Count - 1 do
+    if PrepareBar then
+      DrawLabel;
 end;
 
 procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
