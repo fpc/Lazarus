@@ -489,11 +489,11 @@ var
   var
     P : TPoint;
   begin
-    P.X := RoundToInt(Point.X);
-    P.Y := RoundToInt(Point.Y);
-    If (Pt.X <> P.X) or (Pt.Y <> P.Y) then begin
+    P := Point;
+    if (Pt.X <> P.X) or (Pt.Y <> P.Y) then
+    begin
       Inc(Count);
-      ReallocMem(Points,SizeOf(TPoint)*Count);
+      ReallocMem(Points, SizeOf(TPoint) * Count);
       Points[Count - 1] := P;
       Pt := P;
     end;
