@@ -2838,7 +2838,7 @@ end;
 
 procedure TCustomAnchoredDockManager.ResetBounds(Force: Boolean);
 begin
-  RaiseGDBException('TCustomAnchoredDockManager.ResetBounds TODO');
+  // TODO: 'TCustomAnchoredDockManager.ResetBounds'
 end;
 
 procedure TCustomAnchoredDockManager.SaveToStream(Stream: TStream);
