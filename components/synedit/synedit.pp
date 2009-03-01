@@ -450,7 +450,6 @@ type
     function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
-    function GetLines: TStrings; override;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     {$IFDEF SYN_LAZARUS}
@@ -584,6 +583,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure IncreaseChangeStamp;
     {$ENDIF}
+    function GetLines: TStrings; override;
     function GetViewedTextBuffer: TSynEditStrings; override;
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;

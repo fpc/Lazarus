@@ -38,7 +38,7 @@ type
 
 { TSynEditStringTabExpander }
 
-TSynEditStringTabExpander = class(TSynEditStringsLinked)
+  TSynEditStringTabExpander = class(TSynEditStringsLinked)
   private
     FTabWidth: integer;
     FIndexOfLongestLine: Integer;
@@ -51,13 +51,13 @@ TSynEditStringTabExpander = class(TSynEditStringsLinked)
     function  GetTabWidth : integer;
     procedure SetTabWidth(const AValue : integer);
     function  GetExpandedString(Index: integer): string; override;
-    function  GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     function  GetLengthOfLongestLine: integer; override;
     property LengthOfLine[Index: Integer]: integer
       read GetLengthOfLine write SetLengthOfLine;
   public
     constructor Create(ASynStringSource: TSynEditStrings);
     destructor Destroy; override;
+    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
 
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
