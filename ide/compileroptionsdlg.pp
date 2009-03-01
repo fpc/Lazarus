@@ -896,7 +896,7 @@ begin
 
     with grpSyntaxOptions do
     begin
-      Options.CStyleOperators := Checked[01];
+      Options.CStyleOperators := Checked[0];
       Options.IncludeAssertionCode := Checked[1];
       Options.AllowLabel := Checked[2];
       Options.CPPInline := Checked[3];
