@@ -182,12 +182,13 @@ type
     function GetSeriesColor: TColor; virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
 
-    function GetParentComponent: TComponent; override;
-    function HasParent: Boolean; override;
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
   public
     destructor Destroy; override;
+
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
 
     function Count: Integer; virtual; abstract;
     procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
