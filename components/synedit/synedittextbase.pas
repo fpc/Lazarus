@@ -98,6 +98,9 @@ type
 
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
+
+    function GetExpandedString(Index: integer): string; override;
+    function GetLengthOfLongestLine: integer; override;
   protected
     function GetCount: integer; override;
     function GetCapacity: integer;
@@ -332,6 +335,16 @@ procedure TSynEditStringsLinked.SetAttribute(const Owner: TClass;
                                 const Index: Integer; const AValue: Pointer);
 begin
   fSynStrings.Attribute[Owner, Index] := AValue;
+end;
+
+function TSynEditStringsLinked.GetExpandedString(Index: integer): string;
+begin
+  Result:= fSynStrings.GetExpandedString(Index);
+end;
+
+function TSynEditStringsLinked.GetLengthOfLongestLine: integer;
+begin
+  Result:= fSynStrings.GetLengthOfLongestLine;
 end;
 
 procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);
