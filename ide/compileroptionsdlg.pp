@@ -351,16 +351,16 @@ function CaptionToProcessor(const Caption: string): string;
 begin
   if System.Pos('-Op386',Caption)>0 then
     Result:='386'
-  else if System.Pos('-OpPENTIUM',Caption)>0 then
-    Result:='pentium'
-  else if System.Pos('-OpPENTIUM2',Caption)>0 then
-    Result:='pentium2'
-  else if System.Pos('-OpPENTIUM3',Caption)>0 then
-    Result:='pentium3'
-  else if System.Pos('-OpPENTIUM4',Caption)>0 then
-    Result:='pentium4'
   else if System.Pos('-OpPENTIUMM',Caption)>0 then
     Result:='pentiumm'
+  else if System.Pos('-OpPENTIUM4',Caption)>0 then
+    Result:='pentium4'
+  else if System.Pos('-OpPENTIUM3',Caption)>0 then
+    Result:='pentium3'
+  else if System.Pos('-OpPENTIUM2',Caption)>0 then
+    Result:='pentium2'
+  else if System.Pos('-OpPENTIUM',Caption)>0 then
+    Result:='pentium'
   else
     Result:='';
 end;
