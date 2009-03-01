@@ -490,7 +490,7 @@ var
     P : TPoint;
   begin
     P := Point;
-    if (Pt.X <> P.X) or (Pt.Y <> P.Y) then
+    if (Pt <> P) then
     begin
       Inc(Count);
       ReallocMem(Points, SizeOf(TPoint) * Count);
