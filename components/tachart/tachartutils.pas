@@ -104,6 +104,9 @@ function EqualPoints(const A, B: TPoint): Boolean; inline;
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
 
+// True if float ranges [A, B] and [C, D] have at least one common point.
+function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 
@@ -206,6 +209,12 @@ begin
   A := B;
   B := t;
 end;
+
+function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+begin
+  Result := (A <= D) and (C <= B);
+end;
+
 
 function PointDist(const A, B: TPoint): Integer;
 begin

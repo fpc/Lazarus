@@ -1208,87 +1208,63 @@ end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
-  XMin, XMax: Integer;
   i: Integer;
-  graphCoordTop: TChartCoord;
-  graphCoordBottom: TChartCoord;
-  topX, topY, bottomY: Integer;
+  barX, barTopY, barBottomY: Double;
   barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
-  bx1, by1, bx2, by2: Integer;
-
-  function BarInViewPort(cTop, cBottom: TChartCoord): Boolean;
-  begin //FIXME make cleaner?
-    Result :=
-      ((cTop.x >= ParentChart.XGraphMin) and (cTop.x <= ParentChart.XGraphMax)) and
-      ( ((cTop.y > ParentChart.YGraphMax) and (cBottom.y < ParentChart.YGraphMin))
-        or ( (cTop.y < ParentChart.YGraphMax) and (cTop.y > ParentChart.YGraphMin))
-        or ( (cBottom.y < ParentChart.YGraphMax) and (cBottom.y > ParentChart.YGraphMin))
-      );
-  end;
-
+  r: TRect;
 begin
-  //no elements to draw
   if FCoordList.Count = 0 then exit;
 
-  //get the limits (for the zoom) ??
-  XMin := ParentChart.XImageMin;
-  XMax := ParentChart.XImageMax;
-  if XMin > XMax then
-    Exchange(XMin, XMax);
-
-  // Draw the bars
-  ACanvas.Pen.Assign(FBarPen);
-  ACanvas.Brush.Assign(FBarBrush);
-
-  //calc the single bar width
+  // Calculate the single bar width.
   totalbarWidth :=
-    Round((FBarWidthPercent * 0.01) * ParentChart.ChartWidth / FCoordList.Count);
+    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / FCoordList.Count);
   ExamineAllBarSeries(totalBarSeries, myPos);
   barWidth := totalbarWidth div totalBarSeries;
 
+  ACanvas.Brush.Assign(BarBrush);
+  if barWidth > 2 then
+    ACanvas.Pen.Assign(BarPen)
+  else begin
+    // Bars are too narrow to distinguish border from interior.
+    ACanvas.Pen.Color := BarBrush.Color;
+    ACanvas.Pen.Style := psSolid;
+  end;
+
   for i := 0 to FCoordList.Count - 1 do begin
-    //get the top and bottom points
-    if TChartCoord(FCoordList.Items[i]^).y >= 0 then begin
-      graphCoordTop := TChartCoord(FCoordList.Items[i]^);
-      graphCoordBottom.x := graphCoordTop.x;
-      graphCoordBottom.y := 0;
-    end else begin
-      graphCoordBottom := TChartCoord(FCoordList.Items[i]^);
-      graphCoordTop.x := graphCoordBottom.x;
-      graphCoordTop.y := 0;
+    with PChartCoord(FCoordList.Items[i])^ do begin
+      barX := x;
+      barTopY := y;
     end;
+    barBottomY := 0;
+    if barTopY < barBottomY then
+      Exchange(barTopY, barBottomY);
 
-    //check if bar in view port
-    if BarInViewPort(graphCoordTop, graphCoordBottom) then begin
-      //only draw to the limits
-      if graphCoordTop.y > ParentChart.YGraphMax then graphCoordTop.y := ParentChart.YGraphMax;
-      if graphCoordBottom.y < ParentChart.YGraphMin then graphCoordBottom.y := ParentChart.YGraphMin;
+    with ParentChart do begin
+      // Check if bar is in view port.
+      if
+        not InRange(barX, XGraphMin, XGraphMax) or
+        not FloatRangesOverlap(barBottomY, barTopY, YGraphMin, YGraphMax)
+      then
+        continue;
+
+      // Only draw to the limits.
+      if barTopY > YGraphMax then barTopY := YGraphMax;
+      if barBottomY < YGraphMin then barBottomY := YGraphMin;
+
       //convert from graph to imgs coords
-      ParentChart.GraphToImage(graphCoordTop.x, graphCoordTop.y, topX, topY);
-      ParentChart.YGraphToImage(graphCoordBottom.y, bottomY);
-
-      //calc coords for bar
-{     bx1 := topX-(barWidth div 2);
-      by1 := topY;
-      bx2 := topX+(barWidth div 2);
-      by2 := bottomY;
-}
-      bx1 := topX - (totalbarWidth div 2) + myPos * barWidth;
-      by1 := topY;
-      bx2 := topX - (totalbarWidth div 2) + myPos * barWidth + barWidth;
-      by2 := bottomY;
-
-      //FIXME only draw if bar inside image coord (get a better way of doing this)
-      if (bx1 >= XMin) and (bx2 <= XMax) then
-        if by1 = by2 then begin //draw a line when y=0 FIXME (clean)
-          ACanvas.Pen.Color := FBarBrush.Color;
-          ACanvas.MoveTo(bx1, by1);
-          ACanvas.LineTo(bx2, by2);
-          ACanvas.Pen.Assign(FBarPen);
-        end else
-          ACanvas.Rectangle( bx1, by1, bx2, by2);
+      GraphToImage(barX, barTopY, r.Left, r.Top);
+      YGraphToImage(barBottomY, r.Bottom);
     end;
-  end; // for
+
+    // Adjust for multiple bar series.
+    r.Left += myPos * barWidth - totalbarWidth div 2;
+    r.Right := r.Left + barWidth;
+
+    // Draw a line instead of an empty rectangle.
+    if r.Bottom = r.Top then Inc(r.Bottom);
+    if r.Left = r.Right then Inc(r.Right);
+    ACanvas.Rectangle(r);
+  end;
 end;
 
 procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
