@@ -36,7 +36,7 @@ begin
   Assert(False, 'Trace:PropEnumProc - Start');
   Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
     [String(Str), Data, Window]));
-  RemoveProp(Window{, Str});
+  RemoveProp(Window, Str);
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
 end;

@@ -73,11 +73,6 @@ const
 function DrawState(dc:HDC ; hbr : HBRUSH ; func: DRAWSTATEPROC ; lp:LPARAM; wp:WPARAM;x,y,cx,cy:integer;flags:UINT) : boolean;
 function GetTopWindow(hWnd:HWND):HWND;
 
-function SetProp(Wnd: HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
-function GetProp(Wnd: HWND{ lpString:LPCSTR}):HANDLE;
-function RemoveProp(Wnd: HWND{; lpString:LPCSTR}):HANDLE;
-function EnumProps(Wnd: HWND;lpEnumFunc:PROPENUMPROC) : integer;
-
 // missing imagelist macros and constants
 
 const
@@ -110,43 +105,6 @@ uses
   
 const
   wPattern55AA: array[1..8] of word = ($5555, $aaaa, $5555, $aaaa, $5555, $aaaa, $5555, $aaaa);
-
-var
-  MPropertyLists: TMap;
-
-function SetProp(Wnd:HWND; {lpString:LPCSTR;} hData: HANDLE):WINBOOL;
-begin
-  Result := true;
-  if not MPropertyLists.SetData(Wnd, hData)
-  then MPropertyLists.Add(Wnd, hData);
-end;
-
-
-function GetProp(Wnd:HWND{; lpString:LPCSTR}):HANDLE;
-begin
-  Result := 0;
-  MPropertyLists.GetData(Wnd, Result)
-end;
-
-
-function RemoveProp(Wnd:HWND{; lpString:LPCSTR}):HANDLE;
-begin
-  Result := 0;
-  if MPropertyLists.GetData(Wnd, Result)
-  then MPropertyLists.Delete(Wnd);
-end;
-
-//well we only have one property for each window handle so just find and call that
-// return -1 if none found!
-function EnumProps(Wnd:HWND;lpEnumFunc:PROPENUMPROC) : integer;
-var
-  h:HANDLE;
-begin
-  h := GetProp(Wnd);
-  if h <> 0
-  then Result := integer(lpEnumFunc(Wnd,'',h))
-  else Result := -1;
-end;
 
 function GetTopWindow(hWnd:HWND):HWND;
 begin
@@ -750,12 +708,6 @@ begin
     then Pointer(AlphaBlend) := p;
   end;
   {$endif}
-  
-  {$if SizeOf(THandle) = 4}
-  MPropertyLists := TMap.Create(itu4, 4);
-  {$else}
-  MPropertyLists := TMap.Create(itu8, 8);
-  {$endif}
 end;
 
 procedure Finalize;
@@ -764,8 +716,6 @@ begin
   if kerneldllhandle <> 0
   then FreeLibrary(kerneldllhandle);
   kerneldllhandle := 0;
-  
-  FreeAndNil(MPropertyLists);
 end;
 
 initialization

@@ -102,6 +102,7 @@ function GetWinCEPlatform: TApplicationType;
 
 var
   DefaultWindowInfo: TWindowInfo;
+  WindowInfoAtom: ATOM;
   OverwriteCheck: Integer = 0;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
 
@@ -1158,7 +1159,7 @@ begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   WindowInfo^.DrawItemIndex := -1;
-  WinCEExtra.SetProp(Window, {PChar(dword(WindowInfoAtom)),} dword(WindowInfo));
+  Windows.SetProp(Window, PWideChar(DWord(WindowInfoAtom)), DWord(WindowInfo));
   Result := WindowInfo;
 end;
 
@@ -1166,15 +1167,15 @@ function DisposeWindowInfo(Window: HWND): boolean;
 var
   WindowInfo: PWindowInfo;
 begin
-  WindowInfo := PWindowInfo(WinCEExtra.GetProp(Window{, PChar(dword(WindowInfoAtom))}));
-  Result := WinCEExtra.RemoveProp(Window{, PChar(dword(WindowInfoAtom))})<>0;
+  WindowInfo := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
+  Result := Windows.RemoveProp(Window, PWideChar(DWord(WindowInfoAtom)))<>0;
   if Result then
     Dispose(WindowInfo);
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
-  Result := PWindowInfo(WinCEExtra.GetProp(Window{, PChar(dword(WindowInfoAtom))}));
+  Result := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;
@@ -1353,14 +1354,26 @@ begin
   ChangedMenus.Clear;
 end;
 
-initialization
+procedure DoInitialization;
+begin
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;
+  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TList.Create;
+end;
+
+procedure DoFinalization;
+begin
+  Windows.GlobalDeleteAtom(WindowInfoAtom);
+  WindowInfoAtom := 0;
+  ChangedMenus.Free;
+end;
+
+initialization
+  DoInitialization;
 
 finalization
-//roozbeh:unless i implement enumprop i should free my tpropertylist myself!
-  ChangedMenus.Free;
+  DoFinalization;
 
 end.
 
