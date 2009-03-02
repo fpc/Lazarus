@@ -68,6 +68,9 @@ function ColorAdjustLuma(clrRGB: TColor; n: Integer; fScale: BOOL): TColor;
 function GetHighLightColor(const Color: TColor; Luminance: Integer = 19): TColor;
 function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 
+// misc
+function NormalizeRect(const R: TRect): TRect;
+
 implementation
 
 //TODO: Check code on endianess
@@ -399,6 +402,31 @@ end;
 function GetShadowColor(const Color: TColor; Luminance: Integer): TColor;
 begin
   Result := ColorAdjustLuma(Color, Luminance, False);
+end;
+
+function NormalizeRect(const R: TRect): TRect;
+begin
+  if R.Left <= R.Right then
+  begin
+    Result.Left := R.Left;
+    Result.Right := R.Right;
+  end
+  else
+  begin
+    Result.Left := R.Right;
+    Result.Right := R.Left;
+  end;
+
+  if R.Top <= R.Bottom then
+  begin
+    Result.Top := R.Top;
+    Result.Bottom := R.Bottom;
+  end
+  else
+  begin
+    Result.Top := R.Bottom;
+    Result.Bottom := R.Top;
+  end;
 end;
 
 procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomColor: TColor);
