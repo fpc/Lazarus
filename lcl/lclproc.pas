@@ -1654,19 +1654,25 @@ end;
 procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
   var Left, Top, Width, Height: integer);
 begin
-  if X1<=X2 then begin
-    Left:=X1;
-    Width:=X2 - X1;
-  end else begin
-    Left:=X2;
-    Width:=X1 - X2;
+  if X1 <= X2 then 
+   begin
+    Left := X1;
+    Width := X2 - X1;
+  end 
+  else 
+  begin
+    Left := X2;
+    Width := X1 - X2;
   end;
-  if Y1<=Y2 then begin
-    Top:=Y1;
-    Height:=Y2 - Y1;
-  end else begin
-    Top:=Y2;
-    Height:=Y1 - Y2;
+  if Y1 <= Y2 then 
+  begin
+    Top := Y1;
+    Height := Y2 - Y1;
+  end 
+  else 
+  begin
+    Top := Y2;
+    Height := Y1 - Y2;
   end;
 end;
 

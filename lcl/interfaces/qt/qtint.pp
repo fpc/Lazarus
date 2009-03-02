@@ -46,7 +46,7 @@ uses
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
   Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes,
+  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, GraphUtil, Themes,
   Arrow, CheckLst,
   // WS
   qtproc;

@@ -3873,17 +3873,19 @@ end;
   the current pen and filled by using the current brush.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
   {$endif}
 
-  Result := False;
+  if not IsValidDC(DC) then Exit(False);
 
-  if not IsValidDC(DC) then Exit;
+  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if IsRectEmpty(R) then Exit(True);
 
-  TQtDeviceContext(DC).drawRect(X1, Y1, X2 - X1 - 1, Y2 - Y1 - 1);
-
+  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
   Result := True;
 end;
 

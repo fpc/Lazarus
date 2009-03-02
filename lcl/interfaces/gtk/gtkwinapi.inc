@@ -7492,7 +7492,8 @@ begin
   Assert(False, Format('trace:> [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   if not IsValidDC(DC) then Exit(False);
 
-  CalculateLeftTopWidthHeight(X1,Y1,X2,Y2,Left,Top,Width,Height);
+  CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
+  if (Width = 0) or (Height = 0) then Exit(True);
   // X2, Y2 is not part of the rectangle
   dec(Width);
   dec(Height);
@@ -7520,8 +7521,8 @@ begin
   DevCtx.SelectPenProps;
   Result := dcfPenSelected in DevCtx.Flags;
   if Result and not DevCtx.IsNullPen
-  then gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0, Left+DCOrigin.X,
-                          Top+DCOrigin.Y, Width, Height);
+  then gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
+                          Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   
