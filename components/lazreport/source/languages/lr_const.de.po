@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"PO-Revision-Date: 2008-07-12 11:34+0100\n"
+"PO-Revision-Date: 2009-03-02 21:08+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -301,7 +301,7 @@ msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<String>)/Gibt die Länge von <String> zurück."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -361,7 +361,7 @@ msgstr "UPPERCASE(<String>)/Wandert die Zeichen in <String> in Großbuchstaben u
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Date>)/Ergubt das Jahr für <Date>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
