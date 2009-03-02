@@ -156,6 +156,7 @@ type
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1183,6 +1184,16 @@ end;
 procedure TBarSeries.SetSeriesColor(const AValue: TColor);
 begin
   FBarBrush.Color := AValue;
+end;
+
+procedure TBarSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+var
+  h: Integer;
+begin
+  if MarksStyle = smsNone then exit;
+  h := ACanvas.TextHeight('0') + 10 + 2 * 2 + 4;
+  AMargins.Top := Max(AMargins.Top, h);
+  AMargins.Bottom := Max(AMargins.Bottom, h);
 end;
 
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
