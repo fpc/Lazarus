@@ -24,9 +24,7 @@ Authors: Luнs Rodrigues, Philippe Martinole, Alexander Klenin
 
 unit TAChartUtils;
 
-{$IFDEF fpc}
-{$MODE DELPHI}{$H+}
-{$ENDIF}
+{$H+}
 
 interface
 
