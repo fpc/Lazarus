@@ -3996,7 +3996,9 @@ begin
   {$Endif}
 end;
 
-function TQtWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+function TQtWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+var
+  R: TRect;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -4004,10 +4006,13 @@ begin
     {$ifdef VerboseQTWinAPI}
     WriteLn('Trace:< [WinAPI RoundRect] DC Invalid, result=', result);
     {$Endif}
-    exit;
+    Exit;
   end;
 
-  TQtDeviceContext(Dc).drawRoundRect(X1, Y1, X2 - X1 - 1, Y2 - Y1 - 1, RX, RY);
+  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if IsRectEmpty(R) then Exit(True);
+
+  TQtDeviceContext(Dc).drawRoundRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, RX, RY);
   Result := True;
 end;
 {------------------------------------------------------------------------------

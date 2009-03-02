@@ -1282,10 +1282,7 @@ var
   end;
   
 begin
-  Result := False;
-
-  Dec(X2);
-  Dec(Y2);
+  Result := True;
 
   if X2 < X1 then
   begin
@@ -1301,7 +1298,10 @@ begin
     Y2 := T;
   end;
 
-  if (X2 - X1 < 0) or (Y2 - Y1 < 0) then Exit;
+  if (X2 - X1 <= 0) or (Y2 - Y1 <= 0) then Exit;
+
+  Dec(X2);
+  Dec(Y2);
 
   if not ((RX <= 0) or (RY <= 0)) then
   begin
@@ -1324,8 +1324,6 @@ begin
   end
   else
     Rectangle(DC, X1, Y1, X2, Y2);
-
-  Result := True;
 end;
 
 function TWidgetSet.SaveDC(DC: HDC) : Integer;
