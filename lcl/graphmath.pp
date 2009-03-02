@@ -277,8 +277,8 @@ end;
 Operator := (Value : TFloatPoint) : TPoint;
 begin
   With Result do begin
-    X := LCLProc.RoundToInt(Value.X);
-    Y := LCLProc.RoundToInt(Value.Y);
+    X := Trunc(SimpleRoundTo(Value.X, 0));
+    Y := Trunc(SimpleRoundTo(Value.Y, 0));
   end;
 end;
 
