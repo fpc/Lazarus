@@ -11432,12 +11432,12 @@ begin
   {$IFDEF VerboseFindSourceFile}
   writeln('TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"');
   {$ENDIF}
-  if FilenameIsAbsolute(AFilename) then begin
-    if FileExistsUTF8(AFilename) then
-      Result:=AFilename
-    else
-      Result:='';
-    exit;
+  if FilenameIsAbsolute(AFilename) then
+  begin
+    Result := SwitchPathDelims(AFilename, pdsSystem);
+    if not FileExistsUTF8(Result) then
+      Result := '';
+    Exit;
   end;
 
   AlreadySearchedPaths:='';
