@@ -171,6 +171,7 @@ type
     function GetLegendCount: Integer; virtual; abstract;
     function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
     function IsInLegend: Boolean; virtual; abstract;
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure UpdateBounds(
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
       virtual; abstract;
@@ -264,8 +265,9 @@ type
     FBackColor: TColor;
 
     FAxisVisible: Boolean;
-    
-    procedure CalculateTransformationCoeffs;
+
+    function GetMargins(ACanvas: TCanvas): TRect;
+    procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure PrepareXorPen;
     procedure SetAutoUpdateXMin(Value: Boolean);
     procedure SetAutoUpdateXMax(Value: Boolean);
@@ -853,13 +855,13 @@ begin
   Canvas.Pen.Width := 1;
 end;
 
-procedure TChart.CalculateTransformationCoeffs;
+procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
 var
   lo, hi: Integer;
 begin
   if FXGraphMax <> FXGraphMin then begin
-    lo := XImageMin;
-    hi := XImageMax;
+    lo := XImageMin + AMargin.Left;
+    hi := XImageMax - AMargin.Right;
     if BottomAxis.Inverted then
       Exchange(lo, hi);
     FScale.X := (hi - lo) / (FXGraphMax - FXGraphMin);
@@ -870,8 +872,8 @@ begin
     FOffset.X := 0;
   end;
   if FYGraphMax <> FYGraphMin then begin
-    lo := YImageMin;
-    hi := YImageMax;
+    lo := YImageMin - AMargin.Bottom;
+    hi := YImageMax + AMargin.Top;
     if LeftAxis.Inverted then
       Exchange(lo, hi);
     FScale.Y := (hi - lo) / (FYGraphMax - FYGraphMin);
@@ -1086,7 +1088,7 @@ begin
       XImageMax := ARect.Right - 10 - GetLegendWidth(ACanvas);
     end;
 
-    CalculateTransformationCoeffs;
+    CalculateTransformationCoeffs(GetMargins(ACanvas));
   end;
 
   // Background
@@ -1273,6 +1275,15 @@ begin
     Result += 20 + 10;
 end;
 
+function TChart.GetMargins(ACanvas: TCanvas): TRect;
+var
+  i: Integer;
+begin
+  Result := Rect(0, 0, 0, 0);
+  for i := 0 to SeriesCount - 1 do
+    Series[i].UpdateMargins(ACanvas, Result);
+end;
+
 procedure TChart.SetGraphBrush(Value: TBrush);
 begin
   FGraphBrush.Assign(Value);
@@ -1394,7 +1405,8 @@ begin
       if FAutoUpdateYMax then FYGraphMax := 0;
     end;
   end;
-  CalculateTransformationCoeffs;
+
+  CalculateTransformationCoeffs(GetMargins(ACanvas));
   Clean(ACanvas, ARect);
   DrawAxis(ACanvas, ARect);
   DisplaySeries(ACanvas);
@@ -1835,6 +1847,12 @@ procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
 begin
   if not (csLoading in ComponentState) then
     (AParent as TChart).AddSeries(Self);
+end;
+
+procedure TBasicChartSeries.UpdateMargins(
+  ACanvas: TCanvas; var AMargins: TRect);
+begin
+  // nothing
 end;
 
 procedure Register;
