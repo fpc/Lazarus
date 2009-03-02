@@ -1824,14 +1824,15 @@ begin
     VK_DELETE:
       begin
         doOnKeyDown;
-        if (Key<>0) and (ssCtrl in Shift) and GridCanModify then
+        if (Key<>0) and (ssCtrl in Shift) and GridCanModify and
+            not FDataLink.DataSet.IsEmpty  then begin
           if not (dgConfirmDelete in Options) or
-            (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>
-              mrCancel)
+            (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>mrCancel)
           then begin
             doDelete;
             key := 0;
           end;
+        end;
       end;
 
     VK_DOWN:
