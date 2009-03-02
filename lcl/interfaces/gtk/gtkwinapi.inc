@@ -3858,31 +3858,17 @@ end;
   Use Ellipse to draw a filled circle or ellipse.
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.Ellipse(DC: HDC;
-  x1,y1,x2,y2: Integer): Boolean;
+function TGtkWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-  
-  x,y,width,height: integer;
+  Left, Top, Width, Height: Integer;
   DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
-  
-  if x1<x2 then begin
-    x:=x1;
-    width:=x2-x1;
-  end else begin
-    x:=x2;
-    width:=x1-x2;
-  end;
-  if y1<y2 then begin
-    y:=y1;
-    height:=y2-y1;
-  end else begin
-    y:=y2;
-    height:=y1-y2;
-  end;
+
+  CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
+  if (Width = 0) or (Height = 0) then Exit;
 
   // first draw interior in brush color
   DCOrigin := DevCtx.Offset;
@@ -3894,8 +3880,8 @@ begin
   If not DevCtx.IsNullBrush
   then begin
     DevCtx.SelectBrushProps;
-    gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-               0, 360 shl 6);
+    gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 1,
+                 Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
   end;
 
   // Draw outline
@@ -3906,8 +3892,8 @@ begin
     Result := True;
     if not DevCtx.IsNullPen
     then begin
-      gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-                   0, 360 shl 6);
+      gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 0,
+                   Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
     end;
   end
   else Result := False;

@@ -1257,14 +1257,15 @@ end;
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+function TQtWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+var
+  R: TRect;
 begin
-  Result := False;
+  if not IsValidDC(DC) then Exit(False);
+  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if IsRectEmpty(R) then Exit(True);
 
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).drawEllipse(x1, y1, X2 - X1 - 1, Y2 - Y1 - 1);
-
+  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
   Result := True;
 end;
 
