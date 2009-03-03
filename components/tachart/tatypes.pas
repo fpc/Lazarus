@@ -45,20 +45,31 @@ type
 
   TLegendAlignment = (laLeft, laRight, laTop, laBottom);
 
-  TChartLegend = class(TPersistent)
+  { TChartElement }
+
+  TChartElement = class(TPersistent)
+  private
+    FVisible: Boolean;
+    procedure SetVisible(const AValue: Boolean);
+  protected
+    FOwner: TCustomChart;
+    procedure StyleChanged(Sender: TObject);
+  public
+    constructor Create(AOwner: TCustomChart);
+    procedure Assign(Source: TPersistent); override;
+
+    property Visible: Boolean read FVisible write SetVisible;
+  end;
+
+  TChartLegend = class(TChartElement)
   private
     FAlignment: TLegendAlignment;
     FFont: TFont;
     FFrame: TChartPen;
-    FOwner: TCustomChart;
-    FVisible: Boolean;
 
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
-    procedure SetVisible(AValue: Boolean);
-
-    procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -68,27 +79,22 @@ type
     property Alignment: TLegendAlignment read FAlignment write SetAlignment;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible;
   end;
 
-  TChartTitle = class(TPersistent)
+  TChartTitle = class(TChartElement)
   private
     FAlignment: TAlignment;
     FBrush: TBrush;
     FFont: TFont;
     FFrame: TChartPen;
-    FOwner: TCustomChart;
     FText: TStrings;
-    FVisible: Boolean;
 
     procedure SetAlignment(AValue: TAlignment);
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
     procedure SetText(AValue: TStrings);
-    procedure SetVisible(AValue: Boolean);
-
-    procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -100,21 +106,18 @@ type
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property Text: TStrings read FText write SetText;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible;
   end;
 
-  TChartAxisTitle = class(TPersistent)
+  TChartAxisTitle = class(TChartElement)
   private
     FAngle: Integer;
     FCaption: String;
     FFont: TFont;
-    FOwner: TCustomChart;
 
     procedure SetAngle(AValue: Integer);
     procedure SetCaption(AValue: String);
     procedure SetFont(AValue: TFont);
-
-    procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -126,20 +129,15 @@ type
     property Font: TFont read FFont write SetFont;
   end;
 
-  TChartAxis = class(TPersistent)
+  TChartAxis = class(TChartElement)
   private
     FGrid: TChartPen;
     FInverted: Boolean;
-    FOwner: TCustomChart;
     FTitle: TChartAxisTitle;
-    FVisible: Boolean;
 
     procedure SetGrid(AValue: TChartPen);
     procedure SetInverted(AValue: Boolean);
     procedure SetTitle(AValue: TChartAxisTitle);
-    procedure SetVisible(AValue: Boolean);
-
-    procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -147,10 +145,10 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property Grid: TChartPen read FGrid write SetGrid;
-    //Inverts the axis scale from increasing to decreasing
+    // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted;
     property Title: TChartAxisTitle read FTitle write SetTitle;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible;
   end;
 
 implementation
@@ -171,6 +169,33 @@ begin
   if Assigned(OnChange) then OnChange(Self);
 end;
 
+{ TChartElement }
+
+procedure TChartElement.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TChartElement then
+    Self.FVisible := TChartElement(Source).FVisible;
+end;
+
+constructor TChartElement.Create(AOwner: TCustomChart);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+procedure TChartElement.SetVisible(const AValue: Boolean);
+begin
+  if FVisible = AValue then exit;
+  FVisible := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartElement.StyleChanged(Sender: TObject);
+begin
+  FOwner.Invalidate;
+end;
+
 { TChartLegend }
 
 procedure TChartLegend.Assign(Source: TPersistent);
@@ -186,9 +211,8 @@ end;
 
 constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
-  inherited create;
+  inherited Create(AOwner);
   FAlignment := laRight;
-  FOwner := AOwner;
   FVisible := false;
 
   FFont := TFont.Create;
@@ -207,6 +231,7 @@ end;
 
 procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);
 begin
+  if FAlignment = AValue then exit;
   FAlignment := AValue;
   StyleChanged(Self);
 end;
@@ -223,28 +248,17 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartLegend.SetVisible(AValue: Boolean);
-begin
-  FVisible := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartLegend.StyleChanged(Sender: TObject);
-begin
-  FOwner.Invalidate;
-end;
-
 { TChartTitle }
 
 procedure TChartTitle.Assign(Source: TPersistent);
 begin
   if Source is TChartTitle then
-    with TChartLegend(Source) do begin
+    with TChartTitle(Source) do begin
+      Self.FAlignment := Alignment;
       Self.FBrush.Assign(Brush);
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
       Self.FText.Assign(Text);
-      Self.FVisible := FVisible;
    end;
 
   inherited Assign(Source);
@@ -252,8 +266,7 @@ end;
 
 constructor TChartTitle.Create(AOwner: TCustomChart);
 begin
-  inherited Create;
-  FOwner := AOwner;
+  inherited Create(AOwner);
 
   FBrush := TBrush.Create;
   FBrush.Color := FOwner.Color;
@@ -307,17 +320,6 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartTitle.SetVisible(AValue: Boolean);
-begin
-  FVisible := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartTitle.StyleChanged(Sender: TObject);
-begin
-  FOwner.Invalidate;
-end;
-
 { TChartAxisTitle }
 
 procedure TChartAxisTitle.Assign(Source: TPersistent);
@@ -333,8 +335,7 @@ end;
 
 constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
-  inherited Create;
-  FOwner := AOwner;
+  inherited Create(AOwner);
   FFont := TFont.Create;
   FFont.OnChange := @StyleChanged;
 end;
@@ -363,27 +364,22 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxisTitle.StyleChanged(Sender: TObject);
-begin
-  FOwner.Invalidate;
-end;
-
 { TChartAxis }
 
 procedure TChartAxis.Assign(Source: TPersistent);
 begin
   if Source is TChartAxis then
     with TChartAxis(Source) do begin
+      FGrid.Assign(Grid);
+      FInverted := Inverted;
       FTitle.Assign(Title);
-      FVisible := Visible;
     end;
   inherited Assign(Source);
 end;
 
 constructor TChartAxis.Create(AOwner: TCustomChart);
 begin
-  inherited Create;
-  FOwner := AOwner;
+  inherited Create(AOwner);
   FTitle := TChartAxisTitle.Create(AOwner);
   FGrid := TChartPen.Create;
   FGrid.OnChange := @StyleChanged;
@@ -412,17 +408,6 @@ procedure TChartAxis.SetTitle(AValue: TChartAxisTitle);
 begin
   FTitle.Assign(AValue);
   StyleChanged(Self);
-end;
-
-procedure TChartAxis.SetVisible(AValue: boolean);
-begin
-  FVisible := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartAxis.StyleChanged(Sender: TObject);
-begin
-  FOwner.Invalidate;
 end;
 
 end.
