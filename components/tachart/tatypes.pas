@@ -28,7 +28,7 @@ unit TATypes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls,
+  Classes, SysUtils, Graphics, Controls, FPCanvas,
   TAChartUtils;
 
 type
@@ -46,6 +46,8 @@ type
 
   TLegendAlignment = (laLeft, laRight, laTop, laBottom);
 
+  TFPCanvasHelperClass = class of TFPCanvasHelper;
+
   { TChartElement }
 
   TChartElement = class(TPersistent)
@@ -55,6 +57,8 @@ type
   protected
     FOwner: TCustomChart;
     procedure StyleChanged(Sender: TObject);
+    procedure InitHelper(
+      var AResult: TFPCanvasHelper; AClass: TFPCanvasHelperClass);
   public
     constructor Create(AOwner: TCustomChart);
     procedure Assign(Source: TPersistent); override;
@@ -241,6 +245,13 @@ begin
   FOwner := AOwner;
 end;
 
+procedure TChartElement.InitHelper(
+  var AResult: TFPCanvasHelper; AClass: TFPCanvasHelperClass);
+begin
+  AResult := AClass.Create;
+  AResult.OnChange := @StyleChanged;
+end;
+
 procedure TChartElement.SetOwner(AOwner: TCustomChart);
 begin
   FOwner := AOwner;
@@ -278,10 +289,8 @@ begin
   FAlignment := laRight;
   FVisible := false;
 
-  FFont := TFont.Create;
-  FFont.OnChange := @StyleChanged;
-  FFrame := TChartPen.Create;
-  FFrame.OnChange := @StyleChanged;
+  InitHelper(FFont, TFont);
+  InitHelper(FFrame, TChartPen);
 end;
 
 destructor TChartLegend.Destroy;
@@ -331,14 +340,11 @@ constructor TChartTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
 
-  FBrush := TBrush.Create;
+  InitHelper(FBrush, TBrush);
   FBrush.Color := FOwner.Color;
-  FBrush.OnChange := @StyleChanged;
-  FFont := TFont.Create;
+  InitHelper(FFont, TFont);
   FFont.Color := clBlue;
-  FFont.OnChange := @StyleChanged;
-  FFrame := TChartPen.Create;
-  FFrame.OnChange := @StyleChanged;
+  InitHelper(FFrame, TChartPen);
   FText := TStringList.Create;
 end;
 
@@ -399,8 +405,7 @@ end;
 constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FFont := TFont.Create;
-  FFont.OnChange := @StyleChanged;
+  InitHelper(FFont, TFont);
 end;
 
 destructor TChartAxisTitle.Destroy;
@@ -444,8 +449,7 @@ constructor TChartAxis.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FTitle := TChartAxisTitle.Create(AOwner);
-  FGrid := TChartPen.Create;
-  FGrid.OnChange := @StyleChanged;
+  InitHelper(FGrid, TChartPen);
 end;
 
 destructor TChartAxis.Destroy;
@@ -494,15 +498,11 @@ constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := 20;
-  FFrame := TChartPen.Create;
-  FFrame.OnChange := @StyleChanged;
-  FLabelBrush := TChartLabelBrush.Create;
-  FLabelBrush.OnChange := @StyleChanged;
+  InitHelper(FFrame, TChartPen);
+  InitHelper(FLabelBrush, TChartLabelBrush);
   FLabelBrush.Color := clYellow;
-  FLabelFont := TFont.Create;
-  FLabelFont.OnChange := @StyleChanged;
-  FLinkPen := TChartLinkPen.Create;
-  FLinkPen.OnChange := @StyleChanged;
+  InitHelper(FLabelFont, TFont);
+  InitHelper(FLinkPen, TChartLinkPen);
   FLinkPen.Color := clWhite;
   FStyle := smsNone;
   FVisible := true;
