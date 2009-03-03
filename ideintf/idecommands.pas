@@ -156,7 +156,7 @@ const
   ecQuit                    = ecFirstLazarus + 214;
 
   // IDE navigation
-  ecJumpToEditor            = ecFirstLazarus + 300;
+  // ecJumpToEditor            = ecFirstLazarus + 300; // empty code replace it with any if you want
   ecToggleFormUnit          = ecFirstLazarus + 301;
   ecToggleObjectInsp        = ecFirstLazarus + 302;
   ecToggleSourceEditor      = ecFirstLazarus + 303;

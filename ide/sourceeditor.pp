@@ -6094,12 +6094,6 @@ begin
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);
 
-  ecJumpToEditor:
-    Begin
-      // This is NOT implemented yet
-
-    end;
-
   ecGotoEditor1..ecGotoEditor9,ecGotoEditor0:
     if Notebook.PageCount>Command-ecGotoEditor1 then
       Notebook.PageIndex:=Command-ecGotoEditor1;

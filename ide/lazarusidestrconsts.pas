@@ -1910,7 +1910,6 @@ resourcestring
   srkmecToggleMarker          = 'Toggle Marker %d';
 
   // sourcenotebook
-  srkmecJumpToEditor          = 'Focus to source editor';
   lisKMToggleBetweenUnitAndForm = 'Toggle between Unit and Form';
   srkmecNextEditor            = 'Go to next editor';
   srkmecPrevEditor            = 'Go to prior editor';

@@ -455,7 +455,6 @@ begin
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -787,7 +786,6 @@ begin
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1307,7 +1305,6 @@ begin
   ecViewForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F,[ssMeta,ssAlt],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1574,7 +1571,6 @@ begin
     ecToggleMarker9           : Result:= Format(srkmecToggleMarker,[cmd-ecToggleMarker0]);
 
     // sourcenotebook
-    ecJumpToEditor            : Result:= srkmecJumpToEditor;
     ecNextEditor              : Result:= srkmecNextEditor;
     ecPrevEditor              : Result:= srkmecPrevEditor;
     ecMoveEditorLeft          : Result:= srkmecMoveEditorLeft;
@@ -2222,7 +2218,6 @@ begin
   AddDefault(C, 'View Unit Dependencies', lisMenuViewUnitDependencies,
     ecViewUnitDependencies);
   AddDefault(C, 'View Unit Info', lisKMViewUnitInfo, ecViewUnitInfo);
-  AddDefault(C, 'Focus to source editor', srkmecJumpToEditor, ecJumpToEditor);
   AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm,
     ecToggleFormUnit);
   AddDefault(C, 'View Anchor Editor', lisMenuViewAnchorEditor,
