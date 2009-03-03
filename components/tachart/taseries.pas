@@ -29,7 +29,8 @@ unit TASeries;
 interface
 
 uses
-  Classes, Dialogs, Graphics, sysutils, TAGraph, TAChartUtils;
+  Classes, Dialogs, Graphics, sysutils,
+  TAGraph, TAChartUtils, TATypes;
 
 type
 
