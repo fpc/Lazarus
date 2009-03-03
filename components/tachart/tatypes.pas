@@ -158,8 +158,11 @@ type
 
   TChartMarks = class(TChartElement)
   private
+    FDistance: Integer;
     FFormat: String;
     FStyle: TSeriesMarksStyle;
+
+    procedure SetDistance(const AValue: Integer);
     procedure SetFormat(const AValue: String);
     procedure SetStyle(const AValue: TSeriesMarksStyle);
   public
@@ -168,6 +171,8 @@ type
     procedure Assign(Source: TPersistent); override;
     function IsMarkLabelsVisible: Boolean;
   published
+    // Distance between series point and label.
+    property Distance: Integer read FDistance write SetDistance default 20;
     property Format: String read FFormat write SetFormat;
     property Style: TSeriesMarksStyle
       read FStyle write SetStyle default smsNone;
@@ -446,6 +451,7 @@ begin
   inherited Assign(Source);
   if Source is TChartMarks then
     with TChartMarks(Source) do begin
+      Self.FDistance := FDistance;
       Self.FFormat := FFormat;
       Self.FStyle := FStyle;
     end;
@@ -454,6 +460,7 @@ end;
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDistance := 20;
   FStyle := smsNone;
   FVisible := true;
 end;
@@ -461,6 +468,13 @@ end;
 function TChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
+end;
+
+procedure TChartMarks.SetDistance(const AValue: Integer);
+begin
+  if FDistance = AValue then exit;
+  FDistance := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartMarks.SetFormat(const AValue: String);

@@ -1181,7 +1181,7 @@ var
   h: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-  h := ACanvas.TextHeight('0') + 10 + 2 * 2 + 4;
+  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * 2 + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
 end;
@@ -1215,8 +1215,6 @@ var
   prevLabelRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 
   procedure DrawLabel;
-  const
-    DIST = 10;
   var
     labelRect: TRect;
     dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
@@ -1231,8 +1229,10 @@ var
     labelSize := ACanvas.TextExtent(labelText);
     xc := (r.Left + r.Right) div 2;
     labelPos.X := xc - labelSize.cx div 2;
-    labelPos.Y :=
-      ifthen(barTopY = 0, r.Bottom + DIST, r.Top - DIST - labelSize.cy);
+    if barTopY = 0 then
+      labelPos.Y := r.Bottom + Marks.Distance
+    else
+      labelPos.Y := r.Top - Marks.Distance - labelSize.cy;
     labelRect := Bounds(labelPos.X, labelPos.Y, labelSize.cx, labelSize.cy);
     InflateRect(labelRect, 4, 2);
     if
@@ -1389,7 +1389,6 @@ var
   a, b, center: TPoint;
 const
   MARGIN = 8;
-  MARKS_DIST = 32;
   MarkYMargin = 2;
   MarkXMargin = 4;
 begin
@@ -1415,7 +1414,7 @@ begin
       YImageMin - center.y - MaxIntValue(labelHeights));
   end;
   if Marks.IsMarkLabelsVisible then
-    radius -= MARKS_DIST;
+    radius -= Marks.Distance;
   radius := Max(radius - MARGIN, 0);
 
   prevAngle := 0;
@@ -1436,7 +1435,7 @@ begin
     if not Marks.IsMarkLabelsVisible then continue;
 
     a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
-    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + MARKS_DIST);
+    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + Marks.Distance);
 
     // line from mark to pie
     ACanvas.Pen.Color := LabelToPieLinkColor;
@@ -1454,7 +1453,6 @@ begin
       b.x - MarkXMargin, b.y - MarkYMargin,
       b.x + labelWidths[i] + MarkXMargin, b.y + labelHeights[i] + MarkYMargin);
     ACanvas.TextOut(b.x, b.y, labelTexts[i]);
-
   end;
 end;
 
