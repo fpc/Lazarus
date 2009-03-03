@@ -28,7 +28,8 @@ unit TATypes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls;
+  Classes, SysUtils, Graphics, Controls,
+  TAChartUtils;
 
 type
   TCustomChart = class(TCustomControl);
@@ -57,6 +58,8 @@ type
   public
     constructor Create(AOwner: TCustomChart);
     procedure Assign(Source: TPersistent); override;
+
+    procedure SetOwner(AOwner: TCustomChart);
 
     property Visible: Boolean read FVisible write SetVisible;
   end;
@@ -151,6 +154,26 @@ type
     property Visible;
   end;
 
+  { TChartMarks }
+
+  TChartMarks = class(TChartElement)
+  private
+    FFormat: String;
+    FStyle: TSeriesMarksStyle;
+    procedure SetFormat(const AValue: String);
+    procedure SetStyle(const AValue: TSeriesMarksStyle);
+  public
+    constructor Create(AOwner: TCustomChart);
+
+    procedure Assign(Source: TPersistent); override;
+    function IsMarkLabelsVisible: Boolean;
+  published
+    property Format: String read FFormat write SetFormat;
+    property Style: TSeriesMarksStyle
+      read FStyle write SetStyle default smsNone;
+    property Visible default true;
+  end;
+
 implementation
 
 { TChartPen }
@@ -184,6 +207,11 @@ begin
   FOwner := AOwner;
 end;
 
+procedure TChartElement.SetOwner(AOwner: TCustomChart);
+begin
+  FOwner := AOwner;
+end;
+
 procedure TChartElement.SetVisible(const AValue: Boolean);
 begin
   if FVisible = AValue then exit;
@@ -193,7 +221,8 @@ end;
 
 procedure TChartElement.StyleChanged(Sender: TObject);
 begin
-  FOwner.Invalidate;
+  if FOwner <> nil then
+    FOwner.Invalidate;
 end;
 
 { TChartLegend }
@@ -407,6 +436,49 @@ end;
 procedure TChartAxis.SetTitle(AValue: TChartAxisTitle);
 begin
   FTitle.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+{ TChartMarks }
+
+procedure TChartMarks.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TChartMarks then
+    with TChartMarks(Source) do begin
+      Self.FFormat := FFormat;
+      Self.FStyle := FStyle;
+    end;
+end;
+
+constructor TChartMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FStyle := smsNone;
+  FVisible := true;
+end;
+
+function TChartMarks.IsMarkLabelsVisible: Boolean;
+begin
+  Result := Visible and (Style <> smsNone) and (Format <> '');
+end;
+
+procedure TChartMarks.SetFormat(const AValue: String);
+begin
+  if FFormat = AValue then exit;
+  FFormat := AValue;
+  FStyle := High(FStyle);
+  while (FStyle > smsCustom) and (SERIES_MARK_FORMATS[FStyle] <> AValue) do
+    Dec(FStyle);
+  StyleChanged(Self);
+end;
+
+procedure TChartMarks.SetStyle(const AValue: TSeriesMarksStyle);
+begin
+  if FStyle = AValue then exit;
+  FStyle := AValue;
+  if FStyle <> smsCustom then
+    FFormat := SERIES_MARK_FORMATS[FStyle];
   StyleChanged(Self);
 end;
 

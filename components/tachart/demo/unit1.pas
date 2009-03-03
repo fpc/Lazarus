@@ -99,7 +99,7 @@ var
   i: integer;
 begin
   if FBar = nil then InitBar;
-  FBar.MarksStyle := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
+  FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FBar.AddXY(x, y, '', clRed);
     X := X + 1;
@@ -127,7 +127,7 @@ var
   i: integer;
 begin
   if FPie = nil then InitPie;
-  FPie.MarksStyle := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
+  FPie.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
     FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);

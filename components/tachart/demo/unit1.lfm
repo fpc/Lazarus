@@ -15,16 +15,16 @@ object Form1: TForm1
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
     Legend.Frame.Cosmetic = True
-    Title.Visible = True
+    Title.Alignment = taCenter
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
     Title.Frame.Cosmetic = True
-    Title.Alignment = taCenter
     Title.Text.Strings = (
       'Centered Chart Title'
     )
+    Title.Visible = True
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
     Foot.Font.Height = -13
@@ -34,21 +34,21 @@ object Form1: TForm1
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
-    LeftAxis.Visible = True
-    LeftAxis.Title.Angle = 90
-    LeftAxis.Title.Font.Height = -11
-    LeftAxis.Title.Font.Name = 'MS Sans Serif'
     LeftAxis.Grid.Color = clGray
     LeftAxis.Grid.Cosmetic = True
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
-    BottomAxis.Visible = True
-    BottomAxis.Title.Font.Height = -11
-    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    LeftAxis.Title.Angle = 90
+    LeftAxis.Title.Font.Height = -11
+    LeftAxis.Title.Font.Name = 'MS Sans Serif'
+    LeftAxis.Visible = True
     BottomAxis.Grid.Color = clGray
     BottomAxis.Grid.Cosmetic = True
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
+    BottomAxis.Title.Font.Height = -11
+    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    BottomAxis.Visible = True
     Frame.Cosmetic = True
     Frame.Visible = True
     BackColor = clBtnFace

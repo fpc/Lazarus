@@ -62,7 +62,7 @@ type
     procedure UpdateBounds(
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
       virtual; abstract;
-    procedure AfterAdd; virtual;
+    procedure AfterAdd; virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -1421,11 +1421,6 @@ begin
 end;
 
 { TBasicChartSeries }
-
-procedure TBasicChartSeries.AfterAdd;
-begin
-  // nothing
-end;
 
 destructor TBasicChartSeries.Destroy;
 begin

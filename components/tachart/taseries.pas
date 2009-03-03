@@ -51,24 +51,23 @@ type
 
   TChartSeries = class(TBasicChartSeries)
   private
-    FMarksFormat: String;
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
     FCoordList: TList;
     FActive: Boolean;
-    FMarksStyle: TSeriesMarksStyle;
+    FMarks: TChartMarks;
     FShowInLegend: Boolean;
     FValuesTotal: Double;
     FValuesTotalValid: Boolean;
 
     function GetXMinVal: Integer;
     procedure SetActive(Value: Boolean);
-    procedure SetMarksFormat(const AValue: String);
-    procedure SetMarksStyle(AValue: TSeriesMarksStyle);
+    procedure SetMarks(const AValue: TChartMarks);
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
   protected
+    procedure AfterAdd; override;
     procedure StyleChanged(Sender: TObject);
     property Coord: TList read FCoordList;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
@@ -99,9 +98,7 @@ type
 
   published
     property Active: Boolean read FActive write SetActive default true;
-    property MarksFormat: String read FMarksFormat write SetMarksFormat;
-    property MarksStyle: TSeriesMarksStyle
-      read FMarksStyle write SetMarksStyle default smsNone;
+    property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title;
@@ -343,8 +340,8 @@ begin
 
   FActive := true;
   FShowInLegend := true;
-  FMarksStyle := smsNone;
   FCoordList := TList.Create;
+  FMarks := TChartMarks.Create(FChart);
 end;
 
 destructor TChartSeries.Destroy;
@@ -354,6 +351,7 @@ begin
   for i := 0 to FCoordList.Count - 1 do
     Dispose(PChartCoord(FCoordList.Items[i]));
   FCoordList.Free;
+  FMarks.Free;
   UpdateParentChart;
 
   inherited Destroy;
@@ -380,7 +378,7 @@ begin
       percent := 0
     else
       percent := y / total * 100;
-    Result := Format(FMarksFormat, [y, percent, Text, total, x]);
+    Result := Format(FMarks.Format, [y, percent, Text, total, x]);
   end;
 end;
 
@@ -458,6 +456,11 @@ begin
     FValuesTotal += Y;
 end;
 
+procedure TChartSeries.AfterAdd;
+begin
+  FMarks.SetOwner(FChart);
+end;
+
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
 var
   XVal: Integer;
@@ -502,24 +505,10 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.SetMarksFormat(const AValue: String);
+procedure TChartSeries.SetMarks(const AValue: TChartMarks);
 begin
-  if FMarksFormat = AValue then exit;
-  FMarksFormat := AValue;
-  FMarksStyle := High(TSeriesMarksStyle);
-  while
-    (FMarksStyle > smsCustom) and (SERIES_MARK_FORMATS[FMarksStyle] <> AValue)
-  do
-    Dec(FMarksStyle);
-end;
-
-procedure TChartSeries.SetMarksStyle(AValue: TSeriesMarksStyle);
-begin
-  if FMarksStyle = AValue then exit;
-  FMarksStyle := AValue;
-  if FMarksStyle <> smsCustom then
-    FMarksFormat := SERIES_MARK_FORMATS[FMarksStyle];
-  UpdateParentChart;
+  if FMarks = AValue then exit;
+  FMarks.Assign(AValue);
 end;
 
 procedure TChartSeries.SetShowInLegend(Value: Boolean);
@@ -1191,7 +1180,7 @@ procedure TBarSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
 var
   h: Integer;
 begin
-  if MarksStyle = smsNone then exit;
+  if not Marks.IsMarkLabelsVisible then exit;
   h := ACanvas.TextHeight('0') + 10 + 2 * 2 + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
@@ -1323,7 +1312,7 @@ begin
     ACanvas.Rectangle(r);
   end;
 
-  if MarksStyle = smsNone then exit;
+  if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to FCoordList.Count - 1 do
     if PrepareBar then
       DrawLabel;
@@ -1425,7 +1414,7 @@ begin
       XImageMax - center.x - MaxIntValue(labelWidths),
       YImageMin - center.y - MaxIntValue(labelHeights));
   end;
-  if FMarksStyle <> smsNone then
+  if Marks.IsMarkLabelsVisible then
     radius -= MARKS_DIST;
   radius := Max(radius - MARGIN, 0);
 
@@ -1444,7 +1433,7 @@ begin
 
     prevAngle += angleStep;
 
-    if MarksStyle = smsNone then continue;
+    if not Marks.IsMarkLabelsVisible then continue;
 
     a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
     b := LineEndPoint(center, prevAngle - angleStep / 2, radius + MARKS_DIST);
