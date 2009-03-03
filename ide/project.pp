@@ -4182,7 +4182,7 @@ begin
     end;
     if CompilerOptions.Modified then
     begin
-      //Modified := True;
+      Modified := True;
       {$IFDEF VerboseProjectModified}
       DebugLn(['TProject.SomethingModified CompilerOptions']);
       {$ENDIF}
