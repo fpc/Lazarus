@@ -87,7 +87,7 @@ tools: lcl
 examples: lcl components
 
 #-----------------------------------------------------------------------------
-all: lcl components packager/registration ideintf packager ide starter lazbuilder
+all: lcl packager/registration ideintf packager components ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
 cleanide:

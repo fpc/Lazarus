@@ -3497,7 +3497,7 @@ lazbuilder:
 tools: lcl
 	$(MAKE) -C tools
 examples: lcl components
-all: lcl components packager/registration ideintf packager ide starter lazbuilder
+all: lcl packager/registration ideintf packager components ide starter lazbuilder
 cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide
