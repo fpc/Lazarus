@@ -138,9 +138,21 @@ type
     property Visible: Boolean read FVisible write SetVisible;
   end;
 
+  { TBasicPointSeries }
+
+  TBasicPointSeries = class(TChartSeries)
+  private
+    FPrevLabelRect: TRect;
+  protected
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    procedure DrawLabel(
+      ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
+      ADown: Boolean);
+  end;
+
   { TBarSeries }
 
-  TBarSeries = class(TChartSeries)
+  TBarSeries = class(TBasicPointSeries)
   private
     FBarBrush: TBrush;
     FBarPen: TPen;
@@ -154,7 +166,6 @@ type
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -191,7 +202,7 @@ type
 
   { TAreaSeries }
 
-  TAreaSeries = class(TChartSeries)
+  TAreaSeries = class(TBasicPointSeries)
   private
     FAreaLinesPen: TChartPen;
     FAreaBrush: TBrush;
@@ -221,7 +232,7 @@ type
 
   { TBasicLineSeries }
 
-  TBasicLineSeries  = class(TChartSeries)
+  TBasicLineSeries  = class(TBasicPointSeries)
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   end;
@@ -790,6 +801,17 @@ begin
   // Draw last point
   GetCoords(Count - 1, xg1, yg1, xi1, yi1);
   DrawPoint;
+
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    GetCoords(i, xg1, yg1, xi1, yi1);
+    with ParentChart do
+      if
+        InRange(xg1, XGraphMin, XGraphMax) and
+        InRange(yg1, YGraphMin, YGraphMax)
+      then
+        DrawLabel(ACanvas, i, Point(xi1, yi1), yg1 < 0);
+  end;
 end;
 
 
@@ -1117,6 +1139,56 @@ begin
   Result := FPen.Color;
 end;
 
+{ TBasicPointSeries }
+
+procedure TBasicPointSeries.DrawLabel(
+  ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint; ADown: Boolean);
+var
+  labelRect: TRect;
+  dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  labelText: String;
+  labelSize: TSize;
+begin
+  labelText := FormattedMark(AIndex);
+  if labelText = '' then exit;
+
+  labelSize := ACanvas.TextExtent(labelText);
+  labelRect.Left := ADataPoint.X - labelSize.cx div 2;
+  if ADown then
+    labelRect.Top := ADataPoint.Y + Marks.Distance
+  else
+    labelRect.Top := ADataPoint.Y - Marks.Distance - labelSize.cy;
+  labelRect.BottomRight := labelRect.TopLeft + labelSize;
+  InflateRect(labelRect, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  if
+    not IsRectEmpty(FPrevLabelRect) and
+    IntersectRect(dummy, labelRect, FPrevLabelRect)
+  then
+    exit;
+  FPrevLabelRect := labelRect;
+
+  // Link between the label and the bar.
+  ACanvas.Pen.Assign(Marks.LinkPen);
+  with ADataPoint do
+    if ADown then
+      ACanvas.Line(X, Y, X, labelRect.Top)
+    else
+      ACanvas.Line(X, Y - 1, X, labelRect.Bottom - 1);
+
+  Marks.DrawLabel(ACanvas, labelRect, labelText);
+end;
+
+procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+var
+  h: Integer;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
+  AMargins.Top := Max(AMargins.Top, h);
+  AMargins.Bottom := Max(AMargins.Bottom, h);
+  FPrevLabelRect := Rect(0, 0, 0, 0);
+end;
+
 { TBarSeries }
 
 constructor TBarSeries.Create(AOwner: TComponent);
@@ -1166,16 +1238,6 @@ begin
   FBarBrush.Color := AValue;
 end;
 
-procedure TBarSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
-var
-  h: Integer;
-begin
-  if not Marks.IsMarkLabelsVisible then exit;
-  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
-  AMargins.Top := Max(AMargins.Top, h);
-  AMargins.Bottom := Max(AMargins.Bottom, h);
-end;
-
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
   if Color = clTAColor then Color := SeriesColor;
@@ -1202,44 +1264,6 @@ var
   barX, barTopY, barBottomY: Double;
   i, barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
   r: TRect;
-  prevLabelRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
-
-  procedure DrawLabel;
-  var
-    labelRect: TRect;
-    dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
-    labelText: String;
-    labelSize: TSize;
-    xc: Integer;
-  begin
-    labelText := FormattedMark(i);
-    if labelText = '' then exit;
-
-    labelSize := ACanvas.TextExtent(labelText);
-    xc := (r.Left + r.Right) div 2;
-    labelRect.Left := xc - labelSize.cx div 2;
-    if barTopY = 0 then
-      labelRect.Top := r.Bottom + Marks.Distance
-    else
-      labelRect.Top := r.Top - Marks.Distance - labelSize.cy;
-    labelRect.BottomRight := labelRect.TopLeft + labelSize;
-    InflateRect(labelRect, MARKS_MARGIN_X, MARKS_MARGIN_Y);
-    if
-      not IsRectEmpty(prevLabelRect) and
-      IntersectRect(dummy, labelRect, prevLabelRect)
-    then
-      exit;
-    prevLabelRect := labelRect;
-
-    // Link between the label and the bar.
-    ACanvas.Pen.Assign(Marks.LinkPen);
-    if barTopY = 0 then
-      ACanvas.Line(xc, r.Bottom, xc, labelRect.Top)
-    else
-      ACanvas.Line(xc, r.Top - 1, xc, labelRect.Bottom - 1);
-
-    Marks.DrawLabel(ACanvas, labelRect, labelText);
-  end;
 
   function PrepareBar: Boolean;
   begin
@@ -1301,7 +1325,10 @@ begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to FCoordList.Count - 1 do
     if PrepareBar then
-      DrawLabel;
+      DrawLabel(
+        ACanvas, i,
+        Point((r.Left + r.Right) div 2, ifthen(barTopY = 0, r.Bottom, r.Top)),
+        barTopY = 0);
 end;
 
 procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
@@ -1556,11 +1583,9 @@ begin
 
   InitBounds(XMin, YMin, XMax, YMax);
 
-  with ParentChart do begin
-    Canvas.Pen.Mode := pmCopy;
-    Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Width := 1;
-  end;
+  ACanvas.Pen.Mode := pmCopy;
+  ACanvas.Pen.Style := psSolid;
+  ACanvas.Pen.Width := 1;
 
   for i := 0 to Count - 2 do begin
     graphCoord := FCoordList.Items[i];
@@ -1638,6 +1663,19 @@ begin
       xi2 := EnsureRange(xi2, XMin, XMax);
     end;
     DrawPart;
+  end;
+
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    graphCoord := FCoordList.Items[i];
+    with ParentChart do
+      if
+        not InRange(graphCoord^.x, XGraphMin, XGraphMax) or
+        not InRange(graphCoord^.y, YGraphMin, YGraphMax)
+      then
+        continue;
+    ParentChart.GraphToImage(graphCoord^.x, graphCoord^.y, xi1, yi1);
+    DrawLabel(ACanvas, i, Point(xi1, yi1), false);
   end;
 end;
 

@@ -85,6 +85,7 @@ var
   i: integer;
 begin
   if FArea = nil then InitArea;
+  FArea.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     X3 := X3 + 1;
     if random(2) >= 0.7 then Y3 := Y3 + random(5)
@@ -114,6 +115,7 @@ var
   i: integer;
 begin
   if FLine = nil then InitLine;
+  FLine.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FLine.AddXY(x1, y1, '', clGreen);
     X1 := X1 + 1.5;
