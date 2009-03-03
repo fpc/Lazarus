@@ -56,12 +56,16 @@ object Form1: TForm1
     Color = clBtnFace
     ParentColor = False
     object Chart1LineHor: TLine
+      Marks.Frame.Cosmetic = True
+      Marks.LinkPen.Cosmetic = True
       ShowInLegend = False
       Pen.Cosmetic = True
       Pen.Style = psDot
       SeriesColor = clBlack
     end
     object Chart1LineVert: TLine
+      Marks.Frame.Cosmetic = True
+      Marks.LinkPen.Cosmetic = True
       ShowInLegend = False
       LineStyle = lsVertical
       Pen.Cosmetic = True

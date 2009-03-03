@@ -154,30 +154,59 @@ type
     property Visible;
   end;
 
+  TChartLinkPen = class(TChartPen)
+  published
+    property Color default clWhite;
+  end;
+
+  TChartLabelBrush = class(TBrush)
+  published
+    property Color default clYellow;
+  end;
+
   { TChartMarks }
 
   TChartMarks = class(TChartElement)
   private
     FDistance: Integer;
     FFormat: String;
+    FFrame: TChartPen;
+    FLabelBrush: TChartLabelBrush;
+    FLabelFont: TFont;
+    FLinkPen: TChartLinkPen;
     FStyle: TSeriesMarksStyle;
 
     procedure SetDistance(const AValue: Integer);
     procedure SetFormat(const AValue: String);
+    procedure SetFrame(const AValue: TChartPen);
+    procedure SetLabelBrush(const AValue: TChartLabelBrush);
+    procedure SetLabelFont(const AValue: TFont);
+    procedure SetLinkPen(const AValue: TChartLinkPen);
     procedure SetStyle(const AValue: TSeriesMarksStyle);
   public
     constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
 
     procedure Assign(Source: TPersistent); override;
+    procedure DrawLabel(
+      ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
   published
     // Distance between series point and label.
     property Distance: Integer read FDistance write SetDistance default 20;
     property Format: String read FFormat write SetFormat;
+    property Frame: TChartPen read FFrame write SetFrame;
+    property LabelBrush: TChartLabelBrush read FLabelBrush write SetLabelBrush;
+    property LabelFont: TFont read FLabelFont write SetLabelFont;
+    property LinkPen: TChartLinkPen read FLinkPen write SetLinkPen;
     property Style: TSeriesMarksStyle
       read FStyle write SetStyle default smsNone;
     property Visible default true;
   end;
+
+const
+  MARKS_MARGIN_X = 4;
+  MARKS_MARGIN_Y = 2;
 
 implementation
 
@@ -452,7 +481,11 @@ begin
   if Source is TChartMarks then
     with TChartMarks(Source) do begin
       Self.FDistance := FDistance;
+      Self.FFrame.Assign(FFrame);
       Self.FFormat := FFormat;
+      Self.FLabelBrush.Assign(FLabelBrush);
+      Self.FLabelFont.Assign(FLabelFont);
+      Self.FLinkPen.Assign(FLinkPen);
       Self.FStyle := FStyle;
     end;
 end;
@@ -461,8 +494,38 @@ constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := 20;
+  FFrame := TChartPen.Create;
+  FFrame.OnChange := @StyleChanged;
+  FLabelBrush := TChartLabelBrush.Create;
+  FLabelBrush.OnChange := @StyleChanged;
+  FLabelBrush.Color := clYellow;
+  FLabelFont := TFont.Create;
+  FLabelFont.OnChange := @StyleChanged;
+  FLinkPen := TChartLinkPen.Create;
+  FLinkPen.OnChange := @StyleChanged;
+  FLinkPen.Color := clWhite;
   FStyle := smsNone;
   FVisible := true;
+end;
+
+destructor TChartMarks.Destroy;
+begin
+  FFrame.Free;
+  FLabelBrush.Free;
+  FLabelFont.Free;
+  FLinkPen.Free;
+  inherited Destroy;
+end;
+
+procedure TChartMarks.DrawLabel(
+  ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
+begin
+  ACanvas.Brush.Assign(LabelBrush);
+  ACanvas.Pen.Assign(Frame);
+  ACanvas.Rectangle(ALabelRect);
+  ACanvas.Font.Assign(LabelFont);
+  ACanvas.TextOut(
+    ALabelRect.Left + MARKS_MARGIN_X, ALabelRect.Top + MARKS_MARGIN_Y, AText);
 end;
 
 function TChartMarks.IsMarkLabelsVisible: Boolean;
@@ -484,6 +547,34 @@ begin
   FStyle := High(FStyle);
   while (FStyle > smsCustom) and (SERIES_MARK_FORMATS[FStyle] <> AValue) do
     Dec(FStyle);
+  StyleChanged(Self);
+end;
+
+procedure TChartMarks.SetFrame(const AValue: TChartPen);
+begin
+  if FFrame = AValue then exit;
+  FFrame.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartMarks.SetLabelBrush(const AValue: TChartLabelBrush);
+begin
+  if FLabelBrush = AValue then exit;
+  FLabelBrush.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartMarks.SetLabelFont(const AValue: TFont);
+begin
+  if FLabelFont = AValue then exit;
+  FLabelFont := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartMarks.SetLinkPen(const AValue: TChartLinkPen);
+begin
+  if FLinkPen = AValue then exit;
+  FLinkPen := AValue;
   StyleChanged(Self);
 end;
 

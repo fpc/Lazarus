@@ -174,9 +174,6 @@ type
   TPieSeries = class(TChartSeries)
   private
     ColorIndex: Integer;
-    FMiscColors: array [1..3] of TColor;
-    function GetMiscColor(AIndex: integer): TColor;
-    procedure SetMiscColor(AIndex: integer; const AValue: TColor);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
@@ -190,13 +187,6 @@ type
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
-  published
-    property LabelTextColor: TColor index 1
-      read GetMiscColor write SetMiscColor default clBlack;
-    property LabelBackgroundColor: TColor index 2
-      read GetMiscColor write SetMiscColor default clYellow;
-    property LabelToPieLinkColor: TColor index 3
-      read GetMiscColor write SetMiscColor default clWhite;
   end;
 
   { TAreaSeries }
@@ -1181,7 +1171,7 @@ var
   h: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * 2 + 4;
+  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
 end;
@@ -1221,20 +1211,19 @@ var
     labelText: String;
     labelSize: TSize;
     xc: Integer;
-    labelPos: TPoint;
   begin
     labelText := FormattedMark(i);
     if labelText = '' then exit;
 
     labelSize := ACanvas.TextExtent(labelText);
     xc := (r.Left + r.Right) div 2;
-    labelPos.X := xc - labelSize.cx div 2;
+    labelRect.Left := xc - labelSize.cx div 2;
     if barTopY = 0 then
-      labelPos.Y := r.Bottom + Marks.Distance
+      labelRect.Top := r.Bottom + Marks.Distance
     else
-      labelPos.Y := r.Top - Marks.Distance - labelSize.cy;
-    labelRect := Bounds(labelPos.X, labelPos.Y, labelSize.cx, labelSize.cy);
-    InflateRect(labelRect, 4, 2);
+      labelRect.Top := r.Top - Marks.Distance - labelSize.cy;
+    labelRect.BottomRight := labelRect.TopLeft + labelSize;
+    InflateRect(labelRect, MARKS_MARGIN_X, MARKS_MARGIN_Y);
     if
       not IsRectEmpty(prevLabelRect) and
       IntersectRect(dummy, labelRect, prevLabelRect)
@@ -1243,16 +1232,13 @@ var
     prevLabelRect := labelRect;
 
     // Link between the label and the bar.
-    ACanvas.Pen.Color := clWhite;
+    ACanvas.Pen.Assign(Marks.LinkPen);
     if barTopY = 0 then
       ACanvas.Line(xc, r.Bottom, xc, labelRect.Top)
     else
       ACanvas.Line(xc, r.Top - 1, xc, labelRect.Bottom - 1);
 
-    ACanvas.Pen.Color := clBlack;
-    ACanvas.Brush.Color := clYellow;
-    ACanvas.Rectangle(labelRect);
-    ACanvas.TextOut(labelPos.X, labelPos.Y, labelText);
+    Marks.DrawLabel(ACanvas, labelRect, labelText);
   end;
 
   function PrepareBar: Boolean;
@@ -1375,8 +1361,6 @@ constructor TPieSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ColorIndex := 1;
-  LabelBackgroundColor := clYellow;
-  LabelToPieLinkColor := clWhite;
 end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
@@ -1387,10 +1371,9 @@ var
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
   a, b, center: TPoint;
+  r: TRect;
 const
   MARGIN = 8;
-  MarkYMargin = 2;
-  MarkXMargin = 4;
 begin
   if FCoordList.Count = 0 then exit;
 
@@ -1438,21 +1421,17 @@ begin
     b := LineEndPoint(center, prevAngle - angleStep / 2, radius + Marks.Distance);
 
     // line from mark to pie
-    ACanvas.Pen.Color := LabelToPieLinkColor;
-    ACanvas.MoveTo(a.x, a.y);
-    ACanvas.LineTo(b.x, b.y);
+    ACanvas.Pen.Assign(Marks.LinkPen);
+    ACanvas.Line(a, b);
 
     if b.x < center.x then
       b.x -= labelWidths[i];
     if b.y < center.y then
       b.y -= labelHeights[i];
 
-    ACanvas.Pen.Color := LabelTextColor;
-    ACanvas.Brush.Color := LabelBackgroundColor;
-    ACanvas.Rectangle(
-      b.x - MarkXMargin, b.y - MarkYMargin,
-      b.x + labelWidths[i] + MarkXMargin, b.y + labelHeights[i] + MarkYMargin);
-    ACanvas.TextOut(b.x, b.y, labelTexts[i]);
+    r := Rect(b.x, b.y, b.x + labelWidths[i], b.y + labelHeights[i]);
+    InflateRect(r, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+    Marks.DrawLabel(ACanvas, r, labelTexts[i]);
   end;
 end;
 
@@ -1493,23 +1472,10 @@ begin
       Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
 end;
 
-function TPieSeries.GetMiscColor(AIndex: integer): TColor;
-begin
-  Result := FMiscColors[AIndex];
-end;
-
 function TPieSeries.GetSeriesColor: TColor;
 begin
   Result := clBlack; // SeriesColor is meaningless for PieSeries
 end;
-
-procedure TPieSeries.SetMiscColor(AIndex: integer; const AValue: TColor);
-begin
-  if FMiscColors[AIndex] = AValue then exit;
-  FMiscColors[AIndex] := AValue;
-  UpdateParentChart;
-end;
-
 
 procedure TPieSeries.SetSeriesColor(const AValue: TColor);
 begin

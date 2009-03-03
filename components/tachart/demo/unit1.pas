@@ -244,8 +244,8 @@ procedure TForm1.InitPie;
 begin
   FPie := TPieSeries.Create(Chart1);
   FPie.Title := 'pie';
-  FPie.LabelBackgroundColor := $80FFFF;
-  FPie.LabelToPieLinkColor := clCream;
+  FPie.Marks.LabelBrush.Color := $80FFFF;
+  FPie.Marks.LinkPen.Width := 2;
   Chart1.AddSeries(FPie);
 end;
 

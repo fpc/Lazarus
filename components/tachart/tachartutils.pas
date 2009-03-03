@@ -111,6 +111,8 @@ function PointDistX(const A, B: TPoint): Integer; inline;
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
 
+operator +(const A: TPoint; B: TSize): TPoint;
+
 implementation
 
 uses
@@ -243,6 +245,12 @@ begin
   OldFont := SelectObject(DC, NewFont);
   TextOut(DC, X, Y, @St[1], Length(St));
   DeleteObject(SelectObject(DC, OldFont));
+end;
+
+operator + (const A: TPoint; B: TSize): TPoint;
+begin
+  Result.X := A.X + B.cx;
+  Result.Y := A.Y + B.cy;
 end;
 
 { TPenBrushFontRecall }
