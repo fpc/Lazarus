@@ -4167,49 +4167,59 @@ begin
 end;
 
 function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
-var i: integer;
+var
+  i: integer;
 begin
-  Result:=true;
-  if CheckData then begin
-    if Modified then begin
+  Result := True;
+  if CheckData then
+  begin
+    if Modified then
+    begin
       {$IFDEF VerboseProjectModified}
       DebugLn('TProject.SomethingModified Modified');
       {$ENDIF}
-      exit;
+      Exit;
     end;
-    if CompilerOptions.Modified then begin
-      Modified:=true;
+    if CompilerOptions.Modified then
+    begin
+      //Modified := True;
       {$IFDEF VerboseProjectModified}
       DebugLn(['TProject.SomethingModified CompilerOptions']);
       {$ENDIF}
-      exit;
+      Exit;
     end;
-    for i:=0 to UnitCount-1 do
-      if (Units[i].IsPartOfProject) and Units[i].Modified then begin
-        Modified:=true;
+    for i := 0 to UnitCount - 1 do
+      if (Units[i].IsPartOfProject) and Units[i].Modified then
+      begin
+        Modified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
         {$ENDIF}
-        exit;
+        Exit;
       end;
   end;
-  if CheckSession then begin
-    if SessionModified then begin
+  if CheckSession then
+  begin
+    if SessionModified then
+    begin
       {$IFDEF VerboseProjectModified}
       DebugLn('TProject.SomethingModified SessionModified');
       {$ENDIF}
-      exit;
+      Exit;
     end;
-    for i:=0 to UnitCount-1 do begin
-      if Units[i].SessionModified then begin
-        SessionModified:=true;
+    for i := 0 to UnitCount - 1 do
+    begin
+      if Units[i].SessionModified then
+      begin
+        SessionModified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
         {$ENDIF}
         exit;
       end;
-      if (not Units[i].IsPartOfProject) and Units[i].Modified then begin
-        SessionModified:=true;
+      if (not Units[i].IsPartOfProject) and Units[i].Modified then
+      begin
+        SessionModified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
         {$ENDIF}
@@ -4217,7 +4227,7 @@ begin
       end;
     end;
   end;
-  Result:=false;
+  Result := False;
 end;
 
 procedure TProject.MainSourceFilenameChanged;
