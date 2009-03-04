@@ -224,7 +224,7 @@ type
 
     procedure XGraphToImage(Xin: Double; out XOut: Integer);
     procedure YGraphToImage(Yin: Double; out YOut: Integer);
-    procedure GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
+    function GraphToImage(AGraphPoint: TDoublePoint) : TPoint;
     procedure XImageToGraph(XIn: Integer; var XOut: Double);
     procedure YImageToGraph(YIn: Integer; var YOut: Double);
     procedure ImageToGraph(XIn, YIn: Integer; var XOut, YOut: Double);
@@ -238,7 +238,8 @@ type
     function GetNewColor: TColor;
     function GetRectangle: TRect;
 
-    function LineInViewPort(var xg1, yg1, xg2, yg2: Double): Boolean;
+    function LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
+    function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
     property Canvas;
 
@@ -1042,10 +1043,10 @@ begin
   YOut := Round(FScale.Y * YIn + FOffset.Y);
 end;
 
-procedure TChart.GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
+function TChart.GraphToImage(AGraphPoint: TDoublePoint): TPoint;
 begin
-  XGraphToImage(Xin, XOut);
-  YGraphToImage(Yin, YOut);
+  XGraphToImage(AGraphPoint.X, Result.X);
+  YGraphToImage(AGraphPoint.Y, Result.Y);
 end;
 
 procedure TChart.XImageToGraph(XIn: Integer; var XOut: Double);
@@ -1064,15 +1065,21 @@ begin
   YImageToGraph(YIn, YOut);
 end;
 
-function TChart.LineInViewPort(var xg1, yg1, xg2, yg2: Double): Boolean;
+function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
+begin
+  Result :=
+    InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
+end;
+
+function TChart.LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
 var
   dx, dy, dxy, u1, u2, u3, u4: Double;
 
   procedure CalcDeltas;
   begin
-    dy := yg1 - yg2;
-    dx := xg1 - xg2;
-    dxy := xg1 * yg2 - yg1 * xg2;
+    dy := AG1.Y - AG2.Y;
+    dx := AG1.X - AG2.X;
+    dxy := AG1.X * AG2.Y - AG1.Y * AG2.X;
   end;
 
 begin
@@ -1085,46 +1092,46 @@ begin
   Result := false;
   if u1 * u2 < 0 then begin
     Result := true;
-    if xg1 < XGraphMin then begin
-      yg1 := (XGraphMin * dy + dxy) / dx;
-      xg1 := XGraphMin;
+    if AG1.X < XGraphMin then begin
+      AG1.Y := (XGraphMin * dy + dxy) / dx;
+      AG1.X := XGraphMin;
       CalcDeltas;
     end;
-    if xg2 < XGraphMin then begin
-      yg2 := (XGraphMin * dy + dxy) / dx;
-      xg2 := XGraphMin;
+    if AG2.X < XGraphMin then begin
+      AG2.Y := (XGraphMin * dy + dxy) / dx;
+      AG2.X := XGraphMin;
       CalcDeltas;
     end;
   end;
 
   if u2 * u3 < 0 then begin
     Result := true;
-    if yg2 > YGraphMax then begin
-       xg2 := (YGraphMax * dx - dxy) / dy;
-       yg2 := YGraphMax;
+    if AG2.Y > YGraphMax then begin
+       AG2.X := (YGraphMax * dx - dxy) / dy;
+       AG2.Y := YGraphMax;
        CalcDeltas;
     end;
   end;
 
   if u3 * u4 < 0 then begin
     Result := true;
-    if xg1 > XGraphMax then begin
-       yg1 := (XGraphMax * dy + dxy) / dx;
-       xg1 := XGraphMax;
+    if AG1.X > XGraphMax then begin
+       AG1.Y := (XGraphMax * dy + dxy) / dx;
+       AG1.X := XGraphMax;
        CalcDeltas;
     end;
-    if xg2 > XGraphMax then begin
-       yg2:= (XGraphMax * dy + dxy) / dx;
-       xg2:= XGraphMax;
+    if AG2.X > XGraphMax then begin
+       AG2.Y := (XGraphMax * dy + dxy) / dx;
+       AG2.X := XGraphMax;
        CalcDeltas;
     end;
   end;
 
   if u4 * u1 < 0 then begin
     Result := true;
-    if yg1 < YGraphMin then begin
-       xg1:= (YGraphMin * dx - dxy) / dy;
-       yg1:= YGraphMin;
+    if AG1.Y < YGraphMin then begin
+       AG1.X := (YGraphMin * dx - dxy) / dy;
+       AG1.Y := YGraphMin;
        CalcDeltas;
     end;
   end;

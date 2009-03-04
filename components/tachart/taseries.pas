@@ -33,14 +33,6 @@ uses
   TAGraph, TAChartUtils, TATypes;
 
 type
-
-  TChartCoord = record
-    x, y: Double;
-    Color: TColor;
-    Text: String;
-  end;
-  PChartCoord = ^TChartCoord;
-
   TSeriesPointerStyle = (
     psRectangle, psCircle, psCross, psDiagCross, psStar,
     psLowBracket, psHighBracket);
@@ -78,6 +70,7 @@ type
       var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
     function GetValuesTotal: Double;
+    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -381,6 +374,13 @@ begin
       percent := y / total * 100;
     Result := Format(FMarks.Format, [y, percent, Text, total, x]);
   end;
+end;
+
+procedure TChartSeries.GetCoords(
+  AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+begin
+  AG := DoublePoint(PChartCoord(FCoordList[AIndex])^);
+  AI := ParentChart.GraphToImage(AG);
 end;
 
 function TChartSeries.GetLegendCount: Integer;
@@ -705,10 +705,9 @@ end;
 
 procedure TSerie.Draw(ACanvas: TCanvas);
 var
-  xi1, yi1, xi2, yi2: Integer;
-  xg1, yg1, xg2, yg2: Double;
+  i1, i2: TPoint;
+  g1, g2: TDoublePoint;
   XMin, XMax, YMin, YMax: Integer;
-  chartCoord: PChartCoord;
 
   function PrepareLine: Boolean;
   begin
@@ -717,43 +716,35 @@ var
 
     with ParentChart do
       if // line is totally outside the viewport
-        (xg1 < XGraphMin) and (xg2 < XGraphMin) or
-        (xg1 > XGraphMax) and (xg2 > XGraphMax) or
-        (yg1 < YGraphMin) and (yg2 < YGraphMin) or
-        (yg1 > YGraphMax) and (yg2 > YGraphMax)
+        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
+        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
+        (g1.Y < YGraphMin) and (g2.Y < YGraphMin) or
+        (g1.Y > YGraphMax) and (g2.Y > YGraphMax)
       then
         exit;
 
     Result := true;
+    // line is totally inside the viewport
     with ParentChart do
-      if // line is totally inside the viewport
-        InRange(xg1, XGraphMin, XGraphMax) and
-        InRange(xg2, XGraphMin, XGraphMax) and
-        InRange(yg1, YGraphMin, YGraphMax) and
-        InRange(yg2, YGraphMin, YGraphMax)
-      then
+      if IsPointInViewPort(g1) and IsPointInViewPort(g2) then
         exit;
 
-    if yg1 > yg2 then begin
-      Exchange(xg1, xg2);
-      Exchange(yg1, yg2);
-    end;
+    if g1.Y > g2.Y then
+      Exchange(g1, g2);
 
-    if yg1 = yg2 then begin
-      if xg1 > xg2 then begin
-        Exchange(xg1, xg2);
-        Exchange(yg1, yg2);
-      end;
-      if xg1 < ParentChart.XGraphMin then xi1 := ParentChart.XImageMin;
-      if xg2 > ParentChart.XGraphMax then xi2 := ParentChart.XImageMax;
+    if g1.Y = g2.Y then begin
+      if g1.X > g2.X then
+        Exchange(g1, g2);
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
     end
-    else if xg1 = xg2 then begin
-      if yg1 < ParentChart.YGraphMin then yi1 := ParentChart.YImageMin;
-      if yg2 > ParentChart.YGraphMax then yi2 := ParentChart.YImageMax;
+    else if g1.X = g2.X then begin
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
     end
-    else if ParentChart.LineInViewPort(xg1, yg1, xg2, yg2) then begin
-      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
+    else if ParentChart.LineInViewPort(g1, g2) then begin
+      i1 := ParentChart.GraphToImage(g1);
+      i2 := ParentChart.GraphToImage(g2);
     end
     else
       Result := false;
@@ -762,18 +753,9 @@ var
   procedure DrawPoint;
   begin
     if
-      FShowPoints and InRange(yi1, YMin, YMax) and InRange(xi1, XMin, XMax)
+      FShowPoints and InRange(i1.Y, YMin, YMax) and InRange(i1.X, XMin, XMax)
     then
-      FPointer.Draw(ACanvas, xi1, yi1, SeriesColor);
-  end;
-
-  procedure GetCoords(
-    AIndex: Integer; out AX, AY: Double; out AXScr, AYScr: Integer);
-  begin
-    chartCoord := FCoordList.Items[AIndex];
-    AX := chartCoord^.x;
-    AY := chartCoord^.y;
-    ParentChart.GraphToImage(AX, AY, AXScr, AYScr);
+      FPointer.Draw(ACanvas, i1.X, i1.Y, SeriesColor);
   end;
 
 var
@@ -786,31 +768,27 @@ begin
   ACanvas.Pen.Width := 1;
 
   for i := 0 to Count - 2 do begin
-    GetCoords(i, xg1, yg1, xi1, yi1);
-    GetCoords(i + 1, xg2, yg2, xi2, yi2);
+    GetCoords(i, g1, i1);
+    GetCoords(i + 1, g2, i2);
 
     if PrepareLine then begin
       ACanvas.Pen.Style := FStyle;
-      ACanvas.Pen.Color := chartCoord^.Color;
-      ACanvas.MoveTo(xi1, yi1);
-      ACanvas.LineTo(xi2, yi2);
+      ACanvas.Pen.Color := PChartCoord(FCoordList[i])^.Color;
+      ACanvas.Line(i1, i2);
     end;
     DrawPoint;
   end;
 
   // Draw last point
-  GetCoords(Count - 1, xg1, yg1, xi1, yi1);
+  GetCoords(Count - 1, g1, i1);
   DrawPoint;
 
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    GetCoords(i, xg1, yg1, xi1, yi1);
+    GetCoords(i, g1, i1);
     with ParentChart do
-      if
-        InRange(xg1, XGraphMin, XGraphMax) and
-        InRange(yg1, YGraphMin, YGraphMax)
-      then
-        DrawLabel(ACanvas, i, Point(xi1, yi1), yg1 < 0);
+      if IsPointInViewPort(g1) then
+        DrawLabel(ACanvas, i, i1, g1.Y < 0);
   end;
 end;
 
@@ -1261,33 +1239,31 @@ end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
-  barX, barTopY, barBottomY: Double;
+  barTop: TDoublePoint;
   i, barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
   r: TRect;
 
   function PrepareBar: Boolean;
+  var
+    barBottomY: Double;
   begin
-    with PChartCoord(FCoordList.Items[i])^ do begin
-      barX := x;
-      barTopY := y;
-    end;
+    barTop := DoublePoint(PChartCoord(FCoordList.Items[i])^);
     barBottomY := 0;
-    if barTopY < barBottomY then
-      Exchange(barTopY, barBottomY);
+    if barTop.Y < barBottomY then
+      Exchange(barTop.Y, barBottomY);
 
     with ParentChart do begin
       // Check if bar is in view port.
       Result :=
-        InRange(barX, XGraphMin, XGraphMax) and
-        FloatRangesOverlap(barBottomY, barTopY, YGraphMin, YGraphMax);
+        InRange(barTop.X, XGraphMin, XGraphMax) and
+        FloatRangesOverlap(barBottomY, barTop.Y, YGraphMin, YGraphMax);
       if not Result then exit;
 
       // Only draw to the limits.
-      if barTopY > YGraphMax then barTopY := YGraphMax;
+      if barTop.Y > YGraphMax then barTop.Y := YGraphMax;
       if barBottomY < YGraphMin then barBottomY := YGraphMin;
 
-      //convert from graph to imgs coords
-      GraphToImage(barX, barTopY, r.Left, r.Top);
+      r.TopLeft := GraphToImage(barTop);
       YGraphToImage(barBottomY, r.Bottom);
     end;
 
@@ -1327,8 +1303,8 @@ begin
     if PrepareBar then
       DrawLabel(
         ACanvas, i,
-        Point((r.Left + r.Right) div 2, ifthen(barTopY = 0, r.Bottom, r.Top)),
-        barTopY = 0);
+        Point((r.Left + r.Right) div 2, ifthen(barTop.Y = 0, r.Bottom, r.Top)),
+        barTop.Y = 0);
 end;
 
 procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
@@ -1565,17 +1541,14 @@ end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
-  i: Integer;
-  xi1, yi1, xi2, yi2, xi2a: Integer;
-  xg1, yg1, xg2, yg2: Double;
+  i, xi2a, iy_min: Integer;
+  i1, i2: TPoint;
+  g1, g2: TDoublePoint;
   XMin, XMax, YMin, YMax: Integer;
-  graphCoord: PChartCoord;
-  iy_min: Integer;
 
   procedure DrawPart;
   begin
-    ACanvas.Polygon([
-      Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+    ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)]);
   end;
 
 begin
@@ -1588,33 +1561,23 @@ begin
   ACanvas.Pen.Width := 1;
 
   for i := 0 to Count - 2 do begin
-    graphCoord := FCoordList.Items[i];
-    xg1 := graphCoord^.x;
-    yg1 := graphCoord^.y;
-    ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-    graphCoord := FCoordList.Items[i + 1];
-    xg2 := graphCoord^.x;
-    yg2 := graphCoord^.y;
-    ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
+    GetCoords(i, g1, i1);
+    GetCoords(i + 1, g2, i2);
 
-    ParentChart.YGraphToImage(ParentChart.YGraphMin, iy_min);
+    iy_min := ParentChart.YImageMin;
     ACanvas.Pen.Color:= clBlack;
-    ACanvas.Brush.Color:= graphCoord^.Color;
+    ACanvas.Brush.Color:= PChartCoord(FCoordList.Items[i])^.Color;
 
-    with ParentChart do
-      if // top line is totally inside the viewport
-        InRange(xg1, XGraphMin, XGraphMax) and
-        InRange(xg2, XGraphMin, XGraphMax) and
-        InRange(yg1, YGraphMin, YGraphMax) and
-        InRange(yg2, YGraphMin, YGraphMax)
+    // top line is totally inside the viewport
+    if
+      ParentChart.IsPointInViewPort(g1) and ParentChart.IsPointInViewPort(g2)
     then begin
       if FStairs then begin
         if FInvertedStairs then
-          ACanvas.Polygon([
-            Point(xi1, iy_min), Point(xi1, yi2), Point(xi2, yi2), Point(xi2, iy_min)])
+          ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)])
         else
           ACanvas.Polygon([
-            Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi1), Point(xi2, iy_min)])
+            Point(i1.X, iy_min), i1, Point(i2.X, i1.Y), Point(i2.X, iy_min)])
       end else
         DrawPart;
       continue;
@@ -1622,60 +1585,51 @@ begin
 
     with ParentChart do
       if // top line is totally outside the viewport
-        (xg1 < XGraphMin) and (xg2 < XGraphMin) or
-        (xg1 > XGraphMax) and (xg2 > XGraphMax) or
-        (yg1 < YGraphMin) and (yg2 < YGraphMin)
+        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
+        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
+        (g1.Y < YGraphMin) and (g2.Y < YGraphMin)
       then
         continue;
 
-    if yg1 > yg2 then begin
-      Exchange(xg1, xg2); Exchange(yg1, yg2);
-      Exchange(xi1, xi2); Exchange(yi1, yi2);
+    if g1.Y > g2.Y then begin
+      Exchange(g1, g2);
+      Exchange(i1.X, i2.X); Exchange(i1.Y, i2.Y);
     end;
 
-    if yg1 = yg2 then begin
-      if xg1 > xg2 then begin
-        Exchange(xg1, xg2);
-        Exchange(yg1, yg2);
-      end;
-      if xg1 < ParentChart.XGraphMin then xi1 := ParentChart.XImageMin;
-      if xg2 > ParentChart.XGraphMax then xi2 := ParentChart.XImageMax;
+    if g1.Y = g2.Y then begin
+      if g1.X > g2.X then
+        Exchange(g1, g2);
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
     end
-    else if xg1 = xg2 then begin
-      if yg1 < ParentChart.YGraphMin then yi1 := ParentChart.YImageMin;
-      if yg2 > ParentChart.YGraphMax then yi2 := ParentChart.YImageMax;
+    else if g1.X = g2.X then begin
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
     end
-    else if ParentChart.LineInViewPort(xg1, yg1, xg2, yg2) then begin
-      xi2a := xi2;
-      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
-      if yi2 <= YMin then begin
+    else if ParentChart.LineInViewPort(g1, g2) then begin
+      xi2a := i2.X;
+      i1 := ParentChart.GraphToImage(g1);
+      i2 := ParentChart.GraphToImage(g2);
+      {if i2.Y <= YMin then} begin
         ACanvas.Polygon([
-          Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2),
-          Point(xi2a, YMin), Point(xi2a, iy_min)]);
+          Point(i1.X, iy_min), i1, i2, Point(xi2a, YMin), Point(xi2a, iy_min)]);
         continue;
       end;
     end
-    else if yg2 >= ParentChart.YGraphMax then begin
-      yi1 := YMin;
-      yi2 := YMin;
-      xi1 := EnsureRange(xi1, XMin, XMax);
-      xi2 := EnsureRange(xi2, XMin, XMax);
+    else if g2.Y >= ParentChart.YGraphMax then begin
+      i1.Y := YMin;
+      i2.Y := YMin;
+      i1.X := EnsureRange(i1.X, XMin, XMax);
+      i2.X := EnsureRange(i2.X, XMin, XMax);
     end;
     DrawPart;
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    graphCoord := FCoordList.Items[i];
-    with ParentChart do
-      if
-        not InRange(graphCoord^.x, XGraphMin, XGraphMax) or
-        not InRange(graphCoord^.y, YGraphMin, YGraphMax)
-      then
-        continue;
-    ParentChart.GraphToImage(graphCoord^.x, graphCoord^.y, xi1, yi1);
-    DrawLabel(ACanvas, i, Point(xi1, yi1), false);
+    GetCoords(i, g1, i1);
+    if ParentChart.IsPointInViewPort(g1) then
+      DrawLabel(ACanvas, i, i1, false);
   end;
 end;
 

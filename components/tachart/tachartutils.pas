@@ -38,6 +38,13 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
+  TChartCoord = record
+    x, y: Double;
+    Color: TColor;
+    Text: String;
+  end;
+  PChartCoord = ^TChartCoord;
+
   TDoublePoint = record
     X, Y: Double;
   end;
@@ -97,10 +104,12 @@ const
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
+function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
 function EqualPoints(const A, B: TPoint): Boolean; inline;
 
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
+procedure Exchange(var A, B: TDoublePoint); overload;
 
 // True if float ranges [A, B] and [C, D] have at least one common point.
 function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
@@ -187,6 +196,12 @@ begin
   end; {case AxisScale}
 end;
 
+function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
+begin
+  Result.X := ACoord.x;
+  Result.Y := ACoord.y;
+end;
+
 function EqualPoints(const A, B: TPoint): Boolean;
 begin
   Result := (A.X = B.X) and (A.Y = B.Y);
@@ -204,6 +219,15 @@ end;
 procedure Exchange(var A, B: Double); overload;
 var
   t: Double;
+begin
+  t := A;
+  A := B;
+  B := t;
+end;
+
+procedure Exchange(var A, B: TDoublePoint);
+var
+  t: TDoublePoint;
 begin
   t := A;
   A := B;
