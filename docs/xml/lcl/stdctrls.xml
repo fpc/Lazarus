@@ -101,7 +101,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TEditCharCase">
-        <short>Determines the case of text displayed in the edit box or combobox.</short>
+        <short>
+          <var>TEditCharCase</var> - enumerated type that determines the case of text displayed in the edit box or combobox.</short>
         <descr/>
         <seealso/>
       </element>
@@ -119,7 +120,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TEchoMode">
-        <short>TEchoMode: Determines how strings in the edit box are displayed.</short>
+        <short>
+          <var>TEchoMode</var> - enumerated type that determines how strings in the edit box are displayed.</short>
         <descr/>
         <seealso/>
       </element>
@@ -137,7 +139,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollStyle">
-        <short/>
+        <short>
+          <var>TScrollStyle</var> - enumerated type determining style of scroll bars on a control</short>
         <descr/>
         <seealso/>
       </element>
@@ -171,8 +174,21 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollCode">
-        <short>The scroll action type.</short>
-        <descr/>
+        <short>
+          <var>TScrollCode</var> - the scroll action type.</short>
+        <descr>
+          <p>!!! Beware. The position of these enums must correspond to the SB_xxx values in LCLType  (Delphi compatibility, not our decision)</p>
+          <pre>scLineUp,   // = SB_LINEUP
+    scLineDown, // = SB_LINEDOWN
+    scPageUp,   // = SB_PAGEUP
+    scPageDown, // = SB_PAGEDOWN
+    scPosition, // = SB_THUMBPOSITION
+    scTrack,    // = SB_THUMBTRACK
+    scTop,      // = SB_TOP
+    scBottom,   // = SB_BOTTOM
+    scEndScroll // = SB_ENDSCROLL
+ </pre>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -213,7 +229,8 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TScrollEvent">
-        <short>The scroll event.</short>
+        <short>
+          <var>TScrollEvent</var> - generic event method for processing a scrolling event</short>
         <descr/>
         <seealso/>
       </element>
@@ -869,7 +886,13 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomGroupBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomGroupBox.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding the inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
       <!-- function result Visibility: default -->
       <element name="TCustomGroupBox.GetControlClassDefaultSize.Result">
         <short/>
@@ -1251,7 +1274,8 @@ Reads or Writes flag if control is re-sized.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption">
-        <short>Enumerated type that defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
+        <short>
+          <var>TComboBoxAutoCompleteTextOption</var> - Enumerated type that defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
         <descr>
           <p>
             <var>TComboBoxAutoCompleteTextOption</var>
@@ -1267,7 +1291,7 @@ Reads or Writes flag if control is re-sized.
             <li>cbactEndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li>
             <li>cbactRetainPrefixCase: Retains the case of characters user has typed. (This option has no effect if cbactEndOfLineComplete is False)</li>
             <li>cbactSearchCaseSensitive: Search completion string with case sensitivity.</li>
-            <li>cbactSearchAscending: Search completion string in accending order. (False will search in descending order)</li>
+            <li>cbactSearchAscending: Search completion string in ascending order. (False will search in descending order)</li>
           </ul>
         </descr>
         <seealso/>
@@ -1764,18 +1788,25 @@ False is set when the edit or combobox control loses focus.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
-        <short/>
+      <element name="TCustomComboBox.DoEnter">
+        <short>
+          <var>DoEnter</var> - cals inherited method then autoselects text in dropdown list if required</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoEnter">TWinControl.DoEnter</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.DoExit" link="#LCL.Controls.TWinControl.DoExit">
-        <short/>
+      <element name="TCustomComboBox.DoExit">
+        <short>
+          <var>DoExit</var> - disables <var>AutoSelect</var> then calls inherited <var>DoExit</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoExit">TWinControl.DoExit</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DrawItem">
@@ -1802,11 +1833,14 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomComboBox.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomComboBox.GetControlClassDefaultSize.Result">
@@ -2092,11 +2126,15 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.KeyDown" link="#LCL.Controls.TWinControl.KeyDown">
-        <short/>
+      <element name="TCustomComboBox.KeyDown">
+        <short>
+          <var>KeyDown</var> - performs code for traversing the dropdown list to the correct location before calling inherited <var>KeyDown</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyDown.Key">
@@ -2107,11 +2145,14 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.KeyUp" link="#LCL.Controls.TWinControl.KeyUp">
-        <short/>
+      <element name="TCustomComboBox.KeyUp">
+        <short>
+          <var>KeyUp</var> calls inherited method then performs specific actions depending on which key is being processed</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyUp.Key">
@@ -2122,22 +2163,28 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.KeyPress" link="#LCL.Controls.TWinControl.KeyPress">
-        <short/>
+      <element name="TCustomComboBox.KeyPress">
+        <short>
+          <var>KeyPress</var> adjusts character case if necessary then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyPress.Key">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.MouseUp" link="#LCL.Controls.TControl.MouseUp">
-        <short/>
+      <element name="TCustomComboBox.MouseUp">
+        <short>
+          <var>MouseUp</var> calls inherited method then sets <var>AutoSelect</var> if left mouse button is clicked for the first time after receiving focus</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.MouseUp">TControl.MouseUp</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.MouseUp.Button">
@@ -3371,32 +3418,45 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TCustomListBox.Loaded">
+        <short>
+          <var>Loaded</var> calls inherited method then sends the item index value to the handle</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
-        <short/>
+      <element name="TCustomListBox.InitializeWnd">
+        <short>
+          <var>InitializeWnd</var> calls inherited method then sets up the list of strings</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.FinalizeWnd" link="#LCL.Controls.TWinControl.FinalizeWnd">
-        <short/>
+      <element name="TCustomListBox.FinalizeWnd">
+        <short>
+          <var>FinalizeWnd</var> frees the list of strings then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomListBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomListBox.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> sets its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomListBox.GetControlClassDefaultSize.Result">
@@ -4788,18 +4848,24 @@ Indicates how text is displayed in a text editing control.</p>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
-        <short/>
+      <element name="TCustomEdit.DoEnter">
+        <short>
+          <var>DoEnter</var> - sets <var>AutoSelect</var> if required then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoEnter">TWinControl.DoEnter</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.DoExit" link="#LCL.Controls.TWinControl.DoExit">
-        <short/>
+      <element name="TCustomEdit.DoExit">
+        <short>
+          <var>DoExit</var> - disables <var>AutoSelect</var> then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoExit">TWinControl.DoExit</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelLength">
@@ -4923,11 +4989,15 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.KeyUp" link="#LCL.Controls.TWinControl.KeyUp">
-        <short/>
+      <element name="TCustomEdit.KeyUp">
+        <short>
+          <var>KeyUp</var> calls inherited method then processes according to the identity of <var>Key</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.KeyUp.Key">
@@ -5370,36 +5440,49 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.CreateHandle" link="#LCL.Controls.TWinControl.CreateHandle">
-        <short/>
+      <element name="TCustomMemo.CreateHandle">
+        <short>
+          <var>CreateHandle</var> calls inherited method then initialises <var>Lines</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateHandle">TWinControl.CreateHandle</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
-        <short/>
+      <element name="TCustomMemo.DestroyHandle">
+        <short>
+          <var>DestroyHandle</var> frees <var>Lines</var> then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DestroyHandle">TWinControl.DestroyHandle</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomMemo.RealGetText" link="#LCL.Controls.TControl.RealGetText">
-        <short/>
+      <element name="TCustomMemo.RealGetText">
+        <short>
+          <var>RealGetText</var> - returns the contents of <var>Lines.Text</var> (overriding inherited method)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.RealGetText">TControl.RealGetText</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.RealGetText.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.RealSetText" link="#LCL.Controls.TControl.RealSetText">
-        <short/>
+      <element name="TCustomMemo.RealSetText">
+        <short>
+          <var>RealSetText</var> - copies <var>Value</var> into <var>Lines.Text </var>(overriding inherited method)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.RealSetText">TControl.RealSetText</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.RealSetText.Value">
@@ -5505,11 +5588,15 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TCustomMemo.Loaded">
+        <short>
+          <var>Loaded</var> calls inherited method then sets the ScrollBar and WordWrap properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomMemo.WordWrapIsStored">
@@ -5550,11 +5637,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomMemo.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomMemo.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.GetControlClassDefaultSize.Result">
@@ -6367,18 +6457,21 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.RealSetText" link="#LCL.Controls.TControl.RealSetText">
-        <short/>
+      <element name="TCustomStaticText.RealSetText">
+        <short>
+          <var>RealSetText</var> - calls inherited method then adjusts size</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.RealSetText">TControl.RealSetText</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomStaticText.RealSetText.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.Notification" link="#rtl.Classes.TComponent.Notification">
+      <element name="TCustomStaticText.Notification" link="#LCL.Controls.TControl.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -6432,11 +6525,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomStaticText.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomStaticText.GetControlClassDefaultSize.Result">
@@ -6856,7 +6952,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TButtonControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TButtonControl.Loaded" link="#LCL.Controls.TWinControl.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -6973,7 +7069,9 @@ is done automatically by the streaming system.
           <var>SetChecked</var> - writes Checked status of button to local variable</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ActnList.TActionLink.SetChecked">TActionLink.SetChecked</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TButtonActionLink.SetChecked.Value">
@@ -7090,7 +7188,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.Click" link="#LCL.Controls.TControl.Click">
+      <element name="TCustomButton.Click">
         <descr>
           <p>
             <var>Click </var>
@@ -7101,7 +7199,11 @@ is done automatically by the streaming system.
 </p>
         </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Click">TControl.Click</link>
+        </seealso>
+        <short>
+          <var>Click</var> - checks if the parent form has a Modal Result, then calls inherited method</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
@@ -7182,11 +7284,14 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomButton.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding the inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomButton.GetControlClassDefaultSize.Result">
@@ -7252,16 +7357,24 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.ExecuteDefaultAction" link="#LCL.Controls.TControl.ExecuteDefaultAction">
+      <element name="TCustomButton.ExecuteDefaultAction">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.ExecuteDefaultAction">TControl.ExecuteDefaultAction</link>
+        </seealso>
+        <short>
+          <var>ExecuteDefaultAction</var> if the control is active or default, executes the <var>Click</var> action</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.ExecuteCancelAction" link="#LCL.Controls.TControl.ExecuteCancelAction">
+      <element name="TCustomButton.ExecuteCancelAction">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.ExecuteCancelAction">TControl.ExecuteCancelAction</link>
+        </seealso>
+        <short>
+          <var>ExecuteCancelAction</var> if this is a <var>Cancel</var> button, executes the <var>Click</var> action</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomButton.ActiveDefaultControlChanged" link="#LCL.Controls.TControl.ActiveDefaultControlChanged">
@@ -7615,7 +7728,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
         <short>
-          <var>TCheckBoxState</var> - enumeerated type for state of checkbox</short>
+          <var>TCheckBoxState</var> - enumerated type for state of checkbox</short>
         <descr>Check Box State: an enumerated list of constants defining the possible states of a Check Box -
 Unchecked, Checked or Greyed
 </descr>
@@ -7813,22 +7926,29 @@ is the ancestor of all check-box components.</short>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomCheckBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomCheckBox.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding the inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomCheckBox.GetControlClassDefaultSize.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TCustomCheckBox.Loaded">
+        <short>
+          <var>Loaded</var> - sends the State of the box to the interface before calling inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.WSSetText" link="#LCL.Controls.TWinControl.WSSetText">
@@ -8707,11 +8827,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.CanTab" link="#LCL.Controls.TControl.CanTab">
-        <short/>
+      <element name="TCustomLabel.CanTab">
+        <short>
+          <var>CanTab</var> - always set to False, as you can't tab to a label</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.CanTab">TControl.CanTab</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomLabel.CanTab.Result">
@@ -8762,7 +8885,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabel.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
-        <short/>
+        <short>
+          <var>DoAutoSize</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8808,11 +8933,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomLabel.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomLabel.GetControlClassDefaultSize.Result">
@@ -8831,7 +8959,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Notification" link="#rtl.Classes.TComponent.Notification">
+      <element name="TCustomLabel.Notification" link="#LCL.Controls.TControl.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -9702,12 +9830,17 @@ Reads or Writes flag if control is re-sized.
           </table>
         </descr>
       </topic>
-      <element name="TCustomComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TCustomComboBox.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
           <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
         </descr>
+        <short>
+          <var>AutoSize</var> defaults to True, overriding any previous default</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.AutoSize">TControl.AutoSize</link>
+        </seealso>
       </element>
       <element name="TGroupBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
@@ -9785,6 +9918,29 @@ Reads or Writes flag if control is re-sized.
       <element name="TMemo.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TButton.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TCheckBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCustomComboBox.UTF8KeyPress">
+        <short>
+          <var>UTF8KeyPress</var> converts character case if required then calls inherited method</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.UTF8KeyPress">TWinControl.UTF8KeyPress</link>
+        </seealso>
+      </element>
+      <element name="TCustomButton.Loaded">
+        <short>
+          <var>Loaded</var> calls inherited method, checks to see whether it is a default or cancel control, sets the default widget set</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
+      </element>
+      <element name="TRadioButton.Click">
+        <short>
+          <var>Click</var> - sets <var>Checked</var> to True then calls inherited <var>Click</var>
+        </short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Click">TControl.Click</link>
+        </seealso>
+      </element>
+      <element name="TRadioButton.SetChecked" link="#LCL.StdCtrls.TButtonControl.SetChecked"/>
     </module>
     <!-- StdCtrls -->
   </package>
