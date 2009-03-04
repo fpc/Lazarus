@@ -139,17 +139,17 @@ implementation
 class function TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtAbstractScrollArea: TQtAbstractScrollArea;
+  QtCustomControl: TQtCustomControl;
 begin
   {$ifdef VerboseQt}
     WriteLn('> TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl));
   {$endif}
 
-  QtAbstractScrollArea := TQtAbstractScrollArea.Create(AWinControl, AParams);
-  QtAbstractScrollArea.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
-  QtAbstractScrollArea.viewportNeeded;
-  QtAbstractScrollArea.AttachEvents;
-  Result := TLCLIntfHandle(QtAbstractScrollArea);
+  QtCustomControl := TQtCustomControl.Create(AWinControl, AParams);
+  QtCustomControl.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
+  QtCustomControl.viewportNeeded;
+  QtCustomControl.AttachEvents;
+  Result := TLCLIntfHandle(QtCustomControl);
 
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));

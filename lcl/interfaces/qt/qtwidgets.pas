@@ -300,16 +300,31 @@ type
     procedure setFrameShadow(p1: QFrameShadow);
     procedure setTextColor(const Value: PQColor); override;
   end;
-  
+
   { TQtAbstractScrollArea }
 
   TQtAbstractScrollArea = class(TQtFrame)
   private
+  protected
+    FHScrollbar: TQtScrollBar;
+    FVScrollbar: TQtScrollbar;
+  public
+    function horizontalScrollBar: TQtScrollBar;
+    function verticalScrollBar: TQtScrollBar;
+    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
+    procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure DestroyNotify(AWidget: TQtWidget); override;
+    destructor Destroy; override;
+  end;
+
+  { TQtCustomControl }
+
+  TQtCustomControl = class(TQtAbstractScrollArea)
+  private
     FFrameOnlyAroundContents: Boolean;
     FCornerWidget: TQtWidget;
     FViewPortWidget: TQtViewPort;
-    FHScrollbar: TQtScrollBar;
-    FVScrollbar: TQtScrollbar;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -320,8 +335,6 @@ type
     procedure DestroyNotify(AWidget: TQtWidget); override;
   public
     function cornerWidget: TQtWidget;
-    function horizontalScrollBar: TQtScrollBar;
-    function verticalScrollBar: TQtScrollBar;
     function viewport: TQtViewPort;
     function GetContainerWidget: QWidgetH; override;
 
@@ -332,11 +345,8 @@ type
     procedure setColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setCursor(const ACursor: QCursorH); override;
-    procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
-    procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setTextColor(const Value: PQColor); override;
     procedure setViewport(const AViewPort: QWidgetH);
-    procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure Update(ARect: PRect = nil); override;
     procedure Repaint(ARect: PRect = nil); override;
@@ -590,7 +600,7 @@ type
 
   { TQtTextEdit }
 
-  TQtTextEdit = class(TQtFrame, IQtEdit)
+  TQtTextEdit = class(TQtAbstractScrollArea, IQtEdit)
   private
     FViewportEventHook: QObject_hookH;
     FUndoAvailableHook: QTextEdit_hookH;
@@ -626,7 +636,6 @@ type
     function getContextMenuPolicy: QtContextMenuPolicy; override;
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); override;
     procedure SignalUndoAvailable(b: Boolean); cdecl;
-    procedure setScrollStyle(AScrollStyle: TScrollStyle);
   end;
 
   { TQtTabBar }
@@ -828,7 +837,7 @@ type
 
   { TQtAbstractItemView }
 
-  TQtAbstractItemView = class(TQtFrame)
+  TQtAbstractItemView = class(TQtAbstractScrollArea)
   private
     FOldDelegate: QAbstractItemDelegateH;
     FNewDelegate: QLCLItemDelegateH;
@@ -5585,46 +5594,6 @@ begin
   FUndoAvailable := b;
 end;
 
-procedure TQtTextEdit.setScrollStyle(AScrollStyle: TScrollStyle);
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQTextEdit.setScrollStyle');
-  {$endif}
-  case AScrollStyle of
-    ssNone:
-    begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
-    end;
-    ssHorizontal:
-    begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-    end;
-    ssVertical:
-    begin
-     QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-    end;
-    ssBoth:
-    begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-    end;
-    ssAutoHorizontal:
-    begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-    end;
-    ssAutoVertical:
-    begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-    end;
-    ssAutoBoth:
-    begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-    end;
-  end;
-end;
-
 { TQtTabBar }
 
 procedure TQtTabBar.AttachEvents;
@@ -8458,194 +8427,44 @@ begin
   end;
 end;
 
-{ TQtAbstractScrollArea }
-
 {------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.CreateWidget
+  Function: TQtAbstractScrollArea.horizontalScrollbar
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.CreateWidget(const AParams: TCreateParams):QWidgetH;
-begin
-  // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('TQtAbstractScrollArea.Create');
-  {$endif}
-  FHasPaint := True;
-  FViewPortWidget := nil;
-  Result := QLCLAbstractScrollArea_create();
-
-  FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
-    QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
-
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
-  QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtAbstractScrollArea.Destroy;
+function TQtAbstractScrollArea.horizontalScrollBar: TQtScrollBar;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.Destroy');
+    WriteLn('TQAbstractScrollArea.horizontalScrollBar');
   {$endif}
-  viewportDelete;
-  FreeAndNil(FHScrollBar);
-  FreeAndNil(FVScrollBar);
-
-  inherited Destroy;
-end;
-
-function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  if (QEvent_type(Event) in [
-                            QEventPaint,
-                            QEventMouseButtonPress,
-                            QEventMouseButtonRelease,
-                            QEventMouseButtonDblClick,
-                            QEventContextMenu
-                           ]) and
-     (ClassType = TQtAbstractScrollArea) then
-    Result := False
-  else
-  if QEvent_type(Event) = QEventWheel then
+  if FHScrollBar = nil then
   begin
-    if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
-      Result := inherited EventFilter(Sender, Event)
-    else
-      Result := False;  
-  end else
-  if QEvent_type(Event) = QEventStyleChange then
+    FHScrollBar := TQtScrollBar.CreateFrom(LCLObject,
+      QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+    FHScrollBar.setFocusPolicy(QtNoFocus);
+    FHScrollBar.AttachEvents;
+  end;
+  Result := FHScrollBar;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractScrollArea.verticalScrollbar
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractScrollArea.verticalScrollBar: TQtScrollBar;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.verticalScrollBar');
+  {$endif}
+  if FVScrollBar = nil then
   begin
-    Result := False;
-    QEvent_accept(Event);
-    FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
-      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
-  end else
-    Result := inherited EventFilter(Sender, Event);
-end;
-
-procedure TQtAbstractScrollArea.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
-begin
-  {$ifdef VerboseViewPortEventFilter}
-    WriteLn('ViewPortEventFilter ',QEvent_type(Event));
-  {$endif}
-  
-  QEvent_accept(Event);
-
-  case QEvent_type(Event) of
-    QEventResize,
-    QEventMouseButtonPress,
-    QEventMouseButtonRelease,
-    QEventMouseButtonDblClick,
-    QEventPaint:
-    begin
-      retval^ := True;
-      viewport.EventFilter(viewport.Widget, Event);
-      QEvent_ignore(Event);
-    end;
-  else
-    retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+    FVScrollbar := TQtScrollBar.CreateFrom(LCLObject,
+      QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    FVScrollBar.setFocusPolicy(QtNoFocus);
+    FVScrollbar.AttachEvents;
   end;
-end;
-
-procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
-begin
-  if AWidget = FCornerWidget then
-    FCornerWidget := nil;
-
-  if AWidget = FViewPortWidget then
-    FViewPortWidget := nil;
-
-  if AWidget = FHScrollbar then
-    FHScrollbar := nil;
-
-  if AWidget = FVScrollbar then
-    FVScrollbar := nil;
-
-  inherited DestroyNotify(AWidget);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.cornerWidget
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.cornerWidget: TQtWidget;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.cornerWidget');
-  {$endif}
-  Result := FCornerWidget;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.setColor
-  Params:  TQtWidget
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtAbstractScrollArea.setColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(viewport.Widget));
-  try
-    QPalette_setColor(Palette, QPaletteWindow, Value);
-    QWidget_setPalette(viewport.Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.setCornerWidget
-  Params:  TQtWidget
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtAbstractScrollArea.setCornerWidget(AWidget: TQtWidget);
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.setCornerWidget');
-  {$endif}
-  FCornerWidget := AWidget;
-  if Assigned(FCornerWidget) then
-    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
-  else
-    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
-end;
-
-procedure TQtAbstractScrollArea.setCursor(const ACursor: QCursorH);
-begin
-  if (LCLObject is TCustomControl) and HasPaint then
-    viewport.setCursor(ACursor)
-  else
-    inherited setCursor(ACursor);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.setTextColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtAbstractScrollArea.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(viewport.Widget));
-  try
-    QPalette_setColor(Palette, QPaletteWindowText, Value);
-    QWidget_setPalette(viewport.Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtAbstractScrollArea.setViewport(const AViewPort: QWidgetH);
-begin
-  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AViewPort);
+  Result := FVScrollBar;
 end;
 
 {------------------------------------------------------------------------------
@@ -8676,174 +8495,6 @@ begin
   FVScrollBar := AScrollBar;
   if Assigned(FVScrollBar) then
     QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
-end;
-
-procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
-begin
-  inherited setVisible(visible);
-  if FViewPortWidget <> nil then
-    FViewPortWidget.setVisible(visible);
-end;
-
-procedure TQtAbstractScrollArea.Update(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(viewport.Widget, ARect);
-  end else
-    QWidget_update(viewport.Widget);
-end;
-
-procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(viewport.Widget, ARect);
-  end else
-    QWidget_repaint(viewport.Widget);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.horizontalScrollbar
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.horizontalScrollBar: TQtScrollBar;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.horizontalScrollBar');
-  {$endif}
-  if FHScrollBar = nil then
-  begin
-    FHScrollBar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
-    FHScrollBar.setFocusPolicy(QtNoFocus);
-    FHScrollBar.AttachEvents;
-  end;
-  Result := FHScrollBar;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.verticalScrollbar
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.verticalScrollBar: TQtScrollBar;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.verticalScrollBar');
-  {$endif}
-  if FVScrollBar = nil then
-  begin
-    FVScrollbar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
-    FVScrollBar.setFocusPolicy(QtNoFocus);
-    FVScrollbar.AttachEvents;
-  end;
-  Result := FVScrollBar;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.viewport
-  Params:  None
-  Returns: viewport widget of QAbstractScrollArea
- ------------------------------------------------------------------------------}
-function TQtAbstractScrollArea.viewport: TQtViewport;
-begin
-  viewportNeeded;
-  Result := FViewPortWidget;
-end;
-
-function TQtAbstractScrollArea.GetContainerWidget: QWidgetH;
-begin
-  if ClassType = TQtAbstractScrollArea then
-    Result := viewport.Widget
-  else
-    Result := Widget;
-end;
-
-function TQtAbstractScrollArea.getClientOffset: TPoint;
-begin
-  with getClientBounds do
-    Result := Point(Left, Top);
-end;
-
-function TQtAbstractScrollArea.getClientBounds: TRect;
-begin
-  QWidget_contentsRect(Widget, @Result);
-
-  if not FFrameOnlyAroundContents then
-  begin
-    if (verticalScrollBar.getVisibleTo(Widget)) then
-        dec(Result.Right, verticalScrollBar.getWidth);
-
-    if (horizontalScrollBar.getVisibleTo(Widget)) then
-      dec(Result.Bottom, horizontalScrollBar.getHeight);
-  end;
-end;
-
-procedure TQtAbstractScrollArea.grabMouse;
-begin
-  if LCLObject is TCustomControl then
-    viewport.grabMouse
-  else
-    inherited grabMouse;
-end;
-
-procedure TQtAbstractScrollArea.preferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  if LCLObject is TCustomControl then
-  begin
-    PreferredWidth := 0;
-    PreferredHeight := 0;
-  end else
-    inherited preferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractScrollArea.viewportNeeded
-  Params:  None
-  Returns: Nothing
-           Creates viewport widget for QAbstractScrollArea
- ------------------------------------------------------------------------------}
-procedure TQtAbstractScrollArea.viewportNeeded;
-var
-  AParams: TCreateParams;
-  Method: TMethod;
-begin
-  if FViewPortWidget <> niL then
-    exit;
-  FillChar(AParams, SizeOf(AParams), #0);
-  FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
-  FViewPortWidget.setFocusProxy(Widget);
-  FViewPortWidget.setBackgroundRole(QPaletteNoRole);
-  FViewPortWidget.setAutoFillBackground(False);
-  FViewPortWidget.FOwner := Self;
-  FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
-
-  QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
-  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
-
-  setViewport(FViewPortWidget.Widget);
-end;
-
-procedure TQtAbstractScrollArea.viewportDelete;
-var
-  NilMethod: TMethod;
-begin
-  if Assigned(FViewPortWidget) then
-  begin
-    FillChar(NilMethod, SizeOf(NilMethod), 0);
-    QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), NilMethod);
-    FreeAndNil(FViewPortWidget);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8890,8 +8541,340 @@ begin
       QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
     end;
   end;
-  LCLObject.InvalidateClientRectCache(True);
-  LCLObject.DoAdjustClientRectChange;
+  if ClassType = TQtCustomControl then
+  begin
+    LCLObject.InvalidateClientRectCache(True);
+    LCLObject.DoAdjustClientRectChange;
+  end;
+end;
+
+procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FHScrollbar then
+    FHScrollbar := nil;
+
+  if AWidget = FVScrollbar then
+    FVScrollbar := nil;
+
+  inherited DestroyNotify(AWidget);
+end;
+
+destructor TQtAbstractScrollArea.Destroy;
+begin
+  FreeAndNil(FHScrollBar);
+  FreeAndNil(FVScrollBar);
+  inherited Destroy;
+end;
+
+{ TQtCustomControl }
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.CreateWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtCustomControl.CreateWidget(const AParams: TCreateParams):QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtCustomControl.Create');
+  {$endif}
+  FHasPaint := True;
+  FViewPortWidget := nil;
+  Result := QLCLAbstractScrollArea_create();
+
+  FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
+    QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
+
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+  QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtCustomControl.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.Destroy');
+  {$endif}
+  viewportDelete;
+  inherited Destroy;
+end;
+
+function TQtCustomControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  if (QEvent_type(Event) in [
+                            QEventPaint,
+                            QEventMouseButtonPress,
+                            QEventMouseButtonRelease,
+                            QEventMouseButtonDblClick,
+                            QEventContextMenu
+                           ]) and
+     (ClassType = TQtCustomControl) then
+    Result := False
+  else
+  if QEvent_type(Event) = QEventWheel then
+  begin
+    if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
+      Result := inherited EventFilter(Sender, Event)
+    else
+      Result := False;  
+  end else
+  if QEvent_type(Event) = QEventStyleChange then
+  begin
+    Result := False;
+    QEvent_accept(Event);
+    FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
+      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
+  end else
+    Result := inherited EventFilter(Sender, Event);
+end;
+
+procedure TQtCustomControl.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
+begin
+  {$ifdef VerboseViewPortEventFilter}
+    WriteLn('ViewPortEventFilter ',QEvent_type(Event));
+  {$endif}
+  
+  QEvent_accept(Event);
+
+  case QEvent_type(Event) of
+    QEventResize,
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick,
+    QEventPaint:
+    begin
+      retval^ := True;
+      viewport.EventFilter(viewport.Widget, Event);
+      QEvent_ignore(Event);
+    end;
+  else
+    retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
+  end;
+end;
+
+procedure TQtCustomControl.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FCornerWidget then
+    FCornerWidget := nil;
+
+  if AWidget = FViewPortWidget then
+    FViewPortWidget := nil;
+
+  inherited DestroyNotify(AWidget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.cornerWidget
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtCustomControl.cornerWidget: TQtWidget;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.cornerWidget');
+  {$endif}
+  Result := FCornerWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.setColor
+  Params:  TQtWidget
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtCustomControl.setColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(viewport.Widget));
+  try
+    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QWidget_setPalette(viewport.Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.setCornerWidget
+  Params:  TQtWidget
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtCustomControl.setCornerWidget(AWidget: TQtWidget);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQAbstractScrollArea.setCornerWidget');
+  {$endif}
+  FCornerWidget := AWidget;
+  if Assigned(FCornerWidget) then
+    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
+  else
+    QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
+end;
+
+procedure TQtCustomControl.setCursor(const ACursor: QCursorH);
+begin
+  if (LCLObject is TCustomControl) and HasPaint then
+    viewport.setCursor(ACursor)
+  else
+    inherited setCursor(ACursor);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.setTextColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtCustomControl.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(viewport.Widget));
+  try
+    QPalette_setColor(Palette, QPaletteWindowText, Value);
+    QWidget_setPalette(viewport.Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtCustomControl.setViewport(const AViewPort: QWidgetH);
+begin
+  QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AViewPort);
+end;
+
+procedure TQtCustomControl.setVisible(visible: Boolean);
+begin
+  inherited setVisible(visible);
+  if FViewPortWidget <> nil then
+    FViewPortWidget.setVisible(visible);
+end;
+
+procedure TQtCustomControl.Update(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_update(viewport.Widget, ARect);
+  end else
+    QWidget_update(viewport.Widget);
+end;
+
+procedure TQtCustomControl.Repaint(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_repaint(viewport.Widget, ARect);
+  end else
+    QWidget_repaint(viewport.Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.viewport
+  Params:  None
+  Returns: viewport widget of QAbstractScrollArea
+ ------------------------------------------------------------------------------}
+function TQtCustomControl.viewport: TQtViewport;
+begin
+  viewportNeeded;
+  Result := FViewPortWidget;
+end;
+
+function TQtCustomControl.GetContainerWidget: QWidgetH;
+begin
+  if ClassType = TQtCustomControl then
+    Result := viewport.Widget
+  else
+    Result := Widget;
+end;
+
+function TQtCustomControl.getClientOffset: TPoint;
+begin
+  with getClientBounds do
+    Result := Point(Left, Top);
+end;
+
+function TQtCustomControl.getClientBounds: TRect;
+begin
+  QWidget_contentsRect(Widget, @Result);
+
+  if not FFrameOnlyAroundContents then
+  begin
+    if (verticalScrollBar.getVisibleTo(Widget)) then
+        dec(Result.Right, verticalScrollBar.getWidth);
+
+    if (horizontalScrollBar.getVisibleTo(Widget)) then
+      dec(Result.Bottom, horizontalScrollBar.getHeight);
+  end;
+end;
+
+procedure TQtCustomControl.grabMouse;
+begin
+  if LCLObject is TCustomControl then
+    viewport.grabMouse
+  else
+    inherited grabMouse;
+end;
+
+procedure TQtCustomControl.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if LCLObject is TCustomControl then
+  begin
+    PreferredWidth := 0;
+    PreferredHeight := 0;
+  end else
+    inherited preferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtCustomControl.viewportNeeded
+  Params:  None
+  Returns: Nothing
+           Creates viewport widget for QAbstractScrollArea
+ ------------------------------------------------------------------------------}
+procedure TQtCustomControl.viewportNeeded;
+var
+  AParams: TCreateParams;
+  Method: TMethod;
+begin
+  if FViewPortWidget <> niL then
+    exit;
+  FillChar(AParams, SizeOf(AParams), #0);
+  FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
+  FViewPortWidget.setFocusProxy(Widget);
+  FViewPortWidget.setBackgroundRole(QPaletteNoRole);
+  FViewPortWidget.setAutoFillBackground(False);
+  FViewPortWidget.FOwner := Self;
+  FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
+
+  QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
+  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
+
+  setViewport(FViewPortWidget.Widget);
+end;
+
+procedure TQtCustomControl.viewportDelete;
+var
+  NilMethod: TMethod;
+begin
+  if Assigned(FViewPortWidget) then
+  begin
+    FillChar(NilMethod, SizeOf(NilMethod), 0);
+    QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), NilMethod);
+    FreeAndNil(FViewPortWidget);
+  end;
 end;
 
   { TQtCalendar }
@@ -9611,7 +9594,6 @@ end;
 function TQtGraphicsView.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
-  FViewPortWidget := nil;
   Result := QGraphicsView_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;

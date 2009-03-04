@@ -386,11 +386,11 @@ end;
 class procedure TQtWSScrollBox.ScrollBy(
   const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
 var
-  Widget: TQtAbstractScrollArea;
+  Widget: TQtCustomControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
-  Widget := TQtAbstractScrollArea(AWinControl.Handle);
+  Widget := TQtCustomControl(AWinControl.Handle);
   Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 
@@ -399,11 +399,11 @@ end;
 class procedure TQtWSCustomFrame.ScrollBy(
   const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
 var
-  Widget: TQtAbstractScrollArea;
+  Widget: TQtCustomControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
-  Widget := TQtAbstractScrollArea(AWinControl.Handle);
+  Widget := TQtCustomControl(AWinControl.Handle);
   Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 

@@ -427,8 +427,8 @@ begin
   if FWidget <> nil then
     FWidget.HasCaret := False;
 
-  if AWidget is TQtAbstractScrollArea then
-    AWidget := TQtAbstractScrollArea(AWidget).viewport;
+  if AWidget is TQtCustomControl then
+    AWidget := TQtCustomControl(AWidget).viewport;
 
   FWidget := AWidget;
   if FWidget <> nil then
