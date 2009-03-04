@@ -189,6 +189,9 @@ const
   );
 
 type
+
+  { TManagedBreakPoint }
+
   TManagedBreakPoint = class(TIDEBreakPoint)
   private
     FMaster: TDBGBreakPoint;
@@ -911,7 +914,7 @@ end;
 
 procedure TManagedBreakPoint.OnSourceMarkPositionChanged(Sender: TObject);
 begin
-  Changed;
+  CopySourcePositionToBreakPoint;
 end;
 
 procedure TManagedBreakPoint.OnToggleEnableMenuItemClick(Sender: TObject);
@@ -1052,6 +1055,8 @@ begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited SetLocation(ASource, ALine);
   if FMaster<>nil then FMaster.SetLocation(ASource,ALine);
+  if Project1 <> nil
+  then Project1.Modified := True;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMarkImage;
