@@ -141,6 +141,7 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
       ADown: Boolean);
+    procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
   end;
 
   { TBarSeries }
@@ -783,13 +784,7 @@ begin
   GetCoords(Count - 1, g1, i1);
   DrawPoint;
 
-  if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to Count - 1 do begin
-    GetCoords(i, g1, i1);
-    with ParentChart do
-      if IsPointInViewPort(g1) then
-        DrawLabel(ACanvas, i, i1, g1.Y < 0);
-  end;
+  DrawLabels(ACanvas, true);
 end;
 
 
@@ -1154,6 +1149,21 @@ begin
       ACanvas.Line(X, Y - 1, X, labelRect.Bottom - 1);
 
   Marks.DrawLabel(ACanvas, labelRect, labelText);
+end;
+
+procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+var
+  g: TDoublePoint;
+  pt: TPoint;
+  i: Integer;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    GetCoords(i, g, pt);
+    with ParentChart do
+      if IsPointInViewPort(g) then
+        DrawLabel(ACanvas, i, pt, ADrawDown and (g.Y < 0));
+  end;
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
@@ -1625,12 +1635,7 @@ begin
     DrawPart;
   end;
 
-  if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to Count - 1 do begin
-    GetCoords(i, g1, i1);
-    if ParentChart.IsPointInViewPort(g1) then
-      DrawLabel(ACanvas, i, i1, false);
-  end;
+  DrawLabels(ACanvas, false);
 end;
 
 procedure TAreaSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
