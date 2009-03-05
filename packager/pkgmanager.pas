@@ -3517,7 +3517,7 @@ var
   BuildIDEFlags: TBuildLazarusFlags;
   Msg: string;
 begin
-  if not MainIDE.DoResetToolStatus(true) then exit(mrCancel);
+  if not MainIDE.DoResetToolStatus([rfInteractive]) then exit(mrCancel);
 
   PackageGraph.BeginUpdate(true);
   PkgList:=nil;

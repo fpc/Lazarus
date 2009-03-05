@@ -533,6 +533,7 @@ type
 
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
+    FWaitForClose: Boolean;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -680,7 +681,7 @@ type
     procedure CreateOftenUsedForms; override;
     procedure CreateSearchResultWindow;
     procedure UpdateDefaultPascalFileExtensions;
-    function DoResetToolStatus(Interactive: boolean): boolean; override;
+    function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
 
     // files/units
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -1104,6 +1105,7 @@ begin
   inherited Create(TheOwner);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INHERITED');{$ENDIF}
 
+  FWaitForClose := False;
   FDockingManager:=TLazDockingManager.Create(Self);
 
   SetupDialogs;
@@ -1538,11 +1540,11 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
 var
   MsgResult: integer;
 begin
-  CanClose:=false;
-  FCheckingFilesOnDisk:=true;
+  CanClose := False;
+  FCheckingFilesOnDisk := True;
   try
     // stop debugging/compiling/...
-    if (ToolStatus = itExiting) or not DoResetToolStatus(True) then exit;
+    if (ToolStatus = itExiting) or not DoResetToolStatus([rfInteractive, rfCloseOnDone]) then exit;
 
     // check foreign windows
     if not CloseQueryIDEWindows then exit;
@@ -3176,27 +3178,31 @@ end;
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
 begin
   inherited SetToolStatus(AValue);
-  if DebugBoss<>nil then
+  if DebugBoss <> nil then
     DebugBoss.UpdateButtonsAndMenuItems;
+  if FWaitForClose and (ToolStatus = itNone) then
+  begin
+    FWaitForClose := False;
+    MainIDEBar.Close;
+  end;
 end;
 
-function TMainIDE.DoResetToolStatus(Interactive: boolean): boolean;
+function TMainIDE.DoResetToolStatus(AFlags: TResetToolFlags): boolean;
 begin
-  Result:=false;
+  Result := False;
   case ToolStatus of
-
-  itDebugger:
-    begin
-      if Interactive
-      and (QuestionDlg(lisStopDebugging,
-          lisStopTheDebugging, mtConfirmation,
-          [mrYes, lisMenuStop, mrCancel, lisContinue], 0)<>mrYes)
-      then exit;
-      DebugBoss.DoStopProject;
-    end;
-
+    itDebugger:
+      begin
+        if (rfInteractive in AFlags)
+        and (QuestionDlg(lisStopDebugging,
+            lisStopTheDebugging, mtConfirmation,
+            [mrYes, lisMenuStop, mrCancel, lisContinue], 0) <> mrYes)
+        then exit;
+        if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
+          FWaitForClose := True;
+      end;
   end;
-  Result:=ToolStatus=itNone;
+  Result := ToolStatus = itNone;
 end;
 
 procedure TMainIDE.Notification(AComponent: TComponent; Operation: TOperation);
@@ -3430,7 +3436,7 @@ var
   ARecentProject: String;
 begin
   // stop debugging/compiling/...
-  if not DoResetToolStatus(true) then exit;
+  if not DoResetToolStatus([rfInteractive]) then exit;
 
   // check foreign windows
   if not CloseQueryIDEWindows then exit;

@@ -72,6 +72,12 @@ uses
   MainBar, MainIntf;
 
 type
+  TResetToolFlag = (
+    rfInteractive,
+    rfCloseOnDone
+  );
+  TResetToolFlags = set of TResetToolFlag;
+
   { TMainIDEBase }
 
   TMainIDEBase = class(TMainIDEInterface)
@@ -120,7 +126,7 @@ type
 
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
-    function DoResetToolStatus(Interactive: boolean): boolean; virtual; abstract;
+    function DoResetToolStatus(AFlags: TResetToolFlags): boolean; virtual; abstract;
 
     constructor Create(TheOwner: TComponent); override;
     procedure StartIDE; virtual; abstract;
