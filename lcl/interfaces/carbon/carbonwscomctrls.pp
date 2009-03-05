@@ -517,7 +517,9 @@ class procedure TCarbonWSCustomListView.SetImageList(const ALV: TCustomListView;
 begin
   if not CheckHandle(ALV, Self, 'SetImageList') then Exit;
 
+  TCarbonListView(ALV.Handle).ClearIconCache;
   TCarbonListView(ALV.Handle).UpdateItems;
+  TCarbonListView(ALV.Handle).UpdateColumnView;
 end;
 
 class procedure TCarbonWSCustomListView.SetProperty(const ALV: TCustomListView;

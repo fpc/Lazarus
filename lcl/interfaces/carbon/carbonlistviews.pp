@@ -32,8 +32,9 @@ uses
   MacOSAll,
  // LCL
   LMessages, LCLMessageGlue, LCLType, LCLProc, Controls, StdCtrls, ComCtrls,
+  ImgList, Graphics,
  // LCL Carbon
-  CarbonDef, CarbonPrivate;
+  CarbonDef, CarbonPrivate, CarbonGDIObjects;
 
 type
   TCarbonDataBrowser = class;
@@ -48,6 +49,7 @@ type
     FVisible: Boolean;
     FWidth: Integer;
     FIndex: Integer; // index of TListColumn
+    fTextWithIcon: Boolean;
 
     procedure UpdateHeader;
     function GetHeaderWidth: UInt16;
@@ -76,8 +78,9 @@ type
     procedure SetMaxWidth(AMaxWidth: Integer);
     procedure SetVisible(AVisible: Boolean);
     procedure SetWidth(AWidth: Integer);
+    property TextWithIcon: Boolean read fTextWithIcon write fTextWithIcon;
   end;
-  
+
   { TCarbonCheckListColumn }
 
   TCarbonCheckListColumn = class(TCarbonListColumn)
@@ -91,11 +94,13 @@ type
   { TCarbonCaptionListColumn }
 
   TCarbonCaptionListColumn = class(TCarbonListColumn)
+  protected
+    function GetHeaderPropertyType: DataBrowserPropertyType; override;
   public
     constructor Create(AOwner: TCarbonDataBrowser);
     destructor Destroy; override;
   end;
-  
+
   { TCarbonDataBrowser }
 
   // TODO: images
@@ -121,6 +126,7 @@ type
     procedure RegisterEvents; override;
   protected
     function GetItemCaption(AIndex, ASubIndex: Integer): String; virtual; abstract;
+    function GetItemIcon(AIndex, ASubIndex: Integer): IconRef; virtual;
     function GetReadOnly: Boolean; dynamic; abstract;
     function MultiSelect: Boolean; virtual; abstract;
     function IsOwnerDrawn: Boolean; virtual; abstract;
@@ -170,6 +176,7 @@ type
     procedure InsertColumn(AIndex: Integer; const AColumn: TListColumn);
     procedure MoveColumn(AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
     procedure UpdateColumnIndex;
+    procedure UpdateColumnView; virtual;
 
     procedure ClearItems;
     procedure DeleteItem(AIndex: Integer);
@@ -177,21 +184,32 @@ type
     procedure UpdateItem(AIndex: Integer);
     procedure UpdateItems;
   end;
-  
+
+
   { TCarbonListView }
 
   TCarbonListView = class(TCarbonDataBrowser)
+  private
+    FIcons  : TFPList;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   protected
     function GetItemCaption(AIndex, ASubIndex: Integer): String; override;
+    function GetItemIcon(AIndex, ASubIndex: Integer): IconRef; override;
     function GetReadOnly: Boolean; override;
     function MultiSelect: Boolean; override;
     function IsOwnerDrawn: Boolean; override;
   public
+    constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
+    destructor Destroy; override;
+
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); override;
     procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); override;
     procedure FocusedChanged(AIndex: Integer); override;
+
+    procedure UpdateColumnView; override;
+
+    procedure ClearIconCache;
   end;
   
   { TCarbonListBox }
@@ -220,7 +238,7 @@ type
   end;
   
 const
-  CheckPropertyID = 1024;
+  CheckPropertyID   = 1024;
   CaptionPropertyID = 1025;
 
 implementation
@@ -231,6 +249,117 @@ uses InterfaceBase, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings,
 var CarbonItemDataCallBackUPP        : DataBrowserItemDataUPP;
     CarbonItemNotificationCallBackUPP: DataBrowserItemNotificationUPP;
     CarbonDrawItemCallBackUPP        : DataBrowserDrawItemUPP;
+
+function GetIconRefFromBitmap(bmp: TBitmap; IconSize: Integer): IconRef;
+var
+  image     : TCarbonBitmap;
+  context   : CGContextRef;
+  ColSpace  : CGColorSpaceRef;
+  data      : array of byte;
+  iconHnd   : IconFamilyHandle;
+  tmpHnd    : Handle;
+  i,c,sz    : Integer;
+  dataType  : Integer;
+  maskType  : Integer;
+
+begin
+  Result := nil;
+  if not Assigned(bmp) then Exit;
+  if not CheckBitmap(bmp.Handle, 'GetIconRefFromBitmap', 'bmp') then Exit;
+
+  image := TCarbonBitmap(bmp.Handle);
+  sz := IconSize;
+  case sz of
+    16: begin
+      dataType := kSmall32BitData;
+      maskType := kSmall8BitMask;
+    end;
+    32: begin
+      dataType := kLarge32BitData;
+      maskType := kLarge8BitMask;
+    end;
+    128: begin
+      dataType := kThumbnail32BitData;
+      maskType := kThumbnail8BitMask;
+    end;
+  else
+    dataType := kHuge32BitData;
+    maskType := kHuge8BitMask;
+  end;
+  SetLength(data,IconSize*IconSize*4);
+
+  ColSpace := CGColorSpaceCreateDeviceRGB;
+  if (ColSpace = nil) then Exit;
+
+  // intel-order bitmap
+  context := CGBitmapContextCreate(@data[0], sz, sz, 8, sz * 4, ColSpace, kCGImageAlphaPremultipliedFirst);
+  if not Assigned(context) then Exit;
+
+  if not Assigned(image.CGImage) then image.UpdateImage;
+  CGContextDrawImage(context, GetCGRect(0, 0, sz, sz), image.CGImage );
+  CGContextRelease(context);
+  CGColorSpaceRelease(ColSpace);
+
+  //samples, stated, that NewHandle() must be called with size set to zero
+  //rather than 8, on 10.4 or higher. dunno why,
+  //but calling with any specified size fails icon creation.
+  //The code "iconHnd^^.resourceType" looks dangerous , but works.
+  iconHnd := IconFamilyHandle(NewHandle(0));
+  if (iconHnd = nil) then Exit;
+  iconHnd^^.resourceType := kIconFamilyType;
+  iconHnd^^.resourceSize := sizeof(OSType) + sizeof(Size);
+
+  if PtrToHand(@data[0], tmpHnd, length(data)) = noErr then
+  begin
+    OSError(
+       SetIconFamilyData(iconHnd, dataType, tmpHnd),
+       'GetIconRefFromBitmap', 'SetIconFamilyData');
+    DisposeHandle(tmpHnd);
+  end;
+
+  //it's the following code is Intel only? or is it fine for PowerPC too?
+  //combining alpha into single mask array based on byte of BGRA
+  //{$ifdef LITTLE_ENDIAN} c:=0;{$else}c:=3;{$endif}
+  c := 0;
+  for i := 0 to sz*sz - 1 do begin
+    data[i] := data[c];
+    inc(c, 4);
+  end;
+
+  if PtrToHand(@data[0], tmpHnd, sz*sz) = noErr then
+  begin
+    OSError(
+      SetIconFamilyData(iconHnd, maskType, tmpHnd),
+      'GetIconRefFromBitmap', 'SetIconFamilyData');
+    DisposeHandle(tmpHnd);
+  end;
+
+  OSError(
+    GetIconRefFromIconFamilyPtr( iconHnd^^, GetHandleSize(Handle(iconHnd)), Result),
+    'GetIconRefFromBitmap', 'GetIconRefFromIconFamilyPtr');
+  DisposeHandle(Handle(iconHnd));
+end;
+
+function GetIconRefFromImageList(Images: TCustomImageList; AIndex: Integer; WantedIconSize: Integer): IconRef;
+var
+  iconbmp : TBitmap;
+begin
+  if not Assigned(Images) or (AIndex < 0) or (AIndex >= Images.Count) or
+    (Images.Width = 0) or (Images.Height = 0) then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  iconbmp := TBitmap.Create;
+  iconbmp.PixelFormat := pf32bit;
+  iconbmp.SetSize(Images.Width, Images.Height);
+
+  Images.GetBitmap(AIndex, iconbmp);
+  Result := GetIconRefFromBitmap(iconbmp, WantedIconSize);
+
+  iconbmp.Free;
+end;
 
 { TCarbonListColumn }
 
@@ -263,8 +392,11 @@ function TCarbonListColumn.GetHeaderPropertyType: DataBrowserPropertyType;
 begin
   if FOwner.IsOwnerDrawn then
     Result := kDataBrowserCustomType
-  else
-    Result := kDataBrowserTextType;
+  else begin
+    if fTextWithIcon
+      then Result := kDataBrowserIconAndTextType
+      else Result := kDataBrowserTextType;
+  end;
 end;
 
 constructor TCarbonListColumn.Create(AOwner: TCarbonDataBrowser;
@@ -278,7 +410,6 @@ begin
   
   FDesc.propertyDesc.propertyID := APropertyID;
   FDesc.propertyDesc.propertyType := GetHeaderPropertyType;
-
 
   FDesc.propertyDesc.propertyFlags := kDataBrowserPropertyIsMutable or
                                    kDataBrowserListViewSelectionColumn;
@@ -430,6 +561,14 @@ end;
 
 { TCarbonCaptionListColumn }
 
+function TCarbonCaptionListColumn.GetHeaderPropertyType: DataBrowserPropertyType;
+begin
+  if FOwner.IsOwnerDrawn then
+    Result := kDataBrowserCustomType
+  else
+    Result := kDataBrowserTextType;
+end;
+
 constructor TCarbonCaptionListColumn.Create(AOwner: TCarbonDataBrowser);
 begin
   FListColumn := TListColumn.Create(nil);
@@ -465,6 +604,7 @@ var
   CheckboxValue: ThemeButtonValue;
   CheckboxState: ThemeDrawState;
   CFString: CFStringRef;
+  ItemIcon: IconRef;
   SubIndex: Integer;
 begin
   Result := noErr;
@@ -519,10 +659,12 @@ begin
           (PropID <= CaptionPropertyID + DataBrowserPropertyID(ACarbonDataBrowser.FColumns.Count)) then
         begin
           if PropID = CaptionPropertyID then
-            SubIndex := 0
-          else
+          begin
+            SubIndex := 0;
+          end else begin
             SubIndex :=
               TCarbonListColumn(ACarbonDataBrowser.FColumns[PropID - CaptionPropertyID - 1]).FListColumn.Index;
+          end;
           
           CreateCFString(ACarbonDataBrowser.GetItemCaption(ID - 1, SubIndex),
             CFString);
@@ -531,6 +673,13 @@ begin
           finally
             FreeCFString(CFString);
           end;
+
+          ItemIcon := ACarbonDataBrowser.GetItemIcon(ID-1, SubIndex);
+          if Assigned(ItemIcon) then
+            OSError(
+              SetDataBrowserItemDataIcon(Data, ItemIcon),
+              'CarbonItemDataCallBack', 'SetDataBrowserItemDataIcon');
+
         end
         else
           Result := errDataBrowserPropertyNotFound;
@@ -932,6 +1081,11 @@ begin
   if Result >= GetitemsCount then Result := -1;
 end;
 
+function TCarbonDataBrowser.GetItemIcon(AIndex, ASubIndex: Integer): IconRef;
+begin
+  Result := nil;
+end;
+
 function TCarbonDataBrowser.GetTopItem: Integer;
 begin
   Result := GetItemAt(0, GetHeaderHeight);
@@ -1210,6 +1364,7 @@ begin
     FColumns.Add(C);
     
   UpdateColumnIndex;
+  UpdateColumnView;
 end;
 
 procedure TCarbonDataBrowser.MoveColumn(AOldIndex, ANewIndex: Integer;
@@ -1227,6 +1382,11 @@ begin
     if FColumns[I] = nil then Continue;
     TCarbonListColumn(FColumns[I]).UpdateIndex;
   end;
+end;
+
+procedure TCarbonDataBrowser.UpdateColumnView;
+begin
+
 end;
 
 procedure TCarbonDataBrowser.DeleteItem(AIndex: Integer);
@@ -1295,9 +1455,24 @@ begin
   Result := False; // TODO
 end;
 
+constructor TCarbonListView.Create(const AObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(AObject, AParams);
+  FIcons:=TFPList.Create;
+end;
+
+destructor TCarbonListView.Destroy;
+begin
+  ClearIconCache;
+  FIcons.Free;
+  inherited Destroy;
+end;
+
 procedure TCarbonListView.DrawItem(AIndex: Integer; AState: DataBrowserItemState);
 begin
   // TODO
+  //DebugLn('TCarbonListView.DrawItem Index: ' + DbgS(AIndex) + ' AState: ' +  DbgS(Integer(AState)));
 end;
 
 procedure TCarbonListView.SelectionChanged(AIndex: Integer; ASelect: Boolean);
@@ -1353,6 +1528,71 @@ begin
   Msg.NMHdr := @NMLV.hdr;
 
   DeliverMessage(LCLObject, Msg);
+end;
+
+function TCarbonListView.GetItemIcon(AIndex, ASubIndex: Integer): IconRef;
+var
+  idx   : Integer;
+  view  : TListView;
+  imgs  : TCustomImageList;
+  size  : Integer;
+begin
+  Result := nil;
+  if not Assigned(LCLObject) or not (LCLObject is TListView) or (ASubIndex > 0) then
+    Exit;
+
+  view := TListView(LCLObject);
+  idx := view.Items[AIndex].ImageIndex;
+  if view.ViewStyle <> vsIcon then begin
+    imgs := view.SmallImages;
+    size := 16;
+  end else begin
+    imgs := view.LargeImages;
+    size := 32; // larger icons?
+  end;
+  if not Assigned(imgs) or (idx < 0) or (idx >= imgs.Count) then Exit;
+
+  if FIcons.Count < imgs.Count then FIcons.Count := imgs.Count;
+
+  if not Assigned(FIcons[idx]) then
+  begin
+    Result := GetIconRefFromImageList(imgs, idx, size);
+    FIcons[idx] := Result;
+  end
+  else
+    Result := IconRef(FIcons[idx]);
+end;
+
+procedure TCarbonListView.UpdateColumnView;
+var
+  view: TListView;
+  firstIconed  : Boolean;
+  c : TCarbonListColumn;
+begin
+  view := TListView(LCLObject);
+  if not Assigned(view) then Exit;
+
+  if (view.ViewStyle = vsReport) and (FColumns.Count > 0) then
+  begin
+    firstIconed := Assigned(view.SmallImages);
+    C := TCarbonListColumn(FColumns[0]);
+    if C.TextWithIcon <> firstIconed then
+    begin
+      C.TextWithIcon := firstIconed;
+      C.ReCreate;
+    end;
+  end;
+end;
+
+procedure TCarbonListView.ClearIconCache;
+var
+  i : Integer;
+begin
+  for i := 0 to FIcons.Count - 1 do begin
+    if Assigned(FIcons[i]) then
+      ReleaseIconRef(FIcons[i]);
+  end;
+  FIcons.Clear;
 end;
 
 { TCarbonListBox }
@@ -1436,7 +1676,6 @@ end;
 procedure TCarbonCheckListBox.CheckChanged(AIndex: Integer; AChecked: Boolean);
 begin
   inherited;
-  
   LCLSendChangedMsg(LCLObject, AIndex);
 end;
 
