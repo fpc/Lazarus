@@ -391,7 +391,7 @@ begin
     NewBuffer.DiskEncoding:=NewBuffer.DiskEncoding;
     NewBuffer.MemEncoding:=NewBuffer.MemEncoding;
     NewBuffer.FCodeCache:=Self;
-    Result:=NewBuffer.Save;
+    Result:=NewBuffer.IsVirtual or NewBuffer.Save;
     //DebugLn('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
       NewBuffer.FCodeCache:=nil;
