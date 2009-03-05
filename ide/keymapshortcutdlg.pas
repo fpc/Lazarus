@@ -34,16 +34,14 @@ uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, LCLType,
   PropEdits, IDECommands, IDEWindowIntf,
-  KeyMapping, LazarusIDEStrConsts, Buttons;
+  KeyMapping, LazarusIDEStrConsts, Buttons, ButtonPanel;
 
 type
 
   { TShortCutDialog }
 
   TShortCutDialog = class(TForm)
-    BtnPanel: TPanel;
-    CancelButton: TBitBtn;
-    OkButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     PrimaryGroupBox: TGroupBox;
     SecondaryGroupBox: TGroupBox;
     procedure CancelButtonClick(Sender: TObject);
@@ -129,10 +127,8 @@ end;
 procedure TShortCutDialog.FormCreate(Sender: TObject);
 begin
   Caption := srkmEditForCmd;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  BtnPanel.OKButton.OnClick := @OkButtonClick;
+  BtnPanel.CancelButton.OnClick := @CancelButtonClick;
 
   IDEDialogLayoutList.ApplyLayout(Self, 480, 480);
 
