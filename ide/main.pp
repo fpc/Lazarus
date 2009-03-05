@@ -1542,7 +1542,7 @@ begin
   FCheckingFilesOnDisk:=true;
   try
     // stop debugging/compiling/...
-    if (ToolStatus=itExiting) and (not DoResetToolStatus(true)) then exit;
+    if (ToolStatus = itExiting) or not DoResetToolStatus(True) then exit;
 
     // check foreign windows
     if not CloseQueryIDEWindows then exit;
@@ -2545,9 +2545,9 @@ end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
 begin
-  if SourceNoteBook.Notebook=nil then exit;
+  if SourceNoteBook.Notebook = nil then Exit;
   DoSaveEditorFile(SourceNoteBook.Notebook.PageIndex,
-                   [sfSaveAs,sfCheckAmbiguousFiles]);
+                   [sfSaveAs, sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
@@ -8440,7 +8440,7 @@ begin
       DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
 
     // if we are saving a project to a temporary folder then we also need to save resources
-    // or compilation will be broken
+    // or compilation will fail
     if sfSaveToTestDir in Flags then
       if not Project1.Resources.Regenerate(DestFileName, False, True) then
         DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
