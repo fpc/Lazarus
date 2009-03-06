@@ -9215,6 +9215,7 @@ begin
   RegisterPropertyToSkip(TSynGutter, 'DigitCount', '', '');
   RegisterPropertyToSkip(TSynGutter, 'AllowSkipGutterSeparatorDraw', '', '');
   RegisterPropertyToSkip(TSynGutter, 'GutterParts', '', '');
+  RegisterPropertyToSkip(TSynGutter, 'OnChange', '', '');
 end;
 
 initialization
