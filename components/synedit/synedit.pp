@@ -601,9 +601,7 @@ type
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    {$IFDEF SYN_LAZARUS}
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
-    {$ENDIF}
     procedure KeyPress(var Key: Char); override;
     {$IFDEF SYN_LAZARUS}
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
@@ -2105,7 +2103,6 @@ begin
   GutterChanged(Self);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
   if Key='' then exit;
@@ -2120,19 +2117,20 @@ begin
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
-  end else
+    // Check if ecChar has handled the Key; Todo: move the condition, in one common place
+    if not ReadOnly and (Key >= #32) and (Key <> #127) then
+      Key:='';
+  end else begin
     // don't ignore further keys
     Exclude(fStateFlags, sfIgnoreNextChar);
-  // Key was handled anyway, so eat it!
-  Key:='';
+    // Key was handled anyway, so eat it!
+    Key:='';
+  end;
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.KeyPress(var Key: Char);
 begin
-  {$IFDEF SYN_LAZARUS}
   if Key=#0 then exit;
-  {$ENDIF}
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     {$IFDEF VerboseKeyboard}
@@ -2140,18 +2138,15 @@ begin
     {$ENDIF}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     CommandProcessor(ecChar, Key, nil);
-    {$IFNDEF SYN_LAZARUS}
-    // Key was handled anyway, so eat it!
-    Key:=#0;
-    {$ENDIF}
-  end else
+    // Check if ecChar has handled the Key; Todo: move the condition, in one common place
+    if not ReadOnly and (Key >= #32) and (Key <> #127) then
+      Key:=#0;
+  end else begin
     // don't ignore further keys
     Exclude(fStateFlags, sfIgnoreNextChar);
-  {$IFDEF SYN_LAZARUS}
-  // Key was handled anyway, so eat it!
-  // MG: the comment was right, the implementation not consequent enough
-  Key:=#0;
-  {$ENDIF}
+    // Key was handled anyway, so eat it!
+    Key:=#0;
+  end;
 end;
 
 procedure TCustomSynEdit.LinesChanging(Sender: TObject);
