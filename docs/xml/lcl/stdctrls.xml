@@ -1662,7 +1662,8 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.SetItems">
-        <short/>
+        <short>
+          <var>SetItems</var> writes the strings specified in <var>Value</var> to the <var>Items</var> list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1885,7 +1886,7 @@ False is set when the edit or combobox control loses focus.
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.CloseUp">
         <short>
-          <var>CloseUp</var> - softeare emulation of <var>OnCloseUp</var> event</short>
+          <var>CloseUp</var> - software emulation of <var>OnCloseUp</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4978,11 +4979,14 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomEdit.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomEdit.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomEdit.GetControlClassDefaultSize.Result">
@@ -7042,11 +7046,14 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TButtonActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
-        <short/>
+      <element name="TButtonActionLink.AssignClient">
+        <short>
+          <var>AssignClient</var> calls inherited method then sets up client as a ButtonControl</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TBasicActionLink.AssignClient">TBasicActionLink.AssignClient</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TButtonActionLink.AssignClient.AClient">
@@ -7206,11 +7213,14 @@ is done automatically by the streaming system.
           <var>Click</var> - checks if the parent form has a Modal Result, then calls inherited method</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TCustomButton.CreateWnd">
+        <short>
+          <var>CreateWnd</var> calls inherited method and sets default Widget Set</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.ControlKeyDown" link="#LCL.Controls.TWinControl.ControlKeyDown">
@@ -7855,11 +7865,14 @@ is the ancestor of all check-box components.</short>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
-        <short/>
+      <element name="TCustomCheckBox.InitializeWnd">
+        <short>
+          <var>InitializeWnd</var> calls inherited method and applies any changes</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.Toggle">
@@ -8169,7 +8182,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ParentFont">
+      <element name="TCheckBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
@@ -8959,11 +8972,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Notification" link="#LCL.Controls.TControl.Notification">
-        <short/>
+      <element name="TCustomLabel.Notification">
+        <short>
+          <var>Notification</var> calls inherited method and adjusts focus, if required</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomLabel.Notification.AComponent">
@@ -9105,7 +9121,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomLabel.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -9120,7 +9136,11 @@ is done automatically by the streaming system.
 </p>
         </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Loaded">TControl.Loaded</link>
+        </seealso>
+        <short>
+          <var>Loaded</var> calls inherited method and adjusts size</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomLabel.Alignment">
@@ -9941,6 +9961,18 @@ Reads or Writes flag if control is re-sized.
         </seealso>
       </element>
       <element name="TRadioButton.SetChecked" link="#LCL.StdCtrls.TButtonControl.SetChecked"/>
+      <element name="TCustomEdit.Alignment">
+        <short>
+          <var>Alignment</var> - whether text is left- or right-justified, or centered</short>
+      </element>
+      <element name="TCustomEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TEdit.Alignment" link="#LCL.StdCtrls.TCustomEdit.Alignment"/>
+      <element name="TMemo.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TMemo.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TMemo.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TButtonControl.CMWantSpecialKey" link="#LCL.Controls.TControl.CMWantSpecialKey"/>
+      <element name="TRadioButton.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TRadioButton.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
     </module>
     <!-- StdCtrls -->
   </package>
