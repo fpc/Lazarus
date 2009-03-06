@@ -7679,7 +7679,7 @@ function TMainIDE.SelectProjectItems(ItemList: TStringList;
   ItemType: TIDEProjectItem; MultiSelect: boolean): TModalResult;
 var
   i: integer;
-  MainUnitName, DlgCaption: string;
+  UnitName, DlgCaption: string;
   MainUnitInfo: TUnitInfo;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7703,10 +7703,11 @@ begin
     end else
     begin
       // add all unit names of project
-      if (Project1.Units[i].UnitName <> '') then
+      if (Project1.Units[i].FileName <> '') then
       begin
-        ItemList.AddObject(Project1.Units[i].UnitName,
-          TViewUnitsEntry.Create(Project1.Units[i].UnitName, i,
+        UnitName := ExtractFileName(Project1.Units[i].Filename);
+        ItemList.AddObject(UnitName,
+          TViewUnitsEntry.Create(UnitName, i,
                                  Project1.Units[i] = ActiveUnitInfo));
       end
       else
@@ -7715,12 +7716,11 @@ begin
         MainUnitInfo := Project1.MainUnitInfo;
         if pfMainUnitIsPascalSource in Project1.Flags then
         begin
-          MainUnitName := CreateSrcEditPageName('',
-            MainUnitInfo.Filename, MainUnitInfo.EditorIndex);
-          if MainUnitName <> '' then
+          UnitName := ExtractFileName(MainUnitInfo.Filename);
+          if UnitName <> '' then
           begin
-            ItemList.AddObject(MainUnitName,
-              TViewUnitsEntry.Create(MainUnitName, i, MainUnitInfo = ActiveUnitInfo));
+            ItemList.AddObject(UnitName,
+              TViewUnitsEntry.Create(UnitName, i, MainUnitInfo = ActiveUnitInfo));
           end;
         end;
       end;
