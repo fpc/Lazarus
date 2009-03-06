@@ -1779,11 +1779,28 @@ end;
 function TQtWidgetSet.GetActiveWindow: HWND;
 var
   Widget: QWidgetH;
+  W: TQtWidget;
+  SubW: TQtWidget;
+  Area: QMdiAreaH;
 begin
   Widget := QApplication_activeWindow;
   if Widget <> nil then
-    Result := HWND(QtObjectFromWidgetH(Widget))
-  else
+  begin
+    W := QtObjectFromWidgetH(Widget);
+    if W <> nil then
+    begin
+      if TQtMainWindow(W).MDIAreaHandle <> nil then
+      begin
+        Area := TQtMainWindow(W).MDIAreaHandle;
+        SubW := QtObjectFromWidgetH(QMdiArea_activeSubWindow(Area));
+        if SubW <> nil then
+          Result := HWND(SubW)
+        else
+          Result := HWND(W);
+      end else
+        Result := HWND(W);
+    end;
+  end else
     Result := 0;
 end;
 
