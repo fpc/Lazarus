@@ -54,6 +54,7 @@ type
   
 function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
+function ConvertPathDelims(const AFileName: String): String;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
 function UnQuote(const AValue: String): String;
 
@@ -135,6 +136,16 @@ begin
     end;
     Inc(n);
   end;
+end;
+
+function ConvertPathDelims(const AFileName: String): String;
+var
+  i: Integer;
+begin
+  Result := AFileName;
+  for i := 1 to length(Result) do
+    if Result[i] in ['/','\'] then
+      Result[i] := PathDelim;
 end;
 
 function Unquote(const AValue: String): String;

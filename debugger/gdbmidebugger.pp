@@ -2017,7 +2017,7 @@ begin
   Val(Frame.Values['addr'], Location.Address, e);
   if e=0 then ;
   Location.FuncName := Frame.Values['func'];
-  Location.SrcFile := Frame.Values['file'];
+  Location.SrcFile := ConvertPathDelims(Frame.Values['file']);
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
@@ -2255,7 +2255,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     if ExecuteCommand('info line * pointer(%s)', [S], [cfIgnoreError, cfNoMiCommand], R)
     then begin
       Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
-      Result.SrcFile := GetPart('\"', '\"', R.Values);
+      Result.SrcFile := ConvertPathDelims(GetPart('\"', '\"', R.Values));
     end;
   end;
 

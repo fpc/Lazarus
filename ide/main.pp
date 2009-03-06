@@ -11440,7 +11440,7 @@ begin
   {$ENDIF}
   if FilenameIsAbsolute(AFilename) then
   begin
-    Result := SwitchPathDelims(AFilename, pdsSystem);
+    Result := AFilename;
     if not FileExistsUTF8(Result) then
       Result := '';
     Exit;
