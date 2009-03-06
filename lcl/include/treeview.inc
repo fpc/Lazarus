@@ -4277,7 +4277,7 @@ var
       Brush.Color:=BackgroundColor;
       Pen.Color:=FExpandSignColor;
       Pen.Style:=psSolid;
-      HalfSize:=fExpandSignSize shr 1;
+      HalfSize:=FExpandSignSize shr 1;
       if ((FExpandSignSize and 1)=0) then dec(HalfSize);
       ALeft:=MidX-HalfSize;
       ATop:=MidY-HalfSize;
@@ -4441,7 +4441,7 @@ begin
 
     // draw expand sign
     if Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil)) then
-      DrawExpandSign(x - (Indent shr 1), VertMid, Node.Expanded);
+      DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
 
     // draw icon
     if (Images<>nil) and PaintImages then
@@ -5041,8 +5041,8 @@ var OldMaxRight, OldLastTop, OldMaxLvl: integer;
 begin
   if Canvas=nil then
     RaiseGDBException('Canvas=nil');
-  if (fExpandSignSize<0) then
-    RaiseGDBException('fExpandSignSize='+IntToStr(fExpandSignSize));
+  if (FExpandSignSize<0) then
+    RaiseGDBException('FExpandSignSize='+IntToStr(FExpandSignSize));
   if FDefItemHeight<0 then
     RaiseGDBException('FDefItemHeight='+IntToStr(FDefItemHeight));
   if FIndent<0 then
