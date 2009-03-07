@@ -764,7 +764,7 @@ var
         if P <> Start then begin
           SetLength(Str, P - Start);
           Move(Start^, Str[1], P - Start);
-          if FCaret.LinePos > FLines.Count then
+          if FCaret.LinePos > FLines.Count then {useless check. FCaret.LinePos cannot exceed FLines.Count}
             FLines.Add(StringOfChar(' ', InsertPos - 1) + Str)
           else begin
             TempString := FLines[FCaret.LinePos - 1];
@@ -792,6 +792,8 @@ var
             inc(p,2)
           else
             Inc(P);
+          if FCaret.LinePos = FLines.Count then
+            FLines.Add(StringOfChar(' ', InsertPos - 1));
           FCaret.LinePos := FCaret.LinePos + 1;
         end;
         Start := P;
