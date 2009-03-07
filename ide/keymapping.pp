@@ -2741,7 +2741,9 @@ begin
           Key.Shift2:=CurRelation.ShortcutB.Shift2;
         end;
         inc(KeyCnt);
-      end else begin
+      end
+      else
+      if MaxKeyCnt > 0 then begin
         // Key with a different ecCommand => Remove if it has a conflicting keystroke(s)
         if ( (CurRelation.ShortcutA.Key1 <> VK_UNKNOWN) and
              (Key.Key = CurRelation.ShortcutA.Key1)     and
