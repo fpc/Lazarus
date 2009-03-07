@@ -271,6 +271,20 @@ begin
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
+  // column mode selection
+  ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelDown: SetResult(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelLeft: SetResult(VK_LEFT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelRight: SetResult(VK_RIGHT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageDown: SetResult(VK_NEXT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageBottom: SetResult(VK_NEXT, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelPageUp: SetResult(VK_PRIOR, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageTop: SetResult(VK_PRIOR, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelLineStart: SetResult(VK_HOME, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelLineEnd: SetResult(VK_END, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelEditorTop: SetResult(VK_HOME, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelEditorBottom: SetResult(VK_END, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+
   // editing
   ecBlockIndent: SetResult2(VK_I,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_I,[]);
   ecBlockUnindent: SetResult2(VK_U,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_U,[]);
@@ -623,6 +637,20 @@ begin
   ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  // column mode selection
+  ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelDown: SetResult(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLeft: SetResult(VK_LEFT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelRight: SetResult(VK_RIGHT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageDown: SetResult(VK_NEXT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageBottom: SetResult(VK_NEXT, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageUp: SetResult(VK_PRIOR, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageTop: SetResult(VK_PRIOR, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLineStart: SetResult(VK_HOME, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLineEnd: SetResult(VK_END, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelEditorTop: SetResult(VK_HOME, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelEditorBottom: SetResult(VK_END, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
 
   // editing
   ecBlockIndent: SetResult(VK_K,[ssCtrl],VK_I,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1130,6 +1158,20 @@ begin
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
+// column mode selection
+  ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelDown: SetResult(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelLeft: SetResult(VK_LEFT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelRight: SetResult(VK_RIGHT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageDown: SetResult(VK_NEXT, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageBottom: SetResult(VK_NEXT, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelPageUp: SetResult(VK_PRIOR, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelPageTop: SetResult(VK_PRIOR, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelLineStart: SetResult(VK_HOME, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelLineEnd: SetResult(VK_END, [ssAlt, ssShift], VK_UNKNOWN,[]);
+  ecColSelEditorTop: SetResult(VK_HOME, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+  ecColSelEditorBottom: SetResult(VK_END, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[]);
+
   // editing
   ecBlockIndent: SetResult2(VK_I,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_I,[]);
   ecBlockUnindent: SetResult2(VK_U,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_U,[]);
@@ -1524,6 +1566,18 @@ begin
     ecSelPageBottom           : Result:= srkmecSelPageBottom;
     ecSelEditorTop            : Result:= srkmecSelEditorTop;
     ecSelEditorBottom         : Result:= srkmecSelEditorBottom;
+    ecColSelUp                : Result:= srkmecColSelUp;
+    ecColSelDown              : Result:= srkmecColSelDown;
+    ecColSelLeft              : Result:= srkmecColSelLeft;
+    ecColSelRight             : Result:= srkmecColSelRight;
+    ecColSelPageDown          : Result:= srkmecColSelPageDown;
+    ecColSelPageBottom        : Result:= srkmecColSelPageBottom;
+    ecColSelPageUp            : Result:= srkmecColSelPageUp;
+    ecColSelPageTop           : Result:= srkmecColSelPageTop;
+    ecColSelLineStart         : Result:= srkmecColSelLineStart;
+    ecColSelLineEnd           : Result:= srkmecColSelLineEnd;
+    ecColSelEditorTop         : Result:= srkmecColSelEditorTop;
+    ecColSelEditorBottom      : Result:= srkmecColSelEditorBottom;
     ecSelGotoXY               : Result:= srkmecSelGotoXY;
     ecSelectAll               : Result:= srkmecSelectAll;
     ecDeleteLastChar          : Result:= srkmecDeleteLastChar;
@@ -1989,6 +2043,22 @@ begin
   AddDefault(C, 'Select line', lisMenuSelectLine, ecSelectLine);
   AddDefault(C, 'Select paragraph', lisMenuSelectParagraph, ecSelectParagraph);
   AddDefault(C, 'Toggle Current-Word highlight', srkmecToggleMarkupWord, EcToggleMarkupWord);
+
+  // column mode selection
+  C:=Categories[AddCategory('Column Selection',srkmCatColSelection,
+                IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Column Select Up', srkmecColSelUp, ecColSelUp);
+  AddDefault(C, 'Column Select Down', srkmecColSelDown, ecColSelDown);
+  AddDefault(C, 'Column Select Left', srkmecColSelLeft, ecColSelLeft);
+  AddDefault(C, 'Column Select Right', srkmecColSelRight, ecColSelRight);
+  AddDefault(C, 'Column Select Page Down', srkmecColSelPageDown, ecColSelPageDown);
+  AddDefault(C, 'Column Select Page Bottom', srkmecColSelPageBottom, ecColSelPageBottom);
+  AddDefault(C, 'Column Select Page Up', srkmecColSelPageUp, ecColSelPageUp);
+  AddDefault(C, 'Column Select Page Top', srkmecColSelPageTop, ecColSelPageTop);
+  AddDefault(C, 'Column Select Line Start', srkmecColSelLineStart, ecColSelLineStart);
+  AddDefault(C, 'Column Select Line End', srkmecColSelLineEnd, ecColSelLineEnd);
+  AddDefault(C, 'Column Select to absolute beginning', srkmecColSelEditorTop, ecColSelEditorTop);
+  AddDefault(C, 'Column Select to absolute end', srkmecColSelEditorBottom, ecColSelEditorBottom);
 
   // editing - without menu items in the IDE bar
   C:=Categories[AddCategory('text editing commands',srkmCatEditing,

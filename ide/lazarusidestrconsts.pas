@@ -1838,6 +1838,18 @@ resourcestring
   srkmecSelPageBottom         = 'Select Page Bottom';
   srkmecSelEditorTop          = 'Select to absolute beginning';
   srkmecSelEditorBottom       = 'Select to absolute end';
+  srkmecColSelUp              = 'Column Select Up';
+  srkmecColSelDown            = 'Column Select Down';
+  srkmecColSelLeft            = 'Column Select Left';
+  srkmecColSelRight           = 'Column Select Right';
+  srkmecColSelPageDown        = 'Column Select Page Down';
+  srkmecColSelPageBottom      = 'Column Select Page Bottom';
+  srkmecColSelPageUp          = 'Column Select Page Up';
+  srkmecColSelPageTop         = 'Column Select Page Top';
+  srkmecColSelLineStart       = 'Column Select Line Start';
+  srkmecColSelLineEnd         = 'Column Select Line End';
+  srkmecColSelEditorTop       = 'Column Select to absolute beginning';
+  srkmecColSelEditorBottom    = 'Column Select to absolute end';
   srkmecSelGotoXY             = 'Select Goto XY';
   srkmecSelectAll             = 'Select All';
   srkmecDeleteLastChar        = 'Delete Last Char';
@@ -2065,6 +2077,7 @@ resourcestring
   // Category
   srkmCatCursorMoving   = 'Cursor moving commands';
   srkmCatSelection      = 'Text selection commands';
+  srkmCatColSelection   = 'Text column selection commands';
   srkmCatEditing        = 'Text editing commands';
   lisKMDeleteLastChar = 'Delete last char';
   srkmCatCmdCmd         = 'Command commands';

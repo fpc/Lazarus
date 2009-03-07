@@ -106,6 +106,7 @@ type
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false; ChangeReason: TSynChangeReason = crInsert);
     function  SelAvail: Boolean;
+    function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     property  Enabled: Boolean read FEnabled write SetEnabled;
     property  SpacesToTabs: Boolean read FSpacesToTabs write FSpacesToTabs;
@@ -1079,6 +1080,13 @@ function TSynEditSelection.SelAvail : Boolean;
 begin
   Result := (FStartBytePos <> FEndBytePos) or
     ((FStartLinePos <> FEndLinePos) and (FActiveSelectionMode <> smColumn));
+end;
+
+function TSynEditSelection.SelCanContinue(ACaret: TSynEditCaret): Boolean;
+begin
+  if SelAvail then exit(True);
+  Result := (FActiveSelectionMode = smColumn) and (FEndLinePos = ACaret.LinePos)
+    and (FEndBytePos = ACaret.BytePos);
 end;
 
 function TSynEditSelection.IsBackwardSel: Boolean;

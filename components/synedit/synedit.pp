@@ -5806,9 +5806,14 @@ begin
   IncPaintLock;
   bCaretAdjust := FCaret.AdjustToNextChar;
   try
+    if Command in [ecColSelLeft..ecColSelEditorBottom] then
+      FBlockSelection.ActiveSelectionMode := smColumn
+    else
+      FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+
     case Command of
 // horizontal caret movement or selection
-      ecLeft, ecSelLeft:
+      ecLeft, ecSelLeft, ecColSelLeft:
         begin
           {$IFDEF SYN_LAZARUS}
           if (eoCaretSkipsSelection in Options2) and (Command=ecLeft)
@@ -5816,9 +5821,9 @@ begin
             CaretXY:=LogicalToPhysicalPos(BlockBegin);
           end else
           {$ENDIF}
-            MoveCaretHorz(-1, Command = ecSelLeft);
+            MoveCaretHorz(-1, Command in [ecSelLeft, ecColSelLeft]);
         end;
-      ecRight, ecSelRight:
+      ecRight, ecSelRight, ecColSelRight:
         begin
           {$IFDEF SYN_LAZARUS}
           if (eoCaretSkipsSelection in Options2) and (Command=ecRight)
@@ -5826,41 +5831,41 @@ begin
             CaretXY:=LogicalToPhysicalPos(BlockEnd);
           end else
           {$ENDIF}
-            MoveCaretHorz(1, Command = ecSelRight);
+            MoveCaretHorz(1, Command in [ecSelRight, ecColSelRight]);
         end;
-      ecPageLeft, ecSelPageLeft:
+      ecPageLeft, ecSelPageLeft, ecColSelPageLeft:
         begin
-          MoveCaretHorz(-CharsInWindow, Command = ecSelPageLeft);
+          MoveCaretHorz(-CharsInWindow, Command in [ecSelPageLeft, ecColSelPageLeft]);
         end;
-      ecPageRight, ecSelPageRight:
+      ecPageRight, ecSelPageRight, ecColSelPageRight:
         begin
-          MoveCaretHorz(CharsInWindow, Command = ecSelPageRight);
+          MoveCaretHorz(CharsInWindow, Command in [ecSelPageRight, ecColSelPageRight]);
         end;
-      ecLineStart, ecSelLineStart:
-        DoHomeKey(Command=ecSelLineStart);
+      ecLineStart, ecSelLineStart, ecColSelLineStart:
+        DoHomeKey(Command in [ecSelLineStart, ecColSelLineStart]);
         {begin
           MoveCaretAndSelectionPhysical(CaretXY,Point(1, CaretY),
                                         Command = ecSelLineStart);
           fLastCaretX := CaretX;
         end;}
-      ecLineEnd, ecSelLineEnd:
-        DoEndKey(Command=ecSelLineEnd);
+      ecLineEnd, ecSelLineEnd, ecColSelLineEnd:
+        DoEndKey(Command in [ecSelLineEnd, ecColSelLineEnd]);
 // vertical caret movement or selection
-      ecUp, ecSelUp:
+      ecUp, ecSelUp, ecColSelUp:
         begin
-          MoveCaretVert(-1, Command = ecSelUp);
+          MoveCaretVert(-1, Command in [ecSelUp, ecColSelUp]);
           {$IFNDEF SYN_LAZARUS}
           Update;
           {$ENDIF}
         end;
-      ecDown, ecSelDown:
+      ecDown, ecSelDown, ecColSelDown:
         begin
-          MoveCaretVert(1, Command = ecSelDown);
+          MoveCaretVert(1, Command in [ecSelDown, ecColSelDown]);
           {$IFNDEF SYN_LAZARUS}
           Update;
           {$ENDIF}
         end;
-      ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown:
+      ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown, ecColSelPageUp, ecColSelPageDown:
         begin
           {$IFDEF SYN_LAZARUS}
           counter := fLinesInWindow;
@@ -5877,20 +5882,20 @@ begin
           {$ELSE}
           TopLine := TopLine + counter;
           {$ENDIF}
-          MoveCaretVert(counter, Command in [ecSelPageUp, ecSelPageDown]);
+          MoveCaretVert(counter, Command in [ecSelPageUp, ecSelPageDown, ecColSelPageUp, ecColSelPageDown]);
           Update;
         end;
-      ecPageTop, ecSelPageTop:
+      ecPageTop, ecSelPageTop, ecColSelPageTop:
         begin
           {$IFDEF SYN_LAZARUS}
           MoveCaretAndSelectionPhysical
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (CaretXY, Point(CaretX, TopLine), Command = ecSelPageTop);
+            (CaretXY, Point(CaretX, TopLine), Command in [ecSelPageTop, ecColSelPageTop]);
           Update;
         end;
-      ecPageBottom, ecSelPageBottom:
+      ecPageBottom, ecSelPageBottom, ecColSelPageBottom:
         begin
           CaretNew := Point(CaretX, ScreenRowToRow(LinesInWindow - 1));
           {$IFDEF SYN_LAZARUS}
@@ -5898,20 +5903,20 @@ begin
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (CaretXY, CaretNew, Command = ecSelPageBottom);
+            (CaretXY, CaretNew, Command in [ecSelPageBottom, ecColSelPageBottom]);
           Update;
         end;
-      ecEditorTop, ecSelEditorTop:
+      ecEditorTop, ecSelEditorTop, ecColSelEditorTop:
         begin
           {$IFDEF SYN_LAZARUS}
           MoveCaretAndSelectionPhysical
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (CaretXY, Point(1, 1), Command = ecSelEditorTop);
+            (CaretXY, Point(1, 1), Command in [ecSelEditorTop, ecColSelEditorTop]);
           Update;
         end;
-      ecEditorBottom, ecSelEditorBottom:
+      ecEditorBottom, ecSelEditorBottom, ecColSelEditorBottom:
         begin
           {$IFDEF SYN_LAZARUS}
           CaretNew := Point(1, FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1);
@@ -5926,7 +5931,7 @@ begin
             {$ELSE}
             CaretXY,
             {$ENDIF}
-            CaretNew, Command = ecSelEditorBottom);
+            CaretNew, Command in [ecSelEditorBottom, ecColSelEditorBottom]);
           Update;
         end;
 // goto special line / column position
@@ -7630,7 +7635,8 @@ begin
   FCaret.ForcePastEOL := True;
   if SelectionCommand then begin
     //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
-    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+    if not FBlockSelection.SelCanContinue(FCaret) then
+      SetBlockBegin(PhysicalToLogicalPos(CaretXY));
     SetBlockEnd(FInternalCaret.LineBytePos);
     //debugln('TCustomSynEdit.MoveCaretHorz B BB=',dbgs(BlockBegin),' BE=',dbgs(BlockEnd));
     AquirePrimarySelection;
@@ -7696,6 +7702,7 @@ var
   NewCaret: TPoint;
   OldCaret: TPoint;
   SaveLastCaretX: LongInt;
+  SelContinue: Boolean;
 begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
@@ -7705,11 +7712,12 @@ begin
     NewCaret.X:=fLastCaretX;
   IncPaintLock;
   SaveLastCaretX:=fLastCaretX;
+  SelContinue := FBlockSelection.SelCanContinue(FCaret);
   CaretXY:=NewCaret;
   fLastCaretX:=SaveLastCaretX;
   // set caret and block begin / end
   if SelectionCommand then begin
-    if not SelAvail then begin
+    if not SelContinue then begin
       OldCaret := PhysicalToLogicalPos(OldCaret);
       if (OldCaret.X > Length(FTheLinesView[OldCaret.Y-1]) + 1) and
          not(eoScrollPastEol in Options) then

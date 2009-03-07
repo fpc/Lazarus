@@ -96,6 +96,7 @@ const
   ecSelection       = 100;  // Add this to ecXXX command to get equivalent
                             // command, but with selection enabled. This is not
                             // a command itself.
+
   // Same as commands above, except they affect selection, too
   ecSelLeft         = ecLeft + ecSelection;
   ecSelRight        = ecRight + ecSelection;
@@ -114,6 +115,26 @@ const
   ecSelEditorTop    = ecEditorTop + ecSelection;
   ecSelEditorBottom = ecEditorBottom + ecSelection;
   ecSelGotoXY       = ecGotoXY + ecSelection;  // Data = PPoint
+
+  // Allow access to column mode selection
+  ecColumnSelection = ecSelection+50;
+
+  ecColSelLeft       = ecLeft + ecColumnSelection;
+  ecColSelRight      = ecRight + ecColumnSelection;
+  ecColSelUp         = ecUp + ecColumnSelection;
+  ecColSelDown       = ecDown + ecColumnSelection;
+  ecColSelLineStart  = ecLineStart + ecColumnSelection;
+  ecColSelLineEnd    = ecLineEnd + ecColumnSelection;
+  ecColSelPageUp     = ecPageUp + ecColumnSelection;
+  ecColSelPageDown   = ecPageDown + ecColumnSelection;
+  ecColSelPageLeft   = ecPageLeft + ecColumnSelection;
+  ecColSelPageRight  = ecPageRight + ecColumnSelection;
+  ecColSelPageTop    = ecPageTop + ecColumnSelection;
+  ecColSelPageBottom = ecPageBottom + ecColumnSelection;
+  ecColSelEditorTop    = ecEditorTop + ecColumnSelection;
+  ecColSelEditorBottom = ecEditorBottom + ecColumnSelection;
+
+
 
   ecSelectAll       = 199;  // Select entire contents of editor, cursor to end
 
@@ -967,6 +988,19 @@ begin
   AddKey(ecTab, VK_TAB, []);
   AddKey(ecShiftTab, VK_TAB, [ssShift]);
   AddKey(ecMatchBracket, ord('B'), [ssCtrl,ssShift]);
+
+  AddKey(ecColSelUp, VK_UP,    [ssAlt, ssShift]);
+  AddKey(ecColSelDown, VK_DOWN,  [ssAlt, ssShift]);
+  AddKey(ecColSelLeft, VK_LEFT, [ssAlt, ssShift]);
+  AddKey(ecColSelRight, VK_RIGHT, [ssAlt, ssShift]);
+  AddKey(ecColSelPageDown, VK_NEXT, [ssAlt, ssShift]);
+  AddKey(ecColSelPageBottom, VK_NEXT, [ssAlt, ssShift,ssCtrl]);
+  AddKey(ecColSelPageUp, VK_PRIOR, [ssAlt, ssShift]);
+  AddKey(ecColSelPageTop, VK_PRIOR, [ssAlt, ssShift,ssCtrl]);
+  AddKey(ecColSelLineStart, VK_HOME, [ssAlt, ssShift]);
+  AddKey(ecColSelLineEnd, VK_END, [ssAlt, ssShift]);
+  AddKey(ecColSelEditorTop, VK_HOME, [ssAlt, ssShift,ssCtrl]);
+  AddKey(ecColSelEditorBottom, VK_END, [ssAlt, ssShift,ssCtrl]);
 end;
 
 procedure TSynEditKeyStrokes.SetItem(Index: Integer; Value: TSynEditKeyStroke);

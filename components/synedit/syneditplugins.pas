@@ -533,7 +533,7 @@ begin
               Accept;
               Handled := True;
             end;
-            ecLeft, ecSelLeft:
+            ecLeft, ecSelLeft, ecColSelLeft:
               if CurrentString = '' then
                 Handled := True;
             ecDeleteLastChar:
@@ -542,7 +542,7 @@ begin
             ecTab:
               Accept;
             ecDeleteChar,
-            ecRight, ecSelRight,
+            ecRight, ecSelRight, ecColSelRight,
             ecLostFocus, ecGotFocus:
               ; {processed on AfterProcessing}
             else
@@ -555,10 +555,10 @@ begin
           ecDeleteChar:
             ;
           ecDeleteLastChar,
-          ecLeft, ecSelLeft,
+          ecLeft, ecSelLeft, ecColSelLeft,
           ecChar:
             CurrentString := GetCurrentEditorString;
-          ecRight, ecSelRight: begin
+          ecRight, ecSelRight, ecColSelRight: begin
             iString := GetCurrentEditorString;
             if iString = '' then
               Cancel
