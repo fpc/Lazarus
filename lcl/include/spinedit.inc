@@ -173,7 +173,7 @@ end;
 function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Double): Double;
 begin
   Result := AValue;
-  if FMaxValue > FMinValue then
+  if FMaxValue >= FMinValue then
   begin
     if Result < FMinValue then Result := FMinValue;
     if Result > FMaxValue then Result := FMaxValue;

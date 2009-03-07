@@ -133,7 +133,7 @@ begin
   wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
 
-  if ACustomFloatSpinEdit.MaxValue > ACustomFloatSpinEdit.MinValue then
+  if ACustomFloatSpinEdit.MaxValue >= ACustomFloatSpinEdit.MinValue then
   begin
     AMin := ACustomFloatSpinEdit.MinValue;
     AMax := ACustomFloatSpinEdit.MaxValue;
