@@ -4283,7 +4283,7 @@ end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
-  ScanFrom(AIndex - 1, Min(AIndex, AIndex + ACount));
+  ScanFrom(AIndex - 1, Max(AIndex, AIndex + ACount));
   InvalidateLines(AIndex + 1, -1);
   InvalidateGutterLines(AIndex + 1, -1);
 end;
@@ -4301,7 +4301,7 @@ begin
       fHighlighterNeedsUpdateEndLine:=AIndex+1;
     exit;
   end;
-  EndIndex:=ScanFrom(AIndex) + 1;
+  EndIndex := ScanFrom(AIndex, Max(AIndex, AIndex + ACount)) + 1;
   InvalidateLines(AIndex + 1, EndIndex);
   InvalidateGutterLines(AIndex + 1, EndIndex);
 end;
