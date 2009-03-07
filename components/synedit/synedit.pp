@@ -5806,9 +5806,9 @@ begin
   IncPaintLock;
   bCaretAdjust := FCaret.AdjustToNextChar;
   try
-    if Command in [ecColSelLeft..ecColSelEditorBottom] then
-      FBlockSelection.ActiveSelectionMode := smColumn
-    else
+    if Command in [ecSelColCmdRangeStart..ecSelColCmdRangeEnd] then
+      FBlockSelection.ActiveSelectionMode := smColumn;
+    if Command in [ecSelCmdRangeStart..ecSelCmdRangeEnd] then
       FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
 
     case Command of

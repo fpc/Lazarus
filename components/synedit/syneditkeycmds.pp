@@ -116,6 +116,9 @@ const
   ecSelEditorBottom = ecEditorBottom + ecSelection;
   ecSelGotoXY       = ecGotoXY + ecSelection;  // Data = PPoint
 
+  ecSelCmdRangeStart = ecLeft + ecSelection;
+  ecSelCmdRangeEnd   = ecLeft + ecSelection + 49;
+
   // Allow access to column mode selection
   ecColumnSelection = ecSelection+50;
 
@@ -134,6 +137,8 @@ const
   ecColSelEditorTop    = ecEditorTop + ecColumnSelection;
   ecColSelEditorBottom = ecEditorBottom + ecColumnSelection;
 
+  ecSelColCmdRangeStart = ecLeft + ecColumnSelection;
+  ecSelColCmdRangeEnd   = ecLeft + ecColumnSelection + 48; // 1 less for ecSelectAll
 
 
   ecSelectAll       = 199;  // Select entire contents of editor, cursor to end
