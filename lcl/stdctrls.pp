@@ -855,6 +855,7 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -910,6 +911,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
+    property ParentColor;
     property ParentFont;
     property PopupMenu;
     property ParentShowHint;
