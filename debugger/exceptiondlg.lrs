@@ -13,18 +13,19 @@ LazarusResources.Add('TExceptionDialog','FORMDATA',[
   +'eTop.Control'#7#10'lblMessage'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'Anc'
   +'horSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24
   +'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBotto'
-  +'m'#4'Left'#3#19#2#6'Height'#2#25#3'Top'#2'R'#5'Width'#2'K'#7'Anchors'#11#5
-  +'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#6'Cancel'#9#7'Caption'#6#11
-  +'btnContinue'#21'Constraints.MinHeight'#2#25#20'Constraints.MinWidth'#2'K'#11
-  +'ModalResult'#2#2#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'btnBreak'#21'AnchorSideTo'
-  +'p.Control'#7#10'lblMessage'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'Anchor'
-  +'SideRight.Control'#7#11'btnContinue'#24'AnchorSideBottom.Control'#7#5'Owner'
-  +#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#194#1#6'Height'#2#25#3'T'
-  +'op'#2'R'#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing'
-  +'.Around'#2#6#7'Caption'#6#8'btnBreak'#21'Constraints.MinHeight'#2#25#20'Con'
-  +'straints.MinWidth'#2'K'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0
-  +#9'TCheckBox'#21'cbIgnoreExceptionType'#22'AnchorSideLeft.Control'#7#5'Owner'
-  +#21'AnchorSideTop.Control'#7#8'btnBreak'#18'AnchorSideTop.Side'#7#9'asrCente'
-  +'r'#4'Left'#2#6#6'Height'#2#17#3'Top'#2'V'#5'Width'#3#131#0#20'BorderSpacing'
-  +'.Around'#2#6#7'Caption'#6#21'cbIgnoreExceptionType'#8'TabOrder'#2#2#0#0#0
+  +'m'#4'Left'#3#9#2#6'Height'#2#25#3'Top'#2'R'#5'Width'#2'U'#7'Anchors'#11#5'a'
+  +'kTop'#7'akRight'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#6'Cancel'#9#7
+  +'Caption'#6#11'btnContinue'#21'Constraints.MinHeight'#2#25#20'Constraints.Mi'
+  +'nWidth'#2'K'#11'ModalResult'#2#2#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'btnBreak'
+  +#21'AnchorSideTop.Control'#7#10'lblMessage'#18'AnchorSideTop.Side'#7#9'asrBo'
+  +'ttom'#23'AnchorSideRight.Control'#7#11'btnContinue'#24'AnchorSideBottom.Con'
+  +'trol'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#184#1#6
+  +'Height'#2#25#3'Top'#2'R'#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#8
+  +'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#8'btnBreak'#21'Constr'
+  +'aints.MinHeight'#2#25#20'Constraints.MinWidth'#2'K'#7'Default'#9#11'ModalRe'
+  +'sult'#2#1#8'TabOrder'#2#0#0#0#9'TCheckBox'#21'cbIgnoreExceptionType'#22'Anc'
+  +'horSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#8'btnBreak'#18
+  +'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#6#6'Height'#2#17#3'Top'#2'V'#5
+  +'Width'#3#131#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#21'cbIgnoreExcepti'
+  +'onType'#8'TabOrder'#2#2#0#0#0
 ]);
