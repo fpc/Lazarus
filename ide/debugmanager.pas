@@ -86,7 +86,10 @@ type
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
-    procedure DebuggerException(Sender: TObject; const AExceptionType: TDBGExceptionType; const AExceptionClass, AExceptionText: String);
+    procedure DebuggerException(Sender: TObject;
+      const AExceptionType: TDBGExceptionType;
+      const AExceptionClass, AExceptionText: String;
+      out AContinue: Boolean);
 
     // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
@@ -1261,7 +1264,10 @@ end;
 // Debugger events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.DebuggerException(Sender: TObject; const AExceptionType: TDBGExceptionType; const AExceptionClass, AExceptionText: String);
+procedure TDebugManager.DebuggerException(Sender: TObject;
+  const AExceptionType: TDBGExceptionType;
+  const AExceptionClass, AExceptionText: String;
+  out AContinue: Boolean);
 
   function GetTitle: String;
   begin
@@ -1274,9 +1280,14 @@ var
   ExceptMsg: string;
   msg: String;
   Ignore: Boolean;
-  Res: TModalResult;
 begin
-  if Destroying then exit;
+  if Destroying then
+  begin
+    AContinue := True;
+    Exit;
+  end
+  else
+    AContinue := False;
 
   if AExceptionText = ''
   then
@@ -1293,14 +1304,12 @@ begin
   end;
 
   if AExceptionType <> deInternal then
-    MessageDlg('Error', msg, mtError,[mbOk],0)
+    MessageDlg('Error', msg, mtError, [mbOk], 0)
   else
   begin
-    Res := ExecuteExceptionDialog(msg, Ignore);
+    AContinue := ExecuteExceptionDialog(msg, Ignore) = mrCancel;
     if Ignore then
       TManagedExceptions(Exceptions).AddIfNeeded(AExceptionClass);
-    if Res = mrCancel then
-      FDebugger.Run;
   end;
 end;
 

@@ -2276,6 +2276,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   procedure ProcessException(AInfo: TGDBMIExceptionInfo);
   var
     ExceptionMessage: String;
+    CanContinue: Boolean;
   begin
     if dfImplicidTypes in FDebuggerFlags
     then begin
@@ -2285,39 +2286,47 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
-    DoException(deInternal, AInfo.Name, ExceptionMessage);
-    DoCurrent(GetLocation);
+    DoException(deInternal, AInfo.Name, ExceptionMessage, CanContinue);
+    if CanContinue
+    then ExecuteCommand('-exec-continue', [])
+    else DoCurrent(GetLocation);
   end;
 
   procedure ProcessBreak;
   var
     ErrorNo: Integer;
+    CanContinue: Boolean;
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then ErrorNo := GetIntValue(FTargetRegisters[0], [])
     else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '');
-    DoCurrent(GetLocation);
+    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
+    if CanContinue
+    then ExecuteCommand('-exec-continue', [])
+    else DoCurrent(GetLocation);
   end;
 
   procedure ProcessRunError;
   var
     ErrorNo: Integer;
+    CanContinue: Boolean;
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then ErrorNo := GetIntValue(FTargetRegisters[0], [])
     else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '');
-    ProcessFrame(GetFrame(1));
+    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
+    if CanContinue
+    then ExecuteCommand('-exec-continue', [])
+    else ProcessFrame(GetFrame(1));
   end;
 
   procedure ProcessSignalReceived(const AList: TGDBMINameValueList);
   var
-    SigInt: Boolean;
+    SigInt, CanContinue: Boolean;
     S: String;
   begin
     // TODO: check to run (un)handled
@@ -2333,7 +2342,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then SetState(dsPause);
 
     if not SigInt
-    then DoException(deExternal, 'External: ' + S, '');
+    then DoException(deExternal, 'External: ' + S, '', CanContinue);
 
     if not AIgnoreSigIntState
     or not SigInt
@@ -2370,7 +2379,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
-      DoException(deExternal, 'External: ' + List.Values['signal-name'], '');
+      DoException(deExternal, 'External: ' + List.Values['signal-name'], '', CanContinue);
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;

@@ -1057,7 +1057,9 @@ type
   TDBGCurrentLineEvent = procedure(Sender: TObject;
                                    const ALocation: TDBGLocationRec) of object;
   TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionType: TDBGExceptionType; 
-                                 const AExceptionClass: String; const AExceptionText: String) of object;
+                                 const AExceptionClass: String;
+                                 const AExceptionText: String;
+                                 out AContinue: Boolean) of object;
 
   TDebuggerProperties = class(TPersistent)
   private
@@ -1109,7 +1111,7 @@ type
     function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
-    procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String);
+    procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String; out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DoState(const OldState: TDBGState); virtual;
@@ -1455,10 +1457,12 @@ begin
 end;
 
 procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String;
-  const AExceptionText: String);
+  const AExceptionText: String; out AContinue: Boolean);
 begin
   if Assigned(FOnException) then
-    FOnException(Self, AExceptionType, AExceptionClass, AExceptionText);
+    FOnException(Self, AExceptionType, AExceptionClass, AExceptionText, AContinue)
+  else
+    AContinue := True;
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
