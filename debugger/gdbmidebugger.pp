@@ -2285,7 +2285,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
-    DoException(AInfo.Name, ExceptionMessage);
+    DoException(deInternal, AInfo.Name, ExceptionMessage);
     DoCurrent(GetLocation);
   end;
 
@@ -2298,7 +2298,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    DoException(Format('RunError(%d)', [ErrorNo]), '');
+    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '');
     DoCurrent(GetLocation);
   end;
 
@@ -2311,7 +2311,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    DoException(Format('RunError(%d)', [ErrorNo]), '');
+    DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '');
     ProcessFrame(GetFrame(1));
   end;
 
@@ -2333,7 +2333,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then SetState(dsPause);
 
     if not SigInt
-    then DoException('External: ' + S, '');
+    then DoException(deExternal, 'External: ' + S, '');
 
     if not AIgnoreSigIntState
     or not SigInt
@@ -2370,7 +2370,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
-      DoException('External: ' + List.Values['signal-name'], '');
+      DoException(deExternal, 'External: ' + List.Values['signal-name'], '');
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
@@ -2410,7 +2410,7 @@ begin
         ExceptionInfo := GetExceptionInfo;
 
         // check if we should ignore this exception
-        if Exceptions.Find(ExceptionInfo.Name) <> nil
+        if Exceptions.IgnoreAll or (Exceptions.Find(ExceptionInfo.Name) <> nil)
         then ExecuteCommand('-exec-continue', [])
         else begin
           SetState(dsPause);

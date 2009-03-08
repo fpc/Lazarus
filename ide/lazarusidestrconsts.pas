@@ -3742,7 +3742,7 @@ resourcestring
   lisDebugOptionsFrmInterface = 'Interface';
   lisDebugOptionsFrmLanguageExceptions = 'Language Exceptions';
   lisDebugOptionsFrmIgnoreTheseExceptions = 'Ignore these exceptions';
-  lisDebugOptionsFrmBreakOnLazarusExceptions = 'Break on Lazarus Exceptions';
+  lisDebugOptionsFrmNotifyOnLazarusExceptions = 'Notify on Lazarus Exceptions';
   lisDebugOptionsFrmOSExceptions = 'OS Exceptions';
   lisDebugOptionsFrmSignals = 'Signals';
   lisDebugOptionsFrmName = 'Name';
@@ -3914,6 +3914,11 @@ resourcestring
   lisRegistersDlgName = 'Name';
   lisRegistersDlgValue = 'Value';
 
+  // Exception Dialog
+  lisExceptionDialog = 'Debugger Exception Notification';
+  lisBtnBreak = 'Break';
+  lisBtnContinue = 'Continue';
+  lisIgnoreExceptionType = 'Ignore this exception type';
 
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
   

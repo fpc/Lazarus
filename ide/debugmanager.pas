@@ -53,7 +53,7 @@ uses
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm,
+  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -86,7 +86,7 @@ type
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
-    procedure DebuggerException(Sender: TObject; const AExceptionClass, AExceptionText: String);
+    procedure DebuggerException(Sender: TObject; const AExceptionType: TDBGExceptionType; const AExceptionClass, AExceptionText: String);
 
     // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
@@ -364,6 +364,7 @@ type
     procedure AddDefault;
   public
     constructor Create(const AManager: TDebugManager);
+    procedure AddIfNeeded(AName: string);
     procedure Reset; override;
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
@@ -754,21 +755,21 @@ begin
       if Item.Enabled and (FMaster.Find(Item.Name) = nil)
       then FMaster.Add(Item.Name);
     end;
+    FMaster.IgnoreAll := IgnoreAll;
   end;
 end;
 
 procedure TManagedExceptions.AddDefault;
-
-  procedure AddIfNeeded(AName: string);
-  begin
-    if Find(AName) = nil then
-      Add(AName);
-  end;
-
 begin
   AddIfNeeded('EAbort');
   AddIfNeeded('ECodetoolError');
   AddIfNeeded('EFOpenError');
+end;
+
+procedure TManagedExceptions.AddIfNeeded(AName: string);
+begin
+  if Find(AName) = nil then
+    Add(AName);
 end;
 
 { TManagedSignal }
@@ -1244,18 +1245,27 @@ end;
 // Debugger events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.DebuggerException(Sender: TObject; const AExceptionClass, AExceptionText: String);
+procedure TDebugManager.DebuggerException(Sender: TObject; const AExceptionType: TDBGExceptionType; const AExceptionClass, AExceptionText: String);
+
+  function GetTitle: String;
+  begin
+    Result := Project1.Title;
+    if Result = '' then
+      Result := ExtractFileName(FDebugger.FileName);
+  end;
+
 var
   ExceptMsg: string;
   msg: String;
-
+  Ignore: Boolean;
+  Res: TModalResult;
 begin
   if Destroying then exit;
 
   if AExceptionText = ''
   then
     msg := Format('Project %s raised exception class ''%s''.',
-                  [Project1.Title, AExceptionClass])
+                  [GetTitle, AExceptionClass])
   else begin
     ExceptMsg := AExceptionText;
     // if AExceptionText is not a valid UTF8 string,
@@ -1263,10 +1273,19 @@ begin
     if FindInvalidUTF8Character(pchar(ExceptMsg),length(ExceptMsg), False) > 0 then
       ExceptMsg := AnsiToUtf8(ExceptMsg);
     msg := Format('Project %s raised exception class ''%s'' with message:%s%s',
-                  [Project1.Title, AExceptionClass, #13, ExceptMsg]);
+                  [GetTitle, AExceptionClass, #13, ExceptMsg]);
   end;
 
-  MessageDlg('Error', msg, mtError,[mbOk],0);
+  if AExceptionType <> deInternal then
+    MessageDlg('Error', msg, mtError,[mbOk],0)
+  else
+  begin
+    Res := ExecuteExceptionDialog(msg, Ignore);
+    if Ignore then
+      TManagedExceptions(Exceptions).AddIfNeeded(AExceptionClass);
+    if Res = mrCancel then
+      FDebugger.Run;
+  end;
 end;
 
 procedure TDebugManager.DebuggerOutput(Sender: TObject; const AText: String);

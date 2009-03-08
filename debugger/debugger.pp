@@ -79,6 +79,12 @@ type
     dsError
     );
 
+  TDBGExceptionType = (
+    deInternal,
+    deExternal,
+    deRunError
+  );
+
 {
   Debugger states
   --------------------------------------------------------------------------
@@ -981,14 +987,18 @@ type
   { TBaseExceptions }
   TBaseExceptions = class(TCollection)
   private
+    FIgnoreAll: Boolean;
     function Add(const AName: String): TBaseException;
     function Find(const AName: String): TBaseException;
+    procedure SetIgnoreAll(const AValue: Boolean);
   protected
+    procedure AssignTo(Dest: TPersistent); override;
     procedure ClearExceptions; virtual;
   public
     constructor Create(const AItemClass: TBaseExceptionClass);
     destructor Destroy; override;
     procedure Reset; virtual;
+    property IgnoreAll: Boolean read FIgnoreAll write SetIgnoreAll;
   end;
 
   { TDBGExceptions }
@@ -1046,8 +1056,8 @@ type
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject;
                                    const ALocation: TDBGLocationRec) of object;
-  TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionClass: String;
-                                 const AExceptionText: String) of object;
+  TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionType: TDBGExceptionType; 
+                                 const AExceptionClass: String; const AExceptionText: String) of object;
 
   TDebuggerProperties = class(TPersistent)
   private
@@ -1099,7 +1109,7 @@ type
     function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
-    procedure DoException(const AExceptionClass: String; const AExceptionText: String);
+    procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DoState(const OldState: TDBGState); virtual;
@@ -1444,11 +1454,11 @@ begin
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
 end;
 
-procedure TDebugger.DoException(const AExceptionClass: String;
+procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String;
   const AExceptionText: String);
 begin
   if Assigned(FOnException) then
-    FOnException(Self, AExceptionClass, AExceptionText);
+    FOnException(Self, AExceptionType, AExceptionClass, AExceptionText);
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
@@ -3914,6 +3924,7 @@ end;
 constructor TBaseExceptions.Create(const AItemClass: TBaseExceptionClass);
 begin
   inherited Create(AItemClass);
+  FIgnoreAll := False;
 end;
 
 destructor TBaseExceptions.Destroy;
@@ -3946,6 +3957,22 @@ procedure TBaseExceptions.ClearExceptions;
 begin
   while Count>0 do
     TBaseException(GetItem(Count-1)).Free;
+end;
+
+procedure TBaseExceptions.SetIgnoreAll(const AValue: Boolean);
+begin
+  if FIgnoreAll = AValue then exit;
+  FIgnoreAll := AValue;
+  Changed;
+end;
+
+procedure TBaseExceptions.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TBaseExceptions
+  then begin
+    TBaseExceptions(Dest).IgnoreAll := IgnoreAll;
+  end
+  else inherited AssignTo(Dest);
 end;
 
 { =========================================================================== }
@@ -4006,6 +4033,7 @@ var
 begin
   Clear;
   NewCount := AXMLConfig.GetValue(APath + 'Count', 0);
+  FIgnoreAll := AXMLConfig.GetValue(APath + 'IgnoreAll', False);
   for i := 0 to NewCount-1 do
   begin
     IDEException := TIDEException(inherited Add(''));
@@ -4023,6 +4051,7 @@ var
 begin
   Cnt := Count;
   AXMLConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
+  AXMLConfig.SetDeleteValue(APath + 'IgnoreAll', IgnoreAll, False);
   for i := 0 to Cnt - 1 do
   begin
     IDEException := Items[i];

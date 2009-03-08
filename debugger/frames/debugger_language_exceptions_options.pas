@@ -35,10 +35,11 @@ type
 
   TDebuggerLanguageExceptionsOptions = class(TAbstractIDEOptionsEditor)
     bgIgnoreExceptions: TGroupBox;
-    chkBreakOnException: TCheckBox;
+    chkNotifyOnException: TCheckBox;
     clbExceptions: TCheckListBox;
     cmdExceptionAdd: TBitBtn;
     cmdExceptionRemove: TBitBtn;
+    procedure clbExceptionsClick(Sender: TObject);
     procedure cmdExceptionAddClick(Sender: TObject);
     procedure cmdExceptionRemoveClick(Sender: TObject);
   private
@@ -82,6 +83,11 @@ begin
   else begin
     MessageDlg('Duplicate Exception name', mtError, [mbOK], 0);
   end;
+end;
+
+procedure TDebuggerLanguageExceptionsOptions.clbExceptionsClick(Sender: TObject);
+begin
+  cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
 end;
 
 procedure TDebuggerLanguageExceptionsOptions.cmdExceptionRemoveClick(
@@ -140,7 +146,7 @@ begin
   cmdExceptionAdd.Caption := lisCodeTemplAdd;
   cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
   cmdExceptionAdd.LoadGlyphFromLazarusResource('laz_add');
-  chkBreakOnException.Caption := lisDebugOptionsFrmBreakOnLazarusExceptions;
+  chkNotifyOnException.Caption := lisDebugOptionsFrmNotifyOnLazarusExceptions;
 end;
 
 procedure TDebuggerLanguageExceptionsOptions.ReadSettings(
@@ -148,6 +154,7 @@ procedure TDebuggerLanguageExceptionsOptions.ReadSettings(
 var
   n: integer;
 begin
+  chkNotifyOnException.Checked := not DebugBoss.Exceptions.IgnoreAll;
   for n := 0 to DebugBoss.Exceptions.Count - 1 do
     AddExceptionLine(DebugBoss.Exceptions[n], '');
 end;
@@ -179,6 +186,7 @@ begin
       end;
     end;
   end;
+  DebugBoss.Exceptions.IgnoreAll := not chkNotifyOnException.Checked;
 end;
 
 class function TDebuggerLanguageExceptionsOptions.SupportedOptionsClass: TAbstractIDEOptionsClass;
