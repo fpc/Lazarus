@@ -990,10 +990,10 @@ type
     FIgnoreAll: Boolean;
     function Add(const AName: String): TBaseException;
     function Find(const AName: String): TBaseException;
-    procedure SetIgnoreAll(const AValue: Boolean);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure ClearExceptions; virtual;
+    procedure SetIgnoreAll(const AValue: Boolean); virtual;
   public
     constructor Create(const AItemClass: TBaseExceptionClass);
     destructor Destroy; override;

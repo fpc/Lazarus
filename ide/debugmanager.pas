@@ -362,6 +362,8 @@ type
     procedure SetMaster(const AValue: TDBGExceptions);
   protected
     procedure AddDefault;
+    procedure SetIgnoreAll(const AValue: Boolean); override;
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
     constructor Create(const AManager: TDebugManager);
     procedure AddIfNeeded(AName: string);
@@ -764,6 +766,20 @@ begin
   AddIfNeeded('EAbort');
   AddIfNeeded('ECodetoolError');
   AddIfNeeded('EFOpenError');
+end;
+
+procedure TManagedExceptions.SetIgnoreAll(const AValue: Boolean);
+begin
+  inherited SetIgnoreAll(AValue);
+  Project1.Modified := True;
+end;
+
+procedure TManagedExceptions.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  inherited Notify(Item, Action);
+  if Project1 <> nil then
+    Project1.Modified := True;
 end;
 
 procedure TManagedExceptions.AddIfNeeded(AName: string);
