@@ -3936,6 +3936,7 @@ end;
 procedure TBaseExceptions.Reset;
 begin
   ClearExceptions;
+  FIgnoreAll := False;
 end;
 
 function TBaseExceptions.Find(const AName: String): TBaseException;
