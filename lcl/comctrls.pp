@@ -802,7 +802,7 @@ type
     procedure Assign(ASource: TPersistent); override;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property Caption: TTranslateString read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property MaxWidth: TWidth read FMaxWidth write SetMaxWidth default 0;
@@ -1017,8 +1017,8 @@ type
     property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
     property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
     property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
-    property SortType: TSortType read FSortType write SetSortType;
-    property SortColumn: Integer read FSortColumn write SetSortColumn;
+    property SortType: TSortType read FSortType write SetSortType default stNone;
+    property SortColumn: Integer read FSortColumn write SetSortColumn default 0;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
     property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
