@@ -403,9 +403,18 @@ const
   KINDS: array[TPanelButton] of TBitBtnKind = (
     bkOK, bkCancel, bkClose, bkHelp
   );
-  CAPTIONS: array[TPanelButton] of String = (
-    rsMbOK, rsMbCancel, rsMbClose, rsMbHelp
-  );
+
+  function GetCaption(Btn: TPanelButton): string;
+  begin
+    case Btn of
+    pbOK: Result:=rsMbOK;
+    pbCancel: Result:=rsMbCancel;
+    pbClose: Result:=rsMbClose;
+    pbHelp: Result:=rsMbHelp;
+    else Result:='?';
+    end;
+  end;
+
 begin
   if FButtons[AButton] <> nil then Exit;
 
@@ -416,7 +425,7 @@ begin
     Parent   := Self;
     Kind     := KINDS[AButton];
     AutoSize := True;
-    Caption  := CAPTIONS[AButton];
+    Caption  := GetCaption(AButton);
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;
     if FGlyphs[AButton] = nil
