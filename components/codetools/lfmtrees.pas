@@ -508,7 +508,7 @@ begin
     Node:=Root
   else
     Node:=ContextNode.FirstChild;
-  p:=System.Pos(PropertyPath,'.');
+  p:=System.Pos('.',PropertyPath);
   FirstPart:=copy(PropertyPath,1,p-1);
   RestParts:=copy(PropertyPath,p+1,length(PropertyPath));
   while Node<>nil do begin
