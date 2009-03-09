@@ -196,7 +196,7 @@ type
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Masked: boolean read FMasked write SetMasked;
+    property Masked: boolean read FMasked write SetMasked default False;
     property Reference: TWSCustomImageListReference read GetReference;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;

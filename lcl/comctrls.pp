@@ -1096,7 +1096,7 @@ type
     property MultiSelect;
 //    property OwnerData;
 //    property OwnerDraw;
-    property ParentColor;
+    property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
