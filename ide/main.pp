@@ -11373,7 +11373,7 @@ var
         CompiledUnitPath:=CompiledUnitPath+';'+CurDir;
     end;
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"');
+    debugln(['TMainIDE.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"']);
     {$ENDIF}
 
     // collect all src paths for the compiled units
@@ -11386,7 +11386,7 @@ var
       AllSrcPaths:=MergeSearchPaths(AllSrcPaths,CurSrcPath);
     end;
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"');
+    debugln(['TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"']);
     {$ENDIF}
 
     // add fpc src directories
@@ -11402,14 +11402,14 @@ var
       AllIncPaths:=MergeSearchPaths(AllIncPaths,CurIncPath);
     end;
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"');
+    debugln(['TMainIDE.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"']);
     {$ENDIF}
 
     SearchFile:=AFilename;
     SearchPath:=AllIncPaths;
     Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.SearchIndirectIncludeFile Result="',Result,'"');
+    debugln(['TMainIDE.SearchIndirectIncludeFile Result="',Result,'"']);
     {$ENDIF}
     MarkPathAsSearched(SearchPath);
   end;
@@ -11424,7 +11424,7 @@ var
     if SearchPath<>'' then begin
       Filename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
       {$IFDEF VerboseFindSourceFile}
-      writeln('TMainIDE.FindSourceFile trying "',SearchPath,'" Result=',Result);
+      debugln(['TMainIDE.FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
       {$ENDIF}
       MarkPathAsSearched(SearchPath);
     end;
@@ -11436,7 +11436,7 @@ var
   SearchFile: String;
 begin
   {$IFDEF VerboseFindSourceFile}
-  writeln('TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"');
+  debugln(['TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
   {$ENDIF}
   if FilenameIsAbsolute(AFilename) then
   begin
@@ -11454,7 +11454,7 @@ begin
   // search file in base directory
   Result:=TrimFilename(BaseDir+AFilename);
   {$IFDEF VerboseFindSourceFile}
-  writeln('TMainIDE.FindSourceFile trying Base "',Result,'"');
+  debugln(['TMainIDE.FindSourceFile trying Base "',Result,'"']);
   {$ENDIF}
   if FileExistsUTF8(Result) then exit;
   MarkPathAsSearched(BaseDir);
@@ -11482,7 +11482,7 @@ begin
     Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
                                              ExtractFilenameOnly(AFilename));
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.FindSourceFile trying unit links Result=',Result);
+    debugln(['TMainIDE.FindSourceFile trying unit links Result=',Result]);
     {$ENDIF}
     if Result<>'' then exit;
   end;
@@ -11500,7 +11500,7 @@ begin
     SearchFile:=AFilename;
     Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
     {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result);
+    debugln(['TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
     {$ENDIF}
     if Result<>'' then exit;
 
