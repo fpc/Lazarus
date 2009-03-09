@@ -7112,6 +7112,7 @@ var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   TestFilename, DestFilename: string;
   ResourceCode, LFMCode: TCodeBuffer;
+  MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7154,6 +7155,22 @@ begin
   // if this is a new unit then a simple Save becomes a SaveAs
   if (not (sfSaveToTestDir in Flags)) and (ActiveUnitInfo.IsVirtual) then
     Include(Flags,sfSaveAs);
+
+  // if this is the main source and has the same name as the lpi
+  // rename the project
+  // Note:
+  //   Changing the main source file without the .lpi is possible only by
+  //   manually editing the lpi file, because this is only needed in
+  //   special cases.
+  MainUnitInfo:=ActiveUnitInfo.Project.MainUnitInfo;
+  if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags))
+  and (ActiveUnitInfo=MainUnitInfo)
+  and (CompareFilenames(ExtractFileNameWithoutExt(ActiveUnitInfo.Filename),
+                        ExtractFileNameWithoutExt(MainUnitInfo.Filename))=0) then
+  begin
+    Result:=DoSaveProject([sfSaveAs]);
+    exit;
+  end;
 
   // update source notebook page names
   if (not (sfProjectSaving in Flags)) then
