@@ -452,6 +452,7 @@ type
   
   TQtClipboard = class(TQtObject)
   private
+    FLockClip: Boolean;
     FClipDataChangedHook: QClipboard_hookH;
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
@@ -2806,6 +2807,7 @@ end;
 constructor TQtClipboard.Create;
 begin
   inherited Create;
+  FLockClip := False;
   FOnClipBoardRequest := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
@@ -2844,24 +2846,28 @@ var
   Str: WideString;
   Str2: WideString;
 begin
-  Result := False;
-  TempMimeData := getMimeData(QClipboardClipboard);
-  if (TempMimeData <> nil) and
-  (QMimeData_hasText(TempMimeData) or QMimeData_hasHtml(TempMimeData) or
-    QMimeData_hasURLS(TempMimeData)) then
-  begin
-    QMimeData_text(TempMimeData, @Str);
-    Str := UTF16ToUTF8(Str);
-    
-    {we must check for null terminator}
-    if Copy(Str, length(Str), 1) = #0 then
-      Str2 := Clipbrd.Clipboard.AsText + #0
-    else
+  Result := not FLockClip;
+  if FLockClip then
+    exit;
+  {FLockClip: here we know that our clipboard is not changed by LCL Clipboard}
+  FLockClip := True;
+  try
+    TempMimeData := getMimeData(QClipboardClipboard);
+    if (TempMimeData <> nil) and
+    (QMimeData_hasText(TempMimeData) or QMimeData_hasHtml(TempMimeData) or
+      QMimeData_hasURLS(TempMimeData)) then
+    begin
+      QMimeData_text(TempMimeData, @Str);
+      Str := UTF16ToUTF8(Str);
+
       Str2 := Clipbrd.Clipboard.AsText;
 
-    Result := Str <> Str2;
-    if Result then
-      Clipbrd.Clipboard.AsText := Str;
+      Result := Str <> Str2;
+      if Result then
+        Clipbrd.Clipboard.AsText := Str;
+    end;
+  finally
+    FLockClip := False;
   end;
 end;
 
@@ -2997,15 +3003,9 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
     begin
       DataStream.Size := 0;
       DataStream.Position := 0;
-
       MimeType := FormatToMimeType(Formats[I]);
       FOnClipBoardRequest(Formats[I], DataStream);
-
-      {TODO: check if this is correct on darwin (win32,linux are OK!),
-        seem that data stream always puts an extra #0
-       which confuses clip operations. If you remove this -1
-       then we'll get a mess !!!}
-      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size - 1);
+      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
       QMimeData_setData(MimeData, @MimeType, Data);
       QByteArray_destroy(Data);
     end;
@@ -3024,12 +3024,20 @@ begin
     Result := True;
   end else
   begin
-  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
-    when emptying the clipboard}
-    FOnClipBoardRequest := nil;
-    FOnClipBoardRequest := OnRequestProc;
-    PutOnClipBoard;
-    Result := True;
+    if FLockClip then
+      exit;
+    {FLockClip: we are sure that this request comes from LCL Clipboard}
+    FLockClip := True;
+    try
+      { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+        when emptying the clipboard}
+      FOnClipBoardRequest := nil;
+      FOnClipBoardRequest := OnRequestProc;
+      PutOnClipBoard;
+      Result := True;
+    finally
+      FLockClip := False;
+    end;
   end;
 end;
 
