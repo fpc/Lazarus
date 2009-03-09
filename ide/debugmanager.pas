@@ -1140,7 +1140,7 @@ begin
 
   // some debuggers (e.g. gdb) sometimes returns linux path delims under windows
   // => fix that
-  Filename := TrimFilename(SwitchPathDelims(Filename,pdsSystem));
+  Filename := TrimFilename(Filename);
   SrcFile := Filename;
   SrcFile := MainIDE.FindSourceFile(SrcFile,Project1.ProjectDirectory,
                       [fsfSearchForProject,fsfUseIncludePaths,fsfUseDebugPath]);
