@@ -164,6 +164,7 @@ type
     fdfFindVariable,        // do not search for the base type of a variable,
                             //   instead return the variable declaration
     fdfFunctionResult,      // if function is found, return result type
+    fdfFindChilds,          // search the class of a 'class of'
     
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving,     // set, when searching for an identifier of the
@@ -195,6 +196,7 @@ const
     'fdfIgnoreOverloadedProcs',
     'fdfFindVariable',
     'fdfFunctionResult',
+    'fdfFindChilds',
     'fdfCollect',
     'fdfTopLvlResolving',
     'fdfDoNotCache'
@@ -1549,7 +1551,7 @@ begin
       if IsLastProperty then
         Params.Flags:=Params.Flags+[fdfFindVariable]
       else
-        Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfFunctionResult];
+        Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfFunctionResult,fdfFindChilds];
       if not Context.Tool.FindIdentifierInContext(Params) then exit;
       Context.Tool:=Params.NewCodeTool;
       Context.Node:=Params.NewNode;
@@ -2010,6 +2012,7 @@ begin
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
+    Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
     FindContext:=FindBaseTypeOfNode(Params,ANode);
     if (FindContext.Node<>nil)
     and (FindContext.Node.Desc in [ctnRecordType,ctnClass,ctnClassInterface])
@@ -3056,8 +3059,8 @@ begin
         Params.Load(OldInput,true);
         exit;
       end else
-      if (Result.Node.Desc=ctnClassOfType) then
-      begin
+      if (Result.Node.Desc=ctnClassOfType) and (fdfFindChilds in Params.Flags)
+      then begin
         // this is a 'class of' type
         // -> search the real class
         {$IFDEF ShowTriedBaseContexts}
@@ -4136,7 +4139,7 @@ begin
       Params.Save(OldInput);
       Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
                     +(fdfGlobals*Params.Flags)
-                    +[fdfExceptionOnNotFound,fdfIgnoreUsedUnits]
+                    +[fdfExceptionOnNotFound,fdfIgnoreUsedUnits,fdfFindChilds]
                     -[fdfTopLvlResolving];
       Params.ContextNode:=ProcContextNode;
       Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
@@ -4235,6 +4238,7 @@ begin
     FindIdentifierInContext(Params);
     if FindClassContext then begin
       // parse class and return class node
+      Params.Flags:=Params.Flags+[fdfFindChilds];
       ClassContext:=FindBaseTypeOfNode(Params,Params.NewNode);
       if (ClassContext.Node=nil)
       or (ClassContext.Node.Desc<>ctnClass) then begin
@@ -4347,6 +4351,7 @@ begin
   end;
   if FindClassContext then begin
     AncestorNode:=Params.NewNode;
+    Params.Flags:=Params.Flags+[fdfFindChilds];
     AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                            AncestorNode);
     Params.SetResult(AncestorContext);
@@ -4396,7 +4401,7 @@ begin
   Params.Save(OldInput);
   Params.ContextNode:=WithVarNode;
   Params.Flags:=Params.Flags*fdfGlobals
-                +[fdfExceptionOnNotFound,fdfFunctionResult];
+                +[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
   WithVarExpr:=FindExpressionTypeOfVariable(WithVarNode.StartPos,-1,Params);
   if (WithVarExpr.Desc<>xtContext)
   or (WithVarExpr.Context.Node=nil)
@@ -5438,7 +5443,7 @@ var
             ExprType.Context.Node:=ProcNode.FirstChild;
           end else begin
             OldFlags:=Params.Flags;
-            Include(Params.Flags,fdfFunctionResult);
+            Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
             ExprType.Desc:=xtContext;
             ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
             Params.Flags:=OldFlags;
@@ -5517,17 +5522,23 @@ var
       if ExprType.Context.Tool<>Self then begin
         ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
       end;
-    end;
-    // point changes the context to the base type
-    // this is already done, so there is not much left to do.
-    // Delphi knows . as shortcut for ^.
-    // -> check for pointer type
-    if (Scanner.CompilerMode=cmDELPHI) and (ExprType.Desc=xtContext)
+    end
+    else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
+      // 'class of' plus '.' => jump to the class
+      ExprType.Desc:=xtContext;
+      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                              ExprType.Context.Node.FirstChild);
+    end
+    else if (Scanner.CompilerMode=cmDELPHI) and (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc=ctnPointerType)
     and (ExprType.Context.Node<>StartContext.Node) then begin
+      // Delphi knows . as shortcut for ^.
+      // -> check for pointer type
       // left side of expression has defined a special context
       // => this '.' is a dereference
       ExprType.Desc:=xtContext;
+      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
     end;
