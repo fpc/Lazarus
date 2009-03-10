@@ -395,6 +395,8 @@ begin
   Result:=Line-OtherMark.Line;
   if Result<>0 then exit;
   Result:=Column-OtherMark.Column;
+  if Result <> 0 then exit;
+  Result := PtrInt(Self) - PtrInt(OtherMark);
 end;
 
 function TSourceMark.CompareEditorAndLine(ASynEdit: TCustomSynEdit;
