@@ -2115,20 +2115,25 @@ begin
     aha := ahaExecutionPoint;
   end
   else begin
-    SourceEditorMarks.GetMarksForLine(FEditor,Line,CurMarks,CurMarkCount);
-    if CurMarkCount>0 then begin
-      for i := 0 to CurMarkCount-1 do begin
+    SourceEditorMarks.GetMarksForLine(FEditor, Line, CurMarks, CurMarkCount);
+    if CurMarkCount > 0 then
+    begin
+      for i := 0 to CurMarkCount - 1 do
+      begin
+        if not CurMarks[i].Visible then
+          Continue;
         // check highlight attribute
         aha := CurMarks[i].LineColorAttrib;
-        if aha<>ahaNone then break;
+        if aha <> ahaNone then Break;
 
         // check custom colors
-        CurFG:=CurMarks[i].LineColorForeGround;
-        CurBG:=CurMarks[i].LineColorBackGround;
-        if (CurFG<>clNone) or (CurBG<>clNone) then begin
+        CurFG := CurMarks[i].LineColorForeGround;
+        CurBG := CurMarks[i].LineColorBackGround;
+        if (CurFG <> clNone) or (CurBG <> clNone) then
+        begin
           Markup.Foreground := CurFG;
           Markup.Background := CurBG;
-          Special:=true;
+          Special := True;
           break;
         end;
       end;
@@ -2181,6 +2186,7 @@ begin
     SourceEditorMarks.Add(FExecutionMark);
     EditorComponent.Marks.Add(FExecutionMark);
     FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+    FExecutionMark.LineColorAttrib := ahaExecutionPoint;
   end;
 
   if ExecutionLine <> -1 then
