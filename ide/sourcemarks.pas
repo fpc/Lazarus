@@ -660,28 +660,45 @@ end;
 procedure TSourceMarks.GetMarksForLine(ASynEdit: TCustomSynEdit;
   ALine: integer; var Marks: PSourceMark; var MarkCount: integer);
 var
-  Capacity: integer;
+  i, Capacity: integer;
   AVLNode: TAVLTreeNode;
   EditorAndLine: TEditorAndLine;
   CurMark: TSourceMark;
+  HasChange: Boolean;
 begin
-  Capacity:=0;
-  MarkCount:=0;
-  Marks:=nil;
-  EditorAndLine.Editor:=ASynEdit;
-  EditorAndLine.Line:=ALine;
-  AVLNode:=fSortedItems.FindLeftMostKey(@EditorAndLine,
-                                        @CompareEditorAndLineWithMark);
-  while (AVLNode<>nil) do begin
-    CurMark:=TSourceMark(AVLNode.Data);
-    if CompareEditorAndLineWithMark(@EditorAndLine,CurMark)<>0 then break;
-    if Capacity<=MarkCount then begin
-      inc(Capacity,Capacity+4);
-      ReAllocMem(Marks,Capacity*SizeOf(Pointer));
+  Capacity := 0;
+  MarkCount := 0;
+  Marks := nil;
+  EditorAndLine.Editor := ASynEdit;
+  EditorAndLine.Line := ALine;
+  AVLNode := fSortedItems.FindLeftMostKey(@EditorAndLine,
+                                          @CompareEditorAndLineWithMark);
+  while (AVLNode <> nil) do
+  begin
+    CurMark := TSourceMark(AVLNode.Data);
+    if CompareEditorAndLineWithMark(@EditorAndLine, CurMark) <> 0 then break;
+    if Capacity <= MarkCount then
+    begin
+      inc(Capacity, Capacity + 4);
+      ReAllocMem(Marks, Capacity * SizeOf(Pointer));
     end;
-    Marks[MarkCount]:=CurMark;
+    Marks[MarkCount] := CurMark;
     inc(MarkCount);
-    AVLNode:=fSortedItems.FindSuccessor(AVLNode);
+    AVLNode := fSortedItems.FindSuccessor(AVLNode);
+  end;
+  HasChange := MarkCount > 1;
+  // easy popup sort by priority
+  while HasChange do
+  begin
+    HasChange := False;
+    for i := 0 to MarkCount - 2 do
+      if Marks[i].Priority < Marks[i+1].Priority then
+      begin
+        CurMark := Marks[i];
+        Marks[i] := Marks[i+1];
+        Marks[i+1] := CurMark;
+        HasChange := True;
+      end;
   end;
 end;
 

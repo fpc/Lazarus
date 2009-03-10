@@ -2110,10 +2110,6 @@ begin
   then begin
     aha := ahaErrorLine
   end
-  else if ExecutionLine = Line
-  then begin
-    aha := ahaExecutionPoint;
-  end
   else begin
     SourceEditorMarks.GetMarksForLine(FEditor, Line, CurMarks, CurMarkCount);
     if CurMarkCount > 0 then
