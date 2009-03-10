@@ -2358,7 +2358,7 @@ type
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property Images: TCustomImageList read FImages write SetImages;
-    property Indent: Integer read fIndent write SetIndent default 15;
+    property Indent: Integer read FIndent write SetIndent default 15;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
       read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
