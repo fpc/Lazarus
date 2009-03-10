@@ -125,6 +125,12 @@ implementation
 uses
   BaseDebugManager, LCLProc, LazarusIDEStrConsts;
 
+var
+  imgCurrentLine: Integer;
+  imgSourceLine: Integer;
+  imgNoSourceLine: Integer;
+  imgBreakPoint: Integer;
+
 { TCallStackDlg }
 
 constructor TCallStackDlg.Create(AOwner: TComponent);
@@ -154,6 +160,13 @@ begin
 end;
 
 procedure TCallStackDlg.UpdateView;
+
+  function HasBreakPoint(Entry: TCallStackEntry): Boolean;
+  begin
+    // TODO: find how to check whether breakpoint is set to this line
+    Result := False;
+  end;
+
 var
   n: Integer;
   Item: TListItem;
@@ -197,15 +210,24 @@ begin
       if Entry = nil
       then begin
         Item.Caption := '';
+        Item.ImageIndex := imgNoSourceLine;
         Item.SubItems[0] := '????';
         Item.SubItems[1] := '';
         Item.SubItems[2] := '';
         Item.SubItems[3] := '';
       end
       else begin
-        if Entry.Current
-        then Item.Caption := '>'
-        else Item.Caption := ' ';
+        if Entry.Current then
+          Item.ImageIndex := imgCurrentLine
+        else
+        if HasBreakPoint(Entry) then
+          Item.ImageIndex := imgBreakPoint
+        else
+        if Entry.Source = '' then
+          Item.ImageIndex := imgNoSourceLine
+        else
+          Item.ImageIndex := imgSourceLine;
+
         Item.SubItems[0] := IntToStr(Entry.Index);
         Item.SubItems[1] := Entry.Source;
         Item.SubItems[2] := IntToStr(Entry.Line);
@@ -380,6 +402,12 @@ begin
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
   ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+
+  lvCallStack.SmallImages := IDEImages.Images_16;
+  imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
+  imgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
+  imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
+  imgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
