@@ -2275,7 +2275,7 @@ begin
     and (Y >= 0)
     and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
   then begin
-    if (Cursor <> crHandPoint) or (not (SYNEDIT_LINK_MODIFIER in Shift)) then
+    if (Cursor <> crHandPoint) or (Shift <> [SYNEDIT_LINK_MODIFIER]) then
       Cursor := crIBeam;
   end
   else
@@ -2513,7 +2513,7 @@ begin
   {$IFDEF SYN_LAZARUS}
     if (eoShowCtrlMouseLinks in Options)
     and not(wasDragging)
-    and (Button=mbLeft) and (SYNEDIT_LINK_MODIFIER in Shift)
+    and (Button=mbLeft) and (Shift = [SYNEDIT_LINK_MODIFIER])
     and assigned(FOnClickLink)
     then begin
       FOnClickLink(Self, Button, Shift, X,Y);;
