@@ -2236,11 +2236,10 @@ begin
       then begin
         if ssShift in Shift then
           SetBlockEnd(LogCaretXY)
-        else begin
+        else
           SetBlockBegin(LogCaretXY);
-          if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
-            FBlockSelection.ActiveSelectionMode := smColumn
-        end;
+        if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
+          FBlockSelection.ActiveSelectionMode := smColumn
       end;
       if (Button=mbMiddle)
       and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
