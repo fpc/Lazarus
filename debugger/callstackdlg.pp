@@ -161,10 +161,14 @@ end;
 
 procedure TCallStackDlg.UpdateView;
 
-  function HasBreakPoint(Entry: TCallStackEntry): Boolean;
+  function HasBreakPoint(Entry: TCallStackEntry): Boolean; inline;
+  var
+    FileName: String;
   begin
-    // TODO: find how to check whether breakpoint is set to this line
-    Result := False;
+    FileName := Entry.Source;
+    Result := DebugBoss.GetFullFilename(FileName, False);
+    if Result then
+      Result := DebugBoss.BreakPoints.Find(FileName, Entry.Line) <> nil
   end;
 
 var
