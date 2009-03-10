@@ -38,7 +38,7 @@ interface
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList, MainBase;
+  ActnList, MainBase, IDEImagesIntf;
 
 type
 
@@ -54,7 +54,6 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
-    ImageList1: TImageList;
     ToolButtonTop: TToolButton;
     ToolButtonBottom: TToolButton;
     ToolButtonCopyAll: TToolButton;
@@ -97,7 +96,6 @@ type
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
-    procedure InitImageList;
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
@@ -333,16 +331,6 @@ begin
   JumpToSource;
 end;
 
-procedure TCallStackDlg.InitImageList;
-begin
-  Imagelist1.AddLazarusResource('callstack_show');
-  Imagelist1.AddLazarusResource('callstack_more');
-  Imagelist1.AddLazarusResource('callstack_top');
-  Imagelist1.AddLazarusResource('callstack_bottom');
-  Imagelist1.AddLazarusResource('callstack_goto');
-  Imagelist1.AddLazarusResource('laz_copy');
-end;
-
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
 begin
   if CallStack <> nil
@@ -383,7 +371,15 @@ begin
   lvCallStack.Columns[2].Caption:= lisCEOModeSource;
   lvCallStack.Columns[3].Caption:= lisToDoLLine;
   lvCallStack.Columns[4].Caption:= lisFunction;
-  InitImageList;
+
+  ToolBar1.Images := IDEImages.Images_16;
+  ToolButtonShow.ImageIndex := IDEImages.LoadImage(16, 'callstack_show');
+  ToolButtonMore.ImageIndex := IDEImages.LoadImage(16, 'callstack_more');
+  ToolButtonTop.ImageIndex := IDEImages.LoadImage(16, 'callstack_top');
+  ToolButtonBottom.ImageIndex := IDEImages.LoadImage(16, 'callstack_bottom');
+  ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+  ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+  ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);

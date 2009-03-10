@@ -50,7 +50,6 @@ inherited CallStackDlg: TCallStackDlg
     ButtonWidth = 50
     Caption = 'tbButtons'
     EdgeBorders = []
-    Images = ImageList1
     ShowCaptions = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
@@ -230,9 +229,5 @@ inherited CallStackDlg: TCallStackDlg
       Caption = 'Max 50'
       OnClick = popCountClick
     end
-  end
-  object ImageList1: TImageList[5]
-    left = 232
-    top = 112
   end
 end
