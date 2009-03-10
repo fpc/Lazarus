@@ -3099,11 +3099,14 @@ images/debugger/callstack_top.png -text
 images/debugger/debugger.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
+images/debugger/debugger_current_line.png -text
 images/debugger/debugger_evaluate.png -text svneol=unset#images/png
 images/debugger/debugger_inspect.png -text svneol=unset#images/png
 images/debugger/debugger_modify.png -text svneol=unset#images/png
+images/debugger/debugger_nosource_line.png -text
 images/debugger/debugger_options.png -text svneol=unset#image/png
 images/debugger/debugger_output.png -text svneol=unset#image/png
+images/debugger/debugger_source_line.png -text
 images/debugger/debugger_watches.png -text svneol=unset#image/png
 images/designer/Order_back_one.png -text
 images/designer/Order_forward_one.png -text
