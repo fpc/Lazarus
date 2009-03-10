@@ -3428,7 +3428,7 @@ begin
     Val(AFrameInfo.Values['addr'], addr, e);
     if e=0 then ;
     func := AFrameInfo.Values['func'];
-    filename := AFrameInfo.Values['file'];
+    filename := ConvertPathDelims(AFrameInfo.Values['file']);
     line := AFrameInfo.Values['line'];
   end;
 
