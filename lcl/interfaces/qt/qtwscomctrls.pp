@@ -949,8 +949,8 @@ begin
         Assigned(TListView(ALV).LargeImages) then
         ImgList.Assign(TListView(ALV).LargeImages);
 
-      if (TListView(ALV).ViewStyle = vsSmallIcon) and
-        Assigned(TListView(ALV).LargeImages) then
+      if (TListView(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
+        Assigned(TListView(ALV).SmallImages) then
         ImgList.Assign(TListView(ALV).SmallImages);
 
       if (ImgList.Count > 0) and
