@@ -126,6 +126,7 @@ type
     FErrorLine: integer;
     FErrorColumn: integer;
     FExecutionLine: integer;
+    FExecutionMark: TSourceMark;
     FModified: boolean;
 
     FOnAfterClose: TNotifyEvent;
@@ -140,7 +141,7 @@ type
     FOnMouseDown: TMouseEvent;
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
-    FOnMouseWheel : tMouseWheelEvent;
+    FOnMouseWheel : TMouseWheelEvent;
     FOnKeyDown: TKeyEvent;
 
     FSourceNoteBook: TSourceNotebook;
@@ -159,6 +160,7 @@ type
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
+    procedure UpdateExecutionSourceMark;
     procedure UpdatePageName;
     procedure SetSource(Value: TStrings);
     function GetCurrentCursorXLine: Integer;
@@ -1052,6 +1054,7 @@ Begin
   FErrorLine:=-1;
   FErrorColumn:=-1;
   FExecutionLine:=-1;
+  FExecutionMark := nil;
 
   CreateEditor(AOwner,AParent);
 
@@ -2170,10 +2173,26 @@ begin
   EditorComponent.Invalidate;
 end;
 
+procedure TSourceEditor.UpdateExecutionSourceMark;
+begin
+  if (FExecutionMark = nil) then
+  begin
+    FExecutionMark := TSourceMark.Create(EditorComponent, nil);
+    SourceEditorMarks.Add(FExecutionMark);
+    EditorComponent.Marks.Add(FExecutionMark);
+    FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+  end;
+
+  if ExecutionLine <> -1 then
+    FExecutionMark.Line := ExecutionLine;
+  FExecutionMark.Visible := ExecutionLine <> -1;
+end;
+
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
   if fExecutionLine=NewLine then exit;
   fExecutionLine:=NewLine;
+  UpdateExecutionSourceMark;
   EditorComponent.Invalidate;
 end;
 

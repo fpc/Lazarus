@@ -3,15 +3,14 @@ inherited SourceNotebook: TSourceNotebook
   Height = 300
   Top = 374
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   AllowDropFiles = True
   Caption = 'SourceNotebook'
   ClientHeight = 300
   ClientWidth = 400
-  object StatusBar: TStatusBar
-    Height = 20
-    Top = 280
+  object StatusBar: TStatusBar[0]
+    Left = 0
+    Height = 23
+    Top = 277
     Width = 400
     Panels = <    
       item

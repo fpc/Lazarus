@@ -139,6 +139,7 @@ type
   TSourceMarks = class(TComponent)
   private
     fActiveBreakPointImg: Integer;
+    FCurrentLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
     fInvalidBreakPointImg: Integer;
@@ -188,6 +189,7 @@ type
     property InvalidBreakPointImg: Integer read fInvalidBreakPointImg;
     property MultiBreakPointImg: Integer read fMultiBreakPointImg;
     property UnknownBreakPointImg: Integer read fUnknownBreakPointImg;
+    property CurrentLineImg: Integer read FCurrentLineImg;
   end;
   
 var
@@ -514,6 +516,8 @@ begin
   fUnknownBreakPointImg:=AddImage('UnknownBreakPoint');
   // load multi mixed breakpoint image
   fMultiBreakPointImg:=AddImage('MultiBreakPoint');
+  // load current line image
+  FCurrentLineImg:=AddImage('debugger_current_line');
 end;
 
 function TSourceMarks.FindFirstMarkNode(ASynEdit: TCustomSynEdit; ALine: integer
