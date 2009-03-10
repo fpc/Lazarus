@@ -1083,37 +1083,39 @@ procedure TManagedBreakPoint.UpdateSourceMarkImage;
 var
   Img: Integer;
 begin
-  if SourceMark=nil then exit;
+  if SourceMark = nil then Exit;
   case Valid of
-  vsValid:
-    if Enabled then
-      Img:=SourceEditorMarks.ActiveBreakPointImg
+    vsValid:
+      if Enabled then
+        Img := SourceEditorMarks.ActiveBreakPointImg
+      else
+        Img := SourceEditorMarks.InactiveBreakPointImg;
+    vsInvalid:
+      Img := SourceEditorMarks.InvalidBreakPointImg;
     else
-      Img:=SourceEditorMarks.InactiveBreakPointImg;
-  vsInvalid: Img:=SourceEditorMarks.InvalidBreakPointImg;
-  else
-    Img:=SourceEditorMarks.UnknownBreakPointImg;
+      Img := SourceEditorMarks.UnknownBreakPointImg;
   end;
-  SourceMark.ImageIndex:=Img;
+  SourceMark.ImageIndex := Img;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMarkLineColor;
 var
   aha: TAdditionalHilightAttribute;
 begin
-  if SourceMark=nil then exit;
-  aha:=ahaNone;
+  if SourceMark = nil then Exit;
+  aha := ahaNone;
   case Valid of
-  vsValid:
-    if Enabled then
-      aha:=ahaEnabledBreakpoint
+    vsValid:
+      if Enabled then
+        aha := ahaEnabledBreakpoint
+      else
+        aha := ahaDisabledBreakpoint;
+    vsInvalid:
+      aha := ahaInvalidBreakpoint;
     else
-      aha:=ahaDisabledBreakpoint;
-  vsInvalid: aha:=ahaInvalidBreakpoint;
-  else
-    aha:=ahaUnknownBreakpoint;
+      aha := ahaUnknownBreakpoint;
   end;
-  SourceMark.LineColorAttrib:=aha;
+  SourceMark.LineColorAttrib := aha;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMark;
