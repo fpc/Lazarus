@@ -66,6 +66,48 @@ begin
     Result := 0;
 end;
 
+function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
+var
+  Mark1: TSynEditMark absolute Item1;
+  Mark2: TSynEditMark absolute Item2;
+begin
+  Result := 0;
+  if Mark1 = Mark2 then Exit;
+
+  if Mark1.IsBookmark then
+    Result := -1
+  else
+  if Mark2.IsBookmark then
+    Result := 1
+  else
+  if Mark1.Priority < Mark2.Priority then
+    Result := 1
+  else
+  if Mark1.Priority > Mark2.Priority then
+    Result := -1;
+end;
+
+function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
+var
+  Mark1: TSynEditMark absolute Item1;
+  Mark2: TSynEditMark absolute Item2;
+begin
+  Result := 0;
+  if Mark1 = Mark2 then Exit;
+
+  if Mark1.IsBookmark then
+    Result := 1
+  else
+  if Mark2.IsBookmark then
+    Result := -1
+  else
+  if Mark1.Priority < Mark2.Priority then
+    Result := 1
+  else
+  if Mark1.Priority > Mark2.Priority then
+    Result := -1;
+end;
+
 procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
   i: integer;
@@ -73,15 +115,14 @@ var
   aGutterOffs: PIntArray;
   dc: HDC;
   LineHeight: Integer;
+  LineMarks: TList;
 
-  procedure DrawMark(iMark: integer);
+  procedure DrawMark(CurMark: TSynEditMark);
   var
     iLine: integer;
     itop : Longint;
-    CurMark: TSynEditMark;
   begin
     iTop := 0;
-    CurMark := TSynEdit(SynEdit).Marks[iMark];
     if (CurMark.Line<1) or (CurMark.Line > SynEdit.Lines.Count) then exit;
     if FFoldView.FoldedAtTextIndex[CurMark.Line-1] then exit;
     iLine := FFoldView.TextIndexToScreenLine(CurMark.Line-1);
@@ -97,7 +138,7 @@ var
           iTop := (LineHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
         with fBookMarkOpt do
           BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
-                           iTop + iLine * LineHeight, CurMark.ImageIndex,true);
+                           iTop + iLine * LineHeight, CurMark.ImageIndex, true);
 
         Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
       end;
@@ -131,38 +172,24 @@ begin
 
 
   // now the gutter marks
-  if FBookMarkOpt.GlyphsVisible and (TSynEdit(SynEdit).Marks.Count > 0)
-    and (LastLine >= FirstLine)
-  then begin
+  if FBookMarkOpt.GlyphsVisible and (TSynEdit(SynEdit).Marks.Count > 0) and (LastLine >= FirstLine) then
+  begin
     aGutterOffs := AllocMem((LastLine+1{$IFNDEF SYN_LAZARUS}-TopLine{$ENDIF}) * SizeOf(integer));
     try
-      // Instead of making a two pass loop we look while drawing the bookmarks
-      // whether there is any other mark to be drawn
-      bHasOtherMarks := FALSE;
-      for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do with TSynEdit(SynEdit).Marks[i] do
-        {$IFDEF SYN_LAZARUS}
-        if Visible and (Line >= FFoldView.TextIndex[FirstLine]+1) and (Line <= FFoldView.TextIndex[LastLine]+1) then
-        {$ELSE}
-        if Visible and (Line >= FirstLine) and (Line <= LastLine) then
-        {$ENDIF}
-        begin
-          if IsBookmark <> fBookMarkOpt.DrawBookmarksFirst then              //mh 2000-10-12
-            bHasOtherMarks := TRUE
-          else
-            DrawMark(i);
-        end;
-      if bHasOtherMarks then
+      LineMarks := TList.Create;
+      try
         for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do with TSynEdit(SynEdit).Marks[i] do
-        begin
-          if Visible and (IsBookmark <> FBookMarkOpt.DrawBookmarksFirst)     //mh 2000-10-12
-            {$IFDEF SYN_LAZARUS}
-            and (Line >= FFoldView.TextIndex[FirstLine]+1) and (Line <= FFoldView.TextIndex[LastLine]+1)
-            {$ELSE}
-            and (Line >= FirstLine) and (Line <= LastLine)
-            {$ENDIF}
-          then
-            DrawMark(i);
-        end;
+          if Visible and (Line >= FFoldView.TextIndex[FirstLine] + 1) and (Line <= FFoldView.TextIndex[LastLine] + 1) then
+            LineMarks.Add(TSynEdit(SynEdit).Marks[i]);
+        if fBookMarkOpt.DrawBookmarksFirst then
+          LineMarks.Sort(@DoMarksCompareBookmarksFirst)
+        else
+          LineMarks.Sort(@DoMarksCompareBookmarksLast);
+        for i := 0 to LineMarks.Count - 1 do
+          DrawMark(TSynEditMark(LineMarks[i]));
+      finally
+        LineMarks.Free;
+      end;
     finally
       FreeMem(aGutterOffs);
     end;

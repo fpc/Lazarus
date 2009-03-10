@@ -2187,6 +2187,7 @@ begin
     EditorComponent.Marks.Add(FExecutionMark);
     FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
     FExecutionMark.LineColorAttrib := ahaExecutionPoint;
+    FExecutionMark.Priority := 1;
   end;
 
   if ExecutionLine <> -1 then

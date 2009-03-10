@@ -14,33 +14,36 @@ const
 
 type
 
+  { TSynEditMark }
+
   TSynEditMark = class
   protected
-    fLine, fColumn, fImage: Integer;
+    FLine, FColumn, FImage, FPriority: Integer;
     FEdit: TSynEditBase;
-    fVisible: boolean;
-    fInternalImage: boolean;
-    fBookmarkNum: integer;
+    FVisible: boolean;
+    FInternalImage: boolean;
+    FBookmarkNum: integer;
     function GetEdit: TSynEditBase; virtual;
     procedure SetColumn(const Value: Integer); virtual;
     procedure SetImage(const Value: Integer); virtual;
     procedure SetLine(const Value: Integer); virtual;
-    procedure SetVisible(const Value: boolean); {$IFDEF SYN_LAZARUS}virtual;{$ENDIF} //MWE: Laz needs to know when a line gets visible, so the editor color can be updated
+    procedure SetPriority(const AValue: integer); virtual;
+    procedure SetVisible(const Value: boolean); virtual; //MWE: Laz needs to know when a line gets visible, so the editor color can be updated
     procedure SetInternalImage(const Value: boolean);
     function GetIsBookmark: boolean;
   public
     constructor Create(AOwner: TSynEditBase);
-    property Line: integer read fLine write SetLine;
-    property Column: integer read fColumn write SetColumn;
-    property ImageIndex: integer read fImage write SetImage;
-    property BookmarkNumber: integer read fBookmarkNum write fBookmarkNum;
-    property Visible: boolean read fVisible write SetVisible;
-    property InternalImage: boolean read fInternalImage write SetInternalImage;
+    property Line: integer read FLine write SetLine;
+    property Column: integer read FColumn write SetColumn;
+    property Priority: integer read FPriority write SetPriority;
+    property ImageIndex: integer read FImage write SetImage;
+    property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
+    property Visible: boolean read FVisible write SetVisible;
+    property InternalImage: boolean read FInternalImage write SetInternalImage;
     property IsBookmark: boolean read GetIsBookmark;
   end;
 
-  TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark)
-    of object;
+  TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
 
   TSynEditMarks = array[1..maxMarks] of TSynEditMark;
 
@@ -82,6 +85,11 @@ type  // This is until InvalidateGutterLines, can be moved to an accessible plac
 
 { TSynEditMark }
 
+procedure TSynEditMark.SetPriority(const AValue: integer);
+begin
+  FPriority := AValue;
+end;
+
 function TSynEditMark.GetEdit: TSynEditBase;
 begin
   if FEdit <> nil then try
@@ -106,42 +114,45 @@ end;
 procedure TSynEditMark.SetImage(const Value: Integer);
 begin
   FImage := Value;
-  if fVisible and Assigned(fEdit) then
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
+  if FVisible and Assigned(FEdit) then
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
 end;
 
 procedure TSynEditMark.SetInternalImage(const Value: boolean);
 begin
-  fInternalImage := Value;
-  if fVisible and Assigned(fEdit) then
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
+  FInternalImage := Value;
+  if FVisible and Assigned(FEdit) then
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
 end;
 
 procedure TSynEditMark.SetLine(const Value: Integer);
 begin
-  if fVisible and Assigned(fEdit) then begin
-    if fLine > 0 then
-      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
-    fLine := Value;
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
+  if FVisible and Assigned(FEdit) then
+  begin
+    if FLine > 0 then
+      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
+    FLine := Value;
+    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
   end else
-    fLine := Value;
+    FLine := Value;
 end;
 
 procedure TSynEditMark.SetVisible(const Value: boolean);
 begin
-  if fVisible <> Value then begin
-    fVisible := Value;
-    if Assigned(fEdit) then
-      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(fLine, fLine);
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    if Assigned(FEdit) then
+      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
   end;
 end;
 
 constructor TSynEditMark.Create(AOwner: TSynEditBase);
 begin
   inherited Create;
-  fBookmarkNum := -1;
-  fEdit := AOwner;
+  FBookmarkNum := -1;
+  FEdit := AOwner;
+  FPriority := 0;
 end;
 
 { TSynEditMarkList }
@@ -163,7 +174,7 @@ end;
 constructor TSynEditMarkList.Create(AOwner: TSynEditBase);
 begin
   inherited Create;
-  fEdit := AOwner;
+  FEdit := AOwner;
 end;
 
 destructor TSynEditMarkList.Destroy;
@@ -189,12 +200,12 @@ end;
 
 function TSynEditMarkList.First: TSynEditMark;
 begin
-  result := TSynEditMark(inherited First);
+  Result := TSynEditMark(inherited First);
 end;
 
 function TSynEditMarkList.Get(Index: Integer): TSynEditMark;
 begin
-  result := TSynEditMark(inherited Get(Index));
+  Result := TSynEditMark(inherited Get(Index));
 end;
 
 //Returns up to maxMarks book/gutter marks for a chosen line.
@@ -207,8 +218,10 @@ var
 begin
   FillChar(marks, SizeOf(marks), 0);
   cnt := 0;
-  for i := 0 to Count - 1 do begin
-    if Items[i].Line = line then begin
+  for i := 0 to Count - 1 do
+  begin
+    if Items[i].Line = line then
+    begin
       Inc(cnt);
       marks[cnt] := Items[i];
       if cnt = maxMarks then break;
@@ -224,12 +237,12 @@ end;
 
 function TSynEditMarkList.Last: TSynEditMark;
 begin
-  result := TSynEditMark(inherited Last);
+  Result := TSynEditMark(inherited Last);
 end;
 
 procedure TSynEditMarkList.Place(mark: TSynEditMark);
 begin
-  if assigned(fEdit) then
+  if assigned(FEdit) then
     if assigned(TSynEdit(FEdit).OnPlaceBookmark) then
       TSynEdit(FEdit).OnPlaceBookmark(TSynEdit(FEdit), mark);
   if assigned(mark) then

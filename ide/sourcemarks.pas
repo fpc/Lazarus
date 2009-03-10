@@ -396,6 +396,8 @@ begin
   if Result<>0 then exit;
   Result:=Column-OtherMark.Column;
   if Result <> 0 then exit;
+  Result:=Priority-OtherMark.Priority;
+  if Result <> 0 then exit;
   Result := PtrInt(Self) - PtrInt(OtherMark);
 end;
 
