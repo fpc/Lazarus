@@ -2082,15 +2082,34 @@ end;
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
 var
-  BreakPtMark: TSourceMark;
+  Marks: PSourceMark;
+  i, MarkCount: Integer;
+  BreakFound, ExecutionFound: Boolean;
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
-  BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
-  if BreakPtMark = nil then
-    DebugBoss.DoCreateBreakPoint(Filename,Line,true)
-  else
-    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
+  SourceEditorMarks.GetMarksForLine(FEditor, Line, Marks, MarkCount);
+  BreakFound := False;
+  ExecutionFound := False;
+  for i := 0 to MarkCount - 1 do
+  begin
+    if not Marks[i].Visible then
+      Continue;
+    if Marks[i].IsBreakPoint then
+    begin
+      BreakFound := True;
+      DebugBoss.DoDeleteBreakPointAtMark(Marks[i])
+    end
+    else
+    if Marks[i] = FExecutionMark then
+      ExecutionFound := True;
+  end;
+
+  if not BreakFound then
+    DebugBoss.DoCreateBreakPoint(Filename, Line, True);
+
+  if ExecutionFound then
+    UpdateExecutionSourceMark;
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
