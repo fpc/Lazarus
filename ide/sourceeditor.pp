@@ -2181,14 +2181,19 @@ begin
     FExecutionMark := TSourceMark.Create(EditorComponent, nil);
     SourceEditorMarks.Add(FExecutionMark);
     EditorComponent.Marks.Add(FExecutionMark);
-    FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
     FExecutionMark.LineColorAttrib := ahaExecutionPoint;
     FExecutionMark.Priority := 1;
   end;
 
-  if ExecutionLine <> -1 then
-    FExecutionMark.Line := ExecutionLine;
   FExecutionMark.Visible := ExecutionLine <> -1;
+  if FExecutionMark.Visible then
+  begin
+    FExecutionMark.Line := ExecutionLine;
+    if SourceEditorMarks.FindBreakPointMark(EditorComponent, ExecutionLine) <> nil then
+      FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg
+    else
+      FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+  end;
 end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
