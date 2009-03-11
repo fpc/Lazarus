@@ -38,7 +38,7 @@ uses
 procedure TSynGutterMarks.DoChange(Sender: TObject);
 begin
   if AutoSize then
-    FWidth := 22;
+    FWidth := RealGutterWidth(0);
   inherited DoChange(Sender);
 end;
 
@@ -49,7 +49,7 @@ begin
   FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
   FInternalImage := nil;
 
-  FWidth := 22;
+  FWidth := 23;
 end;
 
 destructor TSynGutterMarks.Destroy;
@@ -58,60 +58,17 @@ begin
   inherited Destroy;
 end;
 
-function TSynGutterMarks.RealGutterWidth(CharWidth : integer) : integer;
+function TSynGutterMarks.RealGutterWidth(CharWidth: integer) : integer;
 begin
-  If Visible then
-    Result := Width
+  if Visible then
+    Result := 22 + FBookMarkOpt.LeftMargin
   else
     Result := 0;
-end;
-
-function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
-var
-  Mark1: TSynEditMark absolute Item1;
-  Mark2: TSynEditMark absolute Item2;
-begin
-  Result := 0;
-  if Mark1 = Mark2 then Exit;
-
-  if Mark1.IsBookmark then
-    Result := -1
-  else
-  if Mark2.IsBookmark then
-    Result := 1
-  else
-  if Mark1.Priority < Mark2.Priority then
-    Result := 1
-  else
-  if Mark1.Priority > Mark2.Priority then
-    Result := -1;
-end;
-
-function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
-var
-  Mark1: TSynEditMark absolute Item1;
-  Mark2: TSynEditMark absolute Item2;
-begin
-  Result := 0;
-  if Mark1 = Mark2 then Exit;
-
-  if Mark1.IsBookmark then
-    Result := 1
-  else
-  if Mark2.IsBookmark then
-    Result := -1
-  else
-  if Mark1.Priority < Mark2.Priority then
-    Result := 1
-  else
-  if Mark1.Priority > Mark2.Priority then
-    Result := -1;
 end;
 
 procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
   i: integer;
-  bHasOtherMarks: boolean;
   aGutterOffs: PIntArray;
   dc: HDC;
   LineHeight: Integer;

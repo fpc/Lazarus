@@ -76,12 +76,81 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
+function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
 
 implementation
 uses SynEdit;
 
 type  // This is until InvalidateGutterLines, can be moved to an accessible place
   SynEditAccess = Class(TCustomSynEdit);
+
+function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
+var
+  Mark1: TSynEditMark absolute Item1;
+  Mark2: TSynEditMark absolute Item2;
+begin
+  Result := 0;
+  if Mark1 = Mark2 then Exit;
+
+  if Mark1.IsBookmark then
+    Result := -1
+  else
+  if Mark2.IsBookmark then
+    Result := 1
+  else
+  if Mark1.Priority < Mark2.Priority then
+    Result := 1
+  else
+  if Mark1.Priority > Mark2.Priority then
+    Result := -1;
+end;
+
+function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
+var
+  Mark1: TSynEditMark absolute Item1;
+  Mark2: TSynEditMark absolute Item2;
+begin
+  Result := 0;
+  if Mark1 = Mark2 then Exit;
+
+  if Mark1.IsBookmark then
+    Result := 1
+  else
+  if Mark2.IsBookmark then
+    Result := -1
+  else
+  if Mark1.Priority < Mark2.Priority then
+    Result := 1
+  else
+  if Mark1.Priority > Mark2.Priority then
+    Result := -1;
+end;
+
+procedure SortMarks(var Marks: TSynEditMarks; Compare: TListSortCompare);
+var
+  i, j, LastMark: Integer;
+  P: Pointer;
+begin
+  for i := Low(Marks) to High(Marks) do
+    if Marks[i] = nil then
+    begin
+      LastMark := i - 1;
+      break;
+    end;
+  // insert sort is the best for our items count
+  for i := Low(Marks) + 1 to LastMark do
+  begin
+    P := Marks[i];
+    j := i - 1;
+    while (j >= Low(Marks)) and (Compare(P, Marks[j]) < 1) do
+    begin
+      Marks[j + 1] := Marks[j];
+      j := j - 1;
+    end;
+    Marks[j + 1] := TSynEditMark(P);
+  end;
+end;
 
 { TSynEditMark }
 
@@ -227,6 +296,11 @@ begin
       if cnt = maxMarks then break;
     end;
   end;
+  if Assigned(FEdit) then
+    if TSynEdit(FEdit).BookMarkOptions.DrawBookmarksFirst then
+      SortMarks(marks, @DoMarksCompareBookmarksFirst)
+    else
+      SortMarks(marks, @DoMarksCompareBookmarksLast);
 end;
 
 procedure TSynEditMarkList.Insert(Index: Integer; Item: TSynEditMark);
