@@ -96,7 +96,6 @@ begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
-    FreeThenNil(FMenu);
     FreeThenNil(FIcon);
     FreeIconHandles;
     Screen.RemoveForm(Self);
