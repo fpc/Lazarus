@@ -5874,7 +5874,7 @@ begin
           {$ENDIF}
           if eoScrollByOneLess in fOptions then
             Dec(counter);
-          if (Command in [ecPageUp, ecSelPageUp]) then
+          if (Command in [ecPageUp, ecSelPageUp, ecColSelPageUp]) then
             counter := -counter;
           {$IFDEF SYN_LAZARUS}
           TopView := TopView + counter;
