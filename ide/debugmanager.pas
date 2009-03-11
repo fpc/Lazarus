@@ -1144,8 +1144,8 @@ begin
   // => fix that
   Filename := TrimFilename(Filename);
   SrcFile := Filename;
-  SrcFile := MainIDE.FindSourceFile(SrcFile,Project1.ProjectDirectory,
-                      [fsfSearchForProject,fsfUseIncludePaths,fsfUseDebugPath]);
+  SrcFile := MainIDE.FindSourceFile(SrcFile, Project1.ProjectDirectory,
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath]);
   if SrcFile = '' then SrcFile := Filename;
 
   if not FilenameIsAbsolute(SrcFile)
@@ -1168,11 +1168,14 @@ begin
     end;
   end;
 
-  if (not FilenameIsAbsolute(SrcFile)) then begin
-    AnUnitInfo:=Project1.FindFile(SrcFile,[pfsfOnlyEditorFiles]);
-    if AnUnitInfo<>nil then begin
+  if not FilenameIsAbsolute(SrcFile) then
+  begin
+    AnUnitInfo := Project1.FindFile(SrcFile, [pfsfOnlyEditorFiles]);
+    if AnUnitInfo <> nil then
+    begin
       // the file is an unsaved file -> can not be extended
-      exit;
+      Result := True;
+      Exit;
     end;
   end;
 
