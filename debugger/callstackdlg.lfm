@@ -39,6 +39,7 @@ inherited CallStackDlg: TCallStackDlg
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
+    OnClick = lvCallStackClick
     OnDblClick = lvCallStackDBLCLICK
   end
   object ToolBar1: TToolBar[1]
