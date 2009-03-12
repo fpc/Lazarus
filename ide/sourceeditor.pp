@@ -2088,21 +2088,26 @@ var
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
-  SourceEditorMarks.GetMarksForLine(FEditor, Line, Marks, MarkCount);
-  BreakFound := False;
-  ExecutionFound := False;
-  for i := 0 to MarkCount - 1 do
-  begin
-    if not Marks[i].Visible then
-      Continue;
-    if Marks[i].IsBreakPoint then
+  Marks := nil;
+  try
+    SourceEditorMarks.GetMarksForLine(FEditor, Line, Marks, MarkCount);
+    BreakFound := False;
+    ExecutionFound := False;
+    for i := 0 to MarkCount - 1 do
     begin
-      BreakFound := True;
-      DebugBoss.DoDeleteBreakPointAtMark(Marks[i])
-    end
-    else
-    if Marks[i] = FExecutionMark then
-      ExecutionFound := True;
+      if not Marks[i].Visible then
+        Continue;
+      if Marks[i].IsBreakPoint then
+      begin
+        BreakFound := True;
+        DebugBoss.DoDeleteBreakPointAtMark(Marks[i])
+      end
+      else
+      if Marks[i] = FExecutionMark then
+        ExecutionFound := True;
+    end;
+  finally
+    FreeMem(Marks);
   end;
 
   if not BreakFound then
