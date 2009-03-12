@@ -496,11 +496,10 @@ end;
 
 class procedure TGtkWSCustomListView.ItemChangeInternal(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
-  //ImageBitmap: TBitmap;
-  //MaskBitmap: TBitmap;
-  //ImageRect: TRect;
-  //Pixmap: PGdkPixmap;
-  //Mask: PGdkBitmap;
+  ImageBitmap: TBitmap;
+  GDIObject: PGDIObject;
+  Pixmap: PGdkPixmap;
+  Mask: PGdkBitmap;
   n, Count: integer;
 begin
   if  (TLVHack(ALV).SmallImages <> nil)
@@ -508,25 +507,19 @@ begin
   and (AItem.ImageIndex < TLVHack(ALV).SmallImages.Count)
   then begin
     // set image & caption
-    {$ifdef IMGLIST_OLDSTYLE}
-    TLVHack(ALV).SmallImages.GetInternalImage(AItem.ImageIndex, ImageBitmap, MaskBitmap, ImageRect);
-    if (ImageRect.Left <> 0)
-    or (ImageRect.Top <> 0)
-    then DebugLn('WARNING: TGtkWSCustomListView.ItemChangeInternal does not support combined imagelists');
-    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
-    if MaskBitmap = nil
-    then begin
-      Mask := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Mask;
-      if Mask <> nil
-      then gdk_bitmap_ref(Mask);
-    end
-    else Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, MaskBitmap.Handle);
-    gtk_clist_set_pixtext(ACListWidget, AIndex, 0, PChar(AItem.Caption), 3, Pixmap, Mask);
-    if Mask <> nil
-    then gdk_bitmap_unref(Mask);
-    {$else}
-    {$IFDEF VerboseGtkToDos}{$note implement}{$ENDIF}
-    {$endif}
+    ImageBitmap := TBitmap.Create;
+    Mask := nil;
+    try
+      TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, ImageBitmap);
+      GDIObject := PGDIObject(ImageBitmap.Handle);
+      Pixmap := GDIObject^.GDIPixmapObject.Image;
+      Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
+      gtk_clist_set_pixtext(ACListWidget, AIndex, 0, PChar(AItem.Caption), 3, Pixmap, Mask);
+    finally
+      ImageBitmap.Free;
+      if Mask <> nil then
+        gdk_bitmap_unref(Mask);
+    end;
   end
   else begin
     // set caption alone
@@ -638,9 +631,7 @@ class procedure TGtkWSCustomListView.ItemSetImage(const ALV: TCustomListView; co
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
-  //ImageBitmap: TBitmap;
-  //MaskBitmap: TBitmap;
-  //ImageRect: TRect;
+  ImageBitmap: TBitmap;
   Pixmap: PGdkPixmap;
   Mask: PGdkBitmap;
   Spacing: guint8;
@@ -654,34 +645,24 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
 
-  {$ifdef IMGLIST_OLDSTYLE}
+  Pixmap := nil;
+  Mask := nil;
+
   if  (TLVHack(ALV).SmallImages <> nil)
   and (AImageIndex >= 0)
   and (AImageIndex < TLVHack(ALV).SmallImages.Count)
   then begin
     // set image & caption
-    TLVHack(ALV).SmallImages.GetInternalImage(AImageIndex, ImageBitmap, MaskBitmap, ImageRect);
-    if (ImageRect.Left <> 0)
-    or (ImageRect.Top <> 0)
-    then DebugLn('WARNING: TGtkWSCustomListView.ItemSetImage does not support combined imagelists');
-    Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
-    if MaskBitmap = nil
-    then begin
-      Mask := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Mask;
-      if Mask <> nil
-      then gdk_bitmap_ref(Mask);
-    end
-    else Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, MaskBitmap.Handle);
-  end
-  else begin
-    Pixmap := nil;
-    Mask := nil;
+    ImageBitmap := TBitmap.Create;
+    try
+      TLVHack(ALV).SmallImages.GetBitmap(AImageIndex, ImageBitmap);
+      Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
+      Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
+      gdk_pixmap_ref(Pixmap);
+    finally
+      ImageBitmap.Free;
+    end;
   end;
-  {$else}
-  {$IFDEF VerboseGtkToDos}{$note implement}{$ENDIF}
-    Pixmap := nil;
-    Mask := nil;
-  {$endif}
 
   CellType := gtk_clist_get_cell_type(CListWidget, AIndex, ASubIndex);
   // Sigh. 
@@ -733,10 +714,10 @@ begin
   else
     DebugLN('[TGtkWSCustomListView.ItemSetImage] Unknown celltype %d', [Ord(CellType)]);
   end;
-  {$ifdef IMGLIST_OLDSTYLE}
-  if Mask <> nil
-  then gdk_bitmap_unref(Mask);
-  {$endif}
+  if Pixmap <> nil then
+    gdk_pixmap_unref(Pixmap);
+  if Mask <> nil then
+    gdk_bitmap_unref(Mask);
 end;
 
 class procedure TGtkWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
