@@ -57,6 +57,11 @@ type
     ck : Integer;
     procedure UpdatePrinterInfo;
     procedure AddInfo(const Desc : String; Const Info : String);
+    procedure DrawGraphic(X,Y,AWidth,AHeight:Integer; Graphic: TGraphic);
+    function CM(Avalue: Double; VertRes:boolean=true): Integer;
+    function MM(AValue: Double; VertRes:boolean=true): Integer;
+    function Inch(AValue: Double; VertRes:boolean=true): Integer;
+    function Per(AValue: Double; VertRes:boolean=true): Integer;
   public
   
     { public declarations }
@@ -76,6 +81,55 @@ begin
   SGrid.Cells[0,ck] := Desc;
   SGrid.Cells[1,ck] := Info;
   Inc(ck);
+end;
+
+procedure TForm1.DrawGraphic(X, Y, AWidth, Aheight: Integer; Graphic: TGraphic);
+var
+  Ratio: Double;
+begin
+  if (AWidth<=0) or (AHeight<=0) then begin
+    if Graphic.Height=0 then
+      ratio := 1
+    else
+      ratio := Graphic.Height/Graphic.Width;
+    if AWidth<=0 then
+      AWidth := round(AHeight/ratio)
+    else
+    if AHeight<=0 then
+      AHeight := round(AWidth * ratio);
+  end;
+
+  if (AWidth>0) and (AHeight>0) then
+    Printer.Canvas.StretchDraw(Bounds(X,Y,AWidth,AHeight), Graphic);
+end;
+
+function TForm1.CM(Avalue: Double; VertRes: boolean=true): Integer;
+begin
+  result := MM(AValue*10, vertRes);
+end;
+
+function TForm1.MM(AValue: Double; VertRes:boolean=true): Integer;
+begin
+  if VertRes then
+    result := Round(AValue*Printer.YDPI/25.4)
+  else
+    result := Round(AValue*Printer.XDPI/25.4);
+end;
+
+function TForm1.Inch(AValue: Double; VertRes:boolean=true): Integer;
+begin
+  if VertRes then
+    result := Round(AValue*Printer.YDPI)
+  else
+    result := Round(AValue*Printer.XDPI);
+end;
+
+function TForm1.Per(AValue: Double; VertRes:boolean=true): Integer;
+begin
+  if VertRes then
+    result := Round(AValue*Printer.PageHeight/100)
+  else
+    result := Round(AValue*Printer.PageWidth/100);
 end;
 
 procedure TForm1.UpdatePrinterInfo;
@@ -139,14 +193,49 @@ begin
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
+var
+  Pic: TPicture;
+  pgw,pgh: Integer;
+  Hin: Integer; // half inch
 begin
   try
     Printer.Title := 'Printer test for printers4lazarus package';
     Printer.BeginDoc;
+    // first page reserved for
     Printer.Canvas.Font.Color:= clBlue;
     Printer.Canvas.Font.Size := 12;
-    Printer.Canvas.TextOut(0,0,'This is test for lazarus printer4lazarus package');
+    Printer.Canvas.TextOut(CM(0.5),CM(0.5),
+                           'This is test for lazarus printer4lazarus package');
+
+    // some often used consts
+    pgw := Printer.PageWidth-1;
+    pgh := Printer.PageHeight-1;
+    Hin := Inch(0.5);
+
+    // print margins marks, assumes XRes=YRes
+    Printer.Canvas.Pen.Color:=clBlack;
+    Printer.Canvas.Line(0, HIn, 0, 0);            // top-left
+    Printer.Canvas.Line(0, 0, HIn, 0);
+    Printer.Canvas.Line(0, pgh-HIn, 0, pgh);      // bottom-left
+    Printer.Canvas.Line(0, pgh, HIn, pgh);
+    Printer.Canvas.Line(pgw-Hin, pgh, pgw, pgh);  // bottom-right
+    Printer.Canvas.Line(pgw,pgh,pgw,pgh-HIn);
+    Printer.Canvas.Line(pgw-Hin, 0, pgw, 0);      // top-right
+    Printer.Canvas.Line(pgw,0,pgw,HIn);
+
+    // Image test
+    Pic := TPicture.Create;
+    Pic.LoadFromFile('../../../../images/splash_logo.png');
+    // draw logo scaled down to 7 centimeters wide preserving image aspect
+    DrawGraphic(CM(1.5), CM(1.5), MM(70), 0, Pic.Graphic);
+
+    // left 3 mm at the right and do it again but using 2 inch tall image
+    DrawGraphic(CM(1.5+7)+MM(3), CM(1.5), 0, Inch(2), Pic.Graphic);
+
+    Pic.Free;
+
     Printer.EndDoc;
+
   except
     on E:Exception do
     begin

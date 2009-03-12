@@ -3,14 +3,13 @@ object Form1: TForm1
   Height = 507
   Top = 142
   Width = 339
-  HorzScrollBar.Page = 338
-  VertScrollBar.Page = 506
   ActiveControl = Button2
   Caption = 'Form1'
   ClientHeight = 507
   ClientWidth = 339
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 16
     Height = 14
@@ -56,13 +55,9 @@ object Form1: TForm1
         Width = 230
       end>
     DefaultColWidth = 90
-    FixedColor = clBtnFace
     Flat = True
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
     RowCount = 15
-    ScrollBars = ssAutoBoth
     TabOrder = 7
-    TabStop = True
   end
   object Button3: TButton
     Left = 8
