@@ -3337,15 +3337,6 @@ begin
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
     end;
-
-    // codefold draw splitter line
-    if assigned(Gutter.CodeFoldPart) and  Gutter.CodeFoldPart(0).Visible
-       and (FFoldedLinesView.DrawDivider[LastLine]) then
-    begin
-      ypos := rcToken.Bottom - 1;
-      LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-      LCLIntf.LineTo(dc, fGutterWidth, ypos);
-    end;
   end;
 
   fMarkupManager.EndMarkup;
