@@ -303,15 +303,21 @@ begin
         Width := WR.Right - WR.Left;
       end
       else if (BorderStyle = bsDialog) then
-      { On normal dialogs we need to take into consideration the size of
+      {
+        For dialogs, the window is put in the middle of the screen.
+
+        On normal dialogs we need to take into consideration the size of
         the window decoration.
 
         For the Top and Left coordinates, using CM_USEDEFAULT produces
-        a wrong and bad result. Using the Workarea rectagle works fine.
+        a wrong and bad result. Using the Workarea rectagle works fine
+        for most devices, but not all, so we put the dialog in the center.
       }
       begin
-        Top := WR.Top;
-        Left := WR.Left;
+        Top := WR.Top + (WR.Bottom - WR.Top) div 2
+          - (Bounds.Bottom - Bounds.Top) div 2;
+        Left := WR.Left + (WR.Right - WR.Left) div 2
+          - (Bounds.Right - Bounds.Left) div 2;
         Height := Bounds.Bottom - Bounds.Top;
         Width := Bounds.Right - Bounds.Left;
       end
@@ -377,8 +383,10 @@ begin
     if (BorderStyle = bsDialog) then
     begin
       Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
-      SizeRect.Top := WR.Top;
-      SizeRect.Left := WR.Left;
+      SizeRect.Top := WR.Top + (WR.Bottom - WR.Top) div 2
+          - AHeight div 2;
+      SizeRect.Left := WR.Left + (WR.Right - WR.Left) div 2
+          - AWidth div 2;
       SizeRect.Bottom := SizeRect.Top + AHeight;
       SizeRect.Right := SizeRect.Left + AWidth;
     end;

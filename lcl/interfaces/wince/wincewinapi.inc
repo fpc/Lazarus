@@ -882,7 +882,6 @@ begin
   // TODO: use the real number of chars (and not the lenght)
   W := Utf8Decode(S);
   Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
-//  Result := Boolean(Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
   Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
