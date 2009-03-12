@@ -210,23 +210,18 @@ type
 
 function CompareSourceMarks(Data1, Data2: Pointer): integer;
 var
-  Mark1: TSourceMark;
-  Mark2: TSourceMark;
+  Mark1: TSourceMark absolute Data1;
+  Mark2: TSourceMark absolute Data2;
 begin
-  Mark1:=TSourceMark(Data1);
-  Mark2:=TSourceMark(Data2);
-  Result:=Mark1.Compare(Mark2);
+  Result := Mark1.Compare(Mark2);
 end;
 
 function CompareEditorAndLineWithMark(Key, Data: Pointer): integer;
 var
-  EditorAndLine: PEditorAndLine;
-  AMark: TSourceMark;
+  EditorAndLine: PEditorAndLine absolute Key;
+  AMark: TSourceMark absolute Data;
 begin
-  EditorAndLine:=PEditorAndLine(Key);
-  AMark:=TSourceMark(Data);
-  Result:=AMark.CompareEditorAndLine(EditorAndLine^.Editor,EditorAndLine^.Line);
-  Result:=-Result;
+  Result := -AMark.CompareEditorAndLine(EditorAndLine^.Editor, EditorAndLine^.Line);
 end;
 
 { TSourceMark }
@@ -406,9 +401,9 @@ end;
 function TSourceMark.CompareEditorAndLine(ASynEdit: TCustomSynEdit;
   ALine: integer): integer;
 begin
-  Result:=PtrInt(fSynEdit)-PtrInt(ASynEdit);
-  if Result<>0 then exit;
-  Result:=Line-ALine;
+  Result := PtrInt(fSynEdit) - PtrInt(ASynEdit);
+  if Result <> 0 then Exit;
+  Result := Line - ALine;
 end;
 
 function TSourceMark.GetFilename: string;
@@ -531,12 +526,19 @@ end;
 function TSourceMarks.FindFirstMarkNode(ASynEdit: TCustomSynEdit; ALine: integer
   ): TAVLTreeNode;
 var
+  LeftNode: TAVLTreeNode;
   EditorAndLine: TEditorAndLine;
 begin
-  EditorAndLine.Editor:=ASynEdit;
-  EditorAndLine.Line:=ALine;
-  Result:=fSortedItems.FindLeftMostKey(@EditorAndLine,
-                                       @CompareEditorAndLineWithMark);
+  EditorAndLine.Editor := ASynEdit;
+  EditorAndLine.Line := ALine;
+  Result := fSortedItems.FindKey(@EditorAndLine, @CompareEditorAndLineWithMark);
+  while Result <> nil do
+  begin
+    LeftNode := fSortedItems.FindPrecessor(Result);
+    if (LeftNode = nil) or
+       (CompareEditorAndLineWithMark(@EditorAndLine, LeftNode.Data) <> 0) then break;
+    Result := LeftNode;
+  end;
 end;
 
 constructor TSourceMarks.Create(TheOwner: TComponent);
@@ -645,19 +647,20 @@ var
   EditorAndLine: TEditorAndLine;
   CurMark: TSourceMark;
 begin
-  Result:=nil;
-  EditorAndLine.Editor:=ASynEdit;
-  EditorAndLine.Line:=ALine;
-  AVLNode:=fSortedItems.FindLeftMostKey(@EditorAndLine,
-                                        @CompareEditorAndLineWithMark);
-  while (AVLNode<>nil) do begin
-    CurMark:=TSourceMark(AVLNode.Data);
-    if CompareEditorAndLineWithMark(@EditorAndLine,CurMark)<>0 then break;
-    if CurMark.IsBreakPoint then begin
-      Result:=CurMark;
-      exit;
+  Result := nil;
+  EditorAndLine.Editor := ASynEdit;
+  EditorAndLine.Line := ALine;
+  AVLNode := FindFirstMarkNode(ASynEdit, ALine);
+  while (AVLNode <> nil) do
+  begin
+    CurMark := TSourceMark(AVLNode.Data);
+    if CompareEditorAndLineWithMark(@EditorAndLine, CurMark) <> 0 then break;
+    if CurMark.IsBreakPoint then
+    begin
+      Result := CurMark;
+      Exit;
     end;
-    AVLNode:=fSortedItems.FindSuccessor(AVLNode);
+    AVLNode := fSortedItems.FindSuccessor(AVLNode);
   end;
 end;
 
@@ -675,8 +678,7 @@ begin
   Marks := nil;
   EditorAndLine.Editor := ASynEdit;
   EditorAndLine.Line := ALine;
-  AVLNode := fSortedItems.FindLeftMostKey(@EditorAndLine,
-                                          @CompareEditorAndLineWithMark);
+  AVLNode := FindFirstMarkNode(ASynEdit, ALine);
   while (AVLNode <> nil) do
   begin
     CurMark := TSourceMark(AVLNode.Data);
