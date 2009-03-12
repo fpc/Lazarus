@@ -618,6 +618,7 @@ type
     function FindBookmark(BookmarkID: integer): TSourceEditor;
     function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
+    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
 
     function GetItems(Index: integer): TSourceEditorInterface; override;
     function GetEditors(Index:integer): TSourceEditor;
@@ -2084,7 +2085,7 @@ procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
 var
   Marks: PSourceMark;
   i, MarkCount: Integer;
-  BreakFound, ExecutionFound: Boolean;
+  BreakFound: Boolean;
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
@@ -2092,7 +2093,6 @@ begin
   try
     SourceEditorMarks.GetMarksForLine(FEditor, Line, Marks, MarkCount);
     BreakFound := False;
-    ExecutionFound := False;
     for i := 0 to MarkCount - 1 do
     begin
       if not Marks[i].Visible then
@@ -2101,10 +2101,7 @@ begin
       begin
         BreakFound := True;
         DebugBoss.DoDeleteBreakPointAtMark(Marks[i])
-      end
-      else
-      if Marks[i] = FExecutionMark then
-        ExecutionFound := True;
+      end;
     end;
   finally
     FreeMem(Marks);
@@ -2112,9 +2109,6 @@ begin
 
   if not BreakFound then
     DebugBoss.DoCreateBreakPoint(Filename, Line, True);
-
-  if ExecutionFound then
-    UpdateExecutionSourceMark;
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
@@ -3150,6 +3144,7 @@ begin
   SourceEditorMarks:=TSourceMarks.Create(Self);
   SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
   SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
+  SourceEditorMarks.OnAction:=@OnSourceMarksAction;
 
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
@@ -4258,6 +4253,20 @@ begin
   if (ASourceEditor=nil) or (not (ASourceEditor is TSourceEditor)) then
     RaiseException('TSourceNotebook.OnSourceMarksGetFilename');
   Result:=TSourceEditor(ASourceEditor).Filename;
+end;
+
+procedure TSourceNotebook.OnSourceMarksAction(AMark: TSourceMark;
+  AAction: TListNotification);
+var
+  Editor: TSourceEditor;
+begin
+  Editor := FindSourceEditorWithEditorComponent(AMark.SynEdit);
+  if Editor = nil then
+    Exit;
+
+  if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
+    (AMark.CompareEditorAndLine(Editor.FExecutionMark.SynEdit, Editor.FExecutionMark.Line) = 0) then
+    Editor.UpdateExecutionSourceMark;
 end;
 
 function TSourceNotebook.GetItems(Index: integer): TSourceEditorInterface;

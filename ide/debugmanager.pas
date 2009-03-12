@@ -1901,8 +1901,8 @@ begin
     GetSourceEditorForBreakPoint(ManagedBreakPoint,ASrcEdit);
   if ASrcEdit=nil then exit;
   NewSrcMark:=TSourceMark.Create(ASrcEdit.EditorComponent,nil);
-  SourceEditorMarks.Add(NewSrcMark);
   ManagedBreakPoint.SourceMark:=NewSrcMark;
+  SourceEditorMarks.Add(NewSrcMark);
   ASrcEdit.EditorComponent.Marks.Add(NewSrcMark);
 end;
 

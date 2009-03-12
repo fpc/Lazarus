@@ -135,6 +135,7 @@ type
   
   TGetSourceEditorEvent = function(ASynEdit: TCustomSynEdit): TObject of object;
   TGetFilenameEvent = function(ASourceEditor: TObject): string of object;
+  TMarksActionEvent = procedure(AMark: TSourceMark; Action: TListNotification) of object;
   
   TSourceMarks = class(TComponent)
   private
@@ -148,6 +149,7 @@ type
     fMultiBreakPointImg: Integer;
     FOnGetFilename: TGetFilenameEvent;
     FOnGetSourceEditor: TGetSourceEditorEvent;
+    FOnAction: TMarksActionEvent;
     fSortedItems: TAVLTree;// tree of TSourceMark
     fUnknownBreakPointImg: Integer;
     function GetItems(Index: integer): TSourceMark;
@@ -183,6 +185,7 @@ type
                                               write FOnGetFilename;
     property OnGetSourceEditor: TGetSourceEditorEvent read FOnGetSourceEditor
                                                       write FOnGetSourceEditor;
+    property OnAction: TMarksActionEvent read FOnAction write FOnAction;
   public
     // icon index
     property ActiveBreakPointImg: Integer read fActiveBreakPointImg;
@@ -573,10 +576,11 @@ begin
   Result:=fItems.Add(AMark);
   fSortedItems.Add(AMark);
   AMark.FSourceMarks:=Self;
+  if Assigned(FOnAction) then
+    FOnAction(AMark, lnAdded);
 end;
 
-function TSourceMarks.Add(ASynEdit: TCustomSynEdit; ALine: integer
-  ): TSourceMark;
+function TSourceMarks.Add(ASynEdit: TCustomSynEdit; ALine: integer): TSourceMark;
 begin
   Result:=TSourceMark.Create(ASynEdit,nil);
   Result.Line := ALine;
@@ -599,6 +603,8 @@ begin
   AMark.fSourceMarks:=nil;
   fItems.Delete(Index);
   fSortedItems.Remove(AMark);
+  if Assigned(FOnAction) then
+    FOnAction(AMark, lnDeleted);
   AMark.Free;
 end;
 
@@ -612,6 +618,8 @@ begin
   AMark.fSourceMarks:=nil;
   fItems.Delete(i);
   fSortedItems.Remove(AMark);
+  if Assigned(FOnAction) then
+    FOnAction(AMark, lnExtracted);
 end;
 
 procedure TSourceMarks.DeleteAllForEditor(ASynEdit: TCustomSynEdit);
