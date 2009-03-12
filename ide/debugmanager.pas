@@ -1665,6 +1665,7 @@ var
 begin
   TheDialog := TCallStackDlg(FDialogs[ddtCallStack]);
   TheDialog.CallStack := FCallStack;
+  TheDialog.BreakPoints := FBreakPoints;
 end;
 
 procedure TDebugManager.InitEvaluateDlg;

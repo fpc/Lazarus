@@ -91,14 +91,18 @@ type
     procedure actSetAsCurrentClick(Sender : TObject);
     procedure actShowClick(Sender: TObject);
   private
+    FBreakPoints: TIDEBreakPoints;
     FCallStack: TIDECallStack;
     FCallStackNotification: TIDECallStackNotification;
+    FBreakpointsNotification: TIDEBreakPointsNotification;
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
+    procedure SetBreakPoints(const AValue: TIDEBreakPoints);
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
+    procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
     procedure GotoIndex(AIndex: Integer);
@@ -115,6 +119,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
     property CallStack: TIDECallStack read FCallStack write SetCallStack;
     property ViewLimit: Integer read FViewLimit write SetViewLimit;
   end;
@@ -140,6 +145,13 @@ begin
   FCallStackNotification.AddReference;
   FCallStackNotification.OnChange := @CallStackChanged;
   FCallStackNotification.OnCurrent := @CallStackCurrent;
+
+  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
+  FBreakpointsNotification.AddReference;
+  FBreakpointsNotification.OnAdd :=@BreakPointChanged;
+  FBreakpointsNotification.OnUpdate := @BreakPointChanged;
+  FBreakpointsNotification.OnRemove := @BreakPointChanged;
+
   FViewLimit := 10;
   FViewCount := 10;
   FViewStart := 0;
@@ -165,10 +177,12 @@ procedure TCallStackDlg.UpdateView;
   var
     FileName: String;
   begin
+    if BreakPoints = nil then
+      Exit(False);
     FileName := Entry.Source;
     Result := DebugBoss.GetFullFilename(FileName, False);
     if Result then
-      Result := DebugBoss.BreakPoints.Find(FileName, Entry.Line) <> nil
+      Result := BreakPoints.Find(FileName, Entry.Line) <> nil;
   end;
 
 var
@@ -246,6 +260,12 @@ end;
 
 destructor TCallStackDlg.Destroy;
 begin
+  SetBreakPoints(nil);
+  FBreakpointsNotification.OnAdd := nil;
+  FBreakpointsNotification.OnUpdate := nil;
+  FBreakpointsNotification.OnRemove := nil;
+  FBreakpointsNotification.ReleaseReference;
+
   SetCallstack(nil);
   FCallStackNotification.OnChange := nil;
   FCallStackNotification.ReleaseReference;
@@ -379,6 +399,12 @@ begin
   SetViewStart(0);
 end;
 
+procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
+begin
+  UpdateView;
+end;
+
 procedure TCallStackDlg.FormCreate(Sender: TObject);
 var
   i: integer;
@@ -475,6 +501,24 @@ begin
     if FViewStart < 0 then FViewStart := 0;
   end;
   FViewLimit := AValue;
+  UpdateView;
+end;
+
+procedure TCallStackDlg.SetBreakPoints(const AValue: TIDEBreakPoints);
+begin
+  if FBreakPoints = AValue then Exit;
+
+  if FBreakPoints <> nil
+  then begin
+    FBreakPoints.RemoveNotification(FBreakpointsNotification);
+  end;
+
+  FBreakPoints := AValue;
+
+  if FBreakPoints <> nil
+  then begin
+    FBreakPoints.AddNotification(FBreakpointsNotification);
+  end;
   UpdateView;
 end;
 
