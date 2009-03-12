@@ -40,6 +40,7 @@ type
   TfrPrintGrid = class(TComponent)
   private
     FDBGrid               : TDBGrid;
+    FOnGetValue: TDetailEvent;
     FOnSetUpColumn: TSetupColumnEvent;
     FReport               : TfrReport;
     FReportDataSet        : TfrDBDataSet;
@@ -81,6 +82,7 @@ type
     property ShowHeaderOnAllPage : boolean read fShowHdOnAllPage write fShowHdOnAllPage default True;
     property ShowProgress : Boolean read fShowProgress write fShowProgress default false;
     property OnSetupColumn: TSetupColumnEvent read FOnSetUpColumn write FOnSetupColumn;
+    property OnGetValue: TDetailEvent read FOnGetValue write FOnGetValue;
  end;
 
 
@@ -245,6 +247,7 @@ begin
   FReport.OnEnterRect  :=@OnEnterRect;
   FReport.OnPrintColumn:=@OnPrintColumn;
   FReport.ShowProgress :=fShowProgress;
+  FReport.OnGetValue   :=FOnGetValue;
 
   FReportDataSet := TfrDBDataSet.Create(Self);
   FReportDataSet.Name := 'frGridDBDataSet1';
