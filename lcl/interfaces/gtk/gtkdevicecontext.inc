@@ -790,7 +790,7 @@ begin
   if IsExtPen then
     IsGeometric := (CurrentPen^.GDIPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC
   else
-    IsGeometric := PenWidth > 0;
+    IsGeometric := PenWidth > 1;
 
   if not IsGeometric then
     PenWidth := 0;
@@ -813,8 +813,11 @@ begin
   end
   else
   begin
-    JoinStyle := GDK_JOIN_MITER;
-    CapStyle := GDK_CAP_NOT_LAST;
+    JoinStyle := GDK_JOIN_ROUND;
+    if IsGeometric then
+      CapStyle := GDK_CAP_ROUND
+    else
+      CapStyle := GDK_CAP_NOT_LAST;
   end;
 
   if not IsExtPen and (PenStyle = PS_USERSTYLE) then
