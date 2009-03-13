@@ -169,6 +169,8 @@ type
 
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
+    function SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr
+                          ): Boolean; override;
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
 
@@ -2355,6 +2357,11 @@ end;
 function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch): TModalresult;
 begin
   Result := TWatchPropertyDlg.Create(Self, AWatch).ShowModal;
+end;
+
+function TDebugManager.SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
+begin
+  Result := (FDebugger <> nil) and FDebugger.SourceAddress(ASource, ALine, AColumn, AAddr);
 end;
 
 procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);

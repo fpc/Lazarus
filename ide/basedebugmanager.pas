@@ -101,7 +101,9 @@ type
     procedure EndDebugging; virtual; abstract;
     function Evaluate(const AExpression: String; var AResult: String
                      ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
-    
+    function SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr
+                          ): Boolean; virtual; abstract; // Retrieves the address of a given source
+
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;

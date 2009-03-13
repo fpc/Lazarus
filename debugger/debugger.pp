@@ -65,7 +65,8 @@ type
     dcModify,
     dcEnvironment,
     dcSetStackFrame,
-    dcDisassemble
+    dcDisassemble,
+    dcSourceAddr
     );
   TDBGCommands = set of TDBGCommand;
 
@@ -1153,6 +1154,7 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
                           out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+    function  SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean; // Retrieves the address of a given source
 
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
@@ -1202,7 +1204,8 @@ const
     'Modify',
     'Environment',
     'SetStackFrame',
-    'Disassemble'
+    'Disassemble',
+    'SourceAddr'
     );
 
   DBGStateNames: array[TDBGState] of string = (
@@ -1242,7 +1245,7 @@ const
              dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
              dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame,
-             dcDisassemble],
+             dcDisassemble, dcSourceAddr],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
@@ -1698,6 +1701,11 @@ begin
     FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
+end;
+
+function TDebugger.SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
+begin
+  Result := ReqCmd(dcSourceAddr, [ASource, ALine, AColumn, @AAddr]);
 end;
 
 procedure TDebugger.StepInto;

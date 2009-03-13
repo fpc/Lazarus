@@ -114,6 +114,7 @@ type
     FCurrentStackFrame: Integer;
     FAsmCache: TTypedMap;
     FAsmCacheIter: TTypedMapIterator;
+    FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
 
     // GDB info (move to ?)
     FGDBVersion: String;
@@ -141,9 +142,11 @@ type
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean;
                           out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+    function  GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
 
     procedure CallStackSetCurrent(AIndex: Integer);
     // ---
+    procedure ClearSourceInfo;
     procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
@@ -334,7 +337,6 @@ type
     procedure Invalidate;
   end;
 
-  { TDBGWatches }
 
   { TGDBMIWatches }
 
@@ -360,6 +362,10 @@ type
   public
   end;
 
+  { TGDBMIExpression }
+  // TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
+  // It is not completed and buggy. Since 5.3 expression evaluation is OK, so maybe in future the
+  // TGDBMIExpression will be completed to support older gdb versions
   TGDBMIExpression = class(TObject)
   private
     FDebugger: TGDBMIDebugger;
@@ -792,6 +798,10 @@ begin
   FDebuggerFlags := [];
   FAsmCache := TTypedMap.Create(itu8, TypeInfo(TGDBMIAsmLine));
   FAsmCacheIter := TTypedMapIterator.Create(FAsmCache);
+  FSourceNames := TStringList.Create;
+  FSourceNames.Sorted := True;
+  FSourceNames.Duplicates := dupError;
+  FSourceNames.CaseSensitive := False;
 
 {$IFdef MSWindows}
   InitWin32;
@@ -837,6 +847,8 @@ begin
   FreeAndNil(FCommandQueue);
   FreeAndNil(FAsmCacheIter);
   FreeAndNil(FAsmCache);
+  ClearSourceInfo;
+  FreeAndNil(FSourceNames);
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -851,6 +863,7 @@ begin
   if State in [dsStop, dsError]
   then begin
     FAsmCache.Clear;
+    ClearSourceInfo;
     FPauseWaitState := pwsNone;
   end;
 
@@ -1363,19 +1376,7 @@ var
   ResultInfo: TGDBType;
   addr: TDbgPtr;
   e: Integer;
-//  Expression: TGDBMIExpression;
 begin
-// TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
-// It is not completed and buggy. Since 5.3 expression evaluation is OK, so maybe in future the
-// TGDBMIExpression will be completed to support older gdb versions
-(*
-  Expression := TGDBMIExpression.Create(Self, AExpression);
-  if not Expression.GetExpression(S)
-  then S := AExpression;
-  WriteLN('[GDBEval] AskExpr: ', AExpression, ' EvalExp:', S ,' Dump: ',
-          Expression.DumpExpression);
-  Expression.Free;
-*)
   S := AExpression;
 
   Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
@@ -1505,6 +1506,58 @@ begin
     end;
   end;
 
+end;
+
+function TGDBMIDebugger.GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
+var
+  ID: packed record
+    Line, Column: Integer;
+  end;
+  Map: TMap;
+  idx, n: Integer;
+  R: TGDBMIExecResult;
+  LinesList, LineList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  Addr: TDbgPtr;
+begin
+  idx := FSourceNames.IndexOf(ASource);
+  if (idx <> -1)
+  then begin
+    Map := TMap(FSourceNames.Objects[idx]);
+    ID.Line := ALine;
+    // since we dont have column info we map all on column 0
+    // ID.Column := AColumn;
+    ID.Column := 0;
+    Result := (Map <> nil) and Map.GetData(ID, AAddr);
+    Exit;
+  end;
+
+  Result := ExecuteCommand('-symbol-list-line %s', [ASource], [cfIgnoreError, cfExternal], R)
+        and (R.State <> dsError);
+  if not Result then Exit;
+
+  Map := TMap.Create(its8, SizeOf(AAddr));
+  FSourceNames.AddObject(ASource, Map);
+
+  LinesList := TGDBMINameValueList.Create(R, ['lines']);
+  if LinesList = nil then Exit(False);
+
+  Result := False;
+  ID.Column := 0;
+  LineList := TGDBMINameValueList.Create('');
+  for n := 0 to LinesList.Count - 1 do
+  begin
+    Item := LinesList.Items[n];
+    LineList.Init(Item^.NamePtr, Item^.NameLen);
+    if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
+    if not TryStrToQWord(Unquote(LineList.Values['pc']), addr) then Continue;
+    Map.Add(ID, Addr);
+    if ID.Line = ALine
+    then begin
+      AAddr := Addr;
+      Result := True;
+    end;
+  end;
 end;
 
 function TGDBMIDebugger.GDBStepInto: Boolean;
@@ -1802,7 +1855,7 @@ function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
-             dcSetStackFrame, dcDisassemble];
+             dcSetStackFrame, dcDisassemble, dcSourceAddr];
 end;
 
 function TGDBMIDebugger.GetTargetWidth: Byte;
@@ -2487,6 +2540,8 @@ begin
     dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
     dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
                                             String(AParams[3].VPointer^), String(AParams[4].VPointer^));
+    dcSourceAddr:  Result := GDBSourceAdress(String(AParams[0].VAnsiString), AParams[1].VInteger, AParams[2].VInteger,
+                                            TDbgPtr(AParams[3].VPointer^));
   end;
 end;
 
@@ -2500,6 +2555,16 @@ begin
     if CmdInfo<>nil then Dispose(CmdInfo);
   end;
   FCommandQueue.Clear;
+end;
+
+procedure TGDBMIDebugger.ClearSourceInfo;
+var
+  n: Integer;
+begin
+  for n := 0 to FSourceNames.Count - 1 do
+    FSourceNames.Objects[n].Free;
+
+  FSourceNames.Clear;
 end;
 
 procedure TGDBMIDebugger.SelectStackFrame(AIndex: Integer);
