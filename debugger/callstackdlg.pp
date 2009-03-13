@@ -38,7 +38,7 @@ interface
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList, MainBase, IDEImagesIntf;
+  ActnList, MainBase, IDEImagesIntf, IDECommands;
 
 type
 
@@ -47,6 +47,7 @@ type
   TCallStackDlg = class(TDebuggerDlg)
     aclActions: TActionList;
     actCopyAll: TAction;
+    actToggleBreakPoint: TAction;
     actViewBottom: TAction;
     actViewTop: TAction;
     actViewLimit: TAction;
@@ -54,6 +55,7 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
+    MenuItem1: TMenuItem;
     ToolButtonTop: TToolButton;
     ToolButtonBottom: TToolButton;
     ToolButtonCopyAll: TToolButton;
@@ -78,6 +80,7 @@ type
     ToolButtonMore: TToolButton;
     ToolButtonMax: TToolButton;
     ToolButtonGoto: TToolButton;
+    procedure actToggleBreakPointExecute(Sender: TObject);
     procedure actViewBottomExecute(Sender: TObject);
     procedure actViewGotoExecute(Sender: TObject);
     procedure actViewMoreExecute(Sender: TObject);
@@ -113,6 +116,7 @@ type
     procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
+    procedure ToggleBreakpoint(Item: TListItem);
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -158,6 +162,7 @@ begin
   FViewCount := 10;
   FViewStart := 0;
   actViewLimit.Caption := popLimit10.Caption;
+  actToggleBreakPoint.ShortCut:= IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
@@ -192,6 +197,7 @@ var
   Item: TListItem;
   Entry: TCallStackEntry;
   First, Count: Integer;
+  Source: String;
 begin
   BeginUpdate;
   try
@@ -256,7 +262,10 @@ begin
         end;
 
         Item.SubItems[0] := IntToStr(Entry.Index);
-        Item.SubItems[1] := Entry.Source;
+        Source := Entry.Source;
+        if Source = '' then // we dont have a source file => just show an adress
+          Source := ':' + IntToHex(Entry.Adress, 8);
+        Item.SubItems[1] := Source;
         Item.SubItems[2] := IntToStr(Entry.Line);
         Item.SubItems[3] := GetFunction(Entry);
       end;
@@ -317,7 +326,7 @@ begin
   if Entry = nil then Exit;
 
   Filename := Entry.Source;
-  if DebugBoss.GetFullFilename(Filename, true)
+  if (FileName <> '') and DebugBoss.GetFullFilename(Filename, True)
   then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True);
 end;
 
@@ -341,6 +350,29 @@ begin
     S := S + LineEnding;
   end;
   ClipBoard.AsText := S;
+end;
+
+procedure TCallStackDlg.ToggleBreakpoint(Item: TListItem);
+var
+  idx: Integer;
+  Entry: TCallStackEntry;
+  BreakPoint: TIDEBreakPoint;
+  FileName: String;
+begin
+  if (Item <> nil) and (BreakPoints <> nil) then
+  begin
+    idx := FViewStart + Item.Index;
+    if idx >= CallStack.Count then Exit;
+    Entry := CallStack.Entries[idx];
+    FileName := Entry.Source;
+    if (FileName = '') or not DebugBoss.GetFullFilename(FileName, False) then
+      Exit;
+    BreakPoint := BreakPoints.Find(FileName, Entry.Line);
+    if BreakPoint <> nil then
+      DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
+    else
+      DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False);
+  end;
 end;
 
 procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
@@ -391,6 +423,11 @@ begin
   if CallStack <> nil
   then SetViewStart(CallStack.Count - FViewLimit)
   else SetViewStart(0);
+end;
+
+procedure TCallStackDlg.actToggleBreakPointExecute(Sender: TObject);
+begin
+  ToggleBreakpoint(lvCallStack.Selected);
 end;
 
 procedure TCallStackDlg.actViewGotoExecute(Sender: TObject);
@@ -454,29 +491,13 @@ procedure TCallStackDlg.lvCallStackClick(Sender: TObject);
 var
   P: TPoint;
   Item: TListItem;
-  idx: Integer;
-  Entry: TCallStackEntry;
-  BreakPoint: TIDEBreakPoint;
-  FileName: String;
 begin
   // toggle breakpoint
   P := lvCallStack.ScreenToClient(Mouse.CursorPos);
   Item := lvCallStack.GetItemAt(P.X, P.Y);
   // if clicked on the first column of a valid item
-  if (Item <> nil) and (P.X <= lvCallStack.Column[0].Width) and (BreakPoints <> nil) then
-  begin
-    idx := FViewStart + Item.Index;
-    if idx >= CallStack.Count then Exit;
-    Entry := CallStack.Entries[idx];
-    FileName := Entry.Source;
-    if (FileName = '') or not DebugBoss.GetFullFilename(FileName, False) then
-      Exit;
-    BreakPoint := BreakPoints.Find(FileName, Entry.Line);
-    if BreakPoint <> nil then
-      DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
-    else
-      DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False);
-  end;
+  if (Item <> nil) and (P.X <= lvCallStack.Column[0].Width) then
+    ToggleBreakPoint(Item);
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);

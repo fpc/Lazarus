@@ -1,7 +1,7 @@
 inherited CallStackDlg: TCallStackDlg
-  Left = 247
+  Left = 516
   Height = 246
-  Top = 176
+  Top = 219
   Width = 562
   ActiveControl = lvCallStack
   Caption = 'CallStack'
@@ -144,12 +144,16 @@ inherited CallStackDlg: TCallStackDlg
     end
   end
   object mnuPopup: TPopupMenu[2]
-    left = 66
-    top = 88
+    left = 16
+    top = 120
     object popShow: TMenuItem
       Action = actShow
       Default = True
       OnClick = actShowClick
+    end
+    object MenuItem1: TMenuItem
+      Action = actToggleBreakPoint
+      OnClick = actToggleBreakPointExecute
     end
     object N1: TMenuItem
       Caption = '-'
@@ -164,8 +168,8 @@ inherited CallStackDlg: TCallStackDlg
     end
   end
   object aclActions: TActionList[3]
-    left = 128
-    top = 104
+    left = 16
+    top = 80
     object actShow: TAction
       Caption = 'Show'
       DisableIfNoHandler = True
@@ -211,10 +215,15 @@ inherited CallStackDlg: TCallStackDlg
       DisableIfNoHandler = True
       OnExecute = actViewBottomExecute
     end
+    object actToggleBreakPoint: TAction
+      Caption = 'Toggle Breakpoint'
+      DisableIfNoHandler = True
+      OnExecute = actToggleBreakPointExecute
+    end
   end
   object mnuLimit: TPopupMenu[4]
-    left = 192
-    top = 112
+    left = 48
+    top = 120
     object popLimit10: TMenuItem
       Tag = 10
       Caption = 'Max 10'
