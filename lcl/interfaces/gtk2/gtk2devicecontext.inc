@@ -66,7 +66,7 @@ begin
     if Widget <> nil then
       renderer := gdk_pango_renderer_get_default(gtk_widget_get_screen(Widget))
     else
-      renderer := gdk_pango_renderer_get_default(gdk_get_default_screen);
+      renderer := gdk_pango_renderer_get_default(gdk_screen_get_default);
     gdk_pango_renderer_set_drawable(renderer, drawable);
     gdk_pango_renderer_set_gc(renderer, GC);
     SetColors(FGColor, BGColor);
