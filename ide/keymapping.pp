@@ -408,7 +408,7 @@ begin
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
   ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddBreakPoint: SetResult(VK_F5,[],VK_UNKNOWN,[]);
+  ecToggleBreakPoint: SetResult(VK_F5,[],VK_UNKNOWN,[]);
   ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
@@ -753,7 +753,7 @@ begin
   ecNextEditor: SetResult(VK_F6,[],VK_UNKNOWN,[],VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_F6,[ssShift],VK_UNKNOWN,[],VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
   ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1286,7 +1286,7 @@ begin
   ecNextEditor: SetResult(VK_RIGHT, [ssMeta,ssAlt], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_LEFT, [ssMeta,ssAlt], VK_UNKNOWN, []);
   ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddBreakPoint: SetResult(VK_P,[ssCtrl],VK_UNKNOWN,[]);
+  ecToggleBreakPoint: SetResult(VK_P,[ssCtrl],VK_UNKNOWN,[]);
   ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
@@ -1631,7 +1631,7 @@ begin
     ecMoveEditorRight         : Result:= srkmecMoveEditorRight;
     ecMoveEditorLeftmost      : Result:= srkmecMoveEditorLeftmost;
     ecMoveEditorRightmost     : Result:= srkmecMoveEditorRightmost;
-    ecAddBreakPoint           : Result:= srkmecAddBreakPoint;
+    ecToggleBreakPoint        : Result:= srkmecToggleBreakPoint;
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
     ecGotoEditor1..
     ecGotoEditor0             : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
@@ -2226,8 +2226,8 @@ begin
                 IDECmdScopeSrcEdit)];
   AddDefault(C, 'Go to next editor', srkmecNextEditor, ecNextEditor);
   AddDefault(C, 'Go to prior editor', srkmecPrevEditor, ecPrevEditor);
-  AddDefault(C, 'Add break point', lisKMAddBreakPoint, ecAddBreakPoint);
-  AddDefault(C, 'Remove break point', lisKMRemoveBreakPoint, ecRemoveBreakPoint
+  AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
+  AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint
     );
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);

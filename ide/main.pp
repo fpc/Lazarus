@@ -2854,7 +2854,7 @@ begin
   ecAboutLazarus:
     MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
 
-  ecAddBreakPoint:
+  ecToggleBreakPoint:
     SourceNotebook.ToggleBreakpointClicked(Self);
 
   ecRemoveBreakPoint:

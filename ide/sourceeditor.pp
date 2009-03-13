@@ -837,7 +837,7 @@ var
     SrcEditMenuPrevBookmark: TIDEMenuCommand;
     SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
     // debugging
-    SrcEditMenuAddBreakpoint: TIDEMenuCommand;
+    SrcEditMenuToggleBreakpoint: TIDEMenuCommand;
     SrcEditMenuRunToCursor: TIDEMenuCommand;
     SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
     SrcEditMenuViewCallStack: TIDEMenuCommand;
@@ -979,8 +979,8 @@ begin
                                             'Debug',uemDebugWord);
     AParent:=SrcEditSubMenuDebug;
       // register the Debug submenu items
-      SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(AParent,'Add Breakpoint',
-                                                       uemAddBreakpoint);
+      SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand(AParent,'Toggle Breakpoint',
+                                                       uemToggleBreakpoint);
       SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Add Watch at Cursor',uemAddWatchAtCursor);
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
@@ -4324,7 +4324,7 @@ begin
   SrcEditMenuNextBookmark.OnClick:=@BookMarkNextClicked;
   SrcEditMenuPrevBookmark.OnClick:=@BookMarkPrevClicked;
 
-  SrcEditMenuAddBreakpoint.OnClick:=@AddBreakpointClicked;
+  SrcEditMenuToggleBreakpoint.OnClick:=@ToggleBreakpointClicked;
   SrcEditMenuAddWatchAtCursor.OnClick:=@AddWatchAtCursor;
   SrcEditMenuRunToCursor.OnClick:=@RunToClicked;
   SrcEditMenuViewCallStack.OnClick:=@ViewCallStackClick;

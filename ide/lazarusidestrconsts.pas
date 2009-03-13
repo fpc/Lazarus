@@ -1700,7 +1700,7 @@ resourcestring
   uemShowLineNumbers = 'Show Line Numbers';
   uemShowUnitInfo = 'Unit Info';
   uemDebugWord = 'Debug';
-  uemAddBreakpoint = '&Add Breakpoint';
+  uemToggleBreakpoint = '&Toggle Breakpoint';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
   uemViewCallStack = 'View Call Stack';
@@ -1925,8 +1925,6 @@ resourcestring
   lisKMToggleBetweenUnitAndForm = 'Toggle between Unit and Form';
   srkmecNextEditor            = 'Go to next editor';
   srkmecPrevEditor            = 'Go to prior editor';
-  lisKMAddBreakPoint = 'Add break point';
-  lisKMRemoveBreakPoint = 'Remove break point';
   srkmecMoveEditorLeft        = 'Move editor left';
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecMoveEditorLeftmost    = 'Move editor leftmost';
@@ -2037,7 +2035,7 @@ resourcestring
   srkmecPause                     = 'pause program';
   srkmecStopProgram               = 'stop program';
   srkmecResetDebugger             = 'reset debugger';
-  srkmecAddBreakPoint             = 'add break point';
+  srkmecToggleBreakPoint          = 'toggle break point';
   srkmecRemoveBreakPoint          = 'remove break point';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
