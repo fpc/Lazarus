@@ -72,8 +72,7 @@ function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
 {off $DEFINE VerboseFonts}
 var
   GdiObject: PGdiObject;
-  FullString: String;
-  aFamily,aStyle: String;
+  FullString, aFamily, aStyle, ALongFontName: String;
   aSize: Integer;
   PangoDesc: PPangoFontDescription;
   CachedFont: TGtkFontCacheDescriptor;
@@ -88,9 +87,13 @@ begin
   Result := 0;
   PangoDesc := nil;
   GdiObject := nil;
+  if LongFontName = '' then
+    ALongFontName := LogFont.lfFaceName
+  else
+    ALongFontName := LongFontName;
   try
     // first search in cache
-    CachedFont:=FontCache.FindGTkFontDesc(LogFont,LongFontName);
+    CachedFont:=FontCache.FindGTkFontDesc(LogFont, ALongFontName);
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
       GdiObject := NewGdiObject(gdiFont);
@@ -119,7 +122,7 @@ begin
         exit;
       end;
 
-      FontNameToPangoFontDescStr(LongFontname, aFamily, aStyle, aSize);
+      FontNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize);
 
       // if font specified size, prefer this instead of 'possibly' inaccurate
       // lfHeight note that lfHeight may actually have a most accurate value
@@ -223,7 +226,7 @@ begin
     if (CachedFont = nil) and (GdiObject<>nil) and (GdiObject^.GDIFontObject <> nil) then
     begin
       // add to cache
-      CachedFont := FontCache.Add(GdiObject^.GDIFontObject, LogFont, LongFontName);
+      CachedFont := FontCache.Add(GdiObject^.GDIFontObject, LogFont, ALongFontName);
       if CachedFont <> nil then
       begin
         CachedFont.PangoFontDescription := PangoDesc;
