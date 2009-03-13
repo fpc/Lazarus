@@ -228,7 +228,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
 
-    procedure Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
+    procedure Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
@@ -243,6 +243,9 @@ const
   MARKS_MARGIN_Y = 2;
 
 implementation
+
+uses
+  Types;
 
 { TChartPen }
 
@@ -650,59 +653,51 @@ begin
   inherited Destroy;
 end;
 
-procedure TSeriesPointer.Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
+procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
+var
+  r: TRect;
 begin
   ACanvas.Brush.Assign(FBrush);
   ACanvas.Pen.Assign(FPen);
+  r := Bounds(ACenter.X, ACenter.Y, 1, 1);
+  InflateRect(r, FHorizSize, FVertSize);
 
+  if FStyle in [psRectangle, psCircle] then
+    ACanvas.Brush.Color := AColor
+  else
+    ACanvas.Pen.Color := AColor;
+
+  // Line does not draw the end point, so coordinates have to be incremented.
   case FStyle of
-    psRectangle: begin
-      ACanvas.Brush.Color := AColor;
-      ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-    end;
+    psRectangle:
+      ACanvas.Rectangle(r);
     psCross: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px+FHorizSize+1,py);
-      ACanvas.MoveTo(px,py-FVertSize);
-      ACanvas.LineTo(px,py+FVertSize+1);
+      ACanvas.Line(r.Left, ACenter.Y, r.Right + 1, ACenter.Y);
+      ACanvas.Line(ACenter.X, r.Top, ACenter.X, r.Bottom + 1);
     end;
     psDiagCross: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+      ACanvas.Line(r.Left, r.Top, r.Right + 1, r.Bottom + 1);
+      ACanvas.Line(r.Left, r.Bottom, r.Right + 1, r.Top - 1);
     end;
     psStar: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px+FHorizSize+1,py);
-      ACanvas.MoveTo(px,py-FVertSize);
-      ACanvas.LineTo(px,py+FVertSize+1);
-
-      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+      ACanvas.Line(r.Left, ACenter.Y, r.Right + 1, ACenter.Y);
+      ACanvas.Line(ACenter.X, r.Top, ACenter.X, r.Bottom + 1);
+      ACanvas.Line(r.Left, r.Top, r.Right + 1, r.Bottom + 1);
+      ACanvas.Line(r.Left, r.Bottom, r.Right + 1, r.Top - 1);
     end;
-    psCircle: begin
-      ACanvas.Brush.Color := AColor;
-      ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-    end;
+    psCircle:
+      ACanvas.Ellipse(r);
     psLowBracket: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-1);
+      ACanvas.MoveTo(r.Left, ACenter.Y);
+      ACanvas.LineTo(r.Left, r.Bottom);
+      ACanvas.LineTo(r.Right, r.Bottom);
+      ACanvas.LineTo(r.Right, ACenter.Y - 1);
     end;
     psHighBracket: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+1);
+      ACanvas.MoveTo(r.Left, ACenter.Y);
+      ACanvas.LineTo(r.Left, r.Top);
+      ACanvas.LineTo(r.Right, r.Top);
+      ACanvas.LineTo(r.Right, ACenter.Y + 1);
     end;
   end;
 end;

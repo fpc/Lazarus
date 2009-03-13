@@ -595,7 +595,7 @@ var
     if
       FShowPoints and InRange(i1.Y, YMin, YMax) and InRange(i1.X, XMin, XMax)
     then
-      FPointer.Draw(ACanvas, i1.X, i1.Y, SeriesColor);
+      FPointer.Draw(ACanvas, i1, SeriesColor);
   end;
 
 var
