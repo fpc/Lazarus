@@ -33,10 +33,6 @@ uses
   TAGraph, TAChartUtils, TATypes;
 
 type
-  TSeriesPointerStyle = (
-    psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket);
-
   BarException = class(Exception);
 
   { TChartSeries }
@@ -96,40 +92,6 @@ type
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title;
-  end;
-
-  TSeriesPointer = class(TPersistent)
-  private
-    FHorizSize, FVertSize: Integer;
-    FStyle: TSeriesPointerStyle;
-    FPen: TChartPen;
-    FBrush: TBrush;
-    FVisible: Boolean;
-    FOwner: TChartSeries;
-    FChanged: TNotifyEvent;
-
-    procedure SetVisible(Value: Boolean);
-    procedure SetStyle(Value: TSeriesPointerStyle);
-    procedure SetPen(Value: TChartPen);
-    procedure SetBrush(Value: TBrush);
-    procedure SetHorizSize(Value: Integer);
-    procedure SetVertSize(Value: Integer);
-  protected
-  public
-    constructor Create(AOwner: TChartSeries);
-    destructor Destroy; override;
-    procedure Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor = clTAColor);
-
-    property ParentSeries: TChartSeries read FOwner;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Brush: TBrush read FBrush write SetBrush;
-    property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
-    property OnChange: TNotifyEvent read FChanged write FChanged;
-    property Pen: TChartPen read FPen write SetPen;
-    property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
-    property VertSize: Integer read FVertSize write SetVertSize default 4;
-    property Visible: Boolean read FVisible write SetVisible;
   end;
 
   { TBasicPointSeries }
@@ -249,6 +211,7 @@ type
     procedure SetShowLines(Value: Boolean);
     procedure SetPointer(Value: TSeriesPointer);
   protected
+    procedure AfterAdd; override;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -550,146 +513,15 @@ begin
   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
-{ TSeriesPointer }
-
-procedure TSeriesPointer.SetVisible(Value: Boolean);
-begin
-  FVisible := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetStyle(Value: TSeriesPointerStyle);
-begin
-  FStyle := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetPen(Value: TChartPen);
-begin
-  FPen.Assign(Value);
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetBrush(Value: TBrush);
-begin
-  FBrush.Assign(Value);
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetHorizSize(Value: Integer);
-begin
-  FHorizSize := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetVertSize(Value: Integer);
-begin
-  FVertSize := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-constructor TSeriesPointer.Create(AOwner: TChartSeries);
-begin
-  FBrush := TBrush.Create;
-  FBrush.Color := clLime;
-  FPen := TChartPen.Create;
-  FOwner := AOwner;
-
-  FHorizSize := 4;
-  FVertSize  := 4;
-end;
-
-destructor TSeriesPointer.Destroy;
-begin
-  FBrush.Free;
-  FPen.Free;
-  inherited Destroy;
-end;
-
-procedure TSeriesPointer.Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
-begin
-  AColor := FOwner.ColorOrDefault(AColor);
-  ACanvas.Brush.Assign(FBrush);
-  ACanvas.Pen.Assign(FPen);
-
-  case FStyle of
-    psRectangle: begin
-      ACanvas.Brush.Color := AColor;
-      ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-    end;
-    psCross: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px+FHorizSize+1,py);
-      ACanvas.MoveTo(px,py-FVertSize);
-      ACanvas.LineTo(px,py+FVertSize+1);
-    end;
-    psDiagCross: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-    end;
-    psStar: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px+FHorizSize+1,py);
-      ACanvas.MoveTo(px,py-FVertSize);
-      ACanvas.LineTo(px,py+FVertSize+1);
-
-      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-    end;
-    psCircle: begin
-      ACanvas.Brush.Color := AColor;
-      ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-    end;
-    psLowBracket: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-      ACanvas.LineTo(px+FHorizSize+1,py-1);
-    end;
-    psHighBracket: begin
-      ACanvas.Pen.Color := AColor;
-      ACanvas.MoveTo(px-FHorizSize,py);
-      ACanvas.LineTo(px-FHorizSize,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      ACanvas.LineTo(px+FHorizSize+1,py+1);
-    end;
-  end;
-end;
-
-procedure TSeriesPointer.Assign(Source: TPersistent);
-begin
-  if Source is TSeriesPointer then
-    with TSeriesPointer(Source) do begin
-      FBrush.Assign(Brush);
-      FPen.Assign(Pen);
-      FStyle := Style;
-      FVisible := Visible;
-    end;
-  inherited Assign(Source);
-end;
-
 { TSerie }
 
 constructor TSerie.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FPointer := TSeriesPointer.Create(Self);
-  FPointer.FStyle := psCross;
-  FPointer.OnChange := @StyleChanged;
-
+  FPointer := TSeriesPointer.Create(FChart);
   FStyle := psSolid;
-
-  ShowPoints := false;
-  ShowLines := true;
+  FShowLines := true;
 
   UpdateInProgress := false;
 end;
@@ -814,6 +646,12 @@ begin
   end;
 
   UpdateParentChart;
+end;
+
+procedure TSerie.AfterAdd;
+begin
+  inherited AfterAdd;
+  FPointer.SetOwner(FChart);
 end;
 
 function TSerie.GetXValue(AIndex: Integer): Double;

@@ -208,6 +208,36 @@ type
     property Visible default true;
   end;
 
+  { TSeriesPointer }
+
+  TSeriesPointer = class(TChartElement)
+  private
+    FBrush: TBrush;
+    FHorizSize: Integer;
+    FPen: TChartPen;
+    FStyle: TSeriesPointerStyle;
+    FVertSize: Integer;
+
+    procedure SetBrush(AValue: TBrush);
+    procedure SetHorizSize(AValue: Integer);
+    procedure SetPen(AValue: TChartPen);
+    procedure SetStyle(AValue: TSeriesPointerStyle);
+    procedure SetVertSize(AValue: Integer);
+  public
+    constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    procedure Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
+  published
+    property Brush: TBrush read FBrush write SetBrush;
+    property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
+    property Pen: TChartPen read FPen write SetPen;
+    property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
+    property VertSize: Integer read FVertSize write SetVertSize default 4;
+    property Visible default true;
+  end;
+
 const
   MARKS_MARGIN_X = 4;
   MARKS_MARGIN_Y = 2;
@@ -584,6 +614,129 @@ begin
   FStyle := AValue;
   if FStyle <> smsCustom then
     FFormat := SERIES_MARK_FORMATS[FStyle];
+  StyleChanged(Self);
+end;
+
+{ TSeriesPointer }
+
+procedure TSeriesPointer.Assign(Source: TPersistent);
+begin
+  if Source is TSeriesPointer then
+    with TSeriesPointer(Source) do begin
+      Self.FBrush.Assign(Brush);
+      Self.FPen.Assign(Pen);
+      Self.FStyle := Style;
+    end;
+  inherited Assign(Source);
+end;
+
+constructor TSeriesPointer.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+
+  InitHelper(FBrush, TBrush);
+  InitHelper(FPen, TChartPen);
+
+  FHorizSize := 4;
+  FStyle := psRectangle;
+  FVertSize  := 4;
+  FVisible := true;
+end;
+
+destructor TSeriesPointer.Destroy;
+begin
+  FBrush.Free;
+  FPen.Free;
+  inherited Destroy;
+end;
+
+procedure TSeriesPointer.Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
+begin
+  ACanvas.Brush.Assign(FBrush);
+  ACanvas.Pen.Assign(FPen);
+
+  case FStyle of
+    psRectangle: begin
+      ACanvas.Brush.Color := AColor;
+      ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+    end;
+    psCross: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px+FHorizSize+1,py);
+      ACanvas.MoveTo(px,py-FVertSize);
+      ACanvas.LineTo(px,py+FVertSize+1);
+    end;
+    psDiagCross: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+    end;
+    psStar: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px+FHorizSize+1,py);
+      ACanvas.MoveTo(px,py-FVertSize);
+      ACanvas.LineTo(px,py+FVertSize+1);
+
+      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+    end;
+    psCircle: begin
+      ACanvas.Brush.Color := AColor;
+      ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+    end;
+    psLowBracket: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-1);
+    end;
+    psHighBracket: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+1);
+    end;
+  end;
+end;
+
+procedure TSeriesPointer.SetBrush(AValue: TBrush);
+begin
+  FBrush.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.SetHorizSize(AValue: Integer);
+begin
+  if FHorizSize = AValue then exit;
+  FHorizSize := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.SetPen(AValue: TChartPen);
+begin
+  FPen.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.SetStyle(AValue: TSeriesPointerStyle);
+begin
+  if FStyle = AValue then exit;
+  FStyle := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.SetVertSize(AValue: Integer);
+begin
+  if FVertSize = AValue then exit;
+  FVertSize := AValue;
   StyleChanged(Self);
 end;
 

@@ -72,6 +72,10 @@ type
     smsLabelPercentTotal, { Cars 12 % of 1234 }
     smsXValue);        { 21/6/1996 }
 
+  TSeriesPointerStyle = (
+    psRectangle, psCircle, psCross, psDiagCross, psStar,
+    psLowBracket, psHighBracket);
+
   { TPenBrushFontRecall }
 
   TPenBrushFontRecall = class
