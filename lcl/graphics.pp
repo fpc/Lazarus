@@ -626,7 +626,7 @@ type
     procedure SetPattern(APattern: TPenPattern); reintroduce;
   published
     property Color: TColor read FColor write SetColor default clBlack;
-    property Cosmetic: Boolean read FCosmetic write SetCosmetic;
+    property Cosmetic: Boolean read FCosmetic write SetCosmetic default True;
     property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
     property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
     property Mode default pmCopy;
