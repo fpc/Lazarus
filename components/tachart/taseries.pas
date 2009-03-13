@@ -71,6 +71,7 @@ type
     procedure UpdateParentChart;
     function GetValuesTotal: Double;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -496,6 +497,15 @@ begin
   UpdateParentChart;
 end;
 
+function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
+begin
+  Result := AColor;
+  if Result <> clTAColor then exit;
+  Result := ADefault;
+  if Result <> clTAColor then exit;
+  Result := SeriesColor;
+end;
+
 function TChartSeries.Count:Integer;
 begin
   Result := FCoordList.Count;
@@ -598,61 +608,58 @@ end;
 
 procedure TSeriesPointer.Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
 begin
-  with FOwner do begin
-    if AColor = clTAColor then
-      AColor := SeriesColor;
-    ACanvas.Brush.Assign(FBrush);
-    ACanvas.Pen.Assign(FPen);
+  AColor := FOwner.ColorOrDefault(AColor);
+  ACanvas.Brush.Assign(FBrush);
+  ACanvas.Pen.Assign(FPen);
 
-    case FStyle of
-      psRectangle: begin
-        ACanvas.Brush.Color := AColor;
-        ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-      end;
-      psCross: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px+FHorizSize+1,py);
-        ACanvas.MoveTo(px,py-FVertSize);
-        ACanvas.LineTo(px,py+FVertSize+1);
-      end;
-      psDiagCross: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      end;
-      psStar: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px+FHorizSize+1,py);
-        ACanvas.MoveTo(px,py-FVertSize);
-        ACanvas.LineTo(px,py+FVertSize+1);
+  case FStyle of
+    psRectangle: begin
+      ACanvas.Brush.Color := AColor;
+      ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+    end;
+    psCross: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px+FHorizSize+1,py);
+      ACanvas.MoveTo(px,py-FVertSize);
+      ACanvas.LineTo(px,py+FVertSize+1);
+    end;
+    psDiagCross: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+    end;
+    psStar: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px+FHorizSize+1,py);
+      ACanvas.MoveTo(px,py-FVertSize);
+      ACanvas.LineTo(px,py+FVertSize+1);
 
-        ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      end;
-      psCircle: begin
-        ACanvas.Brush.Color := AColor;
-        ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-      end;
-      psLowBracket: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-1);
-      end;
-      psHighBracket: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+1);
-      end;
+      ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+    end;
+    psCircle: begin
+      ACanvas.Brush.Color := AColor;
+      ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+    end;
+    psLowBracket: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+      ACanvas.LineTo(px+FHorizSize+1,py-1);
+    end;
+    psHighBracket: begin
+      ACanvas.Pen.Color := AColor;
+      ACanvas.MoveTo(px-FHorizSize,py);
+      ACanvas.LineTo(px-FHorizSize,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+      ACanvas.LineTo(px+FHorizSize+1,py+1);
     end;
   end;
 end;
@@ -790,8 +797,7 @@ end;
 
 function TSerie.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then
-    Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
@@ -1228,7 +1234,7 @@ end;
 
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
@@ -1354,7 +1360,7 @@ end;
 
 function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := Colors[ColorIndex];
+  Color := ColorOrDefault(Color, Colors[ColorIndex]);
   Inc(ColorIndex);
   if ColorIndex > MaxColor then ColorIndex := 1;
 
@@ -1513,7 +1519,7 @@ end;
 
 function TAreaSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
