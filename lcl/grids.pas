@@ -8027,6 +8027,9 @@ begin
       TryScrollTo(TLValue(LeftCol,FixedCols,GCache.MaxTopLeft.x), TopRow)
     else
       TryScrollTo(LeftCol, TLValue(TopRow,FixedRows,GCache.MaxTopLeft.y));
+
+    if EditorMode then
+      EditorPos;
   end;
 end;
 
