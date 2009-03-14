@@ -142,6 +142,7 @@ type
     fActiveBreakPointImg: Integer;
     FCurrentLineBreakPointImg: Integer;
     FCurrentLineImg: Integer;
+    FSourceLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
     fInvalidBreakPointImg: Integer;
@@ -195,6 +196,7 @@ type
     property UnknownBreakPointImg: Integer read fUnknownBreakPointImg;
     property CurrentLineImg: Integer read FCurrentLineImg;
     property CurrentLineBreakPointImg: Integer read FCurrentLineBreakPointImg;
+    property SourceLineImg: Integer read FSourceLineImg;
   end;
   
 var
@@ -524,6 +526,8 @@ begin
   FCurrentLineImg:=AddImage('debugger_current_line');
   // load current line + breakpoint image
   FCurrentLineBreakPointImg:=AddImage('debugger_current_line_breakpoint');
+  // load source line
+  FSourceLineImg:=AddImage('debugger_source_line');
 end;
 
 function TSourceMarks.FindFirstMarkNode(ASynEdit: TCustomSynEdit; ALine: integer

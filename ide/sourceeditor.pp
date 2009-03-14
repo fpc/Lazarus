@@ -343,6 +343,10 @@ type
     procedure Activate;
     function PageIndex: integer;
     function IsActiveOnNoteBook: boolean;
+
+    // debugging
+    procedure FillExecutionMarks;
+    procedure ClearExecutionMarks;
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -3016,6 +3020,23 @@ begin
     Result:=false;
 end;
 
+procedure TSourceEditor.FillExecutionMarks;
+var
+  i: integer;
+  ASource: String;
+  Addr: TDBGPtr;
+begin
+  ASource := FileName;
+  for i := 0 to EditorComponent.Lines.Count - 1 do
+    if DebugBoss.SourceAddress(ASource, i, 0, Addr) and (Addr <> 0) then
+      EditorComponent.SetDebugMarks(i, i);
+end;
+
+procedure TSourceEditor.ClearExecutionMarks;
+begin
+  EditorComponent.ClearDebugMarks;
+end;
+
 Function TSourceEditor.GetWordAtCurrentCaret: String;
 var
   CaretPos: TPoint;
@@ -4489,7 +4510,7 @@ Begin
 End;
 
 Function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
-Begin
+begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
   {$ENDIF}
@@ -4507,23 +4528,21 @@ Begin
   {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
   Result.EditorComponent.BeginUpdate;
-  //debugln(['TSourceNotebook.NewSE PageNum=',PageNum,' Notebook.PageIndex=',Notebook.PageIndex,' FindPageWithEditor=',FindPageWithEditor(Result)]);
-
   FSourceEditorList.Add(Result);
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
   //debugln(['TSourceNotebook.NewSE C GetActiveSE=Result=',GetActiveSE=Result]);
   Result.FPageName:=NoteBook.Pages[Pagenum];
-  Result.EditorComponent.BookMarkOptions.BookmarkImages :=
-                                                      SourceEditorMarks.ImgList;
-  Result.PopupMenu:=SrcPopupMenu;
+  Result.EditorComponent.BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
+  Result.EditorComponent.Gutter.MarksPart.DebugMarksImageIndex := SourceEditorMarks.SourceLineImg;
+  Result.PopupMenu := SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnMouseWheel := @EditorMouseWheel;
   Result.OnClickLink := @EditorClickLink;
   Result.OnMouseLink := @EditorMouseLink;
-  Result.OnKeyDown :=@EditorKeyDown;
+  Result.OnKeyDown := @EditorKeyDown;
 
   Result.EditorComponent.EndUpdate;
   {$IFDEF IDE_DEBUG}
