@@ -3401,14 +3401,18 @@ begin
   if Y<0 then Y:=0;
   if Y>=ClientHeight then Y:=ClientHeight-1;
   ANode:=GetNodeAtY(Y);
+  NodeRect:=ANode.DisplayRect(false);
+  NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
   if ANode<>nil then begin
     AnInsertMarkNode:=ANode;
     if (X>AnInsertMarkNode.DisplayExpandSignRight) then
-      // insert as first child of pointed node
-      AnInsertMarkType:=tvimAsFirstChild
-    else begin
-      NodeRect:=ANode.DisplayRect(false);
-      NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
+      if Y>=NodeMidY then begin
+        // insert as first child of pointed node
+        AnInsertMarkType:=tvimAsFirstChild;
+      end else begin
+        // insert as previous sibling of pointed node
+        AnInsertMarkType:=tvimAsPrevSibling;
+    end else begin
       if Y>=NodeMidY then begin
         if ANode.Expanded and ANode.HasChildren then begin
           // insert as first child of pointed node
@@ -3418,6 +3422,7 @@ begin
           AnInsertMarkType:=tvimAsNextSibling;
         end;
       end else begin
+        // insert as previous sibling of pointed node
         AnInsertMarkType:=tvimAsPrevSibling;
       end;
     end;
