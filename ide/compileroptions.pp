@@ -1865,6 +1865,7 @@ var
   switches, tempsw: String;
   InhLinkerOpts: String;
   NewTargetFilename: String;
+  NewTargetDirectory: String;
   CurIncludePath: String;
   CurLibraryPath: String;
   CurUnitPath: String;
@@ -2411,17 +2412,21 @@ begin
        
 }
   // append -o Option if neccessary
-  if not (ccloDoNotAppendOutFileOption in Flags)
-  and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
+  if not (ccloDoNotAppendOutFileOption in Flags) and
+    ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
-    NewTargetFilename:=CreateTargetFilename(CurMainSrcFile);
-    if (NewTargetFilename<>'')
-    and ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0)
-     or (CurOutputDir<>'')) then
+    NewTargetFilename := CreateTargetFilename(CurMainSrcFile);
+    if (NewTargetFilename<>'') and
+       ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0) or
+       (CurOutputDir<>'')) then
     begin
       if not (cclAbsolutePaths in Flags) then
-        NewTargetFilename:=CreateRelativePath(NewTargetFilename,BaseDirectory);
-      switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFilename);
+        NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
+      NewTargetDirectory := ExtractFilePath(NewTargetFilename);
+      if NewTargetDirectory <> '' then
+        switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
+      NewTargetFileName := ExtractFileName(NewTargetFilename);
+      switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
     end;
   end;
 
