@@ -979,13 +979,7 @@ begin
     Dec(ORect.Right, ARect.Right);
     Dec(ORect.Bottom, ARect.Bottom);
   end;
-{
-  if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
-  begin
-    Dec(LeftOffset, Windows.GetSystemMetrics(SM_CXEDGE));
-    Dec(TopOffset, Windows.GetSystemMetrics(SM_CYEDGE));
-  end;
-}
+
   Result := True;
 end;
 
@@ -1159,7 +1153,11 @@ begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   WindowInfo^.DrawItemIndex := -1;
+  {$ifdef win32}
+  Windows.SetPropW(Window, PWideChar(DWord(WindowInfoAtom)), DWord(WindowInfo));
+  {$else}
   Windows.SetProp(Window, PWideChar(DWord(WindowInfoAtom)), DWord(WindowInfo));
+  {$endif}
   Result := WindowInfo;
 end;
 
@@ -1167,15 +1165,24 @@ function DisposeWindowInfo(Window: HWND): boolean;
 var
   WindowInfo: PWindowInfo;
 begin
+  {$ifdef win32}
+  WindowInfo := PWindowInfo(Windows.GetPropW(Window, PWideChar(DWord(WindowInfoAtom))));
+  Result := Windows.RemovePropW(Window, PWideChar(DWord(WindowInfoAtom)))<>0;
+  {$else}
   WindowInfo := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
   Result := Windows.RemoveProp(Window, PWideChar(DWord(WindowInfoAtom)))<>0;
+  {$endif}
   if Result then
     Dispose(WindowInfo);
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
+  {$ifdef win32}
+  Result := PWindowInfo(Windows.GetPropW(Window, PWideChar(DWord(WindowInfoAtom))));
+  {$else}
   Result := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
+  {$endif}
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;

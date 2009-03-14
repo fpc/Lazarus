@@ -193,7 +193,8 @@ begin
   end;
 end;
 
-procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dword);
+procedure CalcFormWindowFlags(const AForm: TCustomForm;
+  var Flags, FlagsEx: dword);
 var
   BorderStyle: TFormBorderStyle;
 begin
@@ -207,6 +208,11 @@ begin
   Flags := Flags or CalcBorderIconsFlags(AForm);
 end;
 
+{
+  This routine fills SizeRect with
+  the necessary window size to have it's
+  BoundsRect.
+}
 procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
 begin
   // the LCL defines the size of a form without border, win32 with.

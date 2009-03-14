@@ -62,7 +62,11 @@ var
 begin
   init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_DATE_CLASSES;
+  {$ifdef win32}
+  InitCommonControlsEx(init);
+  {$else}
   InitCommonControlsEx(@init);
+  {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
   // customization of Params
