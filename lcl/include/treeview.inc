@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -4446,13 +4446,19 @@ begin
     // draw icon
     if (Images<>nil) and PaintImages then
     begin
-      if FSelectedNode<>Node then
-        ImgIndex:=Node.ImageIndex
+      if FSelectedNode <> Node then
+      begin
+      	GetImageIndex(Node);
+        ImgIndex := Node.ImageIndex
+      end
       else
-        ImgIndex:=Node.SelectedIndex;
-      if (ImgIndex>=0) and (ImgIndex<Images.Count) then
-        Images.Draw(Canvas,x+1,NodeRect.Top,ImgIndex,true);
-      inc(x,Images.Width+2);
+      begin
+      	GetSelectedIndex(Node);
+        ImgIndex := Node.SelectedIndex;
+      end;
+      if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
+        Images.Draw(Canvas, x + 1, NodeRect.Top, ImgIndex, True);
+      inc(x, Images.Width + 2);
     end;
 
     // draw state icon
@@ -4661,7 +4667,7 @@ begin
       and (LogicalX<CursorNode.DisplayExpandSignRight) then begin
         // mousedown occured on expand sign -> expand/collapse
         CursorNode.Expanded:=not CursorNode.Expanded;
-      end else if LogicalX>=CursorNode.DisplayIconLeft then begin
+      end else if LogicalX>=CursorNode.DisplayTextLeft then begin
         // mousedown occured in text or icon
         // -> select node and begin drag operation
         {$IFDEF VerboseDrag}
