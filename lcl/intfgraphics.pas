@@ -1343,33 +1343,34 @@ begin
 end;
 
 procedure TLazIntfImage.ChooseGetSetColorFunctions;
-var
-  Desc: TRawImageDescription absolute FRawImage.Description;
 
   function ChooseRGBA_32Bpp: Boolean;
   var
     Positions: Byte;
   begin
     Result := False;
-    if Desc.Depth <> 32 then Exit;
-    if Desc.BitsPerPixel <> 32 then Exit;
-    if Desc.LineOrder <> riloTopToBottom then Exit;
-    if Desc.AlphaPrec <> 8 then Exit;
-    if Desc.RedPrec <> 8 then Exit;
-    if Desc.GreenPrec <> 8 then Exit;
-    if Desc.BluePrec <> 8 then Exit;
-    if Desc.AlphaShift and 7 <> 0 then Exit;
-    if Desc.RedShift and 7 <> 0 then Exit;
-    if Desc.GreenShift and 7 <> 0 then Exit;
-    if Desc.BlueShift and 7 <> 0 then Exit;
-    
-    Positions := (((Desc.AlphaShift shr 3) and 3) shl 6
-              or ((Desc.RedShift shr 3) and 3) shl 4
-              or ((Desc.GreenShift shr 3) and 3) shl 2
-              or ((Desc.BlueShift shr 3) and 3)) and $FF;
+    with FRawImage.Description do
+    begin
+      if Depth <> 32 then Exit;
+      if BitsPerPixel <> 32 then Exit;
+      if LineOrder <> riloTopToBottom then Exit;
+      if AlphaPrec <> 8 then Exit;
+      if RedPrec <> 8 then Exit;
+      if GreenPrec <> 8 then Exit;
+      if BluePrec <> 8 then Exit;
+      if AlphaShift and 7 <> 0 then Exit;
+      if RedShift and 7 <> 0 then Exit;
+      if GreenShift and 7 <> 0 then Exit;
+      if BlueShift and 7 <> 0 then Exit;
 
-    if Desc.ByteOrder = riboMSBFirst
-    then Positions := not Positions; // reverse positions
+      Positions := (((AlphaShift shr 3) and 3) shl 6
+                or ((RedShift shr 3) and 3) shl 4
+                or ((GreenShift shr 3) and 3) shl 2
+                or ((BlueShift shr 3) and 3)) and $FF;
+
+      if ByteOrder = riboMSBFirst
+      then Positions := not Positions; // reverse positions
+    end;
     
     // the locations of A,R,G,B are now coded in 2 bits each: AARRBBGG
     // the 2-bit value (0..3) represents the location of the channel,
@@ -1446,22 +1447,25 @@ var
     Positions: Byte;
   begin
     Result := False;
-    if Desc.Depth <> 24 then Exit;
-    if Desc.BitsPerPixel <> 32 then Exit;
-    if Desc.LineOrder <> riloTopToBottom then Exit;
-    if Desc.RedPrec <> 8 then Exit;
-    if Desc.GreenPrec <> 8 then Exit;
-    if Desc.BluePrec <> 8 then Exit;
-    if Desc.RedShift and 7 <> 0 then Exit;
-    if Desc.GreenShift and 7 <> 0 then Exit;
-    if Desc.BlueShift and 7 <> 0 then Exit;
+    with FRawImage.Description do
+    begin
+      if Depth <> 24 then Exit;
+      if BitsPerPixel <> 32 then Exit;
+      if LineOrder <> riloTopToBottom then Exit;
+      if RedPrec <> 8 then Exit;
+      if GreenPrec <> 8 then Exit;
+      if BluePrec <> 8 then Exit;
+      if RedShift and 7 <> 0 then Exit;
+      if GreenShift and 7 <> 0 then Exit;
+      if BlueShift and 7 <> 0 then Exit;
 
-    Positions := (((Desc.RedShift shr 3) and 3) shl 4
-              or ((Desc.GreenShift shr 3) and 3) shl 2
-              or ((Desc.BlueShift shr 3) and 3)) and $FF;
+      Positions := (((RedShift shr 3) and 3) shl 4
+                or ((GreenShift shr 3) and 3) shl 2
+                or ((BlueShift shr 3) and 3)) and $FF;
 
-    if Desc.ByteOrder = riboMSBFirst
-    then Positions := not Positions and %00111111; // reverse positions
+      if ByteOrder = riboMSBFirst
+      then Positions := not Positions and %00111111; // reverse positions
+    end;
 
     // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
     // the 2-bit value (0..3) represents the location of the channel,
@@ -1538,25 +1542,28 @@ var
     Positions: Byte;
   begin
     Result := False;
-    if Desc.Depth <> 24 then Exit;
-    if Desc.BitsPerPixel <> 24 then Exit;
-    if Desc.LineOrder <> riloTopToBottom then Exit;
-    if Desc.RedPrec <> 8 then Exit;
-    if Desc.GreenPrec <> 8 then Exit;
-    if Desc.BluePrec <> 8 then Exit;
-    if Desc.RedShift and 7 <> 0 then Exit;
-    if Desc.GreenShift and 7 <> 0 then Exit;
-    if Desc.BlueShift and 7 <> 0 then Exit;
+    with FRawImage.Description do
+    begin
+      if Depth <> 24 then Exit;
+      if BitsPerPixel <> 24 then Exit;
+      if LineOrder <> riloTopToBottom then Exit;
+      if RedPrec <> 8 then Exit;
+      if GreenPrec <> 8 then Exit;
+      if BluePrec <> 8 then Exit;
+      if RedShift and 7 <> 0 then Exit;
+      if GreenShift and 7 <> 0 then Exit;
+      if BlueShift and 7 <> 0 then Exit;
 
-    if Desc.ByteOrder = riboMSBFirst
-    then
-      Positions := ((2-((Desc.RedShift   shr 3) and 3)) shl 4
-                or (2-((Desc.GreenShift shr 3) and 3)) shl 2
-                or (2-((Desc.BlueShift  shr 3) and 3))) and $FF
-    else
-      Positions := (((Desc.RedShift   shr 3) and 3) shl 4
-                or ((Desc.GreenShift shr 3) and 3) shl 2
-                or ((Desc.BlueShift  shr 3) and 3)) and $FF;
+      if ByteOrder = riboMSBFirst
+      then
+        Positions := ((2-((RedShift   shr 3) and 3)) shl 4
+                  or (2-((GreenShift shr 3) and 3)) shl 2
+                  or (2-((BlueShift  shr 3) and 3))) and $FF
+      else
+        Positions := (((RedShift   shr 3) and 3) shl 4
+                  or ((GreenShift shr 3) and 3) shl 2
+                  or ((BlueShift  shr 3) and 3)) and $FF;
+    end;
 
 
     // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
@@ -1601,17 +1608,20 @@ var
   
   procedure ChooseRGBAFunctions;
   begin
-    ChooseRawBitsProc(Desc.BitsPerPixel, Desc.ByteOrder, Desc.BitOrder,
-                      FReadRawImageBits, FWriteRawImageBits);
+    with FRawImage.Description do
+    begin
+      ChooseRawBitsProc(BitsPerPixel, ByteOrder, BitOrder,
+                        FReadRawImageBits, FWriteRawImageBits);
 
-    if Desc.AlphaPrec > 0
-    then begin
-      FGetInternalColorProc := @GetColor_RGBA_NoPalette;
-      FSetInternalColorProc := @SetColor_RGBA_NoPalette;
-    end
-    else begin
-      FGetInternalColorProc := @GetColor_RGB_NoPalette;
-      FSetInternalColorProc := @SetColor_RGB_NoPalette;
+      if AlphaPrec > 0
+      then begin
+        FGetInternalColorProc := @GetColor_RGBA_NoPalette;
+        FSetInternalColorProc := @SetColor_RGBA_NoPalette;
+      end
+      else begin
+        FGetInternalColorProc := @GetColor_RGB_NoPalette;
+        FSetInternalColorProc := @SetColor_RGB_NoPalette;
+      end;
     end;
   end;
 
@@ -1627,35 +1637,34 @@ begin
   end;
   FGetSetColorFunctionsUpdateNeeded := false;
 
-  if Desc.MaskBitsPerPixel > 0
-  then begin
-    ChooseRawBitsProc(Desc.MaskBitsPerPixel,
-                      Desc.ByteOrder,
-                      Desc.MaskBitOrder,
-                      FMaskReadRawImageBits, FMaskWriteRawImageBits);
-  end;
+  with FRawImage.Description do
+  begin
+    if MaskBitsPerPixel > 0
+    then ChooseRawBitsProc(MaskBitsPerPixel, ByteOrder, MaskBitOrder,
+                           FMaskReadRawImageBits, FMaskWriteRawImageBits);
 
-  if Desc.PaletteColorCount = 0
-  then begin
-    case Desc.Format of
-      ricfRGBA: begin
-        if not (ChooseRGBA_32Bpp or ChooseRGB_32Bpp or ChooseRGB_24Bpp)
-        then ChooseRGBAFunctions;
+    if PaletteColorCount = 0
+    then begin
+      case Format of
+        ricfRGBA: begin
+          if not (ChooseRGBA_32Bpp or ChooseRGB_32Bpp or ChooseRGB_24Bpp)
+          then ChooseRGBAFunctions;
+        end;
+        ricfGray: begin
+          ChooseRawBitsProc(BitsPerPixel,
+                            ByteOrder,
+                            BitOrder,
+                            FReadRawImageBits, FWriteRawImageBits);
+          FGetInternalColorProc := @GetColor_Gray_NoPalette;
+          FSetInternalColorProc := @SetColor_Gray_NoPalette;
+        end;
       end;
-      ricfGray: begin
-        ChooseRawBitsProc(Desc.BitsPerPixel,
-                          Desc.ByteOrder,
-                          Desc.BitOrder,
-                          FReadRawImageBits, FWriteRawImageBits);
-        FGetInternalColorProc := @GetColor_Gray_NoPalette;
-        FSetInternalColorProc := @SetColor_Gray_NoPalette;
-      end;
+    end
+    else begin
+      // palette
+      // ToDo
+      DebugLn('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
     end;
-  end
-  else begin
-    // palette
-    // ToDo
-    DebugLn('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
   end;
 end;
 
@@ -1709,10 +1718,9 @@ end;
 
 procedure TLazIntfImage.SetMask_Generic(x, y: integer; const AValue: Boolean);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  if Desc.MaskBitsPerPixel = 0 then Exit;
+  if FRawImage.Description.MaskBitsPerPixel = 0 then Exit;
   
   GetXYMaskPosition(x,y,Position);
   FRawImage.WriteMask(Position, AValue);
@@ -1721,36 +1729,40 @@ end;
 
 procedure TLazIntfImage.GetColor_RGBA_NoPalette(x, y: integer; out Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.AlphaPrec,Desc.AlphaShift, Value.Alpha);
+  with FRawImage.Description do
+  begin
+    FReadRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FReadRawImageBits(FRawImage.Data, Position, GreenPrec, GreenShift, Value.Green);
+    FReadRawImageBits(FRawImage.Data, Position, BluePrec, BlueShift, Value.Blue);
+    FReadRawImageBits(FRawImage.Data, Position, AlphaPrec, AlphaShift, Value.Alpha);
+  end;
 end;
 
 procedure TLazIntfImage.GetColor_RGB_NoPalette(x, y: integer; out Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
+  with FRawImage.Description do
+  begin
+    FReadRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FReadRawImageBits(FRawImage.Data, Position, GreenPrec, GreenShift, Value.Green);
+    FReadRawImageBits(FRawImage.Data, Position, BluePrec, BlueShift, Value.Blue);
+  end;
   // no alpha -> set opaque
   Value.Alpha:=high(Value.Alpha);
 end;
 
 procedure TLazIntfImage.GetColor_Gray_NoPalette(x, y: integer; out Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  with FRawImage.Description do
+    FReadRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
   Value.Green := Value.Red;
   Value.Blue := Value.Red;
   // no alpha -> set opaque
@@ -2355,35 +2367,39 @@ end;
 
 procedure TLazIntfImage.SetColor_RGBA_NoPalette(x, y: integer; const Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec,Desc.RedShift, Value.Red);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.AlphaPrec, Desc.AlphaShift, Value.Alpha)
+  with FRawImage.Description do
+  begin
+    FWriteRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FWriteRawImageBits(FRawImage.Data, Position, GreenPrec, GreenShift, Value.Green);
+    FWriteRawImageBits(FRawImage.Data, Position, BluePrec, BlueShift, Value.Blue);
+    FWriteRawImageBits(FRawImage.Data, Position, AlphaPrec, AlphaShift, Value.Alpha)
+  end;
 end;
 
 procedure TLazIntfImage.SetColor_RGB_NoPalette(x, y: integer; const Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
+  with FRawImage.Description do
+  begin
+    FWriteRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FWriteRawImageBits(FRawImage.Data, Position, GreenPrec, GreenShift, Value.Green);
+    FWriteRawImageBits(FRawImage.Data, Position, BluePrec, BlueShift, Value.Blue);
+  end;
   // no alpha -> ignore
 end;
 
 procedure TLazIntfImage.SetColor_Gray_NoPalette(x, y: integer; const Value: TFPColor);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
   GetXYDataPosition(x,y,Position);
-  FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
+  with FRawImage.Description do
+    FWriteRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
 end;
 
 procedure TLazIntfImage.SetColor_NULL(x, y: integer; const Value: TFPColor);
@@ -2973,8 +2989,6 @@ begin
 end;
 
 procedure TLazIntfImage.CreateData;
-var
-  Desc: TRawImageDescription absolute FRawImage.Description;
 begin
   if FUpdateCount > 0
   then begin
@@ -2986,9 +3000,9 @@ begin
   FreeData;
 
   New(FLineStarts);
-  FLineStarts^.Init(Width, Height, Desc.BitsPerPixel, Desc.LineEnd, Desc.LineOrder);
+  FLineStarts^.Init(Width, Height, FRawImage.Description.BitsPerPixel, FRawImage.Description.LineEnd, FRawImage.Description.LineOrder);
   New(FMaskLineStarts);
-  FMaskLineStarts^.Init(Width, Height, Desc.MaskBitsPerPixel, Desc.MaskLineEnd, Desc.LineOrder);
+  FMaskLineStarts^.Init(Width, Height, FRawImage.Description.MaskBitsPerPixel, FRawImage.Description.MaskLineEnd, FRawImage.Description.LineOrder);
 
   FRawImage.CreateData(False);
 end;
@@ -3024,10 +3038,10 @@ end;
 
 constructor TLazIntfImage.Create(ARawImage: TRawImage; ADataOwner: Boolean);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
+  Desc: TRawImageDescription absolute ARawImage.Description;
 begin
   BeginUpdate;
-  FRawimage := ARawImage;
+  FRawImage := ARawImage;
   Create(Desc.Width, Desc.Height, []);
   FDataOwner := ADataOwner;
   FCreateAllDataNeeded := False;
@@ -3196,7 +3210,7 @@ end;
 
 procedure TLazIntfImage.SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean);
 var
-  Desc: TRawImageDescription absolute FRawImage.Description;
+  Desc: TRawImageDescription absolute ARawImage.Description;
 begin
   if FRawImage.IsEqual(ARawImage) then Exit;
 

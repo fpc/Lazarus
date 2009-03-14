@@ -105,7 +105,7 @@ end;
 
 procedure TFPImageBitmap.ReadStream(AStream: TMemoryStream; ASize: Longint);
 var
-  SCB: TSharedCustomBitmap absolute FSharedImage;
+  SCB: TSharedCustomBitmap;
   IntfImg: TLazIntfImage;
   ImgReader: TFPCustomImageReader;
   LazReader: ILazImageReader;
@@ -124,6 +124,7 @@ begin
     FinalizeReader(ImgReader);
 
     // no need to care about unsharing image, thats done by calling proc
+    SCB := TSharedCustomBitmap(FSharedImage);
     SCB.FImage.FreeData;
     IntfImg.GetRawImage(SCB.FImage, True);
     SCB.FHasMask := IntfImg.HasMask;

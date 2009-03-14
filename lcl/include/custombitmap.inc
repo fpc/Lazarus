@@ -290,7 +290,7 @@ end;
 
 procedure TCustomBitmap.SetSize(AWidth, AHeight: integer);
 var
-  SCB: TSharedCustomBitmap absolute FSharedImage;
+  SCB: TSharedCustomBitmap;
   CurIntfImage, NewIntfImage: TLazIntfImage;
   NewRawImage: TRawImage;
 begin
@@ -299,6 +299,7 @@ begin
   if AWidth < 0 then AWidth := 0;
   if AHeight < 0 then AHeight := 0;
 
+  SCB := TSharedCustomBitmap(FSharedImage);
   if  (SCB.FImage.Description.Height = cardinal(AHeight))
   and (SCB.FImage.Description.Width = cardinal(AWidth))
   then Exit;
