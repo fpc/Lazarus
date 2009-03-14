@@ -605,7 +605,7 @@ type
     property MarkupCurWordTime: Integer
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
     property MarkupCurWordFull: Boolean
-      read FMarkupCurWordFull write FMarkupCurWordFull default False;
+      read FMarkupCurWordFull write FMarkupCurWordFull default True;
     property MarkupCurWordFullLen: Integer
       read FMarkupCurWordFullLen write FMarkupCurWordFullLen default 3;
     property MarkupCurWordNoKeyword: Boolean
@@ -1420,7 +1420,7 @@ begin
   fHighlighterList := TEditOptLangList.Create;
 
   FMarkupCurWordTime := 1500;
-  FMarkupCurWordFull := False;
+  FMarkupCurWordFull := True;
   FMarkupCurWordFullLen := 3;
   FMarkupCurWordNoKeyword := True;
   FMarkupCurWordTrim := True;
@@ -1597,7 +1597,7 @@ begin
       'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
     FMarkupCurWordFull :=
       XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/FullWord', False);
+      'EditorOptions/Display/MarkupCurrentWord/FullWord', True);
     FMarkupCurWordFullLen :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
@@ -1761,7 +1761,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Time',
       FMarkupCurWordTime, 1500);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord',
-      FMarkupCurWordFull, False);
+      FMarkupCurWordFull, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullLen',
       FMarkupCurWordFullLen, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword',
