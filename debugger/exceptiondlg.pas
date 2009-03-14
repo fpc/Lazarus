@@ -33,9 +33,9 @@ uses
 
 type
   
-  { TExceptionDialog }
+  { TIDEExceptionDlg }
 
-  TExceptionDialog = class(TForm)
+  TIDEExceptionDlg = class(TForm)
     btnBreak: TBitBtn;
     btnContinue: TBitBtn;
     cbIgnoreExceptionType: TCheckBox;
@@ -53,9 +53,9 @@ implementation
 
 function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean): TModalResult;
 var
-  ADialog: TExceptionDialog;
+  ADialog: TIDEExceptionDlg;
 begin
-  ADialog := TExceptionDialog.Create(Application);
+  ADialog := TIDEExceptionDlg.Create(Application);
   try
     Result := ADialog.Execute(AMessage, IgnoreException);
   finally
@@ -63,9 +63,9 @@ begin
   end;
 end;
 
-{ TExceptionDialog }
+{ TIDEExceptionDlg }
 
-constructor TExceptionDialog.Create(AOwner: TComponent);
+constructor TIDEExceptionDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := lisExceptionDialog;
@@ -77,7 +77,7 @@ begin
   btnContinue.LoadGlyphFromLazarusResource('menu_run');
 end;
 
-function TExceptionDialog.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;
+function TIDEExceptionDlg.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;
 begin
   lblMessage.Caption := AMessage;
   Result := ShowModal;

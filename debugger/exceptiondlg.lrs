@@ -1,9 +1,10 @@
 { This is an automatically generated lazarus resource file }
 
-LazarusResources.Add('TExceptionDialog','FORMDATA',[
-  'TPF0'#16'TExceptionDialog'#15'ExceptionDialog'#4'Left'#3#223#1#6'Height'#2'q'
+
+LazarusResources.Add('TIDEExceptionDlg','FORMDATA',[
+  'TPF0'#16'TIDEExceptionDlg'#15'IDEExceptionDlg'#4'Left'#3#223#1#6'Height'#2'q'
   +#3'Top'#3'x'#1#5'Width'#3'd'#2#8'AutoSize'#9#11'BorderIcons'#11#12'biSystemM'
-  +'enu'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#15'ExceptionDialog'#12'Cl'
+  +'enu'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#15'IDEExceptionDlg'#12'Cl'
   +'ientHeight'#2'q'#11'ClientWidth'#3'd'#2#8'Position'#7#14'poScreenCenter'#10
   +'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#10'lblMessage'#22'AnchorSideLeft.Contro'
   +'l'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'#2

@@ -1,4 +1,4 @@
-object ExceptionDialog: TExceptionDialog
+object IDEExceptionDlg: TIDEExceptionDlg
   Left = 479
   Height = 113
   Top = 376
@@ -6,7 +6,7 @@ object ExceptionDialog: TExceptionDialog
   AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'ExceptionDialog'
+  Caption = 'IDEExceptionDlg'
   ClientHeight = 113
   ClientWidth = 612
   Position = poScreenCenter
