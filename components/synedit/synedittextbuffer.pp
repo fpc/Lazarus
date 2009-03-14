@@ -60,7 +60,8 @@ type
 
   TSynEditStringFlag = (
     sfModified,              // a line is modified and not saved after
-    sfSaved                  // a line is modified and saved after
+    sfSaved,                 // a line is modified and saved after
+    sfDebugMark              // a line where debugger can stop (for lazarus only)
   );
   TSynEditStringFlags = set of TSynEditStringFlag;
 
@@ -192,6 +193,8 @@ type
     procedure ClearRanges(ARange: TSynEditRange); override;
     procedure MarkModified(AFirst, ALast: Integer; AUndo: Boolean; AReason: TSynChangeReason);
     procedure MarkSaved;
+    procedure SetDebugMarks(AFirst, ALast: Integer);
+    procedure ClearDebugMarks;
     {$ENDIF}
     procedure AddChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); override;
@@ -743,6 +746,23 @@ begin
   for Index := 0 to Count - 1 do
     if sfModified in Flags[Index] then
       Flags[Index] := Flags[Index] + [sfSaved];
+end;
+
+procedure TSynEditStringList.SetDebugMarks(AFirst, ALast: Integer);
+var
+  Index: Integer;
+begin
+  for Index := AFirst to ALast do
+    if (Index >= 0) and (Index < Count) then
+      Flags[Index] := Flags[Index] + [sfDebugMark];
+end;
+
+procedure TSynEditStringList.ClearDebugMarks;
+var
+  Index: Integer;
+begin
+  for Index := 0 to Count - 1 do
+    Flags[Index] := Flags[Index] - [sfDebugMark];
 end;
 
 procedure TSynEditStringList.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);

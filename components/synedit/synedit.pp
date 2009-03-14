@@ -805,6 +805,9 @@ type
     procedure SetSelWord;
     procedure Undo;
     function GetLineState(ALine: Integer): TSynLineState;
+    function HasDebugMark(ALine: Integer): Boolean;
+    procedure SetDebugMarks(AFirst, ALast: Integer);
+    procedure ClearDebugMarks;
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
 {$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
@@ -4990,6 +4993,21 @@ begin
       Result := slsSaved
     else
       Result := slsNone;
+end;
+
+function TCustomSynEdit.HasDebugMark(ALine: Integer): Boolean;
+begin
+  Result := sfDebugMark in TSynEditStringList(fLines).Flags[ALine];
+end;
+
+procedure TCustomSynEdit.SetDebugMarks(AFirst, ALast: Integer);
+begin
+  TSynEditStringList(fLines).SetDebugMarks(AFirst, ALast);
+end;
+
+procedure TCustomSynEdit.ClearDebugMarks;
+begin
+  TSynEditStringList(fLines).ClearDebugMarks;
 end;
 
 procedure TCustomSynEdit.UndoItem;

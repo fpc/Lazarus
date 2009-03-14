@@ -14,6 +14,7 @@ type
 
   TSynGutterMarks = class(TSynGutterPartBase)
   private
+    FDebugMarksImageIndex: Integer;
     FFoldView: TSynEditFoldedView;
     FBookMarkOpt: TSynBookMarkOpt;
     FInternalImage: TSynInternalImage;
@@ -23,9 +24,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
-      override;
+    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
+    property DebugMarksImageIndex: Integer read FDebugMarksImageIndex write FDebugMarksImageIndex;
   end;
 
 implementation
@@ -48,13 +49,14 @@ begin
   FFoldView := Gutter.FoldView;
   FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
   FInternalImage := nil;
+  FDebugMarksImageIndex := -1;
 
   FWidth := 23;
 end;
 
 destructor TSynGutterMarks.Destroy;
 begin
-  FreeAndNil(fInternalImage);
+  FreeAndNil(FInternalImage);
   inherited Destroy;
 end;
 
@@ -68,11 +70,12 @@ end;
 
 procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
-  i: integer;
+  i, j, iLine: integer;
   aGutterOffs: PIntArray;
   dc: HDC;
   LineHeight: Integer;
-  LineMarks: TList;
+  Marks: TSynEditMarks;
+  HasAnyMark: Boolean;
 
   procedure DrawMark(CurMark: TSynEditMark);
   var
@@ -83,36 +86,66 @@ var
     if (CurMark.Line<1) or (CurMark.Line > SynEdit.Lines.Count) then exit;
     if FFoldView.FoldedAtTextIndex[CurMark.Line-1] then exit;
     iLine := FFoldView.TextIndexToScreenLine(CurMark.Line-1);
+    if iLine < 0 then Exit;
 
-    if Assigned(fBookMarkOpt.BookmarkImages) and not CurMark.InternalImage
-    then begin
-      if (CurMark.ImageIndex <= FBookMarkOpt.BookmarkImages.Count) then begin
+    if Assigned(FBookMarkOpt.BookmarkImages) and not CurMark.InternalImage then
+    begin
+      if (CurMark.ImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
+         (CurMark.ImageIndex >= 0) then
+      begin
         if CurMark.IsBookmark = FBookMarkOpt.DrawBookmarksFirst then
           aGutterOffs^[iLine] := AClip.Left
-        else if aGutterOffs^[iLine] = 0 then
-          aGutterOffs^[iLine] := fBookMarkOpt.BookmarkImages.Width + AClip.Left;
-        if LineHeight > fBookMarkOpt.BookmarkImages.Height then
-          iTop := (LineHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
-        with fBookMarkOpt do
+        else
+        if aGutterOffs^[iLine] = 0 then
+          aGutterOffs^[iLine] := FBookMarkOpt.BookmarkImages.Width + AClip.Left;
+        if LineHeight > FBookMarkOpt.BookmarkImages.Height then
+          iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
+        with FBookMarkOpt do
           BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
-                           iTop + iLine * LineHeight, CurMark.ImageIndex, true);
+                              iTop + iLine * LineHeight, CurMark.ImageIndex, True);
 
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
+        Inc(aGutterOffs^[iLine], FBookMarkOpt.BookmarkImages.Width);
       end;
-    end else
+    end
+    else
     begin
-      if CurMark.ImageIndex in [0..9] then begin
-        if not Assigned(fInternalImage) then begin
-          fInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
-        end;
+      if CurMark.ImageIndex in [0..9] then
+      begin
+        if not Assigned(FInternalImage) then
+          FInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
         if aGutterOffs^[iLine] = 0 then
           aGutterOffs^[iLine] := AClip.Left;
-        fInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
-            fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * LineHeight,
+        FInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
+            FBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * LineHeight,
             LineHeight);
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.Xoffset);
+        Inc(aGutterOffs^[iLine], FBookMarkOpt.Xoffset);
       end;
     end;
+  end;
+
+  procedure DrawDebugMark(Line: Integer);
+  var
+    itop : Longint;
+  begin
+    iTop := 0;
+    if Line < 0 then Exit;
+    if Assigned(FBookMarkOpt.BookmarkImages) and
+       (DebugMarksImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
+       (DebugMarksImageIndex >= 0) then
+    begin
+      if not FBookMarkOpt.DrawBookmarksFirst then
+        aGutterOffs^[Line] := AClip.Left
+      else
+      if aGutterOffs^[Line] = 0 then
+        aGutterOffs^[Line] := FBookMarkOpt.BookmarkImages.Width + AClip.Left;
+      if LineHeight > FBookMarkOpt.BookmarkImages.Height then
+        iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
+      with FBookMarkOpt do
+        BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[Line],
+                            iTop + Line * LineHeight, DebugMarksImageIndex, True);
+
+      Inc(aGutterOffs^[Line], FBookMarkOpt.BookmarkImages.Width);
+    end
   end;
 
 begin
@@ -129,23 +162,26 @@ begin
 
 
   // now the gutter marks
-  if FBookMarkOpt.GlyphsVisible and (TSynEdit(SynEdit).Marks.Count > 0) and (LastLine >= FirstLine) then
+  if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
   begin
-    aGutterOffs := AllocMem((LastLine+1{$IFNDEF SYN_LAZARUS}-TopLine{$ENDIF}) * SizeOf(integer));
+    aGutterOffs := AllocMem((LastLine + 1) * SizeOf(integer));
     try
-      LineMarks := TList.Create;
-      try
-        for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do with TSynEdit(SynEdit).Marks[i] do
-          if Visible and (Line >= FFoldView.TextIndex[FirstLine] + 1) and (Line <= FFoldView.TextIndex[LastLine] + 1) then
-            LineMarks.Add(TSynEdit(SynEdit).Marks[i]);
-        if fBookMarkOpt.DrawBookmarksFirst then
-          LineMarks.Sort(@DoMarksCompareBookmarksFirst)
-        else
-          LineMarks.Sort(@DoMarksCompareBookmarksLast);
-        for i := 0 to LineMarks.Count - 1 do
-          DrawMark(TSynEditMark(LineMarks[i]));
-      finally
-        LineMarks.Free;
+      for i := FirstLine to LastLine do
+      begin
+        iLine := FFoldView.TextIndex[i] + 1;
+        TSynEdit(SynEdit).Marks.GetMarksForLine(iLine, Marks);
+        HasAnyMark := False;
+        for j := Low(Marks) to High(Marks) do
+        begin
+          if Marks[j] = nil then
+            break;
+          if not Marks[j].Visible then
+            continue;
+          DrawMark(Marks[j]);
+          HasAnyMark := HasAnyMark or not Marks[j].IsBookmark;
+        end;
+        if not HasAnyMark and TSynEdit(SynEdit).HasDebugMark(iLine) then
+          DrawDebugMark(i);
       end;
     finally
       FreeMem(aGutterOffs);
