@@ -5003,11 +5003,13 @@ end;
 procedure TCustomSynEdit.SetDebugMarks(AFirst, ALast: Integer);
 begin
   TSynEditStringList(fLines).SetDebugMarks(AFirst, ALast);
+  InvalidateGutterLines(AFirst, ALast);
 end;
 
 procedure TCustomSynEdit.ClearDebugMarks;
 begin
   TSynEditStringList(fLines).ClearDebugMarks;
+  InvalidateGutter;
 end;
 
 procedure TCustomSynEdit.UndoItem;
