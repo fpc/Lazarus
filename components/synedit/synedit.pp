@@ -182,7 +182,7 @@ type
     {$IFDEF SYN_LAZARUS}
     sfTripleClicked, sfQuadClicked, sfPainting,
     {$ENDIF}
-    sfWaitForDragging,{$IFDEF SYN_LAZARUS} sfIsDragging,{$ENDIF} sfInsideRedo
+    sfWaitForDragging {$IFDEF SYN_LAZARUS}, sfIsDragging{$ENDIF}
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -376,6 +376,7 @@ type
     {$ENDIF}
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
+    FIsUndoing: Boolean;
     fBookMarks: array[0..9] of TSynEditMark;
     fMouseDownX: integer;
     fMouseDownY: integer;
@@ -431,6 +432,7 @@ type
     {$ENDIF}
 
     procedure AquirePrimarySelection;
+    function GetUndoList: TSynEditUndoList;
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -455,6 +457,7 @@ type
     {$IFDEF SYN_LAZARUS}
     function GetCaretX : Integer;
     function GetCaretY : Integer;
+    function GetCaretUndo: TSynEditUndoItem;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
@@ -516,8 +519,8 @@ type
     {$ELSE}
     procedure SetBorderStyle(Value: TBorderStyle);
     {$ENDIF}
-    procedure SetCaretAndSelection({$IFDEF SYN_LAZARUS}const {$ENDIF}ptCaret,
-                                   ptBefore, ptAfter: TPoint);
+    procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
+                                   Mode: TSynSelectionMode = smCurrent);
     procedure SetCaretX(Value: Integer);
     procedure SetCaretY(Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
@@ -640,19 +643,20 @@ type
     procedure EndPaintBuffer(const ClipRect: TRect);
     {$ENDIF}
     procedure RecalcCharExtent;
-    procedure RedoItem;                                                         //sbs 2000-11-19
+    procedure RedoItem(Item: TSynEditUndoItem);
     procedure SetCaretXY(Value: TPoint); virtual;
     procedure CaretChanged(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
     procedure SetReadOnly(Value: boolean); virtual;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
-      AddToUndoList: Boolean = false; ChangeReason: TSynChangeReason = crInsert);
+      AddToUndoList: Boolean = false);
     procedure ShowCaret;
     // If the translations requires Data, memory will be allocated for it via a
     // GetMem call.  The client must call FreeMem on Data if it is not NIL.
     function TranslateKeyCode(Code: word; Shift: TShiftState; var Data: pointer
       {$IFDEF SYN_LAZARUS};out IsStartOfCombo: boolean{$ENDIF}): TSynEditorCommand;
-    procedure UndoItem;                                                         //sbs 2000-11-19
+    procedure UndoItem(Item: TSynEditUndoItem);
+    property  UndoList: TSynEditUndoList read GetUndoList;
   protected
     fGutterWidth: Integer;
     {$IFDEF EnableDoubleBuf}
@@ -1105,6 +1109,151 @@ uses
 {$ENDIF}
   Clipbrd;
 
+type
+
+  { TSynEditUndoCaret }
+
+  TSynEditUndoCaret = class(TSynEditUndoItem)
+  private
+    FCaretPos: TPoint;
+  protected
+    function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; override;
+  public
+    constructor Create(CaretPos: TPoint);
+    function IsCaretInfo: Boolean; override;
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoSelCaret }
+
+  TSynEditUndoSelCaret = class(TSynEditUndoItem)
+  private
+    FCaretPos, FBeginPos, FEndPos: TPoint;
+    FBlockMode: TSynSelectionMode;
+  protected
+    function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; override;
+  public
+    function IsCaretInfo: Boolean; override;
+    constructor Create(CaretPos, BeginPos, EndPos: TPoint; BlockMode: TSynSelectionMode);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoIndent }
+
+  TSynEditUndoIndent = class(TSynEditUndoItem)
+  public
+    FPosY1, FPosY2, FCnt: Integer;
+  public
+    constructor Create(APosY, EPosY, ACnt: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoUnIndent }
+
+  TSynEditUndoUnIndent = class(TSynEditUndoItem)
+  public
+    FPosY1, FPosY2: Integer;
+    FText: String;
+  public
+    constructor Create(APosY, EPosY: Integer; AText: String);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+{ TSynEditUndoCaret }
+
+function TSynEditUndoCaret.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
+begin
+  Result := (FCaretPos.x = TSynEditUndoCaret(AnItem).FCaretPos.x)
+        and (FCaretPos.y = TSynEditUndoCaret(AnItem).FCaretPos.y);
+end;
+
+constructor TSynEditUndoCaret.Create(CaretPos: TPoint);
+begin
+  FCaretPos := CaretPos;
+end;
+
+function TSynEditUndoCaret.IsCaretInfo: Boolean;
+begin
+  Result := True;
+end;
+
+function TSynEditUndoCaret.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEdit;
+  if Result then
+    with TSynEdit(Caller) do begin
+      CaretXY := FCaretPos;
+      UndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
+    end;
+end;
+
+{ TSynEditUndoSelCaret }
+
+constructor TSynEditUndoSelCaret.Create(CaretPos, BeginPos, EndPos: TPoint;
+  BlockMode: TSynSelectionMode);
+begin
+  FCaretPos := CaretPos;
+  FBeginPos := BeginPos;
+  FEndPos   := EndPos;
+  FBlockMode := BlockMode;
+end;
+
+function TSynEditUndoSelCaret.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
+begin
+  Result := (FCaretPos.x = TSynEditUndoSelCaret(AnItem).FCaretPos.x)
+        and (FCaretPos.y = TSynEditUndoSelCaret(AnItem).FCaretPos.y)
+        and (FBeginPos.x = TSynEditUndoSelCaret(AnItem).FBeginPos.x)
+        and (FBeginPos.y = TSynEditUndoSelCaret(AnItem).FBeginPos.y)
+        and (FEndPos.x = TSynEditUndoSelCaret(AnItem).FEndPos.x)
+        and (FEndPos.y = TSynEditUndoSelCaret(AnItem).FEndPos.y)
+        and (FBlockMode = TSynEditUndoSelCaret(AnItem).FBlockMode);
+end;
+
+function TSynEditUndoSelCaret.IsCaretInfo: Boolean;
+begin
+  Result := True;
+end;
+
+function TSynEditUndoSelCaret.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEdit;
+  if Result then
+    with TSynEdit(Caller) do begin
+      SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode);
+      UndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
+                                                     FEndPos, FBlockMode));
+    end;
+end;
+
+{ TSynEditUndoIndent }
+
+constructor TSynEditUndoIndent.Create(APosY, EPosY, ACnt: Integer);
+begin
+  FPosY1 := APosY;
+  FPosY2 := EPosY;
+  FCnt :=  ACnt;
+end;
+
+function TSynEditUndoIndent.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := False;
+end;
+
+{ TSynEditUndoUnIndent }
+
+constructor TSynEditUndoUnIndent.Create(APosY, EPosY: Integer; AText: String);
+begin
+  FPosY1 := APosY;
+  FPosY2 := EPosY;
+  FText :=  AText;
+end;
+
+function TSynEditUndoUnIndent.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := False;
+end;
+
+
 
 {$IFDEF SYN_LAZARUS}
 var
@@ -1414,10 +1563,13 @@ begin
   fFontDummy := TFont.Create;
   fUndoList := TSynEditUndoList.Create;
   fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
   fRedoList := TSynEditUndoList.Create;
   fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  FIsUndoing := False;
 
-  FTrimmedLinesView.UndoList := fUndoList;
+  TSynEditStringList(FLines).UndoList := fUndoList;
+  TSynEditStringList(FLines).RedoList := fRedoList;
 
   FBlockSelection := TSynEditSelection.Create(FTheLinesView);
   FBlockSelection.MaxLeftChar := @FMaxLeftChar;
@@ -3274,7 +3426,6 @@ var
 { end local procedures }
 
 var
-  ypos : integer;
   ColBG : TColor;
 begin
   if (AClip.Right < fGutterWidth) then exit;
@@ -3451,7 +3602,7 @@ begin
           // See CopyToClipboard
           PasteMode := PSynSelectionMode(P)^;
           inc(P, SizeOf(TSynSelectionMode));
-          SetSelTextPrimitive(PasteMode, P, true, crPaste);
+          SetSelTextPrimitive(PasteMode, P, true);
         end else
           raise ESynEditError.Create('Clipboard paste operation failed.');
       finally
@@ -3548,6 +3699,17 @@ function TCustomSynEdit.GetCaretY : Integer;
 begin
   Result:= fCaret.LinePos;
 end;
+
+function TCustomSynEdit.GetCaretUndo: TSynEditUndoItem;
+begin
+  if SelAvail then
+    Result := TSynEditUndoSelCaret.Create(FCaret.LineCharPos,
+       FBlockSelection.StartLineBytePos, FBlockSelection.EndLineBytePos,
+       FBlockSelection.ActiveSelectionMode)
+  else
+    Result := TSynEditUndoCaret.Create(FCaret.LineCharPos);
+end;
+
 {$ENDIF}
 
 function TCustomSynEdit.GetMarkup(Index: integer): TSynEditMarkup;
@@ -3671,19 +3833,25 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
-  Value: PChar; AddToUndoList: Boolean = false;
-  ChangeReason: TSynChangeReason = crInsert);
+  Value: PChar; AddToUndoList: Boolean = false);
 Begin
   IncPaintLock;
+  if not AddToUndoList then begin
+    fUndoList.Lock;
+    fRedoList.Lock;
+  end;
   try
-    FBlockSelection.SetSelTextPrimitive(PasteMode, Value, AddToUndoList,
-                                        ChangeReason);
+    FBlockSelection.SetSelTextPrimitive(PasteMode, Value);
     // Force caret reset
     CaretXY := CaretXY;
     fLastCaretX := CaretX;
     EnsureCursorPosVisible;
     fMarkupManager.Caret := CaretXY;
   finally
+    if not AddToUndoList then begin
+      fUndoList.Unlock;
+      fRedoList.Unlock;
+    end;
     DecPaintLock;
   end;
 end;
@@ -4274,14 +4442,28 @@ begin
   Dec(Result);
 end;
 
-procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
+  AIndex, ACount: Integer);
 begin
-  ScanFrom(AIndex - 1, Max(AIndex, AIndex + ACount));
+  if PaintLock>0 then begin
+    if (fHighlighterNeedsUpdateStartLine<1)
+    or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
+      fHighlighterNeedsUpdateStartLine:=AIndex+1;
+    if (fHighlighterNeedsUpdateEndLine<1)
+    or (fHighlighterNeedsUpdateEndLine<AIndex+1) then
+      fHighlighterNeedsUpdateEndLine:=AIndex + 1 + MaX(ACount, 0)
+    else
+      fHighlighterNeedsUpdateEndLine := fHighlighterNeedsUpdateEndLine
+                                        + MaX(ACount, 0)
+  end
+  else
+    ScanFrom(AIndex - 1, Max(AIndex, AIndex + ACount));
   InvalidateLines(AIndex + 1, -1);
   InvalidateGutterLines(AIndex + 1, -1);
 end;
 
-procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
+  AIndex, ACount: Integer);
 var
   EndIndex: Integer;
 begin
@@ -4291,7 +4473,7 @@ begin
       fHighlighterNeedsUpdateStartLine:=AIndex+1;
     if (fHighlighterNeedsUpdateEndLine<1)
     or (fHighlighterNeedsUpdateEndLine<AIndex+1) then
-      fHighlighterNeedsUpdateEndLine:=AIndex+1;
+      fHighlighterNeedsUpdateEndLine:=AIndex + 1 + MaX(ACount, 0);
     exit;
   end;
   EndIndex := ScanFrom(AIndex, Max(AIndex, AIndex + ACount)) + 1;
@@ -4712,275 +4894,167 @@ begin
 end;
 
 procedure TCustomSynEdit.Redo;
-{begin}                                                                         //sbs 2000-11-19
 var
   Item: TSynEditUndoItem;
-  OldChangeNumber: integer;
+  Group: TSynEditUndoGroup;
 begin
-  Item := fRedoList.PeekItem;
-  if Item <> nil then begin
-    {$IFDEF SYN_LAZARUS}
-    BeginUndoBlock;
-    OldChangeNumber := Item.fChangeNumber;
-    {$ELSE}
-    OldChangeNumber := fUndoList.BlockChangeNumber;
-    fUndoList.BlockChangeNumber := Item.fChangeNumber;
-    {$ENDIF}
-    try
-      repeat
-        RedoItem;
-        Item := fRedoList.PeekItem;
-      {$IFDEF SYN_LAZARUS}
-      until (Item = nil) or (Item.fChangeNumber <> OldChangeNumber);
-      {$ELSE}
-      until (Item = nil) or (Item.fChangeNumber <> fUndoList.BlockChangeNumber);
-      {$ENDIF}
-    finally
-      {$IFDEF SYN_LAZARUS}
-      EndUndoBlock;
-      {$ELSE}
-      fUndoList.BlockChangeNumber := OldChangeNumber;
-      {$ENDIF}
+  Group := fRedoList.PopItem;
+  if Group <> nil then begin;
+    IncPaintLock;
+    Item := Group.Pop;
+    if Item <> nil then begin
+      BeginUndoBlock;
+      fUndoList.CurrentGroup.Reason := Group.Reason;
+      fUndoList.IsInsideRedo := True;
+      try
+        repeat
+          RedoItem(Item);
+          Item := Group.Pop;
+        until (Item = nil);
+      finally
+        EndUndoBlock;
+      end;
     end;
+    Group.Free;
+    if fRedoList.IsTopMarkedAsUnmodified then
+      fUndoList.MarkTopAsUnmodified;
+    DecPaintLock;
   end;
 end;
 
-procedure TCustomSynEdit.RedoItem;
-{end}                                                                           //sbs 2000-11-19
+procedure TCustomSynEdit.RedoItem(Item: TSynEditUndoItem);
 var
-  Item: TSynEditUndoItem;
-  OldSelMode: TSynSelectionMode;
   Run, StrToDelete: PChar;
   Len, x : integer;
   TempString: string;
-  CaretPt: TPoint;
-  {$IFDEF SYN_LAZARUS}
-  PhysStartPos: TPoint;
-  {$ELSE}
-  e: integer;
-  {$ENDIF}
 begin
-  OldSelMode := FBlockSelection.SelectionMode;
-  Item := fRedoList.PopItem;
-  if Assigned(Item) then try
-    SelectionMode := Item.fChangeSelMode;
-    IncPaintLock;
-    FCaret.ForcePastEOL := True;
-    Include(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
-    {$IFDEF SYN_LAZARUS}
-    PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
-    {$ENDIF}
-    case Item.fChangeReason of
-      crInsert, crPaste, crDragDropInsert:
-        begin
-          SetCaretAndSelection(LogicalToPhysicalPos(Item.ChangeStartPos),
-                               Item.ChangeStartPos, Item.ChangeStartPos);
-          SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          CaretXY := LogicalToPhysicalPos(Item.fChangeEndPos);
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
-{begin}                                                                         //mh 2000-11-20
-          if Item.fChangeReason = crDragDropInsert then begin
-            SetCaretAndSelection(PhysStartPos,
-                                 Item.fChangeStartPos, Item.fChangeEndPos);
-          end;
-{end}                                                                           //mh 2000-11-20
+  if Assigned(Item) then
+  try
+    FCaret.IncForcePastEOL;
+    if Item.ClassType = TSynEditUndoIndent then
+    begin // re-insert the column
+      SetCaretAndSelection(LogicalToPhysicalPos(Point(1,TSynEditUndoIndent(Item).FPosY1)),
+        Point(1, TSynEditUndoIndent(Item).FPosY1), Point(2, TSynEditUndoIndent(Item).FPosY2),
+        smNormal);
+      x := fBlockIndent;
+      fBlockIndent := TSynEditUndoIndent(Item).FCnt;
+      DoBlockIndent;
+      fBlockIndent := x;
+    end
+    else
+    if Item.ClassType = TSynEditUndoUnIndent then
+    begin // re-delete the (raggered) column
+      // add to undo list
+      fUndoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
+         TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
+      // Delete string
+      StrToDelete := PChar(TSynEditUndoUnIndent(Item).FText);
+      CaretY := TSynEditUndoUnIndent(Item).FPosY1;
+      x := -1;
+      repeat
+        Run := GetEOL(StrToDelete);
+        Len := Run - StrToDelete;
+        if x < 0 then
+          x:= Len;
+        if Len > 0 then begin
+          TempString := FTheLinesView[CaretY - 1];
+          Delete(TempString, 1, Len);
+          FTheLinesView[CaretY - 1] := TempString;
         end;
-      crDeleteAfterCursor, crSilentDeleteAfterCursor:                           //mh 2000-10-30
-        begin
-          SetCaretAndSelection(PhysStartPos,
-                               Item.fChangeStartPos, Item.fChangeEndPos);
-          TempString := GetSelText;
-          SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, TempString, Item.fChangeSelMode);
-          {$IFDEF SYN_LAZARUS}
-          CaretXY := LogicalToPhysicalPos(Item.ChangeStartPos);
-          {$ELSE}
-          CaretXY := Item.fChangeStartPos;
-          {$ENDIF}
+        if Run^ in [#10,#13] then begin
+          if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
+            Inc(Run,2)
+          else
+            Inc(Run);
+          CaretY := CaretY + 1;
         end;
-      crDelete, {crDragDropDelete, crSelDelete, }crSilentDelete:                //mh 2000-10-30, 2000-11-20
-        begin
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos, {$IFDEF SYN_LAZARUS}Item.fChangeEndPos{$ELSE}Item.fChangeStartPos{$ENDIF}
-            );
-          TempString := GetSelText;;
-          SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, TempString, Item.fChangeSelMode);
-          {$IFDEF SYN_LAZARUS}
-          CaretXY := PhysStartPos;
-          {$ELSE}
-          CaretXY := LogicalToPhysicalPos(Item.ChangeStartPos);
-          {$ENDIF}
-{begin}                                                                         //mh 2000-11-20
-(*
-          // process next entry? This is awkward, and should be replaced by
-          // undoitems maintaining a single linked list of connected items...
-          ItemNext := fRedoList.PeekItem;
-          if {(Item.fChangeReason = crSelDelete) or }
-            ((Item.fChangeReason = crDragDropDelete) and Assigned(ItemNext)
-              and (ItemNext.fChangeReason = crDragDropInsert))
-          then
-            Redo;
-*)
-{end}                                                                           //mh 2000-11-20
-        end;
-      {$IFDEF SYN_LAZARUS}
-      crTrimSpace:
-        begin
-          FTrimmedLinesView.ForceTrim;
-          UpdateModified;
-        end;
-      {$ENDIF}
-      crTrimRealSpace:
-        begin
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
-        end;
-      crLineBreak:
-{begin}                                                                         //sbs 2000-11-20
-//        CommandProcessor(ecLineBreak, #13, nil);
-        begin
-          {$IFDEF SYN_LAZARUS}
-          SetCaretAndSelection(PhysStartPos, Item.fChangeStartPos,
-                               Item.fChangeStartPos);
-          {$ELSE}
-          CaretPt := Item.fChangeStartPos;
-          SetCaretAndSelection(CaretPt, CaretPt, CaretPt);
-          {$ENDIF}
-          CommandProcessor(ecLineBreak, #13, nil);
-        end;
-{end}                                                                           //sbs 2000-11-20
-      crIndent:
-        begin // re-insert the column
-          SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
-            Item.fChangeStartPos, Item.fChangeEndPos);
-          x := fBlockIndent;
-          fBlockIndent := ord(Item.fChangeStr[1]);
-          SelectionMode := Item.fChangeSelMode;
-          DoBlockIndent;
-          fBlockIndent := x;
-        end;
-      crUnindent :
-        begin // re-delete the (raggered) column
-          // add to undo list
-          fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
-          // Delete string
-          StrToDelete := PChar(Item.fChangeStr);
-          {$IFDEF SYN_LAZARUS}
-          CaretY := Item.ChangeStartPos.Y;
-          x := -1;
-          {$ELSE}
-          CaretY := Item.fChangeStartPos.Y;
-          {$ENDIF}
-          repeat
-            Run := GetEOL(StrToDelete);
-            {$IFDEF SYN_LAZARUS}
-            Len := Run - StrToDelete;
-            if x < 0 then
-              x:= Len;
-            if Len > 0 then begin
-              TempString := FTheLinesView[CaretY - 1];
-              Delete(TempString, 1, Len);
-              FTheLinesView[CaretY - 1] := TempString;
-            end;
-            if Run^ in [#10,#13] then begin
-              if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
-                Inc(Run,2)
-              else
-                Inc(Run);
-              CaretY := CaretY + 1;
-            end;
-            {$ELSE}
-            if Run <> StrToDelete then begin
-              Len := Run - StrToDelete;
-              TempString := Lines[CaretY - 1];
-              if Len > 0 then
-                Delete(TempString, 1, Len);
-              Lines[CaretY - 1] := TempString;
-            end else
-              Len := 0;
-            if Run^ = #13 then begin
-              Inc(Run);
-              if Run^ = #10 then
-                Inc(Run);
-              Inc(fCaretY);
-            end;
-            {$ENDIF}
-            StrToDelete := Run;
-          until Run^ = #0;
-          // restore selection
-          {$IFDEF SYN_LAZARUS}
-          if (Item.fChangeStartPos.y > Item.fChangeEndPos.y)
-            or ((Item.fChangeStartPos.y = Item.fChangeEndPos.y) and (Item.fChangeStartPos.x > Item.fChangeEndPos.x))
-          then SwapInt(Len, x);
-          CaretPt := Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y);
-          SetCaretAndSelection(LogicalToPhysicalPos(CaretPt),
-            Point(Item.fChangeStartPos.x - x, Item.fChangeStartPos.y), CaretPt
-            );
-          {$ELSE}
-          CaretPt := Point(Item.fChangeStartPos.x - fTabWidth,
-                           Item.fChangeStartPos.y);
-          SetCaretAndSelection(CaretPt, CaretPt,
-            Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y)
-            );
-          {$ENDIF}
-        end;
-    end;
+        StrToDelete := Run;
+      until Run^ = #0;
+    end
+    else
+      if not Item.PerformUndo(self) then
+        FTheLinesView.EditRedo(Item);
   finally
-    FBlockSelection.SelectionMode       := OldSelMode;
-    FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
-    Exclude(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
-    FCaret.ForcePastEOL := False;
+    FCaret.DecForcePastEOL;
     Item.Free;
-    DecPaintLock;
-    {$IFDEF SYN_LAZARUS}
-    if fRedoList.IsTopMarkedAsUnmodified then
-      fUndoList.MarkTopAsUnmodified;
-    {$ENDIF}
   end;
 end;
 
 procedure TCustomSynEdit.Undo;
-{begin}                                                                         //sbs 2000-11-19
 var
   Item: TSynEditUndoItem;
-  OldChangeNumber: integer;
+  Group: TSynEditUndoGroup;
 begin
-  Item := fUndoList.PeekItem;
-  if Item <> nil then begin
-    {$IFDEF SYN_LAZARUS}
-    BeginUndoBlock(fRedoList);
-    OldChangeNumber := Item.fChangeNumber;
-    {$ELSE}
-    OldChangeNumber := fRedoList.BlockChangeNumber;
-    fRedoList.BlockChangeNumber := Item.fChangeNumber;
-    {$ENDIF}
-    fUndoList.Lock;
-    try
-      repeat
-        UndoItem;
-        Item := fUndoList.PeekItem;
-      {$IFDEF SYN_LAZARUS}
-      until (Item = nil) or (Item.fChangeNumber <> OldChangeNumber);
-      {$ELSE}
-      until (Item = nil) or (Item.fChangeNumber <> fRedoList.BlockChangeNumber);
-      {$ENDIF}
-    finally
-      // Todo: Decide what do to, If there are any trimable spaces.
-      FTrimmedLinesView.ForceTrim;
-      fUndoList.UnLock;
-      {$IFDEF SYN_LAZARUS}
-      EndUndoBlock(fRedoList);
-      {$ELSE}
-      fRedoList.BlockChangeNumber := OldChangeNumber;
-      {$ENDIF}
+  Group := fUndoList.PopItem;
+  if Group <> nil then begin;
+    IncPaintLock;
+    FIsUndoing := True;
+    Item := Group.Pop;
+    if Item <> nil then begin
+      BeginUndoBlock(fRedoList);
+      fRedoList.CurrentGroup.Reason := Group.Reason;
+      fUndoList.Lock;
+      try
+        repeat
+          UndoItem(Item);
+          Item := Group.Pop;
+        until (Item = nil);
+      finally
+        // Todo: Decide what do to, If there are any trimable spaces.
+        FTrimmedLinesView.ForceTrim;
+        fUndoList.UnLock;
+        EndUndoBlock(fRedoList);
+      end;
     end;
+    FIsUndoing := False;
+    Group.Free;
+    if fUndoList.IsTopMarkedAsUnmodified then
+      fRedoList.MarkTopAsUnmodified;
+    DecPaintLock;
   end;
+end;
+
+procedure TCustomSynEdit.UndoItem(Item: TSynEditUndoItem);
+begin
+  if Assigned(Item) then try
+    FCaret.IncForcePastEOL;
+    if Item.ClassType = TSynEditUndoIndent then
+    begin
+      // remove the column that was inserted // select the inserted column
+      BlockBegin := Point(1, TSynEditUndoIndent(Item).FPosY1);
+      BlockEnd := Point(1 + TSynEditUndoIndent(Item).FCnt, TSynEditUndoIndent(Item).FPosY2);
+      FBlockSelection.ActiveSelectionMode := smColumn;
+      // add to redo list
+      fRedoList.AddChange(TSynEditUndoIndent.Create(TSynEditUndoIndent(Item).FPosY1,
+         TSynEditUndoIndent(Item).FPosY2, TSynEditUndoIndent(Item).FCnt));
+      // remove the column
+      SetSelTextPrimitive(smNormal, nil);
+    end
+    else
+    if Item.ClassType = TSynEditUndoUnIndent then
+    begin
+      fRedoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
+          TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
+      // reinsert the string
+      InsertBlock(Point(1, TSynEditUndoUnIndent(Item).FPosY1),
+                  PChar(TSynEditUndoUnIndent(Item).FText));
+    end
+    else
+      if not Item.PerformUndo(self) then
+        FTheLinesView.EditUndo(Item);
+  finally
+    FTrimmedLinesView.UndoTrimmedSpaces := False;
+    FCaret.DecForcePastEOL;
+    Item.Free;
+  end;
+end;
+
+function TCustomSynEdit.GetUndoList: TSynEditUndoList;
+begin
+  if FIsUndoing then
+    Result := fRedoList
+  else
+    Result := fUndoList;
 end;
 
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
@@ -5003,160 +5077,11 @@ end;
 procedure TCustomSynEdit.SetDebugMarks(AFirst, ALast: Integer);
 begin
   TSynEditStringList(fLines).SetDebugMarks(AFirst, ALast);
-  InvalidateGutterLines(AFirst, ALast);
 end;
 
 procedure TCustomSynEdit.ClearDebugMarks;
 begin
   TSynEditStringList(fLines).ClearDebugMarks;
-  InvalidateGutter;
-end;
-
-procedure TCustomSynEdit.UndoItem;
-{end}                                                                           //sbs 2000-11-19
-var
-  Item: TSynEditUndoItem;
-  OldSelMode: TSynSelectionMode;
-  TmpPos: TPoint;
-  TmpStr: string;
-  {$IFDEF SYN_LAZARUS}
-  PhysStartPos: TPoint;
-  {$ENDIF}
-begin
-  OldSelMode := FBlockSelection.SelectionMode;
-  Item := fUndoList.PopItem;
-  if Assigned(Item) then try
-    FBlockSelection.SelectionMode := Item.fChangeSelMode; // Default and Active SelectionMode
-    IncPaintLock;
-    FCaret.ForcePastEOL := True;
-    {$IFDEF SYN_LAZARUS}
-    PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
-    {$ENDIF}
-    case Item.fChangeReason of
-      crInsert, crPaste, crDragDropInsert:
-        begin
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos, Item.fChangeEndPos);
-          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
-          SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
-                     {$ELSE}Item.fChangeStartPos{$ENDIF};
-        end;
-      crDeleteAfterCursor, crDelete, {crDragDropDelete, crSelDelete, }          //mh 2000-11-20
-      {$IFDEF SYN_LAZARUS}crTrimSpace,{$ENDIF}
-      crSilentDelete, crSilentDeleteAfterCursor:                                //mh 2000-10-30
-        begin
-          if Item.fChangeReason = crTrimSpace then
-            FTrimmedLinesView.UndoTrimmedSpaces := true;
-          // If there's no selection, we have to set
-          // the Caret's position manually.
-          if Item.fChangeSelMode = smColumn then
-            TmpPos := Point(Min(Item.fChangeStartPos.X, Item.fChangeEndPos.X),
-              Min(Item.fChangeStartPos.Y, Item.fChangeEndPos.Y))
-          else
-            TmpPos := minPoint(Item.fChangeStartPos, Item.fChangeEndPos);
-          if (Item.fChangeReason in [crDeleteAfterCursor,
-            crSilentDeleteAfterCursor]) and (TmpPos.Y > FTheLinesView.Count)            //mh 2000-10-30
-          then begin
-            CaretXY := Point(1, FTheLinesView.Count);
-            // this stinks!!!
-            CommandProcessor(ecLineBreak, #13, nil);
-          end;
-          SetCaretAndSelection(LogicalToPhysicalPos(TmpPos), TmpPos, TmpPos);
-          SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr));
-          if Item.fChangeReason in [crSilentDelete, crSilentDeleteAfterCursor
-                                    {$IFDEF SYN_LAZARUS}, crTrimSpace{$ENDIF} ]
-          then
-            CaretXY := LogicalToPhysicalPos(Item.fChangeEndPos)
-          else begin
-            SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
-              Item.fChangeStartPos, Item.fChangeEndPos);
-          end;
-          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, '', Item.fChangeSelMode);
-          EnsureCursorPosVisible;
-          FTrimmedLinesView.UndoTrimmedSpaces := False;
-        end;
-      crTrimRealSpace:
-        begin
-          FTrimmedLinesView.UndoRealSpaces(Item);
-          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
-        end;
-      crLineBreak:
-        begin
-          // If there's no selection, we have to set
-          // the Caret's position manualy.
-          CaretXY := PhysStartPos;
-          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, '', Item.fChangeSelMode);
-          TmpStr := FTheLinesView.Strings[CaretY - 1];
-          FTheLinesView.Delete(Item.fChangeEndPos.y);
-          {$IFDEF SYN_LAZARUS}
-          if Item.fChangeStr <> '' then
-            FTheLinesView[CaretY - 1] := TmpStr + Item.fChangeStr;
-          {$ELSE}
-          TrimmedSetLine(CaretY - 1, TmpStr + Item.fChangeStr);
-          {$ENDIF}
-          DoLinesDeleted(CaretY, 1);
-        end;
-      crIndent: // remove the column that was inserted
-        begin
-          // select the inserted column
-          {$IFDEF SYN_LAZARUS}
-          BlockBegin := Point(1, Item.ChangeStartPos.y);
-          TmpPos := Item.ChangeEndPos;
-          if TmpPos.x = 1 then
-            Dec(TmpPos.y);
-          TmpPos.x := ord(Item.fChangeStr[1])+1;
-          BlockEnd := TmpPos;
-          {$ELSE}
-          BlockBegin := Point(1, Item.fChangeStartPos.y);
-          TmpPos := Item.fChangeEndPos;
-          if TmpPos.x = 1 then
-            Dec(TmpPos.y);
-          TmpPos.x := fTabWidth+1;
-          BlockEnd := TmpPos;
-          {$ENDIF}
-          FBlockSelection.ActiveSelectionMode := smColumn;
-          // add to redo list
-          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, {$IFDEF SYN_LAZARUS}Item.fChangeStr{$ELSE}GetSelText{$ENDIF}, Item.fChangeSelMode);
-          // remove the column
-          SetSelTextPrimitive(Item.fChangeSelMode, nil);
-          // restore the selection
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}
-            LogicalToPhysicalPos(Item.fChangeEndPos),
-            {$ELSE}
-            Item.fChangeEndPos,
-            {$ENDIF}
-            Item.fChangeStartPos, Item.fChangeEndPos);
-        end;
-      crUnindent: // reinsert the (raggered) column that was deleted
-        begin
-         fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
-          // reinsert the string
-          InsertBlock(Point(1, Item.ChangeStartPos.y), PChar(Item.fChangeStr));
-          SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
-            Item.fChangeStartPos, Item.fChangeEndPos);
-        end;
-    end;
-  finally
-    FTrimmedLinesView.UndoTrimmedSpaces := False;
-    FBlockSelection.SelectionMode       := OldSelMode;
-    FBlockSelection.ActiveSelectionMode := Item.fChangeSelMode;
-    FCaret.ForcePastEOL := False;
-    Item.Free;
-    DecPaintLock;
-    {$IFDEF SYN_LAZARUS}
-    if fUndoList.IsTopMarkedAsUnmodified then
-      fRedoList.MarkTopAsUnmodified;
-    {$ENDIF}
-  end;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -5377,16 +5302,16 @@ begin
             end;
           end;
           // insert the selected text
-          FCaret.ForcePastEOL := True;
+          FCaret.IncForcePastEOL;
           try
             CaretXY := NewCaret;
             BlockBegin := NewCaret;
             if Source = Self then
-              SetSelTextPrimitive(smNormal, PChar(DragDropText), true, crDragDropInsert)
+              SetSelTextPrimitive(smNormal, PChar(DragDropText), true)
             else
-              SetSelTextPrimitive(smNormal, PChar(DragDropText), true, crInsert);
+              SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
           finally
-            FCaret.ForcePastEOL := False;
+            FCaret.DecForcePastEOL;
           end;
           BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
                         {$ELSE}NewCaret{$ENDIF};
@@ -5791,7 +5716,6 @@ var
   Temp: string;
   Temp2: string;
   Helper: string;
-  StartOfBlock: TPoint;
   bCaretAdjust: Boolean;
   moveBkm: boolean;
   WP: TPoint;
@@ -5799,23 +5723,22 @@ var
   CaretNew: TPoint;
   OldSelMode: TSynSelectionMode;
 {$IFDEF SYN_MBCSSUPPORT}
+  StartOfBlock: TPoint;
   i: integer;
   s: string;
 {$ENDIF}
   counter: Integer;
   InsDelta: integer;
-  {$IFDEF SYN_LAZARUS}
   LogCounter: integer;
   LogCaretXY: TPoint;
-  LogCaret: TPoint;
-  LastUndoItem:TSynEditUndoItem;
   CY: Integer;
-  {$ENDIF}
 
 begin
   IncPaintLock;
   bCaretAdjust := FCaret.AdjustToNextChar;
   try
+    fUndoList.CurrentReason := Command;
+
     if Command in [ecSelColCmdRangeStart..ecSelColCmdRangeEnd] then
       FBlockSelection.ActiveSelectionMode := smColumn;
     if Command in [ecSelCmdRangeStart..ecSelCmdRangeEnd] then
@@ -6005,37 +5928,23 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-            LogCaret:=LogCaretXY;
-            {$ENDIF}
             Caret := CaretXY;
             //debugln('ecDeleteLastChar B Temp="',DbgStr(Temp),'" CaretX=',dbgs(CaretX),' LogCaretXY=',dbgs(LogCaretXY));
-            if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} > Len +1
+            if LogCaretXY.X > Len +1
             then begin
-              // only move caret one column
-              Helper := ' ';
-              FCaret.ForcePastEOL := True;
+              // past EOL; only move caret one column
+              FCaret.IncForcePastEOL;
               CaretX := CaretX - 1;
-              FCaret.ForcePastEOL := False;
-              {$IFDEF SYN_LAZARUS}
-              // behind EOL, there was no char to delete, this wa a simple cursor move, do not undo
-              Caret := CaretXY;
-              {$ENDIF}
+              FCaret.DecForcePastEOL;
             end else if CaretX = 1 then begin
               // join this line with the last line if possible
               if CaretY > 1 then begin
                 CaretY := CaretY - 1;
                 CaretX := PhysicalLineLength(FTheLinesView[CaretY - 1],
                                              CaretY - 1) + 1;
-                FTheLinesView.Delete(CaretY);
+                FTheLinesView.EditLineJoin(CaretY);
                 DoLinesDeleted(CaretY, 1);
-                {$IFNDEF SYN_LAZARUS}
-                if eoTrimTrailingSpaces in Options then
-                  Temp := TrimRight(Temp);
-                {$ENDIF}
-                LineText := LineText + Temp;
-                Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
               end;
             end else begin
               // delete text before the caret
@@ -6043,72 +5952,25 @@ begin
                  FBeautifier.CanUnindent(Self, Temp, CaretX) then
               begin
                 // unindent
-                Temp := FBeautifier.UnIndentLine(Self, Temp, ViewedTextBuffer,
-                                                 CaretXY, Helper, Temp2, CX); // TODO: Temp2 must be added as crInsert to undolist
-                FTheLinesView[CaretY - 1] := Temp;
+                FBeautifier.UnIndentLine(Self, Temp, ViewedTextBuffer,
+                                         CaretXY, Helper, Temp2, CX);
                 CaretX := CX;
                 fLastCaretX := CaretX;
                 StatusChanged([scCaretX]);
               end else begin
                 // delete char
-                counter := 1;
-                {$IFDEF SYN_LAZARUS}
-                  {$IFDEF USE_UTF8BIDI_LCL}
-                  CaretX := CaretX - counter;
-                  Helper := Copy(Temp, CaretX, counter);
-                  VDelete(Temp, CaretX, counter, drLTR);
-                  {$ELSE USE_UTF8BIDI_LCL}
-                  LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX-counter);
-                  LogCounter:=GetCharLen(Temp,LogCaretXY.X);
-                  CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
-                  Helper := Copy(Temp, LogCaretXY.X, LogCounter);
-                  System.Delete(Temp, LogCaretXY.X, LogCounter);
-                  //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
-                  //  ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
-                  {$ENDIF USE_UTF8BIDI_LCL}
-                  FTheLinesView[CaretY - 1] := Temp;
-                {$ELSE}
-                  {$IFDEF SYN_MBCSSUPPORT}
-                  if ByteType(Temp, CaretX - 2) = mbLeadByte then
-                    Inc(counter);
-                  {$ENDIF}
-                  CaretX := CaretX - counter;
-                  Helper := Copy(Temp, CaretX, counter);
-                  Delete(Temp, CaretX, counter);
-                  TrimmedSetLine(CaretY - 1, Temp);
-                {$ENDIF}
+                {$IFDEF USE_UTF8BIDI_LCL}
+                CaretX := CaretX - 1;
+                FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
+                {$ELSE USE_UTF8BIDI_LCL}
+                LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX - 1);
+                LogCounter:=GetCharLen(Temp,LogCaretXY.X);
+                CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
+                FTheLinesView.EditDelete(FCaret.BytePos, LogCaretXY.Y, LogCounter);
+                {$ENDIF USE_UTF8BIDI_LCL}
               end;
             end;
 
-            if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
-              {$IFDEF SYN_LAZARUS}
-              if eoGroupUndo in Options then begin
-                LastUndoItem := fUndoList.PeekItem;
-                if (LastUndoItem <> nil)
-                  and (LastUndoItem.fChangeReason = crSilentDelete)
-                  and (LastUndoItem.fChangeStartPos.Y = LastUndoItem.fChangeEndPos.Y)
-                  and (PhysicalToLogicalPos(CaretXY).Y = LogCaret.Y)
-                  and (LastUndoItem.fChangeStartPos.X = LogCaret.X)
-                then begin // Share the undo item with the delete char action before
-                  LastUndoItem.fChangeStartPos.X := PhysicalToLogicalPos(CaretXY).X;
-                  LastUndoItem.fChangeStr := Helper +  LastUndoItem.fChangeStr;
-                end
-                else
-                begin
-                  fUndoList.AddChange(crSilentDelete,
-                  PhysicalToLogicalPos(CaretXY), LogCaret,
-                  Helper, smNormal);
-                end;
-              end else begin
-                //debugln('ecDeleteLastChar AddChange CaretXY=',dbgs(CaretXY),
-                //  ' LogCaret=',dbgs(LogCaret),' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
-                fUndoList.AddChange(crSilentDelete, CaretXY, Caret,
-                  Helper, smNormal);
-              end;
-              {$ELSE}
-              fUndoList.AddChange(crSilentDelete,CaretXY,Caret,Helper,smNormal);
-              {$ENDIF}
-            end;
           end;
         end;
       ecDeleteChar:
@@ -6118,54 +5980,20 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-            {$ENDIF}
-            if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} <= Len then
+            if LogCaretXY.X <= Len then
             begin
               // delete char
-              {$IFDEF SYN_LAZARUS}
-                Counter:=GetCharLen(Temp,LogCaretXY.X);
-                Helper := Copy(Temp, LogCaretXY.X, Counter);
-                Caret.X := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X+Counter);
-                Caret.Y := CaretY;
-{$IFDEF USE_UTF8BIDI_LCL}
-                VDelete(Temp, LogCaretXY.X, Counter, drLTR);
-{$ELSE USE_UTF8BIDI_LCL}
-                System.Delete(Temp, LogCaretXY.X, Counter);
-{$ENDIF USE_UTF8BIDI_LCL}
-                FTheLinesView[CaretY - 1] := Temp;
-              {$ELSE}
-                counter := 1;
-                {$IFDEF SYN_MBCSSUPPORT}
-                if ByteType(Temp, CaretX) = mbLeadByte then
-                  Inc(counter);
-                {$ENDIF}
-                Helper := Copy(Temp, CaretX, counter);
-                Caret := Point(CaretX + counter, CaretY);
-                Delete(Temp, CaretX, counter);
-                TrimmedSetLine(CaretY - 1, Temp);
-              {$ENDIF}
+              Counter:=GetCharLen(Temp,LogCaretXY.X);
+              FTheLinesView.EditDelete(LogCaretXY.X, CaretY, Counter);
+              DoLinesDeleted(CaretY - 1, 1);
             end else begin
               // join line with the line after
               if CaretY < FTheLinesView.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
-                FTheLinesView[CaretY - 1] := Temp + Helper + FTheLinesView[CaretY];
-                FTheLinesView.Delete(CaretY);
-                if helper <> '' then begin
-                  Caret := Point(Len+1, CaretY); // logical
-                  fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
-                                      Caret, '', smNormal);
-                end;
-                Caret := Point(1, CaretY + 1);
-                Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
+                FTheLinesView.EditLineJoin(CaretY, Helper);
                 DoLinesDeleted(CaretY - 1, 1);
               end;
-            end;
-            if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
-              fUndoList.AddChange(crSilentDeleteAfterCursor,
-                PhysicalToLogicalPos(Caret), PhysicalToLogicalPos(CaretXY),
-                Helper, smNormal);
             end;
           end;
         end;
@@ -6177,28 +6005,24 @@ begin
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then begin
               Helper := StringOfChar(' ', CaretX - 1 - Len);
-              Caret.X := Caret.X - (CaretX - 1 - Len);
+              CaretX := 1 + Len;
             end;
-            WP := NextWordPos{$IFDEF SYN_LAZARUS}(True){$ENDIF};
+            WP := NextWordPos(True);
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            if Helper <> '' then begin
-              LineText := LineText + Helper;
-              Caret := PhysicalToLogicalPos(Point(Len+1, CaretY));
-              fUndoList.AddChange(crInsert, PhysicalToLogicalPos(CaretXY),
-                                  Caret, '', smNormal);
-            end;
             OldSelMode := FBlockSelection.ActiveSelectionMode;
             try
               SetBlockBegin(PhysicalToLogicalPos(WP));
               SetBlockEnd(PhysicalToLogicalPos(CaretXY));
               FBlockSelection.ActiveSelectionMode := smNormal;
-              SetSelTextPrimitive(smNormal, nil, true, crSilentDeleteAfterCursor)
+              SetSelTextPrimitive(smNormal, nil, true);
+              if Helper <> '' then
+                FTabbedLinesView.EditInsert(CaretX, CaretY, Helper);
             finally
               FBlockSelection.ActiveSelectionMode := OldSelMode;
             end;
-            CaretXY := CaretXY;
+            CaretXY := Caret;
           end;
         end;
       ecDeleteLastWord, ecDeleteBOL:
@@ -6213,7 +6037,7 @@ begin
               SetBlockBegin(PhysicalToLogicalPos(WP));
               SetBlockEnd(PhysicalToLogicalPos(CaretXY));
               FBlockSelection.ActiveSelectionMode := smNormal;
-              SetSelTextPrimitive(smNormal, nil, true, crSilentDelete)
+              SetSelTextPrimitive(smNormal, nil, true)
             finally
               FBlockSelection.ActiveSelectionMode := OldSelMode;
             end;
@@ -6225,32 +6049,13 @@ begin
         if not ReadOnly and not ((FTheLinesView.Count = 1) and (Length(FTheLinesView[0]) = 0))
         then begin
           if SelAvail then
-            SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                          {$ELSE}CaretXY{$ENDIF});
-          if FTheLinesView.Count = 1 then begin
-            fUndoList.AddChange(crDeleteAfterCursor,
-              {$IFDEF SYN_LAZARUS}
-              PhysicalToLogicalPos(Point(1, CaretY)),
-              PhysicalToLogicalPos(CaretXY),
-              {$ELSE}
-              Point(1, CaretY), CaretXY,
-              {$ENDIF}
-              LineText, smNormal);
-            FTheLinesView[0] := '';
-          end else begin
-            fUndoList.AddChange(crDeleteAfterCursor,
-              {$IFDEF SYN_LAZARUS}
-              PhysicalToLogicalPos(Point(1, CaretY)),
-              PhysicalToLogicalPos(CaretXY),
-              LineText + LineEnding,
-              {$ELSE}
-              Point(1, CaretY), CaretXY,
-              LineText + #13#10,
-              {$ENDIF}
-              smNormal);
-            FTheLinesView.Delete(CaretY - 1);
+            SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+          if FTheLinesView.Count = 1 then
+            FTheLinesView.EditDelete(1, 1, length(FTheLinesView[0]))
+          else begin
+            FTheLinesView.EditLinesDelete(CaretY, 1);
+            DoLinesDeleted(CaretY - 1, 1);
           end;
-          DoLinesDeleted(CaretY - 1, 1);
           CaretXY := Point(1, CaretY); // like seen in the Delphi editor
         end;
       ecClearAll:
@@ -6260,6 +6065,9 @@ begin
       ecInsertLine,
       ecLineBreak:
         if not ReadOnly then begin
+          // current line is empty (len = 0)
+          if FTheLinesView.Count = 0 then
+            FTheLinesView.Add('');
           if SelAvail then begin
             SetSelTextExternal('');
           end;
@@ -6267,60 +6075,25 @@ begin
           Temp2 := Temp; //LineText;
 // This is sloppy, but the Right Thing would be to track the column of markers
 // too, so they could be moved depending on whether they are after the caret...
-          InsDelta := Ord(CaretX = 1);
+          InsDelta := Ord( (CaretX = 1) AND (Command = ecLineBreak) );
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           Len := Length(Temp);
-          if Len >= LogCaretXY.X then begin
-            if LogCaretXY.X > 1 then begin
-              // break line in two
-              LineText := LineText; // TrimRealSpaces
-              FTheLinesView.Insert(CaretY - 1, Copy(Temp, 1, LogCaretXY.X - 1));
-              Delete(Temp2, 1, LogCaretXY.X - 1);
-              fUndoList.AddChange(crLineBreak, LogCaretXY, LogCaretXY,
-                                  Temp2, smNormal);
-              if (eoAutoIndent in fOptions) then begin
-                Caret := CaretXY;
-                Caret.Y := Caret.Y + 1;
-                Temp2 := FBeautifier.IndentLine(Self, Temp2, ViewedTextBuffer,
-                                                Caret, Helper, Temp, CX, False);
-              end else
-                CX := 1;
-              FTheLinesView[CaretY] := Temp2;
-              if Command = ecLineBreak then
-                CaretXY := Point(CX, CaretY + 1);
-            end else begin
-              // move the whole line
-              LineText := LineText; // TrimRealSpaces
-              FTheLinesView.Insert(CaretY - 1, '');
-              fUndoList.AddChange(crLineBreak,
-                LogCaretXY, LogCaretXY,
-                Temp2, smNormal);
-              if Command = ecLineBreak then
-                CaretY := CaretY + 1;
-            end;
-          end else begin
-            // current line is empty (len = 0)
-            if FTheLinesView.Count = 0 then
-              FTheLinesView.Add('');
-            // linebreak after end of line
-            LineText := LineText; // TrimRealSpaces
-            fUndoList.AddChange(crLineBreak,
-              LogCaretXY, LogCaretXY,
-              '', smNormal);
-            Temp2 := '';
-            if (eoAutoIndent in fOptions) then begin
-              Caret := CaretXY;
-              Caret.Y := Caret.Y + 1;
-              Temp2 := FBeautifier.IndentLine(Self, Temp2, ViewedTextBuffer,
-                                              Caret, Helper, Temp, CX, False);
-            end else
-              CX := 1;
-            FTheLinesView.Insert(CaretY, Temp);
-            if Command = ecLineBreak then begin
-              FCaret.ForcePastEOL := True;
-              CaretXY := Point(CX, CaretY + 1);
-              FCaret.ForcePastEOL := False;
-            end;
+          if LogCaretXY.X > Len + 1 then
+            LogCaretXY.X := Len + 1;
+          FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
+          if (eoAutoIndent in fOptions) and (LogCaretXY.X > 1) then begin
+            Caret := CaretXY;
+            Caret.Y := Caret.Y + 1;
+            FTheLinesView.EditInsert(1, LogCaretXY.Y + 1,
+                            FBeautifier.IndentLine
+                            (Self, FTheLinesView[CaretY], ViewedTextBuffer,
+                             Caret, Helper, Temp, CX, False));
+          end else
+            CX := 1;
+          if Command = ecLineBreak then begin
+            FCaret.IncForcePastEOL;
+            CaretXY := Point(CX, CaretY + 1);
+            FCaret.DecForcePastEOL;
           end;
           DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
@@ -6339,83 +6112,45 @@ begin
       ecChar:
         if not ReadOnly and (AChar >= #32) and (AChar <> #127) then begin
           if SelAvail then begin
-            BeginUndoBlock;
-            try
-              SetSelTextExternal(AChar);
-              //debugln('ecChar SelAvail StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd));
-            finally
-              EndUndoBlock;
-            end;
+            SetSelTextExternal(AChar);
           end else begin
-            Temp := LineText;
-// Added the check for whether or not we're in insert mode.
-// If we are, we append one less space than we would in overwrite mode.
-// This is because in overwrite mode we have to put in a final space
-// character which will be overwritten with the typed character.  If we put the
-// extra space in in insert mode, it would be left at the end of the line and
-// cause problems unless eoTrimTrailingSpaces is set.
-            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-            {debugln('ecChar CaretXY=',dbgs(CaretXY),
-                    ' LogCaretXY=',dbgs(PhysicalToLogicalPos(CaretXY)),
-                    ' Adjusted LogCaretXY=',dbgs(LogCaretXY),
-                    ' fInserting=',dbgs(fInserting),
-                    ' Temp=',dbgstr(Temp),
-                    '" UseUTF8=',dbgs(UseUTF8));}
             try
-              FCaret.ForcePastEOL := True;
-              StartOfBlock := LogCaretXY;
-              if fInserting then begin
-                // insert mode
-                {$IFDEF USE_UTF8BIDI_LCL}
-                // TODO: improve utf8bidi for tabs
-                Len := VLength(Temp, drLTR);
-                if Len < CaretX then begin
-                  Temp := Temp + StringOfChar(' ', CaretX - Len);
-                end;
-                CaretX := InsertChar(aChar, Temp, CaretX, drLTR);
-                FTheLinesView[CaretY - 1] := Temp;
-                {$ELSE}
-                Len := Length(Temp);
-                if Len < LogCaretXY.X - 1 then
-                  Temp := Temp + StringOfChar(' ', LogCaretXY.X - 1 - Len);
-                System.Insert(AChar, Temp, LogCaretXY.X);
-                //debugln('ecChar Temp=',DbgStr(Temp),' AChar=',DbgStr(AChar));
-                FTheLinesView[CaretY - 1] := Temp;
-                FCaret.AdjustToNextChar := True;
-                CaretX := CaretX + 1;
-                FCaret.AdjustToNextChar := bCaretAdjust;
-                {$ENDIF}
-                fUndoList.AddChange(crInsert, StartOfBlock,
-                  PhysicalToLogicalPos(CaretXY), '', smNormal);
-              end else begin
-                // overwrite mode
-                Counter := GetCharLen(Temp,LogCaretXY.X);
-                Helper := Copy(Temp, LogCaretXY.X, Counter);
-                {$IFDEF USE_UTF8BIDI_LCL}
-                CaretNew.X := CaretX;
-                // TODO: improve utf8bidi for tabs
-                //utf8bidi.insert(Temp,AChar,CaretNew.X);
-                CaretX := CaretNew.X;
-                {$ELSE}
-                Len := Length(Temp);
-                if LogCaretXY.X<=Len then
-                  Temp:=copy(Temp,1,LogCaretXY.X-1)+AChar
-                       +copy(Temp,LogCaretXY.X+Counter,length(Temp))
-                else
-                  Temp:=Temp+StringOfChar(' ', LogCaretXY.X-1-Len)+AChar;
-                {$ENDIF}
-                FTheLinesView[CaretY - 1] := Temp;
-                FCaret.AdjustToNextChar := True;
-                CaretX := CaretX + 1;
-                FCaret.AdjustToNextChar := bCaretAdjust;
-                fUndoList.AddChange(crInsert,
-                  StartOfBlock, FCaret.LineBytePos,
-                  Helper, smNormal);
+              FCaret.IncForcePastEOL;
+              FCaret.AdjustToNextChar := True;
+
+              LogCaretXY := FCaret.LineBytePos;
+              Temp := LineText;
+              Len := Length(Temp);
+              if (not fInserting) and (LogCaretXY.X - 1<= Len) then begin
+                counter := GetCharLen(Temp,LogCaretXY.X);
+                FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, counter);
+                Len := Len - counter;
               end;
+
+              {$IFDEF USE_UTF8BIDI_LCL}
+              // TODO: improve utf8bidi for tabs
+              Len := VLength(LineText, drLTR);
+              (*if Len < CaretX then
+                Temp := StringOfChar(' ', CaretX - Len)
+              else
+                Temp := '' *)
+              FTheLinesView.EditInsert(CaretX, LogCaretXY.Y, (*Temp +*) AChar);
+              {$ELSE}
+              (*if Len < LogCaretXY.X - 1 then begin
+                Temp := StringOfChar(' ', LogCaretXY.X - 1 - Len);
+                LogCaretXY.X := Len + 1;
+              end
+              else
+                temp := '';*)
+              FTheLinesView.EditInsert(LogCaretXY.X, LogCaretXY.Y, (*Temp +*) AChar);
+              {$ENDIF}
+
+              CaretX := CaretX + 1;
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
             finally
-              FCaret.ForcePastEOL := False;
+              FCaret.AdjustToNextChar := bCaretAdjust;
+              FCaret.DecForcePastEOL;
             end;
           end;
         end;
@@ -6532,7 +6267,7 @@ begin
             if Len < CaretX then
               Temp := Temp + StringOfChar(' ', CaretX - Len);
             try
-              FCaret.ForcePastEOL := True;
+              FCaret.IncForcePastEOL;
               StartOfBlock := CaretXY;
 // Processing of case character covers on LeadByte.
               Len := Length(s);
@@ -6551,16 +6286,12 @@ begin
               if fInserting then
                 Helper := '';
               fUndoList.AddChange(crInsert, StartOfBlock,
-                {$IFDEF SYN_LAZARUS}
                 PhysicalToLogicalPos(CaretXY),
-                {$ELSE}
-                CaretXY,
-                {$ENDIF}
                 Helper, smNormal);
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + min(25, fCharsInWindow - 1);
             finally
-              FCaret.ForcePastEOL := False;
+              FCaret.DecForcePastEOL;
             end;
           end;
         end;
@@ -7532,7 +7263,7 @@ begin
     {$ENDIF}
     if (eoNoSelection in ChangedOptions) then
       FBlockSelection.Enabled := eoNoSelection in fOptions;
-    FBlockSelection.SpacesToTabs := eoSpacesToTabs in fOptions;
+    fUndoList.GroupUndo := eoGroupUndo in fOptions;
   end;
 end;
 
@@ -7571,6 +7302,7 @@ begin
       SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
     {$ENDIF}
     EnsureCursorPosVisible;
+    fUndoList.GroupUndo := eoGroupUndo in fOptions;
   end;
 end;
 
@@ -7642,7 +7374,7 @@ begin
 
   // adjust selection
   IncPaintLock;
-  FCaret.ForcePastEOL := True;
+  FCaret.IncForcePastEOL;
   if SelectionCommand then begin
     //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
     if not FBlockSelection.SelCanContinue(FCaret) then
@@ -7654,7 +7386,7 @@ begin
     SetBlockBegin(FInternalCaret.LineBytePos);
   // commit new caret
   CaretXY := FInternalCaret.LineCharPos;
-  FCaret.ForcePastEOL := False;
+  FCaret.DecForcePastEOL;
   DecPaintLock;
 end;
 {$ELSE}
@@ -7827,8 +7559,8 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.SetCaretAndSelection(
-  {$IFDEF SYN_LAZARUS}const {$ENDIF}ptCaret, ptBefore, ptAfter: TPoint);
+procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore,
+  ptAfter: TPoint; Mode: TSynSelectionMode = smCurrent);
 // caret is physical (screen)
 // Before, After is logical (byte)
 begin
@@ -7836,9 +7568,9 @@ begin
   CaretXY := ptCaret;
   SetBlockBegin(ptBefore);
   SetBlockEnd(ptAfter);
-  {$IFDEF SYN_LAZARUS}
+  if Mode <> smCurrent then
+    FBlockSelection.ActiveSelectionMode := Mode;
   AquirePrimarySelection;
-  {$ENDIF}
   DecPaintLock;
 end;
 
@@ -8057,13 +7789,13 @@ begin
       StrPCopy(Run, Spaces);
 
       InsertBlock(Point(1,BB.y), StrToInsert);
+
+      fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, fBlockIndent));
+      TSynEditStringList(FLines).MarkModified(BB.Y, e);
       {$IFDEF SYN_LAZARUS}
       if BlockBackward then
         SwapPoint(BB, BE);
       {$ENDIF}
-      fUndoList.AddChange(crIndent, BB, BE,
-                          {$IFDEF SYN_LAZARUS}chr(fBlockIndent){$ELSE}''{$ENDIF},
-                          FBlockSelection.ActiveSelectionMode);
     finally
       StrDispose(StrToInsert);
     end;
@@ -8214,15 +7946,14 @@ begin
           StrToDelete := Run;
         until Run^ = #0;
         LastIndent := Len;
+        fUndoList.AddChange(TSynEditUndoUnIndent.Create(BB.Y, e, FullStrToDelete));
+        TSynEditStringList(FLines).MarkModified(BB.Y, e);
         {$IFDEF SYN_LAZARUS}
         if BlockBackward then Begin
           SwapPoint(BB, BE);
           SwapInt(FirstIndent, LastIndent);
         end;
         {$ENDIF}
-        fUndoList.AddChange(crUnindent, BB, BE,
-                            {$IFDEF SYN_LAZARUS}FullStrToDelete{$ELSE}StrToDelete{$ENDIF},
-                            FBlockSelection.ActiveSelectionMode);
       end;
       {$IFDEF SYN_LAZARUS}
       if FirstIndent = -1 then begin
@@ -9032,18 +8763,12 @@ begin
 end;
 
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
-var
-  Item: TSynEditUndoItem;
 begin
   IncreaseChangeStamp;
-  Item := TSynEditUndoList(Sender).PeekItem;
-  if Item <> nil then
-    TSynEditStringList(fLines).MarkModified(Item.ChangeStartPos.y - 1,
-      Item.ChangeEndPos.y - 1, Sender = fUndoList, Item.fChangeReason);
   UpdateModified;
   // we have to clear the redo information, since adding undo info removes
   // the necessary context to undo earlier edit actions
-  if (Sender = fUndoList) and not (sfInsideRedo in fStateFlags) then            //mh 2000-10-30
+  if (Sender = fUndoList) and not (fUndoList.IsInsideRedo) then            //mh 2000-10-30
     fRedoList.Clear;
   if Assigned(fOnChange) then
     fOnChange(Self);

@@ -43,18 +43,13 @@ interface
 
 uses
   Classes, SysUtils, SynEditTextBase,
-  {$IFDEF SYN_LAZARUS}
   FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  SynEditTypes, SynEditMiscProcs;                   //mh 2000-10-19
+  SynEditTypes, SynEditMiscProcs;
+
+const
+  NullRange = TSynEditRange(-1);
 
 type
-{begin}                                                                         //mh 2000-10-10
-  {$IFNDEF SYN_LAZARUS}
-  TSynEditRange = pointer;
-  {$ENDIF}
   TSynEditRangeClass = class end; // For Register
   TSynEditFlagsClass = class end; // For Register
 
@@ -65,26 +60,6 @@ type
   );
   TSynEditStringFlags = set of TSynEditStringFlag;
 
-  TSynChangeReason = (crInsert, crPaste, crDragDropInsert,
-    // Note: crSelDelete and crDragDropDelete have been deleted, because
-    //   several undo entries can be chained together now via the ChangeNumber
-    //   see also TCustomSynEdit.[Begin|End]UndoBlock methods
-    crDeleteAfterCursor, crDelete, {crSelDelete, crDragDropDelete, }            //mh 2000-11-20
-    crLineBreak, crIndent, crUnindent,
-    crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
-    crNothing {$IFDEF SYN_LAZARUS}, crTrimSpace, crTrimRealSpace {$ENDIF});
-
-const
-  SynChangeReasonNames : Array [TSynChangeReason] of string =
-   ('crInsert', 'crPaste', 'crDragDropInsert',
-    'crDeleteAfterCursor', 'crDelete', {'crSelDelete', 'crDragDropDelete', }
-    'crLineBreak', 'crIndent', 'crUnindent',
-    'crSilentDelete', 'crSilentDeleteAfterCursor',
-    'crNothing' {$IFDEF SYN_LAZARUS}, 'crTrimSpace', 'crTrimRealSpace' {$ENDIF});
-
-  NullRange = TSynEditRange(-1);
-
-type
   TStringListIndexEvent = procedure(Index: Integer) of object;
 
   TSynEditStringAttribute = record
@@ -97,7 +72,7 @@ type
 
   TLineRangeNotificationList = Class(TMethodList)
   public
-    procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
+    Procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
   end;
 
 
@@ -146,6 +121,9 @@ type
     fIndexOfLongestLine: integer;
     fOnChange: TNotifyEvent;
     fOnChanging: TNotifyEvent;
+    fRedoList: TSynEditUndoList;
+    fUndoList: TSynEditUndoList;
+    FIsUndoing: Boolean;
 
     {$IFDEF SYN_LAZARUS}
     function GetFlags(Index: Integer): TSynEditStringFlags;
@@ -159,6 +137,13 @@ type
     fOnCleared: TNotifyEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
+
+    function GetRedoList: TSynEditUndoList; override;
+    function GetUndoList: TSynEditUndoList; override;
+    procedure SetIsUndoing(const AValue: Boolean); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+
     function GetRange(Index: integer): TSynEditRange; {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     procedure PutRange(Index: integer; ARange: TSynEditRange); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
@@ -174,6 +159,8 @@ type
     procedure SetCapacity(NewCapacity: integer);
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
     procedure SetUpdateState(Updating: Boolean); override;
+
+    procedure UndoEditLinesDelete(LogY, ACount: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -191,7 +178,7 @@ type
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     {$IFDEF SYN_LAZARUS}
     procedure ClearRanges(ARange: TSynEditRange); override;
-    procedure MarkModified(AFirst, ALast: Integer; AUndo: Boolean; AReason: TSynChangeReason);
+    procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
     procedure SetDebugMarks(AFirst, ALast: Integer);
     procedure ClearDebugMarks;
@@ -212,77 +199,21 @@ type
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
     {$ENDIF}
+  public
+    property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
+    property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
+    procedure EditInsert(LogX, LogY: Integer; AText: String); override;
+    function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
+    procedure EditLineBreak(LogX, LogY: Integer); override;
+    procedure EditLineJoin(LogY: Integer; FillText: String = ''); override;
+    procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); override;
+    procedure EditLinesDelete(LogY, ACount: Integer); override;
+    procedure EditUndo(Item: TSynEditUndoItem); override;
+    procedure EditRedo(Item: TSynEditUndoItem); override;
   end;
 
   ESynEditStringList = class(Exception);
 {end}                                                                           //mh 2000-10-10
-
-  { TSynEditUndoItem }
-
-  TSynEditUndoItem = class(TObject)
-  public
-    fChangeReason: TSynChangeReason;
-    fChangeSelMode: TSynSelectionMode;
-    fChangeStartPos: TPoint; // logical position (byte)
-    fChangeEndPos: TPoint; // logical position (byte)
-    fChangeStr: string;
-    fChangeNumber: integer;                                                     //sbs 2000-11-19
-    {$IFDEF SYN_LAZARUS}
-    function ChangeStartPos: TPoint; // logical position (byte)
-    function ChangeEndPos: TPoint; // logical position (byte)
-    {$ENDIF}
-  end;
-
-  { TSynEditUndoList }
-
-  TSynEditUndoList = class(TObject)
-  private
-    fBlockChangeNumber: integer;                                                //sbs 2000-11-19
-    fBlockCount: integer;                                                       //sbs 2000-11-19
-    fFullUndoImposible: boolean;                                                //mh 2000-10-03
-    fItems: TList;
-    fLockCount: integer;
-    fMaxUndoActions: integer;
-    fNextChangeNumber: integer;                                                 //sbs 2000-11-19
-    fOnAdded: TNotifyEvent;
-    {$IFDEF SYN_LAZARUS}
-    fUnModifiedItem: integer;
-    {$ENDIF}
-    procedure EnsureMaxEntries;
-    function GetCanUndo: boolean;
-    function GetItemCount: integer;
-    procedure SetMaxUndoActions(Value: integer);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure AddChange(AReason: TSynChangeReason; AStart, AEnd: TPoint;
-      ChangeText: string; SelMode: TSynSelectionMode);
-    procedure AppendToLastChange(AReason: TSynChangeReason; AStart, AEnd: TPoint;
-      ChangeText: string; SelMode: TSynSelectionMode);
-    procedure BeginBlock;                                                       //sbs 2000-11-19
-    procedure Clear;
-    procedure EndBlock;                                                         //sbs 2000-11-19
-    procedure Lock;
-    function PeekItem: TSynEditUndoItem;
-    function PopItem: TSynEditUndoItem;
-    procedure PushItem(Item: TSynEditUndoItem);
-    procedure Unlock;
-    function IsLocked: Boolean;
-    {$IFDEF SYN_LAZARUS}
-    procedure MarkTopAsUnmodified;
-    function IsTopMarkedAsUnmodified: boolean;
-    function UnModifiedMarkerExists: boolean;
-    {$ENDIF}
-  public
-    property BlockChangeNumber: integer read fBlockChangeNumber                 //sbs 2000-11-19
-      write fBlockChangeNumber;
-    property CanUndo: boolean read GetCanUndo;
-    property FullUndoImpossible: boolean read fFullUndoImposible;               //mh 2000-10-03
-    property ItemCount: integer read GetItemCount;
-    property MaxUndoActions: integer read fMaxUndoActions
-      write SetMaxUndoActions;
-    property OnAddedUndo: TNotifyEvent read fOnAdded write fOnAdded;
-  end;
 
 implementation
 
@@ -296,6 +227,161 @@ const
 const
 {$ENDIF}
   SListIndexOutOfBounds = 'Invalid stringlist index %d';
+
+type
+
+  { TSynEditUndoTxtInsert }
+
+  TSynEditUndoTxtInsert = class(TSynEditUndoItem)
+  private
+    FPosX, FPosY, FLen: Integer;
+  public
+    constructor Create(APosX, APosY, ALen: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoTxtDelete }
+
+  TSynEditUndoTxtDelete = class(TSynEditUndoItem)
+  private
+    FPosX, FPosY: Integer;
+    FText: String;
+  public
+    constructor Create(APosX, APosY: Integer; AText: String);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoTxtLineBreak }
+
+  TSynEditUndoTxtLineBreak = class(TSynEditUndoItem)
+  private
+    FPosY: Integer;
+  public
+    constructor Create(APosY: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoTxtLineJoin }
+
+  TSynEditUndoTxtLineJoin = class(TSynEditUndoItem)
+  private
+    FPosX, FPosY: Integer;
+  public
+    constructor Create(APosX, APosY: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoTxtLinesIns }
+
+  TSynEditUndoTxtLinesIns = class(TSynEditUndoItem)
+  private
+    FPosY, FCount: Integer;
+  public
+    constructor Create(ALine, ACount: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+  { TSynEditUndoTxtLinesDel }
+
+  TSynEditUndoTxtLinesDel = class(TSynEditUndoItem)
+  private
+    FPosY, FCount: Integer;
+  public
+    constructor Create(ALine, ACount: Integer);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+{ TSynEditUndoTxtInsert }
+
+constructor TSynEditUndoTxtInsert.Create(APosX, APosY, ALen: Integer);
+begin
+  FPosX := APosX;
+  FPosY := APosY;
+  FLen  := ALen;
+end;
+
+function TSynEditUndoTxtInsert.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).EditDelete(FPosX, FPosY, FLen);
+end;
+
+{ TSynEditUndoTxtDelete }
+
+constructor TSynEditUndoTxtDelete.Create(APosX, APosY: Integer; AText: String);
+begin
+  FPosX := APosX;
+  FPosY := APosY;
+  FText := AText;
+end;
+
+function TSynEditUndoTxtDelete.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).EditInsert(FPosX, FPosY, FText);
+end;
+
+{ TSynEditUndoTxtLineBreak }
+
+constructor TSynEditUndoTxtLineBreak.Create(APosY: Integer);
+begin
+  FPosY := APosY;
+end;
+
+function TSynEditUndoTxtLineBreak.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).EditLineJoin(FPosY)
+end;
+
+{ TSynEditUndoTxtLineJoin }
+
+constructor TSynEditUndoTxtLineJoin.Create(APosX, APosY: Integer);
+begin
+  FPosX := APosX;
+  FPosY := APosY;
+end;
+
+function TSynEditUndoTxtLineJoin.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).EditLineBreak(FPosX, FPosY)
+end;
+
+{ TSynEditUndoTxtLinesIns }
+
+constructor TSynEditUndoTxtLinesIns.Create(ALine, ACount: Integer);
+begin
+  FPosY  := ALine;
+  FCount := ACount;
+end;
+
+function TSynEditUndoTxtLinesIns.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).UndoEditLinesDelete(FPosY, FCount)
+end;
+
+{ TSynEditUndoTxtLinesDel }
+
+constructor TSynEditUndoTxtLinesDel.Create(ALine, ACount: Integer);
+begin
+  FPosY  := ALine;
+  FCount := ACount;
+end;
+
+function TSynEditUndoTxtLinesDel.PerformUndo(Caller: TObject): Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  if Result then
+    TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount)
+end;
+
 
 { TSynEditStringList }
 
@@ -490,6 +576,24 @@ begin
     Result := 0;
 end;
 
+function TSynEditStringList.GetRedoList: TSynEditUndoList;
+begin
+  Result := fRedoList;
+end;
+
+function TSynEditStringList.GetUndoList: TSynEditUndoList;
+begin
+  if FIsUndoing then
+    Result := fRedoList
+  else
+    Result := fUndoList;
+end;
+
+procedure TSynEditStringList.SetIsUndoing(const AValue: Boolean);
+begin
+  FIsUndoing := AValue;
+end;
+
 // Maps the Physical Width (ScreenCells) to each character
 // Multibyte Chars have thw width on the first byte, and a 0 Width for all other bytes
 function TSynEditStringList.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
@@ -511,8 +615,6 @@ begin
     inc(i);
   end;
 end;
-
-{end}                                                                           //mh 2000-10-19
 
 function TSynEditStringList.GetObject(Index: integer): TObject;
 begin
@@ -726,15 +828,11 @@ begin
     Ranges[Index] := ARange;
 end;
 
-procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer;
-  AUndo: Boolean; AReason: TSynChangeReason);
+procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
   Index: Integer;
 begin
-  // AUndo = True => this change is also pushed to the undo list, False => to the redo list
-  // AReason - a reason of change
-
-  for Index := AFirst to ALast do
+  for Index := AFirst - 1 to ALast - 1 do
     if (Index >= 0) and (Index < Count) then
       Flags[Index] := Flags[Index] + [sfModified] - [sfSaved];
 end;
@@ -799,256 +897,104 @@ begin
   end;
 end;
 
-{ TSynEditUndoList }
-
-constructor TSynEditUndoList.Create;
-begin
-  inherited Create;
-  fItems := TList.Create;
-  fMaxUndoActions := 1024;
-  fNextChangeNumber := 1;                                                       //sbs 2000-11-19
-  {$IFDEF SYN_LAZARUS}
-  fUnModifiedItem:=-1;
-  {$ENDIF}
-end;
-
-destructor TSynEditUndoList.Destroy;
-begin
-  Clear;
-  fItems.Free;
-  inherited Destroy;
-end;
-
-procedure TSynEditUndoList.AddChange(AReason: TSynChangeReason; AStart,
-  AEnd: TPoint; ChangeText: string; SelMode: TSynSelectionMode);
+procedure TSynEditStringList.EditInsert(LogX, LogY: Integer; AText: String);
 var
-  NewItem: TSynEditUndoItem;
+  s: string;
 begin
-  if fLockCount = 0 then begin
-    NewItem := TSynEditUndoItem.Create;
-    try
-      with NewItem do begin
-        fChangeReason := AReason;
-        fChangeSelMode := SelMode;
-        fChangeStartPos := AStart;
-        fChangeEndPos := AEnd;
-        fChangeStr := ChangeText;
-{begin}                                                                         //sbs 2000-11-19
-        if fBlockChangeNumber <> 0 then
-          fChangeNumber := fBlockChangeNumber
-        else begin
-          fChangeNumber := fNextChangeNumber;
-          if fBlockCount = 0 then begin
-            Inc(fNextChangeNumber);
-            if fNextChangeNumber = 0 then
-              Inc(fNextChangeNumber);
-          end;
-        end;
-{end}                                                                           //sbs 2000-11-19
-      end;
-      (* DebugLn(['TSynEditUndoList.AddChange ChangeNumber=',NewItem.fChangeNumber,
-               '  Reason=', SynChangeReasonNames[AReason],'  Astart=',dbgs(AStart),
-               ' AEnd=',dbgs(AEnd),'  SelMode=',ord(SelMode)]); *)
-      PushItem(NewItem);
-    except
-      NewItem.Free;
-      raise;
-    end;
-  end;
+  s := Strings[LogY - 1];
+  if LogX - 1 > Length(s) then
+    AText := StringOfChar(' ', LogX - 1 - Length(s)) + AText;
+  Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s));
+  UndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
+  MarkModified(LogY, LogY);
 end;
 
-procedure TSynEditUndoList.AppendToLastChange(AReason: TSynChangeReason; AStart,
-  AEnd: TPoint; ChangeText: string; SelMode: TSynSelectionMode);
+function TSynEditStringList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
-  NewItem: TSynEditUndoItem;
+  s: string;
 begin
-  if (fLockCount = 0) and (PeekItem <> nil) then begin
-    if (fItems.Count = fUnModifiedItem) then
-      inc(fUnModifiedItem);
-    NewItem := TSynEditUndoItem.Create;
-    try
-      with NewItem do begin
-        fChangeReason := AReason;
-        fChangeSelMode := SelMode;
-        fChangeStartPos := AStart;
-        fChangeEndPos := AEnd;
-        fChangeStr := ChangeText;
-        fChangeNumber := PeekItem.fChangeNumber;
-      end;
-      //PushItem(NewItem);
-      fItems.Add(NewItem);
-      EnsureMaxEntries;
-    except
-      NewItem.Free;
-      raise;
-    end;
-  end;
+  s := Strings[LogY - 1];
+  Result := copy(s, LogX, ByteLen);
+  Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
+  UndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
+  MarkModified(LogY, LogY);
 end;
 
-{begin}                                                                         //sbs 2000-11-19
-procedure TSynEditUndoList.BeginBlock;
-begin
-  Inc(fBlockCount);
-  fBlockChangeNumber := fNextChangeNumber;
-end;
-{end}                                                                           //sbs 2000-11-19
-
-procedure TSynEditUndoList.Clear;
+procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
 var
-  i: integer;
+  s: string;
 begin
-  for i := 0 to fItems.Count - 1 do
-    TSynEditUndoItem(fItems[i]).Free;
-  fItems.Clear;
-  fFullUndoImposible := FALSE;                                                  //mh 2000-10-03
-  {$IFDEF SYN_LAZARUS}
-  fUnModifiedItem:=-1;
-  {$ENDIF}
+  s := Strings[LogY - 1];
+  Strings[LogY - 1] := copy(s, 1, LogX - 1);
+  Insert(LogY, copy(s, LogX, length(s)));
+  UndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
+  MarkModified(LogY, LogY + 1);
 end;
 
-{begin}                                                                         //sbs 2000-11-19
-procedure TSynEditUndoList.EndBlock;
-begin
-  if fBlockCount > 0 then begin
-    Dec(fBlockCount);
-    if fBlockCount = 0 then begin
-      fBlockChangeNumber := 0;
-      Inc(fNextChangeNumber);
-      if fNextChangeNumber = 0 then
-        Inc(fNextChangeNumber);
-    end;
-  end;
-end;
-{end}                                                                           //sbs 2000-11-19
-
-procedure TSynEditUndoList.EnsureMaxEntries;
+procedure TSynEditStringList.EditLineJoin(LogY: Integer; FillText: String = '');
 var
-  Item: TSynEditUndoItem;
+  t: string;
 begin
-  if fItems.Count > fMaxUndoActions then begin                                  //mh 2000-10-03
-    fFullUndoImposible := TRUE;                                                 //mh 2000-10-03
-    while fItems.Count > fMaxUndoActions do begin
-      Item := TSynEditUndoItem(fItems[0]);
-      Item.Free;
-      fItems.Delete(0);
-      {$IFDEF SYN_LAZARUS}
-      if fUnModifiedItem>=0 then dec(fUnModifiedItem);
-      {$ENDIF}
-    end;
-  end;
+  t := Strings[LogY - 1];
+  if FillText <> ''  then
+    EditInsert(1 + Length(t), LogY, FillText);
+  UndoList.AddChange(TSynEditUndoTxtLineJoin.Create(1 + Length(Strings[LogY-1]),
+                                                    LogY));
+  Strings[LogY - 1] := t + FillText + Strings[LogY] ;
+  Delete(LogY);
+  MarkModified(LogY, LogY);
 end;
 
-function TSynEditUndoList.GetCanUndo: boolean;
+procedure TSynEditStringList.EditLinesInsert(LogY, ACount: Integer;
+  AText: String = '');
 begin
-  Result := fItems.Count > 0;
+  InsertLines(LogY - 1, ACount);
+  UndoList.AddChange(TSynEditUndoTxtLinesIns.Create(LogY, ACount));
+  if AText <> '' then
+    EditInsert(1, LogY, AText);
+  MarkModified(LogY, LogY + ACount - 1);
 end;
 
-function TSynEditUndoList.GetItemCount: integer;
-begin
-  Result := fItems.Count;
-end;
-
-procedure TSynEditUndoList.Lock;
-begin
-  Inc(fLockCount);
-end;
-
-function TSynEditUndoList.PeekItem: TSynEditUndoItem;
+procedure TSynEditStringList.EditLinesDelete(LogY, ACount: Integer);
 var
-  iLast: integer;
+  i: Integer;
 begin
-  Result := nil;
-  iLast := fItems.Count - 1;
-  if iLast >= 0 then
-    Result := TSynEditUndoItem(fItems[iLast]);
+  for i := LogY to LogY + ACount - 1 do
+    EditDelete(1, i, length(Strings[i-1]));
+  DeleteLines(LogY - 1, ACount);
+  UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
 end;
 
-function TSynEditUndoList.PopItem: TSynEditUndoItem;
-var
-  iLast: integer;
+procedure TSynEditStringList.EditUndo(Item: TSynEditUndoItem);
 begin
-  Result := nil;
-  iLast := fItems.Count - 1;
-  if iLast >= 0 then begin
-    Result := TSynEditUndoItem(fItems[iLast]);
-    fItems.Delete(iLast);
-    {$IFDEF SYN_LAZARUS}
-    if fUnModifiedItem>fItems.Count then fUnModifiedItem:=-1;
-    {$ENDIF}
-    (*DebugLn(['TSynEditUndoList.PopItem=',Result.fChangeNumber,
-               '  Reason=', SynChangeReasonNames[Result.fChangeReason],'  Astart=',dbgs(Result.fChangeStartPos),
-               ' AEnd=',dbgs(result.fChangeEndPos),'  SelMode=',ord(result.fChangeSelMode )]);*)
+  IsUndoing := True;
+  try
+    EditRedo(Item);
+  finally
+    IsUndoing := False;
   end;
 end;
 
-procedure TSynEditUndoList.PushItem(Item: TSynEditUndoItem);
+procedure TSynEditStringList.UndoEditLinesDelete(LogY, ACount: Integer);
 begin
-  if Assigned(Item) then begin
-    fItems.Add(Item);
-    EnsureMaxEntries;
-    if Assigned(fOnAdded) then
-      fOnAdded(Self);
+  UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  DeleteLines(LogY - 1, ACount);
+end;
+
+procedure TSynEditStringList.EditRedo(Item: TSynEditUndoItem);
+begin
+  Item.PerformUndo(self);
+end;
+
+procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason; ASender: TSynEditStrings; aIndex, aCount: Integer);
+begin
+  case AReason of
+    senrLineChange:
+      FLineChangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
+    senrLineCount:
+      FLineRangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
   end;
 end;
-
-procedure TSynEditUndoList.SetMaxUndoActions(Value: integer);
-begin
-  if Value < 0 then
-    Value := 0;
-  if Value <> fMaxUndoActions then begin
-    fMaxUndoActions := Value;
-    EnsureMaxEntries;
-  end;
-end;
-
-procedure TSynEditUndoList.Unlock;
-begin
-  if fLockCount > 0 then
-    Dec(fLockCount);
-end;
-
-function TSynEditUndoList.IsLocked: Boolean;
-begin
-  Result := fLockCount > 0;
-end;
-
-{$IFDEF SYN_LAZARUS}
-procedure TSynEditUndoList.MarkTopAsUnmodified;
-begin
-  fUnModifiedItem:=fItems.Count;
-end;
-
-function TSynEditUndoList.IsTopMarkedAsUnmodified: boolean;
-begin
-  Result:=(fItems.Count=fUnModifiedItem);
-end;
-
-function TSynEditUndoList.UnModifiedMarkerExists: boolean;
-begin
-  Result:=fUnModifiedItem>=0;
-end;
-
-{$ENDIF}
-
-{ TSynEditUndoItem }
-
-{$IFDEF SYN_LAZARUS}
-function TSynEditUndoItem.ChangeStartPos: TPoint;
-begin
-  if (fChangeStartPos.Y < fChangeEndPos.Y)
-    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
-  then result := fChangeStartPos
-  else result := fChangeEndPos;
-end;
-
-function TSynEditUndoItem.ChangeEndPos: TPoint;
-begin
-  if (fChangeStartPos.Y < fChangeEndPos.Y)
-    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
-  then result := fChangeEndPos
-  else result := fChangeStartPos;
-end;
-{$ENDIF}
 
 { TSynEditStringMemory }
 type

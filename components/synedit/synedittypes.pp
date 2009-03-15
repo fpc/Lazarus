@@ -62,7 +62,7 @@ type
   // to be binary (clipboard) compatible with other (Delphi compiled) synedits
   // use {$PACKENUM 1}
 {$IFDEF SYN_LAZARUS}{$PACKENUM 1}{$ENDIF SYN_LAZARUS}
-  TSynSelectionMode = (smNormal, smLine, smColumn);
+  TSynSelectionMode = (smNormal, smLine, smColumn, smCurrent);
 {$IFDEF SYN_LAZARUS}{$PACKENUM 4}{$ENDIF SYN_LAZARUS}
 
   TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,

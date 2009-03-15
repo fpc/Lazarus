@@ -26,7 +26,7 @@ unit SynEditTextBase;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, SynEditTypes;
+  Classes, SysUtils, LCLProc, SynEditTypes, SynEditMiscProcs, SynEditKeyCmds;
 
 type
   TSynEditStrings = class;
@@ -36,6 +36,11 @@ type
   TSynEditNotifyReason = (senrLineCount, senrLineChange);
 
   TPhysicalCharWidths = Array of Shortint;
+
+  TSynEditUndoList = class;
+  TSynEditUndoItem = class;
+
+type
 
   { TSynEditStrings }
 
@@ -52,6 +57,12 @@ type
     function GetExpandedString(Index: integer): string; virtual; abstract;
     function GetLengthOfLongestLine: integer; virtual; abstract;
     procedure SetTextStr(const Value: string); override;
+
+    function GetRedoList: TSynEditUndoList; virtual; abstract;
+    function GetUndoList: TSynEditUndoList; virtual; abstract;
+    procedure SetIsUndoing(const AValue: Boolean); virtual; abstract;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract;
   public
     constructor Create;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
@@ -78,6 +89,18 @@ type
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer; virtual;
   public
+    procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
+    function  EditDelete(LogX, LogY, ByteLen: Integer): String; virtual; abstract;
+    procedure EditLineBreak(LogX, LogY: Integer); virtual; abstract;
+    procedure EditLineJoin(LogY: Integer; FillText: String = ''); virtual; abstract;
+    procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); virtual; abstract;
+    procedure EditLinesDelete(LogY, ACount: Integer); virtual; abstract;
+    procedure EditUndo(Item: TSynEditUndoItem); virtual; abstract;
+    procedure EditRedo(Item: TSynEditUndoItem); virtual; abstract;
+    property UndoList: TSynEditUndoList read GetUndoList;
+    property RedoList: TSynEditUndoList read GetRedoList;
+    property IsUndoing: Boolean write SetIsUndoing;
+  public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
@@ -101,6 +124,12 @@ type
 
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
+
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+    function GetRedoList: TSynEditUndoList; override;
+    function GetUndoList: TSynEditUndoList; override;
+    procedure SetIsUndoing(const AValue: Boolean); override;
   protected
     function GetCount: integer; override;
     function GetCapacity: integer;
@@ -135,10 +164,114 @@ type
                 AHandler: TStringListLineCountEvent); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+  public
+    // LogX, LogY are 1-based
+    procedure EditInsert(LogX, LogY: Integer; AText: String); override;
+    function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
+    procedure EditLineBreak(LogX, LogY: Integer); override;
+    procedure EditLineJoin(LogY: Integer; FillText: String = ''); override;
+    procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); override;
+    procedure EditLinesDelete(LogY, ACount: Integer); override;
+    procedure EditUndo(Item: TSynEditUndoItem); override;
+    procedure EditRedo(Item: TSynEditUndoItem); override;
+  end;
 
+  { TSynEditUndoItem }
+
+  TSynEditUndoItem = class(TObject)
+  protected
+    // IsEqual is only needed/implemented for Carets
+    function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; virtual;
+    function IsEqual(AnItem: TSynEditUndoItem): Boolean;
+  public
+    function IsCaretInfo: Boolean; virtual;
+    function PerformUndo(Caller: TObject): Boolean; virtual; abstract;
+  end;
+
+  { TSynEditUndoGroup }
+
+  TSynEditUndoGroup = class(TObject)
+  private
+    FItems: Array of TSynEditUndoItem;
+    FCount, FCapacity: Integer;
+    FReason: TSynEditorCommand;
+    function GetItem(Index: Integer): TSynEditUndoItem;
+    procedure Grow;
+  protected
+    Function HasUndoInfo: Boolean;
+    procedure Append(AnUndoGroup: TSynEditUndoItem);
+    procedure TranferTo(AnUndoGroup: TSynEditUndoGroup);
+    function CanMergeWith(AnUndoGroup: TSynEditUndoGroup): Boolean;
+    procedure MergeWith(AnUndoGroup: TSynEditUndoGroup);
+  public
+    constructor Create;
+    Destructor Destroy; override;
+
+    procedure Assign(AnUndoGroup: TSynEditUndoGroup);
+    procedure Add(AnItem: TSynEditUndoItem);
+    procedure Clear;
+    procedure Insert(AIndex: Integer; AnItem: TSynEditUndoItem);
+    function  Pop: TSynEditUndoItem;
+    property Count: Integer read FCount;
+    property Items [Index: Integer]: TSynEditUndoItem read GetItem;
+    property Reason: TSynEditorCommand read FReason write FReason;
   end;
 
 
+  TSynGetCaretUndoProc = function: TSynEditUndoItem of object;
+
+  { TSynEditUndoList }
+
+  TSynEditUndoList = class(TObject)
+  private
+    FGroupUndo: Boolean;
+    FIsInsideRedo: Boolean;
+    FUndoGroup: TSynEditUndoGroup;
+    FInGroupCount: integer;
+    fFullUndoImposible: boolean;
+    fItems: TList;
+    fLockCount: integer;
+    fMaxUndoActions: integer;
+    fOnAdded: TNotifyEvent;
+    FOnNeedCaretUndo: TSynGetCaretUndoProc;
+    fUnModifiedItem: integer;
+    procedure EnsureMaxEntries;
+    function GetCanUndo: boolean;
+    function GetCurrentReason: TSynEditorCommand;
+    function GetItemCount: integer;
+    procedure SetCurrentReason(const AValue: TSynEditorCommand);
+    procedure SetMaxUndoActions(Value: integer);
+    function RealCount: Integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddChange(AChange: TSynEditUndoItem);
+    procedure AppendToLastChange(AChange: TSynEditUndoItem);
+    procedure BeginBlock;
+    procedure EndBlock;
+    procedure Clear;
+    procedure Lock;
+    function PopItem: TSynEditUndoGroup;
+    procedure Unlock;
+    function IsLocked: Boolean;
+    procedure MarkTopAsUnmodified;
+    function IsTopMarkedAsUnmodified: boolean;
+    function UnModifiedMarkerExists: boolean;
+  public
+    property CanUndo: boolean read GetCanUndo;
+    property FullUndoImpossible: boolean read fFullUndoImposible;
+    property ItemCount: integer read GetItemCount;
+    property MaxUndoActions: integer read fMaxUndoActions
+      write SetMaxUndoActions;
+    property IsInsideRedo: Boolean read FIsInsideRedo write FIsInsideRedo;
+    property OnAddedUndo: TNotifyEvent read fOnAdded write fOnAdded;
+    property OnNeedCaretUndo : TSynGetCaretUndoProc
+      read FOnNeedCaretUndo write FOnNeedCaretUndo;
+    property GroupUndo: Boolean read FGroupUndo write FGroupUndo;
+    property CurrentGroup: TSynEditUndoGroup read FUndoGroup;
+    property CurrentReason: TSynEditorCommand read GetCurrentReason
+      write SetCurrentReason;
+  end;
 
 implementation
 
@@ -305,6 +438,11 @@ begin
   fSynStrings.InsertStrings(Index, NewStrings);
 end;
 
+procedure TSynEditStringsLinked.SetIsUndoing(const AValue: Boolean);
+begin
+  fSynStrings.IsUndoing := AValue;
+end;
+
 function TSynEditStringsLinked.GetIsUtf8: Boolean;
 begin
   Result := FSynStrings.IsUtf8;
@@ -345,6 +483,16 @@ end;
 function TSynEditStringsLinked.GetLengthOfLongestLine: integer;
 begin
   Result:= fSynStrings.GetLengthOfLongestLine;
+end;
+
+function TSynEditStringsLinked.GetRedoList: TSynEditUndoList;
+begin
+  Result := fSynStrings.GetRedoList;
+end;
+
+function TSynEditStringsLinked.GetUndoList: TSynEditUndoList;
+begin
+  Result := fSynStrings.GetUndoList;
 end;
 
 procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);
@@ -414,6 +562,434 @@ begin
     fSynStrings.BeginUpdate
   else
    fSynStrings.EndUpdate;
+end;
+
+procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);
+begin
+  fSynStrings.EditInsert(LogX, LogY, AText);
+end;
+
+function TSynEditStringsLinked.EditDelete(LogX, LogY, ByteLen: Integer): String;
+begin
+  Result := fSynStrings.EditDelete(LogX, LogY, ByteLen);
+end;
+
+procedure TSynEditStringsLinked.EditLineBreak(LogX, LogY: Integer);
+begin
+  fSynStrings.EditLineBreak(LogX, LogY);
+end;
+
+procedure TSynEditStringsLinked.EditLineJoin(LogY: Integer;
+  FillText: String = '');
+begin
+  fSynStrings.EditLineJoin(LogY, FillText);
+end;
+
+procedure TSynEditStringsLinked.EditLinesInsert(LogY, ACount: Integer; AText: String = '');
+begin
+  fSynStrings.EditLinesInsert(LogY, ACount, AText);
+end;
+
+procedure TSynEditStringsLinked.EditLinesDelete(LogY, ACount: Integer);
+begin
+  fSynStrings.EditLinesDelete(LogY, ACount);
+end;
+
+procedure TSynEditStringsLinked.EditUndo(Item: TSynEditUndoItem);
+begin
+  fSynStrings.EditUndo(Item);
+end;
+
+procedure TSynEditStringsLinked.EditRedo(Item: TSynEditUndoItem);
+begin
+  fSynStrings.EditRedo(Item);
+end;
+
+procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TSynEditStrings; aIndex, aCount: Integer);
+begin
+  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount);
+end;
+
+{ TSynEditUndoList }
+
+constructor TSynEditUndoList.Create;
+begin
+  inherited Create;
+  // Create and keep one undo group => avoids resizing the FItems list
+  FUndoGroup := TSynEditUndoGroup.Create;
+  FIsInsideRedo := False;
+  fItems := TList.Create;
+  fMaxUndoActions := 1024;
+  fUnModifiedItem:=-1;
+end;
+
+destructor TSynEditUndoList.Destroy;
+begin
+  Clear;
+  fItems.Free;
+  FreeAndNil(FUndoGroup);
+  inherited Destroy;
+end;
+
+procedure TSynEditUndoList.AddChange(AChange: TSynEditUndoItem);
+var
+  ugroup: TSynEditUndoGroup;
+begin
+  if fLockCount > 0 then begin
+    AChange.Free;
+    exit;
+  end;
+
+  if FInGroupCount > 0 then
+    FUndoGroup.Add(AChange)
+  else begin
+    ugroup := TSynEditUndoGroup.Create;
+    ugroup.Add(AChange);
+    fItems.Add(ugroup);
+    if Assigned(fOnAdded) then
+      fOnAdded(Self);
+  end;
+
+  EnsureMaxEntries;
+end;
+
+procedure TSynEditUndoList.AppendToLastChange(AChange: TSynEditUndoItem);
+var
+  cur: Boolean;
+begin
+  cur := FUndoGroup.HasUndoInfo;
+  if (fLockCount <> 0) or ((fItems.Count = 0) and not cur) then begin
+    AChange.Free;
+    exit;
+  end;
+
+  if cur then
+    FUndoGroup.Append(AChange)
+  else
+    TSynEditUndoGroup(fItems[fItems.Count-1]).Append(AChange);
+
+  // Do not callback to synedit, or Redo Info is lost
+  EnsureMaxEntries;
+end;
+
+procedure TSynEditUndoList.BeginBlock;
+begin
+  Inc(FInGroupCount);
+  if (FInGroupCount = 1) then begin
+    FUndoGroup.Clear;
+    if assigned(FOnNeedCaretUndo) then
+      FUndoGroup.add(FOnNeedCaretUndo());
+  end
+end;
+
+procedure TSynEditUndoList.Clear;
+var
+  i: integer;
+begin
+  for i := 0 to fItems.Count - 1 do
+    TSynEditUndoGroup(fItems[i]).Free;
+  fItems.Clear;
+  fFullUndoImposible := FALSE;
+  fUnModifiedItem:=-1;
+end;
+
+procedure TSynEditUndoList.EndBlock;
+var
+  ugroup: TSynEditUndoGroup;
+begin
+  if FInGroupCount > 0 then begin
+    Dec(FInGroupCount);
+    if (FInGroupCount = 0) and FUndoGroup.HasUndoInfo then
+    begin
+      // Keep position for REDO; Do not replace if present
+      if (not FUndoGroup.Items[FUndoGroup.Count - 1].IsCaretInfo)
+          and assigned(FOnNeedCaretUndo) then
+        FUndoGroup.Add(FOnNeedCaretUndo());
+      if (fItems.Count > 0) and FGroupUndo and
+        FUndoGroup.CanMergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1])) then
+      begin
+        FUndoGroup.MergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1]));
+        FUndoGroup.TranferTo(TSynEditUndoGroup(fItems[fItems.Count - 1]));
+      end else begin
+        ugroup := TSynEditUndoGroup.Create;
+        FUndoGroup.TranferTo(ugroup);
+        fItems.Add(ugroup);
+      end;
+      if Assigned(fOnAdded) then
+        fOnAdded(Self);
+      FIsInsideRedo := False;
+    end;
+  end;
+end;
+
+procedure TSynEditUndoList.EnsureMaxEntries;
+var
+  Item: TSynEditUndoGroup;
+begin
+  if fItems.Count > fMaxUndoActions then begin
+    fFullUndoImposible := TRUE;
+    while fItems.Count > fMaxUndoActions do begin
+      Item := TSynEditUndoGroup(fItems[0]);
+      Item.Free;
+      fItems.Delete(0);
+      if fUnModifiedItem>=0 then dec(fUnModifiedItem);
+    end;
+  end;
+end;
+
+function TSynEditUndoList.GetCanUndo: boolean;
+begin
+  Result := fItems.Count > 0;
+end;
+
+function TSynEditUndoList.GetCurrentReason: TSynEditorCommand;
+begin
+  Result := FUndoGroup.Reason;
+end;
+
+function TSynEditUndoList.GetItemCount: integer;
+begin
+  Result := fItems.Count;
+end;
+
+procedure TSynEditUndoList.SetCurrentReason(const AValue: TSynEditorCommand);
+begin
+  if FUndoGroup.Reason = ecNone then
+    FUndoGroup.Reason := AValue;
+end;
+
+procedure TSynEditUndoList.Lock;
+begin
+  Inc(fLockCount);
+end;
+
+function TSynEditUndoList.PopItem: TSynEditUndoGroup;
+var
+  iLast: integer;
+begin
+  Result := nil;
+  iLast := fItems.Count - 1;
+  if iLast >= 0 then begin
+    Result := TSynEditUndoGroup(fItems[iLast]);
+    fItems.Delete(iLast);
+    if fUnModifiedItem>fItems.Count then
+      fUnModifiedItem:=-1;
+  end;
+end;
+
+procedure TSynEditUndoList.SetMaxUndoActions(Value: integer);
+begin
+  if Value < 0 then
+    Value := 0;
+  if Value <> fMaxUndoActions then begin
+    fMaxUndoActions := Value;
+    EnsureMaxEntries;
+  end;
+end;
+
+function TSynEditUndoList.RealCount: Integer;
+begin
+  Result := fItems.Count;
+  if (FInGroupCount > 0) and FUndoGroup.HasUndoInfo then
+    Result := Result + 1;
+end;
+
+procedure TSynEditUndoList.Unlock;
+begin
+  if fLockCount > 0 then
+    Dec(fLockCount);
+end;
+
+function TSynEditUndoList.IsLocked: Boolean;
+begin
+  Result := fLockCount > 0;
+end;
+
+procedure TSynEditUndoList.MarkTopAsUnmodified;
+begin
+  fUnModifiedItem := RealCount;
+end;
+
+function TSynEditUndoList.IsTopMarkedAsUnmodified: boolean;
+begin
+  Result := (RealCount = fUnModifiedItem);
+end;
+
+function TSynEditUndoList.UnModifiedMarkerExists: boolean;
+begin
+  Result := fUnModifiedItem >= 0;
+end;
+
+{ TSynEditUndoItem }
+
+function TSynEditUndoItem.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
+begin
+  Result := False;
+end;
+
+function TSynEditUndoItem.IsEqual(AnItem: TSynEditUndoItem): Boolean;
+begin
+  Result := (ClassType = AnItem.ClassType);
+  if Result then Result := Result and IsEqualContent(AnItem);
+end;
+
+function TSynEditUndoItem.IsCaretInfo: Boolean;
+begin
+  Result := False;
+end;
+
+(*
+function TSynEditUndoItem.ChangeStartPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeStartPos
+  else result := fChangeEndPos;
+end;
+
+function TSynEditUndoItem.ChangeEndPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeEndPos
+  else result := fChangeStartPos;
+end;
+*)
+
+{ TSynEditUndoGroup }
+
+procedure TSynEditUndoGroup.Grow;
+begin
+  FCapacity := FCapacity + Max(10, FCapacity Div 8);
+  SetLength(FItems, FCapacity);
+end;
+
+function TSynEditUndoGroup.HasUndoInfo: Boolean;
+var
+  i: Integer;
+begin
+  i := 0;
+  while i < FCount do
+    if FItems[i].IsCaretInfo then
+      inc(i)
+    else
+      exit(true);
+  Result := False;
+end;
+
+procedure TSynEditUndoGroup.Append(AnUndoGroup: TSynEditUndoItem);
+var
+  i: Integer;
+begin
+  i := FCount - 1;
+  while (i >= 0) and FItems[i].IsCaretInfo do
+    dec(i);
+  inc(i);
+  Insert(i, AnUndoGroup);
+end;
+
+procedure TSynEditUndoGroup.TranferTo(AnUndoGroup: TSynEditUndoGroup);
+begin
+  AnUndoGroup.Assign(self);
+  FCount := 0; // Do not clear; that would free the items
+end;
+
+function TSynEditUndoGroup.CanMergeWith(AnUndoGroup: TSynEditUndoGroup): Boolean;
+begin
+  // Check if the other group can be merged to the START of this node
+  if AnUndoGroup.Count = 0 then exit(True);
+  Result := (FReason <> ecNone) and (AnUndoGroup.Reason = FReason)
+        and Items[0].IsCaretInfo
+        and AnUndoGroup.Items[AnUndoGroup.Count - 1].IsEqual(Items[0]);
+end;
+
+procedure TSynEditUndoGroup.MergeWith(AnUndoGroup: TSynEditUndoGroup);
+begin
+  // Merge other group to start
+  AnUndoGroup.Pop.Free;
+  if AnUndoGroup.Count > 0 then begin
+    fItems[0].Free;
+    fItems[0] := AnUndoGroup.Pop;
+  end;
+  while AnUndoGroup.Count > 0 do
+    Insert(0, AnUndoGroup.Pop);
+end;
+
+function TSynEditUndoGroup.GetItem(Index: Integer): TSynEditUndoItem;
+begin
+  Result := FItems[Index];
+end;
+
+constructor TSynEditUndoGroup.Create;
+begin
+  FCount := 0;
+  FCapacity := 0;
+end;
+
+destructor TSynEditUndoGroup.Destroy;
+begin
+  Clear;
+  FItems := nil;
+  inherited Destroy;
+end;
+
+procedure TSynEditUndoGroup.Assign(AnUndoGroup: TSynEditUndoGroup);
+begin
+  Clear;
+  FCapacity := AnUndoGroup.Count;
+  FCount := FCapacity;
+  SetLength(FItems, FCapacity);
+  if FCapacity = 0 then
+    exit;
+  System.Move(AnUndoGroup.FItems[0], FItems[0], FCapacity * SizeOf(TSynEditUndoItem));
+  FReason := AnUndoGroup.Reason;
+end;
+
+procedure TSynEditUndoGroup.Add(AnItem: TSynEditUndoItem);
+begin
+  if (FCount > 0) and AnItem.IsCaretInfo
+     and FItems[FCount - 1].IsCaretInfo then
+  begin
+    FItems[FCount - 1].Free;
+    FItems[FCount - 1] := AnItem;
+    exit;
+  end;
+  if FCount >= FCapacity then
+    Grow;
+  FItems[FCount] := AnItem;
+  inc (FCount);
+end;
+
+procedure TSynEditUndoGroup.Clear;
+begin
+  while FCount > 0 do begin
+    dec(FCount);
+    FItems[FCount].Free;
+  end;
+  if FCapacity > 100 then begin
+    FCapacity := 100;
+    SetLength(FItems, FCapacity);
+  end;
+  FReason := ecNone;
+end;
+
+procedure TSynEditUndoGroup.Insert(AIndex: Integer; AnItem: TSynEditUndoItem);
+begin
+  if FCount >= FCapacity then
+    Grow;
+  System.Move(FItems[AIndex], FItems[AIndex+1],
+              (FCount - AIndex) * SizeOf(TSynEditUndoItem));
+  FItems[AIndex] := AnItem;
+  inc (FCount);
+end;
+
+function TSynEditUndoGroup.Pop: TSynEditUndoItem;
+begin
+  if FCount <= 0 then
+    exit(nil);
+  dec(FCount);
+  Result := FItems[FCount];
 end;
 
 end.
