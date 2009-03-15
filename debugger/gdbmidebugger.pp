@@ -1532,7 +1532,7 @@ begin
     Exit;
   end;
 
-  Result := ExecuteCommand('-symbol-list-line %s', [ASource], [cfIgnoreError, cfExternal], R)
+  Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError, cfExternal], R)
         and (R.State <> dsError);
   if not Result then Exit;
 
@@ -1551,7 +1551,9 @@ begin
     LineList.Init(Item^.NamePtr, Item^.NameLen);
     if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
     if not TryStrToQWord(Unquote(LineList.Values['pc']), addr) then Continue;
-    Map.Add(ID, Addr);
+    // one line can have more than one address
+    if not Map.HasId(ID) then
+      Map.Add(ID, Addr);
     if ID.Line = ALine
     then begin
       AAddr := Addr;
@@ -3816,19 +3818,19 @@ function TGDBMIExpression.DumpExpression: String;
 begin
   if FLeft = nil
   then Result := ''
-  else Result := '«L:' + FLeft.DumpExpression + '»';
+  else Result := 'L:' + FLeft.DumpExpression + '';
 
   if FOperator = '('
-  then Result := Result + '(«R:' + FRight.DumpExpression + '»)'
+  then Result := Result + '(R:' + FRight.DumpExpression + ')'
   else if FOperator = '['
-  then Result := Result + '[«R:' + FRight.DumpExpression + '»]'
+  then Result := Result + '[R:' + FRight.DumpExpression + ']'
   else begin
     if (Length(FOperator) > 0)
     and (FOperator[1] = '''')
-    then Result := Result + '«O:' + ConvertToCString(FOperator) + '»'
-    else Result := Result + '«O:' + FOperator + '»';
+    then Result := Result + 'O:' + ConvertToCString(FOperator) + ''
+    else Result := Result + 'O:' + FOperator + '';
     if FRight <> nil
-    then Result := Result + '«R:' + FRight.DumpExpression + '»';
+    then Result := Result + 'R:' + FRight.DumpExpression + '';
   end;
 end;
 
