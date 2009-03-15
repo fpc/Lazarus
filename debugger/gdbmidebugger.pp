@@ -1520,6 +1520,7 @@ var
   Item: PGDBMINameValue;
   Addr: TDbgPtr;
 begin
+  AAddr := 0;
   idx := FSourceNames.IndexOf(ASource);
   if (idx <> -1)
   then begin
@@ -1528,7 +1529,9 @@ begin
     // since we dont have column info we map all on column 0
     // ID.Column := AColumn;
     ID.Column := 0;
-    Result := (Map <> nil) and Map.GetData(ID, AAddr);
+    Result := (Map <> nil);
+    if Result
+    then Map.GetData(ID, AAddr);
     Exit;
   end;
 
@@ -1542,7 +1545,6 @@ begin
   LinesList := TGDBMINameValueList.Create(R, ['lines']);
   if LinesList = nil then Exit(False);
   try
-    Result := False;
     ID.Column := 0;
     LineList := TGDBMINameValueList.Create('');
     try
@@ -1551,15 +1553,12 @@ begin
         Item := LinesList.Items[n];
         LineList.Init(Item^.NamePtr, Item^.NameLen);
         if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
-        if not TryStrToQWord(Unquote(LineList.Values['pc']), addr) then Continue;
+        if not TryStrToQWord(Unquote(LineList.Values['pc']), Addr) then Continue;
         // one line can have more than one address
         if not Map.HasId(ID) then
           Map.Add(ID, Addr);
         if ID.Line = ALine
-        then begin
-          AAddr := Addr;
-          Result := True;
-        end;
+        then AAddr := Addr;
       end;
     finally
       LineList.Free;
