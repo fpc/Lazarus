@@ -757,7 +757,9 @@ begin
       i:=GetAttributeInteger('orientation-requested-default',3);
       //Get selected orientation or Default if not defined
       i:=StrToIntDef(cupsGetOption('orientation-requested'),i);
-      //Calc result
+      // check if rotation is automatic or out-of-range
+      if not (i in [3,4,5,6]) then
+        i:=3; // yep, then for us this means portait
       fCachedOrientation:=TPrinterOrientation(i-3);
     end;
     {$IFDEF UseCache}
