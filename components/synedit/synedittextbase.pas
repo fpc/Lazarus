@@ -978,8 +978,9 @@ procedure TSynEditUndoGroup.Insert(AIndex: Integer; AnItem: TSynEditUndoItem);
 begin
   if FCount >= FCapacity then
     Grow;
-  System.Move(FItems[AIndex], FItems[AIndex+1],
-              (FCount - AIndex) * SizeOf(TSynEditUndoItem));
+  If AIndex < FCount then
+    System.Move(FItems[AIndex], FItems[AIndex+1],
+                (FCount - AIndex) * SizeOf(TSynEditUndoItem));
   FItems[AIndex] := AnItem;
   inc (FCount);
 end;
