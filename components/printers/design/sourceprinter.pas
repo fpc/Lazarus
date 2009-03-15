@@ -84,7 +84,7 @@ begin
     LineNum := Pred(PageNum) * LinesPerPage + l;
 
     //check if end of text is reached
-    if LineNum < Text.Count then
+    if LineNum <= Text.Count then
     begin
       if ShowLineNumbers then
         s := Format('%4d: ',[LineNum])
