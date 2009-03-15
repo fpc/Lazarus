@@ -76,7 +76,27 @@ type
     xtkXorAssign);
 
   TRangeState = (rsUnknown, rsAnsiC, rsAnsiCAsm, rsAnsiCAsmBlock, rsAsm,
-    rsAsmBlock, rsDirective, rsDirectiveComment, rsString34, rsString39);
+                 rsAsmBlock, rsDirective, rsDirectiveComment, {rsString34, rsString39,}
+                 rsAsmBlockString, rsAsmString, rsDirectiveString, rsString
+                );
+
+const
+  // map the range into a stringtype range (comments are never mapped into string)
+  // keep the range, if it already is a string-range
+  SynCppRangeToStringRange: Array [TRangeState] of TRangeState
+              = (rsString, rsString, rsString, rsString, rsAsmString,
+                 rsAsmBlockString, rsDirectiveString, rsString,
+                 rsAsmBlockString, rsAsmString, rsDirectiveString, rsString
+                );
+  // map the string-range back into the correct range
+  // non string ranges are kept as they were
+  SynCppStringRangeToRange: Array [TRangeState] of TRangeState
+              = (rsUnknown, rsAnsiC, rsAnsiCAsm, rsAnsiCAsmBlock, rsAsm,
+                 rsAsmBlock, rsDirective, rsDirectiveComment,
+                 rsAsmBlock, rsAsm, rsDirective, rsUnknown
+                );
+
+type
 
   TProcTableProc = procedure of object;
 
@@ -1334,7 +1354,25 @@ begin
 end;
 
 procedure TSynCppSyn.StringProc;
+Var
 begin
+  case FLine[Run] of
+    #0:
+      begin
+        NullProc;
+        exit;
+      end;
+    #10:
+      begin
+        LFProc;
+        exit;
+      end;
+    #13:
+      begin
+        CRProc;
+        exit;
+      end;
+  end;
   fTokenID := tkString;
   repeat
     if fLine[Run] = '\' then begin
@@ -1343,8 +1381,13 @@ begin
     end;
     inc(Run);
   until fLine[Run] in [#0, #10, #13, #34];
-  if FLine[Run] = #34 then
+  if FLine[Run] = #34 then begin
     inc(Run);
+    fRange := SynCppStringRangeToRange[fRange];
+  end else begin
+    // string continues in next line
+    fRange := SynCppRangeToStringRange[fRange];
+  end;
 end;
 
 procedure TSynCppSyn.TildeProc;
@@ -1386,9 +1429,12 @@ begin
   fAsmStart := False;
   fTokenPos := Run;
   case fRange of
-    rsAnsiC, rsAnsiCAsm,
-    rsAnsiCAsmBlock, rsDirectiveComment: AnsiCProc;
-    rsDirective: DirectiveProc;
+    rsAnsiC, rsAnsiCAsm, rsAnsiCAsmBlock, rsDirectiveComment:
+      AnsiCProc;
+    rsAsmBlockString,rsAsmString,rsDirectiveString,rsString:
+      StringProc;
+    rsDirective:
+      DirectiveProc;
   else
     begin
       fRange := rsUnknown;
