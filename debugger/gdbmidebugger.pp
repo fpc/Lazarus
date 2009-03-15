@@ -1541,24 +1541,31 @@ begin
 
   LinesList := TGDBMINameValueList.Create(R, ['lines']);
   if LinesList = nil then Exit(False);
-
-  Result := False;
-  ID.Column := 0;
-  LineList := TGDBMINameValueList.Create('');
-  for n := 0 to LinesList.Count - 1 do
-  begin
-    Item := LinesList.Items[n];
-    LineList.Init(Item^.NamePtr, Item^.NameLen);
-    if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
-    if not TryStrToQWord(Unquote(LineList.Values['pc']), addr) then Continue;
-    // one line can have more than one address
-    if not Map.HasId(ID) then
-      Map.Add(ID, Addr);
-    if ID.Line = ALine
-    then begin
-      AAddr := Addr;
-      Result := True;
+  try
+    Result := False;
+    ID.Column := 0;
+    LineList := TGDBMINameValueList.Create('');
+    try
+      for n := 0 to LinesList.Count - 1 do
+      begin
+        Item := LinesList.Items[n];
+        LineList.Init(Item^.NamePtr, Item^.NameLen);
+        if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
+        if not TryStrToQWord(Unquote(LineList.Values['pc']), addr) then Continue;
+        // one line can have more than one address
+        if not Map.HasId(ID) then
+          Map.Add(ID, Addr);
+        if ID.Line = ALine
+        then begin
+          AAddr := Addr;
+          Result := True;
+        end;
+      end;
+    finally
+      LineList.Free;
     end;
+  finally
+    LinesList.Free;
   end;
 end;
 
