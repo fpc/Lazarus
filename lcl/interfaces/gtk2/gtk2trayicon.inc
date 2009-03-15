@@ -362,14 +362,12 @@ end;
 *
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
 begin
   Result := False;
 
   { Free and nil the handle }
-  TrayIconHandle.Free;
-  TrayIconHandle := nil;
+  TGtk2TrayIconHandle(ATrayIcon.Handle).Free;
+  ATrayIcon.Handle := 0;
 
   Result := True;
 end;
@@ -386,19 +384,21 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
+  TrayIconHandle: TGtk2TrayIconHandle;
 begin
   Result := False;
 
   TrayIconHandle := TGtk2TrayIconHandle.Create(ATrayIcon);
+  ATrayIcon.Handle := PtrInt(TrayIconHandle);
   {*******************************************************************
   *  Now shows the GtkPlug
   *******************************************************************}
-  with TrayIconHandle do begin
+  with TrayIconHandle do
+  begin
     gtk_widget_show(plug);
-    if fEmbedded then begin
-      Result := True;
-    end else
+    if fEmbedded then
+      Result := True
+    else
       Hide(ATrayIcon);
   end;
 end;
@@ -415,16 +415,16 @@ end;
 *
 *******************************************************************}
 class procedure TGtk2WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
-var
-  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
 begin
-  if Assigned(TrayIconHandle) then with TrayIconHandle do begin
-    // Updates the tooltips
-    if Assigned(Tips) then
-	  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(ATrayIcon.Hint), '');
-    // Updates the icon
-    if Assigned(DrawingArea) then begin
-      gtk_image_set_from_pixbuf(GTK_IMAGE(DrawingArea), PGdkPixbuf(ATrayIcon.Icon.Handle));
+  if ATrayIcon.Handle <> 0 then
+    with TGtk2TrayIconHandle(ATrayIcon.Handle) do
+    begin
+      // Updates the tooltips
+      if Assigned(Tips) then
+  	  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(ATrayIcon.Hint), '');
+      // Updates the icon
+      if Assigned(DrawingArea) then begin
+        gtk_image_set_from_pixbuf(GTK_IMAGE(DrawingArea), PGdkPixbuf(ATrayIcon.Icon.Handle));
     end;
   end;
 end;
@@ -443,16 +443,18 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 var
-  TrayIconHandle: TGtk2TrayIconHandle absolute ATrayIcon.Handle;
   WindowHandle: PGDKWindow;
 begin
   Result := Point(0, 0);
-  if Assigned(TrayIconHandle) then with TrayIconHandle do begin
-    if not Assigned(plug) then begin
-      WindowHandle := plug^.window;
-      if Assigned(WindowHandle) then
-        gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
+  if ATrayIcon.Handle <> 0 then
+    with TGtk2TrayIconHandle(ATrayIcon.Handle) do
+    begin
+      if not Assigned(plug) then
+      begin
+        WindowHandle := plug^.window;
+        if Assigned(WindowHandle) then
+          gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
+      end;
     end;
-  end;
 end;
 
