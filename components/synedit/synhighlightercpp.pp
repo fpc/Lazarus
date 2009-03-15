@@ -1354,7 +1354,6 @@ begin
 end;
 
 procedure TSynCppSyn.StringProc;
-Var
 begin
   case FLine[Run] of
     #0:
