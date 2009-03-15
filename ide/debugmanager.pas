@@ -1381,7 +1381,7 @@ begin
   then begin
     // hide IDE during run
     if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger)
-    then  MainIDE.HideIDE;
+    then MainIDE.HideIDE;
 
     if FPrevShownWindow <> 0 then
     begin
@@ -1412,6 +1412,16 @@ begin
     then Editor.ExecutionLine := -1;
   end;
 
+  if (FDebugger.State = dsPause) and (SourceNotebook <> nil)
+  then begin
+    Editor := SourceNotebook.GetActiveSE;
+    if (Editor <> nil) and not Editor.HasExecutionMarks
+    then Editor.FillExecutionMarks;
+  end;
+
+  if not (FDebugger.State in [dsRun, dsPause]) and (SourceNotebook <> nil) then
+    SourceNotebook.ClearExecutionMarks;
+
   case FDebugger.State of
     dsError: begin
     {$ifdef VerboseDebugger}
@@ -1436,7 +1446,6 @@ begin
         then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
       end;
     end;
-
   end;
 end;
 
@@ -1525,7 +1534,11 @@ begin
   else Editor := nil;
 
   if Editor <> nil
-  then Editor.ExecutionLine:=SrcLine;
+  then begin
+    if not Editor.HasExecutionMarks then
+      Editor.FillExecutionMarks;
+    Editor.ExecutionLine := SrcLine;
+  end;
 end;
 
 //-----------------------------------------------------------------------------
@@ -1878,14 +1891,15 @@ var
   CurBreakPoint: TIDEBreakPoint;
   SrcFilename: String;
 begin
-  if (AnUnitInfo.EditorIndex<0) or Destroying then exit;
-  ASrcEdit:=SourceNotebook.Editors[AnUnitInfo.EditorIndex];
+  if (AnUnitInfo.EditorIndex < 0) or Destroying then exit;
+  ASrcEdit := SourceNotebook.Editors[AnUnitInfo.EditorIndex];
   // set breakpoints for this unit
   SrcFilename:=AnUnitInfo.Filename;
-  for i:=0 to FBreakpoints.Count-1 do begin
-    CurBreakPoint:=FBreakpoints[i];
-    if CompareFileNames(CurBreakPoint.Source,SrcFilename)=0 then
-      CreateSourceMarkForBreakPoint(CurBreakPoint,ASrcEdit);
+  for i := 0 to FBreakpoints.Count-1 do
+  begin
+    CurBreakPoint := FBreakpoints[i];
+    if CompareFileNames(CurBreakPoint.Source, SrcFilename) = 0 then
+      CreateSourceMarkForBreakPoint(CurBreakPoint, ASrcEdit);
   end;
 end;
 

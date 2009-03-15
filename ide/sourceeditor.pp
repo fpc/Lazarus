@@ -115,6 +115,7 @@ type
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
     FCodeTemplates: TSynEditAutoComplete;
+    FHasExecutionMarks: Boolean;
     FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
@@ -359,6 +360,7 @@ type
     property EditorComponent: TSynEdit read FEditor;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
     property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
+    property HasExecutionMarks: Boolean read FHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
     property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
     property OnBeforeClose: TNotifyEvent read FOnBeforeClose
@@ -672,6 +674,7 @@ type
     procedure UpdateStatusBar;
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
+    procedure ClearExecutionMarks;
 
     procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject);
@@ -1060,6 +1063,7 @@ Begin
   FErrorColumn:=-1;
   FExecutionLine:=-1;
   FExecutionMark := nil;
+  FHasExecutionMarks := False;
 
   CreateEditor(AOwner,AParent);
 
@@ -3025,16 +3029,25 @@ var
   i: integer;
   ASource: String;
   Addr: TDBGPtr;
+  Res: Boolean;
 begin
+  if HasExecutionMarks then Exit;
   ASource := FileName;
   for i := 0 to EditorComponent.Lines.Count - 1 do
-    if DebugBoss.SourceAddress(ASource, i, 0, Addr) and (Addr <> 0) then
+  begin
+    Res := DebugBoss.SourceAddress(ASource, i, 0, Addr);
+    if not Res then
+      Exit;
+    if (Addr <> 0) then
       EditorComponent.SetDebugMarks(i, i);
+  end;
+  FHasExecutionMarks := True;
 end;
 
 procedure TSourceEditor.ClearExecutionMarks;
 begin
   EditorComponent.ClearDebugMarks;
+  FHasExecutionMarks := False;
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
@@ -6123,6 +6136,8 @@ Begin
     end;
     UpdateStatusBar;
     UpdateActiveEditColors(TempEditor.EditorComponent);
+    if (DebugBoss.State = dsPause) and not TempEditor.HasExecutionMarks then
+      TempEditor.FillExecutionMarks;
     if Assigned(FOnEditorVisibleChanged) then
       FOnEditorVisibleChanged(sender);
   end;
@@ -6675,17 +6690,27 @@ begin
 end;
 
 procedure TSourceNotebook.ClearErrorLines;
-var i: integer;
+var
+  i: integer;
 begin
-  for i:=0 to EditorCount-1 do
-    Editors[i].ErrorLine:=-1;
+  for i := 0 to EditorCount - 1 do
+    Editors[i].ErrorLine := -1;
 end;
 
 procedure TSourceNotebook.ClearExecutionLines;
-var i: integer;
+var
+  i: integer;
 begin
-  for i:=0 to EditorCount-1 do
-    Editors[i].ExecutionLine:=-1;
+  for i := 0 to EditorCount - 1 do
+    Editors[i].ExecutionLine := -1;
+end;
+
+procedure TSourceNotebook.ClearExecutionMarks;
+var
+  i: integer;
+begin
+  for i := 0 to EditorCount - 1 do
+    Editors[i].ClearExecutionMarks;
 end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
