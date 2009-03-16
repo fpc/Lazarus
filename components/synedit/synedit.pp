@@ -5376,6 +5376,8 @@ begin
   if Operation = opRemove then begin
     if AComponent = fHighlighter then begin
       fHighlighter := nil;
+      fMarkupHighCaret.Highlighter := nil;
+      fMarkupWordGroup.Highlighter := nil;
 {begin}                                                                         //mh 2000-10-01
       if not (csDestroying in ComponentState) then begin
         RecalcCharExtent;
@@ -5409,6 +5411,7 @@ begin
       Value.FreeNotification(Self);
     end;
     fHighlighter := Value;
+    // Ensure to free all copies in SynEit.Notification too
     fMarkupHighCaret.Highlighter := Value;
     fMarkupWordGroup.Highlighter := Value;
     {$IFDEF SYN_LAZARUS}
