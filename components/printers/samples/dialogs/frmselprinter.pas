@@ -88,7 +88,7 @@ var
   Ratio: Double;
 begin
   if (AWidth<=0) or (AHeight<=0) then begin
-    if Graphic.Height=0 then
+    if Graphic.Width=0 then
       ratio := 1
     else
       ratio := Graphic.Height/Graphic.Width;
