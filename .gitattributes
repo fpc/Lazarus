@@ -1655,6 +1655,7 @@ debugger/fpdebug/fpd/fpdglobal.pas svneol=native#text/pascal
 debugger/fpdebug/fpd/fpdloop.pas svneol=native#text/pascal
 debugger/fpdebug/fpd/fpdpeimage.pas svneol=native#text/pascal
 debugger/fpdebug/fpd/fpdtype.pas svneol=native#text/pascal
+debugger/fpdebug/fpdd/fpdumpdwarf.lpi svneol=native#text/plain
 debugger/fpdebug/fpdd/fpdumpdwarf.lpr svneol=native#text/pascal
 debugger/fpdebug/test/asmtest.lpi svneol=native#text/plain
 debugger/fpdebug/test/asmtest.lpr svneol=native#text/pascal
