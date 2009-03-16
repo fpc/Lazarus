@@ -742,8 +742,6 @@ end;
 
 procedure TSynEditStringList.PutRange(Index: integer; ARange: TSynEditRange);
 begin
-  if (Index < 0) or (Index >= Count) then
-    ListIndexOutOfBounds(Index);
   {$IFDEF SYN_LAZARUS}
   // do not call BeginUpdate/EndUpdate. It would call the too generic OnChange
   // events
@@ -759,18 +757,22 @@ function TSynEditStringList.GetAttribute(const Owner: TClass; const Index: Integ
 var
   i: Integer;
 begin
+  if (Index = 0) and (Count = 0) then
+    exit(nil);
   if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
   i := ClassIndexForAttribute(Owner);
   if i < 0 then
     raise ESynEditStringList.CreateFmt('Unknown Attribute', []);
-  Result := FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size];
+  Result := FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size]
 end;
 
 procedure TSynEditStringList.SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer);
 var
   i: Integer;
 begin
+  if (Index = 0) and (Count = 0) then
+    Add('');
   if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
   i := ClassIndexForAttribute(Owner);
