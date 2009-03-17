@@ -36,7 +36,8 @@ uses
   SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc,
   InterfaceBase,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra;
+  WSControls, WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra,
+  WSProc;
 
 type
 
@@ -142,11 +143,15 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
-    class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
+    class function GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -154,16 +159,22 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
   { TWinCEWSCustomMemo }
 
   TWinCEWSCustomMemo = class(TWSCustomMemo)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+
+    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -192,6 +203,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TWinCEWSStaticText }
@@ -273,6 +286,33 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
 implementation
 
+const
+  AlignmentToEditFlags: array[TAlignment] of DWord =
+  (
+{ taLeftJustify  } ES_LEFT,
+{ taRightJustify } ES_RIGHT,
+{ taCenter       } ES_CENTER
+  );
+
+  AlignmentToStaticTextFlags: array[TAlignment] of DWord =
+  (
+{ taLeftJustify  } SS_LEFT,
+{ taRightJustify } SS_RIGHT,
+{ taCenter       } SS_CENTER
+  );
+
+  BorderToStaticTextFlags: array[TStaticBorderStyle] of DWord =
+  (
+    0,
+    WS_BORDER, // generic border
+    WS_BORDER  // SS_SUNKEN is not supported
+  );
+
+  AccelCharToStaticTextFlags: array[Boolean] of LONG =
+  (
+    SS_NOPREFIX,
+    0
+  );
 
 {$I wincememostrings.inc}
 
@@ -828,7 +868,12 @@ begin
   // customization of Params
   with Params do
   begin
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if (AWinControl is TCustomEdit) then
+    begin
+      if TCustomEdit(AWinControl).BorderStyle=bsSingle then
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+      Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
+    end;
     pClassName := @EditClsName;
     WindowTitle := StrCaption;
     Flags := Flags or ES_AUTOHSCROLL;
@@ -840,27 +885,62 @@ begin
   Result := Params.Window;
 end;
 
-class function  TWinCEWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+class function TWinCEWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
+  ): Boolean;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCanUndo') then
+    Exit;
+  Result := Windows.SendMessage(ACustomEdit.Handle, EM_CANUNDO, 0, 0) <> 0;
+end;
+
+class function TWinCEWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+var
+  BufferX: Longword;
+begin
+  // EM_GETSEL expects a pointer to 32-bits buffer in lParam
+  Windows.SendMessage(ACustomEdit.Handle, EM_GETSEL, 0, PtrInt(@BufferX));
+  Result.X := BufferX;
+  Result.Y := 0;
+end;
+
+class function TWinCEWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelStart(ACustomEdit.Handle);
 end;
 
-class function  TWinCEWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+class function TWinCEWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelLength(ACustomEdit.Handle);
 end;
 
-class function  TWinCEWSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
+class function TWinCEWSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
 end;
 
-class function  TWinCEWSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+class function TWinCEWSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then
     exit;
   AText := GetControlText(AWinControl.Handle);
+end;
+
+class procedure TWinCEWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const AAlignment: TAlignment);
+var
+  CurrentStyle: DWord;
+begin
+  CurrentStyle := GetWindowLong(ACustomEdit.Handle, GWL_STYLE);
+  if (CurrentStyle and 3) = AlignmentToEditFlags[AAlignment] then
+    Exit;
+  RecreateWnd(ACustomEdit);
+end;
+
+class procedure TWinCEWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
+begin
+  Windows.SendMessage(ACustomEdit.Handle, EM_SETSEL, NewPos.X, NewPos.X);
 end;
 
 class procedure TWinCEWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
@@ -905,21 +985,31 @@ begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
 end;
 
+class procedure TWinCEWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
+    Exit;
+  SendMessage(ACustomEdit.Handle, EM_UNDO, 0, 0)
+end;
+
 { TWinCEWSCustomMemo }
 
 class function TWinCEWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
+  ACustomMemo: TCustomMemo;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
   // customization of Params
+  ACustomMemo := TCustomMemo(AWinControl);
   with Params do
   begin
     Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
     if TCustomMemo(AWinControl).ReadOnly then
       Flags := Flags or ES_READONLY;
+    Flags := Flags or AlignmentToEditFlags[ACustomMemo.Alignment];
     case TCustomMemo(AWinControl).ScrollBars of
       ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
@@ -932,7 +1022,8 @@ begin
       Flags := Flags and not WS_HSCROLL
     else
       Flags := Flags or ES_AUTOHSCROLL;
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if ACustomMemo.BorderStyle=bsSingle then
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := @EditClsName;
     WindowTitle := StrCaption;
   end;
@@ -949,6 +1040,19 @@ begin
   Result:=TWinCEMemoStrings.Create(ACustomMemo.Handle, ACustomMemo)
 end;
 
+class procedure TWinCEWSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit;
+  const NewPos: TPoint);
+var
+  CharIndex: Longword;
+begin
+  { EM_LINEINDEX returns the char index of a given line }
+  CharIndex := Windows.SendMessage(ACustomEdit.Handle, EM_LINEINDEX, NewPos.Y, 0) + NewPos.X;
+  { EM_SETSEL expects the character position in char index, which
+    doesn't go back to zero in new lines
+  }
+  Windows.SendMessage(ACustomEdit.Handle, EM_SETSEL, CharIndex, CharIndex);
+end;
+
 class procedure TWinCEWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
   S: string;
@@ -959,6 +1063,32 @@ begin
     S := S + AText;
     SetText(ACustomMemo, S);
   end;
+end;
+
+class function TWinCEWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+var
+  BufferX: Longword;
+begin
+  { X position calculation }
+
+  { EM_GETSEL returns the char index of the caret, but this index
+    doesn't go back to zero in new lines, so we need to subtract
+    the char index from the line
+
+    EM_GETSEL expects a pointer to 32-bits buffer in lParam
+  }
+  Windows.SendMessage(ACustomEdit.Handle, EM_GETSEL, 0, PtrInt(@BufferX));
+  { EM_LINEINDEX returns the char index of a given line
+    wParam = -1 indicates the line of the caret
+  }
+  Result.X := BufferX - Windows.SendMessage(ACustomEdit.Handle, EM_LINEINDEX, WPARAM(-1), 0);
+
+  { Y position calculation }
+
+  { EM_LINEFROMCHAR returns the number of the line of a given
+    char index.
+  }
+  Result.Y := Windows.SendMessage(ACustomEdit.Handle, EM_LINEFROMCHAR, BufferX, 0);
 end;
 
 class procedure TWinCEWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
@@ -979,12 +1109,16 @@ begin
 end;
 
 { TWinCEWSCustomStaticText }
-const
-  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
 
-function CalcStaticTextFlags(const Alignment: TAlignment): dword;
+function CalcStaticTextFlags(
+   const AAlignment: TAlignment;
+   const ABorder: TStaticBorderStyle;
+   const AShowAccelChar: Boolean): dword;
 begin
-  Result := AlignmentToStaticTextFlags[Alignment];
+  Result :=
+   AlignmentToStaticTextFlags[AAlignment] or
+   BorderToStaticTextFlags[ABorder] or
+   DWORD(AccelCharToStaticTextFlags[AShowAccelChar]);
 end;
 
 class function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
@@ -992,21 +1126,18 @@ class function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinCont
 var
   Params: TCreateWindowExParams;
 begin
-  {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomStaticText.CreateHandle');
-  {$endif}
-
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
-  
   // customization of Params
   with Params do
   begin
     pClassName := @LabelClsName;
     WindowTitle := StrCaption;
-    Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
+    Flags := Flags or SS_NOTIFY or
+      CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment,
+       TCustomStaticText(AWinControl).BorderStyle,
+       TCustomStaticText(AWinControl).ShowAccelChar);
   end;
-
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
@@ -1014,8 +1145,35 @@ end;
 
 class procedure TWinCEWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment') then
+    exit;
   // can not apply on the fly: needs window recreate
   RecreateWnd(ACustomStaticText);
+end;
+
+class procedure TWinCEWSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetStaticBorderStyle') then
+    exit;
+  // can not apply on the fly: needs window recreate
+  RecreateWnd(ACustomStaticText);
+end;
+
+class procedure TWinCEWSCustomStaticText.SetText(
+  const AWinControl: TWinControl; const AText: String);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    exit;
+
+  // maybe we need TWSCustomStaticText.SetShowAccelChar ?
+
+  if (GetWindowLong(AWinControl.Handle, GWL_STYLE) and SS_NOPREFIX) <>
+     AccelCharToStaticTextFlags[TCustomStaticText(AWinControl).ShowAccelChar] then
+    RecreateWnd(AWinControl);
+
+  TWSWinControlClass(ClassParent).SetText(AWinControl, AText);
 end;
 
 { TWinCEWSButtonControl }
