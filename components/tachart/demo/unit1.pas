@@ -21,6 +21,7 @@ type
     btnAddLine: TButton;
     btnAddArea: TButton;
     cbShowAxisTitles: TCheckBox;
+    cbShowReticule: TCheckBox;
     Chart1: TChart;
     cbBottomAxis: TCheckBox;
     cbLeftAxis: TCheckBox;
@@ -28,9 +29,14 @@ type
     cbFooter: TCheckBox;
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
-    edShowGridCheckBox: TCheckBox;
+    cbShowGridCheckBox: TCheckBox;
+    cbShowVertReticule: TCheckBox;
+    Chart1LineHor: TLine;
+    Chart1LineVert: TLine;
+    cbMarkStyle: TComboBox;
     lblAddCount: TLabel;
     lblAdd: TLabel;
+    lblMarkStyle: TLabel;
     lblClear: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
@@ -46,10 +52,12 @@ type
     procedure cbBottomAxisChange(Sender: TObject);
     procedure cbLeftAxisChange(Sender: TObject);
     procedure cbShowAxisTitlesChange(Sender: TObject);
+    procedure cbShowReticuleChange(Sender: TObject);
+    procedure cbShowVertReticuleChange(Sender: TObject);
     procedure cbTitleChange(Sender: TObject);
     procedure cbFooterChange(Sender: TObject);
     procedure cbLegendChange(Sender: TObject);
-    procedure edShowGridCheckBoxChange(Sender: TObject);
+    procedure cbShowGridCheckBoxChange(Sender: TObject);
   private
     FArea: TAreaSeries;
     FBar: TBarSeries;
@@ -67,6 +75,9 @@ var
 
 implementation
 
+uses
+  TAChartUtils;
+
 { TForm1 }
 
 procedure TForm1.btnAddAreaClick(Sender: TObject);
@@ -74,7 +85,7 @@ var
   i: integer;
 begin
   if FArea = nil then InitArea;
-
+  FArea.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     X3 := X3 + 1;
     if random(2) >= 0.7 then Y3 := Y3 + random(5)
@@ -89,6 +100,7 @@ var
   i: integer;
 begin
   if FBar = nil then InitBar;
+  FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FBar.AddXY(x, y, '', clRed);
     X := X + 1;
@@ -103,6 +115,7 @@ var
   i: integer;
 begin
   if FLine = nil then InitLine;
+  FLine.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FLine.AddXY(x1, y1, '', clGreen);
     X1 := X1 + 1.5;
@@ -116,6 +129,7 @@ var
   i: integer;
 begin
   if FPie = nil then InitPie;
+  FPie.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FPie.AddPie(3.4234235235, 'sde21312', clTAColor);
     FPie.AddPie(0.2323, 'adassssssdddddd', clTAColor);
@@ -173,6 +187,22 @@ begin
     if cbShowAxisTitles.Checked then Caption := 'Y axis' else Caption := '';
 end;
 
+procedure TForm1.cbShowGridCheckBoxChange(Sender: TObject);
+begin
+  Chart1.LeftAxis.Grid.Visible := cbShowGridCheckBox.Checked;
+  Chart1.BottomAxis.Grid.Visible := cbShowGridCheckBox.Checked;
+end;
+
+procedure TForm1.cbShowReticuleChange(Sender: TObject);
+begin
+  Chart1.ShowReticule := cbShowReticule.Checked;
+end;
+
+procedure TForm1.cbShowVertReticuleChange(Sender: TObject);
+begin
+  Chart1.ShowVerticalReticule := cbShowVertReticule.Checked;
+end;
+
 procedure TForm1.cbLeftAxisChange(Sender: TObject);
 begin
   Chart1.LeftAxis.Visible := cbLeftAxis.Checked;
@@ -183,27 +213,22 @@ begin
   Chart1.Title.Visible := cbTitle.Checked;
 end;
 
-procedure TForm1.edShowGridCheckBoxChange(Sender: TObject);
-begin
-  Chart1.LeftAxis.Grid.Visible := edShowGridCheckBox.Checked;
-  Chart1.BottomAxis.Grid.Visible := edShowGridCheckBox.Checked;
-end;
-
 procedure TForm1.InitArea;
 begin
   FArea := TAreaSeries.Create(Chart1);
-  Chart1.AddSerie(FArea);
   FArea.SeriesColor := clFuchsia;
+  FArea.Title := 'area';
   //FArea.Stairs := true;
   FArea.InvertedStairs := false;
+  Chart1.AddSeries(FArea);
 end;
 
 procedure TForm1.InitBar;
 begin
   FBar := TBarSeries.Create(Chart1);
-  Chart1.AddSerie(FBar);
   FBar.Title := 'bars';
-  FBar.SeriesColor := clRed;
+  FBar.SeriesColor := clGreen;
+  Chart1.AddSeries(FBar);
 end;
 
 procedure TForm1.InitLine;
@@ -214,16 +239,16 @@ begin
   FLine.Pointer.Style := psRectangle;
   FLine.Title := 'line';
   FLine.SeriesColor := clRed;
-  Chart1.AddSerie(FLine);
+  Chart1.AddSeries(FLine);
 end;
 
 procedure TForm1.InitPie;
 begin
   FPie := TPieSeries.Create(Chart1);
-  Chart1.AddSerie(FPie);
   FPie.Title := 'pie';
-  FPie.SeriesColor := clRed;
-  FPie.MarksStyle := smsLabelPercent;
+  FPie.Marks.LabelBrush.Color := $80FFFF;
+  FPie.Marks.LinkPen.Width := 2;
+  Chart1.AddSeries(FPie);
 end;
 
 initialization

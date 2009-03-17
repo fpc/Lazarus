@@ -9,7 +9,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -18,18 +18,18 @@
  *                                                                           *
  *****************************************************************************
 
+Authors: Luнs Rodrigues, Philippe Martinole, Alexander Klenin
+
 }
 
 unit TAChartUtils;
 
-{$IFDEF fpc}
-{$MODE DELPHI}{$H+}
-{$ENDIF}
+{$H+}
 
 interface
 
 uses
-  Graphics;
+  Graphics, Types;
 
 const
   MaxColor = 15;
@@ -38,9 +38,43 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
+  TChartCoord = record
+    x, y: Double;
+    Color: TColor;
+    Text: String;
+  end;
+  PChartCoord = ^TChartCoord;
+
+  TDoublePoint = record
+    X, Y: Double;
+  end;
+
+  TDoubleRect = record
+    a, b: TDoublePoint;
+  end;
+
+  TPointDistFunc = function (const A, B: TPoint): Integer;
+
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
   TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
+
+  TSeriesMarksStyle = (
+    smsCustom,         { user-defined }
+    smsNone,           { no labels }
+    smsValue,          { 1234 }
+    smsPercent,        { 12 % }
+    smsLabel,          { Cars }
+    smsLabelPercent,   { Cars 12 % }
+    smsLabelValue,     { Cars 1234 }
+    smsLegend,         { ? }
+    smsPercentTotal,   { 12 % of 1234 }
+    smsLabelPercentTotal, { Cars 12 % of 1234 }
+    smsXValue);        { 21/6/1996 }
+
+  TSeriesPointerStyle = (
+    psRectangle, psCircle, psCross, psDiagCross, psStar,
+    psLowBracket, psHighBracket);
 
   { TPenBrushFontRecall }
 
@@ -56,19 +90,46 @@ type
     procedure Recall;
   end;
 
+const
+  // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
+  SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
+    '', '',
+    '%0:g', // smsValue
+    '%1:.2f%%', // smsPercent
+    '%2:s', // smsLabel
+    '%2:s %1:.2f%%', // smsLabelPercent
+    '%2:s %0:g', // smsLabelValue
+    '%2:s', // smsLegend: not sure what it means, left for Delphi compatibility
+    '%1:.2f%% of %3:g', // smsPercentTotal
+    '%1:.2f%% of %3:g', // smsLabelPercentTotal
+    '%4:g' // smsXValue
+  );
+
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
+function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
+function EqualPoints(const A, B: TPoint): Boolean; inline;
+
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
+procedure Exchange(var A, B: TDoublePoint); overload;
+
+// True if float ranges [A, B] and [C, D] have at least one common point.
+function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+
+function PointDist(const A, B: TPoint): Integer; inline;
+function PointDistX(const A, B: TPoint): Integer; inline;
 
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
 
+operator +(const A: TPoint; B: TSize): TPoint;
+
 implementation
 
 uses
-  Math, SysUtils, LCLIntF, LCLType;
+  Math, SysUtils, LCLIntf, LCLType;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -139,6 +200,17 @@ begin
   end; {case AxisScale}
 end;
 
+function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
+begin
+  Result.X := ACoord.x;
+  Result.Y := ACoord.y;
+end;
+
+function EqualPoints(const A, B: TPoint): Boolean;
+begin
+  Result := (A.X = B.X) and (A.Y = B.Y);
+end;
+
 procedure Exchange(var A, B: Integer); overload;
 var
   t: Integer;
@@ -155,6 +227,31 @@ begin
   t := A;
   A := B;
   B := t;
+end;
+
+procedure Exchange(var A, B: TDoublePoint);
+var
+  t: TDoublePoint;
+begin
+  t := A;
+  A := B;
+  B := t;
+end;
+
+function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+begin
+  Result := (A <= D) and (C <= B);
+end;
+
+
+function PointDist(const A, B: TPoint): Integer;
+begin
+  Result := Sqr(A.X - B.X) + Sqr(A.Y - B.Y);
+end;
+
+function PointDistX(const A, B: TPoint): Integer;
+begin
+  Result := Abs(A.X - B.X);
 end;
 
 procedure RotateLabel(
@@ -176,6 +273,12 @@ begin
   OldFont := SelectObject(DC, NewFont);
   TextOut(DC, X, Y, @St[1], Length(St));
   DeleteObject(SelectObject(DC, OldFont));
+end;
+
+operator + (const A: TPoint; B: TSize): TPoint;
+begin
+  Result.X := A.X + B.cx;
+  Result.Y := A.Y + B.cy;
 end;
 
 { TPenBrushFontRecall }

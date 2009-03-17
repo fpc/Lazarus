@@ -1,0 +1,32 @@
+object SeriesEditorForm: TSeriesEditorForm
+  Left = 415
+  Height = 359
+  Top = 241
+  Width = 325
+  Caption = 'SeriesEditorForm'
+  ClientHeight = 340
+  ClientWidth = 325
+  Menu = MainMenu1
+  OnClose = FormClose
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.27'
+  object SeriesListBox: TListBox
+    Height = 340
+    Width = 325
+    Align = alClient
+    MultiSelect = True
+    OnClick = SeriesListBoxClick
+    TabOrder = 0
+  end
+  object MainMenu1: TMainMenu
+    left = 60
+    top = 132
+    object miAdd: TMenuItem
+      Caption = 'Add'
+    end
+    object miDelete: TMenuItem
+      Caption = 'Delete'
+      OnClick = miDeleteClick
+    end
+  end
+end

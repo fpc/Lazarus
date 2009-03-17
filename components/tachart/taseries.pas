@@ -9,7 +9,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -18,53 +18,21 @@
  *                                                                           *
  *****************************************************************************
 
-Authors: Luís Rodrigues and Philippe Martinole
+Authors: Luís Rodrigues, Philippe Martinole, Alexander Klenin
 
 }
 
 unit TASeries;
 
-{$IFDEF fpc}
-{$MODE DELPHI}{$H+}
-{$ENDIF}
+{$H+}
 
 interface
 
 uses
-  {$IFDEF fpc}
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  Classes, Dialogs, Graphics, sysutils, TAGraph;
-
-const
-  clTAColor = clScrollBar;
+  Classes, Dialogs, Graphics, sysutils,
+  TAGraph, TAChartUtils, TATypes;
 
 type
-
-  //not completetly implemented (only TPieSeries - not all)
-  TSeriesMarksStyle = (
-    smsValue,          { 1234 }
-    smsPercent,        { 12 % }
-    smsLabel,          { Cars }
-    smsLabelPercent,   { Cars 12 % }
-    smsLabelValue,     { Cars 1234 }
-    smsLegend,         { ? }
-    smsPercentTotal,   { 12 % of 1234 }
-    smsLabelPercentTotal, { Cars 12 % of 1234 }
-    smsXValue);        { 21/6/1996 }
-
-  ChartCoord = record
-    x, y: Double;
-    Color: TColor;
-    Text: String;
-  end;
-  PChartCoord = ^ChartCoord;
-
-  TSeriesPointerStyle = (
-    psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket);
-
   BarException = class(Exception);
 
   { TChartSeries }
@@ -74,24 +42,33 @@ type
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
-    FSeriesColor: TColor;
-    FTitle: String;
     FCoordList: TList;
     FActive: Boolean;
-    FMarks: TSeriesMarksStyle;
+    FMarks: TChartMarks;
     FShowInLegend: Boolean;
+    FValuesTotal: Double;
+    FValuesTotalValid: Boolean;
 
-    procedure SetActive(Value: Boolean);
-    procedure SetMarks(Value: TSeriesMarksStyle);
     function GetXMinVal: Integer;
+    procedure SetActive(Value: Boolean);
+    procedure SetMarks(const AValue: TChartMarks);
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
   protected
+    procedure AfterAdd; override;
+    procedure StyleChanged(Sender: TObject);
+    property Coord: TList read FCoordList;
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    function GetLegendCount: Integer; override;
+    function IsInLegend: Boolean; override;
+    procedure UpdateBounds(
+      var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
+    function GetValuesTotal: Double;
+    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
   public
-    ParentChart: TChart;
-    procedure Draw(ACanvas: TCanvas); virtual; abstract;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -99,109 +76,90 @@ type
     property YGraphMin: Double read FYGraphMin write FYGraphMin;
     property XGraphMax: Double read FXGraphMax write FXGraphMax;
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
-    property SeriesColor: TColor read FSeriesColor write FSeriesColor default clTAColor;
-    property Title: String read FTitle write FTitle;
 
-    function Count: Integer;
+    function Count: Integer; override;
+    procedure Draw(ACanvas: TCanvas); virtual; abstract;
+    procedure DrawIfActive(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
-    procedure Delete(Index: Integer); virtual;
+    procedure Delete(AIndex: Integer); virtual;
     procedure Clear;
+    function FormattedMark(AIndex: integer): String;
 
-    property Coord: TList read FCoordList;
   published
-    property MarksStyle: TSeriesMarksStyle read FMarks write SetMarks; //this should be an object
-    property Active: Boolean read FActive write SetActive;
-    property ShowInLegend: Boolean read FShowInLegend write SetShowInLegend;
+    property Active: Boolean read FActive write SetActive default true;
+    property Marks: TChartMarks read FMarks write SetMarks;
+    property ShowInLegend: Boolean
+      read FShowInLegend write SetShowInLegend default true;
+    property Title;
   end;
 
-  TSeriesPointer = class(TPersistent)
+  { TBasicPointSeries }
+
+  TBasicPointSeries = class(TChartSeries)
   private
-    FHorizSize, FVertSize: Integer;
-    FStyle: TSeriesPointerStyle;
-    FPen: TChartPen;
-    FBrush: TBrush;
-    FVisible: Boolean;
-    FOwner: TChartSeries;
-    FChanged: TNotifyEvent;
-
-    procedure SetVisible(Value: Boolean);
-    procedure SetStyle(Value: TSeriesPointerStyle);
-    procedure SetPen(Value: TChartPen);
-    procedure SetBrush(Value: TBrush);
-    procedure SetHorizSize(Value: Integer);
-    procedure SetVertSize(Value: Integer);
+    FPrevLabelRect: TRect;
   protected
-  public
-    constructor Create(AOwner: TChartSeries);
-    destructor Destroy; override;
-    procedure Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor = clTAColor);
-
-    property ParentSeries: TChartSeries read FOwner;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Brush: TBrush read FBrush write SetBrush;
-    property Pen: TChartPen read FPen write SetPen;
-    property Style: TSeriesPointerStyle read FStyle write SetStyle;
-    property Visible: Boolean read FVisible write SetVisible;
-    property OnChange: TNotifyEvent read FChanged write FChanged;
-    property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
-    property VertSize: Integer read FVertSize write SetVertSize default 4;
-
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    procedure DrawLabel(
+      ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
+      ADown: Boolean);
+    procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
   end;
 
-  TLineStyle = (lsVertical, lsHorizontal);
+  { TBarSeries }
 
-  TBarSeries = class(TChartSeries)
+  TBarSeries = class(TBasicPointSeries)
   private
     FBarBrush: TBrush;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
-    FSeriesNumber: Integer;
 
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
+    procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
   protected
-    procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
-    property BarWidthPercent:Integer read FBarWidthPercent write SetBarWidthPercent default 70;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
-    property Title;
-    property Active;
-    property SeriesNumber: Integer read FSeriesNumber write FSeriesNumber;
+    property BarWidthPercent: Integer
+      read FBarWidthPercent write SetBarWidthPercent default 70;
+    property SeriesColor;
   end;
+
+  { TPieSeries }
 
   TPieSeries = class(TChartSeries)
   private
     ColorIndex: Integer;
-    FPiePen: TPen;
-    procedure SetPiePen(Value: TPen);
   protected
-    procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendCount: Integer; override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure AfterAdd; override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
-  published
-    property PiePen: TPen read FPiePen write SetPiePen;
-    property Title;
-    property Active;
   end;
 
-  TAreaSeries = class(TChartSeries)
+  { TAreaSeries }
+
+  TAreaSeries = class(TBasicPointSeries)
   private
     FAreaLinesPen: TChartPen;
     FAreaBrush: TBrush;
@@ -212,29 +170,37 @@ type
     procedure SetStairs(Value: Boolean);
     procedure SetInvertedStairs(Value: Boolean);
   protected
-    procedure StyleChanged(Sender: TObject);
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    {from parent}
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
-     property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
-     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-     property Stairs: boolean read FStairs write SetStairs;
-     property InvertedStairs: boolean read FInvertedStairs write SetInvertedStairs;
-     property Title;
-     property Active;
+    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
+    property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
+    property InvertedStairs: Boolean read FInvertedStairs write SetInvertedStairs;
+    property SeriesColor;
+    property Stairs: Boolean read FStairs write SetStairs;
+  end;
+
+  { TBasicLineSeries }
+
+  TBasicLineSeries  = class(TBasicPointSeries)
+  protected
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   end;
 
   { TSerie }
 
-  TSerie = class(TChartSeries)
+  TSerie = class(TBasicLineSeries)
   private
     FPointer: TSeriesPointer;
     FStyle: TPenStyle;
+    FSeriesColor: TColor;
 
     XOfYGraphMin, XOfYGraphMax: Double;          // X max value of points
     FShowPoints: Boolean;
@@ -244,27 +210,34 @@ type
     procedure SetShowPoints(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
     procedure SetPointer(Value: TSeriesPointer);
+  protected
+    procedure AfterAdd; override;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      override;
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure StyleChanged(Sender: TObject);
     procedure Draw(ACanvas: TCanvas); override;
     function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
-    function  GetXValue(Index: Integer): Double;
-    function  GetYValue(Index: Integer): Double;
-    procedure SetXValue(Index: Integer; Value: Double);
-    procedure SetYValue(Index: Integer; Value: Double);
-    function  GetXImgValue(Index: Integer): Integer;
-    function  GetYImgValue(Index: Integer): Integer;
+    function  GetXValue(AIndex: Integer): Double;
+    function  GetYValue(AIndex: Integer): Double;
+    procedure SetXValue(AIndex: Integer; Value: Double);
+    procedure SetYValue(AIndex: Integer; Value: Double);
+    function  GetXImgValue(AIndex: Integer): Integer;
+    function  GetYImgValue(AIndex: Integer): Integer;
     procedure GetMin(var X, Y: Double);
     procedure GetMax(var X, Y: Double);
     function  GetXMin: Double;
     function  GetXMax: Double;
     function  GetYMin: Double;
     function  GetYMax: Double;
-    procedure SetColor(Index: Integer; AColor: TColor);
-    function  GetColor(Index: Integer): TColor;
+    procedure SetColor(AIndex: Integer; AColor: TColor);
+    function  GetColor(AIndex: Integer): TColor;
 
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -274,45 +247,46 @@ type
     property XGraphMax;
     property YGraphMax;
   published
-    property Title;
-    property Active;
-
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
-    property ShowLines: Boolean read FShowLines write SetShowLines default true;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
+    property SeriesColor;
+    property ShowLines: Boolean read FShowLines write SetShowLines default true;
+    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
   end;
 
-  TLine = class(TChartSeries)
+  TLineStyle = (lsVertical, lsHorizontal);
+
+  { TLine }
+
+  TLine = class(TBasicLineSeries)
   private
+    FPen: TPen;
+    FPosGraph: Double;                      // Graph coordinates of line
     FStyle: TLineStyle;
 
-    PosImage: Integer;                     // Image coordinates of line
-    PosGraph: Double;                      // Graph coordinates of line
-
-    FPen: TPen;
-
-    procedure SetPos(Value: Double);
-    procedure SetPen(Value: TPen);
-    procedure SetStyle(Value: TLineStyle);
+    procedure SetPen(AValue: TPen);
+    procedure SetPos(AValue: Double);
+    procedure SetStyle(AValue: TLineStyle);
+    procedure Changed;
+  protected
+    function GetSeriesColor: TColor; override;
+    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    procedure StyleChanged(Sender:TObject);
 
-    property  LineStyle: TLineStyle read FStyle write SetStyle;
   published
+    property LineStyle: TLineStyle read FStyle write SetStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
-    property Position: Double read PosGraph write SetPos;
-    property Active;
+    property Position: Double read FPosGraph write SetPos;
+    property SeriesColor;
   end;
 
 implementation
 
 uses
-  math,
-  TAChartUtils;
+  GraphMath, Math, Types;
 
 constructor TChartSeries.Create(AOwner: TComponent);
 begin
@@ -325,24 +299,76 @@ begin
 
   FActive := true;
   FShowInLegend := true;
-  FMarks := smsLabel;
   FCoordList := TList.Create;
+  FMarks := TChartMarks.Create(FChart);
 end;
 
 destructor TChartSeries.Destroy;
 var
   i: Integer;
 begin
-  if ParentChart <> nil then
-    ParentChart.Series.Remove(Self);
-  UpdateParentChart;
-  ParentChart := nil;
-
   for i := 0 to FCoordList.Count - 1 do
     Dispose(PChartCoord(FCoordList.Items[i]));
   FCoordList.Free;
+  FMarks.Free;
+  UpdateParentChart;
 
   inherited Destroy;
+end;
+
+procedure TChartSeries.DrawIfActive(ACanvas: TCanvas);
+begin
+  if Active then
+    Draw(ACanvas);
+end;
+
+procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
+end;
+
+function TChartSeries.FormattedMark(AIndex: integer): String;
+var
+  total, percent: Double;
+begin
+  total := GetValuesTotal;
+  with PChartCoord(FCoordList[AIndex])^ do begin
+    if total = 0 then
+      percent := 0
+    else
+      percent := y / total * 100;
+    Result := Format(FMarks.Format, [y, percent, Text, total, x]);
+  end;
+end;
+
+procedure TChartSeries.GetCoords(
+  AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+begin
+  AG := DoublePoint(PChartCoord(FCoordList[AIndex])^);
+  AI := ParentChart.GraphToImage(AG);
+end;
+
+function TChartSeries.GetLegendCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+begin
+  Result := ACanvas.TextWidth(Title);
+end;
+
+function TChartSeries.GetValuesTotal: Double;
+var
+  i: Integer;
+begin
+  if not FValuesTotalValid then begin
+    FValuesTotal := 0;
+    for i := 0 to FCoordList.Count - 1 do
+      FValuesTotal += PChartCoord(FCoordList[i])^.y;
+    FValuesTotalValid := true;
+  end;
+  Result := FValuesTotal;
 end;
 
 function TChartSeries.GetXMinVal: Integer;
@@ -368,6 +394,11 @@ begin
     Exchange(YMin, YMax);
 end;
 
+function TChartSeries.IsInLegend: Boolean;
+begin
+  Result := Active and ShowInLegend;
+end;
+
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 var
   pcc: PChartCoord;
@@ -387,6 +418,13 @@ begin
   while (Result > 0) and (PChartCoord(FCoordList.Items[Result - 1])^.x > X) do
     Dec(Result);
   FCoordList.Insert(Result, pcc);
+  if FValuesTotalValid then
+    FValuesTotal += Y;
+end;
+
+procedure TChartSeries.AfterAdd;
+begin
+  FMarks.SetOwner(FChart);
 end;
 
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
@@ -401,10 +439,11 @@ begin
 end;
 
 
-procedure TChartSeries.Delete(Index:Integer);
+procedure TChartSeries.Delete(AIndex:Integer);
 begin
-  Dispose(PChartCoord(FCoordList.Items[Index]));
-  FCoordList.Delete(Index);
+  Dispose(PChartCoord(FCoordList.Items[AIndex]));
+  FCoordList.Delete(AIndex);
+  FValuesTotalValid := false;
   UpdateParentChart;
 end;
 
@@ -416,8 +455,18 @@ begin
   YGraphMin := MaxDouble;
   XGraphMax := MinDouble;
   YGraphMax := MinDouble;
+  FValuesTotalValid := false;
 
   UpdateParentChart;
+end;
+
+function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
+begin
+  Result := AColor;
+  if Result <> clTAColor then exit;
+  Result := ADefault;
+  if Result <> clTAColor then exit;
+  Result := SeriesColor;
 end;
 
 function TChartSeries.Count:Integer;
@@ -431,10 +480,32 @@ begin
   UpdateParentChart;
 end;
 
+procedure TChartSeries.SetMarks(const AValue: TChartMarks);
+begin
+  if FMarks = AValue then exit;
+  FMarks.Assign(AValue);
+end;
+
 procedure TChartSeries.SetShowInLegend(Value: Boolean);
 begin
   FShowInLegend := Value;
   UpdateParentChart;
+end;
+
+procedure TChartSeries.StyleChanged(Sender: TObject);
+begin
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.UpdateBounds(
+  var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
+begin
+  if not Active or (Count = 0) then exit;
+  ANumPoints += Count;
+  if XGraphMin < AXMin then AXMin := XGraphMin;
+  if YGraphMin < AYMin then AYMin := YGraphMin;
+  if XGraphMax > AXMax then AXMax := XGraphMax;
+  if YGraphMax > AYMax then AYMax := YGraphMax;
 end;
 
 procedure TChartSeries.UpdateParentChart;
@@ -442,155 +513,15 @@ begin
   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
-procedure TChartSeries.SetMarks(Value: TSeriesMarksStyle);
-begin
-  FMarks := Value;
-  UpdateParentChart;
-end;
-
-////////////////////////////////////////////////////////////////////////////////
-
-procedure TSeriesPointer.SetVisible(Value: Boolean);
-begin
-  FVisible := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetStyle(Value: TSeriesPointerStyle);
-begin
-  FStyle := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetPen(Value: TChartPen);
-begin
-  FPen.Assign(Value);
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetBrush(Value: TBrush);
-begin
-  FBrush.Assign(Value);
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetHorizSize(Value: Integer);
-begin
-  FHorizSize := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-procedure TSeriesPointer.SetVertSize(Value: Integer);
-begin
-  FVertSize := Value;
-  if Assigned(FChanged) then FChanged(Self);
-end;
-
-constructor TSeriesPointer.Create(AOwner: TChartSeries);
-begin
-  FBrush := TBrush.Create;
-  FBrush.Color := clLime;
-  FPen := TChartPen.Create;
-  FOwner := AOwner;
-
-  FHorizSize := 4;
-  FVertSize  := 4;
-end;
-
-destructor TSeriesPointer.Destroy;
-begin
-  FBrush.Free;
-  FPen.Free;
-  inherited Destroy;
-end;
-
-procedure TSeriesPointer.Draw(ACanvas: TCanvas; px, py: Integer; AColor: TColor);
-begin
-  with FOwner do begin
-    if AColor = clTAColor then
-      AColor := SeriesColor;
-    ACanvas.Brush.Assign(FBrush);
-    ACanvas.Pen.Assign(FPen);
-
-    case FStyle of
-      psRectangle: begin
-        ACanvas.Brush.Color := AColor;
-        ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-      end;
-      psCross: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px+FHorizSize+1,py);
-        ACanvas.MoveTo(px,py-FVertSize);
-        ACanvas.LineTo(px,py+FVertSize+1);
-      end;
-      psDiagCross: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      end;
-      psStar: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px+FHorizSize+1,py);
-        ACanvas.MoveTo(px,py-FVertSize);
-        ACanvas.LineTo(px,py+FVertSize+1);
-
-        ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-      end;
-      psCircle: begin
-        ACanvas.Brush.Color := AColor;
-        ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
-      end;
-      psLowBracket: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-        ACanvas.LineTo(px+FHorizSize+1,py-1);
-      end;
-      psHighBracket: begin
-        ACanvas.Pen.Color := AColor;
-        ACanvas.MoveTo(px-FHorizSize,py);
-        ACanvas.LineTo(px-FHorizSize,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
-        ACanvas.LineTo(px+FHorizSize+1,py+1);
-      end;
-    end;
-  end;
-end;
-
-procedure TSeriesPointer.Assign(Source: TPersistent);
-begin
-  if Source is TSeriesPointer then
-    with TSeriesPointer(Source) do begin
-      FBrush.Assign(Brush);
-      FPen.Assign(Pen);
-      FStyle := Style;
-      FVisible := Visible;
-    end;
-  inherited Assign(Source);
-end;
-
-////////////////////////////////////////////////////////////////////////////////
+{ TSerie }
 
 constructor TSerie.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FPointer := TSeriesPointer.Create(Self);
-  FPointer.FStyle := psCross;
-  FPointer.OnChange := StyleChanged;
-
+  FPointer := TSeriesPointer.Create(FChart);
   FStyle := psSolid;
-
-  ShowPoints := false;
-  ShowLines := true;
+  FShowLines := true;
 
   UpdateInProgress := false;
 end;
@@ -601,23 +532,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TSerie.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
 procedure TSerie.SetPointer(Value: TSeriesPointer);
 begin
   FPointer.Assign(Value);
   UpdateParentChart;
 end;
 
+procedure TSerie.SetSeriesColor(const AValue: TColor);
+begin
+  FSeriesColor := AValue;
+end;
+
 procedure TSerie.Draw(ACanvas: TCanvas);
 var
-  xi1, yi1, xi2, yi2: Integer;
-  xg1, yg1, xg2, yg2: Double;
+  i1, i2: TPoint;
+  g1, g2: TDoublePoint;
   XMin, XMax, YMin, YMax: Integer;
-  chartCoord: PChartCoord;
 
   function PrepareLine: Boolean;
   begin
@@ -626,43 +556,35 @@ var
 
     with ParentChart do
       if // line is totally outside the viewport
-        (xg1 < XGraphMin) and (xg2 < XGraphMin) or
-        (xg1 > XGraphMax) and (xg2 > XGraphMax) or
-        (yg1 < YGraphMin) and (yg2 < YGraphMin) or
-        (yg1 > YGraphMax) and (yg2 > YGraphMax)
+        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
+        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
+        (g1.Y < YGraphMin) and (g2.Y < YGraphMin) or
+        (g1.Y > YGraphMax) and (g2.Y > YGraphMax)
       then
         exit;
 
     Result := true;
+    // line is totally inside the viewport
     with ParentChart do
-      if // line is totally inside the viewport
-        InRange(xg1, XGraphMin, XGraphMax) and
-        InRange(xg2, XGraphMin, XGraphMax) and
-        InRange(yg1, YGraphMin, YGraphMax) and
-        InRange(yg2, YGraphMin, YGraphMax)
-      then
+      if IsPointInViewPort(g1) and IsPointInViewPort(g2) then
         exit;
 
-    if yg1 > yg2 then begin
-      Exchange(xg1, xg2);
-      Exchange(yg1, yg2);
-    end;
+    if g1.Y > g2.Y then
+      Exchange(g1, g2);
 
-    if yg1 = yg2 then begin
-      if xg1 > xg2 then begin
-        Exchange(xg1, xg2);
-        Exchange(yg1, yg2);
-      end;
-      if xg1 < ParentChart.XGraphMin then xi1 := ParentChart.XImageMin;
-      if xg2 > ParentChart.XGraphMax then xi2 := ParentChart.XImageMax;
+    if g1.Y = g2.Y then begin
+      if g1.X > g2.X then
+        Exchange(g1, g2);
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
     end
-    else if xg1 = xg2 then begin
-      if yg1 < ParentChart.YGraphMin then yi1 := ParentChart.YImageMin;
-      if yg2 > ParentChart.YGraphMax then yi2 := ParentChart.YImageMax;
+    else if g1.X = g2.X then begin
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
     end
-    else if ParentChart.LineInViewPort(xg1, yg1, xg2, yg2) then begin
-      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
+    else if ParentChart.LineInViewPort(g1, g2) then begin
+      i1 := ParentChart.GraphToImage(g1);
+      i2 := ParentChart.GraphToImage(g2);
     end
     else
       Result := false;
@@ -671,18 +593,9 @@ var
   procedure DrawPoint;
   begin
     if
-      FShowPoints and InRange(yi1, YMin, YMax) and InRange(xi1, XMin, XMax)
+      FShowPoints and InRange(i1.Y, YMin, YMax) and InRange(i1.X, XMin, XMax)
     then
-      FPointer.Draw(ACanvas, xi1, yi1, SeriesColor);
-  end;
-
-  procedure GetCoords(
-    AIndex: Integer; out AX, AY: Double; out AXScr, AYScr: Integer);
-  begin
-    chartCoord := FCoordList.Items[AIndex];
-    AX := chartCoord^.x;
-    AY := chartCoord^.y;
-    ParentChart.GraphToImage(AX, AY, AXScr, AYScr);
+      FPointer.Draw(ACanvas, i1, SeriesColor);
   end;
 
 var
@@ -695,28 +608,28 @@ begin
   ACanvas.Pen.Width := 1;
 
   for i := 0 to Count - 2 do begin
-    GetCoords(i, xg1, yg1, xi1, yi1);
-    GetCoords(i + 1, xg2, yg2, xi2, yi2);
+    GetCoords(i, g1, i1);
+    GetCoords(i + 1, g2, i2);
 
     if PrepareLine then begin
       ACanvas.Pen.Style := FStyle;
-      ACanvas.Pen.Color := chartCoord^.Color;
-      ACanvas.MoveTo(xi1, yi1);
-      ACanvas.LineTo(xi2, yi2);
+      ACanvas.Pen.Color := PChartCoord(FCoordList[i])^.Color;
+      ACanvas.Line(i1, i2);
     end;
     DrawPoint;
   end;
 
   // Draw last point
-  GetCoords(Count - 1, xg1, yg1, xi1, yi1);
+  GetCoords(Count - 1, g1, i1);
   DrawPoint;
+
+  DrawLabels(ACanvas, true);
 end;
 
 
 function TSerie.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then
-    Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
@@ -735,17 +648,23 @@ begin
   UpdateParentChart;
 end;
 
-function TSerie.GetXValue(Index: Integer): Double;
+procedure TSerie.AfterAdd;
 begin
-  Result := PChartCoord(FCoordList.Items[Index])^.x;
+  inherited AfterAdd;
+  FPointer.SetOwner(FChart);
 end;
 
-function TSerie.GetYValue(Index: Integer): Double;
+function TSerie.GetXValue(AIndex: Integer): Double;
 begin
-  Result := PChartCoord(FCoordList.Items[Index])^.y;
+  Result := PChartCoord(FCoordList.Items[AIndex])^.x;
 end;
 
-procedure TSerie.SetXValue(Index: Integer; Value: Double);
+function TSerie.GetYValue(AIndex: Integer): Double;
+begin
+  Result := PChartCoord(FCoordList.Items[AIndex])^.y;
+end;
+
+procedure TSerie.SetXValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -754,22 +673,22 @@ begin
      if Value < XGraphMin then XGraphMin := Value
      else if Value > XGraphMax then XGraphMax := Value
      else begin
-       if PChartCoord(FCoordList.Items[Index])^.x = XGraphMax then begin
-         PChartCoord(FCoordList.Items[Index])^.x := Value;
+       if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMax then begin
+         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
          if Value < XGraphMax then begin
            XGraphMax := MinDouble;
            for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[Index])^.x;
+             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
              if Val > XGraphMax then XGraphMax := Val;
            end;
          end;
        end
-       else if PChartCoord(FCoordList.Items[Index])^.x = XGraphMin then begin
-         PChartCoord(FCoordList.Items[Index])^.x := Value;
+       else if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMin then begin
+         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
          if Value > XGraphMin then begin
            XGraphMin := MaxDouble;
            for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[Index])^.x;
+             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
              if Val < XGraphMin then XGraphMin := Val;
            end;
          end;
@@ -777,12 +696,12 @@ begin
      end;
   end;
 
-  PChartCoord(FCoordList.Items[Index])^.x := Value;
+  PChartCoord(FCoordList.Items[AIndex])^.x := Value;
 
   UpdateParentChart;
 end;
 
-procedure TSerie.SetYValue(Index: Integer; Value: Double);
+procedure TSerie.SetYValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -791,22 +710,22 @@ begin
     if Value<YGraphMin then YGraphMin:=Value
     else if Value>YGraphMax then YGraphMax:=Value
     else begin
-      if PChartCoord(FCoordList.Items[Index])^.y=YGraphMax then begin
-        PChartCoord(FCoordList.Items[Index])^.y:=Value;
+      if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMax then begin
+        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
         if Value<YGraphMax then begin
           YGraphMax:=MinDouble;
           for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[Index])^.y;
+            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
             if Val>YGraphMax then YGraphMax:=Val;
           end;
         end;
       end
-      else if PChartCoord(FCoordList.Items[Index])^.y=YGraphMin then begin
-        PChartCoord(FCoordList.Items[Index])^.y:=Value;
+      else if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMin then begin
+        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
         if Value>YGraphMin then begin
           YGraphMin:=MaxDouble;
           for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[Index])^.y;
+            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
             if Val<YGraphMin then YGraphMin:=Val;
           end;
         end;
@@ -814,19 +733,19 @@ begin
     end;
   end;
 
-  PChartCoord(FCoordList.Items[Index])^.y := Value;
+  PChartCoord(FCoordList.Items[AIndex])^.y := Value;
 
   UpdateParentChart;
 end;
 
-function TSerie.GetXImgValue(Index: Integer): Integer;
+function TSerie.GetXImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[Index])^.x, Result);
+  ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x, Result);
 end;
 
-function TSerie.GetYImgValue(Index: Integer): Integer;
+function TSerie.GetYImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[Index])^.y, Result);
+  ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y, Result);
 end;
 
 function TSerie.GetXMin: Double;
@@ -861,14 +780,41 @@ begin
   Y := YGraphMin;
 end;
 
-procedure TSerie.SetColor(Index: Integer; AColor: TColor);
+function TSerie.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+var
+  dist, minDist, i: Integer;
+  pt: TPoint;
 begin
-  PChartCoord(FCoordList.items[Index])^.Color := AColor;
+  Result := Count > 0;
+  minDist := MaxInt;
+  for i := 0 to Count - 1 do begin
+    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    dist := ADistFunc(APoint, pt);
+    if dist >= minDist then
+      Continue;
+    minDist := dist;
+    AIndex := i;
+    AImg := pt;
+    AValue.X := GetXValue(i);
+    AValue.Y := GetYValue(i);
+  end;
 end;
 
-function TSerie.GetColor(Index: Integer): TColor;
+function TSerie.GetSeriesColor: TColor;
 begin
-  Result := PChartCoord(FCoordList.items[Index])^.Color;
+  Result := FSeriesColor;
+end;
+
+procedure TSerie.SetColor(AIndex: Integer; AColor: TColor);
+begin
+  PChartCoord(FCoordList.items[AIndex])^.Color := AColor;
+end;
+
+function TSerie.GetColor(AIndex: Integer): TColor;
+begin
+  Result := PChartCoord(FCoordList.items[AIndex])^.Color;
 end;
 
 procedure TSerie.SetShowPoints(Value: Boolean);
@@ -914,46 +860,10 @@ begin
   UpdateParentChart;
 end;
 
-constructor TLine.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
+{ TLine }
 
-  FPen := TPen.Create;
-  FPen.OnChange := StyleChanged;
-  LineStyle := lsHorizontal;
-end;
-
-destructor TLine.Destroy;
+procedure TLine.Changed;
 begin
-  inherited Destroy;
-  FPen.Free;
-end;
-
-procedure TLine.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
-procedure TLine.SetPen(Value: TPen);
-begin
-  FPen.Assign(Value);
-end;
-
-procedure TLine.SetStyle(Value: TLineStyle);
-begin
-  if FStyle <> Value then begin
-    FStyle := Value;
-    case LineStyle of
-      lsHorizontal: begin YGraphMin := PosGraph; YGraphMax := PosGraph; end;
-      lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
-    end;
-    UpdateParentChart;
-  end;
-end;
-
-procedure TLine.SetPos(Value: Double);
-begin
-  PosGraph := Value;
   //FIXME: not the best way of doing this
   {if Visible then begin
      NBPointsMax:=NBPointsMax+1;
@@ -972,36 +882,146 @@ begin
      end;
   end;}
   case LineStyle of
-    lsHorizontal: begin YGraphMin := PosGraph; YGraphMax := PosGraph; end;
-    lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
+    lsHorizontal: begin YGraphMin := FPosGraph; YGraphMax := FPosGraph; end;
+    lsVertical: begin XGraphMin := FPosGraph; XGraphMax := FPosGraph; end;
   end;
-
   UpdateParentChart;
 end;
 
-procedure TLine.Draw;
-var
-  XMin, XMax, YMin, YMax: Integer;
+constructor TLine.Create(AOwner: TComponent);
 begin
-  InitBounds(XMin, YMin, XMax, YMax);
+  inherited Create(AOwner);
+
+  FPen := TPen.Create;
+  FPen.OnChange := @StyleChanged;
+  LineStyle := lsHorizontal;
+end;
+
+destructor TLine.Destroy;
+begin
+  inherited Destroy;
+  FPen.Free;
+end;
+
+procedure TLine.SetPen(AValue: TPen);
+begin
+  FPen.Assign(AValue);
+end;
+
+procedure TLine.SetStyle(AValue: TLineStyle);
+begin
+  if FStyle = AValue then exit;
+  FStyle := AValue;
+  Changed;
+end;
+
+procedure TLine.SetPos(AValue: Double);
+begin
+  if FPosGraph = AValue then exit;
+  FPosGraph := AValue;
+  Changed;
+end;
+
+procedure TLine.SetSeriesColor(const AValue: TColor);
+begin
+  FPen.Color := AValue;
+end;
+
+procedure TLine.Draw(ACanvas: TCanvas);
+var
+  xmin, xmax, ymin, ymax, posImage: Integer;
+begin
+  InitBounds(xmin, ymin, xmax, ymax);
 
   ACanvas.Pen.Assign(FPen);
 
   case LineStyle of
     lsHorizontal:
-      if (PosGraph < ParentChart.XGraphMax) and (PosGraph > ParentChart.XGraphMin) then begin
-        ParentChart.YGraphToImage(PosGraph, PosImage);
-        ACanvas.MoveTo(XMin, PosImage);
-        ACanvas.LineTo(XMax, PosImage);
+      if InRange(FPosGraph, ParentChart.XGraphMin, ParentChart.XGraphMax) then begin
+        ParentChart.YGraphToImage(FPosGraph, posImage);
+        ACanvas.MoveTo(xmin, posImage);
+        ACanvas.LineTo(xmax, posImage);
       end;
     lsVertical:
-      if (PosGraph < ParentChart.YGraphMax) and (PosGraph > ParentChart.YGraphMin) then begin
-        ParentChart.XGraphToImage(PosGraph, PosImage);
-        ACanvas.MoveTo(PosImage, YMin);
-        ACanvas.LineTo(PosImage, YMax);
+      if InRange(FPosGraph, ParentChart.YGraphMin, ParentChart.YGraphMax) then begin
+        ParentChart.XGraphToImage(FPosGraph, posImage);
+        ACanvas.MoveTo(posImage, ymin);
+        ACanvas.LineTo(posImage, ymax);
       end;
   end;
 end;
+
+function TLine.GetSeriesColor: TColor;
+begin
+  Result := FPen.Color;
+end;
+
+{ TBasicPointSeries }
+
+procedure TBasicPointSeries.DrawLabel(
+  ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint; ADown: Boolean);
+var
+  labelRect: TRect;
+  dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  labelText: String;
+  labelSize: TSize;
+begin
+  labelText := FormattedMark(AIndex);
+  if labelText = '' then exit;
+
+  labelSize := ACanvas.TextExtent(labelText);
+  labelRect.Left := ADataPoint.X - labelSize.cx div 2;
+  if ADown then
+    labelRect.Top := ADataPoint.Y + Marks.Distance
+  else
+    labelRect.Top := ADataPoint.Y - Marks.Distance - labelSize.cy;
+  labelRect.BottomRight := labelRect.TopLeft + labelSize;
+  InflateRect(labelRect, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  if
+    not IsRectEmpty(FPrevLabelRect) and
+    IntersectRect(dummy, labelRect, FPrevLabelRect)
+  then
+    exit;
+  FPrevLabelRect := labelRect;
+
+  // Link between the label and the bar.
+  ACanvas.Pen.Assign(Marks.LinkPen);
+  with ADataPoint do
+    if ADown then
+      ACanvas.Line(X, Y, X, labelRect.Top)
+    else
+      ACanvas.Line(X, Y - 1, X, labelRect.Bottom - 1);
+
+  Marks.DrawLabel(ACanvas, labelRect, labelText);
+end;
+
+procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+var
+  g: TDoublePoint;
+  pt: TPoint;
+  i: Integer;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    GetCoords(i, g, pt);
+    with ParentChart do
+      if IsPointInViewPort(g) then
+        DrawLabel(ACanvas, i, pt, ADrawDown and (g.Y < 0));
+  end;
+end;
+
+procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+var
+  h: Integer;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
+  AMargins.Top := Max(AMargins.Top, h);
+  AMargins.Bottom := Max(AMargins.Bottom, h);
+  FPrevLabelRect := Rect(0, 0, 0, 0);
+end;
+
+{ TBarSeries }
 
 constructor TBarSeries.Create(AOwner: TComponent);
 begin
@@ -1009,10 +1029,10 @@ begin
   FBarWidthPercent := 70; //70%
 
   FBarBrush := TBrush.Create;
-  FBarBrush.OnChange := StyleChanged;
+  FBarBrush.OnChange := @StyleChanged;
 
   FBarPen := TPen.Create;
-  FBarPen.OnChange := StyleChanged;
+  FBarPen.OnChange := @StyleChanged;
   FBarPen.Mode := pmCopy;
   FBarPen.Style := psSolid;
   FBarPen.Width := 1;
@@ -1027,14 +1047,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TBarSeries.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
 procedure TBarSeries.SetBarBrush(Value: TBrush);
 begin
-  FSeriesColor := Value.Color;
   FBarBrush.Assign(Value);
 end;
 
@@ -1051,9 +1065,14 @@ begin
     FBarWidthPercent := Value;
 end;
 
+procedure TBarSeries.SetSeriesColor(const AValue: TColor);
+begin
+  FBarBrush.Color := AValue;
+end;
+
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
@@ -1074,122 +1093,112 @@ end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
-  XMin, XMax: Integer;
-  i: Integer;
-  graphCoordTop: ChartCoord;
-  graphCoordBottom: ChartCoord;
-  topX, topY, bottomY: Integer;
-  barWidth, TotalbarWidth: Integer;
-  bx1, by1, bx2, by2: Integer;
+  barTop: TDoublePoint;
+  i, barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
+  r: TRect;
 
-  function BarInViewPort(cTop, cBottom: ChartCoord): Boolean;
-  begin //FIXME make cleaner?
-    Result :=
-      ((cTop.x >= ParentChart.XGraphMin) and (cTop.x <= ParentChart.XGraphMax)) and
-      ( ((cTop.y > ParentChart.YGraphMax) and (cBottom.y < ParentChart.YGraphMin))
-        or ( (cTop.y < ParentChart.YGraphMax) and (cTop.y > ParentChart.YGraphMin))
-        or ( (cBottom.y < ParentChart.YGraphMax) and (cBottom.y > ParentChart.YGraphMin))
-      );
+  function PrepareBar: Boolean;
+  var
+    barBottomY: Double;
+  begin
+    barTop := DoublePoint(PChartCoord(FCoordList.Items[i])^);
+    barBottomY := 0;
+    if barTop.Y < barBottomY then
+      Exchange(barTop.Y, barBottomY);
+
+    with ParentChart do begin
+      // Check if bar is in view port.
+      Result :=
+        InRange(barTop.X, XGraphMin, XGraphMax) and
+        FloatRangesOverlap(barBottomY, barTop.Y, YGraphMin, YGraphMax);
+      if not Result then exit;
+
+      // Only draw to the limits.
+      if barTop.Y > YGraphMax then barTop.Y := YGraphMax;
+      if barBottomY < YGraphMin then barBottomY := YGraphMin;
+
+      r.TopLeft := GraphToImage(barTop);
+      YGraphToImage(barBottomY, r.Bottom);
+    end;
+
+    // Adjust for multiple bar series.
+    r.Left += myPos * barWidth - totalbarWidth div 2;
+    r.Right := r.Left + barWidth;
   end;
 
 begin
-  //no elements to draw
   if FCoordList.Count = 0 then exit;
 
-  //get the limits (for the zoom) ??
-  XMin := ParentChart.XImageMin;
-  XMax := ParentChart.XImageMax;
-  if XMin > XMax then
-    Exchange(XMin, XMax);
+  totalbarWidth :=
+    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / FCoordList.Count);
+  ExamineAllBarSeries(totalBarSeries, myPos);
+  barWidth := totalbarWidth div totalBarSeries;
 
-  // Draw the bars
-  ACanvas.Pen.Assign(FBarPen);
-  ACanvas.Brush.Assign(FBarBrush);
-
-  //calc the single bar width
-  TotalbarWidth :=
-    Round((FBarWidthPercent * 0.01) * ParentChart.ChartWidth / FCoordList.Count);
-  //to use with multibar -- with is on by default
-  barWidth := TotalbarWidth div ParentChart.NumBarSeries;
-
+  ACanvas.Brush.Assign(BarBrush);
   for i := 0 to FCoordList.Count - 1 do begin
-    //get the top and bottom points
-    if ChartCoord(FCoordList.Items[i]^).y >= 0 then begin
-      graphCoordTop := ChartCoord(FCoordList.Items[i]^);
-      graphCoordBottom.x := graphCoordTop.x;
-      graphCoordBottom.y := 0;
-    end else begin
-      graphCoordBottom := ChartCoord(FCoordList.Items[i]^);
-      graphCoordTop.x := graphCoordBottom.x;
-      graphCoordTop.y := 0;
+    if not PrepareBar then continue;
+    // Draw a line instead of an empty rectangle.
+    if r.Bottom = r.Top then Inc(r.Bottom);
+    if r.Left = r.Right then Inc(r.Right);
+
+    if (barWidth > 2) and (r.Bottom - r.Top > 2) then
+      ACanvas.Pen.Assign(BarPen)
+    else begin
+      // Bars are too small to distinguish border from interior.
+      ACanvas.Pen.Color := BarBrush.Color;
+      ACanvas.Pen.Style := psSolid;
     end;
 
-    //check if bar in view port
-    if BarInViewPort(graphCoordTop, graphCoordBottom) then begin
-      //only draw to the limits
-      if graphCoordTop.y > ParentChart.YGraphMax then graphCoordTop.y := ParentChart.YGraphMax;
-      if graphCoordBottom.y < ParentChart.YGraphMin then graphCoordBottom.y := ParentChart.YGraphMin;
-      //convert from graph to imgs coords
-      ParentChart.GraphToImage(graphCoordTop.x, graphCoordTop.y, topX, topY);
-      ParentChart.YGraphToImage(graphCoordBottom.y, bottomY);
+    ACanvas.Rectangle(r);
+  end;
 
-      //calc coords for bar
-{     bx1 := topX-(barWidth div 2);
-      by1 := topY;
-      bx2 := topX+(barWidth div 2);
-      by2 := bottomY;
-}
-      bx1 := topX - (TotalbarWidth div 2) + SeriesNumber * barWidth;
-      by1 := topY;
-      bx2 := topX - (TotalbarWidth div 2) + SeriesNumber * barWidth + barWidth;
-      by2 := bottomY;
-
-      //FIXME only draw if bar inside image coord (get a better way of doing this)
-      if (bx1 >= XMin) and (bx2 <= XMax) then
-        if by1 = by2 then begin //draw a line when y=0 FIXME (clean)
-          ACanvas.Pen.Color := FBarBrush.Color;
-          ACanvas.MoveTo(bx1, by1);
-          ACanvas.LineTo(bx2, by2);
-          ACanvas.Pen.Assign(FBarPen);
-        end else
-          ACanvas.Rectangle( bx1, by1, bx2, by2);
-    end;
-  end; // for
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to FCoordList.Count - 1 do
+    if PrepareBar then
+      DrawLabel(
+        ACanvas, i,
+        Point((r.Left + r.Right) div 2, ifthen(barTop.Y = 0, r.Bottom, r.Top)),
+        barTop.Y = 0);
 end;
 
-constructor TPieSeries.Create(AOwner: TComponent);
+procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
 begin
-  inherited Create(AOwner);
-
-  ColorIndex := 1;
-
-  FPiePen := TPen.Create;
-  FPiePen.OnChange := StyleChanged;
-  FPiePen.Mode := pmCopy;
-  FPiePen.Style := psSolid;
-  FPiePen.Width := 1;
-  FPiePen.Color := clBlack;
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := clBlack;
+  ACanvas.Brush.Assign(BarBrush);
+  ACanvas.Rectangle(ARect);
 end;
 
-destructor TPieSeries.Destroy;
+procedure TBarSeries.ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
+var
+  i: Integer;
 begin
-  FPiePen.Free;
-  inherited Destroy;
+  ATotalNumber := 0;
+  AMyPos := -1;
+  for i := 0 to ParentChart.SeriesCount - 1 do begin
+    if ParentChart.Series[i] = Self then
+      AMyPos := ATotalNumber;
+    if ParentChart.Series[i] is TBarSeries then
+      Inc(ATotalNumber);
+  end;
+  Assert(AMyPos >= 0);
 end;
 
-procedure TPieSeries.StyleChanged(Sender: TObject);
+function TBarSeries.GetSeriesColor: TColor;
 begin
-  UpdateParentChart;
+  Result := FBarBrush.Color;
 end;
 
-procedure TPieSeries.SetPiePen(Value: TPen);
+{ TPieSeries }
+
+function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
 begin
-  FPiePen.Assign(Value);
+  Result := AddXY(getXMinVal + 1, Value, Text, Color);
 end;
 
 function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := Colors[ColorIndex];
+  Color := ColorOrDefault(Color, Colors[ColorIndex]);
   Inc(ColorIndex);
   if ColorIndex > MaxColor then ColorIndex := 1;
 
@@ -1198,138 +1207,145 @@ begin
   UpdateParentChart;
 end;
 
-function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
+procedure TPieSeries.AfterAdd;
 begin
-  Result := AddXY(getXMinVal + 1, Value, Text, Color);
+  // disable axis when we have TPie series
+  ParentChart.LeftAxis.Visible := false;
+  ParentChart.BottomAxis.Visible := false;
 end;
 
-procedure conv_angle(nOrigoX, nOrigoY, nLen: Integer; Angle: Double; out PX, PY: Integer);
+constructor TPieSeries.Create(AOwner: TComponent);
 begin
-  PX := nOrigoX + round(Cos(Angle) * nLen);
-  PY := nOrigoY - round(Sin(Angle) * nLen);
+  inherited Create(AOwner);
+  ColorIndex := 1;
 end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
-  nOrigoX, nOrigoY: LongInt;
-  nLen: Integer;
-  n100Sum: Double;
-  i, AX, AY, BX, BY: Integer;
-  curangle, prevangle, midleangle, prop: Double;
-  maxtextw: Integer;
-  CircleRect: TRect;
-  markrect: TRect;
-  W: Integer;
+  i, radius: Integer;
+  prevAngle, angleStep: Double;
   graphCoord: PChartCoord;
-  MarkTxtWidth: Integer;
-  SPACE_InMarks: integer;
-  labelText: String;
+  labelWidths, labelHeights: TIntegerDynArray;
+  labelTexts: TStringDynArray;
+  a, b, center: TPoint;
+  r: TRect;
 const
-  TAGSMargin = 20;
-  MarkYMargin = 2;
-  MarkXMargin = 4;
+  MARGIN = 8;
 begin
-  SPACE_InMarks := 40;
-  //no elements to draw
   if FCoordList.Count = 0 then exit;
 
-  //center the ParentChart on the canvas
-  if ParentChart.XImageMax - ParentChart.XImageMin > ParentChart.YImageMin - ParentChart.YImageMax then begin
-    W := ParentChart.YImageMin - ParentChart.YImageMax;
-    nOrigoX := (ParentChart.XImageMax - ParentChart.XImageMin) div 2 + ParentChart.XImageMin;
-    nOrigoY := Round((W - 1.01) / 2) + ParentChart.YImageMax;
-  end
-  else begin
-    W := ParentChart.XImageMax - ParentChart.XImageMin;
-    nOrigoX := Round((W - 1.01) / 2) + ParentChart.XImageMin;
-    nOrigoY := (ParentChart.YImageMin - ParentChart.YImageMax) div 2 + ParentChart.YImageMax;
-  end;
-
-  prevangle := 0;
-  maxtextw := 0;
-  n100Sum := 0;
-
+  SetLength(labelWidths, FCoordList.Count);
+  SetLength(labelHeights, FCoordList.Count);
+  SetLength(labelTexts, FCoordList.Count);
   for i := 0 to FCoordList.Count - 1 do begin
-    graphCoord := FCoordList[i];
-    n100Sum  := n100Sum + graphCoord^.y;
-    if ACanvas.TextWidth(graphCoord^.Text) > maxtextw then
-      maxtextw := ACanvas.TextWidth(graphCoord^.Text);
-  end;
-
-  //we can only draw if enought space for text is saved
-  //so we remove maxtextw and MarkXMargin
-  nLen := Round((W - maxtextw * 2) / 2);
-  CircleRect.Left   := nOrigoX - nLen - TAGSMargin;
-  CircleRect.Top    := nOrigoY - nLen - TAGSMargin;
-  CircleRect.Right  := nOrigoX + nlen + TAGSMargin;
-  CircleRect.Bottom := nOrigoY + nlen + TAGSMargin;
-
-  // ACanvas.Rectangle(CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom);
-
-  for i := 0 to FCoordList.Count - 1 do begin
-    graphCoord := FCoordList[i];
-    if graphCoord^.y < 0 then graphCoord^.y := -graphCoord^.y;
-    //if graphCoord^.y = 0 then graphCoord^.y := 0.1; //just to simulate tchart when y=0
-
-    conv_angle(nOrigoX, nOrigoY, nLen, prevangle, AX, AY);
-    prop := graphCoord^.y / n100Sum;
-    curangle := prop * (2 * pi);
-    conv_angle(nOrigoX, nOrigoY, nLen, prevangle+curangle, BX, BY);
-
-    ACanvas.Brush.Color := graphCoord^.Color;
-    ACanvas.Pie(
-      CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom,
-      AX, AY, BX, BY);
-
-    if nLen < SPACE_InMarks then
-       SPACE_InMarks := nLen;
-
-    //marks
-    midleangle := prevangle + curangle / 2;
-    conv_angle(nOrigoX, nOrigoY, nLen + SPACE_InMarks, midleangle, BX, BY);
-    conv_angle(nOrigoX, nOrigoY, nLen, midleangle, aX, aY);
-
-    ACanvas.Pen.Color := clWhite;
-    ACanvas.MoveTo(ax, ay);
-    ACanvas.LineTo(bx, by);
-    ACanvas.Pen.Color := clBlack;
-
-    case MarksStyle of
-      smsLabel:
-        labelText := graphCoord^.Text;
-      smsLabelPercent:
-        labelText := graphCoord^.Text + Format(' %1.3g%%', [prop * 100]);
+    labelTexts[i] := FormattedMark(i);
+    with ACanvas.TextExtent(labelTexts[i]) do begin
+      labelWidths[i] := cx;
+      labelHeights[i] := cy;
     end;
-    MarkTxtWidth := ACanvas.TextWidth(labelText);
+  end;
 
-    //line from mark to pie
-    if Bx < nOrigoX then
-      markrect.Left := BX - MarkTxtWidth - MarkXMargin
-    else
-      markrect.Left := BX - MarkXMargin;
-    markrect.Right := markrect.Left + MarkTxtWidth + MarkXMargin * 2;
+  with ParentChart do begin
+    center.x := (XImageMin + XImageMax) div 2;
+    center.y := (YImageMin + YImageMax) div 2;
+    // Reserve space for labels.
+    radius := Min(
+      XImageMax - center.x - MaxIntValue(labelWidths),
+      YImageMin - center.y - MaxIntValue(labelHeights));
+  end;
+  if Marks.IsMarkLabelsVisible then
+    radius -= Marks.Distance;
+  radius := Max(radius - MARGIN, 0);
 
-    markrect.Top := BY - MarkYMargin;
-    markrect.Bottom := BY + ACanvas.TextHeight(graphCoord^.Text) + MarkYMargin;
+  prevAngle := 0;
+  for i := 0 to FCoordList.Count - 1 do begin
+    // if y < 0 then y := -y;
+    // if y = 0 then y := 0.1; // just to simulate tchart when y=0
 
-    ACanvas.Brush.Color := clYellow;
-    ACanvas.Rectangle(markrect);
+    graphCoord := FCoordList[i];
+    angleStep := graphCoord^.y / GetValuesTotal * 360 * 16;
+    ACanvas.Brush.Color := graphCoord^.Color;
 
-    if Bx < nOrigoX then BX := BX - MarkTxtWidth;
-    ACanvas.Brush.Color := clYellow;
-    ACanvas.TextOut(BX, BY, labelText);
+    ACanvas.RadialPie(
+      center.x - radius, center.y - radius,
+      center.x + radius, center.y + radius, round(prevAngle), round(angleStep));
 
-    prevangle := prevangle + curangle;
-  end; // for
+    prevAngle += angleStep;
+
+    if not Marks.IsMarkLabelsVisible then continue;
+
+    a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
+    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + Marks.Distance);
+
+    // line from mark to pie
+    ACanvas.Pen.Assign(Marks.LinkPen);
+    ACanvas.Line(a, b);
+
+    if b.x < center.x then
+      b.x -= labelWidths[i];
+    if b.y < center.y then
+      b.y -= labelHeights[i];
+
+    r := Rect(b.x, b.y, b.x + labelWidths[i], b.y + labelHeights[i]);
+    InflateRect(r, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+    Marks.DrawLabel(ACanvas, r, labelTexts[i]);
+  end;
 end;
 
+procedure TPieSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+var
+  i: Integer;
+  pc, bc: TColor;
+  r: TRect;
+begin
+  r := ARect;
+  pc := ACanvas.Pen.Color;
+  bc := ACanvas.Brush.Color;
+  for i := 0 to Count - 1 do begin
+    ACanvas.Pen.Color := pc;
+    ACanvas.Brush.Color := bc;
+    with PChartCoord(Coord.Items[i])^ do begin
+      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [y, Text]));
+      ACanvas.Pen.Color := clBlack;
+      ACanvas.Brush.Color := Color;
+    end;
+    ACanvas.Rectangle(r);
+    OffsetRect(r, 0, r.Bottom - r.Top + LEGEND_SPACING);
+  end;
+end;
+
+function TPieSeries.GetLegendCount: Integer;
+begin
+  Result := Count;
+end;
+
+function TPieSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do
+    with PChartCoord(Coord.Items[i])^ do
+      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
+end;
+
+function TPieSeries.GetSeriesColor: TColor;
+begin
+  Result := clBlack; // SeriesColor is meaningless for PieSeries
+end;
+
+procedure TPieSeries.SetSeriesColor(const AValue: TColor);
+begin
+  // SeriesColor is meaningless for PieSeries
+end;
+
+{ TAreaSeries }
 
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAreaLinesPen := TChartPen.Create;
   FAreaBrush := TBrush.Create;
-  FStairs := false;
 end;
 
 destructor TAreaSeries.Destroy;
@@ -1341,7 +1357,7 @@ end;
 
 function TAreaSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
-  if Color = clTAColor then Color := SeriesColor;
+  Color := ColorOrDefault(Color);
 
   Result := inherited AddXY(X, Y, XLabel, Color);
 
@@ -1372,26 +1388,21 @@ begin
   UpdateParentChart;
 end;
 
-
-procedure TAreaSeries.StyleChanged(Sender: TObject);
+procedure TAreaSeries.SetSeriesColor(const AValue: TColor);
 begin
-  UpdateParentChart;
+  FAreaBrush.Color := AValue;
 end;
-
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
-  i: Integer;
-  xi1, yi1, xi2, yi2, xi2a: Integer;
-  xg1, yg1, xg2, yg2: Double;
+  i, xi2a, iy_min: Integer;
+  i1, i2: TPoint;
+  g1, g2: TDoublePoint;
   XMin, XMax, YMin, YMax: Integer;
-  graphCoord: PChartCoord;
-  iy_min: Integer;
 
   procedure DrawPart;
   begin
-    ACanvas.Polygon([
-      Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+    ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)]);
   end;
 
 begin
@@ -1399,40 +1410,28 @@ begin
 
   InitBounds(XMin, YMin, XMax, YMax);
 
-  with ParentChart do begin
-    Canvas.Pen.Mode := pmCopy;
-    Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Width := 1;
-  end;
+  ACanvas.Pen.Mode := pmCopy;
+  ACanvas.Pen.Style := psSolid;
+  ACanvas.Pen.Width := 1;
 
   for i := 0 to Count - 2 do begin
-    graphCoord := FCoordList.Items[i];
-    xg1 := graphCoord^.x;
-    yg1 := graphCoord^.y;
-    ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-    graphCoord := FCoordList.Items[i + 1];
-    xg2 := graphCoord^.x;
-    yg2 := graphCoord^.y;
-    ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
+    GetCoords(i, g1, i1);
+    GetCoords(i + 1, g2, i2);
 
-    ParentChart.YGraphToImage(ParentChart.YGraphMin, iy_min);
+    iy_min := ParentChart.YImageMin;
     ACanvas.Pen.Color:= clBlack;
-    ACanvas.Brush.Color:= graphCoord^.Color;
+    ACanvas.Brush.Color:= PChartCoord(FCoordList.Items[i])^.Color;
 
-    with ParentChart do
-      if // top line is totally inside the viewport
-        InRange(xg1, XGraphMin, XGraphMax) and
-        InRange(xg2, XGraphMin, XGraphMax) and
-        InRange(yg1, YGraphMin, YGraphMax) and
-        InRange(yg2, YGraphMin, YGraphMax)
+    // top line is totally inside the viewport
+    if
+      ParentChart.IsPointInViewPort(g1) and ParentChart.IsPointInViewPort(g2)
     then begin
       if FStairs then begin
         if FInvertedStairs then
-          ACanvas.Polygon([
-            Point(xi1, iy_min), Point(xi1, yi2), Point(xi2, yi2), Point(xi2, iy_min)])
+          ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)])
         else
           ACanvas.Polygon([
-            Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi1), Point(xi2, iy_min)])
+            Point(i1.X, iy_min), i1, Point(i2.X, i1.Y), Point(i2.X, iy_min)])
       end else
         DrawPart;
       continue;
@@ -1440,48 +1439,80 @@ begin
 
     with ParentChart do
       if // top line is totally outside the viewport
-        (xg1 < XGraphMin) and (xg2 < XGraphMin) or
-        (xg1 > XGraphMax) and (xg2 > XGraphMax) or
-        (yg1 < YGraphMin) and (yg2 < YGraphMin)
+        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
+        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
+        (g1.Y < YGraphMin) and (g2.Y < YGraphMin)
       then
         continue;
 
-    if yg1 > yg2 then begin
-      Exchange(xg1, xg2); Exchange(yg1, yg2);
-      Exchange(xi1, xi2); Exchange(yi1, yi2);
+    if g1.Y > g2.Y then begin
+      Exchange(g1, g2);
+      Exchange(i1.X, i2.X); Exchange(i1.Y, i2.Y);
     end;
 
-    if yg1 = yg2 then begin
-      if xg1 > xg2 then begin
-        Exchange(xg1, xg2);
-        Exchange(yg1, yg2);
-      end;
-      if xg1 < ParentChart.XGraphMin then xi1 := ParentChart.XImageMin;
-      if xg2 > ParentChart.XGraphMax then xi2 := ParentChart.XImageMax;
+    if g1.Y = g2.Y then begin
+      if g1.X > g2.X then
+        Exchange(g1, g2);
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
     end
-    else if xg1 = xg2 then begin
-      if yg1 < ParentChart.YGraphMin then yi1 := ParentChart.YImageMin;
-      if yg2 > ParentChart.YGraphMax then yi2 := ParentChart.YImageMax;
+    else if g1.X = g2.X then begin
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
     end
-    else if ParentChart.LineInViewPort(xg1, yg1, xg2, yg2) then begin
-      xi2a := xi2;
-      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
-      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
-      if yi2 <= YMin then begin
+    else if ParentChart.LineInViewPort(g1, g2) then begin
+      xi2a := i2.X;
+      i1 := ParentChart.GraphToImage(g1);
+      i2 := ParentChart.GraphToImage(g2);
+      {if i2.Y <= YMin then} begin
         ACanvas.Polygon([
-          Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2),
-          Point(xi2a, YMin), Point(xi2a, iy_min)]);
+          Point(i1.X, iy_min), i1, i2, Point(xi2a, YMin), Point(xi2a, iy_min)]);
         continue;
       end;
     end
-    else if yg2 >= ParentChart.YGraphMax then begin
-      yi1 := YMin;
-      yi2 := YMin;
-      xi1 := EnsureRange(xi1, XMin, XMax);
-      xi2 := EnsureRange(xi2, XMin, XMax);
+    else if g2.Y >= ParentChart.YGraphMax then begin
+      i1.Y := YMin;
+      i2.Y := YMin;
+      i1.X := EnsureRange(i1.X, XMin, XMax);
+      i2.X := EnsureRange(i2.X, XMin, XMax);
     end;
     DrawPart;
   end;
+
+  DrawLabels(ACanvas, false);
 end;
+
+procedure TAreaSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := clBlack;
+  ACanvas.Brush.Color := SeriesColor;
+  ACanvas.Rectangle(ARect);
+end;
+
+function TAreaSeries.GetSeriesColor: TColor;
+begin
+  Result := FAreaBrush.Color;
+end;
+
+{ TBasicLineSeries }
+
+procedure TBasicLineSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+var
+  y: Integer;
+begin
+  inherited DrawLegend(ACanvas, ARect);
+  ACanvas.Pen.Color := SeriesColor;
+  y := (ARect.Top + ARect.Bottom) div 2;
+  ACanvas.MoveTo(ARect.Left, y);
+  ACanvas.LineTo(ARect.Right, y);
+end;
+
+initialization
+  RegisterSeriesClass(TSerie, 'Line series');
+  RegisterSeriesClass(TAreaSeries, 'Area series');
+  RegisterSeriesClass(TBarSeries, 'Bar series');
+  RegisterSeriesClass(TPieSeries, 'Pie series');
+  RegisterSeriesClass(TLine, 'Line');
 
 end.

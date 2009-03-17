@@ -1,30 +1,30 @@
 object Form1: TForm1
   Left = 341
-  Height = 499
+  Height = 494
   Top = 225
   Width = 585
   Caption = 'Form1'
-  ClientHeight = 499
+  ClientHeight = 494
   ClientWidth = 585
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
-    Height = 408
+    Height = 400
     Width = 585
     Legend.Alignment = laRight
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
     Legend.Frame.Cosmetic = True
-    Title.Visible = True
+    Title.Alignment = taCenter
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
     Title.Frame.Cosmetic = True
-    Title.Alignment = taCenter
     Title.Text.Strings = (
       'Centered Chart Title'
     )
+    Title.Visible = True
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
     Foot.Font.Height = -13
@@ -34,34 +34,51 @@ object Form1: TForm1
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
-    LeftAxis.Visible = True
-    LeftAxis.Title.Angle = 90
-    LeftAxis.Title.Font.Height = -11
-    LeftAxis.Title.Font.Name = 'MS Sans Serif'
     LeftAxis.Grid.Color = clGray
     LeftAxis.Grid.Cosmetic = True
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
-    BottomAxis.Visible = True
-    BottomAxis.Title.Font.Height = -11
-    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    LeftAxis.Title.Angle = 90
+    LeftAxis.Title.Font.Height = -11
+    LeftAxis.Title.Font.Name = 'MS Sans Serif'
+    LeftAxis.Visible = True
     BottomAxis.Grid.Color = clGray
     BottomAxis.Grid.Cosmetic = True
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
+    BottomAxis.Title.Font.Height = -11
+    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    BottomAxis.Visible = True
     Frame.Cosmetic = True
     Frame.Visible = True
     BackColor = clBtnFace
     Align = alClient
     Color = clBtnFace
     ParentColor = False
+    object Chart1LineHor: TLine
+      Marks.Frame.Cosmetic = True
+      Marks.LinkPen.Cosmetic = True
+      ShowInLegend = False
+      Pen.Cosmetic = True
+      Pen.Style = psDot
+      SeriesColor = clBlack
+    end
+    object Chart1LineVert: TLine
+      Marks.Frame.Cosmetic = True
+      Marks.LinkPen.Cosmetic = True
+      ShowInLegend = False
+      LineStyle = lsVertical
+      Pen.Cosmetic = True
+      Pen.Style = psDot
+      SeriesColor = clBlack
+    end
   end
   object Panel1: TPanel
-    Height = 91
-    Top = 408
+    Height = 94
+    Top = 400
     Width = 585
     Align = alBottom
-    ClientHeight = 91
+    ClientHeight = 94
     ClientWidth = 585
     TabOrder = 0
     object lblAdd: TLabel
@@ -83,9 +100,17 @@ object Form1: TForm1
     object lblAddCount: TLabel
       Left = 288
       Height = 14
-      Top = 16
+      Top = 8
       Width = 58
       Caption = 'Multiple add'
+      ParentColor = False
+    end
+    object lblMarkStyle: TLabel
+      Left = 152
+      Height = 14
+      Top = 68
+      Width = 78
+      Caption = 'Add with marks:'
       ParentColor = False
     end
     object btnAddPie: TButton
@@ -130,18 +155,18 @@ object Form1: TForm1
     end
     object cbLegend: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 8
-      Width = 61
+      Width = 56
       Caption = 'Legend'
       OnChange = cbLegendChange
       TabOrder = 4
     end
     object cbBottomAxis: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 24
-      Width = 83
+      Width = 75
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
@@ -150,9 +175,9 @@ object Form1: TForm1
     end
     object cbLeftAxis: TCheckBox
       Left = 384
-      Height = 19
+      Height = 17
       Top = 40
-      Width = 68
+      Width = 60
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
@@ -161,9 +186,9 @@ object Form1: TForm1
     end
     object cbTitle: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 8
-      Width = 46
+      Width = 40
       Caption = 'Title'
       Checked = True
       OnChange = cbTitleChange
@@ -172,18 +197,18 @@ object Form1: TForm1
     end
     object cbFooter: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 24
-      Width = 58
+      Width = 50
       Caption = 'Footer'
       OnChange = cbFooterChange
       TabOrder = 8
     end
     object cbInverted: TCheckBox
       Left = 496
-      Height = 19
+      Height = 17
       Top = 40
-      Width = 68
+      Width = 59
       Caption = 'Inverted'
       OnChange = cbInvertedChange
       TabOrder = 9
@@ -231,35 +256,74 @@ object Form1: TForm1
     object edAddCount: TSpinEdit
       Left = 288
       Height = 21
-      Top = 41
+      Top = 24
       Width = 90
       MaxValue = 1000000
       MinValue = 1
       TabOrder = 14
       Value = 1
     end
-    object edShowGridCheckBox: TCheckBox
-      AnchorSideLeft.Control = cbLeftAxis
-      AnchorSideTop.Control = cbLeftAxis
-      AnchorSideTop.Side = asrBottom
+    object cbShowGridCheckBox: TCheckBox
       Left = 384
-      Height = 19
-      Top = 59
-      Width = 76
+      Height = 17
+      Top = 56
+      Width = 70
       Caption = 'Show grid '
       Checked = True
-      OnChange = edShowGridCheckBoxChange
+      OnChange = cbShowGridCheckBoxChange
       State = cbChecked
       TabOrder = 15
     end
     object cbShowAxisTitles: TCheckBox
       Left = 496
-      Height = 19
-      Top = 59
-      Width = 72
+      Height = 17
+      Top = 56
+      Width = 63
       Caption = 'Axis titles'
       OnChange = cbShowAxisTitlesChange
       TabOrder = 16
+    end
+    object cbShowVertReticule: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 72
+      Width = 76
+      Caption = 'Vert reticule'
+      OnChange = cbShowVertReticuleChange
+      TabOrder = 17
+    end
+    object cbShowReticule: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 72
+      Width = 59
+      Caption = 'Reticule'
+      OnChange = cbShowReticuleChange
+      TabOrder = 18
+    end
+    object cbMarkStyle: TComboBox
+      Left = 240
+      Height = 21
+      Top = 68
+      Width = 136
+      ItemHeight = 13
+      ItemIndex = 5
+      Items.Strings = (
+        'smsCustom'
+        'smsNone'
+        'smsValue'
+        'smsPercent'
+        'smsLabel'
+        'smsLabelPercent'
+        'smsLabelValue'
+        'smsLegend'
+        'smsPercentTotal'
+        'smsLabelPercentTotal'
+        'smsXValue'
+      )
+      Style = csDropDownList
+      TabOrder = 19
+      Text = 'smsLabelPercent'
     end
   end
 end
