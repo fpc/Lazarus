@@ -2325,8 +2325,7 @@ begin
     InvalidateRect(Handle, @fInvalidateRect, False);
     FillChar(fInvalidateRect, SizeOf(TRect), 0);
     FGutter.AutoSizeDigitCount(FTheLinesView.Count); // Todo: Make the LineNumberGutterPart an observer
-    if not (eoScrollPastEof in Options) then
-      TopLine := TopLine;
+    TopLine := TopLine;
   end;
 end;
 
@@ -3913,13 +3912,14 @@ begin
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
   {$ENDIF}
+  FFoldedLinesView.TopTextIndex := fTopLine - 1;
   if Value <> fTopLine then begin
 {$ifdef SYN_LAZARUS}
-    OldTopLine:=TopLine;
+    OldTopLine := TopView;
     fTopLine := Value;
     FFoldedLinesView.TopTextIndex := Value-1;
     UpdateScrollBars;
-    Delta := OldTopLine - TopLine;
+    Delta := OldTopLine - TopView;
     if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags)
     and not (fPaintLock <> 0) then
     begin
