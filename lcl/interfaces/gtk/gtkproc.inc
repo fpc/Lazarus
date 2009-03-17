@@ -8228,7 +8228,8 @@ var
   {$IFDEF GTK2}
   PangoFontDesc: PPangoFontDescription;
   {$ELSE}
-  p: pchar;
+  p,t: pchar;
+  AFont: PGdkFont;
   {$ENDIF}
 begin
   Result:='';
@@ -8246,12 +8247,27 @@ begin
           if (Result='') and (fontset_name<>nil) then
           begin
             // fontset_name it's usually a comma separated list of font names
-            // try to get the first one.
-            p:=strscan(fontset_name, ',');
-            if p=nil then
-              result:=fontset_name
-            else
-              result:=copy(fontset_name,1, p-fontset_name);
+            // try to get the first valid font.
+            p := fontset_name;
+            while p<>nil do begin
+              t := strscan(p, ',');
+              if t=nil then
+                result := p
+              else begin
+                result := copy(p, 1, t-p);
+                while (t<>nil) and (t^ in [',',' ',#9,#10,#13]) do
+                  inc(t);
+              end;
+              AFont := gdk_font_load(pchar(result));
+              if AFont<>nil then begin
+                gdk_font_unref(AFont);
+                {$IFDEF VerboseFonts}
+                debugln('DefaultFont found in fontset: ',result);
+                {$ENDIF}
+                break;
+              end;
+              p := t;
+            end;
           end;
         end;
       {$ENDIF}
