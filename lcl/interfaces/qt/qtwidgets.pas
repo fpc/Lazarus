@@ -6882,36 +6882,9 @@ begin
       QEventMouseButtonDblClick:
       begin
         if (LCLObject.ClassType = TCheckListBox) then
-        begin
-          SlotMouseCheckListBox(Sender, Event);
-          exit;
-        end;
-        {$note possible qt bug with QListView mouse events !}
-        if (QEvent_type(Event) = QEventMouseButtonRelease) then
-        begin
-          if QEvent_spontaneous(Event) then
-            SlotMouse(Sender, Event)
-          else
-          begin
-            {we sent non spontaneous event below so kill it}
-            Result := True;
-            QEvent_ignore(Event);
-          end;
-        end else
+          SlotMouseCheckListBox(Sender, Event)
+        else
           SlotMouse(Sender, Event);
-
-        {listwidget item never sends an QEventMouseButtonRelease,
-         i'll check this with trolltech. zeljko}
-        if (QEvent_type(Event) = QEventMouseButtonPress) and
-          (QEvent_spontaneous(Event)) then
-        begin
-          {create missing mouse release}
-          NewEvent := QMouseEvent_create(QEventMouseButtonRelease, QMouseEvent_pos(QMouseEventH(Event)),
-            QMouseEvent_globalpos(QMouseEventH(Event)),QMouseEvent_button(QMouseEventH(Event)),
-            QMouseEvent_buttons(QMouseEventH(Event)),QApplication_keyboardModifiers());
-          {post event with high priority}
-          QCoreApplication_postEvent(Sender, NewEvent, 1);
-        end        ;
       end;
     end;
   end;
