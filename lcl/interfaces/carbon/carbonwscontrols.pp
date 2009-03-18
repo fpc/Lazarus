@@ -305,6 +305,11 @@ var
   Valid: Boolean;
 begin
   Result := inherited;
+  if not AWinControl.HandleAllocated then
+  begin
+    Result:=AWinControl.CanFocus;
+    Exit;
+  end;
   if not CheckHandle(AWincontrol, Self, 'CanFocus') then Exit;
 
   Bit := CFPreferencesGetAppIntegerValue(CFSTR('AppleKeyboardUIMode'),
