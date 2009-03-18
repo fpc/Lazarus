@@ -20,8 +20,8 @@ type
     btnAddPie: TButton;
     btnAddLine: TButton;
     btnAddArea: TButton;
+    cbReticule: TComboBox;
     cbShowAxisTitles: TCheckBox;
-    cbShowReticule: TCheckBox;
     Chart1: TChart;
     cbBottomAxis: TCheckBox;
     cbLeftAxis: TCheckBox;
@@ -30,7 +30,6 @@ type
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
     cbShowGridCheckBox: TCheckBox;
-    cbShowVertReticule: TCheckBox;
     Chart1LineHor: TLine;
     Chart1LineVert: TLine;
     cbMarkStyle: TComboBox;
@@ -38,6 +37,7 @@ type
     lblAdd: TLabel;
     lblMarkStyle: TLabel;
     lblClear: TLabel;
+    lblReticule: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
     procedure btnClearAreaClick(Sender: TObject);
@@ -51,9 +51,8 @@ type
     procedure btnAddPieClick(Sender: TObject);
     procedure cbBottomAxisChange(Sender: TObject);
     procedure cbLeftAxisChange(Sender: TObject);
+    procedure cbReticuleChange(Sender: TObject);
     procedure cbShowAxisTitlesChange(Sender: TObject);
-    procedure cbShowReticuleChange(Sender: TObject);
-    procedure cbShowVertReticuleChange(Sender: TObject);
     procedure cbTitleChange(Sender: TObject);
     procedure cbFooterChange(Sender: TObject);
     procedure cbLegendChange(Sender: TObject);
@@ -179,6 +178,11 @@ begin
   Chart1.Legend.Visible := cbLegend.Checked;
 end;
 
+procedure TForm1.cbReticuleChange(Sender: TObject);
+begin
+  Chart1.ReticuleMode := TReticuleMode(cbReticule.ItemIndex);
+end;
+
 procedure TForm1.cbShowAxisTitlesChange(Sender: TObject);
 begin
   with Chart1.BottomAxis.Title do
@@ -191,16 +195,6 @@ procedure TForm1.cbShowGridCheckBoxChange(Sender: TObject);
 begin
   Chart1.LeftAxis.Grid.Visible := cbShowGridCheckBox.Checked;
   Chart1.BottomAxis.Grid.Visible := cbShowGridCheckBox.Checked;
-end;
-
-procedure TForm1.cbShowReticuleChange(Sender: TObject);
-begin
-  Chart1.ShowReticule := cbShowReticule.Checked;
-end;
-
-procedure TForm1.cbShowVertReticuleChange(Sender: TObject);
-begin
-  Chart1.ShowVerticalReticule := cbShowVertReticule.Checked;
 end;
 
 procedure TForm1.cbLeftAxisChange(Sender: TObject);

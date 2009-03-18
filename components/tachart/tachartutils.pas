@@ -119,6 +119,7 @@ function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
 
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
+function PointDistY(const A, B: TPoint): Integer; inline;
 
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
@@ -246,6 +247,11 @@ end;
 function PointDistX(const A, B: TPoint): Integer;
 begin
   Result := Abs(A.X - B.X);
+end;
+
+function PointDistY(const A, B: TPoint): Integer; inline;
+begin
+  Result := Abs(A.Y - B.Y);
 end;
 
 procedure RotateLabel(
