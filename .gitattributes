@@ -3868,7 +3868,7 @@ lcl/interfaces/gtk2/gtk2privatelist.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2privatewidget.inc svneol=native#text/plain
 lcl/interfaces/gtk2/gtk2proc.pp svneol=native#text/plan
 lcl/interfaces/gtk2/gtk2themes.pas svneol=native#text/pascal
-lcl/interfaces/gtk2/gtk2trayicon.inc -text
+lcl/interfaces/gtk2/gtk2trayicon.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2widgetset.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2winapi.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2winapih.inc svneol=native#text/pascal
