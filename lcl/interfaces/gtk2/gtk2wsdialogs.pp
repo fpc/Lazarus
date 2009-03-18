@@ -762,11 +762,14 @@ class function TGtk2WSOpenDialog.CreateOpenDialogFilter(
 var
   ListOfFileSelFilterEntry: TFPList;
   i, j, k: integer;
-  GtkFilter: PGtkFileFilter;
+  GtkFilter, GtkSelFilter: PGtkFileFilter;
   MaskList: TStringList;
   FilterEntry: TFileSelFilterEntry;
+  FilterIndex: Integer;
 begin
+  FilterIndex := OpenDialog.FilterIndex;
   ExtractFilterList(OpenDialog.Filter, ListOfFileSelFilterEntry, false);
+  GtkSelFilter := nil;
   if ListOfFileSelFilterEntry.Count > 0 then
   begin
     j := 1;
@@ -786,8 +789,8 @@ begin
 
       gtk_file_chooser_add_filter(SelWidget, GtkFilter);
 
-      if j = OpenDialog.FilterIndex then
-        gtk_file_chooser_set_filter(SelWidget, GtkFilter);
+      if j = FilterIndex then
+        GtkSelFilter := GtkFilter;
 
       Inc(j);
       GtkFilter := nil;
@@ -797,6 +800,9 @@ begin
 
   FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry);
   //gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
+
+  if GtkSelFilter<>nil then
+    gtk_file_chooser_set_filter(SelWidget, GtkSelFilter);
 
   Result := 'hm'; { Don't use '' as null return as this is used for *.* }
 end;
