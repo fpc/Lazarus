@@ -138,7 +138,7 @@ var
   Sz: TSize;
 begin
   Sz := Printer.Canvas.TextExtent(AText);
-  WriteLn('X=',X,' Y=',Y,' Sz.Cx=',Sz.Cx,' Sz.Cy=',Sz.Cy);
+  //WriteLn('X=',X,' Y=',Y,' Sz.Cx=',Sz.Cx,' Sz.Cy=',Sz.Cy);
   Printer.Canvas.TextOut(X - Sz.cx div 2, Y - Sz.cy div 2, AText);
 end;
 
