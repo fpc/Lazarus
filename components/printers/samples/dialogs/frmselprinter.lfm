@@ -12,9 +12,9 @@ object Form1: TForm1
   LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 16
-    Height = 14
+    Height = 13
     Top = 8
-    Width = 230
+    Width = 269
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end

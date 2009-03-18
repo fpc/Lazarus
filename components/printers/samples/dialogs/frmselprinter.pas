@@ -24,7 +24,7 @@ unit frmselprinter;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Types, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   PrintersDlgs, StdCtrls, Grids, Menus;
 
 type
@@ -62,6 +62,7 @@ type
     function MM(AValue: Double; VertRes:boolean=true): Integer;
     function Inch(AValue: Double; VertRes:boolean=true): Integer;
     function Per(AValue: Double; VertRes:boolean=true): Integer;
+    procedure CenterText(const X,Y: Integer; const AText: string);
   public
   
     { public declarations }
@@ -132,6 +133,15 @@ begin
     result := Round(AValue*Printer.PageWidth/100);
 end;
 
+procedure TForm1.CenterText(const X, Y: Integer; const AText: string);
+var
+  Sz: TSize;
+begin
+  Sz := Printer.Canvas.TextExtent(AText);
+  WriteLn('X=',X,' Y=',Y,' Sz.Cx=',Sz.Cx,' Sz.Cy=',Sz.Cy);
+  Printer.Canvas.TextOut(X - Sz.cx div 2, Y - Sz.cy div 2, AText);
+end;
+
 procedure TForm1.UpdatePrinterInfo;
 begin
   try
@@ -195,27 +205,33 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 var
   Pic: TPicture;
-  pgw,pgh: Integer;
+  d, pgw,pgh: Integer;
   Hin: Integer; // half inch
+  s: string;
 begin
   try
     Printer.Title := 'Printer test for printers4lazarus package';
     Printer.BeginDoc;
-    // first page reserved for
-    Printer.Canvas.Font.Color:= clBlue;
-    Printer.Canvas.Font.Size := 12;
-    Printer.Canvas.TextOut(CM(0.5),CM(0.5),
-                           'This is test for lazarus printer4lazarus package');
 
     // some often used consts
     pgw := Printer.PageWidth-1;
     pgh := Printer.PageHeight-1;
     Hin := Inch(0.5);
 
+    // center title text on page width
+    Printer.Canvas.Font.Size := 12;
+    Printer.Canvas.Font.Color:= clBlue;
+    CenterText(pgw div 2, CM(0.5), 'This is test for lazarus printer4lazarus package');
+
     // print margins marks, assumes XRes=YRes
     Printer.Canvas.Pen.Color:=clBlack;
     Printer.Canvas.Line(0, HIn, 0, 0);            // top-left
     Printer.Canvas.Line(0, 0, HIn, 0);
+
+    Printer.Canvas.Brush.Color := clSilver;
+    Printer.Canvas.EllipseC(Hin,Hin,Hin div 2,Hin div 2);
+    CenterText(Hin, Hin, '1');
+
     Printer.Canvas.Line(0, pgh-HIn, 0, pgh);      // bottom-left
     Printer.Canvas.Line(0, pgh, HIn, pgh);
     Printer.Canvas.Line(pgw-Hin, pgh, pgw, pgh);  // bottom-right

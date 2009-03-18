@@ -5,8 +5,8 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'idth'#3'S'#1#13'ActiveControl'#7#7'Button2'#7'Caption'#6#5'Form1'#12'Client'
   +'Height'#3#251#1#11'ClientWidth'#3'S'#1#8'OnCreate'#7#10'FormCreate'#8'Posit'
   +'ion'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#6'Label1'#4
-  +'Left'#2#16#6'Height'#2#14#3'Top'#2#8#5'Width'#3#230#0#7'Caption'#6'/This sa'
-  +'mple show how to use the printer dialogs'#11'ParentColor'#8#0#0#7'TButton'#7
+  +'Left'#2#16#6'Height'#2#13#3'Top'#2#8#5'Width'#3#13#1#7'Caption'#6'/This sam'
+  +'ple show how to use the printer dialogs'#11'ParentColor'#8#0#0#7'TButton'#7
   +'Button2'#4'Left'#2#8#6'Height'#2#27#3'Top'#2'3'#5'Width'#3'@'#1#25'BorderSp'
   +'acing.InnerBorder'#2#4#7'Caption'#6#27'Execute TPrinterSetupDialog'#7'OnCli'
   +'ck'#7#12'Button2Click'#8'TabOrder'#2#0#0#0#7'TButton'#7'Button1'#4'Left'#2#8
