@@ -927,7 +927,8 @@ type
     AppNoExceptionMessages,
     AppActive, // application has focus
     AppDestroying,
-    AppDoNotCallAsyncQueue
+    AppDoNotCallAsyncQueue,
+    AppInitialized // initialization of application was done
     );
   TApplicationFlags = set of TApplicationFlag;
 

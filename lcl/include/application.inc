@@ -360,16 +360,17 @@ procedure TApplication.Initialize;
 begin
   inherited Initialize;
   // interface object and screen
-  if (WidgetSet=nil)
-//  or (AnsiCompareText(WidgetSet.Classname,'TWIDGETSET')=0)
-  or (WidgetSet.ClassType = TWidgetSet)
+  if (WidgetSet=nil) or (WidgetSet.ClassType = TWidgetSet)
   then begin
     DebugLn('ERROR: ',rsNoWidgetSet);
     raise Exception.Create(rsNoWidgetSet);
   end;
   WidgetSet.AppInit(ScreenInfo);
-  ScreenInfo.Initialized:=true;
+  ScreenInfo.Initialized := True;
   Screen.UpdateScreen;
+  // set that we are initialized => all exceptions will be handled by our HandleException
+  include(FFlags, AppInitialized);
+
   // application icon
   if LazarusResources.Find('MAINICON') <> nil then
     Icon.LoadFromLazarusResource('MAINICON');
@@ -1358,8 +1359,8 @@ begin
   if FindInvalidUTF8Character(pchar(Msg),length(Msg), False) > 0 then
     Msg := AnsiToUtf8(Msg);
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
-  if (not Terminated)
-  and (Self<>nil) then begin
+  if (not Terminated) and (Self <> nil) and (AppInitialized in FFlags) then
+  begin
     DisableIdleHandler;
     try
       MsgResult:=MessageBox(PChar(Format(
