@@ -102,6 +102,7 @@ Type
     procedure BrushChanging(APen: TObject); override;
     procedure RegionChanging(APen: TObject); override;
     procedure RequiredState(ReqState: TCanvasState); override;
+    procedure DoEllipseAndFill(const Bounds: TRect); override;
     
     procedure BeginDoc; override;
     procedure EndDoc;   override;
@@ -871,6 +872,10 @@ begin
   // other states are anyway impossible, because handle is dummy
 end;
 
+procedure TPostScriptPrinterCanvas.DoEllipseAndFill(const Bounds: TRect);
+begin
+  Ellipse(Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom);
+end;
 
 constructor TPostScriptPrinterCanvas.Create(APrinter: TPrinter);
 begin
@@ -1543,14 +1548,14 @@ var xScale : Real;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-
   TranslateCoord(Left,Top);
+  TranslateCoord(Right,Bottom);
 
   //calculate centre of ellipse
-  cx:=Left;
-  cy:=Top;
-  rx:=Right-Left;
-  ry:=Bottom-Top;
+  cx:=(Left+Right)/2;
+  cy:=(Top+Bottom)/2;
+  rx:=(Right-Left)/2;
+  ry:=(Bottom-Top)/2;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1558,12 +1563,11 @@ begin
     Ang:='arcn';
     
   //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs(rx);
-  yScale:=Abs(ry);
+  xScale:=Abs((Right-Left)/2.0);
+  yScale:=Abs((Bottom-Top)/2.0);
 
   Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
       [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
-
 
   if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
   begin
