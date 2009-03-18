@@ -312,7 +312,7 @@ var
 implementation
 
 uses
-  Clipbrd, LCLProc, Math;
+  Clipbrd, LCLProc, GraphMath, Math;
 
 const
   MinDouble = -1.7e308;
@@ -1280,7 +1280,7 @@ begin
     if
       FShowReticule and
       Series[i].GetNearestPoint(@PointDistX, pt, pointIndex, newRetPos, value) and
-      not EqualPoints(newRetPos, FReticulePos) and PtInRect(r, newRetPos)
+      (newRetPos <> FReticulePos) and PtInRect(r, newRetPos)
     then begin
       DoDrawReticule(i, pointIndex, newRetPos, value.X, value.Y);
       DrawReticule(Canvas, FReticulePos);

@@ -109,7 +109,6 @@ procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
 function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
-function EqualPoints(const A, B: TPoint): Boolean; inline;
 
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
@@ -204,11 +203,6 @@ function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
 begin
   Result.X := ACoord.x;
   Result.Y := ACoord.y;
-end;
-
-function EqualPoints(const A, B: TPoint): Boolean;
-begin
-  Result := (A.X = B.X) and (A.Y = B.Y);
 end;
 
 procedure Exchange(var A, B: Integer); overload;
