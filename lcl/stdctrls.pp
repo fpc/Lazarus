@@ -824,6 +824,7 @@ type
     property AutoSize;
     property AutoSelect;
     property BidiMode;
+    property BorderStyle;
     property BorderSpacing;
     property Color;
     property Constraints;
