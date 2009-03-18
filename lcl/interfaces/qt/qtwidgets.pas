@@ -65,6 +65,7 @@ type
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure setBorder(const ABorder: Boolean);
     procedure Undo;
   end;
 
@@ -582,6 +583,7 @@ type
     function hasSelectedText: Boolean;
     procedure selectAll;
     procedure setAlignment(const AAlignment: QtAlignment);
+    procedure setBorder(const ABorder: Boolean);
     procedure setColor(const Value: PQColor); override;
     procedure setTextColor(const Value: PQColor); override;
     procedure setCursorPosition(const AValue: Integer);
@@ -619,6 +621,7 @@ type
     function getSelectionLength: Integer;
     function isUndoAvailable: Boolean;
     procedure setAlignment(const AAlignment: QtAlignment);
+    procedure setBorder(const ABorder: Boolean);
     procedure setColor(const Value: PQColor); override;
     procedure setTextColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
@@ -722,6 +725,7 @@ type
   public
     FList: TStrings;
     destructor Destroy; override;
+    procedure setBorder(const ABorder: Boolean);
     procedure SetColor(const Value: PQColor); override;
     procedure setTextColor(const Value: PQColor); override;
     function currentIndex: Integer;
@@ -776,6 +780,7 @@ type
     function getReadOnly: Boolean;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+    procedure setBorder(const ABorder: Boolean);
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setMinimum(const v: Double); virtual; abstract;
     procedure setMaximum(const v: Double); virtual; abstract;
@@ -5247,6 +5252,11 @@ begin
   QLineEdit_setAlignment(QLineEditH(Widget), AAlignment);
 end;
 
+procedure TQtLineEdit.setBorder(const ABorder: Boolean);
+begin
+  QLineEdit_setFrame(QLineEditH(Widget), ABorder);
+end;
+
 procedure TQtLineEdit.AttachEvents;
 var
   Method: TMethod;
@@ -5536,6 +5546,14 @@ begin
   QTextCursor_clearSelection(TextCursor);
   QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
   QTextCursor_destroy(TextCursor);
+end;
+
+procedure TQtTextEdit.setBorder(const ABorder: Boolean);
+begin
+  if ABorder then
+    QFrame_setFrameShape(QFrameH(Widget), QFrameStyledPanel)
+  else
+    QFrame_setFrameShape(QFrameH(Widget), QFrameNoFrame);
 end;
 
 procedure TQtTextEdit.AttachEvents;
@@ -6009,6 +6027,11 @@ begin
     Result := LineEdit.isUndoAvailable
   else
     Result := False;
+end;
+
+procedure TQtComboBox.setBorder(const ABorder: Boolean);
+begin
+  QComboBox_setFrame(QComboBoxH(Widget), ABorder);
 end;
 
 procedure TQtComboBox.setEchoMode(const AMode: QLineEditEchoMode);
@@ -6533,6 +6556,11 @@ begin
     Result := QLineEdit_isUndoAvailable(LineEdit)
   else
     Result := False;
+end;
+
+procedure TQtAbstractSpinBox.setBorder(const ABorder: Boolean);
+begin
+  QAbstractSpinBox_setFrame(QAbstractSpinBoxH(Widget), ABorder);
 end;
 
 procedure TQtAbstractSpinBox.setEchoMode(const AMode: QLineEditEchoMode);

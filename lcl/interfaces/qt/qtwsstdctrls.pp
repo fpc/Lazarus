@@ -589,7 +589,7 @@ var
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
   QtTextEdit.AttachEvents;
-
+  QtTextEdit.setBorder(TCustomMemo(AWinControl).BorderStyle = bsSingle);
   QtTextEdit.setReadOnly(TCustomMemo(AWinControl).ReadOnly);
   QtTextEdit.setLineWrapMode(WordWrapMap[TCustomMemo(AWinControl).WordWrap]);
   // create our FList helper
@@ -706,6 +706,7 @@ var
   QtLineEdit: TQtLineEdit;
 begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
+  QtLineEdit.setBorder(TCustomEdit(AWinControl).BorderStyle = bsSingle);
   QtLineEdit.setAlignment(AlignmentMap[TCustomEdit(AWinControl).Alignment]);
   QtLineEdit.AttachEvents;
 

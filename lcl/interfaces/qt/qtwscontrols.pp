@@ -609,13 +609,18 @@ class procedure TQtWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
   const ABorderStyle: TBorderStyle);
 var
   Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle') then
     Exit;
     
   Widget := TQtWidget(AWinControl.Handle);
+  QtEdit := nil;
   if Widget is TQtFrame then
-    TQtFrame(Widget).setFrameShape(TBorderStyleToQtFrameShapeMap[ABorderStyle]);
+    TQtFrame(Widget).setFrameShape(TBorderStyleToQtFrameShapeMap[ABorderStyle])
+  else
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setBorder(ABorderStyle = bsSingle);
 end;
 
 { TQtWSDragImageList }
