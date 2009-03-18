@@ -549,10 +549,22 @@ type
   editing of the object's properties as sub-properties of the property. }
 
   TClassPropertyEditor = class(TPropertyEditor)
+  private
+    FSubPropsTypeFilter: TTypeKinds;
+    procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
+    function PropInfoFilter(const APropInfo: PPropInfo): Boolean;
+  protected
+    function GetSelections: TPersistentSelectionList; virtual;
   public
+    constructor Create(
+      Hook: TPropertyEditorHook; APropCount: Integer); override;
+
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetValue: ansistring; override;
+
+    property SubPropsTypeFilter: TTypeKinds
+      read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
   end;
 
 { TMethodPropertyEditor
@@ -580,17 +592,16 @@ type
   in the same form that is type compatible with the property being edited
   (e.g. the ActiveControl property). }
 
-  TPersistentPropertyEditor = class(TPropertyEditor)
+  TPersistentPropertyEditor = class(TClassPropertyEditor)
   protected
     function FilterFunc(const ATestEditor: TPropertyEditor): Boolean;
     function GetPersistentReference: TPersistent; virtual;
-    function GetSelections: TPersistentSelectionList; virtual;
+    function GetSelections: TPersistentSelectionList; override;
     function CheckNewValue(APersistent: TPersistent): boolean; virtual;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetProperties(Proc:TGetPropEditProc); override;
     function GetEditLimit: Integer; override;
     function GetValue: AnsiString; override;
     procedure GetValues(Proc: TGetStringProc); override;
@@ -1594,6 +1605,11 @@ type
 
 procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
+
+// Returns true if given property should be displayed on the property list
+// filtered by AFilter.
+function HasSubpropertiesInFilter(
+  const APropInfo: PPropInfo; const AFilter: TTypeKinds): Boolean;
 
 const
   NoDefaultValue = Longint($80000000);
@@ -4003,6 +4019,13 @@ end;
 
 { TClassPropertyEditor }
 
+constructor TClassPropertyEditor.Create(Hook: TPropertyEditorHook;
+  APropCount: Integer);
+begin
+  inherited Create(Hook, APropCount);
+  FSubPropsTypeFilter := tkAny;
+end;
+
 function TClassPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly];
@@ -4010,26 +4033,48 @@ end;
 
 procedure TClassPropertyEditor.GetProperties(Proc: TGetPropEditProc);
 var
-  I: Integer;
-  SubItem: TPersistent;
-  Selection: TPersistentSelectionList;
+  selection: TPersistentSelectionList;
 begin
-  Selection := TPersistentSelectionList.Create;
+  selection := GetSelections;
+  if selection = nil then exit;
+  GetPersistentProperties(
+    selection, SubPropsTypeFilter, PropertyHook, Proc, @PropInfoFilter, nil);
+  selection.Free;
+end;
+
+function TClassPropertyEditor.GetSelections: TPersistentSelectionList;
+var
+  i: Integer;
+  subItem: TPersistent;
+begin
+  Result := TPersistentSelectionList.Create;
   try
-    for I := 0 to PropCount - 1 do begin
-      SubItem := TPersistent(GetObjectValueAt(I));
-      if SubItem<>nil then
-        Selection.Add(SubItem);
+    for i := 0 to PropCount - 1 do begin
+      subItem := TPersistent(GetObjectValueAt(i));
+      if subItem <> nil then
+        Result.Add(subItem);
     end;
-    GetPersistentProperties(Selection,tkProperties,PropertyHook,Proc,nil);
-  finally
-    Selection.Free;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
 function TClassPropertyEditor.GetValue: ansistring;
 begin
-  Result:='('+GetPropType^.Name+')';
+  Result:='(' + GetPropType^.Name + ')';
+end;
+
+function TClassPropertyEditor.PropInfoFilter(
+  const APropInfo: PPropInfo): Boolean;
+begin
+  Result := HasSubpropertiesInFilter(APropInfo, SubPropsTypeFilter);
+end;
+
+procedure TClassPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
+begin
+  if FSubPropsTypeFilter = AValue then exit;
+  FSubPropsTypeFilter := AValue;
 end;
 
 { TMethodPropertyEditor }
@@ -4072,7 +4117,7 @@ begin
     NewMethodName := GetFormMethodName;
     DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',NewMethodName);
     if not IsValidIdent(NewMethodName) then
-      raise EPropertyError.Create('Method name '+NewMethodName+' must be an identifier');
+      raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
     SetValue(NewMethodName); // this will jump to the method
     PropertyHook.RefreshPropertyValues;
   end else
@@ -4293,18 +4338,12 @@ begin
   Result := TPersistent(GetObjectValue);
 end;
 
-function TPersistentPropertyEditor.GetSelections:
-  TPersistentSelectionList;
-var
-  I: Integer;
+function TPersistentPropertyEditor.GetSelections: TPersistentSelectionList;
 begin
-  Result := nil;
   if (GetPersistentReference <> nil) and AllEqual then
-  begin
-    Result := TPersistentSelectionList.Create;
-    for I := 0 to PropCount - 1 do
-      Result.Add(TPersistent(GetObjectValueAt(I)));
-  end;
+    Result := inherited GetSelections
+  else
+    Result := nil;
 end;
 
 function TPersistentPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
@@ -4356,18 +4395,6 @@ begin
     Result := Result + [paSubProperties, paVolatileSubProperties];
 end;
 
-procedure TPersistentPropertyEditor.GetProperties(Proc: TGetPropEditProc);
-var
-  LPersistents: TPersistentSelectionList;
-begin
-  LPersistents := GetSelections;
-  if LPersistents <> nil then
-  begin
-    GetPersistentProperties(LPersistents, tkAny, PropertyHook, Proc, nil);
-    LPersistents.Free;
-  end;
-end;
-
 function TPersistentPropertyEditor.GetEditLimit: Integer;
 begin
   Result := MaxIdentLength;
@@ -4378,19 +4405,18 @@ var
   Component: TComponent;
   APersistent: TPersistent;
 begin
-  Result:='';
-  APersistent:=GetPersistentReference;
+  Result := '';
+  APersistent := GetPersistentReference;
   if APersistent is TComponent then begin
-    Component:=TComponent(APersistent);
-    if Assigned(PropertyHook) then begin
-      Result:=PropertyHook.GetComponentName(Component);
-    end else begin
+    Component := TComponent(APersistent);
+    if Assigned(PropertyHook) then
+      Result := PropertyHook.GetComponentName(Component)
+    else begin
       if Assigned(Component) then
-        Result:=Component.Name;
+        Result := Component.Name;
     end;
-  end else if APersistent<>nil then begin
-    Result:='('+APersistent.ClassName+')';
-  end;
+  end else if APersistent <> nil then
+    Result := inherited GetValue;
 end;
 
 procedure TPersistentPropertyEditor.GetValues(Proc: TGetStringProc);
@@ -6740,6 +6766,49 @@ end;
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
+end;
+
+function HasSubpropertiesInFilter(
+  const APropInfo: PPropInfo; const AFilter: TTypeKinds): Boolean;
+var
+  visited: TFPList;
+
+  procedure Rec(A: PPropInfo);
+  var
+    propList: PPropList;
+    i: Integer;
+    ti: PTypeInfo;
+  begin
+    ti := A^.PropType;
+    //DebugLn('HasSubpropertiesInFilter: ', ti^.Name);
+    Result :=
+      (ti^.Kind <> tkClass) or
+      // Since components are selectable in the designer,
+      // there is always a possibility that some descendant class may have
+      // properties of the required kind.
+      (GetTypeData(ti)^.ClassType.InheritsFrom(TComponent));
+    // Class properties may directly or indirectly refer to the same class,
+    // so we must avoid infinite recursion.
+    if Result or (visited.IndexOf(ti) >= 0) then exit;
+    visited.Add(ti);
+    for i := 0 to GetPropList(ti, propList) - 1 do begin
+      if propList^[i]^.PropType^.Kind in AFilter then
+        Rec(propList^[i]);
+      if Result then break;
+    end;
+    FreeMem(propList);
+    visited.Delete(visited.Count - 1);
+  end;
+
+begin
+  visited := TFPList.Create;
+  try
+    //DebugLn('HasSubpropertiesInFilter -> ', APropInfo^.Name, ': ', APropInfo^.PropType^.Name);
+    Rec(APropInfo);
+    //DebugLn('HasSubpropertiesInFilter <- ', BoolToStr(Result, true));
+  finally
+    visited.Free;
+  end;
 end;
 
 { TNoteBookActiveControlPropertyEditor }

@@ -392,6 +392,7 @@ type
     procedure SetSubPropertiesColor(const AValue: TColor);
     procedure UpdateScrollBar;
     procedure FillComboboxItems;
+    function PropInfoFilter(const APropInfo: PPropInfo): Boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -1181,6 +1182,12 @@ begin
   end;
 end;
 
+function TOICustomPropertyGrid.PropInfoFilter(
+  const APropInfo: PPropInfo): Boolean;
+begin
+  Result := HasSubpropertiesInFilter(APropInfo, FFilter);
+end;
+
 function TOICustomPropertyGrid.GetRowByPath(
   const PropPath: string): TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
@@ -1569,8 +1576,9 @@ begin
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
   // get properties
-  GetPersistentProperties(FSelection, FFilter, FPropertyEditorHook,
-    @AddPropertyEditor,nil);
+  GetPersistentProperties(
+    FSelection, FFilter, FPropertyEditorHook, @AddPropertyEditor,
+    @PropInfoFilter, nil);
   // sort
   FRows.Sort(@SortGridRows);
   for a:=0 to FRows.Count-1 do begin
@@ -1627,7 +1635,9 @@ begin
         exit;
       end;
   end;
-  NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,nil, WidgetSets);
+  if PropEditor is TClassPropertyEditor then
+    (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
+  NewRow := TOIPropertyGridRow.Create(Self, PropEditor, nil, WidgetSets);
   FRows.Add(NewRow);
   if FRows.Count>1 then begin
     NewRow.FPriorBrother:=Rows[FRows.Count-2];
@@ -1749,6 +1759,8 @@ procedure TOICustomPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
 var NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
+  if PropEditor is TClassPropertyEditor then
+    (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
   NewRow.Index:=NewIndex;
@@ -4635,7 +4647,8 @@ begin
   end;
 
   PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
-  EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
+  // Nested or referenced objects may have events too.
+  EventGrid := CreateGrid([tkClass, tkMethod], oipgpEvents, 1);
   FavouriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavourite, 2);
   FavouriteGrid.Favourites := FFavourites;
   RestrictedGrid := CreateGrid(PROPS + [tkMethod], oipgpRestricted, 3);
