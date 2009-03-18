@@ -189,6 +189,7 @@ procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreate
   const AlternateCreateWindow: boolean);
 var
   lhFont: HFONT;
+  AErrorCode: Cardinal;
 begin
   if not AlternateCreateWindow then
   begin
@@ -219,7 +220,9 @@ begin
 
       if Window = 0 then
       begin
-        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
+        AErrorCode := GetLastError;
+        DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+        raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
       end;
     end;
     { after creating a child window the following happens:
