@@ -52,7 +52,7 @@ type
 
   TWin32WSScrollBox = class(TWSScrollBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
 
@@ -196,7 +196,8 @@ begin
   with Params do
   begin
     //TODO: Make control respond to user scroll request
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if TScrollBox(AWinControl).BorderStyle = bsSingle then
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := @ClsName[0];
     Flags := Flags or WS_HSCROLL or WS_VSCROLL;
     SubClassWndProc := nil;

@@ -195,7 +195,7 @@ type
     property AutoScroll;
     property BorderSpacing;
     property BiDiMode;
-    property BorderStyle;
+    property BorderStyle default bsSingle;
     property ChildSizing;
     property ClientHeight;
     property ClientWidth;
