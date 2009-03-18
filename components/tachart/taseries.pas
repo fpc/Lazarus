@@ -194,10 +194,15 @@ type
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
   end;
 
+  TSeriesPointerDrawEvent = procedure (
+    ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
+    ACenter: TPoint) of object;
+
   { TSerie }
 
   TSerie = class(TBasicLineSeries)
   private
+    FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
     FStyle: TPenStyle;
     FSeriesColor: TColor;
@@ -247,6 +252,8 @@ type
     property XGraphMax;
     property YGraphMax;
   published
+    property OnDrawPointer: TSeriesPointerDrawEvent
+      read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property SeriesColor;
     property ShowLines: Boolean read FShowLines write SetShowLines default true;
@@ -590,12 +597,15 @@ var
       Result := false;
   end;
 
-  procedure DrawPoint;
+  procedure DrawPoint(AIndex: Integer);
   begin
     if
       FShowPoints and InRange(i1.Y, YMin, YMax) and InRange(i1.X, XMin, XMax)
-    then
+    then begin
       FPointer.Draw(ACanvas, i1, SeriesColor);
+      if Assigned(FOnDrawPointer) then
+        FOnDrawPointer(Self, ACanvas, AIndex, i1);
+    end;
   end;
 
 var
@@ -616,12 +626,12 @@ begin
       ACanvas.Pen.Color := PChartCoord(FCoordList[i])^.Color;
       ACanvas.Line(i1, i2);
     end;
-    DrawPoint;
+    DrawPoint(i);
   end;
 
   // Draw last point
   GetCoords(Count - 1, g1, i1);
-  DrawPoint;
+  DrawPoint(i);
 
   DrawLabels(ACanvas, true);
 end;
