@@ -216,6 +216,7 @@ Type
     property Anchors;
     property AutoSize;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
@@ -815,6 +816,7 @@ Type
     property Anchors;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
     property BorderSpacing;
+    property BorderStyle;
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
