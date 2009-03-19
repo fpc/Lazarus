@@ -499,7 +499,6 @@ var
 begin
   QtStatusBar := TQtStatusBar(AWinControl.Handle);
 
-  ClearPanels(QtStatusBar);
   TQtStatusBar(AWinControl.Handle).Release;
 end;
 
