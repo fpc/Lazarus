@@ -91,7 +91,7 @@ type
   
   { TEditButton }
   
-  TEditButton = Class(TCustomEditButton)
+  TEditButton = class(TCustomEditButton)
   Public
     property Button;
   published
@@ -100,6 +100,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property BorderStyle;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property ButtonHint;
@@ -152,7 +153,7 @@ type
   TAcceptFileNameEvent = procedure (Sender : TObject; Var Value : String) of Object;
   TDialogKind = (dkOpen,dkSave,dkPictureOpen,dkPictureSave);
   
-  TFileNameEdit = Class(TCustomEditButton)
+  TFileNameEdit = class(TCustomEditButton)
   private
     FDialogOptions: TOpenOptions;
     FFileName : String;
@@ -198,6 +199,7 @@ type
     property Anchors;
     property AutoSelect;
     property BorderSpacing;
+    property BorderStyle;
     property AutoSize;
     property Color;
     property DragCursor;
@@ -236,7 +238,7 @@ type
   
   { TDirectoryEdit }
   
-  TDirectoryEdit = Class(TCustomEditButton)
+  TDirectoryEdit = class(TCustomEditButton)
   private
     FDialogTitle: String;
     FRootDir: String;
@@ -272,6 +274,7 @@ type
     property AutoSize;
     property AutoSelect;
     property BorderSpacing;
+    property BorderStyle;
     property Color;
     property DragCursor;
     property DragMode;
@@ -357,6 +360,7 @@ type
     property AutoSize;
     property AutoSelect;
     property BorderSpacing;
+    property BorderStyle;
     property Color;
     property Constraints;
     property CharCase;
@@ -433,6 +437,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property BorderStyle;
     property AutoSize;
     property AutoSelect;
     property Color;

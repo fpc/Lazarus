@@ -960,6 +960,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
