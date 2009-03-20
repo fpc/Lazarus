@@ -6786,7 +6786,7 @@ var
       // Since components are selectable in the designer,
       // there is always a possibility that some descendant class may have
       // properties of the required kind.
-      (GetTypeData(ti)^.ClassType.InheritsFrom(TComponent));
+      (GetTypeData(ti)^.ClassType.InheritsFrom(TPersistent));
     // Class properties may directly or indirectly refer to the same class,
     // so we must avoid infinite recursion.
     if Result or (visited.IndexOf(ti) >= 0) then exit;
