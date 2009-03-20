@@ -68,8 +68,7 @@ begin
 
   fcupsNumOpts:=0;
   fcupsOptions:=nil;
-  FStates:=FStates-[cpsDefaultPaperNameValid,cpsOrientationValid,
-                    cpsPaperNameValid,cpsCopiesValid];
+  FStates := [];
 end;
 
 procedure TCUPSPrinter.cupsAddOption(aName,aValue: string);
@@ -903,24 +902,27 @@ begin
         //           ||                         ||
         //           ||                         ||
         //
-        //  PORTRAIT ORIENTATION        LANDSCAPE ORIENTATION
+        //     PORTRAIT                   LANDSCAPE
+        //     +-----------------+        +-----------------+
+        //     |        t        |        |        t        |
+        //     |   +---------+   |        |   +---------+   |
+        //     |   |   ( )   |   |        |   |   |   / |   |
+        //     | l |  --+--  | r |        | l |()-+---  | r |
+        //     |   |   / \   |   |        |   |   |   \ |   |
+        //     |   +---------+   |        |   +---------+   |
+        //     |        b        |        |        b        |
+        //     +-----------------+        +-----------------+
         //
-        //   +-----------------+        +-----------------+
-        //   |        t        |        |        t        |
-        //   |   +---------+   |        |   +---------+   |
-        //   |   |         |   |        |   |         |   |
-        //   |   |   ( )   |   |        |   |    v    |   |
-        //   |   |    |    |   |        |   |\   |    |   |
-        //   | l | >--+--< | r |        | l | ---+-() | r |
-        //   |   |    |    |   |        |   |/   |    |   |
-        //   |   |   / \   |   |        |   |    ^    |   |
-        //   |   |  /   \  |   |        |   |         |   |
-        //   |   +---------+   |        |   +---------+   |
-        //   |                 |        |                 |
-        //   |        b        |        |        b        |
-        //   +-----------------+        +-----------------+
-        //
-        //  todo: check meaning of poReverseXXXXX
+        //     REVERSE PORTRAIT           REVERSE LANDSCAPE
+        //     +-----------------+        +-----------------+
+        //     |        t        |        |        t        |
+        //     |   +---------+   |        |   +---------+   |
+        //     |   |   \ /   |   |        |   | \   |   |   |
+        //     | l |  --+--  | r |        | l |  ---+-()| r |
+        //     |   |   ( )   |   |        |   | /   |   |   |
+        //     |   +---------+   |        |   +---------+   |
+        //     |        b        |        |        b        |
+        //     +-----------------+        +-----------------+
         //
 
         if Orientation in [poPortrait, poReversePortrait] then begin
