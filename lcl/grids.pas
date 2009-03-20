@@ -667,6 +667,7 @@ type
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
+    FSavedCursor: TCursor;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -760,6 +761,7 @@ type
     procedure SetSelectActive(const AValue: Boolean);
     procedure SetSelection(const AValue: TGridRect);
     procedure SetTopRow(const AValue: Integer);
+    procedure ChangeCursor(ACursor: Integer = MAXINT);
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure UpdateCachedSizes;
@@ -2202,6 +2204,16 @@ end;
 procedure TCustomGrid.SetTopRow(const AValue: Integer);
 begin
   TryScrollTo(FTopLeft.X, Avalue);
+end;
+
+procedure TCustomGrid.ChangeCursor(ACursor: Integer = MAXINT);
+begin
+  if ACursor=MAXINT then
+    Cursor := FSavedCursor
+  else begin
+    FSavedCursor := Cursor;
+    Cursor := TCursor(ACursor);
+  end;
 end;
 
 procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
@@ -4372,8 +4384,7 @@ end;
 
 function TCustomGrid.doColSizing(X, Y: Integer): Boolean;
 var
-  R: TRect;
-  Loc: Integer;
+  OffIni,OffEnd,Loc: Integer;
 begin
   Result:=False;
   if gsColSizing = fGridState then begin
@@ -4389,49 +4400,51 @@ begin
       end;
     end else
       ResizeColumn(FSplitter.x, x-FSplitter.y);
-    Result:=True;
+    exit(true);
   end else
   if (fGridState=gsNormal) and (ColCount>FixedCols) and
      ((Y<FGCache.FixedHeight) or (FExtendedColSizing and (Y<FGCache.MaxClientXY.Y))) and
      (X>FGCache.FixedWidth)
   then begin
-    //FSplitter.X:= OffsetToColRow(True, True, X, Loc);
-    FSplitter.Y:=0;
-    if OffsetToColRow(True, True, X, FSplitter.X, Loc) then begin
-      R:=CellRect(FSplitter.x, FSplitter.y);
-      FSplitter.y:=X;                       // Resizing X reference
 
-      // if resizing column is partially visible, take the visible boundary.
-      if R.Right>FGCache.ClientWidth then
-        Loc:=FGCache.Clientwidth
-      else
-      if (R.Right-X)<(X-R.Left) then
-        Loc:=R.Right
-      else begin
-        Loc:=R.Left;
-        Dec(FSplitter.x);                   // Resizing col is the previous
-      end;
-      iF (Abs(Loc-x)<=2)and(FSplitter.X>=FFixedCols) then begin
-        // start resizing
-        Cursor:=crHSplit;
-        {.$ifdef UseXOR}
+    // find closest cell and cell boundaries
+    if X>FGCache.GridWidth-1 then
+      FSplitter.x := ColCount-1
+    else
+      OffsetToColRow(True, True, X, FSplitter.X, Loc);
+    ColRowToOffset(True, true, FSplitter.X, OffIni, OffEnd);
+
+    // find out what cell boundary is closer to X
+    if OffEnd>FGCache.ClientWidth then
+      Loc := FGCache.ClientWidth
+    else
+    if (OffEnd-X)<(X-OffIni) then
+      Loc := OffEnd
+    else begin
+      Loc := OffIni;
+      Dec(FSplitter.X);
+    end;
+
+    // check if it's not fixed col and if cursor is close enough to sel boundary
+    if (FSplitter.X>=FFixedCols)and(Abs(Loc-x)<=2) then begin
+      // start resizing
+      if Cursor<>crHSplit then begin
+        FSplitter.Y := X;
+        ChangeCursor(crHSplit);
         FPrevLine := False;
         FPrevValue := -1;
-        {.$endif}
-      end
-      else
-        Cursor:=crDefault;
-      Result:=True;
-    end;
-  end
-    else
-      if (cursor=crHSplit) then
-        Cursor:=crDefault;
+      end;
+      exit(true);
+    end
+  end;
+
+  if (cursor=crHSplit) then
+    ChangeCursor;
 end;
 
 function TCustomGrid.doRowSizing(X, Y: Integer): Boolean;
 var
-  OffTop,OffBottom: Integer;
+  OffIni,OffEnd,Loc: Integer;
 begin
   Result:=False;
   if gsRowSizing = fGridState then begin
@@ -4453,25 +4466,41 @@ begin
      ((X<FGCache.FixedWidth) or (FExtendedRowSizing and (X<FGCache.MaxClientXY.X))) and
      (Y>FGCache.FixedHeight) then
   begin
-    //fSplitter.Y:=OffsetToColRow(False, True, Y, OffTop{dummy});
-    if OffsetToColRow(False, True, Y, FSplitter.Y, OffTop{dummy}) then begin
-      ColRowToOffset(False, True, FSplitter.Y, OffTop, OffBottom);
-      FSplitter.X:=Y;
-      if (OffBottom-Y)<(Y-OffTop) then SwapInt(OffTop, OffBottom)
-      else Dec(FSplitter.y);
-      if (Abs(OffTop-y)<=2)and(FSplitter.Y>=FFixedRows) then begin
-        // start resizing
-        Cursor:=crVSplit;
+
+    // find closest cell and cell boundaries
+    if Y>FGCache.GridHeight-1 then
+      FSplitter.Y := RowCount-1
+    else
+      OffsetToColRow(False, True, Y, FSplitter.Y, OffEnd{dummy});
+    ColRowToOffset(False, True, FSplitter.Y, OffIni, OffEnd);
+
+    // find out what cell boundary is closer to Y
+    if OffEnd>FGCache.ClientHeight then
+      Loc := FGCache.ClientHeight
+    else
+    if (OffEnd-Y)<(Y-OffIni) then
+      Loc := OffEnd
+    else begin
+      Loc := OffIni;
+      Dec(FSplitter.Y);
+    end;
+
+    // check if it's not fixed row and if cursor is close enough to sel boundary
+    if (FSplitter.Y>=FFixedRows)and(Abs(Loc-Y)<=2) then begin
+      // start resizing
+      if Cursor<>crVSplit then begin
+        FSplitter.X := Y;
+        ChangeCursor(crVSplit);
         FPrevLine := False;
         FPrevValue := -1;
-      end else
-        Cursor:=crDefault;
-      Result:=True;
-    end;
-  end
-    else
-      if Cursor=crVSplit then
-        Cursor:=crDefault;
+      end;
+      exit(true);
+    end
+
+  end;
+
+  if (cursor=crVSplit) then
+    ChangeCursor;
 end;
 
 procedure TCustomGrid.doColMoving(X, Y: Integer);
@@ -4485,7 +4514,7 @@ begin
   with FGCache do begin
 
     if (Abs(ClickMouse.X-X)>FDragDX) and (Cursor<>crMultiDrag) then begin
-      Cursor:=crMultiDrag;
+      ChangeCursor(crMultiDrag);
       FMoveLast:=Point(-1,-1);
       ResetOffset(True, False);
     end;
@@ -4521,7 +4550,7 @@ begin
   with FGCache do begin
 
     if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
-      Cursor:=crMultiDrag;
+      ChangeCursor(crMultiDrag);
       FMoveLast:=Point(-1,-1);
       ResetOffset(False, True);
     end;
@@ -5145,7 +5174,7 @@ begin
             Invalidate;
             {$endif}
           DoOPMoveColRow(True, FGCache.ClickCell.X, FMoveLast.X);
-          Cursor:=crDefault;
+          ChangeCursor;
         end else
           if Cur.X=FGCache.ClickCell.X then
             HeaderClick(True, FGCache.ClickCell.X);
@@ -5156,7 +5185,7 @@ begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
         if FMoveLast.Y>=0 then begin
           DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y);
-          Cursor:=crDefault;
+          ChangeCursor;
         end else
           if Cur.Y=FGCache.ClickCell.Y then
             HeaderClick(False, FGCache.ClickCell.Y);
