@@ -1629,6 +1629,8 @@ begin
   CompilerMode:=pcmDelphi;
   {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  if hcCodeFolding in Capabilities then
+    RootCodeFoldBlock.BlockType := Pointer(PtrInt(cfbtNone));
 
   InitIdent;
   MakeMethodTables;
@@ -2347,7 +2349,7 @@ function TSynPasSyn.GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
           Next;
         end;
       end;
-      // Search previous lines
+      // Search next lines
       BeginX2 := 0;
       inc(Result);
       if Result < c-1 then begin
@@ -2700,8 +2702,8 @@ end;
 
 procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
 begin
-  inherited Assign(Src);
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
+    inherited Assign(Src);
     FMode:=TSynPasSynRange(Src).FMode;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FMinimumCodeFoldBlockLevel := TSynPasSynRange(Src).FMinimumCodeFoldBlockLevel;
