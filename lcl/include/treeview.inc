@@ -3401,9 +3401,10 @@ begin
   if Y<0 then Y:=0;
   if Y>=ClientHeight then Y:=ClientHeight-1;
   ANode:=GetNodeAtY(Y);
-  NodeRect:=ANode.DisplayRect(false);
-  NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
-  if ANode<>nil then begin
+  if ANode<>nil then
+  begin
+    NodeRect:=ANode.DisplayRect(false);
+    NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
     AnInsertMarkNode:=ANode;
     if (X>AnInsertMarkNode.DisplayExpandSignRight) then
       if Y>=NodeMidY then begin
