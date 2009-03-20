@@ -7572,7 +7572,37 @@ end;
 
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
   ASelect: Boolean);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  AParent: QTreeWidgetItemH;
+  AIndex: Integer;
+  ASubIndex: Integer;
 begin
+  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+	AParent := QTreeWidgetItem_parent(AItem);
+
+  if AParent <> nil then
+    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, AItem)
+  else
+    ASubIndex := 0;
+
+  NMLV.iItem := AIndex;
+  NMLV.iSubItem := ASubIndex;
+  NMLV.uNewState := LVIS_SELECTED;
+  NMLV.uChanged := LVIF_STATE;
+
+  Msg.NMHdr := @NMLV.hdr;
+  DeliverMessage(Msg);
+
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
 end;
 
