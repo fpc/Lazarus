@@ -118,7 +118,8 @@ begin
                                      GTK_POLICY_AUTOMATIC,
                                      GTK_POLICY_AUTOMATIC);
   // add border for memo
-  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget), GTK_SHADOW_ETCHED_IN);
+  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget),
+    BorderStyleShadowMap[TCustomEdit(AWinControl).BorderStyle]);
   
   SetMainWidget(Widget, TempWidget);
   GetWidgetInfo(Widget, True)^.CoreWidget := TempWidget;
