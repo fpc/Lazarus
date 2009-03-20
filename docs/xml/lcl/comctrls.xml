@@ -280,11 +280,14 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TStatusPanel.GetDisplayName" link="#rtl.Classes.TCollectionItem.GetDisplayName">
-        <short/>
+      <element name="TStatusPanel.GetDisplayName">
+        <short>
+          <var>GetDisplayName</var> - looks first at the <var>Text</var> property; if it is blank calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.GetDisplayName">TCollectionItem.GetDisplayName</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TStatusPanel.GetDisplayName.Result">
@@ -303,11 +306,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusPanel.SetIndex" link="#rtl.Classes.TCollectionItem.SetIndex">
-        <short/>
+      <element name="TStatusPanel.SetIndex">
+        <short>
+          <var>SetIndex</var> saves the old index value, checks that the supplied value is different then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.SetIndex">TCollectionItem.SetIndex</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStatusPanel.SetIndex.Value">
@@ -338,11 +344,14 @@
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TStatusPanel.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TStatusPanel.Assign">
+        <short>
+          <var>Assign</var> copies text, width, alignment, bevel and style properties from <var>Source</var> if it is of correct type, otherwise calls inherited <var>Assign</var> (which will probably raise an exception)</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStatusPanel.Assign.Source">
@@ -438,11 +447,14 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TStatusPanels.GetOwner" link="#rtl.Classes.TPersistent.GetOwner">
-        <short/>
+      <element name="TStatusPanels.GetOwner">
+        <short>
+          <var>GetOwner</var> returns a Status Bar, overriding the inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TStatusPanels.GetOwner.Result">
@@ -601,25 +613,34 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TStatusBar.CreateWnd">
+        <short>
+          <var>CreateWnd</var> calls inherited method, then fixes handles if needed</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
-        <short/>
+      <element name="TStatusBar.DestroyWnd">
+        <short>
+          <var>DestroyWnd</var> calls inherited method and frees handles</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TStatusBar.Loaded">
+        <short>
+          <var>Loaded</var> calls inherited method and fixes handles if needed</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TStatusBar.UpdateHandleObject">
@@ -636,7 +657,7 @@
       <!-- constructor Visibility: public -->
       <element name="TStatusBar.Create">
         <short>
-          <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initialises a number of local variables</short>
+          <var>Create</var> - constructor for <var>TStatusBar</var>: calls inherited <var>Create</var> and initialises a number of local variables</short>
         <descr>
           <p>
             <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initialises a number of local variables</p>
@@ -1236,12 +1257,11 @@
         <descr>
           <p>If GoForward is True, goes to next (higher index) page;</p>
           <p>if False, goes to previous (lower index)</p>
-          <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>
         </descr>
         <errors/>
         <seealso/>
         <short>
-          <var>SelectNextPage</var> - checking that its tab is visible</short>
+          <var>SelectNextPage</var> - goes to next page and selects it</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.SelectNextPage.GoForward">
@@ -1249,8 +1269,13 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
-        <short/>
-        <descr/>
+        <short>
+          <var>SelectNextPage</var> - checking that its tab is visible</short>
+        <descr>
+          <p>If GoForward is True, goes to next (higher index) page;</p>
+          <p>if False, goes to previous (lower index)</p>
+          <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1799,18 +1824,24 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlStrings.BeginUpdate" link="#rtl.Classes.TStrings.BeginUpdate">
-        <short/>
+      <element name="TTabControlStrings.BeginUpdate">
+        <short>
+          <var>BeginUpdate</var> increments the Update count</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.BeginUpdate">TStrings.BeginUpdate</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlStrings.EndUpdate" link="#rtl.Classes.TStrings.EndUpdate">
-        <short/>
+      <element name="TTabControlStrings.EndUpdate">
+        <short>
+          <var>EndUpdate</var> decrements the Update count</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <errors>An exception is raised if the Update count is zero</errors>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.EndUpdate">TStrings.EndUpdate</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.IsUpdating">
@@ -1917,11 +1948,14 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.Get" link="#rtl.Classes.TStrings.Get">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Get">
+        <short>
+          <var>Get</var> returns the text string found on the indexed page</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Get">TStrings.Get</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTabControlNoteBookStrings.Get.Result">
@@ -1943,11 +1977,14 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.GetObject" link="#rtl.Classes.TStrings.GetObject">
-        <short/>
+      <element name="TTabControlNoteBookStrings.GetObject">
+        <short>
+          <var>GetObject</var> returns the indexed object from the paged notebook</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.GetObject">TStrings.GetObject</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTabControlNoteBookStrings.GetObject.Result">
@@ -2017,11 +2054,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.Put" link="#rtl.Classes.TStrings.Put">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Put">
+        <short>
+          <var>Put</var> writes the supplied string to the indexed page of the notebook</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Put">TStrings.Put</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.Put.Index">
@@ -2032,11 +2072,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.PutObject" link="#rtl.Classes.TStrings.PutObject">
-        <short/>
+      <element name="TTabControlNoteBookStrings.PutObject">
+        <short>
+          <var>PutObject</var> stores the supplied object at the indexed place in the paged notebook</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.PutObject">TStrings.PutObject</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.PutObject.Index">
@@ -2047,10 +2090,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetImages" link="#LCL.ComCtrls.TTabControlStrings.SetImages">
+      <element name="TTabControlNoteBookStrings.SetImages">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ComCtrls.TTabControlStrings.SetImages">TTabControlStrings.SetImages</link>
+        </seealso>
+        <short>
+          <var>SetImages</var> - if the supplied ImageList is of correct type, stores it in the notebook <var>Images</var> area</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.SetImages.AValue">
@@ -2067,33 +2114,43 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetUpdateState" link="#rtl.Classes.TStrings.SetUpdateState">
-        <short/>
+      <element name="TTabControlNoteBookStrings.SetUpdateState">
+        <short>
+          <var>SetUpdateState</var> - if Updating is True, calls <var>BeginUpdate</var>; otherwise calls <var>EndUpdate</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.SetUpdateState">TStrings.SetUpdateState</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.SetUpdateState.Updating">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetTabHeight" link="#LCL.ComCtrls.TTabControlStrings.SetTabHeight">
-        <short/>
+      <element name="TTabControlNoteBookStrings.SetTabHeight">
+        <short>
+          <var>SetTabHeight</var> checks if <var>TabHeight</var> is already equal to <var>AValue</var>, otherwise calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ComCtrls.TTabControlStrings.SetTabHeight">TTabControlStrings.SetTabHeight</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.SetTabHeight.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetTabWidth" link="#LCL.ComCtrls.TTabControlStrings.SetTabWidth">
-        <short/>
+      <element name="TTabControlNoteBookStrings.SetTabWidth">
+        <short>
+          <var>SetTabWidth</var> checks if <var>TabWidth</var> is already equal to <var>AValue</var>, otherwise calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ComCtrls.TTabControlStrings.SetTabWidth">TTabControlStrings.SetTabWidth</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.SetTabWidth.AValue">
@@ -2131,29 +2188,38 @@
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Clear" link="#rtl.Classes.TStrings.Clear">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Clear">
+        <short>
+          <var>Clear</var> calls the <var>Clear</var> method for the client Notebook</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Clear">TStrings.Clear</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Delete" link="#rtl.Classes.TStrings.Delete">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Delete">
+        <short>
+          <var>Delete</var> calls the <var>Delete</var> method for the client NoteBook</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Delete">TStrings.Delete</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.Delete.Index">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Insert" link="#rtl.Classes.TStrings.Insert">
-        <short/>
+      <element name="TTabControlNoteBookStrings.Insert">
+        <short>
+          <var>Insert</var> calls the <var>Insert</var> method for the client NoteBok</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TStrings.Insert">TStrings.Insert</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTabControlNoteBookStrings.Insert.Index">
@@ -2625,7 +2691,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomTabControl.Loaded" link="#LCL.Controls.TWinControl.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -2646,7 +2712,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Notification" link="#rtl.Classes.TComponent.Notification">
+      <element name="TCustomTabControl.Notification" link="#LCL.Controls.TControl.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -3541,8 +3607,8 @@
         <descr>Most properties are inherited from ancestors, TPersistent and TObject
 </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent"/>
-          <link id="#rtl.Objects.TObject"/>
+          <link id="#rtl.Classes.TPersistent">Classes.TPersistent</link>
+          <link id="#rtl.Objects.TObject">Objects.TObject</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -3755,31 +3821,41 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListItem.Assign" link="#rtl.Classes.TPersistent.Assign">
+      <element name="TListItem.Assign">
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign"/>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
+        <short>
+          <var>Assign</var> - if source has correct type, copies Caption, Data, ImageIndex and SubItems from source, otherwise calls inherited <var>Assign</var> which probably raises an exception</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItem.Assign.ASource">
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListItem.Create" link="#rtl.System.TObject.Create">
+      <element name="TListItem.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TListItem</var>: calls inherited <var>Create</var> then initialises flags, states, ImageIndex and SubItems </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItem.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListItem.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TListItem.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TListItem</var>: frees SubItems, sets flags to signify destruction, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItem.Delete">
@@ -3947,11 +4023,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TListItems.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
-        <short/>
+      <element name="TListItems.DefineProperties">
+        <short>
+          <var>DefineProperties</var> - calls inherited method, then defines some specific binary properties</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.DefineProperties">TPersistent.DefineProperties</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItems.DefineProperties.Filer">
@@ -4058,21 +4137,29 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListItems.Create" link="#rtl.System.TObject.Create">
+      <element name="TListItems.Create">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TListItems</var>: calls inherited <var>Create</var> then creates the list</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItems.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListItems.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TListItems.Destroy">
+        <short>
+          <var>Destroy</var> destructor for <var>TListItems</var>: frees the individual items on the list, then calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItems.Delete">
@@ -4344,22 +4431,28 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TListColumn.SetIndex" link="#rtl.Classes.TCollectionItem.SetIndex">
-        <short/>
+      <element name="TListColumn.SetIndex">
+        <short>
+          <var>SetIndex</var> - calls inherited method, and if this is a new index value, changes to the new column index</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.SetIndex">TCollectionItem.SetIndex</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListColumn.SetIndex.AValue">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TListColumn.GetDisplayName" link="#rtl.Classes.TCollectionItem.GetDisplayName">
-        <short/>
+      <element name="TListColumn.GetDisplayName">
+        <short>
+          <var>GetDisplayName</var> returns the <var>Caption</var>; if this is blank, calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.GetDisplayName">TCollectionItem.GetDisplayName</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TListColumn.GetDisplayName.Result">
@@ -4391,11 +4484,14 @@
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListColumn.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TListColumn.Assign">
+        <short>
+          <var>Assign</var> - if source is of correct type, copies alignment, caption, visibility and size properties, otherwise calls inherited <var>Assign</var> which probably raises an exception </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListColumn.Assign.ASource">
@@ -4531,29 +4627,39 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListColumns.Create" link="#rtl.Classes.TCollection.Create">
-        <short/>
+      <element name="TListColumns.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TListColumns</var>: sets ownership then calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Create">TCollection.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListColumns.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListColumns.Destroy" link="#rtl.Classes.TCollection.Destroy">
-        <short/>
+      <element name="TListColumns.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TListColumns</var>: calls inherited destructor</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Destroy">TCollection.Destroy</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
-      <element name="TListColumns.Add" link="#rtl.Classes.TCollection.Add">
-        <short/>
+      <element name="TListColumns.Add">
+        <short>
+          <var>Add</var> calls inherited method, then adjusts state flags</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Add">TCollection.Add</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TListColumns.Add.Result">
@@ -4590,11 +4696,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListColumns.Assign" link="#rtl.Classes.TCollection.Assign">
-        <short/>
+      <element name="TListColumns.Assign">
+        <short>
+          <var>Assign</var> checks that source is of correct type, then adds new columns and copies items from source into them; otherwise calls inherited <var>Assign</var> which probably raises an exception</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Assign">TCollection.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListColumns.Assign.Source">
@@ -5488,11 +5597,15 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListView.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
-        <short/>
-        <descr/>
+      <element name="TCustomListView.InitializeWnd">
+        <short>
+          <var>InitializeWnd</var> - calls inherited method, then sets various local properties</short>
+        <descr>
+          <var>InitializeWnd</var> - calls inherited method, then sets style, adds columns, sets imagelists and item depending properties (scroll bars, sorting etc), adds items and sets other miscellaneous properties (default item height, hot track styles, hover time etc)</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Change">
@@ -6445,18 +6558,24 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomProgressBar.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
-        <short/>
+      <element name="TCustomProgressBar.InitializeWnd">
+        <short>
+          <var>InitializeWnd</var> calls inherited method then applies changes</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomProgressBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TCustomProgressBar.Loaded">
+        <short>
+          <var>Loaded</var> calls inherited method then applies changes</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomProgressBar.Create">
@@ -7155,11 +7274,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomUpDown.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
+      <element name="TCustomUpDown.Notification">
+        <short>
+          <var>Notification</var> calls inherited method; if the operation requires removal of the associate control, this is performed</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomUpDown.Notification.AComponent">
@@ -7170,11 +7292,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomUpDown.Click" link="#LCL.Controls.TControl.Click">
-        <short/>
+      <element name="TCustomUpDown.Click">
+        <short>
+          <var>Click</var> - calls <var>OnClick</var> event handler if it is assigned</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Click">TControl.Click</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomUpDown.Click.Button">
@@ -7557,11 +7682,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButtonActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
-        <short/>
+      <element name="TToolButtonActionLink.AssignClient">
+        <short>
+          <var>AssignClient</var> calls inherited method then sets client as ToolButton</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TBasicActionLink.AssignClient">TBasicActionLink.AssignClient</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolButtonActionLink.AssignClient.AClient">
@@ -7937,7 +8065,9 @@
           <var>GetActionLinkClass</var> - returns the Class of the ActionLink for this ToolButton</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetActionLinkClass">TControl.GetActionLinkClass</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TToolButton.GetActionLinkClass.Result">
@@ -7949,7 +8079,9 @@
           <var>ActionChange</var> -  a method for changing the action associated with the Button</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.ActionChange">TControl.ActionChange</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolButton.ActionChange.Sender">
@@ -7960,11 +8092,15 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
-        <short/>
+      <element name="TToolButton.AssignTo">
+        <short>
+          <var>AssignTo</var> calls inherited method: if the destination is of correct type, copies <var>ImageIindex</var> to destination and sets it Checked</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+          <link id="#LCL.Controls.TControl.AssignTo">TControl.AssignTo</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolButton.AssignTo.Dest">
@@ -8088,11 +8224,12 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
+      <element name="TToolButton.Loaded" link="#LCL.Controls.TControl.Loaded">
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.RefreshControl">
@@ -8967,14 +9104,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TToolBar.Loaded" link="#LCL.Controls.TWinControl.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.Notification" link="#rtl.Classes.TComponent.Notification">
+      <element name="TToolBar.Notification" link="#LCL.Controls.TControl.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -9059,6 +9196,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -9800,7 +9938,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTrackBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomTrackBar.Loaded" link="#LCL.Controls.TWinControl.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -9814,6 +9952,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11468,11 +11607,14 @@ Const
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTreeNode.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TTreeNode.Assign">
+        <short>
+          <var>Assign</var> - if <var>Source</var> is of correct type, copies details directly, otherwise calls inherited <var>Assign</var> which probably raises an exception</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNode.Assign.Source">
@@ -12657,22 +12799,30 @@ the comparision is case sensitive.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTreeNodes.Create" link="#rtl.System.TObject.Create">
-        <short/>
+      <element name="TTreeNodes.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TTreeNodes</var>: calls inherited <var>Create</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNodes.Create.AnOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTreeNodes.Destroy" link="#rtl.Classes.TPersistent.Destroy">
-        <short/>
+      <element name="TTreeNodes.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TTreeNodes</var>: calls inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.Add">
@@ -12851,11 +13001,14 @@ the comparision is case sensitive.
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTreeNodes.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
+      <element name="TTreeNodes.Assign">
+        <short>
+          <var>Assign</var> - if <var>Source</var> is of correct type, copies properties directly, otherwise calls inherited <var>Assign</var> which probably raises an exception</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNodes.Assign.Source">
@@ -14918,7 +15071,7 @@ the comparision is case sensitive.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomTreeView.Loaded" link="#LCL.Controls.TWinControl.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -14990,7 +15143,7 @@ the comparision is case sensitive.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Notification" link="#rtl.Classes.TComponent.Notification">
+      <element name="TCustomTreeView.Notification" link="#LCL.Controls.TControl.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -16653,7 +16806,13 @@ the comparision is case sensitive.
           <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
       </element>
-      <element name="THeaderSection.Assign" link="#rtl.Classes.TPersistent.Assign"/>
+      <element name="THeaderSection.Assign">
+        <short>
+          <var>Assign</var> - if <var>Source</var> is of correct type, copies properties directly, otherwise calls inherited <var>Assign</var> which probably raises an exception</short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
+      </element>
       <element name="THeaderSection.Left">
         <short>The position of the left boundary of the section</short>
       </element>
@@ -16688,7 +16847,13 @@ the comparision is case sensitive.
         <short>
           <var>OriginalIndex</var> - index which doesn't change when the user reorders the sections</short>
       </element>
-      <element name="TListColumns.Update" link="#rtl.Classes.TCollection.Update"/>
+      <element name="TListColumns.Update">
+        <short>
+          <var>Update</var> checks if update is in fact required, then calls inherited method</short>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Update">TCollection.Update</link>
+        </seealso>
+      </element>
       <element name="TPageControl.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
       <element name="TPageControl.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TPageControl.DragKind" link="#LCL.Controls.TControl.DragKind"/>
@@ -16708,7 +16873,7 @@ the comparision is case sensitive.
           <var>OnCreateSectionClass</var> - event handler for creating a new section class</short>
       </element>
       <element name="TCustomListView.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag"/>
-      <element name="TCustomListView.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomListView.Loaded" link="#LCL.Controls.TWinControl.Loaded"/>
       <element name="TCustomListView.ToolTips">
         <short>
           <var>ToolTips</var> - whether Popup tool tips are to be shown</short>
@@ -16735,12 +16900,42 @@ the comparision is case sensitive.
         <short>
           <var>GetItemAt</var> - find and return the list item at the specified coordinates</short>
       </element>
-      <element name="TCustomProgressBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TCustomTabControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TCustomTrackBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomProgressBar.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
+      <element name="TCustomTabControl.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
+      <element name="TCustomTrackBar.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding the inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
       <element name="TCustomTreeView.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag"/>
-      <element name="TCustomUpDown.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="THeaderSections.GetOwner" link="#rtl.Classes.TPersistent.GetOwner"/>
+      <element name="TCustomUpDown.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
+      <element name="THeaderSections.GetOwner">
+        <short>
+          <var>GetOwner</var> returns a HeaderControl, overriding inherited value</short>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
+        </seealso>
+      </element>
       <element name="THeaderSections.Update" link="#rtl.Classes.TCollection.Update"/>
       <element name="TSectionTrackState">
         <short>
@@ -16789,7 +16984,13 @@ the comparision is case sensitive.
       <element name="TListView.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TProgressBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TStatusBar.BoundsChanged" link="#LCL.Controls.TControl.BoundsChanged"/>
-      <element name="TStatusBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
+      <element name="TStatusBar.CalculatePreferredSize">
+        <short>
+          <var>CalculatePreferredSize</var> calls inherited method then supplies its own values if any are missing</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+        </seealso>
+      </element>
       <element name="TStatusBar.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored"/>
       <element name="TStatusBar.CreatePanel">
         <short>
@@ -16809,9 +17010,15 @@ the comparision is case sensitive.
       </element>
       <element name="TStatusBar.DoHint">
         <short>
-          <var>DoHint</var> - shows the hint and returns True if successful</short>
+          <var>DoHint</var> - shows the hint and returns True if successful (uses <var>OnHint</var> event handler)</short>
       </element>
-      <element name="TStatusBar.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction"/>
+      <element name="TStatusBar.ExecuteAction">
+        <short>
+          <var>ExecuteAction</var>: if required action is a Hint-related, sets the Hint in place, otherwise calls inherited method</short>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
+        </seealso>
+      </element>
       <element name="TStatusBar.SizeGripEnabled">
         <short>
           <var>SizeGripEnabled</var> - returns True if the size-grip (an area at the bottom of the statusbar where a mouse can grip to change the size) is enabled</short>
@@ -16854,10 +17061,30 @@ the comparision is case sensitive.
       <element name="TTabSheet.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TTrackBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TUpDown.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TPageControl.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient"/>
-      <element name="TPageControl.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient"/>
+      <element name="TPageControl.DoAddDockClient">
+        <descr>Client cannot be added to TPageControl itself but new TabSheet should be added and client placed onto it
+</descr>
+        <short>
+          <var>DoAddDockClient</var> creates a new TabSheet in the PageControl, places the client on it and aligns it</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoAddDockClient">TWinControl.DoAddDockClient</link>
+        </seealso>
+      </element>
+      <element name="TPageControl.DoRemoveDockClient">
+        <short>
+          <var>DoRemoveDockClient</var> - frees the page which is being undocked</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoRemoveDockClient">TWinControl.DoRemoveDockClient</link>
+        </seealso>
+      </element>
       <element name="TPageControl.DoUndockClientMsg" link="#LCL.Controls.TWinControl.DoUndockClientMsg"/>
-      <element name="TPageControl.PositionDockRect" link="#LCL.Controls.TControl.PositionDockRect"/>
+      <element name="TPageControl.PositionDockRect">
+        <short>
+          <var>PositionDockRect</var> converts client coordinates to screen coordinates, then places the docking rectangle at the calculated position</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.PositionDockRect">TControl.PositionDockRect</link>
+        </seealso>
+      </element>
       <element name="TListItem.DisplayRect">
         <short>
           <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item</short>
@@ -16882,11 +17109,23 @@ the comparision is case sensitive.
         <short>
           <var>WSCreateItems</var> - instruction to the Widget Set to create Items</short>
       </element>
-      <element name="TCustomListView.FinalizeWnd" link="#LCL.Controls.TWinControl.FinalizeWnd"/>
+      <element name="TCustomListView.FinalizeWnd">
+        <short>
+          <var>FinalizeWnd</var> stores the list origin then calls inherited method</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
+        </seealso>
+      </element>
       <element name="TCustomListView.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
       <element name="TToolButton.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
       <element name="TToolButton.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
-      <element name="TToolButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TToolButton.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
       <element name="TToolButton.GetButtonDrawDetail">
         <short>
           <var>GetButtonDrawDetail</var> - find theme information for Windows XP inplementations</short>
@@ -16897,7 +17136,13 @@ the comparision is case sensitive.
       <element name="TToolButton.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TToolButton.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TToolBar.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect"/>
-      <element name="TToolBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TToolBar.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding the inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">Control.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
       <element name="TToolBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
       <element name="TToolBar.FontChanged">
         <short>
@@ -16974,7 +17219,13 @@ the comparision is case sensitive.
         <short>
           <var>UpdateState</var> - bring the state of the control up-to-date</short>
       </element>
-      <element name="TCustomHeaderControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomHeaderControl.GetControlClassDefaultSize">
+        <short>
+          <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding inherited values</short>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
+      </element>
       <element name="TCustomTreeView.DoDragMsg">
         <short>
           <var>DoDragMsg</var> generates system message to indicate object and position for dragging and returns Result of action</short>
@@ -17164,6 +17415,18 @@ the comparision is case sensitive.
         <short>
           <var>TCustomHCCreateSectionClassEvent</var> - generic event handler method for custom creation of header control</short>
       </element>
+      <element name="TStatusBar.DrawPanel">
+        <short>
+          <var>DrawPanel</var> calls the <var>OnDrawPanel</var> event handler if assigned</short>
+      </element>
+      <element name="TStatusBar.LMDrawItem">
+        <short>
+          <var>LMDrawItem</var> - LCL message handler for drawing the item on the current canvas</short>
+      </element>
+      <element name="TListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TListView.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TListView.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TCustomTreeView.DoMouseWheel" link="#LCL.Controls.TControl.DoMouseWheel"/>
     </module>
     <!-- ComCtrls -->
   </package>
