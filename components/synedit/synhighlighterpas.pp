@@ -105,8 +105,11 @@ type
   TPascalWordTrippletRanges = set of TPascalCodeFoldBlockType;
 
 const
+  CountPascalCodeFoldBlockOffset: Pointer =
+    Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
   PascalWordTrippletRanges: TPascalWordTrippletRanges =
     [cfbtBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord];
+
 type
 
   TPascalCompilerMode = (
@@ -325,6 +328,7 @@ type
     {$IFDEF SYN_LAZARUS}
     function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
                             SubBlock: boolean = false): TSynCustomCodeFoldBlock;
+    procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); override;
     function GetRangeClass: TSynCustomHighlighterRangeClass; override;
     {$ENDIF}
     procedure EndCodeFoldBlockLastLine;
@@ -2235,8 +2239,13 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
+var
+  p: Pointer;
 begin
-  Result:=TPascalCodeFoldBlockType(PtrUInt(inherited TopCodeFoldBlockType));
+  p := inherited TopCodeFoldBlockType;
+  if p >= CountPascalCodeFoldBlockOffset then
+    p := p - PtrInt(CountPascalCodeFoldBlockOffset);
+  Result := TPascalCodeFoldBlockType(PtrUInt(p));
 end;
 
 // ToDO: pass in Max for the search lines (Begin must be found always)
@@ -2427,14 +2436,20 @@ end;
 function TSynPasSyn.StartPascalCodeFoldBlock(
   ABlockType: TPascalCodeFoldBlockType;
   SubBlock: boolean): TSynCustomCodeFoldBlock;
+var
+  p: PtrInt;
 begin
+  p := 0;
+  if SubBlock then
+    p := PtrInt(CountPascalCodeFoldBlockOffset);
   Result:=TSynCustomCodeFoldBlock(
-            inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)),SubBlock));
+            inherited StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), not SubBlock));
 end;
 
-function TSynPasSyn.GetRangeClass: TSynCustomHighlighterRangeClass;
+procedure TSynPasSyn.EndCodeFoldBlock(DecreaseLevel: Boolean);
 begin
-  Result:=TSynPasSynRange;
+  DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
+  inherited EndCodeFoldBlock(DecreaseLevel);
 end;
 
 procedure TSynPasSyn.EndCodeFoldBlockLastLine;
@@ -2446,6 +2461,11 @@ begin
     TSynPasSynRange(CodeFoldRange).DecLastLineCodeFoldLevelFix;
     dec(FStartCodeFoldBlockLevel);
   end;
+end;
+
+function TSynPasSyn.GetRangeClass: TSynCustomHighlighterRangeClass;
+begin
+  Result:=TSynPasSynRange;
 end;
 
 function TSynPasSyn.GetLastLineCodeFoldLevelFix: integer;
