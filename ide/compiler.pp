@@ -168,10 +168,13 @@ begin
           TheProcess.Execute;
         end;
       finally
-        TheProcess.WaitOnExit;
-        if not (TheProcess.ExitStatus in [0,1]) then  begin
-          WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
-          Result:=mrCancel;
+        if TheProcess.Running then
+        begin
+          TheProcess.WaitOnExit;
+          if not (TheProcess.ExitStatus in [0,1]) then  begin
+            WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
+            Result:=mrCancel;
+          end;
         end;
       end;
     except
