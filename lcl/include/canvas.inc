@@ -1659,6 +1659,13 @@ begin
   LockCanvas;
 end;
 
+function TCanvas.TryLock: Boolean;
+begin
+  Result := not Locked;
+  if Result then
+    Lock;
+end;
+
 {------------------------------------------------------------------------------
   Function: TCanvas.Unlock
   Params:   none

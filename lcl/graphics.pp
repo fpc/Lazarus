@@ -1037,6 +1037,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Lock; virtual;
+    function TryLock: Boolean;
     procedure Unlock; virtual;
     procedure Refresh; virtual;
     procedure Changing; virtual;
