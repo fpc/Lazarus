@@ -319,6 +319,9 @@ begin
   if GTK_IS_SCROLLED_WINDOW(Widget) then
     gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget), BorderStyleShadowMap[ABorderStyle])
   else
+  if GTK_IS_ENTRY(Widget) then
+    gtk_entry_set_has_frame(PGtkEntry(Widget), ABorderStyle <> bsNone)
+  else
     TGtkWSWinControl{(ClassParent)}.SetBorderStyle(AWinControl, ABorderStyle);
 end;
 

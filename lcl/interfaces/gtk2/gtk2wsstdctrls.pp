@@ -172,6 +172,7 @@ type
 
   TGtk2WSCustomEdit = class(TGtkWSCustomEdit)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -850,6 +851,15 @@ end;
 {$I gtk2wscustommemo.inc}
 
 { TGtk2WSCustomEdit }
+
+class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TGtkWSCustomEdit{(ClassParent)}.CreateHandle(AWinControl, AParams);
+  if Result <> 0 then
+    gtk_entry_set_has_frame(PGtkEntry(Result),
+      TCustomEdit(AWinControl).BorderStyle <> bsNone);
+end;
 
 class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
