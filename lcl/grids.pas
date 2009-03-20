@@ -2844,10 +2844,14 @@ begin
     DRow:=DRow-Result.y;
   end;
 
-  if DCol+Result.x<FFixedCols then DCol:=Result.x-FFixedCols else
-  if DCol+Result.x>ColCount-1 then DCol:=ColCount-1-Result.x;
-  if DRow+Result.y<FFixedRows then DRow:=Result.y-FFixedRows else
-  if DRow+Result.y>RowCount-1 then DRow:=RowCount-1-Result.y;
+  if DCol<>0 then begin
+    if DCol+Result.x<FFixedCols then DCol:=Result.x-FFixedCols else
+    if DCol+Result.x>ColCount-1 then DCol:=ColCount-1-Result.x;
+  end;
+  if DRow<>0 then begin
+    if DRow+Result.y<FFixedRows then DRow:=Result.y-FFixedRows else
+    if DRow+Result.y>RowCount-1 then DRow:=RowCount-1-Result.y;
+  end;
 
   Inc(Result.x, DCol);
   Inc(Result.y, DRow);
