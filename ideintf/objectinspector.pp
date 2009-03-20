@@ -791,6 +791,7 @@ begin
   FFilter:=TypeFilter;
   FItemIndex:=-1;
   FStates:=[];
+  FColumn := oipgcValue;
   FRows:=TFPList.Create;
   FExpandingRow:=nil;
   FDragging:=false;
@@ -2058,6 +2059,21 @@ procedure TOICustomPropertyGrid.HandleStandardKeys(
 var
   Handled: Boolean;
 
+  procedure FindPropertyByFirstLetter;
+  var
+    i: Integer;
+  begin
+    if Column = oipgcName then
+      for i := 0 to RowCount - 1 do
+        if (Rows[i].Lvl = Rows[ItemIndex].Lvl) and
+          (Ord(upCase(Rows[i].Name[1])) = Key) then
+        begin
+          SetItemIndexAndFocus(i);
+          exit;
+        end;
+    Handled := false;
+  end;
+
   procedure HandleUnshifted;
   const
     Page = 20;
@@ -2080,6 +2096,8 @@ var
 
       VK_ESCAPE: RefreshValueEdit;
 
+      Ord('A')..Ord('Z'): FindPropertyByFirstLetter;
+
       else
         Handled := false;
     end;
@@ -2088,7 +2106,7 @@ var
 begin
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
   Handled := false;
-  if Shift = [] then
+  if (Shift = []) or (Shift = [ssShift]) then
   begin
     if not (FCurrentEdit is TCustomCombobox) or
        not TCustomCombobox(FCurrentEdit).DroppedDown then
@@ -2120,7 +2138,8 @@ begin
             CanExpandRow(Rows[ItemIndex]);
           if Handled then ExpandRow(ItemIndex)
         end;
-    end;  
+    end;
+
 
   if not Handled and Assigned(OnOIKeyDown) then
   begin
