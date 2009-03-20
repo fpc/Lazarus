@@ -392,7 +392,7 @@ type
     procedure SetSubPropertiesColor(const AValue: TColor);
     procedure UpdateScrollBar;
     procedure FillComboboxItems;
-    function PropInfoFilter(const APropInfo: PPropInfo): Boolean;
+    function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -1183,12 +1183,6 @@ begin
   end;
 end;
 
-function TOICustomPropertyGrid.PropInfoFilter(
-  const APropInfo: PPropInfo): Boolean;
-begin
-  Result := HasSubpropertiesInFilter(APropInfo, FFilter);
-end;
-
 function TOICustomPropertyGrid.GetRowByPath(
   const PropPath: string): TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
@@ -1578,8 +1572,8 @@ begin
   FRows.Clear;
   // get properties
   GetPersistentProperties(
-    FSelection, FFilter, FPropertyEditorHook, @AddPropertyEditor,
-    @PropInfoFilter, nil);
+    FSelection, FFilter + [tkClass], FPropertyEditorHook, @AddPropertyEditor,
+    @EditorFilter);
   // sort
   FRows.Sort(@SortGridRows);
   for a:=0 to FRows.Count-1 do begin
@@ -2167,6 +2161,12 @@ begin
     if FCurrentEdit<>nil then
       FCurrentEdit.SetFocus;
   end;
+end;
+
+function TOICustomPropertyGrid.EditorFilter(
+  const AEditor: TPropertyEditor): Boolean;
+begin
+  Result := IsInteresting(AEditor, FFilter);
 end;
 
 procedure TOICustomPropertyGrid.EraseBackground(DC: HDC);
@@ -4666,8 +4666,7 @@ begin
   end;
 
   PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
-  // Nested or referenced objects may have events too.
-  EventGrid := CreateGrid([tkClass, tkMethod], oipgpEvents, 1);
+  EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
   FavouriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavourite, 2);
   FavouriteGrid.Favourites := FFavourites;
   RestrictedGrid := CreateGrid(PROPS + [tkMethod], oipgpRestricted, 3);

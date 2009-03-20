@@ -552,7 +552,7 @@ type
   private
     FSubPropsTypeFilter: TTypeKinds;
     procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
-    function PropInfoFilter(const APropInfo: PPropInfo): Boolean;
+    function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
     function GetSelections: TPersistentSelectionList; virtual;
   public
@@ -1608,8 +1608,8 @@ procedure EditCollection(AComponent: TComponent; ACollection: TCollection; AProp
 
 // Returns true if given property should be displayed on the property list
 // filtered by AFilter.
-function HasSubpropertiesInFilter(
-  const APropInfo: PPropInfo; const AFilter: TTypeKinds): Boolean;
+function IsInteresting(
+  const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
 
 const
   NoDefaultValue = Longint($80000000);
@@ -4026,6 +4026,12 @@ begin
   FSubPropsTypeFilter := tkAny;
 end;
 
+function TClassPropertyEditor.EditorFilter(
+  const AEditor: TPropertyEditor): Boolean;
+begin
+  Result := IsInteresting(AEditor, SubPropsTypeFilter);
+end;
+
 function TClassPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly];
@@ -4038,7 +4044,7 @@ begin
   selection := GetSelections;
   if selection = nil then exit;
   GetPersistentProperties(
-    selection, SubPropsTypeFilter, PropertyHook, Proc, @PropInfoFilter, nil);
+    selection, SubPropsTypeFilter + [tkClass], PropertyHook, Proc, @EditorFilter);
   selection.Free;
 end;
 
@@ -4063,12 +4069,6 @@ end;
 function TClassPropertyEditor.GetValue: ansistring;
 begin
   Result:='(' + GetPropType^.Name + ')';
-end;
-
-function TClassPropertyEditor.PropInfoFilter(
-  const APropInfo: PPropInfo): Boolean;
-begin
-  Result := HasSubpropertiesInFilter(APropInfo, SubPropsTypeFilter);
 end;
 
 procedure TClassPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
@@ -4388,11 +4388,11 @@ function TPersistentPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect];
   if Assigned(GetPropInfo^.SetProc) then
-    Result := Result + [paValueList, paSortList, paRevertable]
+    Result += [paValueList, paSortList, paRevertable, paVolatileSubProperties]
   else
     Result := Result + [paReadOnly];
   if GReferenceExpandable and (GetPersistentReference <> nil) and AllEqual then
-    Result := Result + [paSubProperties, paVolatileSubProperties];
+    Result := Result + [paSubProperties];
 end;
 
 function TPersistentPropertyEditor.GetEditLimit: Integer;
@@ -6768,32 +6768,57 @@ begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
 end;
 
-function HasSubpropertiesInFilter(
-  const APropInfo: PPropInfo; const AFilter: TTypeKinds): Boolean;
+function IsInteresting(
+  const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
 var
   visited: TFPList;
 
-  procedure Rec(A: PPropInfo);
+  procedure Rec(A: TPropertyEditor);
   var
     propList: PPropList;
     i: Integer;
     ti: PTypeInfo;
+    edClass: TPropertyEditorClass;
+    ed: TPropertyEditor;
   begin
-    ti := A^.PropType;
-    //DebugLn('HasSubpropertiesInFilter: ', ti^.Name);
-    Result :=
-      (ti^.Kind <> tkClass) or
-      // Since components are selectable in the designer,
-      // there is always a possibility that some descendant class may have
-      // properties of the required kind.
-      (GetTypeData(ti)^.ClassType.InheritsFrom(TPersistent));
+    ti := A.GetPropInfo^.PropType;
+    //DebugLn('IsInteresting: ', ti^.Name);
+    Result := ti^.Kind <> tkClass;
+    if Result then exit;
+
+    // Subroperties can change if user selects another object =>
+    // we must show the property, even if it is not interesting currently.
+    Result := paVolatileSubProperties in A.GetAttributes;
+    if Result then exit;
+
+    if tkClass in AFilter then begin
+      // We want classes => any non-trivial editor is immediately interesting.
+      Result := A.ClassType <> TClassPropertyEditor;
+      if Result then exit;
+    end
+    else if
+      A.GetAttributes * [paSubProperties, paVolatileSubProperties] = []
+    then exit;
+
+    // At this stage, there is nothing interesting left in empty objects.
+    if A.GetComponent(0) = nil then exit;
+
     // Class properties may directly or indirectly refer to the same class,
     // so we must avoid infinite recursion.
-    if Result or (visited.IndexOf(ti) >= 0) then exit;
+    if visited.IndexOf(ti) >= 0 then exit;
     visited.Add(ti);
     for i := 0 to GetPropList(ti, propList) - 1 do begin
-      if propList^[i]^.PropType^.Kind in AFilter then
-        Rec(propList^[i]);
+      if not (propList^[i]^.PropType^.Kind in AFilter + [tkClass]) then continue;
+      edClass := GetEditorClass(propList^[i], A.GetComponent(0));
+      if edClass = nil then continue;
+      ed := edClass.Create(nil, 1);
+      try
+        ed.SetPropEntry(0, A.GetComponent(0), propList^[i]);
+        ed.Initialize;
+        Rec(ed);
+      finally
+        ed.Free;
+      end;
       if Result then break;
     end;
     FreeMem(propList);
@@ -6803,9 +6828,9 @@ var
 begin
   visited := TFPList.Create;
   try
-    //DebugLn('HasSubpropertiesInFilter -> ', APropInfo^.Name, ': ', APropInfo^.PropType^.Name);
-    Rec(APropInfo);
-    //DebugLn('HasSubpropertiesInFilter <- ', BoolToStr(Result, true));
+    //DebugLn('IsInteresting -> ', AEditor.GetPropInfo^.Name, ': ', AEditor.GetPropInfo^.PropType^.Name);
+    Rec(AEditor);
+    //DebugLn('IsInteresting <- ', BoolToStr(Result, true));
   finally
     visited.Free;
   end;
