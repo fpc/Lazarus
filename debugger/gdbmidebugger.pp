@@ -1537,6 +1537,13 @@ begin
 
   Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError, cfExternal], R)
         and (R.State <> dsError);
+  // if we have an .inc file then search for filename only since there are some
+  // problems with locating file by full path in gdb in case only relative file
+  // name is stored
+  if not Result then
+    Result := ExecuteCommand('-symbol-list-lines %s', [ExtractFileName(ASource)], [cfIgnoreError, cfExternal], R)
+          and (R.State <> dsError);
+
   if not Result then Exit;
 
   Map := TMap.Create(its8, SizeOf(AAddr));
