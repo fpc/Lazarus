@@ -1256,6 +1256,9 @@ begin
   {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
+    // in case we asigned a null range
+    if not assigned(FCodeFoldRange.FoldRoot) then
+      FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
     FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
   end;
   {$ENDIF}
@@ -1596,9 +1599,16 @@ end;
 
 procedure TSynCustomHighlighterRange.Assign(Src: TSynCustomHighlighterRange);
 begin
-  FTop := Src.FTop;
-  FCodeFoldStackSize := Src.FCodeFoldStackSize;
-  FRangeType := Src.FRangeType;
+  if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
+    FTop := Src.FTop;
+    FCodeFoldStackSize := Src.FCodeFoldStackSize;
+    FRangeType := Src.FRangeType;
+  end
+  else begin
+    FTop := nil;
+    FCodeFoldStackSize := 0;
+    FRangeType := nil;
+  end;
 end;
 
 procedure TSynCustomHighlighterRange.WriteDebugReport;
