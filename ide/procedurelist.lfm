@@ -1,361 +1,162 @@
 object ProcedureListForm: TProcedureListForm
-  Left = 341
-  Height = 327
-  Top = 186
-  Width = 638
-  HelpContext = 0
+  Left = 66
+  Height = 507
+  Top = 78
+  Width = 760
   ActiveControl = cbObjects
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
   Caption = 'Procedure List - '
-  ChildSizing.LeftRightSpacing = 0
-  ChildSizing.TopBottomSpacing = 0
-  ChildSizing.HorizontalSpacing = 0
-  ChildSizing.VerticalSpacing = 0
-  ChildSizing.ControlsPerLine = 0
-  ClientHeight = 327
-  ClientWidth = 638
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
-  Font.Height = 0
-  Font.Style = []
-  FormStyle = fsNormal
+  ClientHeight = 507
+  ClientWidth = 760
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
-  ParentBiDiMode = True
-  ParentFont = False
   Position = poDefault
-  ShowInTaskBar = stDefault
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object StatusBar: TStatusBar
-    Left = 0
-    Height = 21
-    Top = 306
-    Width = 638
-    HelpContext = 0
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
+    Height = 23
+    Top = 484
+    Width = 760
     Panels = <    
       item
-        Alignment = taLeftJustify
         Width = 400
       end    
       item
-        Alignment = taLeftJustify
         Width = 50
       end>
-    ParentShowHint = True
     SimplePanel = False
   end
   object TB: TToolBar
-    Left = 0
     Height = 26
-    Top = 0
-    Width = 638
-    HelpContext = 0
-    AutoSize = False
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BorderWidth = 0
+    Width = 760
     Caption = 'TB'
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
-    Ctl3D = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    EdgeInner = esRaised
-    EdgeOuter = esLowered
-    Enabled = True
-    Flat = True
-    ParentColor = True
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 1
-    TabStop = False
-    Visible = True
     object tbAbout: TToolButton
       Left = 136
       Hint = 'About'
       Top = 2
-      HelpContext = 0
       Caption = 'tbAbout'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       ImageIndex = 9
       ParentShowHint = False
       ShowHint = True
-      Visible = True
       OnClick = tbAboutClick
     end
     object ToolButton2: TToolButton
       Left = 131
       Top = 2
       Width = 5
-      HelpContext = 0
       Caption = 'ToolButton2'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsDivider
-      Visible = True
     end
     object tbJumpTo: TToolButton
       Left = 108
       Hint = 'Jump To Selection'
       Top = 2
-      HelpContext = 0
       Caption = 'Goto'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       ImageIndex = 5
       ParentShowHint = False
       ShowHint = True
-      Visible = True
       OnClick = LVDblClick
     end
     object ToolButton4: TToolButton
       Left = 103
       Top = 2
       Width = 5
-      HelpContext = 0
       Caption = 'ToolButton4'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsDivider
-      Visible = True
     end
     object tbFilterAny: TToolButton
       Left = 80
       Hint = 'Filter by matching any part of method'
       Top = 2
-      HelpContext = 0
       Caption = 'tbFilterAny'
       Down = True
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       Grouped = True
       ImageIndex = 8
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
-      Visible = True
     end
     object tbFilterStart: TToolButton
       Left = 57
       Hint = 'Filter by matching with start of method'
       Top = 2
-      HelpContext = 0
       Caption = 'tbFilterStart'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       Grouped = True
       ImageIndex = 7
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
-      Visible = True
     end
     object ToolButton7: TToolButton
       Left = 52
       Top = 2
       Width = 5
-      HelpContext = 0
       Caption = 'ToolButton7'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsDivider
-      Visible = True
     end
     object tbChangeFont: TToolButton
       Left = 29
       Hint = 'Change Font'
       Top = 2
-      HelpContext = 0
       Caption = 'tbChangeFont'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       ImageIndex = 4
       ParentShowHint = False
       ShowHint = True
-      Visible = True
     end
     object ToolButton9: TToolButton
       Left = 24
       Top = 2
       Width = 5
-      HelpContext = 0
       Caption = 'ToolButton9'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsDivider
-      Visible = True
     end
     object tbCopy: TToolButton
       Left = 1
       Hint = 'Copy method name to the clipboard'
       Top = 2
-      HelpContext = 0
       Caption = 'tbCopy'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
       ImageIndex = 6
       ParentShowHint = False
       ShowHint = True
-      Visible = True
       OnClick = tbCopyClick
     end
   end
   object pnlHeader: TPanel
-    Left = 0
-    Height = 43
+    Height = 35
     Top = 26
-    Width = 638
-    HelpContext = 0
+    Width = 760
     Align = alTop
-    Alignment = taCenter
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BevelInner = bvNone
     BevelOuter = bvNone
-    BevelWidth = 1
-    BorderWidth = 0
-    BorderStyle = bsNone
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
-    ClientHeight = 43
-    ClientWidth = 638
-    Color = clLime
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    FullRepaint = True
+    ClientHeight = 35
+    ClientWidth = 760
     ParentColor = False
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 2
-    TabStop = False
-    Visible = True
     object lblSearch: TLabel
+      AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 18
-      Top = 6
-      Width = 57
-      HelpContext = 0
-      Align = alNone
-      Alignment = taLeftJustify
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
+      Height = 14
+      Top = 10
+      Width = 34
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = '&Search'
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      Layout = tlTop
-      ParentBidiMode = True
       ParentColor = False
-      ParentFont = True
-      ParentShowHint = True
-      ShowAccelChar = True
-      Transparent = True
-      Visible = True
-      WordWrap = False
-      OptimalFill = False
     end
     object lblObjects: TLabel
       AnchorSideLeft.Control = edMethods
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
-      Left = 267
-      Height = 18
-      Top = 12
-      Width = 60
-      HelpContext = 0
-      Align = alNone
-      Alignment = taLeftJustify
-      AutoSize = True
+      Left = 389
+      Height = 14
+      Top = 10
+      Width = 38
       BorderSpacing.Left = 12
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
       Caption = '&Objects'
-      DragCursor = crDrag
-      DragMode = dmManual
-      Enabled = True
-      Layout = tlTop
-      ParentBidiMode = True
       ParentColor = False
-      ParentFont = True
-      ParentShowHint = True
-      ShowAccelChar = True
-      Transparent = True
-      Visible = True
-      WordWrap = False
-      OptimalFill = False
     end
     object edMethods: TEdit
       AnchorSideLeft.Control = lblSearch
@@ -364,39 +165,18 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = cbObjects
       AnchorSideBottom.Side = asrBottom
-      Left = 69
-      Height = 31
+      Left = 46
+      Height = 21
       Top = 6
-      Width = 180
-      HelpContext = 0
-      Align = alNone
+      Width = 325
       Anchors = [akTop, akLeft, akRight, akBottom]
-      AutoSize = False
-      AutoSelect = False
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      CharCase = ecNormal
-      DragCursor = crDrag
-      DragMode = dmManual
-      EchoMode = emNormal
-      Enabled = True
-      MaxLength = -1
-      ParentBidiMode = True
       OnChange = edMethodsChange
       OnKeyDown = edMethodsKeyDown
       OnKeyPress = edMethodsKeyPress
-      ParentFont = True
-      ParentShowHint = True
-      PasswordChar = #0
-      ReadOnly = False
-      TabStop = True
       TabOrder = 0
-      Visible = True
     end
     object cbObjects: TComboBox
       AnchorSideLeft.Control = lblObjects
@@ -404,105 +184,48 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideRight.Control = pnlHeader
       AnchorSideRight.Side = asrBottom
-      Left = 333
-      Height = 31
+      Left = 433
+      Height = 21
       Top = 6
-      Width = 299
-      HelpContext = 0
-      TabStop = True
-      Align = alNone
+      Width = 321
       Anchors = [akTop, akLeft, akRight]
-      ArrowKeysTraverseList = True
-      AutoComplete = False
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      AutoDropDown = False
-      AutoSelect = False
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
       BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      CharCase = ecNormal
-      Ctl3D = False
-      DragCursor = crDrag
-      DragMode = dmManual
-      DropDownCount = 8
-      Enabled = True
-      ItemHeight = 0
-      ItemIndex = -1
-      ItemWidth = 0
-      MaxLength = 0
+      ItemHeight = 13
       OnChange = cbObjectsChange
-      ParentBidiMode = True
-      ParentColor = False
-      ParentCtl3D = True
-      ParentFont = True
-      ParentShowHint = True
       Sorted = True
       Style = csDropDownList
       TabOrder = 1
-      Visible = True
     end
   end
   object LV: TListView
-    Left = 0
-    Height = 237
-    Top = 69
-    Width = 638
-    HelpContext = 0
+    Height = 423
+    Top = 61
+    Width = 760
     Align = alClient
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BorderWidth = 0
-    Checkboxes = False
     Columns = <    
       item
-        AutoSize = False
       end    
       item
-        AutoSize = False
         Caption = 'Procedure'
         Width = 300
       end    
       item
-        AutoSize = False
         Caption = 'Type'
       end    
       item
-        AutoSize = False
         Caption = 'Line'
         Width = 238
       end>
-    ColumnClick = True
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
     HideSelection = False
     Items.LazData = {
       4C0000000100000000000000FFFFFFFFFFFFFFFF03000000000000000E000000
       54466F726D2E54657374466F75720800000046756E6374696F6E020000003234
       FFFFFFFFFFFFFFFFFFFFFFFF
     }
-    MultiSelect = False
-    ParentShowHint = True
     ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
-    ShowColumnHeaders = True
-    SortColumn = 0
-    SortType = stNone
-    TabStop = True
     TabOrder = 0
-    ToolTips = True
-    Visible = True
     ViewStyle = vsReport
     OnDblClick = LVDblClick
     OnKeyPress = edMethodsKeyPress
