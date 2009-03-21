@@ -158,9 +158,10 @@ type
     property Children: TSynCustomCodeFoldBlock read FChildren;
   public
     destructor Destroy; override;
-    function Compare(Block: TSynCustomCodeFoldBlock): integer; virtual;
+    procedure WriteDebugReport;
   public
-    property BlockType: Pointer read FBlockType write FBlockType;
+    procedure InitRootBlockType(AType: Pointer);
+    property BlockType: Pointer read FBlockType;
     property Parent: TSynCustomCodeFoldBlock read FParent;
     property Child[ABlockType: Pointer]: TSynCustomCodeFoldBlock read GetChild;
   end;
@@ -1524,15 +1525,26 @@ begin
   inherited Destroy;
 end;
 
-function TSynCustomCodeFoldBlock.Compare(Block: TSynCustomCodeFoldBlock
-  ): integer;
+procedure TSynCustomCodeFoldBlock.WriteDebugReport;
+  procedure debugout(n: TSynCustomCodeFoldBlock; s1, s: String; p: TSynCustomCodeFoldBlock);
+  begin
+    if n = nil then exit;
+    if n.FParent <> p then
+      DebugLn([s1, 'Wrong Parent for', ' (', PtrInt(n), ')']);
+    DebugLn([s1, PtrUInt(n.BlockType), ' (', PtrInt(n), ')']);
+    debugout(n.FLeft, s+'L: ', s+'   ', p);
+    debugout(n.FRight, s+'R: ', s+'   ', p);
+    debugout(n.FChildren, s+'C: ', s+'   ', n);
+  end;
 begin
-  if BlockType>Block.BlockType then
-    Result:=1
-  else if BlockType<Block.BlockType then
-    Result:=-1
-  else
-    Result:=0;
+  debugout(self, '', '', nil);
+end;
+
+procedure TSynCustomCodeFoldBlock.InitRootBlockType(AType: Pointer);
+begin
+  if assigned(FParent) then
+    raise Exception.Create('Attempt to modify a FoldBlock');
+  FBlockType := AType;
 end;
 
 { TSynCustomHighlighterRange }
@@ -1559,8 +1571,12 @@ begin
     Result:=1
   else if RangeType>Range.RangeType then
     Result:=-1
+  else if Pointer(FTop) < Pointer(Range.FTop) then
+    Result:= -1
+  else if Pointer(FTop) > Pointer(Range.FTop) then
+    Result:= 1
   else
-    Result := FTop.Compare(Range.FTop);
+    Result := 0;
 end;
 
 function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
@@ -1609,7 +1625,8 @@ procedure TSynCustomHighlighterRange.WriteDebugReport;
 begin
   debugln('TSynCustomHighlighterRange.WriteDebugReport ',DbgSName(Self),
     ' RangeType=',dbgs(RangeType),' StackSize=',dbgs(CodeFoldStackSize));
-  debugln(' BlockType=',dbgs(FTop.BlockType));
+  debugln(' Block=',dbgs(PtrInt(FTop)));
+  FTop.WriteDebugReport;
 end;
 
 { TSynCustomHighlighterRanges }
