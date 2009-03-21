@@ -166,7 +166,9 @@ begin
 
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
+  ContributorsPage.DoubleBuffered := True;
   AcknowledgementsPage.Caption:=lisAcknowledgements;
+  AcknowledgementsPage.DoubleBuffered := True;
   LogoPage.Caption:=lisLogo;
   miVerToClipboard.Caption := lisVerToClipboard;
   
