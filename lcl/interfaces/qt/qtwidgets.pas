@@ -979,7 +979,6 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
-    FChangingSelection: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
     FHeaderEventFilterHook: QObject_hookH;
@@ -988,8 +987,6 @@ type
     FItemClickedHook: QTreeWidget_hookH;
     FItemActivatedHook: QTreeWidget_hookH;
     FItemChangedHook: QTreeWidget_hookH;
-    FItemSelectionChangedHook: QTreeWidget_hookH;
-    FItemPressedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
@@ -1028,7 +1025,6 @@ type
     procedure DetachEvents; override;
     function headerViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 
-    procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -1037,7 +1033,6 @@ type
     procedure SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
-    procedure SignalItemSelectionChanged; cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
@@ -7365,7 +7360,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
-  FChangingSelection := False;
   Result := QTreeWidget_create();
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7574,7 +7568,43 @@ end;
 
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
   ASelect: Boolean);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  AParent: QTreeWidgetItemH;
+  AIndex: Integer;
+  ASubIndex: Integer;
+  i: Integer;
 begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
+
+  if AIndex = -1 then
+    exit;
+
+  AParent := QTreeWidgetItem_parent(AItem);
+
+  if AParent <> nil then
+    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, AItem)
+  else
+    ASubIndex := 0;
+
+
+  NMLV.iItem := AIndex;
+  NMLV.iSubItem := ASubIndex;
+  if not ASelect then
+    NMLV.uOldState := LVIS_SELECTED
+  else
+    NMLV.uNewState := LVIS_SELECTED;
+  NMLV.uChanged := LVIF_STATE;
+  Msg.NMHdr := @NMLV.hdr;
+  DeliverMessage(Msg);
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
 end;
 
@@ -7594,8 +7624,6 @@ begin
   FItemClickedHook := QTreeWidget_hook_create(Widget);
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
   FItemChangedHook := QTreeWidget_hook_create(Widget);
-  FItemSelectionChangedHook := QTreeWidget_hook_create(Widget);
-  FItemPressedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   
   QTreeWidget_currentItemChanged_Event(Method) := @SignalCurrentItemChanged;
@@ -7613,12 +7641,6 @@ begin
   QTreeWidget_itemChanged_Event(Method) := @SignalItemChanged;
   QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, Method);
 
-  QTreeWidget_itemSelectionChanged_Event(Method) := @SignalItemSelectionChanged;
-  QTreeWidget_hook_hook_ItemSelectionChanged(FItemSelectionChangedHook, Method);
-
-  QTreeWidget_itemPressed_Event(Method) := @SignalItemPressed;
-  QTreeWidget_hook_hook_ItemPressed(FItemPressedHook, Method);
-
   QTreeWidget_itemEntered_Event(Method) := @SignalItemEntered;
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, Method);
 
@@ -7631,8 +7653,6 @@ begin
   QTreeWidget_hook_destroy(FItemClickedHook);
   QTreeWidget_hook_destroy(FItemActivatedHook);
   QTreeWidget_hook_destroy(FItemChangedHook);
-  QTreeWidget_hook_destroy(FItemSelectionChangedHook);
-  QTreeWidget_hook_destroy(FItemPressedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
   if FHeaderEventFilterHook <> nil then
     QObject_hook_destroy(FHeaderEventFilterHook);
@@ -7655,35 +7675,6 @@ begin
       QWidget_setFocus(Widget);
     end;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemPressed
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
-var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
-
-  Msg.Msg := LM_PRESSED;
-  
-  NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-
-  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
-
-  NMLV.iSubItem := Column;
-  NMLV.uNewState := UINT(NM_KEYDOWN);
-  NMLV.uChanged := LVIS_SELECTED;
-
-  Msg.NMHdr := @NMLV.hdr;
-
-  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -7845,6 +7836,7 @@ var
   NMLV: TNMListView;
   AParent: QTreeWidgetItemH;
   ASubIndex: Integer;
+  AIndex: Integer;
 begin
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -7854,8 +7846,9 @@ begin
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGING;
-  
-  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
+
+  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
+  NMLV.iItem := AIndex;
 
   if NMLV.iItem = -1 then
     exit;
@@ -7872,73 +7865,43 @@ begin
   NMLV.uChanged := LVIF_STATE;
 
   Msg.NMHdr := @NMLV.hdr;
-  
-  if Current <> Previous then
-  	DeliverMessage(Msg);
-  
-end;
 
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemSelectionChanged
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemSelectionChanged; cdecl;
-var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-  Item: QTreeWidgetItemH;
-  AParent: QTreeWidgetItemH;
-  AIndex: Integer;
-  ASubIndex: Integer;
-  i: Integer;
-begin
-  if FChangingSelection then
-    exit;
-  FChangingSelection := True;
-  try
+  if Current <> nil then
+  begin
+  	DeliverMessage(Msg);
 
     FillChar(Msg, SizeOf(Msg), #0);
     FillChar(NMLV, SizeOf(NMLV), #0);
-
     Msg.Msg := CN_NOTIFY;
-
 
     NMLV.hdr.hwndfrom := LCLObject.Handle;
     NMLV.hdr.code := LVN_ITEMCHANGED;
-
-
-    Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
-    AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
-
-    if AIndex = -1 then
-      exit;
-
-    AParent := QTreeWidgetItem_parent(Item);
-
-    if AParent <> nil then
-      ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
-    else
-      ASubIndex := 0;
-
     NMLV.iItem := AIndex;
     NMLV.iSubItem := ASubIndex;
     NMLV.uNewState := LVIS_SELECTED;
     NMLV.uChanged := LVIF_STATE;
-
-
     Msg.NMHdr := @NMLV.hdr;
-
     DeliverMessage(Msg);
+  end;
 
-    {$note must refresh LCL items - workaround.}
-    if LCLObject is TListView then
-    begin
-      for i := 0 to TListView(LCLObject).Items.Count - 1 do
-        TListView(LCLObject).Items[i].Selected;
-    end;
-  finally
-    FChangingSelection := False;
+  if Previous <> nil then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(NMLV, SizeOf(NMLV), #0);
+    Msg.Msg := CN_NOTIFY;
+    NMLV.hdr.hwndfrom := LCLObject.Handle;
+    NMLV.hdr.code := LVN_ITEMCHANGED;
+    NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Previous);
+  	AParent := QTreeWidgetItem_parent(Previous);
+    if AParent <> nil then
+      ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
+    else
+      ASubIndex := 0;
+    NMLV.iSubItem := ASubIndex;
+    NMLV.uOldState := LVIS_SELECTED;
+    NMLV.uChanged := LVIF_STATE;
+    Msg.NMHdr := @NMLV.hdr;
+    DeliverMessage(Msg);
   end;
 end;
 
