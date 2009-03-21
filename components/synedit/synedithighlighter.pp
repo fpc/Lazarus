@@ -159,7 +159,6 @@ type
   public
     destructor Destroy; override;
     function Compare(Block: TSynCustomCodeFoldBlock): integer; virtual;
-    procedure Assign(Src: TSynCustomCodeFoldBlock); virtual;
   public
     property BlockType: Pointer read FBlockType write FBlockType;
     property Parent: TSynCustomCodeFoldBlock read FParent;
@@ -1534,11 +1533,6 @@ begin
     Result:=-1
   else
     Result:=0;
-end;
-
-procedure TSynCustomCodeFoldBlock.Assign(Src: TSynCustomCodeFoldBlock);
-begin
-  FBlockType:=Src.FBlockType;
 end;
 
 { TSynCustomHighlighterRange }

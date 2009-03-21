@@ -774,7 +774,8 @@ begin
     if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
-      CodeFoldRange.Top.BlockType := Pointer(PtrInt(cfbtUses));
+      CodeFoldRange.Pop(false); // avoid minlevel
+      CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end;
   end
   else Result := tkIdentifier;
