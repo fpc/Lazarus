@@ -979,6 +979,7 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
+    FChangingSelection: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
     FHeaderEventFilterHook: QObject_hookH;
@@ -7364,6 +7365,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FChangingSelection := False;
   Result := QTreeWidget_create();
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7572,37 +7574,7 @@ end;
 
 procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
   ASelect: Boolean);
-var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-  AParent: QTreeWidgetItemH;
-  AIndex: Integer;
-  ASubIndex: Integer;
 begin
-  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
-
-  Msg.Msg := CN_NOTIFY;
-
-  NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-
-	AParent := QTreeWidgetItem_parent(AItem);
-
-  if AParent <> nil then
-    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, AItem)
-  else
-    ASubIndex := 0;
-
-  NMLV.iItem := AIndex;
-  NMLV.iSubItem := ASubIndex;
-  NMLV.uNewState := LVIS_SELECTED;
-  NMLV.uChanged := LVIF_STATE;
-
-  Msg.NMHdr := @NMLV.hdr;
-  DeliverMessage(Msg);
-
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
 end;
 
@@ -7919,40 +7891,55 @@ var
   AParent: QTreeWidgetItemH;
   AIndex: Integer;
   ASubIndex: Integer;
+  i: Integer;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
-
-  Msg.Msg := CN_NOTIFY;
-
-
-  NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-
-
-  Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
-  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
-  
-  if AIndex = -1 then
+  if FChangingSelection then
     exit;
-    
- 	AParent := QTreeWidgetItem_parent(Item);
-   
-  if AParent <> nil then
-    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
-  else
-    ASubIndex := 0;
+  FChangingSelection := True;
+  try
 
-  NMLV.iItem := AIndex;
-  NMLV.iSubItem := ASubIndex;
-  NMLV.uNewState := LVIS_SELECTED;
-  NMLV.uChanged := LVIF_STATE;
+    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(NMLV, SizeOf(NMLV), #0);
+
+    Msg.Msg := CN_NOTIFY;
 
 
-  Msg.NMHdr := @NMLV.hdr;
+    NMLV.hdr.hwndfrom := LCLObject.Handle;
+    NMLV.hdr.code := LVN_ITEMCHANGED;
 
-  DeliverMessage(Msg);
-  
+
+    Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
+    AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+
+    if AIndex = -1 then
+      exit;
+
+    AParent := QTreeWidgetItem_parent(Item);
+
+    if AParent <> nil then
+      ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
+    else
+      ASubIndex := 0;
+
+    NMLV.iItem := AIndex;
+    NMLV.iSubItem := ASubIndex;
+    NMLV.uNewState := LVIS_SELECTED;
+    NMLV.uChanged := LVIF_STATE;
+
+
+    Msg.NMHdr := @NMLV.hdr;
+
+    DeliverMessage(Msg);
+
+    {$note must refresh LCL items - workaround.}
+    if LCLObject is TListView then
+    begin
+      for i := 0 to TListView(LCLObject).Items.Count - 1 do
+        TListView(LCLObject).Items[i].Selected;
+    end;
+  finally
+    FChangingSelection := False;
+  end;
 end;
 
 {TQtTableView}
