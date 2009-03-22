@@ -1723,19 +1723,18 @@ begin
   OriginDiff.X := 0;
   OriginDiff.Y := 0;
   // there is no way to get offset for memory or metafile DC => assume it 0
-  if GetObjectType(PaintDC) = OBJ_DC then
-  begin
-    Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
-    if not Result then exit;
-    winOrg.X := 0;
-    winOrg.Y := 0;
-    Result := Windows.ClientToScreen(WindowHandle, winOrg);
-    if not Result then exit;
-    Result := GetLCLClientBoundsOffset(WindowHandle, ORect);
-    if not Result then exit;
-    OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
-    OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
-  end;
+  Result := GetObjectType(PaintDC) = OBJ_DC;
+  if not Result then Exit;
+  Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
+  if not Result then exit;
+  winOrg.X := 0;
+  winOrg.Y := 0;
+  Result := Windows.ClientToScreen(WindowHandle, winOrg);
+  if not Result then exit;
+  Result := GetLCLClientBoundsOffset(WindowHandle, ORect);
+  if not Result then exit;
+  OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
+  OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
   Result := Windows.GetWindowOrgEx(PaintDC, winOrg);
   if not Result then exit;
   dec(OriginDiff.X, winOrg.X);
