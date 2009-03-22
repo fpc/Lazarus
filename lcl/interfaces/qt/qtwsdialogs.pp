@@ -322,6 +322,7 @@ var
   ReturnList: QStringListH;
   i: integer;
   QtFileDialog: TQtFileDialog;
+  Flags: Cardinal;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
@@ -352,7 +353,10 @@ begin
     saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
     saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
     saveTitle := GetUTF8String(FileDialog.Title);
-    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, @selectedFilter, 0);
+    Flags := 0;
+    if not (ofOverwritePrompt in TOpenDialog(FileDialog).Options) then
+      Flags := Flags or QFileDialogDontConfirmOverwrite;
+    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, @selectedFilter, Flags);
     if ReturnText <> '' then
     begin
       FileDialog.FileName := UTF16ToUTF8(ReturnText);
