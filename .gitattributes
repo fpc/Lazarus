@@ -1417,6 +1417,7 @@ components/synedit/syneditautocomplete.pp svneol=native#text/pascal
 components/synedit/syneditexport.pas svneol=native#text/pascal
 components/synedit/syneditfoldedview.pp svneol=native#text/plain
 components/synedit/synedithighlighter.pp svneol=native#text/pascal
+components/synedit/synedithighlighterfoldbase.pas svneol=native#text/plain
 components/synedit/syneditkeycmds.pp svneol=native#text/pascal
 components/synedit/syneditlazdsgn.lrs svneol=native#text/pascal
 components/synedit/syneditlazdsgn.pas svneol=native#text/pascal

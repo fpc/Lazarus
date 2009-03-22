@@ -34,18 +34,15 @@ interface
 uses
   SysUtils, Classes,
 {$IFDEF SYN_CLX}
-  kTextDrawer,
-  Types,
-  QGraphics,
+  kTextDrawer, Types, QGraphics,
 {$ELSE}
   Graphics,
   {$IFDEF SYN_LAZARUS}
-  FileUtil, LCLProc, LCLIntf, LCLType, AvgLvlTree,
+  FileUtil, LCLProc, LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
-  Registry,
-  IniFiles,
+  Registry, IniFiles,
 {$ENDIF}
   SynEditTypes,
   SynEditMiscClasses,
@@ -134,64 +131,9 @@ type
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
     hcRegistry      // supports LoadFrom/SaveToRegistry
-    {$IFDEF SYN_LAZARUS}
-    ,hcCodeFolding  // supports codefolding
-    {$ENDIF}
   );
 
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
-
-  {$IFDEF SYN_LAZARUS}
-  { TSynCustomCodeFoldBlock }
-
-  TSynCustomCodeFoldBlock = class
-  private
-    FBlockType: Pointer;
-    FParent, FChildren: TSynCustomCodeFoldBlock;
-    FRight, FLeft: TSynCustomCodeFoldBlock;
-    FBalance: Integer;
-    function GetChild(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-  protected
-    function GetOrCreateSibling(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-    property Right: TSynCustomCodeFoldBlock read FRight;
-    property Left: TSynCustomCodeFoldBlock read FLeft;
-    property Children: TSynCustomCodeFoldBlock read FChildren;
-  public
-    destructor Destroy; override;
-    procedure WriteDebugReport;
-  public
-    procedure InitRootBlockType(AType: Pointer);
-    property BlockType: Pointer read FBlockType;
-    property Parent: TSynCustomCodeFoldBlock read FParent;
-    property Child[ABlockType: Pointer]: TSynCustomCodeFoldBlock read GetChild;
-  end;
-  TSynCustomCodeFoldBlockClass = class of TSynCustomCodeFoldBlock;
-
-  { TSynCustomHighlighterRange }
-
-  TSynCustomHighlighterRange = class
-  private
-    FCodeFoldStackSize: integer;
-    FRangeType: Pointer;
-    FTop: TSynCustomCodeFoldBlock;
-  public
-    constructor Create(Template: TSynCustomHighlighterRange); virtual;
-    destructor Destroy; override;
-    function Compare(Range: TSynCustomHighlighterRange): integer; virtual;
-    function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
-        TSynCustomCodeFoldBlock;
-    procedure Pop(DecreaseLevel: Boolean = True);
-    procedure Clear; virtual;
-    procedure Assign(Src: TSynCustomHighlighterRange); virtual;
-    procedure WriteDebugReport;
-    property FoldRoot: TSynCustomCodeFoldBlock read FTop write FTop;
-  public
-    property RangeType: Pointer read FRangeType write FRangeType;
-    property CodeFoldStackSize: integer read FCodeFoldStackSize;
-    property Top: TSynCustomCodeFoldBlock read FTop;
-  end;
-  TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange;
-  {$ENDIF}
 
 const
   SYN_ATTR_COMMENT           =   0;
@@ -202,9 +144,6 @@ const
   SYN_ATTR_SYMBOL            =   5;                                             //mh 2001-09-13
 
 type
-  {$IFDEF SYN_LAZARUS}
-  TSynCustomHighlighterRanges = class;
-  {$ENDIF}
 
   { TSynCustomHighlighter }
 
@@ -213,12 +152,7 @@ type
     fAttributes: TStringList;
     fAttrChangeHooks: TSynNotifyEventChain;
     {$IFDEF SYN_LAZARUS}
-    FCodeFoldRange: TSynCustomHighlighterRange;
     FCapabilities: TSynHighlighterCapabilities;
-    protected
-    FMinimumCodeFoldBlockLevel: integer;
-    private
-      FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
@@ -227,10 +161,6 @@ type
   protected
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
-    {$IFDEF SYN_LAZARUS}
-    fRanges: TSynCustomHighlighterRanges;
-    {$ENDIF}
-    function GetLastLineCodeFoldLevelFix: integer; virtual;
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
@@ -245,18 +175,8 @@ type
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
-    {$IFDEF SYN_LAZARUS}
     // code fold - only valid if hcCodeFolding in Capabilities
-    property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
-    function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
-    function TopCodeFoldBlockType: Pointer;
-    function StartCodeFoldBlock(ABlockType: Pointer;
-              IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; virtual;
-    procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
-    {$ENDIF}
-    procedure CreateRootCodeFoldBlock;
-    property RootCodeFoldBlock: TSynCustomCodeFoldBlock read FRootCodeFoldBlock
-      write FRootCodeFoldBlock;
+    function GetLastLineCodeFoldLevelFix: integer; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -286,7 +206,7 @@ type
     procedure NextToEol;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
                       LineNumber:Integer // 0 based
-                      ); virtual; {$IFNDEF SYN_LAZARUS}abstract;{$ENDIF}
+                      ); virtual;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;
@@ -297,17 +217,17 @@ type
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
-    Function GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
-         out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean; virtual;
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
 
-    {$IFDEF SYN_LAZARUS}
-    property MinimumCodeFoldBlockLevel: integer read FMinimumCodeFoldBlockLevel;
-    function CurrentCodeFoldBlockLevel: integer;
+    // folding
+    Function GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
+         out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean; virtual;
+    (* Methds for folding *)
+    function MinimumCodeFoldBlockLevel: integer; virtual;
+    function CurrentCodeFoldBlockLevel: integer; virtual;
     property LastLineCodeFoldLevelFix: integer read GetLastLineCodeFoldLevelFix;
-    {$ENDIF}
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
@@ -335,26 +255,6 @@ type
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
-{$IFDEF SYN_LAZARUS}
-  { TSynCustomHighlighterRanges }
-
-  TSynCustomHighlighterRanges = class
-  private
-    FAllocatedCount: integer;
-    FHighlighterClass: TSynCustomHighlighterClass;
-    FItems: TAvgLvlTree;
-  public
-    constructor Create(TheHighlighterClass: TSynCustomHighlighterClass);
-    destructor Destroy; override;
-    function GetEqual(Range: TSynCustomHighlighterRange
-                      ): TSynCustomHighlighterRange;
-    procedure Allocate;
-    procedure Release;
-    property HighlighterClass: TSynCustomHighlighterClass read FHighlighterClass;
-    property AllocatedCount: integer read FAllocatedCount;
-  end;
-{$ENDIF}
-
 {$IFNDEF SYN_CPPB_1}
   TSynHighlighterList = class(TList)
   private
@@ -374,13 +274,6 @@ type
     TSynCustomHighlighterClass);
   function GetPlaceableHighlighters: TSynHighlighterList;
 {$ENDIF}
-
-{$IFDEF SYN_LAZARUS}
-function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
-function AllocateHighlighterRanges(
-     HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
-{$ENDIF}
-
 
 implementation
 
@@ -474,52 +367,6 @@ procedure RegisterPlaceableHighlighter(highlighter: TSynCustomHighlighterClass);
 begin
   if G_PlaceableHighlighters.hlList.IndexOf(highlighter) < 0 then
     G_PlaceableHighlighters.hlList.Add(highlighter);
-end;
-{$ENDIF}
-
-{$IFDEF SYN_LAZARUS}
-function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
-var
-  Range1: TSynCustomHighlighterRange;
-  Range2: TSynCustomHighlighterRange;
-begin
-  Range1:=TSynCustomHighlighterRange(Data1);
-  Range2:=TSynCustomHighlighterRange(Data2);
-  Result:=Range1.Compare(Range2);
-end;
-
-var
-  HighlighterRanges: TFPList = nil;
-
-function IndexOfHighlighterRanges(
-  HighlighterClass: TSynCustomHighlighterClass): integer;
-begin
-  if HighlighterRanges=nil then
-    Result:=-1
-  else begin
-    Result:=HighlighterRanges.Count-1;
-    while (Result>=0)
-    and (TSynCustomHighlighterRanges(HighlighterRanges[Result]).HighlighterClass
-      <>HighlighterClass)
-    do
-      dec(Result);
-  end;
-end;
-
-function AllocateHighlighterRanges(
-  HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
-var
-  i: LongInt;
-begin
-  if HighlighterRanges=nil then HighlighterRanges:=TFPList.Create;
-  i:=IndexOfHighlighterRanges(HighlighterClass);
-  if i>=0 then begin
-    Result:=TSynCustomHighlighterRanges(HighlighterRanges[i]);
-    Result.Allocate;
-  end else begin
-    Result:=TSynCustomHighlighterRanges.Create(HighlighterClass);
-    HighlighterRanges.Add(Result);
-  end;
 end;
 {$ENDIF}
 
@@ -956,25 +803,10 @@ begin
   fAttributes.Sorted := TRUE;
   fAttrChangeHooks := TSynNotifyEventChain.CreateEx(Self);
   fDefaultFilter := '';
-  {$IFDEF SYN_LAZARUS}
-  if hcCodeFolding in Capabilities then begin
-    CreateRootCodeFoldBlock;
-    FCodeFoldRange:=GetRangeClass.Create(nil);
-    FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
-    fRanges:=AllocateHighlighterRanges(TSynCustomHighlighterClass(ClassType));
-  end;
-  {$ENDIF}
 end;
 
 destructor TSynCustomHighlighter.Destroy;
 begin
-  {$IFDEF SYN_LAZARUS}
-  if hcCodeFolding in Capabilities then begin
-    FreeAndNil(FCodeFoldRange);
-    fRanges.Release;
-    FreeAndNil(FRootCodeFoldBlock);
-  end;
-  {$ENDIF}
   FreeHighlighterAttributes;
   fAttributes.Free;
   fAttrChangeHooks.Free;
@@ -1190,14 +1022,6 @@ end;
 function TSynCustomHighlighter.GetRange: pointer;
 begin
   Result := nil;
-  {$IFDEF SYN_LAZARUS}
-  if (hcCodeFolding in Capabilities) then begin
-    // FCodeFoldRange is the working range and changed steadily
-    // => return a fixed copy of the current CodeFoldRange instance,
-    //    that can be stored by other classes (e.g. TSynEdit)
-    Result:=fRanges.GetEqual(FCodeFoldRange);
-  end;
-  {$ENDIF}
 end;
 
 function TSynCustomHighlighter.GetSampleSource: string;
@@ -1229,12 +1053,6 @@ end;
 
 procedure TSynCustomHighlighter.ResetRange;
 begin
-  {$IFDEF SYN_LAZARUS}
-  if (hcCodeFolding in Capabilities) then begin
-    FCodeFoldRange.Clear;
-    FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
-  end;
-  {$ENDIF}
 end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
@@ -1253,15 +1071,6 @@ end;
 
 procedure TSynCustomHighlighter.SetRange(Value: Pointer);
 begin
-  {$IFDEF SYN_LAZARUS}
-  if (hcCodeFolding in Capabilities) then begin
-    FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
-    // in case we asigned a null range
-    if not assigned(FCodeFoldRange.FoldRoot) then
-      FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
-    FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
-  end;
-  {$ENDIF}
 end;
 
 procedure TSynCustomHighlighter.SetDefaultFilter(Value: string);
@@ -1285,6 +1094,11 @@ begin
   Result := False;
 end;
 
+function TSynCustomHighlighter.MinimumCodeFoldBlockLevel: integer;
+begin
+  Result := 0;
+end;
+
 procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
 begin
   if fEnabled <> Value then
@@ -1302,389 +1116,21 @@ begin
   Result := 0;
 end;
 
-{$IFDEF SYN_LAZARUS}
+function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
+begin
+  Result := 0;
+end;
+
 procedure TSynCustomHighlighter.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
-  if (hcCodeFolding in Capabilities) then begin
-    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
-  end;
 end;
-
-function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
-begin
-  if CodeFoldRange<>nil then
-    Result:=CodeFoldRange.CodeFoldStackSize
-  else
-    Result:=0;
-end;
-
-function TSynCustomHighlighter.GetRangeClass: TSynCustomHighlighterRangeClass;
-begin
-  Result:=TSynCustomHighlighterRange;
-end;
-
-function TSynCustomHighlighter.TopCodeFoldBlockType: Pointer;
-begin
-  if (CodeFoldRange<>nil) and (CodeFoldRange.CodeFoldStackSize>0) then
-    Result:=CodeFoldRange.Top.BlockType
-  else
-    Result:=nil;
-end;
-
-function TSynCustomHighlighter.StartCodeFoldBlock(ABlockType: Pointer;
-  IncreaseLevel: Boolean = True): TSynCustomCodeFoldBlock;
-begin
-  Result:=CodeFoldRange.Add(ABlockType, IncreaseLevel);
-end;
-
-procedure TSynCustomHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);
-begin
-  CodeFoldRange.Pop(DecreaseLevel);
-  if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
-    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
-end;
-
-procedure TSynCustomHighlighter.CreateRootCodeFoldBlock;
-begin
-  FRootCodeFoldBlock := TSynCustomCodeFoldBlock.Create;
-end;
-
-{$ENDIF}
-
-{$IFNDEF SYN_CPPB_1}
-
-{$IFDEF SYN_LAZARUS}
-{ TSynCustomCodeFoldBlock }
-
-function TSynCustomCodeFoldBlock.GetChild(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-begin
-  if assigned(FChildren) then
-    Result := FChildren.GetOrCreateSibling(ABlockType)
-  else begin
-    Result := TSynCustomCodeFoldBlock(self.ClassType.Create);
-    Result.FBlockType := ABlockType;
-    Result.FParent := self;
-    FChildren := Result;
-  end;
-end;
-
-var
-  CreateSiblingBalanceList: Array of TSynCustomCodeFoldBlock;
-
-function TSynCustomCodeFoldBlock.GetOrCreateSibling(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-  procedure BalanceNode(TheNode: TSynCustomCodeFoldBlock);
-  var
-    i, l: Integer;
-    t: Pointer;
-    N, P, C: TSynCustomCodeFoldBlock;
-  begin
-    l := length(CreateSiblingBalanceList);
-    i := 0;
-    t := TheNode.FBlockType;
-    N := self;
-    while N.FBlockType <> t do begin
-      if i >= l then begin
-        inc(l, 20);
-        SetLength(CreateSiblingBalanceList, l);
-      end;
-      CreateSiblingBalanceList[i] := N; // Record all parents
-      inc(i);
-      if t < N.FBlockType
-      then N := N.FLeft
-      else N := N.FRight;
-    end;
-    if i >= l then begin
-      inc(l, 20);
-      SetLength(CreateSiblingBalanceList, l);
-    end;
-    CreateSiblingBalanceList[i] := TheNode;
-    while i >= 0 do begin
-      if CreateSiblingBalanceList[i].FBalance = 0
-        then exit;
-      if (CreateSiblingBalanceList[i].FBalance = -1) or
-         (CreateSiblingBalanceList[i].FBalance = 1) then begin
-        if i = 0 then
-          exit;
-        dec(i);
-        if CreateSiblingBalanceList[i+1] = CreateSiblingBalanceList[i].FLeft
-        then dec(CreateSiblingBalanceList[i].FBalance)
-        else inc(CreateSiblingBalanceList[i].FBalance);
-        continue;
-      end;
-      // rotate
-      P := CreateSiblingBalanceList[i];
-      if P.FBalance = -2 then begin
-        N := P.FLeft;
-        if N.FBalance < 0 then begin
-          (* ** single rotate ** *)
-          (*  []\[]_     _C                []_      C_    _[]
-                    N(-1)_     _[]    =>      []_    _P(0)
-                          P(-2)                  N(0)           *)
-          C := N.FRight;
-          N.FRight := P;
-          P.FLeft := C;
-          N.FBalance := 0;
-          P.FBalance := 0;
-        end else begin
-          (* ** double rotate ** *)
-          (*          x1 x2
-               []_     _C                  x1    x2
-                  N(+1)_     _[]    =>    N _    _ P
-                        P(-2)                 C           *)
-          C := N.FRight;
-          N.FRight := C.FLeft;
-          P.FLeft  := C.FRight;
-          C.FLeft  := N;
-          C.FRight := P;
-          // balance
-          if (C.FBalance <= 0)
-          then N.FBalance := 0
-          else N.FBalance := -1;
-          if (C.FBalance = -1)
-          then P.FBalance := 1
-          else P.FBalance := 0;
-          C.FBalance := 0;
-          N := C;
-        end;
-      end else begin // *******************
-        N := P.FRight;
-        if N.FBalance > 0 then begin
-          (* ** single rotate ** *)
-          C := N.FLeft;
-          N.FLeft := P;
-          P.FRight := C;
-          N.FBalance := 0;
-          P.FBalance := 0;
-        end else begin
-          (* ** double rotate ** *)
-          C := N.FLeft;
-          N.FLeft := C.FRight;
-          P.FRight  := C.FLeft;
-          C.FRight  := N;
-          C.FLeft := P;
-          // balance
-          if (C.FBalance >= 0)
-          then N.FBalance := 0
-          else N.FBalance := +1;
-          if (C.FBalance = +1)
-          then P.FBalance := -1
-          else P.FBalance := 0;
-          C.FBalance := 0;
-          N := C;
-        end;
-      end;
-      // update parent
-      dec(i);
-      if i < 0 then begin
-        if assigned(self.FParent) then
-          self.FParent.FChildren := N
-      end else
-        if CreateSiblingBalanceList[i].FLeft = P
-        then CreateSiblingBalanceList[i].FLeft := N
-        else CreateSiblingBalanceList[i].FRight := N;
-      break;
-    end
-  end;
-var
-  P: TSynCustomCodeFoldBlock;
-begin
-  Result := self;
-  while (assigned(Result)) do begin
-    if Result.FBlockType = ABlockType then
-      exit;
-    P := Result;
-    if ABlockType < Result.FBlockType
-    then Result := Result.FLeft
-    else Result := Result.FRight;
-  end;
-  // Not Found
-  Result := TSynCustomCodeFoldBlock(self.ClassType.Create);
-  Result.FBlockType := ABlockType;
-  Result.FParent := self.FParent;
-
-  if ABlockType < P.FBlockType then begin
-    P.FLeft := Result;
-    dec(P.FBalance);
-  end else begin
-    P.FRight := Result;
-    inc(P.FBalance);
-  end;
-
-  // Balance
-  if P.FBalance <> 0 then
-    BalanceNode(P);
-
-end;
-
-destructor TSynCustomCodeFoldBlock.Destroy;
-begin
-  FreeAndNil(FRight);
-  FreeAndNil(FLeft);
-  FreeAndNil(FChildren);
-  inherited Destroy;
-end;
-
-procedure TSynCustomCodeFoldBlock.WriteDebugReport;
-  procedure debugout(n: TSynCustomCodeFoldBlock; s1, s: String; p: TSynCustomCodeFoldBlock);
-  begin
-    if n = nil then exit;
-    if n.FParent <> p then
-      DebugLn([s1, 'Wrong Parent for', ' (', PtrInt(n), ')']);
-    DebugLn([s1, PtrUInt(n.BlockType), ' (', PtrInt(n), ')']);
-    debugout(n.FLeft, s+'L: ', s+'   ', p);
-    debugout(n.FRight, s+'R: ', s+'   ', p);
-    debugout(n.FChildren, s+'C: ', s+'   ', n);
-  end;
-begin
-  debugout(self, '', '', nil);
-end;
-
-procedure TSynCustomCodeFoldBlock.InitRootBlockType(AType: Pointer);
-begin
-  if assigned(FParent) then
-    raise Exception.Create('Attempt to modify a FoldBlock');
-  FBlockType := AType;
-end;
-
-{ TSynCustomHighlighterRange }
-
-constructor TSynCustomHighlighterRange.Create(
-  Template: TSynCustomHighlighterRange);
-begin
-  if (Template<>nil) and (ClassType<>Template.ClassType) then
-    RaiseGDBException('');
-  if Template<>nil then
-    Assign(Template);
-end;
-
-destructor TSynCustomHighlighterRange.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-function TSynCustomHighlighterRange.Compare(Range: TSynCustomHighlighterRange
-  ): integer;
-begin
-  if RangeType<Range.RangeType then
-    Result:=1
-  else if RangeType>Range.RangeType then
-    Result:=-1
-  else if Pointer(FTop) < Pointer(Range.FTop) then
-    Result:= -1
-  else if Pointer(FTop) > Pointer(Range.FTop) then
-    Result:= 1
-  else
-    Result := 0;
-end;
-
-function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
-  IncreaseLevel: Boolean = True): TSynCustomCodeFoldBlock;
-begin
-  Result := FTop.Child[ABlockType];
-  if IncreaseLevel then
-    inc(FCodeFoldStackSize);
-  FTop:=Result;
-end;
-
-procedure TSynCustomHighlighterRange.Pop(DecreaseLevel: Boolean = True);
-// can be called, even if there is no stack
-// because it's normal that sources under development have unclosed blocks
-begin
-  //debugln('TSynCustomHighlighterRange.Pop');
-  if assigned(FTop.Parent) then begin
-    FTop := FTop.Parent;
-    if DecreaseLevel then
-      dec(FCodeFoldStackSize);
-  end;
-end;
-
-procedure TSynCustomHighlighterRange.Clear;
-begin
-  FRangeType:=nil;
-  FCodeFoldStackSize := 0;
-  FTop:=nil;
-end;
-
-procedure TSynCustomHighlighterRange.Assign(Src: TSynCustomHighlighterRange);
-begin
-  if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
-    FTop := Src.FTop;
-    FCodeFoldStackSize := Src.FCodeFoldStackSize;
-    FRangeType := Src.FRangeType;
-  end
-  else begin
-    FTop := nil;
-    FCodeFoldStackSize := 0;
-    FRangeType := nil;
-  end;
-end;
-
-procedure TSynCustomHighlighterRange.WriteDebugReport;
-begin
-  debugln('TSynCustomHighlighterRange.WriteDebugReport ',DbgSName(Self),
-    ' RangeType=',dbgs(RangeType),' StackSize=',dbgs(CodeFoldStackSize));
-  debugln(' Block=',dbgs(PtrInt(FTop)));
-  FTop.WriteDebugReport;
-end;
-
-{ TSynCustomHighlighterRanges }
-
-constructor TSynCustomHighlighterRanges.Create(
-  TheHighlighterClass: TSynCustomHighlighterClass);
-begin
-  Allocate;
-  FItems:=TAvgLvlTree.Create(@CompareSynHighlighterRanges);
-end;
-
-destructor TSynCustomHighlighterRanges.Destroy;
-begin
-  if HighlighterRanges<>nil then begin
-    HighlighterRanges.Remove(Self);
-    if HighlighterRanges.Count=0 then
-      FreeAndNil(HighlighterRanges);
-  end;
-  FItems.FreeAndClear;
-  FreeAndNil(FItems);
-  inherited Destroy;
-end;
-
-function TSynCustomHighlighterRanges.GetEqual(Range: TSynCustomHighlighterRange
-  ): TSynCustomHighlighterRange;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  if Range=nil then exit(nil);
-  Node:=FItems.Find(Range);
-  if Node<>nil then begin
-    Result:=TSynCustomHighlighterRange(Node.Data);
-  end else begin
-    // add a copy
-    Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
-    FItems.Add(Result);
-  end;
-  //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
-end;
-
-procedure TSynCustomHighlighterRanges.Allocate;
-begin
-  inc(FAllocatedCount);
-end;
-
-procedure TSynCustomHighlighterRanges.Release;
-begin
-  dec(FAllocatedCount);
-  if FAllocatedCount=0 then Free;
-end;
-{$ENDIF}
 
 initialization
   G_PlaceableHighlighters := TSynHighlighterList.Create;
 finalization
   G_PlaceableHighlighters.Free;
   G_PlaceableHighlighters := nil;
-{$ENDIF}
 end.
 
 

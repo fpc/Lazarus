@@ -57,7 +57,7 @@ uses
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
-  Classes, Registry, Controls,
+  Classes, Registry, Controls, SynEditHighlighterFoldBase,
   SynEditTypes, SynEditHighlighter, SynEditTextBuffer, SynEditTextBase;
 
 type
@@ -156,7 +156,7 @@ type
 
   { TSynPasSyn }
 
-  TSynPasSyn = class(TSynCustomHighlighter)
+  TSynPasSyn = class(TSynCustomFoldHighlighter)
   private
     fAsmStart: Boolean;
     FNestedComments: boolean;
@@ -325,6 +325,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
+    procedure CreateRootCodeFoldBlock; override;
     {$IFDEF SYN_LAZARUS}
     function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
                             SubBlock: boolean = false): TSynCustomCodeFoldBlock;
@@ -1639,8 +1640,6 @@ begin
   CompilerMode:=pcmDelphi;
   {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
-  if hcCodeFolding in Capabilities then
-    RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtNone)));
 
   InitIdent;
   MakeMethodTables;
@@ -2636,14 +2635,19 @@ end;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
 function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
 begin
-  Result := inherited GetCapabilities + [hcUserSettings
-                                    {$IFDEF SYN_LAZARUS},hcCodeFolding{$ENDIF}];
+  Result := inherited GetCapabilities + [hcUserSettings];
 end;
 
 {begin}                                                                         //mh 2000-10-08
 function TSynPasSyn.IsFilterStored: boolean;
 begin
   Result := fDefaultFilter <> SYNS_FilterPascal;
+end;
+
+procedure TSynPasSyn.CreateRootCodeFoldBlock;
+begin
+  inherited;
+  RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtNone)));
 end;
 
 function TSynPasSyn.IsKeyword(const AKeyword: string): boolean;
