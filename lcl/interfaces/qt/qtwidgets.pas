@@ -979,6 +979,7 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
+    FSyncingItems: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
     FHeaderEventFilterHook: QObject_hookH;
@@ -7360,6 +7361,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FSyncingItems := False;
   Result := QTreeWidget_create();
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7604,8 +7606,11 @@ begin
     NMLV.uNewState := LVIS_SELECTED;
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
-  DeliverMessage(Msg);
+
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
+
+  if not FSyncingItems then
+    DeliverMessage(Msg);
 end;
 
 procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
@@ -7688,6 +7693,9 @@ var
   NMLV: TNMListView;
   R: TRect;
   Pt: TPoint;
+  Index: Integer;
+  AItem: QTreeWidgetItemH;
+  i: Integer;
 begin
   // we'll send also which item is clicked ... probably future
   // lcl implementation of OnItemClick.
@@ -7716,6 +7724,10 @@ begin
 
   DeliverMessage(MsgN);
 
+  {sync LCL items for selected property}
+  if (LCLObject <> nil) and (LCLObject is TListView) then
+    for i := 0 to TListView(LCLObject).Items.Count - 1 do
+      TListView(LCLObject).Items[i].Selected;
 end;
 
 {------------------------------------------------------------------------------
@@ -7866,42 +7878,47 @@ begin
 
   Msg.NMHdr := @NMLV.hdr;
 
-  if Current <> nil then
-  begin
-  	DeliverMessage(Msg);
+  FSyncingItems := True;
+  try
+    if Current <> nil then
+    begin
+    	DeliverMessage(Msg);
 
-    FillChar(Msg, SizeOf(Msg), #0);
-    FillChar(NMLV, SizeOf(NMLV), #0);
-    Msg.Msg := CN_NOTIFY;
+      FillChar(Msg, SizeOf(Msg), #0);
+      FillChar(NMLV, SizeOf(NMLV), #0);
+      Msg.Msg := CN_NOTIFY;
 
-    NMLV.hdr.hwndfrom := LCLObject.Handle;
-    NMLV.hdr.code := LVN_ITEMCHANGED;
-    NMLV.iItem := AIndex;
-    NMLV.iSubItem := ASubIndex;
-    NMLV.uNewState := LVIS_SELECTED;
-    NMLV.uChanged := LVIF_STATE;
-    Msg.NMHdr := @NMLV.hdr;
-    DeliverMessage(Msg);
-  end;
+      NMLV.hdr.hwndfrom := LCLObject.Handle;
+      NMLV.hdr.code := LVN_ITEMCHANGED;
+      NMLV.iItem := AIndex;
+      NMLV.iSubItem := ASubIndex;
+      NMLV.uNewState := LVIS_SELECTED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      DeliverMessage(Msg);
+    end;
 
-  if Previous <> nil then
-  begin
-    FillChar(Msg, SizeOf(Msg), #0);
-    FillChar(NMLV, SizeOf(NMLV), #0);
-    Msg.Msg := CN_NOTIFY;
-    NMLV.hdr.hwndfrom := LCLObject.Handle;
-    NMLV.hdr.code := LVN_ITEMCHANGED;
-    NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Previous);
-  	AParent := QTreeWidgetItem_parent(Previous);
-    if AParent <> nil then
-      ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
-    else
-      ASubIndex := 0;
-    NMLV.iSubItem := ASubIndex;
-    NMLV.uOldState := LVIS_SELECTED;
-    NMLV.uChanged := LVIF_STATE;
-    Msg.NMHdr := @NMLV.hdr;
-    DeliverMessage(Msg);
+    if Previous <> nil then
+    begin
+      FillChar(Msg, SizeOf(Msg), #0);
+      FillChar(NMLV, SizeOf(NMLV), #0);
+      Msg.Msg := CN_NOTIFY;
+      NMLV.hdr.hwndfrom := LCLObject.Handle;
+      NMLV.hdr.code := LVN_ITEMCHANGED;
+      NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Previous);
+    	AParent := QTreeWidgetItem_parent(Previous);
+      if AParent <> nil then
+        ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
+      else
+        ASubIndex := 0;
+      NMLV.iSubItem := ASubIndex;
+      NMLV.uOldState := LVIS_SELECTED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      DeliverMessage(Msg);
+    end;
+  finally
+    FSyncingItems := False;
   end;
 end;
 
