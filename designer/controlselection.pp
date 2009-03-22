@@ -2157,46 +2157,51 @@ end;
 
 procedure TControlSelection.DrawGrabbers(DC: TDesignerDeviceContext);
 var
-  OldBrushColor:TColor;
-  g:TGrabIndex;
+  OldBrushColor: TColor;
+  g: TGrabIndex;
   Diff: TPoint;
   RestoreBrush: boolean;
 
-  procedure FillRect(RLeft,RTop,RRight,RBottom: integer);
+  procedure FillRect(RLeft, RTop, RRight, RBottom: integer);
   begin
-    if not DC.RectVisible(RLeft,RTop,RRight,RBottom) then exit;
-    if not RestoreBrush then begin
+    if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then Exit;
+    if not RestoreBrush then
+    begin
       DC.Save;
-      with DC.Canvas do begin
-        OldBrushColor:=Brush.Color;
-        Brush.Color:=GrabberColor;
+      with DC.Canvas do
+      begin
+        OldBrushColor := Brush.Color;
+        Brush.Color := GrabberColor;
       end;
-      RestoreBrush:=true;
+      RestoreBrush := True;
     end;
-    DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
+    DC.Canvas.FillRect(Rect(RLeft, RTop, RRight, RBottom));
     //DC.Canvas.TextOut(RLeft,RTop,dbgs(ord(g)));
   end;
 
 begin
-  if (Count=0) or (FForm=nil) or LookupRootSelected
-  or OnlyInvisiblePersistentsSelected then exit;
+  if (Count=0) or (FForm=nil) or LookupRootSelected or
+     OnlyInvisiblePersistentsSelected then Exit;
 
-  Diff:=DC.FormOrigin;
+  Diff := DC.FormOrigin;
 
-  //debugln(['[DrawGrabbers] ',' DC=',Diff.X,',',Diff.Y,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top]);
+  // debugln(['[DrawGrabbers] ',' DC=',Diff.X,',',Diff.Y,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top]);
 
-  RestoreBrush:=false;
-  for g:=Low(TGrabIndex) to High(TGrabIndex) do
+  RestoreBrush := False;
+  for g := Low(TGrabIndex) to High(TGrabIndex) do
     FillRect(
        FGrabbers[g].Left-Diff.X
       ,FGrabbers[g].Top-Diff.Y
       ,FGrabbers[g].Left-Diff.X+FGrabbers[g].Width
       ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
     );
-  Include(FStates,cssGrabbersPainted);
+  Include(FStates, cssGrabbersPainted);
 
   if RestoreBrush then
+  begin
     DC.Canvas.Brush.Color:=OldBrushColor;
+    DC.Restore;
+  end;
 end;
 
 procedure TControlSelection.DrawMarkerAt(DC: TDesignerDeviceContext;
@@ -2208,11 +2213,12 @@ var
   procedure FillRect(RLeft, RTop, RRight, RBottom: integer);
   begin
     if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then exit;
-    if not RestoreBrush then begin
+    if not RestoreBrush then
+    begin
       DC.Save;
       OldBrushColor:=DC.Canvas.Brush.Color;
       DC.Canvas.Brush.Color:=MarkerColor;
-      RestoreBrush:=true;
+      RestoreBrush := True;
     end;
     DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
   end;
@@ -2225,7 +2231,10 @@ begin
   FillRect(ALeft+AWidth-MarkerSize,ATop+AHeight-MarkerSize
                ,ALeft+AWidth,ATop+AHeight);
   if RestoreBrush then
+  begin
     DC.Canvas.Brush.Color:=OldBrushColor;
+    DC.Restore;
+  end;
 end;
 
 procedure TControlSelection.DrawMarkers(DC: TDesignerDeviceContext);
@@ -2360,8 +2369,10 @@ var
     DrawRubberLine(x1,y2,x2,y2);
     DrawRubberLine(x1,y1,x1,y2);
     DrawRubberLine(x2,y1,x2,y2);
-    if RestorePen then begin
+    if RestorePen then
+    begin
       DC.Canvas.Pen.Color:=OldPenColor;
+      DC.Restore;
       Include(FStates,cssRubberbandPainted);
     end;
   end;
@@ -2997,7 +3008,11 @@ begin
   end;
 
   if RestorePen then
+  begin
     DC.Canvas.Pen.Color:=OldPenColor;
+    DC.Restore;
+  end;
+  DC.Restore;
   Include(FStates,cssGuideLinesPainted);
 end;
 

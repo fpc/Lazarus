@@ -49,6 +49,7 @@ type
   private
     FCanvas: TCanvas;
     FDC: HDC;
+    FDCControl: TWinControl;
     FDCOrigin: TPoint;   // DC origin on desktop
     FFlags: TDesignerDCFlags;
     FFormClientOrigin: TPoint; // Form client origin on desktop
@@ -63,7 +64,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetDC(AForm: TCustomForm; aDC: HDC);
+    procedure SetDC(AForm: TCustomForm; ADCControl: TWinControl; ADC: HDC);
     procedure Clear;
     procedure Save;
     procedure Restore;
@@ -71,11 +72,9 @@ type
     property Canvas: TCanvas read FCanvas;
     property DC: HDC read FDC;
     property Form: TCustomForm read FForm;
-    property FormOrigin: TPoint
-      read GetFormOrigin;// DC origin relative to designer Form
+    property FormOrigin: TPoint read GetFormOrigin;// DC origin relative to designer Form
     property DCOrigin: TPoint read GetDCOrigin; // DC origin on Desktop
-    property FormClientOrigin: TPoint
-      read GetFormClientOrigin;// Form Client Origin on desktop
+    property FormClientOrigin: TPoint read GetFormClientOrigin;// Form Client Origin on desktop
     property DCSize: TPoint read GetDCSize;
   end;
 
@@ -330,12 +329,13 @@ var
   CurFormClientOrigin: TPoint;
   CurFormOrigin: TPoint;
 begin
-  if not (ddcDCOriginValid in FFlags) then begin
-    CurFormClientOrigin:=FormClientOrigin;
-    CurFormOrigin:=FormOrigin;
-    FDCOrigin.X:=CurFormOrigin.X-CurFormClientOrigin.X;
-    FDCOrigin.Y:=CurFormOrigin.Y-CurFormClientOrigin.Y;
-    Include(FFlags,ddcDCOriginValid);
+  if not (ddcDCOriginValid in FFlags) then
+  begin
+    CurFormClientOrigin := FormClientOrigin;
+    CurFormOrigin := FormOrigin;
+    FDCOrigin.X := CurFormOrigin.X - CurFormClientOrigin.X;
+    FDCOrigin.Y := CurFormOrigin.Y - CurFormClientOrigin.Y;
+    Include(FFlags, ddcDCOriginValid);
   end;
   Result:=FDCOrigin;
 end;
@@ -353,20 +353,41 @@ end;
 function TDesignerDeviceContext.GetFormClientOrigin: TPoint;
 // returns the Form Client Origin on desktop
 begin
-  if not (ddcFormClientOriginValid in FFlags) then begin
-    FFormClientOrigin:=FForm.ClientOrigin;
-    Include(FFlags,ddcFormClientOriginValid);
+  if not (ddcFormClientOriginValid in FFlags) then
+  begin
+    FFormClientOrigin := FForm.ClientOrigin;
+    Include(FFlags, ddcFormClientOriginValid);
   end;
-  Result:=FFormClientOrigin;
+  Result := FFormClientOrigin;
 end;
 
 function TDesignerDeviceContext.GetFormOrigin: TPoint;
 // returns the DC origin relative to the form client origin
 // For example: The DC of the client area of the form itself will return 0,0
+var
+  AControlOrigin: TPoint;
 begin
   if not (ddcFormOriginValid in FFlags) then 
   begin
-    GetDCOriginRelativeToWindow(FDC, FForm.Handle, FFormOrigin);
+    if not GetDCOriginRelativeToWindow(FDC, FForm.Handle, FFormOrigin) then
+    begin
+      // For some reason we cannot retrieve DC origin. It can happen for exmample
+      // when DC is not controld DC but double buffer DC. Lets use another trick
+      if FDCControl <> nil then
+      begin
+        AControlOrigin := FDCControl.ClientToScreen(Point(0, 0));
+        FFormOrigin := FForm.ClientToScreen(Point(0, 0));
+        FFormOrigin.X := AControlOrigin.X - FFormOrigin.X;
+        FFormOrigin.Y := AControlOrigin.Y - FFormOrigin.Y;
+      end
+      else
+        FFormOrigin := Point(0, 0);
+      if GetWindowOrgEx(FDC, @AControlOrigin) <> 0 then
+      begin
+        Dec(FFormOrigin.X, AControlOrigin.X);
+        Dec(FFormOrigin.Y, AControlOrigin.Y);
+      end;
+    end;
     Include(FFlags, ddcFormOriginValid);
     // DebugLn(['New origin: ', FFormOrigin.X, ':', FFormOrigin.Y]);
   end;
@@ -385,11 +406,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TDesignerDeviceContext.SetDC(AForm: TCustomForm; aDC: HDC);
+procedure TDesignerDeviceContext.SetDC(AForm: TCustomForm; ADCControl: TWinControl; ADC: HDC);
 begin
   Clear;
-  FDC:=aDC;
-  FForm:=AForm;
+  FDC := ADC;
+  FDCControl := ADCControl;
+  FForm := AForm;
 end;
 
 procedure TDesignerDeviceContext.Clear;

@@ -1202,7 +1202,7 @@ begin
   if TheMessage.DC <> 0 then begin
     Include(FFlags,dfNeedPainting);
 
-    DDC.SetDC(Form, TheMessage.DC);
+    DDC.SetDC(Form, Sender as TWinControl, TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
       ' DC=',DbgS(DDC.DC,8),
@@ -2570,6 +2570,7 @@ begin
       if (ControlSelection.Count > 1) and IsSelected then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
+      aDDC.Restore;
     end;
   end;
 end;
@@ -2585,11 +2586,11 @@ begin
   if (Form=nil) or (not Form.HandleAllocated) then exit;
 
   //writeln('TDesigner.DrawDesignerItems B painting');
-  DesignerDC:=GetDesignerDC(Form.Handle);
-  DDC.SetDC(Form,DesignerDC);
+  DesignerDC := GetDesignerDC(Form.Handle);
+  DDC.SetDC(Form, Form, DesignerDC);
   DoPaintDesignerItems;
   DDC.Clear;
-  ReleaseDesignerDC(Form.Handle,DesignerDC);
+  ReleaseDesignerDC(Form.Handle, DesignerDC);
 end;
 
 procedure TDesigner.CheckFormBounds;
@@ -2623,22 +2624,23 @@ end;
 procedure TDesigner.DoPaintDesignerItems;
 begin
   // marker (multi selection markers)
-  if (ControlSelection.SelectionForm=Form)
-  and (ControlSelection.Count>1) then begin
+  if (ControlSelection.SelectionForm = Form) and (ControlSelection.Count > 1) then
+  begin
     ControlSelection.DrawMarkers(DDC);
   end;
   // non visual component icons
   DrawNonVisualComponents(DDC);
   // guidelines and grabbers
-  if (ControlSelection.SelectionForm=Form) then begin
+  if (ControlSelection.SelectionForm=Form) then
+  begin
     if EnvironmentOptions.ShowGuideLines then
       ControlSelection.DrawGuideLines(DDC);
     ControlSelection.DrawGrabbers(DDC);
   end;
   // rubberband
-  if ControlSelection.RubberBandActive
-  and ((ControlSelection.SelectionForm=Form)
-  or (ControlSelection.SelectionForm=nil)) then begin
+  if ControlSelection.RubberBandActive and
+     ((ControlSelection.SelectionForm = Form) or (ControlSelection.SelectionForm = nil)) then
+  begin
     ControlSelection.DrawRubberBand(DDC);
   end;
 end;
