@@ -198,9 +198,9 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
-  { TSerie }
+  { TLineSerie }
 
-  TSerie = class(TBasicLineSeries)
+  TLineSeries = class(TBasicLineSeries)
   private
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
@@ -259,6 +259,10 @@ type
     property ShowLines: Boolean read FShowLines write SetShowLines default true;
     property ShowPoints: Boolean read FShowPoints write SetShowPoints;
   end;
+
+  // 'TSerie' alias is for compatibility with older versions of TAChart.
+  // Do not use it.
+  TSerie = TLineSeries;
 
   TLineStyle = (lsVertical, lsHorizontal);
 
@@ -520,9 +524,9 @@ begin
   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
-{ TSerie }
+{ TLineSeries }
 
-constructor TSerie.Create(AOwner: TComponent);
+constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -533,24 +537,24 @@ begin
   UpdateInProgress := false;
 end;
 
-destructor TSerie.Destroy;
+destructor TLineSeries.Destroy;
 begin
   FPointer.Free;
   inherited Destroy;
 end;
 
-procedure TSerie.SetPointer(Value: TSeriesPointer);
+procedure TLineSeries.SetPointer(Value: TSeriesPointer);
 begin
   FPointer.Assign(Value);
   UpdateParentChart;
 end;
 
-procedure TSerie.SetSeriesColor(const AValue: TColor);
+procedure TLineSeries.SetSeriesColor(const AValue: TColor);
 begin
   FSeriesColor := AValue;
 end;
 
-procedure TSerie.Draw(ACanvas: TCanvas);
+procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
   i1, i2: TPoint;
   g1, g2: TDoublePoint;
@@ -637,7 +641,7 @@ begin
 end;
 
 
-function TSerie.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
+function TLineSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
   Color := ColorOrDefault(Color);
 
@@ -658,23 +662,23 @@ begin
   UpdateParentChart;
 end;
 
-procedure TSerie.AfterAdd;
+procedure TLineSeries.AfterAdd;
 begin
   inherited AfterAdd;
   FPointer.SetOwner(FChart);
 end;
 
-function TSerie.GetXValue(AIndex: Integer): Double;
+function TLineSeries.GetXValue(AIndex: Integer): Double;
 begin
   Result := PChartCoord(FCoordList.Items[AIndex])^.x;
 end;
 
-function TSerie.GetYValue(AIndex: Integer): Double;
+function TLineSeries.GetYValue(AIndex: Integer): Double;
 begin
   Result := PChartCoord(FCoordList.Items[AIndex])^.y;
 end;
 
-procedure TSerie.SetXValue(AIndex: Integer; Value: Double);
+procedure TLineSeries.SetXValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -711,7 +715,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TSerie.SetYValue(AIndex: Integer; Value: Double);
+procedure TLineSeries.SetYValue(AIndex: Integer; Value: Double);
 var
   i: Integer;
   Val: Double;
@@ -748,49 +752,49 @@ begin
   UpdateParentChart;
 end;
 
-function TSerie.GetXImgValue(AIndex: Integer): Integer;
+function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
 begin
   ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x, Result);
 end;
 
-function TSerie.GetYImgValue(AIndex: Integer): Integer;
+function TLineSeries.GetYImgValue(AIndex: Integer): Integer;
 begin
   ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y, Result);
 end;
 
-function TSerie.GetXMin: Double;
+function TLineSeries.GetXMin: Double;
 begin
   Result := XGraphMin;
 end;
 
-function TSerie.GetXMax: Double;
+function TLineSeries.GetXMax: Double;
 begin
   Result := XGraphMax;
 end;
 
-function TSerie.GetYMin: Double;
+function TLineSeries.GetYMin: Double;
 begin
   Result := YGraphMin;
 end;
 
-function TSerie.GetYMax: Double;
+function TLineSeries.GetYMax: Double;
 begin
   Result := YGraphMax;
 end;
 
-procedure TSerie.GetMax(var X, Y: Double);
+procedure TLineSeries.GetMax(var X, Y: Double);
 begin
   X := XOfYGraphMax;
   Y := YGraphMax;
 end;
 
-procedure TSerie.GetMin(var X, Y: Double);
+procedure TLineSeries.GetMin(var X, Y: Double);
 begin
   X := XOfYGraphMin;
   Y := YGraphMin;
 end;
 
-function TSerie.GetNearestPoint(
+function TLineSeries.GetNearestPoint(
   ADistFunc: TPointDistFunc; const APoint: TPoint;
   out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
 var
@@ -812,39 +816,39 @@ begin
   end;
 end;
 
-function TSerie.GetSeriesColor: TColor;
+function TLineSeries.GetSeriesColor: TColor;
 begin
   Result := FSeriesColor;
 end;
 
-procedure TSerie.SetColor(AIndex: Integer; AColor: TColor);
+procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
   PChartCoord(FCoordList.items[AIndex])^.Color := AColor;
 end;
 
-function TSerie.GetColor(AIndex: Integer): TColor;
+function TLineSeries.GetColor(AIndex: Integer): TColor;
 begin
   Result := PChartCoord(FCoordList.items[AIndex])^.Color;
 end;
 
-procedure TSerie.SetShowPoints(Value: Boolean);
+procedure TLineSeries.SetShowPoints(Value: Boolean);
 begin
   FShowPoints := Value;
   UpdateParentChart;
 end;
 
-procedure TSerie.SetShowLines(Value: Boolean);
+procedure TLineSeries.SetShowLines(Value: Boolean);
 begin
   FShowLines := Value;
   UpdateParentChart;
 end;
 
-procedure TSerie.BeginUpdate;
+procedure TLineSeries.BeginUpdate;
 begin
   UpdateInProgress := true;
 end;
 
-procedure TSerie.EndUpdate;
+procedure TLineSeries.EndUpdate;
 var
   i: Integer;
   Val: Double;
@@ -1519,7 +1523,7 @@ begin
 end;
 
 initialization
-  RegisterSeriesClass(TSerie, 'Line series');
+  RegisterSeriesClass(TLineSeries, 'Line series');
   RegisterSeriesClass(TAreaSeries, 'Area series');
   RegisterSeriesClass(TBarSeries, 'Bar series');
   RegisterSeriesClass(TPieSeries, 'Pie series');

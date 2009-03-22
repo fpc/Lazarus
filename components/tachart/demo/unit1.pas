@@ -60,7 +60,7 @@ type
   private
     FArea: TAreaSeries;
     FBar: TBarSeries;
-    FLine: TSerie;
+    FLine: TLineSeries;
     FPie: TPieSeries;
     x, y, x1, y1, x3, y3: Double;
     procedure InitBar;
@@ -227,7 +227,7 @@ end;
 
 procedure TForm1.InitLine;
 begin
-  FLine := TSerie.Create(Chart1);
+  FLine := TLineSeries.Create(Chart1);
   FLine.ShowLines := true;
   FLine.ShowPoints := true;
   FLine.Pointer.Style := psRectangle;
