@@ -1456,9 +1456,11 @@ end;
 procedure TSynEditFoldedView.LinesDeletedAtTextIndex(AStartIndex, ALineCount : Integer; SkipFixFolding : Boolean);
 var top : Integer;
 begin
+  top := TopTextIndex;
   // topline may get out of sync => synedit is always going to chnage it back
   fFoldTree.AdjustForLinesDeleted(AStartIndex+1, ALineCount);
-  if not(SkipFixFolding) then FixFoldingAtTextIndex(AStartIndex, AStartIndex+ALineCount+1)
+  if not(SkipFixFolding) then
+    FixFoldingAtTextIndex(AStartIndex, AStartIndex+ALineCount+1)
   else
   if AStartIndex < top - ALineCount then CalculateMaps;
 end;
