@@ -3454,13 +3454,13 @@ end;
 
 function TListPropertyEditor.ReadElementCount: integer;
 var
-  TheList: TList;
+  TheList: TObject;
 begin
-  TheList:=TList(GetObjectValue);
-  if (TheList<>nil) and (TheList is TList) then
-    Result:=TheList.Count
+  TheList := GetObjectValue;
+  if (TheList <> nil) and (TheList is TList) then
+    Result := TList(TheList).Count
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TListPropertyEditor.ReadElement(Index: integer): TPersistent;
@@ -3981,13 +3981,13 @@ end;
 
 function TCollectionPropertyEditor.ReadElementCount: integer;
 var
-  Collection: TCollection;
+  Collection: TObject;
 begin
-  Collection:=TCollection(GetObjectValue);
-  if (Collection<>nil) and (Collection is TCollection) then
-    Result:=Collection.Count
+  Collection := GetObjectValue;
+  if (Collection <> nil) and (Collection is TCollection) then
+    Result := TCollection(Collection).Count
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TCollectionPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -6780,6 +6780,7 @@ var
     ti: PTypeInfo;
     edClass: TPropertyEditorClass;
     ed: TPropertyEditor;
+    obj: TPersistent;
   begin
     ti := A.GetPropInfo^.PropType;
     //DebugLn('IsInteresting: ', ti^.Name);
@@ -6800,8 +6801,9 @@ var
       A.GetAttributes * [paSubProperties, paVolatileSubProperties] = []
     then exit;
 
+    obj := TPersistent(A.GetObjectValue);
     // At this stage, there is nothing interesting left in empty objects.
-    if A.GetComponent(0) = nil then exit;
+    if obj = nil then exit;
 
     // Class properties may directly or indirectly refer to the same class,
     // so we must avoid infinite recursion.
@@ -6809,11 +6811,11 @@ var
     visited.Add(ti);
     for i := 0 to GetPropList(ti, propList) - 1 do begin
       if not (propList^[i]^.PropType^.Kind in AFilter + [tkClass]) then continue;
-      edClass := GetEditorClass(propList^[i], A.GetComponent(0));
+      edClass := GetEditorClass(propList^[i], obj);
       if edClass = nil then continue;
-      ed := edClass.Create(nil, 1);
+      ed := edClass.Create(AEditor.FPropertyHook, 1);
       try
-        ed.SetPropEntry(0, A.GetComponent(0), propList^[i]);
+        ed.SetPropEntry(0, obj, propList^[i]);
         ed.Initialize;
         Rec(ed);
       finally
