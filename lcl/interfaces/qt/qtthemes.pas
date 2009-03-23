@@ -124,7 +124,15 @@ begin
       begin
         Palette := QWidget_palette(Context.Parent);
         QPainter_setBackground(Context.Widget, QPalette_background(Palette));
+      end else
+      begin
+        Palette := QPalette_create();
+        QApplication_palette(Palette);
+        QPainter_setBackground(Context.Widget, QPalette_background(Palette));
+        QPalette_destroy(Palette);
       end;
+      if HasTransparentParts(Details) then
+        QPainter_setBackgroundMode(Context.Widget, QtTransparentMode);
       ARect := R;
       Element := GetDrawElement(Details);
       case Element.DrawVariant of
