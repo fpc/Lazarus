@@ -1202,7 +1202,13 @@ begin
   if TheMessage.DC <> 0 then begin
     Include(FFlags,dfNeedPainting);
 
-    DDC.SetDC(Form, Sender as TWinControl, TheMessage.DC);
+    if Sender is TWinControl then
+      DDC.SetDC(Form, TWinControl(Sender), TheMessage.DC)
+    else
+    if Sender <> nil then
+      DDC.SetDC(Form, Sender.Parent, TheMessage.DC)
+    else
+      DDC.SetDC(Form, nil, TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
       ' DC=',DbgS(DDC.DC,8),
