@@ -162,6 +162,7 @@ type
     FNestedComments: boolean;
     FStartCodeFoldBlockLevel: integer;
     fRange: TRangeStates;
+    FAtLineStart: Boolean; // Line had only spaces or comments sofar
     {$IFDEF SYN_LAZARUS}
     fLineStr: string;
     fLine: PChar;
@@ -1683,6 +1684,7 @@ begin
   {$ENDIF}
   FNodeInfoLine := -1;
   fLineNumber := LineNumber;
+  FAtLineStart := True;
   if not FCatchNodeInfo then
     Next;
 end; { SetLine }
@@ -2117,6 +2119,8 @@ begin
   {$IFDEF SYN_LAZARUS}
   end;
   {$ENDIF}
+  if not(FTokenID in [tkSpace, tkComment]) then
+    FAtLineStart := False;
   //DebugLn(['TSynPasSyn.Next Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
 end;
 
@@ -2375,13 +2379,23 @@ begin
 end;
 
 procedure TSynPasSyn.EndCodeFoldBlockLastLine;
+var
+  i: Integer;
 begin
+  i := FNodeInfoCount;
   EndCodeFoldBlock;
-  if (CurrentCodeFoldBlockLevel < FStartCodeFoldBlockLevel) and
-    (FStartCodeFoldBlockLevel > 0)
-  then begin
-    TSynPasSynRange(CodeFoldRange).DecLastLineCodeFoldLevelFix;
-    dec(FStartCodeFoldBlockLevel);
+  if FAtLineStart then begin
+    // If we are not at linestate, new folds could have been opened => handle as normal close
+    if (CurrentCodeFoldBlockLevel < FStartCodeFoldBlockLevel) and
+      (FStartCodeFoldBlockLevel > 0)
+    then begin
+      TSynPasSynRange(CodeFoldRange).DecLastLineCodeFoldLevelFix;
+      dec(FStartCodeFoldBlockLevel);
+    end
+  end
+  else if FNodeInfoCount > i then begin
+    exclude(FNodeInfoList[FNodeInfoCount - 1].FoldAction, sfaMarkup); // not markup able
+    FNodeInfoList[FNodeInfoCount - 1].LogXEnd := 0;
   end;
 end;
 
