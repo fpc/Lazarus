@@ -581,6 +581,9 @@ end;
 procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  if LV.Items.Count = 0 then
+    Exit;
+
   if Key = VK_Down then
   begin
     if (LV.Items.IndexOf(LV.ItemFocused) + 1) < LV.Items.Count then
