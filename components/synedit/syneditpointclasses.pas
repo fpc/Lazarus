@@ -75,8 +75,6 @@ type
     FCaret: TSynEditCaret;
     fUndoList: TSynEditUndoList;
     FInvalidateLinesMethod: TInvalidateLines;
-    FLinesDeletedMethod: TLinesCountChanged;
-    FLinesInsertedMethod: TLinesCountChanged;
     FEnabled: Boolean;
     FTabWidth: Integer;
     FActiveSelectionMode: TSynSelectionMode;
@@ -126,8 +124,6 @@ type
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
-    property  LinesDeletedMethod: TLinesCountChanged write FLinesDeletedMethod;
-    property  LinesInsertedMethod: TLinesCountChanged write FLinesInsertedMethod;
     property  Caret: TSynEditCaret read FCaret write FCaret;
     property  UndoList: TSynEditUndoList read fUndoList write fUndoList;
     // TODO: Move dependend functions to Lines
@@ -600,9 +596,7 @@ var
   procedure DeleteSelection;
   var
     y, l, r, xb, xe, MarkOffset: Integer;
-    UpdateMarks: boolean;
   begin
-    UpdateMarks := FALSE;
     MarkOffset := 0;
     case ActiveSelectionMode of
       smNormal:
@@ -619,7 +613,6 @@ var
             end;
             FLines.EditDelete(BB.X, BB.Y, BE.X - BB.X);
           end;
-          UpdateMarks := TRUE;
           FCaret.LineBytePos := BB;
         end;
       smColumn:
@@ -662,13 +655,9 @@ var
           if BE.Y >= BB.Y then
             FLines.EditLinesDelete(BB.Y, BE.Y - BB.Y + 1);
           FCaret.LineCharPos := Point(1, BB.Y);
-          UpdateMarks := TRUE;
           MarkOffset := 1;
         end;
     end;
-    // Update marks
-    if UpdateMarks then
-      FLinesDeletedMethod(BB.Y, BE.Y - BB.Y + MarkOffset);
   end;
 
   procedure InsertText;
@@ -794,9 +783,6 @@ var
       until P^ = #0;
     end;
 
-  var
-    StartLine: Integer;
-    InsertedLines: Integer;
   begin
     if Value = '' then
       Exit;
@@ -812,22 +798,14 @@ var
     // 3 copies of every string vs. our one copy below.  I'd prefer no copies,
     // but we aren't set up to work with PChars that well.
 
-    StartLine := FCaret.LinePos;
     case PasteMode of
       smNormal:
-        InsertedLines := InsertNormal;
+        InsertNormal;
       smColumn:
-        InsertedLines := InsertColumn;
+        InsertColumn;
       smLine:
-        InsertedLines := InsertLine;
-    else
-      InsertedLines := 0;
+        InsertLine;
     end;
-    // We delete selected based on the current selection mode, but paste
-    // what's on the clipboard according to what it was when copied.
-    // Update marks
-    if InsertedLines > 0 then
-      FLinesInsertedMethod(StartLine, InsertedLines);
   end;
 
 begin

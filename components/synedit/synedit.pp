@@ -1576,8 +1576,6 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
-  FBlockSelection.LinesDeletedMethod := {$IFDEF FPC}@{$ENDIF}DoLinesDeleted;
-  FBlockSelection.LinesInsertedMethod := {$IFDEF FPC}@{$ENDIF}DoLinesInserted;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
 
 {$IFDEF SYN_COMPILER_4_UP}
@@ -4458,6 +4456,10 @@ begin
   end
   else
     ScanFrom(AIndex - 1, Max(AIndex, AIndex + ACount));
+  if ACount > 0 then
+    DoLinesInserted(AIndex + 1, ACount)
+  else
+    DoLinesDeleted(AIndex, -ACount);
   InvalidateLines(AIndex + 1, -1);
   InvalidateGutterLines(AIndex + 1, -1);
 end;
@@ -5949,7 +5951,6 @@ begin
                 CaretX := PhysicalLineLength(FTheLinesView[CaretY - 1],
                                              CaretY - 1) + 1;
                 FTheLinesView.EditLineJoin(CaretY);
-                DoLinesDeleted(CaretY, 1);
               end;
             end else begin
               // delete text before the caret
@@ -5991,13 +5992,11 @@ begin
               // delete char
               Counter:=GetCharLen(Temp,LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, CaretY, Counter);
-              DoLinesDeleted(CaretY - 1, 1);
             end else begin
               // join line with the line after
               if CaretY < FTheLinesView.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
                 FTheLinesView.EditLineJoin(CaretY, Helper);
-                DoLinesDeleted(CaretY - 1, 1);
               end;
             end;
           end;
@@ -6059,7 +6058,6 @@ begin
             FTheLinesView.EditDelete(1, 1, length(FTheLinesView[0]))
           else begin
             FTheLinesView.EditLinesDelete(CaretY, 1);
-            DoLinesDeleted(CaretY - 1, 1);
           end;
           CaretXY := Point(1, CaretY); // like seen in the Delphi editor
         end;
@@ -6100,7 +6098,6 @@ begin
             CaretXY := Point(CX, CaretY + 1);
             FCaret.DecForcePastEOL;
           end;
-          DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
           fLastCaretX := CaretX;                                               //mh 2000-10-19
         end;
