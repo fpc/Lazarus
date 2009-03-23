@@ -7861,7 +7861,9 @@ begin
 
   AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
 
-  AParent := QTreeWidgetItem_parent(Current);
+  AParent := nil;
+  if Current <> nil then
+    AParent := QTreeWidgetItem_parent(Current);
 
   if AParent <> nil then
     ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Current)
