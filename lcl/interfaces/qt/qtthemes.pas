@@ -114,102 +114,111 @@ var
   Element: TQtDrawElement;
   Features: QStyleOptionButtonButtonFeatures;
   Position: QStyleOptionHeaderSectionPosition;
+  Palette: QPaletteH;
 begin
   if (Context <> nil) then
   begin
-    ARect := R;
-    Element := GetDrawElement(Details);
-    case Element.DrawVariant of
-      qdvNone:
-        inherited DrawElement(DC, Details, R, ClipRect);
-      qdvControl:
+    Context.save;
+    try
+      if Context.Parent <> nil then
       begin
-        if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
-        begin
-          opt := QStyleOptionButton_create();
-          Features := QStyleOptionButtonNone;
-          if Details.Element = teToolBar then
-            Features := Features or QStyleOptionButtonFlat;
-          QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
-        end
-        else
-        if (Element.ControlElement = QStyleCE_HeaderSection) then
-        begin
-          opt := QStyleOptionHeader_create();
-          case Details.Part of
-            HP_HEADERITEM: Position := QStyleOptionHeaderMiddle;
-            HP_HEADERITEMLEFT: Position := QStyleOptionHeaderBeginning;
-            HP_HEADERITEMRIGHT: Position := QStyleOptionHeaderEnd;
-          end;
-          QStyleOptionHeader_setPosition(QStyleOptionHeaderH(opt), Position);
-          QStyleOptionHeader_setOrientation(QStyleOptionHeaderH(opt), QtHorizontal);
-        end
-        else
-          opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
-
-        QStyleOption_setState(opt, GetControlState(Details));
-        QStyleOption_setRect(opt, @ARect);
-
-        QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
-        QStyleOption_Destroy(opt);
+        Palette := QWidget_palette(Context.Parent);
+        QPainter_setBackground(Context.Widget, QPalette_background(Palette));
       end;
-      qdvComplexControl:
-      begin
-        Context.save;
-        case Element.ComplexControl of
-          QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
-          
-          QStyleCC_TitleBar, QStyleCC_MdiControls:
+      ARect := R;
+      Element := GetDrawElement(Details);
+      case Element.DrawVariant of
+        qdvNone:
+          inherited DrawElement(DC, Details, R, ClipRect);
+        qdvControl:
+        begin
+          if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
           begin
-            opt := QStyleOptionTitleBar_create();
-            QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
-            // workaround: qt has own minds about position of requested part -
-            // but we need a way to draw it at our position
-            Context.translate(ARect.Left, ARect.Top);
-            OffsetRect(ARect, -ARect.Left, -ARect.Top);
-          end;
-          QStyleCC_Slider, QStyleCC_ScrollBar:
+            opt := QStyleOptionButton_create();
+            Features := QStyleOptionButtonNone;
+            if Details.Element = teToolBar then
+              Features := Features or QStyleOptionButtonFlat;
+            QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
+          end
+          else
+          if (Element.ControlElement = QStyleCE_HeaderSection) then
           begin
-            opt := QStyleOptionSlider_create();
-            QStyleOptionSlider_setMinimum(QStyleOptionSliderH(opt), 0);
-            QStyleOptionSlider_setMaximum(QStyleOptionSliderH(opt), 100);
-          end;
-        else
-          opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
+            opt := QStyleOptionHeader_create();
+            case Details.Part of
+              HP_HEADERITEM: Position := QStyleOptionHeaderMiddle;
+              HP_HEADERITEMLEFT: Position := QStyleOptionHeaderBeginning;
+              HP_HEADERITEMRIGHT: Position := QStyleOptionHeaderEnd;
+            end;
+            QStyleOptionHeader_setPosition(QStyleOptionHeaderH(opt), Position);
+            QStyleOptionHeader_setOrientation(QStyleOptionHeaderH(opt), QtHorizontal);
+          end
+          else
+            opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
+
+          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setRect(opt, @ARect);
+
+          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
+          QStyleOption_Destroy(opt);
         end;
-        
-        QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt), Element.SubControls);
-        
-        QStyleOption_setState(opt, GetControlState(Details));
-        QStyleOption_setRect(opt, @ARect);
-        QStyle_drawComplexControl(Style, Element.ComplexControl, QStyleOptionComplexH(opt), Context.Widget);
-        QStyleOption_Destroy(opt);
-        Context.restore;
-      end;
-      qdvPrimitive:
-      begin
-        if Element.PrimitiveElement = QStylePE_FrameTabWidget then
+        qdvComplexControl:
         begin
-          opt := QStyleOptionTabWidgetFrame_create();
-          // need widget to draw gradient
-        end
-        else
+          case Element.ComplexControl of
+            QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
+
+            QStyleCC_TitleBar, QStyleCC_MdiControls:
+            begin
+              opt := QStyleOptionTitleBar_create();
+              QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
+              // workaround: qt has own minds about position of requested part -
+              // but we need a way to draw it at our position
+              Context.translate(ARect.Left, ARect.Top);
+              OffsetRect(ARect, -ARect.Left, -ARect.Top);
+            end;
+            QStyleCC_Slider, QStyleCC_ScrollBar:
+            begin
+              opt := QStyleOptionSlider_create();
+              QStyleOptionSlider_setMinimum(QStyleOptionSliderH(opt), 0);
+              QStyleOptionSlider_setMaximum(QStyleOptionSliderH(opt), 100);
+            end;
+          else
+            opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
+          end;
+
+          QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt), Element.SubControls);
+
+          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setRect(opt, @ARect);
+          QStyle_drawComplexControl(Style, Element.ComplexControl, QStyleOptionComplexH(opt), Context.Widget);
+          QStyleOption_Destroy(opt);
+        end;
+        qdvPrimitive:
+        begin
+          if Element.PrimitiveElement = QStylePE_FrameTabWidget then
+          begin
+            opt := QStyleOptionTabWidgetFrame_create();
+            // need widget to draw gradient
+          end
+          else
+            opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setRect(opt, @ARect);
+          QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
+          QStyleOption_Destroy(opt);
+        end;
+        qdvStandardPixmap:
+        begin
           opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
-        QStyleOption_setState(opt, GetControlState(Details));
-        QStyleOption_setRect(opt, @ARect);
-        QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
-        QStyleOption_Destroy(opt);
+          AIcon := QIcon_create();
+          QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
+          QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
+            ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+          QIcon_destroy(AIcon);
+          QStyleOption_Destroy(opt);
+        end;
       end;
-      qdvStandardPixmap:
-      begin
-        opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
-        AIcon := QIcon_create();
-        QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
-        QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
-          ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-        QIcon_destroy(AIcon);
-        QStyleOption_Destroy(opt);
-      end;
+    finally
+      Context.restore;
     end;
   end;
 end;
