@@ -153,6 +153,7 @@ type
     fAttrChangeHooks: TSynNotifyEventChain;
     {$IFDEF SYN_LAZARUS}
     FCapabilities: TSynHighlighterCapabilities;
+    FCurrentLines: TSynEditStrings;
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
@@ -176,7 +177,6 @@ type
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
     // code fold - only valid if hcCodeFolding in Capabilities
-    function GetLastLineCodeFoldLevelFix: integer; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -220,14 +220,12 @@ type
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
+    property CurrentLines: TSynEditStrings read FCurrentLines write FCurrentLines;
 
-    // folding
-    Function GetWordTriplet(LogicalCaret: TPoint; Lines: TSynEditStrings;
-         out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer): Boolean; virtual;
     (* Methds for folding *)
     function MinimumCodeFoldBlockLevel: integer; virtual;
     function CurrentCodeFoldBlockLevel: integer; virtual;
-    property LastLineCodeFoldLevelFix: integer read GetLastLineCodeFoldLevelFix;
+    function LastLineCodeFoldLevelFix: integer; virtual;
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
@@ -1087,13 +1085,6 @@ begin
   fAttrChangeHooks.Remove(ANotifyEvent);
 end;
 
-function TSynCustomHighlighter.GetWordTriplet(LogicalCaret: TPoint;
-  Lines: TSynEditStrings; out Y1, XB1, XE1, Y2, XB2, XE2, Y3, XB3, XE3: Integer
-  ): Boolean;
-begin
-  Result := False;
-end;
-
 function TSynCustomHighlighter.MinimumCodeFoldBlockLevel: integer;
 begin
   Result := 0;
@@ -1111,7 +1102,7 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.GetLastLineCodeFoldLevelFix: integer;
+function TSynCustomHighlighter.LastLineCodeFoldLevelFix: integer;
 begin
   Result := 0;
 end;

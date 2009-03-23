@@ -94,6 +94,20 @@ type
 
   TSynCustomHighlighterRanges = class;
 
+  TSynFoldAction = (sfaOpen,    // At this node a new Fold can start
+                    sfaClose,   // At this node a fold ends
+                    sfaMarkup,  // This node can be highlighted, by the matching Word-Pair Markup
+                    sfaInvalid  // Wrong Index
+                   );
+  TSynFoldActions = set of TSynFoldAction;
+
+  TSynFoldNodeInfo = record
+    LogXStart, LogXEnd: Integer; // -1 previous line
+    FoldLvlStart, FoldLvlEnd: Integer;
+    FoldAction: TSynFoldActions;
+    FoldType: Pointer;
+  end;
+
   { TSynCustomFoldHighlighter }
 
   TSynCustomFoldHighlighter = class(TSynCustomHighlighter)
@@ -104,6 +118,8 @@ type
   protected
     FMinimumCodeFoldBlockLevel: integer;
   protected
+    function GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo; virtual;
+    function GetFoldNodeInfoCount(Line: Integer): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
     function TopCodeFoldBlockType: Pointer;
@@ -125,6 +141,14 @@ type
 
     function MinimumCodeFoldBlockLevel: integer; override;
     function CurrentCodeFoldBlockLevel: integer; override;
+
+    // requires CurrentLines;
+    function MinimumFoldLevel(Index: Integer): integer; virtual; abstract;
+    function EndFoldLevel(Index: Integer): integer; virtual; abstract;
+    function LastLineFoldLevelFix(Index: Integer): integer; virtual; abstract;
+
+    property FoldNodeInfo[Line, Index: Integer]: TSynFoldNodeInfo read GetFoldNodeInfo;
+    property FoldNodeInfoCount[Line: Integer]: Integer read GetFoldNodeInfoCount;
   end;
 
   TSynCustomHighlighterClass = class of TSynCustomFoldHighlighter;
@@ -258,6 +282,16 @@ begin
     Result:=CodeFoldRange.CodeFoldStackSize
   else
     Result:=0;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer): Integer;
+begin
+  Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo;
+begin
+  Result.FoldAction := [sfaInvalid];
 end;
 
 function TSynCustomFoldHighlighter.GetRangeClass: TSynCustomHighlighterRangeClass;

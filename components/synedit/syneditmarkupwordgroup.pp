@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  LCLProc, SynEditHighlighter;
+  LCLProc, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
 
@@ -109,7 +109,91 @@ end;
 procedure TSynEditMarkupWordGroup.FindMatchingWords(PhysCaret: TPoint;
   out Word1, Word2, Word3: TWordPoint);
 var
+  LCnt: Integer;
+  HL: TSynCustomFoldHighlighter;
+
+  function FindEndNode(StartNode: TSynFoldNodeInfo;
+                       var YIndex, NIndex: Integer): TSynFoldNodeInfo;
+  begin
+    repeat
+      inc(NIndex);
+      Result := HL.FoldNodeInfo[YIndex, NIndex];
+    until (sfaInvalid in Result.FoldAction) or
+          (Result.FoldLvlEnd <= StartNode.FoldLvlStart);
+    if not (sfaInvalid in Result.FoldAction) then
+      exit;
+
+    inc(YIndex);
+    while (YIndex < LCnt) and
+          (HL.MinimumFoldLevel(YIndex) > StartNode.FoldLvlStart) do
+      inc(YIndex);
+    if YIndex = LCnt then
+      exit;
+
+    NIndex := -1;
+    repeat
+      inc(NIndex);
+      Result:= HL.FoldNodeInfo[YIndex, NIndex];
+    until (sfaInvalid in Result.FoldAction) or
+          (Result.FoldLvlEnd <= StartNode.FoldLvlStart);
+    if (Result.LogXEnd = 0) then
+      Result.FoldAction := [sfaInvalid]; // LastLine closed Node(maybe force-closed?)
+  end;
+
+  function FindStartNode(EndNode: TSynFoldNodeInfo;
+                       var YIndex, NIndex: Integer): TSynFoldNodeInfo;
+  begin
+    repeat
+      dec(NIndex);
+      Result := HL.FoldNodeInfo[YIndex, NIndex];
+    until (sfaInvalid in Result.FoldAction) or
+          (Result.FoldLvlStart <= EndNode.FoldLvlEnd);
+    if not(sfaInvalid in Result.FoldAction) then
+      exit;
+
+    dec(YIndex);
+    while (YIndex >= 0) and (HL.MinimumFoldLevel(YIndex) > EndNode.FoldLvlEnd) do
+      dec(YIndex);
+    if YIndex < 0 then
+      exit;
+    NIndex := HL.FoldNodeInfoCount[YIndex];
+    repeat
+      dec(NIndex);
+      Result:= HL.FoldNodeInfo[YIndex, NIndex];
+    until (sfaInvalid in Result.FoldAction) or
+          (Result.FoldLvlStart <= EndNode.FoldLvlEnd);
+  end;
+
+  function FindMultiNode(OrigNode: TSynFoldNodeInfo;
+                       var YIndex, NIndex: Integer): TSynFoldNodeInfo;
+  var
+    i: LongInt;
+  begin
+    i := NIndex;
+    repeat
+      dec(NIndex);
+      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      if (sfaMarkup in Result.FoldAction) and
+         (Result.LogXStart = OrigNode.LogXStart) and (Result.LogXEnd > 0)
+      then
+        exit;
+    until (sfaInvalid in Result.FoldAction) or (Result.LogXStart <> OrigNode.LogXStart);
+    NIndex := i;
+    repeat
+      inc(NIndex);
+      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      if (sfaMarkup in Result.FoldAction) and
+         (Result.LogXStart = OrigNode.LogXStart) and (Result.LogXEnd > 0)
+      then
+        exit;
+    until (sfaInvalid in Result.FoldAction) or (Result.LogXStart <> OrigNode.LogXStart);
+    Result.FoldAction := [sfaInvalid];
+  end;
+
+var
   LogCaretXY: TPoint;
+  i, i2, i3, y, y1, y2: integer;
+  Node1, Node2, Node3: TSynFoldNodeInfo;
 begin
   Word1.Y := -1;
   Word2.Y := -1;
@@ -119,34 +203,86 @@ begin
   then
     Exit;
 
-  // Check for Begin-End like pairs
-  if not assigned(FHighlighter) then Exit;
-  LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
-  if FHighlighter.GetWordTriplet(LogCaretXY, Lines,
-        Word1.Y, Word1.X, Word1.X2,
-        Word3.Y, Word3.X, Word3. X2,
-        Word2.Y, Word2.X, Word2. X2
-       ) then
-  begin
-    if Word1.Y > 0 then begin
-      Word1.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
-      Word1.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
-    end;
-    if Word2.Y > 0 then begin
-      Word2.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
-      Word2.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
-    end;
-    if Word3.Y > 0 then begin
-      Word3.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
-      Word3.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
-    end;
+  if not (FHighlighter is TSynCustomFoldHighlighter) then
     exit;
+  hl := TSynCustomFoldHighlighter(FHighlighter);
+  LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+  y := LogCaretXY.Y - 1;
+  LCnt := Lines.Count;
+  HL.CurrentLines := Lines;
+  i := 0;
+  repeat
+    Node1 := HL.FoldNodeInfo[y, i];
+    inc(i);
+  until (sfaInvalid in Node1.FoldAction) or
+        ((Node1.LogXEnd >= LogCaretXY.X - 1) and (Node1.LogXEnd > 0));
+  while not(Node1.FoldAction * [sfaInvalid, sfaMarkup] <> [])
+        and (Node1.LogXStart <= LogCaretXY.X - 1) do
+  begin
+    Node1 := HL.FoldNodeInfo[y, i];
+    inc(i);
+  end;
+  if (Node1.LogXStart > LogCaretXY.X - 1) or not(sfaMarkup in Node1.FoldAction) then
+    exit;
+  dec(i);
+
+  if sfaOpen in Node1.FoldAction then begin
+    y1 := y;
+    Node2 := FindEndNode(Node1, y, i);
+    if (sfaInvalid in Node2.FoldAction) then
+      exit;
+    y2 := y;
+    i2 := i;
+    i3 := i;
+    Node3 := FindMultiNode(Node2, y, i3);
+  end else begin
+    Node2 := Node1;
+    i3 := i;
+    Node3 := FindMultiNode(Node2, y, i3);
+    y2 := y;
+    i2 := i;
+    Node1 := FindStartNode(Node2, y, i);
+    if (sfaInvalid in Node1.FoldAction) then
+      exit;
+    y1 := y;
   end;
 
-  // In Case GetWordTriplet did set them
-  Word1.Y := -1;
-  Word2.Y := -1;
-  Word3.Y := -1;
+  y := y2;
+  if not(sfaInvalid in Node3.FoldAction) then
+    Node3 := FindStartNode(Node3, y, i);
+
+  Word1.Y  := y1 + 1;
+  Word1.X  := Node1.LogXStart + 1;
+  Word1.X2 := Node1.LogXEnd + 1;
+  Word2.Y  := y2 + 1;
+  Word2.X  := Node2.LogXStart + 1;
+  Word2.X2 := Node2.LogXEnd + 1;
+  if not(sfaInvalid in Node3.FoldAction) then begin
+    Word3 := Word2;
+    if i3 > i2 then begin
+      Word2 := Word1;
+      Word1.Y  := y + 1;
+      Word1.X  := Node3.LogXStart + 1;
+      Word1.X2 := Node3.LogXEnd + 1;
+    end else begin
+      Word2.Y  := y + 1;
+      Word2.X  := Node3.LogXStart + 1;
+      Word2.X2 := Node3.LogXEnd + 1;
+    end;
+  end;
+
+  if Word1.Y > 0 then begin
+    Word1.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
+    Word1.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
+  end;
+  if Word2.Y > 0 then begin
+    Word2.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
+    Word2.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
+  end;
+  if Word3.Y > 0 then begin
+    Word3.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
+    Word3.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
+  end;
 end;
 
 procedure TSynEditMarkupWordGroup.DoCaretChanged(OldCaret: TPoint);
