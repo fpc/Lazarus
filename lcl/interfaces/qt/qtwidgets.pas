@@ -7728,6 +7728,19 @@ begin
   if (LCLObject <> nil) and (LCLObject is TListView) then
     for i := 0 to TListView(LCLObject).Items.Count - 1 do
       TListView(LCLObject).Items[i].Selected;
+
+  {inform LCL about current change}
+  MsgN.Msg := CN_NOTIFY;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.uNewState := 0;
+  NMLV.uOldState := 0;
+  if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Item) then
+    NMLV.uNewState := LVIS_SELECTED
+  else
+    NMLV.uOldState := LVIS_SELECTED;
+  NMLV.uChanged :=  LVIF_STATE;
+  MsgN.NMHdr := @NMLV.hdr;
+  DeliverMessage(Msgn);
 end;
 
 {------------------------------------------------------------------------------
