@@ -995,7 +995,8 @@ type
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
 
-    property AutoSizing: Boolean Read FAutoSizing;
+    property AutoSizing: Boolean read FAutoSizing;
+    property AutoSizingLockCount: Integer read FAutoSizingLockCount;
   protected
     // protected messages
     procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;

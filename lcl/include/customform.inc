@@ -517,7 +517,8 @@ end;
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
   //DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
-  Include(FFormState,fsDisableAutoSize);
+  if AutoSizingLockCount = 0 then
+    Include(FFormState, fsDisableAutoSize);
   inherited WMPaint(Message);
   //DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
