@@ -81,6 +81,7 @@ type
     procedure AddSystemResource(const AResource: String); override;
     procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
 
+    procedure DoBeforeBuild;
     procedure Clear;
     function Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
     function RenameDirectives(const CurFileName, NewFileName: String): Boolean;
@@ -209,6 +210,13 @@ begin
   finally
     OutStream.Free;
   end;
+end;
+
+procedure TProjectResources.DoBeforeBuild;
+begin
+  VersionInfo.DoBeforeBuild(Self);
+  XPManifest.DoBeforeBuild(Self);
+  ProjectIcon.DoBeforeBuild(Self);
 end;
 
 procedure TProjectResources.Clear;

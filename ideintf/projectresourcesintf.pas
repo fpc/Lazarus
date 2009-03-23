@@ -29,9 +29,11 @@ type
     FOnModified: TNotifyEvent;
     procedure SetModified(const AValue: boolean);
   public
+    constructor Create; virtual;
+
+    procedure DoBeforeBuild(AResources: TAbstractProjectResources); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
 
-    constructor Create; virtual;
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
@@ -66,6 +68,11 @@ end;
 constructor TAbstractProjectResource.Create;
 begin
   FModified := False;
+end;
+
+procedure TAbstractProjectResource.DoBeforeBuild(AResources: TAbstractProjectResources);
+begin
+  // nothing
 end;
 
 { TAbstractProjectResources }

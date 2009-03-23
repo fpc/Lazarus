@@ -84,6 +84,7 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
   public
+    procedure DoBeforeBuild(AResources: TAbstractProjectResources); override;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
@@ -318,8 +319,6 @@ begin
   if UseVersionInfo then
   begin
     // project indicates to use the versioninfo
-    if AutoIncrementBuild then // project indicate to use autoincrementbuild
-      BuildNr := BuildNr + 1;
     if ProductVersionString = '' then
        ProductVersionString := IntToStr(VersionNr) + '.' +
                                IntToStr(MajorRevNr) + '.' +
@@ -509,6 +508,13 @@ begin
   if FVersionNr=AValue then exit;
   FVersionNr:=AValue;
   Modified:=true;
+end;
+
+procedure TProjectVersionInfo.DoBeforeBuild(
+  AResources: TAbstractProjectResources);
+begin
+  if AutoIncrementBuild then // project indicate to use autoincrementbuild
+    BuildNr := BuildNr + 1;
 end;
 
 finalization

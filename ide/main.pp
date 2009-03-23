@@ -9126,6 +9126,7 @@ begin
   DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
   {$ENDIF}
 
+  Project1.Resources.DoBeforeBuild;
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
