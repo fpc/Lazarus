@@ -7860,39 +7860,37 @@ begin
   NMLV.hdr.code := LVN_ITEMCHANGING;
 
   AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
-  NMLV.iItem := AIndex;
 
-  if NMLV.iItem = -1 then
-    exit;
-    
-	AParent := QTreeWidgetItem_parent(Current);
-  
+  AParent := QTreeWidgetItem_parent(Current);
+
   if AParent <> nil then
     ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Current)
   else
     ASubIndex := 0;
-    
+
+  NMLV.iItem := AIndex;
   NMLV.iSubItem := ASubIndex;
   NMLV.uNewState := LVIS_SELECTED;
   NMLV.uChanged := LVIF_STATE;
 
   Msg.NMHdr := @NMLV.hdr;
+  DeliverMessage(Msg);
 
   FSyncingItems := True;
   try
     if Current <> nil then
     begin
-    	DeliverMessage(Msg);
-
       FillChar(Msg, SizeOf(Msg), #0);
       FillChar(NMLV, SizeOf(NMLV), #0);
       Msg.Msg := CN_NOTIFY;
-
       NMLV.hdr.hwndfrom := LCLObject.Handle;
       NMLV.hdr.code := LVN_ITEMCHANGED;
       NMLV.iItem := AIndex;
       NMLV.iSubItem := ASubIndex;
-      NMLV.uNewState := LVIS_SELECTED;
+      if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Current) then
+        NMLV.uNewState := LVIS_SELECTED
+      else
+        NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
       DeliverMessage(Msg);
@@ -7906,13 +7904,16 @@ begin
       NMLV.hdr.hwndfrom := LCLObject.Handle;
       NMLV.hdr.code := LVN_ITEMCHANGED;
       NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Previous);
-    	AParent := QTreeWidgetItem_parent(Previous);
+      AParent := QTreeWidgetItem_parent(Previous);
       if AParent <> nil then
         ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
       else
         ASubIndex := 0;
       NMLV.iSubItem := ASubIndex;
-      NMLV.uOldState := LVIS_SELECTED;
+      if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Previous) then
+        NMLV.uNewState := LVIS_SELECTED
+      else
+        NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
       DeliverMessage(Msg);
