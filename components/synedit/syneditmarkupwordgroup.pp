@@ -286,18 +286,23 @@ begin
 end;
 
 procedure TSynEditMarkupWordGroup.DoCaretChanged(OldCaret: TPoint);
+var
+  C: TPoint;
 begin
+  C := TSynEdit(SynEdit).CaretXY;
+  if ( (C.Y = FHighlightPos1.Y) and (C.X >= FHighlightPos1.X) and (C.X <= FHighlightPos1.X2) ) or
+     ( (C.Y = FHighlightPos2.Y) and (C.X >= FHighlightPos2.X) and (C.X <= FHighlightPos2.X2) ) or
+     ( (C.Y = FHighlightPos3.Y) and (C.X >= FHighlightPos3.X) and (C.X <= FHighlightPos3.X2) ) then
+    exit;
   InvalidateCurrentHighlight;
 end;
 
 procedure TSynEditMarkupWordGroup.DoTopLineChanged(OldTopLine: Integer);
 begin
-  InvalidateCurrentHighlight;
 end;
 
 procedure TSynEditMarkupWordGroup.DoLinesInWindoChanged(OldLinesInWindow: Integer);
 begin
-  InvalidateCurrentHighlight;
 end;
 
 procedure TSynEditMarkupWordGroup.DoTextChanged(StartLine, EndLine: Integer);
