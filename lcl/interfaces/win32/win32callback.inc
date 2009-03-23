@@ -1221,6 +1221,12 @@ begin
   Assert(False, 'Trace:WindowProc - Checking Proc');
   Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
   case Msg of
+    WM_NULL:
+      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) then
+      begin
+        CheckSynchronize;
+        TWin32Widgetset(Widgetset).CheckPipeEvents;
+      end;
     WM_ACTIVATE:
     begin
       case LOWORD(WParam) Of
