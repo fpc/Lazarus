@@ -9763,14 +9763,13 @@ end;
 
 function TQtDesignWidget.DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  BeginEventProcessing;
   Result := False;
-  if LCLObject <> nil then
-  begin
-    QEvent_Accept(Event);
-    case QEvent_type(Event) of
-      QEventPaint: SlotDesignControlPaint(Sender, Event);
-    end;
+  QEvent_Accept(Event);
+  if LCLObject = nil then
+    exit;
+  BeginEventProcessing;
+  case QEvent_type(Event) of
+    QEventPaint: SlotDesignControlPaint(Sender, Event);
   end;
   EndEventProcessing;
 end;
