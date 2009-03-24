@@ -2037,7 +2037,7 @@ end;}
 function TWinCEWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
-  Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2+1, Y2+1));
+  Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2, Y2));
   Assert(False, Format('Trace:< [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
