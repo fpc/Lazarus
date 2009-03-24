@@ -64,6 +64,7 @@ type
     class procedure RemovePage(const ANotebook: TCustomNotebook;
       const AIndex: integer); override;
 
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); override;
@@ -341,6 +342,24 @@ begin
   TabWidget.setUpdatesEnabled(false);
   TabWidget.removeTab(AIndex);
   TabWidget.setUpdatesEnabled(true);
+end;
+
+class function TQtWSCustomNotebook.GetDesignInteractive(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+var
+  TabWidget: TQtTabWidget;
+  TabBar: TQtTabBar;
+  TabIndex: Integer;
+  p: TQtPoint;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'GetDesignInteractive') then
+    Exit;
+  TabWidget := TQtTabWidget(AWinControl.Handle);
+  TabBar := TabWidget.TabBar;
+  p := QtPoint(AClientPos.x, AClientPos.y);
+  TabIndex := QTabBar_tabAt(QTabBarH(TabBar.Widget), @p);
+  Result := (TabIndex >= 0) and (TabWidget.getCurrentIndex <> TabIndex);
 end;
 
 class function TQtWSCustomNotebook.GetTabIndexAtPos(

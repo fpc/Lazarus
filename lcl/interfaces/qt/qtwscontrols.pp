@@ -71,6 +71,7 @@ type
     class procedure AddControl(const AControl: TControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
 
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -311,6 +312,15 @@ begin
   ARect := TQtWidget(AWinControl.Handle).getClientBounds;
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
+end;
+
+class function TQtWSWinControl.GetDesignInteractive(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'GetDesignInteractive') then
+    Exit;
+  Result := False;
 end;
 
 class procedure TQtWSWinControl.SetBiDiMode(const AWinControl : TWinControl;
