@@ -290,8 +290,8 @@ end;
 
 class function TCustomCalendar.GetControlClassDefaultSize: TPoint;
 begin
-  Result.X:=190;
-  Result.Y:=153;
+  Result.X:=220;
+  Result.Y:=190;
 end;
 
 procedure TCustomCalendar.LMMonthChanged(var Message: TLMessage);
