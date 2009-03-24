@@ -1290,6 +1290,8 @@ type
   { TQtDesignWidget }
 
   TQtDesignWidget = class(TQtMainWindow)
+  private
+    procedure DesignHookMouseClick(AControl: TControl ; APoint: TPoint);
   protected
     FDesignControlEventHook: QObject_hookH;
     FDesignControl: QWidgetH;
@@ -9774,7 +9776,42 @@ begin
   EndEventProcessing;
 end;
 
+procedure TQtDesignWidget.DesignHookMouseClick(AControl: TControl;
+  APoint: TPoint);
+var
+  TabSheet: TTabSheet;
+  TabWidget: TQtTabWidget;
+  TabBar: TQtTabBar;
+  TabIndex: Integer;
+  R: TRect;
+  p: TQtPoint;
+  pt: TPoint;
+begin
+  {TODO: add combobox too}
+  if AControl is TCustomNoteBook then
+  begin
+    TabWidget := TQtTabWidget(TCustomNotebook(AControl).Handle);
+    TabBar := TabWidget.TabBar;
+    QWidget_geometry(TabWidget.Widget, @R);
+    pt.X := APoint.X - R.Left;
+    pt.Y := APoint.y - R.Top;
+    QWidget_geometry(TabBar.Widget, @R);
+    if LCLIntf.PtInRect(R, pt) then
+    begin
+      p.x := pt.X;
+      p.y := pt.Y;
+      TabIndex := QTabBar_tabAt(QTabBarH(TabBar.Widget), @p);
+      if (TabIndex >= 0) and (TabWidget.getCurrentIndex <> TabIndex) then
+        TabWidget.setCurrentIndex(TabIndex);
+    end;
+  end;
+end;
+
 function TQtDesignWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  p: TQtPoint;
+  pt: TPoint;
+  Control: TControl;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -9783,6 +9820,22 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease:
+    begin
+      Result := inherited EventFilter(Sender, Event);
+      p := QMouseEvent_pos(QMouseEventH(Event))^;
+      OffsetMousePos(@p);
+      pt.X := P.x;
+      pt.Y := P.y;
+      Control := LCLObject.ControlAtPos(pt, True, True);
+      if Assigned(Control) then
+      begin
+        {hook for TCustomNotebook}
+        if (Control is TCustomNoteBook) then
+          DesignHookMouseClick(Control, pt);
+      end;
+    end;
     QEventChildAdded,
     QEventChildRemoved: BringDesignerToFront;
     QEventResize:
