@@ -210,24 +210,21 @@ Type
     procedure GetNewDate(Sender:TObject);//or onClick
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function Execute: Boolean; override;
   published
-    property Date: TDateTime Read FDate Write FDate;
+    property Date: TDateTime read FDate write FDate;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
-    property DisplaySettings: TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
+    property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
     property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poMainFormCenter;
-    property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsTitleStored;
-    property OKCaption:TCaption Read FOKCaption Write FOKCaption;
-    property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
+    property DialogTitle:TCaption read FDialogTitle write FDialogTitle stored IsTitleStored;
+    property OKCaption:TCaption read FOKCaption write FOKCaption;
+    property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
   end;
 
-
 procedure Register;
-
 
 implementation
 
@@ -1173,16 +1170,12 @@ end;
 constructor TCalendarDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Date:=trunc(Now);
-  DialogPosition:=poMainFormCenter;
-  DialogTitle:=rsPickDate;
-  OKCaption:=rsMbOK;
-  CancelCaption:=rsMbCancel;
-end;
-
-destructor TCalendarDialog.Destroy;
-begin
-  inherited Destroy;
+  DisplaySettings := DefaultDisplaySettings;
+  Date := trunc(Now);
+  DialogPosition := poMainFormCenter;
+  DialogTitle := rsPickDate;
+  OKCaption := rsMbOK;
+  CancelCaption := rsMbCancel;
 end;
 
 procedure TCalendarDialog.GetNewDate(Sender:TObject);//or onClick
