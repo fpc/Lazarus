@@ -30,27 +30,29 @@ unit Calendar;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0_2) and defined(win32)}
-// FPC <= 2.0.2 compatibility code
-// WINDOWS define was added after FPC 2.0.2
-  {$define WINDOWS}
-{$endif}
-
 interface
 
 uses
   SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls;
   
   
-Type
+type
+  TDisplaySetting = (
+    dsShowHeadings,
+    dsShowDayNames,
+    dsNoMonthChange,
+    dsShowWeekNumbers,
+    dsStartMonday
+  );
+  TDisplaySettings = set of TDisplaySetting;
+const
+  DefaultDisplaySettings = [dsShowHeadings, dsShowDayNames];
+
+type
+  EInvalidDate = class(Exception);
+
   { TCustomCalendar }
 
-  TDisplaySetting = (dsShowHeadings, dsShowDayNames, dsNoMonthChange,
-                     dsShowWeekNumbers,dsStartMonday);
-  TDisplaySettings = set of TDisplaySetting;
-  
-  EInvalidDate = class(Exception);
-  
   TCustomCalendar = class(TWinControl)
   private
     FDateAsString : String;
@@ -63,11 +65,10 @@ Type
     FYearChanged: TNotifyEvent;
     FPropsChanged: boolean;
     function GetDateTime: TDateTime;
-    function ReadOnlyIsStored: boolean;
     procedure SetDateTime(const AValue: TDateTime);
     procedure SetReadOnly(const AValue: Boolean);
-    Procedure GetProps;
-    Procedure SetProps;
+    procedure GetProps;
+    procedure SetProps;
     function GetDisplaySettings: TDisplaySettings;
     procedure SetDisplaySettings(const AValue: TDisplaySettings);
     function GetDate: String;
@@ -80,20 +81,19 @@ Type
     class function GetControlClassDefaultSize: TPoint; override;
     procedure Loaded; override;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
+    constructor Create(AOwner: TComponent); override;
     procedure InitializeWnd; override;
-    property Date: String read GetDate write SetDate stored false;
+    property Date: String read GetDate write SetDate stored False;
     property DateTime: TDateTime read GetDateTime write SetDateTime;
-    property DisplaySettings: TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
+    property DisplaySettings: TDisplaySettings read GetDisplaySettings
+      write SetDisplaySettings default DefaultDisplaySettings;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
   end;
-  
-  
+
   { TCalendar }
   
   TCalendar = class(TCustomCalendar)
@@ -126,11 +126,11 @@ Type
     property OnYearChanged;
     property PopupMenu;
     property ReadOnly;
-    property Tabstop;
+    property ShowHint;
+    property TabStop;
     property Visible;
   end;
-  
-  
+
 procedure Register;
   
 implementation
@@ -145,19 +145,15 @@ end;
 
 { TCustomCalendar }
 
-constructor TCustomCalendar.Create(TheOwner: TComponent);
+constructor TCustomCalendar.Create(AOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited Create(AOwner);
   fCompStyle := csCalendar;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
-  fDisplaySettings := [dsShowHeadings, dsShowDayNames];
+  FReadOnly := False;
+  FDisplaySettings := DefaultDisplaySettings;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;
-end;
-
-destructor TCustomCalendar.Destroy;
-begin
-  Inherited Destroy;
 end;
 
 procedure TCustomCalendar.Loaded;
@@ -183,24 +179,12 @@ procedure TCustomCalendar.SetDate(const AValue: String);
 var
   NewDate: TDateTime;
 begin
-  if FDateAsString=AValue then exit;
-  try
-    {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCustomCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
-    {$ENDIF}
-    NewDate:=StrToDate(AValue);  //test to see if date valid ....
-    // no exception => set valid date
-    FDateAsString := AValue;
-    FDate := NewDate;
-  except
-    // TODO: remove test for csLoading after fpc 2.0.4 has been released
-    // The Date property is not supposed to be stored, but earlier fpc version
-    // did this anyway.
-    if not (csLoading in ComponentState) then
-      raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue])
-    else
-      exit;
-  end;
+  if FDateAsString = AValue then Exit;
+
+  NewDate:=StrToDate(AValue);  //test to see if date valid ....
+  // no exception => set valid date
+  FDateAsString := AValue;
+  FDate := NewDate;
   SetProps;
 end;
 
@@ -223,11 +207,6 @@ begin
     FReadOnly := aValue;
     SetProps;
   end;
-end;
-
-function TCustomCalendar.ReadOnlyIsStored: boolean;
-begin
-  Result:=FReadOnly;
 end;
 
 function TCustomCalendar.GetDateTime: TDateTime;
@@ -326,6 +305,5 @@ begin
   if Assigned(OnYearChanged) then OnYearChanged(self);
   if Assigned(OnChange) then OnChange(self);
 end;
-
 
 end.
