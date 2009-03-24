@@ -91,11 +91,21 @@ class procedure TWin32WSCustomCalendar.AdaptBounds(const AWinControl: TWinContro
 var
   WinHandle: HWND;
   lRect: TRect;
+  TodayWidth: integer;
 begin
   WinHandle := AWinControl.Handle;
   Windows.SendMessage(WinHandle, MCM_GETMINREQRECT, 0, LPARAM(@lRect));
   Width := lRect.Right;
   Height := lRect.Bottom;
+  // according to msdn to ensure that today string is not clipped we need to choose
+  // maximal width between that rectangle and today string width
+  // this needs to be done only if we are showing today string
+  if (GetWindowLong(WinHandle, GWL_STYLE) and MCS_NOTODAY) = 0 then
+  begin
+    TodayWidth := Windows.SendMessage(WinHandle, MCM_GETMAXTODAYWIDTH, 0, 0);
+    if Width < TodayWidth then
+      Width := TodayWidth;
+  end;
 end;
 
 class function  TWin32WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
