@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Calendar, SysUtils, Controls, LCLType,
+  CommCtrl, SysUtils, Controls, LCLType, Calendar,
 ////////////////////////////////////////////////////
-  WSCalendar, WSLCLClasses, Windows, Win32Def, Win32WSControls;
+  WSCalendar, WSLCLClasses, WSProc, Windows, Win32WSControls;
 
 type
 
@@ -74,10 +74,12 @@ begin
     pClassName := 'SysMonthCal32';
     WindowTitle := StrCaption;
     Flags := WS_CHILD or WS_VISIBLE;
+    if dsShowWeekNumbers in TCustomCalendar(AWinControl).DisplaySettings then
+      Flags := Flags or MCS_WEEKNUMBERS;
     SubClassWndProc := @WindowProc;
   end;
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
+  FinishCreateWindow(AWinControl, Params, False);
   Result := Params.Window;
   SetClassLong(Result, GCL_STYLE, GetClassLong(Result, GCL_STYLE) or CS_DBLCLKS);
   // resize to proper size
@@ -114,8 +116,17 @@ begin
 end;
 
 class procedure TWin32WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
+var
+  Style: LongInt;
 begin
-  // TODO: implement me!
+  if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetDisplaySettings') then
+    Exit;
+  Style := GetWindowLong(ACalendar.Handle, GWL_STYLE);
+  if dsShowWeekNumbers in ASettings then
+    Style := Style or MCS_WEEKNUMBERS
+  else
+    Style := Style and not MCS_WEEKNUMBERS;
+  SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
 end;
 
 class procedure TWin32WSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);

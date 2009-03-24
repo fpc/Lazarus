@@ -33,12 +33,6 @@ uses
   Windows, Classes, LCLType;
 
 const
-  // Used by TCalendar
-  MCM_FIRST = $1000;
-  MCM_GETCURSEL = MCM_FIRST + 1;
-  MCM_SETCURSEL =  MCM_FIRST + 2;
-  MCM_GETMINREQRECT = MCM_FIRST + 9;
-
   // it is not good to use WM_USER since many programs use it.
   WM_LCL_SOCK_ASYNC = WM_USER + $500;
 
