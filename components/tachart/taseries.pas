@@ -43,14 +43,12 @@ type
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
     FCoordList: TList;
-    FActive: Boolean;
     FMarks: TChartMarks;
     FShowInLegend: Boolean;
     FValuesTotal: Double;
     FValuesTotalValid: Boolean;
 
     function GetXMinVal: Integer;
-    procedure SetActive(Value: Boolean);
     procedure SetMarks(const AValue: TChartMarks);
     procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
@@ -62,12 +60,12 @@ type
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetLegendCount: Integer; override;
     function IsInLegend: Boolean; override;
-    procedure UpdateBounds(
-      var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double); override;
+    procedure UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
     function GetValuesTotal: Double;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
+    procedure SetActive(AValue: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -78,8 +76,6 @@ type
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
 
     function Count: Integer; override;
-    procedure Draw(ACanvas: TCanvas); virtual; abstract;
-    procedure DrawIfActive(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     procedure Delete(AIndex: Integer); virtual;
@@ -87,7 +83,7 @@ type
     function FormattedMark(AIndex: integer): String;
 
   published
-    property Active: Boolean read FActive write SetActive default true;
+    property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
@@ -327,12 +323,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TChartSeries.DrawIfActive(ACanvas: TCanvas);
-begin
-  if Active then
-    Draw(ACanvas);
-end;
-
 procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
 begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
@@ -485,9 +475,9 @@ begin
   Result := FCoordList.Count;
 end;
 
-procedure TChartSeries.SetActive(Value: Boolean);
+procedure TChartSeries.SetActive(AValue: Boolean);
 begin
-  FActive := Value;
+  FActive := AValue;
   UpdateParentChart;
 end;
 
@@ -508,11 +498,9 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.UpdateBounds(
-  var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
+procedure TChartSeries.UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double);
 begin
   if not Active or (Count = 0) then exit;
-  ANumPoints += Count;
   if XGraphMin < AXMin then AXMin := XGraphMin;
   if YGraphMin < AYMin then AYMin := YGraphMin;
   if XGraphMax > AXMax then AXMax := XGraphMax;

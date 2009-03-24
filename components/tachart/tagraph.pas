@@ -51,6 +51,7 @@ type
   protected
     FTitle: String;
     FChart: TChart;
+    FActive: Boolean;
 
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
     function GetLegendCount: Integer; virtual; abstract;
@@ -58,8 +59,7 @@ type
     function IsInLegend: Boolean; virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure UpdateBounds(
-      var ANumPoints: Integer; var AXMin, AYMin, AXMax, AYMax: Double);
-      virtual; abstract;
+      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
     procedure AfterAdd; virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
@@ -67,6 +67,7 @@ type
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
+    procedure SetActive(AValue: Boolean); virtual; abstract;
 
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
@@ -77,8 +78,9 @@ type
     function HasParent: Boolean; override;
 
     function Count: Integer; virtual; abstract;
-    procedure DrawIfActive(ACanvas: TCanvas); virtual; abstract;
+    procedure Draw(ACanvas: TCanvas); virtual; abstract;
 
+    property Active: Boolean read FActive write SetActive;
     property ParentChart: TChart read FChart;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
@@ -894,7 +896,8 @@ var
 begin
   Result := Rect(0, 0, 0, 0);
   for i := 0 to SeriesCount - 1 do
-    Series[i].UpdateMargins(ACanvas, Result);
+    if Series[i].Active then
+      Series[i].UpdateMargins(ACanvas, Result);
 end;
 
 procedure TChart.SetGraphBrush(Value: TBrush);
@@ -947,8 +950,7 @@ end;
 procedure TChart.Refresh(ACanvas: TCanvas; ARect: TRect);
 var
   Tolerance, Valeur: Double;
-  i: Integer;
-  NBPointsMax: Integer;
+  i, pointsTotal: Integer;
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
 begin
   DrawReticule(ACanvas);
@@ -964,10 +966,13 @@ begin
     XMaxSeries := MinDouble;
     YMinSeries := MaxDouble;
     YMaxSeries := MinDouble;
-    NBPointsMax := 0;
+    pointsTotal := 0;
     for i := 0 to SeriesCount - 1 do
-      Series[i].UpdateBounds(
-        NBPointsMax, XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
+      with Series[i] do
+        if Active then begin
+          pointsTotal += Count;
+          UpdateBounds(XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
+        end;
     if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
     if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
     if XMaxSeries < MinDouble / 10 then XMaxSeries := 0;
@@ -989,7 +994,7 @@ begin
     Tolerance := 0.001; //this should be cleaned eventually
     // Tolerance := 0.1;
 
-    if NBPointsMax > 0 then begin
+    if pointsTotal > 0 then begin
       // If several points : automatic +/-10% of interval
       Valeur := Tolerance * (XMaxSeries - XMinSeries);
       if Valeur <> 0 then begin
@@ -1182,7 +1187,8 @@ begin
 
   // Update all series
   for i := 0 to SeriesCount - 1 do
-    Series[i].DrawIfActive(ACanvas);
+    if Series[i].Active then
+      Series[i].Draw(ACanvas);
 
   //now disable clipping
   SelectClipRgn(ACanvas.Handle, 0);
