@@ -27,11 +27,11 @@ unit WinCEWSCalendar;
 interface
 
 uses
-  Calendar, SysUtils, Controls, LCLType, commctrl,
+  Calendar, SysUtils, Controls, LCLType, commctrl,WSProc,
   WSCalendar, WSLCLClasses, Windows, WinCEDef, WinCEWSControls;
 
 type
-
+	
   { TWinCEWSCustomCalendar }
 
   TWinCEWSCustomCalendar = class(TWSCustomCalendar)
@@ -45,7 +45,6 @@ type
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
     class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
-
 
 implementation
 
@@ -75,6 +74,8 @@ begin
     pClassName := 'SysMonthCal32';
     WindowTitle := StrCaption;
     Flags := WS_CHILD or WS_VISIBLE;
+    if dsShowWeekNumbers in TCustomCalendar(AWinControl).DisplaySettings then
+        Flags := Flags or MCS_WEEKNUMBERS;
     SubClassWndProc := @WindowProc;
   end;
   // create window
@@ -115,8 +116,17 @@ begin
 end;
 
 class procedure TWinCEWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
+var
+   Style: LongInt;
 begin
-  // TODO: implement me!
+if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetDisplaySettings') then
+     Exit;
+   Style := GetWindowLong(ACalendar.Handle, GWL_STYLE);
+   if dsShowWeekNumbers in ASettings then
+     Style := Style or MCS_WEEKNUMBERS
+   else
+     Style := Style and not MCS_WEEKNUMBERS;
+   SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
 end;
 
 class procedure TWinCEWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);

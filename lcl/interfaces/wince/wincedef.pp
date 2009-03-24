@@ -33,11 +33,13 @@ Uses
   Windows, Classes, LCLType;
 
 Const
-  // Used by TCalendar
+// Used by TCalendar
   MCM_FIRST = $1000;
   MCM_GETCURSEL = MCM_FIRST + 1;
   MCM_SETCURSEL =  MCM_FIRST + 2;
   MCM_GETMINREQRECT = MCM_FIRST + 9;
+  MCS_WEEKNUMBERS                = $0004;
+
 
 Type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
