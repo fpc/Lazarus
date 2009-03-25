@@ -9785,7 +9785,7 @@ begin
       p := QMouseEvent_pos(QMouseEventH(Event))^;
       OffsetMousePos(@p);
       pt := Point(p.x, p.y);
-      Control := LCLObject.ControlAtPos(pt, True, True);
+      Control := LCLObject.ControlAtPos(pt, [capfRecursive, capfAllowWinControls]);
 
       if Assigned(Control) and (Control is TWinControl) then
       begin
