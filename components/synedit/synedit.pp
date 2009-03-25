@@ -5643,7 +5643,6 @@ var
   s: string;
 {$ENDIF}
   counter: Integer;
-  InsDelta: integer;
   LogCounter: integer;
   LogCaretXY: TPoint;
   CY: Integer;
@@ -5986,7 +5985,6 @@ begin
           Temp2 := Temp; //LineText;
 // This is sloppy, but the Right Thing would be to track the column of markers
 // too, so they could be moved depending on whether they are after the caret...
-          InsDelta := Ord( (CaretX = 1) AND (Command = ecLineBreak) );
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           Len := Length(Temp);
           if LogCaretXY.X > Len + 1 then

@@ -595,9 +595,8 @@ var
 
   procedure DeleteSelection;
   var
-    y, l, r, xb, xe, MarkOffset: Integer;
+    y, l, r, xb, xe: Integer;
   begin
-    MarkOffset := 0;
     case ActiveSelectionMode of
       smNormal:
         begin
@@ -655,7 +654,6 @@ var
           if BE.Y >= BB.Y then
             FLines.EditLinesDelete(BB.Y, BE.Y - BB.Y + 1);
           FCaret.LineCharPos := Point(1, BB.Y);
-          MarkOffset := 1;
         end;
     end;
   end;
