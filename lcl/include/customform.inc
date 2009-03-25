@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -451,10 +451,15 @@ end;
 
 procedure TCustomForm.CMShowingChanged(var Message: TLMessage);
 begin
-  if Showing then
-    DoShow
-  else
-    DoHide;
+  try
+    if Showing then
+      DoShow
+    else
+      DoHide;
+  except
+    if not HandleShowHideException then
+      raise;
+  end;
   inherited;
 end;
 
@@ -652,10 +657,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
 begin
-  LockRealizeBounds;
-  if Assigned(FOnCreate) then FOnCreate(Self);
-  FFormHandlers[fhtCreate].CallNotifyEvents(Self);
-  UnlockRealizeBounds;
+  try
+    LockRealizeBounds;
+    if Assigned(FOnCreate) then FOnCreate(Self);
+    FFormHandlers[fhtCreate].CallNotifyEvents(Self);
+    UnlockRealizeBounds;
+  except
+    if not HandleCreateException then
+      raise
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -685,7 +695,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoDestroy;
 begin
-  if Assigned(FOnDestroy) then FOnDestroy(Self);
+  try
+    if Assigned(FOnDestroy) then FOnDestroy(Self);
+  except
+    if not HandleDestroyException then
+      raise;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -788,6 +803,27 @@ begin
       if OwnedComponent.HasParent = False
         then Proc(OwnedComponent);
     end;
+end;
+
+function TCustomForm.HandleCreateException: Boolean;
+begin
+  Result := Application.CaptureExceptions;
+  if Result then
+    Application.HandleException(Self);
+end;
+
+function TCustomForm.HandleDestroyException: Boolean;
+begin
+  Result := Application.CaptureExceptions;
+  if Result then
+    Application.HandleException(Self);
+end;
+
+function TCustomForm.HandleShowHideException: Boolean;
+begin
+  Result := Application.CaptureExceptions;
+  if Result then
+    Application.HandleException(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -2081,7 +2117,10 @@ begin
         try
           WidgetSet.AppProcessMessages; // process all events
         except
-          on E: Exception do Application.HandleException(E);
+          if Application.CaptureExceptions then
+            Application.HandleException(Self)
+          else
+            raise;
         end;
         if Application.Terminated then
           ModalResult := mrCancel;

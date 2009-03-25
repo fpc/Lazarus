@@ -471,6 +471,9 @@ type
     procedure DoShow; dynamic;
     procedure EndFormUpdate;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function HandleCreateException: Boolean; dynamic;
+    function HandleDestroyException: Boolean; dynamic;
+    function HandleShowHideException: Boolean; dynamic;
     procedure Loaded; override;
     procedure ChildHandlesCreated; override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
@@ -1273,7 +1276,7 @@ type
     procedure SetOnShowHint(Const AValue : TShowHintEvent);
     procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
   public
-    Constructor Create(AOwner: TComponent); Override;
+    constructor Create(AOwner: TComponent); Override;
     destructor Destroy; override;
   published
     property CaptureExceptions: boolean read FCaptureExceptions
