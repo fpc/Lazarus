@@ -10,12 +10,14 @@ uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
 begin
+  //Result:=InternalGetResolution(True);
   Result:=72;
 end;
 
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetYDPI: Integer;
 begin
+  //Result:=InternalGetResolution(False);
   Result:=72;
 end;
 
@@ -88,6 +90,33 @@ begin
          SetOptionsOfPrinter;
 
     Result:=cupsdyn.cupsGetOption(PChar(aKeyWord),fcupsNumOpts,fcupsOptions);
+  end;
+end;
+
+function TCUPSPrinter.GetResolutionOption: string;
+var
+  L1,L2: TStringlist;
+  i: Integer;
+begin
+  Result := Self.cupsGetOption('Resolution');
+  if Result='' then
+  begin
+    // get resolution from ppd
+    Result := GetPPDAttribute('DefaultResolution');
+    if Result='' then
+    begin
+      // try grouped options
+      L1 := TStringList.Create;
+      L2 := TStringList.Create;
+      try
+        i := EnumPPDChoice(L1,'Resolution',L2);
+        if i>=0 then
+          Result := L2[i]
+      finally
+        L2.Free;
+        L1.Free;
+      end;
+    end;
   end;
 end;
 
@@ -212,6 +241,54 @@ begin
     end;
   end;
   result := fCupsPapersCount>0;
+end;
+
+function TCUPSPrinter.InternalGetResolution(ForX: boolean): Integer;
+
+  procedure ParseResolution(s:string);
+  var
+    a,b: Integer;
+  begin
+    if s<>'' then begin
+      s := uppercase(s);
+      a := pos('X', S);
+      b := pos('D', S);
+      if b=0 then
+        b := Length(S)
+      else
+        dec(b);
+      if a>0 then begin
+        // NNNXMMMDPI (or NNN X MMM DPI)
+        FCachedResolution.x := StrToIntDef(trim(copy(S,1,a-1)), 0);
+        FCAchedResolution.y := StrToIntDef(trim(copy(S,a+1,b)), 0);
+      end else begin
+        // NNNDPI (or NNN DPI);
+        FCachedResolution.x := StrToIntDef(trim(copy(S,1,b)), 0);
+        FCachedResolution.y := FCachedResolution.x;
+      end;
+    end;
+  end;
+
+begin
+  if not (cpsResolutionValid in FStates) then begin
+    // check user defined resolution
+    FCachedResolution.x := 0;
+    FCachedResolution.y := 0;
+
+    ParseResolution(GetResolutionOption);
+
+    if (FCachedResolution.x=0) or (FCachedResolution.y=0) then
+    begin
+      FCachedResolution.x := 300;
+      FCachedResolution.y := 300;
+    end;
+
+    include(FStates, cpsResolutionValid);
+  end;
+  if ForX then
+    result := FCachedResolution.X
+  else
+    result := FCachedResolution.Y;
 end;
 
 //Print the file aFileName with a selected printer an options
@@ -391,6 +468,48 @@ begin
           end;
         end;
       end;
+    end;
+  end;
+end;
+
+function TCUPSPrinter.GetPPDAttribute(const aName: string): string;
+var
+  i         : integer;
+  AttrRoot  : PPppd_attr_t;
+  Attr      : Pppd_attr_t;
+begin
+  Result:='';
+  if not CUPSLibInstalled then
+    Exit;
+
+  if (Printers.Count>0) and (fcupsPrinter<>nil) and (fcupsPPD<>nil) then
+  begin
+    {
+    WriteLn('PPD INFO: ');
+    WriteLn('  Model         : ', fcupsPPD^.modelname);
+    WriteLn('  ModelNumber   : ', fcupsPPD^.model_number);
+    WriteLn('  Manufacturer  : ', fcupsPPD^.manufacturer);
+    WriteLn('  Nickname      : ', fcupsPPD^.nickname);
+    WriteLn('  Product       : ', fcupsPPD^.product);
+    WriteLn('  ShortNickName : ', fcupsPPD^.shortnickname);
+    WriteLn('  Attributes    : ', fcupsPPD^.num_attrs,' Current=',fcupsPPD^.cur_attr);
+    }
+    i := 0;
+    AttrRoot := fCupsPPD^.attrs;
+    while (AttrRoot<>nil) and (i<fcupsPPD^.num_attrs) do
+    begin
+      Attr := AttrRoot^;
+      if attr<>nil then
+      begin
+        //WriteLn('    i=',i,' Name=',Attr^.Name,' Spec=',Attr^.Spec,' Value=',Attr^.Value);
+        if (StrComp(pchar(AName), Attr^.name)=0) then
+        begin
+          result := attr^.value;
+          break;
+        end;
+      end;
+      inc(i);
+      inc(AttrRoot);
     end;
   end;
 end;

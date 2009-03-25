@@ -63,7 +63,8 @@ type
     cpsOrientationValid,
     cpsPaperNameValid,
     cpsCopiesValid,
-    cpsPaperRectValid
+    cpsPaperRectValid,
+    cpsResolutionValid
     );
   TCUPSPrinterStates = set of TCUPSPrinterState;
   
@@ -96,6 +97,7 @@ type
      FBeginDocCount: Integer;
      fRawModeStream: TMemoryStream;
      FOutputFilename: string;
+     fCachedResolution: TPoint;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
@@ -110,6 +112,7 @@ type
      function  InternalGetCurPaperName: string;
      procedure InternalGetPaperRect(aPaperName:string; var PaperRect:TPaperRect);
      function  CupsPapersListValid: boolean;
+     function  InternalGetResolution(ForX: boolean): Integer;
 
   protected
      function GetCanvasRef : TPrinterCanvasRef; override;
@@ -152,9 +155,11 @@ type
      function GetAttributeBoolean(aName : PChar; DefaultValue : Boolean) : Boolean;
      function EnumPPDChoice(Lst : TStrings; const aKeyWord : string;
         OptNames: TStrings = nil) : Integer;
+     function GetPPDAttribute(const aName: string): string;
 
      procedure cupsAddOption(aName,aValue: string);
      function cupsGetOption(aKeyWord: string): String;
+     function GetResolutionOption: string;
   public
     constructor Create; override;
     destructor Destroy; override;

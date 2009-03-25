@@ -45,6 +45,7 @@ type
     btnCancel1: TBUTTON;
     btnOk: TBUTTON;
     cbPaperSize: TCOMBOBOX;
+    cbResolution: TComboBox;
     cbPaperType: TCOMBOBOX;
     cbPaperSrc: TCOMBOBOX;
     cbBanStart: TCOMBOBOX;
@@ -59,6 +60,7 @@ type
     labBanStart: TLABEL;
     labBanEnd: TLABEL;
     labPaperSrc: TLABEL;
+    labResolution: TLabel;
     labPaperType: TLABEL;
     labPaperSize: TLABEL;
     PagesProperties: TNOTEBOOK;
@@ -82,7 +84,8 @@ type
     procedure dlgpropertiesprinterSHOW(Sender: TObject);
   private
     { private declarations }
-    fPaperSizeOptions,FMediaTypeOptions,FInputSlotOptions: TStringList;
+    fPaperSizeOptions,FMediaTypeOptions,FInputSlotOptions,
+    FResolutions: TStringList;
     
     procedure RefreshInfos;
 
@@ -131,7 +134,7 @@ end;
 //Initialization
 procedure Tdlgpropertiesprinter.dlgpropertiesprinterCREATE(Sender: TObject);
 Var Lst : TStringList;
-    i   : Integer;
+    i,j : Integer;
     pOr : TPrinterOrientation;
     St  : String;
 begin
@@ -142,10 +145,13 @@ begin
   FPaperSizeOptions := TStringList.Create;
   FMediaTypeOptions := TStringlist.Create;
   FInputSlotOptions := TStringList.Create;
+  FResolutions      := TStringList.Create;
 
   InitCombo(cbPaperSize,'PageSize',Printer.PaperSize.PaperName, FPaperSizeOptions);
   InitCombo(cbPaperType,'MediaType','Plain Paper',FMediaTypeOptions);
   InitCombo(cbPaperSrc ,'InputSlot','Auto Sheet Feeder',FInputSlotOptions);
+  st := THackCUPSPrinter(Printer).GetResolutionOption;
+  InitCombo(cbResolution,'Resolution', st, FResolutions);
 
   Lst:=TStringList.Create;
   try
@@ -218,6 +224,7 @@ end;
 procedure Tdlgpropertiesprinter.FormDestroy(Sender: TObject);
 begin
   if Sender=nil then ;
+  FResolutions.Free;
   FPaperSizeOptions.Free;
   FMediaTypeOptions.Free;
   FInputSlotOptions.Free;
@@ -277,6 +284,11 @@ begin
   THackCUPSPrinter(Printer).FreeOptions;
   THackCUPSPrinter(Printer).SetOptionsOfPrinter;
 
+  //Resolution
+  if (cbResolution.Items.Count>0) and (cbResolution.ItemIndex<>cbResolution.Tag) then
+    THackCUPSPrinter(Printer).cupsAddOption('Resolution',
+      fResolutions[cbResolution.ItemIndex]);
+
   //PageSize
   if (cbPaperSize.Items.Count>0) and (cbPaperSize.ItemIndex<>cbPaperSize.Tag) then
   begin
@@ -294,7 +306,6 @@ begin
   if (cbPaperSrc.Items.Count>0) and (cbPaperSrc.ItemIndex<>cbPaperSrc.Tag) then
     THackCUPSPrinter(Printer).cupsAddOption('InputSlot',
       FInputSlotOptions[cbPaperSrc.ItemIndex]);
-      
 
   //Duplex
   if gbDuplex.Enabled then
