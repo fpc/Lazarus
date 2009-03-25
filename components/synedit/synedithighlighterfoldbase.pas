@@ -133,11 +133,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetRange: Pointer; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
-                      LineNumber:Integer // 0 based
-                      ); override;
-    procedure SetRange(Value: Pointer); override;
-    procedure ResetRange; override;
 
     function MinimumCodeFoldBlockLevel: integer; override;
     function CurrentCodeFoldBlockLevel: integer; override;
@@ -149,6 +144,12 @@ type
 
     property FoldNodeInfo[Line, Index: Integer]: TSynFoldNodeInfo read GetFoldNodeInfo;
     property FoldNodeInfoCount[Line: Integer]: Integer read GetFoldNodeInfoCount;
+
+    procedure SetRange(Value: Pointer); override;
+    procedure ResetRange; override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+                      LineNumber:Integer // 0 based
+                      ); override;
   end;
 
   TSynCustomHighlighterClass = class of TSynCustomFoldHighlighter;

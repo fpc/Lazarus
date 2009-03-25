@@ -365,10 +365,12 @@ type
     function GetTokenPos: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; override;
     procedure Next; override;
+
     procedure ResetRange; override;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
       LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
+
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
 
@@ -2288,8 +2290,9 @@ function TSynPasSyn.MinimumFoldLevel(Index: Integer): integer;
 var
   r: Pointer;
 begin
-  if Index = CurrentLines.Count - 1 then exit(0);
-  r := CurrentLines.Ranges[Index + 1];  // stored as the start of the next line
+  if (Index < 0) or (Index >= CurrentLines.Count) then
+    exit(0);
+  r := CurrentLines.Ranges[Index];
   if (r <> nil) and (r <> NullRange) then
     Result := TSynPasSynRange(r).MinimumCodeFoldBlockLevel
   else
@@ -2300,8 +2303,9 @@ function TSynPasSyn.EndFoldLevel(Index: Integer): integer;
 var
   r: Pointer;
 begin
-  if Index = CurrentLines.Count - 1 then exit(0);
-  r := CurrentLines.Ranges[Index + 1];  // stored as the start of the next line
+  if (Index < 0) or (Index >= CurrentLines.Count) then
+    exit(0);
+  r := CurrentLines.Ranges[Index];
   if (r <> nil) and (r <> NullRange) then
     Result := TSynPasSynRange(r).CodeFoldStackSize
   else
@@ -2312,8 +2316,9 @@ function TSynPasSyn.LastLineFoldLevelFix(Index: Integer): integer;
 var
   r: Pointer;
 begin
-  if Index = CurrentLines.Count - 1 then exit(0);
-  r := CurrentLines.Ranges[Index + 1];   // stored as the start of the next line
+  if (Index < 0) or (Index >= CurrentLines.Count) then
+    exit(0);
+  r := CurrentLines.Ranges[Index];
   if (r <> nil) and (r <> NullRange) then
     Result := TSynPasSynRange(r).LastLineCodeFoldLevelFix
   else
@@ -2406,8 +2411,7 @@ begin
   if FNodeInfoLine <> Line then begin
     FCatchNodeInfo := True;
     FNodeInfoCount := 0;
-    SetRange(CurrentLines.Ranges[Line]);
-    SetLine(CurrentLines[Line], Line);
+    StartAtLineIndex(Line);
     fStringLen := 0;
     i := LastLineFoldLevelFix(Line);
     while i < 0 do begin

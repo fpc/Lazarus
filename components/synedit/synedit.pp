@@ -3336,6 +3336,7 @@ var
       if not Assigned(fHighlighter) then begin
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
       end else begin
+        fHighlighter.CurrentLines := FTheLinesView;
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
@@ -3358,8 +3359,7 @@ var
         end
         else begin
         {$ENDIF}
-          fHighlighter.SetRange(FFoldedLinesView.Ranges[CurLine]);     //mh 2000-10-10
-          fHighlighter.SetLine(sLine, FFoldedLinesView.TextIndex[CurLine]);
+          fHighlighter.StartAtLineIndex(FFoldedLinesView.ScreenLineToTextIndex(CurLine));
           // Try to concatenate as many tokens as possible to minimize the count
           // of ExtTextOut calls necessary. This depends on the selection state
           // or the line having special colors. For spaces the foreground color
@@ -4356,87 +4356,21 @@ end;
 
 function TCustomSynEdit.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
 // Index and AtLeastTilIndex are 0 based
-  var
-    FixFStart: Integer;
-    LastLineDiffers : Boolean;
-    SkipPrev: Boolean;
-  procedure SetCodeFoldAttributes;
-  begin
-    FFoldedLinesView.FoldMinLevel[Result-1] := fHighlighter.MinimumCodeFoldBlockLevel;
-    FFoldedLinesView.FoldEndLevel[Result-1] := fHighlighter.CurrentCodeFoldBlockLevel;
-    if (fHighlighter.LastLineCodeFoldLevelFix <> 0) and (result > 1) then begin
-      if SkipPrev then
-        FixFStart := Index - 1
-      else begin
-        FFoldedLinesView.FoldEndLevel[Result-2] :=
-          FFoldedLinesView.FoldEndLevel[Result-2] + fHighlighter.LastLineCodeFoldLevelFix;
-        if FFoldedLinesView.FoldMinLevel[Result-2] > FFoldedLinesView.FoldEndLevel[Result-2] then
-          FFoldedLinesView.FoldMinLevel[Result-2] := FFoldedLinesView.FoldEndLevel[Result-2];
-      end;
-    end;
-  end;
-
 begin
   if Index < 0 then Index := 0;
-  Result := Max(Index - 1,0);
   if not assigned(fHighlighter) or (Index > FTheLinesView.Count - 1) then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
     Topline := TopLine;
     exit;
   end;
-  FixFStart := Index;
-  if Result > 0 then
-    fHighlighter.SetRange(FTheLinesView.Ranges[Result])
-  else begin
-    fHighlighter.ReSetRange;
-    FTheLinesView.Ranges[0] := fHighlighter.GetRange;
-  end;
-  if Index >= FTheLinesView.Count - 1 then begin
-    FFoldedLinesView.FixFoldingAtTextIndex(Index);
-    fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
-    Topline := TopLine;
-    Exit;
-  end;
-  //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' Line="',Lines[Index],'"');
-  fHighlighter.SetLine(FTheLinesView[Result], Result);
-  inc(Result);
-  fHighlighter.NextToEol;
-  LastLineDiffers := True;
-  SkipPrev := True;
-  while (fHighlighter.GetRange <> FTheLinesView.Ranges[Result])
-    or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
-    or (FFoldedLinesView.FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
-    or (FFoldedLinesView.FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel)
-    or LastLineDiffers or (Result<=AtLeastTilIndex+1)
-  do begin
-    //debugln(['TSynCustomHighlighter.ScanFrom WHILE Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' ScannedLine="',Lines[Result-1],'"']);
-    LastLineDiffers := (fHighlighter.GetRange <> FTheLinesView.Ranges[Result])
-      or (fHighlighter.LastLineCodeFoldLevelFix <> 0)
-      or (FFoldedLinesView.FoldMinLevel[Result-1] <> fHighlighter.MinimumCodeFoldBlockLevel)
-      or (FFoldedLinesView.FoldEndLevel[Result-1] <> fHighlighter.CurrentCodeFoldBlockLevel);
-    FTheLinesView.Ranges[Result] := fHighlighter.GetRange;
-    SetCodeFoldAttributes;
-    SkipPrev := False;
-    //if (Result and $fff)=0 then
-    //  debugln('TCustomSynEdit.ScanFrom A Line=', dbgs(Result),' Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',dbgs(length(Lines[Result-1])));
-    fHighlighter.SetLine(FTheLinesView[Result], Result);
-    //debugln(['TSynCustomHighlighter.ScanFrom SetLine Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' Line="',Lines[Result],'"']);
-    fHighlighter.NextToEol;
-    //debugln(['TSynCustomHighlighter.ScanFrom NextEOL Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel]);
-    inc(Result);
-    if Result = FTheLinesView.Count then
-      break;
-  end;
-  // at least one line changed
-  //  => update code fold attributes of last scanned line
-  if (Result>Index+1) and (Result<=FTheLinesView.Count) then
-    SetCodeFoldAttributes;
-  FFoldedLinesView.FixFoldingAtTextIndex(FixFStart, Result);
-  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(FixFStart+1), 0),
+  fHighlighter.CurrentLines := FTheLinesView;
+  Result :=  fHighlighter.ScanFrom(Index, AtLeastTilIndex);
+
+  FFoldedLinesView.FixFoldingAtTextIndex(Index, Result);
+  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0),
                                        Min(RowToScreenRow(Result), LinesInWindow+1));
   Topline := TopLine;
-  if FixFStart < index then Invalidate;
   Dec(Result);
 end;
 
@@ -4533,33 +4467,7 @@ var
   i: integer;
 {$ENDIF}
 begin
-  {$IFDEF SYN_LAZARUS}
   ScanFrom(0,FTheLinesView.Count-1);
-  {$ELSE}
-  if Assigned(fHighlighter) and (Lines.Count > 0) then begin
-    fHighlighter.ResetRange;
-{begin}                                                                         //mh 2000-10-10
-(*
-    Lines.Objects[0] := fHighlighter.GetRange;
-    i := 1;
-    while (i < Lines.Count) do begin
-      fHighlighter.SetRange(Lines.Objects[i - 1]);
-      fHighlighter.SetLine(Lines[i - 1], i - 1);
-      fHighlighter.NextToEol;
-      Lines.Objects[i] := fHighlighter.GetRange;
-      Inc(i);
-    end;
-*)
-    i := 0;
-    repeat
-      FTheLinesView.Ranges[i] := fHighlighter.GetRange;
-      fHighlighter.SetLine(Lines[i], i);
-      fHighlighter.NextToEol;
-      Inc(i);
-    until i >= Lines.Count;
-{end}                                                                           //mh 2000-10-10
-  end;
-  {$ENDIF}
 end;
 
 {$IFDEF SYN_MBCSSUPPORT}
@@ -5382,6 +5290,7 @@ begin
       fHighlighter := nil;
       fMarkupHighCaret.Highlighter := nil;
       fMarkupWordGroup.Highlighter := nil;
+      FFoldedLinesView.Highlighter := nil;
 {begin}                                                                         //mh 2000-10-01
       if not (csDestroying in ComponentState) then begin
         RecalcCharExtent;
@@ -5418,10 +5327,9 @@ begin
     // Ensure to free all copies in SynEit.Notification too
     fMarkupHighCaret.Highlighter := Value;
     fMarkupWordGroup.Highlighter := Value;
+    FFoldedLinesView.Highlighter := Value;
     {$IFDEF SYN_LAZARUS}
     if fHighlighter<>nil then begin
-      fHighlighter.ResetRange;
-      FTheLinesView.ClearRanges(fHighlighter.GetRange);
       fTSearch.IdentChars:=fHighlighter.IdentChars;
     end else begin
       fTSearch.ResetIdentChars;
@@ -6396,8 +6304,8 @@ begin
       FindFirstNonWhiteSpaceCharInNextLine;
     end else begin
       if fHighlighter<>nil then begin
-        fHighlighter.SetRange(FTheLinesView.Ranges[CY - 1]);
-        fHighlighter.SetLine(Line, CY - 1);
+        fHighlighter.CurrentLines := FTheLinesView;
+        fHighlighter.StartAtLineIndex(CY - 1);
         while not fHighlighter.GetEol do begin
           nTokenPos := fHighlighter.GetTokenPos; // zero-based
           fHighlighter.GetTokenEx(sToken,nTokenLen);
@@ -8324,8 +8232,8 @@ var
       end;
       // Init the Highlighter only once per line
       if MaxKnownTokenPos < 1 then begin
-        fHighlighter.SetRange(FTheLinesView.Ranges[PosY - 1]);
-        fHighlighter.SetLine(Line, PosY - 1);
+        fHighlighter.CurrentLines := FTheLinesView;
+        fHighlighter.StartAtLineIndex(PosY - 1);
         TokenListCnt := 0;
       end
       else
@@ -8575,8 +8483,8 @@ begin
   if Assigned(Highlighter) and (PosY >= 0) and (PosY < FTheLinesView.Count) then
   begin
     Line := FTheLinesView[PosY];
-    Highlighter.SetRange(FTheLinesView.Ranges[PosY]);
-    Highlighter.SetLine(Line, PosY);
+    fHighlighter.CurrentLines := FTheLinesView;
+    Highlighter.StartAtLineIndex(PosY);
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then begin
       while not Highlighter.GetEol do begin

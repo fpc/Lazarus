@@ -68,7 +68,6 @@ type
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
-    procedure ClearRanges(ARange: TSynEditRange); virtual; abstract;
 
     procedure RegisterAttribute(const Index: TClass; const Size: Word); virtual; abstract;
     property Attribute[Owner: TClass; Index: Integer]: Pointer
@@ -153,8 +152,6 @@ type
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
-
-    procedure ClearRanges(ARange: TSynEditRange); override;
 
     // Size: 0 = Bit (TODO); 1..8 Size In Byte "SizeOf()"
     procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
@@ -498,11 +495,6 @@ end;
 procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);
 begin
   fSynStrings.RegisterAttribute(Index, Size);
-end;
-
-procedure TSynEditStringsLinked.ClearRanges(ARange: TSynEditRange);
-begin
-  fSynStrings.ClearRanges(ARange);
 end;
 
 procedure TSynEditStringsLinked.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);

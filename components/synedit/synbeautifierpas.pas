@@ -90,15 +90,12 @@ begin
   end;
   
   Line:=Lines[Y-1];
-  if Y = 1 then
-    Highlighter.ResetRange
-  else
-    Highlighter.SetRange(TSynEditStringList(Lines).Ranges[Y - 2]);
+  Highlighter.CurrentLines := Lines;
+  Highlighter.StartAtLineIndex(Y - 1);
   if StartX>length(Line) then begin
     TokenStart:=length(Line)+1;
     //TokenType:=Highlighter.GetTokenKind;
   end else begin
-    Highlighter.SetLine(Line, Y-1);
     while not Highlighter.GetEol do begin
       TokenStart := Highlighter.GetTokenPos + 1;
       Token := Highlighter.GetToken;
@@ -111,6 +108,7 @@ begin
       end;
       Highlighter.Next;
     end;
+    Highlighter.ContinueNextLine;
   end;
   
 end;
@@ -140,12 +138,13 @@ begin
     DebugLn(['TSynBeautifierPas.InComment Lines empty']);
     exit(false); // no code
   end;
-  
+
+  Highlighter.CurrentLines := Lines;
   if XY.Y>Lines.Count then begin
     // cursor after end of code
     DebugLn(['TSynBeautifierPas.InComment cursor after end of code']);
     XY.Y:=Lines.Count;
-    Highlighter.SetRange(Lines.Ranges[XY.Y - 1]);
+    Highlighter.StartAtLineIndex(XY.Y - 1);
     TokenType:=Highlighter.GetTokenKind;
   end else if XY.Y<=0 then begin
     // cursor in front of code => no prior token
@@ -161,18 +160,13 @@ begin
         exit(false);
       end;
       DebugLn(['TSynBeautifierPas.InComment cursor left of code']);
-      Highlighter.SetRange(Lines.Ranges[XY.Y - 2]);
-      Highlighter.SetLine(' ',XY.Y-1);
+      Highlighter.StartAtLineIndex(XY.Y - 2);
       TokenType:=Highlighter.GetTokenKind;
     end else begin
-      if XY.Y = 1 then
-        Highlighter.ResetRange
-      else
-        Highlighter.SetRange(Lines.Ranges[XY.Y - 1]);
+      Highlighter.StartAtLineIndex(XY.Y - 1);
       if XY.X>length(Line) then
         XY.X:=length(Line)+1;
       DebugLn(['TSynBeautifierPas.InComment scanning line ...']);
-      Highlighter.SetLine(Line+' ', XY.Y-1);
       while not Highlighter.GetEol do begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;

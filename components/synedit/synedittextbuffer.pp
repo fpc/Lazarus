@@ -177,7 +177,6 @@ type
     procedure InsertStrings(Index: integer; NewStrings: TStrings);              // DJLP 2000-11-01
       {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     {$IFDEF SYN_LAZARUS}
-    procedure ClearRanges(ARange: TSynEditRange); override;
     procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
     procedure SetDebugMarks(AFirst, ALast: Integer);
@@ -822,14 +821,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynEditStringList.ClearRanges(ARange: TSynEditRange);
-var
-  Index: Integer;
-begin
-  for Index:=0 to Count-1 do
-    Ranges[Index] := ARange;
-end;
-
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
   Index: Integer;

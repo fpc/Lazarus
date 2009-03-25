@@ -154,6 +154,7 @@ type
     {$IFDEF SYN_LAZARUS}
     FCapabilities: TSynHighlighterCapabilities;
     FCurrentLines: TSynEditStrings;
+    FLineIndex: Integer;
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
@@ -177,6 +178,7 @@ type
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
     // code fold - only valid if hcCodeFolding in Capabilities
+    property  LineIndex: Integer read FLineIndex;
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -192,23 +194,26 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
+  public
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); virtual; abstract;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract;
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
+
+    procedure SetRange(Value: Pointer); virtual;
+    procedure ResetRange; virtual;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual;
-    procedure SetRange(Value: Pointer); virtual;
-    procedure ResetRange; virtual;
+    procedure StartAtLineIndex(LineNumber:Integer); // 0 based
+    procedure ContinueNextLine; // To be called at EOL; does not read the range
+  public
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
     function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; virtual;
@@ -222,6 +227,7 @@ type
     property LanguageName: string read GetLanguageName;
     property CurrentLines: TSynEditStrings read FCurrentLines write FCurrentLines;
 
+    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer;
     (* Methds for folding *)
     function MinimumCodeFoldBlockLevel: integer; virtual;
     function CurrentCodeFoldBlockLevel: integer; virtual;
@@ -1049,7 +1055,27 @@ begin
   while not GetEol do Next;
 end;
 
+procedure TSynCustomHighlighter.ContinueNextLine;
+begin
+  inc(FLineIndex);
+  SetLine(CurrentLines[FLineIndex], FLineIndex);
+end;
+
+procedure TSynCustomHighlighter.StartAtLineIndex(LineNumber: Integer);
+begin
+  FLineIndex := LineNumber;
+  if LineNumber = 0 then
+    ResetRange
+  else
+    SetRange(CurrentLines.Ranges[LineNumber - 1]);
+  SetLine(CurrentLines[LineNumber], LineNumber);
+end;
+
 procedure TSynCustomHighlighter.ResetRange;
+begin
+end;
+
+procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin
 end;
 
@@ -1085,6 +1111,26 @@ begin
   fAttrChangeHooks.Remove(ANotifyEvent);
 end;
 
+function TSynCustomHighlighter.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
+var
+  c: LongInt;
+begin
+  Result := Index;
+  c := CurrentLines.Count;
+  StartAtLineIndex(Result);
+  NextToEol;
+  while (GetRange <> CurrentLines.Ranges[Result]) or
+        (Result <= AtLeastTilIndex+1)
+  do begin
+    CurrentLines.Ranges[Result] := GetRange;
+    inc(Result);
+    if Result = c then
+      break;
+    ContinueNextLine;
+    NextToEol;
+  end;
+end;
+
 function TSynCustomHighlighter.MinimumCodeFoldBlockLevel: integer;
 begin
   Result := 0;
@@ -1110,11 +1156,6 @@ end;
 function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
 begin
   Result := 0;
-end;
-
-procedure TSynCustomHighlighter.SetLine(const NewValue: String;
-  LineNumber: Integer);
-begin
 end;
 
 initialization

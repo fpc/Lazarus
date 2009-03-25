@@ -32,7 +32,8 @@ interface
 uses
   LCLProc, Graphics,
   Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase,
-  SynEditMiscClasses, SynEditMiscProcs, SynEditPointClasses;
+  SynEditMiscClasses, SynEditMiscProcs, SynEditPointClasses,
+  SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
 
@@ -165,14 +166,12 @@ type
       *TextIndex = Line (0-based) in the complete text(folded and unfolded)
   }
 
-  TSynEditFoldMinClass = class end; // For RegisterAttribute
-  TSynEditFoldEndClass = class end; // For RegisterAttribute
-
   { TSynEditFoldedView }
 
   TSynEditFoldedView = class // TODO: class(TSynEditStringsLinked)
   private
     fCaret: TSynEditCaret;
+    FHighLighter: TSynCustomHighlighter;
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
     FMarkupInfoFoldedCode: TSynSelectedColor;
@@ -198,8 +197,6 @@ type
     function GetFoldType(index : Integer) : TSynEditCodeFoldType;
     function IsFolded(index : integer) : Boolean;  // TextIndex
     procedure PutRange(Index : integer; const AValue : TSynEditRange);
-    procedure SetFoldEndLevel(Index: integer; const AValue: integer);
-    procedure SetFoldMinLevel(Index: integer; const AValue: integer);
     procedure SetTopLine(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
@@ -288,10 +285,10 @@ type
       read fOnFoldChanged write fOnFoldChanged;
   public
     // TextIndex
-    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
-                                                   write SetFoldMinLevel;
-    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
-                                                   write SetFoldEndLevel;
+    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel;
+    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel;
+    property HighLighter: TSynCustomHighlighter read FHighLighter
+                                                write FHighLighter;
   end;
 
   
@@ -1408,8 +1405,6 @@ end;
 constructor TSynEditFoldedView.Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
 begin
   fLines := aTextView;
-  flines.RegisterAttribute(TSynEditFoldMinClass, SizeOf(Integer));
-  flines.RegisterAttribute(TSynEditFoldEndClass, SizeOf(Integer));
   fCaret := ACaret;
   fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
@@ -1688,32 +1683,25 @@ begin
 end;
 
 (* Folding *)
-procedure TSynEditFoldedView.SetFoldEndLevel(Index: integer; const AValue: integer);
-begin
-  if (Index >= 0) and (Index < fLines.Count) then
-    fLines.Attribute[TSynEditFoldEndClass, Index] := Pointer(PtrUInt(AValue));
-end;
-
-procedure TSynEditFoldedView.SetFoldMinLevel(Index: integer; const AValue: integer);
-begin
-  if (Index >= 0) and (Index < fLines.Count) then
-    fLines.Attribute[TSynEditFoldMinClass, Index] := Pointer(PtrUInt(AValue));
-end;
 
 function TSynEditFoldedView.GetFoldEndLevel(Index: integer): integer;
 begin
-  if (Index >= 0) and (Index < fLines.Count) then
-    Result := Integer(fLines.Attribute[TSynEditFoldEndClass, Index])
-  else
-    Result := 0;
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit(0);
+  FHighLighter.CurrentLines := fLines;
+  Result := TSynCustomFoldHighlighter(FHighLighter).EndFoldLevel(Index) +
+            TSynCustomFoldHighlighter(FHighLighter).LastLineFoldLevelFix(Index + 1);
 end;
 
 function TSynEditFoldedView.GetFoldMinLevel(Index: integer): integer;
 begin
-  if (Index >= 0) and (Index < fLines.Count) then
-    Result := Integer(fLines.Attribute[TSynEditFoldMinClass, Index])
-  else
-    Result := 0;
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit(0);
+  FHighLighter.CurrentLines := fLines;
+  Result := TSynCustomFoldHighlighter(FHighLighter).EndFoldLevel(Index) +
+            TSynCustomFoldHighlighter(FHighLighter).LastLineFoldLevelFix(Index + 1);
+  Result := Min(Result,
+               TSynCustomFoldHighlighter(FHighLighter).MinimumFoldLevel(Index));
 end;
 
 procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer);
