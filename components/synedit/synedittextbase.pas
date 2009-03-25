@@ -706,7 +706,7 @@ begin
       if (not FUndoGroup.Items[FUndoGroup.Count - 1].IsCaretInfo)
           and assigned(FOnNeedCaretUndo) then
         FUndoGroup.Add(FOnNeedCaretUndo());
-      if (fItems.Count > 0) and FGroupUndo and
+      if (fItems.Count > 0) and FGroupUndo and (not IsTopMarkedAsUnmodified) and
         FUndoGroup.CanMergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1])) then
       begin
         FUndoGroup.MergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1]));
