@@ -1076,7 +1076,7 @@ begin
         if Assigned(OnException) then
           OnException(Sender, Exception(ExceptObject));
         while FApplicationHandlers[ahtException].NextDownIndex(i) do
-          TExceptionEvent(FApplicationHandlers[ahtException][i])(Self,Exception(ExceptObject));
+          TExceptionEvent(FApplicationHandlers[ahtException][i])(Sender, Exception(ExceptObject));
       end
       else
         ShowException(Exception(ExceptObject));
