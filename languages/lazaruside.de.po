@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-31 21:21+0100\n"
+"PO-Revision-Date: 2009-03-03 21:19+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -6577,7 +6577,7 @@ msgstr "Zeilen in der Auswahl umbrechen"
 #: lazarusidestrconsts.lismenubuild
 msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
-msgstr "Projekt kompilieren"
+msgstr "Lazarus kompilieren"
 
 #: lazarusidestrconsts.lismenubuildall
 msgid "Build all"
@@ -7536,51 +7536,51 @@ msgstr "Neue Konsolenanwendung"
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
 msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
-msgstr "Anlegen einer neuen CGI-Anwendung.%sDie Programmdatei wird von Lazarus betreut."
+msgstr "Legt eine neuen CGI-Anwendung an.%sDie Programmdatei wird von Lazarus betreut."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
-msgstr "Erzeuge ein neues Programm."
+msgstr "Erzeugt ein neues Programm."
 
 #: lazarusidestrconsts.lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
-msgstr "Erzeugen einer neuen Editordatei.%sWählen Sie den Typ."
+msgstr "Erzeugt eine neue Editordatei.%sWählen Sie den Typ."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
-msgstr "Erzeuge eine neue leere Textdatei."
+msgstr "Erzeugt eine neue leere Textdatei."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
-msgstr "Erzeugen einer neuen grafischen Applikation.%sDas Programm wird von Lazarus gewartet."
+msgstr "Erzeugt eine neue grafische Applikation.%sDas Programm wird von Lazarus gewartet."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr "Erzeuge eine neue Pascal-Unit"
+msgstr "Erzeugt eine neue Pascal-Unit"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
-msgstr "Erzeugen eines neuen Programms.%sDie Programmdatei wird von Lazarus gewartet."
+msgstr "Erzeugt eine neues Programms.%sDie Programmdatei wird von Lazarus gewartet."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
-msgstr "Erzeuge neues Projekt.%sWählen Sie einen Typ."
+msgstr "Erzeugt neues Projekt.%sWählen Sie einen Typ."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 msgid "Create a new standard package.%sA package is a collection of units and components."
-msgstr "Erzeugen eines neuen Standard-Packages.%sEin Package ist eine Sammlung von Units und Komponenten."
+msgstr "Erzeugt ein neues Standard-Packages.%sEin Package ist eine Sammlung von Units und Komponenten."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
-msgstr "Erzeugen einer neuen Unit mit einem Datenmodul."
+msgstr "Erzeugt eine neue Unit mit einem Datenmodul."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
 msgid "Create a new unit with a frame"
-msgstr "Neue Unit mit Frame anlegen"
+msgstr "Erzeugt eine neue Unit mit einem Frame"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
-msgstr "Erzeugen einer neuen Unit mit einem LCL-Formular."
+msgstr "Erzeugt eine neue Unit mit einem LCL-Formular."
 
 #: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
 msgid "Inherit from an existing component."
