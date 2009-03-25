@@ -9766,10 +9766,12 @@ function TQtDesignWidget.DesignControlEventFilter(Sender: QObjectH; Event: QEven
 var
   p: TQtPoint;
   pt: TPoint;
+  R: TRect;
   Control: TControl;
   MouseEvent: QMouseEventH;
   WidgetToNotify: QWidgetH;
   WSQtWidget: TWSWinControlClass;
+  Action: QActionH;
 begin
   Result := False;
   QEvent_Accept(Event);
@@ -9807,11 +9809,30 @@ begin
             QInputEvent_modifiers(QInputEventH(Event))
             );
           QCoreApplication_postEvent(WidgetToNotify, MouseEvent, 1);
-        end else
-          Result := inherited EventFilter(Sender, Event);
-
+        end;
       end else
-        Result := inherited EventFilter(Sender, Event);
+      begin
+        p := QMouseEvent_pos(QMouseEventH(Event))^;
+        WidgetToNotify := QApplication_widgetAt(@p);
+        if (WidgetToNotify <> nil) then
+        begin
+          if TQtMainWindow(Self).MenuBar.Widget <> nil then
+          begin
+            QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @R);
+            pt := Point(P.X, P.Y);
+            if LCLIntf.PtInRect(R, pt) then
+            begin
+              Action := QMenuBar_actionAt(QMenuBarH(TQtMainWindow(Self).MenuBar.Widget), @p);
+              if Action <> nil then
+              begin
+                QCoreApplication_notify(QCoreApplication_instance(), TQtMainWindow(Self).MenuBar.Widget, Event);
+                QEvent_accept(Event);
+                Result := True;
+              end;
+            end;
+          end;
+        end;
+      end;
     end;
     QEventPaint: SlotDesignControlPaint(Sender, Event);
   end;
