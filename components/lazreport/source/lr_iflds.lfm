@@ -3,8 +3,6 @@ object frInsertFieldsForm: TfrInsertFieldsForm
   Height = 222
   Top = 210
   Width = 334
-  HorzScrollBar.Page = 333
-  VertScrollBar.Page = 221
   BorderStyle = bsDialog
   Caption = 'Insert fields'
   ClientHeight = 222
@@ -14,11 +12,12 @@ object frInsertFieldsForm: TfrInsertFieldsForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 4
     Height = 14
     Top = 4
-    Width = 89
+    Width = 87
     Caption = '&Available datasets'
     FocusControl = DatasetCB
     ParentColor = False
@@ -30,7 +29,7 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     Width = 145
     HelpContext = 106
     ClickOnSelChange = False
-    ItemHeight = 13
+    ItemHeight = 0
     MultiSelect = True
     TabOrder = 0
   end
@@ -40,9 +39,9 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     Top = 20
     Width = 145
     HelpContext = 97
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    AutoComplete = False
     ItemHeight = 13
-    MaxLength = 0
+    ItemWidth = 0
     OnChange = DatasetCBChange
     Sorted = True
     Style = csDropDownList
@@ -59,9 +58,9 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     TabOrder = 2
     object HorzRB: TRadioButton
       Left = 8
-      Height = 19
+      Height = 17
       Top = 5
-      Width = 73
+      Width = 65
       HelpContext = 115
       AllowGrayed = True
       Caption = '&Horizontal'
@@ -71,13 +70,14 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     end
     object VertRB: TRadioButton
       Left = 8
-      Height = 19
+      Height = 17
       Top = 25
-      Width = 61
+      Width = 53
       HelpContext = 122
       AllowGrayed = True
       Caption = '&Vertical'
       TabOrder = 1
+      TabStop = False
     end
   end
   object Button1: TButton
@@ -112,19 +112,18 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     TabOrder = 5
     object HeaderCB: TCheckBox
       Left = 8
-      Height = 19
-      Width = 102
+      Height = 17
+      Top = 0
+      Width = 94
       HelpContext = 132
-      AllowGrayed = True
       Caption = '&Include headers'
       TabOrder = 0
     end
     object BandCB: TCheckBox
       Left = 8
-      Height = 19
+      Height = 17
       Top = 22
-      Width = 93
-      AllowGrayed = True
+      Width = 85
       Caption = 'Include &bands'
       TabOrder = 1
     end

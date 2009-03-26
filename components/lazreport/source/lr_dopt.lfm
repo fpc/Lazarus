@@ -1,11 +1,8 @@
 object frDocOptForm: TfrDocOptForm
-  Left = 314
+  Left = 299
   Height = 499
-  Top = 202
+  Top = 119
   Width = 468
-  HorzScrollBar.Page = 467
-  VertScrollBar.Page = 498
-  ActiveControl = TabSheet1
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Report options'
   ClientHeight = 499
@@ -15,35 +12,34 @@ object frDocOptForm: TfrDocOptForm
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 50
-    Top = 449
+    Top = 443
     Width = 456
-    Align = alBottom
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
   object PageControl1: TPageControl
     Left = 6
-    Height = 437
+    Height = 431
     Top = 6
     Width = 456
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     BorderSpacing.Around = 6
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Options'
-      ClientHeight = 411
+      ClientHeight = 405
       ClientWidth = 448
       object labPrinter: TLabel
         Left = 6
         Height = 14
         Top = 6
-        Width = 33
+        Width = 31
         Caption = 'Printer'
         ParentColor = False
       end
@@ -59,6 +55,7 @@ object frDocOptForm: TfrDocOptForm
         Width = 430
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
+        ItemHeight = 0
         OnDrawItem = ListBox1DrawItem
         Style = lbOwnerDrawFixed
         TabOrder = 0
@@ -68,11 +65,10 @@ object frDocOptForm: TfrDocOptForm
         AnchorSideTop.Control = ListBox1
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
+        Height = 17
         Top = 262
-        Width = 144
+        Width = 142
         HelpContext = 77
-        AllowGrayed = True
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
         Caption = '&Select when report loaded'
@@ -83,12 +79,11 @@ object frDocOptForm: TfrDocOptForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ListBox1
         AnchorSideTop.Side = asrBottom
-        Left = 168
-        Height = 13
+        Left = 166
+        Height = 17
         Top = 262
-        Width = 96
+        Width = 94
         HelpContext = 86
-        AllowGrayed = True
         BorderSpacing.Left = 12
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
@@ -98,12 +93,13 @@ object frDocOptForm: TfrDocOptForm
     end
     object TabSheet2: TTabSheet
       Caption = 'Other'
-      ClientHeight = 411
+      ClientHeight = 405
       ClientWidth = 448
       object GroupBox3: TGroupBox
         AnchorSideRight.Side = asrBottom
+        Left = 0
         Height = 73
-        Top = 338
+        Top = 332
         Width = 448
         Align = alBottom
         AutoSize = True
@@ -112,9 +108,9 @@ object frDocOptForm: TfrDocOptForm
         ClientWidth = 444
         TabOrder = 0
         object labMaj: TLabel
-          Left = 6
+          Left = 0
           Height = 14
-          Top = 6
+          Top = 0
           Width = 32
           Caption = 'labMaj'
           ParentColor = False
@@ -123,9 +119,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = edtMaj
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
-          Left = 104
+          Left = 98
           Height = 14
-          Top = 6
+          Top = 0
           Width = 41
           BorderSpacing.Left = 12
           Caption = 'labMinor'
@@ -135,10 +131,10 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = edtMinor
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
-          Left = 202
+          Left = 196
           Height = 14
-          Top = 6
-          Width = 53
+          Top = 0
+          Width = 54
           BorderSpacing.Left = 12
           Caption = 'labRelease'
           ParentColor = False
@@ -147,10 +143,10 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = edtRelease
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
-          Left = 300
+          Left = 294
           Height = 14
-          Top = 6
-          Width = 37
+          Top = 0
+          Width = 38
           BorderSpacing.Left = 12
           Caption = 'labBuild'
           ParentColor = False
@@ -159,9 +155,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = labMaj
           AnchorSideTop.Control = labMaj
           AnchorSideTop.Side = asrBottom
-          Left = 12
+          Left = 6
           Height = 23
-          Top = 26
+          Top = 20
           Width = 80
           AutoSize = True
           BorderSpacing.Bottom = 6
@@ -173,9 +169,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = labMinor
           AnchorSideTop.Control = labMinor
           AnchorSideTop.Side = asrBottom
-          Left = 110
+          Left = 104
           Height = 23
-          Top = 26
+          Top = 20
           Width = 80
           AutoSize = True
           BorderSpacing.Bottom = 6
@@ -187,9 +183,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = labRelease
           AnchorSideTop.Control = labRelease
           AnchorSideTop.Side = asrBottom
-          Left = 208
+          Left = 202
           Height = 23
-          Top = 26
+          Top = 20
           Width = 80
           AutoSize = True
           BorderSpacing.Bottom = 6
@@ -201,9 +197,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Control = labBuild
           AnchorSideTop.Control = labBuild
           AnchorSideTop.Side = asrBottom
-          Left = 306
+          Left = 300
           Height = 23
-          Top = 26
+          Top = 20
           Width = 80
           AutoSize = True
           BorderSpacing.Bottom = 6
@@ -218,11 +214,13 @@ object frDocOptForm: TfrDocOptForm
         AnchorSideRight.Control = TabSheet2
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = GroupBox3
-        Height = 338
+        Left = 0
+        Height = 332
+        Top = 0
         Width = 448
         Align = alClient
         Caption = 'Other'
-        ClientHeight = 320
+        ClientHeight = 314
         ClientWidth = 444
         TabOrder = 1
         object labTitle: TLabel
@@ -263,7 +261,7 @@ object frDocOptForm: TfrDocOptForm
           Left = 6
           Height = 14
           Top = 202
-          Width = 51
+          Width = 50
           Caption = 'Comments'
           ParentColor = False
         end
@@ -274,7 +272,7 @@ object frDocOptForm: TfrDocOptForm
           Left = 6
           Height = 14
           Top = 55
-          Width = 42
+          Width = 40
           Caption = 'labAutor'
           ParentColor = False
         end
@@ -334,7 +332,7 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideBottom.Control = GroupBox2
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 92
+          Height = 86
           Top = 222
           Width = 432
           Anchors = [akTop, akLeft, akRight, akBottom]
