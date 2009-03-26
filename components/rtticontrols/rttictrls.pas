@@ -1087,7 +1087,6 @@ Type
     property OnResize;
     property OnYearChanged;
     property PopupMenu;
-    property ReadOnly;
     property Tabstop;
     property Visible;
   end;
