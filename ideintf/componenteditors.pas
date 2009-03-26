@@ -338,6 +338,14 @@ type
     function GetVerb(Index:integer):string;override;
     procedure ExecuteVerb(Index:integer);override;
   end;
+
+  { TTimerComponentEditor }
+
+  TTimerComponentEditor = class(TDefaultComponentEditor)
+  public
+    constructor Create(AComponent: TComponent;
+      ADesigner: TComponentEditorDesigner); override;
+  end;
   
 
 { Register a component editor }
@@ -532,7 +540,8 @@ var
   procedure ReplaceBest;
   begin
     FBest := Prop;
-    if FFirst = FBest then FFirst := nil;
+    if FFirst = FBest then
+      FFirst := nil;
   end;
 
 begin
@@ -540,13 +549,18 @@ begin
     FFirst := Prop;
   PropName := Prop.GetName;
   BestName := '';
-  if Assigned(FBest) then BestName := FBest.GetName;
+  if Assigned(FBest) then
+    BestName := FBest.GetName;
+  // event priority is hardcoded:
+  // first priority has OnCreate, then OnClick and OnChange is the last
   if CompareText(PropName, FBestEditEvent) = 0 then
     ReplaceBest
-  else if CompareText(BestName, FBestEditEvent) <> 0 then
+  else
+  if CompareText(BestName, FBestEditEvent) <> 0 then
     if CompareText(PropName, 'ONCHANGE') = 0 then
       ReplaceBest
-    else if CompareText(BestName, 'ONCHANGE') <> 0 then
+    else
+    if CompareText(BestName, 'ONCHANGE') <> 0 then
       if CompareText(PropName, 'ONCLICK') = 0 then
         ReplaceBest;
 end;
@@ -1176,8 +1190,16 @@ begin
   Result:=TCustomTabControl(GetComponent);
 end;
 
-initialization
+{ TTimerComponentEditor }
 
+constructor TTimerComponentEditor.Create(AComponent: TComponent;
+  ADesigner: TComponentEditorDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+  BestEditEvent := 'ONTIMER';
+end;
+
+initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
@@ -1187,6 +1209,7 @@ initialization
   RegisterComponentEditor(TCheckGroup,TCheckGroupComponentEditor);
   RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
+  RegisterComponentEditor(TTimer, TTimerComponentEditor);
 
 finalization
   InternalFinal;
