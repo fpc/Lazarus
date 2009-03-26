@@ -48,6 +48,7 @@ type
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
   end;
@@ -114,6 +115,33 @@ begin
   SendMessage(ACalendar.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
   with ST do
     Result := EncodeDate(WYear,WMonth,WDay);
+end;
+
+class function TWin32WSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
+  const APoint: TPoint): TCalendarPart;
+var
+  HitTestInfo: MCHITTESTINFO;
+  HitPart: DWord;
+begin
+  if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
+    Exit;
+  FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
+  HitTestInfo.cbSize := SizeOf(HitTestInfo);
+  HitTestInfo.pt := APoint;
+  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
+  case HitPart of
+    MCHT_CALENDARDATE,
+    MCHT_CALENDARDATENEXT,
+    MCHT_CALENDARDATEPREV: Result := cpDate;
+    MCHT_CALENDARWEEKNUM : Result := cpWeekNumber;
+    MCHT_TITLEBK: Result := cpTitle;
+    MCHT_TITLEMONTH: Result := cpTitleMonth;
+    MCHT_TITLEYEAR: Result := cpTitleYear;
+    MCHT_TITLEBTNNEXT,
+    MCHT_TITLEBTNPREV: Result := cpTitleBtn;
+  else
+    Result := cpNoWhere;
+  end;
 end;
 
 class procedure TWin32WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
