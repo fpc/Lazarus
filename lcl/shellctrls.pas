@@ -287,6 +287,8 @@ begin
 procedure TCustomShellTreeView.SetShellListView(
   const Value: TCustomShellListView);
 begin
+  FShellListView := Value;
+
   // Update the pair, it will then update itself
   // in the setter of this property
   // Updates only if necessary to avoid circular calls of the setters
@@ -462,6 +464,8 @@ end;
 procedure TCustomShellListView.SetShellTreeView(
   const Value: TCustomShellTreeView);
 begin
+  FShellTreeView := Value;
+
 {  if Value.Selected <> nil then
   begin
     FRoot := Value.GetPathFromNode(Value.Selected);
