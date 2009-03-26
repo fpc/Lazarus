@@ -56,7 +56,6 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
       const ADisplaySettings: TDisplaySettings); override;
-    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
 implementation
@@ -163,17 +162,6 @@ begin
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
   gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
-end;
-
-class procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
-  const AReadOnly: boolean);
-begin
-  if not WSCheckHandleAllocated(ACalendar, 'SetReadOnly') then
-    Exit;
-  if AReadOnly then
-    gtk_calendar_freeze(GetCalendar(ACalendar))
-  else
-    gtk_calendar_thaw(GetCalendar(ACalendar));
 end;
 
 initialization

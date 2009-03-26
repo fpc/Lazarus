@@ -47,7 +47,6 @@ type
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ADisplaySettings: TDisplaySettings); override;
-    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
 
@@ -64,20 +63,6 @@ begin
   QtCalendar.AttachEvents;
 
   Result := TLCLIntfHandle(QtCalendar);
-end;
-
-class procedure TQtWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
-var
-  QtCalendar: TQtCalendar;
-begin
-  QtCalendar := TQtCalendar(ACalendar.Handle);
-
-  if AReadOnly then
-    QCalendarWidget_setSelectionMode(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetNoSelection)
-  else
-    QCalendarWidget_setSelectionMode(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetSingleSelection);
-
-  QCalendarWidget_setDateEditEnabled(QCalendarWidgetH(QtCalendar.Widget), not AReadOnly);
 end;
 
 class function TQtWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

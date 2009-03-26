@@ -43,7 +43,6 @@ type
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
-    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
 implementation
@@ -127,11 +126,6 @@ if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetDisplaySetti
    else
      Style := Style and not MCS_WEEKNUMBERS;
    SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
-end;
-
-class procedure TWinCEWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
-begin
-  // TODO: implement me!
 end;
 
 initialization

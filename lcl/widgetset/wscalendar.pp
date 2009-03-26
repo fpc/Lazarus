@@ -44,22 +44,22 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Calendar,
+  Types, Calendar,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
 type
   { TWSCustomCalendar }
 
-  TWSCustomCalendarClass = class of TWSCustomCalendar;
   TWSCustomCalendar = class(TWSWinControl)
   published
-    class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
+    class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; virtual;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); virtual;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
       const ADisplaySettings: TDisplaySettings); virtual;
-    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); virtual;
   end;
+  TWSCustomCalendarClass = class of TWSCustomCalendar;
 
 
 implementation
@@ -69,16 +69,17 @@ begin
   Result := 0.0;
 end;
 
+class function TWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart;
+begin
+  Result := cpNoWhere;
+end;
+
 class procedure TWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 begin
 end;
 
 class procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
-begin
-end;
-
-class procedure TWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
 begin
 end;
 

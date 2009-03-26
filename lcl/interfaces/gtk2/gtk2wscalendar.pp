@@ -57,11 +57,40 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar;
       const ADisplaySettings: TDisplaySettings); override;
-    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
 
 implementation
+
+type
+  TGtkCalendarPrivate = record
+    header_win: PGdkWindow;
+    day_name_win: PGdkWindow;
+    main_win: PGdkWindow;
+    week_win: PGdkWindow;
+    arrow_win: array[0..3] of PGdkWindow;
+
+    header_h: guint;
+    day_name_h: guint;
+    main_h: guint;
+
+    arrow_state: array[0..3] of guint;
+    arrow_width: guint;
+    max_month_width: guint;
+    max_year_width: guint;
+
+    day_width: guint;
+    week_width: guint;
+
+    min_day_width: guint;
+    max_day_char_width: guint;
+    max_day_char_ascent: guint;
+    max_day_char_descent: guint;
+    max_label_char_ascent: guint;
+    max_label_char_descent: guint;
+    max_week_char_width: guint;
+  end;
+  PGtkCalendarPrivate = ^TGtkCalendarPrivate;
 
 { TGtk2WSCustomCalendar }
 
@@ -167,17 +196,6 @@ begin
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
   gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
-end;
-
-class procedure TGtk2WSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
-  const AReadOnly: boolean);
-begin
-  if not WSCheckHandleAllocated(ACalendar, 'SetReadOnly') then
-    Exit;
-  if AReadOnly then
-    gtk_calendar_freeze(GetCalendar(ACalendar))
-  else
-    gtk_calendar_thaw(GetCalendar(ACalendar));
 end;
 
 initialization

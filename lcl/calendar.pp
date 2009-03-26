@@ -33,8 +33,7 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls;
-  
+  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
   
 type
   TDisplaySetting = (
@@ -49,6 +48,16 @@ const
   DefaultDisplaySettings = [dsShowHeadings, dsShowDayNames];
 
 type
+  TCalendarPart = (
+    cpNoWhere,      // somewhere
+    cpDate,         // date part
+    cpWeekNumber,   // week number
+    cpTitle,        // somewhere in the title
+    cpTitleBtn,     // button in the title
+    cpTitleMonth,   // month value in the title
+    cpTitleYear     // year value in the title
+  );
+
   EInvalidDate = class(Exception);
 
   { TCustomCalendar }
@@ -59,14 +68,12 @@ type
     FDate: TDateTime; // last valid date
     FDisplaySettings : TDisplaySettings;
     FOnChange: TNotifyEvent;
-    FReadOnly: Boolean;
     FDayChanged: TNotifyEvent;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
     FPropsChanged: boolean;
     function GetDateTime: TDateTime;
     procedure SetDateTime(const AValue: TDateTime);
-    procedure SetReadOnly(const AValue: Boolean);
     procedure GetProps;
     procedure SetProps;
     function GetDisplaySettings: TDisplaySettings;
@@ -82,12 +89,12 @@ type
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
+    function HitTest(APoint: TPoint): TCalendarPart;
     procedure InitializeWnd; override;
     property Date: String read GetDate write SetDate stored False;
     property DateTime: TDateTime read GetDateTime write SetDateTime;
     property DisplaySettings: TDisplaySettings read GetDisplaySettings
       write SetDisplaySettings default DefaultDisplaySettings;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
@@ -125,7 +132,6 @@ type
     property OnUTF8KeyPress;
     property OnYearChanged;
     property PopupMenu;
-    property ReadOnly;
     property ShowHint;
     property TabStop;
     property Visible;
@@ -150,10 +156,17 @@ begin
   inherited Create(AOwner);
   fCompStyle := csCalendar;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
-  FReadOnly := False;
   FDisplaySettings := DefaultDisplaySettings;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;
+end;
+
+function TCustomCalendar.HitTest(APoint: TPoint): TCalendarPart;
+begin
+  if HandleAllocated then
+    Result := TWSCustomCalendarClass(WidgetSetClass).HitTest(Self, APoint)
+  else
+    Result := cpNoWhere;
 end;
 
 procedure TCustomCalendar.Loaded;
@@ -200,15 +213,6 @@ begin
   SetProps;
 end;
 
-procedure TCustomCalendar.SetReadOnly(const AValue: Boolean);
-begin
-  if (FReadOnly <> aValue) then
-  begin
-    FReadOnly := aValue;
-    SetProps;
-  end;
-end;
-
 function TCustomCalendar.GetDateTime: TDateTime;
 begin
   GetProps;
@@ -253,16 +257,15 @@ procedure TCustomCalendar.SetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    FPropsChanged:=false;
+    FPropsChanged := False;
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
     TWSCustomCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
     TWSCustomCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
-    TWSCustomCalendarClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
-  end else begin
-    FPropsChanged:=true;
-  end;
+  end
+  else
+    FPropsChanged := True;
 end;
 
 procedure TCustomCalendar.LMChanged(var Message: TLMessage);
@@ -305,5 +308,8 @@ begin
   if Assigned(OnYearChanged) then OnYearChanged(self);
   if Assigned(OnChange) then OnChange(self);
 end;
+
+initialization
+  RegisterPropertyToSkip(TCalendar, 'ReadOnly', 'Obsoleted property', '');
 
 end.
