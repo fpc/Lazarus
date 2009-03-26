@@ -51,6 +51,7 @@ type
     fLockList : TStringList;
     FLineEdited: Boolean;
     procedure DoCaretChanged(Sender : TObject);
+    Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure SetEnabled(const AValue : Boolean);
     procedure SetTrimType(const AValue: TSynEditStringTrimmingType);
     function  TrimLine(const S : String; Index: Integer; RealUndo: Boolean = False) : String;
@@ -282,10 +283,14 @@ begin
   FLineEdited := False;
   FTrimType := settLeaveLine;
   Inherited Create(ASynStringSource);
+  fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
 begin
+  fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(fLockList);
   inherited Destroy;
@@ -308,13 +313,13 @@ begin
     exit;
   end;
   FIsTrimming := True;
-  s := fSynStrings[fLineIndex];
-  fSynStrings[fLineIndex] := s;                                               // trigger OnPutted, so the line gets repainted
+  SendNotification(senrLineChange, self, fLineIndex, 1);
   if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) then begin
     UndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     fSpaces := '';
   end else begin
     // same line, only right of caret
+    s := fSynStrings[fLineIndex];
     i := TSynEditCaret(Sender).BytePos;
     if i <= length(s) + 1 then
       j := 0
@@ -327,6 +332,15 @@ begin
   FIsTrimming := False;
   FLineEdited := False;
   fLineIndex := TSynEditCaret(Sender).LinePos - 1;
+end;
+
+procedure TSynEditStringTrimmingList.LinesChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+begin
+  if FIsTrimming then
+    exit;
+  FLineEdited := true;
+  if fLockCount = 0 then
+    DoCaretChanged(fCaret);
 end;
 
 procedure TSynEditStringTrimmingList.SetEnabled(const AValue : Boolean);
