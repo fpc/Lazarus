@@ -53,8 +53,8 @@ inherited frBasic: TfrBasic
     ItemIndex = 0
     Items.Strings = (
       'No backup'
-      'Backup to seperate file'
-      'Output to seperate file')
+      'Backup to separate file'
+      'Output to separate file')
     TabOrder = 1
     OnClick = rgBackupClick
   end

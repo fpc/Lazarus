@@ -28,8 +28,8 @@ See http://www.gnu.org/licenses/gpl.html
 {$I JcfGlobal.inc}
 
 {
-This unit contains OS/File utility code
-For use when the JCL functions are not avaialable
+This unit contains OS and File utility code
+For use when the JCL functions are not available
 }
 interface
 
@@ -37,11 +37,17 @@ uses
   SysUtils, Classes;
 
 function GetWindowsTempFolder: string;
+
+function FileIsReadOnly(const ps: string): boolean;
 function FileGetSize(const FileName: string): Int64;
+
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 function GetTickCount: Cardinal;
 function IsMultiByte(const pcChar: WideChar): Boolean;
 
+function IsWinServer2008R2: Boolean;
+function IsWin7: Boolean;
+function IsWinServer2008: Boolean;
 function IsWinVista: Boolean;
 function IsWinXP: Boolean;
 function IsWin2k: Boolean;
@@ -49,16 +55,21 @@ function IsWin2003: Boolean;
 
 implementation
 
+// We know that this unit contains platform-specific code
+// it's guarded by ifdefs
+{$WARN SYMBOL_PLATFORM OFF}
+
 uses
-{$ifdef MSWINDOWS}
-  Windows, ShellApi
-{$endif}
-{$ifdef Unix}
-  Unix
-{$endif}
-{$ifdef fpc}
-  , LCLIntf, FileUtil
-{$endif};
+  {$ifdef MSWINDOWS}
+    Windows, ShellApi, {$WARNINGS OFF} FileCtrl {$WARNINGS ON}
+  {$endif}
+  {$ifdef Unix}
+    ,Unix,
+  {$endif}
+  {$ifdef fpc}
+    ,LCLIntf, FileUtil, Dialogs
+  {$endif}
+  ;
 
 function GetWindowsTempFolder: string;
 {$ifndef fpc}
@@ -76,9 +87,38 @@ begin
 {$endif}
 end;
 
-// We know that this unit contains platform-specific code
-// it's guarded by ifdefs
-{$WARN SYMBOL_PLATFORM OFF}
+{$IFDEF FPC}
+
+  // FPC version
+  function FileIsReadOnly(const ps: string): boolean;
+  var
+    liAttr: integer;
+  begin
+    Assert(FileExists(ps));
+  {$WARNINGS OFF}
+    liAttr := FileGetAttr(ps);
+    Result := ((liAttr and faReadOnly) <> 0);
+  {$WARNINGS ON}
+  end;
+
+{$ELSE}
+  {$IFDEF WIN32}
+
+  // delphi-windows version
+  function FileIsReadOnly(const ps: string): boolean;
+  var
+    liAttr: integer;
+  begin
+    Assert(FileExists(ps));
+  {$WARNINGS OFF}
+    liAttr := FileGetAttr(ps);
+    Result := ((liAttr and faReadOnly) <> 0);
+  {$WARNINGS ON}
+  end;
+
+  {$ENDIF}
+{$ENDIF}
+
 
 function FileGetSize(const FileName: string): Int64;
 {$ifndef fpc}
@@ -131,11 +171,41 @@ begin
 {$endif}
 end;
 
+function IsWinServer2008R2: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 6) and (Win32MinorVersion = 1);
+  // Should also make sure it's a server (see JclSysInfo)
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+function IsWin7: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 6) and (Win32MinorVersion = 1);
+  // Should also make sure it's a workstation (see JclSysInfo)
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+function IsWinServer2008: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 6) and (Win32MinorVersion = 0);
+  // Should also make sure it's a server (see JclSysInfo)
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
 function IsWinVista: Boolean;
 begin
 {$IFDEF MSWINDOWS}
-  Result := Win32MajorVersion = 6;
-  // can be also window server 2008
+  Result := (Win32MajorVersion = 6) and (Win32MinorVersion = 0);
+  // Should also make sure it's a workstation (see JclSysInfo)
 {$ELSE}
   Result := False;
 {$ENDIF}

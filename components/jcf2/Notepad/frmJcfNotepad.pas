@@ -213,12 +213,10 @@ begin
 
   ReadTextFile(psFileName, lsFileContents, feLastInputContentType);
 
-  // use standard line breaks - temp
-  //lsFileContents := WideStringReplace(lsFileContents, NativeLineFeed, NativeCrLf, [rfReplaceAll]);
-
   mInput.Text := lsFileContents;
   sb1.Panels[1].Text := psFileName;
   AddCheckMRU(psFileName);
+  fsLastInputFileName := psFileName;
 
   CheckInputState;
   SendShowFilePos;

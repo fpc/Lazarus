@@ -255,48 +255,14 @@ begin
   end;
 end;
 
-
-function NeedsReturn(const pt, ptNext: TSourceToken): boolean;
+{ true if the "AddGoodReturns" setting wants a return here }
+function NeedsGoodReturn(const pt, ptNext: TSourceToken): boolean;
 const
   CLASS_FOLLOW = [ttOf, ttHelper];
 var
   lcNext: TSourceToken;
 begin
   Result := False;
-
-  { these can include returns }
-  if pt.TokenType = ttConditionalCompilationRemoved then
-    exit;
-
-  { option to Break After Uses }
-  if pt.HasParentNode(nUses) and (pt.TokenType = ttUses) and
-  FormatSettings.Returns.BreakAfterUses then
-  begin
-    Result := true;
-  end;
-
-  if pt.HasParentNode(nUses) and FormatSettings.Returns.UsesClauseOnePerLine then
-  begin
-    if (pt.TokenType = ttUses) then
-    begin
-      Result := True;
-      exit;
-    end;
-
-    if (pt.TokenType in [ttComma, ttUses]) then
-    begin
-      // add a return, unless there's a comment just after the comma
-      lcNext := pt.NextTokenWithExclusions([ttWhiteSpace]);
-      if (lcNext <> nil) and (lcNext.TokenType <> ttComment) then
-      begin
-        Result := True;
-        exit;
-      end;
-    end;
-  end;
-
-  if (pt.TokenType = ttReturn) then
-    exit;
 
   if (pt.TokenType in WordsJustReturnAfter) then
   begin
@@ -498,7 +464,53 @@ begin
       exit;
     end;
   end;
+end;
 
+function NeedsReturn(const pt, ptNext: TSourceToken): boolean;
+var
+  lcNext: TSourceToken;
+begin
+  Result := False;
+
+  { these can include returns }
+  if pt.TokenType = ttConditionalCompilationRemoved then
+    exit;
+
+  { option to Break After Uses }
+  if pt.HasParentNode(nUses) and (pt.TokenType = ttUses) and
+    FormatSettings.Returns.BreakAfterUses then
+  begin
+    Result := True;
+    exit;
+  end;
+
+  if pt.HasParentNode(nUses) and FormatSettings.Returns.UsesClauseOnePerLine then
+  begin
+    if (pt.TokenType = ttUses) then
+    begin
+      Result := True;
+      exit;
+    end;
+
+    if (pt.TokenType in [ttComma, ttUses]) then
+    begin
+      // add a return, unless there's a comment just after the comma
+      lcNext := pt.NextTokenWithExclusions([ttWhiteSpace]);
+      if (lcNext <> nil) and (lcNext.TokenType <> ttComment) then
+      begin
+        Result := True;
+        exit;
+      end;
+    end;
+  end;
+
+  if (pt.TokenType = ttReturn) then
+    exit;
+
+  if FormatSettings.Returns.AddGoodReturns then
+  begin
+    Result := NeedsGoodReturn(pt, ptNext);
+  end;
 end;
 
 function IsAsmLabelEnd(const pcSourceToken: TSourceToken): boolean;
@@ -629,7 +641,9 @@ end;
 
 function TReturnAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.AddGoodReturns;
+  Result := FormatSettings.Returns.AddGoodReturns or
+    FormatSettings.Returns.UsesClauseOnePerLine or
+    FormatSettings.Returns.BreakAfterUses;
 end;
 
 end.

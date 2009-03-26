@@ -33,7 +33,7 @@ interface
   this unit is simple type defs with no dependencies 
 }
 type
-  TBackupMode = (cmInPlace, cmInPlaceWithBackup, cmSeperateOutput);
+  TBackupMode = (cmInPlace, cmInPlaceWithBackup, cmSeparateOutput);
   TSourceMode = (fmSingleFile, fmDirectory, fmDirectoryRecursive);
 
   TStatusMessageType =

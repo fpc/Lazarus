@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-{$I JcfGlobal.inc}
+{$I ..\Include\JcfGlobal.inc}
 
 interface
 
@@ -116,7 +116,7 @@ uses
   {$ifndef fpc}Windows, {$endif} SysUtils, Dialogs, Controls, Forms,
   { local }
   JcfStringUtils, JcfSystemUtils,
-  JcfFileUtils, JcfMiscFunctions, JcfLog,
+  JcfMiscFunctions, JcfLog,
   JcfRegistrySettings, JcfSettings, JcfUnicodeFiles;
 
 constructor TFileConverter.Create;
@@ -173,9 +173,9 @@ begin
 
   { all kinds of chaos ensues if you work with readonly files,
     for e.g. you can rename them to .bak, but on the next run you will be unable to delete the old .bak files.
-    They are only safe when the source is read not written, ie "output to seperate file" backup mode
+    They are only safe when the source is read not written, ie "output to separate file" backup mode
   }
-  if (BackupMode <> cmSeperateOutput) and (FileIsReadOnly(psInputFileName)) then
+  if (BackupMode <> cmSeparateOutput) and (FileIsReadOnly(psInputFileName)) then
   begin
     Log.WriteError('File: ' + psInputFileName + ' cannot be processed as it is read only');
     exit;
@@ -312,7 +312,7 @@ begin
       end;
     end;
 
-    cmSeperateOutput:
+    cmSeparateOutput:
     begin
       fsOutFileName := lsOut;
       { simple. Write to a new file

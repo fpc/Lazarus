@@ -44,31 +44,31 @@ object fmJCFNotepad: TfmJCFNotepad
     Align = alTop
     TabOrder = 1
     object sbLoad: TSpeedButton
-      Left = 3
-      Top = 3
-      Width = 60
+      Left = 2
+      Top = 2
+      Width = 70
       Height = 29
       Action = actOpen
       ParentShowHint = False
       ShowHint = True
     end
     object sbSave: TSpeedButton
-      Left = 67
-      Top = 3
-      Width = 66
+      Left = 148
+      Top = 2
+      Width = 94
       Height = 29
       Action = actSave
     end
     object sbGo: TSpeedButton
-      Left = 135
-      Top = 3
+      Left = 74
+      Top = 2
       Width = 72
       Height = 29
       Action = actGo
     end
     object sbClear: TSpeedButton
-      Left = 209
-      Top = 3
+      Left = 244
+      Top = 2
       Width = 70
       Height = 29
       Action = actClear
@@ -173,7 +173,7 @@ object fmJCFNotepad: TfmJCFNotepad
       OnExecute = actOpenExecute
     end
     object actSave: TAction
-      Caption = '&Save...'
+      Caption = '&Save output...'
       Hint = 'Save the output'
       OnExecute = actSaveExecute
     end
@@ -224,7 +224,6 @@ object fmJCFNotepad: TfmJCFNotepad
       end
       object mnuFileSaveOut: TMenuItem
         Action = actSave
-        Caption = '&Save Output...'
       end
       object mnuFileSaveIn: TMenuItem
         Caption = 'Save &Input'

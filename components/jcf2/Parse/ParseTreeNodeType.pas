@@ -433,6 +433,8 @@ begin
       Result := 'Generic';
     nAnonymousMethod:
       Result := 'Anonymous method';
+    nClassVars:
+      Result := 'Class vars';
     nMethodReferenceType:
       Result := 'Method reference type';
     else

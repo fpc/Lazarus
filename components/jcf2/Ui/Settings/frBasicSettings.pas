@@ -90,7 +90,7 @@ uses
   { jcl }
   jclFileUtils,
   { local }
-  JcfFileUtils, JcfHelp, JcfSettings, JcfRegistrySettings;
+  JcfHelp, JcfSettings, JcfRegistrySettings;
 
 {$ifdef FPC}
   {$R *.lfm}
@@ -162,7 +162,7 @@ begin
       lblOutput.Caption := '';
     cmInPlaceWithBackup:
       lblOutput.Caption := 'Backup file';
-    cmSeperateOutput:
+    cmSeparateOutput:
       lblOutput.Caption := 'Output file';
     else
       raise Exception.Create('TfrmMain.DisplayOutputFile: bad backup group index');
@@ -265,7 +265,7 @@ begin
       Result := Result + ' in place';
     cmInPlaceWithBackup:
       Result := Result + ' with backup';
-    cmSeperateOutput:
+    cmSeparateOutput:
       Result := Result + ' to output';
   end;
 end;

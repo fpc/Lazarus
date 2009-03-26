@@ -115,10 +115,7 @@ object frmMain: TfrmMain
     Top = 226
     Width = 648
     Height = 331
-    AutoSize = False
     ClipboardCommands = [caCopy]
-    MaxLines = 0
-    HideCaret = False
     Align = alClient
     ParentColor = True
     ReadOnly = True

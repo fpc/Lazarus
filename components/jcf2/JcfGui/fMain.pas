@@ -30,7 +30,7 @@ unit fMain;
 }
 
 
-{$I JcfGlobal.inc}
+{$I ..\Include\JcfGlobal.inc}
 
 interface
 

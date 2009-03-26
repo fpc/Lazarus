@@ -414,7 +414,7 @@ begin
 
   { files}
   feBackupMode := TBackupMode(fcReg.ReadInteger(REG_FILES_SECTION,
-    REG_BACKUP_MODE, Ord(cmSeperateOutput)));
+    REG_BACKUP_MODE, Ord(cmSeparateOutput)));
   feSourceMode := TSourceMode(fcReg.ReadInteger(REG_FILES_SECTION,
     REG_SOURCE_MODE, Ord(fmSingleFile)));
   fsInput := fcReg.ReadString(REG_FILES_SECTION, REG_INPUT, '');
@@ -578,7 +578,7 @@ begin
   begin
     Result := '';
   end
-  else if peMode in [cmInPlaceWithBackup, cmSeperateOutput] then
+  else if peMode in [cmInPlaceWithBackup, cmSeparateOutput] then
   begin
     lsExt  := ExtractFileExt(psIn);
     liMainFileNameLength := Length(psIn) - Length(lsExt);

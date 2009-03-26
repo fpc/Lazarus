@@ -1082,7 +1082,7 @@ begin
 
   { In Delphi.Net, the type can be preceeded by an attribute in '[ ]' }
   lc := fcTokenList.FirstSolidToken;
-  while (lc.WordType in IdentifierTypes) or TypePastAttribute do
+  while (lc <> nil) and ((lc.WordType in IdentifierTypes) or TypePastAttribute) do
   begin
     RecogniseTypeDecl;
 
@@ -3632,8 +3632,10 @@ begin
   begin
     RecogniseBlock;
 
-    if fcTokenList.FirstSolidTokenType = ttSemiColon then
+    if (not pbAnon) and (fcTokenList.FirstSolidTokenType = ttSemiColon) then
+    begin
       Recognise(ttSemicolon);
+    end;
   end;
 
   PopNode;
@@ -3663,8 +3665,10 @@ begin
   begin
     RecogniseBlock;
 
-    if fcTokenList.FirstSolidTokenType = ttSemiColon then
+    if (not pbAnon) and (fcTokenList.FirstSolidTokenType = ttSemiColon) then
+    begin
       Recognise(ttSemicolon);
+    end;
   end;
 
   PopNode;
@@ -3892,7 +3896,7 @@ procedure TBuildParseTree.RecogniseProcedureDirectives;
 var
   lbFirstPass: boolean;
 begin
-  { these are semi-colon seperated
+  { these are semi-colon separated
 
     want to leave 'Function foo;' as is,
     but strip off the '; safecall' off 'Function bar; safecall;'
@@ -4919,7 +4923,7 @@ begin
      -> [AsmLabel]
      -> Opcode [AsmParam] [',' AsmParam]...
 
-     NB whitespace is significant, i.e. returns can seperate statement
+     NB whitespace is significant, i.e. returns can separate statement
      Help says ' semicolons, end-of-line characters, or Delphi comments.'
 
      I know that the help claims that a label is a prefix on a statement,
@@ -4927,7 +4931,7 @@ begin
      so that would require a complete statement to consist of
      an optional label followed by an optional opcode
 
-     Anyway labels are usually placed on a seperate line
+     Anyway labels are usually placed on a separate line
 
      RET is opcode with no params
   }
@@ -5523,7 +5527,7 @@ begin
   begin
     lcNext := fcTokenList.SolidToken(2);
     if lcNext <> nil then
-      Result := (lcNext.TokenType = ttOpenBracket);
+      Result := (lcNext.TokenType in [ttOpenBracket, ttColon]);
   end;
 end;
 

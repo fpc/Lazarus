@@ -585,7 +585,7 @@ begin
     Inc(liIndentCount);
 
   // program or library top level procs
-  // re bug 1898723 ] Identination of procedures in library
+  // re bug 1898723 - Identination of procedures in library
   if not FormatSettings.Indent.IndentLibraryProcs then
   begin
     if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then

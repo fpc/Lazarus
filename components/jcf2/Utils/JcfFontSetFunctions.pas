@@ -47,8 +47,7 @@ uses
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
-  if IsWinVista then
-  //if IsWinVista or IsWinServer2008 then
+  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
   begin
     AObjectFont.Name := 'Segoe UI';
     AObjectFont.Size := 9;
@@ -69,8 +68,7 @@ end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
-  //if IsWinVista or IsWinServer2008 then
-  if IsWinVista then
+  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
   begin
     AObjectFont.Name := 'Calibri';
     AObjectFont.Size := 9;

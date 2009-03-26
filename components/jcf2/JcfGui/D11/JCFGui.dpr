@@ -40,7 +40,6 @@ uses
   VisitSetXY in '..\..\Process\VisitSetXY.pas',
   BaseVisitor in '..\..\Process\BaseVisitor.pas',
   JcfMiscFunctions in '..\..\Utils\JcfMiscFunctions.pas',
-  JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
   JcfLog in '..\..\Utils\JcfLog.pas',
   fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',

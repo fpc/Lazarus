@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
   { local }
   frmBaseSettingsFrame, JvMemo, JvExStdCtrls;
 
@@ -56,10 +56,10 @@ type
 implementation
 
 uses
-    { jcl }
-    JclFileUtils,
-    { local }
-    JcfFileUtils, JcfRegistrySettings, JcfSettings;
+  { jcl }
+  JclFileUtils,
+  { local }
+  JcfRegistrySettings, JcfSettings;
 
 {$ifdef FPC}
   {$R *.lfm}
