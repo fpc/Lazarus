@@ -323,10 +323,9 @@ begin
   result:=rootDir;
 end;
 
-
 procedure Register;
 begin
-  RegisterComponents('Misc',[TCustomShellTreeView]);
+  RegisterComponents('Misc',[TShellTreeView]);
 //  RegisterNoIcon([TCustomShellTreeView]);
 end;
 

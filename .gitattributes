@@ -4025,6 +4025,7 @@ lcl/interfaces/wince/wincewschecklst.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscomctrls.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscontrols.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscustomlistview.inc svneol=native#text/plain
+lcl/interfaces/wince/wincewsdialogs.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsextctrls.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsforms.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsimglist.pp svneol=native#text/pascal

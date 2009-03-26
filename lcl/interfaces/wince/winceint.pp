@@ -270,7 +270,7 @@ Uses
  WinCEWSControls,
 // WinCEWSDbCtrls,
 // WinCEWSDBGrids,
-// WinCEWSDialogs,
+ WinCEWSDialogs,
 // WinCEWSDirSel,
 // WinCEWSEditBtn,
  WinCEWSExtCtrls,
