@@ -27,6 +27,10 @@ unit Laz_XMLStreaming;
 {$UNDEF HasReadWriteBuf}
 {$ENDIF}
 
+{$IF (FPC_VERSION = 2) AND (FPC_RELEASE >= 3)}
+  {$DEFINE USE_NEW_READER_WRITER}
+{$IFEND}
+
 interface
 
 uses SysUtils, Classes, TypInfo, FileProcs, Laz_DOM, Laz_XMLWrite;
@@ -82,8 +86,10 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
-    {$IFDEF FPC_HAS_UNICODESTRING}
+    {$IFDEF USE_NEW_READER_WRITER}
+    procedure WriteUInt64(Value: QWord); override;
     procedure WriteUnicodeString(const Value: UnicodeString); override;
+    procedure WriteVariant(const VarValue: Variant); override;
     {$ENDIF}
     {$IFDEF HasReadWriteBuf}
     procedure Write(const Buffer; Count: Longint); override;
@@ -131,7 +137,7 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
-    {$IFDEF FPC_HAS_UNICODESTRING}
+    {$IFDEF USE_NEW_READER_WRITER}
     function ReadUnicodeString: UnicodeString; override;
     {$ENDIF}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
@@ -458,12 +464,67 @@ begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
-{$IFDEF FPC_HAS_UNICODESTRING}
+{$IFDEF USE_NEW_READER_WRITER}
+procedure TXMLObjectWriter.WriteUInt64(Value: QWord);
+begin
+  GetPropertyElement('uint64')['value'] := IntToStr(Value);
+end;
+
 procedure TXMLObjectWriter.WriteUnicodeString(const Value: UnicodeString);
 // save unicodestrings as utf8
 begin
   GetPropertyElement('unicodestring')['value'] := System.UTF8Encode(Value);
 end;
+
+procedure TXMLObjectWriter.WriteVariant(const VarValue: Variant);
+begin
+  case tvardata(VarValue).vtype of
+    varEmpty:
+      begin
+        GetPropertyElement('uint64')['value'] := 'nil';
+      end;
+    varNull:
+      begin
+        GetPropertyElement('uint64')['value'] := 'null';
+      end;
+    { all integer sizes must be split for big endian systems }
+    varShortInt,varSmallInt,varInteger,varInt64:
+      begin
+        WriteInteger(VarValue);
+      end;
+    varQWord:
+      begin
+        WriteUInt64(VarValue);
+      end;
+    varBoolean:
+      begin
+        WriteBoolean(VarValue);
+      end;
+    varCurrency:
+      begin
+        WriteCurrency(VarValue);
+      end;
+    varSingle:
+      begin
+        WriteSingle(VarValue);
+      end;
+    varDouble:
+      begin
+        WriteFloat(VarValue);
+      end;
+    varDate:
+      begin
+        WriteDate(VarValue);
+      end;
+    varOleStr,varString:
+      begin
+        WriteWideString(VarValue);
+      end;
+    else
+      raise EWriteError.CreateFmt('Unsupported property variant type %d', [Ord(tvardata(VarValue).vtype)]);
+  end;
+end;
+
 {$ENDIF}
 
 {$IFDEF HasReadWriteBuf}
@@ -673,9 +734,18 @@ begin
           Result:=vaExtended
         else if FElement.NodeName='widestring' then
           Result:=vaWString
-        {$IFDEF FPC_HAS_UNICODESTRING}
+        {$IFDEF USE_NEW_READER_WRITER}
+        else if FElement.NodeName = 'uint64' then
+          Result:=vaQWord
         else if FElement.NodeName='unicodestring' then
           Result:=vaUString
+        else if FElement.NodeName='variant' then
+        begin
+          if FElement['value'] = 'nil' then
+            Result := vaNil
+          else
+            Result := vaNull;
+        end
         {$ENDIF}
         else if FElement.NodeName='collectionproperty' then
           Result:=vaCollection
@@ -1059,7 +1129,7 @@ begin
   //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
 
-{$IFDEF FPC_HAS_UNICODESTRING}
+{$IFDEF USE_NEW_READER_WRITER}
 function TXMLObjectReader.ReadUnicodeString: UnicodeString;
 var
   ValueAsUTF8: String;
