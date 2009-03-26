@@ -3,8 +3,7 @@ object frProgressForm: TfrProgressForm
   Height = 106
   Top = 137
   Width = 278
-  HorzScrollBar.Page = 277
-  VertScrollBar.Page = 105
+  ActiveControl = Button1
   BorderStyle = bsDialog
   Caption = 'frProgressForm'
   ClientHeight = 106
@@ -13,11 +12,12 @@ object frProgressForm: TfrProgressForm
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 20
-    Height = 14
+    Height = 16
     Top = 32
-    Width = 7
+    Width = 9
     Alignment = taCenter
     Caption = '1'
     ParentColor = False
@@ -33,5 +33,12 @@ object frProgressForm: TfrProgressForm
     ModalResult = 2
     OnClick = Button1Click
     TabOrder = 0
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer1Timer
+    left = 224
+    top = 24
   end
 end

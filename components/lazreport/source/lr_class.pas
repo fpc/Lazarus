@@ -21,7 +21,7 @@ uses
   
   LCLType,LCLIntf,TypInfo,LCLProc,
   SysUtilsAdds,
-  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel,LR_Const;
+  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
 const
 // object flags
@@ -7959,35 +7959,28 @@ var
 procedure TfrReport.BuildBeforeModal(Sender: TObject);
 begin
   {$IFDEF DebugLR}
-  DebugLn('20');
+  DebugLn('TfrReport.BuildBeforeModal INIT FinalPass=',dbgs(FinalPass),' DoublePass=',dbgs(DoublePass));
   {$ENDIF}
   DoBuildReport;
-  {$IFDEF DebugLR}
-  DebugLn('21');
-  {$ENDIF}
   if FinalPass then
   begin
     if Terminated then
-      frProgressForm.ModalResult := mrCancel
+      frProgressForm.ModalDone(mrCancel)
     else
-      frProgressForm.ModalResult := mrOk;
+      frProgressForm.ModalDone(mrOk);
   end
   else
   begin
-    {$IFDEF DebugLR}
-    DebugLn('22');
-    {$ENDIF}
-
     FirstPassTerminated := Terminated;
     SavedAllPages := EMFPages.Count;
     DoublePass := False;
     FirstTime := False;
     DoPrepareReport; // do final pass
     DoublePass := True;
-    {$IFDEF DebugLR}
-    DebugLn('23');
-    {$ENDIF}
   end;
+  {$IFDEF DebugLR}
+  DebugLn('TfrReport.BuildBeforeModal DONE');
+  {$ENDIF}
 end;
 
 function TfrReport.PrepareReport: Boolean;
