@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk, gdkpixbuf, GtkFontCache,
   {$ENDIF}
   // RTL, FCL, LCL
-  SysUtils, Classes, Controls, Calendar, LCLType, LMessages,
+  SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
   InterfaceBase,
   // Widgetset
   GtkProc, GtkDef, Gtk2Int, Gtk2WsControls,
@@ -54,6 +54,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar;
       const ADisplaySettings: TDisplaySettings); override;
@@ -155,6 +156,92 @@ begin
   Result := EncodeDate(Year, Month + 1, Day);
 end;
 
+class function TGtk2WSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
+  const APoint: TPoint): TCalendarPart;
+var
+  GtkCalendar: PGtkCalendar;
+  Style: PGtkStyle;
+  FrameW, FrameH, BodyY, BodyX, DayH, ArrowW: Integer;
+  Options: TGtkCalendarDisplayOptions;
+  R: TRect;
+begin
+  Result := cpNoWhere;
+  if not WSCheckHandleAllocated(ACalendar, 'HitTest') then
+    Exit;
+
+  GtkCalendar := GetCalendar(ACalendar);
+  Style := gtk_widget_get_style(PGtkWidget(ACalendar.Handle));
+  FrameW := gtk_widget_get_xthickness(Style);
+  FrameH := gtk_widget_get_Ythickness(Style);
+
+  Options := gtk_calendar_get_display_options(GtkCalendar);
+
+  if Ord(Options) and Ord(GTK_CALENDAR_SHOW_HEADING) <> 0 then
+    BodyY := PGtkCalendarPrivate(GtkCalendar^.private_data)^.header_h
+  else
+    BodyY := 0;
+
+  if Ord(Options) and Ord(GTK_CALENDAR_SHOW_WEEK_NUMBERS) <> 0 then
+    BodyX := PGtkCalendarPrivate(GtkCalendar^.private_data)^.week_width
+  else
+    BodyX := 0;
+
+  if APoint.Y >= BodyY + FrameH then
+  begin
+    // we are in the body
+    if Ord(Options) and Ord(GTK_CALENDAR_SHOW_DAY_NAMES) <> 0 then
+      DayH := PGtkCalendarPrivate(GtkCalendar^.private_data)^.day_name_h
+    else
+      DayH := 0;
+
+    if (APoint.Y - BodyY - DayH - FrameH >= 0) then
+    begin
+      if APoint.X >= BodyX + FrameW then
+        Result := cpDate
+      else
+        Result := cpWeekNumber;
+    end;
+  end
+  else
+  if BodyY > 0 then
+  begin
+    Result := cpTitle; // we are in the header at least
+
+    ArrowW := PGtkCalendarPrivate(GtkCalendar^.private_data)^.arrow_width;
+
+    R.Top := 3 + FrameH;
+    R.Bottom := BodyY - 7 + FrameH;
+    R.Left := 3 + FrameW;
+    // check month + buttons
+    R.Right := R.Left + ArrowW + 1;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleBtn);
+    R.Left := R.Right + 1;
+    R.Right := FrameW + ArrowW + PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_month_width + 1;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleMonth);
+    R.Left := R.Right;
+    R.Right := R.Left + ArrowW;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleBtn);
+    // check year + buttons
+    Style := gtk_widget_get_style(PGtkWidget(GtkCalendar));
+    R.Right := PGtkWidget(GtkCalendar)^.allocation.width - 3 -
+      2 * gtk_widget_get_xthickness(Style) + FrameW + 1;
+    R.Left := R.Right - ArrowW;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleBtn);
+    R.Right := R.Left;
+    R.Left := R.Right - PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_year_width;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleYear);
+    R.Right := R.Left;
+    R.Left := R.Right - ArrowW;
+    if PtInRect(R, APoint) then
+      Exit(cpTitleBtn);
+  end;
+end;
+
 class procedure TGtk2WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   Year, Month, Day: string;
@@ -189,10 +276,10 @@ begin
     num := Num  + (1 shl 2);
 
   if (dsShowWeekNumbers in ADisplaySettings) then
-     num := Num  + (1 shl 3);
+    num := Num  + (1 shl 3);
 
   if (dsStartMonday in ADisplaySettings) then
-     num := Num  + (1 shl 4);
+    num := Num  + (1 shl 4);
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
   gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
