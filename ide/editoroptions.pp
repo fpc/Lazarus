@@ -1401,7 +1401,7 @@ begin
   FShowGutterHints := True;
   fBlockIndent := 2;
   fBlockIndentType := sbitSpace;
-  FTrimSpaceType := settLeaveLine;
+  FTrimSpaceType := settEditLine;
   fUndoLimit := 32767;
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
@@ -1526,7 +1526,7 @@ begin
                           'SpaceIndent'));
     FTrimSpaceType := GetTrimSpaceType
       (XMLConfig.GetValue('EditorOptions/General/Editor/SpaceTrimType',
-                          'LeaveLine'));
+                          'EditLine'));
     fUndoLimit :=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit', 32767);
     fTabWidth :=
@@ -1702,7 +1702,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndentType'
       , GetSynBeautifierIndentName(fBlockIndentType), 'SpaceIndent');
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/SpaceTrimType'
-      , GetTrimSpaceName(FTrimSpaceType), 'LeaveLine');
+      , GetTrimSpaceName(FTrimSpaceType), 'EditLine');
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
       , fUndoLimit, 32767);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/TabWidth'
@@ -1884,6 +1884,8 @@ begin
       Result := 'EditLine';
     settMoveCaret:
       Result := 'MoveCaret';
+    settIgnoreAll:
+      Result := 'PosOnly';
   end;
 end;
 
@@ -1893,7 +1895,9 @@ begin
   if IndentName = 'EditLine' then
     Result := settEditLine
   else if IndentName = 'MoveCaret' then
-    Result := settMoveCaret;
+    Result := settMoveCaret
+  else if IndentName = 'PosOnly' then
+    Result := settIgnoreAll;
 end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter):

@@ -1154,6 +1154,7 @@ resourcestring
   dlgTrimSpaceTypeLeaveLine = 'Leave line';
   dlgTrimSpaceTypeEditLine = 'Line Edited';
   dlgTrimSpaceTypeCaretMove = 'Caret or Edit';
+  dlgTrimSpaceTypePosOnly = 'Position Only';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

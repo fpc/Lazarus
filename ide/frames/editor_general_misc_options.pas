@@ -80,6 +80,7 @@ begin
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeCaretMove);
+  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypePosOnly);
   EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
 end;
 

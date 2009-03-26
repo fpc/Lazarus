@@ -33,7 +33,8 @@ LCLProc,
 
 type
 
-  TSynEditStringTrimmingType = (settLeaveLine, settEditLine, settMoveCaret);
+  TSynEditStringTrimmingType = (settLeaveLine, settEditLine, settMoveCaret,
+                                settIgnoreAll);
 
   { TSynEditStringTrimmingList }
 
@@ -314,7 +315,8 @@ begin
   end;
   FIsTrimming := True;
   SendNotification(senrLineChange, self, fLineIndex, 1);
-  if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) then begin
+  if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) or
+     (FTrimType = settIgnoreAll) then begin
     UndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     fSpaces := '';
   end else begin
@@ -629,7 +631,7 @@ procedure TSynEditStringTrimmingList.EditInsertTrim(LogX, LogY: Integer;
 var
   s: string;
 begin
-  if AText = '' then
+  if (AText = '') or (FTrimType = settIgnoreAll) then
     exit;
   s := Spaces(LogY - 1);
   StoreSpacesForLine(LogY - 1,
@@ -643,7 +645,7 @@ function TSynEditStringTrimmingList.EditDeleteTrim(LogX, LogY, ByteLen:
 var
   s: string;
 begin
-  if ByteLen <= 0 then
+  if (ByteLen <= 0) or (FTrimType = settIgnoreAll) then
     exit('');
   s := Spaces(LogY - 1);
   Result := copy(s, LogX, ByteLen);
