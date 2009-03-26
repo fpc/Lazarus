@@ -64,7 +64,7 @@ uses
     Windows, ShellApi, {$WARNINGS OFF} FileCtrl {$WARNINGS ON}
   {$endif}
   {$ifdef Unix}
-    ,Unix,
+    ,Unix
   {$endif}
   {$ifdef fpc}
     ,LCLIntf, FileUtil, Dialogs
