@@ -6008,7 +6008,13 @@ begin
           fLastCaretX := CaretX;                                               //mh 2000-10-19
         end;
       ecTab:
-        if not ReadOnly then DoTabKey;
+        if not ReadOnly then
+        try
+          FCaret.IncForcePastEOL;
+          DoTabKey;
+        finally
+          FCaret.DecForcePastEOL;
+        end;
       ecShiftTab:
         if not ReadOnly then
           {$IFDEF SYN_LAZARUS}
