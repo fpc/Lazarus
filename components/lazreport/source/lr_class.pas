@@ -8496,7 +8496,7 @@ begin
   DebugPrnInfo('=== AFTER EMFPages[0]^');
   {$ENDIF}
   if Title <> '' then
-    Printer.Title:=Format('LazReport : %s',[Title])
+    Printer.Title:=Format('%s',[Title])
   else
     Printer.Title:=Format('LazReport : %s',[sUntitled]);
 
