@@ -314,6 +314,12 @@ type
   { Timer }
 
   TTimer = class (TCustomTimer)
+  published
+    property Enabled;
+    property Interval;
+    property OnTimer;
+    property OnStartTimer;
+    property OnStopTimer;
   end;
 
 
@@ -326,7 +332,7 @@ type
     );
   TIdleTimerAutoEvents = set of TIdleTimerAutoEvent;
 
-  TIdleTimer = class(TTimer)
+  TCustomIdleTimer = class(TCustomTimer)
   private
     FAutoEnabled: boolean;
     FAutoEndEvent: TIdleTimerAutoEvent;
@@ -344,13 +350,26 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property AutoEnabled: boolean read FAutoEnabled write SetAutoEnabled;
-    property AutoStartEvent: TIdleTimerAutoEvent
-      read FAutoStartEvent write SetAutoStartEvent default itaOnIdle;
-    property AutoEndEvent: TIdleTimerAutoEvent
-      read FAutoEndEvent write SetAutoEndEvent default itaOnUserInput;
+
+    property AutoEnabled: boolean read FAutoEnabled
+      write SetAutoEnabled default False;
+    property AutoStartEvent: TIdleTimerAutoEvent read FAutoStartEvent
+      write SetAutoStartEvent default itaOnIdle;
+    property AutoEndEvent: TIdleTimerAutoEvent read FAutoEndEvent
+      write SetAutoEndEvent default itaOnUserInput;
   end;
 
+  TIdleTimer = class(TCustomIdleTimer)
+  published
+    property AutoEnabled;
+    property AutoStartEvent;
+    property AutoEndEvent;
+    property Enabled;
+    property Interval;
+    property OnTimer;
+    property OnStartTimer;
+    property OnStopTimer;
+  end;
 
   { TShape }
 

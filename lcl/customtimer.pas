@@ -52,7 +52,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;

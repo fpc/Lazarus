@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
-  ExtCtrls, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
+  ExtCtrls, CustomTimer, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType, PropEdits,
   ObjInspStrConsts;
 
@@ -1200,16 +1200,16 @@ begin
 end;
 
 initialization
-  RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
-  RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
-  RegisterComponentEditor(TCustomPage,TPageComponentEditor);
-  RegisterComponentEditor(TCustomTabControl,TTabControlComponentEditor);
-  RegisterComponentEditor(TStringGrid,TStringGridComponentEditor);
-  RegisterComponentEditor(TCheckListBox,TCheckListBoxComponentEditor);
-  RegisterComponentEditor(TCheckGroup,TCheckGroupComponentEditor);
-  RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
+  RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
+  RegisterComponentEditor(TCustomNotebook, TNotebookComponentEditor);
+  RegisterComponentEditor(TCustomPage, TPageComponentEditor);
+  RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
+  RegisterComponentEditor(TStringGrid, TStringGridComponentEditor);
+  RegisterComponentEditor(TCheckListBox, TCheckListBoxComponentEditor);
+  RegisterComponentEditor(TCheckGroup, TCheckGroupComponentEditor);
+  RegisterComponentEditor(TToolBar, TToolBarComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
-  RegisterComponentEditor(TTimer, TTimerComponentEditor);
+  RegisterComponentEditor(TCustomTimer, TTimerComponentEditor);
 
 finalization
   InternalFinal;

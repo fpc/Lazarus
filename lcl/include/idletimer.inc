@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -21,14 +21,14 @@
 
 { TIdleTimer }
 
-procedure TIdleTimer.SetAutoEnabled(const AValue: boolean);
+procedure TCustomIdleTimer.SetAutoEnabled(const AValue: boolean);
 begin
   if FAutoEnabled=AValue then exit;
   FAutoEnabled:=AValue;
   UpdateHandlers;
 end;
 
-procedure TIdleTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
+procedure TCustomIdleTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
 begin
   if not AutoEnabled then exit;
   // automatic start, stop or restart
@@ -38,7 +38,7 @@ begin
     Enabled:=true;
 end;
 
-procedure TIdleTimer.DoOnIdleEnd(Sender: TObject);
+procedure TCustomIdleTimer.DoOnIdleEnd(Sender: TObject);
 begin
   if not AutoEnabled then exit;
   // automatic start, stop or restart
@@ -48,7 +48,7 @@ begin
     Enabled:=true;
 end;
 
-procedure TIdleTimer.DoOnUserInput(Sender: TObject; Msg: Cardinal);
+procedure TCustomIdleTimer.DoOnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   if not AutoEnabled then exit;
   // automatic start, stop or restart
@@ -58,26 +58,27 @@ begin
     Enabled:=true;
 end;
 
-procedure TIdleTimer.Loaded;
+procedure TCustomIdleTimer.Loaded;
 begin
   inherited Loaded;
   UpdateHandlers;
 end;
 
-constructor TIdleTimer.Create(TheOwner: TComponent);
+constructor TCustomIdleTimer.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FAutoStartEvent:=itaOnIdle;
-  FAutoEndEvent:=itaOnUserInput;
+  FAutoEnabled := False;
+  FAutoStartEvent := itaOnIdle;
+  FAutoEndEvent := itaOnUserInput;
 end;
 
-destructor TIdleTimer.Destroy;
+destructor TCustomIdleTimer.Destroy;
 begin
-  AutoEnabled:=false;
+  AutoEnabled := False;
   inherited Destroy;
 end;
 
-procedure TIdleTimer.UpdateHandlers;
+procedure TCustomIdleTimer.UpdateHandlers;
 begin
   if FAutoEnabled
   and ([csDesigning,csLoading,csDestroying]*ComponentState=[]) then begin
@@ -97,13 +98,13 @@ begin
   end;
 end;
 
-procedure TIdleTimer.SetAutoEndEvent(const AValue: TIdleTimerAutoEvent);
+procedure TCustomIdleTimer.SetAutoEndEvent(const AValue: TIdleTimerAutoEvent);
 begin
   if FAutoEndEvent=AValue then exit;
   FAutoEndEvent:=AValue;
 end;
 
-procedure TIdleTimer.SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
+procedure TCustomIdleTimer.SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
 begin
   if FAutoStartEvent=AValue then exit;
   FAutoStartEvent:=AValue;
