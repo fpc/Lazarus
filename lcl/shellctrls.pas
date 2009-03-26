@@ -26,7 +26,7 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Forms,
+  Classes, SysUtils, Forms, Graphics,
   ComCtrls;
 
 type
@@ -37,27 +37,38 @@ type
 
   TObjectTypes = set of TObjectType;
 
+  { Forward declaration of the classes }
+
+  TCustomShellTreeView = class;
+  TCustomShellListView = class;
+
   { TCustomShellTreeView }
 
   TCustomShellTreeView = class(TCustomTreeView)
   private
     FObjectTypes: TObjectTypes;
+    FShellListView: TCustomShellListView;
+    { Setters and getters }
+    procedure SetShellListView(const Value: TCustomShellListView);
+    { Other internal methods }
     procedure HandleOnExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
   protected
   public
+    { Basic methods }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     { Methods specific to Lazarus }
     class procedure GetFilesInDir(const ABaseDir: string;
       AObjectTypes: TObjectTypes; AResult: TStrings);
-    function PopulateTreeNodeWithFiles(ANode: TTreeNode; ANodePath: string): Boolean;
-    procedure PopulateTreeViewWithBaseFiles;
+    function PopulateTreeNodeWithFiles(
+      ANode: TTreeNode; ANodePath: string): Boolean;
+    procedure PopulateWithBaseFiles;
     function GetPathFromNode(ANode: TTreeNode): string;
 
     { Properties }
-
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
+    property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
   end;
 
   { TShellTreeView }
@@ -115,6 +126,118 @@ type
     property ExpandSignColor;
     { TCustomShellTreeView properties }
     property ObjectTypes;
+    property ShellListView;
+  end;
+
+  { TCustomShellListView }
+
+  TCustomShellListView = class(TCustomListView)
+  private
+    FObjectTypes: TObjectTypes;
+    FRoot: string;
+    FShellTreeView: TCustomShellTreeView;
+    { Setters and getters }
+    procedure SetShellTreeView(const Value: TCustomShellTreeView);
+    { Other internal methods }
+  protected
+  public
+    { Basic methods }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    { Methods specific to Lazarus }
+    procedure PopulateWithRoot();
+//    function GetPathFromNode(ANode: TTreeNode): string;
+
+    { Properties }
+    property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
+    property Root: string read FRoot write FRoot;
+    property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
+  end;
+
+  { TShellListView }
+
+  TShellListView = class(TCustomShellListView)
+  published
+    { TCustomListView properties
+      The same as TListView excluding data properties }
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderStyle;
+    property BorderWidth;
+//    property Checkboxes;
+    property Color default clWindow;
+//    property Columns;
+//    property ColumnClick;
+    property Constraints;
+    property DragCursor;
+    property DragMode;
+//    property DefaultItemHeight;
+//    property DropTarget;
+    property Enabled;
+//    property FlatScrollBars;
+    property Font;
+//    property FullDrag;
+//    property GridLines;
+    property HideSelection;
+//    property HotTrack;
+//    property HotTrackStyles;
+//    property HoverTime;
+//    property Items;
+    property LargeImages;
+    property MultiSelect;
+//    property OwnerData;
+//    property OwnerDraw;
+    property ParentColor default False;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property RowSelect;
+    property ScrollBars;
+    property ShowColumnHeaders;
+    property ShowHint;
+//    property ShowWorkAreas;
+    property SmallImages;
+    property SortColumn;
+    property SortType;
+    property StateImages;
+    property TabStop;
+    property TabOrder;
+    property ToolTips;
+    property Visible;
+    property ViewStyle;
+//    property OnAdvancedCustomDraw;
+//    property OnAdvancedCustomDrawItem;
+//    property OnAdvancedCustomDrawSubItem;
+    property OnChange;
+    property OnClick;
+    property OnColumnClick;
+    property OnCompare;
+    property OnContextPopup;
+//    property OnCustomDraw;
+//    property OnCustomDrawItem;
+//    property OnCustomDrawSubItem;
+    property OnDblClick;
+    property OnDeletion;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnSelectItem;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+    { TCustomShellListView properties }
+    property ObjectTypes;
+    property Root;
+    property ShellTreeView;
   end;
 
 procedure Register;
@@ -161,6 +284,16 @@ begin
 
 { TCustomShellTreeView }
 
+procedure TCustomShellTreeView.SetShellListView(
+  const Value: TCustomShellListView);
+begin
+  // Update the pair, it will then update itself
+  // in the setter of this property
+  // Updates only if necessary to avoid circular calls of the setters
+  if Value.ShellTreeView <> Self then
+    Value.ShellTreeView := Self;
+end;
+
 procedure TCustomShellTreeView.HandleOnExpanding(Sender: TObject;
   Node: TTreeNode; var AllowExpansion: Boolean);
 begin
@@ -182,7 +315,7 @@ begin
 
   // Populates the base dirs
 
-  PopulateTreeViewWithBaseFiles();
+  PopulateWithBaseFiles();
 end;
 
 destructor TCustomShellTreeView.Destroy;
@@ -190,7 +323,8 @@ begin
   inherited Destroy;
 end;
 
-{ Finds all files/directories directly inside a directory.
+{ Helper routine.
+  Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories. }
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
   AObjectTypes: TObjectTypes; AResult: TStrings);
@@ -239,8 +373,8 @@ begin
 end;
 
 { Returns true if at least one item was added, false otherwise }
-function TCustomShellTreeView.PopulateTreeNodeWithFiles(ANode: TTreeNode;
-  ANodePath: string): Boolean;
+function TCustomShellTreeView.PopulateTreeNodeWithFiles(
+  ANode: TTreeNode; ANodePath: string): Boolean;
 var
   i: Integer;
   Files: TStringList;
@@ -262,7 +396,7 @@ begin
   end;
 end;
 
-procedure TCustomShellTreeView.PopulateTreeViewWithBaseFiles;
+procedure TCustomShellTreeView.PopulateWithBaseFiles;
   {$if defined(windows) and not defined(wince)}
 const
   DRIVE_UNKNOWN = 0;
@@ -323,10 +457,72 @@ begin
   result:=rootDir;
 end;
 
+{ TCustomShellListView }
+
+procedure TCustomShellListView.SetShellTreeView(
+  const Value: TCustomShellTreeView);
+begin
+{  if Value.Selected <> nil then
+  begin
+    FRoot := Value.GetPathFromNode(Value.Selected);
+    Clear();
+    PopulateWithRoot();
+  end
+  else
+  begin
+    Clear();
+  end;
+
+  // Also update the pair, but only if necessary to avoid circular calls of the setters
+  if Value.ShellListView <> Self then
+    Value.ShellListView := Self;}
+end;
+
+constructor TCustomShellListView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  // Initial property values
+
+  ObjectTypes:= [otNonFolders];
+
+  Self.Columns.Add;
+  Self.Column[0].Caption := 'Name';
+  Self.Columns.Add;
+  Self.Column[1].Caption := 'Size';
+  Self.Columns.Add;
+  Self.Column[2].Caption := 'Type';
+end;
+
+destructor TCustomShellListView.Destroy;
+begin
+
+  inherited Destroy;
+end;
+
+procedure TCustomShellListView.PopulateWithRoot();
+var
+  i: Integer;
+  Files: TStringList;
+  NewItem: TListItem;
+begin
+{  Files := TStringList.Create;
+  try
+    TCustomShellTreeView.GetFilesInDir(FRoot, FObjectTypes, Files);
+
+    for i := 0 to Files.Count - 1 do
+    begin
+      NewItem := Items.Add;
+      NewItem.Caption := Files.Strings[i];
+    end;
+  finally
+    Files.Free;
+  end;}
+end;
+
 procedure Register;
 begin
-  RegisterComponents('Misc',[TShellTreeView]);
-//  RegisterNoIcon([TCustomShellTreeView]);
+  RegisterComponents('Misc',[TShellTreeView, TShellListView]);
 end;
 
 end.

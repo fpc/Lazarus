@@ -101,7 +101,7 @@ implementation
 type
   TWinCEFileDialogForm = class(TForm)
     ShellTreeView: TShellTreeView;
-    FileListBox: TFileListBox;
+    ShellListView: TShellListView;
   end;
 
 { TWinCEWSFileDialog }
@@ -110,7 +110,7 @@ class function TWinCEWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialo
 var
   ResultForm: TWinCEFileDialogForm absolute Result;
   ShellTreeView: TShellTreeView;
-  FileListBox: TFileListBox;
+  ShellListView: TShellListView;
 begin
   Result := THandle(TWinCEFileDialogForm.Create(Application));
 
@@ -126,29 +126,34 @@ begin
   ShellTreeView.Height := 100;
   ShellTreeView.Align := alTop;
 
-  // Add the FileListView to the dialog
-  FileListBox := TFileListBox.Create(ResultForm);
-  ResultForm.FileListBox := FileListBox;
-  FileListBox.Parent := ResultForm;
-  FileListBox.Left := 0;
-  FileListBox.Top := ShellTreeView.Height;
-  FileListBox.Width := ResultForm.Width;
-  FileListBox.Height := 100;
+  // Add the ShellListView to the dialog
+  ShellListView := TShellListView.Create(ResultForm);
+  ResultForm.ShellListView := ShellListView;
+  ShellListView.Parent := ResultForm;
+  ShellListView.Left := 0;
+  ShellListView.Top := ShellTreeView.Height;
+  ShellListView.Width := ResultForm.Width;
+  ShellListView.Height := 100;
+  ShellListView.ShellTreeView := ShellTreeView;
 end;
 
 class procedure TWinCEWSFileDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 var
-  ResultForm: TWinCEFileDialogForm absolute ACommonDialog.Handle;
+  ResultForm: TWinCEFileDialogForm;
 begin
+  ResultForm := TWinCEFileDialogForm(ACommonDialog.Handle);
+
   ResultForm.ShellTreeView.Free;
-  ResultForm.FileListBox.Free;
+  ResultForm.ShellListView.Free;
   ResultForm.Free;
 end;
 
 class procedure TWinCEWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  ResultForm: TWinCEFileDialogForm absolute ACommonDialog.Handle;
+  ResultForm: TWinCEFileDialogForm;
 begin
+  ResultForm := TWinCEFileDialogForm(ACommonDialog.Handle);
+
   ResultForm.ShowModal;
 end;
 
