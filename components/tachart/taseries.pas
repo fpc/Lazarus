@@ -76,7 +76,8 @@ type
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
 
     function Count: Integer; override;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual;
+    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual; overload;
+    function AddXY(X, Y: Double): Longint; virtual; overload;
     function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     procedure Delete(AIndex: Integer); virtual;
     procedure Clear;
@@ -439,6 +440,10 @@ begin
   Result := AddXY(XVal + 1, AValue, XLabel, Color);
 end;
 
+function TChartSeries.AddXY(X, Y: Double): Longint;
+begin
+  AddXY(X, Y, '', clTAColor);
+end;
 
 procedure TChartSeries.Delete(AIndex:Integer);
 begin
