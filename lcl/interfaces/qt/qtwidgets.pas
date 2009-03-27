@@ -1250,6 +1250,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function calViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function HitTest(const APoint: TPoint): byte;
 
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
@@ -6869,7 +6870,6 @@ procedure TQtListWidget.SlotMouseCheckListBox(Sender: QObjectH; Event: QEventH
   ); cdecl;
 var
   MousePos: TQtPoint;
-  Msg: TLMessage;
   x: Integer;
   w: QListWidgetItemH;
 begin
@@ -6895,8 +6895,6 @@ end;
 
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
-var
-  NewEvent: QMouseEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -7577,7 +7575,6 @@ var
   AParent: QTreeWidgetItemH;
   AIndex: Integer;
   ASubIndex: Integer;
-  i: Integer;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
@@ -7694,8 +7691,6 @@ var
   NMLV: TNMListView;
   R: TRect;
   Pt: TPoint;
-  Index: Integer;
-  AItem: QTreeWidgetItemH;
   i: Integer;
 begin
   // we'll send also which item is clicked ... probably future
@@ -9024,6 +9019,53 @@ begin
         FMouseDoubleClicked := True;
         SlotMouse(Sender, Event);
       end;
+    end;
+  end;
+end;
+
+function TQtCalendar.HitTest(const APoint: TPoint): byte;
+var
+  Layout: QLayoutH;
+  CalendarBody: QWidgetH;
+  HeaderRect, BodyRect: TRect;
+  AQtPoint: TQtPoint;
+  Index: QModelIndexH;
+begin
+  Result := 0;
+  Layout := QWidget_layout(Widget);
+  // layout must have 2 items:
+  // 1 - navigation bar
+  // 2 - calendar model
+  if QLayout_count(Layout) <> 2 then
+    Exit;
+  QLayoutItem_geometry(QLayout_itemAt(Layout, 0), @HeaderRect);
+  QLayoutItem_geometry(QLayout_itemAt(Layout, 1), @BodyRect);
+  if PtInRect(HeaderRect, APoint) then
+  begin
+    // we are in the header
+    Result := 3;
+    // todo: detail result more - button / month / year
+  end
+  else
+  if PtInRect(BodyRect, APoint) then
+  begin
+    CalendarBody := QLayoutItem_widget(QLayout_itemAt(Layout, 1));
+    AQtPoint := QtPoint(APoint.X, APoint.Y);
+    QWidget_mapFrom(CalendarBody, @AQtPoint, Widget, @AQtPoint);
+    Index := QModelIndex_create();
+    try
+      QTableView_indexAt(QTableWidgetH(CalendarBody), Index, @AQtPoint);
+      if (QCalendarWidget_horizontalHeaderFormat(QCalendarWidgetH(Widget)) = QCalendarWidgetNoHorizontalHeader) or
+         (QModelIndex_row(Index) > 0) then
+      begin
+        if (QCalendarWidget_verticalHeaderFormat(QCalendarWidgetH(Widget)) = QCalendarWidgetNoVerticalHeader) or
+           (QModelIndex_column(Index) > 0) then
+          Result := 1
+        else
+          Result := 2;
+      end;
+    finally
+      QModelIndex_destroy(Index);
     end;
   end;
 end;

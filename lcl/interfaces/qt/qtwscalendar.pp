@@ -33,9 +33,9 @@ uses
   qt4,
   qtwidgets,
   // LCL
-  SysUtils, DateUtils, Controls, Calendar, LCLType, LCLIntf, LCLProc,
+  SysUtils, Types, DateUtils, Controls, Calendar, LCLType, LCLIntf, LCLProc,
   // Widgetset
-  WSCalendar, WSLCLClasses;
+  WSProc, WSCalendar, WSLCLClasses;
 
 type
 
@@ -43,8 +43,9 @@ type
 
   TQtWSCustomCalendar = class(TWSCustomCalendar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ADisplaySettings: TDisplaySettings); override;
   end;
@@ -82,6 +83,18 @@ begin
   finally
     QDate_destroy(ADate);
   end;
+end;
+
+class function TQtWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
+  const APoint: TPoint): TCalendarPart;
+var
+  QtCalendar: TQtCalendar;
+begin
+  Result := cpNoWhere;
+  if not WSCheckHandleAllocated(ACalendar, 'HitTest') then
+    Exit;
+  QtCalendar := TQtCalendar(ACalendar.Handle);
+  Result := TCalendarPart(QtCalendar.HitTest(APoint))
 end;
 
 class procedure TQtWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);

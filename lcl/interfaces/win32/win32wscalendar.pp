@@ -123,6 +123,7 @@ var
   HitTestInfo: MCHITTESTINFO;
   HitPart: DWord;
 begin
+  Result := cpNoWhere;
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
     Exit;
   FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
@@ -139,8 +140,6 @@ begin
     MCHT_TITLEYEAR: Result := cpTitleYear;
     MCHT_TITLEBTNNEXT,
     MCHT_TITLEBTNPREV: Result := cpTitleBtn;
-  else
-    Result := cpNoWhere;
   end;
 end;
 
