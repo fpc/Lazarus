@@ -41,6 +41,7 @@ type
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
   end;
@@ -106,6 +107,32 @@ begin
     Result := EncodeDate(WYear,WMonth,WDay);
 end;
 
+class function TWinCEWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
+  const APoint: TPoint): TCalendarPart;
+var
+  HitTestInfo: MCHITTESTINFO;
+  HitPart: DWord;
+begin
+  Result := cpNoWhere;
+  if not WSCheckHandleAllocated(ACalendar, 'HitTest') then
+    Exit;
+  FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
+  HitTestInfo.cbSize := SizeOf(HitTestInfo);
+  HitTestInfo.pt := APoint;
+  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
+  case HitPart of
+    MCHT_CALENDARDATE,
+    MCHT_CALENDARDATENEXT,
+    MCHT_CALENDARDATEPREV: Result := cpDate;
+    MCHT_CALENDARWEEKNUM : Result := cpWeekNumber;
+    MCHT_TITLEBK: Result := cpTitle;
+    MCHT_TITLEMONTH: Result := cpTitleMonth;
+    MCHT_TITLEYEAR: Result := cpTitleYear;
+    MCHT_TITLEBTNNEXT,
+    MCHT_TITLEBTNPREV: Result := cpTitleBtn;
+  end;
+end;
+
 class procedure TWinCEWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   ST: SystemTime;
@@ -118,7 +145,7 @@ class procedure TWinCEWSCustomCalendar.SetDisplaySettings(const ACalendar: TCust
 var
    Style: LongInt;
 begin
-if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetDisplaySettings') then
+  if not WSCheckHandleAllocated(ACalendar, 'SetDisplaySettings') then
      Exit;
    Style := GetWindowLong(ACalendar.Handle, GWL_STYLE);
    if dsShowWeekNumbers in ASettings then
