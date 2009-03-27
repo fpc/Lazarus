@@ -192,7 +192,6 @@ function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; A
 Type
 { TCalendarDialog }
   TCalendarDialog = class(TCommonDialog)
-    procedure CalendarDblClick(Sender: TObject);
   private
     FDate: TDateTime;
     FDayChanged: TNotifyEvent;
@@ -208,6 +207,7 @@ Type
     function IsTitleStored: Boolean;
   protected
     procedure GetNewDate(Sender:TObject);//or onClick
+    procedure CalendarDblClick(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
@@ -1186,11 +1186,16 @@ end;
 procedure TCalendarDialog.CalendarDblClick(Sender: TObject);
 var
   CalendarForm: TForm;
+  P: TPoint;
 begin
-  GetNewDate(Sender);
-  CalendarForm:=TForm(TComponent(Sender).Owner);
-  // close the calendar dialog
-  CalendarForm.ModalResult:=mrOk;
+  P := FCalendar.ScreenToClient(Mouse.CursorPos);
+  if FCalendar.HitTest(P) in [cpNoWhere, cpDate] then
+  begin
+    GetNewDate(Sender);
+    CalendarForm:=TForm(TComponent(Sender).Owner);
+    // close the calendar dialog
+    CalendarForm.ModalResult:=mrOk;
+  end;
 end;
 
 function TCalendarDialog.IsTitleStored: Boolean;

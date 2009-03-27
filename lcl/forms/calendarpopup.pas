@@ -83,8 +83,12 @@ begin
 end;
 
 procedure TCalendarPopupForm.CalendarDblClick(Sender: TObject);
+var
+  P: TPoint;
 begin
-  ReturnDate;
+  P := Calendar.ScreenToClient(Mouse.CursorPos);
+  if Calendar.HitTest(P) in [cpNoWhere, cpDate] then
+    ReturnDate;
 end;
 
 procedure TCalendarPopupForm.CalendarKeyDown(Sender: TObject; var Key: Word;
