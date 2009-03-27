@@ -102,6 +102,7 @@ type
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
+    function GetImageIndex(Entry: TCallStackEntry): Integer;
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
@@ -178,7 +179,7 @@ begin
   UpdateView;
 end;
 
-procedure TCallStackDlg.UpdateView;
+function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
 
   function HasBreakPoint(Entry: TCallStackEntry): Boolean; inline;
   var
@@ -192,6 +193,27 @@ procedure TCallStackDlg.UpdateView;
       Result := BreakPoints.Find(FileName, Entry.Line) <> nil;
   end;
 
+begin
+  if HasBreakPoint(Entry) then
+  begin
+    if Entry.Current then
+      Result := imgCurrentLineAtBreakPoint
+    else
+      Result := imgBreakPoint;
+  end
+  else
+  begin
+    if Entry.Current then
+      Result := imgCurrentLine
+    else
+    if Entry.Source = '' then
+      Result := imgNoSourceLine
+    else
+      Result := imgSourceLine;
+  end;
+end;
+
+procedure TCallStackDlg.UpdateView;
 var
   n: Integer;
   Item: TListItem;
@@ -243,24 +265,7 @@ begin
         Item.SubItems[3] := '';
       end
       else begin
-        if HasBreakPoint(Entry) then
-        begin
-          if Entry.Current then
-            Item.ImageIndex := imgCurrentLineAtBreakPoint
-          else
-            Item.ImageIndex := imgBreakPoint;
-        end
-        else
-        begin
-          if Entry.Current then
-            Item.ImageIndex := imgCurrentLine
-          else
-          if Entry.Source = '' then
-            Item.ImageIndex := imgNoSourceLine
-          else
-            Item.ImageIndex := imgSourceLine;
-        end;
-
+        Item.ImageIndex := GetImageIndex(Entry);
         Item.SubItems[0] := IntToStr(Entry.Index);
         Source := Entry.Source;
         if Source = '' then // we dont have a source file => just show an adress
@@ -447,8 +452,24 @@ end;
 
 procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
+var
+  i, idx: Integer;
+  Entry: TCallStackEntry;
 begin
-  UpdateView;
+  if BreakPoints = nil then
+    Exit;
+
+  for i := 0 to lvCallStack.Items.Count - 1 do
+  begin
+    idx := FViewStart + lvCallStack.Items[i].Index;
+    if idx >= CallStack.Count then
+      Continue;
+    Entry := CallStack.Entries[idx];
+    if Entry <> nil then
+      lvCallStack.Items[i].ImageIndex := GetImageIndex(Entry)
+    else
+      lvCallStack.Items[i].ImageIndex := imgNoSourceLine;
+  end;
 end;
 
 procedure TCallStackDlg.FormCreate(Sender: TObject);
