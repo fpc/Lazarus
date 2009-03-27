@@ -326,7 +326,7 @@ begin
   lf.lfPitchAndFamily := 0;
   DC := GetDC(0);
   try
-    EnumFontFamiliesEX(DC, @lf, @EnumFontsNoDups, PtrInt(FontList), 0);
+    EnumFontFamiliesEx(DC, @lf, @EnumFontsNoDups, PtrInt(FontList), 0);
   finally
     ReleaseDC(0, DC);
   end;

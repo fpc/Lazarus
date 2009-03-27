@@ -938,18 +938,49 @@ end;
   Creates a logical font that has the characteristics specified in the
   specified record.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreateFontIndirect(Const LogFont: TLogFont): HFONT;
+function TWin32WidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 var
+{$ifdef WindowsUnicodeSupport}
+  TempLogFontW: TLogFontW;
+  TempLogFont: TLogFontA absolute TempLogFontW;
+{$else}
   TempLogFont: TLogFont;
+{$endif}
+  FontName: String;
 begin
+  FontName := LogFont.lfFaceName;
+
   TempLogFont := LogFont;
-  if String(TempLogFont.lfFaceName) = DefFontData.Name then
+  if FontName = DefFontData.Name then
   begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName) // FMetrics must be UTF16
+    else
+      Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
+    {$else}
     Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
+    {$endif}
     if TempLogFont.lfHeight = 0 then
       TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
+  end
+  else
+  begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    TempLogFontW.lfFaceName := UTF8ToUTF16(FontName)
+  else
+    TempLogFontW.lfFaceName := Utf8ToAnsi(FontName);
+  {$endif}
   end;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Result := Windows.CreateFontIndirectW(@TempLogFontW)
+  else
+    Result := Windows.CreateFontIndirectA(@TempLogFont)
+  {$else}
   Result := Windows.CreateFontIndirect(@TempLogFont);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1310,18 +1341,86 @@ begin
 end;
 
 function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
-  EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
+  EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
 begin
-  result := Windows.EnumFontFamilies(DC,Family,
-    Windows.FontEnumProc(EnumFontFamProc), Lparam);
+  // TODO: do as EnumFontFamiliesEx
+  Result := Windows.EnumFontFamilies(DC, Family,
+    Windows.FontEnumProc(EnumFontFamProc), LParam);
 end;
 
-function TWin32WidgetSet.EnumFontFamiliesEx(DC:HDC; lpLogFont:PLogFont;
-  Callback: FontEnumExProc; LParam:Lparam; flags:dword):longint;
+{$ifdef WindowsUnicodeSupport}
+type
+  TProcRedirRec = record
+    LParam: LParam;
+    CallBack: FontEnumExProc;
+  end;
+  PProcRedirRec = ^TProcRedirRec;
+
+function EnumExProcRedirW(var ELogFont: TEnumLogFontExW; var Metric: TNewTextMetricEx;
+    FontType: Longint; Data: LParam): Longint; stdcall;
+var
+  Rec: PProcRedirRec absolute Data;
+  ALogFont: TEnumLogFontExA;
 begin
-  result := Windows.EnumFontFamiliesEx(DC,
+  Move(ELogFont.elfLogFont, ALogFont.elfLogFont, SizeOf(ALogFont.elfLogFont) - SizeOf(ALogFont.elfLogFont.lfFaceName));
+  ALogFont.elfLogFont.lfFaceName := UTF16ToUTF8(ELogFont.elfLogFont.lfFaceName);
+  ALogFont.elfFullName := UTF16ToUTF8(ELogFont.elfFullName);
+  ALogFont.elfStyle := UTF16ToUTF8(ELogFont.elfStyle);
+  ALogFont.elfScript := UTF16ToUTF8(ELogFont.elfScript);
+
+  Result := Rec^.CallBack(ALogFont, Metric, FontType, Rec^.LParam);
+end;
+
+function EnumExProcRedirA(var ELogFont: TEnumLogFontExA; var Metric: TNewTextMetricEx;
+    FontType: Longint; Data: LParam): Longint; stdcall;
+var
+  Rec: PProcRedirRec absolute Data;
+  ALogFont: TEnumLogFontExA;
+begin
+  ALogFont := ELogFont;
+  ALogFont.elfLogFont.lfFaceName := AnsiToUtf8(ELogFont.elfLogFont.lfFaceName);
+  ALogFont.elfFullName := AnsiToUtf8(ELogFont.elfFullName);
+  ALogFont.elfStyle := AnsiToUtf8(ELogFont.elfStyle);
+  ALogFont.elfScript := AnsiToUtf8(ELogFont.elfScript);
+
+  Result := Rec^.CallBack(ALogFont, Metric, FontType, Rec^.LParam);
+end;
+{$endif}
+
+function TWin32WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; LParam: Lparam; flags: DWord): longint;
+{$ifdef WindowsUnicodeSupport}
+var
+  FontName: String;
+  LFW: LogFontW;
+  LFA: LogFontA absolute LFW;
+  Rec: TProcRedirRec;
+{$endif}
+begin
+{$ifdef WindowsUnicodeSupport}
+  FontName := lpLogFont^.lfFaceName;
+  ZeroMemory(@LFW, SizeOf(LFW));
+  LFW.lfCharSet := lpLogFont^.lfCharSet;
+  LFW.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
+  Rec.LParam := LParam;
+  Rec.CallBack := CallBack;
+  if UnicodeEnabledOS then
+  begin
+    LFW.lfFaceName := UTF8ToUTF16(FontName);
+    Result := LongInt(Windows.EnumFontFamiliesExW(DC,
+      LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
+  end
+  else
+  begin
+    LFA.lfFaceName := Utf8ToAnsi(FontName);
+    Result := LongInt(Windows.EnumFontFamiliesExA(DC,
+      LFA, windows.FontEnumExProc(@EnumExProcRedirA), Windows.LParam(@Rec), Flags));
+  end;
+{$else}
+  Result := Windows.EnumFontFamiliesEx(DC,
     windows.LPLOGFONT(lpLogFont),
-    windows.FontEnumExProc(Callback), Lparam, Flags);
+    windows.FontEnumExProc(Callback), LParam, Flags);
+{$endif}
 end;
 
 {------------------------------------------------------------------------------

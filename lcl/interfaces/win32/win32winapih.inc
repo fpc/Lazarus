@@ -47,7 +47,7 @@ function ClipboardRegisterFormat(const AMimeType: String): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP; override;
-function CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH; override;
+function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;

@@ -877,10 +877,10 @@ type
     property DataModuleCount: Integer read GetDataModuleCount;
     property DataModules[Index: Integer]: TDataModule read GetDataModules;
     
-    property Fonts : TStrings read GetFonts;
-    property Height : Integer read Getheight;
-    property HintFont : TFont read GetHintFont;
-    property Width : Integer read GetWidth;
+    property Fonts: TStrings read GetFonts;
+    property Height: Integer read Getheight;
+    property HintFont: TFont read GetHintFont;
+    property Width: Integer read GetWidth;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
                                                  write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange

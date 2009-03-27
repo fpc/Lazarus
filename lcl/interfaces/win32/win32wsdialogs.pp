@@ -28,16 +28,6 @@ unit Win32WSDialogs;
 interface
 
 uses
-{$IF FPC_VERSION < 2}
-  {$DEFINE OLD_PLACE}
-{$IFEND}
-{$IF (FPC_VERSION = 2) AND (FPC_RELEASE < 2)}
-  {$DEFINE OLD_PLACE}
-{$IFEND}
-{$IF (FPC_VERSION = 2) AND (FPC_RELEASE = 2) AND (FPC_PATCH = 0)}
-  {$DEFINE OLD_PLACE}
-{$IFEND}
-
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -46,9 +36,7 @@ uses
 ////////////////////////////////////////////////////
 // rtl
   Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes,
-{$IFNDEF OLD_PLACE}
   CommDlg,
-{$ENDIF}
 // lcl
   LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, FileUtil,
 // ws
@@ -768,12 +756,71 @@ class function TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialo
   end;
 
 var
+{$ifdef WindowsUnicodeSupport}
+  CFW: TChooseFontW;
+  LFW: LogFontW;
+  CF: TChooseFontA absolute CFW;
+  LF: LogFontA absolute LFW;
+{$else}
   CF: TChooseFont;
-  LF: LCLType.LOGFONT;
+  LF: LogFont;
+{$endif}
   UserResult: WINBOOL;
 begin
   with TFontDialog(ACommonDialog) do
   begin
+  {$ifdef WindowsUnicodeSupport}
+    ZeroMemory(@CFW, sizeof(TChooseFontW));
+    ZeroMemory(@LFW, sizeof(LogFontW));
+    if UnicodeEnabledOS then
+    begin
+      with LFW do
+      begin
+        LFHeight := Font.Height;
+        LFFaceName := UTF8ToUTF16(Font.Name);
+        if (fsBold in Font.Style) then LFWeight:= FW_BOLD;
+        LFItalic := byte(fsItalic in Font.Style);
+        LFStrikeOut := byte(fsStrikeOut in Font.Style);
+        LFUnderline := byte(fsUnderline in Font.Style);
+        LFCharSet := Font.CharSet;
+      end;
+      with CFW do
+      begin
+        LStructSize := sizeof(TChooseFont);
+        HWndOwner := GetOwnerHandle(ACommonDialog);
+        LPLogFont := commdlg.PLOGFONTW(@LFW);
+        Flags := GetFlagsFromOptions(Options);
+        Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
+        RGBColors := DWORD(Font.Color);
+      end;
+      UserResult := ChooseFontW(@CFW);
+      // we need to update LF now
+      LF.lfFaceName := UTF16ToUTF8(LFW.lfFaceName);
+    end
+    else
+    begin
+      with LF do
+      begin
+        LFHeight := Font.Height;
+        LFFaceName := Utf8ToAnsi(Font.Name);
+        if (fsBold in Font.Style) then LFWeight:= FW_BOLD;
+        LFItalic := byte(fsItalic in Font.Style);
+        LFStrikeOut := byte(fsStrikeOut in Font.Style);
+        LFUnderline := byte(fsUnderline in Font.Style);
+        LFCharSet := Font.CharSet;
+      end;
+      with CF do
+      begin
+        LStructSize := sizeof(TChooseFont);
+        HWndOwner := GetOwnerHandle(ACommonDialog);
+        LPLogFont := commdlg.PLOGFONTA(@LF);
+        Flags := GetFlagsFromOptions(Options);
+        Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
+        RGBColors := DWORD(Font.Color);
+      end;
+      UserResult := ChooseFontA(@CF);
+    end
+  {$else}
     ZeroMemory(@CF, sizeof(TChooseFont));
     ZeroMemory(@LF, sizeof(LogFont));
     with LF do
@@ -790,18 +837,15 @@ begin
     begin
       LStructSize := sizeof(TChooseFont);
       HWndOwner := GetOwnerHandle(ACommonDialog);
-{$ifndef OLD_PLACE}
       LPLogFont := commdlg.PLOGFONT(@LF);
-{$else}
-      LPLogFont := windows.PLOGFONT(@LF);
-{$endif}
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
       RGBColors := DWORD(Font.Color);
     end;
+    UserResult := ChooseFont(@CF);
+  {$endif}
   end;
 
-  UserResult := ChooseFont(@CF);
   SetDialogResult(ACommonDialog, UserResult);
   if UserResult then
   begin
