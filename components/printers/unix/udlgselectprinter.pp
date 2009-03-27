@@ -62,9 +62,7 @@ type
     edPageSet: TCOMBOBOX;
     cbTasktime: TCOMBOBOX;
     edRange: TEDIT;
-    PrinterStatePanel: TPanel;
-    PrinterComboPanel: TPanel;
-    PrinterLabelsPanel: TPanel;
+    panLabels: TPanel;
     PrinterGroupbox: TGroupbox;
     gbPages: TGROUPBOX;
     gbCopies: TGROUPBOX;
@@ -76,6 +74,7 @@ type
     PrinterDescriptionLabel: TLabel;
     labComment: TLABEL;
     labCUPS: TLABEL;
+    labPrinterName: TLabel;
     PrioLabel: TLabel;
     labCUPSServer: TLABEL;
     labTask: TLABEL;
@@ -428,17 +427,26 @@ end;
 procedure TdlgSelectPrinter.btnReducCLICK(Sender: TObject);
 begin
   if Sender=nil then ;
+
+  Constraints.MinHeight:=0;
+  Constraints.MaxHeight:=0;
   if btnReduc.Tag=1 then
   begin
     btnReduc.Tag:=0;
     btnReduc.Caption:='More ...';
-    Height:=Height-nbOpts.Height;
+    Height:=217;
+    Constraints.MinHeight:=Height;
+    Constraints.MaxHeight:=Height;
   end
   else
   begin
+    Constraints.MinHeight:=0;
+    Constraints.MaxHeight:=0;
     btnReduc.Tag:=1;
     btnReduc.Caption:='Less ...';
-    Height:=Height+nbOpts.Height;
+    Height:=440;
+    Constraints.MinHeight:=Height;
+    Constraints.MaxHeight:=0;
   end;
 end;
 

@@ -18,6 +18,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     Width = 457
     Align = alBottom
     Anchors = [akLeft, akBottom]
+    BevelOuter = bvNone
     ClientHeight = 41
     ClientWidth = 457
     FullRepaint = False
@@ -58,13 +59,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     TabOrder = 1
     object pgGeneral: TPage
       Caption = 'General'
-      ClientWidth = 453
-      ClientHeight = 394
+      ClientWidth = 451
+      ClientHeight = 390
       object labPaperSize: TLabel
         Left = 15
         Height = 16
         Top = 19
-        Width = 63
+        Width = 64
         Caption = 'Paper size'
         ParentColor = False
       end
@@ -72,7 +73,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Left = 15
         Height = 16
         Top = 55
-        Width = 64
+        Width = 68
         Caption = 'Paper type'
         ParentColor = False
       end
@@ -80,7 +81,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Left = 15
         Height = 16
         Top = 92
-        Width = 78
+        Width = 84
         Caption = 'Paper source'
         ParentColor = False
       end
@@ -88,13 +89,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Left = 15
         Height = 16
         Top = 125
-        Width = 62
+        Width = 66
         Caption = 'Resolution'
         ParentColor = False
       end
       object cbPaperSize: TComboBox
         Left = 130
-        Height = 27
+        Height = 29
         Top = 9
         Width = 310
         AutoComplete = False
@@ -107,7 +108,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
       end
       object cbPaperType: TComboBox
         Left = 130
-        Height = 27
+        Height = 29
         Top = 45
         Width = 310
         AutoComplete = False
@@ -119,7 +120,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
       end
       object cbPaperSrc: TComboBox
         Left = 130
-        Height = 27
+        Height = 29
         Top = 81
         Width = 310
         AutoComplete = False
@@ -146,9 +147,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbPortrait: TRadioButton
           Left = 7
-          Height = 21
+          Height = 22
           Top = 5
-          Width = 65
+          Width = 71
           AllowGrayed = True
           Caption = 'Portrait'
           Checked = True
@@ -159,9 +160,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbLandscape: TRadioButton
           Left = 7
-          Height = 21
+          Height = 22
           Top = 29
-          Width = 86
+          Width = 92
           AllowGrayed = True
           Caption = 'Landscape'
           DragCursor = crDefault
@@ -171,9 +172,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbrev_Landscape: TRadioButton
           Left = 7
-          Height = 21
+          Height = 22
           Top = 53
-          Width = 132
+          Width = 142
           AllowGrayed = True
           Caption = 'Reverse landscape'
           DragCursor = crDefault
@@ -183,9 +184,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbrev_portrait: TRadioButton
           Left = 7
-          Height = 21
+          Height = 22
           Top = 77
-          Width = 113
+          Width = 124
           AllowGrayed = True
           Caption = 'Reverse portrait'
           DragCursor = crDefault
@@ -211,9 +212,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexNone: TRadioButton
           Left = 14
-          Height = 21
+          Height = 22
           Top = 5
-          Width = 53
+          Width = 57
           AllowGrayed = True
           Caption = 'None'
           Checked = True
@@ -224,9 +225,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexLong: TRadioButton
           Left = 14
-          Height = 21
+          Height = 22
           Top = 29
-          Width = 83
+          Width = 90
           AllowGrayed = True
           Caption = 'Long edge'
           DragCursor = crDefault
@@ -236,9 +237,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexShort: TRadioButton
           Left = 14
-          Height = 21
+          Height = 22
           Top = 53
-          Width = 86
+          Width = 94
           AllowGrayed = True
           Caption = 'Short edge'
           DragCursor = crDefault
@@ -260,7 +261,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 6
           Height = 16
           Top = 9
-          Width = 29
+          Width = 32
           Caption = 'Start'
           ParentColor = False
         end
@@ -268,13 +269,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Left = 6
           Height = 16
           Top = 49
-          Width = 24
+          Width = 25
           Caption = 'End'
           ParentColor = False
         end
         object cbBanStart: TComboBox
           Left = 94
-          Height = 27
+          Height = 29
           Top = 1
           Width = 128
           AutoComplete = False
@@ -286,7 +287,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object cbBanEnd: TComboBox
           Left = 94
-          Height = 27
+          Height = 29
           Top = 41
           Width = 128
           AutoComplete = False
@@ -314,9 +315,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet1: TRadioButton
           Left = 6
-          Height = 21
+          Height = 22
           Top = 5
-          Width = 30
+          Width = 32
           AllowGrayed = True
           Caption = '1'
           Checked = True
@@ -327,9 +328,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet2: TRadioButton
           Left = 6
-          Height = 21
+          Height = 22
           Top = 25
-          Width = 30
+          Width = 32
           AllowGrayed = True
           Caption = '2'
           DragCursor = crDefault
@@ -339,9 +340,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet4: TRadioButton
           Left = 6
-          Height = 21
+          Height = 22
           Top = 46
-          Width = 30
+          Width = 32
           AllowGrayed = True
           Caption = '4'
           DragCursor = crDefault
@@ -352,7 +353,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
       end
       object cbResolution: TComboBox
         Left = 130
-        Height = 27
+        Height = 29
         Top = 117
         Width = 310
         AutoComplete = False

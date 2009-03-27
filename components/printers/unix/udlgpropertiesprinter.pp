@@ -152,6 +152,10 @@ begin
   InitCombo(cbPaperSrc ,'InputSlot','Auto Sheet Feeder',FInputSlotOptions);
   st := THackCUPSPrinter(Printer).GetResolutionOption;
   InitCombo(cbResolution,'Resolution', st, FResolutions);
+  if not cbResolution.Enabled then begin
+    cbResolution.Items.Add(st);
+    cbResolution.ItemIndex:=0;
+  end;
 
   Lst:=TStringList.Create;
   try
@@ -285,7 +289,7 @@ begin
   THackCUPSPrinter(Printer).SetOptionsOfPrinter;
 
   //Resolution
-  if (cbResolution.Items.Count>0) and (cbResolution.ItemIndex<>cbResolution.Tag) then
+  if cbResolution.Enabled and (cbResolution.ItemIndex<>cbResolution.Tag) then
     THackCUPSPrinter(Printer).cupsAddOption('Resolution',
       fResolutions[cbResolution.ItemIndex]);
 
