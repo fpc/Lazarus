@@ -1960,8 +1960,32 @@ end;
   Gets information about a specified graphics object.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+{$ifdef WindowsUnicodeSupport}
+var
+  LF: PLogFontA absolute Buf;
+  LFW: TLogFontW;
+{$endif}
 begin
   Assert(False, 'Trace:[TWin32WidgetSet.GetObject]');
+  {$ifdef WindowsUnicodeSupport}
+  if GetObjectType(GDIObj) = OBJ_FONT then
+  begin
+    if (UnicodeEnabledOS) and (BufSize = Sizeof(LOGFONTA)) then
+    begin
+      BufSize := SizeOf(LogFontW);
+      Result := Windows.GetObjectW(GDIObj, BufSize, @LFW);
+      Move(LFW, LF^, SizeOf(LogFontA) - SizeOf(LOGFONTA.lfFaceName));
+      LF^.lfFaceName := UTF16ToUTF8(LFW.lfFaceName);
+    end
+    else
+    begin
+      Result := Windows.GetObject(GDIObj, BufSize, Buf);
+      if (BufSize >= Sizeof(LOGFONTA)) and (Result <= BufSize) then
+        LF^.lfFaceName := AnsiToUtf8(LF^.lfFaceName);
+    end;
+  end
+  else
+  {$endif}
   Result := Windows.GetObject(GDIObj, BufSize, Buf);
 end;
 
