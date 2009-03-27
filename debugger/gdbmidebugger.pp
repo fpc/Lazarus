@@ -1520,7 +1520,10 @@ var
   Item: PGDBMINameValue;
   Addr: TDbgPtr;
 begin
+  Result := False;
   AAddr := 0;
+  if ASource = ''
+  then Exit;
   idx := FSourceNames.IndexOf(ASource);
   if (idx <> -1)
   then begin
