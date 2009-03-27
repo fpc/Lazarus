@@ -1,67 +1,79 @@
 inherited EvaluateDlg: TEvaluateDlg
-  Left = 351
+  Left = 470
   Height = 290
-  Top = 136
+  Top = 393
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 289
-  ActiveControl = ToolBar1
   BorderStyle = bsSizeToolWin
   Caption = 'Evaluate/Modify'
+  ClientHeight = 290
+  ClientWidth = 400
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   KeyPreview = True
   OnClose = FormClose
   OnKeyDown = FormKeyDown
-  object Label1: TLabel
-    Left = 8
-    Height = 17
-    Top = 44
-    Width = 60
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 47
+    Width = 57
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
     Caption = '&Expression:'
-    Color = clNone
     ParentColor = False
   end
-  object Label2: TLabel
-    Left = 8
-    Height = 17
-    Top = 92
-    Width = 36
+  object Label2: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbExpression
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 91
+    Width = 35
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = '&Result:'
-    Color = clNone
     ParentColor = False
   end
-  object lblNewValue: TLabel
-    Left = 8
-    Height = 17
-    Top = 245
-    Width = 59
+  object lblNewValue: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = cmbNewValue
+    Left = 6
+    Height = 14
+    Top = 246
+    Width = 55
     Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 3
     Caption = '&New value:'
-    Color = clNone
     ParentColor = False
   end
-  object ToolBar1: TToolBar
+  object ToolBar1: TToolBar[3]
+    Left = 0
     Height = 44
+    Top = 0
     Width = 400
     AutoSize = True
     ButtonHeight = 40
     ButtonWidth = 50
     Caption = 'ToolBar1'
     EdgeBorders = [ebTop, ebBottom]
-    Flat = True
-    Images = ImageList1
     Indent = 2
     ShowCaptions = True
     TabOrder = 0
     TabStop = True
     object tbInspect: TToolButton
-      Left = 166
+      Left = 159
       Top = 2
       Caption = '&Inspect'
       Enabled = False
       ImageIndex = 3
     end
     object tbWatch: TToolButton
-      Left = 116
+      Left = 109
       Top = 2
       AllowAllUp = True
       Caption = '&Watch'
@@ -70,7 +82,7 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbWatchClick
     end
     object tbModify: TToolButton
-      Left = 62
+      Left = 59
       Top = 2
       Caption = '&Modify'
       Enabled = False
@@ -85,35 +97,63 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbEvaluateClick
     end
   end
-  object cmbExpression: TComboBox
-    Left = 8
+  object cmbExpression: TComboBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
     Height = 21
-    Top = 60
-    Width = 384
+    Top = 64
+    Width = 388
     Anchors = [akTop, akLeft, akRight]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    MaxLength = 0
+    AutoComplete = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    ItemHeight = 13
+    ItemWidth = 0
     OnChange = cmbExpressionChange
     OnKeyDown = cmbExpressionKeyDown
     TabOrder = 2
   end
-  object txtResult: TMemo
-    Left = 8
-    Height = 131
+  object txtResult: TMemo[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = lblNewValue
+    Left = 6
+    Height = 132
     Top = 108
-    Width = 384
+    Width = 388
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ScrollBars = ssAutoVertical
     TabOrder = 1
   end
-  object cmbNewValue: TComboBox
-    Left = 8
+  object cmbNewValue: TComboBox[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
     Height = 21
-    Top = 262
-    Width = 384
+    Top = 263
+    Width = 388
     Anchors = [akLeft, akRight, akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    MaxLength = 0
+    AutoComplete = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
+    ItemWidth = 0
     TabOrder = 3
   end
 end
