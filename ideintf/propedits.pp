@@ -4388,7 +4388,7 @@ function TPersistentPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect];
   if Assigned(GetPropInfo^.SetProc) then
-    Result += [paValueList, paSortList, paRevertable, paVolatileSubProperties]
+    Result := Result + [paValueList, paSortList, paRevertable, paVolatileSubProperties]
   else
     Result := Result + [paReadOnly];
   if GReferenceExpandable and (GetPersistentReference <> nil) and AllEqual then
