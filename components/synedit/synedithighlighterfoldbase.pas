@@ -71,7 +71,8 @@ type
 
   TSynCustomHighlighterRange = class
   private
-    FCodeFoldStackSize: integer;
+    FCodeFoldStackSize: integer; // EndLevel
+    FMinimumCodeFoldBlockLevel: integer;
     FRangeType: Pointer;
     FTop: TSynCustomCodeFoldBlock;
   public
@@ -79,8 +80,8 @@ type
     destructor Destroy; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; virtual;
     function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
-        TSynCustomCodeFoldBlock;
-    procedure Pop(DecreaseLevel: Boolean = True);
+        TSynCustomCodeFoldBlock; virtual;
+    procedure Pop(DecreaseLevel: Boolean = True); virtual;
     procedure Clear; virtual;
     procedure Assign(Src: TSynCustomHighlighterRange); virtual;
     procedure WriteDebugReport;
@@ -88,6 +89,8 @@ type
   public
     property RangeType: Pointer read FRangeType write FRangeType;
     property CodeFoldStackSize: integer read FCodeFoldStackSize;
+    property MinimumCodeFoldBlockLevel: integer
+      read FMinimumCodeFoldBlockLevel write FMinimumCodeFoldBlockLevel;
     property Top: TSynCustomCodeFoldBlock read FTop;
   end;
   TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange;
@@ -116,8 +119,6 @@ type
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
   protected
-    FMinimumCodeFoldBlockLevel: integer;
-  protected
     function GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo; virtual;
     function GetFoldNodeInfoCount(Line: Integer): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
@@ -134,14 +135,21 @@ type
     destructor Destroy; override;
     function GetRange: Pointer; override;
 
-    function MinimumCodeFoldBlockLevel: integer; override;
-    function CurrentCodeFoldBlockLevel: integer; override;
+    function MinimumCodeFoldBlockLevel: integer; virtual;
+    function CurrentCodeFoldBlockLevel: integer; virtual;
 
     // requires CurrentLines;
     function MinimumFoldLevel(Index: Integer): integer; virtual; abstract;
     function EndFoldLevel(Index: Integer): integer; virtual; abstract;
-    function LastLineFoldLevelFix(Index: Integer): integer; virtual; abstract;
 
+    // fold-nodes that can be collapsed
+    // Highlighter can join several fold structures Or leave out some
+    function FoldOpenCount(ALineIndex: Integer): integer; virtual;
+    function FoldCloseCount(ALineIndex: Integer): integer; virtual;
+    function FoldNestCount(ALineIndex: Integer): integer; virtual;
+    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
+
+    // All fold-nodes
     property FoldNodeInfo[Line, Index: Integer]: TSynFoldNodeInfo read GetFoldNodeInfo;
     property FoldNodeInfoCount[Line: Integer]: Integer read GetFoldNodeInfoCount;
 
@@ -258,7 +266,7 @@ end;
 
 function TSynCustomFoldHighlighter.MinimumCodeFoldBlockLevel: integer;
 begin
-  Result := FMinimumCodeFoldBlockLevel;
+  Result := FCodeFoldRange.MinimumCodeFoldBlockLevel;
 end;
 
 procedure TSynCustomFoldHighlighter.SetRange(Value: Pointer);
@@ -267,14 +275,13 @@ begin
   // in case we asigned a null range
   if not assigned(FCodeFoldRange.FoldRoot) then
     FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
-  FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
 end;
 
 procedure TSynCustomFoldHighlighter.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
   inherited;
-  FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+  FCodeFoldRange.MinimumCodeFoldBlockLevel := FCodeFoldRange.FCodeFoldStackSize;
 end;
 
 function TSynCustomFoldHighlighter.CurrentCodeFoldBlockLevel: integer;
@@ -283,6 +290,26 @@ begin
     Result:=CodeFoldRange.CodeFoldStackSize
   else
     Result:=0;
+end;
+
+function TSynCustomFoldHighlighter.FoldOpenCount(ALineIndex: Integer): integer;
+begin
+  result := 0;
+end;
+
+function TSynCustomFoldHighlighter.FoldCloseCount(ALineIndex: Integer): integer;
+begin
+  result := 0;
+end;
+
+function TSynCustomFoldHighlighter.FoldNestCount(ALineIndex: Integer): integer;
+begin
+  Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
+begin
+  result := 0;
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer): Integer;
@@ -317,8 +344,6 @@ end;
 procedure TSynCustomFoldHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);
 begin
   CodeFoldRange.Pop(DecreaseLevel);
-  if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
-    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
 end;
 
 procedure TSynCustomFoldHighlighter.CreateRootCodeFoldBlock;
@@ -538,16 +563,19 @@ end;
 function TSynCustomHighlighterRange.Compare(Range: TSynCustomHighlighterRange
   ): integer;
 begin
-  if RangeType<Range.RangeType then
+  if RangeType < Range.RangeType then
     Result:=1
-  else if RangeType>Range.RangeType then
+  else if RangeType > Range.RangeType then
     Result:=-1
   else if Pointer(FTop) < Pointer(Range.FTop) then
     Result:= -1
   else if Pointer(FTop) > Pointer(Range.FTop) then
     Result:= 1
   else
-    Result := 0;
+    Result := FMinimumCodeFoldBlockLevel - Range.FMinimumCodeFoldBlockLevel;
+  if Result <> 0 then
+    exit;
+  Result := FCodeFoldStackSize - Range.FCodeFoldStackSize;
 end;
 
 function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
@@ -568,6 +596,8 @@ begin
     FTop := FTop.Parent;
     if DecreaseLevel then
       dec(FCodeFoldStackSize);
+    if FMinimumCodeFoldBlockLevel > FCodeFoldStackSize then
+      FMinimumCodeFoldBlockLevel := FCodeFoldStackSize;
   end;
 end;
 
@@ -575,6 +605,7 @@ procedure TSynCustomHighlighterRange.Clear;
 begin
   FRangeType:=nil;
   FCodeFoldStackSize := 0;
+  FMinimumCodeFoldBlockLevel := 0;
   FTop:=nil;
 end;
 
@@ -583,11 +614,13 @@ begin
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
     FTop := Src.FTop;
     FCodeFoldStackSize := Src.FCodeFoldStackSize;
+    FMinimumCodeFoldBlockLevel := Src.FMinimumCodeFoldBlockLevel;
     FRangeType := Src.FRangeType;
   end
   else begin
     FTop := nil;
     FCodeFoldStackSize := 0;
+    FMinimumCodeFoldBlockLevel := 0;
     FRangeType := nil;
   end;
 end;
@@ -634,6 +667,7 @@ begin
     // add a copy
     Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
+    //if FItems.Count mod 32 = 0 then debugln(['FOLDRANGE Count=', FItems.Count]);
   end;
   //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
 end;

@@ -42,6 +42,30 @@ type
 
 type
 
+
+  { TSynEditStorageMem }
+
+  TSynEditStorageMem = class
+  private
+    FMem: PByte;
+    FCount, FCapacity: Integer;
+    function GetItemPointer(Index: Integer): Pointer;
+  protected
+    procedure SetCapacity(const AValue: Integer); virtual;
+    procedure SetCount(const AValue: Integer); virtual;
+    function ItemSize: Integer; virtual; abstract;
+
+    property Mem: PByte read FMem;
+    property ItemPointer[Index: Integer]: Pointer read GetItemPointer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Move(AFrom, ATo, ALen: Integer); virtual;
+    property Capacity: Integer read FCapacity write SetCapacity;
+    // Count must be maintained by owner
+    property Count: Integer read FCount write SetCount;
+  end;
+
   { TSynEditStrings }
 
   TSynEditStrings = class(TStrings)
@@ -49,8 +73,8 @@ type
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
-    function GetRange(Index: integer): TSynEditRange; virtual; abstract;
-    procedure PutRange(Index: integer; ARange: TSynEditRange); virtual; abstract;
+    function GetRange: TSynEditStorageMem; virtual; abstract;
+    procedure PutRange(ARange: TSynEditStorageMem); virtual; abstract;
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; virtual; abstract;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); virtual; abstract;
 
@@ -103,7 +127,7 @@ type
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
-    property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
+    property Ranges: TSynEditStorageMem read GetRange write PutRange;
   end;
 
   { TSynEditStringsLinked }
@@ -115,8 +139,8 @@ type
     function  GetIsUtf8 : Boolean;  override;
     procedure SetIsUtf8(const AValue : Boolean);  override;
 
-    function GetRange(Index: integer): TSynEditRange;  override;
-    procedure PutRange(Index: integer; ARange: TSynEditRange);  override;
+    function GetRange: TSynEditStorageMem;  override;
+    procedure PutRange(ARange: TSynEditStorageMem);  override;
 
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
@@ -451,14 +475,14 @@ begin
 end;
 
 //Ranges
-function TSynEditStringsLinked.GetRange(Index: integer): TSynEditRange;
+function TSynEditStringsLinked.GetRange: TSynEditStorageMem;
 begin
-  Result:= fSynStrings.Ranges[Index];
+  Result:= fSynStrings.Ranges;
 end;
 
-procedure TSynEditStringsLinked.PutRange(Index: integer; ARange: TSynEditRange);
+procedure TSynEditStringsLinked.PutRange(ARange: TSynEditStorageMem);
 begin
-  fSynStrings.Ranges[Index] := ARange;
+  fSynStrings.Ranges := ARange;
 end;
 
 function TSynEditStringsLinked.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
@@ -983,6 +1007,55 @@ begin
     exit(nil);
   dec(FCount);
   Result := FItems[FCount];
+end;
+
+{ TSynEditStorageMem }
+
+function TSynEditStorageMem.GetItemPointer(Index: Integer): Pointer;
+begin
+  Result := Pointer(FMem + Index * ItemSize);
+end;
+
+procedure TSynEditStorageMem.SetCapacity(const AValue: Integer);
+begin
+  if FCapacity = AValue then exit;
+  FMem := ReallocMem(FMem, AValue * ItemSize);
+  if AValue > FCapacity then
+    FillChar((FMem+FCapacity*ItemSize)^, (AValue-FCapacity)*ItemSize, 0);
+  FCapacity := AValue;
+end;
+
+procedure TSynEditStorageMem.SetCount(const AValue: Integer);
+begin
+  FCount := AValue;
+end;
+
+constructor TSynEditStorageMem.Create;
+begin
+  FCapacity := 0;
+  FCount := 0;
+end;
+
+destructor TSynEditStorageMem.Destroy;
+begin
+  SetCount(0);
+  SetCapacity(0);
+  inherited Destroy;
+end;
+
+procedure TSynEditStorageMem.Move(AFrom, ATo, ALen: Integer);
+var
+  len: Integer;
+begin
+  if ATo < AFrom then begin
+    Len := Min(ALen, AFrom-ATo);
+    System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
+    FillChar((FMem+(AFrom+ALen-Len)*ItemSize)^, Len*ItemSize, 0);
+  end else begin
+    Len := Min(ALen, ATo-AFrom);
+    System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
+    FillChar((FMem+AFrom*ItemSize)^, Len*ItemSize, 0);
+  end;
 end;
 
 end.

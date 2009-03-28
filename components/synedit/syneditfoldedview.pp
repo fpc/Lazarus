@@ -180,23 +180,16 @@ type
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
     fFoldTypeList : Array of TSynEditCodeFoldType;
     fOnFoldChanged : TFoldChangedEvent;
-    fCFDividerDrawLevel: Integer;
     fLockCount : Integer;
     fNeedFixFrom, fNeedFixMinEnd : Integer;
     fNeedCaretCheck : Boolean;
 
     function GetCount : integer;
-    function GetDrawDivider(Index : integer) : Boolean;
-    function GetFoldEndLevel(Index: integer): integer;
-    function GetFoldMinLevel(Index: integer): integer;
-    function GetFoldNestLevel(index : Integer): integer;
     function GetLines(index : Integer) : String;
     function GetDisplayNumber(index : Integer) : Integer;
-    function GetRange(Index : integer) : TSynEditRange;
     function GetTextIndex(index : Integer) : Integer;
     function GetFoldType(index : Integer) : TSynEditCodeFoldType;
     function IsFolded(index : integer) : Boolean;  // TextIndex
-    procedure PutRange(Index : integer; const AValue : TSynEditRange);
     procedure SetTopLine(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
@@ -232,16 +225,10 @@ type
     // Attributes for Visible-Lines-On-screen
     property Lines[index : Integer] : String            (* Lines on screen / 0 = TopLine *)
       read GetLines; default;
-    property Ranges[Index: integer]: TSynEditRange
-      read GetRange write PutRange;
     property DisplayNumber[index : Integer] : Integer   (* LineNumber for display in Gutter / result is 1-based *)
       read GetDisplayNumber;
     property FoldType[index : Integer] : TSynEditCodeFoldType (* FoldIcon / State *)
       read GetFoldType;
-    property FoldNestLvl[index : Integer] : integer           (* FoldIcon / Deep/Level of nesting; 1 for top-lvl *)
-      read GetFoldNestLevel;
-    property DrawDivider[Index: integer]: Boolean
-      read GetDrawDivider;
     property TextIndex[index : Integer] : Integer       (* Position in SynTextBuffer / result is 0-based *)
       read GetTextIndex; // maybe writable
 
@@ -255,7 +242,6 @@ type
 
     property Count : integer read GetCount;             (* refers to visible (unfolded) lines *)
 
-    property CFDividerDrawLevel: Integer read fCFDividerDrawLevel write fCFDividerDrawLevel;
     property MarkupInfoFoldedCode: TSynSelectedColor read FMarkupInfoFoldedCode;
   public
     procedure Lock;
@@ -283,10 +269,6 @@ type
 
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
       read fOnFoldChanged write fOnFoldChanged;
-  public
-    // TextIndex
-    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel;
-    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel;
     property HighLighter: TSynCustomHighlighter read FHighLighter
                                                 write FHighLighter;
   end;
@@ -1554,21 +1536,6 @@ begin
   Result := fLines.Count - fFoldTree.FindLastFold.FoldedBefore;
 end;
 
-function TSynEditFoldedView.GetDrawDivider(Index : integer) : Boolean;
-begin
-  result := (FoldType[Index] in [cfEnd])
-    and (FoldEndLevel[TextIndex[index]] < CFDividerDrawLevel);
-end;
-
-function TSynEditFoldedView.GetFoldNestLevel(index : Integer): integer;
-begin
-  if (index < 0) or (index > fLinesInWindow) then exit(-1);
-  if (fFoldTypeList[index] = cfEnd) and (fTextIndexList[index] > 0) then
-    Result := FoldEndLevel[fTextIndexList[index]-1]
-  else
-    Result := FoldEndLevel[fTextIndexList[index]];
-end;
-
 (* Topline *)
 procedure TSynEditFoldedView.SetTopLine(const ALine : integer);
 begin
@@ -1601,7 +1568,19 @@ procedure TSynEditFoldedView.CalculateMaps;
 var
   i, tpos, cnt  : Integer;
   node : TSynTextFoldAVLNode;
+  hl: TSynCustomFoldHighlighter;
 begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then begin
+    for i := 0 to fLinesInWindow do begin
+      fTextIndexList[i] := fTopLine + i - 1;
+      fFoldTypeList[i] := cfNone;
+    end;
+    exit;
+  end;
+
+  FHighLighter.CurrentLines := fLines;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
   node := fFoldTree.FindFoldForFoldedLine(fTopLine, true);
   // ftopline is not a folded line
   // so node.FoldedBefore(next node after ftopl) does apply
@@ -1617,13 +1596,13 @@ begin
       if (node.IsInFold) and (tpos+1 = node.StartLine)
       then fFoldTypeList[i] := cfCollapsed
       else
-      if FoldEndLevel[tpos-1] > FoldMinLevel[tpos-1]
+      if (hl.FoldOpenCount(tpos - 1) > 0)
       then fFoldTypeList[i] := cfExpanded
       else
-      if (tpos > 1) and (FoldEndLevel[tpos-2] > FoldMinLevel[tpos-1])
+      if (tpos > 1) and (hl.FoldCloseCount(tpos - 1) > 0)
       then fFoldTypeList[i] := cfEnd
       else
-      if FoldEndLevel[tpos-1] > 0
+      if hl.FoldNestCount(tpos - 1) > 0
       then fFoldTypeList[i] := cfContinue
       else fFoldTypeList[i] := cfNone;
 
@@ -1651,13 +1630,6 @@ begin
   Result := fTextIndexList[index]+1;
 end;
 
-function TSynEditFoldedView.GetRange(Index : integer) : TSynEditRange;
-begin
-  if (index < 0) or (index > fLinesInWindow) then
-    exit(fLines.Ranges[ScreenLineToTextIndex(Index)]);
-  Result := fLines.Ranges[fTextIndexList[index]];
-end;
-
 function TSynEditFoldedView.GetTextIndex(index : Integer) : Integer;
 begin
   if (index < 0) or (index > fLinesInWindow) then
@@ -1676,33 +1648,7 @@ begin
   Result := fFoldTree.FindFoldForLine(index+1).IsInFold;
 end;
 
-procedure TSynEditFoldedView.PutRange(Index : integer; const AValue : TSynEditRange);
-begin
-  if (index < 0) or (index > fLinesInWindow) then exit;
-  fLines.Ranges[fTextIndexList[index]] := AValue;
-end;
-
 (* Folding *)
-
-function TSynEditFoldedView.GetFoldEndLevel(Index: integer): integer;
-begin
-  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
-  then exit(0);
-  FHighLighter.CurrentLines := fLines;
-  Result := TSynCustomFoldHighlighter(FHighLighter).EndFoldLevel(Index) +
-            TSynCustomFoldHighlighter(FHighLighter).LastLineFoldLevelFix(Index + 1);
-end;
-
-function TSynEditFoldedView.GetFoldMinLevel(Index: integer): integer;
-begin
-  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
-  then exit(0);
-  FHighLighter.CurrentLines := fLines;
-  Result := TSynCustomFoldHighlighter(FHighLighter).EndFoldLevel(Index) +
-            TSynCustomFoldHighlighter(FHighLighter).LastLineFoldLevelFix(Index + 1);
-  Result := Min(Result,
-               TSynCustomFoldHighlighter(FHighLighter).MinimumFoldLevel(Index));
-end;
 
 procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer);
 begin
@@ -1715,17 +1661,11 @@ begin
 end;
 
 function TSynEditFoldedView.LengthForFoldAtTextIndex(ALine : Integer) : Integer;
-var
-  i, lvl, cnt : Integer;
 begin
-  cnt := fLines.Count;
-  // AStartLine is 1-based // FoldEndLevel is 0-based
-  lvl := FoldEndLevel[ALine];
-  i := ALine+1;
-  while (i < cnt)  and (FoldMinLevel[i] >= lvl) do inc(i);
-  // check if fold last line of block (not mixed "end begin")
-  if (i < cnt) and (FoldEndLevel[i] <= FoldMinLevel[i]) then inc(i);
-  Result := i-ALine-1;
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit(0);
+  Result := TSynCustomFoldHighlighter(FHighLighter).FoldLineLength(ALine,
+               TSynCustomFoldHighlighter(FHighLighter).FoldOpenCount(ALine) -1);
 end;
 
 procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer);
@@ -1780,13 +1720,19 @@ end;
 procedure TSynEditFoldedView.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
 var
   i, l, top: Integer;
+  hl: TSynCustomFoldHighlighter;
 begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  FHighLighter.CurrentLines := fLines;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+
   top := TopTextIndex;
   fFoldTree.Clear;
   i := 0;
   while i < fLines.Count do begin
-    if (FoldEndLevel[i] > FoldMinLevel[i])
-    and (FoldEndLevel[i] > StartLevel) then begin
+    if (hl.FoldOpenCount(i) > 0)
+    and (hl.FoldNestCount(i) > StartLevel) then begin
       l := LengthForFoldAtTextIndex(i);
       // i is 0-based
       // FoldTree is 1-based AND first line remains visble
@@ -1807,6 +1753,7 @@ var
   line, cnt, a: Integer;
   LastStart, LastCount: Integer;
   node, tmpnode: TSynTextFoldAVLNode;
+  hl: TSynCustomFoldHighlighter;
 begin
   Result := false;
   if fLockCount > 0 then begin
@@ -1824,6 +1771,11 @@ begin
     exit;
   end;
   If AMinEnd < node.StartLine then AMinEnd := node.StartLine;
+
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  FHighLighter.CurrentLines := fLines;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
 
   // LineCount is allowed to be -1
   while node.IsInFold and (node.StartLine + node.LineCount + 1 >= AStart) do begin
@@ -1851,7 +1803,7 @@ begin
     LastCount := cnt;
 
     // look at the 0-based cfCollapsed (visible) Line
-    if not(FoldEndLevel[line -1] > FoldMinLevel[line - 1]) then begin
+    if not(hl.FoldOpenCount(line - 1) > 0) then begin
       // the Fold-Begin of this node has gone
       tmpnode := node.Prev;
       aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
@@ -1917,36 +1869,35 @@ function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer) : Intege
 var
   i, l : Integer;
   node: TSynTextFoldAVLNode;
+  hl: TSynCustomFoldHighlighter;
 begin
   Result := -1;
-  i := ALine-1;
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  FHighLighter.CurrentLines := fLines;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
 
-  if (i>0) and (FoldMinLevel[i] < FoldEndLevel[i-1])then begin
-    if FoldMinLevel[i] < FoldEndLevel[i] then begin
-      // this is a combined "end begin" line
-      node := fFoldTree.FindFoldForLine(ALine, true);
-      if node.IsInFold and (node.StartLine = ALine +1) then
-        dec(i);
-      if i < 0 then exit;
-    end else begin
-      // this is a "end" line
-      dec(i);
-    end;
-    l := FoldEndLevel[i];
-  end else if FoldEndLevel[i] = 0 then
-    exit
-  else begin
-    // check if current line is cfCollapsed
+  i := ALine;
+  if hl.FoldOpenCount(i - 1) > 0 then begin
     node := fFoldTree.FindFoldForLine(ALine, true);
     if node.IsInFold and (node.StartLine = ALine +1) then
-      dec(i);
-    if i < 0 then exit;
-    l := FoldEndLevel[i]
-  end;
-
-  while (i > 0) and (FoldMinLevel[i] >= l) do
+      dec(i)
+    else
+      exit(ALine);
+  end
+  else if hl.FoldCloseCount(i - 1) > 0 then
     dec(i);
-  if (FoldEndLevel[i] > 0) then // TODO, check for collapsed at index = 0
+  if (i < 0) or (hl.FoldNestCount(i-1) = 0) then
+    exit;
+
+  l := 0;
+  while (i > 0) and (l >= 0) do begin // (FoldMinLevel[i] >= l) do
+    dec(i);
+    l := l - hl.FoldOpenCount(i);
+    if l >= 0 then
+      l := l + hl.FoldCloseCount(i);
+  end;
+  if (hl.FoldNestCount(i) > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
 end;
 

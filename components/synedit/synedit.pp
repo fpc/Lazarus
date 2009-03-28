@@ -312,6 +312,7 @@ type
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
+    FDividerDrawLevel: Integer;
     fFirstLine: integer;
     fBlockIndent: integer;
     FBlockSelection: TSynEditSelection;
@@ -433,6 +434,7 @@ type
 
     procedure AquirePrimarySelection;
     function GetUndoList: TSynEditUndoList;
+    procedure SetDividerDrawLevel(const AValue: Integer);
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -478,8 +480,6 @@ type
     {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
-    procedure SetCFDividerDrawLevel(const AValue: Integer);
-    function  GetCFDividerDrawLevel : Integer;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     {$ENDIF}
@@ -619,7 +619,6 @@ type
     function GetTopView : Integer;
     procedure SetTopView(const AValue : Integer);
     {$ENDIF}
-    procedure ListScanRanges(Sender: TObject);
     procedure Loaded; override;
     procedure MarkListChange(Sender: TObject);
 {$IFDEF SYN_MBCSSUPPORT}
@@ -929,10 +928,7 @@ type
     {$ENDIF}
     property SelectionMode: TSynSelectionMode
       read GetSelectionMode write SetSelectionMode default smNormal;
-    {$IFDEF SYN_LAZARUS}
-    property CFDividerDrawLevel: Integer
-        read GetCFDividerDrawLevel write SetCFDividerDrawLevel;
-    {$ENDIF}
+    property CFDividerDrawLevel: Integer read FDividerDrawLevel write SetDividerDrawLevel;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1981,16 +1977,6 @@ begin
   Result:=PhysicalToLogicalPos(CaretXY);
 end;
 
-procedure TCustomSynEdit.SetCFDividerDrawLevel(const AValue: Integer);
-begin
-  FFoldedLinesView.CFDividerDrawLevel := AValue;
-end;
-
-function TCustomSynEdit.GetCFDividerDrawLevel : Integer;
-begin
-  Result := FFoldedLinesView.CFDividerDrawLevel;
-end;
-
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
 begin
   CaretXY:=LogicalToPhysicalPos(NewLogCaretXY);
@@ -2791,7 +2777,8 @@ var
   colEditorBG: TColor;
     // painting the background and the text
   rcLine, rcToken: TRect;
-  CurLine: integer;         // line index for the loop
+  CurLine: integer;         // Screen-line index for the loop
+  CurTextIndex: Integer;    // Current Index in text
   CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
   TokenAccu: record
     Len, MaxLen: integer;
@@ -3314,6 +3301,7 @@ var
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
       inc(CurLine);
+      CurTextIndex := FFoldedLinesView.TextIndex[CurLine];
       FTextDrawer.FrameStartX := -1;
       FTextDrawer.FrameEndX := -1;
       LastFSX := -1;
@@ -3340,44 +3328,22 @@ var
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
-        {$IFDEF DEBUGSYNRANGE}
-        if (FFoldedLinesView.Ranges[CurLine] = nil) or
-           (FFoldedLinesView.Ranges[CurLine] = NullRange) then begin
-          debugln(['>>>> SynEdit Highlight-Ranges Error <<<< ',
-                   ' AClip =', dbgs(AClip),
-                   ' FirstLine=', FirstLine,' LastLine=',Lastline,
-                   ' CurLine=',CurLine,
-                   ' FirstCol=',FirstCol, ' LastCol=',LastCol,
-                   ' CanvasRect=',dbgs(Canvas.ClipRect)]);
-          debugln([' Topline=', FTopLine, ' LineCount=', FLines.Count,
-                   ' FoldedTopLine=', FFoldedLinesView.TopLine,
-                   ' foldedCount=', FFoldedLinesView.Count,
-                   ' TextHeight=', FTextHeight,
-                   ' Range=', PtrInt(FFoldedLinesView.Ranges[CurLine])
-                 ]);
-          DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
-        end
-        else begin
-        {$ENDIF}
-          fHighlighter.StartAtLineIndex(FFoldedLinesView.ScreenLineToTextIndex(CurLine));
-          // Try to concatenate as many tokens as possible to minimize the count
-          // of ExtTextOut calls necessary. This depends on the selection state
-          // or the line having special colors. For spaces the foreground color
-          // is ignored as well.
-          //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
-          while not fHighlighter.GetEol do begin
-            fHighlighter.GetTokenEx(sToken,nTokenLen);
-            attr := fHighlighter.GetTokenAttribute;
-            // Add Markup to the token and append it to the TokenAccu
-            // record. This will paint any chars already stored if there is
-            // a (visible) change in the attributes.
-            DrawHiLightMarkupToken(attr,sToken,nTokenLen);
-            // Let the highlighter scan the next token.
-            fHighlighter.Next;
-          end;
-        {$IFDEF DEBUGSYNRANGE}
+        fHighlighter.StartAtLineIndex(CurTextIndex);
+        // Try to concatenate as many tokens as possible to minimize the count
+        // of ExtTextOut calls necessary. This depends on the selection state
+        // or the line having special colors. For spaces the foreground color
+        // is ignored as well.
+        //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
+        while not fHighlighter.GetEol do begin
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          attr := fHighlighter.GetTokenAttribute;
+          // Add Markup to the token and append it to the TokenAccu
+          // record. This will paint any chars already stored if there is
+          // a (visible) change in the attributes.
+          DrawHiLightMarkupToken(attr,sToken,nTokenLen);
+          // Let the highlighter scan the next token.
+          fHighlighter.Next;
         end;
-        {$ENDIF}
       end;
       // Draw anything that's left in the TokenAccu record. Fill to the end
       // of the invalid area with the correct colors.
@@ -3385,13 +3351,15 @@ var
 
       fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
 
-      // codefold draw splitter line
-      if assigned(Gutter.CodeFoldPart) and  Gutter.CodeFoldPart.Visible
-         and (FFoldedLinesView.DrawDivider[curLine]) then
-      begin
-        ypos := rcToken.Bottom - 1;
-        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth - 1, ypos);
+      // draw splitter line
+      if Assigned(fHighlighter) then begin
+        fHighlighter.DrawDividerLevel := FDividerDrawLevel;
+        if (fHighlighter.DrawDivider[CurTextIndex]) then
+        begin
+          ypos := rcToken.Bottom - 1;
+          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+          LCLIntf.LineTo(dc, fGutterWidth - 1, ypos);
+        end;
       end;
     end;
     CurLine:=-1;
@@ -4461,15 +4429,6 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.ListScanRanges(Sender: TObject);
-{$IFNDEF SYN_LAZARUS}
-var
-  i: integer;
-{$ENDIF}
-begin
-  ScanFrom(0,FTheLinesView.Count-1);
-end;
-
 {$IFDEF SYN_MBCSSUPPORT}
 type
   TStringType = (stNone, stHalfNumAlpha, stHalfSymbol, stHalfKatakana,
@@ -4967,6 +4926,12 @@ begin
     Result := fUndoList;
 end;
 
+procedure TCustomSynEdit.SetDividerDrawLevel(const AValue: Integer);
+begin
+  FDividerDrawLevel := AValue;
+  Invalidate;
+end;
+
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
 begin
   with TSynEditStringList(fLines) do
@@ -5288,6 +5253,9 @@ begin
   if Operation = opRemove then begin
     if AComponent = fHighlighter then begin
       fHighlighter := nil;
+      if assigned(FLines.Ranges) then
+        FLines.Ranges.Free;
+      FLines.Ranges := nil;
       fMarkupHighCaret.Highlighter := nil;
       fMarkupWordGroup.Highlighter := nil;
       FFoldedLinesView.Highlighter := nil;
@@ -5309,9 +5277,10 @@ end;
 
 procedure TCustomSynEdit.RemoveHooksFromHighlighter;
 begin
-  if Assigned(fHighlighter) then
-    fHighlighter.UnhookAttrChangeEvent
-    ({$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+  if not Assigned(fHighlighter) then
+    exit;
+  fHighlighter.UnhookAttrChangeEvent({$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+  fHighlighter.DetachFromLines(FLines);
 end;
 
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
@@ -5322,6 +5291,7 @@ begin
       Value.HookAttrChangeEvent(
         {$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
       Value.FreeNotification(Self);
+      Value.AttachToLines(FLines);
     end;
     fHighlighter := Value;
     // Ensure to free all copies in SynEit.Notification too
@@ -5338,7 +5308,7 @@ begin
     RecalcCharExtent;
     FTheLinesView.BeginUpdate;
     try
-      ListScanRanges(Self);
+      ScanFrom(0,FTheLinesView.Count-1);
     finally
       FTheLinesView.EndUpdate;
     end;

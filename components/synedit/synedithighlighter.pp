@@ -59,6 +59,18 @@ type
   {$ENDIF}
   end;
 
+  { TSynHighlighterRangeList }
+
+  TSynHighlighterRangeList = class(TSynEditStorageMem)
+  private
+    function GetRange(Index: Integer): Pointer;
+    procedure SetRange(Index: Integer; const AValue: Pointer);
+  protected
+    function ItemSize: Integer; override;
+  public
+    property Range[Index: Integer]: Pointer read GetRange write SetRange; default;
+  end;
+
   { TSynHighlighterAttributes }
 
   TSynHighlighterAttributes = class(TPersistent)
@@ -154,11 +166,15 @@ type
     {$IFDEF SYN_LAZARUS}
     FCapabilities: TSynHighlighterCapabilities;
     FCurrentLines: TSynEditStrings;
+    FCurrentRanges: TSynHighlighterRangeList;
+    FDrawDividerLevel: Integer;
     FLineIndex: Integer;
     {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
+    procedure SetCurrentLines(const AValue: TSynEditStrings);
+    procedure SetDrawDividerLevel(const AValue: Integer);
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
     fDefaultFilter: string;
@@ -177,8 +193,12 @@ type
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
+    function CreateRangeList: TSynHighlighterRangeList; virtual;
+    function UpdateRangeInfoAtLine(Index: Integer): Boolean; virtual; // Returns true if range changed
     // code fold - only valid if hcCodeFolding in Capabilities
     property  LineIndex: Integer read FLineIndex;
+    property CurrentRanges: TSynHighlighterRangeList read FCurrentRanges;
+    function GetDrawDivider(Index: integer): Boolean; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -194,6 +214,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure AttachToLines(Lines: TSynEditStrings);
+    procedure DetachFromLines(Lines: TSynEditStrings);
   public
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
@@ -206,13 +228,21 @@ type
     procedure Next; virtual; abstract;
     procedure NextToEol;
 
+    property DrawDivider[Index: integer]: Boolean read GetDrawDivider;
+    property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel;
+  public
+    property CurrentLines: TSynEditStrings read FCurrentLines write SetCurrentLines;
+
+    procedure StartAtLineIndex(LineNumber:Integer); virtual; // 0 based
+    procedure ContinueNextLine; // To be called at EOL; does not read the range
+
+    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual;
-    procedure StartAtLineIndex(LineNumber:Integer); // 0 based
-    procedure ContinueNextLine; // To be called at EOL; does not read the range
+
   public
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
@@ -225,13 +255,6 @@ type
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
-    property CurrentLines: TSynEditStrings read FCurrentLines write FCurrentLines;
-
-    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer;
-    (* Methds for folding *)
-    function MinimumCodeFoldBlockLevel: integer; virtual;
-    function CurrentCodeFoldBlockLevel: integer; virtual;
-    function LastLineCodeFoldLevelFix: integer; virtual;
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
@@ -833,6 +856,18 @@ begin
   end;
 end;
 
+procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStrings);
+begin
+  Lines.Ranges := CreateRangeList;
+end;
+
+procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStrings);
+begin
+  if assigned(Lines.Ranges) then
+    Lines.Ranges.Free;
+  Lines.Ranges := nil;
+end;
+
 procedure TSynCustomHighlighter.FreeHighlighterAttributes;
 var
   i: integer;
@@ -1067,7 +1102,7 @@ begin
   if LineNumber = 0 then
     ResetRange
   else
-    SetRange(CurrentLines.Ranges[LineNumber - 1]);
+    SetRange(FCurrentRanges[LineNumber - 1]);
   SetLine(CurrentLines[LineNumber], LineNumber);
 end;
 
@@ -1106,9 +1141,24 @@ procedure TSynCustomHighlighter.SetSampleSource(Value: string);
 begin
 end;
 
+function TSynCustomHighlighter.CreateRangeList: TSynHighlighterRangeList;
+begin
+  Result := TSynHighlighterRangeList.Create;
+end;
+
 procedure TSynCustomHighlighter.UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
 begin
   fAttrChangeHooks.Remove(ANotifyEvent);
+end;
+
+function TSynCustomHighlighter.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+var
+  r: Pointer;
+begin
+  r := GetRange;
+  Result := r <> FCurrentRanges[Index];
+  if Result then
+    FCurrentRanges[Index] := r;
 end;
 
 function TSynCustomHighlighter.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
@@ -1119,21 +1169,15 @@ begin
   c := CurrentLines.Count;
   StartAtLineIndex(Result);
   NextToEol;
-  while (GetRange <> CurrentLines.Ranges[Result]) or
+  while UpdateRangeInfoAtLine(Result) or
         (Result <= AtLeastTilIndex+1)
   do begin
-    CurrentLines.Ranges[Result] := GetRange;
     inc(Result);
     if Result = c then
       break;
     ContinueNextLine;
     NextToEol;
   end;
-end;
-
-function TSynCustomHighlighter.MinimumCodeFoldBlockLevel: integer;
-begin
-  Result := 0;
 end;
 
 procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
@@ -1148,14 +1192,41 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.LastLineCodeFoldLevelFix: integer;
+procedure TSynCustomHighlighter.SetCurrentLines(const AValue: TSynEditStrings);
 begin
-  Result := 0;
+  if AValue = FCurrentLines then
+    exit;
+  FCurrentLines := AValue;
+  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges);
 end;
 
-function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
+procedure TSynCustomHighlighter.SetDrawDividerLevel(const AValue: Integer);
 begin
-  Result := 0;
+  if FDrawDividerLevel = AValue then exit;
+  FDrawDividerLevel := AValue;
+  //DefHighlightChange(Self);
+end;
+
+function TSynCustomHighlighter.GetDrawDivider(Index: integer): Boolean;
+begin
+  result := false;
+end;
+
+{ TSynHighlighterRangeList }
+
+function TSynHighlighterRangeList.GetRange(Index: Integer): Pointer;
+begin
+  Result := Pointer(ItemPointer[Index]^);
+end;
+
+procedure TSynHighlighterRangeList.SetRange(Index: Integer; const AValue: Pointer);
+begin
+  Pointer(ItemPointer[Index]^) := AValue;
+end;
+
+function TSynHighlighterRangeList.ItemSize: Integer;
+begin
+  Result := SizeOf(Pointer);
 end;
 
 initialization
