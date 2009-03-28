@@ -2086,6 +2086,20 @@ examples/cursors/project1.lpr svneol=native#text/pascal
 examples/cursors/unit1.lfm svneol=native#text/plain
 examples/cursors/unit1.lrs svneol=native#text/pascal
 examples/cursors/unit1.pas svneol=native#text/pascal
+examples/database/dblookup/data/lookerup.dbf -text
+examples/database/dblookup/data/lookerup.mbf -text
+examples/database/dblookup/data/months.dbf -text
+examples/database/dblookup/data/months.mbf -text
+examples/database/dblookup/project1.ico -text svneol=unset#image/ico
+examples/database/dblookup/project1.lpi svneol=native#text/plain
+examples/database/dblookup/project1.lpr svneol=native#text/plain
+examples/database/dblookup/project1.lrs svneol=native#text/plain
+examples/database/dblookup/project1.manifest svneol=native#text/plain
+examples/database/dblookup/project1.rc svneol=native#text/plain
+examples/database/dblookup/readme.txt svneol=native#text/plain
+examples/database/dblookup/unit1.lfm svneol=native#text/plain
+examples/database/dblookup/unit1.lrs svneol=native#text/plain
+examples/database/dblookup/unit1.pas svneol=native#text/plain
 examples/designerbaseclass/README.txt svneol=native#text/plain
 examples/designerbaseclass/customcomponentclass.pas svneol=native#text/plain
 examples/designerbaseclass/designbaseclassdemopkg.lpk svneol=native#text/plain
