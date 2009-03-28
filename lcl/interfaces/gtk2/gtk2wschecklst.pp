@@ -171,7 +171,8 @@ begin
   gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), True);
 
   SignalConnect(PGtkWidget(renderer), 'toggled', @Gtk2WS_CheckListBoxToggle, WidgetInfo);
-  SignalConnect(TreeViewWidget, 'row_activated', @Gtk2WS_CheckListBoxRowActivate, WidgetInfo);
+  // don't toggle on double-click
+  //SignalConnect(TreeViewWidget, 'row_activated', @Gtk2WS_CheckListBoxRowActivate, WidgetInfo);
 
   //g_signal_connect (renderer, 'toggled', G_CALLBACK (@gtk_clb_toggle), AWinControl);
   //g_signal_connect (TreeViewWidget, 'row_activated', G_CALLBACK (@gtk_clb_toggle_row_activated), AWinControl);
