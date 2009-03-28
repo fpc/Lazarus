@@ -5723,17 +5723,17 @@ begin
             (CaretXY, CaretNew, Command in [ecSelPageBottom, ecColSelPageBottom]);
           Update;
         end;
-      ecEditorTop, ecSelEditorTop, ecColSelEditorTop:
+      ecEditorTop, ecSelEditorTop:
         begin
           {$IFDEF SYN_LAZARUS}
           MoveCaretAndSelectionPhysical
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (CaretXY, Point(1, 1), Command in [ecSelEditorTop, ecColSelEditorTop]);
+            (CaretXY, Point(1, 1), Command in [ecSelEditorTop]);
           Update;
         end;
-      ecEditorBottom, ecSelEditorBottom, ecColSelEditorBottom:
+      ecEditorBottom, ecSelEditorBottom:
         begin
           {$IFDEF SYN_LAZARUS}
           CaretNew := Point(1, FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1);
@@ -5748,9 +5748,21 @@ begin
             {$ELSE}
             CaretXY,
             {$ENDIF}
-            CaretNew, Command in [ecSelEditorBottom, ecColSelEditorBottom]);
+            CaretNew, Command in [ecSelEditorBottom]);
           Update;
         end;
+      ecColSelEditorTop:
+        begin
+          MoveCaretAndSelectionPhysical(CaretXY, Point(CaretX, 1), true);
+          Update;
+        end;
+      ecColSelEditorBottom:
+        begin
+          CaretNew := Point(CaretX, FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1);
+          MoveCaretAndSelectionPhysical(CaretXY, CaretNew, true);
+          Update;
+        end;
+        
 // goto special line / column position
       ecGotoXY, ecSelGotoXY:
         if Assigned(Data) then begin
