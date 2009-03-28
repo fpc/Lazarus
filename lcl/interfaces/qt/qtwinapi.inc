@@ -2756,9 +2756,15 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
   function GetPaletteColor(Palette: QPaletteH; Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
   var
     QColor : PQColor;
+    QC: QColorH;
   begin
     QColor:=QPalette_color(Palette, Group, Role);
-    Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
+    QC := QColor_create(QColor);
+    try
+      Result:=(QColor_red(QC) and $00FF) or ((QColor_green(QC) and $00FF) shl 8) or ((QColor_blue(QC) and $00FF) shl 16);
+    finally
+      QColor_destroy(QC);
+    end;
   end;
 
   function GetClInfo(Bk: Boolean): TColor;
