@@ -58,6 +58,10 @@ fields:
 
 }
 
+{$IF (FPC_VERSION = 2) AND (FPC_RELEASE = 2) AND (FPC_PATCH <= 2)}
+  {$DEFINE HAS_NOT_FIRSTKEYBYVALUE}
+{$ENDIF}
+
 constructor TDBLookup.Create(AOwner: TComponent);
 begin
   inherited;
@@ -280,6 +284,10 @@ begin
 end;
 
 procedure TDBLookup.UpdateData(const AListFieldValue: string);
+{$IFDEF HAS_NOT_FIRSTKEYBYVALUE}
+begin
+end;
+{$ELSE}
 var
   I: Integer;
   TmpActive: Boolean;
@@ -323,3 +331,4 @@ begin
       FListLink.DataSet.Active := False;
   end;
 end;
+{$ENDIF}
