@@ -39,7 +39,7 @@ end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
 begin
-  FDataLink.Field.AsString:= FLookup.KeyFieldValueOf(Text);
+  FLookup.UpdateData(Text);
 end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
@@ -52,10 +52,7 @@ end;
 
 procedure TDBLookupComboBox.UpdateText;
 begin
-  if Assigned(FDataLink.Field) then
-    Text:= FLookup.ListFieldValueOf(FDataLink.Field.AsString)
-  else
-    inherited UpdateText;
+  Text:= FLookup.ListFieldValue;
 end;
 
 function TDBLookupComboBox.GetKeyField: string;
@@ -78,6 +75,11 @@ begin
   Result := FLookup.ListSource;
 end;
 
+function TDBLookupComboBox.GetLookupCache: boolean;
+begin
+  Result := FLookup.LookupCache;
+end;
+
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
@@ -96,5 +98,10 @@ end;
 procedure TDBLookupComboBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
+end;
+
+procedure TDBLookupComboBox.SetLookupCache(const Value: boolean);
+begin
+  FLookup.LookupCache := Value;
 end;
 

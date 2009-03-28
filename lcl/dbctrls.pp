@@ -132,28 +132,32 @@ Type
     FHasLookUpField: Boolean;
     FListLink: TFieldDataLink;
     FListSource: TDataSource;
-    FKeyFieldName: string;
-    FKeyFieldValue: string;
+    FDataFieldNames: string;
+    FKeyFieldNames: string;
     FListFieldName: string;
-    FListFieldValue: string;
     FListFieldIndex: Integer;
-    FKeyField: TField;
-    FListField: TField;
-    procedure ActiveChange(Sender: TObject);
+    FLookUpFieldIsCached: Boolean;
+    FDataFields: TList;  // Data Fields to lookup/edit
+    FKeyFields: TList;   // Keyfields in lookup dataset
+    FListField: TField;  // Result field in lookup dataset
+    FLookupCache: boolean;
+    FLookupList: TLookupList;
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
-    procedure LinkGetBookMark;
-    procedure LinkGotoBookMark;
     function GetKeyFieldName: string;
     function GetListSource: TDataSource;
+    procedure LinkGetBookMark;
+    procedure LinkGotoBookMark;
     procedure SetKeyFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
+    procedure SetLookupCache(const Value: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
-    function KeyFieldValueOf(const AListFieldValue: string): string;
-    function ListFieldValueOf(const AKeyFieldValue: string): string;
+    function ListFieldValue: string;
+    procedure UpdateData(const AListFieldValue: string);
+    property LookupCache: boolean read FLookupCache  write SetLookupCache;
     // properties to be published by owner control
     // these are not used where data control Field is dbLookup
     property KeyField: string read GetKeyFieldName write SetKeyFieldName;
@@ -407,10 +411,12 @@ Type
     function GetListField: string;
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
+    function GetLookupCache: boolean;
     procedure SetKeyField(const Value: string);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
+    procedure SetLookupCache(const Value: boolean);
   protected
     procedure DataChange(Sender: TObject); override;
     procedure Loaded; override;
@@ -432,6 +438,7 @@ Type
     property ListField: string read GetListField write SetListField;
     property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
     property ListSource: TDataSource read GetListSource write SetListSource;
+    property LookupCache: boolean read GetLookupCache  write SetLookupCache;
 //    property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -709,10 +716,12 @@ Type
     function GetListField: string;
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
+    function GetLookupCache: boolean;
     procedure SetKeyField(const Value: string);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
+    procedure SetLookupCache(const Value: boolean);
   protected
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
@@ -740,6 +749,7 @@ Type
     property ListField: string read GetListField write SetListField;
     property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
     property ListSource: TDataSource read GetListSource write SetListSource;
+    property LookupCache: boolean read GetLookupCache  write SetLookupCache;
 //    property MaxLength default -1;
     property OnChange;
     property OnChangeBounds;

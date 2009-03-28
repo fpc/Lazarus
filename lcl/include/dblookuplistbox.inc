@@ -41,7 +41,7 @@ procedure TDBLookupListBox.UpdateData(Sender: TObject);
 begin
   if (ItemIndex < 0) then
     Exit;
-  FDataLink.Field.AsString:= FLookup.KeyFieldValueOf(Items[ItemIndex]);
+  FLookup.UpdateData(Items[ItemIndex]);
 end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
@@ -56,10 +56,7 @@ end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
 begin
-  if Assigned(FDataLink.Field) then
-    ItemIndex:= Items.IndexOf(FLookup.ListFieldValueOf(FDataLink.Field.AsString))
-  else
-    ItemIndex:= -1;
+  ItemIndex:= Items.IndexOf(FLookup.ListFieldValue);
 end;
 
 function TDBLookupListBox.GetKeyField: string;
@@ -82,6 +79,11 @@ begin
   Result := FLookup.ListSource;
 end;
 
+function TDBLookupListBox.GetLookupCache: boolean;
+begin
+  Result := FLookup.LookupCache;
+end;
+
 procedure TDBLookupListBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
@@ -100,5 +102,10 @@ end;
 procedure TDBLookupListBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
+end;
+
+procedure TDBLookupListBox.SetLookupCache(const Value: boolean);
+begin
+  FLookup.LookupCache := Value;
 end;
 
