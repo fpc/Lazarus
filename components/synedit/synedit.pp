@@ -7432,16 +7432,16 @@ procedure TCustomSynEdit.MoveCaretAndSelection(
 // ptBefore and ptAfter are logical (byte)
 begin
   IncPaintLock;
+  FInternalCaret.AllowPastEOL := FCaret.AllowPastEOL;
+  FInternalCaret.LineBytePos := ptAfter;
+
   if SelectionCommand then begin
     if not SelAvail then SetBlockBegin(ptBefore);
-    SetBlockEnd(ptAfter);
-    {$IFDEF SYN_LAZARUS}
+    SetBlockEnd(FInternalCaret.LineBytePos);
     AquirePrimarySelection;
-    {$ENDIF}
   end else
-    SetBlockBegin(ptAfter);
-  CaretXY := {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(ptAfter)
-             {$ELSE}ptAfter{$ENDIF};
+    SetBlockBegin(FInternalCaret.LineBytePos);
+  CaretXY := FInternalCaret.LineCharPos;
   DecPaintLock;
 end;
 
