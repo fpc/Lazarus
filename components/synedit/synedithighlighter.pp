@@ -163,13 +163,12 @@ type
   private
     fAttributes: TStringList;
     fAttrChangeHooks: TSynNotifyEventChain;
-    {$IFDEF SYN_LAZARUS}
     FCapabilities: TSynHighlighterCapabilities;
     FCurrentLines: TSynEditStrings;
     FCurrentRanges: TSynHighlighterRangeList;
     FDrawDividerLevel: Integer;
     FLineIndex: Integer;
-    {$ENDIF}
+    FLineText: String;
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
@@ -1103,7 +1102,9 @@ begin
     ResetRange
   else
     SetRange(FCurrentRanges[LineNumber - 1]);
-  SetLine(CurrentLines[LineNumber], LineNumber);
+  // Keep a copy of the line text, since some highlighters just use a PChar pointer to it.
+  FLineText := CurrentLines[LineNumber];
+  SetLine(FLineText, LineNumber);
 end;
 
 procedure TSynCustomHighlighter.ResetRange;
