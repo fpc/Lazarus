@@ -65,7 +65,6 @@ type
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
@@ -273,37 +272,6 @@ begin
                end;
   else
     Result := TGtkWSWinControl{(ClassParent)}.GetText(AWinControl, AText);
-  end;
-end;
-
-class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
-  const AText: string);
-var
-  P : Pointer;
-  TextBuf: PGtkTextBuffer;
-  StartIter: TGtkTextIter;
-  pLabel: pchar;
-begin
-  P := Pointer(AWinControl.Handle);
-  
-  pLabel := pchar(AText);
-  
-  case AWinControl.fCompStyle of
-    csMemo        : begin
-                    TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo(P, True)^.CoreWidget));
-                    gtk_text_buffer_set_text(TextBuf, plabel, -1);
-                    gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
-                    gtk_text_buffer_place_cursor(TextBuf, @StartIter);
-                    //debugln('TGtkWSWinControl.SetText A ',dbgs(gtk_text_get_length(PGtkText(P))),' AText="',AText,'"');
-                    //gtk_text_freeze(PGtkText(P));
-                    //gtk_text_set_point(PGtkText(P), 0);
-                    //gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
-                    //gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
-                    //gtk_text_thaw(PGtkText(P));
-                    //debugln('TGtkWSWinControl.SetText B ',dbgs(gtk_text_get_length(PGtkText(P))));
-                  end;
-  else
-    TGtkWSWinControl{(ClassParent)}.SetText(AWinControl, AText);
   end;
 end;
 

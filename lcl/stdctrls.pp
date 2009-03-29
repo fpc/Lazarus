@@ -688,6 +688,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure TextChanged; override;
     procedure Change; dynamic;
     procedure DoEnter; override;

@@ -21,10 +21,11 @@ type
     constructor Create(TextView : PGtkTextView; TheOwner: TWinControl);
     destructor Destroy; override;
     procedure Assign(Source : TPersistent); override;
+    procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
+    procedure SetTextStr(const Value: string); override;
     //procedure Sort; virtual;
     procedure QueueCursorMove(APosition: Integer);
   public
@@ -126,18 +127,30 @@ begin
 end;
 
 procedure TGtk2MemoStrings.Assign(Source: TPersistent);
+var
+  S: TStrings absolute Source;
 begin
-  if (Source=Self) or (Source=nil) then exit;
-  if Source is TStrings then begin
-    gtk_text_buffer_set_text(FGtkBuf, PChar(TStrings(Source).Text), -1);
-    exit;
-  end;
-  Inherited Assign(Source);
+  if Source is TStrings then
+  begin
+    // to prevent Clear and then SetText we need to use our own Assign
+    QuoteChar := S.QuoteChar;
+    Delimiter := S.Delimiter;
+    NameValueSeparator := S.NameValueSeparator;
+    TextLineBreakStyle := S.TextLineBreakStyle;
+    Text := S.Text;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TGtk2MemoStrings.AddStrings(TheStrings: TStrings);
+begin
+  SetTextStr(GetTextStr + TStrings(TheStrings).Text);
 end;
 
 procedure TGtk2MemoStrings.Clear;
 begin
-  gtk_text_buffer_set_text(FGtkBuf, PChar(''), -1);
+  SetText('');
 end;
 
 procedure TGtk2MemoStrings.Delete(Index: integer);
@@ -188,9 +201,13 @@ begin
   gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
 end;
 
-procedure TGtk2MemoStrings.SetText(TheText: PChar);
+procedure TGtk2MemoStrings.SetTextStr(const Value: string);
 begin
-  gtk_text_buffer_set_text(FGtkBuf, TheText, -1);
+  if (Value <> Text) then
+  begin
+    LockOnChange(PGtkObject(Owner.Handle), 1);
+    gtk_text_buffer_set_text(FGtkBuf, PChar(Value), -1);
+  end;
 end;
 
 procedure TGtk2MemoStrings.QueueCursorMove(APosition: Integer);

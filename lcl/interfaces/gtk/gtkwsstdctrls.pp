@@ -155,6 +155,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -1248,6 +1249,14 @@ class procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
 begin
   WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle),true)^.CoreWidget,
                      NewLength);
+end;
+
+class procedure TGtkWSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    Exit;
+  gtk_entry_set_text(PGtkEntry(AWinControl.Handle), PChar(AText));
 end;
 
 class procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;

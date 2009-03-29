@@ -2,18 +2,23 @@
 
 { Callbacks }
 
-procedure Gtk2WS_MemoChanged( AGtkTextBuffer: PGtkTextBuffer; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_MemoChanged(AGtkTextBuffer: PGtkTextBuffer; WidgetInfo: PWidgetInfo); cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMessage;
 begin
   EventTrace('Gtk2WS_MemoChanged', WidgetInfo^.LCLObject);
+  if WidgetInfo^.ChangeLock > 0 then
+  begin
+    Dec(WidgetInfo^.ChangeLock);
+    Exit;
+  end;
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
-procedure Gtk2WS_MemoCutToClip( widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_MemoCutToClip(widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMessage;
 begin
   EventTrace('Gtk2WS_MemoCutToClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
@@ -21,9 +26,9 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
-procedure Gtk2WS_MemoCopyToClip( widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_MemoCopyToClip(widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMessage;
 begin
   EventTrace('Gtk2WS_MemoCopyToClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
@@ -31,9 +36,9 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
-procedure Gtk2WS_MemoPasteFromClip( widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_MemoPasteFromClip(widget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMessage;
 begin
   EventTrace('Gtk2WS_MemoPasteFromClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
@@ -124,7 +129,8 @@ begin
   SetMainWidget(Widget, TempWidget);
   GetWidgetInfo(Widget, True)^.CoreWidget := TempWidget;
 
-  gtk_text_view_set_editable (PGtkTextView(TempWidget), not TCustomMemo(AWinControl).ReadOnly);
+  gtk_text_buffer_set_text(gtk_text_view_get_buffer(PGtkTextView(TempWidget)), PChar(TCustomMemo(AWinControl).Text), -1);
+  gtk_text_view_set_editable(PGtkTextView(TempWidget), not TCustomMemo(AWinControl).ReadOnly);
   gtk_text_view_set_justification(PGtkTextView(TempWidget), aGtkJustification[TCustomMemo(AWinControl).Alignment]);
   if TCustomMemo(AWinControl).WordWrap then
     gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_WORD)
@@ -272,6 +278,20 @@ begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
   if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
     gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
+end;
+
+class procedure TGtk2WSCustomMemo.SetText(const AWinControl: TWinControl;
+  const AText: string);
+var
+  TextBuf: PGtkTextBuffer;
+  StartIter: TGtkTextIter;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    Exit;
+  TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo(Pointer(AWinControl.Handle), True)^.CoreWidget));
+  gtk_text_buffer_set_text(TextBuf, PChar(AText), -1);
+  gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
+  gtk_text_buffer_place_cursor(TextBuf, @StartIter);
 end;
 
 class procedure TGtk2WSCustomMemo.GetPreferredSize(
