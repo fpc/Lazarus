@@ -2209,13 +2209,16 @@ begin
       if (QApplication_mouseButtons and QtXButton2) > 0 then
         Result := Result or StateDown;
     VK_MENU:
-      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
+      if (QApplication_keyboardModifiers and QtAltModifier) > 0 then
         Result := Result or StateDown;
     VK_SHIFT:
       if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
         Result := Result or StateDown;
     VK_CONTROL:
       if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
+        Result := Result or StateDown;
+    VK_LWIN, VK_RWIN:
+      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
         Result := Result or StateDown;
    {$ifdef VerboseQtWinAPI}
     else

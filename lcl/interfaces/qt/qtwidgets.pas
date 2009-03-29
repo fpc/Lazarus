@@ -2314,6 +2314,8 @@ begin
     Result := Result or MK_SHIFT;
   if AModifiers and qtControlModifier <> 0 then
     Result := Result or MK_CONTROL;
+  if AModifiers and qtAltModifier <> 0 then
+    Result := Result or $20000000;
   { TODO: add support for ALT, META and NUMKEYPAD }
 end;
 
@@ -2372,6 +2374,8 @@ begin
     Msg.State := [ssShift];
   if (ModifierState and MK_CONTROL) <> 0 then
     Msg.State := [ssCtrl] + Msg.State;
+  if (ModifierState and $20000000) <> 0 then
+    Msg.State := [ssAlt] + Msg.State;
 
   LastMouse.Widget := Sender;
   LastMouse.MousePos := MousePos;
@@ -3176,7 +3180,9 @@ begin
     QtKey_Help: Result := VK_HELP;
     QtKey_Direction_L,
     QtKey_Direction_R,
-    QtKey_Exclam..
+    QtKey_Exclam,QtKey_NumberSign..
+    QtKey_AmperSand,
+    QtKey_ParenLeft,
     QtKey_ParenRight: Result := VK_UNKNOWN;
     QtKey_Asterisk: Result := VK_MULTIPLY;
     QtKey_Plus: Result := VK_ADD;
@@ -3184,7 +3190,20 @@ begin
     QtKey_Minus: Result := VK_SUBTRACT;
     QtKey_Period: Result := VK_DECIMAL;
     QtKey_Slash: Result := VK_DIVIDE;
-    QtKey_BracketLeft..
+
+    QtKey_Colon,
+    QtKey_Semicolon: Result := VK_OEM_1;
+    QtKey_AsciiTilde: Result := VK_OEM_3;
+    QtKey_BraceLeft,
+    QtKey_BracketLeft: Result := VK_OEM_4;
+    QtKey_BackSlash: Result := VK_OEM_5;
+    QtKey_BraceRight,
+    QtKey_BracketRight: Result := VK_OEM_6;
+    QtKey_QuoteDbl,
+    QtKey_Apostrophe: Result := VK_OEM_7;
+    QtKey_Less: Result := VK_OEM_COMMA;
+    QtKey_Greater: Result := VK_OEM_PERIOD;
+
     QtKey_ydiaeresis,
     QtKey_Multi_key..
     QtKey_No: Result := VK_UNKNOWN;
