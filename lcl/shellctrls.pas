@@ -505,10 +505,11 @@ begin
 end;
 
 procedure TCustomShellListView.PopulateWithRoot();
-var
+{var
   i: Integer;
   Files: TStringList;
   NewItem: TListItem;
+}
 begin
 {  Files := TStringList.Create;
   try
