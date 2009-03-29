@@ -200,7 +200,7 @@ end;
 {------------------------------------------------------------------------------
        TApplication Messagebox
 ------------------------------------------------------------------------------}
-function TApplication.MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
+function TApplication.MessageBox(Text, Caption: PChar; Flags: Longint) : Integer;
 begin
   if Assigned(MessageBoxFunction) then
     Result:=MessageBoxFunction(Text,Caption,Flags)
@@ -988,16 +988,10 @@ end;
   Returns: title of application
  ------------------------------------------------------------------------------}
 function TApplication.GetTitle: string;
-var
-  Ext: string;
 begin
   Result := inherited Title;
-  If Result = '' then begin
-    Result := ExtractFileName(GetExeName);
-    Ext := ExtractFileExt(Result);
-    If Ext <> '' then
-      Delete(Result, Length(Result) - Length(Ext) + 1, Length(Ext));
-  end;
+  if Result = '' then
+    Result := ExtractFileNameOnly(GetExeName);
 end;
 
 procedure TApplication.FreeIconHandles;
@@ -1353,7 +1347,7 @@ var
 begin
   if AppNoExceptionMessages in FFlags then exit;
   Msg := E.Message;
-  if FindInvalidUTF8Character(pchar(Msg),length(Msg), False) > 0 then
+  if FindInvalidUTF8Character(PChar(Msg), Length(Msg), False) > 0 then
     Msg := AnsiToUtf8(Msg);
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
   if (not Terminated) and (Self <> nil) and (AppInitialized in FFlags) then
@@ -1367,9 +1361,10 @@ begin
     finally
       EnableIdleHandler;
     end;
-    if MsgResult<>mrOk then begin
-      Include(FFlags,AppNoExceptionMessages);
-      HaltingProgram:=true;
+    if MsgResult<>mrOk then
+    begin
+      Include(FFlags, AppNoExceptionMessages);
+      HaltingProgram := True;
       Halt;
     end;
   end else

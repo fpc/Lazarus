@@ -129,7 +129,7 @@ var
   CurBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
   DefaultButton : TMsgDlgBtn;
 begin
-  If (Buttons = []) or (Buttons = [mbHelp]) then
+ if (Buttons = []) or (Buttons = [mbHelp]) then
     Buttons := Buttons + [mbOk];
   CancelValue := ButtonResults[ModalEscapeValue (Buttons)];
   if UseDefButton then
@@ -138,7 +138,7 @@ begin
   DefaultIndex := 0;
   ButtonCount := 0;
   Result := nil;
-  For CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
+  for CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
     If CurBtn in Buttons then begin
       ReallocMem(Result, (ButtonCount + 1)*SizeOf(Longint));
       Result[ButtonCount] := ButtonIds[CurBtn];

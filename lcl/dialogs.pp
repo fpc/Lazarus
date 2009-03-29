@@ -547,7 +547,7 @@ begin
   RegisterComponents('Misc',[TColorButton]);
 end;
 
-function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
+function ShowMessageBox(Text, Caption: PChar; Flags: Longint) : Integer;
 var
   DlgType : TMsgDlgType;
   Buttons : TMsgDlgButtons;
