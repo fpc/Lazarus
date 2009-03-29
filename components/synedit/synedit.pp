@@ -508,7 +508,7 @@ type
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
     {$ENDIF}
-    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer;
+    function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure SelectedColorsChanged(Sender: TObject);
     procedure DoBlockSelectionChanged(Sender: TObject);
@@ -1739,7 +1739,8 @@ begin
         // rescan all lines in range
         // Note: The highlighter range of the line can be invalid as well,
         //       so start scan one line earlier
-        LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine-2,
+        dec(fHighlighterNeedsUpdateStartLine, 2);
+        LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine,
                                   fHighlighterNeedsUpdateEndLine-1);
         //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
         InvalidateLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
@@ -4322,7 +4323,7 @@ begin
   Update;
 end;
 
-function TCustomSynEdit.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
+function TCustomSynEdit.ScanFrom(var Index: integer; AtLeastTilIndex: integer): integer;
 // Index and AtLeastTilIndex are 0 based
 begin
   if Index < 0 then Index := 0;
@@ -4339,6 +4340,7 @@ begin
   fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0),
                                        Min(RowToScreenRow(Result), LinesInWindow+1));
   Topline := TopLine;
+  if Index > 0 then dec(Index);
   Dec(Result);
 end;
 
@@ -4357,7 +4359,7 @@ begin
                                         + MaX(ACount, 0)
   end
   else
-    ScanFrom(AIndex - 1, Max(AIndex, AIndex + ACount));
+    ScanFrom(AIndex, Max(AIndex, AIndex + ACount));
   if ACount > 0 then
     DoLinesInserted(AIndex + 1, ACount)
   else
@@ -5284,6 +5286,8 @@ begin
 end;
 
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
+var
+  tmp: Integer;
 begin
   if Value <> fHighlighter then begin
     RemoveHooksFromHighlighter;
@@ -5308,7 +5312,8 @@ begin
     RecalcCharExtent;
     FTheLinesView.BeginUpdate;
     try
-      ScanFrom(0,FTheLinesView.Count-1);
+      tmp := 0;
+      ScanFrom(tmp,FTheLinesView.Count-1);
     finally
       FTheLinesView.EndUpdate;
     end;
