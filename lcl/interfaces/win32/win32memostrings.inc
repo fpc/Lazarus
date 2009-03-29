@@ -20,6 +20,7 @@ type
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
@@ -139,6 +140,23 @@ begin
   inherited Destroy;
 end;
 
+procedure TWin32MemoStrings.Assign(Source: TPersistent);
+var
+  S: TStrings absolute Source;
+begin
+  if Source is TStrings then
+  begin
+    // to prevent Clear and then SetText we need to use our own Assign
+    QuoteChar := S.QuoteChar;
+    Delimiter := S.Delimiter;
+    NameValueSeparator := S.NameValueSeparator;
+    TextLineBreakStyle := S.TextLineBreakStyle;
+    Text := S.Text;
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TWin32MemoStrings.AddStrings(TheStrings: TStrings);
 begin
   SetTextStr(GetTextStr + TStrings(TheStrings).Text);
@@ -201,14 +219,22 @@ begin
 end;
 
 procedure TWin32MemoStrings.SetTextStr(const Value: string);
+var
+  Msg: TLMessage;
 begin
-{$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS
-  then Windows.SetWindowTextW(fHandle, PWideChar(UTF8ToUTF16(Value)))
-  else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(Value)));
-{$else}
-  SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
-{$endif}
+  if (Value <> Text) then
+  begin
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS
+    then Windows.SetWindowTextW(fHandle, PWideChar(UTF8ToUTF16(Value)))
+    else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(Value)));
+  {$else}
+    SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
+  {$endif}
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.Msg := CM_TEXTCHANGED;
+    DeliverMessage(Owner, Msg);
+  end;
 end;
 
 {$ENDIF}
