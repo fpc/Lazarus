@@ -101,6 +101,7 @@ type
     cfbtProgram,
     cfbtUnit,
     cfbtRecord,
+    cfbtTry,
     cfbtExcept,
     cfbtRepeat
     );
@@ -111,7 +112,7 @@ const
     Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
   PascalWordTrippletRanges: TPascalWordTrippletRanges =
     [cfbtBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
-     cfbtExcept, cfbtRepeat
+     cfbtTry, cfbtExcept, cfbtRepeat
     ];
 
 type
@@ -835,7 +836,9 @@ begin
         EndCodeFoldBlock;
       end else if TopPascalCodeFoldBlockType = cfbtExcept then begin
         EndCodeFoldBlock;
-        if TopPascalCodeFoldBlockType = cfbtBeginEnd then
+        if TopPascalCodeFoldBlockType = cfbtTry then
+          EndCodeFoldBlock;
+      end else if TopPascalCodeFoldBlockType = cfbtTry then begin
           EndCodeFoldBlock;
       end else if TopPascalCodeFoldBlockType = cfbtBeginEnd then begin
         EndCodeFoldBlock;
@@ -880,10 +883,9 @@ begin
       if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
     end else
       if KeyComp('Case') then begin
-        {$IFDEF SYN_LAZARUS}
-        if TopPascalCodeFoldBlockType=cfbtBeginEnd then
+        if TopPascalCodeFoldBlockType in
+           [cfbtBeginEnd, cfbtTry, cfbtExcept, cfbtRepeat] then
           StartPascalCodeFoldBlock(cfbtBeginEnd,true);
-        {$ENDIF}
         Result := tkKey;
       end else Result := tkIdentifier;
 end;
@@ -1081,8 +1083,9 @@ begin
   else if KeyComp('Array') then Result := tkKey
   else if KeyComp('Try') then
   begin
-    if TopPascalCodeFoldBlockType=cfbtBeginEnd then
-      StartPascalCodeFoldBlock(cfbtBeginEnd,true);
+    if TopPascalCodeFoldBlockType in
+       [cfbtBeginEnd, cfbtTry, cfbtExcept, cfbtRepeat] then
+      StartPascalCodeFoldBlock(cfbtTry,true);
     Result := tkKey;
   end
   else if KeyComp('Inline') then Result := tkKey else Result := tkIdentifier;
@@ -1162,7 +1165,8 @@ function TSynPasSyn.Func73: TtkTokenKind;
 begin
   if KeyComp('Except') then begin
     Result := tkKey;
-    StartPascalCodeFoldBlock(cfbtExcept, True);
+    if TopPascalCodeFoldBlockType = cfbtTry then
+      StartPascalCodeFoldBlock(cfbtExcept, True);
    end
    else Result := tkIdentifier;
 end;
@@ -1188,7 +1192,8 @@ function TSynPasSyn.Func79: TtkTokenKind;
 begin
   if KeyComp('Finally') then begin
     Result := tkKey;
-    StartPascalCodeFoldBlock(cfbtExcept, True);
+    if TopPascalCodeFoldBlockType = cfbtTry then
+      StartPascalCodeFoldBlock(cfbtExcept, True);
   end
   else Result := tkIdentifier;
 end;
@@ -2469,9 +2474,11 @@ end;
 
 procedure TSynPasSyn.CloseBeginEndBlocks;
 begin
-  if not(TopPascalCodeFoldBlockType in [cfbtBeginEnd, cfbtExcept, cfbtRepeat]) then
+  if not(TopPascalCodeFoldBlockType in
+         [cfbtBeginEnd, cfbtExcept, cfbtTry, cfbtRepeat]) then
     exit;
-  while TopPascalCodeFoldBlockType in [cfbtBeginEnd, cfbtExcept, cfbtRepeat] do
+  while TopPascalCodeFoldBlockType in
+        [cfbtBeginEnd, cfbtExcept, cfbtTry, cfbtRepeat] do
     EndCodeFoldBlockLastLine;
   if TopPascalCodeFoldBlockType = cfbtProcedure then
     EndCodeFoldBlockLastLine; // This procedure did have a begin/end block, so it must end too
