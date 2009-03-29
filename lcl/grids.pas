@@ -1026,6 +1026,7 @@ type
     { Exposed procs }
     procedure AutoAdjustColumns;
     procedure BeginUpdate;
+    function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     function  CellRect(ACol, ARow: Integer): TRect;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
@@ -6038,6 +6039,25 @@ end;
 procedure TCustomGrid.BeginUpdate;
 begin
   Inc(FUpdateCount);
+end;
+
+function TCustomGrid.BoxRect(ALeft, ATop, ARight, ABottom: Longint): TRect;
+begin
+  if ARight<ALeft then
+    SwapInt(ALeft, ARight);
+  if ABottom<ATop then
+    SwapInt(ATop, ABottom);
+
+  Result := CellRect(ALeft, ATop);
+  with CellRect(ARight, ABottom) do
+    Result.BottomRight := BottomRight;
+
+  with FGCache.VisibleGrid do begin
+    Result.Left:=Max(Result.Left, Left);
+    Result.Right:=Min(Result.Right, Right);
+    Result.Top:=Max(Result.Top, Top);
+    Result.Bottom:=Min(Result.Bottom,Bottom);
+  end;
 end;
 
 procedure TCustomGrid.EndUpdate(aRefresh: boolean = true);
