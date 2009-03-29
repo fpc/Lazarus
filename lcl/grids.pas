@@ -778,6 +778,7 @@ type
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); virtual;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); dynamic;
     procedure CalcFocusRect(var ARect: TRect);
     function  CanEditShow: Boolean; virtual;
@@ -1026,7 +1027,6 @@ type
     { Exposed procs }
     procedure AutoAdjustColumns;
     procedure BeginUpdate;
-    function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     function  CellRect(ACol, ARow: Integer): TRect;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
