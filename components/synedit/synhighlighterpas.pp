@@ -2332,7 +2332,7 @@ begin
   while (i < cnt) and (MinimumPasFoldLevel(i) >= lvl) do inc(i);
   // check if fold last line of block (not mixed "end begin")
   // and not lastlinefix
-  if (i < cnt) and (EndPasFoldLevel(i) > MinimumPasFoldLevel(i)) then
+  if (i = cnt) or (EndPasFoldLevel(i) > MinimumPasFoldLevel(i)) then
     dec(i);
   // Amount of lines, that will become invisible (excludes the cfCollapsed line)
   Result := i - ALineIndex;
