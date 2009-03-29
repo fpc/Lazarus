@@ -2507,8 +2507,8 @@ end;
 function TSynPasSyn.GetDrawDivider(Index: integer): Boolean;
 begin
   result := (EndFoldLevel(Index) < DrawDividerLevel) and
-            (EndFoldLevel(Index - 1) >= DrawDividerLevel) and
-            (MinimumFoldLevel(Index) = EndFoldLevel(Index)); // not amixed line
+            (EndFoldLevel(Index - 1) > MinimumFoldLevel(Index)) and
+            (MinimumFoldLevel(Index) = EndFoldLevel(Index)); // not a mixed line
 end;
 
 function TSynPasSyn.GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo;
