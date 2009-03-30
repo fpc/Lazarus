@@ -1866,11 +1866,7 @@ end;
 
 function TCustomGrid.InternalNeedBorder: boolean;
 begin
-  {$IFDEF WINDOWS}
   result := FFlat and (FGridBorderStyle = bsSingle);
-  {$ELSE}
-  result := FGridBorderStyle = bsSingle;
-  {$ENDIF}
 end;
 
 procedure TCustomGrid.InternalSetColCount(ACount: Integer);
@@ -6052,12 +6048,7 @@ begin
   with CellRect(ARight, ABottom) do
     Result.BottomRight := BottomRight;
 
-  with FGCache.VisibleGrid do begin
-    Result.Left:=Max(Result.Left, Left);
-    Result.Right:=Min(Result.Right, Right);
-    Result.Top:=Max(Result.Top, Top);
-    Result.Bottom:=Min(Result.Bottom,Bottom);
-  end;
+  IntersectRect(Result, Result, FGCache.VisibleGrid);
 end;
 
 procedure TCustomGrid.EndUpdate(aRefresh: boolean = true);
