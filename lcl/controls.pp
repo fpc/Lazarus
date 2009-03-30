@@ -2668,8 +2668,9 @@ const
   DeadCursors = 1;
 
 const
-  Cursors: array[0..21] of TIdentMapEntry = (
+  Cursors: array[0..22] of TIdentMapEntry = (
     (Value: crDefault;      Name: 'crDefault'),
+    (Value: crNone;         Name: 'crNone'),
     (Value: crArrow;        Name: 'crArrow'),
     (Value: crCross;        Name: 'crCross'),
     (Value: crIBeam;        Name: 'crIBeam'),
