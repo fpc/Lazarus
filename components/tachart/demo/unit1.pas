@@ -231,6 +231,7 @@ begin
   FLine.ShowLines := true;
   FLine.ShowPoints := true;
   FLine.Pointer.Style := psRectangle;
+  FLine.Pointer.Brush.Color := clRed;
   FLine.Title := 'line';
   FLine.SeriesColor := clRed;
   Chart1.AddSeries(FLine);
