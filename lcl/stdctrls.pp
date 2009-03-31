@@ -405,6 +405,7 @@ type
     property Color;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property DropDownCount;
     property Enabled;
@@ -831,6 +832,7 @@ type
     property Constraints;
     property CharCase;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property EchoMode;
     property Enabled;
@@ -884,6 +886,7 @@ type
     property Color;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -974,6 +977,7 @@ type
     property Color nodefault;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property FocusControl;
     property Font;
@@ -1103,6 +1107,7 @@ type
     property Constraints;
     property Default;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -1399,6 +1404,7 @@ type
     property Color;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property FocusControl;
