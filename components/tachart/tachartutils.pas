@@ -74,7 +74,7 @@ type
 
   TSeriesPointerStyle = (
     psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket);
+    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
 
   { TPenBrushFontRecall }
 

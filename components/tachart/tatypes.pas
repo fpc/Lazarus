@@ -694,8 +694,11 @@ procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor)
   end;
 
 const
-  DRAW_STRINGS: array [TSeriesPointerStyle] of String =
-    ('', '17931', '28 46', '19 73', '28 46 19 73', '', '41236', '47896');
+  DRAW_STRINGS: array [TSeriesPointerStyle] of String = (
+    //psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
+    //psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
+    '', '17931', '', '28 46', '19 73', '28 46 19 73',
+    '41236', '47896', '87412', '89632', '84268');
 begin
   ACanvas.Brush.Assign(FBrush);
   ACanvas.Pen.Assign(FPen);

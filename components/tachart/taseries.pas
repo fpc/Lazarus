@@ -442,7 +442,7 @@ end;
 
 function TChartSeries.AddXY(X, Y: Double): Longint;
 begin
-  AddXY(X, Y, '', clTAColor);
+  Result := AddXY(X, Y, '', clTAColor);
 end;
 
 procedure TChartSeries.Delete(AIndex:Integer);
