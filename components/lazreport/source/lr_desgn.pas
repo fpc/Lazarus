@@ -960,6 +960,7 @@ var
       begin
         Brush.Color := clWhite;
         Brush.Style := bsSolid;
+        Brush.Bitmap:= nil;
       end;
       
       //FillRgn(Handle, R, Brush.Handle);

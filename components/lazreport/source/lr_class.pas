@@ -1534,6 +1534,7 @@ begin
   fp := FillColor;
   if (DocMode = dmDesigning) and (fp = clNone) then
     fp := clWhite;
+  Canvas.Brush.Bitmap := nil;
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := fp;
   if DocMode = dmDesigning then
@@ -3485,6 +3486,7 @@ begin
   with Canvas do
   begin
     //Brush.Bitmap := SBmp;
+    Brush.Bitmap := nil;
     Brush.Style := bsSolid;
     Brush.Color:=clBtnFace;
     FillRect(DRect);
