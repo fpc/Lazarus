@@ -776,10 +776,8 @@ begin
 end;
 
 function TChartExtent.GetBorder(AIndex: Integer): Double;
-var
-  a: array [1..4] of Double absolute FExtent;
 begin
-  Result := a[AIndex];
+  Result := Extent.coords[AIndex];
 end;
 
 procedure TChartExtent.SetAuto(AIndex: Integer; AValue: Boolean);
@@ -789,10 +787,8 @@ begin
 end;
 
 procedure TChartExtent.SetBorder(AIndex: Integer; const AValue: Double);
-var
-  a: array [1..4] of Double absolute FExtent;
 begin
-  a[AIndex] := AValue;
+  Extent.coords[AIndex] := AValue;
   StyleChanged(Self);
 end;
 

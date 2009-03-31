@@ -50,7 +50,13 @@ type
   end;
 
   TDoubleRect = record
-    a, b: TDoublePoint;
+  case Integer of
+    0: (
+      a, b: TDoublePoint;
+    );
+    1: (
+      coords: array [1..4] of Double;
+    );
   end;
 
   TPointDistFunc = function (const A, B: TPoint): Integer;
