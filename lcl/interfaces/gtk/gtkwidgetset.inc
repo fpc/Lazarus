@@ -3911,7 +3911,6 @@ begin
     crHourGlass:CursorValue := GDK_WATCH;
     crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
     crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
-    crNo:       CursorValue := GDK_LEFT_PTR;
     crAppStart: CursorValue := GDK_LEFT_PTR;
     crHelp:     CursorValue := GDK_QUESTION_ARROW;
     crHandPoint:CursorValue := GDK_Hand1;

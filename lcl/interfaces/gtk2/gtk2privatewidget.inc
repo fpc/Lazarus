@@ -21,8 +21,8 @@ var
   Widget: PGtkWidget;
   Window: PGdkWindow;
 begin
-  Widget := AInfo^.ClientWidget;
-  if Widget = nil then Exit;
+  Widget := AInfo^.CoreWidget;
+  if (Widget = nil) or not GTK_IS_BUTTON(Widget) then Exit;
   Window := PGtkButton(Widget)^.event_window;
   if Window = nil then Exit;
   SetWindowCursor(Window, AInfo^.ControlCursor, False);
