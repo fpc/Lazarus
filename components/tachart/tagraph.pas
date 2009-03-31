@@ -52,22 +52,23 @@ type
     FTitle: String;
     FChart: TChart;
     FActive: Boolean;
+    FShowInLegend: Boolean;
 
+    procedure AfterAdd; virtual; abstract;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
     function GetLegendCount: Integer; virtual; abstract;
     function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
-    function IsInLegend: Boolean; virtual; abstract;
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
-    procedure UpdateBounds(
-      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
-    procedure AfterAdd; virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
-    procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
+    procedure UpdateBounds(
+      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure SetActive(AValue: Boolean); virtual; abstract;
+    procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
+    procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
 
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
@@ -84,6 +85,8 @@ type
     property ParentChart: TChart read FChart;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
+    property ShowInLegend: Boolean
+      read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
   end;
 
@@ -308,6 +311,19 @@ uses
 const
   MinDouble = -1.7e308;
   MaxDouble = 1.7e308;
+
+procedure Register;
+var
+  i: Integer;
+  sc: TSeriesClass;
+begin
+  RegisterComponents('Additional', [TChart]);
+  for i := 0 to SeriesClassRegistry.Count - 1 do begin
+    sc := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    RegisterClass(sc);
+    RegisterNoIcon([sc]);
+  end;
+end;
 
 procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string);
 begin
@@ -767,8 +783,9 @@ begin
     TH := ACanvas.TextHeight('I');
     h := 0;
     for i := 0 to SeriesCount - 1 do
-      if Series[i].IsInLegend then
-        Inc(h, Series[i].GetLegendCount);
+      with Series[i] do
+        if Active and ShowInLegend then
+          Inc(h, GetLegendCount);
     x1 := ARect.Right - w - 5;
     y1 := YImageMax;
     x2 := x1 + w;
@@ -783,7 +800,7 @@ begin
     r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
-        if IsInLegend then begin
+        if Active and ShowInLegend then begin
           ACanvas.Pen.Color := FLegend.Frame.Color;
           ACanvas.Brush.Assign(FGraphBrush);
           DrawLegend(ACanvas, r);
@@ -884,8 +901,9 @@ begin
     exit;
 
   for i := 0 to SeriesCount - 1 do
-    if Series[i].IsInLegend then
-      Result := Max(Series[i].GetLegendWidth(ACanvas), Result);
+    with Series[i] do
+      if Active and ShowInLegend then
+        Result := Max(GetLegendWidth(ACanvas), Result);
   if Result > 0 then
     Result += 20 + 10;
 end;
@@ -1429,19 +1447,6 @@ procedure TBasicChartSeries.UpdateMargins(
   ACanvas: TCanvas; var AMargins: TRect);
 begin
   // nothing
-end;
-
-procedure Register;
-var
-  i: Integer;
-  sc: TSeriesClass;
-begin
-  RegisterComponents('Additional', [TChart]);
-  for i := 0 to SeriesClassRegistry.Count - 1 do begin
-    sc := TSeriesClass(SeriesClassRegistry.Objects[i]);
-    RegisterClass(sc);
-    RegisterNoIcon([sc]);
-  end;
 end;
 
 { TChartSeriesList }

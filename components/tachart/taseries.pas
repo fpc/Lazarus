@@ -44,28 +44,27 @@ type
     FXGraphMax, FYGraphMax: Double;
     FCoordList: TList;
     FMarks: TChartMarks;
-    FShowInLegend: Boolean;
     FValuesTotal: Double;
     FValuesTotalValid: Boolean;
 
     function GetXMinVal: Integer;
-    procedure SetMarks(const AValue: TChartMarks);
-    procedure SetShowInLegend(Value: Boolean);
     procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
+    procedure SetMarks(const AValue: TChartMarks);
   protected
     procedure AfterAdd; override;
-    procedure StyleChanged(Sender: TObject);
-    property Coord: TList read FCoordList;
+    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
-    function IsInLegend: Boolean; override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    function GetValuesTotal: Double;
+    procedure SetActive(AValue: Boolean); override;
+    procedure SetShowInLegend(Value: Boolean); override;
+    procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double); override;
     procedure UpdateParentChart;
-    function GetValuesTotal: Double;
-    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
-    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
-    procedure SetActive(AValue: Boolean); override;
+
+    property Coord: TList read FCoordList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -75,19 +74,18 @@ type
     property XGraphMax: Double read FXGraphMax write FXGraphMax;
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
 
-    function Count: Integer; override;
+    function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual; overload;
     function AddXY(X, Y: Double): Longint; virtual; overload;
-    function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
-    procedure Delete(AIndex: Integer); virtual;
     procedure Clear;
+    function Count: Integer; override;
+    procedure Delete(AIndex: Integer); virtual;
     function FormattedMark(AIndex: integer): String;
 
   published
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
-    property ShowInLegend: Boolean
-      read FShowInLegend write SetShowInLegend default true;
+    property ShowInLegend;
     property Title;
   end;
 
@@ -394,11 +392,6 @@ begin
     Exchange(XMin, XMax);
   if YMin > YMax then
     Exchange(YMin, YMax);
-end;
-
-function TChartSeries.IsInLegend: Boolean;
-begin
-  Result := Active and ShowInLegend;
 end;
 
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
