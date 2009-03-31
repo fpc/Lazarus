@@ -26,7 +26,6 @@ type
   TDragDockCommon = class
   private
     FManager: TDragManagerDefault;
-    FDragObjectAutoFree: Boolean;
     FDragImageList: TDragImageList;
     function SendCmDragMsg(ADragObject: TDragObject; ADragMsg: TDragMessage): Boolean;
     function SendDragMessage(AControl: TControl; Msg: TDragMessage; ADragObject: TDragObject; Target: TControl; const Position: TPoint): LRESULT;
@@ -141,12 +140,8 @@ begin
 
   AControl.DoStartDrag(FDragObject);
   if FDragObject = nil then
-  begin
-    FDragObjectAutoFree := true;
-    FDragObject := TDragControlObject.Create(AControl);
-    FDragObject.FAutoCreated := True;
-  end;
-  
+    FDragObject := TDragControlObject.AutoCreate(AControl);
+
   GetCursorPos(p);
   FDragObject.DragPos := p;
   SetCaptureControl(AControl);
@@ -221,8 +216,8 @@ var
   Accepted: Boolean;
   TargetPos: TPoint;
 begin
-  ADragObjectCopy:=FDragObject;
-  if FDragObject<>nil then
+  ADragObjectCopy := FDragObject;
+  if FDragObject <> nil then
   try
     FDragObject := nil;
     SetCaptureControl(nil);
@@ -258,7 +253,7 @@ begin
 
   finally
     //erase global variables (dragging stopped)
-    if FDragObjectAutoFree then
+    if ADragObjectCopy.AutoCreated then
       ADragObjectCopy.Free;
   end;
 end;
@@ -272,13 +267,10 @@ var
   p, cp: TPoint;
 begin
   inherited Create(AManager, AControl);
-  AControl.DoStartDock(TDragObject(FDockObject));
+  AControl.DoStartDock(FDockObject);
   if FDockObject = nil then
-  begin
-    FDragObjectAutoFree := true;
-    FDockObject  := TDragDockObject.Create(AControl);
-  end;
-  
+    FDockObject := TDragDockObject.AutoCreate(AControl);
+
   // we should handle somehow difference between
   // Control.BoundsRect.LeftTop and CursorPos
   
@@ -549,7 +541,7 @@ begin
       ADockObjectCopy.Control.DragCanceled;
     ADockObjectCopy.EndDrag(ADockObjectCopy.DragTarget,TargetPos.X,TargetPos.Y);
   finally
-    if FDragObjectAutoFree then
+    if ADockObjectCopy.AutoCreated then
       ADockObjectCopy.Free
   end;
 end;

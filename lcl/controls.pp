@@ -345,6 +345,7 @@ type
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; virtual;
   public
     constructor Create(AControl: TControl); virtual;
+    constructor AutoCreate(AControl: TControl); virtual;
 
     procedure HideDragImage; virtual;
     procedure ShowDragImage; virtual;
@@ -359,6 +360,13 @@ type
 
   TDragObjectClass = class of TDragObject;
 
+  { TDragObjectEx }
+
+  TDragObjectEx = class(TDragObject)
+  public
+    constructor Create(AControl: TControl); override;
+  end;
+
 
   { TDragControlObject }
 
@@ -368,6 +376,12 @@ type
     function GetDragImages: TDragImageList; override;
   end;
 
+  { TDragControlObjectEx }
+
+  TDragControlObjectEx = class(TDragControlObject)
+  public
+    constructor Create(AControl: TControl); override;
+  end;
 
   { TDragDockObject }
 
@@ -414,6 +428,12 @@ type
     property EraseDockRect: TRect read FEraseDockRect write FEraseDockRect;
   end;
 
+  { TDragDockObjectEx }
+
+  TDragDockObjectEx = class(TDragDockObject)
+  public
+    constructor Create(AControl: TControl); override;
+  end;
 
   { TDragManager }
 
@@ -714,7 +734,6 @@ type
     property Control: TControl read FControl write SetControl;
     property Side: TAnchorSideReference read FSide write SetSide default asrTop;
   end;
-
 
   { TControlActionLink }
 
@@ -3476,7 +3495,7 @@ end;
 
 function TDockManager.AutoFreeByControl: Boolean;
 begin
-  Result:=true;
+  Result := True;
 end;
 
 initialization

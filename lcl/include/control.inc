@@ -468,12 +468,16 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CalculateDockSizes;
 begin
-  if Floating then begin
+{ TODO -cdocking : also: if dragged (neither floating nor hosted) }
+  if Floating then
+  begin
     // the control is floating. Save Width and Height for undocking
-    UndockHeight:=Height;
-    UndockWidth:=Width;
+    UndockHeight := Height;
+    UndockWidth := Width;
   end
-  else if HostDockSite<>nil then begin
+  else
+  if HostDockSite <> nil then
+  begin
     // the control is docked into a HostSite. That means some of it bounds
     // were maximized to fit into the HostSite.
     if (DockOrientation=doHorizontal)
@@ -528,12 +532,9 @@ end;
   function TControl.GetFloating: Boolean;
 ------------------------------------------------------------------------------}
 function TControl.GetFloating: Boolean;
-var
-  CurHostDockSite: TWinControl;
 begin
-  CurHostDockSite:=HostDockSite;
-  Result := (CurHostDockSite <> nil)
-            and (CurHostDockSite is FloatingDockSiteClass);
+  // a non-windowed control never can float for itself
+  Result := (HostDockSite <> nil) and (HostDockSite is FloatingDockSiteClass);
 end;
 
 {------------------------------------------------------------------------------

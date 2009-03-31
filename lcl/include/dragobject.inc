@@ -25,6 +25,12 @@ begin
   FControl := AControl;
 end;
 
+constructor TDragObject.AutoCreate(AControl: TControl);
+begin
+  Create(AControl);
+  FAutoCreated := True;
+end;
+
 procedure TDragObject.EndDrag(Target: TObject; X, Y: Integer);
 begin
   if FControl <> nil then
@@ -56,6 +62,13 @@ begin
     GetDragImages.ShowDragImage;
 end;
 
+{ TDragObjectEx }
+
+constructor TDragObjectEx.Create(AControl: TControl);
+begin
+  inherited AutoCreate(AControl);
+end;
+
 { TDragControlObject }
 
 function TDragControlObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
@@ -69,6 +82,13 @@ end;
 function TDragControlObject.GetDragImages: TDragImageList;
 begin
   Result := Control.GetDragImages;
+end;
+
+{ TDragControlObjectEx }
+
+constructor TDragControlObjectEx.Create(AControl: TControl);
+begin
+  inherited AutoCreate(AControl);
 end;
 
 { TDragDockObject }
@@ -88,6 +108,13 @@ procedure TDragDockObject.EndDrag(Target: TObject; X, Y: Integer);
 begin
   if FControl <> nil then
     FControl.DoEndDock(Target, X, Y);
+end;
+
+{ TDragDockObjectEx }
+
+constructor TDragDockObjectEx.Create(AControl: TControl);
+begin
+  inherited AutoCreate(AControl);
 end;
 
 // included by controls.pp
