@@ -788,7 +788,7 @@ end;
 
 procedure TChartExtent.SetBorder(AIndex: Integer; const AValue: Double);
 begin
-  Extent.coords[AIndex] := AValue;
+  FExtent.coords[AIndex] := AValue;
   StyleChanged(Self);
 end;
 
