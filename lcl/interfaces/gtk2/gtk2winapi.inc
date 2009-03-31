@@ -290,7 +290,7 @@ begin
   
   bitmap := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
   try
-    pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+    pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, bitmap);
     
     if IconInfo^.fIcon
     then begin
@@ -299,9 +299,10 @@ begin
     end;
     
     // create cursor from pixbuf
-    Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
-      IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
-
+    Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
+      pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    if pixbuf <> nil
+    then gdk_pixbuf_unref(pixbuf);
   finally
     if bitmap <> nil
     then gdk_bitmap_unref(bitmap);
