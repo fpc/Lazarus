@@ -238,6 +238,30 @@ type
     property Visible default true;
   end;
 
+  { TChartExtent }
+
+  TChartExtent = class (TChartElement)
+  private
+    FExtent: TDoubleRect;
+    FAuto: array [1..4] of Boolean;
+
+    function GetAuto(AIndex: integer): Boolean;
+    function GetBorder(AIndex: Integer): Double;
+    procedure SetAuto(AIndex: Integer; AValue: Boolean);
+    procedure SetBorder(AIndex: Integer; const AValue: Double);
+  public
+    property Extent: TDoubleRect read FExtent;
+  published
+    property XMin: Double index 1 read GetBorder write SetBorder;
+    property YMin: Double index 2 read GetBorder write SetBorder;
+    property XMax: Double index 3 read GetBorder write SetBorder;
+    property YMax: Double index 4 read GetBorder write SetBorder;
+    property AutoXMin: Boolean index 1 read GetAuto write SetAuto;
+    property AutoYMin: Boolean index 2 read GetAuto write SetAuto;
+    property AutoXMax: Boolean index 3 read GetAuto write SetAuto;
+    property AutoYMax: Boolean index 4 read GetAuto write SetAuto;
+  end;
+
 const
   MARKS_MARGIN_X = 4;
   MARKS_MARGIN_Y = 2;
@@ -743,6 +767,35 @@ begin
   FVertSize := AValue;
   StyleChanged(Self);
 end;
+
+{ TChartExtent }
+
+function TChartExtent.GetAuto(AIndex: Integer): Boolean;
+begin
+  Result := FAuto[AIndex];
+end;
+
+function TChartExtent.GetBorder(AIndex: Integer): Double;
+var
+  a: array [1..4] of Double absolute FExtent;
+begin
+  Result := a[AIndex];
+end;
+
+procedure TChartExtent.SetAuto(AIndex: Integer; AValue: Boolean);
+begin
+  FAuto[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartExtent.SetBorder(AIndex: Integer; const AValue: Double);
+var
+  a: array [1..4] of Double absolute FExtent;
+begin
+  a[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
 
 end.
 

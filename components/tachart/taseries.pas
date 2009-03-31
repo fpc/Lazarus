@@ -78,9 +78,10 @@ type
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual; overload;
     function AddXY(X, Y: Double): Longint; virtual; overload;
     procedure Clear;
-    function Count: Integer; override;
+    function Count: Integer;
     procedure Delete(AIndex: Integer); virtual;
     function FormattedMark(AIndex: integer): String;
+    function IsEmpty: Boolean; override;
 
   published
     property Active default true;
@@ -289,6 +290,47 @@ type
     property SeriesColor;
   end;
 
+  TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
+
+  { TFuncSeries }
+
+  TFuncSeries = class(TBasicChartSeries)
+  private
+    FExtent: TChartExtent;
+    FOnCalculate: TFuncCalculateEvent;
+    FPen: TChartPen;
+
+    procedure SetExtent(const AValue: TChartExtent);
+    procedure SetOnCalculate(const AValue: TFuncCalculateEvent);
+    procedure SetPen(const AValue: TChartPen);
+  protected
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendCount: Integer; override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    function GetSeriesColor: TColor; override;
+    procedure SetActive(AValue: Boolean); override;
+    procedure SetSeriesColor(const AValue: TColor); override;
+    procedure SetShowInLegend(AValue: Boolean); override;
+    procedure StyleChanged(Sender: TObject);
+    procedure UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double); override;
+    procedure UpdateParentChart;
+
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Draw(ACanvas: TCanvas); override;
+    function IsEmpty: Boolean; override;
+
+  published
+    property Active default true;
+    property Extent: TChartExtent read FExtent write SetExtent;
+    property Pen: TChartPen read FPen write SetPen;
+    property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
+    property ShowInLegend;
+    property Title;
+  end;
+
 implementation
 
 uses
@@ -392,6 +434,11 @@ begin
     Exchange(XMin, XMax);
   if YMin > YMax then
     Exchange(YMin, YMax);
+end;
+
+function TChartSeries.IsEmpty: Boolean;
+begin
+  Result := Count = 0;
 end;
 
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -1508,11 +1555,154 @@ begin
   ACanvas.LineTo(ARect.Right, y);
 end;
 
+{ TFuncSeries }
+
+constructor TFuncSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActive := true;
+  FExtent := TChartExtent.Create(FChart);
+  FShowInLegend := true;
+  FPen := TChartPen.Create;
+  FPen.OnChange := @StyleChanged;
+end;
+
+destructor TFuncSeries.Destroy;
+begin
+  FExtent.Free;
+  FPen.Free;
+  inherited Destroy;
+end;
+
+procedure TFuncSeries.Draw(ACanvas: TCanvas);
+
+  function CalcY(AX: Integer): Integer;
+  var
+    xg, yg: Double;
+  begin
+    FChart.XImageToGraph(AX, xg);
+    OnCalculate(xg, yg);
+    yg := EnsureRange(yg, Extent.YMin, Extent.YMax);
+    FChart.YGraphToImage(yg, Result);
+  end;
+
+var
+  x, xmax: Integer;
+begin
+  if not Assigned(OnCalculate) then exit;
+
+  FChart.XGraphToImage(Extent.XMin, x);
+  x := Max(x, FChart.XImageMin);
+  FChart.XGraphToImage(Extent.XMax, xmax);
+  xmax := Min(xmax, FChart.XImageMax);
+
+  ACanvas.Pen.Assign(Pen);
+
+  ACanvas.MoveTo(x, CalcY(x));
+  while x < xmax do begin
+    Inc(x, 2);
+    ACanvas.LineTo(x, CalcY(x));
+  end;
+end;
+
+procedure TFuncSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+var
+  y: Integer;
+begin
+  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
+  ACanvas.Pen.Assign(Pen);
+  y := (ARect.Top + ARect.Bottom) div 2;
+  ACanvas.MoveTo(ARect.Left, y);
+  ACanvas.LineTo(ARect.Right, y);
+end;
+
+function TFuncSeries.GetLegendCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TFuncSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+begin
+  Result := ACanvas.TextWidth(Title);
+end;
+
+function TFuncSeries.GetSeriesColor: TColor;
+begin
+  Result := FPen.Color;
+end;
+
+function TFuncSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(OnCalculate);
+end;
+
+procedure TFuncSeries.SetActive(AValue: Boolean);
+begin
+  if FActive = AValue then exit;
+  FActive := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetExtent(const AValue: TChartExtent);
+begin
+  if FExtent = AValue then exit;
+  FExtent.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
+begin
+  if FOnCalculate = AValue then exit;
+  FOnCalculate := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetPen(const AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetSeriesColor(const AValue: TColor);
+begin
+  if FPen.Color = AValue then exit;
+  FPen.Color := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetShowInLegend(AValue: Boolean);
+begin
+  if FShowInLegend = AValue then exit;
+  FShowInLegend := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.StyleChanged(Sender: TObject);
+begin
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double);
+begin
+  if Extent.XMin < AXMin then AXMin := Extent.XMin;
+  if Extent.YMin < AYMin then AYMin := Extent.YMin;
+  if Extent.XMax > AXMax then AXMax := Extent.XMax;
+  if Extent.YMax > AYMax then AYMax := Extent.YMax;
+end;
+
+procedure TFuncSeries.UpdateParentChart;
+begin
+  if ParentChart <> nil then
+    ParentChart.Invalidate;
+end;
+
 initialization
   RegisterSeriesClass(TLineSeries, 'Line series');
   RegisterSeriesClass(TAreaSeries, 'Area series');
   RegisterSeriesClass(TBarSeries, 'Bar series');
   RegisterSeriesClass(TPieSeries, 'Pie series');
+  RegisterSeriesClass(TFuncSeries, 'Function series');
   RegisterSeriesClass(TLine, 'Line');
 
 end.

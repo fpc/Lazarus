@@ -54,7 +54,7 @@ type
     FActive: Boolean;
     FShowInLegend: Boolean;
 
-    procedure AfterAdd; virtual; abstract;
+    procedure AfterAdd; virtual;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
     function GetLegendCount: Integer; virtual; abstract;
     function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
@@ -78,7 +78,7 @@ type
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
-    function Count: Integer; virtual; abstract;
+    function IsEmpty: Boolean; virtual; abstract;
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
 
     property Active: Boolean read FActive write SetActive;
@@ -219,9 +219,9 @@ type
     procedure XGraphToImage(Xin: Double; out XOut: Integer);
     procedure YGraphToImage(Yin: Double; out YOut: Integer);
     function GraphToImage(AGraphPoint: TDoublePoint) : TPoint;
-    procedure XImageToGraph(XIn: Integer; var XOut: Double);
-    procedure YImageToGraph(YIn: Integer; var YOut: Double);
-    procedure ImageToGraph(XIn, YIn: Integer; var XOut, YOut: Double);
+    procedure XImageToGraph(XIn: Integer; out XOut: Double);
+    procedure YImageToGraph(YIn: Integer; out YOut: Double);
+    procedure ImageToGraph(XIn, YIn: Integer; out XOut, YOut: Double);
     procedure DisplaySeries(ACanvas: TCanvas);
     procedure ZoomFull;
 
@@ -968,7 +968,8 @@ end;
 procedure TChart.Refresh(ACanvas: TCanvas; ARect: TRect);
 var
   Tolerance, Valeur: Double;
-  i, pointsTotal: Integer;
+  i: Integer;
+  allEmpty: Boolean = true;
   XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
 begin
   DrawReticule(ACanvas);
@@ -984,11 +985,10 @@ begin
     XMaxSeries := MinDouble;
     YMinSeries := MaxDouble;
     YMaxSeries := MinDouble;
-    pointsTotal := 0;
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active then begin
-          pointsTotal += Count;
+          allEmpty := allEmpty and IsEmpty;
           UpdateBounds(XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
         end;
     if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
@@ -1012,7 +1012,7 @@ begin
     Tolerance := 0.001; //this should be cleaned eventually
     // Tolerance := 0.1;
 
-    if pointsTotal > 0 then begin
+    if not allEmpty then begin
       // If several points : automatic +/-10% of interval
       Valeur := Tolerance * (XMaxSeries - XMinSeries);
       if Valeur <> 0 then begin
@@ -1067,17 +1067,17 @@ begin
   YGraphToImage(AGraphPoint.Y, Result.Y);
 end;
 
-procedure TChart.XImageToGraph(XIn: Integer; var XOut: Double);
+procedure TChart.XImageToGraph(XIn: Integer; out XOut: Double);
 begin
   XOut := (XIn - FOffset.X) / FScale.X;
 end;
 
-procedure TChart.YImageToGraph(YIn: Integer; var YOut: Double);
+procedure TChart.YImageToGraph(YIn: Integer; out YOut: Double);
 begin
   YOut := (YIn - FOffset.Y) / FScale.Y;
 end;
 
-procedure TChart.ImageToGraph(XIn, YIn: Integer; var XOut, YOut: Double);
+procedure TChart.ImageToGraph(XIn, YIn: Integer; out XOut, YOut: Double);
 begin
   XImageToGraph(XIn, XOut);
   YImageToGraph(YIn, YOut);
@@ -1403,6 +1403,11 @@ begin
 end;
 
 { TBasicChartSeries }
+
+procedure TBasicChartSeries.AfterAdd;
+begin
+  // nothing
+end;
 
 destructor TBasicChartSeries.Destroy;
 begin
