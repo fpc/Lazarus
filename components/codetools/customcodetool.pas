@@ -872,6 +872,14 @@ begin
           inc(CurPos.StartPos);
       #1..#32:
         inc(CurPos.StartPos);
+      #$EF:
+        if (Src[CurPos.StartPos+1]=#$BB)
+        and (Src[CurPos.StartPos+2]=#$BF) then begin
+          // skip UTF BOM
+          inc(CurPos.StartPos,3);
+        end else begin
+          break;
+        end;
       '{': // pascal comment
         begin
           CommentLvl:=1;
