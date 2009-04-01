@@ -4,7 +4,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -42,8 +42,8 @@ type
     procedure SetEmbedded;
 {$endif HasGdk2X}
   public
-  	constructor Create(const wsTrayIcon: TCustomTrayIcon);
-	  destructor Destroy; override;
+    constructor Create(const wsTrayIcon: TCustomTrayIcon);
+    destructor Destroy; override;
   end;
 
 const
@@ -304,13 +304,9 @@ begin
   *******************************************************************}
 
   plug := gtk_plug_new(0);
-
   Tips := gtk_tooltips_new;
-
   g_object_ref(Tips);
-
   gtk_object_sink(GTK_OBJECT(Tips));
-
   gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(wsTrayIcon.Hint), '');
 
   {*******************************************************************
@@ -320,20 +316,17 @@ begin
   gtk_widget_add_events(plug, GDK_ALL_EVENTS_MASK);
 
   g_signal_connect(plug, 'realize', TGCallback(@realize_cb), wsTrayIcon);
-
   g_signal_connect(plug, 'popup-menu', TGCallback(@popup_cb), wsTrayIcon);
-
   g_signal_connect(plug, 'motion-notify-event', TGCallback(@motion_cb), wsTrayIcon);
-
   g_signal_connect(plug, 'button-press-event', TGCallback(@button_press_cb), wsTrayIcon);
-
   g_signal_connect(plug, 'button-release-event', TGCallback(@button_release_cb), wsTrayIcon);
 
   {*******************************************************************
   *  Draws the icon
   *******************************************************************}
 
-  with wsTrayIcon do begin
+  with wsTrayIcon do
+  begin
     DrawingArea := gtk_image_new_from_pixbuf(PGdkPixbuf(Icon.Handle));
     gtk_widget_show(DrawingArea);
     gtk_container_add(GTK_CONTAINER(plug), DrawingArea);
@@ -343,11 +336,9 @@ end;
 destructor TGtk2TrayIconHandle.Destroy;
 begin
   gtk_widget_destroy(plug);
-
   plug := nil;
 
   g_object_unref(Tips);
-
   Tips := nil;
 end;
 
@@ -423,10 +414,9 @@ begin
       if Assigned(Tips) then
   	  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), plug, PChar(ATrayIcon.Hint), '');
       // Updates the icon
-      if Assigned(DrawingArea) then begin
+      if Assigned(DrawingArea) then
         gtk_image_set_from_pixbuf(GTK_IMAGE(DrawingArea), PGdkPixbuf(ATrayIcon.Icon.Handle));
     end;
-  end;
 end;
 
 {*******************************************************************
