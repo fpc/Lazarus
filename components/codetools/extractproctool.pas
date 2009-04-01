@@ -49,6 +49,26 @@ uses
   FindDeclarationTool;
   
 type
+  TExtractedProcVariableType = (
+    epvtParameter,
+    epvtLocalVar
+    //epvtExternVar // variable is defined outside (e.g. a global variable or a class member)
+    );
+
+  TExtractedProcVariable = class
+  public
+    Node: TCodeTreeNode;
+    Tool: TFindDeclarationTool;
+    VarType: TExtractedProcVariableType;
+    ReadInSelection: boolean;
+    WriteInSelection: boolean;
+    UsedInNonSelection: boolean;
+    ReadAfterSelection: boolean;
+    ReadAfterSelectionValid: boolean;
+    RemovedFromOldProc: boolean;
+    function UsedInSelection: boolean;
+  end;
+
   { TExtractProcTool }
   
   TExtractProcType = (
@@ -76,13 +96,15 @@ type
   public
     function CheckExtractProc(const StartPos, EndPos: TCodeXYPosition;
       out MethodPossible, SubProcSameLvlPossible: boolean;
-      out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+      out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
+      VarTree: TAVLTree = nil  // tree of TExtractedProcVariable
       ): boolean;
     function ExtractProc(const StartPos, EndPos: TCodeXYPosition;
       ProcType: TExtractProcType; const ProcName: string;
       IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
-      SourceChangeCache: TSourceChangeCache): boolean;
+      SourceChangeCache: TSourceChangeCache;
+      FunctionResultVariableStartPos: integer = 0): boolean;
   end;
   
 const
@@ -97,40 +119,16 @@ const
     'PublishedMethod'
     );
 
+function CreateExtractProcVariableTree: TAVLTree;
+procedure ClearExtractProcVariableTree(VarTree: TAVLTree; FreeTree: boolean);
+
 implementation
-
-type
-  TExtractedProcVariableType = (
-    epvtParameter,
-    epvtLocalVar
-    );
-
-  TExtractedProcVariable = class
-  public
-    Node: TCodeTreeNode;
-    VarType: TExtractedProcVariableType;
-    ReadInSelection: boolean;
-    WriteInSelection: boolean;
-    UsedInNonSelection: boolean;
-    ReadAfterSelection: boolean;
-    ReadAfterSelectionValid: boolean;
-    RemovedFromOldProc: boolean;
-    function UsedInSelection: boolean;
-  end;
-
-{ TExtractedProcVariable }
-
-function TExtractedProcVariable.UsedInSelection: boolean;
-begin
-  Result:=ReadInSelection or WriteInSelection;
-end;
 
 function CompareExtractedProcVariables(V1, V2: TExtractedProcVariable): integer;
 var
   cmp: Integer;
 begin
   cmp:=V2.Node.StartPos-V1.Node.StartPos;
-  
   if cmp<0 then
     Result:=-1
   else if cmp>0 then
@@ -151,6 +149,26 @@ begin
     Result:=1
   else
     Result:=0;
+end;
+
+function CreateExtractProcVariableTree: TAVLTree;
+begin
+  Result:=TAVLTree.Create(TListSortCompare(@CompareExtractedProcVariables));
+end;
+
+procedure ClearExtractProcVariableTree(VarTree: TAVLTree; FreeTree: boolean);
+begin
+  if VarTree=nil then exit;
+  VarTree.FreeAndClear;
+  if FreeTree then
+    VarTree.Free;
+end;
+
+{ TExtractedProcVariable }
+
+function TExtractedProcVariable.UsedInSelection: boolean;
+begin
+  Result:=ReadInSelection or WriteInSelection;
 end;
 
 { TExtractProcTool }
@@ -271,7 +289,7 @@ end;
 
 function TExtractProcTool.CheckExtractProc(const StartPos,
   EndPos: TCodeXYPosition; out MethodPossible, SubProcSameLvlPossible: boolean;
-  out MissingIdentifiers: TAVLTree): boolean;
+  out MissingIdentifiers: TAVLTree; VarTree: TAVLTree): boolean;
 var
   BlockStartPos: integer;
   BlockEndPos: integer;
@@ -282,7 +300,7 @@ begin
   then exit;
   MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
   if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
-                               ProcNode,nil,nil,MissingIdentifiers) then exit;
+                               ProcNode,VarTree,nil,MissingIdentifiers) then exit;
   Result:=true;
 end;
 
@@ -290,7 +308,8 @@ function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
   IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
   out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache;
+  FunctionResultVariableStartPos: integer): boolean;
 const
   ShortProcFormat = [phpWithoutClassKeyword];
   {$IFDEF CTDebug}
@@ -303,6 +322,29 @@ var
   BlockStartPos, BlockEndPos: integer; // the selection
   ProcNode: TCodeTreeNode; // the main proc node of the selection
   VarTree: TAVLTree;
+  ResultNode: TCodeTreeNode;
+
+  function FindFunctionResultNode: boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    ProcVar: TExtractedProcVariable;
+  begin
+    Result:=false;
+    ResultNode:=nil;
+    if FunctionResultVariableStartPos<1 then exit(true); // create a proc, not a function
+    AVLNode:=VarTree.FindLowest;
+    while AVLNode<>nil do begin
+      ProcVar:=TExtractedProcVariable(AVLNode.Data);
+      if ProcVar.Node.StartPos=FunctionResultVariableStartPos then begin
+        ProcVar.UsedInNonSelection:=true;
+        ProcVar.ReadAfterSelection:=true;
+        Result:=true;
+        ResultNode:=ProcVar.Node;
+        exit;
+      end;
+      AVLNode:=VarTree.FindSuccessor(AVLNode);
+    end;
+  end;
   
   function ReplaceSelectionWithCall: boolean;
   var
@@ -319,7 +361,7 @@ var
     Indent:=GetLineIndent(Src,BlockStartPos);
     ParamListCode:='';
     // gather all variables, that are used in the selection and in the rest of
-    // the old proc. These are the parameters for the new proc.
+    // the old proc (in front or behind). These are the parameters for the new proc.
     if (VarTree<>nil) and (ProcType<>eptSubProcedure) then begin
       AVLNode:=VarTree.FindLowest;
       while AVLNode<>nil do begin
@@ -332,8 +374,9 @@ var
           ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),
           '');
         {$ENDIF}
-        if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
-          // variables
+        if (ProcVar.UsedInSelection and ProcVar.UsedInNonSelection)
+        and (ResultNode<>ProcVar.Node) then begin
+          // parameter
           if ParamListCode<>'' then ParamListCode:=ParamListCode+',';
           ParamListCode:=ParamListCode+GetIdentifier(@Src[ProcVar.Node.StartPos]);
         end;
@@ -343,6 +386,9 @@ var
     if ParamListCode<>'' then
       ParamListCode:='('+ParamListCode+')';
     CallCode:=ProcName+ParamListCode+';';
+    if ResultNode<>nil then begin
+      CallCode:=GetIdentifier(@Src[ResultNode.StartPos])+':='+CallCode;
+    end;
     CallCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                                                                CallCode,Indent);
     {$IFDEF CTDebug}
@@ -564,14 +610,17 @@ var
     Result:=true;
   end;
 
-  function CreateProcParamList(out CompleteParamListCode,
-    BaseParamListCode: string): boolean;
+  function CreateProcParamList(
+    out CompleteParamListCode, // including modifiers, brackets and result type
+    BaseParamListCode: string // without modifiers and result type
+    ): boolean;
   var
     AVLNode: TAVLTreeNode;
     ProcVar: TExtractedProcVariable;
     ParamName: String;
     ParamTypeCode: String;
     ParamSpecifier: String;
+    ResultType: String;
   begin
     Result:=false;
     CompleteParamListCode:='';
@@ -590,7 +639,8 @@ var
           ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),
           '');
         {$ENDIF}
-        if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
+        if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection
+        and (ProcVar.Node<>ResultNode) then begin
           // extract identifier and type
           if CompleteParamListCode<>'' then
             CompleteParamListCode:=CompleteParamListCode+';';
@@ -615,6 +665,10 @@ var
     if CompleteParamListCode<>'' then begin
       CompleteParamListCode:='('+CompleteParamListCode+')';
       BaseParamListCode:='('+BaseParamListCode+')';
+    end;
+    if ResultNode<>nil then begin
+      ResultType:=ExtractDefinitionNodeType(ResultNode);
+      CompleteParamListCode:=CompleteParamListCode+':'+ResultType;
     end;
     {$IFDEF CTDebug}
     DebugLn('CreateProcParamList END CompleteParamListCode="',CompleteParamListCode,'"');
@@ -646,7 +700,8 @@ var
           ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection),
           ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),'');
         {$ENDIF}
-        if ProcVar.UsedInSelection and (not ProcVar.UsedInNonSelection) then
+        if ProcVar.UsedInSelection
+        and ((not ProcVar.UsedInNonSelection) or (ProcVar.Node=ResultNode)) then
         begin
           // extract identifier and type
           if VarSectionCode='' then
@@ -692,7 +747,7 @@ var
     Result:=false;
     BeginEndCode:='';
     le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
-    // extract dirty source, so that compiler directives are moved.
+    // extract dirty source, so that compiler directives are moved too
     StartPos.Code.LineColToPosition(StartPos.Y,StartPos.X,DirtyStartPos);
     StartPos.Code.LineColToPosition(EndPos.Y,EndPos.X,DirtyEndPos);
     DirtySelection:=copy(StartPos.Code.Source,
@@ -710,6 +765,11 @@ var
                SourceChangeCache.BeautifyCodeOptions.TabWidth,
                s);
     DirtySelection:=s;
+    if ResultNode<>nil then begin
+      DirtySelection:=DirtySelection
+              +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+              +'Result:='+GetIdentifier(@Src[ResultNode.StartPos])+';'+le;
+    end;
     // create Begin..End block
     BeginEndCode:='begin'+le
                   +DirtySelection
@@ -849,13 +909,19 @@ var
     MethodDefinition: String;
     CleanMethodDefinition: String;
     NewClassPart: TNewClassPart;
+    Keyword: String;
   begin
     Result:=false;
+    if ResultNode=nil then
+      Keyword:='procedure'
+    else
+      Keyword:='function';
+
     case ProcType of
     
     eptProcedureWithInterface:
       begin
-        ProcHeader:='procedure '+ProcName+CompleteParamList+';';
+        ProcHeader:=Keyword+' '+ProcName+CompleteParamList+';';
         ProcHeader:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
           ProcHeader,IntfIndent);
         {$IFDEF CTDebug}
@@ -883,8 +949,8 @@ var
         CodeCompleteSrcChgCache:=SourceChangeCache;
 
         // insert new method to class
-        MethodDefinition:='procedure '+ProcName+CompleteParamList+';';
-        CleanMethodDefinition:='procedure '+ProcName+BaseParamList+';';
+        MethodDefinition:=Keyword+' '+ProcName+CompleteParamList+';';
+        CleanMethodDefinition:=Keyword+' '+ProcName+BaseParamList+';';
         if ProcExistsInCodeCompleteClass(CleanMethodDefinition) then exit;
         case ProcType of
         eptPrivateMethod:   NewClassPart:=ncpPrivateProcs;
@@ -909,7 +975,10 @@ var
     ProcHeader: String;
   begin
     le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
-    ProcHeader:='procedure ';
+    if ResultNode=nil then
+      ProcHeader:='procedure '
+    else
+      ProcHeader:='function ';
     if ProcClassName<>'' then
       ProcHeader:=ProcHeader+ProcClassName+'.';
     ProcHeader:=ProcHeader+ProcName+ParamList+';'+le;
@@ -1002,7 +1071,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDebug}
-  DebugLn('ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType]);
+  DebugLn('ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType],' FunctionResultVariableStartPos=',FunctionResultVariableStartPos);
   {$ENDIF}
   if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
   then exit;
@@ -1014,11 +1083,12 @@ begin
     exit;
   CodeCompleteSrcChgCache:=SourceChangeCache;
 
-  VarTree:=TAVLTree.Create(TListSortCompare(@CompareExtractedProcVariables));
+  VarTree:=CreateExtractProcVariableTree;
   NewProcPath:=nil;
   try
     if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
                                  ProcNode,VarTree,IgnoreIdentifiers,nil) then exit;
+    if not FindFunctionResultNode then exit;
     if not ReplaceSelectionWithCall then exit;
     if not DeleteMovedLocalVariables then exit;
     if not CreateProcNameParts(ProcClassName,ProcClassNode) then exit;
@@ -1038,10 +1108,7 @@ begin
     if not SourceChangeCache.Apply then exit;
     if not FindJumpPointToNewProc(NewProcPath) then exit;
   finally
-    if VarTree<>nil then begin
-      VarTree.FreeAndClear;
-      VarTree.Free;
-    end;
+    ClearExtractProcVariableTree(VarTree,true);
     NewProcPath.Free;
   end;
   Result:=true;
@@ -1076,6 +1143,7 @@ type
     end else begin
       ProcVar:=TExtractedProcVariable.Create;
       ProcVar.Node:=VarNode;
+      ProcVar.Tool:=Self;
     end;
     ProcVar.ReadInSelection:=ProcVar.ReadInSelection or IsInSelection;
     ProcVar.WriteInSelection:=ProcVar.WriteInSelection

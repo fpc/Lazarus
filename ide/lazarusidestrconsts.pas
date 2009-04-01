@@ -4072,6 +4072,8 @@ resourcestring
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';  
   lisSetValue = 'Set value';
+  lisCreateFunction = 'Create function';
+  lisResult2 = 'Result:';
 
 implementation
 

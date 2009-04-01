@@ -497,12 +497,14 @@ type
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
           out MethodPossible, SubProcSameLvlPossible: boolean;
-          out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+          out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
+          VarTree: TAVLTree = nil  // tree of TExtractedProcVariable
           ): boolean;
     function ExtractProc(Code: TCodeBuffer; const StartPoint, EndPoint: TPoint;
           ProcType: TExtractProcType; const ProcName: string;
           IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+          FunctionResultVariableStartPos: integer = 0
           ): boolean;
 
     // code templates
@@ -3497,7 +3499,8 @@ end;
 
 function TCodeToolManager.CheckExtractProc(Code: TCodeBuffer; const StartPoint,
   EndPoint: TPoint; out MethodPossible, SubProcSameLvlPossible: boolean;
-  out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+  out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
+  VarTree: TAVLTree  // tree of TExtractedProcVariable
   ): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
@@ -3515,7 +3518,8 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.CheckExtractProc(StartPos,EndPos,MethodPossible,
-                                     SubProcSameLvlPossible,MissingIdentifiers);
+                                     SubProcSameLvlPossible,MissingIdentifiers,
+                                     VarTree);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -3524,7 +3528,8 @@ end;
 function TCodeToolManager.ExtractProc(Code: TCodeBuffer; const StartPoint,
   EndPoint: TPoint; ProcType: TExtractProcType; const ProcName: string;
   IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+  FunctionResultVariableStartPos: integer): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -3542,7 +3547,8 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.ExtractProc(StartPos,EndPos,ProcType,ProcName,
-                         IgnoreIdentifiers,NewPos,NewTopLine,SourceChangeCache);
+                         IgnoreIdentifiers,NewPos,NewTopLine,SourceChangeCache,
+                         FunctionResultVariableStartPos);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
