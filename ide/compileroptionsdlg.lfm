@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 398
+  Left = 403
   Height = 528
-  Top = 261
+  Top = 285
   Width = 669
   ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]
@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 7
+    PageIndex = 5
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -293,7 +293,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpSyntaxMode'
-        ClientHeight = 41
+        ClientHeight = 56
         ClientWidth = 649
         TabOrder = 2
         object cmbSyntaxMode: TComboBox
@@ -332,7 +332,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'grpSmartLinkUnit'
-        ClientHeight = 34
+        ClientHeight = 49
         ClientWidth = 454
         TabOrder = 0
         object chkSmartLinkUnit: TCheckBox
@@ -359,7 +359,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Caption = 'grpChecks'
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 140
+        ClientHeight = 155
         ClientWidth = 185
         TabOrder = 1
         object chkChecksIO: TCheckBox
@@ -422,7 +422,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpHeapSize'
-        ClientHeight = 35
+        ClientHeight = 50
         ClientWidth = 454
         TabOrder = 2
         object edtHeapSize: TEdit
@@ -451,7 +451,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpTargetPlatform'
-        ClientHeight = 111
+        ClientHeight = 126
         ClientWidth = 454
         TabOrder = 3
         object lblTargetOS: TLabel
@@ -565,7 +565,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'grpOptimizations'
-        ClientHeight = 163
+        ClientHeight = 178
         ClientWidth = 649
         TabOrder = 4
         OnResize = grpOptimizationsResize
@@ -665,7 +665,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpLinkLibraries'
-        ClientHeight = 34
+        ClientHeight = 49
         ClientWidth = 649
         TabOrder = 0
         object chkLinkSmart: TCheckBox
@@ -688,7 +688,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'TargetSpecificsGrpBox'
-        ClientHeight = 34
+        ClientHeight = 49
         ClientWidth = 649
         TabOrder = 1
         object chkWin32GraphicApp: TCheckBox
@@ -711,7 +711,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpOptions'
-        ClientHeight = 63
+        ClientHeight = 78
         ClientWidth = 649
         TabOrder = 2
         object chkOptionsLinkOpt: TCheckBox
@@ -744,7 +744,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpDebugging'
-        ClientHeight = 202
+        ClientHeight = 217
         ClientWidth = 649
         TabOrder = 3
         object chkDebugGDB: TCheckBox
@@ -852,7 +852,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpErrorCnt'
-        ClientHeight = 35
+        ClientHeight = 50
         ClientWidth = 649
         TabOrder = 1
         object edtErrorCnt: TEdit
@@ -884,9 +884,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         TabOrder = 0
         object chkUseMsgFile: TCheckBox
           Left = 6
-          Height = 17
+          Height = 22
           Top = 7
-          Width = 93
+          Width = 117
           Caption = 'chkUseMsgFile'
           OnChange = chkUseMsgFileChange
           TabOrder = 0
@@ -909,10 +909,11 @@ object frmCompilerOptions: TfrmCompilerOptions
           TabOrder = 2
         end
         object chklistCompMsg: TCheckListBox
-          Left = 6
-          Height = 388
+          Left = 0
+          Height = 379
           Top = 39
-          Width = 634
+          Width = 649
+          Align = alBottom
           Anchors = [akTop, akLeft, akRight, akBottom]
           ItemHeight = 0
           OnClick = chklistCompMsgClick
@@ -935,7 +936,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpConfigFile'
-        ClientHeight = 91
+        ClientHeight = 106
         ClientWidth = 649
         TabOrder = 0
         object chkConfigFile: TCheckBox
@@ -978,7 +979,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCustomOptions'
-        ClientHeight = 302
+        ClientHeight = 317
         ClientWidth = 649
         TabOrder = 1
         object memCustomOptions: TMemo
@@ -1127,7 +1128,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'ExecuteAfterGroupBox'
-        ClientHeight = 89
+        ClientHeight = 104
         ClientWidth = 649
         TabOrder = 1
         object lblRunIfExecAfter: TLabel
@@ -1259,7 +1260,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpCompiler'
-        ClientHeight = 60
+        ClientHeight = 75
         ClientWidth = 649
         TabOrder = 2
         object lblRunIfCompiler: TLabel
@@ -1354,7 +1355,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'ExecuteBeforeGroupBox'
-        ClientHeight = 89
+        ClientHeight = 104
         ClientWidth = 649
         TabOrder = 3
         object lblRunIfExecBefore: TLabel
