@@ -200,6 +200,14 @@ begin
       begin
         inc(Position);
       end;
+      #$EF:
+        if (Source[Position+1]=#$BB)
+        and (Source[Position+2]=#$BF) then begin
+          // skip UTF BOM
+          inc(Position,3);
+        end else begin
+          break;
+        end;
      '\': // backslash
       if (Position<Len) and (Source[Position+1] in [#10,#13]) then begin
         inc(Position,2);
