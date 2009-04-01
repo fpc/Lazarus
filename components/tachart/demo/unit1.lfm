@@ -51,13 +51,13 @@ object Form1: TForm1
     ParentColor = False
     object Chart1LineHor: TLine
       ShowInLegend = False
-      Pen.Style = psDot
+      Pen.Style = psDash
       SeriesColor = clBlack
     end
     object Chart1LineVert: TLine
       ShowInLegend = False
       LineStyle = lsVertical
-      Pen.Style = psDot
+      Pen.Style = psDash
       SeriesColor = clBlack
     end
   end

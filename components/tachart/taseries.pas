@@ -48,7 +48,6 @@ type
     FValuesTotalValid: Boolean;
 
     function GetXMinVal: Integer;
-    procedure InitBounds(out XMin, YMin, XMax, YMax: Integer);
     procedure SetMarks(const AValue: TChartMarks);
   protected
     procedure AfterAdd; override;
@@ -421,21 +420,6 @@ begin
     Result := 0;
 end;
 
-procedure TChartSeries.InitBounds(out XMin, YMin, XMax, YMax: Integer);
-begin
-  with ParentChart do begin
-    XMin := ClipRect.Left;
-    XMax := ClipRect.Right;
-    YMin := ClipRect.Bottom;
-    YMax := ClipRect.Top;
-  end;
-
-  if XMin > XMax then
-    Exchange(XMin, XMax);
-  if YMin > YMax then
-    Exchange(YMin, YMax);
-end;
-
 function TChartSeries.IsEmpty: Boolean;
 begin
   Result := Count = 0;
@@ -591,7 +575,6 @@ procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
   i1, i2: TPoint;
   g1, g2: TDoublePoint;
-  XMin, XMax, YMin, YMax: Integer;
 
   function PrepareLine: Boolean;
   begin
@@ -636,9 +619,7 @@ var
 
   procedure DrawPoint(AIndex: Integer);
   begin
-    if
-      FShowPoints and InRange(i1.Y, YMin, YMax) and InRange(i1.X, XMin, XMax)
-    then begin
+    if FShowPoints and PtInRect(ParentChart.ClipRect, i1) then begin
       FPointer.Draw(ACanvas, i1, SeriesColor);
       if Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ACanvas, AIndex, i1);
@@ -650,7 +631,6 @@ var
 begin
   if Count = 0 then exit;
 
-  InitBounds(XMin, YMin, XMax, YMax);
   ACanvas.Pen.Mode := pmCopy;
   ACanvas.Pen.Width := 1;
 
@@ -976,26 +956,23 @@ end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
 var
-  xmin, xmax, ymin, ymax, posImage: Integer;
+  posImage: Integer;
 begin
-  InitBounds(xmin, ymin, xmax, ymax);
-
   ACanvas.Pen.Assign(FPen);
 
-  case LineStyle of
-    lsHorizontal:
-      if InRange(FPosGraph, ParentChart.XGraphMin, ParentChart.XGraphMax) then begin
-        ParentChart.YGraphToImage(FPosGraph, posImage);
-        ACanvas.MoveTo(xmin, posImage);
-        ACanvas.LineTo(xmax, posImage);
-      end;
-    lsVertical:
-      if InRange(FPosGraph, ParentChart.YGraphMin, ParentChart.YGraphMax) then begin
-        ParentChart.XGraphToImage(FPosGraph, posImage);
-        ACanvas.MoveTo(posImage, ymin);
-        ACanvas.LineTo(posImage, ymax);
-      end;
-  end;
+  with ParentChart do
+    case LineStyle of
+      lsHorizontal:
+        begin
+          YGraphToImage(FPosGraph, posImage);
+          DrawLineHoriz(ACanvas, posImage);
+        end;
+      lsVertical:
+        begin
+          XGraphToImage(FPosGraph, posImage);
+          DrawLineVert(ACanvas, posImage);
+        end;
+    end;
 end;
 
 function TLine.GetSeriesColor: TColor;
@@ -1441,30 +1418,27 @@ end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
-  i, xi2a, iy_min: Integer;
+  i, xi2a, ymin: Integer;
   i1, i2: TPoint;
   g1, g2: TDoublePoint;
-  XMin, XMax, YMin, YMax: Integer;
 
   procedure DrawPart;
   begin
-    ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)]);
+    ACanvas.Polygon([Point(i1.X, ymin), i1, i2, Point(i2.X, ymin)]);
   end;
 
 begin
   if Count = 0 then exit;
 
-  InitBounds(XMin, YMin, XMax, YMax);
-
   ACanvas.Pen.Mode := pmCopy;
   ACanvas.Pen.Style := psSolid;
   ACanvas.Pen.Width := 1;
+  ymin := ParentChart.ClipRect.Bottom - 1;
 
   for i := 0 to Count - 2 do begin
     GetCoords(i, g1, i1);
     GetCoords(i + 1, g2, i2);
 
-    iy_min := ParentChart.ClipRect.Bottom;
     ACanvas.Pen.Color:= clBlack;
     ACanvas.Brush.Color:= PChartCoord(FCoordList.Items[i])^.Color;
 
@@ -1474,10 +1448,10 @@ begin
     then begin
       if FStairs then begin
         if FInvertedStairs then
-          ACanvas.Polygon([Point(i1.X, iy_min), i1, i2, Point(i2.X, iy_min)])
+          ACanvas.Polygon([Point(i1.X, ymin), i1, i2, Point(i2.X, ymin)])
         else
           ACanvas.Polygon([
-            Point(i1.X, iy_min), i1, Point(i2.X, i1.Y), Point(i2.X, iy_min)])
+            Point(i1.X, ymin), i1, Point(i2.X, i1.Y), Point(i2.X, ymin)])
       end else
         DrawPart;
       continue;
@@ -1496,32 +1470,33 @@ begin
       Exchange(i1.X, i2.X); Exchange(i1.Y, i2.Y);
     end;
 
-    if g1.Y = g2.Y then begin
-      if g1.X > g2.X then
-        Exchange(g1, g2);
-      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.ClipRect.Left;
-      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.ClipRect.Right;
-    end
-    else if g1.X = g2.X then begin
-      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.ClipRect.Bottom;
-      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.ClipRect.Top;
-    end
-    else if ParentChart.LineInViewPort(g1, g2) then begin
-      xi2a := i2.X;
-      i1 := ParentChart.GraphToImage(g1);
-      i2 := ParentChart.GraphToImage(g2);
-      {if i2.Y <= YMin then} begin
-        ACanvas.Polygon([
-          Point(i1.X, iy_min), i1, i2, Point(xi2a, YMin), Point(xi2a, iy_min)]);
-        continue;
+    with ParentChart do
+      if g1.Y = g2.Y then begin
+        if g1.X > g2.X then
+          Exchange(g1, g2);
+        if g1.X < XGraphMin then i1.X := ClipRect.Left;
+        if g2.X > XGraphMax then i2.X := ClipRect.Right;
+      end
+      else if g1.X = g2.X then begin
+        if g1.Y < YGraphMin then i1.Y := ymin;
+        if g2.Y > YGraphMax then i2.Y := ClipRect.Top;
+      end
+      else if LineInViewPort(g1, g2) then begin
+        xi2a := i2.X;
+        i1 := GraphToImage(g1);
+        i2 := GraphToImage(g2);
+        {if i2.Y <= ymin then} begin
+          ACanvas.Polygon([
+            Point(i1.X, ymin), i1, i2, Point(xi2a, ymin), Point(xi2a, ymin)]);
+          continue;
+        end;
+      end
+      else if g2.Y >= YGraphMax then begin
+        i1.Y := ymin;
+        i2.Y := ymin;
+        i1.X := EnsureRange(i1.X, ClipRect.Left, ClipRect.Right);
+        i2.X := EnsureRange(i2.X, ClipRect.Left, ClipRect.Right);
       end;
-    end
-    else if g2.Y >= ParentChart.YGraphMax then begin
-      i1.Y := YMin;
-      i2.Y := YMin;
-      i1.X := EnsureRange(i1.X, XMin, XMax);
-      i2.X := EnsureRange(i2.X, XMin, XMax);
-    end;
     DrawPart;
   end;
 
@@ -1550,8 +1525,7 @@ begin
   inherited DrawLegend(ACanvas, ARect);
   ACanvas.Pen.Color := SeriesColor;
   y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.MoveTo(ARect.Left, y);
-  ACanvas.LineTo(ARect.Right, y);
+  ACanvas.Line(ARect.Left, y, ARect.Right, y);
 end;
 
 { TFuncSeries }
@@ -1611,8 +1585,7 @@ begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
   ACanvas.Pen.Assign(Pen);
   y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.MoveTo(ARect.Left, y);
-  ACanvas.LineTo(ARect.Right, y);
+  ACanvas.Line(ARect.Left, y, ARect.Right, y);
 end;
 
 function TFuncSeries.GetLegendCount: Integer;

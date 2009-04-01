@@ -20,9 +20,9 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'.Font.Height'#2#245#26'BottomAxis.Title.Font.Name'#6#13'MS Sans Serif'#18'B'
   +'ottomAxis.Visible'#9#13'Frame.Visible'#9#9'BackColor'#7#9'clBtnFace'#5'Alig'
   +'n'#7#8'alClient'#5'Color'#7#9'clBtnFace'#11'ParentColor'#8#0#5'TLine'#13'Ch'
-  +'art1LineHor'#12'ShowInLegend'#8#9'Pen.Style'#7#5'psDot'#11'SeriesColor'#7#7
+  +'art1LineHor'#12'ShowInLegend'#8#9'Pen.Style'#7#6'psDash'#11'SeriesColor'#7#7
   +'clBlack'#0#0#5'TLine'#14'Chart1LineVert'#12'ShowInLegend'#8#9'LineStyle'#7
-  +#10'lsVertical'#9'Pen.Style'#7#5'psDot'#11'SeriesColor'#7#7'clBlack'#0#0#0#6
+  +#10'lsVertical'#9'Pen.Style'#7#6'psDash'#11'SeriesColor'#7#7'clBlack'#0#0#0#6
   +'TPanel'#6'Panel1'#6'Height'#2'f'#3'Top'#3#136#1#5'Width'#3'I'#2#5'Align'#7#8
   +'alBottom'#12'ClientHeight'#2'f'#11'ClientWidth'#3'I'#2#8'TabOrder'#2#0#0#6
   +'TLabel'#6'lblAdd'#4'Left'#2#13#6'Height'#2#14#3'Top'#2#10#5'Width'#2#24#7'C'

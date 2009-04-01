@@ -184,9 +184,6 @@ type
 
     function GetSeriesCount: Integer;
 
-    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
-
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -195,11 +192,12 @@ type
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
 
-    procedure Refresh(ACanvas: TCanvas; ARect: TRect);
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
     procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
     procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
+    procedure UpdateExtent;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -229,6 +227,8 @@ type
     procedure SaveToBitmapFile(const FileName: String);
     procedure CopyToClipboardBitmap;
     procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
+    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
 
     function GetNewColor: TColor;
     function GetRectangle: TRect;
@@ -426,7 +426,15 @@ procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 begin
   FClipRect := ARect;
   InflateRect(FClipRect, -2, -2);
-  Refresh(ACanvas, ARect);
+  DrawReticule(ACanvas);
+
+  UpdateExtent;
+  Clean(ACanvas, ARect);
+  DrawTitleFoot(ACanvas, ARect);
+  DrawLegend(ACanvas, ARect);
+  DrawAxis(ACanvas, ARect);
+  DisplaySeries(ACanvas);
+  DrawReticule(ACanvas);
 end;
 
 procedure TChart.PrepareXorPen;
@@ -588,8 +596,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     if FBottomAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FBottomAxis.Grid);
       ACanvas.Brush.Style := bsClear;
-      if (x > FClipRect.Left) and (x < FClipRect.Right) then
-        DrawLineVert(ACanvas, x);
+      DrawLineVert(ACanvas, x);
     end;
 
     ACanvas.Pen.Color := AxisColor;
@@ -616,8 +623,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     if FLeftAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FLeftAxis.Grid);
       ACanvas.Brush.Style := bsClear;
-      if (y > FClipRect.Top) and (y < FClipRect.Bottom) then
-        DrawLineHoriz(ACanvas, y);
+      DrawLineHoriz(ACanvas, y);
     end;
 
     ACanvas.Pen.Color := AxisColor;
@@ -679,7 +685,7 @@ begin
     // that a new mark longer then existing ones is introduced.
     // That will change marks width and reduce view area,
     // requiring another call to CalculateTransformationCoeffs...
-    // So punt for now and just reserve space for extra digit unconditilnally.
+    // So punt for now and just reserve space for extra digit unconditionally.
     leftAxisWidth += ACanvas.TextWidth('0');
     if FMirrorX then
       FClipRect.Right -= leftAxisWidth
@@ -789,12 +795,14 @@ end;
 
 procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
 begin
-  ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
+  if (FClipRect.Top < AY) and (AY < FClipRect.Bottom) then
+    ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
 end;
 
 procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
 begin
-  ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
+  if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
+    ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
 end;
 
 procedure TChart.SetAutoUpdateXMin(Value: Boolean);
@@ -921,110 +929,25 @@ end;
 procedure TChart.SetAutoXMin(Auto: Boolean);
 begin
   FAutoUpdateXMin := Auto;
-  Refresh(Canvas, Rect(0, 0, Width, Height));
+  Invalidate;
 end;
 
 procedure TChart.SetAutoXMax(Auto: Boolean);
 begin
   FAutoUpdateXMax := Auto;
-  Refresh(Canvas, Rect(0, 0, Width, Height));
+  Invalidate;
 end;
 
 procedure TChart.SetAutoYMin(Auto: Boolean);
 begin
   FAutoUpdateYMin := Auto;
-  Refresh(Canvas, Rect(0, 0, Width, Height));
+  Invalidate;
 end;
 
 procedure TChart.SetAutoYMax(Auto: Boolean);
 begin
   FAutoUpdateYMax := Auto;
-  Refresh(Canvas, Rect(0, 0, Width, Height));
-end;
-
-procedure TChart.Refresh(ACanvas: TCanvas; ARect: TRect);
-var
-  Tolerance, Valeur: Double;
-  i: Integer;
-  allEmpty: Boolean = true;
-  XMinSeries, XMaxSeries, YMinSeries, YMaxSeries: Double;
-begin
-  DrawReticule(ACanvas);
-  if FIsZoomed then begin
-    FXGraphMin := FCurrentExtent.a.X;
-    FYGraphMin := FCurrentExtent.a.Y;
-    FXGraphMax := FCurrentExtent.b.X;
-    FYGraphMax := FCurrentExtent.b.Y;
-  end
-  else begin
-    // Search # of points, min and max of all series
-    XMinSeries := MaxDouble;
-    XMaxSeries := MinDouble;
-    YMinSeries := MaxDouble;
-    YMaxSeries := MinDouble;
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active then begin
-          allEmpty := allEmpty and IsEmpty;
-          UpdateBounds(XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
-        end;
-    if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
-    if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
-    if XMaxSeries < MinDouble / 10 then XMaxSeries := 0;
-    if YMaxSeries < MinDouble / 10 then YMaxSeries := 0;
-
-    if YMaxSeries = YMinSeries then begin
-      YMaxSeries := YMaxSeries + 1;
-      YMinSeries := YMinSeries - 1;
-    end;
-    if XMaxSeries = XMinSeries then begin
-      XMaxSeries := XMaxSeries + 1;
-      XMinSeries := XMinSeries - 1;
-    end;
-
-
-    // Image coordinates calculation
-    // Update max in graph
-    // If one point : +/-10% of the point coordinates
-    Tolerance := 0.001; //this should be cleaned eventually
-    // Tolerance := 0.1;
-
-    if not allEmpty then begin
-      // If several points : automatic +/-10% of interval
-      Valeur := Tolerance * (XMaxSeries - XMinSeries);
-      if Valeur <> 0 then begin
-        if FAutoUpdateXMin then FXGraphMin := XMinSeries - Valeur;
-        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + Valeur;
-      end
-      else begin
-        if FAutoUpdateXMin then FXGraphMin := XMinSeries - 1;
-        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + 1;
-      end;
-      Valeur := Tolerance * (YMaxSeries - YMinSeries);
-      if Valeur<>0 then begin
-        if FAutoUpdateYMin then FYGraphMin := YMinSeries-Valeur;
-        if FAutoUpdateYMax then FYGraphMax := YMaxSeries+Valeur;
-      end
-      else begin
-        if FAutoUpdateYMin then FYGraphMin := YMinSeries-1;
-        if FAutoUpdateYMax then FYGraphMax := YMinSeries+1;
-      end;
-    end
-    else begin
-      // 0 Points
-      if FAutoUpdateXMin then FXGraphMin := 0;
-      if FAutoUpdateXMax then FXGraphMax := 0;
-      if FAutoUpdateYMin then FYGraphMin := 0;
-      if FAutoUpdateYMax then FYGraphMax := 0;
-    end;
-  end;
-
-  Clean(ACanvas, ARect);
-  DrawTitleFoot(ACanvas, ARect);
-  DrawLegend(ACanvas, ARect);
-  DrawAxis(ACanvas, ARect);
-  DisplaySeries(ACanvas);
-  DrawReticule(ACanvas);
+  Invalidate;
 end;
 
 procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
@@ -1362,6 +1285,82 @@ end;
 function TChart.GetSeriesCount: Integer;
 begin
   Result := FSeries.FList.Count;
+end;
+
+procedure TChart.UpdateExtent;
+var
+  XMinSeries, YMinSeries, XMaxSeries, YMaxSeries, Valeur, Tolerance: Double;
+  allEmpty: Boolean;
+  i: Integer;
+begin
+  if FIsZoomed then begin
+    FXGraphMin := FCurrentExtent.a.X;
+    FYGraphMin := FCurrentExtent.a.Y;
+    FXGraphMax := FCurrentExtent.b.X;
+    FYGraphMax := FCurrentExtent.b.Y;
+  end
+  else begin
+    // Search # of points, min and max of all series
+    XMinSeries := MaxDouble;
+    XMaxSeries := MinDouble;
+    YMinSeries := MaxDouble;
+    YMaxSeries := MinDouble;
+    for i := 0 to SeriesCount - 1 do
+      with Series[i] do
+        if Active then begin
+          allEmpty := allEmpty and IsEmpty;
+          UpdateBounds(XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
+        end;
+    if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
+    if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
+    if XMaxSeries < MinDouble / 10 then XMaxSeries := 0;
+    if YMaxSeries < MinDouble / 10 then YMaxSeries := 0;
+
+    if YMaxSeries = YMinSeries then begin
+      YMaxSeries := YMaxSeries + 1;
+      YMinSeries := YMinSeries - 1;
+    end;
+    if XMaxSeries = XMinSeries then begin
+      XMaxSeries := XMaxSeries + 1;
+      XMinSeries := XMinSeries - 1;
+    end;
+
+
+    // Image coordinates calculation
+    // Update max in graph
+    // if one point : + / - 10% of the point coordinates
+    Tolerance := 0.001; //this should be cleaned eventually
+    // Tolerance := 0.1;
+
+    if not allEmpty then begin
+      // if several points : automatic + / - 10% of interval
+      Valeur := Tolerance * (XMaxSeries - XMinSeries);
+      if Valeur <> 0 then begin
+        if FAutoUpdateXMin then FXGraphMin := XMinSeries - Valeur;
+        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + Valeur;
+      end
+      else begin
+        if FAutoUpdateXMin then FXGraphMin := XMinSeries - 1;
+        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + 1;
+      end;
+      Valeur := Tolerance * (YMaxSeries - YMinSeries);
+      if Valeur <> 0 then begin
+        if FAutoUpdateYMin then FYGraphMin := YMinSeries - Valeur;
+        if FAutoUpdateYMax then FYGraphMax := YMaxSeries + Valeur;
+      end
+      else begin
+        if FAutoUpdateYMin then FYGraphMin := YMinSeries - 1;
+        if FAutoUpdateYMax then FYGraphMax := YMinSeries + 1;
+      end;
+    end
+    else begin
+      // 0 Points
+      if FAutoUpdateXMin then FXGraphMin := 0;
+      if FAutoUpdateXMax then FXGraphMax := 0;
+      if FAutoUpdateYMin then FYGraphMin := 0;
+      if FAutoUpdateYMax then FYGraphMax := 0;
+    end;
+  end;
 end;
 
 procedure TChart.ZoomFull;
