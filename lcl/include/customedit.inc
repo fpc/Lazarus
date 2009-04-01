@@ -37,16 +37,6 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
 
-procedure TCustomEdit.CMTextChanged(var Message: TLMessage);
-begin
-  if not (wcfCreatingHandle in FWinControlFlags) then
-  begin
-    Modified := True;
-    if HandleAllocated then
-      Change;
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.Create
   Params:  none
@@ -470,7 +460,11 @@ begin
   end;
 
   if not (wcfCreatingHandle in FWinControlFlags) then
+  begin
     Modified := True;
+    if HandleAllocated then
+      Change;
+  end;
 end;
 
 procedure TCustomEdit.Change;
