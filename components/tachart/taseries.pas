@@ -424,10 +424,10 @@ end;
 procedure TChartSeries.InitBounds(out XMin, YMin, XMax, YMax: Integer);
 begin
   with ParentChart do begin
-    XMin := XImageMin;
-    XMax := XImageMax;
-    YMin := YImageMin;
-    YMax := YImageMax;
+    XMin := ClipRect.Left;
+    XMax := ClipRect.Right;
+    YMin := ClipRect.Bottom;
+    YMax := ClipRect.Top;
   end;
 
   if XMin > XMax then
@@ -619,12 +619,12 @@ var
     if g1.Y = g2.Y then begin
       if g1.X > g2.X then
         Exchange(g1, g2);
-      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
-      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.ClipRect.Left;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.ClipRect.Right;
     end
     else if g1.X = g2.X then begin
-      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
-      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.ClipRect.Bottom;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.ClipRect.Top;
     end
     else if ParentChart.LineInViewPort(g1, g2) then begin
       i1 := ParentChart.GraphToImage(g1);
@@ -1293,12 +1293,11 @@ begin
   end;
 
   with ParentChart do begin
-    center.x := (XImageMin + XImageMax) div 2;
-    center.y := (YImageMin + YImageMax) div 2;
+    center := CenterPoint(ClipRect);
     // Reserve space for labels.
     radius := Min(
-      XImageMax - center.x - MaxIntValue(labelWidths),
-      YImageMin - center.y - MaxIntValue(labelHeights));
+      ClipRect.Right - center.x - MaxIntValue(labelWidths),
+      ClipRect.Bottom - center.y - MaxIntValue(labelHeights));
   end;
   if Marks.IsMarkLabelsVisible then
     radius -= Marks.Distance;
@@ -1465,7 +1464,7 @@ begin
     GetCoords(i, g1, i1);
     GetCoords(i + 1, g2, i2);
 
-    iy_min := ParentChart.YImageMin;
+    iy_min := ParentChart.ClipRect.Bottom;
     ACanvas.Pen.Color:= clBlack;
     ACanvas.Brush.Color:= PChartCoord(FCoordList.Items[i])^.Color;
 
@@ -1500,12 +1499,12 @@ begin
     if g1.Y = g2.Y then begin
       if g1.X > g2.X then
         Exchange(g1, g2);
-      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.XImageMin;
-      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.XImageMax;
+      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.ClipRect.Left;
+      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.ClipRect.Right;
     end
     else if g1.X = g2.X then begin
-      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.YImageMin;
-      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.YImageMax;
+      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.ClipRect.Bottom;
+      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.ClipRect.Top;
     end
     else if ParentChart.LineInViewPort(g1, g2) then begin
       xi2a := i2.X;
@@ -1592,9 +1591,9 @@ begin
   if not Assigned(OnCalculate) then exit;
 
   FChart.XGraphToImage(Extent.XMin, x);
-  x := Max(x, FChart.XImageMin);
+  x := Max(x, FChart.ClipRect.Left);
   FChart.XGraphToImage(Extent.XMax, xmax);
-  xmax := Min(xmax, FChart.XImageMax);
+  xmax := Min(xmax, FChart.ClipRect.Right);
 
   ACanvas.Pen.Assign(Pen);
 

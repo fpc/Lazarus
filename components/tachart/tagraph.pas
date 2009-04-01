@@ -116,7 +116,6 @@ type
   private
     FSeries: TChartSeriesList;
     FMirrorX: Boolean;                // From right to left ?
-    YMarkWidth: Integer;              // Depend on Y marks
     FXGraphMin, FYGraphMin: Double;   // Graph coordinates of limits
     FXGraphMax, FYGraphMax: Double;
     FAutoUpdateXMin: Boolean;         // Automatic calculation of XMin limit of graph ?
@@ -140,6 +139,7 @@ type
     FIsZoomed: Boolean;
     FSelectionRect: TRect;
     FCurrentExtent: TDoubleRect;
+    FClipRect: TRect;
 
     FReticuleMode: TReticuleMode;
     FOnDrawReticule: TDrawReticuleEvent;
@@ -163,7 +163,7 @@ type
     procedure SetYGraphMin(Value: Double);
     procedure SetXGraphMax(Value: Double);
     procedure SetYGraphMax(Value: Double);
-    procedure SetMirrorX(Value: Boolean);
+    procedure SetMirrorX(AValue: Boolean);
     procedure SetGraphBrush(Value: TBrush);
     procedure SetTitle(Value: TChartTitle);
     procedure SetFoot(Value: TChartTitle);
@@ -184,6 +184,9 @@ type
 
     function GetSeriesCount: Integer;
 
+    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
+
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -191,10 +194,13 @@ type
     procedure DoDrawReticule(
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
-  public
-    XImageMin, YImageMin: Integer;                // Image coordinates of limits
-    XImageMax, YImageMax: Integer;
 
+    procedure Refresh(ACanvas: TCanvas; ARect: TRect);
+    procedure Clean(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
+  public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
     procedure Paint; override;
@@ -203,11 +209,6 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-    procedure Refresh(ACanvas: TCanvas; ARect: TRect);
-    procedure Clean(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
 
     procedure AddSeries(ASeries: TBasicChartSeries);
     procedure DeleteSeries(ASeries: TBasicChartSeries);
@@ -236,6 +237,7 @@ type
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
     property Canvas;
+    property ClipRect: TRect read FClipRect;
 
     property SeriesCount: Integer read GetSeriesCount;
     property ChartHeight: Integer read GetChartHeight;
@@ -306,7 +308,7 @@ var
 implementation
 
 uses
-  Clipbrd, LCLProc, GraphMath, Math;
+  Clipbrd, LCLProc, GraphMath, Math, Types;
 
 const
   MinDouble = -1.7e308;
@@ -347,8 +349,6 @@ begin
   FReticuleMode := rmNone;
 
   FSeries := TChartSeriesList.Create(Self);
-
-  YMarkWidth := 10;
 
   FAutoUpdateXMin := True;
   FAutoUpdateXMax := True;
@@ -423,48 +423,9 @@ begin
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-var
-  i: Integer;
-  pbf: TPenBrushFontRecall;
 begin
-  YImageMin := ARect.Bottom - 5;
-  YImageMax := ARect.Top + 5;
-
-  if FTitle.Visible or FFoot.Visible then
-    pbf := TPenBrushFontRecall.Create(ACanvas, [pbfFont])
-  else
-    pbf := nil;
-  try
-    if FTitle.Visible then begin
-      ACanvas.Font.Assign(FTitle.Font);
-      for i := 0 to FTitle.Text.Count - 1 do
-        YImageMax := YImageMax + 5 + ACanvas.TextHeight(FTitle.Text[i]);
-    end;
-
-    if FFoot.Visible then begin
-      ACanvas.Font.Assign(FFoot.Font);
-      for i := 0 to FFoot.Text.Count - 1 do
-        YImageMin := YImageMin - 5 - ACanvas.TextHeight(FFoot.Text[i]);
-    end;
-  finally
-    pbf.Free;
-  end;
-
-  if FBottomAxis.Visible and FAxisVisible then begin
-    //FIXME: fix to rotate other than 0/90/180 degres
-    YImageMin := YImageMin -
-      ACanvas.TextHeight(FBottomAxis.Title.Caption) - ACanvas.TextHeight('1');
-  end;
-  if FMirrorX then begin
-    XImageMin := ARect.Right - YMarkWidth - GetLegendWidth(ACanvas);
-    XImageMax := ARect.Left;
-  end else begin
-    if FLeftAxis.Visible and FAxisVisible then
-      XImageMin := YMarkWidth + ACanvas.TextHeight(FLeftAxis.Title.Caption) + ARect.Left
-    else
-      XImageMin := YMarkWidth + ARect.Left;
-    XImageMax := ARect.Right - 10 - GetLegendWidth(ACanvas);
-  end;
+  FClipRect := ARect;
+  InflateRect(FClipRect, -2, -2);
   Refresh(ACanvas, ARect);
 end;
 
@@ -483,24 +444,32 @@ var
   lo, hi: Integer;
 begin
   if FXGraphMax <> FXGraphMin then begin
-    lo := XImageMin + AMargin.Left;
-    hi := XImageMax - AMargin.Right;
+    lo := FClipRect.Left + AMargin.Left;
+    hi := FClipRect.Right - AMargin.Right;
     if BottomAxis.Inverted then
       Exchange(lo, hi);
     FScale.X := (hi - lo) / (FXGraphMax - FXGraphMin);
     FOffset.X := hi - FScale.X * FXGraphMax;
+    XImageToGraph(FClipRect.Left, FXGraphMin);
+    XImageToGraph(FClipRect.Right, FXGraphMax);
+    if BottomAxis.Inverted then
+      Exchange(FXGraphMin, FXGraphMax);
   end
   else begin
     FScale.X := 1;
     FOffset.X := 0;
   end;
   if FYGraphMax <> FYGraphMin then begin
-    lo := YImageMin - AMargin.Bottom;
-    hi := YImageMax + AMargin.Top;
+    lo := FClipRect.Bottom - AMargin.Bottom;
+    hi := FClipRect.Top + AMargin.Top;
     if LeftAxis.Inverted then
       Exchange(lo, hi);
     FScale.Y := (hi - lo) / (FYGraphMax - FYGraphMin);
     FOffset.Y := hi - FScale.Y * FYGraphMax;
+    YImageToGraph(FClipRect.Bottom, FYGraphMin);
+    YImageToGraph(FClipRect.Top, FYGraphMax);
+    if LeftAxis.Inverted then
+      Exchange(FYGraphMin, FYGraphMax);
   end
   else begin
     FScale.Y := 1;
@@ -515,27 +484,28 @@ begin
   ACanvas.Pen.Color := Color;
   ACanvas.Brush.Color := Color;
   ACanvas.Brush.Style := bsSolid;
-  ACanvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+  ACanvas.Rectangle(ARect);
 end;
 
 procedure TChart.DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
 
-  function GetTextPos(AAlign: TAlignment; const AText: String): Integer;
+  function AlignedTextPos(AAlign: TAlignment; const AText: String): TSize;
   begin
+    Result := ACanvas.TextExtent(AText);
     case AAlign of
       taLeftJustify:
-        Result := XImageMin;
+        Result.cx := FClipRect.Left;
       taCenter:
-        Result := (ARect.Left + ARect.Right - ACanvas.TextWidth(AText)) div 2;
+        Result.cx := (FClipRect.Left + FClipRect.Right - Result.cx) div 2;
       taRightJustify:
-        Result := XImageMax - ACanvas.TextWidth(AText);
+        Result.cx := FClipRect.Right - Result.cx;
     end;
   end;
 
 var
-  i, y: Integer;
+  sz: TSize;
+  i: Integer;
   pbf: TPenBrushFontRecall;
-  t: String;
 begin
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfBrush, pbfFont]);
   try
@@ -543,23 +513,23 @@ begin
       if Visible and (Text.Count > 0) then begin
         ACanvas.Brush.Assign(Brush);
         ACanvas.Font.Assign(Font);
-        y := 5 + ARect.Top;
         for i := 0 to Text.Count - 1 do begin
-          t := Text[i];
-          ACanvas.TextOut(GetTextPos(Alignment, t), y, t);
-          y += ACanvas.TextHeight(t);
+          sz := AlignedTextPos(Alignment, Text[i]);
+          ACanvas.TextOut(sz.cx, FClipRect.Top, Text[i]);
+          FClipRect.Top += sz.cy;
         end;
+        FClipRect.Top += 4;
       end;
     with FFoot do
       if Visible and (Text.Count > 0) then begin
         ACanvas.Brush.Assign(Brush);
         ACanvas.Font.Assign(Font);
-        y := ARect.Bottom - 5;
         for i := Text.Count - 1 downto 0 do begin
-          t := Text[i];
-          y -= ACanvas.TextHeight(t);
-          ACanvas.TextOut(GetTextPos(Alignment, t), y, t);
+          sz := AlignedTextPos(Alignment, Text[i]);
+          FClipRect.Bottom -= sz.cy;
+          ACanvas.TextOut(sz.cy, FClipRect.Bottom, Text[i]);
         end;
+        FClipRect.Bottom -= 4;
       end;
   finally
     pbf.Free;
@@ -574,31 +544,37 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     Result := Trim(FloatToStr(AMark));
   end;
 
-  function CenteredPos(const AText: String; minPos, maxPos: Integer): Integer;
-  begin
-    Result := (minPos + maxPos - ACanvas.TextWidth(AText)) div 2;
-  end;
-
-  procedure DrawAxisLabels;
+  procedure DrawAxisTitles;
   var
-    x: Integer;
+    x, w: Integer;
+    c: TPoint;
+    sz: TSize;
+    s: String;
   begin
-    if FLeftAxis.Visible and FAxisVisible then begin
-      x := 5;
-      if FMirrorX then
-        x += ARect.Right - ACanvas.TextWidth(FLeftAxis.Title.Caption);
-      RotateLabel(
-        ACanvas, x,
-        CenteredPos(FLeftAxis.Title.Caption, YImageMin, YImageMax),
-        FLeftAxis.Title.Caption, FLeftAxis.Title.Angle)
+    // FIXME: Angle assumed to be around 0 for bottom and 90 for left axis.
+
+    c := CenterPoint(FClipRect);
+    s := FLeftAxis.Title.Caption;
+    if FLeftAxis.Visible and (s <> '') then begin
+      w := ACanvas.TextHeight(FLeftAxis.Title.Caption);
+      if FMirrorX then begin
+        x := FClipRect.Right - w;
+        FClipRect.Right := x - 4;
+      end
+      else begin
+        x := FClipRect.Left;
+        FClipRect.Left += w + 4;
+      end;
+      RotateLabel(ACanvas, x, c.Y - w div 2, s, FLeftAxis.Title.Angle)
     end;
 
-    if FBottomAxis.Visible and FAxisVisible then begin
+    s := FBottomAxis.Title.Caption;
+    if FBottomAxis.Visible and (s <> '') then begin
+      sz := ACanvas.TextExtent(s);
       RotateLabel(
-        ACanvas,
-        CenteredPos(FBottomAxis.Title.Caption, XImageMin, XImageMax),
-        YImageMin + 5 + ACanvas.TextHeight(FBottomAxis.Title.Caption),
-        FBottomAxis.Title.Caption, FBottomAxis.Title.Angle);
+        ACanvas, c.X - sz.cx div 2, FClipRect.Bottom - sz.cy,
+        s, FBottomAxis.Title.Angle);
+      FClipRect.Bottom -= sz.cy + 4;
     end;
   end;
 
@@ -608,59 +584,57 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     markText: String;
   begin
     XGraphToImage(AMark, x);
-    ACanvas.Brush.Assign(FGraphBrush);
 
     if FBottomAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FBottomAxis.Grid);
-      if (x <> XImageMax) and (x <> XImageMin) then begin
-        ACanvas.MoveTo(x, YImageMin);
-        ACanvas.LineTo(x, YImageMax);
-      end;
+      ACanvas.Brush.Style := bsClear;
+      if (x > FClipRect.Left) and (x < FClipRect.Right) then
+        DrawLineVert(ACanvas, x);
     end;
 
     ACanvas.Pen.Color := AxisColor;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
-    ACanvas.MoveTo(x, YImageMin - 4);
-    ACanvas.LineTo(x, YImageMin + 4);
-    ACanvas.Brush.Color := Color;
+    ACanvas.Line(x, FClipRect.Bottom - 4, x, FClipRect.Bottom + 4);
 
+    ACanvas.Brush.Assign(FGraphBrush);
+    ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
     w := ACanvas.TextWidth(markText);
     ACanvas.TextOut(
-      EnsureRange(x - w div 2, 1, ARect.Right - w), YImageMin + 4, markText);
+      EnsureRange(x - w div 2, 1, ARect.Right - w),
+      FClipRect.Bottom + 5, markText);
   end;
 
   procedure DrawYMark(AMark: Double);
   var
-    y, w, h: Integer;
+    x, y, w, h: Integer;
     markText: String;
   begin
     YGraphToImage(AMark, y);
-    ACanvas.Brush.Assign(FGraphBrush);
 
     if FLeftAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FLeftAxis.Grid);
-      if (y <> YImageMax) and (y <> YImageMin) then begin
-        ACanvas.MoveTo(XImageMin, y);
-        ACanvas.LineTo(XImageMax, y);
-      end;
+      ACanvas.Brush.Style := bsClear;
+      if (y > FClipRect.Top) and (y < FClipRect.Bottom) then
+        DrawLineHoriz(ACanvas, y);
     end;
 
     ACanvas.Pen.Color := AxisColor;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
-    ACanvas.MoveTo(XImageMin - 4, y);
-    ACanvas.LineTo(XImageMin + 4, y);
-    ACanvas.Brush.Color := Color;
+    ACanvas.Line(FClipRect.Left - 4, y, FClipRect.Left + 4, y);
 
+    ACanvas.Brush.Assign(FGraphBrush);
+    ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
     w := ACanvas.TextWidth(markText);
     h := ACanvas.TextHeight(markText) div 2;
     if FMirrorX then
-      ACanvas.TextOut(XImageMin + 6, y - h, markText)
+      x := FClipRect.Right + 5
     else
-      ACanvas.TextOut(XImageMin - 7 - w, y - h, markText);
+      x := FClipRect.Left - 5 - w;
+    ACanvas.TextOut(x, y - h, markText);
   end;
 
 var
@@ -670,69 +644,66 @@ var
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
 begin
+  if not FAxisVisible then exit;
+
+  DrawAxisTitles;
+
   // Check AxisScale for both axes
   leftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
   bottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
-  // Find max mark width
-  maxWidth := 0;
-  if FYGraphMin <> FYGraphMax then begin
-    CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
-    case LeftAxisScale of
-      asIncreasing:
-        while mark <= FYGraphMax + step * 10e-10 do begin
-          if mark >= FYGraphMin then
-            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= FYGraphMin - step * 10e-10 do begin
-          if mark <= FYGraphMax then
-            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-          mark -= step;
-        end;
-    end;
-  end;
 
-  YMarkWidth := 10;
-  //only consider this width if visible
-  if FLeftAxis.Visible and FAxisVisible then
-    leftAxisWidth := ACanvas.TextHeight(FLeftAxis.Title.Caption) + 16
-  else
-    leftAxisWidth := 0;
-
-  if maxWidth + leftAxisWidth > YMarkWidth then begin
-    YMarkWidth := maxWidth + leftAxisWidth;
-    if FMirrorX then begin
-      XImageMin := ARect.Right - YMarkWidth - GetLegendWidth(ACanvas);
-      XImageMax := ARect.Left + 10;
-    end
-    else begin
-      XImageMin := ARect.Left + YMarkWidth;
-      XImageMax := ARect.Right - 10 - GetLegendWidth(ACanvas);
+  leftAxisWidth := 0;
+  if FLeftAxis.Visible then begin
+    // Find max mark width
+    maxWidth := 0;
+    if FYGraphMin <> FYGraphMax then begin
+      CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
+      case leftAxisScale of
+        asIncreasing:
+          while mark <= FYGraphMax + step * 10e-10 do begin
+            if mark >= FYGraphMin then
+              maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
+            mark += step;
+          end;
+        asDecreasing:
+          while mark >= FYGraphMin - step * 10e-10 do begin
+            if mark <= FYGraphMax then
+              maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
+            mark -= step;
+          end;
+      end;
     end;
 
-    CalculateTransformationCoeffs(GetMargins(ACanvas));
+    leftAxisWidth := maxWidth + 5;
+    // CalculateTransformationCoeffs changes axis interval, so it is possibile
+    // that a new mark longer then existing ones is introduced.
+    // That will change marks width and reduce view area,
+    // requiring another call to CalculateTransformationCoeffs...
+    // So punt for now and just reserve space for extra digit unconditilnally.
+    leftAxisWidth += ACanvas.TextWidth('0');
+    if FMirrorX then
+      FClipRect.Right -= leftAxisWidth
+    else
+      FClipRect.Left += leftAxisWidth;
   end;
+
+  if FBottomAxis.Visible then
+    FClipRect.Bottom -= ACanvas.TextHeight('0') + 5;
+
+  CalculateTransformationCoeffs(GetMargins(ACanvas));
 
   // Background
-  ACanvas.Pen.Style := psClear;
-  ACanvas.Brush.Color := FBackColor;
-  ACanvas.Rectangle(XImageMin, YImageMin, XImageMax, YImageMax);
-
-  if FFrame.Visible then
-    with ACanvas do begin
-      Pen.Assign(FFrame);
-      MoveTo(XImageMin, YImageMin);
-      LineTo(XImageMin, YImageMax);
-      LineTo(XImageMax, YImageMax);
-      LineTo(XImageMax, YImageMin);
-      LineTo(XImageMin, YImageMin);
-    end;
-
-  DrawAxisLabels;
+  with ACanvas do begin
+    if FFrame.Visible then
+      Pen.Assign(FFrame)
+    else
+      Pen.Style := psClear;
+    Brush.Color := FBackColor;
+    Rectangle(FClipRect);
+  end;
 
   // X graduations
-  if FBottomAxis.Visible and FAxisVisible and (FXGraphMin <> FXGraphMax) then begin
+  if FBottomAxis.Visible and (FXGraphMin <> FXGraphMax) then begin
     CalculateIntervals(FXGraphMin, FXGraphMax, bottomAxisScale, mark, step);
     case bottomAxisScale of
       asIncreasing:
@@ -751,7 +722,7 @@ begin
   end;
 
   // Y graduations
-  if FLeftAxis.Visible and AxisVisible and (FYGraphMin <> FYGraphMax) then begin
+  if FLeftAxis.Visible and (FYGraphMin <> FYGraphMax) then begin
     CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
     case leftAxisScale of
       asIncreasing:
@@ -776,9 +747,14 @@ var
   pbf: TPenBrushFontRecall;
   r: TRect;
 begin
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
+  if not Legend.Visible then exit;
 
+  // TODO: Legend.Alignment
+
+  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
   try
+    ACanvas.Font.Assign(FLegend.Font);
+
     w := GetLegendWidth(ACanvas);
     TH := ACanvas.TextHeight('I');
     h := 0;
@@ -786,15 +762,15 @@ begin
       with Series[i] do
         if Active and ShowInLegend then
           Inc(h, GetLegendCount);
-    x1 := ARect.Right - w - 5;
-    y1 := YImageMax;
+    FClipRect.Right -= w + 10;
+    x1 := FClipRect.Right + 5;
+    y1 := FClipRect.Top;
     x2 := x1 + w;
     y2 := y1 + LEGEND_SPACING + h * (TH + LEGEND_SPACING);
 
     // Border
     ACanvas.Brush.Assign(FGraphBrush);
     ACanvas.Pen.Assign(FLegend.Frame);
-    ACanvas.Font.Assign(FLegend.Font);
     ACanvas.Rectangle(x1, y1, x2, y2);
 
     r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
@@ -809,6 +785,16 @@ begin
   finally
     pbf.Free;
   end;
+end;
+
+procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+begin
+  ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
+end;
+
+procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
+begin
+  ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
 end;
 
 procedure TChart.SetAutoUpdateXMin(Value: Boolean);
@@ -855,19 +841,10 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetMirrorX(Value: Boolean);
+procedure TChart.SetMirrorX(AValue: Boolean);
 begin
-  if Value = FMirrorX then exit;
-  if FMirrorX then begin
-    XImageMin := YMarkWidth;
-    XImageMax := Width - 10 - GetLegendWidth(Canvas);
-    FMirrorX := false;
-  end
-  else begin
-    XImageMin := Width - YMarkWidth - GetLegendWidth(Canvas);
-    XImageMax := 10;
-    FMirrorX := true;
-  end;
+  if AValue = FMirrorX then exit;
+  FMirrorX := AValue;
   Invalidate;
 end;
 
@@ -912,7 +889,7 @@ function TChart.GetMargins(ACanvas: TCanvas): TRect;
 var
   i: Integer;
 begin
-  Result := Rect(0, 0, 0, 0);
+  Result := Rect(4, 4, 4, 4);
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
       Series[i].UpdateMargins(ACanvas, Result);
@@ -1042,12 +1019,11 @@ begin
     end;
   end;
 
-  CalculateTransformationCoeffs(GetMargins(ACanvas));
   Clean(ACanvas, ARect);
+  DrawTitleFoot(ACanvas, ARect);
+  DrawLegend(ACanvas, ARect);
   DrawAxis(ACanvas, ARect);
   DisplaySeries(ACanvas);
-  DrawTitleFoot(ACanvas, ARect);
-  if FLegend.Visible then DrawLegend(ACanvas, ARect);
   DrawReticule(ACanvas);
 end;
 
@@ -1200,15 +1176,17 @@ var
 begin
   if SeriesCount = 0 then exit;
 
-  //set cliping region so we don't draw outsite
-  IntersectClipRect(ACanvas.Handle, XImageMin, YImageMax, XImageMax, YImageMin);
+  // Set clipping region so we don't draw outside.
+  // TODO: Replace by Canvas.ClipRect after fixing issue 13418.
+  IntersectClipRect(
+    ACanvas.Handle, FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
 
   // Update all series
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
       Series[i].Draw(ACanvas);
 
-  //now disable clipping
+  // Now disable clipping.
   SelectClipRgn(ACanvas.Handle, 0);
 end;
 
@@ -1216,17 +1194,14 @@ procedure TChart.DrawReticule(ACanvas: TCanvas);
 begin
   PrepareXorPen;
   if ReticuleMode in [rmVertical, rmCross] then
-    ACanvas.Line(FReticulePos.X, YImageMin, FReticulePos.X, YImageMax);
+    DrawLineVert(ACanvas, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
-    ACanvas.Line(XImageMin, FReticulePos.Y, XImageMax, FReticulePos.Y);
+    DrawLineHoriz(ACanvas, FReticulePos.Y);
 end;
 
 procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if
-    (X < XImageMax) and (X > XImageMin) and
-    (Y < YImageMin) and (Y > YImageMax) and FAllowZoom
-  then begin
+  if PtInRect(FClipRect, Point(X, Y)) and FAllowZoom then begin
     FIsMouseDown := true;
     FSelectionRect := Rect(X, Y, X, Y);
   end;
@@ -1238,7 +1213,6 @@ const
     nil, @PointDistX, @PointDistY, @PointDist);
 var
   i, pointIndex: Integer;
-  r: TRect;
   pt, newRetPos: TPoint;
   value: TDoublePoint;
 begin
@@ -1252,17 +1226,11 @@ begin
   end;
 
   if FReticuleMode = rmNone then exit;
-  r := Rect(XImageMin, YImageMin, XImageMax, YImageMax);
-  if r.Top > r.Bottom then
-    Exchange(r.Top, r.Bottom);
-  if r.Left > r.Right then
-    Exchange(r.Left, r.Right);
-
   for i := 0 to SeriesCount - 1 do begin
     if
       Series[i].GetNearestPoint(
         DIST_FUNCS[FReticuleMode], pt, pointIndex, newRetPos, value) and
-      (newRetPos <> FReticulePos) and PtInRect(r, newRetPos)
+      (newRetPos <> FReticulePos) and PtInRect(FClipRect, newRetPos)
     then begin
       DoDrawReticule(i, pointIndex, newRetPos, value);
       DrawReticule(Canvas);
@@ -1374,12 +1342,12 @@ end;
 
 function TChart.GetChartHeight: Integer;
 begin
-  Result := YImageMax - YImageMin;
+  Result := FClipRect.Right - FClipRect.Left;
 end;
 
 function TChart.GetChartWidth: Integer;
 begin
-  Result := XImageMax - XImageMin;
+  Result := FClipRect.Bottom - FClipRect.Top;
 end;
 
 procedure TChart.GetChildren(AProc: TGetChildProc; ARoot: TComponent);
