@@ -133,6 +133,9 @@ type
     FAsyncOutput: TDynamicDataQueue;
     FScanners: TFPList; // list of TIDEMsgScanner
     FTool: TIDEExternalToolOptions;
+
+    DarwinLinkerMultiline: Boolean;
+    DarwinLinkerLine : String;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -282,6 +285,11 @@ begin
   TheAsyncProcess:=nil;
   EndUpdateNeeded:=false;
   ExceptionMsg:='';
+
+  //Darwin linker features
+  DarwinLinkerMultiline:=false;
+  DarwinLinkerLine:='';
+
   try
     BeginBufferingOutput;
 
@@ -694,16 +702,49 @@ var i, j, FilenameEndPos: integer;
   
   { For example:
     linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
+    Mac OS X linker example:
+    ld: framework not found Cocoas
   }
   function CheckForLinkingErrors(p: integer): boolean;
   var
     OldStart: LongInt;
+    DarwinSymbs:Boolean;
+  const
+    DarwinPrefixLvl1 = '  ';
+    DarwinPrefixLvl2 = '      ';
   begin
     Result:=false;
     OldStart:=p;
     while (p<=length(s)) and (s[p] in ['0'..'9','a'..'z','A'..'Z','_']) do
       inc(p);
-    if not CompStr('.o(',s,p) then exit;
+    if not CompStr('.o(',s,p) then begin
+      p := OldStart;
+      if CompStr('ld: ',s,p) then begin
+        inc(p, 4);
+        DarwinSymbs := CompStr('symbol(s) not found',s,p);
+        Result := DarwinSymbs or
+                  CompStr('framework not found',s,p) or
+                  CompStr('library not found',s,p);
+        if DarwinSymbs then begin
+          if DarwinLinkerLine <> '' then DoAddFilteredLine(DarwinLinkerLine);
+          DarwinLinkerMultiline:=false;
+        end;
+      end else if CompStr('Undefined symbols:', s, OldStart) or DarwinLinkerMultiline then begin
+        DarwinLinkerMultiline:=true;
+        if CompStr(DarwinPrefixLvl2, s, OldStart) then begin
+          DarwinLinkerLine := DarwinLinkerLine + ' ' +
+            Copy(s, length(DarwinPrefixLvl2)+1, length(s)-length(DarwinPrefixLvl2));
+        end else if CompStr(DarwinPrefixLvl1, s, OldStart) then begin
+          if DarwinLinkerLine <> '' then DoAddFilteredLine(DarwinLinkerLine);
+          DarwinLinkerLine := s;
+        end else begin
+          if DarwinLinkerLine <> '' then DoAddFilteredLine(DarwinLinkerLine);
+          DoAddFilteredLine(copy(s,OldStart,length(s)));
+        end;
+      end;
+      if not Result then Exit;
+      p := OldStart;
+    end;
     Result:=true;
     DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
