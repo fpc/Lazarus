@@ -47,7 +47,7 @@ uses
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
   CompilerOptions, CheckCompilerOpts, CompOptsModes,
-  Compiler_Conditionals_Options, Compiler_BuildModes_Options;
+  Compiler_Conditionals_Options, Compiler_BuildModes_Options, CheckLst;
 
 type
   { Compiler options form }
@@ -160,7 +160,16 @@ type
     MsgPage: TPage;
     grpVerbosity: TCheckGroup;
     grpErrorCnt: TGroupBox;
+
+    { Compiler Messages Controls }
     edtErrorCnt: TEdit;
+    btnBrowseMsg: TButton;
+    chklistCompMsg: TCheckListBox;
+    chkUseMsgFile: TCheckBox;
+    editMsgFileName: TEdit;
+    grpCompilerMessages: TGroupBox;
+    CfgCmpMsgPage: TPage;
+
 
     { 'Other' Controls }
     OtherPage: TPage;
@@ -233,6 +242,8 @@ type
     procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
+    procedure CfgCmpMsgPageContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
@@ -241,12 +252,17 @@ type
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure grpOptimizationsResize(Sender: TObject);
+
+    procedure btnBrowseMsgClick(Sender: TObject);
+    procedure chklistCompMsgClick(Sender: TObject);
+    procedure chkUseMsgFileChange(Sender: TObject);
   private
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
     procedure SetupCodeGenerationTab(Page: integer);
     procedure SetupLinkingTab(Page: integer);
     procedure SetupMessagesTab(Page: integer);
+    procedure SetupConfigMsgTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
     procedure SetupConditionalTab(Page: integer);
     procedure SetupInheritedTab(Page: integer);
@@ -261,9 +277,11 @@ type
     ImageIndexRequired: integer;
     ImageIndexInherited: integer;
     InheritedChildDatas: TList; // list of PInheritedNodeData
+    TempMessages: TCompilerMessagesList;
     procedure SetReadOnly(const AValue: boolean);
     procedure UpdateInheritedTab;
     procedure ClearInheritedTree;
+    procedure SetCompilerMessages;
   public
     CompilerOpts: TBaseCompilerOptions;
     OldCompOpts: TBaseCompilerOptions;
@@ -377,6 +395,7 @@ begin
     inherited Create(TheOwner);
     Caption := dlgCompilerOptions;
 
+    TempMessages := TCompilerMessagesList.Create;
     IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
 
     ImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
@@ -395,6 +414,8 @@ begin
     SetupLinkingTab(Page);
     inc(Page);
     SetupMessagesTab(Page);
+    inc(Page);
+    SetupConfigMsgTab(Page);
     inc(Page);
     SetupOtherTab(Page);
     inc(Page);
@@ -417,6 +438,7 @@ destructor TfrmCompilerOptions.Destroy;
 begin
   FreeAndNil(OldCompOpts);
   ClearInheritedTree;
+  TempMessages.Free;
   inherited Destroy;
 end;
 
@@ -465,6 +487,12 @@ begin
   // Test MakeOptionsString function
   if not PutCompilerOptions(ccomlWarning) then exit;
   ShowCompilerOptionsDialog(CompilerOpts);
+end;
+
+procedure TfrmCompilerOptions.CfgCmpMsgPageContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
@@ -678,6 +706,18 @@ begin
       Checked[17] := Options.ShowNothing;
       Checked[18] := Options.ShowHintsForUnusedUnitsInMainSrc;
       Checked[19] := Options.WriteFPCLogo;
+    end;
+
+
+    // compiler messages
+    chkUseMsgFile.OnChange := nil;
+    try
+      chkUseMsgFile.Checked := Options.UseMsgFile;
+      editMsgFileName.Caption := Options.MsgFileName;
+      TempMessages.Assign(Options.CompilerMessages);
+      SetCompilerMessages;
+    finally
+      chkUseMsgFile.OnChange := @chkUseMsgFileChange;
     end;
 
     // other
@@ -986,6 +1026,11 @@ begin
       Options.ShowHintsForUnusedUnitsInMainSrc := Checked[18];
       Options.WriteFPCLogo := Checked[19];
     end;
+
+    // compiler messages
+    Options.UseMsgFile := chkUseMsgFile.Checked;
+    Options.MsgFileName := editMsgFileName.Caption;
+    Options.CompilerMessages.Assign(TempMessages);
 
     // conditionals
     // these are all done via the frames
@@ -1819,6 +1864,94 @@ begin
   btnOk.Enabled:=not FReadOnly;
   btnCheck.Enabled:=not FReadOnly;
 end;
+
+procedure TfrmCompilerOptions.SetupConfigMsgTab(Page: integer);
+begin
+  MainNotebook.Page[Page].Caption := dlgCOCfgCmpMessages;
+
+  grpCompilerMessages.Caption := dlgCompilerMessage;
+  chkUseMsgFile.Caption := dlgUseMsgFile;
+  editMsgFileName.Caption := '';
+end;
+
+procedure TfrmCompilerOptions.chklistCompMsgClick(Sender: TObject);
+var
+  i : Integer;
+begin
+  for i := 0 to chklistCompMsg.Count - 1 do
+    TCompilerMessageConfig(chklistCompMsg.Items.Objects[i]).Ignored := not chklistCompMsg.Checked[i];
+end;
+
+procedure TfrmCompilerOptions.chkUseMsgFileChange(Sender: TObject);
+begin
+  SetCompilerMessages;
+end;
+
+procedure TfrmCompilerOptions.btnBrowseMsgClick(Sender: TObject);
+var
+  dlg : TOpenDialog;
+begin
+  dlg := TOpenDialog.Create(Self);
+  try
+    dlg.Filter := dlgBrowseMsgFilter;
+    if not dlg.Execute then Exit;
+    editMsgFileName.Caption := dlg.FileName;
+    SetCompilerMessages;
+  finally
+    dlg.Free
+  end;
+end;
+
+procedure TfrmCompilerOptions.SetCompilerMessages;
+const
+  MaxIndexLen = 5;
+var
+  i : Integer;
+  j : Integer;
+  topidx  : Integer;
+  m : TCompilerMessageConfig;
+
+
+  function IntToStrLen(idx, strlen: integer): string;
+  var
+    s : string;
+  begin
+    Result := IntToStr(idx);
+    if length(Result) < strlen then  begin
+      SetLength(s, strlen - length(Result));
+      FillChar(s[1], length(s), '0');
+      Result := s + Result;
+    end;
+  end;
+
+begin
+  topidx := chklistCompMsg.TopIndex;
+  chklistCompMsg.Items.BeginUpdate;
+  try
+    if chkUseMsgFile.Checked and FileExistsUTF8(editMsgFileName.Caption) and (editMsgFileName.Caption <> '') then begin
+      try
+        TempMessages.LoadMsgFile(editMsgFileName.Caption)
+      except
+        TempMessages.SetDefault;
+      end;
+    end else
+      TempMessages.SetDefault;
+
+    chklistCompMsg.Clear;
+    chklistCompMsg.Items.Clear;
+    for i := 0 to TempMessages.Count - 1 do begin
+      m := TempMessages.Msg[i];
+      j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [m.MsgType, m.GetUserText]), m);
+      chklistCompMsg.Checked[j] := not m.Ignored;
+    end;
+
+  finally
+    chklistCompMsg.Items.EndUpdate;
+    chkListCompMsg.TopIndex := topidx;
+  end;
+end;
+
+
 
 initialization
   {$I compileroptionsdlg.lrs}

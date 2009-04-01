@@ -1277,6 +1277,7 @@ resourcestring
   dlgCodeGeneration = 'Code';
   dlgCOLinking = 'Linking';
   dlgCOMessages = 'Messages';
+  dlgCOCfgCmpMessages = 'Compiler Messages';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilation = 'Compilation';
@@ -1499,6 +1500,11 @@ resourcestring
   
   // show compiler options dialog
   dlgCommandLineParameters = 'Command line parameters';
+
+  // custom messages
+  dlgBrowseMsgFilter = 'Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*';
+  dlgCompilerMessage = 'Compiler Messages';
+  dlgUseMsgFile = 'Use messages file';
 
   // project options dialog
   dlgProjectOptions = 'Project Options';

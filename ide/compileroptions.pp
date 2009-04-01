@@ -308,8 +308,6 @@ type
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
-type
-
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class
@@ -333,6 +331,73 @@ type
 
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
 
+  
+  TCompilerMessagesList = class; 
+  
+  { TCompilerMessageConfig }
+  
+  TCompilerMessageConfig = class
+  private
+    fOwner  : TCompilerMessagesList; 
+  public
+    MsgIndex : integer;
+    MsgText  : String;
+    Ignored  : Boolean;
+    MsgType  : Char;
+    constructor Create(AOwner: TCompilerMessagesList); 
+    function GetFileText: string;
+    function GetUserText: string; overload;
+    function GetUserText(const ReplaceParams: array of string): string; overload; 
+  end;
+
+  { TCompilerMessagesList }
+  
+  TCompilerMessagesList = class
+  private
+    fItems      : TFPList; 
+    fHash       : array of array of TCompilerMessageConfig;  
+  protected
+    fHidden       : TStringList; 
+    fUsedMsgFile  : string; 
+    fUpdating     : Integer; 
+
+    procedure ClearHash;
+    procedure AddHash(Msg: TCompilerMessageConfig);
+    function FindHash(AIndex: integer):TCompilerMessageConfig ; 
+
+    function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
+    function GetMsgConfig(i: Integer): TCompilerMessageConfig; virtual;
+    procedure SetMsgIgnored(i: Integer; const AValue: Boolean); virtual;
+    function GetMsgIgnored(i: Integer): Boolean; virtual;
+
+    procedure GetIgnoredArray(var b: array of Boolean);    // array must be large enough 
+    procedure SetIgnoredArray(const b: array of Boolean);  // to store b[MaxMsgIndex], or function fail
+
+    function GetCount: Integer; 
+  public
+    constructor Create; 
+    destructor Destroy; override;
+    procedure Clear;  virtual; 
+
+    procedure Assign(Src: TCompilerMessagesList);  virtual; 
+
+    procedure BeginUpdate; virtual; 
+    procedure EndUpdate; virtual; 
+
+    function LoadMsgFile(const FileName: string; isFileUnicode: Boolean = false): Boolean; virtual;
+
+    function Add(AMsgIndex: Integer; AMsgChar: Char; const AMsgText: string; AIgnored: Boolean=false): TCompilerMessageConfig; virtual;
+
+    procedure SetDefault(KeepIgnored: Boolean=true); virtual;
+    function GetParams(MsgIndex: Integer; var prms: array of string; var PrmCount: Integer): Integer; virtual;
+
+    property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
+    property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
+    property MsgIgnored[i: Integer]: Boolean read GetMsgIgnored write SetMsgIgnored;
+    property Count: Integer read GetCount; 
+    property UsedMsgFile : string read fUsedMsgFile; 
+  end;
+  
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -354,7 +419,13 @@ type
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
-
+    
+    // Compiler Messags
+    fUseCustomMessages: Boolean; // use messages customization 
+    fUseMsgFile: Boolean;  // use specified file for messages 
+    fMsgFileName: String;  // messages file name 
+    fCompilerMessages: TCompilerMessagesList; 
+    
     procedure SetTargetFilename(const AValue: String);
   protected
     procedure SetBaseDirectory(const AValue: string); override;
@@ -471,6 +542,11 @@ type
     property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
                                             write FCreateMakefileOnBuild;
+                                            
+    // compiler messages
+    property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
+    property UseMsgFile: Boolean read fUseMsgFile write fUseMsgFile;
+    property MsgFileName: String read fMsgFileName write fMsgFileName;
   end;
   
   
@@ -590,6 +666,16 @@ function LoadXMLCompileReasons(const AConfig: TXMLConfig;
 procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
   const AFlags, DefaultFlags: TCompileReasons);
 
+const
+  MaxMsgParams = 4; 
+  MaxMsgIndex = 20000; 
+
+  symFile   = '$FileName';
+  symClass  = '$Class';
+  symName   = '$Name';
+  symItem   = '$Item';
+  symLineNo = '$LineNum';
+  
 implementation
 
 const
@@ -866,7 +952,7 @@ begin
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
   fBuildModes := TIDEBuildModes.Create(Self);
-
+  FCompilerMessages:=TCompilerMessagesList.Create;
   Clear;
 end;
 
@@ -880,6 +966,7 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
+  FreeAndNil(FCompilerMessages);
   FreeAndNil(fBuildModes);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
@@ -1248,6 +1335,16 @@ begin
   WriteFPCLogo := XMLConfigFile.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
+  if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
+  for i := 0 to fCompilerMessages.Count - 1 do begin
+    with fCompilerMessages.Msg[i] do 
+      Ignored := XMLConfigFile.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false);
+  end; 
+  UseMsgFile := XMLConfigFile.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
+  MsgFileName := XMLConfigFile.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
+
+  
+  
   { Other }
   p:=Path+'Other/';
   DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
@@ -1308,6 +1405,7 @@ var
 
 var
   P: string;
+  i: Integer;
 begin
   { Save the compiler options to the XML file }
   p:=Path;
@@ -1413,6 +1511,13 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
   XMLConfigFile.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
+
+  for i := 0 to CompilerMessages.Count - 1 do begin
+    with CompilerMessages.Msg[i] do 
+      XMLConfigFile.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), Ignored, false);
+  end;
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
 
   { Other }
   p:=Path+'Other/';
@@ -1845,9 +1950,19 @@ begin
   Result:=MakeOptionsString(GetDefaultMainSourceFileName,Globals,Flags);
 end;
 
-function CompilerSupportMessages(CompilerVersion, CompilerRelease, CompilerPatch: Integer): Boolean;
+function GetIgnoredMsgsIndexes(msglist: TCompilerMessagesList; const Separator: string): string;
+var
+  i : integer;
 begin
-  Result := (CompilerVersion >= 2) and (CompilerRelease >= 3) and (CompilerPatch >=1);
+  Result := '';
+  if not Assigned(msglist) then Exit;
+  for i := 0 to msglist.Count - 1 do 
+    if msglist.Msg[i].Ignored then begin
+      if Result <> '' then 
+        Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
+      else 
+        Result := IntToStr(msglist.Msg[i].MsgIndex);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1862,7 +1977,7 @@ function TBaseCompilerOptions.MakeOptionsString(
   const MainSourceFilename: string; Globals: TGlobalCompilerOptions;
   Flags: TCompilerCmdLineOptions): String;
 var
-  switches, tempsw: String;
+  switches, tempsw, t: String;
   InhLinkerOpts: String;
   NewTargetFilename: String;
   NewTargetDirectory: String;
@@ -2374,6 +2489,16 @@ begin
      oxxx = Object files
      rxxx = Compiler messages file
 }
+  try 
+    t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
+    if t <> '' then
+      switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+    if fUseMsgFile and FileExistsUTF8(MsgFileName)then
+     switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
+  except 
+  end; 
+
+
   { ----------------------------------------------- }
 
   { TODO: The following switches need to be implemented. They need to
@@ -2600,6 +2725,10 @@ begin
   fShowHintsForSenderNotUsed := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
+  
+  fUseCustomMessages := false;  
+  fCompilerMessages.Clear; 
+  fCompilerMessages.SetDefault; 
 
   // other
   fDontUseConfigFile := false;
@@ -3669,6 +3798,592 @@ begin
 
   StdModes.BuildModeSet:=Self;
 end;
+
+{ TCompilerMessagesList }
+
+procedure TCompilerMessagesList.ClearHash; 
+var
+  i : integer; 
+begin
+  for i := 0 to length(fHash) - 1 do SetLength(fHash[i], 0); 
+end;
+
+procedure TCompilerMessagesList.AddHash(Msg: TCompilerMessageConfig); 
+var
+  idx : Integer; 
+  sub : Integer; 
+begin
+  idx := Msg.MsgIndex div 1000;
+  sub := Msg.MsgIndex mod 1000;
+  while length(fHash) <= idx do 
+    if length(FHash) = 0 
+      then SetLength(fHash, 16)
+      else SetLength(fHash, length(fHash)*2); 
+
+  while length(fHash[idx]) <= sub do 
+    if length(fHash[idx]) = 0 
+      then SetLength(fHash[idx], 16)
+      else SetLength(fHash[idx], length(fHash[idx])*2); 
+
+  fHash[idx][sub] := Msg; 
+end;
+
+function TCompilerMessagesList.FindHash(AIndex: integer): TCompilerMessageConfig; 
+var 
+  idx : Integer; 
+  sub : Integer; 
+begin
+  idx := AIndex div 1000;
+  sub := AIndex mod 1000;
+  Result := nil; 
+  if (idx >= 0) and (idx < length(fHash)) then begin
+    if (sub >= 0) and (sub < length(fHash[idx])) then
+      Result := fHash[idx][sub]; 
+  end; 
+   
+end;
+
+function TCompilerMessagesList.GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
+begin
+  Result := FindHash(Aindex);
+end;
+
+function TCompilerMessagesList.GetMsgConfig(i: Integer): TCompilerMessageConfig;
+begin
+  Result := TCompilerMessageConfig(fItems[i]);
+end;
+
+procedure TCompilerMessagesList.SetMsgIgnored(i: Integer; const AValue: Boolean);
+begin
+  msg[i].Ignored := AValue;
+end;
+
+function TCompilerMessagesList.GetMsgIgnored(i: Integer): Boolean;
+begin
+  Result := msg[i].Ignored;
+end;
+
+procedure TCompilerMessagesList.GetIgnoredArray(var b: array of Boolean); 
+var
+  i   : Integer; 
+  idx : Integer; 
+begin
+  FillChar(b[0], length(b)*sizeof(boolean), false);
+  for i := 0 to Count - 1 do begin 
+    idx := msg[i].MsgIndex; 
+    if (idx >= 0) and (idx < length(b)) then  
+      b[idx] := msg[i].Ignored; 
+  end; 
+end;
+
+procedure TCompilerMessagesList.SetIgnoredArray(const b: array of Boolean); 
+var
+  i   : Integer; 
+  idx : Integer; 
+begin
+  for i := 0 to Count - 1 do begin 
+    idx := msg[i].MsgIndex; 
+    if (idx >= 0) and (idx < length(b)) then
+      msg[i].Ignored := b[idx];
+  end; 
+end;
+
+function TCompilerMessagesList.GetCount: Integer; 
+begin
+  Result := fItems.Count; 
+end;
+
+constructor TCompilerMessagesList.Create; 
+begin
+  inherited Create; 
+  fItems := TFPList.Create; 
+  fHidden := TStringList.Create;
+end;
+
+destructor TCompilerMessagesList.Destroy;
+begin
+  Clear; 
+  fHidden.Free; 
+  fItems.Free; 
+  inherited Destroy;
+end;
+
+procedure TCompilerMessagesList.Clear;
+var
+  i : integer;
+  obj : TCompilerMessageConfig;
+begin
+  fHidden.Clear; 
+  for i := 0 to fItems.Count - 1 do begin
+    obj := TCompilerMessageConfig(fItems[i]);
+    if Assigned(obj) then obj.Free;
+  end;
+  fItems.Clear; 
+  ClearHash; 
+end;
+
+procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList); 
+var
+  i : Integer; 
+  m : TCompilerMessageConfig; 
+begin
+  BeginUpdate;
+  try
+    Clear;
+    fUsedMsgFile := Src.fUsedMsgFile; 
+    fHidden.Assign(Src.fHidden); 
+    for i := 0 to Src.Count - 1 do begin
+      with Src.Msg[i]do begin
+        m := TCompilerMessageConfig.Create(Self);
+        m.MsgIndex := MsgIndex;
+        m.MsgText := MsgText;
+        m.Ignored := Ignored;
+        m.MsgType := MsgType;
+        fItems.Add(m);
+        AddHash(m);
+      end;
+    end; 
+  finally
+    EndUpdate; 
+  end;   
+end; 
+
+procedure TCompilerMessagesList.BeginUpdate; 
+begin
+  inc(fUpdating); 
+end;
+
+procedure TCompilerMessagesList.EndUpdate; 
+begin
+  dec(fUpdating); 
+end;
+
+function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode: Boolean): Boolean;
+
+  function IsMsgLine(const s: string; var msgIdx: Integer; var msgType, msgText: string; 
+   var isMultiLine: Boolean): Boolean;
+  var
+    i   : Integer; 
+    p   : Integer; 
+    err : Integer; 
+    sub : string; 
+  begin
+    Result := (s <> '')  and not(s[1] in ['#',';','%']); 
+    if not Result then Exit; 
+  
+    p := Pos('=', s);
+    Result := p > 0;
+    if not Result then Exit;
+  
+    sub := Copy(s, p+1, 5);
+    Result := length(sub) = 5;
+    if not Result then Exit;
+     
+    val( sub, msgIdx, err);
+    Result := err = 0;
+    if not Result then Exit; 
+  
+    inc(p, 6); 
+    Result := s[p] = '_';
+    if not Result then Exit;
+    inc(p); 
+    i := p; 
+    while (s[p] <> '_') do inc(p); 
+    msgType := Copy(s, i, p-i); 
+    isMultiLine := msgType = '[';
+    if isMultiLine then msgType := ''; 
+  
+    inc(p);
+    msgText := Copy(s, p, length(s) - p + 1); 
+    Result := true; 
+  end;         
+  
+  function GetNextMultiLine(const s: string; var EndOfMultiLine: Boolean): string;
+  begin
+    EndOfMultiLine := s = ']';
+    if EndOfMultiLine then Result := ''
+    else Result := s; 
+  end; 
+
+  function EncodeString(const s: string): string;
+  begin
+    if isFileUnicode then Result := s
+    else Result := AnsiToUtf8(s); 
+  end; 
+
+var
+  temp  : TStringList; 
+  isMln : Boolean; 
+  midx  : Integer;
+  mtype : string;
+  mtext : string; 
+  i   : Integer; 
+  lst : Boolean; 
+  b   : array of Boolean; 
+begin
+  BeginUpdate; 
+  try
+    SetLength(b, MaxMsgIndex);
+    GetIgnoredArray(b); 
+    
+    SetDefault(false);
+     
+    temp := TStringList.create;
+    try 
+      temp.LoadFromFile(FileName); 
+      i := 0;
+      while i < temp.Count do begin
+        if IsMsgLine(EncodeString(temp[i]), midx, mtype, mtext, isMln) then begin
+          if isMln then begin
+            lst := false; 
+            fHidden.Add(temp[i]); 
+            while (i < temp.Count) and (not lst) do begin
+              inc(i); 
+              GetNextMultiLine(temp[i], lst); 
+              fHidden.Add(temp[i]); 
+            end; 
+          end else begin
+            if (length(mtype) = 1) and (UpperCase(mtype)[1] in ['H','N','W']) 
+              then Add(midx, mtype[1], mtext, b[midx])
+              else fHidden.Add(temp[i]); 
+            inc(i); 
+          end; 
+        end else
+          inc(i); 
+      end; 
+      Result := true; 
+      fUsedMsgFile := FileName;    
+    finally
+      temp.Free; 
+      SetIgnoredArray(b); 
+      EndUpdate; 
+    end;  
+  except
+    Result := false; 
+  end; 
+end;
+
+function IntToStrLen(i:Integer; len: integer; FillCh: Char = '0'): string;
+var
+  s : string; 
+  j : integer; 
+begin
+  if len <= 0 then begin
+    Result := ''; 
+    Exit;
+  end; 
+  s := IntToStr(i);
+  if length(s)>= len then 
+    Result := s
+  else begin 
+    SetLength(Result, len);
+    FillChar(Result[1], len, FillCh); 
+    j := (len - length(s)) + 1; 
+    Move(s[1], Result[j], length(s)); 
+  end; 
+end; 
+
+
+const
+  cmpMsgHint = 'Hint'; 
+  cmpMsgNote = 'Note';
+  cmpMsgWarn = 'Warn';
+
+function GetMsgTypeStr(AMsgChar: Char; const DefValue: string=''): string;
+begin
+  case AMsgChar of
+    'h','H': Result := cmpMsgHint;
+    'w','W': Result := cmpMsgWarn;
+    'n','N': Result := cmpMsgNote; 
+  else
+    Result := DefValue; 
+  end; 
+end; 
+
+function TCompilerMessagesList.Add(AMsgIndex: Integer;
+  AMsgChar: Char; const AMsgText: string; AIgnored: Boolean): TCompilerMessageConfig;
+var
+  msgconf : TCompilerMessageConfig;
+  prm   : array of string;
+  cnt   : Integer;   
+begin
+  msgconf := FindHash(AMsgIndex); 
+  if not Assigned(msgConf) then begin 
+    msgconf := TCompilerMessageConfig.Create(Self);
+    msgconf.MsgIndex := AMsgIndex;
+    fItems.Add(msgconf);
+    AddHash(msgconf); 
+  end; 
+  msgconf.MsgType := AMsgChar;
+  msgconf.MsgText := AMsgText; //ReplaceParamsArray(ACompilerMsg, ReplaceParams);
+  msgconf.Ignored := AIgnored;
+  SetLength(prm, MaxMsgParams); 
+  GetParams(AMsgIndex, prm, cnt); 
+  Result := msgconf; 
+end;
+
+function GetNextNumber(const s: string; var index: Integer; var Num : Integer): Boolean; 
+var
+  i : integer; 
+  err:Integer; 
+begin
+  i := index;
+  while (i <= length(s)) and (s[i] in ['0'..'9']) do inc (i); 
+  Result := i - index > 0;
+  if Result then begin 
+    Val(Copy(s, Index, i - Index), Num, err);
+    index := i;
+  end; 
+end; 
+
+function ReplaceParamsArray(const ACompilerMsg: string;
+  const ReplaceParams: array of string): string;
+var
+  j   : Integer; 
+  i   : Integer; 
+  nm  : Integer; 
+  p   : Integer; 
+begin
+  i := 1;
+  p := 1;
+  Result := '';
+  while i <= length(ACompilerMsg) do begin 
+    if ACompilerMsg[i] = '$' then begin
+      j := i + 1; 
+      nm := 0; 
+      if GetNextNumber(ACompilerMsg, j, nm) then begin
+        Result := Result + Copy(ACompilerMsg, p, i - p);
+        if nm <= length(ReplaceParams) then Result := Result + ReplaceParams[nm-1]; 
+        p := j; 
+        i := p; 
+      end else
+        inc(i); 
+    end else 
+      inc(i); 
+  end; 
+  if p < length(ACompilerMsg) then
+    Result := Result + Copy(ACompilerMsg, p, length(ACompilerMsg) - p + 1);
+end;
+
+procedure TCompilerMessagesList.SetDefault(KeepIgnored: Boolean);
+var
+  b : array of Boolean; 
+begin
+  if KeepIgnored then begin
+    SetLength(b, MaxMsgIndex); 
+    GetIgnoredArray(b) 
+  end; 
+  BeginUpdate;
+  try 
+    Clear; 
+    Add(03005,'W','Procedure type "$1" ignored'); 
+    Add(03011,'W','Relocatable DLL or executable $1 debug info does not work, disabled.'); 
+    Add(03012,'W','To allow debugging for win32 code you need to disable relocation with -WN option'); 
+    Add(03018,'W','Constructor should be public');
+    Add(03019,'W','Destructor should be public'); 
+    Add(03020,'N','Class should have one destructor only');
+    Add(03023,'N','The object "$1" has no VMT');
+    Add(03031,'N','Values in enumeration types have to be ascending');
+    Add(03036,'W','range check error while evaluating constants');
+    Add(03042,'W','use extended syntax of NEW and DISPOSE for instances of objects');
+    Add(03043,'W','use of NEW or DISPOSE for untyped pointers is meaningless');
+    Add(03057,'W','An inherited method is hidden by "$1"');
+    Add(03060,'W','Stored property directive is not yet implemented');
+    Add(03094,'W','Unknown procedure directive had to be ignored: "$1"');
+    Add(03100,'W','Virtual methods are used without a constructor in "$1"');
+    Add(03123,'W','"$1" not yet supported inside inline procedure/function');
+    Add(03124,'W','Inlining disabled');
+    Add(03126,'H','may be pointer dereference is missing');
+    Add(03141,'W','string "$1" is longer than "$2"');
+    Add(03149,'W','Don'#39't load OBJPAS unit manually, use \{\$mode objfpc\} or \{\$mode delphi\} instead');
+    Add(03168,'W','Procedure named "$1" not found that is suitable for implementing the $2.$3');
+    Add(03175,'W','Some fields coming before "$1" weren'#39't initialized');
+    Add(03177,'W','Some fields coming after "$1" weren'#39't initialized');
+    Add(03182,'W','Overriding calling convention "$1" with "$2"');
+    Add(03186,'W','Use of unsupported feature!');
+    Add(03187,'H','C arrays are passed by reference');
+    Add(03189,'H','Type "$1" redefinition');
+    Add(03190,'W','cdecl'#39'ared functions have no high parameter');
+    Add(03191,'W','cdecl'#39'ared functions do not support open strings');
+    Add(03195,'W','Calling convention directive ignored: "$1"');
+    Add(03211,'W','Implicit uses of Variants unit');
+    Add(03218,'W','Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)');
+    Add(03226,'W','Don'#39't load LINEINFO unit manually, Use the -gl compiler switch instead');
+    Add(03237,'W','Register list is ignored for pure assembler routines');
+  
+    Add(04014,'W','Automatic type conversion from floating type to COMP which is an integer type');
+    Add(04015,'H','use DIV instead to get an integer result');
+    Add(04022,'W','lo/hi(dword/qword) returns the upper/lower word/dword');
+    Add(04035,'W','Mixing signed expressions and longwords gives a 64bit result');
+    Add(04036,'W','Mixing signed expressions and cardinals here may cause a range check error');
+    Add(04040,'W','Class types "$1" and "$2" are not related');
+    Add(04043,'W','String literal has more characters than short string length');
+    Add(04044,'W','Comparison is always false due to range of values');
+    Add(04045,'W','Comparison is always true due to range of values');
+    Add(04046,'W','Constructing a class "$1" with abstract method "$2"');
+    Add(04047,'H','The left operand of the IN operator should be byte sized');
+    Add(04048,'W','Type size mismatch, possible loss of data / range check error');
+    Add(04049,'H','Type size mismatch, possible loss of data / range check error');
+    Add(04055,'H','Conversion between ordinals and pointers is not portable');
+    Add(04056,'W','Conversion between ordinals and pointers is not portable');   
+    Add(04059,'W','Converting constant real value to double for C variable argument, add explicit typecast to prevent this.');
+    Add(04066,'W','Arithmetic "$1" on untyped pointer is unportable to {$T+}, suggest typecast');
+    Add(04079,'H','Converting the operands to "$1" before doing the add could prevent overflow errors.');
+    Add(04080,'H','Converting the operands to "$1" before doing the subtract could prevent overflow errors.');
+    Add(04081,'H','Converting the operands to "$1" before doing the multiply could prevent overflow errors.'); 
+    Add(04082,'W','Converting pointers to signed integers may result in wrong comparison results and range errors, use an unsigned type instead.');
+  
+    Add(05003,'H','Identifier already defined in $1 at line $2');
+    Add(05014,'W','Label not defined "$1"');
+    Add(05023,'H','Unit "$1" not used in $2');
+    Add(05024,'H','Parameter "$1" not used');
+    Add(05025,'N','Local variable "$1" not used');
+    Add(05026,'H','Value parameter "$1" is assigned but never used');
+    Add(05027,'N','Local variable "$1" is assigned but never used');
+    Add(05028,'H','Local $1 "$2" is not used');
+    Add(05029,'N','Private field "$1.$2" is never used');
+    Add(05030,'N','Private field "$1.$2" is assigned but never used');
+    Add(05031,'N','Private method "$1.$2" never used');
+    Add(05033,'W','Function result does not seem to be set');
+    Add(05034,'W','Type "$1" is not aligned correctly in current record for C');
+    Add(05036,'W','Local variable "$1" does not seem to be initialized');
+    Add(05037,'W','Variable "$1" does not seem to be initialized');
+    Add(05039,'H','Found declaration: $1');
+    Add(05043,'W','Symbol "$1" is deprecated');
+    Add(05044,'W','Symbol "$1" is not portable');
+    Add(05055,'W','Symbol "$1" is not implemented');
+    Add(05057,'H','Local variable "$1" does not seem to be initialized');
+    Add(05058,'H','Variable "$1" does not seem to be initialized');
+    Add(05059,'W','Function result variable does not seem to initialized');
+    Add(05060,'H','Function result variable does not seem to be initialized'); 
+    Add(05061,'W','Variable "$1" read but nowhere assigned');
+    Add(05062,'H','Found abstract method: $1');
+    Add(05063,'W','Symbol "$1" is experimental');
+    Add(05064,'W','Forward declaration "$1" not resolved, assumed external');
+  
+    Add(06016,'W','Possible illegal call of constructor or destructor');
+    Add(06017,'N','Inefficient code');
+    Add(06018,'W','unreachable code');
+    Add(06041,'W','Parameters size exceeds limit for certain cpu'#39's');
+    Add(06042,'W','Local variable size exceed limit for certain cpu'#39's');
+    Add(06048,'H','Inherited call to abstract method ignored');
+  
+    Add(07018,'W','Possible error in object field handling');
+    Add(07023,'W','@CODE and @DATA not supported');
+    Add(07029,'W','Fwait can cause emulation problems with emu387');
+    Add(07030,'W','$1 without operand translated into $1P');
+    Add(07031,'W','ENTER instruction is not supported by Linux kernel');
+    Add(07032,'W','Calling an overload function in assembler');
+    Add(07039,'H','$1 translated to $2');
+    Add(07040,'W','$1 is associated to an overloaded function');
+    Add(07043,'W','Procedures can'#39't return any value in asm code');
+    Add(07046,'W','Size suffix and destination or source size do not match');
+    Add(07052,'W','constant with symbol $1 for address which is not on a pointer');
+    Add(07058,'W','NEAR ignored');
+    Add(07059,'W','FAR ignored');
+    Add(07066,'W','Modulo not supported');
+    Add(07072,'W','Identifier $1 supposed external');
+    Add(07079,'W','32bit constant created for address');
+    Add(07080,'N','.align is target specific, use .balign or .p2align');
+    //Add(07086,'W','"$1" without operand translated into "$1 %st,%st(1)"');
+    //Add(07087,'W','"$1 %st(n)" translated into "$1 %st,%st(n)"');
+    //Add(07088,'W','"$1 %st(n)" translated into "$1 %st(n),%st"');
+    Add(07093,'W','ALIGN not supported');
+    Add(07098,'W','No size specified and unable to determine the size of the operands, using DWORD as default');
+    Add(07101,'W','No size specified and unable to determine the size of the operands, using BYTE as default');
+    Add(07102,'W','Use of +offset(%ebp) for parameters invalid here');
+    Add(07103,'W','Use of +offset(%ebp) is not compatible with regcall convention');
+    Add(07104,'W','Use of -offset(%ebp) is not recommended for local variable access');
+    Add(07105,'W','Use of -offset(%esp), access may cause a crash or value may be lost');
+  
+    Add(09000,'W','Source operating system redefined');
+    Add(09011,'W','Object $1 not found, Linking may fail !');
+    Add(09012,'W','Library $1 not found, Linking may fail !');
+  finally
+    EndUpdate; 
+    if KeepIgnored then
+      SetIgnoredArray(b);
+  end; 
+end;
+
+function TCompilerMessagesList.GetParams(MsgIndex: Integer;
+  var prms: array of string; var PrmCount: Integer): Integer;
+
+  procedure SetParams(const Src: array of string);
+  var
+    i : integer;
+  begin
+    PrmCount := length(src);
+    if PrmCount > length(prms) then Result := length(Prms)
+    else Result := PrmCount;
+    for i := 0 to PrmCount - 1 do
+      Prms[i] := Src[i];
+  end;
+
+begin
+  case MsgIndex of 
+    3005: SetParams([symName]);
+    3011: SetParams([symFile]);
+    3023, 3057, 3094, 3100, 3123, 3175, 3177, 3189 : SetParams([symName]);
+    3141, 3182: SetParams([symName, symName]); 
+    3168: SetParams([symName, symName, symName]);
+    3195: SetParams([symName]);
+    3218: SetParams([symName, symName]);
+    4040: SetParams([symClass, symClass]);
+    4046: SetParams([symClass, symName]);
+    4066, 4079,4080, 4081: SetParams([symName]);
+    5003: SetParams([symName, symLineNo]);
+    5014: SetParams([symName]);
+    5023: SetParams([symName, symName]);
+    5024,5025,5026,5027: SetParams([symName]);
+    5028: SetParams([symItem, symName]);
+    5029: SetParams([symClass, symName]);
+    5030: SetParams([symClass, symName]);
+    5031: SetParams([symClass, symName]);
+    5034,5036,5037,5039,
+    5043,5044,5055,5057,
+    5058,5061,5062,5063,
+    5064,7030: SetParams([symName]);
+    7039: SetParams([symName, symName]);
+    7040,9011: SetParams([symName]);
+    9012: SetParams([symFile]);
+  else
+    PrmCount := 0;
+    Result := 0;
+  end;
+
+end;
+
+{ TCompilerMessageConfig }
+
+constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList); 
+begin
+  fOwner:=AOwner; 
+end;
+
+function TCompilerMessageConfig.GetFileText: string;
+begin
+  Result := IntToStrLen(MsgIndex, 5)+'_'+MsgType+'_'+MsgText;
+end;
+
+function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
+begin
+  Result := Format('%s', [ReplaceParamsArray(MsgText, ReplaceParams) ]);
+end;
+
+function TCompilerMessageConfig.GetUserText: string; 
+var
+  prm : array of string; 
+  cnt : Integer; 
+begin
+  if Assigned(fOwner) then begin
+    SetLength(prm, MaxMsgParams);
+    fOwner.GetParams(MsgIndex, prm, cnt); 
+    Result := GetUserText(prm); 
+  end else
+    Result := GetUserText([]); 
+end;
+
 
 initialization
   CompilerParseStamp:=1;
