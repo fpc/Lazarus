@@ -2198,6 +2198,7 @@ begin
   Result:=Scanner.CleanedPosToCursor(CleanPos,p,Code);
   if Result then begin
     Caret.Code:=TCodeBuffer(Code);
+    if Caret.Code.IsDeleted then exit(false);
     TCodeBuffer(Code).AbsoluteToLineCol(p,Caret.Y,Caret.X);
     Result:=(Caret.Y>=0);
   end;
