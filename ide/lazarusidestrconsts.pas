@@ -1276,8 +1276,8 @@ resourcestring
   dlgCOParsing = 'Parsing';
   dlgCodeGeneration = 'Code';
   dlgCOLinking = 'Linking';
-  dlgCOMessages = 'Messages';
-  dlgCOCfgCmpMessages = 'Compiler Messages';
+  dlgCOVerbosity = 'Verbosity';
+  dlgCOCfgCmpMessages = 'Messages';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilation = 'Compilation';

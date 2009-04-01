@@ -261,7 +261,7 @@ type
     procedure SetupParsingTab(Page: integer);
     procedure SetupCodeGenerationTab(Page: integer);
     procedure SetupLinkingTab(Page: integer);
-    procedure SetupMessagesTab(Page: integer);
+    procedure SetupVerbosityTab(Page: integer);
     procedure SetupConfigMsgTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
     procedure SetupConditionalTab(Page: integer);
@@ -413,7 +413,7 @@ begin
     inc(Page);
     SetupLinkingTab(Page);
     inc(Page);
-    SetupMessagesTab(Page);
+    SetupVerbosityTab(Page);
     inc(Page);
     SetupConfigMsgTab(Page);
     inc(Page);
@@ -1408,12 +1408,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupMessagesTab
+  TfrmCompilerOptions SetupVerbosityTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupMessagesTab(Page: integer);
+procedure TfrmCompilerOptions.SetupVerbosityTab(Page: integer);
 begin
   // Setup the Messages Tab
-  MainNoteBook.Page[Page].Caption:= dlgCOMessages;
+  MainNoteBook.Page[Page].Caption:= dlgCOVerbosity;
 
   with grpVerbosity do begin
     Caption := dlgVerbosity;
