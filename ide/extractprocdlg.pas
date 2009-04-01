@@ -143,7 +143,7 @@ begin
       ProcType:=ExtractProcDialog.GetProcType;
       FuncNode:=ExtractProcDialog.GetFunctionNode;
       FunctionResultVariableStartPos:=0;
-      if FuncNode<>nil then
+      if (FuncNode<>nil) then
         FunctionResultVariableStartPos:=FuncNode.StartPos;
     finally
       ExtractProcDialog.Free;
@@ -358,7 +358,7 @@ var
   Variable: TExtractedProcVariable;
 begin
   Result:=nil;
-  if Variables=nil then exit;
+  if (Variables=nil) or (not CreateFunctionCheckBox.Checked) then exit;
   Find:=FuncVariableComboBox.Text;
   AVLNode:=Variables.FindLowest;
   while AVLNode<>nil do begin
