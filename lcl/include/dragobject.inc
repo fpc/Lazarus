@@ -66,7 +66,8 @@ end;
 
 constructor TDragObjectEx.Create(AControl: TControl);
 begin
-  inherited AutoCreate(AControl);
+  inherited Create(AControl);
+  FAutoCreated := True;
 end;
 
 { TDragControlObject }
@@ -88,7 +89,8 @@ end;
 
 constructor TDragControlObjectEx.Create(AControl: TControl);
 begin
-  inherited AutoCreate(AControl);
+  inherited Create(AControl);
+  FAutoCreated := True;
 end;
 
 { TDragDockObject }
@@ -114,7 +116,8 @@ end;
 
 constructor TDragDockObjectEx.Create(AControl: TControl);
 begin
-  inherited AutoCreate(AControl);
+  inherited Create(AControl);
+  FAutoCreated := True;
 end;
 
 // included by controls.pp

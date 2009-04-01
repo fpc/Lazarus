@@ -345,7 +345,7 @@ type
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; virtual;
   public
     constructor Create(AControl: TControl); virtual;
-    constructor AutoCreate(AControl: TControl); virtual;
+    constructor AutoCreate(AControl: TControl);
 
     procedure HideDragImage; virtual;
     procedure ShowDragImage; virtual;
