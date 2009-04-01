@@ -681,13 +681,21 @@ end;
 function TCustomPropertyStorage.ReadString(const Ident, DefaultValue: string): string;
 begin
   StorageNeeded(True);
-  Result := DoReadString(RootSection, Ident, DefaultValue);
+  try
+    Result := DoReadString(RootSection, Ident, DefaultValue);
+  finally
+    FreeStorage;
+  end;
 end;
 
 procedure TCustomPropertyStorage.WriteString(const Ident, Value: string);
 begin
   StorageNeeded(False);
-  DoWriteString(RootSection, Ident, Value);
+  try
+    DoWriteString(RootSection, Ident, Value);
+  finally
+    FreeStorage;
+  end;
 end;
 
 function TCustomPropertyStorage.ReadInteger(const Ident: string; DefaultValue: Longint): Longint;
