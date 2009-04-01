@@ -23,6 +23,7 @@ procedure TRasterImage.Assign(Source: TPersistent);
   var
     RI: TRawImage;
     msk, dummy: HBITMAP;
+    Res: Boolean;
   begin
     // we need a winapi.CopyImage here (would make things easier)
     // in theory, it should not matter if a HBITMAP was created as bitmap or as mask
@@ -36,8 +37,9 @@ procedure TRasterImage.Assign(Source: TPersistent);
     DeleteObject(dummy);
 
     if BitmapHandleAllocated
-    then UpdateHandles(BitmapHandle, msk)
-    else UpdateHandles(0, msk);
+    then Res := UpdateHandles(BitmapHandle, msk)
+    else Res := UpdateHandles(0, msk);
+    if not Res then DeleteObject(msk);
   end;
 
 
