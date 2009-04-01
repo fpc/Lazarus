@@ -48,12 +48,9 @@ begin
   PrevValue := FValue;
   FValueChanged := True;
 
-  //DebugLn('TCustomFloatSpinEdit.TextChanged Text: ' + Text + ' Value: ' + DbgS(Value));
-
   if Value <> PrevValue then
   begin
     FValueEmpty := False;
-
     inherited;
   end;
 end;
@@ -63,12 +60,6 @@ begin
   if FMaxValue = AValue then Exit;
   FMaxValue := AValue;
   UpdateControl;
-end;
-
-function TCustomFloatSpinEdit.IsStored: boolean;
-begin
-  // workaround for FPC bug
-  Result := True;
 end;
 
 procedure TCustomFloatSpinEdit.SetMinValue(const AValue: Double);

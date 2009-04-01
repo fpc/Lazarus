@@ -49,7 +49,6 @@ type
     procedure SetMinValue(const AValue: Double);
     procedure SetValueEmpty(const AValue: Boolean);
     procedure UpdateControl;
-    function IsStored: Boolean; // FPC bug workaround
   protected
     function  RealGetText: TCaption; override;
     procedure TextChanged; override;
@@ -69,10 +68,10 @@ type
     function StrToValue(const S: String): Double;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
-    property Increment: Double read FIncrement write SetIncrement stored IsStored;
-    property MinValue: Double read FMinValue write SetMinValue stored IsStored;
-    property MaxValue: Double read FMaxValue write SetMaxValue stored IsStored;
-    property Value: Double read GetValue write SetValue stored IsStored;
+    property Increment: Double read FIncrement write SetIncrement;
+    property MinValue: Double read FMinValue write SetMinValue;
+    property MaxValue: Double read FMaxValue write SetMaxValue;
+    property Value: Double read GetValue write SetValue;
     property ValueEmpty: Boolean read FValueEmpty write SetValueEmpty default False;
   end;
   
