@@ -114,10 +114,10 @@ type
     procedure SetItems(Index: integer; AnItem: TSourceLogEntry);
     function GetMarkers(Index: integer): TSourceLogMarker;
     procedure BuildLineRanges;
-    procedure IncreaseChangeStep;
     procedure SetReadOnly(const Value: boolean);
     function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
   protected
+    procedure IncreaseChangeStep;
     procedure DecodeLoaded(const AFilename: string;
                         var ASource, ADiskEncoding, AMemEncoding: string); virtual;
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
