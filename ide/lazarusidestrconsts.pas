@@ -343,6 +343,11 @@ resourcestring
   lisMenuAddBreakpoint = 'Add breakpoint';
   lisMenuAddBpSource = 'Source breakpoint';
 
+  lisInspectDialog = 'Debug Inspector';
+  lisInspectData = 'Data';
+  lisInspectProperties = 'Properties';
+  lisInspectMethods = 'Methods';
+
   lisMenuNewPackage = 'New package ...';
   lisMenuOpenPackage = 'Open loaded package ...';
   lisMenuOpenRecentPkg = 'Open recent package ...';
@@ -894,7 +899,7 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   lisFPDocEditor = 'FPDoc Editor';
-  lisOkBtn = 'Ok';
+  lisOkBtn = 'OK';
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
