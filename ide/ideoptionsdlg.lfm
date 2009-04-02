@@ -13,26 +13,31 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ButtonPanel: TButtonPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 30
-    Top = 464
+    Height = 38
+    Top = 462
     Width = 688
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Around = 0
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
-    ShowBevel = False
   end
   object CategoryTree: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 452
+    Height = 456
     Top = 6
     Width = 206
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    BorderSpacing.Bottom = 6
     Constraints.MinWidth = 206
     DefaultItemHeight = 15
     ReadOnly = True
