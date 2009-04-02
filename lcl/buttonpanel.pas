@@ -145,6 +145,8 @@ const
   DEFAULT_BUTTONPANEL_BORDERSPACING: TControlBorderSpacingDefault = (
     Left:0; Top:0; Right:0; Bottom:0; Around:6;
   );
+  DefMinWidth = 75;
+  DefMinHeight = 25;
 
 procedure Register;
 begin
@@ -256,7 +258,7 @@ begin
 
   if Align in [alLeft, alRight]
   then begin
-    // give the sime width in this case too
+    // give the same width in this case too
     FButtonsWidth := 0;
     for btn := Low(btn) to High(btn) do
     begin
@@ -407,11 +409,12 @@ const
   function GetCaption(Btn: TPanelButton): string;
   begin
     case Btn of
-    pbOK: Result:=rsMbOK;
-    pbCancel: Result:=rsMbCancel;
-    pbClose: Result:=rsMbClose;
-    pbHelp: Result:=rsMbHelp;
-    else Result:='?';
+      pbOK: Result:=rsMbOK;
+      pbCancel: Result:=rsMbCancel;
+      pbClose: Result:=rsMbClose;
+      pbHelp: Result:=rsMbHelp;
+    else
+      Result:='?';
     end;
   end;
 
@@ -425,6 +428,8 @@ begin
     Parent   := Self;
     Kind     := KINDS[AButton];
     AutoSize := True;
+    Constraints.MinWidth := DefMinWidth;
+    Constraints.MinHeight := DefMinHeight;
     Caption  := GetCaption(AButton);
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;
@@ -496,7 +501,6 @@ begin
     ANewLeft := -ANewWidth - 100;
     Exit;
   end;
-
 
   // make all buttons the same height
   ANewHeight := FButtonsHeight;
