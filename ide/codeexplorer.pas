@@ -40,12 +40,12 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl,
+  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree,
   // CodeTools
   CodeToolManager, CodeAtom, CodeCache, CodeTree, KeywordFuncLists,
   FindDeclarationTool, DirectivesTree, PascalParserTool,
   // IDE Intf
-  LazIDEIntf, IDECommands, MenuIntf,
+  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
   CodeExplOpts, StdCtrls, ExtCtrls;
@@ -170,6 +170,8 @@ type
     procedure SetMode(AMode: TCodeExplorerMode);
     procedure UpdateMode;
   protected
+    fLastCodeTool: TCodeTool;
+    fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
@@ -183,7 +185,11 @@ type
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
     procedure ClearCTNodes(ATreeView: TTreeView);// remove temporary references
-    procedure JumpToSelection;
+    procedure JumpToSelection; // jump in source editor
+    function SelectSourceEditorNode: boolean;
+    function SelectCodePosition(CodeBuf: TCodeBuffer; X, Y: integer): boolean; // select deepest node
+    function FindCodeTVNodeAtCleanPos(CleanPos: integer): TTreeNode;
+    procedure BuildCodeSortedForStartPos;
     procedure CurrentCodeBufferChanged;
     procedure CodeFilterChanged;
     procedure DirectivesFilterChanged;
@@ -234,6 +240,34 @@ type
     StartPos, EndPos: integer;
     constructor Create(CodeNode: TCodeTreeNode);
   end;
+
+function CompareViewNodeDataStartPos(Node1, Node2: TTreeNode): integer;
+var
+  NodeData1: TViewNodeData;
+  NodeData2: TViewNodeData;
+begin
+  NodeData1:=TViewNodeData(Node1.Data);
+  NodeData2:=TViewNodeData(Node2.Data);
+  if NodeData1.StartPos>NodeData2.StartPos then
+    Result:=1
+  else if NodeData1.StartPos<NodeData2.StartPos then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareStartPosWithViewNodeData(Key: PInteger; Node: TTreeNode): integer;
+var
+  NodeData: TViewNodeData;
+begin
+  NodeData:=TViewNodeData(Node.Data);
+  if Key^ > NodeData.StartPos then
+    Result:=1
+  else if Key^ < NodeData.StartPos then
+    Result:=-1
+  else
+    Result:=0;
+end;
 
 procedure InitCodeExplorerOptions;
 begin
@@ -294,6 +328,8 @@ begin
   {$IFDEF EnableIDEDocking}
   ControlDocker.Manager:=LazarusIDE.DockingManager;
   {$ENDIF}
+
+  MainNotebook.ActivePageComponent:=CodePage;
 
   RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   OptionsSpeedButton.Hint:=dlgFROpts;
@@ -819,6 +855,8 @@ end;
 destructor TCodeExplorerView.Destroy;
 begin
   inherited Destroy;
+  fLastCodeTool:=nil;
+  FreeAndNil(fCodeSortedForStartPos);
   if CodeExplorerView=Self then
     CodeExplorerView:=nil;
 end;
@@ -885,6 +923,7 @@ begin
     exit;
   end;
   Exclude(FFlags,cevCodeRefreshNeeded);
+  fLastCodeTool:=nil;
 
   try
     Include(FFlags,cevRefreshing);
@@ -895,6 +934,7 @@ begin
     ACodeTool:=nil;
     if Assigned(OnGetCodeTree) then
       OnGetCodeTree(Self,ACodeTool);
+    fLastCodeTool:=ACodeTool;
 
     // check for changes in the codetools
     if (ACodeTool=nil) then begin
@@ -922,6 +962,9 @@ begin
         FLastCodeChangeStep:=ACodeTool.Scanner.ChangeStep;
     end else
       FCodeFilename:='';
+
+    if fCodeSortedForStartPos<>nil then
+      fCodeSortedForStartPos.Clear;
       
     //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
 
@@ -945,7 +988,8 @@ begin
     CodeTreeview.CustomSort(@CompareCodeNodes);
     
     AutoExpandNodes;
-    
+
+    BuildCodeSortedForStartPos;
     ClearCTNodes(CodeTreeview);
     CodeTreeview.EndUpdate;
 
@@ -1083,6 +1127,81 @@ begin
   end;
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
+end;
+
+function TCodeExplorerView.SelectSourceEditorNode: boolean;
+var
+  SrcEdit: TSourceEditorInterface;
+  xy: TPoint;
+begin
+  Result:=false;
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  if SrcEdit=nil then exit;
+  xy:=SrcEdit.CursorTextXY;
+  Result:=SelectCodePosition(TCodeBuffer(SrcEdit.CodeToolsBuffer),xy.x,xy.y);
+end;
+
+function TCodeExplorerView.SelectCodePosition(CodeBuf: TCodeBuffer;
+  X, Y: integer): Boolean;
+var
+  CodePos: TCodeXYPosition;
+  CleanPos: integer;
+  TVNode: TTreeNode;
+begin
+  Result:=false;
+  if CurrentPage=cepCode then begin
+    if FLastCodeValid and (fLastCodeTool<>nil) then begin
+      CodePos:=CodeXYPosition(X,Y,CodeBuf);
+      if fLastCodeTool.CaretToCleanPos(CodePos,CleanPos)<>0 then exit;
+      TVNode:=FindCodeTVNodeAtCleanPos(CleanPos);
+      if TVNode=nil then exit;
+      TVNode.Selected:=true;
+      Result:=true;
+    end;
+  end;
+end;
+
+function TCodeExplorerView.FindCodeTVNodeAtCleanPos(CleanPos: integer
+  ): TTreeNode;
+// find TTreeNode in CodeTreeView containing the codetools clean position
+// if there are several nodes, the one with the shortest range (EndPos-StartPos)
+// is returned.
+var
+  KeyPos: integer;
+  AVLNode: TAvgLvlTreeNode;
+  Node: TTreeNode;
+begin
+  Result:=nil;
+  if (fLastCodeTool=nil) or (not FLastCodeValid) or (CodeTreeview=nil)
+  or (fCodeSortedForStartPos=nil) then exit;
+  KeyPos:=CleanPos;
+  AVLNode:=fCodeSortedForStartPos.FindLeftMostKey(@KeyPos,
+                            TListSortCompare(@CompareStartPosWithViewNodeData));
+  if AVLNode=nil then exit;
+  Node:=TTreeNode(AVLNode.Data);
+  // ToDo: find the shortest
+  Result:=Node;
+end;
+
+procedure TCodeExplorerView.BuildCodeSortedForStartPos;
+var
+  TVNode: TTreeNode;
+  NodeData: TViewNodeData;
+begin
+  if fCodeSortedForStartPos<>nil then
+   fCodeSortedForStartPos.Clear;
+  if (CodeTreeview=nil) then exit;
+  TVNode:=CodeTreeview.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    NodeData:=TViewNodeData(TVNode.Data);
+    if (NodeData<>nil) and (NodeData.StartPos>0) then begin
+      if fCodeSortedForStartPos=nil then
+        fCodeSortedForStartPos:=
+              TAvgLvlTree.Create(TListSortCompare(@CompareViewNodeDataStartPos));
+      fCodeSortedForStartPos.Add(TVNode);
+    end;
+    TVNode:=TVNode.GetNext;
+  end;
 end;
 
 procedure TCodeExplorerView.CurrentCodeBufferChanged;

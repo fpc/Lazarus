@@ -21,6 +21,8 @@
     TAvgLvlTree is an Average Level binary Tree. This binary tree is always
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
+
+    Tree is sorted ascending.
 }
 unit AvgLvlTree;
 
