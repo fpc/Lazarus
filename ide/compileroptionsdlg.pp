@@ -242,8 +242,6 @@ type
     procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
-    procedure CfgCmpMsgPageContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
@@ -487,12 +485,6 @@ begin
   // Test MakeOptionsString function
   if not PutCompilerOptions(ccomlWarning) then exit;
   ShowCompilerOptionsDialog(CompilerOpts);
-end;
-
-procedure TfrmCompilerOptions.CfgCmpMsgPageContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: Boolean);
-begin
-
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
