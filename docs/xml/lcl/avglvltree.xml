@@ -1,1104 +1,787 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     AvgLvlTree
   ====================================================================
 -->
-
-<module name="AvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- unresolved type reference Visibility: default -->
-<element name="FPCAdds">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- function type Visibility: default -->
-<element name="TObjectSortCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- function result Visibility: default -->
-<element name="TObjectSortCompare.Result">
-<short></short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Tree">
-<short></short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Data1">
-<short></short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Data2">
-<short></short>
-</element>
-<!-- object Visibility: default -->
-<element name="TAvgLvlTreeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Left">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Right">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Balance">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Data">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNode.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- function Visibility: public -->
-<element name="TAvgLvlTreeNode.TreeDepth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTreeNode.TreeDepth.Result">
-<short></short>
-</element>
-<!-- pointer type Visibility: default -->
-<element name="PAvgLvlTreeNode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- object Visibility: default -->
-<element name="TAvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FOnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FOnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.BalanceAfterInsert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.BalanceAfterInsert.ANode">
-<short></short>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.BalanceAfterDelete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.BalanceAfterDelete.ANode">
-<short></short>
-</element>
-<!-- function Visibility: private -->
-<element name="TAvgLvlTree.FindInsertPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindInsertPos.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindInsertPos.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetOnCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetOnCompare.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetOnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetOnObjectCompare.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetCompares">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetCompares.NewCompare">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetCompares.NewObjectCompare">
-<short></short>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTree.Root">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.Compare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Compare.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Compare.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Compare.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.Find">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Find.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Find.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindSuccessor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindSuccessor.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindSuccessor.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindPrecessor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindPrecessor.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindPrecessor.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLowest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLowest.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindHighest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindHighest.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindNearest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindNearest.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindNearest.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindPointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindPointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindPointer.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMost.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMost.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMost.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMost.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMostKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMostKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMostSameKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostSameKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostSameKey.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMostSameKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostSameKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostSameKey.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Add.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Add.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Add.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Delete.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Remove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Remove.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.RemovePointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.RemovePointer.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.MoveDataLeftMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.MoveDataLeftMost.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.MoveDataRightMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.MoveDataRightMost.ANode">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.OnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.OnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.FreeAndClear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.FreeAndDelete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FreeAndDelete.ANode">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.ConsistencyCheck.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.WriteReportToStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.WriteReportToStream.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.WriteReportToStream.StreamSize">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.ReportAsString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.ReportAsString.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Create.OnCompareMethod">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTree.CreateObjectCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TAvgLvlTree.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PAvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FFirstFree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FFreeCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FMinFree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FMaxFreeRatio">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio.NewValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.SetMinFree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.SetMinFree.NewValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeFirstFreeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeNode.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.NewNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.NewNode.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.MinimumFreeNode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.MaximumFreeNodeRatio">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- AvgLvlTree -->
-</package>
+    <module name="AvgLvlTree">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FPCAdds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TObjectSortCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TObjectSortCompare.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Tree">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Data1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Data2">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTreeNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Parent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Left">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Right">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Balance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNode.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTreeNode.TreeDepth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTreeNode.TreeDepth.Result">
+        <short/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PAvgLvlTreeNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTree">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FOnCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FOnObjectCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.BalanceAfterInsert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.BalanceAfterInsert.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.BalanceAfterDelete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.BalanceAfterDelete.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TAvgLvlTree.FindInsertPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindInsertPos.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindInsertPos.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetOnCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetOnCompare.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetOnObjectCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetOnObjectCompare.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetCompares">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetCompares.NewCompare">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetCompares.NewObjectCompare">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTree.Root">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Compare">
+        <short>Compare two data. For every two nodes of the tree holds: Compare(Left,Right)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Data1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Data2">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Find">
+        <short>Find node with a Data of the same key. The found Node.Data need not be the same as the Data parameter.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Find.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Find.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindKey">
+        <short>Search a node with the same key. OnCompareKeyWithData first parameter is the key, second the Node.Data.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindSuccessor">
+        <short>Find the next node to the right with the next higher value.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindSuccessor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindSuccessor.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindPrecessor">
+        <short>Find the next node to the left with the next lower value.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindPrecessor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindPrecessor.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLowest">
+        <short>Find the left most node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLowest.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindHighest">
+        <short>Find the right most node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindHighest.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindNearest">
+        <short>Find a node with the same key. If no node with exact the same key exists a node left or right is returned.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindNearest.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindNearest.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindPointer">
+        <short>As Find, but Key and Data must be the same.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindPointer.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindPointer.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMost">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMost.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMost.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMost">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMost.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMost.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMostKey">
+        <short>As FindKey, but if there are several nodes with the same key, the left most is returned</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMostKey">
+        <short>As FindKey, but if there are several nodes with the same key, the right most is returned</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey">
+        <short>Starts at ANode and returns the left most node with the same key as ANode.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMostSameKey">
+        <short>Starts at ANode and returns the left most node with the same key as ANode.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostSameKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostSameKey.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Add">
+        <short>Adds a node to the tree</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Add.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Add.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Add.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Delete">
+        <short>Removes and frees a node. The data is not freed (See FreeAndDelete).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Delete.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Remove">
+        <short>if the Data with the same key exists one node is removed.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Remove.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.RemovePointer">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.RemovePointer.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.MoveDataLeftMost">
+        <short>If there are several nodes with the same Key as ANode, the node is moved left most of this group.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.MoveDataLeftMost.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.MoveDataRightMost">
+        <short>If there are several nodes with the same Key as ANode, the node is moved right most of this group.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.MoveDataRightMost.ANode">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.OnCompare">
+        <short>Provide an OnCompare procedure to define your own sorting. The tree will be rebuilt without loosig data..</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.OnObjectCompare">
+        <short>Same as OnCompare, but with a method instead of a procedure.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Clear">
+        <short>Delete all nodes without freeing the data.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.FreeAndClear">
+        <short>Delete all nodes and call TObject(Node.Data).Free on every data.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.FreeAndDelete">
+        <short>Call TObject(ANode.Data).Free then delete the node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FreeAndDelete.ANode">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.ConsistencyCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.ConsistencyCheck.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.WriteReportToStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.WriteReportToStream.s">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.WriteReportToStream.StreamSize">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.ReportAsString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.ReportAsString.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Create.OnCompareMethod">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.CreateObjectCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TAvgLvlTree.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PAvgLvlTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FFirstFree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FFreeCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FMinFree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FMaxFreeRatio">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio.NewValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMinFree">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMinFree.NewValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeFirstFreeNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeNode.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.NewNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.NewNode.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.MinimumFreeNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.MaximumFreeNodeRatio">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TAvgLvlTree.FindNearestKey">
+        <short>Same as FindKey, but if the exact Key can not be found a Node left or right of it is returned.</short>
+      </element>
+    </module>
+    <!-- AvgLvlTree -->
+  </package>
 </fpdoc-descriptions>
