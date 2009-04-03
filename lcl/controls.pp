@@ -418,6 +418,12 @@ type
     procedure AdjustDockRect(ARect: TRect); virtual;
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
     procedure EndDrag(Target: TObject; X, Y: Integer); override;
+
+    // dock image drawing
+    procedure InitDock(APosition: TPoint); virtual;
+    procedure ShowDockImage; virtual;
+    procedure HideDockImage; virtual;
+    procedure MoveDockImage; virtual;
   public
     property DockOffset: TPoint read FDockOffset write FDockOffset;
     property DockRect: TRect read FDockRect write FDockRect;

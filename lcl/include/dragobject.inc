@@ -112,6 +112,49 @@ begin
     FControl.DoEndDock(Target, X, Y);
 end;
 
+procedure TDragDockObject.InitDock(APosition: TPoint);
+begin
+  // Determine hotspot scale for adjusting the undocked rectangle.
+  // Since the undocked extent of the control doesn't change, we fix the hotspot offset.
+  // Usage: OffsetRect(DockRect, FDockOffset);
+
+  DragPos := APosition; //should have been done before
+  Control.CalculateDockSizes;
+  // mouse click offset from control TopLeft in screen coordinates
+  FDockRect.TopLeft := Control.ClientToScreen(Point(0, 0));
+  if Control.Width > 0 then
+    FDockOffset.x := Round((APosition.x - FDockRect.Left) / Control.Width * Control.UndockWidth)
+  else
+    FDockOffset.X := 0;
+  if Control.Height > 0 then
+    FDockOffset.Y := Round((APosition.y - FDockRect.Top) / Control.Height * Control.UndockHeight)
+  else
+    FDockOffset.Y := 0;
+  FEraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
+end;
+
+procedure TDragDockObject.ShowDockImage;
+begin
+  WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disShow);
+  EraseDockRect := DockRect;
+end;
+
+procedure TDragDockObject.HideDockImage;
+begin
+  WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disHide);
+  FEraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
+end;
+
+procedure TDragDockObject.MoveDockImage;
+begin
+  //Draw the form outlines when the position has changed
+  if not CompareMem(@DockRect, @EraseDockRect, SizeOf(TRect)) then
+  begin
+    WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disMove);
+    EraseDockRect := DockRect;
+  end;
+end;
+
 { TDragDockObjectEx }
 
 constructor TDragDockObjectEx.Create(AControl: TControl);

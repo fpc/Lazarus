@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -59,7 +59,6 @@ type
   TDockPerformer = class(TDragDockCommon)
   private
     FDockObject: TDragDockObject;
-    procedure DefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -264,27 +263,15 @@ end;
 constructor TDockPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
 var
-  p, cp: TPoint;
+  APoint: TPoint;
 begin
   inherited Create(AManager, AControl);
   AControl.DoStartDock(FDockObject);
   if FDockObject = nil then
     FDockObject := TDragDockObject.AutoCreate(AControl);
 
-  // we should handle somehow difference between
-  // Control.BoundsRect.LeftTop and CursorPos
-  
-  GetCursorPos(p);
-  FDockObject.DragPos := p;
-  // mouse click offset from control TopLeft in screen coordinates
-  cp := AControl.BoundsRect.TopLeft;
-  if AControl.Parent <> nil then
-    cp := AControl.Parent.ClientToScreen(cp);
-  FDockObject.DockOffset := Point(p.x - cp.x, p.y - cp.y);
-  AControl.CalculateDockSizes;
-  FDockObject.DockRect := Rect(p.x, p.y, p.x + AControl.Width, p.y + AControl.Height);
-  FDockObject.EraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
-  
+  GetCursorPos(APoint);
+  FDockObject.InitDock(APoint);
   // we are tracking capture change to stop drag/dock is happen
   SetCaptureControl(AControl);
 end;
@@ -301,15 +288,14 @@ begin
 end;
 
 procedure TDockPerformer.DragStarted(APosition: TPoint);
-//Imput device has moved beyond tresholt (or immediate docking)
+// Input device has moved beyond threshold (or immediate docking)
 begin
   if FDockObject = nil then
     Exit;
   FDragImageList := FDockObject.GetDragImages;
   if FDragImageList <> nil then
     FDragImageList.BeginDrag(0, APosition.X, APosition.Y);
-  DefaultDockImage(FDockObject.EraseDockRect, FDockObject.DockRect, disShow);
-  FDockObject.EraseDockRect := FDockObject.DockRect;
+  FDockObject.ShowDockImage;
 end;
 
 procedure TDockPerformer.DragMove(APosition: TPoint);
@@ -468,12 +454,7 @@ begin
         DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
     end;
 
-    //Draw the form outlines when the position has changed
-    if not CompareMem(@DockRect, @EraseDockRect, SizeOf(TRect)) then
-    begin
-      DefaultDockImage(FDockObject.EraseDockRect, FDockObject.DockRect, disMove);
-      EraseDockRect := DockRect;
-    end;
+    MoveDockImage;
   end;
 end;
 
@@ -491,7 +472,7 @@ begin
     FDockObject := nil;
     SetCaptureControl(nil);
 
-    DefaultDockImage(ADockObjectCopy.EraseDockRect, ADockObjectCopy.DockRect, disHide);
+    ADockObjectCopy.HideDockImage;
     ADockObjectCopy.Floating := ADockObjectCopy.DragTarget = nil;
 
     Accepted := ADockObjectCopy.DragTarget <> nil;
@@ -546,11 +527,6 @@ begin
   end;
 end;
 
-
-procedure TDockPerformer.DefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
-begin
-  WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect, AOperation);
-end;
 
 { TDragManagerDefault }
 
