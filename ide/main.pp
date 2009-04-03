@@ -12545,6 +12545,7 @@ var
   Identifier: string;
   PascalReferences: TAVLTree;
   ListOfLazFPDocNode: TFPList;
+  CurUnitname: String;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
@@ -12561,6 +12562,14 @@ begin
   DoJumpToCodePos(TargetSrcEdit, TargetUnitInfo,
     NewSource, NewX, NewY, NewTopLine, true);
   CodeToolBoss.GetIdentifierAt(NewSource,NewX,NewY,Identifier);
+  CurUnitname:=ExtractFileNameOnly(NewSource.Filename);
+  if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+  begin
+    IDEMessageDialog(srkmecRenameIdentifier,
+      lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
+      mtInformation,[mbCancel],'');
+    exit(mrCancel);
+  end;
 
   GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;

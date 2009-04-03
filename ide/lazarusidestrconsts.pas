@@ -4074,6 +4074,8 @@ resourcestring
   lisSetValue = 'Set value';
   lisCreateFunction = 'Create function';
   lisResult2 = 'Result:';
+  lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction = 'The identifier is '
+    +'a unit. Please use the File - Save as function to rename a unit.';
 
 implementation
 
