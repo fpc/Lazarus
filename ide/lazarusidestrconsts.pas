@@ -1340,6 +1340,7 @@ resourcestring
   dlgCOGDB = 'Generate Debugging Info For GDB (Slows Compiling)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';
   dlgLNumsBct = 'Display Line Numbers in Run-time Error Backtraces';
+  dlgGenerateDwarf = 'Generate dwarf debug information';
   dlgCOHeaptrc = 'Use Heaptrc Unit';
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';

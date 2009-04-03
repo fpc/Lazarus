@@ -270,6 +270,7 @@ type
     // Linking:
     fGenDebugInfo: Boolean;
     fUseLineInfoUnit: Boolean;
+    FGenerateDwarf: Boolean;
     fUseHeaptrc: Boolean;
     fUseValgrind: Boolean;
     fGenGProfCode: Boolean;
@@ -382,6 +383,7 @@ type
     // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
+    property GenerateDwarf: Boolean read FGenerateDwarf write FGenerateDwarf;
     property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
     property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
     property GenGProfCode: Boolean read fGenGProfCode write fGenGProfCode;

@@ -62,6 +62,7 @@ type
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
+    chkGenerateDwarf: TCheckBox;
     MainNoteBook: TNoteBook;
 
     { Search Paths Controls }
@@ -659,6 +660,7 @@ begin
     // linking
     chkDebugGDB.Checked := Options.GenerateDebugInfo;
     chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
+    chkGenerateDwarf.Checked := Options.GenerateDwarf;
     chkUseHeaptrc.Checked := Options.UseHeaptrc;
     chkUseValgrind.Checked := Options.UseValgrind;
     chkGenGProfCode.Checked := Options.GenGProfCode;
@@ -983,6 +985,7 @@ begin
     // linking
     Options.GenerateDebugInfo := chkDebugGDB.Checked;
     Options.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
+    Options.GenerateDwarf := chkGenerateDwarf.Checked;
     Options.UseHeaptrc := chkUseHeaptrc.Checked;
     Options.UseValgrind := chkUseValgrind.Checked;
     Options.GenGProfCode := chkGenGProfCode.Checked;
@@ -1382,6 +1385,7 @@ begin
 
   chkDebugGDB.Caption := dlgCOGDB+' (-g)';
   chkUseLineInfoUnit.Caption := dlgLNumsBct+' (-gl)';
+  chkGenerateDwarf.Caption := dlgGenerateDwarf + '(-gw)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc+' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind+' (-gv)';
   chkGenGProfCode.Caption := dlgGPROF+' (-pg)';

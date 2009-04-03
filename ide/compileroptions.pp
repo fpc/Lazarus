@@ -1297,6 +1297,7 @@ begin
   p:=Path+'Linking/';
   GenerateDebugInfo := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
   UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
+  GenerateDwarf := XMLConfigFile.GetValue(p+'Debugging/GenerateDwarf/Value', false);
   UseHeaptrc := XMLConfigFile.GetValue(p+'Debugging/UseHeaptrc/Value', false);
   UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
@@ -1473,6 +1474,7 @@ begin
   p:=Path+'Linking/';
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDwarf/Value', GenerateDwarf, false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
@@ -2320,6 +2322,10 @@ begin
   if (UseLineInfoUnit) then
     switches := switches + ' -gl';
 
+  { Generate dwarf debug information }
+  if (GenerateDwarf) then
+    switches := switches + ' -gw';
+
   { Use Heaptrc Unit }
   if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
     switches := switches + ' -gh';
@@ -2693,6 +2699,7 @@ begin
   // linking
   fGenDebugInfo := false;
   fUseLineInfoUnit := true;
+  FGenerateDwarf := false;
   fUseHeaptrc := false;
   fUseValgrind := false;
   fGenGProfCode := false;
@@ -2804,6 +2811,7 @@ begin
   // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
+  FGenerateDwarf := CompOpts.FGenerateDwarf;
   fUseHeaptrc := CompOpts.fUseHeaptrc;
   fUseValgrind := CompOpts.fUseValgrind;
   fGenGProfCode := CompOpts.fGenGProfCode;
@@ -2935,6 +2943,7 @@ begin
   Tool.Path:='Linking';
   Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo);
   Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit);
+  Tool.AddDiff('GenerateDwarf',FGenerateDwarf,CompOpts.FGenerateDwarf);
   Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc);
   Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind);
   Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode);
