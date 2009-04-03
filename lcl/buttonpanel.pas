@@ -73,6 +73,9 @@ type
     procedure UpdateButtonOrder;
     procedure UpdateSizes;
   protected
+    procedure CalculatePreferredSize(
+                         var PreferredWidth, PreferredHeight: integer;
+                         WithThemeSpace: Boolean); override;
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
     procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop, ANewWidth,
@@ -266,6 +269,19 @@ begin
       if FButtonsWidth > FButtons[btn].Width then Continue;
       FButtonsWidth := FButtons[btn].Width;
     end;
+  end;
+end;
+
+procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if HandleAllocated then
+  begin
+    if Align in [alTop, alBottom] then
+      PreferredHeight := FButtonsHeight + Spacing + FBevel.Height
+    else
+    if Align in [alLeft, alRight] then
+      PreferredWidth := FButtonsWidth + Spacing + FBevel.Width;
   end;
 end;
 
@@ -478,7 +494,7 @@ begin
       alLeft: begin
         ANewTop := AlignRect.Top;
         ANewLeft := AlignRect.Left + FSpacing + FButtonsWidth;
-        ANewHEight := AlignRect.Bottom - AlignRect.Top;
+        ANewHeight := AlignRect.Bottom - AlignRect.Top;
       end;
       alRight: begin
         ANewTop := AlignRect.Top;
