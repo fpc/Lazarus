@@ -279,10 +279,18 @@ begin
   begin
     UpdateSizes;
     if Align in [alTop, alBottom] then
-      PreferredHeight := FButtonsHeight + Spacing + FBevel.Height
+    begin
+      PreferredHeight := FButtonsHeight;
+      if ShowBevel then
+        inc(PreferredHeight, Spacing + FBevel.Height);
+    end
     else
     if Align in [alLeft, alRight] then
-      PreferredWidth := FButtonsWidth + Spacing + FBevel.Width;
+    begin
+      PreferredWidth := FButtonsWidth;
+      if ShowBevel then
+        inc(PreferredWidth, Spacing + FBevel.Width);
+    end;
   end;
 end;
 
