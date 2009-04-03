@@ -86,11 +86,11 @@ type
     function GetString(Index: Integer): String;
     procedure SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
     procedure SetAttributeSize(const AValue: Integer);
-    procedure SetCount(const AValue: Integer); override;
     procedure SetObject(Index: Integer; const AValue: TObject);
     procedure SetRangeList(const AValue: TSynEditStorageMem);
     procedure SetString(Index: Integer; const AValue: String);
   protected
+    procedure SetCount(const AValue: Integer); override;
     function ItemSize: Integer; override;
     procedure SetCapacity(const AValue: Integer); override;
   public
