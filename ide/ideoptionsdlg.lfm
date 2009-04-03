@@ -18,11 +18,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 38
-    Top = 462
+    Height = 34
+    Top = 460
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
@@ -32,7 +33,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 456
+    Height = 454
     Top = 6
     Width = 206
     Anchors = [akTop, akLeft, akBottom]

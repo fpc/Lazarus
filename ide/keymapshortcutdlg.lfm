@@ -1,10 +1,11 @@
 object ShortCutDialog: TShortCutDialog
   Left = 290
-  Height = 257
+  Height = 248
   Top = 189
   Width = 545
+  AutoSize = True
   Caption = 'ShortCutDialog'
-  ClientHeight = 257
+  ClientHeight = 248
   ClientWidth = 545
   OnCreate = FormCreate
   LCLVersion = '0.9.27'
@@ -29,11 +30,14 @@ object ShortCutDialog: TShortCutDialog
     TabOrder = 1
   end
   object BtnPanel: TButtonPanel
+    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 35
+    Height = 26
     Top = 216
     Width = 533
+    Align = alTop
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

@@ -2,49 +2,24 @@
 
 LazarusResources.Add('TChooseKeySchemeDlg','FORMDATA',[
   'TPF0'#19'TChooseKeySchemeDlg'#18'ChooseKeySchemeDlg'#4'Left'#3#150#1#6'Heigh'
-  +'t'#3#233#0#3'Top'#3'3'#1#5'Width'#3#177#1#11'HelpContext'#2#0#13'ActiveCont'
-  +'rol'#7#29'SchemeRadiogroup.RadioButton0'#5'Align'#7#6'alNone'#14'AllowDropF'
-  +'iles'#8#10'AutoScroll'#9#8'AutoSize'#8#11'BorderIcons'#11#12'biSystemMenu'
-  +#10'biMinimize'#10'biMaximize'#0#11'BorderStyle'#7#10'bsSizeable'#7'Caption'
-  +#6#18'ChooseKeySchemeDlg'#28'ChildSizing.LeftRightSpacing'#2#0#28'ChildSizin'
-  +'g.TopBottomSpacing'#2#0#29'ChildSizing.HorizontalSpacing'#2#0#27'ChildSizin'
-  +'g.VerticalSpacing'#2#0#27'ChildSizing.ControlsPerLine'#2#0#12'ClientHeight'
-  +#3#233#0#11'ClientWidth'#3#177#1#8'DockSite'#8#8'DragKind'#7#6'dkDrag'#8'Dra'
-  +'gMode'#7#8'dmManual'#7'Enabled'#9#11'Font.Height'#2#0#10'Font.Style'#11#0#9
-  +'FormStyle'#7#8'fsNormal'#8'OnCreate'#7#24'ChooseKeySchemeDlgCREATE'#14'Pare'
-  +'ntBiDiMode'#9#10'ParentFont'#8#8'Position'#7#14'poScreenCenter'#13'ShowInTa'
-  +'skBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6'0.9.27'#11'Wi'
-  +'ndowState'#7#8'wsNormal'#0#6'TLabel'#9'NoteLabel'#4'Left'#2#6#6'Height'#2#18
-  +#3'Top'#2#6#5'Width'#3#165#1#11'HelpContext'#2#0#5'Align'#7#5'alTop'#9'Align'
-  +'ment'#7#13'taLeftJustify'#8'AutoSize'#9#18'BorderSpacing.Left'#2#0#17'Borde'
-  +'rSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0
-  +#20'BorderSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFil'
-  +'l'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#9'NoteLabe'
-  +'l'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#6'Layo'
-  +'ut'#7#5'tlTop'#14'ParentBidiMode'#9#11'ParentColor'#8#10'ParentFont'#9#14'P'
-  +'arentShowHint'#9#13'ShowAccelChar'#9#11'Transparent'#9#7'Visible'#9#8'WordW'
-  +'rap'#9#11'OptimalFill'#8#0#0#11'TRadioGroup'#16'SchemeRadiogroup'#4'Left'#2
-  +#6#6'Height'#3#149#0#3'Top'#2#30#5'Width'#3#165#1#11'HelpContext'#2#0#5'Alig'
-  +'n'#7#8'alClient'#8'AutoFill'#9#8'AutoSize'#8#18'BorderSpacing.Left'#2#0#17
-  +'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'
-  +#2#0#20'BorderSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'cc'
-  +'aFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#6'Sche'
-  +'me'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2
-  +#6#29'ChildSizing.HorizontalSpacing'#2#0#27'ChildSizing.VerticalSpacing'#2#0
-  +#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSi'
-  +'zing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkH'
-  +'orizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScal'
-  +'eChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'Chil'
-  +'dSizing.ControlsPerLine'#2#1#12'ClientHeight'#3#130#0#11'ClientWidth'#3#161
-  +#1#12'ColumnLayout'#7#24'clHorizontalThenVertical'#7'Columns'#2#1#5'Ctl3D'#8
-  +#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#9'ItemInd'
-  +'ex'#2#0#13'Items.Strings'#1#6#17'Default (Lazarus)'#6#12'Classic (TP)'#6#22
-  +'Mac OS X (Apple style)'#6#24'Mac OS X (Lazarus style)'#0#10'ParentFont'#9#11
-  +'ParentColor'#9#11'ParentCtl3D'#9#14'ParentShowHint'#9#8'TabOrder'#2#0#7'Tab'
-  +'Stop'#9#7'Visible'#9#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Hei'
-  +'ght'#2'0'#3'Top'#3#185#0#5'Width'#3#165#1#11'HelpContext'#2#0#5'Align'#7#8
-  +'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOrder'#2#1#13'D'
-  +'efaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#6'pbHelp'#0
-  +#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0
-  +#0#0
+  +'t'#3#233#0#3'Top'#3'3'#1#5'Width'#3#177#1#13'ActiveControl'#7#29'SchemeRadi'
+  +'ogroup.RadioButton0'#7'Caption'#6#18'ChooseKeySchemeDlg'#12'ClientHeight'#3
+  +#233#0#11'ClientWidth'#3#177#1#8'OnCreate'#7#24'ChooseKeySchemeDlgCREATE'#8
+  +'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#9'Not'
+  +'eLabel'#4'Left'#2#6#6'Height'#2#14#3'Top'#2#6#5'Width'#3#165#1#5'Align'#7#5
+  +'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#9'NoteLabel'#11'ParentColo'
+  +'r'#8#8'WordWrap'#9#0#0#11'TRadioGroup'#16'SchemeRadiogroup'#4'Left'#2#6#6'H'
+  +'eight'#3#169#0#3'Top'#2#26#5'Width'#3#165#1#5'Align'#7#8'alClient'#8'AutoFi'
+  +'ll'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#6'Scheme'#28'ChildSizing.Le'
+  +'ftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.Enl'
+  +'argeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertic'
+  +'al'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'cr'
+  +'sScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildS'
+  +'izing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPe'
+  +'rLine'#2#1#12'ClientHeight'#3#151#0#11'ClientWidth'#3#161#1#9'ItemIndex'#2#0
+  +#13'Items.Strings'#1#6#17'Default (Lazarus)'#6#12'Classic (TP)'#6#22'Mac OS '
+  +'X (Apple style)'#6#24'Mac OS X (Lazarus style)'#0#8'TabOrder'#2#0#7'TabStop'
+  +#9#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2#26#3'Top'#3
+  +#201#0#5'Width'#3#165#1#8'TabOrder'#2#1#11'ShowButtons'#11#4'pbOK'#8'pbCance'
+  +'l'#6'pbHelp'#0#9'ShowBevel'#8#0#0#0
 ]);

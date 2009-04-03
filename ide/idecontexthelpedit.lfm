@@ -18,23 +18,23 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   LCLVersion = '0.9.27'
   object WindowControlsGroupBox: TGroupBox
     Left = 6
-    Height = 444
+    Height = 466
     Top = 6
     Width = 305
     Align = alLeft
     BorderSpacing.Around = 6
     Caption = 'WindowControlsGroupBox'
-    ClientHeight = 425
+    ClientHeight = 448
     ClientWidth = 301
     TabOrder = 0
     object ControlsTreeView: TTreeView
       Left = 6
-      Height = 331
+      Height = 354
       Top = 6
       Width = 289
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       ReadOnly = True
       TabOrder = 0
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
@@ -42,7 +42,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object CreateHelpNodeForControlButton: TButton
       Left = 6
       Height = 35
-      Top = 343
+      Top = 366
       Width = 289
       Align = alBottom
       BorderSpacing.Around = 6
@@ -53,7 +53,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object TestButton: TButton
       Left = 6
       Height = 35
-      Top = 384
+      Top = 407
       Width = 289
       Align = alBottom
       BorderSpacing.Around = 6
@@ -64,23 +64,23 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   end
   object NodesGroupBox: TGroupBox
     Left = 328
-    Height = 444
+    Height = 466
     Top = 6
     Width = 285
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    ClientHeight = 425
+    ClientHeight = 448
     ClientWidth = 281
     TabOrder = 1
     object HelpNodesTreeView: TTreeView
       Left = 6
-      Height = 294
+      Height = 317
       Top = 6
       Width = 269
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       ReadOnly = True
       TabOrder = 0
       OnSelectionChanged = HelpNodesTreeViewSelectionChanged
@@ -89,34 +89,34 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object HelpNodePropertiesGroupBox: TGroupBox
       Left = 6
       Height = 113
-      Top = 306
+      Top = 329
       Width = 269
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'HelpNodePropertiesGroupBox'
-      ClientHeight = 94
+      ClientHeight = 95
       ClientWidth = 265
       TabOrder = 1
       object NodeNameLabel: TLabel
         Left = 10
-        Height = 18
+        Height = 14
         Top = 10
-        Width = 44
+        Width = 32
         Caption = 'Name:'
         ParentColor = False
       end
       object NodePathLabel: TLabel
         Left = 10
-        Height = 18
+        Height = 14
         Top = 40
-        Width = 33
+        Width = 27
         Caption = 'Path:'
         ParentColor = False
       end
       object NodeHasHelpCheckBox: TCheckBox
         Left = 6
-        Height = 22
-        Top = 66
+        Height = 17
+        Top = 72
         Width = 253
         Align = alBottom
         BorderSpacing.Around = 6
@@ -154,16 +154,17 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   end
   object Splitter1: TSplitter
     Left = 317
-    Height = 444
+    Height = 466
     Top = 6
     Width = 5
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 48
-    Top = 456
+    Height = 26
+    Top = 478
     Width = 607
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

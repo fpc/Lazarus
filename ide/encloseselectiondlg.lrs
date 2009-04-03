@@ -2,37 +2,18 @@
 
 LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
   'TPF0'#23'TEncloseSelectionDialog'#22'EncloseSelectionDialog'#4'Left'#3'?'#1#6
-  +'Height'#3#244#0#3'Top'#3#231#0#5'Width'#3'K'#1#11'HelpContext'#2#0#13'Activ'
-  +'eControl'#7#23'ButtonPanel.CloseButton'#5'Align'#7#6'alNone'#14'AllowDropFi'
-  +'les'#8#10'AutoScroll'#9#8'AutoSize'#8#11'BorderIcons'#11#12'biSystemMenu'#10
-  +'biMinimize'#10'biMaximize'#0#11'BorderStyle'#7#10'bsSizeable'#7'Caption'#6
-  +#17'Enclose Selection'#28'ChildSizing.LeftRightSpacing'#2#0#28'ChildSizing.T'
-  +'opBottomSpacing'#2#0#29'ChildSizing.HorizontalSpacing'#2#0#27'ChildSizing.V'
-  +'erticalSpacing'#2#0#27'ChildSizing.ControlsPerLine'#2#0#12'ClientHeight'#3
-  +#244#0#11'ClientWidth'#3'K'#1#8'DockSite'#8#8'DragKind'#7#6'dkDrag'#8'DragMo'
-  +'de'#7#8'dmManual'#7'Enabled'#9#11'Font.Height'#2#0#10'Font.Style'#11#0#9'Fo'
-  +'rmStyle'#7#8'fsNormal'#8'OnCreate'#7#28'EncloseSelectionDialogCREATE'#14'Pa'
-  +'rentBiDiMode'#9#10'ParentFont'#8#8'Position'#7#14'poScreenCenter'#13'ShowIn'
-  +'TaskBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6'0.9.27'#11
-  +'WindowState'#7#8'wsNormal'#0#11'TRadioGroup'#14'TypeRadiogroup'#4'Left'#2#6
-  +#6'Height'#3#184#0#3'Top'#2#6#5'Width'#3'?'#1#11'HelpContext'#2#0#5'Align'#7
-  +#8'alClient'#8'AutoFill'#9#8'AutoSize'#8#18'BorderSpacing.Left'#2#0#17'Borde'
-  +'rSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0
-  +#20'BorderSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFil'
-  +'l'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#4'Type'#28
-  +'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'C'
-  +'hildSizing.HorizontalSpacing'#2#0#27'ChildSizing.VerticalSpacing'#2#0#29'Ch'
-  +'ildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.'
-  +'EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizo'
-  +'ntal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChil'
-  +'ds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizi'
-  +'ng.ControlsPerLine'#2#1#12'ColumnLayout'#7#24'clHorizontalThenVertical'#7'C'
-  +'olumns'#2#1#5'Ctl3D'#8#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'
-  +#7'Enabled'#9#9'ItemIndex'#2#255#10'ParentFont'#9#11'ParentColor'#9#11'Paren'
-  +'tCtl3D'#9#14'ParentShowHint'#9#8'TabOrder'#2#0#7'TabStop'#9#7'Visible'#9#0#0
-  +#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'0'#3'Top'#3#196#0#5
-  +'Width'#3'?'#1#11'HelpContext'#2#0#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'B'
-  +'uttonOrder'#7#9'boDefault'#8'TabOrder'#2#1#13'DefaultButton'#7#4'pbOK'#11'S'
-  +'howButtons'#11#4'pbOK'#8'pbCancel'#0#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7
-  +'pbClose'#6'pbHelp'#0#7'Visible'#9#0#0#0
+  +'Height'#3#244#0#3'Top'#3#231#0#5'Width'#3'K'#1#7'Caption'#6#17'Enclose Sele'
+  +'ction'#12'ClientHeight'#3#244#0#11'ClientWidth'#3'K'#1#8'OnCreate'#7#28'Enc'
+  +'loseSelectionDialogCREATE'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6
+  +#6'0.9.27'#0#11'TRadioGroup'#14'TypeRadiogroup'#4'Left'#2#6#6'Height'#3#200#0
+  +#3'Top'#2#6#5'Width'#3'?'#1#5'Align'#7#8'alClient'#8'AutoFill'#9#20'BorderSp'
+  +'acing.Around'#2#6#7'Caption'#6#4'Type'#28'ChildSizing.LeftRightSpacing'#2#6
+  +#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24
+  +'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenou'
+  +'sChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'Chil'
+  +'dSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cc'
+  +'lLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#8'TabOrder'
+  +#2#0#7'TabStop'#9#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'
+  +#2#26#3'Top'#3#212#0#5'Width'#3'?'#1#8'TabOrder'#2#1#11'ShowButtons'#11#4'pb'
+  +'OK'#8'pbCancel'#0#9'ShowBevel'#8#0#0#0
 ]);

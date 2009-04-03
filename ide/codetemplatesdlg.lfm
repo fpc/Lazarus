@@ -133,13 +133,13 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 246
+    Height = 268
     Top = 236
     Width = 485
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 228
+    ClientHeight = 250
     ClientWidth = 481
     TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
@@ -176,7 +176,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 154
+      Height = 176
       Top = 68
       Width = 469
       BorderSpacing.Around = 6
@@ -189,7 +189,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ParentColor = False
       ParentFont = False
       TabOrder = 1
-      Gutter.Width = 55
+      BookMarkOptions.OnChange = nil
+      Gutter.Width = 57
       Keystrokes = <      
         item
           Command = 3
@@ -517,7 +518,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BracketHighlightStyle = sbhsBoth
       object TSynGutterPartList
         object TSynGutterMarks
-          Width = 22
+          Width = 23
         end
         object TSynGutterLineNumber
           Width = 17
@@ -572,11 +573,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 48
-    Top = 488
+    Height = 26
+    Top = 510
     Width = 485
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
   end
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False

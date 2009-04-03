@@ -8,42 +8,46 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   ClientHeight = 421
   ClientWidth = 387
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 381
+    Height = 26
+    Top = 389
     Width = 375
-    Align = alBottom
-    AutoSize = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object MethodsGroupBox: TGroupBox
     Left = 6
-    Height = 249
-    Top = 126
+    Height = 261
+    Top = 122
     Width = 375
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'MethodsGroupBox'
-    ClientHeight = 231
+    ClientHeight = 243
     ClientWidth = 371
     TabOrder = 1
     object MethodsSynEdit: TSynEdit
       Left = 6
-      Height = 219
+      Height = 231
       Top = 6
       Width = 359
       Align = alClient
       BorderSpacing.Around = 6
+      CFDividerDrawLevel = 0
       Font.Height = -14
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
+      Font.Quality = fqNonAntialiased
       ParentColor = False
+      ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
-      Gutter.CodeFoldingWidth = 14
+      Gutter.Width = 0
       Highlighter = SynPasSyn1
       Keystrokes = <      
         item
@@ -370,11 +374,38 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
         'MethodsSynEdit'
       )
       ReadOnly = True
+      BracketHighlightStyle = sbhsBoth
+      object TSynGutterPartList
+        object TSynGutterMarks
+          Width = 23
+        end
+        object TSynGutterLineNumber
+          Width = 17
+          MarkupInfo.Background = clBtnFace
+          MarkupInfo.Foreground = clNone
+          DigitCount = 2
+          ShowOnlyLineNumbersMultiplesOf = 1
+          ZeroStart = False
+          LeadingZeros = False
+        end
+        object TSynGutterChanges
+          Width = 4
+          ModifiedColor = 59900
+          SavedColor = clGreen
+        end
+        object TSynGutterSeparator
+          Width = 2
+        end
+        object TSynGutterCodeFolding
+          MarkupInfo.Background = clNone
+          MarkupInfo.Foreground = clGray
+        end
+      end
     end
   end
   object SectionsGroupBox: TGroupBox
     Left = 6
-    Height = 114
+    Height = 110
     Top = 6
     Width = 375
     Align = alTop
@@ -386,14 +417,14 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
     ChildSizing.HorizontalSpacing = 15
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 4
-    ClientHeight = 96
+    ClientHeight = 92
     ClientWidth = 371
     TabOrder = 2
     object PrivateCheckBox: TCheckBox
       Left = 6
       Height = 23
       Top = 6
-      Width = 121
+      Width = 113
       Caption = 'PrivateCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 0
@@ -402,31 +433,31 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Left = 6
       Height = 23
       Top = 29
-      Width = 121
+      Width = 113
       Caption = 'ProtectedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 1
     end
     object PublicCheckBox: TCheckBox
       Left = 6
-      Height = 19
+      Height = 17
       Top = 52
-      Width = 121
+      Width = 113
       Caption = 'PublicCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 2
     end
     object PublishedCheckBox: TCheckBox
       Left = 6
-      Height = 19
-      Top = 71
-      Width = 121
+      Height = 17
+      Top = 69
+      Width = 113
       Caption = 'PublishedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 3
     end
     object AllButton: TButton
-      Left = 142
+      Left = 134
       Height = 23
       Top = 6
       Width = 103
@@ -435,7 +466,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       TabOrder = 4
     end
     object PublishedButton: TButton
-      Left = 142
+      Left = 134
       Height = 23
       Top = 29
       Width = 103
@@ -446,6 +477,8 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   end
   object SynPasSyn1: TSynPasSyn
     Enabled = False
+    CompilerMode = pcmDelphi
+    NestedComments = False
     left = 103
     top = 199
   end
