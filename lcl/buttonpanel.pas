@@ -277,6 +277,7 @@ procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
 begin
   if HandleAllocated then
   begin
+    UpdateSizes;
     if Align in [alTop, alBottom] then
       PreferredHeight := FButtonsHeight + Spacing + FBevel.Height
     else
