@@ -417,7 +417,10 @@ end;
 
 function TTICustomGrid.GetPropertyCount: integer;
 begin
-  Result:=FProperties.Count;
+  if FProperties <> nil then
+    Result := FProperties.Count
+  else
+    Result := 0;
 end;
 
 procedure TTICustomGrid.SetAliasPropertyNames(const AValue: TAliasStrings);
