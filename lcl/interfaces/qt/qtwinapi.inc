@@ -4846,7 +4846,7 @@ var
   DstQDC: TQtDeviceContext absolute DestDC;
   SrcRect, DstRect, MaskRect: TRect;
   SrcWidthOrig, SrcHeightOrig: Integer;
-  Image, QMask: QImageH;
+  Image, TmpImage, QMask, TmpMask: QImageH;
   SrcMatrix: QMatrixH;
   dx, dy: integer;
 begin
@@ -4900,6 +4900,7 @@ begin
     dec(Width, dx);    // substract width
     dec(SrcWidth, dx); // and dont forget about SrcWidth or we will get unneeded stretching
   end;
+
   if dy <> 0 then
   begin
     inc(Y, dy);
@@ -4918,7 +4919,28 @@ begin
     QMask := TQtImage(Mask).Handle
   else
     QMask := nil;
-  DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+
+  if (DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top) then
+  begin
+    // Right < Left mean horizontal flip, Bottom < Top - vertical
+    TmpImage := QImage_create();
+    QImage_mirrored(Image, TmpImage, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
+    if QMask <> nil then
+    begin
+      TmpMask := QImage_create();
+      QImage_mirrored(QMask, TmpMask, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
+    end
+    else
+      TmpMask := QMask;
+    DstRect := NormalizeRect(DstRect);
+    MaskRect := NormalizeRect(MaskRect);
+    DstQDC.drawImage(@DstRect, TmpImage, @SrcRect, TmpMask, @MaskRect);
+    QImage_destroy(TmpImage);
+    if TmpMask <> nil then
+      QImage_destroy(TmpMask);
+  end
+  else
+    DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
 
   Result := True;
 end;
