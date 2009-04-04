@@ -2624,7 +2624,8 @@ begin
           end;
         end
         else // global var
-          if FDividerDrawConfig[pddlVarGlobal].MaxDrawDepth > 0 then exit;
+          if FDividerDrawConfig[pddlVarGlobal].MaxDrawDepth > 0 then
+            exit(FDividerDrawConfig[pddlVarGlobal].TopSetting);
       cfbtClass, cfbtRecord:
         begin
           if CheckFoldNestLevel(0, i + 1, [cfbtProcedure],
