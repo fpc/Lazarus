@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, SynEditTextBase,
-  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType,
+  FileUtil, LCLProc, LCLIntf, LCLType,
   SynEditTypes, SynEditMiscProcs;
 
 const

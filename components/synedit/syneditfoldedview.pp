@@ -31,7 +31,7 @@ interface
 
 uses
   LCLProc, Graphics,
-  Classes, SysUtils, SynEditTypes, SynEditTextBuffer, SynEditTextBase,
+  Classes, SysUtils, SynEditTextBase,
   SynEditMiscClasses, SynEditMiscProcs, SynEditPointClasses,
   SynEditHighlighter, SynEditHighlighterFoldBase;
 

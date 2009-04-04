@@ -27,7 +27,7 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTextBase, SynEditTextBuffer, SynEditMiscProcs;
+  Classes, SysUtils, SynEditTextBase;
 
 const
   // Offset to add to LengthOfLine, if Line has no tabs.

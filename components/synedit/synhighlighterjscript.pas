@@ -273,7 +273,7 @@ type
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     {$ENDIF}
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
     function GetToken: String; override;
@@ -1788,7 +1788,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynJScriptSyn.GetTokenEx(var TokenStart: PChar; var TokenLength: integer);
+procedure TSynJScriptSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;

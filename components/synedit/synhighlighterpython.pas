@@ -162,7 +162,7 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     {$ENDIF}
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -486,8 +486,8 @@ begin
 end; { SetLine }
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynPythonSyn.GetTokenEx(var TokenStart: PChar;
-  var TokenLength: integer);
+procedure TSynPythonSyn.GetTokenEx(out TokenStart: PChar;
+  out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;

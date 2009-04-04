@@ -38,8 +38,8 @@ uses
 {$ELSE}
   FileUtil, LCLProc, LCLIntf, LCLType,
 {$ENDIF}
-  SynEditHighlighter, SynEditTypes, SynEditMiscClasses, SynEditTextBuffer,
-  SynEditTextBase, AvgLvlTree;
+  SynEditHighlighter, SynEditTextBuffer,
+  AvgLvlTree;
 
 type
 
@@ -159,8 +159,6 @@ type
                       LineNumber:Integer // 0 based
                       ); override;
   end;
-
-  TSynCustomHighlighterClass = class of TSynCustomFoldHighlighter;
 
   { TSynCustomHighlighterRanges }
 

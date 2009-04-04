@@ -1,7 +1,7 @@
 object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
-  Left = 207
+  Left = 1772
   Height = 300
-  Top = 207
+  Top = 92
   Width = 190
   ActiveControl = SynObjectPartsListBox
   BorderStyle = bsSizeToolWin
@@ -25,7 +25,6 @@ object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
     ButtonHeight = 40
     ButtonWidth = 44
     Caption = 'ToolBar1'
-    Ctl3D = False
     ShowCaptions = True
     TabOrder = 0
     object AddButton: TToolButton
@@ -80,7 +79,6 @@ object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
     Align = alTop
     Anchors = []
     AutoComplete = False
-    Ctl3D = False
     ItemHeight = 13
     ItemWidth = 0
     Style = csDropDownList

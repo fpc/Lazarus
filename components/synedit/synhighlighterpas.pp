@@ -58,7 +58,7 @@ uses
   Windows, Messages,
   {$ENDIF}
   Classes, Registry, Controls, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBuffer, SynEditTextBase,
+  SynEditTypes, SynEditHighlighter, SynEditTextBuffer,
   SynEditStrConst;
 
 type
@@ -408,7 +408,7 @@ type
     function GetRange: Pointer; override;
     function GetToken: string; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: TtkTokenKind;
@@ -2234,7 +2234,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynPasSyn.GetTokenEx(var TokenStart: PChar; var TokenLength: integer);
+procedure TSynPasSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   if TokenLength>0 then begin

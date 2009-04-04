@@ -137,7 +137,7 @@ type
     function IsSecondKeyWord(aToken: string): Boolean;
     function GetToken: string; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override; /////TL: Added 2003-06-11
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; /////TL: Added 2003-06-11
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -717,8 +717,8 @@ end;
 
 ////TL 2003-06-11: Added the following to satisfy abstract method override
 {$IFDEF SYN_LAZARUS}
-procedure TSynUNIXShellScriptSyn.GetTokenEx(var TokenStart: PChar;
-  var TokenLength: integer);
+procedure TSynUNIXShellScriptSyn.GetTokenEx(out TokenStart: PChar;
+  out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;

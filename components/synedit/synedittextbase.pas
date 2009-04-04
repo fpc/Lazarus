@@ -26,7 +26,7 @@ unit SynEditTextBase;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, SynEditTypes, SynEditMiscProcs, SynEditKeyCmds;
+  Classes, SysUtils, LCLProc, SynEditMiscProcs, SynEditKeyCmds;
 
 type
   TSynEditStrings = class;

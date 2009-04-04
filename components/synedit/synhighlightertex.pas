@@ -118,7 +118,7 @@ type
                       LineNumber:Integer); override;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
@@ -340,7 +340,7 @@ begin
 end;  { GetToken }
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynTeXSyn.GetTokenEx(var TokenStart: PChar; var TokenLength: integer);
+procedure TSynTeXSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;

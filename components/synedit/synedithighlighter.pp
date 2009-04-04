@@ -44,9 +44,7 @@ uses
   {$ENDIF}
   Registry, IniFiles,
 {$ENDIF}
-  SynEditTypes,
-  SynEditMiscClasses,
-  SynEditTextBuffer, SynEditTextBase;
+  SynEditTypes, SynEditMiscClasses, SynEditTextBase;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -258,7 +256,7 @@ type
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); virtual; abstract;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract;

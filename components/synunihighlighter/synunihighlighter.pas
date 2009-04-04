@@ -343,7 +343,7 @@ type
     function GetToken: string; override;
     ////TL Added the following 3 lines... and the implementation procedure
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override; ////TL: Added 2003-06-11
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; ////TL: Added 2003-06-11
     {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
@@ -1718,8 +1718,8 @@ end;
 
 ////TL 2003-06-12: Added the following to satisfy abstract method override
 {$IFDEF SYN_LAZARUS}
-procedure TSynUniSyn.GetTokenEx(var TokenStart: PChar;
-  var TokenLength: integer);
+procedure TSynUniSyn.GetTokenEx(out TokenStart: PChar;
+  out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
