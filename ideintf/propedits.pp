@@ -2997,7 +2997,9 @@ end;
 
 function TEnumPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paMultiSelect,paValueList,paSortList,paRevertable,paHasDefaultValue];
+  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TEnumPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -3308,8 +3310,9 @@ end;
 
 function TSetPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect,paSubProperties,paReadOnly,paRevertable,
-             paHasDefaultValue];
+  Result := [paMultiSelect, paSubProperties, paReadOnly, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 procedure TSetPropertyEditor.GetProperties(Proc: TGetPropEditProc);
@@ -4726,7 +4729,9 @@ const
 
 function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paRevertable, paHasDefaultValue];
+  Result := [paMultiSelect, paValueList, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
 function TModalResultPropertyEditor.OrdValueToVisualValue(OrdValue: longint
@@ -4954,11 +4959,12 @@ end;
 
 function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect,paValueList,paRevertable,paHasDefaultValue,paDialog];
+  Result := [paMultiSelect, paValueList, paRevertable, paDialog];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
-function TShortCutPropertyEditor.OrdValueToVisualValue(OrdValue: longint
-  ): string;
+function TShortCutPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   CurValue: TShortCut;
 begin
@@ -5068,11 +5074,12 @@ end;
 
 function TCursorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paMultiSelect,paSortList,paValueList,paRevertable,paHasDefaultValue];
+  Result := [paMultiSelect, paSortList, paValueList, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
 end;
 
-function TCursorPropertyEditor.OrdValueToVisualValue(OrdValue: longint
-  ): string;
+function TCursorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
   Result := CursorToString(TCursor(OrdValue));
 end;
