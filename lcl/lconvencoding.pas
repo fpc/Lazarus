@@ -32,6 +32,7 @@ uses
 const
   EncodingUTF8 = 'utf8';
   EncodingAnsi = 'ansi';
+  EncodingUTF8BOM = 'utf8bom';
 
 function GuessEncoding(const s: string): string;
 
@@ -48,6 +49,7 @@ var
   ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
   ConvertUTF8ToAnsi: TConvertEncodingFunction = nil;
   
+function UTF8BOMToUTF8(const s: string): string; // UTF8 with BOM
 function ISO_8859_1ToUTF8(const s: string): string; // central europe
 function CP1250ToUTF8(const s: string): string; // central europe
 function CP1251ToUTF8(const s: string): string; // cyrillic
@@ -64,6 +66,7 @@ function KOI8ToUTF8(const s: string): string;  // russian cyrillic
 function SingleByteToUTF8(const s: string;
                           const Table: TCharToUTF8Table): string;
 
+function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
 function UTF8ToISO_8859_1(const s: string): string; // central europe
 function UTF8ToCP1250(const s: string): string; // central europe
 function UTF8ToCP1251(const s: string): string; // cyrillic
@@ -3524,6 +3527,11 @@ const
     ''                  // #255
   );
 
+function UTF8BOMToUTF8(const s: string): string;
+begin
+  Result:=copy(s,4,length(s));
+end;
+
 function ISO_8859_1ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayISO_8859_1ToUTF8);
@@ -4298,6 +4306,12 @@ begin
   end;
 end;
 
+function UTF8ToUTF8BOM(const s: string): string;
+begin
+  DebugLn(['UTF8ToUTF8BOM ']);
+  Result:=#$EF#$BB#$BF+s;
+end;
+
 function UTF8ToISO_8859_1(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToISO_8859_1);
@@ -4406,6 +4420,7 @@ end;
 procedure GetSupportedEncodings(List: TStrings);
 begin
   List.Add('UTF-8');
+  List.Add('UTF-8BOM');
   List.Add('Ansi');
   List.Add('CP1250');
   List.Add('CP1251');
@@ -4486,7 +4501,7 @@ begin
   
   // try BOM (Byte Order Mark)
   if CompareI(@s[1],#$EF#$BB#$BF,3) then begin
-    Result:=EncodingUTF8;
+    Result:=EncodingUTF8BOM;
     exit;
   end;
   
@@ -4554,6 +4569,7 @@ begin
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
   
   if (AFrom=EncodingUTF8) then begin
+    if ATo='utf8bom' then begin Result:=UTF8ToUTF8BOM(s); exit; end;
     if ATo='iso88591' then begin Result:=UTF8ToISO_8859_1(s); exit; end;
     if ATo='cp1250' then begin Result:=UTF8ToCP1250(s); exit; end;
     if ATo='cp1251' then begin Result:=UTF8ToCP1251(s); exit; end;
@@ -4573,6 +4589,7 @@ begin
       exit;
     end;
   end else if ATo=EncodingUTF8 then begin
+    if AFrom='utf8bom' then begin Result:=UTF8BOMToUTF8(s); exit; end;
     if AFrom='iso88591' then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
     if AFrom='cp1250' then begin Result:=CP1250ToUTF8(s); exit; end;
     if AFrom='cp1251' then begin Result:=CP1251ToUTF8(s); exit; end;

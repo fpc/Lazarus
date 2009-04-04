@@ -1453,8 +1453,13 @@ end;
 
 function TUnitInfo.NeedsSaveToDisk: boolean;
 begin
-  Result:=IsVirtual or Modified or ChangedOnDisk(true)
-          or (not FileExistsUTF8(Filename));
+  Result:=IsVirtual or Modified or ChangedOnDisk(true);
+  if not Result then begin
+    if Source<>nil then
+      Result:=Source.FileOnDiskNeedsUpdate
+    else
+      Result:=not FileExistsUTF8(Filename);
+  end;
 end;
 
 procedure TUnitInfo.UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);

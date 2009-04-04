@@ -1707,6 +1707,7 @@ resourcestring
   lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modificatio'
     +'ns to %s%s%s%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
+  lisUtf8WithBOM = 'UTF-8 with BOM';
   uemSetBookmark = '&Set Bookmark';
   uemToggleBookmark = '&Toggle Bookmark';
   uemReadOnly = 'Read Only';

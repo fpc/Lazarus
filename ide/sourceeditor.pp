@@ -4023,6 +4023,8 @@ begin
     then begin
       // the ansi encoding is shown as 'ansi (system encoding)' -> cut
       NewEncoding:=EncodingAnsi;
+    end else if NewEncoding=lisUtf8WithBOM then begin
+      NewEncoding:=EncodingUTF8BOM;
     end;
     DebugLn(['TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
     if SrcEdit.CodeBuffer<>nil then begin
@@ -4055,7 +4057,7 @@ begin
         if CurResult=mrYes then begin
           // change file
           SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
-          SrcEdit.Modified:=true;
+          SrcEdit.CodeBuffer.Modified:=true;
           DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
           if (not SrcEdit.CodeBuffer.IsVirtual)
           and (LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk) then begin
@@ -4453,13 +4455,16 @@ begin
   for i:=0 to List.Count-1 do begin
     CurName:='Encoding'+IntToStr(i);
     CurEncoding:=List[i];
+    CurCaption:=CurEncoding;
     if SysUtils.CompareText(CurEncoding,EncodingAnsi)=0 then begin
       SysEncoding:=GetSystemEncoding;
       if (SysEncoding<>'') and (SysUtils.CompareText(SysEncoding,EncodingAnsi)<>0)
       then
-        CurEncoding:=CurEncoding+' ('+GetSystemEncoding+')';
+        CurCaption:=CurCaption+' ('+GetSystemEncoding+')';
     end;
-    CurCaption:=CurEncoding;
+    if CurEncoding='UTF-8BOM' then begin
+      CurCaption:=lisUtf8WithBOM;
+    end;
     if SrcEditSubMenuEncoding.Count=i then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuEncoding,
