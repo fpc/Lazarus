@@ -87,7 +87,7 @@ type
     function CreateThemeServices: TThemeServices; virtual;
   public
     constructor Create; virtual;
-    destructor Destroy; override;
+    procedure BeforeDestruction;override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
     procedure AppRun(const ALoop: TApplicationMainLoop); virtual;

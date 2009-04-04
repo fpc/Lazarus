@@ -472,6 +472,7 @@ type
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); virtual;
     procedure UpdateThemes;
 
+    property DottedBrush: HBRUSH read GetDottedBrush;
     property ThemesAvailable: Boolean read FThemesAvailable;
     property ThemesEnabled: Boolean read GetThemesEnabled;
 
@@ -1875,7 +1876,7 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
   begin
     OldColor1 := SetBkColor(DC, ColorToRGB(Color1));
     OldColor2 := SetTextColor(DC, ColorToRGB(Color2));
-    FillRect(DC, ARect, GetDottedBrush);
+    FillRect(DC, ARect, DottedBrush);
     SetBkColor(DC, OldColor1);
     SetTextColor(DC, OldColor2);
   end;

@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -29,10 +29,10 @@ begin
   FThemeServices := CreateThemeServices;
 end;
 
-destructor TWidgetSet.Destroy;
+procedure TWidgetSet.BeforeDestruction;
 begin
-  FreeAndNil(FThemeServices);
-  inherited Destroy;
+  FreeAndNil(FThemeServices); // destroy before destructor to release resources
+  inherited BeforeDestruction;
 end;
 
 procedure TWidgetSet.PassCmdLineOptions;
