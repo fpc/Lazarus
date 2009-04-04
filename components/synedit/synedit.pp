@@ -3429,6 +3429,7 @@ begin
   Canvas.Pen.Width := 1;
   // Do everything else with API calls. This (maybe) realizes the new pen color.
   dc := Canvas.Handle;
+  SetBkMode(dc, TRANSPARENT);
 
   // If anything of the two pixel space before the text area is visible, then
   // fill it with the component background color.
