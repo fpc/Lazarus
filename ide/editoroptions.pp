@@ -337,6 +337,57 @@ const
     )
   );
 
+type
+
+  TEditorOptionsDividerInfo = record
+    Name: String;      // Name for display
+    Xml: String;       // Name for XML
+    BoolOpt: Boolean;  // Checkbox only
+    MaxLevel: Integer;
+  end;
+  TEditorOptionsDividerInfoList = Array [0..999] of TEditorOptionsDividerInfo;
+  PEditorOptionsDividerInfoList = ^TEditorOptionsDividerInfoList;
+
+  TEditorOptionsDividerRecord = record
+    Count: Integer;
+    Info: PEditorOptionsDividerInfoList;
+  end;
+
+const
+
+  EditorOptionsDividerInfoPas: Array [0..8] of TEditorOptionsDividerInfo
+  = (
+      (Name: dlgDivPasUnitSectionName;  Xml: 'Sect';    BoolOpt: True;  MaxLevel: 1),
+      (Name: dlgDivPasUsesName;         Xml: 'Uses';    BoolOpt: True;  MaxLevel: 0),
+      (Name: dlgDivPasVarGlobalName;    Xml: 'GVar';    BoolOpt: True;  MaxLevel: 1),
+      (Name: dlgDivPasVarLocalName;     Xml: 'LVar';    BoolOpt: False; MaxLevel: 0),
+      (Name: dlgDivPasStructGlobalName; Xml: 'GStruct'; BoolOpt: False; MaxLevel: 1),
+      (Name: dlgDivPasStructLocalName;  Xml: 'LStruct'; BoolOpt: False; MaxLevel: 0),
+      (Name: dlgDivPasProcedureName;    Xml: 'Proc';    BoolOpt: False; MaxLevel: 1),
+      (Name: dlgDivPasBeginEndName;     Xml: 'Begin';   BoolOpt: False; MaxLevel: 0),
+      (Name: dlgDivPasTryName;          Xml: 'Try';     BoolOpt: False; MaxLevel: 0)
+    );
+
+  EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of
+    TEditorOptionsDividerRecord =
+    ( (Count: 0; Info: nil), // none
+      (Count: 0; Info: nil), // text
+      (Count: 9; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsDividerInfoPas[0]), // Freepas
+      (Count: 9; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsDividerInfoPas[0]), // pas
+      (Count: 0; Info: nil), // lfm
+      (Count: 0; Info: nil), // xml
+      (Count: 0; Info: nil), // html
+      (Count: 0; Info: nil), // cpp
+      (Count: 0; Info: nil), // perl
+      (Count: 0; Info: nil), // java
+      (Count: 0; Info: nil), // shell
+      (Count: 0; Info: nil), // python
+      (Count: 0; Info: nil), // php
+      (Count: 0; Info: nil), // sql
+      (Count: 0; Info: nil)  // jscript
+    );
+
+
 const
   EditorOptsFormatVersion = 4;
 
@@ -491,7 +542,6 @@ type
 
     // Code Folding
     FUseCodeFolding: Boolean;
-    FCFDividerDrawLevel: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -524,6 +574,11 @@ type
                                                  DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TSrcIDEHighlighter;
                                        SynColorScheme: String);
+
+    procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+    procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+    procedure WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+
     function GetLineColors(Syn: TSrcIDEHighlighter;
           AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
           out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
@@ -636,8 +691,6 @@ type
     // Code Folding
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
-    property CFDividerDrawLevel: Integer
-        read FCFDividerDrawLevel write FCFDividerDrawLevel default 4;
   end;
 
 const
@@ -1446,9 +1499,6 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
-
-  // Code Folding
-  FCFDividerDrawLevel := 4;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1636,8 +1686,6 @@ begin
     FUseCodeFolding :=
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
-    FCFDividerDrawLevel :=
-      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 4);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1794,8 +1842,6 @@ begin
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
-    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
-        FCFDividerDrawLevel, 4);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2265,16 +2311,92 @@ begin
   end;
 end;
 
+procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  Conf: TSynDividerDrawConfig;
+  ConfName: String;
+  Path: String;
+  i: Integer;
+begin
+  ReadDefaultsForHighlighterFoldSettings(Syn);
+
+  TheInfo := EditorOptionsDividerDefaults
+    [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
+  // read settings, that are different from the defaults
+  for i := 0 to TheInfo.Count - 1 do begin
+    Conf := Syn.DividerDrawConfig[i];
+    ConfName := TheInfo.Info^[i].Xml;
+    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
+      '/Type' + ConfName + '/' ;
+    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
+        Conf.MaxDrawDepth);
+    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
+        Conf.TopColor);
+    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
+        Conf.NestColor);
+  end;
+end;
+
+procedure TEditorOptions.ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  i: Integer;
+begin
+  TheInfo := EditorOptionsDividerDefaults
+    [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
+  for i := 0 to TheInfo.Count - 1 do begin
+    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
+    Syn.DividerDrawConfig[i].TopColor := clDefault;
+    Syn.DividerDrawConfig[i].NestColor := clDefault;
+  end;
+end;
+
+procedure TEditorOptions.WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+var
+  DefSyn: TSrcIDEHighlighter;
+  i:      Integer;
+  Path:   String;
+  Conf, DefConf: TSynDividerDrawConfig;
+  TheInfo: TEditorOptionsDividerRecord;
+  ConfName: String;
+begin
+  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
+  try
+    ReadDefaultsForHighlighterFoldSettings(DefSyn);
+
+    TheInfo := EditorOptionsDividerDefaults
+      [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
+    for i := 0 to TheInfo.Count - 1 do begin
+      Conf := Syn.DividerDrawConfig[i];
+      DefConf := DefSyn.DividerDrawConfig[i]; // default value
+      ConfName := TheInfo.Info^[i].Xml;
+      Path := 'EditorOptions/DividerDraw/Lang' +
+        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+      XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,
+                               DefConf.MaxDrawDepth);
+      XMLConfig.SetDeleteValue(Path + 'TopColor/Value', Conf.TopColor,
+                               DefConf.TopColor);
+      XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
+                               DefConf.NestColor);
+    end;
+  finally
+    DefSyn.Free;
+  end;
+end;
+
 procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
   ReadHighlighterSettings(Syn, '');
+  ReadHighlighterFoldSettings(Syn);
 end;
 
 procedure TEditorOptions.SetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // write highlight settings to config file
 begin
   WriteHighlighterSettings(Syn, '');
+  WriteHighlighterFoldSettings(Syn);
 end;
 
 function TEditorOptions.GetLineColors(Syn: TSrcIDEHighlighter;
@@ -2432,9 +2554,6 @@ begin
     MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
     MarkCaret.Trim := FMarkupCurWordTrim;
   end;
-
-  // Code Folding
-  ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
 
   KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
 end;

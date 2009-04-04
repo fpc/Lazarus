@@ -239,6 +239,7 @@ type
     procedure TextOut(X, Y: Integer; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
       Text: PChar; Length: Integer); virtual;
+    procedure DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
     procedure SetBaseFont(Value: TFont); virtual;
     procedure SetBaseStyle(const Value: TFontStyles); virtual;
     procedure SetStyle(Value: TFontStyles); virtual;
@@ -1169,6 +1170,18 @@ begin
     end;
     DeleteObject(SelectObject(FDC, OldPen));
   end;
+end;
+
+procedure TheTextDrawer.DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
+var
+  Pen, OldPen: HPen;
+  old : TPoint;
+begin
+  Pen := CreateColorPen(AColor);
+  OldPen := SelectObject(FDC, Pen);
+  MoveToEx(FDC, X, Y, @old);
+  LineTo(FDC, X2, Y2);
+  DeleteObject(SelectObject(FDC, OldPen));
 end;
 
 procedure TheTextDrawer.ReleaseTemporaryResources;

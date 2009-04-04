@@ -157,6 +157,43 @@ const
 
 type
 
+  TSynDividerDrawConfigSetting = Record
+    Color: TColor;
+  end;
+
+const
+  SynEmptyDividerDrawConfigSetting: TSynDividerDrawConfigSetting =
+    ( Color: clNone );
+
+type
+  { TSynDividerDrawConfig }
+
+  TSynDividerDrawConfig = class
+  private
+    FDepth: Integer;
+    FTopSetting, FNestSetting: TSynDividerDrawConfigSetting;
+    fOnChange: TNotifyEvent;
+    function GetNestColor: TColor; virtual;
+    function GetTopColor: TColor; virtual;
+    procedure SetNestColor(const AValue: TColor); virtual;
+    procedure SetTopColor(const AValue: TColor); virtual;
+  protected
+    function GetMaxDrawDepth: Integer; virtual;
+    procedure SetMaxDrawDepth(AValue: Integer); virtual;
+    procedure Changed;
+  public
+    // Do not use to set values, or you skip the change notification
+    property TopSetting: TSynDividerDrawConfigSetting read FTopSetting;
+    property NestSetting: TSynDividerDrawConfigSetting read FNestSetting;
+  public
+    constructor Create;
+    procedure Assign(Src: TSynDividerDrawConfig); virtual;
+    property MaxDrawDepth: Integer read GetMaxDrawDepth write SetMaxDrawDepth;
+    property TopColor: TColor read GetTopColor write SetTopColor;
+    property NestColor: TColor read GetNestColor write SetNestColor;
+    property OnChange: TNotifyEvent read fOnChange write fOnChange;
+  end;
+
   { TSynCustomHighlighter }
 
   TSynCustomHighlighter = class(TComponent)
@@ -197,7 +234,9 @@ type
     // code fold - only valid if hcCodeFolding in Capabilities
     property  LineIndex: Integer read FLineIndex;
     property CurrentRanges: TSynHighlighterRangeList read FCurrentRanges;
-    function GetDrawDivider(Index: integer): Boolean; virtual;
+    function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
+    function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
+    function GetDividerDrawConfigCount: Integer; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -227,7 +266,8 @@ type
     procedure Next; virtual; abstract;
     procedure NextToEol;
 
-    property DrawDivider[Index: integer]: Boolean read GetDrawDivider;
+    property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
+      read GetDrawDivider;
     property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel;
   public
     property CurrentLines: TSynEditStrings read FCurrentLines write SetCurrentLines;
@@ -273,6 +313,10 @@ type
       index SYN_ATTR_SYMBOL read GetDefaultAttribute;
     property WhitespaceAttribute: TSynHighlighterAttributes
       index SYN_ATTR_WHITESPACE read GetDefaultAttribute;
+
+    property DividerDrawConfig[Index: Integer]: TSynDividerDrawConfig
+      read GetDividerDrawConfig;
+    property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
   published
     property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
       stored IsFilterStored;
@@ -898,6 +942,8 @@ begin
         end;
       end;
     end;
+    for i := 0 to DividerDrawConfigCount - 1 do
+      DividerDrawConfig[i].Assign(Src.DividerDrawConfig[i]);
     // assign the sample source text only if same or descendant class
     if Src is ClassType then
       SampleSource := Src.SampleSource;
@@ -1208,9 +1254,19 @@ begin
   //DefHighlightChange(Self);
 end;
 
-function TSynCustomHighlighter.GetDrawDivider(Index: integer): Boolean;
+function TSynCustomHighlighter.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;
 begin
-  result := false;
+  result := SynEmptyDividerDrawConfigSetting;
+end;
+
+function TSynCustomHighlighter.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
+begin
+  Result := nil;
+end;
+
+function TSynCustomHighlighter.GetDividerDrawConfigCount: Integer;
+begin
+  Result := 0;
 end;
 
 { TSynHighlighterRangeList }
@@ -1228,6 +1284,64 @@ end;
 function TSynHighlighterRangeList.ItemSize: Integer;
 begin
   Result := SizeOf(Pointer);
+end;
+
+{ TSynDividerDrawConfig }
+
+function TSynDividerDrawConfig.GetNestColor: TColor;
+begin
+  Result := FNestSetting.Color;
+end;
+
+function TSynDividerDrawConfig.GetTopColor: TColor;
+begin
+  Result := FTopSetting.Color;
+end;
+
+procedure TSynDividerDrawConfig.SetNestColor(const AValue: TColor);
+begin
+  if AValue = FNestSetting.Color then exit;
+  FNestSetting.Color := AValue;
+  Changed;
+end;
+
+procedure TSynDividerDrawConfig.SetTopColor(const AValue: TColor);
+begin
+  if AValue = FTopSetting.Color then exit;
+  FTopSetting.Color := AValue;
+  Changed;
+end;
+
+function TSynDividerDrawConfig.GetMaxDrawDepth: Integer;
+begin
+  Result := FDepth;
+end;
+
+procedure TSynDividerDrawConfig.SetMaxDrawDepth(AValue: Integer);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
+  Changed;
+end;
+
+procedure TSynDividerDrawConfig.Changed;
+begin
+  if Assigned(fOnChange) then
+    fOnChange(Self);
+end;
+
+constructor TSynDividerDrawConfig.Create;
+begin
+  inherited;
+  FDepth := 0;
+  FTopSetting.Color := clDefault;
+  FNestSetting.Color := clDefault;
+end;
+
+procedure TSynDividerDrawConfig.Assign(Src: TSynDividerDrawConfig);
+begin
+  fOnChange := src.fOnChange;
+  FDepth := Src.FDepth;
 end;
 
 initialization

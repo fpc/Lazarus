@@ -1,12 +1,11 @@
 inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
-  Height = 88
-  Width = 400
-  ClientHeight = 88
-  ClientWidth = 400
-  TabOrder = 0
+  Height = 334
+  Width = 521
+  ClientHeight = 334
+  ClientWidth = 521
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 230
+  DesignTop = 230
   object Bevel1: TBevel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkCodeFoldingEnabled
@@ -15,46 +14,280 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 2
-    Top = 23
-    Width = 400
+    Top = 25
+    Width = 521
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
   end
-  object lblDividerDrawLevel: TLabel[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = edDividerDrawLevel
-    AnchorSideTop.Side = asrCenter
-    Left = 0
-    Height = 14
-    Top = 35
-    Width = 94
-    Caption = 'lblDividerDrawLevel'
+  object LanguageLabel: TLabel[1]
+    AnchorSideLeft.Control = LanguageComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LanguageComboBox
+    Left = 206
+    Height = 16
+    Top = 31
+    Width = 81
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'LanguageLabel'
     ParentColor = False
   end
   object chkCodeFoldingEnabled: TCheckBox[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 17
+    Height = 19
     Top = 0
-    Width = 131
+    Width = 136
     Caption = 'chkCodeFoldingEnabled'
-    OnChange = chkCodeFoldingEnabledChange
     TabOrder = 0
   end
-  object edDividerDrawLevel: TSpinEdit[3]
-    AnchorSideLeft.Control = lblDividerDrawLevel
-    AnchorSideLeft.Side = asrBottom
+  object LanguageComboBox: TComboBox[3]
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
-    AnchorSideTop.Side = asrBottom
-    Left = 100
-    Height = 23
+    Left = 0
+    Height = 21
     Top = 31
-    Width = 50
-    BorderSpacing.Left = 6
+    Width = 200
+    AutoComplete = False
     BorderSpacing.Top = 6
-    MaxValue = 10
+    ItemHeight = 13
+    ItemWidth = 0
+    OnChange = LanguageComboBoxChange
+    OnExit = LanguageComboBoxExit
+    OnKeyDown = LanguageComboBoxKeyDown
     TabOrder = 1
-    Value = 1
+    Text = 'LanguageComboBox'
+  end
+  object FoldConfigListBox: TListBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = LanguageComboBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 276
+    Top = 58
+    Width = 200
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnClick = FoldConfigListBoxClick
+    OnSelectionChange = FoldConfigListBoxSelectionChange
+    TabOrder = 2
+  end
+  object DividerConfPanel: TPanel[5]
+    AnchorSideLeft.Control = FoldConfigListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FoldConfigListBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 206
+    Height = 276
+    Top = 58
+    Width = 315
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BevelOuter = bvNone
+    ClientHeight = 276
+    ClientWidth = 315
+    TabOrder = 3
+    object DividerBoolPanel: TPanel
+      AnchorSideLeft.Control = DividerConfPanel
+      AnchorSideTop.Control = DividerConfPanel
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = DividerSpinPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 315
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 315
+      TabOrder = 1
+      Visible = False
+      object DividerOnOffCheckBox: TCheckBox
+        AnchorSideLeft.Control = DividerBoolPanel
+        AnchorSideTop.Control = DividerBoolPanel
+        AnchorSideRight.Control = DividerBoolPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 315
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'DividerOnOffCheckBox'
+        OnChange = DividerOnOffCheckBoxChange
+        TabOrder = 0
+      end
+    end
+    object DividerSpinPanel: TPanel
+      AnchorSideLeft.Control = DividerConfPanel
+      AnchorSideTop.Control = DividerConfPanel
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 315
+      TabOrder = 0
+      object DividerSpinLabel: TLabel
+        AnchorSideLeft.Control = DividerSpinEdit
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = DividerSpinEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = DividerSpinPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 53
+        Height = 16
+        Top = 3
+        Width = 262
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 3
+        Caption = 'DividerSpinLabel'
+        ParentColor = False
+      end
+      object DividerSpinEdit: TSpinEdit
+        AnchorSideLeft.Control = DividerSpinPanel
+        AnchorSideTop.Control = DividerSpinPanel
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 50
+        OnChange = DividerSpinEditChange
+        TabOrder = 0
+      end
+    end
+    object NestLvlPanel: TPanel
+      AnchorSideLeft.Control = DividerConfPanel
+      AnchorSideTop.Control = TopLvlPanel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 44
+      Top = 80
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BevelOuter = bvNone
+      ClientHeight = 44
+      ClientWidth = 315
+      TabOrder = 2
+      Visible = False
+      object NestLvlColorLabel: TLabel
+        AnchorSideLeft.Control = NestLvlPanel
+        AnchorSideTop.Control = NestLvlPanel
+        Left = 0
+        Height = 16
+        Top = 0
+        Width = 97
+        Caption = 'NestLvlColorLabel'
+        ParentColor = False
+      end
+      object NestLvlColorBox: TColorBox
+        AnchorSideLeft.Control = NestLvlPanel
+        AnchorSideTop.Control = NestLvlColorLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 22
+        Top = 22
+        Width = 100
+        DefaultColorColor = clWhite
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        AutoComplete = False
+        BorderSpacing.Top = 6
+        ItemHeight = 16
+        ItemWidth = 0
+        OnChange = NestLvlColorBoxChange
+        TabOrder = 0
+      end
+      object NestLvlColorCheckBox: TCheckBox
+        AnchorSideLeft.Control = NestLvlColorBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = NestLvlColorBox
+        AnchorSideTop.Side = asrCenter
+        Left = 106
+        Height = 19
+        Top = 24
+        Width = 129
+        BorderSpacing.Left = 6
+        Caption = 'NestLvlColorCheckBox'
+        OnChange = NestLvlColorCheckBoxChange
+        TabOrder = 1
+      end
+    end
+    object TopLvlPanel: TPanel
+      AnchorSideLeft.Control = DividerConfPanel
+      AnchorSideTop.Control = DividerConfPanel
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 44
+      Top = 30
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 30
+      BevelOuter = bvNone
+      ClientHeight = 44
+      ClientWidth = 315
+      TabOrder = 3
+      object TopLvlColorLabel: TLabel
+        AnchorSideLeft.Control = TopLvlPanel
+        AnchorSideTop.Control = TopLvlPanel
+        Left = 0
+        Height = 16
+        Top = 0
+        Width = 94
+        Caption = 'TopLvlColorLabel'
+        ParentColor = False
+      end
+      object TopLvlColorBox: TColorBox
+        AnchorSideLeft.Control = TopLvlPanel
+        AnchorSideTop.Control = TopLvlColorLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 22
+        Top = 22
+        Width = 100
+        DefaultColorColor = clWhite
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        AutoComplete = False
+        BorderSpacing.Top = 6
+        ItemHeight = 16
+        ItemWidth = 0
+        OnChange = TopLvlColorBoxChange
+        TabOrder = 0
+      end
+      object TopLvlColorCheckBox: TCheckBox
+        AnchorSideLeft.Control = TopLvlColorBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = TopLvlColorBox
+        AnchorSideTop.Side = asrCenter
+        Left = 106
+        Height = 19
+        Top = 24
+        Width = 126
+        BorderSpacing.Left = 6
+        Caption = 'TopLvlColorCheckBox'
+        OnChange = TopLvlColorCheckBoxChange
+        TabOrder = 1
+      end
+    end
   end
 end

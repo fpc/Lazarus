@@ -123,7 +123,7 @@ type
     function GetFoldNodeInfoCount(Line: Integer): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
-    function TopCodeFoldBlockType: Pointer;
+    function TopCodeFoldBlockType(DownIndex: Integer = 0): Pointer;
     function StartCodeFoldBlock(ABlockType: Pointer;
               IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; virtual;
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
@@ -327,12 +327,20 @@ begin
   Result:=TSynCustomHighlighterRange;
 end;
 
-function TSynCustomFoldHighlighter.TopCodeFoldBlockType: Pointer;
+function TSynCustomFoldHighlighter.TopCodeFoldBlockType(DownIndex: Integer = 0): Pointer;
+var
+  Fold: TSynCustomCodeFoldBlock;
 begin
-  if (CodeFoldRange<>nil) and (CodeFoldRange.CodeFoldStackSize>0) then
-    Result:=CodeFoldRange.Top.BlockType
-  else
-    Result:=nil;
+  Result:=nil;
+  if (CodeFoldRange<>nil) then begin
+    Fold := CodeFoldRange.Top;
+    while (Fold <> nil) and (DownIndex > 0) do begin
+      Fold := Fold.Parent;
+      dec(DownIndex);
+    end;
+    if Fold <> nil then
+      Result := Fold.BlockType
+  end;
 end;
 
 function TSynCustomFoldHighlighter.StartCodeFoldBlock(ABlockType: Pointer;

@@ -1220,8 +1220,23 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
-  dlgCFDividerDrawLevel = 'Divider Draw Level';
-  
+  dlgDividerOnOff = 'Draw divider';
+  dlgDividerDrawDepth = 'Draw divider level';
+  dlgDividerTopColor = 'Line color';
+  dlgDividerTopColorDefault = 'Use Default';
+  dlgDividerNestColor = 'Nested line color';
+  dlgDividerNestColorDefault = 'Use Default';
+
+  dlgDivPasUnitSectionName  = 'Unit sections';
+  dlgDivPasUsesName         = 'Uses clause';
+  dlgDivPasVarGlobalName    = 'Var/Type';
+  dlgDivPasVarLocalName     = 'Var/Type (local)';
+  dlgDivPasStructGlobalName = 'Class/Struct';
+  dlgDivPasStructLocalName  = 'Class/Struct (local)';
+  dlgDivPasProcedureName    = 'Procedure/Function';
+  dlgDivPasBeginEndName     = 'Begin/End';
+  dlgDivPasTryName          = 'Try/Except';
+
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';

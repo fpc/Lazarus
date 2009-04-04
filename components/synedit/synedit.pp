@@ -312,7 +312,6 @@ type
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
-    FDividerDrawLevel: Integer;
     fFirstLine: integer;
     fBlockIndent: integer;
     FBlockSelection: TSynEditSelection;
@@ -434,7 +433,8 @@ type
 
     procedure AquirePrimarySelection;
     function GetUndoList: TSynEditUndoList;
-    procedure SetDividerDrawLevel(const AValue: Integer);
+    function GetDividerDrawLevel: Integer; deprecated;
+    procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -928,7 +928,9 @@ type
     {$ENDIF}
     property SelectionMode: TSynSelectionMode
       read GetSelectionMode write SetSelectionMode default smNormal;
-    property CFDividerDrawLevel: Integer read FDividerDrawLevel write SetDividerDrawLevel;
+    // See Highlighter for new methods
+    property CFDividerDrawLevel: Integer
+      read GetDividerDrawLevel write SetDividerDrawLevel; deprecated;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -981,7 +983,6 @@ type
     property Color;
     {$IFDEF SYN_LAZARUS}
     property Cursor default crIBeam;
-    property CFDividerDrawLevel;
     {$ENDIF}
     property Enabled;
     property Font;
@@ -1318,6 +1319,11 @@ begin
     PrimarySelection.OnRequest:=@PrimarySelectionRequest;
   except
   end;
+end;
+
+function TCustomSynEdit.GetDividerDrawLevel: Integer;
+begin
+  Result := fHighlighter.DrawDividerLevel;
 end;
 
 procedure TCustomSynEdit.SurrenderPrimarySelection;
@@ -3287,6 +3293,8 @@ var
     nTokenLen: integer; // Pos in Char // Len in Byte ??
     attr: TSynHighlighterAttributes;
     ypos: Integer;
+    DividerInfo: TSynDividerDrawConfigSetting;
+    cl: Integer;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
@@ -3354,12 +3362,14 @@ var
 
       // draw splitter line
       if Assigned(fHighlighter) then begin
-        fHighlighter.DrawDividerLevel := FDividerDrawLevel;
-        if (fHighlighter.DrawDivider[CurTextIndex]) then
+        DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
+        if DividerInfo.Color <> clNone then
         begin
           ypos := rcToken.Bottom - 1;
-          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-          LCLIntf.LineTo(dc, fGutterWidth - 1, ypos);
+          cl := DividerInfo.Color;
+          if cl = clDefault then
+            cl := fRightEdgeColor;
+          fTextDrawer.DrawLine(nRightEdge, ypos, fGutterWidth - 1, ypos, cl);
         end;
       end;
     end;
@@ -4930,7 +4940,8 @@ end;
 
 procedure TCustomSynEdit.SetDividerDrawLevel(const AValue: Integer);
 begin
-  FDividerDrawLevel := AValue;
+  if assigned(fHighlighter) then
+    fHighlighter.DrawDividerLevel := AValue;
   Invalidate;
 end;
 
@@ -8855,6 +8866,7 @@ begin
   RegisterPropertyToSkip(TSynGutter, 'AllowSkipGutterSeparatorDraw', '', '');
   RegisterPropertyToSkip(TSynGutter, 'GutterParts', '', '');
   RegisterPropertyToSkip(TSynGutter, 'OnChange', '', '');
+  RegisterPropertyToSkip(TSynEdit, 'CFDividerDrawLevel', '', '');
 end;
 
 initialization

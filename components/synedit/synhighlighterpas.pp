@@ -57,8 +57,9 @@ uses
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
-  Classes, Registry, Controls, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBuffer, SynEditTextBase;
+  Classes, Registry, Controls, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
+  SynEditTypes, SynEditHighlighter, SynEditTextBuffer, SynEditTextBase,
+  SynEditStrConst;
 
 type
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -105,12 +106,15 @@ type
     cfbtExcept,
     cfbtRepeat
     );
-  TPascalWordTrippletRanges = set of TPascalCodeFoldBlockType;
+  TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
 
 const
   CountPascalCodeFoldBlockOffset: Pointer =
     Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
-  PascalWordTrippletRanges: TPascalWordTrippletRanges =
+
+  cfbtAll: TPascalCodeFoldBlockTypes =
+    [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)];
+  PascalWordTrippletRanges: TPascalCodeFoldBlockTypes =
     [cfbtBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat
     ];
@@ -125,6 +129,29 @@ type
     pcmGPC,
     pcmMacPas
     );
+
+  TSynPasDividerDrawLocation = (
+      pddlUnitSection,
+      pddlUses,
+      pddlVarGlobal,     // Var, Type, Const in global scope
+      pddlVarLocal,      // Var, Type, Const in local (procedure) scope
+      pddlStructGlobal,  // Class, Object, Record in global type block
+      pddlStructLocal,   // Class, Object, Record in local (procedure) type block
+      pddlProcedure,
+      pddlBeginEnd,      // Includes Repeat
+      pddlTry
+    );
+
+const
+
+  PasDividerDrawLocationDefaults: Array [TSynPasDividerDrawLocation] of
+    Integer = (1, 0, // unit, uses
+               1, 0, // var
+               1, 0, // struct
+               2, 0, // proc, begin
+               0);
+
+type
 
   { TSynPasSynRange }
 
@@ -208,6 +235,7 @@ type
     FCatchNodeInfo: Boolean;
     FNodeInfoLine, FNodeInfoCount: Integer;
     FNodeInfoList: Array of TSynFoldNodeInfo;
+    FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
     procedure GrowNodeInfoList;
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -338,6 +366,8 @@ type
     procedure SetD4syntax(const Value: boolean);
     procedure InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
                        ABlockType: TPascalCodeFoldBlockType);
+    procedure CreateDividerDrawConfig;
+    procedure DestroyDividerDrawConfig;
   protected
     function GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo; override;
     function GetFoldNodeInfoCount(Line: Integer): Integer; override;
@@ -351,7 +381,7 @@ type
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); override;
     procedure CloseBeginEndBlocks;
     procedure EndCodeFoldBlockLastLine;
-    function TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
+    function TopPascalCodeFoldBlockType(DownIndex: Integer = 0): TPascalCodeFoldBlockType;
 
     function GetRangeClass: TSynCustomHighlighterRangeClass; override;
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
@@ -361,7 +391,9 @@ type
     function LastLinePasFoldLevelFix(Index: Integer): integer;
 
     function LastLineFoldLevelFix(Index: Integer): integer;
-    function GetDrawDivider(Index: integer): Boolean; override;
+    function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; override;
+    function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; override;
+    function GetDividerDrawConfigCount: Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -369,6 +401,7 @@ type
     function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -434,9 +467,6 @@ type
 
 
 implementation
-
-uses
-  Graphics, SynEditStrConst;
 
 const
   RESERVED_WORDS_TP: array [1..54] of String = (
@@ -1671,6 +1701,7 @@ end;
 constructor TSynPasSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  CreateDividerDrawConfig;
   fD4syntax := true;
   fAsmAttri := TSynHighlighterAttributes.Create(SYNS_AttrAssembler);
   AddAttribute(fAsmAttri);
@@ -1705,6 +1736,12 @@ begin
   fDefaultFilter := SYNS_FilterPascal;
   FNodeInfoLine := -1;
 end; { Create }
+
+destructor TSynPasSyn.Destroy;
+begin
+  DestroyDividerDrawConfig;
+  inherited Destroy;
+end;
 
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
@@ -2299,11 +2336,11 @@ begin
   end;
 end;
 
-function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
+function TSynPasSyn.TopPascalCodeFoldBlockType(DownIndex: Integer = 0): TPascalCodeFoldBlockType;
 var
   p: Pointer;
 begin
-  p := inherited TopCodeFoldBlockType;
+  p := TopCodeFoldBlockType(DownIndex);
   if p >= CountPascalCodeFoldBlockOffset then
     p := p - PtrUInt(CountPascalCodeFoldBlockOffset);
   Result := TPascalCodeFoldBlockType(PtrUInt(p));
@@ -2511,11 +2548,163 @@ begin
   end;
 end;
 
-function TSynPasSyn.GetDrawDivider(Index: integer): Boolean;
+function TSynPasSyn.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;
+  function CheckFoldNestLevel(MaxDepth, StartLvl: Integer;
+    CountTypes, SkipTypes: TPascalCodeFoldBlockTypes;
+    out ResultLvl: Integer): Boolean;
+  var
+    i, j, m: Integer;
+    t: TPascalCodeFoldBlockType;
+  begin
+    i := 0;
+    j := StartLvl;
+    m := CurrentCodeFoldBlockLevel;
+    t := TopPascalCodeFoldBlockType(j);
+    while (i <= MaxDepth) and (j < m) and
+          ((t in CountTypes) or (t in SkipTypes)) do begin
+      inc(j);
+      if t in CountTypes then
+        inc(i);
+      t := TopPascalCodeFoldBlockType(j)
+    end;
+    ResultLvl := i;
+    Result := i <= MaxDepth;
+  end;
+
+var
+  nxt, cur: TPascalCodeFoldBlockType;
+  CloseCnt, ClosedByNextLine, ClosedInLastLine: Integer;
+  i, top, c: Integer;
+  t: TSynPasDividerDrawLocation;
 begin
-  result := (EndFoldLevel(Index) < DrawDividerLevel) and
-            (EndFoldLevel(Index - 1) > MinimumFoldLevel(Index)) and
-            (MinimumFoldLevel(Index) = EndFoldLevel(Index)); // not a mixed line
+  Result := inherited;
+  if (index = 0) then exit;
+  CloseCnt :=  EndFoldLevel(Index - 1) - MinimumFoldLevel(Index);
+  if (CloseCnt = 0) or (MinimumFoldLevel(Index) <> EndFoldLevel(Index)) then // not a mixed line
+    exit;
+
+  // SetRange[Index] has the folds at the start of this line
+  // ClosedByNextLine: Folds closed by the next lines LastLineFix
+  //                   must be taken from SetRange[Index+1] (end of this line)
+  ClosedByNextLine := -LastLineFoldLevelFix(Index + 1);
+  // ClosedInLastLine: Folds Closed by this lines LastLineFix
+  //                   must be ignored. (They are part of SetRange[Index] / this line)
+  ClosedInLastLine := -LastLineFoldLevelFix(Index);
+
+  // Get the highest close-offset
+  i := ClosedByNextLine - 1;
+  if i >= 0 then begin
+    SetRange(CurrentRanges[Index]);     // Checking ClosedByNextLine
+    top := 0;
+  end else begin
+    SetRange(CurrentRanges[Index - 1]); // Checking Closed in this Line
+    i := CloseCnt - ClosedByNextLine + ClosedInLastLine - 1;
+    top := ClosedInLastLine;
+  end;
+
+  cur := TopPascalCodeFoldBlockType(i + 1);
+  while (i >= top) do begin
+    nxt := cur; // The "next higher" close node compared to current
+    cur := TopPascalCodeFoldBlockType(i);
+    Result := FDividerDrawConfig[pddlUses].TopSetting; //// xxxx
+    case cur of
+      cfbtUnitSection:
+        if FDividerDrawConfig[pddlUnitSection].MaxDrawDepth > 0 then
+          exit(FDividerDrawConfig[pddlUnitSection].TopSetting);
+      cfbtUses:
+        if FDividerDrawConfig[pddlUses].MaxDrawDepth > 0 then
+          exit(FDividerDrawConfig[pddlUses].TopSetting);
+      cfbtVarType:
+        if nxt = cfbtProcedure then begin
+          if CheckFoldNestLevel(FDividerDrawConfig[pddlVarLocal].MaxDrawDepth - 1,
+                                i + 2, [cfbtProcedure], cfbtAll, c) then begin
+            if c = 0
+            then exit(FDividerDrawConfig[pddlVarLocal].TopSetting)
+            else exit(FDividerDrawConfig[pddlVarLocal].NestSetting);
+          end;
+        end
+        else // global var
+          if FDividerDrawConfig[pddlVarGlobal].MaxDrawDepth > 0 then exit;
+      cfbtClass, cfbtRecord:
+        begin
+          if CheckFoldNestLevel(0, i + 1, [cfbtProcedure],
+                                cfbtAll - [cfbtVarType], c)
+          then t := pddlStructGlobal
+          else t := pddlStructLocal;
+          if CheckFoldNestLevel(FDividerDrawConfig[t].MaxDrawDepth - 1,
+                                i + 1, [cfbtClass, cfbtRecord],
+                                cfbtAll - [cfbtVarType], c) then begin
+            if c = 0
+            then exit(FDividerDrawConfig[t].TopSetting)
+            else exit(FDividerDrawConfig[t].NestSetting);
+          end;
+        end;
+      cfbtProcedure:
+        if CheckFoldNestLevel(FDividerDrawConfig[pddlProcedure].MaxDrawDepth - 1,
+                              i + 1, [cfbtProcedure], cfbtAll, c) then begin
+          if c = 0
+          then exit(FDividerDrawConfig[pddlProcedure].TopSetting)
+          else exit(FDividerDrawConfig[pddlProcedure].NestSetting);
+        end;
+      cfbtBeginEnd, cfbtRepeat:
+        if CheckFoldNestLevel(FDividerDrawConfig[pddlBeginEnd].MaxDrawDepth - 1,
+                              i + 1, [cfbtBeginEnd, cfbtRepeat],
+                              cfbtAll - [cfbtProcedure], c) then begin
+          if c = 0
+          then exit(FDividerDrawConfig[pddlBeginEnd].TopSetting)
+          else exit(FDividerDrawConfig[pddlBeginEnd].NestSetting);
+        end;
+      cfbtTry:
+        if CheckFoldNestLevel(FDividerDrawConfig[pddlTry].MaxDrawDepth - 1,
+                              i + 1, [cfbtTry], cfbtAll - [cfbtProcedure], c)
+        then begin
+          if c = 0
+          then exit(FDividerDrawConfig[pddlTry].TopSetting)
+          else exit(FDividerDrawConfig[pddlTry].NestSetting);
+        end;
+    end;
+    dec(i);
+    if (i < top) and (ClosedByNextLine > 0) then begin
+      // Switch to blocks closed in this line
+      SetRange(CurrentRanges[Index - 1]);
+      i := CloseCnt - ClosedByNextLine + ClosedInLastLine - 1;
+      ClosedByNextLine := 0;
+      top := ClosedInLastLine;
+      cur := TopPascalCodeFoldBlockType(i + 1);
+    end;
+  end;
+  Result := inherited;
+end;
+
+procedure TSynPasSyn.CreateDividerDrawConfig;
+var
+  i: TSynPasDividerDrawLocation;
+begin
+  for i := low(TSynPasDividerDrawLocation) to high(TSynPasDividerDrawLocation) do
+  begin
+    FDividerDrawConfig[i] := TSynDividerDrawConfig.Create;
+    FDividerDrawConfig[i].OnChange := {$IFDEF FPC}@{$ENDIF}DefHighlightChange;
+    FDividerDrawConfig[i].MaxDrawDepth := PasDividerDrawLocationDefaults[i];
+  end;
+end;
+
+procedure TSynPasSyn.DestroyDividerDrawConfig;
+var
+  i: TSynPasDividerDrawLocation;
+begin
+  for i := low(TSynPasDividerDrawLocation) to high(TSynPasDividerDrawLocation) do
+    FreeAndNil(FDividerDrawConfig[i]);
+end;
+
+function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
+begin
+  Result := FDividerDrawConfig[TSynPasDividerDrawLocation(Index)];
+end;
+
+function TSynPasSyn.GetDividerDrawConfigCount: Integer;
+begin
+  Result := ord(high(TSynPasDividerDrawLocation))
+          - ord(low(TSynPasDividerDrawLocation)) + 1;
 end;
 
 function TSynPasSyn.GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo;
