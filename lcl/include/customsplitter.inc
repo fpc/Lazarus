@@ -436,11 +436,10 @@ begin
     //DebugLn(['TCustomSplitter.MoveSplitter Offset=',Offset,' OffsetMaxLower=',OffsetMaxLower,' OffsetMaxUpper=',OffsetMaxUpper]);
 
     // move splitter
-    if ResizeAnchor in [akLeft,akRight] then begin
-      Left:=Left+Offset;
-    end else begin
-      Top:=Top+Offset;
-    end;
+    if ResizeAnchor in [akLeft, akRight] then
+      Left := Left + Offset
+    else
+      Top := Top + Offset;
   end;
 end;
 
@@ -504,8 +503,10 @@ procedure TCustomSplitter.StartSplitterMove(const MouseXY: TPoint);
 begin
   if FSplitDragging then exit;
   FSplitDragging := True;
-  fSplitterStartMouseXY := MouseXY;
-  fSplitterStartLeftTop := Point(Left,Top);
+  FSplitterStartMouseXY := MouseXY;
+  FSplitterStartLeftTop := Point(Left,Top);
+  if ResizeStyle in [rsLine, rsPattern] then
+    Invalidate;
 end;
 
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -531,11 +532,11 @@ begin
     GetCursorPos(MousePos);
     case ResizeAnchor of
       akLeft, akRight:
-         Offset := (MousePos.X-fSplitterStartMouseXY.X)
-                 - (Self.Left-fSplitterStartLeftTop.X);
+         Offset := (MousePos.X - FSplitterStartMouseXY.X)
+                 - (Self.Left - FSplitterStartLeftTop.X);
       akTop, akBottom:
-         Offset := (MousePos.Y-fSplitterStartMouseXY.Y)
-                 - (Self.Top-fSplitterStartLeftTop.Y);
+         Offset := (MousePos.Y - FSplitterStartMouseXY.Y)
+                 - (Self.Top - FSplitterStartLeftTop.Y);
     end;
 
     if Offset = 0 then Exit;
@@ -548,9 +549,12 @@ procedure TCustomSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if FSplitDragging then begin
+  if FSplitDragging then
+  begin
     if Assigned(OnMoved) then OnMoved(Self);
     FSplitDragging := False;
+    if ResizeStyle in [rsLine, rsPattern] then
+      Invalidate;
   end;
 end;
 
@@ -735,61 +739,76 @@ begin
 end;
 
 procedure TCustomSplitter.Paint;
-const
-  GripperDetailsPart: array[Boolean] of TThemedRebar =
-  (
-    trGripperVert,
-    trGripper
-  );
-var
-  ARect, GripperRect: TRect;
-  BgPart: TThemedRebar;
-  BgDetails, GripperDetails: TThemedElementDetails;
-  GripperSize: Integer;
+  procedure DrawThemedPattern(ARect: TRect);
+  const
+    GripperDetailsPart: array[Boolean] of TThemedRebar =
+    (
+      trGripperVert,
+      trGripper
+    );
+  var
+    GripperRect: TRect;
+    BgPart: TThemedRebar;
+    BgDetails, GripperDetails: TThemedElementDetails;
+    GripperSize: Integer;
+  begin
+    GripperDetails := ThemeServices.GetElementDetails(GripperDetailsPart[ResizeAnchor in [akLeft,akRight]]);
+
+    if not Enabled then
+      BgPart := trBandDisabled
+    else
+    if FMouseInControl then
+      BgPart := trBandHot
+    else
+      BgPart := trBandNormal;
+
+    BgDetails := ThemeServices.GetElementDetails(BgPart);
+    ThemeServices.DrawElement(Canvas.Handle, BgDetails, ARect, nil);
+
+    if Beveled then
+      ThemeServices.DrawEdge(Canvas.Handle, BgDetails, ARect, BDR_RAISEDOUTER,
+        BF_ADJUST or BF_RECT, @ARect);
+
+    GripperRect := ARect;
+    GripperSize := ThemeServices.GetDetailSize(GripperDetails);
+    if GripperSize <> -1 then
+    begin
+      if ResizeAnchor in [akLeft,akRight] then
+      begin
+        if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
+        begin
+          GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
+          GripperRect.Bottom := GripperRect.Top + GripperSize;
+        end;
+      end
+      else
+      begin
+        if (GripperRect.Right - GripperRect.Left) > GripperSize then
+        begin
+          GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
+          GripperRect.Right := GripperRect.Left + GripperSize;
+        end;
+      end;
+    end;
+
+    ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect);
+  end;
+
+  procedure DrawResizePattern(ARect: TRect);
+  begin
+    if ResizeStyle = rsPattern then
+      FillRect(Canvas.Handle, ARect, ThemeServices.DottedBrush)
+    else
+      FillRect(Canvas.Handle, ARect, GetStockObject(BLACK_BRUSH));
+  end;
+
 begin
   inherited Paint;
 
-  ARect := ClientRect;
-  GripperDetails := ThemeServices.GetElementDetails(GripperDetailsPart[ResizeAnchor in [akLeft,akRight]]);
-
-  if not Enabled then
-    BgPart := trBandDisabled
+  if (ResizeStyle in [rsNone, rsUpdate]) or not FSplitDragging then
+    DrawThemedPattern(ClientRect)
   else
-  if FMouseInControl then
-    BgPart := trBandHot
-  else
-    BgPart := trBandNormal;
-
-  BgDetails := ThemeServices.GetElementDetails(BgPart);
-  ThemeServices.DrawElement(Canvas.Handle, BgDetails, ARect, nil);
-
-  if Beveled then
-    ThemeServices.DrawEdge(Canvas.Handle, BgDetails, ARect, BDR_RAISEDOUTER,
-      BF_ADJUST or BF_RECT, @ARect);
-
-  GripperRect := ARect;
-  GripperSize := ThemeServices.GetDetailSize(GripperDetails);
-  if GripperSize <> -1 then
-  begin
-    if ResizeAnchor in [akLeft,akRight] then
-    begin
-      if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
-      begin
-        GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
-        GripperRect.Bottom := GripperRect.Top + GripperSize;
-      end;
-    end
-    else
-    begin
-      if (GripperRect.Right - GripperRect.Left) > GripperSize then
-      begin
-        GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
-        GripperRect.Right := GripperRect.Left + GripperSize;
-      end;
-    end;
-  end;
-    
-  ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect);
+    DrawResizePattern(ClientRect);
 end;
 
 procedure TCustomSplitter.MouseEnter;
@@ -820,7 +839,7 @@ constructor TCustomSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FResizeStyle := rsUpdate;
-  fAutoSnap := True;
+  FAutoSnap := True;
   FBeveled := False;
   FMinSize := 30;
   FMouseInControl := False;

@@ -447,8 +447,8 @@ type
     FResizeAnchor: TAnchorKind;
     FResizeStyle: TResizeStyle;
     FSplitDragging: Boolean;
-    fSplitterStartMouseXY: TPoint; // in screen coordinates
-    fSplitterStartLeftTop: TPoint; // in screen coordinates
+    FSplitterStartMouseXY: TPoint; // in screen coordinates
+    FSplitterStartLeftTop: TPoint; // in screen coordinates
     function GetResizeControl: TControl;
     procedure SetAutoSnap(const AValue: boolean);
     procedure SetBeveled(const AValue: boolean);
