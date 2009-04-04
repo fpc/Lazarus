@@ -2932,19 +2932,19 @@ var
     if bDoRightEdge and (not (eoHideRightMargin in Options))
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
     then begin
-      // draw background
+      // draw background (use rcToken, so we do not delete the divider-draw-line)
       InternalFillRect(dc,rcToken);
-      // draw edge
-      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      // draw edge (use rcLine / rcToken may be reduced)
+      LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
-        Token, TokenLen);
+        Token, TokenLen, rcLine.Bottom);
     end else begin
       // draw text with background
       //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(Token,1, TokenLen)),' rcToken=',dbgs(rcToken));
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
-        Token, TokenLen);
+        Token, TokenLen, rcLine.Bottom);
     end;
     rcToken.Left := rcToken.Right;
   end;
@@ -3013,8 +3013,8 @@ var
       // Draw the right edge if necessary.
       if bDoRightEdge and (not (eoHideRightMargin in Options))
       and (nRightEdge >= eolx) then begin // xx rc Token
-        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+        LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
+        LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       end;
 
       if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
@@ -3051,7 +3051,7 @@ var
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
         if rcToken.Right > rcToken.Left then
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
-                                 rcToken, '...', 3);
+                                 rcToken, '...', 3, rcLine.Bottom);
       end;
 
     end;
@@ -3333,7 +3333,17 @@ var
       if not Assigned(fHighlighter) then begin
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
       end else begin
-        fHighlighter.CurrentLines := FTheLinesView;
+        // draw splitter line
+        DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
+        if DividerInfo.Color <> clNone then
+        begin
+          ypos := rcToken.Bottom - 1;
+          cl := DividerInfo.Color;
+          if cl = clDefault then
+            cl := fRightEdgeColor;
+          fTextDrawer.DrawLine(nRightEdge, ypos, fGutterWidth - 1, ypos, cl);
+          dec(rcToken.Bottom);
+        end;
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
@@ -3359,19 +3369,6 @@ var
       PaintHighlightToken(TRUE);
 
       fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
-
-      // draw splitter line
-      if Assigned(fHighlighter) then begin
-        DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
-        if DividerInfo.Color <> clNone then
-        begin
-          ypos := rcToken.Bottom - 1;
-          cl := DividerInfo.Color;
-          if cl = clDefault then
-            cl := fRightEdgeColor;
-          fTextDrawer.DrawLine(nRightEdge, ypos, fGutterWidth - 1, ypos, cl);
-        end;
-      end;
     end;
     CurLine:=-1;
   end;
@@ -3410,11 +3407,14 @@ begin
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
   //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
   colEditorBG := Color;
-  if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
-  begin
-    colBG := Highlighter.WhitespaceAttribute.Background;
-    if colBG <> clNone then
-      colEditorBG := colBG;
+  if Assigned(fHighlighter) then begin
+    fHighlighter.CurrentLines := FTheLinesView;
+    if Assigned(Highlighter.WhitespaceAttribute) then
+    begin
+      colBG := Highlighter.WhitespaceAttribute.Background;
+      if colBG <> clNone then
+        colEditorBG := colBG;
+    end;
   end;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.
@@ -3431,17 +3431,14 @@ begin
   dc := Canvas.Handle;
   SetBkMode(dc, TRANSPARENT);
 
-  // If anything of the two pixel space before the text area is visible, then
-  // fill it with the component background color.
-  if (AClip.Left < fGutterWidth + 2) then begin
-    rcToken := AClip;
-    rcToken.Left := Max(AClip.Left, fGutterWidth);
-    rcToken.Right := fGutterWidth + 2;
-    SetBkColor(dc,colEditorBG);
-    InternalFillRect(dc, rcToken);
-    // Adjust the invalid area to not include this area.
-    AClip.Left := rcToken.Right;
-  end;
+  // Delete the whole area
+  SetBkColor(dc, ColorToRGB(colEditorBG));
+  InternalFillRect(dc, AClip);
+
+  // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
+  if (AClip.Left < fGutterWidth + 2) then
+    AClip.Left := fGutterWidth + 2;
+
   if (LastLine >= FirstLine) then begin
     CalculateCtrlMouseLink;
     // Paint the visible text lines. To make this easier, compute first the
@@ -3457,17 +3454,12 @@ begin
     end;
   end;
 
-  // If there is anything visible below the last line, then fill this as well.
-  rcToken := AClip;
-  rcToken.Top := (LastLine+1) * fTextHeight;
-  if (rcToken.Top < rcToken.Bottom) then begin
-    SetBkColor(dc, ColorToRGB(colEditorBG));
-    InternalFillRect(dc, rcToken);
-    // Draw the right edge if necessary.
-    if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
-      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-    end;
+  // Draw the right edge if necessary.
+ AClip.Top := (LastLine+1) * fTextHeight;
+  if (AClip.Top < AClip.Bottom) and bDoRightEdge and
+     (not (eoHideRightMargin in Options)) then begin
+    LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
+    LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
   end;
 
   fMarkupManager.EndMarkup;

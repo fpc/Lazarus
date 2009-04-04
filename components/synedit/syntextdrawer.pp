@@ -238,7 +238,7 @@ type
     procedure EndDrawing; virtual;
     procedure TextOut(X, Y: Integer; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
-      Text: PChar; Length: Integer); virtual;
+      Text: PChar; Length: Integer; FrameBottom: Integer = -1); virtual;
     procedure DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
     procedure SetBaseFont(Value: TFont); virtual;
     procedure SetBaseStyle(const Value: TFontStyles); virtual;
@@ -290,7 +290,7 @@ type
       const ARect: TRect; Text: PChar; Length: Integer); virtual;
   public
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
-      Text: PChar; Length: Integer); override;
+      Text: PChar; Length: Integer; FrameBottom: Integer = -1); override;
   end;
 
   function GetFontsInfoManager: TheFontsInfoManager;
@@ -1094,7 +1094,7 @@ begin
 end;
 
 procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
-  const ARect: TRect; Text: PChar; Length: Integer);
+  const ARect: TRect; Text: PChar; Length: Integer; FrameBottom: Integer = -1);
 
   procedure InitETODist(InitValue: Integer);
   const
@@ -1127,7 +1127,38 @@ var
   Pen, OldPen: HPen;
   old : TPoint;
 begin
-  {$IFDEF SYN_LAZARUS}
+  if FFrameColor <> clNone then
+  begin
+    // draw background // TODO: only if not default bg color
+    InternalFillRect(FDC, ARect);
+
+    if FrameBottom < 0 then
+      FrameBottom := ARect.Bottom;
+    Pen := CreateColorPen(FFrameColor);
+    OldPen := SelectObject(FDC, Pen);
+    MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+    if ARect.Right = FFrameEndX then begin
+      LineTo(FDC, ARect.Right-1, ARect.Top);
+      LineTo(FDC, ARect.Right-1, FrameBottom-1);
+    end else begin
+      // Last point of the line may not be drawn, so paint one more
+      LineTo(FDC, ARect.Right, ARect.Top);
+      MoveToEx(FDC, ARect.Right-1, FrameBottom-1, @old);
+    end;
+    if ARect.Left = FFrameStartX then begin
+      LineTo(FDC, ARect.Left, FrameBottom-1);
+      LineTo(FDC, ARect.Left, ARect.Top);
+    end else begin
+      MoveToEx(FDC, ARect.Left, FrameBottom-1, @old);
+      LineTo(FDC, ARect.Right, FrameBottom-1);
+    end;
+    DeleteObject(SelectObject(FDC, OldPen));
+
+    if (fuOptions and ETO_OPAQUE) > 0 then
+      fuOptions := fuOptions - ETO_OPAQUE;
+    fuOptions := 0;
+  end;
+
   NeedDistArray:= (FCharExtra > 0) or (not MonoSpace)
     or (not FFontStock.MonoSpace) or (FBaseCharWidth <> FFontStock.CharAdvance);
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
@@ -1142,34 +1173,6 @@ begin
     LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
   else
     LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
-  {$ELSE}
-  if FETOSizeInChar < Length then
-    InitETODist(GetCharWidth);
-  Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
-    Length, PInteger(FETODist));
-  {$ENDIF}
-  if FFrameColor <> clNone then
-  begin
-    Pen := CreateColorPen(FFrameColor);
-    OldPen := SelectObject(FDC, Pen);
-    MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-    if ARect.Right = FFrameEndX then begin
-      LineTo(FDC, ARect.Right-1, ARect.Top);
-      LineTo(FDC, ARect.Right-1, ARect.Bottom-1);
-    end else begin
-      // Last point of the line may not be drawn, so paint one more
-      LineTo(FDC, ARect.Right, ARect.Top);
-      MoveToEx(FDC, ARect.Right-1, ARect.Bottom-1, @old);
-    end;
-    if ARect.Left = FFrameStartX then begin
-      LineTo(FDC, ARect.Left, ARect.Bottom-1);
-      LineTo(FDC, ARect.Left, ARect.Top);
-    end else begin
-      MoveToEx(FDC, ARect.Left, ARect.Bottom-1, @old);
-      LineTo(FDC, ARect.Right, ARect.Bottom-1);
-    end;
-    DeleteObject(SelectObject(FDC, OldPen));
-  end;
 end;
 
 procedure TheTextDrawer.DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
@@ -1233,7 +1236,7 @@ end;
 {$ENDIF}
 
 procedure TheTextDrawerEx.ExtTextOut(X, Y: Integer; fuOptions: UINT;
-  const ARect: TRect; Text: PChar; Length: Integer);
+  const ARect: TRect; Text: PChar; Length: Integer; FrameBottom: Integer = -1);
 begin
   FExtTextOutProc(X, Y, fuOptions, ARect, Text, Length);
 end;
