@@ -1125,7 +1125,8 @@ end;
 function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
-  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
+  ADstWidth, ADstHeight: Integer; FlipHorz, FlipVert: Boolean;
+  out ADst, ADstMask: PGdkPixmap) : Boolean;
 
   procedure Warn(const AText: String);
   begin
@@ -1149,6 +1150,40 @@ begin
     Warn('ScaleDst=nil');
     exit;
   end;
+
+  // flip if needed
+  if FlipHorz then
+  begin
+    {$IFNDEF GTK1}
+    ScaleSrc := ScaleDst;
+    ScaleDst := gdk_pixbuf_flip(ScaleSrc, True);
+    gdk_pixbuf_unref(ScaleSrc);
+    if ScaleDst = nil
+    then begin
+      Warn('ScaleDst=nil');
+      exit;
+    end;
+    {$ELSE}
+    // TODO: implement flipping for gtk1
+    {$ENDIF}
+  end;
+
+  if FlipVert then
+  begin
+    {$IFNDEF GTK1}
+    ScaleSrc := ScaleDst;
+    ScaleDst := gdk_pixbuf_flip(ScaleSrc, False);
+    gdk_pixbuf_unref(ScaleSrc);
+    if ScaleDst = nil
+    then begin
+      Warn('ScaleDst=nil');
+      exit;
+    end;
+    {$ELSE}
+    // TODO: implement flipping for gtk1
+    {$ENDIF}
+  end;
+
 //  BeginGDKErrorTrap;
 
   // Creating pixmap from scaled pixbuf

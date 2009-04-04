@@ -628,7 +628,8 @@ function CreatePixbufFromImageAndMask(ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth,
 function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
-  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
+  ADstWidth, ADstHeight: Integer; FlipHorz, FlipVert: Boolean;
+  out ADst, ADstMask: PGdkPixmap): Boolean;
 
 // obsolete:
 function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;

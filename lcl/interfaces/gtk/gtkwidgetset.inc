@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -2346,6 +2346,7 @@ var
   TempPixmap: PGdkPixmap;
   TempMaskBitmap: PGdkBitmap;
   SizeChange, ROpIsSpecial: Boolean;
+  FlipHorz, FlipVert: Boolean;
 
   function ScaleAndROP(DestGC: PGDKGC;
     Src: PGDKDrawable; SrcPixmap: PGdkPixmap; SrcMaskBitmap: PGdkBitmap): Boolean;
@@ -2408,7 +2409,7 @@ var
       Result := ScalePixmapAndMask(GC, ScaleMethod,
                             SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight,
                             nil, SrcMaskBitmap,
-                            Width, Height, TempPixmap, TempMaskBitmap);
+                            Width, Height, FlipHorz, FlipVert, TempPixmap, TempMaskBitmap);
       if not Result
       then DebugLn('WARNING: ScaleAndROP ScalePixmap for pixmap failed');
     end
@@ -2672,10 +2673,25 @@ begin
   DebugLn('StretchCopyArea Start '+dbgs(Result));
   {$ENDIF}
   if not Result then Exit;
-  if (Width = 0) or ( Height = 0) then exit;
+
+  FlipHorz := Width < 0;
+  if FlipHorz then
+  begin
+    Width := -Width;
+    X := X - Width;
+  end;
+
+  FlipVert := Height < 0;
+  if FlipVert then
+  begin
+    Height := -Height;
+    Y := Y - Height;
+  end;
+
+  if (Width = 0) or (Height = 0) then exit;
   if (SrcWidth = 0) or (SrcHeight = 0) then exit;
 
-  SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight);
+  SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight) or FlipVert or FlipHorz;
   ROpIsSpecial := (ROp <> SRCCOPY);
 
   SrcDCOrigin := SrcDevContext.Offset;
