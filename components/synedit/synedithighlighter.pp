@@ -897,18 +897,6 @@ begin
   end;
 end;
 
-procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStrings);
-begin
-  Lines.Ranges := CreateRangeList;
-end;
-
-procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStrings);
-begin
-  if assigned(Lines.Ranges) then
-    Lines.Ranges.Free;
-  Lines.Ranges := nil;
-end;
-
 procedure TSynCustomHighlighter.FreeHighlighterAttributes;
 var
   i: integer;
@@ -1243,6 +1231,19 @@ begin
     exit;
   FCurrentLines := AValue;
   FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges);
+end;
+
+procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStrings);
+begin
+  Lines.Ranges := CreateRangeList;
+  FCurrentLines := nil;
+end;
+
+procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStrings);
+begin
+  if assigned(Lines.Ranges) then
+    Lines.Ranges.Free;
+  Lines.Ranges := nil;
 end;
 
 procedure TSynCustomHighlighter.SetDrawDividerLevel(const AValue: Integer);
