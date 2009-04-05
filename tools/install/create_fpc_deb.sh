@@ -8,6 +8,12 @@ set -e
 #------------------------------------------------------------------------------
 Usage="Usage: [OS_TARGET=xxx] [CPU_TARGET=xxx] [BINUTILSPREFIX=xxx] $0 fpc|fpc-src [notemp] <FPCSrcDir> [release]"
 
+TmpDir=$TEMP
+if [ -z "$TmpDir" ]; then
+  TmpDir=~/tmp
+fi
+TmpDir=$TmpDir/fpc_patchdir
+
 # what package should be built ...
 PackageName=""
 if [ "$1" = fpc ]; then
@@ -154,7 +160,6 @@ fi
 #------------------------------------------------------------------------------
 # create a temporary copy of the fpc sources to patch it
 
-TmpDir=~/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
     rm -rf $TmpDir

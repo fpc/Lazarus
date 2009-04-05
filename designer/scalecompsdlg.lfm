@@ -9,9 +9,8 @@ object ScaleComponentsDialog: TScaleComponentsDialog
   Caption = 'ScaleComponentsDialog'
   ClientHeight = 82
   ClientWidth = 258
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object PercentLabel: TLabel
     AnchorSideTop.Control = PercentEdit
     AnchorSideTop.Side = asrCenter
@@ -40,10 +39,10 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 148
-    Height = 23
-    Top = 53
-    Width = 40
+    Left = 110
+    Height = 26
+    Top = 50
+    Width = 59
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -60,14 +59,15 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 194
-    Height = 23
-    Top = 53
-    Width = 58
+    Left = 175
+    Height = 26
+    Top = 50
+    Width = 77
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
+    Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2

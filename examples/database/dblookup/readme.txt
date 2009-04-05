@@ -1,0 +1,4 @@
+This example contains a data table of month numbers and the corresponding month names.
+There is a second data table which has a month number data field and a second month number data field which is used as the KeyField for a month name lookup field
+TDBLookupComboBox and listbox controls are linked to the first month number field and to the lookup field. They lookup into the first dataset for their display values.
+As expected, changing the value of the controls on the data field changes the value of the field however changing the value of the controls on the lookup field does not change the value of its key field as would be expected (this is the behaviour in Delphi)

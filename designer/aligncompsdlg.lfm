@@ -9,13 +9,12 @@ object AlignComponentsDialog: TAlignComponentsDialog
   ClientHeight = 238
   ClientWidth = 400
   OnResize = FormResize
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object HorizontalRadioGroup: TRadioGroup
     AnchorSideBottom.Control = ACDBtnPanel
     Left = 6
-    Height = 191
+    Height = 188
     Top = 6
     Width = 191
     Anchors = [akTop, akLeft, akBottom]
@@ -35,7 +34,7 @@ object AlignComponentsDialog: TAlignComponentsDialog
   object VerticalRadioGroup: TRadioGroup
     AnchorSideBottom.Control = ACDBtnPanel
     Left = 203
-    Height = 191
+    Height = 188
     Top = 6
     Width = 191
     Anchors = [akTop, akRight, akBottom]
@@ -53,18 +52,19 @@ object AlignComponentsDialog: TAlignComponentsDialog
     TabOrder = 1
   end
   object ACDBtnPanel: TPanel
-    Height = 35
-    Top = 203
+    Left = 0
+    Height = 38
+    Top = 200
     Width = 400
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 35
+    ClientHeight = 38
     ClientWidth = 400
     TabOrder = 2
     object OKButton: TBitBtn
-      Left = 238
-      Height = 23
+      Left = 236
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight
@@ -80,13 +80,14 @@ object AlignComponentsDialog: TAlignComponentsDialog
     end
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
-      Left = 319
-      Height = 23
+      Left = 317
+      Height = 26
       Top = 6
-      Width = 75
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
+      Cancel = True
       Caption = 'Cancel'
       Constraints.MinWidth = 75
       Kind = bkCancel

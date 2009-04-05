@@ -92,12 +92,17 @@ begin
   end;
 end;
 
-class function GetColorDepth: Integer;
+function GetColorDepth(ADC: HDC): Integer; inline; overload;
+begin
+  Result := GetDeviceCaps(ADC, BITSPIXEL) * GetDeviceCaps(ADC, PLANES);
+end;
+
+function GetColorDepth: Integer; inline; overload;
 var
   DC: HDC;
 begin
   DC := GetDC(0);
-  Result := GetDeviceCaps(DC, BITSPIXEL) * GetDeviceCaps(DC, PLANES);
+  Result := GetColorDepth(DC);
   ReleaseDC(0, DC);
 end;
 
@@ -285,15 +290,24 @@ var
   ListImg, DeviceImg: TLazIntfImage;
   OldBmp, ImgHandle, MskHandle: HBitmap;
   ImgDC: HDC;
+  HasComCtl6: Boolean;
 begin
-  if ADrawEffect = gdeNormal then
+  HasComCtl6 := Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6;
+  // If we are using comctl > 6 then COLOR_32 is supported and alpha bitmaps will
+  // be drawn correctly. If version is lower than our alpha bitmaps will be drawn
+  // with mask and with no alpha. But if we draw with effect different fron normal
+  // we will draw using another method with alpha even using comctl < 6. To prevent
+  // such inconsistency in drawing lets check whether we need alpha drawing first
+  // and whether imagelist has native alpha drawing. If it has then we will use
+  // ImageList_DrawEx in other case we will draw alpha bitmap ourself.
+  if (ADrawEffect = gdeNormal) and (HasComCtl6 or (GetColorDepth(ADC) < 32)) then
   begin
-      ImageList_DrawEx(AList.Reference._Handle, AIndex, ADC, ABounds.Left,
-        ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
-        ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
+    ImageList_DrawEx(AList.Reference._Handle, AIndex, ADC, ABounds.Left,
+      ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
+      ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
   end
   else
-  if (ADrawEffect = gdeDisabled) and (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) then
+  if (ADrawEffect = gdeDisabled) and HasComCtl6 then
   begin
     // if it is manifested exe then use winXP algoriphm of gray painting
     FillChar(DrawParams, SizeOf(DrawParams), 0);

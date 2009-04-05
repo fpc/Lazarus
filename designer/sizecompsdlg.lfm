@@ -10,17 +10,16 @@ object SizeComponentsDialog: TSizeComponentsDialog
   ClientWidth = 380
   OnClose = FormClose
   OnResize = FormResize
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object OKButton: TBitBtn
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 270
-    Height = 23
-    Top = 161
-    Width = 40
+    Left = 232
+    Height = 26
+    Top = 158
+    Width = 59
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -37,14 +36,15 @@ object SizeComponentsDialog: TSizeComponentsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 316
-    Height = 23
-    Top = 161
-    Width = 58
+    Left = 297
+    Height = 26
+    Top = 158
+    Width = 77
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
+    Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
@@ -56,7 +56,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     AnchorSideBottom.Control = HeightRadioGroup
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 149
+    Height = 146
     Top = 6
     Width = 181
     Anchors = [akTop, akLeft, akBottom]
@@ -71,7 +71,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 131
+    ClientHeight = 128
     ClientWidth = 177
     TabOrder = 2
     object WidthEdit: TEdit
@@ -79,7 +79,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
       AnchorSideBottom.Side = asrBottom
       Left = 86
       Height = 23
-      Top = 102
+      Top = 99
       Width = 80
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
@@ -92,7 +92,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = OKButton
     Left = 193
-    Height = 149
+    Height = 146
     Top = 6
     Width = 181
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -107,7 +107,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 131
+    ClientHeight = 128
     ClientWidth = 177
     TabOrder = 3
     object HeightEdit: TEdit
@@ -115,7 +115,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
       AnchorSideBottom.Side = asrBottom
       Left = 87
       Height = 23
-      Top = 102
+      Top = 99
       Width = 80
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
