@@ -2921,6 +2921,7 @@ var
   // column of the first character
   var
     nX: integer;
+    tok: TRect;
   begin
     {debugln('PaintToken A TokenLen=',dbgs(TokenLen),
       ' FirstPhysical=',dbgs(FirstPhysical),
@@ -2933,18 +2934,31 @@ var
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
     then begin
       // draw background (use rcToken, so we do not delete the divider-draw-line)
-      InternalFillRect(dc,rcToken);
+      if rcToken.Left < nRightEdge then begin
+        tok := rcToken;
+        tok.Right := nRightEdge;
+        InternalFillRect(dc, tok);
+      end;
+      if rcToken.Right > nRightEdge then begin
+        tok := rcToken;
+        tok.Left := nRightEdge;
+        tok.Bottom := rcLine.Bottom;
+        InternalFillRect(dc, tok);
+      end;
       // draw edge (use rcLine / rcToken may be reduced)
       LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
-        Token, TokenLen, rcLine.Bottom);
+                             Token, TokenLen, rcLine.Bottom);
     end else begin
       // draw text with background
       //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(Token,1, TokenLen)),' rcToken=',dbgs(rcToken));
-      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
-        Token, TokenLen, rcLine.Bottom);
+      tok := rcToken;
+      if rcToken.Right > nRightEdge + 1 then
+        tok.Bottom := rcLine.Bottom;
+      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, tok,
+                             Token, TokenLen, rcLine.Bottom);
     end;
     rcToken.Left := rcToken.Right;
   end;
@@ -2956,6 +2970,7 @@ var
     MarkupInfo, FoldedCodeInfo: TSynSelectedColor;
     FGFold, BGfold, FFfold : TColor;
     Sfold: TFontStyles;
+    tok: TRect;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -3005,6 +3020,15 @@ var
           then nX1 := rcLine.Right;
         end;
 
+        if nX1 > nRightEdge then begin
+          if rcToken.Left < nRightEdge then begin
+            tok := rcToken;
+            tok.Right := nRightEdge;
+            InternalFillRect(dc, tok);
+            rcToken.Left := nRightEdge;
+          end;
+          rcToken.Bottom := rcLine.Bottom;
+        end;
         rcToken.Right := nX1;
         InternalFillRect(dc, rcToken); {TODO: if style underline, then print spaces}
         rcToken.Left := nX1;
@@ -3053,7 +3077,6 @@ var
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
                                  rcToken, '...', 3, rcLine.Bottom);
       end;
-
     end;
   end;
 
