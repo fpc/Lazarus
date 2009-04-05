@@ -14,14 +14,14 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="FAKE PRINTER"/>
+      <SelectedPrinter Value="HP-LaserJet-1200"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="1"/>
-        <Width Value="960"/>
-        <Height Value="1584" PageType="0"/>
+        <Width Value="1"/>
+        <Height Value="1" PageType="0"/>
         <PgSize Value="1"/>
         <Margins>
           <left Value="0"/>
@@ -34,6 +34,7 @@
         <PrintToPrevPage Value="False"/>
         <ColCount Value="1"/>
         <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
         <ObjectCount Value="19"/>
         <Object1>
           <Name Value="ReportTitle1"/>
@@ -48,7 +49,9 @@
             <Height Value="160"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btReportTitle"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
@@ -66,7 +69,9 @@
             <Height Value="28"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btMasterData"/>
           <Condition Value=""/>
           <DatasetStr Value="Filas"/>
@@ -84,7 +89,9 @@
             <Height Value="48"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btColumnHeader"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
@@ -102,7 +109,9 @@
             <Height Value="88"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btColumnFooter"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
@@ -120,6 +129,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object5>
         <Object6>
           <Name Value="Line2"/>
@@ -134,6 +148,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object6>
         <Object7>
           <Name Value="Memo1"/>
@@ -150,15 +169,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Cliente : [cliente]&#xD;&#xA;"/>
+            <Memo Value="Cliente : [cliente]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -185,23 +204,23 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="280"/>
+            <Left Value="248"/>
             <Top Value="16"/>
-            <Width Value="188"/>
+            <Width Value="240"/>
             <Height Value="38"/>
           </Size>
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Presupuesto&#xD;&#xA;"/>
+            <Memo Value="Presupuesto&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -217,7 +236,7 @@
             <FillColor Value="clWhite"/>
             <HighlightStr Value=""/>
           </Highlight>
-          <Alignment Value="taLeftJustify"/>
+          <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
         </Object8>
@@ -236,15 +255,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Dirección: [direccion]&#xD;&#xA;"/>
+            <Memo Value="Dirección: [direccion]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -279,15 +298,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="33751084"/>
             <FormatStr Value=""/>
-            <Memo Value="Fecha: [DATE]&#xD;&#xA;"/>
+            <Memo Value="Fecha: [DATE]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -322,15 +341,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[nombre]&#xD;&#xA;"/>
+            <Memo Value="[nombre]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -365,15 +384,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="17039916"/>
             <FormatStr Value="$ ###0.00"/>
-            <Memo Value="[precio]&#xD;&#xA;"/>
+            <Memo Value="[precio]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -406,6 +425,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object13>
         <Object14>
           <Name Value="Line4"/>
@@ -420,6 +444,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object14>
         <Object15>
           <Name Value="Memo7"/>
@@ -436,15 +465,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Nombre&#xD;&#xA;"/>
+            <Memo Value="Nombre&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -479,15 +508,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Precio&#xD;&#xA;"/>
+            <Memo Value="Precio&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -520,6 +549,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object17>
         <Object18>
           <Name Value="Line6"/>
@@ -534,6 +568,11 @@
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+          </Frames>
         </Object18>
         <Object19>
           <Name Value="Memo9"/>
@@ -542,23 +581,23 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="316"/>
+            <Left Value="284"/>
             <Top Value="364"/>
-            <Width Value="140"/>
+            <Width Value="184"/>
             <Height Value="20"/>
           </Size>
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
-            <Format Value="17039916"/>
+            <Format Value="17039406"/>
             <FormatStr Value="$ ###0.00"/>
-            <Memo Value="TOTAL : [total]&#xD;&#xA;"/>
+            <Memo Value="TOTAL : [total]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -617,7 +656,7 @@
           <Item Value="total"/>
         </Objects5>
       </FVal>
-      <ParentVars Value="DEFAULT&#xD;&#xA; cliente&#xD;&#xA; direccion&#xD;&#xA;PRODUCTOS&#xD;&#xA; nombre&#xD;&#xA; precio&#xD;&#xA; total&#xD;&#xA;"/>
+      <ParentVars Value="DEFAULT&#xA; cliente&#xA; direccion&#xA;PRODUCTOS&#xA; nombre&#xA; precio&#xA; total&#xA;"/>
     </Pages>
   </LazReport>
 </CONFIG>

@@ -59,7 +59,7 @@ begin
   Edit2.Text := '';
   Edit3.Text := '';
   Edit4.Text := '';
-  Edit5.Text := '0.00';
+  Edit5.Text := FormatFloat('###0.00', 0.0);
   
   StringGrid1.RowCount := 1;
   
@@ -92,7 +92,7 @@ begin
   StringGrid1.RowCount := StringGrid1.RowCount + 1;
   StringGrid1.Cells[0, StringGrid1.RowCount - 1] := Edit3.Text;
   StringGrid1.Cells[1, StringGrid1.RowCount - 1] := FormatFloat('$ ###0.00', StrToFloat(Edit4.Text));
-  
+
   Edit5.Text := FormatFloat('###0.00', StrToFloat(Edit5.Text) + StrToFloat(Edit4.Text));
   
   Edit3.Text := '';
@@ -118,7 +118,7 @@ end;
 
 procedure TForm1.FilasFirst(Sender: TObject);
 begin
-  fila := 1; {fila por la cual empieza. En este caso la 1 porque la 0 es para los títulos}
+  fila := 1; {fila por la cual empieza. En este caso la 1 porque la 0 es para los tÃ­tulos}
              {starting row. In this case 1 because row 0 it's for title}
 end;
 

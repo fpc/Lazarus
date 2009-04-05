@@ -3,19 +3,19 @@ object Form1: TForm1
   Height = 612
   Top = 95
   Width = 320
-  HorzScrollBar.Page = 319
-  VertScrollBar.Page = 611
+  ActiveControl = Edit1
   Caption = 'Budget'
   ClientHeight = 612
   ClientWidth = 320
   OnShow = FormShow
+  LCLVersion = '0.9.27'
   object GroupBox1: TGroupBox
     Left = 8
     Height = 128
     Top = 8
     Width = 305
     Caption = 'Customer Data'
-    ClientHeight = 110
+    ClientHeight = 124
     ClientWidth = 301
     TabOrder = 0
     object Label1: TLabel
@@ -55,14 +55,14 @@ object Form1: TForm1
     Top = 152
     Width = 305
     Caption = 'Add Products'
-    ClientHeight = 54
+    ClientHeight = 68
     ClientWidth = 301
     TabOrder = 1
     object Label3: TLabel
-      Left = 12
+      Left = 14
       Height = 16
       Top = 8
-      Width = 46
+      Width = 54
       Caption = 'Product:'
       ParentColor = False
     end
@@ -70,7 +70,7 @@ object Form1: TForm1
       Left = 166
       Height = 16
       Top = 8
-      Width = 47
+      Width = 58
       Caption = 'Price ($):'
       ParentColor = False
     end
@@ -99,7 +99,7 @@ object Form1: TForm1
     end
   end
   object GroupBox3: TGroupBox
-    Left = 8
+    Left = 9
     Height = 280
     Top = 232
     Width = 304
@@ -108,10 +108,10 @@ object Form1: TForm1
     ClientWidth = 300
     TabOrder = 2
     object Label5: TLabel
-      Left = 158
-      Height = 13
-      Top = 224
-      Width = 50
+      Left = 149
+      Height = 16
+      Top = 231
+      Width = 56
       Caption = 'Total ($):'
       ParentColor = False
     end
@@ -121,13 +121,9 @@ object Form1: TForm1
       Top = 8
       Width = 282
       ColCount = 2
-      FixedColor = clBtnFace
       FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
       RowCount = 1
-      ScrollBars = ssAutoBoth
       TabOrder = 0
-      TabStop = True
       ColWidths = (
         208
         70
@@ -176,7 +172,9 @@ object Form1: TForm1
     top = 576
   end
   object frReport1: TfrReport
+    InitialZoom = pzDefault
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
     OnGetValue = frReport1GetValue
     left = 153
     top = 576
