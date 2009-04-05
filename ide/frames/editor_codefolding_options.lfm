@@ -5,8 +5,8 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
   ClientHeight = 334
   ClientWidth = 521
   Visible = False
-  DesignLeft = 115
-  DesignTop = 115
+  DesignLeft = 69
+  DesignTop = 69
   object Bevel1: TBevel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkCodeFoldingEnabled
@@ -346,6 +346,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     Align = alNone
     BorderSpacing.Left = 6
     Caption = 'ToolBar1'
+    EdgeBorders = []
     TabOrder = 4
     object DividerSpeedButton: TSpeedButton
       Tag = 1

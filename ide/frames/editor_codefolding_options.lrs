@@ -3,8 +3,8 @@
 LazarusResources.Add('TEditorCodefoldingOptionsFrame','FORMDATA',[
   'TPF0'#241#30'TEditorCodefoldingOptionsFrame'#29'EditorCodefoldingOptionsFram'
   +'e'#6'Height'#3'N'#1#5'Width'#3#9#2#7'Anchors'#11#5'akTop'#0#12'ClientHeight'
-  +#3'N'#1#11'ClientWidth'#3#9#2#7'Visible'#8#10'DesignLeft'#2's'#9'DesignTop'#2
-  +'s'#0#242#2#0#6'TBevel'#6'Bevel1'#22'AnchorSideLeft.Control'#7#5'Owner'#21'A'
+  +#3'N'#1#11'ClientWidth'#3#9#2#7'Visible'#8#10'DesignLeft'#2'E'#9'DesignTop'#2
+  +'E'#0#242#2#0#6'TBevel'#6'Bevel1'#22'AnchorSideLeft.Control'#7#5'Owner'#21'A'
   +'nchorSideTop.Control'#7#21'chkCodeFoldingEnabled'#18'AnchorSideTop.Side'#7#9
   +'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7
   +#9'asrBottom'#4'Left'#2#0#6'Height'#2#2#3'Top'#2#25#5'Width'#3#9#2#7'Anchors'
@@ -131,11 +131,12 @@ LazarusResources.Add('TEditorCodefoldingOptionsFrame','FORMDATA',[
   +'LanguageComboBox'#18'AnchorSideTop.Side'#7#9'asrCenter'#23'AnchorSideRight.'
   ,'Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#206#0
   +#6'Height'#2#26#3'Top'#2#28#5'Width'#3';'#1#5'Align'#7#6'alNone'#18'BorderSp'
-  +'acing.Left'#2#6#7'Caption'#6#8'ToolBar1'#8'TabOrder'#2#4#0#12'TSpeedButton'
-  +#18'DividerSpeedButton'#3'Tag'#2#1#4'Left'#2#1#6'Height'#2#22#3'Top'#2#2#5'W'
-  +'idth'#2'F'#7'Caption'#6#7'Divider'#5'Color'#7#9'clBtnFace'#4'Down'#9#10'Gro'
-  +'upIndex'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#23'DividerSpeedButtonClick'#0#0
-  +#12'TSpeedButton'#15'FoldSpeedButton'#3'Tag'#2#1#4'Left'#2'G'#6'Height'#2#22
-  +#3'Top'#2#2#5'Width'#2'F'#7'Caption'#6#4'Fold'#5'Color'#7#9'clBtnFace'#10'Gr'
-  +'oupIndex'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#20'FoldSpeedButtonClick'#0#0#0#0
+  +'acing.Left'#2#6#7'Caption'#6#8'ToolBar1'#11'EdgeBorders'#11#0#8'TabOrder'#2
+  +#4#0#12'TSpeedButton'#18'DividerSpeedButton'#3'Tag'#2#1#4'Left'#2#1#6'Height'
+  +#2#22#3'Top'#2#2#5'Width'#2'F'#7'Caption'#6#7'Divider'#5'Color'#7#9'clBtnFac'
+  +'e'#4'Down'#9#10'GroupIndex'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#23'DividerSpe'
+  +'edButtonClick'#0#0#12'TSpeedButton'#15'FoldSpeedButton'#3'Tag'#2#1#4'Left'#2
+  +'G'#6'Height'#2#22#3'Top'#2#2#5'Width'#2'F'#7'Caption'#6#4'Fold'#5'Color'#7#9
+  +'clBtnFace'#10'GroupIndex'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#20'FoldSpeedBut'
+  +'tonClick'#0#0#0#0
 ]);
