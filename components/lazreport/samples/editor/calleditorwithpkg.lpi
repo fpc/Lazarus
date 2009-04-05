@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="LazReport Designer"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
@@ -48,7 +47,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="2">
       <Unit0>
         <Filename Value="calleditorwithpkg.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -62,55 +61,102 @@
         <ComponentName Value="frmMain"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="maincalleditor.lrs"/>
         <UnitName Value="maincalleditor"/>
-        <CursorPos X="59" Y="262"/>
-        <TopLine Value="232"/>
+        <CursorPos X="42" Y="167"/>
+        <TopLine Value="152"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
+        <Bookmarks Count="2">
+          <Item0 X="3" Y="191" ID="0"/>
+          <Item1 X="3" Y="322" ID="9"/>
+        </Bookmarks>
         <Loaded Value="True"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <CursorPos X="31" Y="501"/>
-        <TopLine Value="483"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../../lcl/postscriptcanvas.pas"/>
-        <UnitName Value="PostScriptCanvas"/>
-        <CursorPos X="1" Y="554"/>
-        <TopLine Value="554"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
-      </Unit3>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="19" HistoryIndex="18">
       <Position1>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="10" Column="28" TopLine="1"/>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="56" Column="17" TopLine="55"/>
       </Position1>
       <Position2>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="13" Column="39" TopLine="1"/>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="48" Column="17" TopLine="47"/>
       </Position2>
       <Position3>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="501" Column="31" TopLine="483"/>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="86" Column="52" TopLine="85"/>
       </Position3>
+      <Position4>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="99" Column="69" TopLine="98"/>
+      </Position4>
+      <Position5>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="102" Column="29" TopLine="86"/>
+      </Position5>
+      <Position6>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="297" Column="18" TopLine="284"/>
+      </Position6>
+      <Position7>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="296" Column="13" TopLine="284"/>
+      </Position7>
+      <Position8>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="304" Column="5" TopLine="296"/>
+      </Position8>
+      <Position9>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="186" Column="3" TopLine="184"/>
+      </Position9>
+      <Position10>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="231" Column="13" TopLine="228"/>
+      </Position10>
+      <Position11>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="186" Column="65" TopLine="173"/>
+      </Position11>
+      <Position12>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="188" Column="21" TopLine="173"/>
+      </Position12>
+      <Position13>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="192" Column="16" TopLine="173"/>
+      </Position13>
+      <Position14>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="202" Column="19" TopLine="176"/>
+      </Position14>
+      <Position15>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="304" Column="39" TopLine="278"/>
+      </Position15>
+      <Position16>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="87" Column="35" TopLine="87"/>
+      </Position16>
+      <Position17>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="324" Column="48" TopLine="305"/>
+      </Position17>
+      <Position18>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="141" Column="14" TopLine="130"/>
+      </Position18>
+      <Position19>
+        <Filename Value="maincalleditor.pas"/>
+        <Caret Line="169" Column="42" TopLine="149"/>
+      </Position19>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

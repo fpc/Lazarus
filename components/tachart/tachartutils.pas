@@ -50,7 +50,13 @@ type
   end;
 
   TDoubleRect = record
-    a, b: TDoublePoint;
+  case Integer of
+    0: (
+      a, b: TDoublePoint;
+    );
+    1: (
+      coords: array [1..4] of Double;
+    );
   end;
 
   TPointDistFunc = function (const A, B: TPoint): Integer;
@@ -73,8 +79,8 @@ type
     smsXValue);        { 21/6/1996 }
 
   TSeriesPointerStyle = (
-    psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket);
+    psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
+    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
 
   { TPenBrushFontRecall }
 
@@ -109,7 +115,6 @@ procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
 function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
-function EqualPoints(const A, B: TPoint): Boolean; inline;
 
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
@@ -120,6 +125,7 @@ function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
 
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
+function PointDistY(const A, B: TPoint): Integer; inline;
 
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
@@ -206,11 +212,6 @@ begin
   Result.Y := ACoord.y;
 end;
 
-function EqualPoints(const A, B: TPoint): Boolean;
-begin
-  Result := (A.X = B.X) and (A.Y = B.Y);
-end;
-
 procedure Exchange(var A, B: Integer); overload;
 var
   t: Integer;
@@ -252,6 +253,11 @@ end;
 function PointDistX(const A, B: TPoint): Integer;
 begin
   Result := Abs(A.X - B.X);
+end;
+
+function PointDistY(const A, B: TPoint): Integer; inline;
+begin
+  Result := Abs(A.Y - B.Y);
 end;
 
 procedure RotateLabel(

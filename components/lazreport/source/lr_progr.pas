@@ -21,7 +21,7 @@ uses
   
   LCLProc,
 
-  LR_Class, LR_Const;
+  LR_Const, LR_Class, ExtCtrls;
 
 const
   CM_BeforeModal = WM_USER + 1;
@@ -33,20 +33,22 @@ type
   TfrProgressForm = class(TForm)
     Button1: TButton;
     Label1: TLabel;
+    Timer1: TTimer;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
     fDoc: TfrReport;
     fOnBeforeModal: TNotifyEvent;
-
     procedure DoBeforeModal(Data: ptrint);
   public
     { Public declarations }
     FirstCaption: String;
-    property OnBeforeModal: TNotifyEvent read FOnBeforeModal write FOnBeforeModal;
-
     function Show_Modal(Doc: TfrReport): Word;
+    procedure ModalDone(AModalResult: TModalResult);
+
+    property OnBeforeModal: TNotifyEvent read FOnBeforeModal write FOnBeforeModal;
   end;
 
 var
@@ -63,15 +65,14 @@ begin
   Visible:=False;
   Enabled:=True;
   ModalResult:=mrNone;
-  {$IFDEF DebugLR}
-  DebugLn('A1');
-  {$ENDIF}
   InitializeWnd;
-  
   Result:=ShowModal;
-  {$IFDEF DebugLR}
-  DebugLn('A2');
-  {$ENDIF}
+end;
+
+procedure TfrProgressForm.ModalDone(AModalResult: TModalResult);
+begin
+  ModalResult := AModalResult;
+  Timer1.Enabled:=true;
 end;
 
 procedure TfrProgressForm.Button1Click(Sender: TObject);
@@ -89,6 +90,11 @@ end;
 procedure TfrProgressForm.FormCreate(Sender: TObject);
 begin
   Button1.Caption:=sCancel;
+end;
+
+procedure TfrProgressForm.Timer1Timer(Sender: TObject);
+begin
+  Timer1.Enabled:=false;
 end;
 
 initialization

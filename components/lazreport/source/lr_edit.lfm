@@ -20,6 +20,7 @@ inherited frEditorForm: TfrEditorForm
   Position = poScreenCenter
   ShowHint = True
   object Panel2: TPanel[0]
+    Left = 0
     Height = 45
     Top = 336
     Width = 505
@@ -105,6 +106,7 @@ inherited frEditorForm: TfrEditorForm
     end
   end
   object ScriptPanel: TPanel[1]
+    Left = 0
     Height = 152
     Top = 184
     Width = 505
@@ -117,26 +119,30 @@ inherited frEditorForm: TfrEditorForm
     object Label2: TLabel
       Left = 4
       Height = 14
+      Top = 0
       Width = 28
       Caption = 'S&cript'
       ParentColor = False
     end
     object M2: TSynEdit
+      Left = 0
       Height = 136
       Top = 16
       Width = 505
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
+      CFDividerDrawLevel = 0
       Font.Height = -14
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
+      Font.Quality = fqNonAntialiased
       ParentColor = False
+      ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = 2
       BookMarkOptions.OnChange = nil
       Gutter.Color = 13605511
-      Gutter.LeftOffset = 10
-      Gutter.Width = 20
-      Gutter.CodeFoldingWidth = 14
+      Gutter.Width = 57
       Highlighter = SynPasSyn1
       Keystrokes = <      
         item
@@ -467,11 +473,40 @@ inherited frEditorForm: TfrEditorForm
         '   c:=25;'
         'End'
       )
-      SelectedColor.OnChange = nil
+      BracketHighlightStyle = sbhsBoth
+      object TSynGutterPartList
+        object TSynGutterMarks
+          AutoSize = False
+          Width = 22
+        end
+        object TSynGutterLineNumber
+          Width = 19
+          MarkupInfo.Background = clNone
+          MarkupInfo.Foreground = clNone
+          DigitCount = 2
+          ShowOnlyLineNumbersMultiplesOf = 1
+          ZeroStart = False
+          LeadingZeros = False
+        end
+        object TSynGutterChanges
+          Width = 4
+          ModifiedColor = 59900
+          SavedColor = clGreen
+        end
+        object TSynGutterSeparator
+          Width = 2
+        end
+        object TSynGutterCodeFolding
+          MarkupInfo.Background = clWhite
+          MarkupInfo.Foreground = clGray
+        end
+      end
     end
   end
   object MemoPanel: TPanel[2]
+    Left = 0
     Height = 175
+    Top = 0
     Width = 505
     Align = alClient
     BevelOuter = bvNone
@@ -480,6 +515,7 @@ inherited frEditorForm: TfrEditorForm
     FullRepaint = False
     TabOrder = 2
     object M1: TMemo
+      Left = 0
       Height = 125
       Top = 50
       Width = 505
@@ -491,7 +527,9 @@ inherited frEditorForm: TfrEditorForm
       WordWrap = False
     end
     object Panel1: TPanel
+      Left = 0
       Height = 50
+      Top = 0
       Width = 505
       Align = alTop
       BevelOuter = bvNone
@@ -522,7 +560,7 @@ inherited frEditorForm: TfrEditorForm
           Left = 4
           Height = 19
           Top = 2
-          Width = 53
+          Width = 47
           HelpContext = 80
           AllowGrayed = True
           Caption = '&Script'
@@ -533,7 +571,7 @@ inherited frEditorForm: TfrEditorForm
           Left = 92
           Height = 19
           Top = 2
-          Width = 62
+          Width = 56
           HelpContext = 90
           AllowGrayed = True
           Caption = '&Big font'
@@ -544,7 +582,7 @@ inherited frEditorForm: TfrEditorForm
           Left = 224
           Height = 19
           Top = 2
-          Width = 78
+          Width = 72
           HelpContext = 100
           AllowGrayed = True
           Caption = '&Word wrap'
@@ -556,6 +594,7 @@ inherited frEditorForm: TfrEditorForm
   end
   object Splitter: TSplitter[3]
     Cursor = crVSplit
+    Left = 0
     Height = 9
     Top = 175
     Width = 505
@@ -569,9 +608,20 @@ inherited frEditorForm: TfrEditorForm
     DefaultFilter = '(TSynHighlighterAttributes)'
     Enabled = False
     AsmAttri.Foreground = 5812813
+    AsmAttri.FrameColor = clNone
     CommentAttri.Foreground = 13461314
+    CommentAttri.FrameColor = clNone
+    IdentifierAttri.FrameColor = clNone
+    KeyAttri.FrameColor = clNone
     NumberAttri.Foreground = clRed
+    NumberAttri.FrameColor = clNone
+    SpaceAttri.FrameColor = clNone
     StringAttri.Foreground = 15226932
+    StringAttri.FrameColor = clNone
+    SymbolAttri.FrameColor = clNone
+    DirectiveAttri.FrameColor = clNone
+    CompilerMode = pcmDelphi
+    NestedComments = False
     left = 228
     top = 192
   end

@@ -238,6 +238,30 @@ type
     property Visible default true;
   end;
 
+  { TChartExtent }
+
+  TChartExtent = class (TChartElement)
+  private
+    FExtent: TDoubleRect;
+    FAuto: array [1..4] of Boolean;
+
+    function GetAuto(AIndex: integer): Boolean;
+    function GetBorder(AIndex: Integer): Double;
+    procedure SetAuto(AIndex: Integer; AValue: Boolean);
+    procedure SetBorder(AIndex: Integer; const AValue: Double);
+  public
+    property Extent: TDoubleRect read FExtent;
+  published
+    property XMin: Double index 1 read GetBorder write SetBorder;
+    property YMin: Double index 2 read GetBorder write SetBorder;
+    property XMax: Double index 3 read GetBorder write SetBorder;
+    property YMax: Double index 4 read GetBorder write SetBorder;
+    property AutoXMin: Boolean index 1 read GetAuto write SetAuto;
+    property AutoYMin: Boolean index 2 read GetAuto write SetAuto;
+    property AutoXMax: Boolean index 3 read GetAuto write SetAuto;
+    property AutoYMax: Boolean index 4 read GetAuto write SetAuto;
+  end;
+
 const
   MARKS_MARGIN_X = 4;
   MARKS_MARGIN_Y = 2;
@@ -654,52 +678,61 @@ begin
 end;
 
 procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
-var
-  r: TRect;
+
+  function PointByIndex(AIndex: Char): TPoint;
+  // 7--8--9
+  // 4  5  6
+  // 1--2--3
+  const
+    V: array ['1'..'9'] of -1..1 = (1, 1, 1, 0, 0, 0, -1, -1, -1);
+    H: array ['1'..'9'] of -1..1 = (-1, 0, 1, -1, 0, 1, -1, 0, 1);
+  begin
+    Result := ACenter;
+    Result.X += H[AIndex] * HorizSize;
+    Result.Y += V[AIndex] * VertSize;
+  end;
+
+  procedure DrawByString(const AStr: String);
+  var
+    pts: array of TPoint;
+    i: Integer;
+    j: Integer = 0;
+  begin
+    SetLength(pts, Length(AStr));
+    for i := 1 to Length(AStr) do begin
+      if AStr[i] = ' ' then begin
+        if Brush.Style = bsClear then begin
+          ACanvas.Polyline(pts, 0, j);
+          // Polyline does not draw the end point.
+          ACanvas.Pixels[pts[j - 1].X, pts[j - 1].Y] := Pen.Color;
+        end
+        else
+          ACanvas.Polygon(pts, true, 0, j);
+        j := 0;
+      end
+      else begin
+        pts[j] := PointByIndex(AStr[i]);
+        Inc(j);
+      end;
+    end;
+  end;
+
+const
+  DRAW_STRINGS: array [TSeriesPointerStyle] of String = (
+    //psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
+    //psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
+    '', '17931', '', '28 46', '19 73', '28 46 19 73',
+    '41236', '47896', '87412', '89632', '84268');
 begin
   ACanvas.Brush.Assign(FBrush);
   ACanvas.Pen.Assign(FPen);
-  r := Bounds(ACenter.X, ACenter.Y, 1, 1);
-  InflateRect(r, FHorizSize, FVertSize);
 
-  if FStyle in [psRectangle, psCircle] then
-    ACanvas.Brush.Color := AColor
+  if FStyle = psCircle then
+    ACanvas.Ellipse(
+      ACenter.X - HorizSize, ACenter.Y - VertSize,
+      ACenter.X + HorizSize, ACenter.Y + VertSize)
   else
-    ACanvas.Pen.Color := AColor;
-
-  // Line does not draw the end point, so coordinates have to be incremented.
-  case FStyle of
-    psRectangle:
-      ACanvas.Rectangle(r);
-    psCross: begin
-      ACanvas.Line(r.Left, ACenter.Y, r.Right + 1, ACenter.Y);
-      ACanvas.Line(ACenter.X, r.Top, ACenter.X, r.Bottom + 1);
-    end;
-    psDiagCross: begin
-      ACanvas.Line(r.Left, r.Top, r.Right + 1, r.Bottom + 1);
-      ACanvas.Line(r.Left, r.Bottom, r.Right + 1, r.Top - 1);
-    end;
-    psStar: begin
-      ACanvas.Line(r.Left, ACenter.Y, r.Right + 1, ACenter.Y);
-      ACanvas.Line(ACenter.X, r.Top, ACenter.X, r.Bottom + 1);
-      ACanvas.Line(r.Left, r.Top, r.Right + 1, r.Bottom + 1);
-      ACanvas.Line(r.Left, r.Bottom, r.Right + 1, r.Top - 1);
-    end;
-    psCircle:
-      ACanvas.Ellipse(r);
-    psLowBracket: begin
-      ACanvas.MoveTo(r.Left, ACenter.Y);
-      ACanvas.LineTo(r.Left, r.Bottom);
-      ACanvas.LineTo(r.Right, r.Bottom);
-      ACanvas.LineTo(r.Right, ACenter.Y - 1);
-    end;
-    psHighBracket: begin
-      ACanvas.MoveTo(r.Left, ACenter.Y);
-      ACanvas.LineTo(r.Left, r.Top);
-      ACanvas.LineTo(r.Right, r.Top);
-      ACanvas.LineTo(r.Right, ACenter.Y + 1);
-    end;
-  end;
+    DrawByString(DRAW_STRINGS[FStyle] + ' ');
 end;
 
 procedure TSeriesPointer.SetBrush(AValue: TBrush);
@@ -734,6 +767,31 @@ begin
   FVertSize := AValue;
   StyleChanged(Self);
 end;
+
+{ TChartExtent }
+
+function TChartExtent.GetAuto(AIndex: Integer): Boolean;
+begin
+  Result := FAuto[AIndex];
+end;
+
+function TChartExtent.GetBorder(AIndex: Integer): Double;
+begin
+  Result := Extent.coords[AIndex];
+end;
+
+procedure TChartExtent.SetAuto(AIndex: Integer; AValue: Boolean);
+begin
+  FAuto[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartExtent.SetBorder(AIndex: Integer; const AValue: Double);
+begin
+  FExtent.coords[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
 
 end.
 

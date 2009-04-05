@@ -31,6 +31,7 @@ type
     FOnOpen, FOnClose: TNotifyEvent;
     FBookmark: TfrBookmark;
     FEof: Boolean;
+    function GetSafeDataset: TDataSet;
     procedure SetDataSet(Value: TDataSet);
     procedure SetDataSource(Value: TDataSource);
   protected
@@ -56,7 +57,7 @@ type
     
   published
     property CloseDataSource: Boolean read FCloseDataSource write FCloseDataSource default False;
-    property DataSet: TDataSet read FDataSet write SetDataSet;
+    property DataSet: TDataSet read GetSafeDataset write SetDataSet;
     property DataSource: TDataSource read FDataSource write SetDataSource;
     property OpenDataSource: Boolean read FOpenDataSource write FOpenDataSource default True;
     property RangeBegin;
@@ -99,6 +100,16 @@ begin
   FDataSource := nil;
 end;
 
+function TfrDBDataSet.GetSafeDataset: TDataSet;
+begin
+  if FDataSource<>nil then
+    Result := FDataSource.DataSet
+  else
+    Result := nil;
+  if Result=nil then
+    Result := FDataset;
+end;
+
 procedure TfrDBDataSet.SetDataSource(Value: TDataSource);
 begin
   FDataSource := Value;
@@ -123,32 +134,32 @@ function TfrDBDataSet.GetBookMark: Pointer;
 begin
   Result:=inherited GetBookMark;
   
-  if Assigned(fDataSet) then
-    Result:=fDataSet.GetBookmark;
+  if Assigned(Dataset) then
+    Result:=Dataset.GetBookmark;
 end;
 
 procedure TfrDBDataSet.GotoBookMark(BM: Pointer);
 begin
-  if Assigned(fDataSet) then
-    fDataSet.GotoBookmark(BM);
+  if Assigned(Dataset) then
+    Dataset.GotoBookmark(BM);
 end;
 
 procedure TfrDBDataSet.FreeBookMark(BM: Pointer);
 begin
-  if Assigned(fDataSet) and Assigned(BM) then
-    fDataSet.FreeBookmark(BM);
+  if Assigned(Dataset) and Assigned(BM) then
+    Dataset.FreeBookmark(BM);
 end;
 
 procedure TfrDBDataSet.DisableControls;
 begin
-  if Assigned(fDataSet) then
-    fDataSet.DisableControls;
+  if Assigned(Dataset) then
+    Dataset.DisableControls;
 end;
 
 procedure TfrDBDataSet.EnableControls;
 begin
-  if Assigned(fDataSet) then
-    fDataSet.EnableControls;
+  if Assigned(Dataset) then
+    Dataset.EnableControls;
 end;
 
 procedure TfrDBDataSet.Init;

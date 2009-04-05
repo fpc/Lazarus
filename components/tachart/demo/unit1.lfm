@@ -9,18 +9,16 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
-    Height = 400
+    Height = 392
     Width = 585
     Legend.Alignment = laRight
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
-    Legend.Frame.Cosmetic = True
     Title.Alignment = taCenter
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
-    Title.Frame.Cosmetic = True
     Title.Text.Strings = (
       'Centered Chart Title'
     )
@@ -30,12 +28,10 @@ object Form1: TForm1
     Foot.Font.Height = -13
     Foot.Font.Name = 'MS Sans Serif'
     Foot.Font.Style = [fsBold]
-    Foot.Frame.Cosmetic = True
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
     LeftAxis.Grid.Color = clGray
-    LeftAxis.Grid.Cosmetic = True
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
     LeftAxis.Title.Angle = 90
@@ -43,42 +39,34 @@ object Form1: TForm1
     LeftAxis.Title.Font.Name = 'MS Sans Serif'
     LeftAxis.Visible = True
     BottomAxis.Grid.Color = clGray
-    BottomAxis.Grid.Cosmetic = True
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
     BottomAxis.Title.Font.Height = -11
     BottomAxis.Title.Font.Name = 'MS Sans Serif'
     BottomAxis.Visible = True
-    Frame.Cosmetic = True
     Frame.Visible = True
     BackColor = clBtnFace
     Align = alClient
     Color = clBtnFace
     ParentColor = False
     object Chart1LineHor: TLine
-      Marks.Frame.Cosmetic = True
-      Marks.LinkPen.Cosmetic = True
       ShowInLegend = False
-      Pen.Cosmetic = True
-      Pen.Style = psDot
+      Pen.Style = psDash
       SeriesColor = clBlack
     end
     object Chart1LineVert: TLine
-      Marks.Frame.Cosmetic = True
-      Marks.LinkPen.Cosmetic = True
       ShowInLegend = False
       LineStyle = lsVertical
-      Pen.Cosmetic = True
-      Pen.Style = psDot
+      Pen.Style = psDash
       SeriesColor = clBlack
     end
   end
   object Panel1: TPanel
-    Height = 94
-    Top = 400
+    Height = 102
+    Top = 392
     Width = 585
     Align = alBottom
-    ClientHeight = 94
+    ClientHeight = 102
     ClientWidth = 585
     TabOrder = 0
     object lblAdd: TLabel
@@ -106,11 +94,19 @@ object Form1: TForm1
       ParentColor = False
     end
     object lblMarkStyle: TLabel
-      Left = 152
+      Left = 48
       Height = 14
-      Top = 68
+      Top = 80
       Width = 78
       Caption = 'Add with marks:'
+      ParentColor = False
+    end
+    object lblReticule: TLabel
+      Left = 360
+      Height = 14
+      Top = 80
+      Width = 43
+      Caption = 'Reticule:'
       ParentColor = False
     end
     object btnAddPie: TButton
@@ -283,28 +279,10 @@ object Form1: TForm1
       OnChange = cbShowAxisTitlesChange
       TabOrder = 16
     end
-    object cbShowVertReticule: TCheckBox
-      Left = 384
-      Height = 17
-      Top = 72
-      Width = 76
-      Caption = 'Vert reticule'
-      OnChange = cbShowVertReticuleChange
-      TabOrder = 17
-    end
-    object cbShowReticule: TCheckBox
-      Left = 496
-      Height = 17
-      Top = 72
-      Width = 59
-      Caption = 'Reticule'
-      OnChange = cbShowReticuleChange
-      TabOrder = 18
-    end
     object cbMarkStyle: TComboBox
-      Left = 240
+      Left = 132
       Height = 21
-      Top = 68
+      Top = 76
       Width = 136
       ItemHeight = 13
       ItemIndex = 5
@@ -322,8 +300,26 @@ object Form1: TForm1
         'smsXValue'
       )
       Style = csDropDownList
-      TabOrder = 19
+      TabOrder = 17
       Text = 'smsLabelPercent'
+    end
+    object cbReticule: TComboBox
+      Left = 416
+      Height = 21
+      Top = 76
+      Width = 136
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'rmNone'
+        'rmVertical'
+        'rmHorizontal'
+        'rmCross'
+      )
+      OnChange = cbReticuleChange
+      Style = csDropDownList
+      TabOrder = 18
+      Text = 'rmNone'
     end
   end
 end
