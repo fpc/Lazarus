@@ -120,6 +120,10 @@ type
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
   protected
+    function GetFoldConfig(Index: Integer): Boolean; virtual;
+    function GetFoldConfigCount: Integer; virtual;
+    procedure SetFoldConfig(Index: Integer; const AValue: Boolean); virtual;
+
     function GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo; virtual;
     function GetFoldNodeInfoCount(Line: Integer): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
@@ -159,6 +163,11 @@ type
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
                       LineNumber:Integer // 0 based
                       ); override;
+  public
+    property FoldConfig[Index: Integer]: Boolean
+      read GetFoldConfig write SetFoldConfig;
+    property FoldConfigCount: Integer read GetFoldConfigCount;
+
   end;
 
   { TSynCustomHighlighterRanges }
@@ -314,6 +323,20 @@ end;
 function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer): Integer;
 begin
   Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldConfigCount: Integer;
+begin
+  Result := 0;
+end;
+
+procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: Boolean);
+begin
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo;

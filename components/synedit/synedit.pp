@@ -7552,10 +7552,15 @@ begin
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
+var
+  t: integer;
 begin
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);                                                      //jr 2000-10-01
   Invalidate;
+  t := 0;
+  if fHighlighter.AttributeChangeNeedScan then
+    ScanFrom(t, FLines.Count - 1);
 end;
 
 procedure TCustomSynEdit.StatusChanged(AChanges: TSynStatusChanges);

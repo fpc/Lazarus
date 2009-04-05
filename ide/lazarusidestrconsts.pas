@@ -1220,6 +1220,9 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
+  dlgDividerConf = 'Divider';
+  dlgfoldConf    = 'Folding';
+
   dlgDividerOnOff = 'Draw divider';
   dlgDividerDrawDepth = 'Draw divider level';
   dlgDividerTopColor = 'Line color';
@@ -1236,6 +1239,25 @@ resourcestring
   dlgDivPasProcedureName    = 'Procedure/Function';
   dlgDivPasBeginEndName     = 'Begin/End';
   dlgDivPasTryName          = 'Try/Except';
+
+  dlgFoldPasBeginEnd        = 'Begin/End (nested)';
+  dlgFoldPasProcBeginEnd    = 'Begin/End (procedure)';
+  dlgFoldPasNestedComment   = 'Nested Comment';
+  dlgFoldPasProcedure       = 'Procedure';
+  dlgFoldPasUses            = 'Uses';
+  dlgFoldPasVarType         = 'Var/Type (global)';
+  dlgFoldLocalPasVarType    = 'Var/Type (local)';
+  dlgFoldPasClass           = 'Class/Object';
+  dlgFoldPasClassSection    = 'public/private';
+  dlgFoldPasUnitSection     = 'Unit section';
+  dlgFoldPasProgram         = 'Program';
+  dlgFoldPasUnit            = 'Unit';
+  dlgFoldPasRecord          = 'Record';
+  dlgFoldPasTry             = 'Try';
+  dlgFoldPasExcept          = 'Except/Finally';
+  dlgFoldPasRepeat          = 'Repeat';
+  dlgFoldPasCase            = 'Case';
+  dlgFoldPasAsm             = 'Asm';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';

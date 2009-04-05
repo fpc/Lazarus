@@ -211,6 +211,7 @@ type
     procedure SetDrawDividerLevel(const AValue: Integer);
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
+    FAttributeChangeNeedScan: Boolean;
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
@@ -237,6 +238,7 @@ type
     function GetDividerDrawConfigCount: Integer; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
+    property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; virtual;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -1042,8 +1044,10 @@ procedure TSynCustomHighlighter.DefHighlightChange(Sender: TObject);
 begin
   if fUpdateCount > 0 then
     fUpdateChange := TRUE
-  else
+  else begin
     fAttrChangeHooks.Fire;
+    FAttributeChangeNeedScan := False;
+  end;
 end;
 
 function TSynCustomHighlighter.GetAttribCount: integer;

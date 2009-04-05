@@ -39,7 +39,7 @@ uses
   // LCL
   Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
-  SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
+  SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditKeyCmds,
   SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
@@ -387,6 +387,85 @@ const
       (Count: 0; Info: nil)  // jscript
     );
 
+type
+
+  TEditorOptionsFoldInfo = record
+    Name: String;      // Name for display
+    Xml: String;       // Name for XML
+    Index: Integer;    // FHighlighter.FoldConf[index]
+    Enabled: Boolean;
+  end;
+  TEditorOptionsFoldInfoList = Array [0..999] of TEditorOptionsFoldInfo;
+  PEditorOptionsFoldInfoList = ^TEditorOptionsFoldInfoList;
+
+  TEditorOptionsFoldRecord = record
+    Count: Integer;
+    Info: PEditorOptionsFoldInfoList;
+  end;
+
+const
+
+  EditorOptionsFoldInfoPas: Array [0..17] of TEditorOptionsFoldInfo
+  = (
+      (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
+       Index: ord(cfbtProcedure)-1;    Enabled: True),
+      (Name:  dlgFoldLocalPasVarType;  Xml:     'LocalVarType';
+       Index: ord(cfbtLocalVarType)-1; Enabled: True),
+      (Name:  dlgFoldPasProcBeginEnd;  Xml:     'ProcBeginEnd';
+       Index: ord(cfbtTopBeginEnd)-1;  Enabled: True),
+      (Name:  dlgFoldPasBeginEnd;      Xml:     'BeginEnd';
+       Index: ord(cfbtBeginEnd)-1;     Enabled: True),
+      (Name:  dlgFoldPasRepeat;        Xml:     'Repeat';
+       Index: ord(cfbtRepeat)-1;       Enabled: False),
+      (Name:  dlgFoldPasCase;          Xml:     'Case';
+       Index: ord(cfbtCase)-1;         Enabled: False),
+      (Name:  dlgFoldPasTry;           Xml:     'Try';
+       Index: ord(cfbtTry)-1;          Enabled: False),
+      (Name:  dlgFoldPasExcept;        Xml:     'Except';
+       Index: ord(cfbtExcept)-1;       Enabled: False),
+      (Name:  dlgFoldPasAsm;           Xml:     'Asm';
+       Index: ord(cfbtAsm)-1;          Enabled: True),
+
+      (Name:  dlgFoldPasProgram;       Xml:     'Program';
+       Index: ord(cfbtProgram)-1;      Enabled: False),
+      (Name:  dlgFoldPasUnit;          Xml:     'Unit';
+       Index: ord(cfbtUnit)-1;         Enabled: False),
+      (Name:  dlgFoldPasUnitSection;   Xml:     'UnitSection';
+       Index: ord(cfbtUnitSection)-1;  Enabled: False),
+      (Name:  dlgFoldPasUses;          Xml:     'Uses';
+       Index: ord(cfbtUses)-1;         Enabled: True),
+
+      (Name:  dlgFoldPasVarType;       Xml:     'VarType';
+       Index: ord(cfbtVarType)-1;      Enabled: False),
+      (Name:  dlgFoldPasClass;         Xml:     'Class';
+       Index: ord(cfbtClass)-1;        Enabled: True),
+      (Name:  dlgFoldPasClassSection;  Xml:     'ClassSection';
+       Index: ord(cfbtClassSection)-1; Enabled: True),
+      (Name:  dlgFoldPasRecord;        Xml:     'Record';
+       Index: ord(cfbtRecord)-1;       Enabled: True),
+
+      (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
+       Index: ord(cfbtNestedComment)-1;Enabled: True)
+    );
+
+  EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
+    TEditorOptionsFoldRecord =
+    ( (Count:  0; Info: nil), // none
+      (Count:  0; Info: nil), // text
+      (Count: 18; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 18; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
+      (Count:  0; Info: nil), // lfm
+      (Count:  0; Info: nil), // xml
+      (Count:  0; Info: nil), // html
+      (Count:  0; Info: nil), // cpp
+      (Count:  0; Info: nil), // perl
+      (Count:  0; Info: nil), // java
+      (Count:  0; Info: nil), // shell
+      (Count:  0; Info: nil), // python
+      (Count:  0; Info: nil), // php
+      (Count:  0; Info: nil), // sql
+      (Count:  0; Info: nil)  // jscript
+    );
 
 const
   EditorOptsFormatVersion = 4;
@@ -2317,11 +2396,12 @@ var
   Conf: TSynDividerDrawConfig;
   ConfName: String;
   Path: String;
-  i: Integer;
+  i, h: Integer;
+  TheFoldInfo: TEditorOptionsFoldRecord;
 begin
-  i := HighlighterList.FindByHighlighter(Syn);
-  if i < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
   ReadDefaultsForHighlighterFoldSettings(Syn);
 
@@ -2338,35 +2418,56 @@ begin
     Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
         Conf.NestColor);
   end;
+
+  if (syn is TSynCustomFoldHighlighter) then begin
+    TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+    for i := 0 to TheFoldInfo.Count - 1 do begin
+      ConfName := TheFoldInfo.Info^[i].Xml;
+      Path := 'EditorOptions/FoldConfig/Lang' +
+        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+    TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] :=
+      XMLConfig.GetValue(Path + 'Enabled/Value',
+        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index]);
+    end;
+  end;
 end;
 
 procedure TEditorOptions.ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 var
   TheInfo: TEditorOptionsDividerRecord;
-  i: Integer;
+  i, h: Integer;
+  TheFoldInfo: TEditorOptionsFoldRecord;
 begin
-  i := HighlighterList.FindByHighlighter(Syn);
-  if i < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
   for i := 0 to TheInfo.Count - 1 do begin
     Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
     Syn.DividerDrawConfig[i].TopColor := clDefault;
     Syn.DividerDrawConfig[i].NestColor := clDefault;
+  end;
+  if (syn is TSynCustomFoldHighlighter) then begin
+    TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+    for i := 0 to TheFoldInfo.Count - 1 do begin
+      TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index]
+        := TheFoldInfo.Info^[i].Enabled;
+    end;
   end;
 end;
 
 procedure TEditorOptions.WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 var
   DefSyn: TSrcIDEHighlighter;
-  i:      Integer;
+  i, h:   Integer;
   Path:   String;
   Conf, DefConf: TSynDividerDrawConfig;
   TheInfo: TEditorOptionsDividerRecord;
   ConfName: String;
+  TheFoldInfo: TEditorOptionsFoldRecord;
 begin
-  i := HighlighterList.FindByHighlighter(Syn);
-  if i < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
   DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
   try
@@ -2384,6 +2485,19 @@ begin
       XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
                                DefConf.NestColor);
     end;
+
+    if (syn is TSynCustomFoldHighlighter) then begin
+      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+      for i := 0 to TheFoldInfo.Count - 1 do begin
+        ConfName := TheFoldInfo.Info^[i].Xml;
+        Path := 'EditorOptions/FoldConfig/Lang' +
+          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+        XMLConfig.SetDeleteValue(Path + 'Enabled/Value',
+          TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
+          TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info^[i].Index]);
+      end;
+    end;
+
   finally
     DefSyn.Free;
   end;

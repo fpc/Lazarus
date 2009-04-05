@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls, Graphics,
   LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
-  SynEditHighlighter, Spin, ComCtrls, ColorBox;
+  SynEditHighlighter, SynEditHighlighterFoldBase, Spin, ComCtrls, ColorBox, CheckLst, Buttons;
 
 type
 
@@ -35,6 +35,11 @@ type
 
   TEditorCodefoldingOptionsFrame = class(TAbstractIDEOptionsEditor)
     Bevel1: TBevel;
+    FoldConfigCheckListBox: TCheckListBox;
+    FoldConfPanel: TPanel;
+    DividerSpeedButton: TSpeedButton;
+    FoldSpeedButton: TSpeedButton;
+    ToolBar1: TToolBar;
     TopLvlPanel: TPanel;
     TopLvlColorCheckBox: TCheckBox;
     NestLvlColorCheckBox: TCheckBox;
@@ -47,16 +52,20 @@ type
     NestLvlColorLabel: TLabel;
     LanguageComboBox: TComboBox;
     LanguageLabel: TLabel;
-    FoldConfigListBox: TListBox;
+    DividerConfigListBox: TListBox;
     DividerConfPanel: TPanel;
     DividerSpinPanel: TPanel;
     DividerBoolPanel: TPanel;
     DividerSpinEdit: TSpinEdit;
     NestLvlPanel: TPanel;
     procedure DividerOnOffCheckBoxChange(Sender: TObject);
+    procedure DividerSpeedButtonClick(Sender: TObject);
     procedure DividerSpinEditChange(Sender: TObject);
-    procedure FoldConfigListBoxClick(Sender: TObject);
-    procedure FoldConfigListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure DividerConfigListBoxClick(Sender: TObject);
+    procedure DividerConfigListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FoldConfigCheckListBoxClickCheck(Sender: TObject);
+    procedure FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FoldSpeedButtonClick(Sender: TObject);
     procedure LanguageComboBoxChange(Sender: TObject);
     procedure LanguageComboBoxExit(Sender: TObject);
     procedure LanguageComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -69,7 +78,8 @@ type
     FHighlighters: array[TLazSyntaxHighlighter] of TSrcIDEHighlighter;
     FCurHighlighter: TSrcIDEHighlighter;
     FCurDividerConf: TSynDividerDrawConfig;
-    FCurInfo: TEditorOptionsDividerRecord;
+    FCurDivInfo: TEditorOptionsDividerRecord;
+    FCurFoldInfo: TEditorOptionsFoldRecord;
   protected
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
@@ -104,26 +114,80 @@ end;
 procedure TEditorCodefoldingOptionsFrame.LanguageComboBoxExit(Sender: TObject);
 var
   ComboBox: TComboBox absolute Sender;
-  i: Integer;
   tp: TLazSyntaxHighlighter;
 begin
   tp := EditorOpts.HighlighterList
           [EditorOpts.HighlighterList.FindByName(ComboBox.Text)].TheType;
   FCurHighlighter := GetHighlighter(tp, True);
-  FCurInfo := EditorOptionsDividerDefaults[tp];
-  FoldConfigListBox.Clear;
-  for i := 0 to FCurInfo.Count - 1 do
-    FoldConfigListBox.Items.add(FCurInfo.Info^[i].Name);
-  FoldConfigListBox.ItemIndex := 0;
-  FoldConfigListBoxSelectionChange(Sender, True);
+  FCurDivInfo := EditorOptionsDividerDefaults[tp];
+  FCurFoldInfo := EditorOptionsFoldDefaults[tp];
+
+  DividerSpeedButton.Enabled := FCurDivInfo.Count > 0;
+  FoldSpeedButton.Enabled := FCurFoldInfo.Count > 0;
+
+  if DividerSpeedButton.Enabled and
+     (DividerSpeedButton.Down or not FoldSpeedButton.Enabled) then begin
+    DividerSpeedButton.Down := true;
+    DividerSpeedButtonClick(DividerSpeedButton)
+  end else begin
+    FoldSpeedButton.Down := true;
+    FoldSpeedButtonClick(FoldSpeedButton);
+  end;
 end;
 
-procedure TEditorCodefoldingOptionsFrame.FoldConfigListBoxClick(Sender: TObject);
+procedure TEditorCodefoldingOptionsFrame.FoldSpeedButtonClick(Sender: TObject);
+var
+  i: Integer;
 begin
-  FoldConfigListBoxSelectionChange(Sender, True);
+  FoldConfPanel.Visible := true;
+  DividerConfPanel.Visible := False;
+  FoldConfigCheckListBox.Clear;
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+
+  for i := 0 to FCurFoldInfo.Count - 1 do begin
+    FoldConfigCheckListBox.Items.add(FCurFoldInfo.Info^[i].Name);
+    FoldConfigCheckListBox.Checked[i] :=
+      TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index];
+  end;
 end;
 
-procedure TEditorCodefoldingOptionsFrame.FoldConfigListBoxSelectionChange(Sender: TObject; User: boolean);
+procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxClickCheck(Sender: TObject);
+var
+  i: Integer;
+begin
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  for i := 0 to FCurFoldInfo.Count - 1 do
+    TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index]
+      := FoldConfigCheckListBox.Checked[i];
+end;
+
+procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  FoldConfigCheckListBoxClickCheck(Sender);
+end;
+
+procedure TEditorCodefoldingOptionsFrame.DividerSpeedButtonClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  FoldConfPanel.Visible := False;
+  DividerConfPanel.Visible := True;
+
+  DividerConfigListBox.Clear;
+  for i := 0 to FCurDivInfo.Count - 1 do
+    DividerConfigListBox.Items.add(FCurDivInfo.Info^[i].Name);
+  DividerConfigListBox.ItemIndex := 0;
+  DividerConfigListBoxSelectionChange(Sender, True);
+end;
+
+procedure TEditorCodefoldingOptionsFrame.DividerConfigListBoxClick(Sender: TObject);
+begin
+  DividerConfigListBoxSelectionChange(Sender, True);
+end;
+
+procedure TEditorCodefoldingOptionsFrame.DividerConfigListBoxSelectionChange(Sender: TObject; User: boolean);
 var
   ListBox: TListBox absolute Sender;
   i: LongInt;
@@ -132,11 +196,11 @@ var
 begin
   if not assigned(FCurHighlighter) then exit;
   i := ListBox.ItemIndex;
-  if (i < 0) or (i >= FCurInfo.Count) then exit;
+  if (i < 0) or (i >= FCurDivInfo.Count) then exit;
   NewDiv := FCurHighlighter.DividerDrawConfig[i];
   FCurDividerConf := nil;
 
-  b := FCurInfo.Info^[i].BoolOpt;
+  b := FCurDivInfo.Info^[i].BoolOpt;
   DividerBoolPanel.Visible := b;
   DividerSpinPanel.Visible := not b;
   NestLvlPanel.Visible := not b;
@@ -228,7 +292,6 @@ function TEditorCodefoldingOptionsFrame.GetHighlighter(SynType: TLazSyntaxHighli
   CreateIfNotExists: Boolean): TSrcIDEHighlighter;
 var
   SynClass: TCustomSynClass;
-  i: Integer;
 begin
   Result := FHighlighters[SynType];
   if (Result <> nil) or not(CreateIfNotExists) then exit;
@@ -268,13 +331,16 @@ begin
   TopLvlColorCheckBox.Caption := dlgDividerTopColorDefault;
   NestLvlColorLabel.Caption := dlgDividerNestColor;
   NestLvlColorCheckBox.Caption := dlgDividerNestColorDefault;
+  DividerSpeedButton.Caption := dlgDividerConf;
+  FoldSpeedButton.Caption := dlgfoldConf;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 var
   i: Integer;
-  r: TEditorOptionsDividerRecord;
+  rd: TEditorOptionsDividerRecord;
+  rf: TEditorOptionsFoldRecord;
 begin
   with AOptions as TEditorOptions do
   begin
@@ -283,8 +349,9 @@ begin
     with LanguageComboBox.Items do begin
       BeginUpdate;
       for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
-        r := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
-        if r.Count > 0 then
+        rd := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+        rf := EditorOptionsFoldDefaults[HighlighterList[i].TheType];
+        if (rd.Count > 0) or (rf.Count > 0) then
           Add(HighlighterList[i].SynClass.GetLanguageName);
       end;
       EndUpdate;
