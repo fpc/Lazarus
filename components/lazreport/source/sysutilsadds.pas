@@ -179,13 +179,15 @@ Var i      : Integer;
 
 begin
 
-  DFMT := ShortDateFormat; //nl_langinfo(D_FMT)
-  TFMT := ShortTimeFormat; //nl_langinfo(T_FMT)
-  TFMTAP := LongTimeFormat; //nl_langinfo(T_FMT_AMPM)
-
+  //GNOME: GNOME_DESKTOP_SESSION_ID
   //KDE config
-  if DirectoryExistsUTF8(ExpandFileNameUTF8('~/.kde/share/config')) then
+  if (GetEnvironmentVariable('KDE_FULL_SESSION')<>'') and
+     (DirectoryExistsUTF8(ExpandFileNameUTF8('~/.kde/share/config'))) then
   begin
+
+    DFMT := ShortDateFormat; //nl_langinfo(D_FMT)
+    TFMT := ShortTimeFormat; //nl_langinfo(T_FMT)
+    TFMTAP := LongTimeFormat; //nl_langinfo(T_FMT_AMPM)
 
     Lg:=Copy(GetEnvironmentVariableUTF8('LANG'),1,2); //Langue
     LstKde:=TStringList.Create;
