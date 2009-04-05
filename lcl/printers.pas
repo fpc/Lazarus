@@ -82,8 +82,8 @@ type
     property PageHeight : Integer read GetPageHeight write SetPageHeight;
     property PageWidth  : Integer read GetPageWidth write SetPageWidth;
     property PageNumber : Integer read fPageNum;
-    property TopMargin : Integer read GetLeftMargin write FTopMargin;
-    property LeftMargin: Integer read GetTopMargin write FLeftMargin;
+    property TopMargin : Integer read GetTopMargin write FTopMargin;
+    property LeftMargin: Integer read GetLeftMargin write FLeftMargin;
     property BottomMargin: Integer read GetBottomMargin write FBottomMargin;
     property RightMargin: Integer read GetRightMargin write FRightMargin;
 
@@ -96,6 +96,8 @@ type
     WorkRect     : TRect;
   end;
 
+  { TPaperSize }
+
   TPaperSize = Class(TObject)
   private
     //The width and length are in points;
@@ -106,8 +108,10 @@ type
     fLastPrinterIndex  : Integer;      //Last index of printer used
 
     function GetDefaultPaperName: string;
+    function GetPhysPaperHeight: Integer;
     function GetPaperName: string;
     function GetPaperRect: TPaperRect;
+    function GetPhysPaperWidth: Integer;
     function GetSupportedPapers: TStrings;
     procedure SetPaperName(const AName: string);
     function PaperRectOfName(const AName: string) : TPaperRect;
@@ -116,6 +120,8 @@ type
     constructor Create(aOwner : TPrinter); overload;
     destructor Destroy; override;
 
+    property Width           : Integer read GetPhysPaperWidth;
+    property Height          : Integer read GetPhysPaperHeight;
     property PaperName       : string read GetPaperName write SetPaperName;
     property DefaultPaperName: string read GetDefaultPaperName;
 
@@ -781,6 +787,11 @@ begin
   Result:=fOwnedPrinter.DoGetDefaultPaperName;
 end;
 
+function TPaperSize.GetPhysPaperHeight: Integer;
+begin
+  result := PaperRect.PhysicalRect.Bottom - PaperRect.PhysicalRect.Top;
+end;
+
 function TPaperSize.GetPaperName: string;
 begin
   Result:=fOwnedPrinter.DoGetPaperName;
@@ -791,6 +802,11 @@ end;
 function TPaperSize.GetPaperRect: TPaperRect;
 begin
   Result:=PaperRectOfName(PaperName);
+end;
+
+function TPaperSize.GetPhysPaperWidth: Integer;
+begin
+  result := PaperRect.PhysicalRect.Right - PaperRect.PhysicalRect.Left;
 end;
 
 function TPaperSize.GetSupportedPapers: TStrings;
