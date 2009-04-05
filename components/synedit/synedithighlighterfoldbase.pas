@@ -82,6 +82,7 @@ type
     function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
         TSynCustomCodeFoldBlock; virtual;
     procedure Pop(DecreaseLevel: Boolean = True); virtual;
+    function MaxFoldLevel: Integer; virtual;
     procedure Clear; virtual;
     procedure Assign(Src: TSynCustomHighlighterRange); virtual;
     procedure WriteDebugReport;
@@ -586,7 +587,14 @@ end;
 
 function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
   IncreaseLevel: Boolean = True): TSynCustomCodeFoldBlock;
+var
+  i: LongInt;
 begin
+  i := MaxFoldLevel;
+  if (i > 0) and (FCodeFoldStackSize >= i) then begin
+    //debugln('Reached MaxFoldLevel, ignoring folds');
+    exit(nil);
+  end;
   Result := FTop.Child[ABlockType];
   if IncreaseLevel then
     inc(FCodeFoldStackSize);
@@ -605,6 +613,11 @@ begin
     if FMinimumCodeFoldBlockLevel > FCodeFoldStackSize then
       FMinimumCodeFoldBlockLevel := FCodeFoldStackSize;
   end;
+end;
+
+function TSynCustomHighlighterRange.MaxFoldLevel: Integer;
+begin
+  Result := -1;
 end;
 
 procedure TSynCustomHighlighterRange.Clear;

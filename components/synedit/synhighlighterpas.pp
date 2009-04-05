@@ -170,6 +170,7 @@ type
     function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
         TSynCustomCodeFoldBlock; override;
     procedure Pop(DecreaseLevel: Boolean = True); override;
+    function MaxFoldLevel: Integer; override;
     procedure IncBracketNestLevel;
     procedure DecBracketNestLevel;
     procedure DecLastLineCodeFoldLevelFix;
@@ -2993,9 +2994,9 @@ end;
 
 function TSynPasSynRange.Add(ABlockType: Pointer; IncreaseLevel: Boolean): TSynCustomCodeFoldBlock;
 begin
-  if IncreaseLevel then
-    inc(FPasFoldEndLevel);
   Result := inherited Add(ABlockType, True);
+  if IncreaseLevel and assigned(result) then
+    inc(FPasFoldEndLevel);
 end;
 
 procedure TSynPasSynRange.Pop(DecreaseLevel: Boolean);
@@ -3007,6 +3008,12 @@ begin
       FPasFoldMinLevel := FPasFoldEndLevel;
   end;
   inherited Pop(True);
+end;
+
+function TSynPasSynRange.MaxFoldLevel: Integer;
+begin
+  // Protect from overly mem consumption, by too many nested folds
+  Result := 100;
 end;
 
 procedure TSynPasSynRange.IncBracketNestLevel;
