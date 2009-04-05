@@ -2319,10 +2319,12 @@ var
   Path: String;
   i: Integer;
 begin
+  i := HighlighterList.FindByHighlighter(Syn);
+  if i < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+
   ReadDefaultsForHighlighterFoldSettings(Syn);
 
-  TheInfo := EditorOptionsDividerDefaults
-    [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
   // read settings, that are different from the defaults
   for i := 0 to TheInfo.Count - 1 do begin
     Conf := Syn.DividerDrawConfig[i];
@@ -2343,8 +2345,9 @@ var
   TheInfo: TEditorOptionsDividerRecord;
   i: Integer;
 begin
-  TheInfo := EditorOptionsDividerDefaults
-    [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
+  i := HighlighterList.FindByHighlighter(Syn);
+  if i < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
   for i := 0 to TheInfo.Count - 1 do begin
     Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
     Syn.DividerDrawConfig[i].TopColor := clDefault;
@@ -2361,12 +2364,13 @@ var
   TheInfo: TEditorOptionsDividerRecord;
   ConfName: String;
 begin
+  i := HighlighterList.FindByHighlighter(Syn);
+  if i < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
+
   DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
   try
     ReadDefaultsForHighlighterFoldSettings(DefSyn);
-
-    TheInfo := EditorOptionsDividerDefaults
-      [HighlighterList[HighlighterList.FindByHighlighter(Syn)].TheType];
     for i := 0 to TheInfo.Count - 1 do begin
       Conf := Syn.DividerDrawConfig[i];
       DefConf := DefSyn.DividerDrawConfig[i]; // default value
