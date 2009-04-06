@@ -30,7 +30,7 @@ interface
 
 uses
   // libs
-  Math, GLib2, Gtk2, Gtk2Ext, Gdk2, Gdk2Pixbuf, Gtk2Int, GtkProc, GtkDef,
+  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, GtkProc, GtkDef,
   // LCL
   LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType,
   // widgetset
