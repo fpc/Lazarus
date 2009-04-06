@@ -2607,7 +2607,7 @@ function TSynPasSyn.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting
   end;
 
 var
-  nxt, cur: TPascalCodeFoldBlockType;
+  cur: TPascalCodeFoldBlockType;
   CloseCnt, ClosedByNextLine, ClosedInLastLine: Integer;
   i, top, c: Integer;
   t: TSynPasDividerDrawLocation;
@@ -2639,7 +2639,7 @@ begin
 
   cur := TopPascalCodeFoldBlockType(i + 1);
   while (i >= top) do begin
-    nxt := cur; // The "next higher" close node compared to current
+    //nxt := cur; // The "next higher" close node compared to current
     cur := TopPascalCodeFoldBlockType(i);
     Result := FDividerDrawConfig[pddlUses].TopSetting; //// xxxx
     case cur of
