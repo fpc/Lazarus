@@ -63,7 +63,7 @@ begin
   Result := WidgetSet.CallWindowProc(lpPrevWndFunc, Handle, Msg, WParam, LParam);
 end;
 
-function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
+function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := WidgetSet.ClientToScreen(Handle, P);
 end;
@@ -236,6 +236,11 @@ begin
   WidgetSet.EnterCriticalSection(CritSection);
 end;
 
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+begin
+  Result := Widgetset.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+end;
+
 function EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 begin
@@ -387,6 +392,11 @@ end;
 function GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := WidgetSet.GetKeyState(nVirtKey);
+end;
+
+function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+begin
+  Result := Widgetset.GetMonitorInfo(hMonitor, lpmi);
 end;
 
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;

@@ -34,8 +34,8 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-Const
-  BOOL_TEXT: Array[Boolean] Of String = ('False', 'True');
+const
+  BOOL_TEXT: array[Boolean] of string = ('False', 'True');
 
 //##apiwiz##sps##   // Do not remove
 
@@ -1340,6 +1340,11 @@ begin
   Result := Integer(Windows.EndPaint(Handle, @PS));
 end;
 
+function TWin32WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+begin
+  Result := Win32Extra.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+end;
+
 function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
 begin
@@ -1948,6 +1953,11 @@ end;
 function TWin32WidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := Windows.GetKeyState(nVirtKey);
+end;
+
+function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+begin
+  Result := Win32Extra.GetMonitorInfo(hMonitor, lpmi);
 end;
 
 {------------------------------------------------------------------------------

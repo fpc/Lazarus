@@ -1324,6 +1324,18 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
+function TQtWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+var
+  i: integer;
+  Desktop: QDesktopWidgetH;
+begin
+  Desktop := QApplication_desktop();
+  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
+    lpfnEnum(HMONITOR(QDesktopWidget_screen(Desktop, i)), 0, nil, dwData);
+  Result := True;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: EnumFontFamiliesEx
@@ -2224,6 +2236,33 @@ begin
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
    {$endif}
+  end;
+end;
+
+function TQtWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+var
+  Desktop: QDesktopWidgetH;
+  i: integer;
+  Screen: QWidgetH;
+begin
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  if not Result then Exit;
+  Result := False;
+  Desktop := QApplication_desktop();
+  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
+  begin
+    Screen := QDesktopWidget_screen(Desktop, i);
+    if HMONITOR(Screen) = Monitor then
+    begin
+      QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, i);
+      QDesktopWidget_availableGeometry(Desktop, @lpmi^.rcWork, i);
+      if QDesktopWidget_primaryScreen(Desktop) = i then
+        lpmi^.dwFlags := MONITORINFOF_PRIMARY
+      else
+        lpmi^.dwFlags := 0;
+      Result := True;
+      break;
+    end;
   end;
 end;
 

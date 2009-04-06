@@ -21,7 +21,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -40,9 +40,11 @@ function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
 
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
+function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 
 function SetCursorPos(X, Y: Integer): Boolean; override;

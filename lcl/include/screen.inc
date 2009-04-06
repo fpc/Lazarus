@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -18,6 +18,19 @@
  *****************************************************************************
 
 }
+
+function EnumMonitors(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
+    dwData: LPARAM): LongBool; stdcall;
+var
+  Screen: TScreen absolute dwData;
+  Monitor: TMonitor;
+begin
+  Monitor := TMonitor.Create;
+  Monitor.FHandle := hMonitor;
+  Monitor.FMonitorNum := Screen.FMonitors.Add(Monitor);
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Method: TScreen.Create
   Params:  AOwner: the owner of the class
@@ -30,16 +43,17 @@ begin
   inherited Create(AOwner);
   FFonts := TStringlist.Create;
   FCursorMap := TMap.Create(its4, SizeOf(HCursor));
+  FMonitors := TMonitorList.Create;
   TStringlist(FFonts).Sorted := True;
-  FCustomForms:=TList.Create;
-  FCustomFormsZOrdered:=TList.Create;
+  FCustomForms := TList.Create;
+  FCustomFormsZOrdered := TList.Create;
   FFormList := TList.Create;
   FDataModuleList := TList.Create;
-  FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
+  FPixelsPerInch := ScreenInfo.PixelsPerInchX;
   FSaveFocusedList := TList.Create;
 
-  AddDataModule:=@DoAddDataModule;
-  RemoveDataModule:=@DoRemoveDataModule;
+  AddDataModule := @DoAddDataModule;
+  RemoveDataModule := @DoRemoveDataModule;
 end;
 
 {------------------------------------------------------------------------------
@@ -53,7 +67,7 @@ destructor TScreen.Destroy;
 var
   HandlerType: TScreenNotification;
 begin
-  for HandlerType:=Low(FScreenHandlers) to High(FScreenHandlers) do
+  for HandlerType := Low(FScreenHandlers) to High(FScreenHandlers) do
     FreeThenNil(FScreenHandlers[HandlerType]);
   FreeThenNil(FHintFont);
   FreeThenNil(FDataModuleList);
@@ -64,6 +78,7 @@ begin
   FreeThenNil(FFonts);
   // DestroyCursors; - free on widgetset free
   FCursorMap.Free;
+  FMonitors.Free;
   inherited Destroy;
 end;
 
@@ -376,6 +391,11 @@ begin
   FCursorMap.Clear;
 end;
 
+procedure TScreen.DestroyMonitors;
+begin
+  FMonitors.Clear;
+end;
+
 {------------------------------------------------------------------------------
   function TScreen.GetCursors(Index: Integer): HCURSOR;
  ------------------------------------------------------------------------------}
@@ -519,6 +539,18 @@ begin
   Result := GetSystemMetrics(SM_CYSCREEN);
 end;
 
+function TScreen.GetMonitor(Index: Integer): TMonitor;
+begin
+  Result := FMonitors[Index];
+end;
+
+function TScreen.GetMonitorCount: Integer;
+begin
+  if FMonitors.Count = 0 then
+    UpdateMonitors;
+  Result := FMonitors.Count;
+end;
+
 function TScreen.GetHintFont: TFont;
 begin
   if (FHintFont=nil) then
@@ -631,6 +663,12 @@ begin
     FLastActiveControl := FActiveControl;
     NotifyOnActiveControlChanged;
   end;
+end;
+
+procedure TScreen.UpdateMonitors;
+begin
+  DestroyMonitors;
+  EnumDisplayMonitors(0, nil, @EnumMonitors, LParam(Self));
 end;
 
 procedure TScreen.RestoreLastActive;

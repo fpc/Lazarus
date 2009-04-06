@@ -78,6 +78,7 @@ function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; overr
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
@@ -107,6 +108,7 @@ function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
+function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;

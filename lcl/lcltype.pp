@@ -95,6 +95,7 @@ type
   HBITMAP = type THandle;
   HPALETTE = type THandle;
   HBRUSH = type THandle;
+  HMONITOR = type THandle;
 
   Bool    = LongBool;
   Short   = SmallInt;
@@ -124,8 +125,8 @@ type
   HMENU   = Windows.HMENU;
   HBITMAP = Windows.HBITMAP;
   HPALETTE = Windows.HPALETTE;
-
   HBRUSH = Windows.HBRUSH;
+  HMONITOR = Windows.HANDLE; // define as Windows.HMONITOR when fpc have it
 
   WPARAM = Windows.WPARAM;
   LPARAM = Windows.LPARAM;
@@ -858,6 +859,31 @@ type
     ColorDepth: Integer;
     Initialized: boolean;
   end;
+
+{ monitor support }
+const
+  MONITORINFOF_PRIMARY = $00000001;
+  CCHDEVICENAME = 32;
+
+type
+  tagMonitorInfo = record
+    cbSize: DWord;
+    rcMonitor: TRect;
+    rcWork: TRect;
+    dwFlags: DWord;
+  end;
+  PMonitorInfo = ^TMonitorInfo;
+  TMonitorInfo = tagMonitorInfo;
+
+  tagMonitorInfoEx = record
+    cbSize: DWord;
+    rcMonitor: TRect;
+    rcWork: TRect;
+    dwFlags: DWord;
+    szDevice: array[0..CCHDEVICENAME - 1] of Char;
+  end;
+  PMonitorInfoEx = ^TMonitorInfoEx;
+  TMonitorInfoEx = tagMonitorInfoEx;
 
 {painting stuff}
 
@@ -2157,6 +2183,9 @@ type
 
   FontEnumExProc = function (var ELogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
     FontType: Longint; Data:LParam):Longint; stdcall;
+
+ MonitorEnumProc = function(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
+    dwData: LPARAM): LongBool; stdcall;
 
   PWndClassExA = ^TWndClassExA;
   PWndClassExW = ^TWndClassExW;

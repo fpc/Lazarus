@@ -47,7 +47,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; WParam: WParam; LParam: LParam) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CharLowerBuff --> independent
-function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -90,6 +90,7 @@ function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; {$IFD
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnumFontFamiliesEx(DC: HDC; lpLogFont:PLogFont; Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -124,6 +125,7 @@ function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFontLanguageInfo(DC: HDC): DWord; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetForegroundWindow: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

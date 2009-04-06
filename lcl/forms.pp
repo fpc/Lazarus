@@ -746,6 +746,43 @@ type
 
   THintWindowClass = class of THintWindow;
 
+  { TMonitor }
+
+  TMonitor = class(TObject)
+  private
+    FHandle: HMONITOR;
+    FMonitorNum: Integer;
+    function GetInfo(out Info: TMonitorInfo): Boolean; {inline; fpc bug - compilation error with inline}
+    function GetLeft: Integer;
+    function GetHeight: Integer;
+    function GetTop: Integer;
+    function GetWidth: Integer;
+    function GetBoundsRect: TRect;
+    function GetWorkareaRect: TRect;
+    function GetPrimary: Boolean;
+  public
+    property Handle: HMONITOR read FHandle;
+    property MonitorNum: Integer read FMonitorNum;
+    property Left: Integer read GetLeft;
+    property Height: Integer read GetHeight;
+    property Top: Integer read GetTop;
+    property Width: Integer read GetWidth;
+    property BoundsRect: TRect read GetBoundsRect;
+    property WorkareaRect: TRect read GetWorkareaRect;
+    property Primary: Boolean read GetPrimary;
+  end;
+
+  { TMonitorList }
+
+  TMonitorList = class(TList)
+  private
+    function GetItem(AIndex: Integer): TMonitor;
+    procedure SetItem(AIndex: Integer; const AValue: TMonitor);
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  public
+    property Items[AIndex: Integer]: TMonitor read GetItem write SetItem; default;
+  end;
 
   { TScreen }
 
@@ -770,6 +807,7 @@ type
     );
 
   { TScreen }
+
   TScreen = class(TLCLComponent)
   private
     FActiveControl: TWinControl;
@@ -789,12 +827,14 @@ type
     FScreenHandlers: array[TScreenNotification] of TMethodList;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
+    FMonitors: TMonitorList;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
     procedure DeleteCursor(AIndex: Integer);
     procedure DestroyCursors;
+    procedure DestroyMonitors;
     function GetCursors(AIndex: Integer): HCURSOR;
     function GetCustomFormCount: Integer;
     function GetCustomFormZOrderCount: Integer;
@@ -808,12 +848,15 @@ type
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
+    function GetMonitor(Index: Integer): TMonitor;
+    function GetMonitorCount: Integer;
     function GetWidth : Integer;
     procedure AddForm(AForm: TCustomForm);
     procedure RemoveForm(AForm: TCustomForm);
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
+    procedure UpdateMonitors;
     procedure RestoreLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
                          const Handler: TMethod; AsLast: Boolean);
@@ -880,6 +923,8 @@ type
     property Fonts: TStrings read GetFonts;
     property Height: Integer read Getheight;
     property HintFont: TFont read GetHintFont;
+    property MonitorCount: Integer read GetMonitorCount;
+    property Monitors[Index: Integer]: TMonitor read GetMonitor;
     property Width: Integer read GetWidth;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
                                                  write FOnActiveControlChange;
@@ -1627,7 +1672,10 @@ procedure FreeWidgetSet;
 begin
   //debugln('FreeWidgetSet');
   if Screen <> nil then
+  begin
     Screen.DestroyCursors;
+    Screen.DestroyMonitors;
+  end;
   if Application=nil then exit;
   Application.Free;
   Application:=nil;
@@ -1646,6 +1694,7 @@ end;
 {$I customframe.inc}
 {$I customform.inc}
 {$I customdockform.inc}
+{$I monitor.inc}
 {$I screen.inc}
 {$I application.inc}
 {$I applicationproperties.inc}

@@ -17,7 +17,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -352,6 +352,15 @@ begin
   result := Inherited EndPaint(Handle, PS);
 end;
 
+function TGtk2WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+var
+  i: integer;
+begin
+  for i := 0 to gdk_screen_get_n_monitors(gdk_screen_get_default) - 1 do
+    lpfnEnum(i, 0, nil, dwData);
+end;
+
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -488,6 +497,24 @@ function TGtk2WidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
   gdk_display_get_pointer(gdk_display_get_default(), nil, @lpPoint.X, @lpPoint.Y, nil);
   Result := True;
+end;
+
+function TGtk2WidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+var
+  MonitorRect: TGdkRectangle;
+begin
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  if not Result then Exit;
+  gdk_screen_get_monitor_geometry(gdk_screen_get_default, Monitor, @MonitorRect);
+  with MonitorRect do
+    lpmi^.rcMonitor := Bounds(x, y, width, height);
+  // there is no way to determine workarea in gtk
+  lpmi^.rcWork := lpmi^.rcMonitor;
+  // gtk uses zero position for primary monitor
+  if Monitor = 0 then
+    lpmi^.dwFlags := MONITORINFOF_PRIMARY
+  else
+    lpmi^.dwFlags := 0;
 end;
 
 {------------------------------------------------------------------------------

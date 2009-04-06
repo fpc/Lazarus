@@ -384,6 +384,9 @@ const
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
+  EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
+  GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
+
 
 const
   // ComCtlVersions
@@ -437,13 +440,16 @@ function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comd
 function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetSaveFileNameA';
 
 function GetFileVersion(FileName: string): dword;
-
 {$endif}
 
 implementation
 
 uses
   Win32Proc;
+
+const
+  xPRIMARY_MONITOR = $12340042;
+
 
 {$PACKRECORDS NORMAL}
 
@@ -885,6 +891,77 @@ begin
   end;
 end;
 
+function _EnumDisplayMonitors(hdcOptionalForPainting: HDC;
+  lprcEnumMonitorsThatIntersect: PRect;
+  lpfnEnumProc: MonitorEnumProc;
+  dwData: LPARAM): LongBool; stdcall;
+var
+  rcLimit, rcClip: TRect;
+  ptOrg: TPoint;
+  Cb: Integer;
+begin
+  // from MultiMon.h
+  rcLimit.left   := 0;
+  rcLimit.top    := 0;
+  rcLimit.right  := GetSystemMetrics(SM_CXSCREEN);
+  rcLimit.bottom := GetSystemMetrics(SM_CYSCREEN);
+
+  if (hdcOptionalForPainting <> 0) then
+  begin
+    Cb := GetClipBox(hdcOptionalForPainting, @rcClip);
+    if not GetDCOrgEx(hdcOptionalForPainting, @ptOrg) then
+      Exit(False);
+
+    OffsetRect(rcLimit, -ptOrg.x, -ptOrg.y);
+    if (IntersectRect(rcLimit, rcLimit, rcClip) and
+       ((lprcEnumMonitorsThatIntersect = nil) or
+         IntersectRect(rcLimit, rcLimit, lprcEnumMonitorsThatIntersect^))) then
+    begin
+      if Cb =  NULLREGION then
+        Exit(True)
+      else
+      if Cb = ERROR then
+        Exit(False);
+    end
+  end
+  else
+  if ((lprcEnumMonitorsThatIntersect <> nil) and
+      not IntersectRect(rcLimit, rcLimit, lprcEnumMonitorsThatIntersect^)) then
+    Exit(True);
+
+  Result := lpfnEnumProc(
+              xPRIMARY_MONITOR,
+              hdcOptionalForPainting,
+              @rcLimit,
+              dwData);
+end;
+
+function _GetMonitorInfo(hMonitor: HMONITOR; lpMonitorInfo: PMonitorInfo): Boolean; stdcall;
+var
+  rcWork: TRect;
+begin
+  // from MultiMon.h
+  if ((hMonitor = xPRIMARY_MONITOR) and
+      (lpMonitorInfo <> nil) and
+      (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfo)) and
+      SystemParametersInfo(SPI_GETWORKAREA, 0, @rcWork, 0)) then
+  begin
+    lpMonitorInfo^.rcMonitor.left := 0;
+    lpMonitorInfo^.rcMonitor.top  := 0;
+    lpMonitorInfo^.rcMonitor.right  := GetSystemMetrics(SM_CXSCREEN);
+    lpMonitorInfo^.rcMonitor.bottom := GetSystemMetrics(SM_CYSCREEN);
+    lpMonitorInfo^.rcWork := rcWork;
+    lpMonitorInfo^.dwFlags := MONITORINFOF_PRIMARY;
+
+    if (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfoEx)) then
+      PMonitorInfoEx(lpMonitorInfo)^.szDevice := 'DISPLAY';
+
+    Exit(True);
+  end;
+
+  Result := False;
+end;
+
 
 const 
   msimg32lib = 'msimg32.dll';
@@ -930,6 +1007,23 @@ begin
       Pointer(GetComboboxInfo) := p
     else
       Pointer(GetComboboxInfo) := @_GetComboboxInfo;
+    p := GetProcAddress(user32handle, 'EnumDisplayMonitors');
+    if p <> nil then
+      Pointer(EnumDisplayMonitors) := p
+    else
+      Pointer(EnumDisplayMonitors) := @_EnumDisplayMonitors;
+  {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      p := GetProcAddress(user32handle, 'GetMonitorInfoW')
+    else
+      p := GetProcAddress(user32handle, 'GetMonitorInfoA');
+  {$ELSE}
+    p := GetProcAddress(user32handle, 'GetMonitorInfoA');
+  {$ENDIF}
+    if p <> nil then
+      Pointer(GetMonitorInfo) := p
+    else
+      Pointer(GetMonitorInfo) := @_GetMonitorInfo;
   end;
 end;
 
