@@ -788,6 +788,20 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
+function TCarbonWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+var
+  Count: CGDisplayCount;
+  activeDspys: array[0..1024] of CGDirectDisplayID;
+  i: integer;
+begin
+  if OSError(CGGetActiveDisplayList(1024, activeDspys, Count),
+    'TCarbonWidgetSet.EnumDisplayMonitors', 'CGGetActiveDisplayList') then Exit(False);
+  Result := True;
+  for i := 0 to Count - 1 do
+    Result := Result and lpfnEnum(HMONITOR(activeDspys[i]), 0, nil, dwData);
+end;
+
 function TCarbonWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam: Lparam): Longint;
 begin
@@ -1405,6 +1419,32 @@ end;
 function TCarbonWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result:=inherited GetFontLanguageInfo(DC);
+end;
+
+function TCarbonWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+var
+  DisplayID: CGDirectDisplayID absolute hMonitor;
+  DeviceHandle: GDHandle;
+  displayRect: CGRect;
+  availRect: Rect;
+begin
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  if not Result then Exit;
+  displayRect := CGDisplayBounds(DisplayID);
+  lpmi^.rcMonitor := CGRectToRect(displayRect);
+  lpmi^.rcWork := lpmi^.rcMonitor;
+  if DisplayID = CGMainDisplayID then
+  begin
+    lpmi^.dwFlags := MONITORINFOF_PRIMARY;
+    if OSError(DMGetGDeviceByDisplayID(DisplayIDType(DisplayID), DeviceHandle, True),
+      'TCarbonWidgetSet.GetMonitorInfo', 'DMGetGDeviceByDisplayID') then Exit;
+    if OSError(GetAvailableWindowPositioningBounds(DeviceHandle, availRect),
+      'TCarbonWidgetSet.GetMonitorInfo', 'GetAvailableWindowPositioningBounds') then Exit;
+    with availRect do
+      lpmi^.rcWork := Types.Rect(left, top, right, bottom);
+  end
+  else
+    lpmi^.dwFlags := 0;
 end;
 
 {------------------------------------------------------------------------------
