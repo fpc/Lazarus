@@ -120,6 +120,7 @@ Salvatore Coppola
 Samuel Herzog
 Samuel Liddicott
 Sean McIlwain
+Sebastian Gasiorek
 Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller

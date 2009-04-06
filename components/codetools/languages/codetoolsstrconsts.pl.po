@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
 "PO-Revision-Date: 2007-01-14 00:09+0100\n"
@@ -611,7 +611,7 @@ msgstr ". zaczynając od "
 
 #: codetoolsstrconsts.ctspositionnotinsource
 msgid "Position not in source"
-msgstr ""
+msgstr "Pozycja poza źródłem"
 
 #: codetoolsstrconsts.ctsprocedureorfunction
 msgid "procedure or function"
@@ -663,7 +663,7 @@ msgstr "Nazwa pliku źródła dla standardowych modułów fpc"
 
 #: codetoolsstrconsts.ctssourceisnotunit
 msgid "source is not unit"
-msgstr "źródłó nie jest modułem"
+msgstr "źródło nie jest modułem"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
 msgid "source not found: unit %s"
@@ -687,7 +687,7 @@ msgstr "zamiast: %s znaleziono: %s"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"
-msgstr "stała napisowa"
+msgstr "stała łańcuchowa"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
