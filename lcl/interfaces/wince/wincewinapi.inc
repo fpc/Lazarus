@@ -15,7 +15,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -814,6 +814,10 @@ begin
   Result := Integer(Windows.EndPaint(Handle, @PS));
 end;
 
+function TWinCEWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+begin
+  Result := WinCEDef.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+end;
 
 {function TWinCEWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
@@ -1339,12 +1343,29 @@ end;
 {function TWinCEWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result:=inherited GetFontLanguageInfo(DC);
-end;
+end;}
 
 function TWinCEWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
-  Result:=inherited GetKeyState(nVirtKey);
-end;}
+  Result := Windows.GetKeyState(nVirtKey);
+end;
+
+function TWinCEWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+var
+  LocalInfo: TMonitorInfoExW;
+begin
+  if (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfoEx)) then
+  begin
+    LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
+    Result := WinCEDef.GetMonitorInfo(hMonitor, @LocalInfo);
+    lpmi^.rcMonitor := LocalInfo.rcMonitor;
+    lpmi^.rcWork := LocalInfo.rcWork;
+    lpmi^.dwFlags := LocalInfo.dwFlags;
+    PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
+  end
+  else
+    Result := WinCEDef.GetMonitorInfo(hMonitor, lpmi);
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetObject

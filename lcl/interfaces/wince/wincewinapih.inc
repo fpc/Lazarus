@@ -18,7 +18,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -93,6 +93,7 @@ function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 {function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;}
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
@@ -125,7 +126,8 @@ function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 //function GetFontLanguageInfo(DC: HDC): DWord; override;
-//function GetKeyState(nVirtKey: Integer): Smallint; override;
+function GetKeyState(nVirtKey: Integer): Smallint; override;
+function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
