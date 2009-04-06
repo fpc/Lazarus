@@ -3447,7 +3447,10 @@ begin
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then begin
       bDoRightEdge := TRUE;
     end;
-  end;
+  end
+  else
+    nRightEdge := AClip.Right;
+
   Canvas.Pen.Color := fRightEdgeColor; // used for code folding too
   Canvas.Pen.Width := 1;
   // Do everything else with API calls. This (maybe) realizes the new pen color.
