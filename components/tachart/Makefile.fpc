@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for TAChartLazarusPkg 0.0
+#   Makefile.fpc for TAChartLazarusPkg 1.0
 #
-#   This file was generated on 25-9-2008
+#   This file was generated on 8-3-2009
 
 [package]
 name=tachartlazaruspkg
-version=0.0
+version=1.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
