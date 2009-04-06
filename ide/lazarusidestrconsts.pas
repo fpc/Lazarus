@@ -2188,8 +2188,6 @@ resourcestring
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
   rsLanguagePolish      = 'Polish';
-  rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
-  rsLanguagePolishWin   = 'Polish(CP1250)';
   rsLanguageItalian     = 'Italian';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';

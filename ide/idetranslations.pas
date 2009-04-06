@@ -97,10 +97,6 @@ begin
     Result:=rsLanguageItalian
   else if CompareText(ID,'pl')=0 then
     Result:=rsLanguagePolish
-  else if CompareText(ID,'pliso')=0 then
-    Result:=rsLanguagePolishISO
-  else if CompareText(ID,'plwin')=0 then
-    Result:=rsLanguagePolishWin
   else if CompareText(ID,'ru')=0 then
     Result:=rsLanguageRussian
   else if CompareText(ID,'es')=0 then
