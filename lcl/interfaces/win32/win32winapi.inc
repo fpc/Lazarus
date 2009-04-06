@@ -1956,8 +1956,29 @@ begin
 end;
 
 function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+{$IFDEF WindowsUnicodeSupport}
+var
+  LocalInfo: TMonitorInfoExW;
+{$ENDIF}
 begin
-  Result := Win32Extra.GetMonitorInfo(hMonitor, lpmi);
+  {$IFDEF WindowsUnicodeSupport}
+  if (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfoEx)) then
+  begin
+    if UnicodeEnabledOS then
+    begin
+      LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
+      Result := Win32Extra.GetMonitorInfo(hMonitor, @LocalInfo);
+      lpmi^.rcMonitor := LocalInfo.rcMonitor;
+      lpmi^.rcWork := LocalInfo.rcWork;
+      lpmi^.dwFlags := LocalInfo.dwFlags;
+      PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
+    end
+    else
+      PMonitorInfoEx(lpmi)^.szDevice := AnsiToUtf8(PMonitorInfoEx(lpmi)^.szDevice);
+  end
+  else
+  {$ENDIF}
+    Result := Win32Extra.GetMonitorInfo(hMonitor, lpmi);
 end;
 
 {------------------------------------------------------------------------------

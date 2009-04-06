@@ -885,6 +885,16 @@ type
   PMonitorInfoEx = ^TMonitorInfoEx;
   TMonitorInfoEx = tagMonitorInfoEx;
 
+  tagMonitorInfoExW = record
+    cbSize: DWord;
+    rcMonitor: TRect;
+    rcWork: TRect;
+    dwFlags: DWord;
+    szDevice: array[0..CCHDEVICENAME - 1] of WideChar;
+  end;
+  PMonitorInfoExW = ^TMonitorInfoExW;
+  TMonitorInfoExW = tagMonitorInfoExW;
+
 {painting stuff}
 
   PDrawItemStruct = ^TDrawItemStruct;

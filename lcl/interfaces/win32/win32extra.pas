@@ -20,6 +20,7 @@
 unit Win32Extra;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 {$IFDEF TRACE}
   {$ASSERTIONS ON}
@@ -953,13 +954,21 @@ begin
     lpMonitorInfo^.rcWork := rcWork;
     lpMonitorInfo^.dwFlags := MONITORINFOF_PRIMARY;
 
+    {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      if (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfoExW)) then
+        PMonitorInfoExW(lpMonitorInfo)^.szDevice := 'DISPLAY'
+    end
+    else
+    {$ENDIF}
     if (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfoEx)) then
       PMonitorInfoEx(lpMonitorInfo)^.szDevice := 'DISPLAY';
 
-    Exit(True);
-  end;
-
-  Result := False;
+    Result := True;
+  end
+  else
+    Result := False;
 end;
 
 
