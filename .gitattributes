@@ -3633,6 +3633,7 @@ lcl/include/menu.inc svneol=native#text/pascal
 lcl/include/menuactionlink.inc svneol=native#text/pascal
 lcl/include/menuitem.inc svneol=native#text/pascal
 lcl/include/messagedialogs.inc svneol=native#text/pascal
+lcl/include/monitor.inc svneol=native#text/pascal
 lcl/include/mouse.inc svneol=native#text/pascal
 lcl/include/notebook.inc svneol=native#text/pascal
 lcl/include/page.inc svneol=native#text/pascal
