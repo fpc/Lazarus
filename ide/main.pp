@@ -860,6 +860,8 @@ type
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
+    function DoReplaceUnitUse(OldFilename, OldUnitName,
+                              NewFilename, NewUnitName: string): TModalResult;
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
@@ -7113,6 +7115,10 @@ var ActiveSrcEdit:TSourceEditor;
   TestFilename, DestFilename: string;
   ResourceCode, LFMCode: TCodeBuffer;
   MainUnitInfo: TUnitInfo;
+  OldUnitName: String;
+  OldFilename: String;
+  NewUnitName: String;
+  NewFilename: String;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7199,6 +7205,9 @@ begin
   else
     exit;
 
+  OldUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
+  OldFilename:=ActiveUnitInfo.Filename;
+
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode);
@@ -7271,6 +7280,15 @@ begin
     UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   SourceNoteBook.UpdateStatusBar;
+
+  // fix all references
+  NewUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
+  NewFilename:=ActiveUnitInfo.Filename;
+  if (OldUnitName<>NewUnitName)
+  or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
+    Result:=mrOk; // ToDo: DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName);
+    if Result<>mrOk then exit;
+  end;
 
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile END');
@@ -14909,6 +14927,60 @@ begin
 
   CreateGUID(lGUID);
   ActiveSrcEdit.Selection := Format(cGUID, [GUIDToString(lGUID)]);
+end;
+
+function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
+  NewUnitName: string): TModalResult;
+{ Replaces all references to an unit
+
+}
+var
+  OwnerList: TFPList;
+  ExtraFiles: TStrings;
+  Files: TStringList;
+begin
+  if (CompareFilenames(OldFilename,NewFilename)=0)
+  and (OldUnitName=NewUnitName) then
+    exit(mrOk);
+
+  OwnerList:=nil;
+  Files:=TStringList.Create;
+  try
+    // get owners of unit
+    OwnerList:=PkgBoss.GetOwnersOfUnit(NewFilename);
+    if OwnerList=nil then exit(mrOk);
+    PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+    ReverseList(OwnerList);
+
+    // get source files of packages and projects
+    ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+    try
+      if ExtraFiles<>nil then
+        Files.AddStrings(ExtraFiles);
+    finally
+      ExtraFiles.Free;
+    end;
+    DebugLn(['TMainIDE.DoReplaceUnitUse ',Files.Text]);
+
+    // commit source editor to codetools
+    SaveSourceEditorChangesToCodeCache(-1);
+
+    // search pascal source references
+    {Result:=GatherUnitReferences(Files,OldFilename,
+                                 Options.SearchInComments,PascalReferences);
+    if CodeToolBoss.ErrorMessage<>'' then
+      DoJumpToCodeToolBossError;
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoFindRenameIdentifier GatherIdentifierReferences failed');
+      exit;
+    end;}
+
+  finally
+    OwnerList.Free;
+    Files.Free;
+  end;
+  //PkgBoss.GetOwnersOfUnit(NewFilename);
+  Result:=mrOk;
 end;
 
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);

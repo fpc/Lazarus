@@ -268,8 +268,8 @@ type
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
     procedure DecreaseAutoRevertLock;
-    function ParseUnitNameFromSource(TryCache: boolean): string;
-    procedure ReadUnitNameFromSource(TryCache: boolean);
+    function ParseUnitNameFromSource(TryCache: boolean): string;// fetch name fom source
+    procedure ReadUnitNameFromSource(TryCache: boolean);// fetch unit name from source and update property UnitName
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
