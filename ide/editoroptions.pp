@@ -2400,6 +2400,8 @@ var
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
   h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
@@ -2439,6 +2441,8 @@ var
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
   h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
   for i := 0 to TheInfo.Count - 1 do begin
@@ -2466,6 +2470,8 @@ var
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
   h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
