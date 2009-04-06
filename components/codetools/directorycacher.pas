@@ -823,6 +823,37 @@ end;
 
 function TCTDirectoryCache.FindUnitSourceInCompletePath(
   var UnitName, InFilename: string; AnyCase: boolean): string;
+
+  function FindInFilename(aFilename: string): string;
+  var
+    Ext: String;
+  begin
+    Ext:=ExtractFileExt(aFilename);
+    if Ext='' then
+      aFilename:=aFilename+'.pp'; // append default extension
+    if AnyCase then
+      Result:=Pool.FindDiskFilename(aFilename)
+    else
+      Result:=aFilename;
+    if (not FileExistsCached(Result)) then begin
+      if (Ext<>'') then begin
+        Result:='';
+        exit;
+      end;
+      // search for secondary extension
+      aFilename:=ChangeFileExt(aFilename,'.pas');
+      if AnyCase then
+        Result:=Pool.FindDiskFilename(aFilename)
+      else
+        Result:=aFilename;
+      if (not FileExistsCached(Result)) then begin
+        Result:='';
+        exit;
+      end;
+    end;
+    InFilename:=CreateRelativePath(Result,Directory);
+  end;
+
 var
   UnitSrc: TCTDirectoryUnitSources;
   CurDir: String;
@@ -851,28 +882,13 @@ begin
       // not found in cache -> search
       if FilenameIsAbsolute(InFilename) then begin
         // absolute filename
-        if AnyCase then
-          Result:=Pool.FindDiskFilename(InFilename)
-        else
-          Result:=InFilename;
-        if FileExistsCached(Result) then
-          InFilename:=CreateRelativePath(Result,Directory)
-        else
-          Result:='';
+        Result:=FindInFilename(InFilename);
       end else begin
         // 'in'-filename has no complete path
         // -> search file relative to current directory
         CurDir:=Directory;
         if CurDir<>'' then begin
-          if AnyCase then
-            Result:=Pool.FindDiskFilename(CurDir+InFilename)
-          else
-            Result:=TrimFilename(CurDir+InFilename);
-          if FileExistsCached(Result) then begin
-            InFilename:=CreateRelativePath(Result,CurDir);
-          end else begin
-            Result:='';
-          end;
+          Result:=FindInFilename(TrimFilename(CurDir+InFilename));
         end else begin
           // this is a virtual directory -> search virtual unit
           InFilename:=Pool.FindVirtualFile(InFilename);
