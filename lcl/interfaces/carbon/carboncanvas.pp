@@ -109,6 +109,8 @@ type
     
     procedure SetAntialiasing(AValue: Boolean);
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
+    procedure SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);  // Width and Height must be negative to flip the image
+    procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer); // Width and Height must be negative to restore
   public
     procedure DrawFocusRect(ARect: TRect);
     procedure DrawGrid(const ARect: TRect; DX, DY: Integer);
@@ -680,15 +682,43 @@ begin
 
   CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
   try
+    SetCGFillping(CGContext, Width, Height);
     if OSError(
       HIViewDrawCGImage(CGContext,
       GetCGRectSorted(X, Y, X + Width, Y + Height), CGImage),
       'DrawCGImage', 'HIViewDrawCGImage') then Exit;
+    RestoreCGFillping(CGContext, Width, Height);
   finally
     CGContextRestoreGState(CGContext);
   end;
   
   Result := True;
+end;
+
+procedure TCarbonDeviceContext.SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+begin
+  if Width < 0 then begin
+    CGContextTranslateCTM(Ctx, -Width, 0);
+    CGContextScaleCTM(Ctx, -1, 1);
+  end;
+
+  if Height < 0 then begin
+    CGContextTranslateCTM(Ctx, 0, -Height);
+    CGContextScaleCTM(Ctx, 1, -1);
+  end;
+end;
+
+procedure TCarbonDeviceContext.RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+begin
+  if Height < 0 then begin
+    CGContextTranslateCTM(Ctx, 0, Height);
+    CGContextScaleCTM(Ctx, 1, -1);
+  end;
+
+  if Width < 0 then begin
+    CGContextScaleCTM(Ctx, -1, 1);
+    CGContextTranslateCTM(Ctx, Width, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1399,8 +1429,11 @@ begin
         LayerContext := CGLayerGetContext(Layer);
         CGContextScaleCTM(LayerContext, 1, -1);
         CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
+
+        SetCGFillping(LayerContext, Width, Height);
         CGContextClipToMask(LayerContext, LayRect, MskImage);
         CGContextDrawImage(LayerContext, LayRect, Image);
+
         CGContextDrawLayerInRect(CGContext, DstRect, Layer);
         
         Result := True;
