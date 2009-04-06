@@ -120,7 +120,9 @@ type
   public
     IncludePath: string;
     Filename: string;
-    constructor Create(const AFilename, AIncludePath: string);
+    DynamicExtension: boolean;
+    constructor Create(const AFilename, AIncludePath: string;
+                       aDynamicExtension: boolean);
   end;
   
   { TMissingIncludeFiles is a list of TMissingIncludeFile }
@@ -277,9 +279,11 @@ type
     function ThreadingDirective: boolean;
     procedure BuildDirectiveFuncList;
     
-    function IncludeFile(const AFilename: string): boolean;
-    function SearchIncludeFile(AFilename: string; var NewCode: Pointer;
-      var MissingIncludeFile: TMissingIncludeFile): boolean;
+    function IncludeFile(const AFilename: string;
+                         DynamicExtension: boolean): boolean;
+    function SearchIncludeFile(AFilename: string; DynamicExtension: boolean;
+                         var NewCode: Pointer;
+                         var MissingIncludeFile: TMissingIncludeFile): boolean;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
     function GetIncludeFileIsMissing: boolean;
@@ -2452,6 +2456,7 @@ function TLinkScanner.IncludeDirective: boolean;
 // {$i filename} or {$include filename}
 // filename can be 'filename with spaces'
 var IncFilename: string;
+  DynamicExtension: Boolean;
 begin
   inc(SrcPos);
   if (Src[SrcPos]<>'%') then begin
@@ -2459,10 +2464,13 @@ begin
     if (IncFilename<>'') and (IncFilename[1]='''')
     and (IncFilename[length(IncFilename)]='''') then
       IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
+    DynamicExtension:=false;
     if PascalCompiler<>pcDelphi then begin
       // default is fpc behaviour (default extension is .pp)
-      if ExtractFileExt(IncFilename)='' then
+      if ExtractFileExt(IncFilename)='' then begin
         IncFilename:=IncFilename+'.pp';
+        DynamicExtension:=true;
+      end;
     end else begin
       // delphi understands quoted include files and default extension is .pas
       if ExtractFileExt(IncFilename)='' then
@@ -2475,7 +2483,7 @@ begin
     // put old position on stack
     PushIncludeLink(CleanedLen,CommentEndPos,Code);
     // load include file
-    Result:=IncludeFile(IncFilename);
+    Result:=IncludeFile(IncFilename,DynamicExtension);
     if Result then begin
       if (SrcPos<=SrcLen) then
         CommentEndPos:=SrcPos
@@ -2526,6 +2534,7 @@ begin
 end;
 
 function TLinkScanner.SearchIncludeFile(AFilename: string;
+  DynamicExtension: boolean;
   var NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var PathStart, PathEnd: integer;
   IncludePath, PathDivider, CurPath: string;
@@ -2544,13 +2553,18 @@ var PathStart, PathEnd: integer;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
+    if (NewCode=nil) and DynamicExtension then begin
+      if CompareFileExt(ExpFilename,'.pp',true)=0 then
+        ChangeFileExt(ExpFilename,'.pas');
+      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+    end;
     Result:=NewCode<>nil;
   end;
   
   procedure SetMissingIncludeFile;
   begin
     if MissingIncludeFile=nil then
-      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
+      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'',DynamicExtension);
     MissingIncludeFile.IncludePath:=IncludePath;
   end;
 
@@ -2650,13 +2664,15 @@ begin
   SetMissingIncludeFile;
 end;
 
-function TLinkScanner.IncludeFile(const AFilename: string): boolean;
+function TLinkScanner.IncludeFile(const AFilename: string;
+  DynamicExtension: boolean): boolean;
 var
   NewCode: Pointer;
   MissingIncludeFile: TMissingIncludeFile;
 begin
   MissingIncludeFile:=nil;
-  Result:=SearchIncludeFile(AFilename, NewCode, MissingIncludeFile);
+  Result:=SearchIncludeFile(AFilename, DynamicExtension, NewCode,
+                            MissingIncludeFile);
   if Result then begin
     // change source
     if Assigned(FOnIncludeCode) then
@@ -2764,7 +2780,8 @@ begin
     -> Check all missing include files again }
   for i:=0 to FMissingIncludeFiles.Count-1 do begin
     MissingIncludeFile:=FMissingIncludeFiles[i];
-    if SearchIncludeFile(MissingIncludeFile.Filename,NewCode,MissingIncludeFile)
+    if SearchIncludeFile(MissingIncludeFile.Filename,
+      MissingIncludeFile.DynamicExtension,NewCode,MissingIncludeFile)
     then begin
       Result:=true;
       exit;
@@ -3321,11 +3338,13 @@ end;
 
 { TMissingIncludeFile }
 
-constructor TMissingIncludeFile.Create(const AFilename, AIncludePath: string);
+constructor TMissingIncludeFile.Create(const AFilename, AIncludePath: string;
+  aDynamicExtension: boolean);
 begin
   inherited Create;
   Filename:=AFilename;
   IncludePath:=AIncludePath;
+  DynamicExtension:=aDynamicExtension;
 end;
 
 { TMissingIncludeFiles }
