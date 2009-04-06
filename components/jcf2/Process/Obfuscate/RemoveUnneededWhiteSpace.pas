@@ -75,7 +75,7 @@ end;
 const
   MiscUnspacedTokens: TTokenTypeSet = [
     ttQuotedLiteralString, ttSemiColon, ttColon, ttComma,
-    ttDot, ttDoubleDot, ttAssign, ttReturn];
+    ttDot, ttDoubleDot, ttAssign, ttReturn, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
 
   DoNotConcat = [ttGreaterThan, ttLessThan, ttEquals];
 

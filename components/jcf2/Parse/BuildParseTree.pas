@@ -2306,7 +2306,7 @@ procedure TBuildParseTree.RecogniseOperatorSymbol;
 const
   OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
     ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
-    ttAssign];
+    ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
 begin
   Recognise(OperatorTokens);
 end;
@@ -2971,11 +2971,11 @@ begin
     RecogniseBracketedStatement;
     RecogniseDesignatorTail;
 
-    if fcTokenList.FirstSolidTokenType = ttAssign then
+    if fcTokenList.FirstSolidTokenType in AssignmentDirectives then
     begin
       PushNode(nAssignment);
 
-      Recognise(ttAssign);
+      Recognise(fcTokenList.FirstSolidTokenType);
       RecogniseExpr(True);
       
       PopNode;
@@ -3044,11 +3044,11 @@ begin
 
   RecogniseDesignatorTail;
 
-  if TokenList.FirstSolidTokenType = ttAssign then
+  if TokenList.FirstSolidTokenType in AssignmentDirectives then
   begin
     PushNode(nAssignment);
 
-    Recognise(ttAssign);
+    Recognise(TokenList.FirstSolidTokenType);
     RecogniseExpr(True);
 
     PopNode;

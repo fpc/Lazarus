@@ -92,6 +92,9 @@ const
   NativeSingleQuote = Char('''');
 
 
+{$IFNDEF DELPHI12}
+function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
+{$ENDIF}
 function CharIsControl(const C: Char): Boolean;
 function CharIsAlpha(const C: Char): Boolean;
 function CharIsAlphaNum(const C: Char): Boolean;
@@ -167,7 +170,7 @@ uses
 {$IFNDEF DELPHI12}
 
 // define  CharInSet for Delphi 2007 or earlier
-function CharInSet(const C: Char; const testSet: TSysCharSet): boolean;
+function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
 begin
   Result := C in testSet;
 end;

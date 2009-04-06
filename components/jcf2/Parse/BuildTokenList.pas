@@ -474,17 +474,34 @@ begin
 end;
 
 function TBuildTokenList.TryAssign(const pcToken: TSourceToken): boolean;
+var
+  TwoChars: WideString;
 begin
   Result := False;
 
-  if Current <> ':' then
+  if not (CharInSet(Current, [':', '+', '-', '*', '/'])) then
     exit;
 
-  if CurrentChars(2) <> ':=' then
+  TwoChars := CurrentChars(2);
+
+  if TwoChars = ':=' then
+    pcToken.TokenType := ttAssign
+  else
+  if TwoChars = '+=' then
+    pcToken.TokenType := ttPlusAssign
+  else
+  if TwoChars = '-=' then
+    pcToken.TokenType := ttMinusAssign
+  else
+  if TwoChars = '*=' then
+    pcToken.TokenType := ttTimesAssign
+  else
+  if TwoChars = '/=' then
+    pcToken.TokenType := ttFloatDivAssign
+  else
     exit;
 
-  pcToken.TokenType := ttAssign;
-  pcToken.SourceCode := CurrentChars(2);
+  pcToken.SourceCode := TwoChars;
   Consume(2);
   
   Result := True;

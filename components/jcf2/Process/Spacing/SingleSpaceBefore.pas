@@ -140,7 +140,7 @@ begin
   if pt.HasParentNode(nAsm) then
     exit;
 
-  if (pt.TokenType = ttAssign) then
+  if (pt.TokenType in AssignmentDirectives) then
   begin
     Result := True;
     exit;

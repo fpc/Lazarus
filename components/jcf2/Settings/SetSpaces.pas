@@ -117,7 +117,6 @@ type
     property SpaceBeforeOpenSquareBracketsInExpression: boolean
       read fbSpaceBeforeOpenSquareBracketsInExpression write fbSpaceBeforeOpenSquareBracketsInExpression;
 
-
     property SpaceAfterOpenBrackets: boolean read fbSpaceAfterOpenBrackets write fbSpaceAfterOpenBrackets;
     property SpaceBeforeCloseBrackets: boolean read fbSpaceBeforeCloseBrackets write fbSpaceBeforeCloseBrackets;
     property MoveSpaceToBeforeColon: boolean read fbMoveSpaceToBeforeColon write fbMoveSpaceToBeforeColon;

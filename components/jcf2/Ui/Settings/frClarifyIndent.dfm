@@ -1,12 +1,12 @@
 inherited fClarifyIndent: TfClarifyIndent
   Width = 430
-  Height = 307
+  Height = 342
   Font.Charset = ANSI_CHARSET
   Font.Height = -15
   Font.Name = 'Segoe UI'
   ParentFont = False
   ExplicitWidth = 430
-  ExplicitHeight = 307
+  ExplicitHeight = 342
   object Label2: TLabel
     Left = 4
     Top = 6
@@ -32,7 +32,7 @@ inherited fClarifyIndent: TfClarifyIndent
     Left = 4
     Top = 32
     Width = 417
-    Height = 257
+    Height = 310
     Caption = 'Options'
     TabOrder = 1
     object cbIndentBeginEnd: TCheckBox
@@ -142,6 +142,22 @@ inherited fClarifyIndent: TfClarifyIndent
       Height = 18
       Caption = 'Indent for procedure body'
       TabOrder = 11
+    end
+    object cbIndentNestedTypes: TCheckBox
+      Left = 12
+      Top = 250
+      Width = 366
+      Height = 18
+      Caption = 'Indent nested types'
+      TabOrder = 12
+    end
+    object cbIndentVarAndConstInClass: TCheckBox
+      Left = 12
+      Top = 272
+      Width = 366
+      Height = 18
+      Caption = 'Indent var and const in class'
+      TabOrder = 13
     end
   end
 end

@@ -270,7 +270,8 @@ begin
     exit;
   end;
 
-  { return after 'type' unless it's the second type in "type foo = type integer;" }
+  { return after 'type' unless it's the second type in "type foo = type integer;"
+    but what about }
   if (pt.TokenType = ttType) and (pt.HasParentNode(nTypeSection, 1)) and
     ( not pt.IsOnRightOf(nTypeDecl, ttEquals)) then
   begin

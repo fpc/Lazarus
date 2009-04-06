@@ -56,7 +56,7 @@ uses SourceToken, TokenUtils, Tokens, ParseTreeNodeType,
 
 function HasNoReturnBefore(const pt: TSourceToken): boolean;
 const
-  NoReturnTokens: TTokenTypeSet    = [ttAssign, ttColon, ttSemiColon];
+  NoReturnTokens: TTokenTypeSet    = [ttAssign, ttColon, ttSemiColon, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
   ProcNoReturnWords: TTokenTypeSet = [ttThen, ttDo];
 var
   lcPrev: TParseTreeNode;

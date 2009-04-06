@@ -272,7 +272,13 @@ type
     ttGreaterThanOrEqual,
     ttLessThanOrEqual,
     ttNotEqual,
-    ttBackSlash { legal in char literals }
+    ttBackSlash, { legal in char literals }
+
+    // FreePascal c-style operators
+    ttPlusAssign,     // +=
+    ttMinusAssign,    // -=
+    ttTimesAssign,    // *=
+    ttFloatDivAssign  // /=
     );
 
   TTokenTypeSet = set of TTokenType;
@@ -415,6 +421,8 @@ const
   BuiltInTypes: TTokenTypeSet     = [ttBoolean .. ttOleVariant];
 
   AsmOffsets: TTokenTypeSet = [ttVmtOffset, ttDmtOffset];
+
+  AssignmentDirectives: TTokenTypeSet = [ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
 
 { interpret a string as a token }
 procedure TypeOfToken(const psWord: string; out peWordType: TWordType;
@@ -750,6 +758,12 @@ begin
   AddKeyword('>', wtOperator, ttGreaterThan);
   AddKeyword('<', wtOperator, ttLessThan);
   AddKeyword('\', wtOperator, ttBackSlash);
+
+  // FreePascal c-style operators
+  AddKeyword('+=', wtNotAWord, ttPlusAssign);
+  AddKeyword('-=', wtNotAWord, ttMinusAssign);
+  AddKeyword('*=', wtNotAWord, ttTimesAssign);
+  AddKeyword('/=', wtNotAWord, ttFloatDivAssign);
 
   {Now that we know how many keywords were added,
     we can set the actual size of the array }

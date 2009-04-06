@@ -120,13 +120,13 @@ end;
 function TAlignAssign.TokenIsAligned(const pt: TSourceToken): boolean;
 begin
   { keep the indent - don't align statement of differing indent levels }
-  if (fiStartBlockLevel < 0) and (pt.TokenType = ttAssign) then
+  if (fiStartBlockLevel < 0) and (pt.TokenType in AssignmentDirectives) then
     fiStartBlockLevel := BlockLevel(pt);
 
-  if (fiStartCaseLevel < 0) and (pt.TokenType = ttAssign) then
+  if (fiStartCaseLevel < 0) and (pt.TokenType in AssignmentDirectives) then
     fiStartCaseLevel := CaseLevel(pt);
 
-  Result := (pt.TokenType = ttAssign) and
+  Result := (pt.TokenType in AssignmentDirectives) and
     (fiStartBlockLevel = BlockLevel(pt)) and (fiStartCaseLevel = CaseLevel(pt));
 end;
 

@@ -378,7 +378,7 @@ begin
         end;
       end;
       { It is good to break after := not before }
-      ttAssign:
+      ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign:
       begin
         piScoreBefore := BAD2;
         piScoreAfter  := GOOD3;

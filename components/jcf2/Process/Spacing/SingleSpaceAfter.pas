@@ -55,7 +55,8 @@ uses
   FormatFlags, TokenUtils, SettingsTypes;
 
 const
-  SingleSpaceAfterTokens: TTokenTypeSet = [ttColon, ttAssign, ttComma];
+  SingleSpaceAfterTokens: TTokenTypeSet = [ttColon, ttAssign, ttComma,
+    ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
 
   SingleSpaceAfterWords: TTokenTypeSet = [
     ttProcedure, ttFunction,

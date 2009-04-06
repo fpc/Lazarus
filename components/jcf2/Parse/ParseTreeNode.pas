@@ -543,8 +543,7 @@ begin
 end;
 
 
-function TParseTreeNode.IsOnRightOf(const peRootNodeTypes, peNodes:
-  TParseTreeNodeTypeSet): boolean;
+function TParseTreeNode.IsOnRightOf(const peRootNodeTypes, peNodes: TParseTreeNodeTypeSet): boolean;
 var
   lbSearchDone: boolean;
 
