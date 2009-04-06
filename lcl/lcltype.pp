@@ -99,6 +99,7 @@ type
 
   Bool    = LongBool;
   Short   = SmallInt;
+  PRect   = ^TRect;
 
   WPARAM = type PtrInt; //LongInt or Int64 on CPU64;
   LPARAM = type PtrInt; //LongInt or Int64 on CPU64;
