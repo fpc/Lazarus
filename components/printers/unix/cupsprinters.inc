@@ -10,15 +10,13 @@ uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
 begin
-  //Result:=InternalGetResolution(True);
-  Result:=72;
+  Result:=InternalGetResolution(True);
 end;
 
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetYDPI: Integer;
 begin
-  //Result:=InternalGetResolution(False);
-  Result:=72;
+  Result:=InternalGetResolution(False);
 end;
 
 //write count bytes from buffer to raw mode stream
@@ -167,11 +165,18 @@ procedure TCUPSPrinter.CreatePapers;
       WinCode:= 0;
     end;
   end;
+  function PRRect(const ALeft,ATop,ARight,ABottom: Integer): TRect;
+  begin
+    Result.Left := ALeft;
+    Result.Top := ATop;
+    Result.Right  := round(ARight * Printer.XDPI / 72);
+    Result.Bottom := round(ABottom * Printer.XDPI / 72);
+  end;
 begin
   SetLength(fPapers, 3);
-  add(0, 'Letter',    Rect(0, 0, 612,  792 ), Rect(0,   0,   612, 792 ));
-  add(1, 'A4',        Rect(0, 0, 595,  892 ), Rect(0,   0,   595, 892 ));
-  add(2, 'Legal',     Rect(0, 0, 612,  1008), Rect(0,   0,   612, 1008));
+  add(0, 'Letter',    PRRect(0, 0, 612,  792 ), PRRect(0,   0,   612, 792 ));
+  add(1, 'A4',        PRRect(0, 0, 595,  892 ), PRRect(0,   0,   595, 892 ));
+  add(2, 'Legal',     PRRect(0, 0, 612,  1008), PRRect(0,   0,   612, 1008));
 end;
 
 function TCUPSPrinter.IndexOfPaper(aPaperName: string): integer;
@@ -687,7 +692,9 @@ begin
     {$IFDEF LogPrintoutFile}
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
+    {$IFNDEF DoNotPrint}
     PrintFile(FOutputFileName);
+    {$ENDIF}
     DeleteFileUTF8(FOutputFilename);
   end;
 
@@ -974,6 +981,7 @@ function TCUPSPrinter.DoGetPaperRect(aName: string;
   
 var
   P : Pppd_size_t;
+  Ky,Kx: Double;
 begin
   if (not (cpsPaperRectValid in FStates))
   or (fCachePaperRectName<>aName) then begin
@@ -1043,29 +1051,34 @@ begin
         //     |        b        |        |        b        |
         //     +-----------------+        +-----------------+
         //
-
+        Kx := Printer.XDPI/72;
+        Ky := Printer.YDPI/72;
         if Orientation in [poPortrait, poReversePortrait] then begin
-        
-          fCachePaperRect.PhysicalRect.Right:=Longint(Trunc(P^.Width));
-          fCachePaperRect.PhysicalRect.Bottom:=Longint(Trunc(P^.Length));
-
-          fCachePaperRect.WorkRect.Left:=LongInt(Trunc(P^.Left));
-          fCachePaperRect.WorkRect.Right:=Longint(Trunc(P^.Right));
-          fCachePaperRect.WorkRect.Top:=LongInt(Trunc(P^.Length-P^.Top));
-          fCachePaperRect.WorkRect.Bottom:=LongInt(Trunc(P^.Length-P^.Bottom));
-          
+          fCachePaperRect.PhysicalRect.Right:=Round(P^.Width*Kx);
+          fCachePaperRect.PhysicalRect.Bottom:=Round(P^.Length*Ky);
+          fCachePaperRect.WorkRect.Left:=Round(P^.Left*Kx);
+          fCachePaperRect.WorkRect.Right:=Round(P^.Right*Kx);
+          fCachePaperRect.WorkRect.Top:=Round((P^.Length-P^.Top)*Ky);
+          fCachePaperRect.WorkRect.Bottom:=Round((P^.Length-P^.Bottom)*Ky);
         end else begin
-
-          FCachePaperRect.PhysicalRect.Right:=Longint(Trunc(P^.Length));
-          FCachePaperRect.PhysicalRect.Bottom:=Longint(Trunc(P^.Width));
-          
-          FCachePaperRect.WorkRect.Left:=Longint(Trunc(P^.Length-P^.Top));
-          FCachePaperRect.WorkRect.Right:=longint(Trunc(P^.Length-P^.Bottom));
-          FCachePaperRect.WorkRect.Top:=Longint(Trunc(P^.Width-P^.Right));
-          FCachePaperRect.WorkRect.Bottom:=Longint(Trunc(p^.width - P^.left));
-          
+          FCachePaperRect.PhysicalRect.Right:=Round(P^.Length*Kx);
+          FCachePaperRect.PhysicalRect.Bottom:=Round(P^.Width*Ky);
+          FCachePaperRect.WorkRect.Left:=Round((P^.Length-P^.Top)*Kx);
+          FCachePaperRect.WorkRect.Right:=Round((P^.Length-P^.Bottom)*Kx);
+          FCachePaperRect.WorkRect.Top:=Round((P^.Width-P^.Right)*Ky);
+          FCachePaperRect.WorkRect.Bottom:=Round((p^.width - P^.left)*Ky);
         end;
 
+        {$IFDEF DebugCUPS}
+        with P^ do
+        DebugLn('ORG: Width=%f Length=%f Left=%f Right=%f Top=%f Bottom=%f Name=%s',
+          [Width,Length,Left,Right,Top,Bottom,string(Name)]);
+        with FCachePaperRect do
+        DebugLn('NEW: Width=%d Length=%d Left=%d Top=%d Right=%d Bottom=%d ml=%d mt=%d mr=%d mb=%d',
+          [PhysicalRect.Right,PhysicalRect.Bottom,WorkRect.Left,WorkRect.Top,WorkRect.Right,WorkRect.Bottom,
+           WorkRect.Left,WorkRect.Top,PhysicalRect.Right-WorkRect.Right,
+           PhysicalRect.Bottom-WorkRect.Bottom]);
+        {$ENDIF}
         //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
       end;
     end;

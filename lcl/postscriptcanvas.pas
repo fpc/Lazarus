@@ -48,6 +48,9 @@ uses
 Type
 
   { TPostScriptPrinterCanvas }
+  TpsPoint=record
+    fx,fy:single;
+  end;
 
   TPostScriptPrinterCanvas = Class(TPrinterCanvas)
   private
@@ -64,7 +67,8 @@ Type
     fcPenStyle     : TPenStyle;
     fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
-    
+
+    procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
     procedure Write(const St : String; Lst : TstringList = nil); overload;
     procedure WriteB(const St : string);
@@ -73,7 +77,7 @@ Type
     procedure WriteComment(const St : string);
     procedure WriteOrientation;
     
-    procedure TranslateCoord(Var X,Y : Integer);
+    function TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
     procedure SetPosition(X,Y : Integer);
     
     procedure UpdateLineWidth;
@@ -554,20 +558,25 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.WriteOrientation;
+var
+  h:integer;
 begin
   if (Printer<>nil) and (Printer.Orientation=poLandscape) then
   begin
-    Write(format('%d 0 translate 90 rotate',[PageHeight]));
+    h:=round(PageHeight*72/printer.YDPI); // in pixels
+    Write(format('%d 0 translate 90 rotate',[h]));
   end;
 end;
 
 //Convert an TCanvas Y point to PostScript Y point
 //The TCanvas origine is corner Left,Top and PostScript is Left,Bottom
 //Modify X and Y for use Left and Top margin
-procedure TPostScriptPrinterCanvas.TranslateCoord(var X,Y : Integer);
+function TPostScriptPrinterCanvas.TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
 begin
-  Y:=PageHeight+BottomMargin-Y;
-  X:=X+LeftMargin;
+  cnvY:=PageHeight+BottomMargin-cnvY; // swap Y axis
+  cnvX:=cnvX+LeftMargin; // shift X axis
+  Result.fx:=72*(cnvX/Printer.XDPI); // pixels to points
+  Result.fy:=72*(cnvY/Printer.YDPI);
 end;
 
 //Save the last position
@@ -579,10 +588,16 @@ end;
 
 //Init the width of line
 procedure TPostScriptPrinterCanvas.UpdateLineWidth;
+var
+  fs:TFormatSettings;
+  pw:single;
 begin
   if Pen.Width<>fcPenWidth then
   begin
-    Write(Format('%d setlinewidth',[Pen.Width]));
+    fs.DecimalSeparator:='.';
+    pw:=1/Self.Printer.XDPI; // printer pixel in inches
+    pw:=Pen.Width*pw*72; // pen width in Points -> 1/72 inches
+    Write(Format('%.3f setlinewidth',[pw],fs));
     fcPenWidth:=Pen.Width;
   end;
 end;
@@ -713,8 +728,14 @@ end;
 
 //Move pen at last pos
 procedure TPostScriptPrinterCanvas.MoveToLastPos;
+var
+  pp:TpsPoint;
+  fs:TFormatSettings;
 begin
-  write(Format('%d %d moveto',[fPenPos.X,fPenPos.Y])+' %last pos');
+  pp:=Self.TranslateCoord(fpenPos.X,fPenPos.Y);
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+  write(Format('%f %f moveto',[pp.fx,pp.fy],fs)+' %last pos');
 end;
 
 //Add at the PstScript sequence, the Fill Pattern/Color and Broder
@@ -918,6 +939,8 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.BeginDoc;
+var
+  l,t,w,h: Integer;
 begin
   inherited BeginDoc;
 
@@ -931,9 +954,27 @@ begin
   
   Font.Size:=12;
   Font.Color:=clBlack;
+
+  if (Printer<>nil) then
+  begin
+    with Printer.PaperSize.PaperRect.WorkRect do
+    begin
+      l:=round(Left*72/printer.XDPI);
+      t:=round(Top*72/Printer.XDPI);
+      w:=round(Right*72/Printer.XDPI); // page in pixels, printer in points
+      h:=round(Bottom*72/Printer.YDPI);
+    end;
+  end
+  else // should not be
+  begin
+    l:=0;
+    t:=0;
+    w:=PageWidth; // page in pixels, printer in points
+    h:=PageHeight;
+  end;
   
   WriteHeader('%!PS-Adobe-3.0');
-  WriteHeader('%%'+Format('BoundingBox: 0 0 %d %d',[PageWidth,PageHeight]));
+  WriteHeader('%%'+Format('BoundingBox: %d %d %d %d',[l,t,w,h]));
   WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
   WriteHeader('%%'+Format('Title: %s',[Title]));
   WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
@@ -1197,6 +1238,11 @@ begin
   
   if Trim(fFileName)<>'' then
     SaveToFile(ExpandFileNameUTF8(fFileName));
+
+  if Assigned(fPsUnicode) then
+    FreeAndNil(fPsUnicode);
+
+  Self.fcPenWidth:=0;
 end;
 
 procedure TPostScriptPrinterCanvas.NewPage;
@@ -1211,53 +1257,70 @@ end;
 
 //Move the current position
 procedure TPostScriptPrinterCanvas.MoveTo(X1, Y1: Integer);
+var
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
   RequiredState([csHandleValid]);
+
+  write('stroke');
+
   WriteComment(Format('MoveTo(%d,%d)',[x1,y1]));
 
   SetPosition(X1,Y1);
-  TranslateCoord(X1,Y1);
+  pp:=TranslateCoord(X1,Y1);
 
-  write(Format('%d %d moveto',[X1,Y1]));
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+  write(Format('%f %f moveto',[pp.fx,pp.fy],fs));
 end;
 
 //Drawe line
 procedure TPostScriptPrinterCanvas.LineTo(X1, Y1: Integer);
+var
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-
   WriteComment(Format('LineTo(%d,%d)',[x1,y1]));
   SetPosition(X1,Y1);
-  TranslateCoord(X1,Y1);
+  pp:=TranslateCoord(X1,Y1);
   UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
-  write(Format('%d %d lineto stroke',[X1,Y1]));
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+  write(Format('%f %f lineto',[pp.fx,pp.fy],fs));
   changed;
 end;
 
 procedure TPostScriptPrinterCanvas.Polyline(Points: PPoint; NumPts: Integer);
-Var i  : LongInt;
-    Lst: TStringList;
-    Pt : TPoint;
+var
+  i  : LongInt;
+  Lst: TStringList;
+  Pt : TPoint;
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
   if (NumPts<=1) or not Assigned(Points) then Exit;
   Changing;
   RequiredState([csHandleValid, csPenValid]);
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
 
   Lst:=TStringList.Create;
   try
     Pt:=Points[0];
-    TranslateCoord(Pt.x,Pt.y);
-    Write(Format('%d %d moveto',[Pt.x,Pt.y]),Lst);
+    pp:=TranslateCoord(Pt.x,Pt.y);
+    Write(Format('%f %f moveto',[pp.fx,pp.fy],fs),Lst);
     for i:=1 to NumPts-1 do
     begin
       Pt:=Points[i];
-      TranslateCoord(Pt.x,Pt.y);
+      pp:=TranslateCoord(Pt.x,Pt.y);
       SetPosition(Pt.x,Pt.y);
-      TranslateCoord(Pt.x,Pt.y);
-      Write(Format('%d %d lineto',[Pt.x,Pt.y]),Lst);
+      //TranslateCoord(Pt.x,Pt.y);
+      Write(Format('%f %f lineto',[pp.fx,pp.fy],fs),Lst);
     end;
 
     if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
@@ -1278,12 +1341,18 @@ end;
 
 procedure TPostScriptPrinterCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
   Filled: boolean; Continuous: boolean);
-Var i  : Integer;
-    St : String;
-    Pt : TPoint;
+var
+  i  : Integer;
+  St : String;
+  Pt : TPoint;
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
+
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
   
   if (NumPts>=4) then
   begin
@@ -1291,15 +1360,15 @@ begin
 
     St:='';
     Pt:=Points[0];
-    TranslateCoord(Pt.x,Pt.y);
+    pp:=TranslateCoord(Pt.x,Pt.y);
     if Continuous then
       WriteB('newpath');
-    WriteB(Format('%d %d moveto',[Pt.x,Pt.y]));
+    WriteB(Format('%f %f moveto',[pp.fx,pp.fy],fs));
     for i:=1 to NumPts-1 do
     begin
       Pt:=Points[i];
-      TranslateCoord(Pt.x,Pt.y);
-      St:=St+Format(' %d %d',[Pt.x,Pt.y]);
+      pp:=TranslateCoord(Pt.x,Pt.y);
+      St:=St+Format(' %f %f',[pp.fx,pp.fy]);
     end;
     WriteB(Format('%s curveto',[St]));
 
@@ -1312,6 +1381,29 @@ begin
   Changed;
 end;
 
+
+// internal rect path
+procedure TPostScriptPrinterCanvas.psDrawRect(ARect:TRect);
+var
+  fs:TFormatSettings;
+  pp1,pp2:TpsPoint;
+begin
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+  pp1:=TranslateCoord(Arect.Left,Arect.Top);
+  pp2:=TranslateCoord(ARect.Right,Arect.Bottom);
+
+  ClearBuffer;
+  //Tempo draw rect
+  WriteB('newpath');
+  writeB(Format('    %f %f moveto',[pp1.fx,pp1.fy],fs));
+  writeB(Format('    %f %f lineto',[pp2.fx,pp1.fy],fs));
+  writeB(Format('    %f %f lineto',[pp2.fx,pp2.fy],fs));
+  writeB(Format('    %f %f lineto',[pp1.fx,pp2.fy],fs));
+  writeB('closepath');
+
+end;
+
 //Draw an Rectangle
 procedure TPostScriptPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
 begin
@@ -1319,17 +1411,8 @@ begin
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
   writecomment(Format('Rectangle(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
 
-  ClearBuffer;
-  //Tempo draw rect
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
+  psDrawRect(Types.Rect(x1,y1,x2,y2));
 
   SetBrushFillPattern(True,True);
 
@@ -1339,27 +1422,13 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.Frame(const ARect: TRect);
-Var X1,Y1,X2,Y2 : Integer;
+var
+  X1,Y1,X2,Y2 : Integer;
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
 
-  X1:=aRect.Left;
-  Y1:=aRect.Top;
-  X2:=aRect.Right;
-  Y2:=aRect.Bottom;
-  
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-
-  ClearBuffer;
-  //Tempo draw rect
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
+  psDrawRect(ARect);
 
   SetBrushFillPattern(True,False);
 
@@ -1369,7 +1438,8 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.FrameRect(const ARect: TRect);
-Var CL : TColor;
+var
+  CL : TColor;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
@@ -1387,28 +1457,14 @@ end;
 
 //Fill an Rectangular region
 procedure TPostScriptPrinterCanvas.FillRect(const ARect: TRect);
-Var X1,Y1,X2,Y2 : Integer;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
 
-  X1:=ARect.Left;
-  Y1:=ARect.Top;
-  X2:=ARect.Right;
-  Y2:=ARect.Bottom;
 
-  Writecomment(Format('FillRect(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-  
-  ClearBuffer;
+  Writecomment(Format('FillRect(%d,%d,%d,%d)',[Arect.Left,ARect.Top,Arect.Right,ARect.Bottom]));
 
-  WriteB('newpath');
-  WriteB(Format('    %d %d moveto',[X1,Y1]));
-  WriteB(Format('    %d %d lineto',[X2,Y1]));
-  WriteB(Format('    %d %d lineto',[X2,Y2]));
-  WriteB(Format('    %d %d lineto',[X1,Y2]));
-  WriteB('closepath');
+  psDrawRect(ARect);
 
   SetBrushFillPattern(False,True);
 
@@ -1419,10 +1475,16 @@ end;
 
 procedure TPostScriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
   RY: Integer);
-Var ellipsePath : string;
+var
+  ellipsePath : string;
+  fs:TFormatSettings;
+  pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
+
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
 
   X1:=Min(X1,X2);
   X2:=Max(X1,X2);
@@ -1430,8 +1492,8 @@ begin
   Y2:=Max(Y1,Y2);
 
   writecomment(Format('RoundRect(%d,%d,%d,%d,%d,%d)',[x1,y1,x2,y2,Rx,Ry]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
+  pp1:=TranslateCoord(X1,Y1);
+  pp2:=TranslateCoord(X2,Y2);
 
   ClearBuffer;
   
@@ -1439,16 +1501,16 @@ begin
   save current matrix, translate to center of ellipse, scale by rx ry, and draw
   a circle of unit radius in counterclockwise dir, return to original matrix
   arguments are (cx, cy, rx, ry, startAngle, endAngle)}
-  ellipsePath:='matrix currentmatrix %d %d translate %d %d scale 0 0 1 %d %d arc setmatrix';
+  ellipsePath:='matrix currentmatrix %f %f translate %f %f scale 0 0 1 %d %d arc setmatrix';
 
   {choice between newpath and moveto beginning of arc
    go with newpath for precision, does this violate any assumptions in code???
    write(format('%d %d moveto',[x1+rx, y1]),Lst  # this also works}
   WriteB('newpath');
-  WriteB(Format(ellipsePath,[x1+rx,y1-ry,rx,ry,90,180]));
-  WriteB(Format(ellipsePath,[x1+rx,y2+ry,rx,ry,180,270]));
-  WriteB(Format(ellipsePath,[x2-rx,y2+ry,rx,ry,270,360]));
-  WriteB(Format(ellipsePath,[x2-rx,y1-ry,rx,ry,0,90]));
+  WriteB(Format(ellipsePath,[pp1.fx+rx,pp1.fy-ry,rx,ry,90,180]));
+  WriteB(Format(ellipsePath,[pp1.fx+rx,pp2.fy+ry,rx,ry,180,270]));
+  WriteB(Format(ellipsePath,[pp2.fx-rx,pp2.fy+ry,rx,ry,270,360]));
+  WriteB(Format(ellipsePath,[pp2.fx-rx,pp1.fy-ry,rx,ry,0,90]));
   WriteB('closepath');
     
   SetBrushFillPattern(True,True);
@@ -1459,24 +1521,30 @@ end;
 
 procedure TPostScriptPrinterCanvas.Polygon(Points: PPoint; NumPts: Integer;
   Winding: boolean);
-Var i  : LongInt;
-    Pt : TPoint;
+var
+  i  : LongInt;
+  Pt : TPoint;
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
   if (NumPts<=1) or not Assigned(Points) then Exit;
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
+
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
   
   ClearBuffer;
   
   Pt:=Points[0];
-  TranslateCoord(Pt.x,Pt.y);
+  pp:=TranslateCoord(Pt.x,Pt.y);
   WriteB('newpath');
-  WriteB(Format('%d %d moveto',[Pt.x,Pt.y]));
+  WriteB(Format('%f %f moveto',[pp.fx,pp.fy],fs));
   for i:=1 to NumPts-1 do
   begin
     Pt:=Points[i];
-    TranslateCoord(Pt.x,Pt.y);
-    WriteB(Format('%d %d lineto',[Pt.x,Pt.y]));
+    pp:=TranslateCoord(Pt.x,Pt.y);
+    WriteB(Format('%f %f lineto',[pp.fx,pp.fy]));
   end;
   WriteB('closepath');
 
@@ -1495,27 +1563,32 @@ var xScale : Real;
     Code   : string;
     stAng  : Integer;
     ang    : Integer;
+    fs:TFormatSettings;
+    pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+
   writecomment(Format('Ellipse(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
+  pp1:=TranslateCoord(X1,Y1);
+  pp2:=TranslateCoord(X2,Y2);
 
   //Init
   StAng:=0;
   Ang:=360;
 
   //calculate centre of ellipse
-  cx:=(x1+x2)/2;
-  cy:=(y1+y2)/2;
-  rx:=(x2-x1)/2;
-  ry:=(y2-y1)/2;
+  cx:=(pp1.fx+pp2.fx)/2;
+  cy:=(pp1.fy+pp2.fy)/2;
+  rx:=(pp2.fx-pp1.fx)/2;
+  ry:=(pp2.fy-pp1.fy)/2;
   
   //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs((x2-x1)/2.0);
-  yScale:=Abs((y2-y1)/2.0);
+  xScale:=Abs((pp2.fx-pp1.fx)/2.0);
+  yScale:=Abs((pp2.fy-pp1.fy)/2.0);
 
   Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
       [cX,cY,xScale,yScale,StAng,Ang,'arc']);
@@ -1545,17 +1618,23 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
+    fs:TFormatSettings;
+    pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  TranslateCoord(Left,Top);
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+
+  pp1:=TranslateCoord(Left,Top);
+  pp2:=TranslateCoord(Right,Bottom);
   TranslateCoord(Right,Bottom);
 
   //calculate centre of ellipse
-  cx:=(Left+Right)/2;
-  cy:=(Top+Bottom)/2;
-  rx:=(Right-Left)/2;
-  ry:=(Bottom-Top)/2;
+  cx:=pp1.fx;
+  cy:=pp1.fy;
+  rx:=pp2.fx-pp1.fx;
+  ry:=pp2.fy-pp1.fy;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1656,17 +1735,25 @@ end;
 
 //Out the text at the X,Y coord. Set the font
 procedure TPostScriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
-Var PenUnder : Real;
-    PosUnder : Integer;
+var
+  PenUnder : Real;
+  PosUnder : Integer;
+  fs:TFormatSettings;
+  pp:TpsPoint;
 begin
-  TranslateCoord(X,Y);
+  pp:=TranslateCoord(X,Y);
+  fs.DecimalSeparator:='.';
+  fs.ThousandSeparator:=#0;
+
   UpdateFont;
+
   FPSUnicode.Font:=MappedFontName;
   FPSUnicode.FontSize:=Font.Size;
   FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
   //The Y origine for ps text it's Left bottom corner
-  Dec(Y,Abs(Font.Size));
+  //Dec(Y,Abs(Font.Size));
+  pp.fy:=pp.fy-abs(Font.Size); // in points
   
   if fsUnderline in Font.Style then
   begin
@@ -1674,13 +1761,13 @@ begin
     if fsBold in Font.Style then
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
-    Write(format('%d %d uli',[X,Y]));
+    Write(format('%f %f uli',[pp.fx,pp.fy],fs));
     FPSUnicode.OutputString(MapedString(Text));
     write(PPCFormat('%.3f %d ule',[PenUnder,PosUnder]));
   end
   else
   begin
-    write(Format('%d %d moveto',[X,Y]));
+    write(Format('%f %f moveto',[pp.fx,pp.fy],fs));
     FPSUnicode.OutputString(MapedString(Text));
   end;
 
@@ -1696,7 +1783,7 @@ begin
   Result.cY := 0;
   if Text='' then Exit;
   RequiredState([csHandleValid, csFontValid]);
-  Result.cY:=Font.Size;
+  Result.cY:=round((Font.Size/72)*Printer.YDPI); // points to inches and then to pixels
 
   FontName:=MappedFontName;
   IndexFont:=0; //By default, use Courier metrics
@@ -1715,7 +1802,7 @@ begin
     if (c in [#32..#255]) then
       Inc(Result.cX,cFontPSMetrics[IndexFont].Widths[Ord(c)]);
   end;
-  Result.cX:=Round(Result.cX*Font.Size*0.001);
+  Result.cX:=Round(Result.cX*(Font.Size/72)*0.001*Printer.XDPI);
 end;
 
 //Draw an Picture
@@ -1728,11 +1815,11 @@ end;
 //Draw an picture with scale size
 procedure TPostScriptPrinterCanvas.StretchDraw(const DestRect: TRect;  SrcGraphic: TGraphic);
 var X1,Y1,X2,Y2 : Integer;
-    DrawWidth : Integer;
-    DrawHeight: Integer;
+    DrawWidth : single;
+    DrawHeight: single;
     ImgWidth  : Integer;
     ImgHeight : Integer;
-
+  pp1,pp2:TpsPoint;
 begin
   if not Assigned(SrcGraphic) then exit;
   Changing;
@@ -1743,21 +1830,21 @@ begin
   X2:=DestRect.Right;
   Y2:=DestRect.Bottom;
   
-  TranslateCoord(X1,Y1);
-  TransLateCoord(X2,Y2);
+  pp1:=TranslateCoord(X1,Y1);
+  pp2:=TransLateCoord(X2,Y2);
   
   ImgWidth:=SrcGraphic.Width;
   ImgHeight:=SrcGraphic.Height;
 
   //if not FPImage then draw ab Rectangle because other wise PostScript
   //interpreter wait infinite some RGB datas
-  DrawWidth:=X2-X1;
-  DrawHeight:=Y1-Y2;
+  DrawWidth:=pp2.fx-pp1.fx;
+  DrawHeight:=pp1.fy-pp2.fy;
   ClearBuffer;
 
   WriteB('gsave');
-  writeB(Format('%d %d translate',[X1,Y1-DrawHeight]));
-  WriteB(Format('%d %d scale',[DrawWidth,DrawHeight]));
+  writeB(Format('%f %f translate',[pp1.fx,pp1.fy-DrawHeight]));
+  WriteB(Format('%f %f scale',[DrawWidth,DrawHeight]));
   WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
   WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
   WriteB(Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
@@ -1786,12 +1873,13 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
+  pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
   writecomment(Format('Chord(%d,%d,%d,%d,%d,%d)',[x1,y1,x2-x1,y2-y1,Angle1,Angle2]));
-  TranslateCoord(x1, y1);
+  pp:=TranslateCoord(x1, y1);
 
   //calculate centre of ellipse
   cx:=x1;
