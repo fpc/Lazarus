@@ -1242,7 +1242,7 @@ begin
   if Assigned(fPsUnicode) then
     FreeAndNil(fPsUnicode);
 
-  Self.fcPenWidth:=0;
+  Self.fcPenWidth:=-2; // prevent cached line width affect new page
 end;
 
 procedure TPostScriptPrinterCanvas.NewPage;
@@ -1253,6 +1253,9 @@ begin
   Write('showpage');
   Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
   write('newpath');
+
+  Self.fcPenWidth:=-1; // prevent cached line width affect new page
+  UpdateLineWidth;
 end;
 
 //Move the current position
