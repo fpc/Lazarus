@@ -4669,18 +4669,17 @@ begin
   MoveCursorToUsesEnd(UsesNode);
   repeat
     ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    if (Params.IdentifierTool=Self)
+    and CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
+    begin
+      // the searched identifier was a uses unitname, point to the identifier in
+      // the uses section
+      Result:=true;
+      Params.SetResult(Self,UsesNode,UnitNameAtom.StartPos);
+      exit;
+    end;
     if (fdfIgnoreUsedUnits in Params.Flags) then begin
-      if (Params.IdentifierTool=Self)
-      and CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
-      begin
-        // the searched identifier was a uses unitname, but because the unit
-        // should not be opened, point to identifier in the uses section
-        Result:=true;
-        Params.SetResult(Self,UsesNode,UnitNameAtom.StartPos);
-        exit;
-      end else begin
-        // identifier not found
-      end;
+      // search further
     end else begin
       // open the unit
       {$IFDEF ShowTriedUnits}
