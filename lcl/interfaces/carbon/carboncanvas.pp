@@ -819,6 +819,7 @@ function TCarbonDeviceContext.ExtTextOut(X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   TextLayout: TCarbonTextLayout;
+  BrushSolid: Boolean;
 begin
   Result := False;
   //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
@@ -827,7 +828,13 @@ begin
   if Rect <> nil then
   begin
     // fill background
-    if (Options and ETO_OPAQUE) > 0 then FillRect(Rect^, BkBrush);
+    if (Options and ETO_OPAQUE) > 0 then
+    begin
+      BrushSolid := BkBrush.Solid; // must ignore BkMode
+      BkBrush.Solid := True;
+      FillRect(Rect^, BkBrush);
+      BkBrush.Solid := BrushSolid;
+    end;
     //DebugLn('TCarbonDeviceContext.ExtTextOut fill ' + DbgS(Rect^));
   end;
 
@@ -838,8 +845,11 @@ begin
       // fill drawed text background
       if (Rect = nil) and ((Options and ETO_OPAQUE) > 0) then
       begin
+        BrushSolid := BkBrush.Solid; // must ignore BkMode
+        BkBrush.Solid := True;
         BkBrush.Apply(Self, False); // do not use ROP2
         CGContextFillRect(CGContext, TextLayout.GetDrawBounds(X, Y));
+        BkBrush.Solid := BrushSolid;
       end;
     end;
 

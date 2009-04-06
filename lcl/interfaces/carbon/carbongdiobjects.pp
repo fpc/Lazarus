@@ -165,7 +165,7 @@ type
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
     function CreateCGColor: CGColorRef;
     
-    property Solid: Boolean read FA;
+    property Solid: Boolean read FA write FA;
     property ColorRef: TColorRef read GetColorRef;
   end;
 
