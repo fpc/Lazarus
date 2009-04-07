@@ -1508,7 +1508,7 @@ begin
       ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
-    if CursorNode.Desc=ctnUsesSection then begin
+    if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
       GatherUnitNames(IdentStartPos,GatherContext,BeautifyCodeOptions);
       MoveCursorToCleanPos(IdentEndPos);
       ReadNextAtom;

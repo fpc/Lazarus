@@ -78,6 +78,7 @@ const
   ctnVarDefinition      = 21;
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
+  ctnUseUnit            = 24;
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
@@ -397,6 +398,7 @@ begin
   ctnVarDefinition: Result:='Var';
   ctnConstDefinition: Result:='Const';
   ctnGlobalProperty: Result:='Global Property';
+  ctnUseUnit: Result:='use unit';
 
   ctnProperty: Result:='Property';
   ctnMethodMap: Result:='Method Map';

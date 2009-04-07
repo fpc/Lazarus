@@ -1738,6 +1738,9 @@ begin
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
     AtomIsIdentifier(true);
+    CreateChildNode;
+    CurNode.Desc:=ctnUseUnit;
+    CurNode.EndPos:=CurPos.EndPos;
     ReadNextAtom;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
@@ -1745,8 +1748,10 @@ begin
         if ExceptionOnError then
           RaiseStringExpectedButAtomFound(ctsStringConstant)
         else exit;
+      CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
     end;
+    EndChildNode;
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
       if ExceptionOnError then

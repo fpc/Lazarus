@@ -1363,7 +1363,7 @@ begin
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
     if (not IsDirtySrcValid)
-    and (CursorNode.Desc=ctnUsesSection) then begin
+    and (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
       // in uses section
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -1721,9 +1721,11 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   // reparse uses section
   MoveCursorToNodeStart(UsesNode);
-  ReadNextAtom;
-  if not UpAtomIs('USES') then
-    RaiseUsesExpected;
+  if (UsesNode.Desc=ctnUsesSection) then begin
+    ReadNextAtom;
+    if not UpAtomIs('USES') then
+      RaiseUsesExpected;
+  end;
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
