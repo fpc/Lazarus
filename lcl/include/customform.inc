@@ -755,7 +755,7 @@ end;
 
 procedure TCustomForm.EnsureVisible(AMoveToTop: Boolean = True);
 begin
-  MakeFullyVisible;
+  MakeFullyVisible(nil, True);
   if AMoveToTop then
     ShowOnTop
   else
@@ -1822,31 +1822,44 @@ begin
   end;
 end;
 
-procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor);
+procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor; UseWorkarea: Boolean = False);
 var
-  newLeft, newTop: Integer;
+  newLeft, newTop, WindowWidth, WindowHeight: Integer;
   ABounds: TRect;
   Mon: TMonitor;
 begin
   newLeft := Left;
   newTop := Top;
 
+  // window rect is not the same as bounds rect. window rect contains titlebar
+  if GetWindowRect(Handle, ABounds) = 0 then
+    ABounds := BoundsRect;
+  with ABounds do
+  begin
+    WindowWidth := Right - Left;
+    WindowHeight := Bottom - Top;
+  end;
+
   // reduce calls to GetMonitor
   if AMonitor <> nil then
     Mon := AMonitor
   else
     Mon := Monitor;
+
   if Mon <> nil then
-    ABounds := Mon.BoundsRect
+    if UseWorkArea then
+      ABounds := Mon.WorkareaRect
+    else
+      ABounds := Mon.BoundsRect
   else
     ABounds := Bounds(0, 0, Screen.Width, Screen.Height);
 
-  if newLeft + (Width div 2) > ABounds.Right then
-    newLeft := ABounds.Right - Width;
+  if newLeft + WindowWidth > ABounds.Right then
+    newLeft := ABounds.Right - WindowWidth;
   if newLeft < ABounds.Left then
     newLeft := ABounds.Left;
-  if newTop + (Height div 2) + 24 > ABounds.Bottom then
-    newTop := ABounds.Bottom - Height - 24;
+  if newTop + WindowHeight > ABounds.Bottom then
+    newTop := ABounds.Bottom - WindowHeight;
   if newTop < ABounds.Top then
     newTop := ABounds.Top;
   SetBounds(newLeft, newTop, Width, Height);

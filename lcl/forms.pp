@@ -528,7 +528,7 @@ type
     procedure IntfDropFiles(const FileNames: array of String);
     procedure IntfHelp(AComponent: TComponent);
     function IsShortcut(var Message: TLMKey): boolean; virtual;
-    procedure MakeFullyVisible(AMonitor: TMonitor = nil);
+    procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
     function NeedParentForAutoSize: Boolean; override;
     procedure Release;
     procedure SetFocus; override;
