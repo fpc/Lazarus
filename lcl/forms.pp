@@ -54,8 +54,8 @@ type
     poDefault,         // LCL decision (normally window manager decides)
     poDefaultPosOnly,  // designed size and LCL position
     poDefaultSizeOnly, // designed position and LCL size
-    poScreenCenter,    // center form on screen
-    poDesktopCenter,   // center form on desktop
+    poScreenCenter,    // center form on screen of active form
+    poDesktopCenter,   // center form on desktop (total of all screens)
     poMainFormCenter,  // center form on main form
     poOwnerFormCenter  // center form on owner form
     );
