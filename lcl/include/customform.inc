@@ -753,25 +753,13 @@ begin
   end;
 end;
 
-procedure TCustomForm.EnsureVisible(AMoveToTop: boolean = true);
-var
-  newLeft, newTop: integer;
+procedure TCustomForm.EnsureVisible(AMoveToTop: Boolean = True);
 begin
-  newLeft := Left;
-  newTop := Top;
-  if newLeft + (Width div 2) > Screen.Width then
-    newLeft := Screen.Width - Width;
-  if newLeft < 0 then
-    newLeft := 0;
-  if newTop + (Height div 2) + 24 > Screen.Height then
-    newTop := Screen.Height - Height - 24;
-  if newTop < 0 then
-    newTop := 0;
-  SetBounds(newLeft, newTop, Width, Height);
+  MakeFullyVisible;
   if AMoveToTop then
     ShowOnTop
   else
-    Visible:=true;
+    Visible := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1041,7 +1029,7 @@ end;
 
 function TCustomForm.ColorIsStored: boolean;
 begin
-  Result:=(Color <> clBtnFace);
+  Result := (Color <> clBtnFace);
 end;
 
 procedure TCustomForm.DoSendBoundsToInterface;
@@ -1832,6 +1820,36 @@ begin
       if Result then exit;
     end;
   end;
+end;
+
+procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor);
+var
+  newLeft, newTop: Integer;
+  ABounds: TRect;
+  Mon: TMonitor;
+begin
+  newLeft := Left;
+  newTop := Top;
+
+  // reduce calls to GetMonitor
+  if AMonitor <> nil then
+    Mon := AMonitor
+  else
+    Mon := Monitor;
+  if Mon <> nil then
+    ABounds := Mon.BoundsRect
+  else
+    ABounds := Bounds(0, 0, Screen.Width, Screen.Height);
+
+  if newLeft + (Width div 2) > ABounds.Right then
+    newLeft := ABounds.Right - Width;
+  if newLeft < ABounds.Left then
+    newLeft := ABounds.Left;
+  if newTop + (Height div 2) + 24 > ABounds.Bottom then
+    newTop := ABounds.Bottom - Height - 24;
+  if newTop < ABounds.Top then
+    newTop := ABounds.Top;
+  SetBounds(newLeft, newTop, Width, Height);
 end;
 
 {------------------------------------------------------------------------------

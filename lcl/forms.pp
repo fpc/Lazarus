@@ -463,6 +463,7 @@ type
     procedure ActiveChanged; dynamic;
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure BeginFormUpdate;
+    function ColorIsStored: boolean; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Deactivate; dynamic;
@@ -508,43 +509,47 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer{=0}); virtual;
-    procedure BeforeDestruction; override;
-    function BigIconHandle: HICON;
-    function SmallIconHandle: HICON;
-    procedure DestroyWnd; override;
     destructor Destroy; override;
+    procedure BeforeDestruction; override;
+
+    class function GetControlClassDefaultSize: TPoint; override;
+
+    function BigIconHandle: HICON;
     procedure Close;
     function CloseQuery: boolean; virtual;
-    procedure Release;
-    procedure Hide;
-    procedure Show;
-    procedure ShowOnTop;
-    procedure EnsureVisible(AMoveToTop: boolean = true);
+    procedure DefocusControl(Control: TWinControl; Removing: Boolean);
+    procedure DestroyWnd; override;
+    procedure EnsureVisible(AMoveToTop: Boolean = True);
+    procedure FocusControl(WinControl: TWinControl);
     function FormIsUpdating: boolean; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    function GetFormImage: TBitmap;
+    function GetRolesForControl(AControl: TControl): TControlRolesForForm;
+    procedure Hide;
+    procedure IntfDropFiles(const FileNames: array of String);
+    procedure IntfHelp(AComponent: TComponent);
+    function IsShortcut(var Message: TLMKey): boolean; virtual;
+    procedure MakeFullyVisible(AMonitor: TMonitor = nil);
     function NeedParentForAutoSize: Boolean; override;
+    procedure Release;
+    procedure SetFocus; override;
+    function SetFocusedControl(Control: TWinControl): Boolean ; virtual;
+    procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure Show;
+    function ShowModal: Integer; virtual;
+    procedure ShowOnTop;
+    function SmallIconHandle: HICON;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
-    procedure DefocusControl(Control: TWinControl; Removing: Boolean);
-    procedure SetFocus; override;
-    function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
-    procedure FocusControl(WinControl: TWinControl);
-    function ShowModal: Integer; virtual;
-    procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
-    function GetRolesForControl(AControl: TControl): TControlRolesForForm;
-    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+
+    // handlers
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
                                   AsLast: Boolean=true);
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
     procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean=true);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
-    function IsShortcut(var Message: TLMKey): boolean; virtual;
-    function ColorIsStored: boolean; override;
-    procedure IntfDropFiles(const FileNames: Array of String);
-    procedure IntfHelp(AComponent: TComponent);
-    function GetFormImage: TBitmap;
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
