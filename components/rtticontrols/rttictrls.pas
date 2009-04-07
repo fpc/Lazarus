@@ -486,6 +486,8 @@ Type
     property Align;
     property Anchors;
     property ArrowKeysTraverseList;
+    property AutoComplete;
+    property AutoCompleteText;
     property AutoDropDown;
     property BorderSpacing;
     property DropDownCount;
@@ -2405,6 +2407,7 @@ function TTICustomComboBox.LinkTestEditing(Sender: TObject): boolean;
 begin
   if Sender=nil then ;
   Result:=Focused or DroppedDown;
+  //DebugLn(['TTICustomComboBox.LinkTestEditing ',dbgsName(Self),' Result=',Result,' CanTab=',CanTab,' Handle=',HandleAllocated,' ',dbgsname(FindOwnerControl(GetFocus))]);
 end;
 
 procedure TTICustomComboBox.SetLink(const AValue: TPropertyLink);
@@ -2431,19 +2434,21 @@ end;
 procedure TTICustomComboBox.LinkSaveToProperty(Sender: TObject);
 var
   i: Integer;
+  s: String;
 begin
   if Sender=nil then ;
   //debugln('TTICustomComboBox.LinkSaveToProperty ',dbgsName(Self),' FLink.GetAsText=',FLink.GetAsText,' Text=',Text);
   if (FLink.Editor=nil) then exit;
-  FLink.SetAsText(Text);
+  s:=Text;
+  FLink.SetAsText(s);
   
   // update history
-  if (MaxHistoryCount>0) and ((Items.Count=0) or (Items[0]<>Text)) then begin
+  if (MaxHistoryCount>0) and ((Items.Count=0) or (Items[0]<>s)) then begin
     Items.BeginUpdate;
-    Items.Insert(0,Text);
+    Items.Insert(0,s);
     for i:=Items.Count-1 downto 1 do
-      if (i>=MaxHistoryCount) or (Items[i]=Text)
-      or ((not HistoryCaseSensitive) and (AnsiCompareText(Items[i],Text)=0))
+      if (i>=MaxHistoryCount) or (Items[i]=s)
+      or ((not HistoryCaseSensitive) and (AnsiCompareText(Items[i],s)=0))
       then
         Items.Delete(i);
     Items.EndUpdate;
