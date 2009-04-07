@@ -1425,8 +1425,6 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.Frame(const ARect: TRect);
-var
-  X1,Y1,X2,Y2 : Integer;
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
@@ -1480,14 +1478,14 @@ procedure TPostScriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
   RY: Integer);
 var
   ellipsePath : string;
-  fs:TFormatSettings;
+  //fs:TFormatSettings;
   pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
+  //fs.DecimalSeparator:='.';
+  //fs.ThousandSeparator:=#0;
 
   X1:=Min(X1,X2);
   X2:=Max(X1,X2);
@@ -1566,14 +1564,14 @@ var xScale : Real;
     Code   : string;
     stAng  : Integer;
     ang    : Integer;
-    fs:TFormatSettings;
+    //fs:TFormatSettings;
     pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
+  //fs.DecimalSeparator:='.';
+  //fs.ThousandSeparator:=#0;
 
   writecomment(Format('Ellipse(%d,%d,%d,%d)',[x1,y1,x2,y2]));
   pp1:=TranslateCoord(X1,Y1);
@@ -1621,13 +1619,13 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
-    fs:TFormatSettings;
+    //fs:TFormatSettings;
     pp1,pp2:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
+  //fs.DecimalSeparator:='.';
+  //fs.ThousandSeparator:=#0;
 
   pp1:=TranslateCoord(Left,Top);
   pp2:=TranslateCoord(Right,Bottom);
@@ -1876,13 +1874,13 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
-  pp:TpsPoint;
+  //pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
   writecomment(Format('Chord(%d,%d,%d,%d,%d,%d)',[x1,y1,x2-x1,y2-y1,Angle1,Angle2]));
-  pp:=TranslateCoord(x1, y1);
+  //pp:=TranslateCoord(x1, y1);
 
   //calculate centre of ellipse
   cx:=x1;
