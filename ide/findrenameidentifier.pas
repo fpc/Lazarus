@@ -36,19 +36,18 @@ uses
   Laz_Dom, AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  InputHistory, SearchResultView, CodeHelp;
+  InputHistory, SearchResultView, CodeHelp, ButtonPanel;
 
 type
 
   { TFindRenameIdentifierDialog }
 
   TFindRenameIdentifierDialog = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     CurrentGroupBox: TGroupBox;
     CurrentListBox: TListBox;
     ExtraFilesEdit: TEdit;
     ExtraFilesGroupBox: TGroupBox;
-    FindOrRenameButton: TBitBtn;
     NewEdit: TEdit;
     NewGroupBox: TGroupBox;
     RenameCheckBox: TCheckBox;
@@ -434,15 +433,13 @@ end;
 procedure TFindRenameIdentifierDialog.FindRenameIdentifierDialogCreate(
   Sender: TObject);
 begin
-  IDEDialogLayoutList.ApplyLayout(Self,450,460);
+  IDEDialogLayoutList.ApplyLayout(Self,450,480);
 
   Caption:=lisFRIFindOrRenameIdentifier;
-  CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
-  FindOrRenameButton.Caption:=lisFRIFindReferences;
-  FindOrRenameButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisFRIRename;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
@@ -452,6 +449,8 @@ begin
   ScopeRadioGroup.Items[1]:=lisFRIinMainProject;
   ScopeRadioGroup.Items[2]:=lisFRIinProjectPackageOwningCurrentUnit;
   ScopeRadioGroup.Items[3]:=lisFRIinAllOpenPackagesAndProjects;
+
+  ButtonPanel1.OKButton.OnClick:=@FindOrRenameButtonClick;
 
   LoadFromConfig;
 end;
@@ -475,9 +474,9 @@ begin
   RenameCheckBox.Enabled:=AllowRename;
   NewEdit.Enabled:=RenameCheckBox.Checked and RenameCheckBox.Enabled;
   if NewEdit.Enabled then
-    FindOrRenameButton.Caption:=lisFRIRenameAllReferences
+    ButtonPanel1.OKButton.Caption:=lisFRIRenameAllReferences
   else
-    FindOrRenameButton.Caption:=lisFRIFindReferences;
+    ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
 end;
 
 procedure TFindRenameIdentifierDialog.SetAllowRename(const AValue: boolean);
