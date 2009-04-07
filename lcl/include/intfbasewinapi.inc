@@ -1133,17 +1133,17 @@ end;
 
 function TWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
 begin
-  Result := 0;
+  Result := MONITOR_UNIMPL;
 end;
 
 function TWidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
 begin
-  Result := 0;
+  Result := MONITOR_UNIMPL;
 end;
 
 function TWidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
 begin
-  Result := 0;
+  Result := MONITOR_UNIMPL;
 end;
 
 function TWidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;

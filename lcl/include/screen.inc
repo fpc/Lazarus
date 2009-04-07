@@ -328,25 +328,76 @@ function TScreen.MonitorFromPoint(const Point: TPoint;
 var
   MonitorHandle: HMONITOR;
   i: integer;
+  R: TRect;
 begin
   MonitorHandle := WidgetSet.MonitorFromPoint(Point, MonitorSearchFlags[MonitorDefault]);
   for i := 0 to MonitorCount - 1 do
     if Monitors[i].Handle = MonitorHandle then
       Exit(Monitors[i]);
-  Result := nil;
+  if MonitorHandle = MONITOR_UNIMPL then
+  begin
+    R.TopLeft := Point;
+    R.BottomRight := Point;
+    Result := MonitorFromRect(R, MonitorDefault);
+  end
+  else
+    Result := nil;
 end;
 
 function TScreen.MonitorFromRect(const Rect: TRect;
   MonitorDefault: TMonitorDefaultTo): TMonitor;
 var
   MonitorHandle: HMONITOR;
-  i: integer;
+  i, Square, Distance, BestSquare, BestDistance: integer;
+  MonitorRect, Intersection: TRect;
+  Nearest: TMonitor;
 begin
   MonitorHandle := WidgetSet.MonitorFromRect(@Rect, MonitorSearchFlags[MonitorDefault]);
   for i := 0 to MonitorCount - 1 do
     if Monitors[i].Handle = MonitorHandle then
       Exit(Monitors[i]);
-  Result := nil;
+  // we are here => interface does not support our search functions
+  if MonitorHandle = MONITOR_UNIMPL then
+  begin
+    Result := nil;
+    BestSquare := 0;
+    BestDistance := MaxInt;
+    Nearest := nil;
+    for i := 0 to MonitorCount - 1 do
+    begin
+      MonitorRect := Monitors[i].BoundsRect;
+      if IntersectRect(Intersection, Rect, MonitorRect) then
+      begin
+        with Intersection do
+          Square := (Right - Left) * (Bottom - Top);
+        if Square > BestSquare then
+        begin
+          BestSquare := Square;
+          Result := Monitors[i];
+        end
+      end;
+      with MonitorRect do
+        Distance := Min(Min(Abs(Rect.Left - Right), Abs(Rect.Right - Left)),
+                        Min(Abs(Rect.Top - Bottom), Abs(Rect.Bottom - Top)));
+      if Distance < BestDistance then
+      begin
+        BestDistance := Distance;
+        Nearest := Monitors[i];
+      end;
+    end;
+    if Result = nil then
+    begin
+      if MonitorDefault = mdPrimary then
+        Result := PrimaryMonitor
+      else
+      if MonitorDefault = mdNull then
+        Result := nil
+      else
+        Result := Nearest;
+    end;
+  end
+  else
+    Result := nil;
 end;
 
 function TScreen.MonitorFromWindow(const Handle: THandle;
@@ -354,12 +405,19 @@ function TScreen.MonitorFromWindow(const Handle: THandle;
 var
   MonitorHandle: HMONITOR;
   i: integer;
+  R: TRect;
 begin
   MonitorHandle := WidgetSet.MonitorFromWindow(Handle, MonitorSearchFlags[MonitorDefault]);
   for i := 0 to MonitorCount - 1 do
     if Monitors[i].Handle = MonitorHandle then
       Exit(Monitors[i]);
-  Result := nil;
+  if MonitorHandle = MONITOR_UNIMPL then
+  begin
+    GetWindowRect(Handle, R);
+    Result := MonitorFromRect(R, MonitorDefault);
+  end
+  else
+    Result := nil;
 end;
 
 function EnumFontsNoDups(
