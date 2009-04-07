@@ -850,6 +850,7 @@ type
     function GetHeight : Integer;
     function GetMonitor(Index: Integer): TMonitor;
     function GetMonitorCount: Integer;
+    function GetPrimaryMonitor: TMonitor;
     function GetWidth : Integer;
     procedure AddForm(AForm: TCustomForm);
     procedure RemoveForm(AForm: TCustomForm);
@@ -925,12 +926,13 @@ type
     property HintFont: TFont read GetHintFont;
     property MonitorCount: Integer read GetMonitorCount;
     property Monitors[Index: Integer]: TMonitor read GetMonitor;
+    property PixelsPerInch: integer read FPixelsPerInch;
+    property PrimaryMonitor: TMonitor read GetPrimaryMonitor;
     property Width: Integer read GetWidth;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
                                                  write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange
                                               write FOnActiveFormChange;
-    property PixelsPerInch: integer read FPixelsPerInch;
   end;
 
 

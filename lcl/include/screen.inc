@@ -551,6 +551,16 @@ begin
   Result := FMonitors.Count;
 end;
 
+function TScreen.GetPrimaryMonitor: TMonitor;
+var
+  i: integer;
+begin
+  for i := 0 to MonitorCount - 1 do
+    if Monitors[i].Primary then
+      Exit(Monitors[i]);
+  Result := nil;
+end;
+
 function TScreen.GetHintFont: TFont;
 begin
   if (FHintFont=nil) then
