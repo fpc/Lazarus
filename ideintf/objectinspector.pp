@@ -1990,11 +1990,11 @@ begin
     begin
       Index := MouseToIndex(y,false);
       if (Index > -1)
-      and (Index<>ItemIndex) // do not show a hint for the current row to not hide the editor
+      and (not FShowingLongHint)
       and ((FHintWindow=nil) or (not FHintWindow.Visible)
-           or (Index<>FHintIndex) or (not FShowingLongHint))
+           or (Index<>FHintIndex))
       then begin
-        FHintIndex:=-1;
+        FHintIndex:=Index;
         FShowingLongHint:=false;
         fPropRow := GetRow(Index);
         if X < SplitterX then 
@@ -2004,11 +2004,10 @@ begin
           if ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) and 
              InitHints then 
           begin
-            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fPoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
-                                   fPropRow.Top - TopY-1));
+                                   fPropRow.Bottom - TopY-1));
             MoveRect(fHintRect,fPoint.x,fPoint.y);
             FHintWindow.ActivateHint(fHintRect,fHint);
           end;
@@ -2021,9 +2020,8 @@ begin
           if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)) and 
              InitHints then 
           begin
-            FHintIndex:=Index;
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fpoint := ClientToScreen(Point(SplitterX, fPropRow.Top - TopY - 1));
+            fpoint := ClientToScreen(Point(SplitterX, fPropRow.Bottom - TopY - 1));
             MoveRect(fHintRect, fPoint.x, fPoint.y);
             FHintWindow.ActivateHint(fHintRect, fHint);
           end;
@@ -2983,6 +2981,7 @@ begin
           begin
             FHintIndex := Index;
             FShowingLongHint := True;
+            //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(Rect),' ',AHint,' ',dbgs(Position)]);
             FHintWindow.ActivateHint(Rect, AHint);
           end;
           exit;
@@ -3000,6 +2999,7 @@ begin
   Rect.Top := Position.Y + 10;
   Rect.Right := Rect.Left + Rect.Right + 3;
   Rect.Bottom := Rect.Top + Rect.Bottom + 3;
+  //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(Rect),' ',AHint,' ',dbgs(Position)]);
 
   FHintWindow.ActivateHint(Rect, AHint);
 end;
