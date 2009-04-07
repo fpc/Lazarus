@@ -3407,7 +3407,7 @@ end;
 function TGTKWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
-  Result := lpfnEnum(0, 0, nil, dwData);
+  Result := lpfnEnum(1, 0, nil, dwData);
 end;
 
 {.$define VerboseEnumFonts}  
@@ -5369,7 +5369,7 @@ end;
 
 function TGTKWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 0);
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 1);
   if not Result then Exit;
   lpmi^.rcMonitor := Bounds(0, 0, gdk_screen_width, gdk_screen_height);
   lpmi^.rcWork := lpmi^.rcMonitor;

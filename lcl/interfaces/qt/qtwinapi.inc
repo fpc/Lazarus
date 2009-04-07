@@ -1334,7 +1334,7 @@ begin
   Result := True;
   for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
   begin
-    Result := Result and lpfnEnum(i, 0, nil, dwData);
+    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -2246,9 +2246,10 @@ function TQtWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boo
 var
   Desktop: QDesktopWidgetH;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
   if not Result then Exit;
   Desktop := QApplication_desktop();
+  Dec(Monitor);
   Result := (Monitor >= 0) and (Monitor < QDesktopWidget_numScreens(Desktop));
   if not Result then Exit;
   QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, Monitor);

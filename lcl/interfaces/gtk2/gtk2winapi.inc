@@ -360,7 +360,7 @@ begin
   Result := True;
   for i := 0 to gdk_screen_get_n_monitors(gdk_screen_get_default) - 1 do
   begin
-    Result := Result and lpfnEnum(i, 0, nil, dwData);
+    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -507,8 +507,9 @@ function TGtk2WidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): B
 var
   MonitorRect: TGdkRectangle;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
   if not Result then Exit;
+  Dec(Monitor);
   gdk_screen_get_monitor_geometry(gdk_screen_get_default, Monitor, @MonitorRect);
   with MonitorRect do
     lpmi^.rcMonitor := Bounds(x, y, width, height);
