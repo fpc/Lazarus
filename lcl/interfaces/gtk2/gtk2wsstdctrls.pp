@@ -127,6 +127,8 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     
+    class function  CanFocus(const AWinControl: TWinControl): boolean; override;
+
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
@@ -1532,6 +1534,23 @@ begin
     SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
   Dec(WidgetInfo^.ChangeLock);
+end;
+
+class function TGtk2WSCustomComboBox.CanFocus(const AWinControl: TWinControl
+  ): boolean;
+var
+  WidgetInfo: PWidgetInfo;
+  Entry: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit(false);
+  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
+  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
+    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
+    Result:=GTK_WIDGET_CAN_FOCUS(Entry);
+  end else begin
+    Result:=GTK_WIDGET_CAN_FOCUS(WidgetInfo^.CoreWidget);
+  end;
+  //DebugLn(['TGtk2WSCustomComboBox.CanFocus ',dbgsName(AWinControl),' ',gtk_is_combo_box_entry(WidgetInfo^.CoreWidget),' Result=',Result]);
 end;
 
 class function TGtk2WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
