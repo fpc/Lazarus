@@ -1331,9 +1331,12 @@ var
   Desktop: QDesktopWidgetH;
 begin
   Desktop := QApplication_desktop();
-  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
-    lpfnEnum(i, 0, nil, dwData);
   Result := True;
+  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
+  begin
+    Result := Result and lpfnEnum(i, 0, nil, dwData);
+    if not Result then break;
+  end;
 end;
 
 

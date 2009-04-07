@@ -799,7 +799,10 @@ begin
     'TCarbonWidgetSet.EnumDisplayMonitors', 'CGGetActiveDisplayList') then Exit(False);
   Result := True;
   for i := 0 to Count - 1 do
+  begin
     Result := Result and lpfnEnum(HMONITOR(activeDspys[i]), 0, nil, dwData);
+    if not Result then break;
+  end;
 end;
 
 function TCarbonWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
