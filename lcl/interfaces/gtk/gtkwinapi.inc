@@ -5368,10 +5368,19 @@ begin
 end;
 
 function TGTKWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+{$IFDEF HasX}
+var
+  x, y, w, h: gint;
+{$ENDIF}
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 1);
   if not Result then Exit;
   lpmi^.rcMonitor := Bounds(0, 0, gdk_screen_width, gdk_screen_height);
+  {$IFDEF HasX}
+  if XGetWorkarea(x, y, w, h) <> -1 then
+    lpmi^.rcWork := Bounds(x, y, w, h)
+  else
+  {$ENDIF}
   lpmi^.rcWork := lpmi^.rcMonitor;
   lpmi^.dwFlags := MONITORINFOF_PRIMARY
 end;

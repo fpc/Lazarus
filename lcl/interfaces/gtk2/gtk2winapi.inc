@@ -506,6 +506,9 @@ end;
 function TGtk2WidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
   MonitorRect: TGdkRectangle;
+  {$IFDEF HasX}
+  x, y, w, h: gint;
+  {$ENDIF}
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
   if not Result then Exit;
@@ -514,6 +517,12 @@ begin
   with MonitorRect do
     lpmi^.rcMonitor := Bounds(x, y, width, height);
   // there is no way to determine workarea in gtk
+  {$IFDEF HasX}
+  if XGetWorkarea(x, y, w, h) <> -1 then
+    lpmi^.rcWork := Bounds(Max(MonitorRect.x, x), Max(MonitorRect.y, y),
+                  Min(MonitorRect.Width, w), Min(MonitorRect.Height, h))
+  else
+  {$ENDIF}
   lpmi^.rcWork := lpmi^.rcMonitor;
   // gtk uses zero position for primary monitor
   if Monitor = 0 then
