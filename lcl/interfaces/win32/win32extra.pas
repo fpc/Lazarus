@@ -387,6 +387,10 @@ var
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
   EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
   GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
+  MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
+  MonitorFromRect: function(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
+  MonitorFromPoint: function(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
+
 
 
 const
@@ -971,8 +975,50 @@ begin
     Result := False;
 end;
 
+function _MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0 ) or
+      ((ptScreenCoords.x >= 0) and
+      (ptScreenCoords.x < GetSystemMetrics(SM_CXSCREEN)) and
+      (ptScreenCoords.y >= 0) and
+      (ptScreenCoords.y < GetSystemMetrics(SM_CYSCREEN)))) then
+    Result := xPRIMARY_MONITOR
+  else
+    Result := 0;
+end;
 
-const 
+function _MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0) or
+      ((lprcScreenCoords^.right > 0) and
+      (lprcScreenCoords^.bottom > 0) and
+      (lprcScreenCoords^.left < GetSystemMetrics(SM_CXSCREEN)) and
+      (lprcScreenCoords^.top < GetSystemMetrics(SM_CYSCREEN)))) then
+    Result := xPRIMARY_MONITOR
+  else
+    Result := 0;
+end;
+
+function _MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+var
+  wp: TWindowPlacement;
+  B: Boolean;
+begin
+  if (dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0) then
+    Exit(xPRIMARY_MONITOR);
+
+  if IsIconic(hWnd) then
+    B := GetWindowPlacement(hWnd, @wp)
+  else
+    B := GetWindowRect(hWnd, @wp.rcNormalPosition);
+
+  if B then
+    Result := _MonitorFromRect(@wp.rcNormalPosition, dwFlags)
+  else
+    Result := 0;
+end;
+
+const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
 
@@ -1033,6 +1079,21 @@ begin
       Pointer(GetMonitorInfo) := p
     else
       Pointer(GetMonitorInfo) := @_GetMonitorInfo;
+    p := GetProcAddress(user32handle, 'MonitorFromWindow');
+    if p <> nil then
+      Pointer(MonitorFromWindow) := p
+    else
+      Pointer(MonitorFromWindow) := @_MonitorFromWindow;
+    p := GetProcAddress(user32handle, 'MonitorFromRect');
+    if p <> nil then
+      Pointer(MonitorFromRect) := p
+    else
+      Pointer(MonitorFromRect) := @_MonitorFromRect;
+    p := GetProcAddress(user32handle, 'MonitorFromPoint');
+    if p <> nil then
+      Pointer(MonitorFromPoint) := p
+    else
+      Pointer(MonitorFromPoint) := @_MonitorFromPoint;
   end;
 end;
 

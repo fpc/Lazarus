@@ -19,6 +19,14 @@
 
 }
 
+const
+  MonitorSearchFlags: array[TMonitorDefaultTo] of DWord =
+  (
+ { mdNearest } MONITOR_DEFAULTTONEAREST,
+ { mdNull    } MONITOR_DEFAULTTONULL,
+ { mdPrimary } MONITOR_DEFAULTTOPRIMARY
+  );
+
 function EnumMonitors(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
     dwData: LPARAM): LongBool; stdcall;
 var
@@ -313,6 +321,45 @@ begin
       EnableWindow(AForm.Handle, True);
   end;
   FreeAndNil(AFormList);
+end;
+
+function TScreen.MonitorFromPoint(const Point: TPoint;
+  MonitorDefault: TMonitorDefaultTo): TMonitor;
+var
+  MonitorHandle: HMONITOR;
+  i: integer;
+begin
+  MonitorHandle := WidgetSet.MonitorFromPoint(Point, MonitorSearchFlags[MonitorDefault]);
+  for i := 0 to MonitorCount - 1 do
+    if Monitors[i].Handle = MonitorHandle then
+      Exit(Monitors[i]);
+  Result := nil;
+end;
+
+function TScreen.MonitorFromRect(const Rect: TRect;
+  MonitorDefault: TMonitorDefaultTo): TMonitor;
+var
+  MonitorHandle: HMONITOR;
+  i: integer;
+begin
+  MonitorHandle := WidgetSet.MonitorFromRect(@Rect, MonitorSearchFlags[MonitorDefault]);
+  for i := 0 to MonitorCount - 1 do
+    if Monitors[i].Handle = MonitorHandle then
+      Exit(Monitors[i]);
+  Result := nil;
+end;
+
+function TScreen.MonitorFromWindow(const Handle: THandle;
+  MonitorDefault: TMonitorDefaultTo): TMonitor;
+var
+  MonitorHandle: HMONITOR;
+  i: integer;
+begin
+  MonitorHandle := WidgetSet.MonitorFromWindow(Handle, MonitorSearchFlags[MonitorDefault]);
+  for i := 0 to MonitorCount - 1 do
+    if Monitors[i].Handle = MonitorHandle then
+      Exit(Monitors[i]);
+  Result := nil;
 end;
 
 function EnumFontsNoDups(

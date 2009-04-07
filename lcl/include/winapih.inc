@@ -173,6 +173,10 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function OffsetRect --> independent

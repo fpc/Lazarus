@@ -141,6 +141,9 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean; override;
 function MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer; override;
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; override;
+function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; override;
+function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean; override;

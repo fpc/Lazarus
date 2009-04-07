@@ -2529,6 +2529,21 @@ begin
   {$endif}
 end;
 
+function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  Result := Win32Extra.MonitorFromPoint(ptScreenCoords, dwFlags);
+end;
+
+function TWin32WidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  Result := Win32Extra.MonitorFromRect(lprcScreenCoords, dwFlags);
+end;
+
+function TWin32WidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+begin
+  Result := Win32Extra.MonitorFromWindow(hWnd, dwFlags);
+end;
+
 {------------------------------------------------------------------------------
   Method:  MoveToEx
   Params:  DC       - handle of device context

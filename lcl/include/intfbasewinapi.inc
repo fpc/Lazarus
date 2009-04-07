@@ -16,7 +16,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -1128,7 +1128,22 @@ end;
 function TWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 begin
-  Result:= 0;
+  Result := 0;
+end;
+
+function TWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  Result := 0;
+end;
+
+function TWidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  Result := 0;
+end;
+
+function TWidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+begin
+  Result := 0;
 end;
 
 function TWidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;

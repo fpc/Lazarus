@@ -1706,6 +1706,11 @@ begin
   Result:=FPixelsPerInch;
 end;
 
+function TCustomForm.GetMonitor: TMonitor;
+begin
+  Result := Screen.MonitorFromWindow(Handle, mdNearest);
+end;
+
 function TCustomForm.GetRestoredLeft: integer;
 begin
   if WindowState=wsNormal then

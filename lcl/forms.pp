@@ -63,6 +63,7 @@ type
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
+  TMonitor = class;
   TScrollingWinControl = class;
 
 
@@ -412,6 +413,7 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    function GetMonitor: TMonitor;
     function GetPixelsPerInch: Longint;
     function GetRestoredLeft: integer;
     function GetRestoredTop: integer;
@@ -570,6 +572,7 @@ type
                                  stored IsKeyPreviewStored default False;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
+    property Monitor: TMonitor read GetMonitor;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
     property OnCloseQuery : TCloseQueryEvent
@@ -806,6 +809,8 @@ type
     snActiveFormChanged
     );
 
+  TMonitorDefaultTo = (mdNearest, mdNull, mdPrimary);
+
   { TScreen }
 
   TScreen = class(TLCLComponent)
@@ -902,6 +907,12 @@ type
 
     function DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
     procedure EnableForms(var AFormList: TList);
+    function MonitorFromPoint(const Point: TPoint;
+      MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
+    function MonitorFromRect(const Rect: TRect;
+      MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
+    function MonitorFromWindow(const Handle: THandle;
+      MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;

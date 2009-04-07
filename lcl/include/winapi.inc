@@ -607,6 +607,21 @@ begin
   Result:= WidgetSet.MessageBox(hWnd, lpText, lpCaption, uType);
 end;
 
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  Result := Widgetset.MonitorFromPoint(ptScreenCoords, dwFlags);
+end;
+
+function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  Result := Widgetset.MonitorFromRect(lprcScreenCoords, dwFlags);
+end;
+
+function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+begin
+  Result := Widgetset.MonitorFromWindow(hWnd, dwFlags);
+end;
+
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   Result := WidgetSet.MoveToEx(DC, X, Y, OldPoint);
