@@ -236,8 +236,13 @@ const
   DefaultComboBoxAutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending];
 
 type
-  TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
-                    csOwnerDrawVariable);
+  TComboBoxStyle = (
+    csDropDown,       // like an TEdit plus a button to drop down the list, default
+    csSimple,         // like an TEdit plus a TListBox
+    csDropDownList,   // like TLabel plus a button to drop down the list
+    csOwnerDrawFixed, // like csDropDownList, but custom drawn
+    csOwnerDrawVariable // like csDropDownList, but custom drawn and with each item can have another height
+    );
 
   TOwnerDrawState = TBaseOwnerDrawState;
 
