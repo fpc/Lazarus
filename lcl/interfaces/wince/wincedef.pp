@@ -110,8 +110,11 @@ type
     TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
 
-function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MONITORENUMPROC; dwData: LPARAM): LongBool; external KernelDLL name 'EnumDisplayMonitors';
-function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; external KernelDLL name 'GetMonitorInfo';
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MONITORENUMPROC; dwData: LPARAM): LongBool; cdecl; external KernelDLL name 'EnumDisplayMonitors';
+function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; cdecl; external KernelDLL name 'GetMonitorInfo';
+function MonitorFromWindow(hWnd: HWND; dwFlags: DWORD): HMONITOR; cdecl; external KernelDLL name 'MonitorFromWindow';
+function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; cdecl; external KernelDLL name 'MonitorFromRect';
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; cdecl; external KernelDLL name 'MonitorFromPoint';
 
 var
   // FTimerData contains the currently running timers

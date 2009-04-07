@@ -26,7 +26,7 @@
 
 unit Forms;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$macro on}
 
 interface
 
@@ -1456,6 +1456,11 @@ procedure Register;
 
 implementation
 
+{$ifdef WinCE}
+  {$define extdecl := cdecl}
+{$else}
+  {$define extdecl := stdcall}
+{$endif}
 
 uses
   WSForms; // Widgetset uses circle is allowed

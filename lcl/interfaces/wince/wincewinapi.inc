@@ -1889,6 +1889,21 @@ begin
     PWideChar(WideLPCaption), UType);
 end;
 
+function TWinCEWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  Result := WinCEDef.MonitorFromPoint(ptScreenCoords, dwFlags);
+end;
+
+function TWinCEWidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  Result := WinCEDef.MonitorFromRect(lprcScreenCoords, dwFlags);
+end;
+
+function TWinCEWidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+begin
+  Result := WinCEDef.MonitorFromWindow(hWnd, dwFlags);
+end;
+
 {------------------------------------------------------------------------------
   Method:  MoveToEx
   Params:  DC       - handle of device context

@@ -152,7 +152,7 @@ end;
 function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
 {$else}
 function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll: lpRECT; prcClip: lpRECT;
-  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags:UINT):longint; external KernelDll name 'ScrollWindowEx';
+  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags:UINT):longint; cdecl; external KernelDll name 'ScrollWindowEx';
 {$endif}
 
 class procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;

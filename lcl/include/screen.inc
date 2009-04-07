@@ -28,7 +28,7 @@ const
   );
 
 function EnumMonitors(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
-    dwData: LPARAM): LongBool; stdcall;
+    dwData: LPARAM): LongBool; extdecl;
 var
   Screen: TScreen absolute dwData;
   Monitor: TMonitor;
@@ -37,6 +37,19 @@ begin
   Monitor.FHandle := hMonitor;
   Monitor.FMonitorNum := Screen.FMonitors.Add(Monitor);
   Result := True;
+end;
+
+function EnumFontsNoDups(var LogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
+  FontType: Longint; Data: LParam): LongInt; extdecl;
+var
+  L: TStrings;
+  S: String;
+begin
+  L := TStrings(PtrInt(Data));
+  S := LogFont.elfLogFont.lfFaceName;
+  if L.IndexOf(S) < 0 then
+    L.Add(S);
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -418,22 +431,6 @@ begin
   end
   else
     Result := nil;
-end;
-
-function EnumFontsNoDups(
-  var LogFont: TEnumLogFontEx;
-  var Metric: TNewTextMetricEx;
-  FontType: Longint;
-  Data: LParam):LongInt; stdcall;
-var
-  L: TStrings;
-  S: String;
-begin
-  L := TStrings(PtrInt(Data));
-  S := LogFont.elfLogFont.lfFaceName;
-  if L.IndexOf(S)<0 then
-    L.Add(S);
-  result := 1;
 end;
 
 procedure GetScreenFontsList(FontList: TStrings);

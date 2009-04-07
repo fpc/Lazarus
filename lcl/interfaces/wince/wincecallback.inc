@@ -180,7 +180,7 @@ type
   Handles the messages sent to the specified window, in parameter Window, by
   Windows or other applications
  ------------------------------------------------------------------------------}
-Function
+function
 {$ifdef MSG_DEBUG}
   RealWindowProc
 {$else}

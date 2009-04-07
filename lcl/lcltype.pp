@@ -36,7 +36,7 @@ the Delphi Windows unit. This is only done for compatibiltiy.
 
 unit LCLType;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$macro on}
 
 interface
 
@@ -53,6 +53,12 @@ uses
   windows,
 {$endif WINDOWS}
   Classes, SysUtils;
+
+{$ifdef WinCE}
+  {$define extdecl := cdecl}
+{$else}
+  {$define extdecl := stdcall}
+{$endif}
 
 type
 {$IFDEF USE_UTF8BIDI_LCL}
@@ -2196,13 +2202,13 @@ type
   end;
 
   FontEnumProc = function (var ELogFont:TEnumLogFont; var Metric:TNewTextMetric;
-    FontType:longint; Data:LParam):longint; stdcall;
+    FontType:longint; Data:LParam):longint; extdecl;
 
   FontEnumExProc = function (var ELogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
-    FontType: Longint; Data:LParam):Longint; stdcall;
+    FontType: Longint; Data:LParam):Longint; extdecl;
 
- MonitorEnumProc = function(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
-    dwData: LPARAM): LongBool; stdcall;
+  MonitorEnumProc = function(hMonitor: HMONITOR; hdcMonitor: HDC; lprcMonitor: PRect;
+    dwData: LPARAM): LongBool; extdecl;
 
   PWndClassExA = ^TWndClassExA;
   PWndClassExW = ^TWndClassExW;

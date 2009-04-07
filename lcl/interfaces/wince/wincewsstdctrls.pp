@@ -376,7 +376,7 @@ end;
 //roozbeh:there are still some issues with group box!
 
 function GroupBoxPanelWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 begin
   // handle paint messages for theming
   case Msg of
