@@ -3404,6 +3404,12 @@ begin
   ReleaseDC(Handle, PS.HDC);
 end;
 
+function TGTKWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+begin
+  Result := lpfnEnum(0, 0, nil, dwData);
+end;
+
 {.$define VerboseEnumFonts}  
 {$IFDEF VerboseGtkToDos}{$note: compare TGtkWidgetSet.EnumFontFamilies with gtkproc.FillScreenFonts}{$ENDIF}
 function TGtkWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
@@ -5359,6 +5365,15 @@ begin
   end;
 
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
+end;
+
+function TGTKWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+begin
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 0);
+  if not Result then Exit;
+  lpmi^.rcMonitor := Bounds(0, 0, gdk_screen_width, gdk_screen_height);
+  lpmi^.rcWork := lpmi^.rcMonitor;
+  lpmi^.dwFlags := MONITORINFOF_PRIMARY
 end;
 
 {------------------------------------------------------------------------------
@@ -9745,6 +9760,7 @@ begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
+
 {var
   Crit,
   tmp : ppthread_mutex_t;

@@ -357,8 +357,12 @@ function TGtk2WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
 var
   i: integer;
 begin
+  Result := True;
   for i := 0 to gdk_screen_get_n_monitors(gdk_screen_get_default) - 1 do
-    lpfnEnum(i, 0, nil, dwData);
+  begin
+    Result := Result and lpfnEnum(i, 0, nil, dwData);
+    if not Result then break;
+  end;
 end;
 
 {------------------------------------------------------------------------------
