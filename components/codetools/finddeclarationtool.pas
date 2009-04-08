@@ -657,6 +657,12 @@ type
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
+    function FindUnitSourceWithUnitIdentifier(UsesNode: TCodeTreeNode;
+       const AnUnitIdentifier: string; ExceptionOnNotFound: boolean
+       ): TCodeBuffer;
+    function FindCodeToolForUnitIdentifier(UsesNode: TCodeTreeNode;
+       const AnUnitIdentifier: string; ExceptionOnNotFound: boolean
+       ): TFindDeclarationTool;
     function FindIdentifierInInterface(AskingTool: TFindDeclarationTool;
       Params: TFindDeclarationParams): boolean;
     function CompareNodeIdentifier(Node: TCodeTreeNode;
@@ -2976,7 +2982,7 @@ var
   SpecializeNode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
   NameNode: TCodeTreeNode;
-  
+
   procedure RaiseForwardNotResolved;
   begin
     RaiseExceptionFmt(ctsForwardClassDefinitionNotResolved,
@@ -3134,6 +3140,15 @@ begin
           // skip search in proc parameters
           Params.ContextNode:=Params.ContextNode.Parent;
         TypeFound:=FindIdentifierInContext(Params);
+        if TypeFound and (Params.NewNode.Desc in [ctnUseUnit,ctnUsesSection])
+        then begin
+          NameNode:=Params.NewNode;
+          Params.NewNode:=nil;
+          Params.NewCodeTool:=FindCodeToolForUnitIdentifier(NameNode,
+            GetIdentifier(Params.Identifier),true);
+          Params.NewCodeTool.BuildTree(true);
+          Params.NewNode:=Params.NewCodeTool.Tree.Root;
+        end;
         if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
         then begin
           // unitname.typename
@@ -4752,6 +4767,103 @@ begin
     else if NewCode=TCodeBuffer(Scanner.MainCode) then
       Result:=Self;
   end;
+end;
+
+function TFindDeclarationTool.FindUnitSourceWithUnitIdentifier(
+  UsesNode: TCodeTreeNode; const AnUnitIdentifier: string;
+  ExceptionOnNotFound: boolean): TCodeBuffer;
+
+  procedure RaiseUsesExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
+  end;
+
+  procedure RaiseStrConstExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+  end;
+
+  procedure RaiseUnitNotFound;
+  begin
+    RaiseExceptionInstance(
+      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitIdentifier]),
+        AnUnitIdentifier));
+  end;
+
+var
+  UnitNamePos: TAtomPosition;
+  UnitInFilePos: TAtomPosition;
+  UnitInFilename: String;
+begin
+  Result:=nil;
+  {$IFDEF ShowTriedContexts}
+  DebugLn('TFindDeclarationTool.FindUnitSourceWithUnitIdentifier A');
+  {$ENDIF}
+  {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
+  // reparse uses section
+  MoveCursorToNodeStart(UsesNode);
+  if (UsesNode.Desc=ctnUsesSection) then begin
+    ReadNextAtom;
+    if not UpAtomIs('USES') then
+      RaiseUsesExpected;
+  end;
+  repeat
+    ReadNextAtom;  // read name
+    if AtomIsChar(';') then break;
+    AtomIsIdentifier(true);
+    UnitNamePos:=CurPos;
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      if not AtomIsStringConstant then RaiseStrConstExpected;
+      UnitInFilePos:=CurPos;
+      ReadNextAtom;
+    end else
+      UnitInFilePos.StartPos:=-1;
+    if CompareIdentifierPtrs(@Src[UnitNamePos.StartPos],
+                             PChar(Pointer(AnUnitIdentifier)))=0
+    then begin
+      // cursor is on a unitname -> try to locate it
+      if UnitInFilePos.StartPos>=1 then begin
+        UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
+                             UnitInFilePos.EndPos-UnitInFilePos.StartPos-2)
+      end else
+        UnitInFilename:='';
+      Result:=FindUnitSource(AnUnitIdentifier,UnitInFilename,true);
+      if (Result=nil) and ExceptionOnNotFound then
+        RaiseUnitNotFound;
+      exit;
+    end;
+    if AtomIsChar(';') then break;
+    if not AtomIsChar(',') then
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
+  until (CurPos.StartPos>SrcLen);
+  {$IFDEF ShowTriedContexts}
+  DebugLn('TFindDeclarationTool.FindUnitSourceWithUnitIdentifier END identifier not found in uses section');
+  {$ENDIF}
+  if ExceptionOnNotFound then
+    RaiseUnitNotFound;
+end;
+
+function TFindDeclarationTool.FindCodeToolForUnitIdentifier(
+  UsesNode: TCodeTreeNode; const AnUnitIdentifier: string;
+  ExceptionOnNotFound: boolean): TFindDeclarationTool;
+var
+  NewCode: TCodeBuffer;
+begin
+  Result:=nil;
+  NewCode:=FindUnitSourceWithUnitIdentifier(UsesNode,AnUnitIdentifier,
+                                            ExceptionOnNotFound);
+  if NewCode=nil then
+    exit;
+  if Assigned(FOnGetCodeToolForBuffer) then
+    Result:=FOnGetCodeToolForBuffer(Self,NewCode,false)
+  else if NewCode=TCodeBuffer(Scanner.MainCode) then
+    Result:=Self;
+  if (Result=nil) and ExceptionOnNotFound then
+    RaiseExceptionInstance(
+      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitIdentifier]),
+        AnUnitIdentifier));
 end;
 
 function TFindDeclarationTool.FindIdentifierInInterface(
