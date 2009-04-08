@@ -118,6 +118,7 @@ type
                               SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function FindUnusedUnits(Units: TStrings): boolean;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -1324,6 +1325,198 @@ begin
   if not CommentUnitsInUsesSection(FindMainUsesSection) then exit;
   if not CommentUnitsInUsesSection(FindImplementationUsesSection) then exit;
   if not SourceChangeCache.Apply then exit;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindUnusedUnits(Units: TStrings): boolean;
+// returns a list of unitname=flags
+// flags are a comma separated list of words:
+//   'implementation': unit is in implementation uses section
+//   'used': an identifier of the interface is used
+//   'code': unit has non empty initialization/finalization section
+var
+  Identifiers: TAVLTree;// all identifiers used in this unit
+
+  procedure RaiseUsesExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
+  end;
+
+  procedure RaiseStrConstExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+  end;
+
+  function IsUnitAlreadyChecked(const AnUnitName: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to Units.Count-1 do
+      if SysUtils.CompareText(Units.Names[i],AnUnitName)=0 then exit(true);
+    Result:=false;
+  end;
+
+  procedure GatherIdentifiers;
+  var
+    Node: TCodeTreeNode;
+    Identifier: PChar;
+  begin
+    if Identifiers<>nil then exit;
+    Identifiers:=TAVLTree.Create(@CompareIdentifierPtrs);
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      if (Node.Desc in [ctnBeginBlock,ctnAsmBlock])
+      or ((Node.FirstChild=nil)
+          and (Node.Desc in [ctnIdentifier,ctnRangedArrayType,ctnOpenArrayType,
+              ctnOfConstType,ctnRecordVariant,ctnProcedureType,ctnRangeType,
+              ctnTypeType,ctnFileType,ctnPointerType,ctnClassOfType,
+              ctnSpecializeParams,ctnGenericParameter,ctnConstant]))
+      then begin
+        MoveCursorToNodeStart(Node);
+        repeat
+          ReadNextAtom;
+          if CurPos.StartPos>=Node.EndPos then break;
+          if IsIdentStartChar[Src[CurPos.StartPos]] then begin
+            Identifier:=@Src[CurPos.StartPos];
+            if Identifiers.Find(Identifier)=nil then begin
+              DebugLn(['GatherIdentifiers ',GetIdentifier(Identifier)]);
+              Identifiers.Add(Identifier);
+            end;
+          end;
+        until false;
+        Node:=Node.NextSkipChilds;
+      end else
+        Node:=Node.Next;
+    end;
+  end;
+
+  function InterfaceIsUsed(Tool: TFindDeclarationTool;
+    IntfNode: TCodeTreeNode): boolean;
+
+    function IsIdentifierUsed(StartPos: integer): boolean;
+    begin
+      Result:=Identifiers.Find(@Tool.Src[StartPos])<>nil;
+    end;
+
+  var
+    Node: TCodeTreeNode;
+  begin
+    Result:=true;
+    Node:=IntfNode.FirstChild;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnEnumIdentifier:
+        if IsIdentifierUsed(Node.StartPos) then exit;
+      end;
+      Node:=Node.Next;
+    end;
+    Result:=false;
+  end;
+
+  procedure CheckUnit(Tool: TFindDeclarationTool;
+    out HasCode, UseInterface: boolean);
+  var
+    Node: TCodeTreeNode;
+    Identifier: String;
+  begin
+    GatherIdentifiers;
+    HasCode:=false;
+    UseInterface:=false;
+    // parse used unit
+    Tool.BuildTree(false);
+    Node:=Tool.Tree.Root;
+    while (Node<>nil) do begin
+      case Node.Desc of
+      ctnUnit,ctnPackage,ctnLibrary:
+        begin
+          Identifier:=Tool.ExtractSourceName;
+          if Identifiers.Find(PChar(Identifier))<>nil then
+            UseInterface:=true;
+        end;
+      ctnInterface:
+        if not UseInterface then
+          UseInterface:=InterfaceIsUsed(Tool,Node);
+      ctnInitialization,ctnFinalization,ctnBeginBlock:
+        begin
+          HasCode:=true;
+          break;
+        end;
+      end;
+      Node:=Node.NextBrother;
+    end;
+  end;
+
+  procedure CheckUsesSection(UsesNode: TCodeTreeNode; InImplementation: boolean);
+  var
+    UnitNamePos: TAtomPosition;
+    UnitInFilePos: TAtomPosition;
+    UnitName: String;
+    UnitInFilename: String;
+    Tool: TFindDeclarationTool;
+    HasCode: boolean;
+    UseInterface: boolean;
+    Flags: String;
+  begin
+    HasCode:=false;
+    UseInterface:=false;
+    if UsesNode=nil then exit;
+    MoveCursorToNodeStart(UsesNode);
+    ReadNextAtom;
+    if not UpAtomIs('USES') then
+      RaiseUsesExpected;
+    repeat
+      ReadNextAtom;  // read name
+      if AtomIsChar(';') then break;
+      AtomIsIdentifier(true);
+      UnitNamePos:=CurPos;
+      ReadNextAtom;
+      if UpAtomIs('IN') then begin
+        ReadNextAtom;
+        if not AtomIsStringConstant then RaiseStrConstExpected;
+        UnitInFilePos:=CurPos;
+        ReadNextAtom;
+      end else
+        UnitInFilePos.StartPos:=-1;
+      UnitName:=copy(Src,UnitNamePos.StartPos,
+                     UnitNamePos.EndPos-UnitNamePos.StartPos);
+      if not IsUnitAlreadyChecked(UnitName) then begin
+        if UnitInFilePos.StartPos>=1 then begin
+          UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
+                               UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
+        end else
+          UnitInFilename:='';
+        // try to load the used unit
+        DebugLn(['CheckUsesSection ',UnitName,UnitInFilename]);
+        Tool:=FindCodeToolForUsedUnit(UnitName,UnitInFilename,true);
+        // parse the used unit
+        CheckUnit(Tool,HasCode,UseInterface);
+        Flags:='';
+        if InImplementation then
+          Flags:=Flags+',implementation';
+        if HasCode then
+          Flags:=Flags+',code';
+        if UseInterface then
+          Flags:=Flags+',used';
+        DebugLn(['CheckUsesSection ',UnitName,'=',Flags]);
+        Units.Add(UnitName+'='+Flags);
+      end;
+      if AtomIsChar(';') then break;
+      if not AtomIsChar(',') then
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
+    until (CurPos.StartPos>SrcLen);
+  end;
+
+begin
+  Result:=false;
+  DebugLn(['TStandardCodeTool.FindUnusedUnits ']);
+  BuildTree(false);
+  Identifiers:=nil;
+  try
+    CheckUsesSection(FindMainUsesSection,false);
+    CheckUsesSection(FindImplementationUsesSection,true);
+  finally
+    Identifiers.Free;
+  end;
   Result:=true;
 end;
 

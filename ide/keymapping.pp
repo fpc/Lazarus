@@ -403,6 +403,7 @@ begin
   ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveUnusedUnits: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -1760,6 +1761,7 @@ begin
     ecFindBlockStart          : Result:= srkmecFindBlockStart;
     ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
     ecRemoveEmptyMethods      : Result:= srkmecRemoveEmptyMethods;
+    ecRemoveUnusedUnits       : Result:= srkmecRemoveEmptyMethods;
 
     // project (menu string resource)
     ecNewProject              : Result:= lisMenuNewProject;
@@ -2220,6 +2222,8 @@ begin
     ecShowAbstractMethods);
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods,
     ecRemoveEmptyMethods);
+  AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits,
+    ecRemoveUnusedUnits);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,

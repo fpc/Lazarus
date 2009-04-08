@@ -488,6 +488,7 @@ type
                                 out AllRemoved: boolean;
                                 const Attr: TProcHeadAttributes;
                                 out RemovedProcHeads: TStrings): boolean;
+    function FindUnusedUnits(Code: TCodeBuffer; Units: TStrings): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -3475,6 +3476,21 @@ begin
   try
     Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,AClassName,Sections,
                             SourceChangeCache,AllRemoved,Attr,RemovedProcHeads);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUnusedUnits(Code: TCodeBuffer; Units: TStrings
+  ): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindEmptyMethods A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUnusedUnits(Units);
   except
     on e: Exception do Result:=HandleException(e);
   end;

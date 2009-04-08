@@ -1752,7 +1752,7 @@ begin
                      UnitNamePos.EndPos-UnitNamePos.StartPos);
       if UnitInFilePos.StartPos>=1 then begin
         UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
-                     UnitInFilePos.EndPos-UnitInFilePos.StartPos-2)
+                             UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
       end else
         UnitInFilename:='';
       NewPos.Code:=FindUnitSource(UnitName,UnitInFilename,true);

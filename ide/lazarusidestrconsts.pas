@@ -1785,6 +1785,7 @@ resourcestring
   lisUEDoNotSho = 'Do not show this message again.';
   uemInsertTodo = 'Insert Todo';
   lisCodeHelpShowEmptyMethods = 'Show empty methods';
+  lisCodeHelpShowUnusedUnits = 'Show unused units';
   uemHighlighter = 'Highlighter';
   uemEncoding = 'Encoding';
 
@@ -2076,6 +2077,7 @@ resourcestring
   srkmecFindBlockStart            = 'Find block start';
   srkmecShowAbstractMethods       = 'Show abstract methods';
   srkmecRemoveEmptyMethods        = 'Remove empty methods';
+  srkmecRemoveUnusedUnits         = 'Remove unused units';
 
   // run menu
   srkmecBuild                     = 'build program/project';

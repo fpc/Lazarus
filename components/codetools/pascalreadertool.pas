@@ -1787,7 +1787,7 @@ begin
   then
     RaiseException('[TPascalParserTool.MoveCursorToUsesStart] '
       +'internal error: invalid UsesNode');
-  // search backwards through the uses section
+  // search through the uses section
   MoveCursorToCleanPos(UsesNode.StartPos);
   ReadNextAtom;
   if (not UpAtomIs('USES')) and (not UpAtomIs('CONTAINS')) then

@@ -1,0 +1,28 @@
+object UnusedUnitsDialog: TUnusedUnitsDialog
+  Left = 375
+  Height = 365
+  Top = 236
+  Width = 340
+  Caption = 'UnusedUnitsDialog'
+  ClientHeight = 365
+  ClientWidth = 340
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 44
+    Top = 315
+    Width = 328
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object UnitsTreeView: TTreeView
+    Left = 0
+    Height = 309
+    Top = 0
+    Width = 340
+    Align = alClient
+    DefaultItemHeight = 19
+    TabOrder = 1
+  end
+end

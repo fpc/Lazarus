@@ -133,8 +133,9 @@ uses
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
-  EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
+  EmptyMethodsDlg, UnusedUnitsDlg, CleanDirDlg, CodeContextForm, AboutFrm,
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
+  BuildManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -864,6 +865,7 @@ type
                               NewFilename, NewUnitName: string): TModalResult;
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
+    function DoRemoveUnusedUnits: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
@@ -2770,6 +2772,9 @@ begin
 
   ecRemoveEmptyMethods:
     DoRemoveEmptyMethods;
+
+  ecRemoveUnusedUnits:
+    DoRemoveUnusedUnits;
 
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
@@ -12711,6 +12716,11 @@ end;
 function TMainIDE.DoRemoveEmptyMethods: TModalResult;
 begin
   Result:=ShowEmptyMethodsDialog;
+end;
+
+function TMainIDE.DoRemoveUnusedUnits: TModalResult;
+begin
+  Result:=ShowUnusedUnitsDialog;
 end;
 
 {-------------------------------------------------------------------------------

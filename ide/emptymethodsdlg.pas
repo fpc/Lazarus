@@ -94,6 +94,7 @@ var
   ListOfPCodeXYPosition: TFPList;
   AllEmpty: boolean;
 begin
+  Result:=mrCancel;
   ListOfPCodeXYPosition:=TFPList.Create;
   try
     // init codetools

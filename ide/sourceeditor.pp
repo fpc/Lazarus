@@ -433,6 +433,7 @@ type
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
+    procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);
@@ -857,6 +858,7 @@ var
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
     SrcEditMenuShowAbstractMethods: TIDEMenuCommand;
     SrcEditMenuShowEmptyMethods: TIDEMenuCommand;
+    SrcEditMenuShowUnusedUnits: TIDEMenuCommand;
   SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
@@ -1015,9 +1017,14 @@ begin
                                'ShowAbstractMethods',srkmecShowAbstractMethods);
     SrcEditMenuShowEmptyMethods:=RegisterIDEMenuCommand(AParent,
                                'ShowEmptyMethods', lisCodeHelpShowEmptyMethods);
+    SrcEditMenuShowUnusedUnits:=RegisterIDEMenuCommand(AParent,
+                               'ShowUnusedUnits', lisCodeHelpShowUnusedUnits);
+    {$IFNDEF EnableUnusedUnits}
+    SrcEditMenuShowUnusedUnits.Visible:=false;
+    {$ENDIF}
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-                                        'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
+                        'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
 
   // register the Flags section
   SrcEditSubMenuFlags:=RegisterIDESubMenu(SourceEditorMenuRoot,
@@ -4383,6 +4390,7 @@ begin
   SrcEditMenuRenameIdentifier.OnClick:=@RenameIdentifierMenuItemClick;
   SrcEditMenuShowAbstractMethods.OnClick:=@ShowAbstractMethodsMenuItemClick;
   SrcEditMenuShowEmptyMethods.OnClick:=@ShowEmptyMethodsMenuItemClick;
+  SrcEditMenuShowUnusedUnits.OnClick:=@ShowUnusedUnitsMenuItemClick;
 
   SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
@@ -5625,6 +5633,11 @@ end;
 procedure TSourceNotebook.ShowEmptyMethodsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecRemoveEmptyMethods);
+end;
+
+procedure TSourceNotebook.ShowUnusedUnitsMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecRemoveUnusedUnits);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);
