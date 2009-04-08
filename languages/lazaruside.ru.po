@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-27 02:16+0300\n"
+"PO-Revision-Date: 2009-04-01 04:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -747,7 +747,7 @@ msgstr "Нет"
 
 #: lazarusidestrconsts.dlgenvotherfiles
 msgid "Other files"
-msgstr "Др. файлы"
+msgstr "Прочие файлы"
 
 #: lazarusidestrconsts.dlgenvproject
 msgid "Project"
@@ -1742,7 +1742,11 @@ msgstr "При правке строки"
 
 #: lazarusidestrconsts.dlgtrimspacetypeleaveline
 msgid "Leave line"
-msgstr "Не изменять строку"
+msgstr "При покидании строки"
+
+#: lazarusidestrconsts.dlgtrimspacetypeposonly
+msgid "Position Only"
+msgstr "Только положение курсора"
 
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
@@ -1871,7 +1875,7 @@ msgid "Align"
 msgstr "Выравнивание"
 
 #: lazarusidestrconsts.fdmdeleteselection
-msgid "Delete selection"
+msgid "Delete Selection"
 msgstr "Удалить выбранное"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
@@ -1909,6 +1913,11 @@ msgstr "Сохранить форму в виде XML"
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
 msgstr "Масштаб"
+
+#: lazarusidestrconsts.fdmselectall
+msgctxt "lazarusidestrconsts.fdmselectall"
+msgid "Select All"
+msgstr "Выделить все"
 
 #: lazarusidestrconsts.fdmshowoptions
 msgid "Show Options for form editing"
@@ -2580,12 +2589,23 @@ msgid "Bottom space equally"
 msgstr "Равномерно по нижним краям"
 
 #: lazarusidestrconsts.lisbreak
+msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Останов"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
 msgstr "Обзор (поиск компилятора) (%s)"
+
+#: lazarusidestrconsts.lisbtnbreak
+msgctxt "lazarusidestrconsts.lisbtnbreak"
+msgid "Break"
+msgstr "Останов"
+
+#: lazarusidestrconsts.lisbtncontinue
+msgctxt "lazarusidestrconsts.lisbtncontinue"
+msgid "Continue"
+msgstr "Продолжить"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -3682,7 +3702,7 @@ msgstr "Скобка"
 
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
-msgstr "Колонка"
+msgstr "Двоеточие"
 
 #: lazarusidestrconsts.liscodetoolsoptscomma
 msgid "Comma"
@@ -3869,6 +3889,10 @@ msgstr "Параметры %sСборки Lazarus%s"
 msgid "Confirm changes"
 msgstr "Подтвердить изменения"
 
+#: lazarusidestrconsts.lisconfirmdelete
+msgid "Confirm delete"
+msgstr "Подтвердите удаление"
+
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
 msgstr "Вы хотите пересобрать Lazarus?"
@@ -3890,6 +3914,7 @@ msgid "contains"
 msgstr "содержит"
 
 #: lazarusidestrconsts.liscontinue
+msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -4121,10 +4146,6 @@ msgstr "%s (идёт отладка ...)"
 msgid "Additional search path"
 msgstr "Дополнительный путь поиска"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmbreakonlazarusexceptions
-msgid "Break on Lazarus Exceptions"
-msgstr "Останов при исключениях Lazarus"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Точка останова"
@@ -4187,6 +4208,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name"
 msgstr "Имя"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
+msgid "Notify on Lazarus Exceptions"
+msgstr "Уведомлять об исключениях Lazarus"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
 msgstr "Исключения ОС"
@@ -4240,6 +4265,10 @@ msgstr "Невозможно загрузить файл %s%s%s."
 msgid "Decimal"
 msgstr "Десятичное"
 
+#: lazarusidestrconsts.lisdefaultvalue
+msgid "Default value"
+msgstr "Значение по умолчанию"
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "&Удалить все"
@@ -4272,6 +4301,10 @@ msgstr "Удалить файл с подобным именем?"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
 
+#: lazarusidestrconsts.lisdeletebuildmode
+msgid "Delete build mode %s%s%s?"
+msgstr "Удалить режим сборки %s%s%s?"
+
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Удаление файла не удалось"
@@ -4287,6 +4320,10 @@ msgstr "Удалить старый файл?"
 #: lazarusidestrconsts.lisdeleteselectedfiles
 msgid "Delete selected files"
 msgstr "Удалить выбранные файлы"
+
+#: lazarusidestrconsts.lisdeletevalue
+msgid "Delete value %s%s%s"
+msgstr "Удалить значение %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
@@ -4471,6 +4508,10 @@ msgstr "Вставить выбранные компоненты из буфер
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "Выбрать родительский компонент"
+
+#: lazarusidestrconsts.lisduplicatefoundofvalue
+msgid "Duplicate found of value %s%s%s."
+msgstr "Значение %s%s%s уже существует."
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
@@ -4852,6 +4893,10 @@ msgstr "Примеры"
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Примеры:%s<Идентификатор>%sTMyEnum.<Перечисление>%s<Имя модуля>.<Идентификатор>%s#<Имя пакета>.<Имя модуля>.<Идентификатор>"
+
+#: lazarusidestrconsts.lisexceptiondialog
+msgid "Debugger Exception Notification"
+msgstr "Уведомление об исключении отладчика"
 
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
@@ -5464,6 +5509,10 @@ msgstr "Игнорировать и продолжить"
 msgid "Ignore binaries"
 msgstr "Игнорировать двоичные файлы"
 
+#: lazarusidestrconsts.lisignoreexceptiontype
+msgid "Ignore this exception type"
+msgstr "Игнорировать этот тип исключений"
+
 #: lazarusidestrconsts.lisignoremissingfile
 msgid "Ignore missing file"
 msgstr "Игнорировать отсутствующие файлы"
@@ -5570,6 +5619,10 @@ msgstr "Установить выбранное"
 #: lazarusidestrconsts.lisinternalname
 msgid "Internal Name:"
 msgstr "Внутреннее имя:"
+
+#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
+msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
+msgstr "Неверный режим сборки %s%s%s. Режим сборки должен быть идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -5690,10 +5743,6 @@ msgstr "Прервать сборку"
 #: lazarusidestrconsts.liskmaddactiveunittoproject
 msgid "Add active unit to project"
 msgstr "Добавить текущий модуль к проекту"
-
-#: lazarusidestrconsts.liskmaddbreakpoint
-msgid "Add break point"
-msgstr "Добавить точку останова"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -5975,10 +6024,6 @@ msgstr "Быстрая компиляция, без компоновки"
 #: lazarusidestrconsts.liskmremoveactiveunitfromproject
 msgid "Remove active unit from project"
 msgstr "Удалить текущий модуль из проекта"
-
-#: lazarusidestrconsts.liskmremovebreakpoint
-msgid "Remove break point"
-msgstr "Удалить точку останова"
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -8788,27 +8833,27 @@ msgstr "При установке пакета %s автоматически у�
 
 #: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
 msgid "invalid Compiler filename"
-msgstr "неправильное имя Компилятора"
+msgstr "неверное имя файла компилятора"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
-msgstr "Неправильное расширение файла"
+msgstr "Неверное расширение файла"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagefileextension
 msgid "Invalid package file extension"
-msgstr "Неправильное расширение файла пакета"
+msgstr "Неверное расширение файла пакета"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagefilename
 msgid "Invalid package filename"
-msgstr "Неправильное имя файла пакета"
+msgstr "Неверное имя файла пакета"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagename
 msgid "Invalid package name"
-msgstr "Неправильное имя пакета"
+msgstr "Неверное имя пакета"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagename2
 msgid "Invalid Package Name"
-msgstr "Неправильное имя пакета"
+msgstr "Неверное имя пакета"
 
 #: lazarusidestrconsts.lispkgmanglazarus
 msgid "Lazarus"
@@ -8820,7 +8865,7 @@ msgstr "Загрузка пакета %s заменит пакет %s%sиз фа
 
 #: lazarusidestrconsts.lispkgmangnewpackage
 msgid "NewPackage"
-msgstr "Новый Пакет"
+msgstr "NewPackage"
 
 #: lazarusidestrconsts.lispkgmangpackage
 msgid "Package: %s"
@@ -9983,6 +10028,10 @@ msgstr "Средство выбора"
 msgid "Set default"
 msgstr "Установить по умолчанию"
 
+#: lazarusidestrconsts.lissetvalue
+msgid "Set value"
+msgstr "Установить значение"
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Краткое:"
@@ -10497,6 +10546,10 @@ msgstr "В каталоге есть и другие файлы с таким ж
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "На диске есть файл с таким же именем и похожим расширением%sФайл: %s%sПохожий файл: %s%s%sУдалить второй файл?"
+
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
+msgid "There is already a build mode with the name %s%s%s."
+msgstr "Режим сборки с именем %s%s%s уже существует."
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -11182,6 +11235,14 @@ msgstr "Домашний каталог пользователя"
 msgid "Value:"
 msgstr "Значение:"
 
+#: lazarusidestrconsts.lisvalue2
+msgid "Value%s"
+msgstr "Значение%s"
+
+#: lazarusidestrconsts.lisvalues
+msgid "Values"
+msgstr "Значения"
+
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
 msgstr "Вызовов методов"
@@ -11588,6 +11649,10 @@ msgstr "Управляющие команды"
 msgid "CodeTools commands"
 msgstr "Команды CodeTools"
 
+#: lazarusidestrconsts.srkmcatcolselection
+msgid "Text column selection commands"
+msgstr "Команды выделения столбцов текста"
+
 #: lazarusidestrconsts.srkmcatcursormoving
 msgid "Cursor moving commands"
 msgstr "Команды перемещения курсора"
@@ -11669,10 +11734,6 @@ msgstr " конфликтует с "
 msgid "abort build"
 msgstr "прервать сборку"
 
-#: lazarusidestrconsts.srkmecaddbreakpoint
-msgid "add break point"
-msgstr "добавить точку останова"
-
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Добавить точку перехода"
@@ -11724,6 +11785,54 @@ msgstr "Редактор определений CodeTools"
 #: lazarusidestrconsts.srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "Параметры Codetools"
+
+#: lazarusidestrconsts.srkmeccolseldown
+msgid "Column Select Down"
+msgstr "Выделить снизу"
+
+#: lazarusidestrconsts.srkmeccolseleditorbottom
+msgid "Column Select to absolute end"
+msgstr "Выделить до самого конца"
+
+#: lazarusidestrconsts.srkmeccolseleditortop
+msgid "Column Select to absolute beginning"
+msgstr "Выделить до самого начала"
+
+#: lazarusidestrconsts.srkmeccolselleft
+msgid "Column Select Left"
+msgstr "Выделить слева"
+
+#: lazarusidestrconsts.srkmeccolsellineend
+msgid "Column Select Line End"
+msgstr "Выделить до конца строки"
+
+#: lazarusidestrconsts.srkmeccolsellinestart
+msgid "Column Select Line Start"
+msgstr "Выделить до начала строки"
+
+#: lazarusidestrconsts.srkmeccolselpagebottom
+msgid "Column Select Page Bottom"
+msgstr "Выделить всю страницу снизу"
+
+#: lazarusidestrconsts.srkmeccolselpagedown
+msgid "Column Select Page Down"
+msgstr "Выделить страницу снизу"
+
+#: lazarusidestrconsts.srkmeccolselpagetop
+msgid "Column Select Page Top"
+msgstr "Выделить всю страницу сверху"
+
+#: lazarusidestrconsts.srkmeccolselpageup
+msgid "Column Select Page Up"
+msgstr "Выделить страницу сверху"
+
+#: lazarusidestrconsts.srkmeccolselright
+msgid "Column Select Right"
+msgstr "Выделить справа"
+
+#: lazarusidestrconsts.srkmeccolselup
+msgid "Column Select Up"
+msgstr "Выделить сверху"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
@@ -11978,10 +12087,6 @@ msgstr "просмотреть"
 msgid "Invert assignment"
 msgstr "Инвертировать присвоение"
 
-#: lazarusidestrconsts.srkmecjumptoeditor
-msgid "Focus to source editor"
-msgstr "Перевести фокус в редактор исходного кода"
-
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
 msgstr "Разорвать строку, сдвинуть курсор"
@@ -12143,6 +12248,7 @@ msgid "Select Down"
 msgstr "Выделить вниз"
 
 #: lazarusidestrconsts.srkmecselectall
+msgctxt "lazarusidestrconsts.srkmecselectall"
 msgid "Select All"
 msgstr "Выделить все"
 
@@ -12242,6 +12348,10 @@ msgstr "остановить программу"
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Проверка синтаксиса"
+
+#: lazarusidestrconsts.srkmectogglebreakpoint
+msgid "toggle break point"
+msgstr "переключить точку останова"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -12412,10 +12522,6 @@ msgstr "Файл \""
 msgid "\" is not writable."
 msgstr "\" не для записи."
 
-#: lazarusidestrconsts.uemaddbreakpoint
-msgid "&Add Breakpoint"
-msgstr "&Добавить точку останова"
-
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Добавить &наблюдение у курсора"
@@ -12570,6 +12676,10 @@ msgstr "Сведения о модуле"
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
 msgstr "П&ереключить закладку"
+
+#: lazarusidestrconsts.uemtogglebreakpoint
+msgid "&Toggle Breakpoint"
+msgstr "П&ереключить точку останова"
 
 #: lazarusidestrconsts.uemviewcallstack
 msgid "View Call Stack"
