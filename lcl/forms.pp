@@ -45,6 +45,11 @@ uses
   ;
 
 type
+  // forward class declarations
+  TIDesigner = class;
+  TMonitor = class;
+  TScrollingWinControl = class;
+
   TProcedure = procedure;
   TProcedureOfObject = procedure of object;
 
@@ -62,10 +67,6 @@ type
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
-
-  TMonitor = class;
-  TScrollingWinControl = class;
-
 
   { Hint actions }
 
@@ -330,31 +331,31 @@ type
 
   { TCustomForm }
 
-  TIDesigner = class;
-
-  TBorderIcon = (biSystemMenu, biMinimize, biMaximize, biHelp);
+  TBorderIcon = ( // Form title bar items
+    biSystemMenu, // system menu
+    biMinimize,   // minimize button
+    biMaximize,   // maximize button
+    biHelp        // help button
+  );
   TBorderIcons = set of TBorderIcon;
 
-  TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
-  TCloseQueryEvent = procedure(Sender : TObject;
-                               var CanClose : boolean) of object;
-  THelpEvent = function(Command: Word; Data: Longint;
-    var CallHelp: Boolean): Boolean of object;
-    
-  TDropFilesEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
-
-  TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
+  TDefaultMonitor = ( // monitor to place form
+    dmDesktop,        // use full desktop
+    dmPrimary,        // use primary monitor
+    dmMainForm,       // use monitor of main form
+    dmActiveForm      // use monitor of active form
+  );
 
   TFormStateType = (
-    fsCreating,  // initializing (form streaming)
-    fsVisible,   // form should be shown
-    fsShowing,
-    fsModal,     // form is modal
-    fsCreatedMDIChild,
-    fsBorderStyleChanged,
-    fsFormStyleChanged,
-    fsFirstShow,  // form is shown for the first time
-    fsDisableAutoSize
+    fsCreating,          // initializing (form streaming)
+    fsVisible,           // form should be shown
+    fsShowing,           // form handling WM_SHOWWINDOW message
+    fsModal,             // form is modal
+    fsCreatedMDIChild,   // todo: not mplemented
+    fsBorderStyleChanged,// border style is changed before window handle creation
+    fsFormStyleChanged,  // form style is changed before window handle creation
+    fsFirstShow,         // form is shown for the first time
+    fsDisableAutoSize    // disable autosize
     );
   TFormState = set of TFormStateType;
 
@@ -369,7 +370,11 @@ type
 
   TShowInTaskbar = (stDefault, stAlways, stNever);
 
-  { TCustomForm }
+  TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
+  TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
+  TDropFilesEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
+  THelpEvent = function(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean of object;
+  TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
 
   TCustomForm = class(TScrollingWinControl)
   private
@@ -380,6 +385,7 @@ type
     FBorderIcons: TBorderIcons;
     FDefaultControl: TControl;
     FCancelControl: TControl;
+    FDefaultMonitor: TDefaultMonitor;
     FDesigner: TIDesigner;
     FFormState: TFormState;
     FFormStyle: TFormStyle;
@@ -566,6 +572,8 @@ type
     property Caption stored IsForm;
     property Color default clBtnFace;
     property DefaultControl: TControl read FDefaultControl write SetDefaultControl;
+    property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
+      write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write SetDesigner;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
@@ -641,6 +649,7 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DefaultMonitor;
     property DockSite;
     property DragKind;
     property DragMode;
