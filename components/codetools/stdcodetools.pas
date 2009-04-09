@@ -1453,6 +1453,11 @@ var
         if IsIdentifierUsed(Node.StartPos) then exit;
       ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
         if IsNodeVisible(Node) and IsIdentifierUsed(Node.StartPos) then exit;
+      ctnProcedure:
+        if (Node.Parent.Desc=ctnInterface)
+        and (Node.FirstChild<>nil)
+        and (Node.FirstChild.Desc=ctnProcedureHead)
+        and IsIdentifierUsed(Node.FirstChild.StartPos) then exit;
       end;
       Node:=Node.Next;
     end;
