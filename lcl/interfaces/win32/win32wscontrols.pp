@@ -37,9 +37,8 @@ uses
   CommCtrl, Windows, Classes, Controls, Graphics,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
-  { TODO: needs to move }
-  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType,
-  InterfaceBase, LCLIntf, LCLType, LCLProc, Themes;
+  { LCL }
+  InterfaceBase, LCLType, LCLIntf, LCLProc, Themes;
 
 type
   { TWin32WSDragImageList }

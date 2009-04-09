@@ -491,7 +491,7 @@ const
 implementation
 
 uses
-  SysUtils, ComCtrls, InterfaceBase, LCLIntf, GraphType, Graphics, ImgList;
+  SysUtils, InterfaceBase, LCLIntf, GraphType, Graphics, ImgList;
 
 //----------------------------------------------------------------------------------------------------------------------
 
