@@ -1414,7 +1414,8 @@ var
           StartPos:=CurPos.EndPos;
         end;
       else
-        StartPos:=Node.StartPos;
+        if StartPos<1 then
+          StartPos:=Node.StartPos;
       end;
       Node:=Node.Next;
     end;
@@ -1425,7 +1426,20 @@ var
 
     function IsIdentifierUsed(StartPos: integer): boolean;
     begin
+      if CompareIdentifiers(PChar(GetIdentifier(@Tool.Src[StartPos])),'TComponent')=0 then
+        DebugLn(['IsIdentifierUsed ',GetIdentifier(@Tool.Src[StartPos])]);
       Result:=Identifiers.Find(@Tool.Src[StartPos])<>nil;
+    end;
+
+    function IsNodeVisible(Node: TCodeTreeNode): boolean;
+    begin
+      if (Node.Parent=nil)
+      or (Node.Parent.Desc=ctnInterface)
+      or (Node.Parent.Parent=nil)
+      or (Node.Parent.Parent.Desc=ctnInterface) then
+        Result:=true
+      else
+        Result:=false;
     end;
 
   var
@@ -1437,6 +1451,8 @@ var
       case Node.Desc of
       ctnEnumIdentifier:
         if IsIdentifierUsed(Node.StartPos) then exit;
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+        if IsNodeVisible(Node) and IsIdentifierUsed(Node.StartPos) then exit;
       end;
       Node:=Node.Next;
     end;
