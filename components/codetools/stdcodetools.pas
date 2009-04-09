@@ -1458,6 +1458,9 @@ var
         and (Node.FirstChild<>nil)
         and (Node.FirstChild.Desc=ctnProcedureHead)
         and IsIdentifierUsed(Node.FirstChild.StartPos) then exit;
+      ctnGlobalProperty:
+        if Tool.MoveCursorToPropName(Node)
+        and IsIdentifierUsed(Tool.CurPos.StartPos) then exit;
       end;
       Node:=Node.Next;
     end;
