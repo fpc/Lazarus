@@ -1356,37 +1356,58 @@ var
     Result:=false;
   end;
 
+  procedure GatherIdentifiersInRange(StartPos, EndPos: integer);
+  // gather all used identifiers from this unit in the range Startpos..EndPos
+  var
+    Identifier: PChar;
+  begin
+    if (StartPos<1) or (StartPos>=EndPos) then exit;
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if CurPos.StartPos>=EndPos then break;
+      if IsIdentStartChar[Src[CurPos.StartPos]] then begin
+        Identifier:=@Src[CurPos.StartPos];
+        if Identifiers.Find(Identifier)=nil then begin
+          DebugLn(['GatherIdentifiers ',GetIdentifier(Identifier)]);
+          Identifiers.Add(Identifier);
+        end;
+      end;
+    until false;
+  end;
+
   procedure GatherIdentifiers;
+  // gather all used identifiers from this unit
+  var
+    StartPos: Integer;
+
+    procedure Gather;
+    begin
+      if StartPos<1 then exit;
+      GatherIdentifiersInRange(StartPos,CurPos.StartPos);
+      StartPos:=-1;
+    end;
+
   var
     Node: TCodeTreeNode;
-    Identifier: PChar;
   begin
     if Identifiers<>nil then exit;
     Identifiers:=TAVLTree.Create(@CompareIdentifierPtrs);
+    StartPos:=-1;
     Node:=Tree.Root;
     while Node<>nil do begin
-      if (Node.Desc in [ctnBeginBlock,ctnAsmBlock])
-      or ((Node.FirstChild=nil)
-          and (Node.Desc in [ctnIdentifier,ctnRangedArrayType,ctnOpenArrayType,
-              ctnOfConstType,ctnRecordVariant,ctnProcedureType,ctnRangeType,
-              ctnTypeType,ctnFileType,ctnPointerType,ctnClassOfType,
-              ctnSpecializeParams,ctnGenericParameter,ctnConstant]))
-      then begin
-        MoveCursorToNodeStart(Node);
-        repeat
+      case Node.Desc of
+      ctnEnumIdentifier:
+        begin
+          Gather;
+          MoveCursorToCleanPos(Node.StartPos);
           ReadNextAtom;
-          if CurPos.StartPos>=Node.EndPos then break;
-          if IsIdentStartChar[Src[CurPos.StartPos]] then begin
-            Identifier:=@Src[CurPos.StartPos];
-            if Identifiers.Find(Identifier)=nil then begin
-              DebugLn(['GatherIdentifiers ',GetIdentifier(Identifier)]);
-              Identifiers.Add(Identifier);
-            end;
-          end;
-        until false;
-        Node:=Node.NextSkipChilds;
-      end else
-        Node:=Node.Next;
+          StartPos:=CurPos.EndPos;
+        end;
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+        Gather;
+      end;
+      Node:=Node.Next;
     end;
   end;
 
