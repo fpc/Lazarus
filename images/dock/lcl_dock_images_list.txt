@@ -1,0 +1,2 @@
+lcl_dock_close.png
+lcl_dock_restore.png

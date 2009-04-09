@@ -1,0 +1,5 @@
+lcl_dock_to_bottom.png
+lcl_dock_to_left.png
+lcl_dock_to_page.png
+lcl_dock_to_right.png
+lcl_dock_to_top.png

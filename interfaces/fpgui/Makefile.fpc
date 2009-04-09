@@ -1,0 +1,49 @@
+#   $Id: Makefile.fpc 7398 2005-07-22 13:47:35Z mattias $
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#   
+
+[package]
+main=lcl
+
+[require]
+packages=rtl
+
+[target]
+units=interfaces
+
+[prerules]
+ifneq ($(findstring $(OS_TARGET),$(UNIXs)),)
+fpGUIPlatform=x11
+endif
+ifeq ($(OS_TARGET),win32)
+fpGUIPlatform=gdi
+endif
+ifeq ($(OS_TARGET),wince)
+fpGUIPlatform=gdi
+endif
+ifeq ($(OS_TARGET),win64)
+fpGUIPlatform=gdi
+endif
+
+[compiler]
+options=-gl -dfpgui
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . corelib gui corelib/$(fpGUIPlatform)
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
+includedir=corelib corelib/$(fpGUIPlatform)
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)
+

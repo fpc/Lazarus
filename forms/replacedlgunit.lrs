@@ -1,0 +1,43 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TReplaceDialogForm','FORMDATA',[
+  'TPF0'#18'TReplaceDialogForm'#17'ReplaceDialogForm'#4'Left'#3#156#1#6'Height'
+  +#3#162#0#3'Top'#3#140#1#5'Width'#3#176#1#18'HorzScrollBar.Page'#3#175#1#18'V'
+  +'ertScrollBar.Page'#3#161#0#13'ActiveControl'#7#8'EditFind'#11'BorderIcons'
+  +#11#12'biSystemMenu'#6'biHelp'#0#7'Caption'#6#12'Replace text'#12'ClientHeig'
+  +'ht'#3#162#0#11'ClientWidth'#3#176#1#0#6'TLabel'#9'TextLabel'#4'Left'#2#4#6
+  +'Height'#2#20#3'Top'#2#19#5'Width'#2'F'#7'Caption'#6#12'Text to find'#12'Foc'
+  +'usControl'#7#8'EditFind'#11'ParentColor'#8#0#0#6'TLabel'#12'ReplaceLabel'#4
+  +'Left'#2#4#6'Height'#2#20#3'Top'#2'0'#5'Width'#2'O'#7'Caption'#6#12'Replace '
+  +'with'#12'FocusControl'#7#11'EditReplace'#11'ParentColor'#8#0#0#5'TEdit'#8'E'
+  +'ditFind'#4'Left'#2'H'#6'Height'#2#23#3'Top'#2#10#5'Width'#3#1#1#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0#4'Text'#6#8'EditFind'#0#0
+  +#5'TEdit'#11'EditReplace'#4'Left'#2'H'#6'Height'#2#23#3'Top'#2'*'#5'Width'#3
+  +#1#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#1#4'Text'#6
+  +#11'EditReplace'#0#0#9'TCheckBox'#22'WholeWordsOnlyCheckBox'#4'Left'#2#4#6'H'
+  +'eight'#2#22#3'Top'#2'P'#5'Width'#3#133#0#7'Caption'#6#16'Whole words only'#8
+  +'TabOrder'#2#2#0#0#9'TCheckBox'#21'CaseSensitiveCheckBox'#4'Left'#2#4#6'Heig'
+  +'ht'#2#22#3'Top'#2'h'#5'Width'#2't'#7'Caption'#6#14'Case sensitive'#8'TabOrd'
+  +'er'#2#3#0#0#7'TButton'#14'FindMoreButton'#3'Tag'#2#1#4'Left'#3'Q'#1#6'Heigh'
+  +'t'#2#25#3'Top'#2#11#5'Width'#2'['#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Cap'
+  +'tion'#6#9'Find more'#7'Default'#9#8'TabOrder'#2#4#0#0#7'TButton'#13'Replace'
+  +'Button'#3'Tag'#2#2#4'Left'#3'Q'#1#6'Height'#2#25#3'Top'#2'('#5'Width'#2'['#7
+  +'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#7'Replace'#8'TabOrder'#2#5#0
+  +#0#7'TButton'#16'ReplaceAllButton'#3'Tag'#2#3#4'Left'#3'P'#1#6'Height'#2#25#3
+  +'Top'#2'D'#5'Width'#2'['#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#11
+  +'Replace all'#8'TabOrder'#2#6#0#0#7'TButton'#12'CancelButton'#4'Left'#3'Q'#1
+  +#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'['#7'Anchors'#11#5'akTop'#7'akRight'#0
+  +#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#7#0#0#7
+  +'TButton'#10'HelpButton'#4'Left'#3'Q'#1#6'Height'#2#25#3'Top'#3#129#0#5'Widt'
+  +'h'#2'['#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6#4'Help'#8'TabOr'
+  +'der'#2#8#0#0#11'TRadioGroup'#19'DirectionRadioGroup'#4'Left'#3#128#0#6'Heig'
+  +'ht'#2'-'#3'Top'#2'P'#5'Width'#3#184#0#8'AutoFill'#9#7'Caption'#6#9'Directio'
+  +'n'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6
+  +#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSi'
+  +'zing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkH'
+  +'orizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScal'
+  +'eChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'Chil'
+  +'dSizing.ControlsPerLine'#2#2#12'ClientHeight'#2#26#11'ClientWidth'#3#180#0#7
+  +'Columns'#2#2#13'Items.Strings'#1#6#7'Forward'#6#8'Backward'#0#8'TabOrder'#2
+  +#9#0#0#0
+]);

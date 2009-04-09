@@ -1,0 +1,8 @@
+
+gtk_toggle_button eats the mouse button after events
+That means on OnMouseUp/OnClick the TCheckBox still has the old 'Checked'.
+OnChange works.
+Delphi code expects "OnClick" after changing "Checked".
+
+
+

@@ -1,0 +1,40 @@
+Interfaces
+
+It is organized according to the following structure:
+
+interfaces
+  |
+  +--- fpgui
+  |
+  +--- gtk
+  |
+  +--- gtk2
+  |
+  +--- qt
+  |
+  +--- win32
+  |
+  +--- carbon
+  |
+  +--- ...
+  |
+
+interfaces/fpgui:
+  All fpgui (http://opensoft.homeip.net/fpgui/) specific code goes here.
+
+ interfaces/gtk:
+  All gtk 1.x specific code goes here. (With some specials for gtk2.x)
+
+interfaces/gtk2:
+  All gtk 2.x specific code goes here.
+  The gtk 2 interface inherits from the gtk 1 interface.
+
+interfaces/qt:
+  All QT (Trolltech, KDE) specific code goes here.
+
+interfaces/win32:
+  All win32 (native MS windows interface) specific code goes here.
+
+interfaces/carbon:
+  All Carbon (native MacOSX interface) specific code goes here.
+

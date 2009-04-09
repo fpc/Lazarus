@@ -1,0 +1,22 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  object GetTargetsButton: TButton
+    
+    Caption = 'Get targets'
+    OnClick = GetTargetsButtonClick
+    TabOrder = 0
+    Left = 60
+    Height = 25
+    Top = 70
+    Width = 150
+  end
+end

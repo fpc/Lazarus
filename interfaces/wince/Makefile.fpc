@@ -1,0 +1,34 @@
+#   $Id: Makefile.fpc 7398 2005-07-22 13:47:35Z mattias $
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+main=lazarus/lcl
+
+[require]
+packages=rtl
+
+[target]
+units=interfaces
+implicitunits=winceint
+
+[compiler]
+options=-gl
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/wince
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(STATICLIBEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)
+

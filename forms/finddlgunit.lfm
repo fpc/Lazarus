@@ -1,0 +1,104 @@
+object FindDialogForm: TFindDialogForm
+  Left = 432
+  Height = 103
+  Top = 419
+  Width = 444
+  HorzScrollBar.Page = 443
+  VertScrollBar.Page = 102
+  ActiveControl = EditFind
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'Find'
+  ClientHeight = 103
+  ClientWidth = 444
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  object FindLabel: TLabel
+    Left = 6
+    Height = 20
+    Top = 19
+    Width = 70
+    Caption = 'Text to find'
+    FocusControl = EditFind
+    ParentColor = False
+  end
+  object EditFind: TEdit
+    Left = 72
+    Height = 23
+    Top = 10
+    Width = 269
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = EditFindChange
+    TabOrder = 0
+    Text = 'EditFind'
+  end
+  object FindButton: TButton
+    Left = 349
+    Height = 25
+    Top = 8
+    Width = 91
+    Anchors = [akTop, akRight]
+    Caption = 'Find more'
+    Default = True
+    TabOrder = 1
+  end
+  object CancelButton: TButton
+    Left = 349
+    Height = 25
+    Top = 40
+    Width = 91
+    Anchors = [akTop, akRight]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object WholeWordsOnlyCheckBox: TCheckBox
+    Left = 6
+    Height = 22
+    Top = 51
+    Width = 133
+    Caption = 'Whole words only'
+    TabOrder = 3
+  end
+  object CaseSensitiveCheckBox: TCheckBox
+    Left = 6
+    Height = 22
+    Top = 78
+    Width = 116
+    Caption = 'Case sensitive'
+    TabOrder = 4
+  end
+  object DirectionRadioGroup: TRadioGroup
+    Left = 144
+    Height = 45
+    Top = 46
+    Width = 197
+    AutoFill = True
+    Caption = 'Direction'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 26
+    ClientWidth = 193
+    Columns = 2
+    Items.Strings = (
+      'Forward'
+      'Backward'
+    )
+    TabOrder = 5
+  end
+  object HelpButton: TButton
+    Left = 349
+    Height = 25
+    Top = 72
+    Width = 91
+    Anchors = [akRight, akBottom]
+    Caption = 'Help'
+    TabOrder = 6
+  end
+end

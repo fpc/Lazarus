@@ -1,0 +1,123 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=lcl
+version=0.9b
+
+[target]
+dirs=interfaces
+units=alllclunits
+# DO NOT ADD alllclunits to implicitunits. It is just a dummy unit used for compiling.
+implicitunits= \
+  actnlist \
+  arrow \
+  avglvltree \
+  buttons \
+  calendar \
+  chart \
+  checklst \
+  clipbrd \
+  clistbox \
+  comctrls \
+  controls \
+  dbactns \
+  dbctrls \
+  dbgrids \
+  dialogs \
+  dynamicarray \
+  dynhasharray \
+  editbtn \
+  extctrls \
+  extdlgs \
+  extendedstrings \
+  extgraphics \
+  filectrl \
+  forms \
+  fpcadds \
+  graphics \
+  graphmath \
+  graphtype \
+  grids \
+  imglist \
+  inipropstorage \
+  interfacebase \
+  lazlinkedlist \
+  lclintf \
+  lclmemmanager \
+  lclproc \
+  lclrescache \
+  lclstrconsts \
+  lcltype \
+  lclunicodedata \
+  lconvencoding \
+  lmessages \
+  lresources \
+  maskedit \
+  menus \
+  pairsplitter \
+  popupnotifier \
+  postscriptprinter \
+  printers \
+  propertystorage \
+  spin \
+  stdactns \
+  stdctrls \
+  stringhashlist \
+  textstrings \
+  toolwin \
+  utrace \
+  xmlpropstorage
+
+rsts=lclstrconsts
+
+[require]
+packages=
+
+[prerules]
+ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
+NONWIN32=nonwin32
+endif
+
+[compiler]
+options=-gl
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=. $(NONWIN32) forms widgetset
+includedir=include
+
+[install]
+#buildunit=alllclunits
+
+[clean]
+# clear all .ppu/.o/.rst files in all source and output directories
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) \
+      $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))\
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+
+[default]
+lcldir=.
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS)
+
+cleanlaz: clean
+        $(MAKE) -C interfaces clean
+        $(MAKE) -C interfaces/carbon clean
+        $(MAKE) -C interfaces/fpgui clean
+        $(MAKE) -C interfaces/gtk clean
+        $(MAKE) -C interfaces/gtk2 clean
+        $(MAKE) -C interfaces/qt clean
+        $(MAKE) -C interfaces/win32 clean
+        $(MAKE) -C interfaces/wince clean
+
