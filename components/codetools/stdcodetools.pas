@@ -1369,7 +1369,7 @@ var
       if IsIdentStartChar[Src[CurPos.StartPos]] then begin
         Identifier:=@Src[CurPos.StartPos];
         if Identifiers.Find(Identifier)=nil then begin
-          DebugLn(['GatherIdentifiers ',GetIdentifier(Identifier)]);
+          DebugLn(['Used Identifier=',GetIdentifier(Identifier)]);
           Identifiers.Add(Identifier);
         end;
       end;
@@ -1381,10 +1381,10 @@ var
   var
     StartPos: Integer;
 
-    procedure Gather;
+    procedure Gather(EndPos: integer);
     begin
       if StartPos<1 then exit;
-      GatherIdentifiersInRange(StartPos,CurPos.StartPos);
+      GatherIdentifiersInRange(StartPos,EndPos);
       StartPos:=-1;
     end;
 
@@ -1393,19 +1393,28 @@ var
   begin
     if Identifiers<>nil then exit;
     Identifiers:=TAVLTree.Create(@CompareIdentifierPtrs);
+    DebugLn(['GatherIdentifiers ']);
     StartPos:=-1;
     Node:=Tree.Root;
     while Node<>nil do begin
       case Node.Desc of
-      ctnEnumIdentifier:
+      ctnUseUnit,ctnUsesSection,
+      ctnProgram,ctnUnit,ctnPackage,ctnLibrary,ctnEndPoint:
         begin
-          Gather;
+          // skip node
+          Gather(Node.StartPos);
+        end;
+      ctnEnumIdentifier,
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+        begin
+          // start reading behind identifier
+          Gather(Node.StartPos);
           MoveCursorToCleanPos(Node.StartPos);
           ReadNextAtom;
           StartPos:=CurPos.EndPos;
         end;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
-        Gather;
+      else
+        StartPos:=Node.StartPos;
       end;
       Node:=Node.Next;
     end;
@@ -1477,6 +1486,7 @@ var
     HasCode: boolean;
     UseInterface: boolean;
     Flags: String;
+    OldPos: LongInt;
   begin
     HasCode:=false;
     UseInterface:=false;
@@ -1501,6 +1511,7 @@ var
       UnitName:=copy(Src,UnitNamePos.StartPos,
                      UnitNamePos.EndPos-UnitNamePos.StartPos);
       if not IsUnitAlreadyChecked(UnitName) then begin
+        OldPos:=CurPos.StartPos;
         if UnitInFilePos.StartPos>=1 then begin
           UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
                                UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
@@ -1520,6 +1531,9 @@ var
           Flags:=Flags+',used';
         DebugLn(['CheckUsesSection ',UnitName,'=',Flags]);
         Units.Add(UnitName+'='+Flags);
+        // restore cursor
+        MoveCursorToCleanPos(OldPos);
+        ReadNextAtom;
       end;
       if AtomIsChar(';') then break;
       if not AtomIsChar(',') then
