@@ -1019,9 +1019,6 @@ begin
                                'ShowEmptyMethods', lisCodeHelpShowEmptyMethods);
     SrcEditMenuShowUnusedUnits:=RegisterIDEMenuCommand(AParent,
                                'ShowUnusedUnits', lisCodeHelpShowUnusedUnits);
-    {$IFNDEF EnableUnusedUnits}
-    SrcEditMenuShowUnusedUnits.Visible:=false;
-    {$ENDIF}
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');

@@ -3,6 +3,7 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   Height = 365
   Top = 236
   Width = 340
+  ActiveControl = UnitsTreeView
   Caption = 'UnusedUnitsDialog'
   ClientHeight = 365
   ClientWidth = 340
@@ -24,5 +25,6 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     Align = alClient
     DefaultItemHeight = 19
     TabOrder = 1
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end
