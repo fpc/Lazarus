@@ -47,8 +47,7 @@ uses
 ////////////////////////////////////////////////////
   ComCtrls, Controls, ImgList, StdCtrls,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
-  WSToolwin;
+  WSLCLClasses, WSControls, WSExtCtrls, WSToolwin;
 
 type
   { TWSStatusBar }

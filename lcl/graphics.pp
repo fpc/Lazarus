@@ -33,7 +33,7 @@ interface
 
 
 uses
-  SysUtils, Math, Types, Classes, Contnrs, FPCAdds,
+  SysUtils, Math, Types, Classes, FPCAdds,
   FileUtil,
   FPImgCmn, FPImage, FPCanvas,
   FPReadPNG, FPWritePNG, PNGComn,  // png support
