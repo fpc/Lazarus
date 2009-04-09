@@ -68,12 +68,11 @@ class procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowT
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TArrow, TWSArrow);
 ////////////////////////////////////////////////////
 end.

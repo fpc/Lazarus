@@ -172,12 +172,11 @@ class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TScrollingWinControl, TWSScrollingWinControl);
 //  RegisterWSComponent(TScrollBox, TWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWSCustomFrame);

@@ -563,12 +563,11 @@ class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBo
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TScrollBar, TWSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWSGroupBox);

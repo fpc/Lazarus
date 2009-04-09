@@ -100,12 +100,11 @@ type
 
 implementation
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TPreviewFileControl, TWSPreviewFileControl);
 //  RegisterWSComponent(TPreviewFileDialog, TWSPreviewFileDialog);
 //  RegisterWSComponent(TOpenPictureDialog, TWSOpenPictureDialog);

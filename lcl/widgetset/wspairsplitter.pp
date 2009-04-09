@@ -198,12 +198,11 @@ begin
   end;
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
 //  RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
   RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
 //  RegisterWSComponent(TPairSplitter, TWSPairSplitter);

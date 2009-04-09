@@ -83,12 +83,11 @@ class procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCal
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

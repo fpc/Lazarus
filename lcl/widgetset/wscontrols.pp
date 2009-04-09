@@ -328,12 +328,11 @@ begin
   Result := False;
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
   RegisterWSComponent(TDragImageList, TWSDragImageList);
   RegisterWSComponent(TControl, TWSControl);
   RegisterWSComponent(TWinControl, TWSWinControl);

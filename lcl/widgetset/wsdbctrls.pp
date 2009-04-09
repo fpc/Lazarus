@@ -125,12 +125,11 @@ type
 
 implementation
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TDBEdit, TWSDBEdit);
 //  RegisterWSComponent(TDBListBox, TWSDBListBox);
 //  RegisterWSComponent(TDBRadioGroup, TWSDBRadioGroup);

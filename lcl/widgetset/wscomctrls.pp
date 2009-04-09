@@ -514,12 +514,11 @@ class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const 
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TCustomStatusBar, TWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TWSPageControl);

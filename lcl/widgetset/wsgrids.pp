@@ -94,12 +94,11 @@ begin
   AEditor.Dispatch(GMsg);
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
 //  RegisterWSComponent(TStringCellEditor, TWSStringCellEditor);
     RegisterWSComponent(TCustomGrid, TWSCustomGrid);
 //  RegisterWSComponent(TDrawGrid, TWSDrawGrid);

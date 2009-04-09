@@ -187,12 +187,11 @@ begin
   Warn;
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TMenuItem, TWSMenuItem);
 //  RegisterWSComponent(TMenu, TWSMenu);
 //  RegisterWSComponent(TMainMenu, TWSMainMenu);

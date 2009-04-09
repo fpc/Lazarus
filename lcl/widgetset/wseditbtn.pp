@@ -88,12 +88,11 @@ type
 
 implementation
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TCustomEditButton, TWSCustomEditButton);
 //  RegisterWSComponent(TEditButton, TWSEditButton);
 //  RegisterWSComponent(TFileNameEdit, TWSFileNameEdit);

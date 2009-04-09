@@ -64,12 +64,11 @@ type
 
 implementation
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TCustomActionList, TWSCustomActionList);
 //  RegisterWSComponent(TActionList, TWSActionList);
 ////////////////////////////////////////////////////

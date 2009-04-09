@@ -356,12 +356,11 @@ begin
   Result := ATrayIcon.Icon.Canvas;
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
 //  RegisterWSComponent(TCustomPage, TWSCustomPage);
   RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
 //  RegisterWSComponent(TPage, TWSPage);

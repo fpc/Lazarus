@@ -94,12 +94,11 @@ class procedure TWSCustomCheckListBox.SetState(
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 //  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.

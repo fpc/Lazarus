@@ -86,12 +86,11 @@ class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit:
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
   RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
 //  RegisterWSComponent(TFloatSpinEdit, TWSFloatSpinEdit);
 ////////////////////////////////////////////////////

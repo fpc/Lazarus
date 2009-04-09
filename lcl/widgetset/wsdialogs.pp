@@ -117,12 +117,11 @@ class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
   RegisterWSComponent(TCommonDialog, TWSCommonDialog);
 //  RegisterWSComponent(TFileDialog, TWSFileDialog);
 //  RegisterWSComponent(TOpenDialog, TWSOpenDialog);

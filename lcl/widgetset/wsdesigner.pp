@@ -61,12 +61,11 @@ class procedure TWsCustomRubberBand.SetShape(ARubberBand: TCustomRubberBand;
 begin
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+//initialization
 // RegisterWSComponent(TCustomRubberBand, TWSCustomRubberBand);
 ////////////////////////////////////////////////////
 end.

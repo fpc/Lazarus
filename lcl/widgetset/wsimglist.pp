@@ -254,12 +254,11 @@ begin
   TDefaultImageListImplementor(AList.Reference.Ptr)[AIndex] := ABitmap;
 end;
 
-initialization
-
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+initialization
   RegisterWSComponent(TCustomImageList, TWSCustomImageList);
 ////////////////////////////////////////////////////
 end.
