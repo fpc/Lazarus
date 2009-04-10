@@ -270,6 +270,7 @@ type
     function Func39: TtkTokenKind;
     function Func40: TtkTokenKind;
     function Func41: TtkTokenKind;
+    function Func42: TtkTokenKind; // "alias"
     function Func44: TtkTokenKind;
     function Func45: TtkTokenKind;
     function Func47: TtkTokenKind;
@@ -592,6 +593,7 @@ begin
   fIdentFuncTable[39] := @Func39;
   fIdentFuncTable[40] := @Func40;
   fIdentFuncTable[41] := @Func41;
+  fIdentFuncTable[42] := @Func42;
   fIdentFuncTable[44] := @Func44;
   fIdentFuncTable[45] := @Func45;
   fIdentFuncTable[47] := @Func47;
@@ -1020,6 +1022,14 @@ begin
     Result := tkKey;
   end
   else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func42: TtkTokenKind;
+begin
+  if KeyComp('Alias') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func44: TtkTokenKind;
