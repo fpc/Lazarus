@@ -18,6 +18,8 @@ procedure RegisterCustomControl;
 procedure RegisterImageList;
 // comctrls
 procedure RegisterStatusBar;
+// calender
+procedure RegisterCustomCalendar;
 
 implementation
 
@@ -32,6 +34,8 @@ function WSRegisterCustomControl: Boolean;   external name 'WSRegisterCustomCont
 function WSRegisterImageList: Boolean;       external name 'WSRegisterImageList';
 // comctrls
 function WSRegisterStatusBar: Boolean;       external name 'WSRegisterStatusBar';
+// calender
+function WSRegisterCustomCalendar: Boolean;    external name 'WSRegisterCustomCalendar';
 
 procedure RegisterCustomImageList;
 const
@@ -114,6 +118,15 @@ begin
   WSRegisterStatusBar;
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TStatusBar, TWSStatusBar);
+  Done := True;
+end;
+
+procedure RegisterCustomCalendar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCalendar;
   Done := True;
 end;
 

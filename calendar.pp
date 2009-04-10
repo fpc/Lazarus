@@ -33,7 +33,8 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
+  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources,
+  WSFactory;
   
 type
   TDisplaySetting = (
@@ -81,6 +82,7 @@ type
     function GetDate: String;
     procedure SetDate(const AValue: String);
   protected
+    class procedure WSRegisterClass; override;
     procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
@@ -199,6 +201,12 @@ begin
   FDateAsString := AValue;
   FDate := NewDate;
   SetProps;
+end;
+
+class procedure TCustomCalendar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCalendar;
 end;
 
 function TCustomCalendar.GetDisplaySettings: TDisplaySettings;

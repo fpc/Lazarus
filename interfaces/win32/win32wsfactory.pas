@@ -4,7 +4,7 @@ unit Win32WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList,
+  Classes, Controls, ComCtrls, ImgList, Calendar,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -85,6 +85,12 @@ end;
 function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
   RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
+  Result := True;
+end;
+
+function RegisterCustomCalendar: Boolean; alias : 'WSRegisterCustomCalendar';
+begin
+  RegisterWSComponent(TCustomCalendar, TWin32WSCustomCalendar);
   Result := True;
 end;
 
