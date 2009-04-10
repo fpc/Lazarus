@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Process, AsyncProcess, LCLProc, Forms, Controls, FileUtil,
-  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter;
+  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)

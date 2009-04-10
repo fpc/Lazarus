@@ -23,7 +23,7 @@ unit TestLpi;
 interface
 
 uses
-  Classes, SysUtils, strutils, fpcunit, testregistry, process, AsyncProcess,
+  Classes, SysUtils, strutils, fpcunit, testregistry, process, UTF8Process,
   InterfaceBase, FileUtil,
   TestGlobals;
 

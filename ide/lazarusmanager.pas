@@ -81,7 +81,7 @@ uses
 {$IFDEF unix}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, Process, AsyncProcess,
+  Classes, SysUtils, Process, AsyncProcess, UTF8Process,
   LCLProc, FileUtil, Forms, Controls, Dialogs,
   LazConf, Splash;
   

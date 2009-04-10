@@ -6,7 +6,7 @@ interface
 
 uses
   // General units
-  Classes, SysUtils, Process, AsyncProcess, DB, Typinfo,
+  Classes, SysUtils, Process, UTF8Process, DB, Typinfo,
   // IDE interface
   MenuIntf, propedits, lresources,
   // Data dict units

@@ -41,7 +41,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Process, AsyncProcess, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, LResources, ExtCtrls,
-  LazConfigStorage, FileUtil,
+  LazConfigStorage, FileUtil, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
   InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, ButtonPanel;

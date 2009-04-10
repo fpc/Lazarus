@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, AsyncProcess, Buttons, Process, ExtCtrls;
+  FileUtil, UTF8Process, Buttons, Process, ExtCtrls;
 
 type
   { TForm1 }

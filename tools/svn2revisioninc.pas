@@ -46,7 +46,7 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, CustApp, SysUtils, Process, AsyncProcess, LCLProc, FileUtil,
+  Classes, CustApp, SysUtils, Process, UTF8Process, LCLProc, FileUtil,
   Dom, XmlRead, GetOpts;
 
 type

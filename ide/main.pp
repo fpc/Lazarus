@@ -75,7 +75,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
+  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
   // codetools
   LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,

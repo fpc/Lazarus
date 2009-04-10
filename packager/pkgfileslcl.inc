@@ -81,6 +81,7 @@ AddFile('textstrings.pas','TextStrings',pftUnit,[],cpBase);
 AddFile('toolwin.pp','Toolwin',pftUnit,[],cpBase);
 AddFile('translations.pas','Translations',pftUnit,[],cpBase);
 AddFile('utrace.pp','UTrace',pftUnit,[],cpBase);
+AddFile('utf8process.pp','UTF8Process',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('widgetset/wsactnlist.pp','WSActnList',pftUnit,[],cpBase);
 AddFile('widgetset/wsarrow.pp','WSArrow',pftUnit,[],cpBase);
 AddFile('widgetset/wsbuttons.pp','WSButtons',pftUnit,[],cpBase);

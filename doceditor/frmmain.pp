@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   FileUtil, Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,
-  process, AsyncProcess, fpdeutil;
+  process, UTF8Process, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);

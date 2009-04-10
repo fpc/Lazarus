@@ -27,14 +27,14 @@ interface
 uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
   FileUtil, Clipbrd, StdCtrls, Buttons, Process, AsyncProcess, Menus, ExtCtrls,
+  UTF8Process, ButtonPanel,
   // codetools
   KeywordFuncLists, CodeToolManager, FileProcs,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
-  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf,
-  ButtonPanel;
+  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
 
 type
   TCompilerOptionsTest = (

@@ -9,7 +9,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
-  Process, AsyncProcess, LCLProc, DynQueue, FileUtil,
+  Process, AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process,
   IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
   IDEProcs, LazConf;
 

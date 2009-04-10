@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, Math, process, fpcunit, testregistry,
-  FileUtil, AsyncProcess, InterfaceBase,
+  FileUtil, UTF8Process, InterfaceBase,
   TestGlobals;
 
 type
