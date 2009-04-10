@@ -12586,13 +12586,6 @@ begin
     NewSource, NewX, NewY, NewTopLine, true);
   CodeToolBoss.GetIdentifierAt(NewSource,NewX,NewY,Identifier);
   CurUnitname:=ExtractFileNameOnly(NewSource.Filename);
-  if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
-  begin
-    IDEMessageDialog(srkmecRenameIdentifier,
-      lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
-      mtInformation,[mbCancel],'');
-    exit(mrCancel);
-  end;
 
   GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
@@ -12690,6 +12683,13 @@ begin
 
     // rename identifier
     if Options.Rename and Rename then begin
+      if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+      begin
+        IDEMessageDialog(srkmecRenameIdentifier,
+          lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
+          mtInformation,[mbCancel],'');
+        exit(mrCancel);
+      end;
       if not CodeToolBoss.RenameIdentifier(PascalReferences,
         Identifier,Options.RenameTo)
       then begin
