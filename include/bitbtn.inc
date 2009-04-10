@@ -233,6 +233,13 @@ begin
   end;
 end;
 
+class procedure TCustomBitBtn.WSRegisterClass;
+begin
+  RegisterPropertyToSkip(TBitBtn, 'Style', 'VCL compatibility property', '');
+  inherited WSRegisterClass;
+  RegisterCustomBitBtn;
+end;
+
 procedure TCustomBitBtn.InitializeWnd;
 begin
   inherited InitializeWnd;

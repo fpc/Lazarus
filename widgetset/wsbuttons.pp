@@ -95,13 +95,4 @@ class procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomButton, TWSButton);
-//  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
-//  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
-////////////////////////////////////////////////////
 end.

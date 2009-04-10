@@ -40,7 +40,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache;
+  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache, WSFactory;
 
 type
   TButtonLayout =
@@ -153,6 +153,7 @@ type
     function GetCaptionOfKind(aKind: TBitBtnKind): String;
   protected
     FButtonGlyph: TButtonGlyph;
+    class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
@@ -276,6 +277,7 @@ type
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
   protected
     FState: TButtonState;
+    class procedure WSRegisterClass; override;
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject);
     function  DialogChar(var Message: TLMKey): boolean; override;
@@ -481,5 +483,4 @@ end;
 
 initialization
   {$I btn_icons.lrs}
-  RegisterPropertyToSkip(TBitBtn, 'Style', 'VCL compatibility property', '');
 end.

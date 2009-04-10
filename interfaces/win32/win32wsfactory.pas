@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls,
-  Dialogs, (*DirSel,*) ExtCtrls, ExtDlgs,
+  Dialogs, (*DirSel,*) ExtCtrls, ExtDlgs, Buttons,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -484,6 +484,19 @@ end;*)
 function WSRegisterCalendarDialog: Boolean;    alias : 'WSRegisterCalendarDialog';
 begin
 //  RegisterWSComponent(TCalendarDialog, TWin32WSCalendarDialog);
+  Result := False;
+end;
+
+// Buttons
+function WSRegisterCustomBitBtn: Boolean;      alias : 'WSRegisterCustomBitBtn';
+begin
+  RegisterWSComponent(TCustomBitBtn, TWin32WSBitBtn);
+  Result := True;
+end;
+
+function WSRegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
+begin
+//  RegisterWSComponent(TCustomSpeedButton, TWin32WSSpeedButton);
   Result := False;
 end;
 

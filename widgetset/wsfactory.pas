@@ -92,6 +92,10 @@ procedure RegisterCalculatorDialog;
 procedure RegisterCalculatorForm;
 //procedure RegisterCalendarDialogForm;
 procedure RegisterCalendarDialog;
+// Buttons
+procedure RegisterCustomBitBtn;
+procedure RegisterCustomSpeedButton;
+
 
 implementation
 uses
@@ -181,6 +185,9 @@ function WSRegisterCalculatorDialog: Boolean;  external name 'WSRegisterCalculat
 function WSRegisterCalculatorForm: Boolean;    external name 'WSRegisterCalculatorForm';
 //function WSRegisterCalendarDialogForm: Boolean; external name 'WSRegisterCalendarDialogForm';
 function WSRegisterCalendarDialog: Boolean;    external name 'WSRegisterCalendarDialog';
+// Buttons
+function WSRegisterCustomBitBtn: Boolean;      external name 'WSRegisterCustomBitBtn';
+function WSRegisterCustomSpeedButton: Boolean; external name 'WSRegisterCustomSpeedButton';
 
 
 procedure RegisterCustomImageList;
@@ -594,7 +601,7 @@ begin
   if Done then exit;
   WSRegisterCustomButton;
 //  if not WSRegisterCustomButton then
-//
+//    RegisterWSComponent(TCustomButton, TWSButton);
   Done := True;
 end;
 
@@ -993,6 +1000,28 @@ begin
   WSRegisterCalendarDialog;
 //  if not WSRegisterCalendarDialog then
 //    RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
+  Done := True;
+end;
+
+procedure RegisterCustomBitBtn;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomBitBtn;
+//  if not WSRegisterCustomBitBtn then
+//    RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
+  Done := True;
+end;
+
+procedure RegisterCustomSpeedButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomSpeedButton;
+//  if not WSRegisterCustomSpeedButton then
+//    RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
   Done := True;
 end;
 
