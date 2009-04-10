@@ -669,6 +669,12 @@ begin
   Clear;
 end;
 
+class procedure TCustomImageList.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomImageList;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Insert
   Params:  Index: the index of the inserted image

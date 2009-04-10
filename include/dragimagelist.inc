@@ -36,6 +36,12 @@ begin
     WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
 
+class procedure TDragImageList.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterDragImageList;
+end;
+
 {
   TDragImageList.Initialize
   set default values for properties

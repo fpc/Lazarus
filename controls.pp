@@ -282,6 +282,7 @@ type
     FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
     procedure SetDragCursor(const AValue: TCursor);
   protected
+    class procedure WSRegisterClass; override;
     procedure Initialize; override;
   public
     function BeginDrag(Window: HWND; X, Y: Integer): Boolean;
@@ -970,6 +971,7 @@ type
   protected
     FControlState: TControlState;
     FCursor: TCursor;
+    class procedure WSRegisterClass; override;
     function GetCursor: TCursor; virtual;
     procedure SetCursor(Value: TCursor); virtual;
     procedure SetVisible(Value: Boolean); virtual;
@@ -1626,6 +1628,7 @@ type
                                       var BoundsModified: Boolean);
   protected
     FWinControlFlags: TWinControlFlags;
+    class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure CreateControlAlignList(TheAlign: TAlign;
                                     AlignList: TFPList; StartControl: TControl);
@@ -1888,6 +1891,7 @@ type
     FOnPaint: TNotifyEvent;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
+    class procedure WSRegisterClass; override;
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;
@@ -1906,6 +1910,7 @@ type
     FCanvas: TCanvas;
     FOnPaint: TNotifyEvent;
   protected
+    class procedure WSRegisterClass; override;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure DestroyWnd; override;
     procedure PaintWindow(DC: HDC); override;
@@ -2295,6 +2300,7 @@ implementation
 
 uses
   WSControls, // circle with base widgetset is allowed
+  WSFactory,
   Forms, // the circle can't be broken without breaking Delphi compatibility
   Math;  // Math is in RTL and only a few functions are used.
 

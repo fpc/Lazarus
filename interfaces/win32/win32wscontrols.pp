@@ -585,19 +585,4 @@ begin
     Result := ImageList_DragShowNolock(True);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TDragImageList, TWin32WSDragImageList); // Uncomment with native image list
-  RegisterWSComponent(TControl, TWin32WSControl);
-  RegisterWSComponent(TWinControl, TWin32WSWinControl);
-//  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
-//  RegisterWSComponent(TImageList, TWin32WSImageList);
-////////////////////////////////////////////////////
 end.

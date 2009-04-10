@@ -3075,6 +3075,12 @@ begin
   SetBounds(FLeft, FTop, Max(0,Value), FHeight);
 end;
 
+class procedure TControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterControl;
+end;
+
 function TControl.GetCursor: TCursor;
 begin
   Result := FCursor;

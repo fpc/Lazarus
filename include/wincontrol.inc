@@ -5599,6 +5599,12 @@ begin
   end;
 end;
 
+class procedure TWinControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterWinControl;
+end;
+
 function TWinControl.IsClientHeightStored: boolean;
 begin
   // The ClientHeight is needed to restore childs anchored akBottom

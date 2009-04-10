@@ -837,7 +837,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TWin32WSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
   RegisterWSComponent(TCustomListView, TWin32WSCustomListView);

@@ -41,7 +41,7 @@ uses
   SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
   FileUtil, LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType,
   Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
-  Themes;
+  Themes, WSLCLClasses, InterfaceBase;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -140,6 +140,7 @@ type
     procedure SetSimplePanel(Value : Boolean);
     procedure SetSizeGrip(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure BoundsChanged; override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -2785,7 +2786,7 @@ implementation
 
 // !!! Avoid unit circles. Only add units if really needed.
 uses
-  WSComCtrls;
+  WSComCtrls, WSFactory;
 
 const
   ScrollBarWidth = 0;

@@ -146,8 +146,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
 
-    function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
-
+    class procedure WSRegisterClass; override;
+    function WSCreateReference(AParams: TCreateParams): PWSReference; override;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateSize(AWidth, AHeight: Integer);
@@ -206,7 +206,8 @@ implementation
 
 uses
   dialogs,
-  WSImglist;
+  WSImglist,
+  WSFactory;
 
 {$I imglist.inc}
 
