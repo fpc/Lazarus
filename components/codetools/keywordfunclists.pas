@@ -762,6 +762,7 @@ begin
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;

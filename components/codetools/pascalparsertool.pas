@@ -1517,6 +1517,11 @@ begin
             ReadConstant(true,false,[]);
           end;
         end;
+      end else if UpAtomIs('ALIAS') then begin
+        if not ReadNextAtomIsChar(':') then
+          RaiseCharExpectedButAtomFound(':');
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
         // read assembler alias   [public,alias: 'alternative name'],
         // internproc, internconst, external
