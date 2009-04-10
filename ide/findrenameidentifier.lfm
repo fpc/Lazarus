@@ -52,7 +52,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     object NewEdit: TEdit
       Left = 6
       Height = 23
-      Top = 6
+      Top = 34
       Width = 424
       Align = alTop
       BorderSpacing.Around = 6
@@ -62,7 +62,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     object RenameCheckBox: TCheckBox
       Left = 6
       Height = 22
-      Top = 35
+      Top = 6
       Width = 424
       Align = alTop
       BorderSpacing.Around = 6

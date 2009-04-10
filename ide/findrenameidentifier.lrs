@@ -17,35 +17,34 @@ LazarusResources.Add('TFindRenameIdentifierDialog','FORMDATA',[
   +#6'Height'#2'R'#3'Top'#2'r'#5'Width'#3#184#1#5'Align'#7#8'alBottom'#8'AutoSi'
   +'ze'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#11'NewGroupBox'#12'ClientHe'
   +'ight'#2'?'#11'ClientWidth'#3#180#1#8'TabOrder'#2#1#0#5'TEdit'#7'NewEdit'#4
-  +'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#5'alTop'#20
+  +'Left'#2#6#6'Height'#2#23#3'Top'#2'"'#5'Width'#3#168#1#5'Align'#7#5'alTop'#20
   +'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#7'NewEdit'#0#0#9'TCheck'
-  +'Box'#14'RenameCheckBox'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'#'#5'Width'#3
-  +#168#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#14'Rena'
-  +'meCheckBox'#8'OnChange'#7#20'RenameCheckBoxChange'#8'TabOrder'#2#1#0#0#0#9
-  +'TGroupBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'#3#238#0#3'Top'#3#202#0#5
-  +'Width'#3#184#1#5'Align'#7#8'alBottom'#8'AutoSize'#9#20'BorderSpacing.Around'
-  +#2#6#7'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#219#0#11'ClientWidth'
-  +#3#180#1#8'TabOrder'#2#2#0#9'TCheckBox'#21'ScopeCommentsCheckBox'#4'Left'#2#6
-  +#6'Height'#2#22#3'Top'#3#191#0#5'Width'#3#168#1#5'Align'#7#5'alTop'#11'Allow'
-  +'Grayed'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#21'ScopeCommentsCheckBo'
-  +'x'#8'TabOrder'#2#0#0#0#11'TRadioGroup'#15'ScopeRadioGroup'#4'Left'#2#6#6'He'
-  +'ight'#2'w'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'AutoFill'#9#8
-  +'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'ScopeRadioGroup'#28
-  +'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'C'
-  +'hildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing'
-  +'.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHoriz'
-  +'ontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChi'
-  +'lds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSiz'
-  +'ing.ControlsPerLine'#2#1#12'ClientHeight'#2'd'#11'ClientWidth'#3#164#1#13'I'
-  +'tems.Strings'#1#6#15'in current unit'#6#15'in main project'#6#30'in project'
-  +'/package owning file'#6'!in all open projects and packages'#0#8'TabOrder'#2
-  +#1#0#0#9'TGroupBox'#18'ExtraFilesGroupBox'#4'Left'#2#6#6'Height'#2'6'#3'Top'
-  +#3#131#0#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'AutoSize'#9#20'BorderSpacing'
-  +'.Around'#2#6#7'Caption'#6#18'ExtraFilesGroupBox'#12'ClientHeight'#2'#'#11'C'
-  +'lientWidth'#3#164#1#8'TabOrder'#2#2#0#5'TEdit'#14'ExtraFilesEdit'#4'Left'#2
-  +#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3#152#1#5'Align'#7#5'alTop'#20'BorderS'
-  +'pacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#14'ExtraFilesEdit'#0#0#0#0#12
-  +'TButtonPanel'#12'ButtonPanel1'#4'Left'#2#6#6'Height'#2','#3'Top'#3#190#1#5
-  +'Width'#3#184#1#8'TabOrder'#2#3#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0#0#0
-  +#0
+  +'Box'#14'RenameCheckBox'#4'Left'#2#6#6'Height'#2#22#3'Top'#2#6#5'Width'#3#168
+  +#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#14'RenameCh'
+  +'eckBox'#8'OnChange'#7#20'RenameCheckBoxChange'#8'TabOrder'#2#1#0#0#0#9'TGro'
+  +'upBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'#3#238#0#3'Top'#3#202#0#5'Wid'
+  +'th'#3#184#1#5'Align'#7#8'alBottom'#8'AutoSize'#9#20'BorderSpacing.Around'#2
+  +#6#7'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#219#0#11'ClientWidth'#3
+  +#180#1#8'TabOrder'#2#2#0#9'TCheckBox'#21'ScopeCommentsCheckBox'#4'Left'#2#6#6
+  +'Height'#2#22#3'Top'#3#191#0#5'Width'#3#168#1#5'Align'#7#5'alTop'#11'AllowGr'
+  +'ayed'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#21'ScopeCommentsCheckBox'
+  +#8'TabOrder'#2#0#0#0#11'TRadioGroup'#15'ScopeRadioGroup'#4'Left'#2#6#6'Heigh'
+  +'t'#2'w'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'AutoFill'#9#8'Aut'
+  +'oSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'ScopeRadioGroup'#28'C'
+  +'hildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'Ch'
+  +'ildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.'
+  +'EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizo'
+  +'ntal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChil'
+  +'ds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizi'
+  +'ng.ControlsPerLine'#2#1#12'ClientHeight'#2'd'#11'ClientWidth'#3#164#1#13'It'
+  +'ems.Strings'#1#6#15'in current unit'#6#15'in main project'#6#30'in project/'
+  +'package owning file'#6'!in all open projects and packages'#0#8'TabOrder'#2#1
+  +#0#0#9'TGroupBox'#18'ExtraFilesGroupBox'#4'Left'#2#6#6'Height'#2'6'#3'Top'#3
+  +#131#0#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'AutoSize'#9#20'BorderSpacing.A'
+  +'round'#2#6#7'Caption'#6#18'ExtraFilesGroupBox'#12'ClientHeight'#2'#'#11'Cli'
+  +'entWidth'#3#164#1#8'TabOrder'#2#2#0#5'TEdit'#14'ExtraFilesEdit'#4'Left'#2#6
+  +#6'Height'#2#23#3'Top'#2#6#5'Width'#3#152#1#5'Align'#7#5'alTop'#20'BorderSpa'
+  +'cing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#14'ExtraFilesEdit'#0#0#0#0#12'TB'
+  +'uttonPanel'#12'ButtonPanel1'#4'Left'#2#6#6'Height'#2','#3'Top'#3#190#1#5'Wi'
+  +'dth'#3#184#1#8'TabOrder'#2#3#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0#0#0#0
 ]);

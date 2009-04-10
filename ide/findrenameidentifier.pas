@@ -83,7 +83,7 @@ procedure CleanUpFileList(Files: TStringList);
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint;
   AllowRename: boolean; // allow user to disable/enable rename
-  SetRenameActive: boolean; // enable rename
+  SetRenameActive: boolean; // check rename
   Options: TFindRenameIdentifierOptions): TModalResult;
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
