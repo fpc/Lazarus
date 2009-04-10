@@ -41,18 +41,16 @@ uses
   Win32WSStdCtrls;
 
 const
-  HasRegisteredCustomImageList: Boolean = False;
   HasRegisteredDragImageList: Boolean = False;
   HasRegisteredControl: Boolean = False;
   HasRegisteredWinControl: Boolean = False;
   HasRegisteredStatusBar: Boolean = False;
 
 // imglist
-procedure RegisterCustomImageList; alias : 'WSRegisterCustomImageList';
+function WSRegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
 begin
-  if not HasRegisteredCustomImageList then
-    RegisterWSComponent(TCustomImageList, TWin32WSCustomImageList);
-  HasRegisteredCustomImageList := True;
+  RegisterWSComponent(TCustomImageList, TWin32WSCustomImageList);
+  Result := True;
 end;
 
 // controls

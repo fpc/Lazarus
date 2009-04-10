@@ -8,7 +8,7 @@ uses
   WSLCLClasses, WSControls, WSImgList;
 
 // imglist
-procedure RegisterCustomImageList; external name 'WSRegisterCustomImageList';
+procedure RegisterCustomImageList;
 // controls
 procedure RegisterDragImageList; external name 'WSRegisterDragImageList';
 procedure RegisterControl; external name 'WSRegisterControl';
@@ -19,9 +19,8 @@ procedure RegisterImageList; external name 'WSRegisterImageList';
 // comctrls
 procedure RegisterStatusBar; external name 'WSRegisterStatusBar';
 
-// defaults
-// imglist
-procedure DefRegisterCustomImageList;
+(* Defaults, *)
+(* Widgetset can point back to them, if they do have nothing of their own *)
 // controls
 procedure DefRegiterDragImageList;
 procedure DefRegisterControl;
@@ -40,11 +39,17 @@ const
   HasRegisteredControl: Boolean = False;
   HasRegisteredWinControl: Boolean = False;
 
-procedure DefRegisterCustomImageList;
+// imglist
+function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
+
+procedure RegisterCustomImageList;
+const
+  Done: Boolean = False;
 begin
-  if not HasRegisteredCustomImageList then
+  if Done then exit;
+  if not WSRegisterCustomImageList then
     RegisterWSComponent(TCustomImageList, TWSCustomImageList);
-  HasRegisteredCustomImageList := True;
+  Done := true;
 end;
 
 procedure DefRegiterDragImageList;
