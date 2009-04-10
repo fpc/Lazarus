@@ -40,7 +40,7 @@ begin
   if Done then exit;
   if not WSRegisterCustomImageList then
     RegisterWSComponent(TCustomImageList, TWSCustomImageList);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterDragImageList;
@@ -50,7 +50,7 @@ begin
   if Done then exit;
   if not WSRegisterDragImageList then
     RegisterWSComponent(TDragImageList, TWSDragImageList);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterControl;
@@ -60,7 +60,7 @@ begin
   if Done then exit;
   if not WSRegisterControl then
     RegisterWSComponent(TControl, TWSControl);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterWinControl;
@@ -70,7 +70,7 @@ begin
   if Done then exit;
   if not WSRegisterWinControl then
     RegisterWSComponent(TWinControl, TWSWinControl);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterGraphicControl;
@@ -81,7 +81,7 @@ begin
   WSRegisterGraphicControl;
 //  if not WSRegisterGraphicControl then
 //    RegisterWSComponent(TGraphicControl, TWSGraphicControl);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterCustomControl;
@@ -92,7 +92,7 @@ begin
   WSRegisterCustomControl;
 //  if not WSRegisterCustomControl then
 //    RegisterWSComponent(TCustomControl, TWSCustomControl);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterImageList;
@@ -103,7 +103,7 @@ begin
   WSRegisterImageList;
 //  if not WSRegisterImageList then
 //    RegisterWSComponent(TImageList, TWSImageList);
-  Done := true;
+  Done := True;
 end;
 
 procedure RegisterStatusBar;
@@ -114,7 +114,7 @@ begin
   WSRegisterStatusBar;
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TStatusBar, TWSStatusBar);
-  Done := true;
+  Done := True;
 end;
 
 end.
