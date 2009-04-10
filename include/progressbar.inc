@@ -212,6 +212,12 @@ begin
     ApplyChanges;
   end;
 end;
+
+class procedure TCustomProgressBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomProgressBar;
+end;
  
 {------------------------------------------------------------------------------
   Method: TCustomProgressBar.StepIt

@@ -221,6 +221,8 @@ type
     function GetTabIndex: Integer;
     procedure SetPageControl(APageControl: TPageControl);
     procedure SetTabIndex(const AValue: Integer);
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -263,6 +265,7 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
+    fOnPageChanged: TNotifyEvent;
     FPageToUndock: TTabSheet;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
@@ -273,6 +276,7 @@ type
     procedure SetTabIndex(const AValue: Integer);
     function FindPageWithDockClient(Client: TControl): TTabSheet;
   protected
+    class procedure WSRegisterClass; override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
@@ -980,6 +984,7 @@ type
     procedure ItemInserted(const AItem: TListItem);
 
   protected
+    class procedure WSRegisterClass; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
 
@@ -1174,6 +1179,7 @@ type
     procedure SetBarShowText (Value : boolean);
     procedure SetOrientation (Value : TProgressBarOrientation);
   protected
+    class procedure WSRegisterClass; override;
     procedure ApplyChanges;
     procedure InitializeWnd; override;
     procedure Loaded; override;
@@ -1277,6 +1283,7 @@ type
     procedure UpdateUpDownPositionText;
   protected
     OldKeyDown : TKeyEvent;
+    class procedure WSRegisterClass; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
@@ -1411,6 +1418,7 @@ type
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   protected
     FToolBar: TToolBar;
+    class procedure WSRegisterClass; override;
     procedure CopyPropertiesFromMenuItem(const Value: TMenuItem);
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -1549,6 +1557,7 @@ type
     procedure RemoveButton(Button: TToolButton);
     function IsVertical: Boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
@@ -1674,6 +1683,7 @@ type
     procedure SetTickStyle(Value: TTickStyle);
     procedure UpdateSelection;
   protected
+    class procedure WSRegisterClass; override;
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure FixParams(var APosition, AMin, AMax: Integer);
@@ -2284,6 +2294,7 @@ type
   protected
     FChangeTimer: TTimer;
     FEditor: TEdit;
+    class procedure WSRegisterClass; override;
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;

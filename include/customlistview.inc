@@ -342,6 +342,12 @@ begin
   DoInsert(AItem);
 end;
 
+class procedure TCustomListView.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomListView;
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItems                                                   }
 {------------------------------------------------------------------------------}

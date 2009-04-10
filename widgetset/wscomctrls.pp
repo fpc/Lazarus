@@ -513,25 +513,4 @@ class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const 
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomStatusBar, TWSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TWSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TWSPageControl);
-//  RegisterWSComponent(TCustomListView, TWSCustomListView);
-//  RegisterWSComponent(TCustomListView, TWSListView);
-//  RegisterWSComponent(TCustomProgressBar, TWSProgressBar);
-//  RegisterWSComponent(TCustomCustomUpDown, TWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TWSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TWSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TWSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TWSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TWSTreeView);
-////////////////////////////////////////////////////
 end.

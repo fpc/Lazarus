@@ -441,6 +441,12 @@ begin
     Message.Result := 0;
 end;
 
+class procedure TToolButton.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomToolButton;
+end;
+
 procedure TToolButton.MouseEnter;
 begin
   //DebugLn('TToolButton.MouseEnter ',Name);

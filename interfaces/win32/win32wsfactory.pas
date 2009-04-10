@@ -41,7 +41,7 @@ uses
   Win32WSStdCtrls;
 
 // imglist
-function WSRegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
 begin
   RegisterWSComponent(TCustomImageList, TWin32WSCustomImageList);
   Result := True;
@@ -76,11 +76,6 @@ begin
   Result := False;
 end;
 
-function RegisterImageList: Boolean; alias : 'WSRegisterImageList';
-begin
-  Result := False;
-end;
-
 // comctrls
 function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
@@ -88,6 +83,55 @@ begin
   Result := True;
 end;
 
+function RegisterTabSheet: Boolean; alias : 'WSRegisterTabSheet';
+begin
+  Result := False;
+end;
+
+function RegisterPageControl: Boolean; alias : 'WSRegisterPageControl';
+begin
+  Result := False;
+end;
+
+function RegisterCustomListView: Boolean; alias : 'WSRegisterCustomListView';
+begin
+  RegisterWSComponent(TCustomListView, TWin32WSCustomListView);
+  Result := True;
+end;
+
+function RegisterCustomProgressBar: Boolean; alias : 'WSRegisterCustomProgressBar';
+begin
+  RegisterWSComponent(TCustomProgressBar, TWin32WSProgressBar);
+  Result := True;
+end;
+
+function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';
+begin
+  Result := False;
+end;
+
+function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';
+begin
+  Result := False;
+end;
+
+function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
+begin
+  Result := False;
+end;
+
+function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
+begin
+  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
+  Result := True;
+end;
+
+function RegisterCustomTreeView: Boolean; alias : 'WSRegisterCustomTreeView';
+begin
+  Result := False;
+end;
+
+// calendar
 function RegisterCustomCalendar: Boolean; alias : 'WSRegisterCustomCalendar';
 begin
   RegisterWSComponent(TCustomCalendar, TWin32WSCustomCalendar);

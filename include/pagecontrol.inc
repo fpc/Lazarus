@@ -71,6 +71,12 @@ begin
   Result := nil;
 end;
 
+class procedure TPageControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPageControl;
+end;
+
 procedure TPageControl.DoAddDockClient(Client: TControl; const ARect: TRect);
 var
   TabSheet: TTabSheet;

@@ -206,6 +206,12 @@ begin
   Result := Height > Width;
 end;
 
+class procedure TToolBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterToolBar;
+end;
+
 procedure TToolBar.ApplyFontForButtons;
 var
   i: integer;

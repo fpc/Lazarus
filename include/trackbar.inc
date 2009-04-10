@@ -287,6 +287,12 @@ procedure TCustomTrackBar.UpdateSelection;
 begin
 end;
 
+class procedure TCustomTrackBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomTrackBar;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomTrackBar.ApplyChanges
   Params: none
