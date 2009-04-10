@@ -3113,6 +3113,7 @@ begin
   PackageGraph.MarkAllPackagesAsNotVisited;
   for i:=0 to OldOwnerList.Count-1 do
     AddUsedByOwners(TObject(OldOwnerList[i]));
+  AddedNonPackages.Free;
   OldOwnerList.Free;
 end;
 
