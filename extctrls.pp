@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, popupnotifier;
+  LCLClasses, Menus, popupnotifier, WSFactory;
 
 type
 
@@ -60,6 +60,7 @@ type
     procedure SetImageIndex(const AValue: integer);
     procedure SetTabVisible(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure SetParent(AParent: TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
@@ -182,6 +183,7 @@ type
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
+    class procedure WSRegisterClass; override;
     PageClass: TCustomPageClass;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
@@ -234,6 +236,8 @@ type
   { TPage }
 
   TPage = class(TCustomPage)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Caption;
     property ChildSizing;
@@ -268,6 +272,8 @@ type
     function GetActiveNotebookPageComponent: TPage;
     function GetNoteBookPage(Index: Integer): TPage;
     procedure SetActiveNotebookPageComponent(const AValue: TPage);
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Page[Index: Integer]: TPage read GetNoteBookPage;
@@ -385,6 +391,7 @@ type
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
   protected
+    class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -457,6 +464,7 @@ type
     procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
+    class procedure WSRegisterClass; override;
     procedure CheckAlignment;
     function CheckNewSize(var NewSize: integer): boolean; virtual;
     function FindAlignControl: TControl;
@@ -496,6 +504,8 @@ type
   { TSplitter }
 
   TSplitter = class(TCustomSplitter)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -524,6 +534,7 @@ type
 
   TPaintBox = class(TGraphicControl)
   protected
+    class procedure WSRegisterClass; override;
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
@@ -587,6 +598,7 @@ type
     procedure SetStretch(const AValue : Boolean);
     procedure SetTransparent(const AValue : Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure PictureChanged(Sender : TObject); virtual;
     function DestRect: TRect; virtual;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -620,6 +632,8 @@ type
   { TImage }
 
   TImage = class(TCustomImage)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -673,6 +687,7 @@ type
     function GetShape:TBevelShape;
     procedure SetShape(aShape:TBevelShape);
   protected
+    class procedure WSRegisterClass; override;
     procedure Paint; override;
   public
     constructor Create(AOwner:TComponent); override;
@@ -735,6 +750,7 @@ type
     procedure UpdateItems;
     procedure UpdateTabStops;
   protected
+    class procedure WSRegisterClass; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
@@ -762,6 +778,8 @@ type
   { TRadioGroup }
 
   TRadioGroup = class(TCustomRadioGroup)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -839,6 +857,7 @@ type
     procedure UpdateItems;
     procedure UpdateControlsPerLine;
   protected
+    class procedure WSRegisterClass; override;
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
     procedure DefineProperties(Filer: TFiler); override;
@@ -864,6 +883,8 @@ type
   { TCheckGroup }
 
   TCheckGroup = class(TCustomCheckGroup)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -954,6 +975,7 @@ type
     procedure SetLabelPosition(const Value: TLabelPosition);
     procedure SetLabelSpacing(const Value: Integer);
   protected
+    class procedure WSRegisterClass; override;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetName(const Value: TComponentName); override;
     procedure DoPositionLabel; virtual;
@@ -974,6 +996,8 @@ type
   { TLabeledEdit }
 
   TLabeledEdit = class(TCustomLabeledEdit)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Anchors;
     property AutoSelect;
@@ -1038,6 +1062,7 @@ type
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
   protected
+    class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var Rect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
@@ -1064,6 +1089,8 @@ type
   { TPanel }
 
   TPanel = class(TCustomPanel)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1144,6 +1171,8 @@ type
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
     procedure IconChanged(Sender: TObject);
+  protected
+    class procedure WSRegisterClass; override;
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1232,6 +1261,62 @@ end;
 {$I bevel.inc}
 {$I customimage.inc}
 {$I customtrayicon.inc}
+
+{ TPage }
+
+class procedure TPage.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPage;
+end;
+
+{ TSplitter }
+
+class procedure TSplitter.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterSplitter;
+end;
+
+{ TImage }
+
+class procedure TImage.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterImage;
+end;
+
+{ TRadioGroup }
+
+class procedure TRadioGroup.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterRadioGroup;
+end;
+
+{ TCheckGroup }
+
+class procedure TCheckGroup.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCheckGroup;
+end;
+
+{ TLabeledEdit }
+
+class procedure TLabeledEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterLabeledEdit;
+end;
+
+{ TPanel }
+
+class procedure TPanel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPanel;
+end;
 
 initialization
   DockSplitterClass:=TSplitter;

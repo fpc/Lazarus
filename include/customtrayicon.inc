@@ -167,6 +167,12 @@ begin
     TWSCustomTrayIconClass(WidgetSetClass).InternalUpdate(Self);
 end;
 
+class procedure TCustomTrayIcon.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomTrayIcon;
+end;
+
 {*******************************************************************
 *  TCustomTrayIcon.InternalUpdate ()
 *

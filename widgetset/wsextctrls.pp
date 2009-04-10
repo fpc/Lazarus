@@ -356,30 +356,4 @@ begin
   Result := ATrayIcon.Icon.Canvas;
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-//  RegisterWSComponent(TCustomPage, TWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
-//  RegisterWSComponent(TPage, TWSPage);
-//  RegisterWSComponent(TNotebook, TWSNotebook);
-//  RegisterWSComponent(TShape, TWSShape);
-//  RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
-//  RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
-//  RegisterWSComponent(TPaintBox, TWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TWSCustomImage);
-//  RegisterWSComponent(TImage, TWSImage);
-//  RegisterWSComponent(TBevel, TWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TWSCheckGroup);
-//  RegisterWSComponent(TCustomLabeledEdit, TWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TWSCustomPanel);
-//  RegisterWSComponent(TPanel, TWSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.

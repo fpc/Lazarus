@@ -725,33 +725,4 @@ end;
 
 {$include win32trayicon.inc}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomPage, TWin32WSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TWin32WSCustomNotebook);
-//  RegisterWSComponent(TPage, TWin32WSPage);
-//  RegisterWSComponent(TNotebook, TWin32WSNotebook);
-//  RegisterWSComponent(TShape, TWin32WSShape);
-//  RegisterWSComponent(TCustomSplitter, TWin32WSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TWin32WSSplitter);
-//  RegisterWSComponent(TPaintBox, TWin32WSPaintBox);
-//  RegisterWSComponent(TCustomImage, TWin32WSCustomImage);
-//  RegisterWSComponent(TImage, TWin32WSImage);
-//  RegisterWSComponent(TBevel, TWin32WSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TWin32WSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TWin32WSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TWin32WSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TWin32WSCheckGroup);
-//  RegisterWSComponent(TCustomLabeledEdit, TWin32WSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TWin32WSLabeledEdit);
-  RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);
-//  RegisterWSComponent(TPanel, TWin32WSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TWin32WSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.

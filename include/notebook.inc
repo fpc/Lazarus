@@ -32,6 +32,12 @@ begin
   SetActivePageComponent(AValue);
 end;
 
+class procedure TNotebook.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterNotebook;
+end;
+
 {------------------------------------------------------------------------------
   TNotebook Constructor
  ------------------------------------------------------------------------------}

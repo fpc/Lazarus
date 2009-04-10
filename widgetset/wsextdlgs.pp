@@ -100,18 +100,4 @@ type
 
 implementation
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TPreviewFileControl, TWSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TWSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TWSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TWSSavePictureDialog);
-//  RegisterWSComponent(TCalculatorDialog, TWSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TWSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TWSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
-////////////////////////////////////////////////////
 end.

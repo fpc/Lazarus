@@ -64,6 +64,12 @@ begin
   end;
 end;
 
+class procedure TCustomPanel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomPanel;
+end;
+
 procedure TCustomPanel.SetBevelInner(const Value: TPanelBevel);
 begin
   if BevelInner <> Value then

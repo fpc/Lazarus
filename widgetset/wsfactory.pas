@@ -39,10 +39,42 @@ procedure RegisterColorButton;
 procedure RegisterFontDialog;
 // dirsel
 //procedure RegisterDirSelDlg;
+// extctrls
+procedure RegisterCustomPage;
+procedure RegisterCustomNotebook;
+procedure RegisterPage;
+procedure RegisterNotebook;
+procedure RegisterShape;
+procedure RegisterCustomSplitter;
+procedure RegisterSplitter;
+procedure RegisterPaintBox;
+procedure RegisterCustomImage;
+procedure RegisterImage;
+procedure RegisterBevel;
+procedure RegisterCustomRadioGroup;
+procedure RegisterRadioGroup;
+procedure RegisterCustomCheckGroup;
+procedure RegisterCheckGroup;
+procedure RegisterCustomLabeledEdit;
+procedure RegisterLabeledEdit;
+procedure RegisterCustomPanel;
+procedure RegisterPanel;
+procedure RegisterCustomTrayIcon;
+
+//ExtDlgs
+procedure RegisterPreviewFileControl;
+procedure RegisterPreviewFileDialog;
+procedure RegisterOpenPictureDialog;
+procedure RegisterSavePictureDialog;
+procedure RegisterCalculatorDialog;
+procedure RegisterCalculatorForm;
+//procedure RegisterCalendarDialogForm;
+procedure RegisterCalendarDialog;
 
 implementation
 uses
-  Dialogs, WSDialogs;
+  Dialogs, ExtCtrls, ExtDlgs,
+  WSDialogs, WSExtCtrls,WSExtDlgs;
 
 // imglist
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
@@ -76,6 +108,37 @@ function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorBut
 function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
 // dirsel
 //function WSRegisterDirSelDlg: Boolean;         external name 'WSRegisterDirSelDlg';
+// extctrls
+function WSRegisterCustomPage: Boolean;        external name 'WSRegisterCustomPage';
+function WSRegisterCustomNotebook: Boolean;    external name 'WSRegisterCustomNotebook';
+function WSRegisterPage: Boolean;              external name 'WSRegisterPage';
+function WSRegisterNotebook: Boolean;          external name 'WSRegisterNotebook';
+function WSRegisterShape: Boolean;             external name 'WSRegisterShape';
+function WSRegisterCustomSplitter: Boolean;    external name 'WSRegisterCustomSplitter';
+function WSRegisterSplitter: Boolean;          external name 'WSRegisterSplitter';
+function WSRegisterPaintBox: Boolean;          external name 'WSRegisterPaintBox';
+function WSRegisterCustomImage: Boolean;       external name 'WSRegisterCustomImage';
+function WSRegisterImage: Boolean;             external name 'WSRegisterImage';
+function WSRegisterBevel: Boolean;             external name 'WSRegisterBevel';
+function WSRegisterCustomRadioGroup: Boolean;  external name 'WSRegisterCustomRadioGroup';
+function WSRegisterRadioGroup: Boolean;        external name 'WSRegisterRadioGroup';
+function WSRegisterCustomCheckGroup: Boolean;  external name 'WSRegisterCustomCheckGroup';
+function WSRegisterCheckGroup: Boolean;        external name 'WSRegisterCheckGroup';
+function WSRegisterCustomLabeledEdit: Boolean; external name 'WSRegisterCustomLabeledEdit';
+function WSRegisterLabeledEdit: Boolean;       external name 'WSRegisterLabeledEdit';
+function WSRegisterCustomPanel: Boolean;       external name 'WSRegisterCustomPanel';
+function WSRegisterPanel: Boolean;             external name 'WSRegisterPanel';
+function WSRegisterCustomTrayIcon: Boolean;    external name 'WSRegisterCustomTrayIcon';
+//ExtDlgs
+function WSRegisterPreviewFileControl: Boolean; external name 'WSRegisterPreviewFileControl';
+function WSRegisterPreviewFileDialog: Boolean; external name 'WSRegisterPreviewFileDialog';
+function WSRegisterOpenPictureDialog: Boolean; external name 'WSRegisterOpenPictureDialog';
+function WSRegisterSavePictureDialog: Boolean; external name 'WSRegisterSavePictureDialog';
+function WSRegisterCalculatorDialog: Boolean;  external name 'WSRegisterCalculatorDialog';
+function WSRegisterCalculatorForm: Boolean;    external name 'WSRegisterCalculatorForm';
+//function WSRegisterCalendarDialogForm: Boolean; external name 'WSRegisterCalendarDialogForm';
+function WSRegisterCalendarDialog: Boolean;    external name 'WSRegisterCalendarDialog';
+
 
 procedure RegisterCustomImageList;
 const
@@ -357,6 +420,316 @@ begin
   WSRegisterDirSelDlg;
   Done := True;
 end;*)
+
+// extctrls
+procedure RegisterCustomPage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomPage;
+//  if not WSRegisterCustomPage then
+//    RegisterWSComponent(TCustomPage, TWSCustomPage);
+  Done := True;
+end;
+
+procedure RegisterCustomNotebook;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomNotebook then
+    RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
+  Done := True;
+end;
+
+procedure RegisterPage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPage;
+//  if not WSRegisterPage then
+//    RegisterWSComponent(TPage, TWSPage);
+  Done := True;
+end;
+
+procedure RegisterNotebook;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterNotebook;
+//  if not WSRegisterNotebook then
+//    RegisterWSComponent(TNotebook, TWSNotebook);
+  Done := True;
+end;
+
+procedure RegisterShape;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterShape;
+//  if not WSRegisterShape then
+//    RegisterWSComponent(TShape, TWSShape);
+  Done := True;
+end;
+
+procedure RegisterCustomSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomSplitter;
+//  if not WSRegisterCustomSplitter then
+//    RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
+  Done := True;
+end;
+
+procedure RegisterSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSplitter;
+//  if not WSRegisterSplitter then
+//    RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
+  Done := True;
+end;
+
+procedure RegisterPaintBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPaintBox;
+//  if not WSRegisterPaintBox then
+//    RegisterWSComponent(TPaintBox, TWSPaintBox);
+  Done := True;
+end;
+
+procedure RegisterCustomImage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomImage;
+//  if not WSRegisterCustomImage then
+//    RegisterWSComponent(TCustomImage, TWSCustomImage);
+  Done := True;
+end;
+
+procedure RegisterImage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterImage;
+//  if not WSRegisterImage then
+//    RegisterWSComponent(TImage, TWSImage);
+  Done := True;
+end;
+
+procedure RegisterBevel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterBevel;
+//  if not WSRegisterBevel then
+//    RegisterWSComponent(TBevel, TWSBevel);
+  Done := True;
+end;
+
+procedure RegisterCustomRadioGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomRadioGroup;
+//  if not WSRegisterCustomRadioGroup then
+//    RegisterWSComponent(TCustomRadioGroup, TWSCustomRadioGroup);
+  Done := True;
+end;
+
+procedure RegisterRadioGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterRadioGroup;
+//  if not WSRegisterRadioGroup then
+//    RegisterWSComponent(TRadioGroup, TWSRadioGroup);
+  Done := True;
+end;
+
+procedure RegisterCustomCheckGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckGroup;
+//  if not WSRegisterCustomCheckGroup then
+//    RegisterWSComponent(TCustomCheckGroup, TWSCustomCheckGroup);
+  Done := True;
+end;
+
+procedure RegisterCheckGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCheckGroup;
+//  if not WSRegisterCheckGroup then
+//    RegisterWSComponent(TCheckGroup, TWSCheckGroup);
+  Done := True;
+end;
+
+procedure RegisterCustomLabeledEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomLabeledEdit;
+//  if not WSRegisterCustomLabeledEdit then
+//    RegisterWSComponent(TCustomLabeledEdit, TWSCustomLabeledEdit);
+  Done := True;
+end;
+
+procedure RegisterLabeledEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterLabeledEdit;
+//  if not WSRegisterLabeledEdit then
+//    RegisterWSComponent(TLabeledEdit, TWSLabeledEdit);
+  Done := True;
+end;
+
+procedure RegisterCustomPanel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomPanel;
+//  if not WSRegisterCustomPanel then
+//    RegisterWSComponent(TCustomPanel, TWSCustomPanel);
+  Done := True;
+end;
+
+procedure RegisterPanel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPanel;
+//  if not WSRegisterPanel then
+//    RegisterWSComponent(TPanel, TWSPanel);
+  Done := True;
+end;
+
+procedure RegisterCustomTrayIcon;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomTrayIcon then
+    RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
+  Done := True;
+end;
+
+
+// ExtDlgs
+procedure RegisterPreviewFileControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPreviewFileControl;
+//  if not WSRegisterPreviewFileControl then
+//    RegisterWSComponent(TPreviewFileControl, TWSPreviewFileControl);
+  Done := True;
+end;
+
+procedure RegisterPreviewFileDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPreviewFileDialog;
+//  if not WSRegisterPreviewFileDialog then
+//    RegisterWSComponent(TPreviewFileDialog, TWSPreviewFileDialog);
+  Done := True;
+end;
+
+procedure RegisterOpenPictureDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterOpenPictureDialog;
+//  if not WSRegisterOpenPictureDialog then
+//    RegisterWSComponent(TOpenPictureDialog, TWSOpenPictureDialog);
+  Done := True;
+end;
+
+procedure RegisterSavePictureDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSavePictureDialog;
+//  if not WSRegisterSavePictureDialog then
+//    RegisterWSComponent(TSavePictureDialog, TWSSavePictureDialog);
+  Done := True;
+end;
+
+procedure RegisterCalculatorDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalculatorDialog;
+//  if not WSRegisterCalculatorDialog then
+//    RegisterWSComponent(TCalculatorDialog, TWSCalculatorDialog);
+  Done := True;
+end;
+
+procedure RegisterCalculatorForm;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalculatorForm;
+//  if not WSRegisterCalculatorForm then
+//    RegisterWSComponent(TCalculatorForm, TWSCalculatorForm);
+  Done := True;
+end;
+
+(*procedure RegisterCalendarDialogForm;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalendarDialogForm;
+//  if not WSRegisterCalendarDialogForm then
+//    RegisterWSComponent(TCalendarDialogForm, TWSCalendarDialogForm);
+  Done := True;
+end;*)
+
+procedure RegisterCalendarDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalendarDialog;
+//  if not WSRegisterCalendarDialog then
+//    RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
+  Done := True;
+end;
+
 
 end.
 

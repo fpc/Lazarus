@@ -76,6 +76,12 @@ begin
   end;
 end;
 
+class procedure TCustomPage.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomPage;
+end;
+
 {------------------------------------------------------------------------------
   TCustomPage WMPaint
   Params: a TLMPaint message

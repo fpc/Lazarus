@@ -34,6 +34,12 @@ begin
   DoPositionLabel;
 end;
 
+class procedure TCustomLabeledEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomLabeledEdit;
+end;
+
 procedure TCustomLabeledEdit.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);

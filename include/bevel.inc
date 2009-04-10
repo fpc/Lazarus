@@ -66,6 +66,12 @@ begin
   end;
 end;
 
+class procedure TBevel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterBevel;
+end;
+
 procedure TBevel.Paint;
 Var
   Colora, Colorb: TColor;

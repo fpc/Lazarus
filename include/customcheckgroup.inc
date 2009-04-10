@@ -147,6 +147,12 @@ begin
   //DebugLn('TCustomCheckGroup.UpdateControlsPerLine ',dbgs(ChildSizing.Layout=cclLeftToRightThenTopToBottom),' ',dbgs(ChildSizing.ControlsPerLine));
 end;
 
+class procedure TCustomCheckGroup.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCheckGroup;
+end;
+
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
