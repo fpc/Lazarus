@@ -28,6 +28,17 @@ procedure RegisterCustomTrackBar;
 procedure RegisterCustomTreeView;
 // calender
 procedure RegisterCustomCalendar;
+// dialogs
+procedure RegisterCommonDialog;
+procedure RegisterFileDialog;
+procedure RegisterOpenDialog;
+procedure RegisterSaveDialog;
+procedure RegisterSelectDirectoryDialog;
+procedure RegisterColorDialog;
+procedure RegisterColorButton;
+procedure RegisterFontDialog;
+// dirsel
+//procedure RegisterDirSelDlg;
 
 implementation
 
@@ -52,6 +63,17 @@ function WSRegisterCustomTrackBar: Boolean;    external name 'WSRegisterCustomTr
 function WSRegisterCustomTreeView: Boolean;    external name 'WSRegisterCustomTreeView';
 // calender
 function WSRegisterCustomCalendar: Boolean;    external name 'WSRegisterCustomCalendar';
+// dialogs
+function WSRegisterCommonDialog: Boolean;      external name 'WSRegisterCommonDialog';
+function WSRegisterFileDialog: Boolean;        external name 'WSRegisterFileDialog';
+function WSRegisterOpenDialog: Boolean;        external name 'WSRegisterOpenDialog';
+function WSRegisterSaveDialog: Boolean;        external name 'WSRegisterSaveDialog';
+function WSRegisterSelectDirectoryDialog: Boolean; external name 'WSRegisterSelectDirectoryDialog';
+function WSRegisterColorDialog: Boolean;       external name 'WSRegisterColorDialog';
+function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorButton';
+function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
+// dirsel
+//function WSRegisterDirSelDlg: Boolean;         external name 'WSRegisterDirSelDlg';
 
 procedure RegisterCustomImageList;
 const
@@ -235,6 +257,89 @@ begin
 //    RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
   Done := True;
 end;
+
+// dialogs
+procedure RegisterCommonDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCommonDialog;
+  Done := True;
+end;
+
+procedure RegisterFileDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterFileDialog;
+  Done := True;
+end;
+
+procedure RegisterOpenDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterOpenDialog;
+  Done := True;
+end;
+
+procedure RegisterSaveDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSaveDialog;
+  Done := True;
+end;
+
+procedure RegisterSelectDirectoryDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSelectDirectoryDialog;
+  Done := True;
+end;
+
+procedure RegisterColorDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterColorDialog;
+  Done := True;
+end;
+
+procedure RegisterColorButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterColorButton;
+  Done := True;
+end;
+
+procedure RegisterFontDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterFontDialog;
+  Done := True;
+end;
+
+// dirsel
+(*procedure RegisterDirSelDlg;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterDirSelDlg;
+  Done := True;
+end;*)
 
 end.
 

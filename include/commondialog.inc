@@ -77,6 +77,12 @@ begin
   result := FTitle<>DefaultTitle;
 end;
 
+class procedure TCommonDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCommonDialog;
+end;
+
 procedure TCommonDialog.SetHeight(const AValue: integer);
 begin
   if FHeight=AValue then exit;

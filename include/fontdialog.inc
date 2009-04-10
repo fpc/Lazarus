@@ -55,6 +55,12 @@ begin
   FFont.Assign(AValue);
 end;
 
+class procedure TFontDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterFontDialog;
+end;
+
 function TFontDialog.DefaultTitle: string;
 begin
   Result:=rsSelectFontTitle;

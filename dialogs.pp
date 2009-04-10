@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, LResources, SysUtils, LCLIntf, InterfaceBase, FileUtil,
   LCLStrConsts, LCLType, LCLProc, Forms, Controls,
-  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses;
+  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses, WSFactory;
 
 
 type
@@ -76,6 +76,7 @@ type
     procedure SetWidth(const AValue: integer);
     function IsTitleStored: boolean;
   protected
+    class procedure WSRegisterClass; override;
     function DoExecute : boolean; virtual;
     function DefaultTitle: string; virtual;
   public
@@ -118,6 +119,7 @@ type
     procedure SetDefaultExt(const AValue: string);
     procedure SetFilterIndex(const AValue: Integer);
   protected
+    class procedure WSRegisterClass; override;
     function DoExecute: boolean; override;
     function GetFilterIndex: Integer; virtual;
     procedure SetFileName(const Value: String); virtual;
@@ -186,6 +188,7 @@ type
     FOptions: TOpenOptions;
     FLastSelectionChangeFilename: string;
   protected
+    class procedure WSRegisterClass; override;
     procedure DereferenceLinks; virtual;
     function CheckFile(var AFilename: string): boolean; virtual;
     function CheckFileMustExist(const AFileName: string): boolean; virtual;
@@ -209,6 +212,7 @@ type
   
   TSaveDialog = class(TOpenDialog)
   protected
+    class procedure WSRegisterClass; override;
     function DefaultTitle: string; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -219,6 +223,7 @@ type
   
   TSelectDirectoryDialog = class(TOpenDialog)
   protected
+    class procedure WSRegisterClass; override;
     function CheckFileMustExist(const AFilename: string): boolean; override;
     function DefaultTitle: string; override;
   public
@@ -234,6 +239,7 @@ type
     procedure SetCustomColors(const AValue: TStrings);
     procedure AddDefaultColor(const s: AnsiString);
   protected
+    class procedure WSRegisterClass; override;
     function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -263,6 +269,7 @@ type
     procedure SetButtonColorAutoSize(const AValue: Boolean);
     procedure SetButtonColorSize(const AValue: Integer);
   protected
+    class procedure WSRegisterClass; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
     function GetDisabledPattern: TBitmap; virtual;
@@ -335,6 +342,7 @@ type
     FPreviewText: string;
     procedure SetFont(const AValue: TFont);
   protected
+    class procedure WSRegisterClass; override;
     function DefaultTitle: string; override;
   public
     procedure ApplyClicked; virtual;

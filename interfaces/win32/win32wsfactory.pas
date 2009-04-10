@@ -5,6 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar,
+  Dialogs, (*DirSel,*)
   WSLCLClasses, WSFactory;
 
 implementation
@@ -137,5 +138,61 @@ begin
   RegisterWSComponent(TCustomCalendar, TWin32WSCustomCalendar);
   Result := True;
 end;
+
+// dialogs
+function WSRegisterCommonDialog: Boolean;      alias : 'WSRegisterCommonDialog';
+begin
+  RegisterWSComponent(TCommonDialog, TWin32WSCommonDialog);
+  Result := True;
+end;
+
+function WSRegisterFileDialog: Boolean;        alias : 'WSRegisterFileDialog';
+begin
+//  RegisterWSComponent(TFileDialog, TWin32WSFileDialog);
+  Result := False;
+end;
+
+function WSRegisterOpenDialog: Boolean;        alias : 'WSRegisterOpenDialog';
+begin
+  RegisterWSComponent(TOpenDialog, TWin32WSOpenDialog);
+  Result := True;
+end;
+
+function WSRegisterSaveDialog: Boolean;        alias : 'WSRegisterSaveDialog';
+begin
+  RegisterWSComponent(TSaveDialog, TWin32WSSaveDialog);
+  Result := True;
+end;
+
+function WSRegisterSelectDirectoryDialog: Boolean; alias : 'WSRegisterSelectDirectoryDialog';
+begin
+  RegisterWSComponent(TSelectDirectoryDialog, TWin32WSSelectDirectoryDialog);
+  Result := True;
+end;
+
+function WSRegisterColorDialog: Boolean;       alias : 'WSRegisterColorDialog';
+begin
+  RegisterWSComponent(TColorDialog, TWin32WSColorDialog);
+  Result := True;
+end;
+
+function WSRegisterColorButton: Boolean;       alias : 'WSRegisterColorButton';
+begin
+//  RegisterWSComponent(TColorButton, TWin32WSColorButton);
+  Result := False;
+end;
+
+function WSRegisterFontDialog: Boolean;        alias : 'WSRegisterFontDialog';
+begin
+  RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
+  Result := True;
+end;
+
+// dirsel
+(*function WSRegisterDirSelDlg: Boolean;         alias : 'WSRegisterDirSelDlg';
+begin
+//  RegisterWSComponent(TDirSelDlg, TWin32WSDirSelDlg);
+  Result := False;
+end;*)
 
 end.

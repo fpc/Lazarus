@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, ComCtrls, ExtCtrls;
+  StdCtrls, ComCtrls, ExtCtrls, WSFactory;
 
 type
 
@@ -53,6 +53,8 @@ type
     procedure SetDir(const Value: string);
     procedure SetRootDir(const Value: string);
     procedure SetupCaptions;
+  protected
+    class procedure WSRegisterClass; override;
   public
     function SelectedDir: string;
     property Directory: string read FDir write SetDir;
@@ -199,6 +201,12 @@ begin
   btnOK.Caption := rsMbOK;
   btnCancel.Caption := rsMbCancel;
   lblDirectory.Caption := rsDirectory;
+end;
+
+class procedure TDirSelDlg.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterDirSelDlg;
 end;
 
 {Returns the absolute path to a node.}
