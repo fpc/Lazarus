@@ -639,7 +639,6 @@ begin
 end;
 
 initialization
-  RegisterPropertyToSkip(TCommonDialog, 'Ctl3D', 'VCL compatibility property', '');
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;

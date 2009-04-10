@@ -79,6 +79,7 @@ end;
 
 class procedure TCommonDialog.WSRegisterClass;
 begin
+  RegisterPropertyToSkip(TCommonDialog, 'Ctl3D', 'VCL compatibility property', '');
   inherited WSRegisterClass;
   RegisterCommonDialog;
 end;
