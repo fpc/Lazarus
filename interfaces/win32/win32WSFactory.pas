@@ -40,12 +40,6 @@ uses
   Win32WSSpin,
   Win32WSStdCtrls;
 
-const
-  HasRegisteredDragImageList: Boolean = False;
-  HasRegisteredControl: Boolean = False;
-  HasRegisteredWinControl: Boolean = False;
-  HasRegisteredStatusBar: Boolean = False;
-
 // imglist
 function WSRegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
 begin
@@ -54,48 +48,44 @@ begin
 end;
 
 // controls
-procedure RegisterDragImageList; alias : 'WSRegisterDragImageList';
+function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
 begin
-  if not HasRegisteredDragImageList then
-    RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
-  HasRegisteredDragImageList := True;
+  RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
+  Result := True;
 end;
 
-procedure RegisterControl; alias : 'WSRegisterControl';
+function RegisterControl: Boolean; alias : 'WSRegisterControl';
 begin
-  if not HasRegisteredControl then
-    RegisterWSComponent(TControl, TWin32WSControl);
-  HasRegisteredControl := True;
+  RegisterWSComponent(TControl, TWin32WSControl);
+  Result := True;
 end;
 
-procedure RegisterWinControl; alias : 'WSRegisterWinControl';
+function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  if not HasRegisteredWinControl then
-    RegisterWSComponent(TWinControl, TWin32WSWinControl);
-  HasRegisteredWinControl := True;
+  RegisterWSComponent(TWinControl, TWin32WSWinControl);
+  Result := True;
 end;
 
-procedure RegisterGraphicControl; alias : 'WSRegisterGraphicControl';
+function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
 begin
-  DefRegisterGraphicControl;
+  Result := False;
 end;
 
-procedure RegisterCustomControl; alias : 'WSRegisterCustomControl';
+function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';
 begin
-  DefRegisterCustomControl;
+  Result := False;
 end;
 
-procedure RegisterImageList; alias : 'WSRegisterImageList';
+function RegisterImageList: Boolean; alias : 'WSRegisterImageList';
 begin
-  DefRegisterImageList;
+  Result := False;
 end;
 
 // comctrls
-procedure RegisterStatusBar; alias : 'WSRegisterStatusBar';
+function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
-  if not HasRegisteredStatusBar then
-    RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
-  HasRegisteredStatusBar := True;
+  RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
+  Result := True;
 end;
 
 end.

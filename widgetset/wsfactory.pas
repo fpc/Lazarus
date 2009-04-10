@@ -10,37 +10,28 @@ uses
 // imglist
 procedure RegisterCustomImageList;
 // controls
-procedure RegisterDragImageList; external name 'WSRegisterDragImageList';
-procedure RegisterControl; external name 'WSRegisterControl';
-procedure RegisterWinControl; external name 'WSRegisterWinControl';
-procedure RegisterGraphicControl; external name 'WSRegisterGraphicControl';
-procedure RegisterCustomControl; external name 'WSRegisterCustomControl';
-procedure RegisterImageList; external name 'WSRegisterImageList';
+procedure RegisterDragImageList;
+procedure RegisterControl;
+procedure RegisterWinControl;
+procedure RegisterGraphicControl;
+procedure RegisterCustomControl;
+procedure RegisterImageList;
 // comctrls
-procedure RegisterStatusBar; external name 'WSRegisterStatusBar';
-
-(* Defaults, *)
-(* Widgetset can point back to them, if they do have nothing of their own *)
-// controls
-procedure DefRegiterDragImageList;
-procedure DefRegisterControl;
-procedure DefRegisterWinControl;
-procedure DefRegisterGraphicControl;
-procedure DefRegisterCustomControl;
-procedure DefRegisterImageList;
-// comctrls
-procedure DefRegisterStatusBar;
+procedure RegisterStatusBar;
 
 implementation
 
-const
-  HasRegisteredCustomImageList: Boolean = False;
-  HasRegisteredDragImageList: Boolean = False;
-  HasRegisteredControl: Boolean = False;
-  HasRegisteredWinControl: Boolean = False;
-
 // imglist
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
+// controls
+function WSRegisterDragImageList: Boolean;   external name 'WSRegisterDragImageList';
+function WSRegisterControl: Boolean;         external name 'WSRegisterControl';
+function WSRegisterWinControl: Boolean;      external name 'WSRegisterWinControl';
+function WSRegisterGraphicControl: Boolean;  external name 'WSRegisterGraphicControl';
+function WSRegisterCustomControl: Boolean;   external name 'WSRegisterCustomControl';
+function WSRegisterImageList: Boolean;       external name 'WSRegisterImageList';
+// comctrls
+function WSRegisterStatusBar: Boolean;       external name 'WSRegisterStatusBar';
 
 procedure RegisterCustomImageList;
 const
@@ -52,45 +43,78 @@ begin
   Done := true;
 end;
 
-procedure DefRegiterDragImageList;
+procedure RegisterDragImageList;
+const
+  Done: Boolean = False;
 begin
-  if not HasRegisteredDragImageList then
+  if Done then exit;
+  if not WSRegisterDragImageList then
     RegisterWSComponent(TDragImageList, TWSDragImageList);
-  HasRegisteredDragImageList := True;
+  Done := true;
 end;
 
-procedure DefRegisterControl;
+procedure RegisterControl;
+const
+  Done: Boolean = False;
 begin
-  if not HasRegisteredControl then
+  if Done then exit;
+  if not WSRegisterControl then
     RegisterWSComponent(TControl, TWSControl);
-  HasRegisteredControl := True;
+  Done := true;
 end;
 
-procedure DefRegisterWinControl;
+procedure RegisterWinControl;
+const
+  Done: Boolean = False;
 begin
-  if not HasRegisteredWinControl then
+  if Done then exit;
+  if not WSRegisterWinControl then
     RegisterWSComponent(TWinControl, TWSWinControl);
-  HasRegisteredWinControl := True;
+  Done := true;
 end;
 
-procedure DefRegisterGraphicControl;
+procedure RegisterGraphicControl;
+const
+  Done: Boolean = False;
 begin
-//  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
+  if Done then exit;
+  WSRegisterGraphicControl;
+//  if not WSRegisterGraphicControl then
+//    RegisterWSComponent(TGraphicControl, TWSGraphicControl);
+  Done := true;
 end;
 
-procedure DefRegisterCustomControl;
+procedure RegisterCustomControl;
+const
+  Done: Boolean = False;
 begin
-//  RegisterWSComponent(TCustomControl, TWSCustomControl);
+  if Done then exit;
+  WSRegisterCustomControl;
+//  if not WSRegisterCustomControl then
+//    RegisterWSComponent(TCustomControl, TWSCustomControl);
+  Done := true;
 end;
 
-procedure DefRegisterImageList;
+procedure RegisterImageList;
+const
+  Done: Boolean = False;
 begin
-//  RegisterWSComponent(TImageList, TWSImageList);
+  if Done then exit;
+  WSRegisterImageList;
+//  if not WSRegisterImageList then
+//    RegisterWSComponent(TImageList, TWSImageList);
+  Done := true;
 end;
 
-procedure DefRegisterStatusBar;
+procedure RegisterStatusBar;
+const
+  Done: Boolean = False;
 begin
-//  RegisterWSComponent(TStatusBar, TWSStatusBar);
+  if Done then exit;
+  WSRegisterStatusBar;
+//  if not WSRegisterStatusBar then
+//    RegisterWSComponent(TStatusBar, TWSStatusBar);
+  Done := true;
 end;
 
 end.
