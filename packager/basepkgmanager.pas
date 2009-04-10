@@ -47,7 +47,7 @@ uses
   TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
   PropEdits, LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
-  PackageDefs, ComponentReg, CompilerOptions, Project;
+  PackageDefs, PackageSystem, ComponentReg, CompilerOptions, Project;
 
 type
   { TBasePkgManager }
@@ -216,7 +216,7 @@ begin
     end else if DepOwner is TProject then begin
       Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
         DepOwner).ProjectInfoFile)]);
-    end else if DepOwner=PkgBoss then begin
+    end else if (DepOwner=PkgBoss) or (DepOwner=PackageGraph) then begin
       Description:=lisPkgMangLazarus;
     end else begin
       Description:=dbgsName(DepOwner)

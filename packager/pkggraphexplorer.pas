@@ -483,8 +483,10 @@ begin
     UsedByDep:=Pkg.FirstUsedByDependency;
     sl:=TStringList.Create;
     while UsedByDep<>nil do begin
-      NewItem:=GetDependencyOwnerAsString(UsedByDep);
-      sl.Add(NewItem);
+      if UsedByDep.Owner<>PackageGraph then begin
+        NewItem:=GetDependencyOwnerAsString(UsedByDep);
+        sl.Add(NewItem);
+      end;
       UsedByDep:=UsedByDep.NextUsedByDependency;
     end;
     PkgListBox.Items.Assign(sl);
