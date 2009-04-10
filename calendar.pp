@@ -106,6 +106,8 @@ type
   { TCalendar }
   
   TCalendar = class(TCustomCalendar)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -317,7 +319,12 @@ begin
   if Assigned(OnChange) then OnChange(self);
 end;
 
-initialization
+{ TCalendar }
+
+class procedure TCalendar.WSRegisterClass;
+begin
   RegisterPropertyToSkip(TCalendar, 'ReadOnly', 'Obsoleted property', '');
+  inherited WSRegisterClass;
+end;
 
 end.
