@@ -2659,7 +2659,7 @@ begin
       P.x := GET_X_LPARAM(lParam);
       P.y := GET_Y_LPARAM(lParam);
       Windows.ScreenToClient(Parent, P);
-      if (Owner is TCustomForm) or (Owner is TCustomFrame) then
+      if (Owner is TCustomForm) then
       begin
         // ask form about control under mouse. we need TWinControl
         Control := Owner.ControlAtPos(P, [capfAllowWinControls, capfRecursive]);
