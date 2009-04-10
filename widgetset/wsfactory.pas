@@ -41,6 +41,8 @@ procedure RegisterFontDialog;
 //procedure RegisterDirSelDlg;
 
 implementation
+uses
+  Dialogs, WSDialogs;
 
 // imglist
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
@@ -264,7 +266,8 @@ const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterCommonDialog;
+  if not WSRegisterCommonDialog then
+    RegisterWSComponent(TCommonDialog, TWSCommonDialog);
   Done := True;
 end;
 
@@ -274,6 +277,8 @@ const
 begin
   if Done then exit;
   WSRegisterFileDialog;
+//  if not WSRegisterFileDialog then
+//    RegisterWSComponent(TFileDialog, TWSFileDialog);
   Done := True;
 end;
 
@@ -283,6 +288,8 @@ const
 begin
   if Done then exit;
   WSRegisterOpenDialog;
+//  if not WSRegisterOpenDialog then
+//    RegisterWSComponent(TOpenDialog, TWSOpenDialog);
   Done := True;
 end;
 
@@ -292,6 +299,8 @@ const
 begin
   if Done then exit;
   WSRegisterSaveDialog;
+//  if not WSRegisterSaveDialog then
+//    RegisterWSComponent(TSaveDialog, TWSSaveDialog);
   Done := True;
 end;
 
@@ -301,6 +310,8 @@ const
 begin
   if Done then exit;
   WSRegisterSelectDirectoryDialog;
+//  if not WSRegisterSelectDirectoryDialog then
+//    RegisterWSComponent(TSelectDirectoryDialog, TWSSelectDirectoryDialog);
   Done := True;
 end;
 
@@ -310,6 +321,8 @@ const
 begin
   if Done then exit;
   WSRegisterColorDialog;
+//  if not WSRegisterColorDialog then
+//    RegisterWSComponent(TColorDialog, TWSColorDialog);
   Done := True;
 end;
 
@@ -319,6 +332,8 @@ const
 begin
   if Done then exit;
   WSRegisterColorButton;
+//  if not WSRegisterColorButton then
+//    RegisterWSComponent(TColorButton, TWSColorButton);
   Done := True;
 end;
 
@@ -328,6 +343,8 @@ const
 begin
   if Done then exit;
   WSRegisterFontDialog;
+//  if not WSRegisterFontDialog then
+//    RegisterWSComponent(TFontDialog, TWSFontDialog);
   Done := True;
 end;
 
