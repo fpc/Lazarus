@@ -1365,6 +1365,7 @@ end;
 procedure TPieSeries.SetSeriesColor(const AValue: TColor);
 begin
   // SeriesColor is meaningless for PieSeries
+  Unused(AValue);
 end;
 
 { TAreaSeries }

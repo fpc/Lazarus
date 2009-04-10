@@ -193,9 +193,9 @@ type
       const AData: TDoublePoint); virtual;
 
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawLegend(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawLegend(ACanvas: TCanvas);
     procedure UpdateExtent;
 
   public
@@ -410,6 +410,7 @@ end;
 procedure TChart.EraseBackground(DC: HDC);
 begin
   // do not erase, since we will paint over it anyway
+  Unused(DC);
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);
@@ -430,8 +431,8 @@ begin
 
   UpdateExtent;
   Clean(ACanvas, ARect);
-  DrawTitleFoot(ACanvas, ARect);
-  DrawLegend(ACanvas, ARect);
+  DrawTitleFoot(ACanvas);
+  DrawLegend(ACanvas);
   DrawAxis(ACanvas, ARect);
   DisplaySeries(ACanvas);
   DrawReticule(ACanvas);
@@ -495,7 +496,7 @@ begin
   ACanvas.Rectangle(ARect);
 end;
 
-procedure TChart.DrawTitleFoot(ACanvas: TCanvas; ARect: TRect);
+procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
 
   function AlignedTextPos(AAlign: TAlignment; const AText: String): TSize;
   begin
@@ -747,7 +748,7 @@ begin
   end;
 end;
 
-procedure TChart.DrawLegend(ACanvas: TCanvas; ARect: TRect);
+procedure TChart.DrawLegend(ACanvas: TCanvas);
 var
   w, h, x1, y1, x2, y2, i, TH: Integer;
   pbf: TPenBrushFontRecall;
@@ -1124,6 +1125,7 @@ end;
 
 procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  Unused(Button, Shift);
   if PtInRect(FClipRect, Point(X, Y)) and FAllowZoom then begin
     FIsMouseDown := true;
     FSelectionRect := Rect(X, Y, X, Y);
@@ -1139,6 +1141,7 @@ var
   pt, newRetPos: TPoint;
   value: TDoublePoint;
 begin
+  Unused(Shift);
   pt := Point(X, Y);
   if FIsMouseDown then begin
     PrepareXorPen;
@@ -1165,6 +1168,7 @@ end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  Unused(Button, Shift);
   if not FIsMouseDown then exit;
   FReticulePos := Point(X, Y);
 
@@ -1290,7 +1294,7 @@ end;
 procedure TChart.UpdateExtent;
 var
   XMinSeries, YMinSeries, XMaxSeries, YMaxSeries, Valeur, Tolerance: Double;
-  allEmpty: Boolean;
+  allEmpty: Boolean = true;
   i: Integer;
 begin
   if FIsZoomed then begin
@@ -1387,6 +1391,11 @@ function TBasicChartSeries.GetNearestPoint(
   ADistFunc: TPointDistFunc; const APoint: TPoint;
   out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
 begin
+  Unused(ADistFunc, APoint);
+  AIndex := 0;
+  AImg := Point(0, 0);
+  AValue.X := 0;
+  AValue.Y := 0;
   Result := false;
 end;
 
@@ -1419,6 +1428,7 @@ procedure TBasicChartSeries.UpdateMargins(
   ACanvas: TCanvas; var AMargins: TRect);
 begin
   // nothing
+  Unused(ACanvas, AMargins);
 end;
 
 { TChartSeriesList }

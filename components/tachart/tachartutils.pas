@@ -130,6 +130,10 @@ function PointDistY(const A, B: TPoint): Integer; inline;
 procedure RotateLabel(
   Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
 
+// Call this to silence 'parameter is unused' hint
+procedure Unused(const A1);
+procedure Unused(const A1, A2);
+
 operator +(const A: TPoint; B: TSize): TPoint;
 
 implementation
@@ -280,6 +284,16 @@ begin
   TextOut(DC, X, Y, @St[1], Length(St));
   DeleteObject(SelectObject(DC, OldFont));
 end;
+
+{$HINTS OFF}
+procedure Unused(const A1);
+begin
+end;
+
+procedure Unused(const A1, A2);
+begin
+end;
+{$HINTS ON}
 
 operator + (const A: TPoint; B: TSize): TPoint;
 begin
