@@ -578,7 +578,6 @@ interfaces/qt/qtwstoolwin.pp svneol=native#text/pascal
 interfaces/win32/README.txt svneol=native#text/plain
 interfaces/win32/interfaces.pp svneol=native#text/pascal
 interfaces/win32/issues.xml svneol=native#text/xml
-interfaces/win32/win32WSFactory.pas svneol=native#text/pascal
 interfaces/win32/win32callback.inc svneol=native#text/pascal
 interfaces/win32/win32debug.pp svneol=native#text/pascal
 interfaces/win32/win32def.pp svneol=native#text/pascal
@@ -613,6 +612,7 @@ interfaces/win32/win32wseditbtn.pp svneol=native#text/pascal
 interfaces/win32/win32wsextctrls.pp svneol=native#text/pascal
 interfaces/win32/win32wsextdlgs.pp svneol=native#text/pascal
 interfaces/win32/win32wsextdlgs.rc svneol=CRLF#text/plain eol=crlf
+interfaces/win32/win32wsfactory.pas svneol=native#text/pascal
 interfaces/win32/win32wsfilectrl.pp svneol=native#text/pascal
 interfaces/win32/win32wsforms.pp svneol=native#text/pascal
 interfaces/win32/win32wsgrids.pp svneol=native#text/pascal
