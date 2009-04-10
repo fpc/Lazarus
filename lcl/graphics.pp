@@ -35,9 +35,9 @@ interface
 uses
   SysUtils, Math, Types, Classes, FPCAdds,
   FileUtil,
-  FPImgCmn, FPImage, FPCanvas,
-  FPReadPNG, FPWritePNG, PNGComn,  // png support
-  FPReadBMP, FPWriteBMP,   // bmp support
+  FPImage, FPCanvas,
+  FPWritePNG, PNGComn,  // png support
+  FPWriteBMP,   // bmp support
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
   FPReadJpeg, FPWriteJpeg, // jpg support
   IntfGraphics,
