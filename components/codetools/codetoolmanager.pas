@@ -406,6 +406,8 @@ type
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList): boolean;
+    function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
+          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
@@ -2115,6 +2117,26 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindReferences END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
+  SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUnitReferences A ',UnitCode.Filename,' Target=',TargetCode.Filename);
+  {$ENDIF}
+  ListOfPCodeXYPosition:=nil;
+  if not InitCurCodeTool(TargetCode) then exit;
+  try
+    Result:=FCurCodeTool.FindUnitReferences(UnitCode,SkipComments,
+                                            ListOfPCodeXYPosition);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUnitReferences END ');
   {$ENDIF}
 end;
 

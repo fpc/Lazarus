@@ -594,6 +594,8 @@ type
       Params: TFindDeclarationParams): boolean;
   protected
     WordIsPredefinedIdentifier: TKeyWordFunctionList;
+    procedure RaiseUsesExpected;
+    procedure RaiseStrConstExpected;
   protected
     // node caches
     procedure DoDeleteNodes; override;
@@ -755,7 +757,9 @@ type
       var ListOfPFindContext: TFPList): boolean;
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
-      
+    function FindUnitReferences(UnitCode: TCodeBuffer;
+      SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
 
@@ -1706,17 +1710,6 @@ end;
 function TFindDeclarationTool.FindDeclarationInUsesSection(
   UsesNode: TCodeTreeNode; CleanPos: integer;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-  
-  procedure RaiseUsesExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
-  end;
-  
-  procedure RaiseStrConstExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
-  end;
-  
 var UnitName, UnitInFilename: string;
   UnitNamePos, UnitInFilePos: TAtomPosition;
 begin
@@ -3920,6 +3913,72 @@ begin
   Result:=true;
 end;
 
+function TFindDeclarationTool.FindUnitReferences(UnitCode: TCodeBuffer;
+  SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+var
+  OldUnitName: String;
+
+  function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
+  var
+    ReferencePos: TCodeXYPosition;
+  begin
+    Result:=true;
+    if UsesNode=nil then exit;
+    //DebugLn(['CheckUsesSection ']);
+    MoveCursorToNodeStart(UsesNode);
+    if (UsesNode.Desc=ctnUsesSection) then begin
+      ReadNextAtom;
+      if not UpAtomIs('USES') then
+        RaiseUsesExpected;
+    end;
+    repeat
+      ReadNextAtom;  // read name
+      if CurPos.StartPos>SrcLen then break;
+      if AtomIsChar(';') then break;
+      AtomIsIdentifier(true);
+      //DebugLn(['CheckUsesSection ',GetAtom,' ',OldUnitName]);
+      if AtomIs(OldUnitName) then begin
+        if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
+          DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
+          AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
+        end;
+      end;
+      ReadNextAtom;
+      if UpAtomIs('IN') then begin
+        ReadNextAtom;
+        if not AtomIsStringConstant then RaiseStrConstExpected;
+        ReadNextAtom;
+      end;
+      if AtomIsChar(';') then break;
+      if not AtomIsChar(',') then
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
+    until (CurPos.StartPos>SrcLen);
+  end;
+
+var
+  InterfaceUsesNode: TCodeTreeNode;
+  ImplementationUsesNode: TCodeTreeNode;
+begin
+  Result:=false;
+  debugln('FindUnitReferences UnitCode=',UnitCode.Filename,' SkipComments=',dbgs(SkipComments),' ',MainFilename);
+
+  OldUnitName:=ExtractFileNameOnly(UnitCode.Filename);
+  ListOfPCodeXYPosition:=nil;
+  ActivateGlobalWriteLock;
+  try
+    BuildTree(false);
+
+    InterfaceUsesNode:=FindMainUsesSection;
+    if not CheckUsesSection(InterfaceUsesNode) then exit;
+
+    ImplementationUsesNode:=FindImplementationUsesSection;
+    if not CheckUsesSection(ImplementationUsesNode) then exit;
+  finally
+    DeactivateGlobalWriteLock;
+  end;
+  Result:=true;
+end;
+
 {-------------------------------------------------------------------------------
   function TFindDeclarationTool.CleanPosIsDeclarationIdentifier(CleanPos: integer;
     Node: TCodeTreeNode): boolean;
@@ -4773,16 +4832,6 @@ function TFindDeclarationTool.FindUnitSourceWithUnitIdentifier(
   UsesNode: TCodeTreeNode; const AnUnitIdentifier: string;
   ExceptionOnNotFound: boolean): TCodeBuffer;
 
-  procedure RaiseUsesExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
-  end;
-
-  procedure RaiseStrConstExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
-  end;
-
   procedure RaiseUnitNotFound;
   begin
     RaiseExceptionInstance(
@@ -5080,6 +5129,16 @@ begin
   end else begin
     // proceed the search normally ...
   end;
+end;
+
+procedure TFindDeclarationTool.RaiseUsesExpected;
+begin
+  RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
+end;
+
+procedure TFindDeclarationTool.RaiseStrConstExpected;
+begin
+  RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
 end;
 
 procedure TFindDeclarationTool.BeginParsing(DeleteNodes,

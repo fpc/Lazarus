@@ -7291,7 +7291,10 @@ begin
   NewFilename:=ActiveUnitInfo.Filename;
   if (OldUnitName<>NewUnitName)
   or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
-    Result:=mrOk; // ToDo: DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName);
+    Result:=mrOk;
+    {$IFDEF EnableReplaceUnitUse}
+    Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName);
+    {$ENDIF}
     if Result<>mrOk then exit;
   end;
 
@@ -14941,19 +14944,26 @@ end;
 
 function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
   NewUnitName: string): TModalResult;
-{ Replaces all references to an unit
+{ Replaces all references to a unit
 
 }
 var
   OwnerList: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
+  OldCode: TCodeBuffer;
+  OldCodeCreated: Boolean;
+  PascalReferences: TAVLTree;
+  i: Integer;
 begin
   if (CompareFilenames(OldFilename,NewFilename)=0)
   and (OldUnitName=NewUnitName) then
     exit(mrOk);
 
   OwnerList:=nil;
+  OldCode:=nil;
+  OldCodeCreated:=false;
+  PascalReferences:=nil;
   Files:=TStringList.Create;
   try
     // get owners of unit
@@ -14970,22 +14980,37 @@ begin
     finally
       ExtraFiles.Free;
     end;
+    for i:=Files.Count-1 downto 0 do begin
+      if (CompareFilenames(Files[i],OldFilename)=0)
+      or (CompareFilenames(Files[i],NewFilename)=0) then
+        Files.Delete(i);
+    end;
+
     DebugLn(['TMainIDE.DoReplaceUnitUse ',Files.Text]);
 
     // commit source editor to codetools
     SaveSourceEditorChangesToCodeCache(-1);
 
     // search pascal source references
-    {Result:=GatherUnitReferences(Files,OldFilename,
-                                 Options.SearchInComments,PascalReferences);
+    OldCode:=CodeToolBoss.LoadFile(OldFilename,true,false);
+    if OldCode=nil then begin
+      // create old file in memory so that unit search can find it
+      OldCode:=CodeToolBoss.CreateFile(OldFilename);
+      OldCodeCreated:=true;
+    end;
+
+    Result:=GatherUnitReferences(Files,OldCode,false,PascalReferences);
     if CodeToolBoss.ErrorMessage<>'' then
       DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier GatherIdentifierReferences failed');
+      debugln('TMainIDE.DoReplaceUnitUse GatherUnitReferences failed');
       exit;
-    end;}
+    end;
 
   finally
+    if OldCodeCreated then
+      OldCode.IsDeleted:=true;
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
     OwnerList.Free;
     Files.Free;
   end;

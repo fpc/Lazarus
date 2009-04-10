@@ -1337,16 +1337,6 @@ function TStandardCodeTool.FindUnusedUnits(Units: TStrings): boolean;
 var
   Identifiers: TAVLTree;// all identifiers used in this unit
 
-  procedure RaiseUsesExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
-  end;
-
-  procedure RaiseStrConstExpected;
-  begin
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
-  end;
-
   function IsUnitAlreadyChecked(const AnUnitName: string): boolean;
   var
     i: Integer;

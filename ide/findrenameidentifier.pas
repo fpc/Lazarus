@@ -89,6 +89,9 @@ function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   SearchInComments: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+function GatherUnitReferences(Files: TStringList;
+  UnitCode: TCodeBuffer; SearchInComments: boolean;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   TreeOfPCodeXYPosition: TAVLTree): TModalResult;
@@ -166,7 +169,7 @@ begin
       LoadResult:=
                LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
       if LoadResult=mrAbort then begin
-        debugln('GatherIdentifierReferences unable to load "',Code.Filename,'"');
+        debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
         exit;
       end;
       if LoadResult<>mrOk then continue;
@@ -193,6 +196,58 @@ begin
     end;
 
     Result:=mrOk;
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    if Result<>mrOk then
+      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+  end;
+end;
+
+function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
+  SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+var
+  ListOfPCodeXYPosition: TFPList;
+  LoadResult: TModalResult;
+  Code: TCodeBuffer;
+  i: Integer;
+begin
+  Result:=mrCancel;
+  ListOfPCodeXYPosition:=nil;
+  TreeOfPCodeXYPosition:=nil;
+  try
+    CleanUpFileList(Files);
+
+    // search in every file
+    for i:=0 to Files.Count-1 do begin
+      if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
+      DebugLn(['GatherUnitReferences AAA1 ',Files[i]]);
+      LoadResult:=
+               LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
+      if LoadResult=mrAbort then begin
+        debugln('GatherUnitReferences unable to load "',Files[i],'"');
+        exit;
+      end;
+      if LoadResult<>mrOk then continue;
+
+      // search references
+      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      if not CodeToolBoss.FindUnitReferences(
+        UnitCode, Code, not SearchInComments, ListOfPCodeXYPosition) then
+      begin
+        debugln('GatherUnitReferences unable to FindUnitReferences in "',Code.Filename,'"');
+        Result:=mrAbort;
+        exit;
+      end;
+      //debugln('GatherUnitReferences FindUnitReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
+
+      // add to tree
+      if ListOfPCodeXYPosition<>nil then begin
+        if TreeOfPCodeXYPosition=nil then
+          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
+        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
+                                              TreeOfPCodeXYPosition,true,false);
+      end;
+    end;
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if Result<>mrOk then
