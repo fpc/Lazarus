@@ -127,6 +127,8 @@ const
 begin
   if Done then exit;
   WSRegisterCustomCalendar;
+//  if not WSRegisterCustomCalendar then
+//    RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
   Done := True;
 end;
 
