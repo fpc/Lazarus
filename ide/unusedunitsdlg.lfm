@@ -11,19 +11,20 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   LCLVersion = '0.9.27'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 44
-    Top = 315
+    Height = 26
+    Top = 333
     Width = 328
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object UnitsTreeView: TTreeView
     Left = 0
-    Height = 309
+    Height = 327
     Top = 0
     Width = 340
     Align = alClient
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     TabOrder = 1
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
