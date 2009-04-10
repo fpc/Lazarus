@@ -109,6 +109,12 @@ begin
   Result:=true;
 end;
 
+class procedure TCustomMemo.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomMemo;
+end;
+
 procedure TCustomMemo.CreateHandle;
 var
   NewStrings : TStrings;

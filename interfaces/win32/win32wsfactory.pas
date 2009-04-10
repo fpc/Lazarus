@@ -4,7 +4,7 @@ unit Win32WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls,
   Dialogs, (*DirSel,*) ExtCtrls, ExtDlgs,
   WSLCLClasses, WSFactory;
 
@@ -194,6 +194,128 @@ begin
 //  RegisterWSComponent(TDirSelDlg, TWin32WSDirSelDlg);
   Result := False;
 end;*)
+
+// StdCtrls
+function WSRegisterScrollBar: Boolean;    alias : 'WSRegisterScrollBar';
+begin
+  RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
+  Result := True;
+end;
+
+function WSRegisterCustomGroupBox: Boolean;    alias : 'WSRegisterCustomGroupBox';
+begin
+  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
+  Result := True;
+end;
+
+function WSRegisterGroupBox: Boolean;    alias : 'WSRegisterGroupBox';
+begin
+//  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
+  Result := False;
+end;
+
+function WSRegisterCustomComboBox: Boolean;    alias : 'WSRegisterCustomComboBox';
+begin
+  RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
+  Result := True;
+end;
+
+function WSRegisterComboBox: Boolean;    alias : 'WSRegisterComboBox';
+begin
+//  RegisterWSComponent(TComboBox, TWin32WSComboBox);
+  Result := False;
+end;
+
+function WSRegisterCustomListBox: Boolean;    alias : 'WSRegisterCustomListBox';
+begin
+  RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
+  Result := True;
+end;
+
+function WSRegisterListBox: Boolean;    alias : 'WSRegisterListBox';
+begin
+//  RegisterWSComponent(TListBox, TWin32WSListBox);
+  Result := False;
+end;
+
+function WSRegisterCustomEdit: Boolean;    alias : 'WSRegisterCustomEdit';
+begin
+  RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
+  Result := True;
+end;
+
+function WSRegisterCustomMemo: Boolean;    alias : 'WSRegisterCustomMemo';
+begin
+  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
+  Result := True;
+end;
+
+function WSRegisterEdit: Boolean;    alias : 'WSRegisterEdit';
+begin
+//  RegisterWSComponent(TEdit, TWin32WSEdit);
+  Result := False;
+end;
+
+function WSRegisterMemo: Boolean;    alias : 'WSRegisterMemo';
+begin
+//  RegisterWSComponent(TMemo, TWin32WSMemo);
+  Result := False;
+end;
+
+function WSRegisterButtonControl: Boolean;    alias : 'WSRegisterButtonControl';
+begin
+  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
+  Result := True;
+end;
+
+function WSRegisterCustomButton: Boolean;    alias : 'WSRegisterCustomButton';
+begin
+  RegisterWSComponent(TCustomButton, TWin32WSButton);
+  Result := True;
+end;
+
+function WSRegisterCustomCheckBox: Boolean;    alias : 'WSRegisterCustomCheckBox';
+begin
+  RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
+  Result := True;
+end;
+
+function WSRegisterCheckBox: Boolean;    alias : 'WSRegisterCheckBox';
+begin
+//  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
+  Result := False;
+end;
+
+function WSRegisterToggleBox: Boolean;    alias : 'WSRegisterToggleBox';
+begin
+  RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
+  Result := True;
+end;
+
+function WSRegisterRadioButton: Boolean;    alias : 'WSRegisterRadioButton';
+begin
+  RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
+  Result := True;
+end;
+
+function WSRegisterCustomStaticText: Boolean;    alias : 'WSRegisterCustomStaticText';
+begin
+  RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
+  Result := True;
+end;
+
+function WSRegisterStaticText: Boolean;    alias : 'WSRegisterStaticText';
+begin
+//  RegisterWSComponent(TStaticText, TWin32WSStaticText);
+  Result := False;
+end;
+
+function WSRegisterLabel: Boolean;    alias : 'WSRegisterLabel';
+begin
+//  RegisterWSComponent(TLabel, );
+  Result := False;
+end;
+
 
 // extctrls
 function WSRegisterCustomPage: Boolean;        alias : 'WSRegisterCustomPage';

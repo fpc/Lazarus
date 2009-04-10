@@ -563,30 +563,4 @@ class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBo
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TScrollBar, TWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TWSCustomListBox);
-//  RegisterWSComponent(TListBox, TWSListBox);
-//  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
-//  RegisterWSComponent(TEdit, TWSEdit);
-//  RegisterWSComponent(TMemo, TWSMemo);
-//  RegisterWSComponent(TCustomStaticText, TWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TWSStaticText);
-//  RegisterWSComponent(TButtonControl, TWSButtonControl);
-//  RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TWSCheckBox);
-//  RegisterWSComponent(TCheckBox, TWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TWSToggleBox);
-//  RegisterWSComponent(TRadioButton, TWSRadioButton);
-//  RegisterWSComponent(TLabel, TWSLabel);
-////////////////////////////////////////////////////
 end.

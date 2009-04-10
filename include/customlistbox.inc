@@ -319,6 +319,12 @@ begin
     TWSCustomListBoxClass(WidgetSetClass).SelectItem(Self, Index, IsSelected);
 end;
 
+class procedure TCustomListBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomListBox;
+end;
+
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.SetExtendedSelect                                   }
 {------------------------------------------------------------------------------}

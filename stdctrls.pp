@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
-  TextStrings, Forms, Menus, LResources;
+  TextStrings, Forms, Menus, LResources, WSFactory;
 
 type
 
@@ -115,6 +115,8 @@ type
   { TScrollBar }
 
   TScrollBar = class(TCustomScrollBar)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -159,6 +161,7 @@ type
 
   TCustomGroupBox = class (TWinControl)
   protected
+    class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); Override;
@@ -168,6 +171,8 @@ type
   { TGroupBox }
 
   TGroupBox = class(TCustomGroupBox)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -297,6 +302,7 @@ type
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure SetCharCase(eccCharCase: TEditCharCase);
   protected
+    class procedure WSRegisterClass; override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure DoEnter; override;
@@ -395,6 +401,8 @@ type
   { TComboBox }
 
   TComboBox = class(TCustomComboBox)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -501,6 +509,7 @@ type
     procedure WMLButtonUp(Var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
     procedure BeginAutoDrag; override;
@@ -605,6 +614,8 @@ type
   { TListBox }
 
   TListBox = class(TCustomListBox)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -691,6 +702,7 @@ type
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
   protected
+    class procedure WSRegisterClass; override;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
@@ -781,6 +793,7 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
     function StoreScrollBars: boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
     function  RealGetText: TCaption; override;
@@ -820,6 +833,8 @@ type
   { TEdit }
 
   TEdit = class(TCustomEdit)
+  protected
+    class procedure WSRegisterClass; override;
   public
     property AutoSelected;
   published
@@ -880,6 +895,8 @@ type
   { TMemo }
 
   TMemo = class(TCustomMemo)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -950,6 +967,7 @@ type
     procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
+    class procedure WSRegisterClass; override;
     function GetLabelText: String ; virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -969,6 +987,8 @@ type
   { TStaticText }
 
   TStaticText = class(TCustomStaticText)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1019,6 +1039,7 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     fLastCheckedOnChange: boolean;
+    class procedure WSRegisterClass; override;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
@@ -1064,6 +1085,7 @@ type
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure UpdateFocus(AFocused: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     procedure CreateWnd; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1160,6 +1182,7 @@ type
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
@@ -1184,7 +1207,12 @@ type
   end;
 
   // Normal checkbox
+
+  { TCheckBox }
+
   TCheckBox = class(TCustomCheckBox)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Action;
     property Align;
@@ -1240,6 +1268,8 @@ type
 
   TToggleBox = class(TCustomCheckBox)
   private
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1279,6 +1309,7 @@ type
 
   TRadioButton = class(TCustomCheckBox)
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
@@ -1397,6 +1428,8 @@ type
   { TLabel }
 
   TLabel = class(TCustomLabel)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1497,10 +1530,77 @@ end;
 
 {$I customstatictext.inc}
 
-initialization
-  RegisterPropertyToSkip(TButtonControl, 'UseOnChange',
-    'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
-    '');
+{ TScrollBar }
+
+class procedure TScrollBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterScrollBar;
+end;
+
+{ TGroupBox }
+
+class procedure TGroupBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterGroupBox;
+end;
+
+{ TComboBox }
+
+class procedure TComboBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterComboBox;
+end;
+
+{ TListBox }
+
+class procedure TListBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterListBox;
+end;
+
+{ TEdit }
+
+class procedure TEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterEdit;
+end;
+
+{ TMemo }
+
+class procedure TMemo.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterMemo;
+end;
+
+{ TCheckBox }
+
+class procedure TCheckBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCheckBox;
+end;
+
+{ TStaticText }
+
+class procedure TStaticText.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterStaticText;
+end;
+
+{ TLabel }
+
+class procedure TLabel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterLabel;
+end;
 
 end.
 

@@ -39,6 +39,28 @@ procedure RegisterColorButton;
 procedure RegisterFontDialog;
 // dirsel
 //procedure RegisterDirSelDlg;
+// StdCtrls
+procedure RegisterScrollBar;
+procedure RegisterCustomGroupBox;
+procedure RegisterGroupBox;
+procedure RegisterCustomComboBox;
+procedure RegisterComboBox;
+procedure RegisterCustomListBox;
+procedure RegisterListBox;
+procedure RegisterCustomEdit;
+procedure RegisterCustomMemo;
+procedure RegisterEdit;
+procedure RegisterMemo;
+procedure RegisterButtonControl;
+procedure RegisterCustomButton;
+procedure RegisterCustomCheckBox;
+procedure RegisterCheckBox;
+procedure RegisterToggleBox;
+procedure RegisterRadioButton;
+procedure RegisterCustomStaticText;
+procedure RegisterStaticText;
+procedure RegisterLabel;
+
 // extctrls
 procedure RegisterCustomPage;
 procedure RegisterCustomNotebook;
@@ -108,6 +130,27 @@ function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorBut
 function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
 // dirsel
 //function WSRegisterDirSelDlg: Boolean;         external name 'WSRegisterDirSelDlg';
+// StdCtrls
+function WSRegisterScrollBar: Boolean;         external name 'WSRegisterScrollBar';
+function WSRegisterCustomGroupBox: Boolean;    external name 'WSRegisterCustomGroupBox';
+function WSRegisterGroupBox: Boolean;          external name 'WSRegisterGroupBox';
+function WSRegisterCustomComboBox: Boolean;    external name 'WSRegisterCustomComboBox';
+function WSRegisterComboBox: Boolean;          external name 'WSRegisterComboBox';
+function WSRegisterCustomListBox: Boolean;     external name 'WSRegisterCustomListBox';
+function WSRegisterListBox: Boolean;           external name 'WSRegisterListBox';
+function WSRegisterCustomEdit: Boolean;        external name 'WSRegisterCustomEdit';
+function WSRegisterCustomMemo: Boolean;        external name 'WSRegisterCustomMemo';
+function WSRegisterEdit: Boolean;              external name 'WSRegisterEdit';
+function WSRegisterMemo: Boolean;              external name 'WSRegisterMemo';
+function WSRegisterButtonControl: Boolean;     external name 'WSRegisterButtonControl';
+function WSRegisterCustomButton: Boolean;      external name 'WSRegisterCustomButton';
+function WSRegisterCustomCheckBox: Boolean;    external name 'WSRegisterCustomCheckBox';
+function WSRegisterCheckBox: Boolean;          external name 'WSRegisterCheckBox';
+function WSRegisterToggleBox: Boolean;         external name 'WSRegisterToggleBox';
+function WSRegisterRadioButton: Boolean;       external name 'WSRegisterRadioButton';
+function WSRegisterCustomStaticText: Boolean;  external name 'WSRegisterCustomStaticText';
+function WSRegisterStaticText: Boolean;        external name 'WSRegisterStaticText';
+function WSRegisterLabel: Boolean;             external name 'WSRegisterLabel';
 // extctrls
 function WSRegisterCustomPage: Boolean;        external name 'WSRegisterCustomPage';
 function WSRegisterCustomNotebook: Boolean;    external name 'WSRegisterCustomNotebook';
@@ -410,6 +453,229 @@ begin
 //    RegisterWSComponent(TFontDialog, TWSFontDialog);
   Done := True;
 end;
+
+// SdtCtrls
+procedure RegisterScrollBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterScrollBar;
+//  if not WSRegisterScrollBar then
+//    RegisterWSComponent(TScrollBar, TWSScrollBar);
+  Done := True;
+end;
+
+procedure RegisterCustomGroupBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomGroupBox;
+//  if not WSRegisterCustomGroupBox then
+//    RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
+  Done := True;
+end;
+
+procedure RegisterGroupBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterGroupBox;
+//  if not WSRegisterGroupBox then
+//    RegisterWSComponent(TGroupBox, TWSGroupBox);
+  Done := True;
+end;
+
+procedure RegisterCustomComboBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomComboBox;
+//  if not WSRegisterCustomComboBox then
+//    RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
+  Done := True;
+end;
+
+procedure RegisterComboBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterComboBox;
+//  if not WSRegisterComboBox then
+//    RegisterWSComponent(TComboBox, TWSComboBox);
+  Done := True;
+end;
+
+procedure RegisterCustomListBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomListBox;
+//  if not WSRegisterCustomListBox then
+//    RegisterWSComponent(TCustomListBox, TWSCustomListBox);
+  Done := True;
+end;
+
+procedure RegisterListBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterListBox;
+//  if not WSRegisterListBox then
+//    RegisterWSComponent(TListBox, TWSListBox);
+  Done := True;
+end;
+
+procedure RegisterCustomEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomEdit;
+//  if not WSRegisterCustomEdit then
+//    RegisterWSComponent(TCustomEdit, TWSCustomEdit);
+  Done := True;
+end;
+
+procedure RegisterCustomMemo;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomMemo;
+//  if not WSRegisterCustomMemo then
+//    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
+  Done := True;
+end;
+
+procedure RegisterEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterEdit;
+//  if not WSRegisterEdit then
+//    RegisterWSComponent(TEdit, TWSEdit);
+  Done := True;
+end;
+
+procedure RegisterMemo;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMemo;
+//  if not WSRegisterMemo then
+//    RegisterWSComponent(TMemo, TWSMemo);
+  Done := True;
+end;
+
+procedure RegisterButtonControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterButtonControl;
+//  if not WSRegisterButtonControl then
+//    RegisterWSComponent(TButtonControl, TWSButtonControl);
+  Done := True;
+end;
+
+procedure RegisterCustomButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomButton;
+//  if not WSRegisterCustomButton then
+//
+  Done := True;
+end;
+
+procedure RegisterCustomCheckBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckBox;
+//  if not WSRegisterCustomCheckBox then
+//    RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
+  Done := True;
+end;
+
+
+procedure RegisterCheckBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCheckBox;
+//  if not WSRegisterCheckBox then
+//    RegisterWSComponent(TCheckBox, TWSCheckBox);
+  Done := True;
+end;
+
+procedure RegisterToggleBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterToggleBox;
+//  if not WSRegisterToggleBox then
+//    RegisterWSComponent(TToggleBox, TWSToggleBox);
+  Done := True;
+end;
+
+procedure RegisterRadioButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterRadioButton;
+//  if not WSRegisterRadioButton then
+//    RegisterWSComponent(TRadioButton, TWSRadioButton);
+  Done := True;
+end;
+
+procedure RegisterCustomStaticText;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomStaticText;
+//  if not WSRegisterCustomStaticText then
+//    RegisterWSComponent(TCustomStaticText, TWSCustomStaticText);
+  Done := True;
+end;
+
+procedure RegisterStaticText;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterStaticText;
+//  if not WSRegisterStaticText then
+//    RegisterWSComponent(TStaticText, TWSStaticText);
+  Done := True;
+end;
+
+procedure RegisterLabel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterLabel;
+//  if not WSRegisterLabel then
+//    RegisterWSComponent(TLabel, TWSLabel);
+  Done := True;
+end;
+
 
 // dirsel
 (*procedure RegisterDirSelDlg;
@@ -729,7 +995,6 @@ begin
 //    RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
   Done := True;
 end;
-
 
 end.
 

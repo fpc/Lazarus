@@ -443,6 +443,12 @@ begin
   end;
 end;
 
+class procedure TCustomComboBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomComboBox;
+end;
+
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   skip : Boolean;

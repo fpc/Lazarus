@@ -159,4 +159,10 @@ begin
     FFocusControl.SetFocus;
 end;
 
+class procedure TCustomStaticText.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomStaticText;
+end;
+
 // included by stdctrls.pp

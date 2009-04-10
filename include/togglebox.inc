@@ -16,6 +16,12 @@
 }
 {------------------------------------------------------------------------------}
 
+class procedure TToggleBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterToggleBox;
+end;
+
 constructor TToggleBox.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
