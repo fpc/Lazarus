@@ -42,6 +42,7 @@ object Form1: TForm1
       Extent.UseYMax = True
       Pen.Color = clOlive
       Pen.Width = 2
+      Step = 4
       Title = 'Sin(x)'
     end
     object Chart1XAxis: TLine

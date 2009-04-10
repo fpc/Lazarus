@@ -16,8 +16,8 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'t.YMin'#5#0#0#0#0#0#0#0#128#255#191#11'Extent.XMax'#5#0#248'(\'#143#194#245
   +#200#1'@'#11'Extent.YMax'#5#0#0#0#0#0#0#0#128#255'?'#14'Extent.UseXMin'#9#14
   +'Extent.UseYMin'#9#14'Extent.UseXMax'#9#14'Extent.UseYMax'#9#9'Pen.Color'#7#7
-  +'clOlive'#9'Pen.Width'#2#2#5'Title'#6#6'Sin(x)'#0#0#5'TLine'#11'Chart1XAxis'
-  +#12'ShowInLegend'#8#11'SeriesColor'#7#7'clBlack'#0#0#5'TLine'#11'Chart1YAxis'
-  +#12'ShowInLegend'#8#9'LineStyle'#7#10'lsVertical'#11'SeriesColor'#7#7'clBlac'
-  +'k'#0#0#0#0
+  +'clOlive'#9'Pen.Width'#2#2#4'Step'#2#4#5'Title'#6#6'Sin(x)'#0#0#5'TLine'#11
+  +'Chart1XAxis'#12'ShowInLegend'#8#11'SeriesColor'#7#7'clBlack'#0#0#5'TLine'#11
+  +'Chart1YAxis'#12'ShowInLegend'#8#9'LineStyle'#7#10'lsVertical'#11'SeriesColo'
+  +'r'#7#7'clBlack'#0#0#0#0
 ]);

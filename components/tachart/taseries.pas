@@ -291,6 +291,8 @@ type
 
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
 
+  TFuncSeriesStep = 1..MaxInt;
+
   { TFuncSeries }
 
   TFuncSeries = class(TBasicChartSeries)
@@ -298,10 +300,12 @@ type
     FExtent: TChartExtent;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
+    FStep: TFuncSeriesStep;
 
     procedure SetExtent(const AValue: TChartExtent);
     procedure SetOnCalculate(const AValue: TFuncCalculateEvent);
     procedure SetPen(const AValue: TChartPen);
+    procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
@@ -327,6 +331,7 @@ type
     property Pen: TChartPen read FPen write SetPen;
     property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
     property ShowInLegend;
+    property Step: TFuncSeriesStep read FStep write SetStep default 2;
     property Title;
   end;
 
@@ -1538,6 +1543,7 @@ begin
   FShowInLegend := true;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
+  FStep := 2;
 end;
 
 destructor TFuncSeries.Destroy;
@@ -1582,7 +1588,7 @@ begin
 
   ACanvas.MoveTo(x, CalcY(x));
   while x < xmax do begin
-    Inc(x, 2);
+    Inc(x, FStep);
     ACanvas.LineTo(x, CalcY(x));
   end;
 end;
@@ -1656,6 +1662,13 @@ procedure TFuncSeries.SetShowInLegend(AValue: Boolean);
 begin
   if FShowInLegend = AValue then exit;
   FShowInLegend := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
   UpdateParentChart;
 end;
 
