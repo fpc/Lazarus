@@ -142,9 +142,8 @@ begin
     PkgListBox.ItemIndex:=-1;
     exit;
   end;
-  if Dependency.Owner is TLazPackage then begin
+  if Dependency.Owner is TLazPackage then
     SelectPackage(TLazPackage(Dependency.Owner));
-  end;
 end;
 
 procedure TPkgGraphExplorerDlg.PkgListBoxDblClick(Sender: TObject);
@@ -339,13 +338,24 @@ var
   TreePkg: TLazPackage;
   TreeDependency: TPkgDependency;
   ListIndex: Integer;
+  UsedByDep: TPkgDependency;
+  SelName: string;
 begin
   Dependency:=nil;
+  ListIndex:=PkgListBox.ItemIndex;
+  if ListIndex<0 then exit;
   GetDependency(PkgTreeView.Selected,TreePkg,TreeDependency);
   if (Dependency=nil) and (TreePkg<>nil) then begin
-    ListIndex:=PkgListBox.ItemIndex;
-    if ListIndex<0 then exit;
-    Dependency:=TreePkg.UsedByDepByIndex(ListIndex);
+    SelName:=PkgListBox.Items[ListIndex];
+    UsedByDep:=TreePkg.FirstUsedByDependency;
+    while UsedByDep<>nil do begin
+      if UsedByDep.Owner<>PackageGraph then begin
+        if SelName=GetDependencyOwnerAsString(UsedByDep) then begin
+          Dependency:=UsedByDep;
+        end;
+      end;
+      UsedByDep:=UsedByDep.NextUsedByDependency;
+    end;
   end;
 end;
 

@@ -350,7 +350,7 @@ type
     property MinVersion: TPkgVersion read FMinVersion write SetMinVersion;
     property MaxVersion: TPkgVersion read FMaxVersion write SetMaxVersion;
     property Removed: boolean read FRemoved write SetRemoved;
-    property Owner: TObject read FOwner write FOwner;
+    property Owner: TObject read FOwner write FOwner;// package or project or IDE
     property RequiredPackage: TLazPackage read FRequiredPackage write SetRequiredPackage;
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write SetLoadPackageResult;
     property HoldPackage: boolean read FHoldPackage write SetHoldPackage;

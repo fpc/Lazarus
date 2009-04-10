@@ -3,7 +3,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   Height = 413
   Top = 239
   Width = 462
-  ActiveControl = InfoMemo
+  ActiveControl = PkgTreePanel
   Caption = 'PkgGraphExplorerDlg'
   ClientHeight = 413
   ClientWidth = 462
