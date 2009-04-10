@@ -765,6 +765,7 @@ tests/test7_1anchordocking.lpr svneol=native#text/plain
 /tmschema.pas svneol=native#text/pascal
 /toolwin.pp svneol=native#text/pascal
 /translations.pas svneol=native#text/pascal
+/utf8process.pp svneol=native#text/pascal
 /utrace.pp svneol=native#text/pascal
 widgetset/README.txt svneol=native#text/plain
 widgetset/wsactnlist.pp svneol=native#text/pascal

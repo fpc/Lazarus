@@ -22,7 +22,7 @@ unit LazHelpHTML;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, AsyncProcess,
+  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, UTF8Process,
   LazConfigStorage, LCLStrConsts, HelpIntfs, LazHelpIntf;
   
 type
