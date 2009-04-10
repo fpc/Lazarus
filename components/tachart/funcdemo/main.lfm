@@ -36,6 +36,10 @@ object Form1: TForm1
       Extent.YMin = -1
       Extent.XMax = 6.28
       Extent.YMax = 1
+      Extent.UseXMin = True
+      Extent.UseYMin = True
+      Extent.UseXMax = True
+      Extent.UseYMax = True
       Pen.Color = clOlive
       Pen.Width = 2
       Title = 'Sin(x)'

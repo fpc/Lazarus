@@ -1555,19 +1555,28 @@ procedure TFuncSeries.Draw(ACanvas: TCanvas);
   begin
     FChart.XImageToGraph(AX, xg);
     OnCalculate(xg, yg);
-    yg := EnsureRange(yg, Extent.YMin, Extent.YMax);
+    if Extent.UseYMin and (yg < Extent.YMin) then
+      yg := Extent.YMin;
+    if Extent.UseYMax and (yg > Extent.YMax) then
+      yg := Extent.YMax;
     FChart.YGraphToImage(yg, Result);
   end;
 
 var
-  x, xmax: Integer;
+  x, xmax, t: Integer;
 begin
   if not Assigned(OnCalculate) then exit;
 
-  FChart.XGraphToImage(Extent.XMin, x);
-  x := Max(x, FChart.ClipRect.Left);
-  FChart.XGraphToImage(Extent.XMax, xmax);
-  xmax := Min(xmax, FChart.ClipRect.Right);
+  x := FChart.ClipRect.Left;
+  if Extent.UseXMin then begin
+    FChart.XGraphToImage(Extent.XMin, t);
+    x := Max(x, t);
+  end;
+  xmax := FChart.ClipRect.Right;
+  if Extent.UseXMax then begin
+    FChart.XGraphToImage(Extent.XMax, t);
+    x := Min(x, t);
+  end;
 
   ACanvas.Pen.Assign(Pen);
 
@@ -1657,10 +1666,12 @@ end;
 
 procedure TFuncSeries.UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double);
 begin
-  if Extent.XMin < AXMin then AXMin := Extent.XMin;
-  if Extent.YMin < AYMin then AYMin := Extent.YMin;
-  if Extent.XMax > AXMax then AXMax := Extent.XMax;
-  if Extent.YMax > AYMax then AYMax := Extent.YMax;
+  with Extent do begin
+    if UseXMin and (XMin < AXMin) then AXMin := XMin;
+    if UseYMin and (YMin < AYMin) then AYMin := YMin;
+    if UseXMax and (XMax > AXMax) then AXMax := XMax;
+    if UseYMax and (YMax > AYMax) then AYMax := YMax;
+  end;
 end;
 
 procedure TFuncSeries.UpdateParentChart;

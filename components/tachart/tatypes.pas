@@ -243,23 +243,23 @@ type
   TChartExtent = class (TChartElement)
   private
     FExtent: TDoubleRect;
-    FAuto: array [1..4] of Boolean;
+    FUseBounds: array [1..4] of Boolean;
 
-    function GetAuto(AIndex: integer): Boolean;
-    function GetBorder(AIndex: Integer): Double;
-    procedure SetAuto(AIndex: Integer; AValue: Boolean);
-    procedure SetBorder(AIndex: Integer; const AValue: Double);
+    function GetBounds(AIndex: Integer): Double;
+    function GetUseBounds(AIndex: integer): Boolean;
+    procedure SetBounds(AIndex: Integer; const AValue: Double);
+    procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
     property Extent: TDoubleRect read FExtent;
   published
-    property XMin: Double index 1 read GetBorder write SetBorder;
-    property YMin: Double index 2 read GetBorder write SetBorder;
-    property XMax: Double index 3 read GetBorder write SetBorder;
-    property YMax: Double index 4 read GetBorder write SetBorder;
-    property AutoXMin: Boolean index 1 read GetAuto write SetAuto;
-    property AutoYMin: Boolean index 2 read GetAuto write SetAuto;
-    property AutoXMax: Boolean index 3 read GetAuto write SetAuto;
-    property AutoYMax: Boolean index 4 read GetAuto write SetAuto;
+    property XMin: Double index 1 read GetBounds write SetBounds;
+    property YMin: Double index 2 read GetBounds write SetBounds;
+    property XMax: Double index 3 read GetBounds write SetBounds;
+    property YMax: Double index 4 read GetBounds write SetBounds;
+    property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds;
+    property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds;
+    property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds;
+    property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds;
   end;
 
 const
@@ -770,23 +770,23 @@ end;
 
 { TChartExtent }
 
-function TChartExtent.GetAuto(AIndex: Integer): Boolean;
+function TChartExtent.GetUseBounds(AIndex: Integer): Boolean;
 begin
-  Result := FAuto[AIndex];
+  Result := FUseBounds[AIndex];
 end;
 
-function TChartExtent.GetBorder(AIndex: Integer): Double;
+function TChartExtent.GetBounds(AIndex: Integer): Double;
 begin
-  Result := Extent.coords[AIndex];
+  Result := FExtent.coords[AIndex];
 end;
 
-procedure TChartExtent.SetAuto(AIndex: Integer; AValue: Boolean);
+procedure TChartExtent.SetUseBounds(AIndex: Integer; AValue: Boolean);
 begin
-  FAuto[AIndex] := AValue;
+  FUseBounds[AIndex] := AValue;
   StyleChanged(Self);
 end;
 
-procedure TChartExtent.SetBorder(AIndex: Integer; const AValue: Double);
+procedure TChartExtent.SetBounds(AIndex: Integer; const AValue: Double);
 begin
   FExtent.coords[AIndex] := AValue;
   StyleChanged(Self);
