@@ -1,14 +1,15 @@
+# 
 msgid ""
 msgstr ""
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2008-12-03 10:28+0100\n"
-"Language-Team: français\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.10.2\n"
 "Project-Id-Version: lazaruside\n"
-"MIME-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-03-29 23:45+0200\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: français\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
@@ -124,7 +125,7 @@ msgstr "Compatibilité TP/BP 7.0"
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
-msgstr "Parenthèse"
+msgstr "Parenthèses"
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
@@ -1376,7 +1377,7 @@ msgstr "Défilement après la fin du fichier"
 
 #: lazarusidestrconsts.dlgscrollpastendline
 msgid "Scroll past end of line"
-msgstr "Défilement après la fin d'une ligne"
+msgstr "Défilement après fin de ligne"
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -1548,7 +1549,7 @@ msgstr "Options des syntaxes"
 
 #: lazarusidestrconsts.dlgtabindent
 msgid "Tab indents blocks"
-msgstr "La touche tabulation indente les blocs"
+msgstr "Tabulation indente les blocs"
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
@@ -1664,7 +1665,7 @@ msgstr "Utiliser une application de démarrage"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr "Coloration syntaxique"
+msgstr "Utiliser la coloration syntaxique"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgid "Value"
