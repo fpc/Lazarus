@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -27,7 +27,7 @@ uses
   Win32WSExtCtrls,       // +
   Win32WSExtDlgs,        // +
   Win32WSForms,          // +
-  Win32WSGrids,          // -
+  Win32WSGrids,          // +
   Win32WSImgList,        // +
   Win32WSMenus,          // -
   Win32WSPairSplitter,   // -
@@ -422,6 +422,12 @@ end;
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
   RegisterWSComponent(THintWindow, TWin32WSHintWindow);
+  Result := True;
+end;
+
+function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
+begin
+  RegisterWSComponent(TCustomGrid, TWin32WSCustomGrid);
   Result := True;
 end;
 

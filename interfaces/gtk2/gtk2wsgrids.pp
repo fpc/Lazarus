@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -39,14 +39,6 @@ uses
 
 type
 
-  { TGtk2WSStringCellEditor }
-
-  TGtk2WSStringCellEditor = class(TWSStringCellEditor)
-  private
-  protected
-  public
-  end;
-
   { TGtk2WSCustomGrid }
 
   TGtk2WSCustomGrid = class(TWSCustomGrid)
@@ -54,23 +46,6 @@ type
   protected
   public
   end;
-
-  { TGtk2WSDrawGrid }
-
-  TGtk2WSDrawGrid = class(TWSDrawGrid)
-  private
-  protected
-  public
-  end;
-
-  { TGtk2WSStringGrid }
-
-  TGtk2WSStringGrid = class(TWSStringGrid)
-  private
-  protected
-  public
-  end;
-
 
 implementation
 
@@ -82,9 +57,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TGtk2WSStringCellEditor);
 //  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TGtk2WSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TGtk2WSStringGrid);
 ////////////////////////////////////////////////////
 end.

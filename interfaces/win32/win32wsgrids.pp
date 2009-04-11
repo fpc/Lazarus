@@ -40,32 +40,12 @@ uses
   WSGrids, WSLCLClasses;
 
 type
-
-  { TWin32WSStringCellEditor }
-
-  TWin32WSStringCellEditor = class(TWSStringCellEditor)
-  published
-  end;
-
   { TWin32WSCustomGrid }
 
   TWin32WSCustomGrid = class(TWSCustomGrid)
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); override;
   end;
-
-  { TWin32WSDrawGrid }
-
-  TWin32WSDrawGrid = class(TWSDrawGrid)
-  published
-  end;
-
-  { TWin32WSStringGrid }
-
-  TWin32WSStringGrid = class(TWSStringGrid)
-  published
-  end;
-
 
 implementation
 
@@ -93,17 +73,4 @@ begin
   PostMessage(AEditor.Handle, WM_CHAR, WChar, 0);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TWin32WSStringCellEditor);
-  RegisterWSComponent(TCustomGrid, TWin32WSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TWin32WSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TWin32WSStringGrid);
-////////////////////////////////////////////////////
 end.

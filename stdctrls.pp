@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
-  TextStrings, Forms, Menus, LResources, WSFactory;
+  TextStrings, Forms, Menus, LResources;
 
 type
 
@@ -1463,7 +1463,7 @@ procedure Register;
 implementation
 
 uses
-  WSControls, WSStdCtrls; // Widgetset uses circle is allowed
+  WSControls, WSStdCtrls, WSFactory; // Widgetset uses circle is allowed
 
 
 type

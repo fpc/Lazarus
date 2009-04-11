@@ -49,35 +49,17 @@ uses
   WSLCLClasses, WSMaskEdit, WSControls;
 
 type
-  { TWSStringCellEditor }
-
-  TWSStringCellEditor = class(TWSCustomMaskEdit)
-  published
-  end;
-
-  TWSCustomGridClass = class of TWSCustomgrid;
   { TWSCustomGrid }
 
   TWSCustomGrid = class(TWSCustomControl)
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
   end;
-
-  { TWSDrawGrid }
-
-  TWSDrawGrid = class(TWSCustomGrid)
-  published
-  end;
-
-  { TWSStringGrid }
-
-  TWSStringGrid = class(TWSDrawGrid)
-  published
-  end;
-
+  TWSCustomGridClass = class of TWSCustomgrid;
 
 implementation
-uses LCLIntf, LCLProc;
+uses
+  LCLIntf, LCLProc;
 
 { TWSCustomGrid }
 
@@ -94,14 +76,4 @@ begin
   AEditor.Dispatch(GMsg);
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-//  RegisterWSComponent(TStringCellEditor, TWSStringCellEditor);
-    RegisterWSComponent(TCustomGrid, TWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TWSStringGrid);
-////////////////////////////////////////////////////
 end.

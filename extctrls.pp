@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, popupnotifier, WSFactory;
+  LCLClasses, Menus, popupnotifier;
 
 type
 
@@ -1217,7 +1217,7 @@ implementation
 
 // !!! Avoid unit circles. Only add units if really needed.
 uses
-  Math, WSExtCtrls;
+  Math, WSExtCtrls, WSFactory;
 
 procedure Register;
 begin

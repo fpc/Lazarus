@@ -39,27 +39,9 @@ uses
 
 type
 
-  { TQtWSStringCellEditor }
-
-  TQtWSStringCellEditor = class(TWSStringCellEditor)
-  published
-  end;
-
   { TQtWSCustomGrid }
 
   TQtWSCustomGrid = class(TWSCustomGrid)
-  published
-  end;
-
-  { TQtWSDrawGrid }
-
-  TQtWSDrawGrid = class(TWSDrawGrid)
-  published
-  end;
-
-  { TQtWSStringGrid }
-
-  TQtWSStringGrid = class(TWSStringGrid)
   published
   end;
 
@@ -74,9 +56,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TQtWSStringCellEditor);
 //  RegisterWSComponent(TCustomGrid, TQtWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TQtWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TQtWSStringGrid);
 ////////////////////////////////////////////////////
 end.

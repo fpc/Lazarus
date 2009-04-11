@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, LResources, SysUtils, LCLIntf, InterfaceBase, FileUtil,
   LCLStrConsts, LCLType, LCLProc, Forms, Controls,
-  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses, WSFactory;
+  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses;
 
 
 type
@@ -535,7 +535,7 @@ procedure Register;
 implementation
 
 uses 
-  Math, WSDialogs;
+  Math, WSDialogs, WSFactory;
 
 const
   //

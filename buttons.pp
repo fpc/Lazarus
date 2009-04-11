@@ -40,7 +40,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache, WSFactory;
+  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache;
 
 type
   TButtonLayout =
@@ -400,7 +400,7 @@ procedure Register;
 implementation
 
 uses
-  WSButtons;
+  WSButtons, WSFactory;
 
 const
   BitBtnModalResults: array[TBitBtnKind] of TModalResult = (

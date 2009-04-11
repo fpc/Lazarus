@@ -4,8 +4,8 @@ unit WSFactory;
 
 interface
 uses
-  Classes, Controls, ImgList,
-  WSLCLClasses, WSControls, WSImgList;
+  Classes, Controls, ImgList, Grids,
+  WSLCLClasses, WSControls, WSImgList, WSGrids;
 
 // imglist
 procedure RegisterCustomImageList;
@@ -86,6 +86,8 @@ procedure RegisterScrollBox;
 procedure RegisterCustomFrame;
 procedure RegisterCustomForm;
 procedure RegisterHintWindow;
+// Grids
+procedure RegisterCustomGrid;
 
 implementation
 uses
@@ -171,7 +173,8 @@ function WSRegisterScrollBox: Boolean;          external name 'WSRegisterScrollB
 function WSRegisterCustomFrame: Boolean;        external name 'WSRegisterCustomFrame';
 function WSRegisterCustomForm: Boolean;         external name 'WSRegisterCustomForm';
 function WSRegisterHintWindow: Boolean;         external name 'WSRegisterHintWindow';
-
+// Grids
+function WSRegisterCustomGrid: Boolean;         external name 'WSRegisterCustomGrid';
 
 procedure RegisterCustomImageList;
 const
@@ -904,6 +907,16 @@ begin
   WSRegisterHintWindow;
 //  if not WSRegisterHintWindow then
 //    RegisterWSComponent(THintWindow, TWSHintWindow);
+  Done := True;
+end;
+
+procedure RegisterCustomGrid;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomGrid then
+    RegisterWSComponent(TCustomGrid, TWSCustomGrid);
   Done := True;
 end;
 
