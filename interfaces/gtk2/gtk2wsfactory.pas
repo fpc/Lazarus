@@ -148,6 +148,7 @@ end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
+  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget); { GTK1 }
   RegisterWSComponent(TWinControl, TGtk2WSWinControl);
   Result := True;
 end;
