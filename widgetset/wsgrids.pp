@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Controls, LCLType, Grids,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSMaskEdit, WSControls, WSFactory;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSCustomGrid }
