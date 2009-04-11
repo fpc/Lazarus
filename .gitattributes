@@ -701,7 +701,6 @@ languages/lclstrconsts.zh_CN.po svneol=native#text/utf8
 nonwin32/README.txt svneol=native#text/plain
 nonwin32/messages.pp svneol=native#text/pascal
 /pairsplitter.pas svneol=native#text/pascal
-/popupnotifier.lrs svneol=native#text/plain
 /popupnotifier.pas svneol=native#text/pascal
 /postscriptcanvas.pas svneol=native#text/pascal
 /postscriptprinter.pas svneol=native#text/pascal

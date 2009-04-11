@@ -25,14 +25,10 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, StdCtrls
+  Classes, SysUtils, Forms, Controls, Graphics, StdCtrls;
   { Note: Be careful that ExtCtrls depend on popupnotifier, so
     it should have only a minimal amount of dependencies to avoid circular
     references. Preferably only units that ExtCtrls already has }
-{$ifdef fpc}
-  , LResources
-{$endif}
-;
 
 type
   { TNotifierXButton }
@@ -456,10 +452,5 @@ begin
 
   vNotifierForm.Show;
 end;
-
-initialization
-{$ifdef fpc}
-  {$i popupnotifier.lrs}
-{$endif}
 
 end.
