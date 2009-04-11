@@ -349,26 +349,26 @@ function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
   RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
   RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
 //  RegisterWSComponent(TStaticText, TGtkWSStaticText);
   RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
