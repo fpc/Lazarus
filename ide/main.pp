@@ -862,7 +862,8 @@ type
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoReplaceUnitUse(OldFilename, OldUnitName,
-                              NewFilename, NewUnitName: string): TModalResult;
+                              NewFilename, NewUnitName: string;
+                              IgnoreErrors, Quiet: boolean): TModalResult;
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
@@ -7293,7 +7294,8 @@ begin
   or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
     Result:=mrOk;
     {$IFDEF EnableReplaceUnitUse}
-    Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName);
+    Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
+                             true,true);
     {$ENDIF}
     if Result<>mrOk then exit;
   end;
@@ -12697,7 +12699,7 @@ begin
         Identifier,Options.RenameTo)
       then begin
         DoJumpToCodeToolBossError;
-        debugln('TMainIDE.DoFindRenameIdentifier unable to rename identifier');
+        debugln('TMainIDE.DoFindRenameIdentifier unable to commit');
         Result:=mrCancel;
         exit;
       end;
@@ -14943,7 +14945,7 @@ begin
 end;
 
 function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
-  NewUnitName: string): TModalResult;
+  NewUnitName: string; IgnoreErrors, Quiet: boolean): TModalResult;
 { Replaces all references to a unit
 
 }
@@ -14957,7 +14959,7 @@ var
   i: Integer;
 begin
   if (CompareFilenames(OldFilename,NewFilename)=0)
-  and (OldUnitName=NewUnitName) then
+  and (OldUnitName=NewUnitName) then // compare unitnames case sensitive, maybe only the case changed
     exit(mrOk);
 
   OwnerList:=nil;
@@ -14986,12 +14988,12 @@ begin
         Files.Delete(i);
     end;
 
-    DebugLn(['TMainIDE.DoReplaceUnitUse ',Files.Text]);
+    //DebugLn(['TMainIDE.DoReplaceUnitUse ',Files.Text]);
 
     // commit source editor to codetools
     SaveSourceEditorChangesToCodeCache(-1);
 
-    // search pascal source references
+    // load or create old unit
     OldCode:=CodeToolBoss.LoadFile(OldFilename,true,false);
     if OldCode=nil then begin
       // create old file in memory so that unit search can find it
@@ -14999,12 +15001,29 @@ begin
       OldCodeCreated:=true;
     end;
 
-    Result:=GatherUnitReferences(Files,OldCode,false,PascalReferences);
-    if CodeToolBoss.ErrorMessage<>'' then
+    // search pascal source references
+    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,PascalReferences);
+    if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'')
+    then
       DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
       debugln('TMainIDE.DoReplaceUnitUse GatherUnitReferences failed');
       exit;
+    end;
+
+    // replace
+    if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
+      if not CodeToolBoss.RenameIdentifier(PascalReferences,
+        OldUnitName,NewUnitName)
+      then begin
+        if (not IgnoreErrors) and (not Quiet) then
+          DoJumpToCodeToolBossError;
+        debugln('TMainIDE.DoReplaceUnitUse unable to commit');
+        if not IgnoreErrors then begin
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
     end;
 
   finally

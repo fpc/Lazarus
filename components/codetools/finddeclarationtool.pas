@@ -3940,7 +3940,7 @@ var
       //DebugLn(['CheckUsesSection ',GetAtom,' ',UnitName]);
       if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
-          DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
+          //DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
           Found:=true;
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
@@ -3967,7 +3967,7 @@ var
       if UpAtomIs(UpperUnitName)
       and not LastAtomIs(0,'.') then begin
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
-          DebugLn(['CheckSource found: ',DbgsCXY(ReferencePos)]);
+          //DebugLn(['CheckSource found: ',DbgsCXY(ReferencePos)]);
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
       end;
@@ -3982,7 +3982,7 @@ var
   StartPos: Integer;
 begin
   Result:=false;
-  debugln('FindUnitReferences UnitCode=',UnitCode.Filename,' SkipComments=',dbgs(SkipComments),' ',MainFilename);
+  //debugln('FindUnitReferences UnitCode=',UnitCode.Filename,' SkipComments=',dbgs(SkipComments),' ',MainFilename);
 
   UnitName:=ExtractFileNameOnly(UnitCode.Filename);
   UpperUnitName:=UpperCaseStr(UnitName);

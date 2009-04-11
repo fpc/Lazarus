@@ -90,7 +90,7 @@ function GatherIdentifierReferences(Files: TStringList;
   SearchInComments: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function GatherUnitReferences(Files: TStringList;
-  UnitCode: TCodeBuffer; SearchInComments: boolean;
+  UnitCode: TCodeBuffer; SearchInComments, IgnoreErrors: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -204,7 +204,8 @@ begin
 end;
 
 function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
-  SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+  SearchInComments, IgnoreErrors: boolean;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   ListOfPCodeXYPosition: TFPList;
   LoadResult: TModalResult;
@@ -217,14 +218,17 @@ begin
   try
     CleanUpFileList(Files);
 
+    Result:=mrOk;
     // search in every file
     for i:=0 to Files.Count-1 do begin
       if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
-      DebugLn(['GatherUnitReferences AAA1 ',Files[i]]);
       LoadResult:=
                LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
       if LoadResult=mrAbort then begin
         debugln('GatherUnitReferences unable to load "',Files[i],'"');
+        if IgnoreErrors then
+          continue;
+        Result:=mrCancel;
         exit;
       end;
       if LoadResult<>mrOk then continue;
@@ -235,7 +239,9 @@ begin
         UnitCode, Code, not SearchInComments, ListOfPCodeXYPosition) then
       begin
         debugln('GatherUnitReferences unable to FindUnitReferences in "',Code.Filename,'"');
-        Result:=mrAbort;
+        if IgnoreErrors then
+          continue;
+        Result:=mrCancel;
         exit;
       end;
       //debugln('GatherUnitReferences FindUnitReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
@@ -250,8 +256,6 @@ begin
     end;
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    if Result<>mrOk then
-      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
 end;
 
