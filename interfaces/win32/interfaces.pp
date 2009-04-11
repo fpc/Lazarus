@@ -29,7 +29,7 @@ unit Interfaces;
 interface 
 
 uses
-  InterfaceBase, Win32WSFactory;
+  InterfaceBase;
 
 implementation
 

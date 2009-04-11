@@ -62,7 +62,8 @@ uses
   // widgetset
   GtkInt,
   GtkDebug,
-  GtkFontCache, GtkDef, Gtk1Def, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
+  GtkFontCache, GtkDef, Gtk1Def, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate,
+  WSLCLClasses;
 
 type
 
@@ -113,7 +114,8 @@ uses
 // Gtk1Themes,
 ////////////////////////////////////////////////////
   StdCtrls,
-  GTKWinApiWindow;
+  GTKWinApiWindow,
+  GtkWSFactory;
 
 {$include gtk1widgetset.inc}
 

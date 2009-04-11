@@ -32,7 +32,7 @@ unit Interfaces;
 interface
 
 uses 
-  InterfaceBase, GtkWSFactory;
+  InterfaceBase;
 
 implementation
 
