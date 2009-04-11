@@ -316,6 +316,7 @@ end;
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
 //  RegisterWSComponent(TEdit, TGtk2WSEdit);
+  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry); { GTK1 }
   RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   Result := True;
 end;
@@ -323,6 +324,7 @@ end;
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
 //  RegisterWSComponent(TMemo, TGtk2WSMemo);
+  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling); { GTK1 }
   RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
   Result := True;
 end;
@@ -335,7 +337,7 @@ end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-//  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton); { enabled in GTK1 ? }
+  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton); { enabled(ifdef) in GTK1 }
   RegisterWSComponent(TCustomButton, TGtk2WSButton);
   Result := True;
 end;
