@@ -6,7 +6,7 @@ interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
-  WSLCLClasses;
+  PairSplitter, WSLCLClasses;
 
 implementation
 uses
@@ -24,7 +24,10 @@ uses
   GtkWSImgList,
   GtkWSMenus,
   GtkWSSpin,
-  GtkWSStdCtrls;
+  GtkWSStdCtrls,
+  GtkWSPairSplitter,
+  GtkWSPrivate,
+  Gtk1WSPrivate;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
