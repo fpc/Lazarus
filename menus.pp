@@ -161,6 +161,7 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
+    class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BitmapChange(Sender: TObject);
@@ -296,6 +297,7 @@ type
     procedure SetParent(const AValue: TComponent);
     procedure SetParentBiDiMode(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure BidiModeChanged; virtual;
     procedure CreateHandle; virtual;
     procedure DoChange(Source: TMenuItem; Rebuild: Boolean); virtual;
@@ -341,6 +343,7 @@ type
   TMainMenu = class(TMenu)
   protected
     procedure ItemChanged;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -360,6 +363,7 @@ type
     FPopupComponent: TComponent;
     FPopupPoint: TPoint;
   protected
+    class procedure WSRegisterClass; override;
     procedure DoPopup(Sender: TObject); virtual;
     procedure DoClose; virtual;
   public
@@ -412,7 +416,7 @@ const
 implementation
 
 uses
-  WSMenus,
+  WSMenus, WSFactory,
   Forms {KeyDataToShiftState};
 
 { Menu command management }

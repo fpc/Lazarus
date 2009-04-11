@@ -1380,6 +1380,12 @@ begin
   if Sender=Action then ActionChange(Sender,False);
 end;
 
+class procedure TMenuItem.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterMenuItem;
+end;
+
 procedure TMenuItem.AssignTo(Dest: TPersistent);
 begin
   if Dest is TCustomAction then begin

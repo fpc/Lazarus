@@ -88,6 +88,11 @@ procedure RegisterCustomForm;
 procedure RegisterHintWindow;
 // Grids
 procedure RegisterCustomGrid;
+// Menus
+procedure RegisterMenuItem;
+procedure RegisterMenu;
+procedure RegisterMainMenu;
+procedure RegisterPopupMenu;
 
 implementation
 uses
@@ -175,6 +180,11 @@ function WSRegisterCustomForm: Boolean;         external name 'WSRegisterCustomF
 function WSRegisterHintWindow: Boolean;         external name 'WSRegisterHintWindow';
 // Grids
 function WSRegisterCustomGrid: Boolean;         external name 'WSRegisterCustomGrid';
+// Menus
+function WSRegisterMenuItem: Boolean;           external name 'WSRegisterMenuItem';
+function WSRegisterMenu: Boolean;               external name 'WSRegisterMenu';
+function WSRegisterMainMenu: Boolean;           external name 'WSRegisterMainMenu';
+function WSRegisterPopupMenu: Boolean;          external name 'WSRegisterPopupMenu';
 
 procedure RegisterCustomImageList;
 const
@@ -917,6 +927,50 @@ begin
   if Done then exit;
   if not WSRegisterCustomGrid then
     RegisterWSComponent(TCustomGrid, TWSCustomGrid);
+  Done := True;
+end;
+
+procedure RegisterMenuItem;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMenuItem;
+//  if not WSRegisterMenuItem then
+//    RegisterWSComponent(TMenuItem, TWSMenuItem);
+  Done := True;
+end;
+
+procedure RegisterMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMenu;
+//  if not WSRegisterMenu then
+//    RegisterWSComponent(TMenu, TWSMenu);
+  Done := True;
+end;
+
+procedure RegisterMainMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMainMenu;
+//  if not WSRegisterMainMenu then
+//    RegisterWSComponent(TMainMenu, TWSMainMenu);
+  Done := True;
+end;
+
+procedure RegisterPopupMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPopupMenu;
+//  if not WSRegisterPopupMenu then
+//    RegisterWSComponent(TPopupMenu, TWSPopupMenu);
   Done := True;
 end;
 

@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -29,7 +29,7 @@ uses
   Win32WSForms,          // +
   Win32WSGrids,          // +
   Win32WSImgList,        // +
-  Win32WSMenus,          // -
+  Win32WSMenus,          // +
   Win32WSPairSplitter,   // -
   Win32WSSpin,           // -
   Win32WSStdCtrls;       // +
@@ -428,6 +428,29 @@ end;
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
   RegisterWSComponent(TCustomGrid, TWin32WSCustomGrid);
+  Result := True;
+end;
+
+function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';
+begin
+  RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
+  Result := True;
+end;
+
+function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
+begin
+  RegisterWSComponent(TMenu, TWin32WSMenu);
+  Result := True;
+end;
+
+function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
+begin
+  Result := False;
+end;
+
+function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
+begin
+  RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
   Result := True;
 end;
 

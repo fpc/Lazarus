@@ -187,14 +187,4 @@ begin
   Warn;
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TMenuItem, TWSMenuItem);
-//  RegisterWSComponent(TMenu, TWSMenu);
-//  RegisterWSComponent(TMainMenu, TWSMainMenu);
-//  RegisterWSComponent(TPopupMenu, TWSPopupMenu);
-////////////////////////////////////////////////////
 end.
