@@ -200,14 +200,4 @@ begin
   UpdateFloatSpinEditControl(ACustomFloatSpinEdit.Handle, ACustomFloatSpinEdit);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomFloatSpinEdit, TWinCEWSCustomFloatSpinEdit);
-////////////////////////////////////////////////////
 end.

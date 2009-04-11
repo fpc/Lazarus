@@ -655,34 +655,4 @@ begin
   Result := Params.Window;
 end;
 
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomPage, TWinCEWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TWinCEWSCustomNotebook);
-//  RegisterWSComponent(TPage, TWinCEWSPage);
-//  RegisterWSComponent(TNotebook, TWinCEWSNotebook);
-//  RegisterWSComponent(TShape, TWinCEWSShape);
-//  RegisterWSComponent(TCustomSplitter, TWinCEWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TWinCEWSSplitter);
-//  RegisterWSComponent(TPaintBox, TWinCEWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TWinCEWSCustomImage);
-//  RegisterWSComponent(TImage, TWinCEWSImage);
-//  RegisterWSComponent(TBevel, TWinCEWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TWinCEWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TWinCEWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TWinCEWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TWinCEWSCheckGroup);
-//  RegisterWSComponent(TCustomLabeledEdit, TWinCEWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TWinCEWSLabeledEdit);
-  RegisterWSComponent(TCustomPanel, TWinCEWSCustomPanel);
-//  RegisterWSComponent(TPanel, TWinCEWSPanel);
-//  RegisterWSComponent(TCustomTrayIcon, TWinCEWSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.

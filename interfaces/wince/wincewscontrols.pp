@@ -504,17 +504,4 @@ begin
     Result := ImageList_DragShowNolock(True);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TDragImageList, TWinCEWSDragImageList);
-//  RegisterWSComponent(TControl, TWinCEWSControl);
-  RegisterWSComponent(TWinControl, TWinCEWSWinControl);
-//  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TWSCustomControl);
-//  RegisterWSComponent(TImageList, TWSImageList);
-////////////////////////////////////////////////////
 end.

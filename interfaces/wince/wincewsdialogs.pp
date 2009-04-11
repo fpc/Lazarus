@@ -157,22 +157,4 @@ begin
   ResultForm.ShowModal;
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCommonDialog, TWinCEWSCommonDialog);
-  RegisterWSComponent(TFileDialog, TWinCEWSFileDialog);
-//  RegisterWSComponent(TOpenDialog, TWinCEWSOpenDialog);
-//  RegisterWSComponent(TSaveDialog, TWinCEWSSaveDialog);
-//  RegisterWSComponent(TSelectDirectoryDialog, TWinCEWSSelectDirectoryDialog);
-//  RegisterWSComponent(TColorDialog, TWinCEWSColorDialog);
-//  RegisterWSComponent(TColorButton, TWinCEWSColorButton);
-//  RegisterWSComponent(TFontDialog, TWinCEWSFontDialog);
-////////////////////////////////////////////////////
-
 end.

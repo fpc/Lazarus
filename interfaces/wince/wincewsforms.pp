@@ -436,21 +436,4 @@ begin
   BringWindowToTop(ACustomForm.Handle);
 end;
 
-
-initialization
-
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollingWinControl, TWinCEWSScrollingWinControl);
-  RegisterWSComponent(TScrollBox, TWinCEWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TWinCEWSCustomFrame);
-//  RegisterWSComponent(TFrame, TWinCEWSFrame);
-  RegisterWSComponent(TCustomForm, TWinCEWSCustomForm);
-//  RegisterWSComponent(TForm, TWinCEWSForm);
-//  RegisterWSComponent(THintWindow, TWinCEWSHintWindow);
-//  RegisterWSComponent(TScreen, TWinCEWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TWinCEWSApplicationProperties);
-////////////////////////////////////////////////////
 end.

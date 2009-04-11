@@ -254,36 +254,21 @@ var
 
 Implementation
 
-Uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// WinCEWSActnList,
+uses
+ WinCEWSFactory,
  WinCEWSArrow,
  WinCEWSButtons,
  WinCEWSCalendar,
  WinCEWSCheckLst,
  WinCEWSComCtrls,
  WinCEWSControls,
-// WinCEWSDbCtrls,
-// WinCEWSDBGrids,
  WinCEWSDialogs,
-// WinCEWSEditBtn,
  WinCEWSExtCtrls,
-// WinCEWSExtDlgs,
-// WinCEWSFileCtrl,
  WinCEWSForms,
-// WinCEWSGrids,
  WinCEWSImgList,
-// WinCEWSMaskEdit,
  WinCEWSMenus,
-// WinCEWSPairSplitter,
  WinCEWSSpin,
  WinCEWSStdCtrls,
-// WinCEWSToolwin,
 ////////////////////////////////////////////////////
   Arrow, Spin, CheckLst, LclProc, LCLMessageGlue;
 type

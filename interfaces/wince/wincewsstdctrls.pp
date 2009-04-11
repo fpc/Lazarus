@@ -1367,34 +1367,4 @@ begin
   Result := Params.Window;
 end;
 
-
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TWinCEWSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TWinCEWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TWinCEWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TWinCEWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TWinCEWSComboBox);
-  RegisterWSComponent(TCustomListBox, TWinCEWSCustomListBox);
-//  RegisterWSComponent(TListBox, TWinCEWSListBox);
-  RegisterWSComponent(TCustomEdit, TWinCEWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TWinCEWSCustomMemo);
-//  RegisterWSComponent(TEdit, TWinCEWSEdit);
-//  RegisterWSComponent(TMemo, TWinCEWSMemo);
-//  RegisterWSComponent(TButtonControl, TWinCEWSButtonControl);
-  RegisterWSComponent(TCustomButton, TWinCEWSButton);
-  RegisterWSComponent(TCustomCheckBox, TWinCEWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TWinCEWSCheckBox);
-  RegisterWSComponent(TToggleBox, TWinCEWSToggleBox);
-  RegisterWSComponent(TRadioButton, TWinCEWSRadioButton);
-  RegisterWSComponent(TCustomStaticText, TWinCEWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TWinCEWSStaticText);
-////////////////////////////////////////////////////
 end.
