@@ -95,13 +95,6 @@ type
     );
   TAmbiguousFileActions = set of TAmbiguousFileAction;
   
-  TCharCaseFileAction = (
-      ccfaAsk,
-      ccfaAutoRename,
-      ccfaIgnore
-    );
-  TCharCaseFileActions = set of TCharCaseFileAction;
-
 const
   AmbiguousFileActionNames: array[TAmbiguousFileAction] of string = (
       'Ask',
@@ -111,10 +104,34 @@ const
       'Ignore'
     );
 
+type
+  TCharCaseFileAction = (
+      ccfaAsk,
+      ccfaAutoRename,
+      ccfaIgnore
+    );
+  TCharCaseFileActions = set of TCharCaseFileAction;
+
+const
   CharCaseFileActionNames: array[TCharCaseFileAction] of string = (
       'Ask',
       'AutoRename',
       'Ignore'
+    );
+
+type
+  TUnitRenameReferencesAction = (
+    urraAlways, // update references in other files
+    urraAsk,    // scan, then ask, then update
+    urraNever   // don't scan, don't ask, don't update
+    );
+  TUnitRenameReferencesActions = set of TUnitRenameReferencesAction;
+
+const
+  UnitRenameReferencesActionNames: array[TUnitRenameReferencesAction] of string = (
+      'Always',
+      'Ask',
+      'Never'
     );
 
 type
@@ -221,7 +238,8 @@ type
     fPascalFileExtension: TPascalExtType;
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
-    
+    FUnitRenameReferencesAction: TUnitRenameReferencesAction;
+
     // lazdoc
     FLazDocPaths: string;
 
@@ -424,6 +442,8 @@ type
                                                      write fAmbiguousFileAction;
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
+    property UnitRenameReferencesAction: TUnitRenameReferencesAction
+             read FUnitRenameReferencesAction write FUnitRenameReferencesAction;
 
     // lazdoc
     property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
@@ -448,6 +468,7 @@ function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileAction;
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
+function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
@@ -487,23 +508,29 @@ end;
 function AmbiguousFileActionNameToType(
   const Action: string): TAmbiguousFileAction;
 begin
-  for Result:=Low(TAmbiguousFileAction) to High(TAmbiguousFileAction) do begin
+  for Result:=Low(TAmbiguousFileAction) to High(TAmbiguousFileAction) do
     if CompareText(AmbiguousFileActionNames[Result],Action)=0 then
       exit;
-  end;
   Result:=afaAsk;
 end;
 
 function CharCaseFileActionNameToType(
   const Action: string): TCharCaseFileAction;
 begin
-  for Result:=Low(TCharCaseFileAction) to High(TCharCaseFileAction) do begin
+  for Result:=Low(TCharCaseFileAction) to High(TCharCaseFileAction) do
     if CompareText(CharCaseFileActionNames[Result],Action)=0 then
       exit;
-  end;
   Result:=ccfaAutoRename;
 end;
 
+function UnitRenameReferencesActionNameToType(const Action: string
+  ): TUnitRenameReferencesAction;
+begin
+  for Result:=Low(TUnitRenameReferencesAction) to High(TUnitRenameReferencesAction) do
+    if CompareText(UnitRenameReferencesActionNames[Result],Action)=0 then
+      exit;
+  Result:=urraAsk;
+end;
 
 function CheckFileChanged(const OldFilename,
   NewFilename: string): boolean;
@@ -664,6 +691,7 @@ begin
   // naming
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
+  FUnitRenameReferencesAction:=urraAsk;
 
   // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
@@ -950,12 +978,6 @@ begin
     
     // naming
     LoadPascalFileExt(Path+'');
-
-    //lazdoc
-    FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
-    if FileVersion<=105 then
-      FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
-
     if FileVersion>=103 then begin
       fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
         Path+'CharcaseFileAction/Value',''));
@@ -968,13 +990,19 @@ begin
       else
         fCharcaseFileAction:=ccfaIgnore;
     end;
-
     if FileVersion>=104 then
       CurPath:=Path+'AmbiguousFileAction/Value'
     else
       CurPath:=Path+'AmbigiousFileAction/Value';
     fAmbiguousFileAction:=AmbiguousFileActionNameToType(XMLConfig.GetValue(
       CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
+    FUnitRenameReferencesAction:=UnitRenameReferencesActionNameToType(XMLConfig.GetValue(
+      Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
+
+    //lazdoc
+    FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
+    if FileVersion<=105 then
+      FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
 
     // 'new items'
     FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
@@ -1179,6 +1207,10 @@ begin
     XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
                              CharCaseFileActionNames[fCharcaseFileAction],
                              CharCaseFileActionNames[ccfaAutoRename]);
+
+    XMLConfig.SetDeleteValue(Path+'UnitRenameReferencesAction/Value',
+                   UnitRenameReferencesActionNames[FUnitRenameReferencesAction],
+                   UnitRenameReferencesActionNames[urraAsk]);
 
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],

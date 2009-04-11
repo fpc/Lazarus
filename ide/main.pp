@@ -863,7 +863,7 @@ type
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoReplaceUnitUse(OldFilename, OldUnitName,
                               NewFilename, NewUnitName: string;
-                              IgnoreErrors, Quiet: boolean): TModalResult;
+                              IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
@@ -7292,11 +7292,11 @@ begin
   NewFilename:=ActiveUnitInfo.Filename;
   if (OldUnitName<>NewUnitName)
   or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
-    Result:=mrOk;
-    {$IFDEF EnableReplaceUnitUse}
-    Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
-                             true,true);
-    {$ENDIF}
+    if EnvironmentOptions.UnitRenameReferencesAction=urraNever then
+      Result:=mrOK
+    else
+      Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
+               true,true,EnvironmentOptions.UnitRenameReferencesAction=urraAsk);
     if Result<>mrOk then exit;
   end;
 
@@ -14945,7 +14945,7 @@ begin
 end;
 
 function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
-  NewUnitName: string; IgnoreErrors, Quiet: boolean): TModalResult;
+  NewUnitName: string; IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
 { Replaces all references to a unit
 
 }
@@ -14957,6 +14957,7 @@ var
   OldCodeCreated: Boolean;
   PascalReferences: TAVLTree;
   i: Integer;
+  MsgResult: TModalResult;
 begin
   if (CompareFilenames(OldFilename,NewFilename)=0)
   and (OldUnitName=NewUnitName) then // compare unitnames case sensitive, maybe only the case changed
@@ -15013,6 +15014,25 @@ begin
 
     // replace
     if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
+      if Confirm then begin
+        MsgResult:=IDEQuestionDialog(lisUpdateReferences,
+          Format(lisTheUnitIsUsedByOtherFilesUpdateReferencesAutomatic, [
+            OldUnitName, #13]), mtConfirmation,
+          [mrYes,mrNo,mrYesToAll,mrNoToAll],'');
+        case MsgResult of
+        mrYes: ;
+        mrYesToAll: EnvironmentOptions.UnitRenameReferencesAction:=urraAlways;
+        mrNoToAll:
+          begin
+            EnvironmentOptions.UnitRenameReferencesAction:=urraNever;
+            Result:=mrOk;
+            exit;
+          end;
+        else
+          Result:=mrOk;
+          exit;
+        end;
+      end;
       if not CodeToolBoss.RenameIdentifier(PascalReferences,
         OldUnitName,NewUnitName)
       then begin

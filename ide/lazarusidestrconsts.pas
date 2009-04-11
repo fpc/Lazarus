@@ -1020,9 +1020,13 @@ resourcestring
   
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
+  lisNever = 'Never';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
   dlgnoAutomaticRenaming = 'no automatic renaming';
+  lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update '
+    +'references ...';
+  lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
   // OI colors
@@ -2456,6 +2460,9 @@ resourcestring
   lisCodeToolsDefsInvalidParent = 'Invalid parent';
   lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen = 'A %s can not hold '
     +'TControls.%sYou can only put non visual components on it.';
+  lisUpdateReferences = 'Update references?';
+  lisTheUnitIsUsedByOtherFilesUpdateReferencesAutomatic = 'The unit %s is '
+    +'used by other files.%sUpdate references automatically?';
   lisCodeToolsDefsAutoCreatedNodesReadOnly = 'Auto created nodes can not be '
     +'edited,%snor can they have non auto created child nodes.';
   lisCodeToolsDefsInvalidParentNode = 'Invalid parent node';

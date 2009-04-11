@@ -36,6 +36,7 @@ type
     AmbiguousFileActionRadioGroup: TRadioGroup;
     CharcaseFileActionRadioGroup: TRadioGroup;
     PascalFileExtRadiogroup: TRadioGroup;
+    UnitReferencesRadioGroup: TRadioGroup;
   private
   public
     function GetTitle: String; override;
@@ -72,6 +73,21 @@ begin
     PascalFileExtRadiogroup.Columns:=PascalFileExtRadiogroup.Items.Count;
   end;
 
+  with AmbiguousFileActionRadioGroup do
+  begin
+    Caption:=dlgAmbigFileAct;
+    with Items do
+    begin
+      BeginUpdate;
+      Add(dlgEnvAsk);
+      Add(dlgAutoDel);
+      Add(dlgAutoRen);
+      Add(dlgAmbigWarn);
+      Add(dlgIgnoreVerb);
+      EndUpdate;
+    end;
+  end;
+
   with CharcaseFileActionRadioGroup do
   begin
     Caption:=dlgCharCaseFileAct;
@@ -85,17 +101,15 @@ begin
     end;
   end;
 
-  with AmbiguousFileActionRadioGroup do
+  with UnitReferencesRadioGroup do
   begin
-    Caption:=dlgAmbigFileAct;
+    Caption:=lisWhenAUnitIsRenamedUpdateReferences;
     with Items do
     begin
       BeginUpdate;
+      Add(lisAlways);
       Add(dlgEnvAsk);
-      Add(dlgAutoDel);
-      Add(dlgAutoRen);
-      Add(dlgAmbigWarn);
-      Add(dlgIgnoreVerb);
+      Add(lisNever);
       EndUpdate;
     end;
   end;
@@ -113,6 +127,7 @@ begin
 
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
+    UnitReferencesRadioGroup.ItemIndex := ord(UnitRenameReferencesAction);
   end;
 end;
 
@@ -126,6 +141,7 @@ begin
       PascalFileExtension := petPAS;
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
+    UnitRenameReferencesAction := TUnitRenameReferencesAction(UnitReferencesRadioGroup.ItemIndex);
   end;
 end;
 
