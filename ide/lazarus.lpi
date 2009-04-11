@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="64">
+    <Units Count="63">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -392,107 +392,100 @@
         <UnitName Value="options_debugger_general"/>
       </Unit49>
       <Unit50>
-        <Filename Value="../debugger/frames/options_debugger_eventlog.pas"/>
-        <ComponentName Value="DebuggerEventLogOptionsFrame"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="options_debugger_eventlog"/>
-      </Unit50>
-      <Unit51>
         <Filename Value="../debugger/frames/options_debugger_language_exceptions.pas"/>
         <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_language_exceptions"/>
-      </Unit51>
-      <Unit52>
+      </Unit50>
+      <Unit51>
         <Filename Value="../debugger/frames/options_debugger_signals.pas"/>
         <ComponentName Value="DebuggerSignalsOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_debugger_signals"/>
-      </Unit52>
-      <Unit53>
+      </Unit51>
+      <Unit52>
         <Filename Value="frames/options_compiler_conditionals.pas"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Options_Compiler_Conditionals"/>
-      </Unit53>
-      <Unit54>
+      </Unit52>
+      <Unit53>
         <Filename Value="frames/compiler_conditionals_options.pas"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Compiler_Conditionals_Options"/>
-      </Unit54>
-      <Unit55>
+      </Unit53>
+      <Unit54>
         <Filename Value="frames/options_compiler_buildmodes.pas"/>
         <ComponentName Value="CompOptBuildModesFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_compiler_buildmodes"/>
-      </Unit55>
-      <Unit56>
+      </Unit54>
+      <Unit55>
         <Filename Value="frames/options_oi.pas"/>
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_OI"/>
-      </Unit56>
-      <Unit57>
+      </Unit55>
+      <Unit56>
         <Filename Value="frames/options_files.pas"/>
         <ComponentName Value="FilesOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_files"/>
-      </Unit57>
-      <Unit58>
+      </Unit56>
+      <Unit57>
         <Filename Value="frames/options_desktop.pas"/>
         <ComponentName Value="DesktopOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_desktop"/>
-      </Unit58>
-      <Unit59>
+      </Unit57>
+      <Unit58>
         <Filename Value="frames/options_window.pas"/>
         <ComponentName Value="WindowOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_window"/>
-      </Unit59>
-      <Unit60>
+      </Unit58>
+      <Unit59>
         <Filename Value="frames/options_formed.pas"/>
         <ComponentName Value="FormEditorOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_formed"/>
-      </Unit60>
-      <Unit61>
+      </Unit59>
+      <Unit60>
         <Filename Value="frames/options_backup.pas"/>
         <ComponentName Value="BackupOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_backup"/>
-      </Unit61>
-      <Unit62>
+      </Unit60>
+      <Unit61>
         <Filename Value="frames/options_naming.pas"/>
         <ComponentName Value="NamingOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_naming"/>
-      </Unit62>
-      <Unit63>
+      </Unit61>
+      <Unit62>
         <Filename Value="frames/options_fpdoc.pas"/>
         <ComponentName Value="FpDocOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_fpdoc"/>
-      </Unit63>
+      </Unit62>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
