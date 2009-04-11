@@ -8,6 +8,95 @@ uses
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   PairSplitter, WSLCLClasses;
 
+
+// imglist
+function RegisterCustomImageList: Boolean;
+// controls
+function RegisterDragImageList: Boolean;
+function RegisterControl: Boolean;
+function RegisterWinControl: Boolean;
+function RegisterGraphicControl: Boolean;
+function RegisterCustomControl: Boolean;
+// comctrls
+function RegisterStatusBar: Boolean;
+function RegisterTabSheet: Boolean;
+function RegisterPageControl: Boolean;
+function RegisterCustomListView: Boolean;
+function RegisterCustomProgressBar: Boolean;
+function RegisterCustomUpDown: Boolean;
+function RegisterCustomToolButton: Boolean;
+function RegisterToolBar: Boolean;
+function RegisterCustomTrackBar: Boolean;
+function RegisterCustomTreeView: Boolean;
+// calendar
+function RegisterCustomCalendar: Boolean;
+// dialogs
+function RegisterCommonDialog: Boolean;
+function RegisterFileDialog: Boolean;
+function RegisterOpenDialog: Boolean;
+function RegisterSaveDialog: Boolean;
+function RegisterSelectDirectoryDialog: Boolean;
+function RegisterColorDialog: Boolean;
+function RegisterColorButton: Boolean;
+function RegisterFontDialog: Boolean;
+// StdCtrls
+function RegisterCustomScrollBar: Boolean;
+function RegisterCustomGroupBox: Boolean;
+function RegisterCustomComboBox: Boolean;
+function RegisterCustomListBox: Boolean;
+function RegisterCustomEdit: Boolean;
+function RegisterCustomMemo: Boolean;
+function RegisterButtonControl: Boolean;
+function RegisterCustomButton: Boolean;
+function RegisterCustomCheckBox: Boolean;
+function RegisterToggleBox: Boolean;
+function RegisterRadioButton: Boolean;
+function RegisterCustomStaticText: Boolean;
+function RegisterCustomLabel: Boolean;
+// extctrls
+function RegisterCustomPage: Boolean;
+function RegisterCustomNotebook: Boolean;
+function RegisterShape: Boolean;
+function RegisterCustomSplitter: Boolean;
+function RegisterPaintBox: Boolean;
+function RegisterCustomImage: Boolean;
+function RegisterBevel: Boolean;
+function RegisterCustomRadioGroup: Boolean;
+function RegisterCustomCheckGroup: Boolean;
+function RegisterCustomLabeledEdit: Boolean;
+function RegisterCustomPanel: Boolean;
+function RegisterCustomTrayIcon: Boolean;
+//ExtDlgs
+function RegisterPreviewFileControl: Boolean;
+function RegisterPreviewFileDialog: Boolean;
+function RegisterOpenPictureDialog: Boolean;
+function RegisterSavePictureDialog: Boolean;
+function RegisterCalculatorDialog: Boolean;
+function RegisterCalculatorForm: Boolean;
+function RegisterCalendarDialog: Boolean;
+// Buttons
+function RegisterCustomBitBtn: Boolean;
+function RegisterCustomSpeedButton: Boolean;
+// Arrow
+function RegisterArrow: Boolean;
+// CheckLst
+function RegisterCustomCheckListBox: Boolean;
+// Forms
+function RegisterScrollingWinControl: Boolean;
+function RegisterScrollBox: Boolean;
+function RegisterCustomFrame: Boolean;
+function RegisterCustomForm: Boolean;
+function RegisterHintWindow: Boolean;
+function RegisterCustomGrid: Boolean;
+function RegisterMenuItem: Boolean;
+function RegisterMenu: Boolean;
+function RegisterMainMenu: Boolean;
+function RegisterPopupMenu: Boolean;
+function RegisterPairSplitterSide: Boolean;
+function RegisterCustomPairSplitter: Boolean;
+function RegisterCustomFloatSpinEdit: Boolean;
+function RegisterCustomRubberBand: Boolean;
+
 implementation
 uses
   GtkWSArrow,
