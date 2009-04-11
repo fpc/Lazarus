@@ -482,6 +482,7 @@ interfaces/gtk2/gtk2wscustommemo.inc svneol=native#text/pascal
 interfaces/gtk2/gtk2wsdialogs.pp svneol=native#text/pascal
 interfaces/gtk2/gtk2wsextctrls.pp svneol=native#text/pascal
 interfaces/gtk2/gtk2wsextdlgs.pp svneol=native#text/pascal
+interfaces/gtk2/gtk2wsfactory.pas svneol=native#text/pascal
 interfaces/gtk2/gtk2wsforms.pp svneol=native#text/pascal
 interfaces/gtk2/gtk2wsgrids.pp svneol=native#text/pascal
 interfaces/gtk2/gtk2wsimglist.pp svneol=native#text/pascal

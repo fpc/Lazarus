@@ -277,34 +277,4 @@ end;
 
 {$include gtk2trayicon.inc}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook, TGtk2PrivateNotebook);
-  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
-//  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
-//  RegisterWSComponent(TShape, TGtk2WSShape);
-//  RegisterWSComponent(TCustomSplitter, TGtk2WSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TGtk2WSSplitter);
-//  RegisterWSComponent(TPaintBox, TGtk2WSPaintBox);
-//  RegisterWSComponent(TCustomImage, TGtk2WSCustomImage);
-//  RegisterWSComponent(TImage, TGtk2WSImage);
-//  RegisterWSComponent(TBevel, TGtk2WSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TGtk2WSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TGtk2WSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TGtk2WSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TGtk2WSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TGtk2WSBoundLabel);
-//  RegisterWSComponent(TCustomLabeledEdit, TGtk2WSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TGtk2WSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TGtk2WSCustomPanel);
-//  RegisterWSComponent(TPanel, TGtk2WSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.

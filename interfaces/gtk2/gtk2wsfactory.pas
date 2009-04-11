@@ -1,4 +1,4 @@
-unit GtkWSFactory;
+unit Gtk2WSFactory;
 
 {$mode objfpc}{$H+}
 
@@ -101,560 +101,574 @@ implementation
 uses
   GtkWSArrow,
   GtkWSButtons,
-  GtkWSCalendar,
-  GtkWSCheckLst,
-  GtkWSComCtrls,
+  Gtk2WSCalendar,
+  Gtk2WSCheckLst,
+  Gtk2WSComCtrls,
   GtkWSControls,
-  GtkWSDialogs,
-  GtkWSExtCtrls,
+  Gtk2WSControls,
+  Gtk2WSDialogs,
+  Gtk2WSExtCtrls,
   GtkWSExtDlgs,
   GtkWSForms,
-  GtkWSGrids,
-  GtkWSImgList,
+  Gtk2WSForms,
+  Gtk2WSGrids,
+  Gtk2WSImgList,
   GtkWSMenus,
-  GtkWSSpin,
+  Gtk2WSMenus,
+  Gtk2WSSpin,
   GtkWSStdCtrls,
+  Gtk2WSStdCtrls,
   GtkWSPairSplitter,
-  GtkWSPrivate,
-  Gtk1WSPrivate;
+//  GtkWSPrivate,
+  Gtk2WSPrivate;
+
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
 begin
-//  RegisterWSComponent(TImageList, TGtkWSImageList);
-//  RegisterWSComponent(TCustomImageList, TGtkWSCustomImageList);
+//  RegisterWSComponent(TImageList, TGtk2WSImageList);
+//  RegisterWSComponent(TCustomImageList, TGtk2WSCustomImageList);
   Result := False;
 end;
 
 // controls
 function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
 begin
-  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
+//  RegisterWSComponent(TDragImageList, TGtk2WSDragImageList);
+  RegisterWSComponent(TDragImageList, TGtkWSDragImageList); { GTK1 }
   Result := True;
 end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';
 begin
-//  RegisterWSComponent(TControl, TGtkWSControl);
+//  RegisterWSComponent(TControl, TGtk2WSControl);
   Result := False;
 end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
+  RegisterWSComponent(TWinControl, TGtk2WSWinControl);
   Result := True;
 end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
 begin
-//  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
+//  RegisterWSComponent(TGraphicControl, TGtk2WSGraphicControl);
   Result := False;
 end;
 
 function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';
 begin
-//  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
+//  RegisterWSComponent(TCustomControl, TGtk2WSCustomControl);
   Result := False;
 end;
 
 // comctrls
 function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
-  RegisterWSComponent(TStatusBar, TGtkWSStatusBar);
+  RegisterWSComponent(TStatusBar, TGtk2WSStatusBar);
   Result := True;
 end;
 
 function RegisterTabSheet: Boolean; alias : 'WSRegisterTabSheet';
 begin
-//  RegisterWSComponent(TCustomTabSheet, TGtkWSTabSheet);
+//  RegisterWSComponent(TCustomTabSheet, TGtk2WSTabSheet);
   Result := False;
 end;
 
 function RegisterPageControl: Boolean; alias : 'WSRegisterPageControl';
 begin
-//  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
+//  RegisterWSComponent(TCustomPageControl, TGtk2WSPageControl);
   Result := False;
 end;
 
 function RegisterCustomListView: Boolean; alias : 'WSRegisterCustomListView';
 begin
-{$IFDEF GTK1}
-//  RegisterWSComponent(TCustomListView, TGtkWSListView);
-  RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkPrivateScrolling);
+  RegisterWSComponent(TCustomListView, TGtk2WSCustomListView);
+//  RegisterWSComponent(TCustomListView, TGtk2WSListView);
   Result := True;
-{$ELSE}
-  Result := False;
-{$ENDIF}
 end;
 
 function RegisterCustomProgressBar: Boolean; alias : 'WSRegisterCustomProgressBar';
 begin
-{$IFDEF GTK1}
-  RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
+  RegisterWSComponent(TCustomProgressBar, TGtk2WSProgressBar);
   Result := True;
-{$ELSE}
-  Result := False;
-{$ENDIF}
 end;
 
 function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';
 begin
-//  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
+//  RegisterWSComponent(TCustomUpDown, TGtk2WSCustomUpDown);
+//  RegisterWSComponent(TCustomUpDown, TGtk2WSUpDown);
   Result := False;
 end;
 
 function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';
 begin
-//  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
+//  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
   Result := False;
 end;
 
 function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
 begin
-  RegisterWSComponent(TToolBar, TGtkWSToolBar);
+  RegisterWSComponent(TToolBar, TGtk2WSToolBar);
   Result := True;
 end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
 begin
-  RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
+  RegisterWSComponent(TCustomTrackBar, TGtk2WSTrackBar);
   Result := True;
 end;
 
 function RegisterCustomTreeView: Boolean; alias : 'WSRegisterCustomTreeView';
 begin
-//  RegisterWSComponent(TCustomTreeView, TGtkWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TGtkWSTreeView);
+//  RegisterWSComponent(TCustomTreeView, TGtk2WSCustomTreeView);
+//  RegisterWSComponent(TCustomTreeView, TGtk2WSTreeView);
   Result := False;
 end;
 
 // calendar
 function RegisterCustomCalendar: Boolean; alias : 'WSRegisterCustomCalendar';
 begin
-  RegisterWSComponent(TCustomCalendar, TGtkWSCustomCalendar);
+  RegisterWSComponent(TCustomCalendar, TGtk2WSCustomCalendar);
   Result := True;
 end;
 
 // dialogs
 function RegisterCommonDialog: Boolean; alias : 'WSRegisterCommonDialog';
 begin
-  RegisterWSComponent(TCommonDialog, TGtkWSCommonDialog);
+  RegisterWSComponent(TCommonDialog, TGtk2WSCommonDialog);
   Result := True;
 end;
 
 function RegisterFileDialog: Boolean; alias : 'WSRegisterFileDialog';
 begin
-//  RegisterWSComponent(TFileDialog, TGtkWSFileDialog);
-  Result := False;
+  RegisterWSComponent(TFileDialog, TGtk2WSFileDialog);
+  Result := True;
 end;
 
 function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
 begin
-  RegisterWSComponent(TOpenDialog, TGtkWSOpenDialog);
+  RegisterWSComponent(TOpenDialog, TGtk2WSOpenDialog);
   Result := True;
 end;
 
 function RegisterSaveDialog: Boolean; alias : 'WSRegisterSaveDialog';
 begin
-//  RegisterWSComponent(TSaveDialog, TGtkWSSaveDialog);
+//  RegisterWSComponent(TSaveDialog, TGtk2WSSaveDialog);
   Result := False;
 end;
 
 function RegisterSelectDirectoryDialog: Boolean; alias : 'WSRegisterSelectDirectoryDialog';
 begin
-//  RegisterWSComponent(TSelectDirectoryDialog, TGtkWSSelectDirectoryDialog);
+//  RegisterWSComponent(TSelectDirectoryDialog, TGtk2WSSelectDirectoryDialog);
   Result := False;
 end;
 
 function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';
 begin
-  RegisterWSComponent(TColorDialog, TGtkWSColorDialog);
+  RegisterWSComponent(TColorDialog, TGtk2WSColorDialog);
   Result := True;
 end;
 
 function RegisterColorButton: Boolean; alias : 'WSRegisterColorButton';
 begin
-//  RegisterWSComponent(TColorButton, TGtkWSColorButton);
+//  RegisterWSComponent(TColorButton, TGtk2WSColorButton);
   Result := False;
 end;
 
 function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
-  RegisterWSComponent(TFontDialog, TGtkWSFontDialog);
+  RegisterWSComponent(TFontDialog, TGtk2WSFontDialog);
   Result := True;
 end;
 
 // StdCtrls
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
-  RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
+  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
   Result := True;
 end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
 begin
-  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
+//  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
   Result := True;
 end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
-  RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TGtkWSComboBox);
+  RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
+//  RegisterWSComponent(TComboBox, TGtk2WSComboBox);
   Result := True;
 end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-//  RegisterWSComponent(TListBox, TGtkWSListBox);
-  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtk1PrivateList);
+  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox, TGtk2PrivateList);
+//  RegisterWSComponent(TListBox, TGtk2WSListBox);
   Result := True;
 end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
-  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry);
+//  RegisterWSComponent(TEdit, TGtk2WSEdit);
+  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   Result := True;
 end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
-  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
+//  RegisterWSComponent(TMemo, TGtk2WSMemo);
+  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
   Result := True;
 end;
 
 function RegisterButtonControl: Boolean; alias : 'WSRegisterButtonControl';
 begin
-//  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
+//  RegisterWSComponent(TButtonControl, TGtk2WSButtonControl);
   Result := False;
 end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk1PrivateButton);
+//  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton); { enabled in GTK1 ? }
+  RegisterWSComponent(TCustomButton, TGtk2WSButton);
   Result := True;
 end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
-  RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
+//  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
+  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
   Result := True;
 end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
-  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
+//  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);
+  RegisterWSComponent(TToggleBox, TGtkWSToggleBox); { GTK1 }
   Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
-  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
+//  RegisterWSComponent(TRadioButton, TGtk2WSRadioButton);
+  RegisterWSComponent(TRadioButton, TGtkWSRadioButton); { GTK1 }
   Result := True;
 end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-//  RegisterWSComponent(TStaticText, TGtkWSStaticText);
-  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
+  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText); { GTK1 }
+//  RegisterWSComponent(TStaticText, TGtk2WSStaticText);
+//  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText);
   Result := True;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
 begin
+//  RegisterWSComponent(TCustomLabel, TGtk2WSCustomLabel);
+//  RegisterWSComponent(TLabel, TGtk2WSLabel);
   Result := False;
 end;
 
 // extctrls
 function RegisterCustomPage: Boolean; alias : 'WSRegisterCustomPage';
 begin
-//  RegisterWSComponent(TPage, TGtkWSPage);
-  RegisterWSComponent(TCustomPage, TGtkWSCustomPage);
+//  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
+  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
   Result := True;
 end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-//  RegisterWSComponent(TNotebook, TGtkWSNotebook);
-{$IFDEF GTK1}
-  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook, TGtk1PrivateNotebook);
+  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook, TGtk2PrivateNotebook);
+//  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
   Result := True;
-{$ELSE}
-  Result := False;
-{$ENDIF}
 end;
 
 function RegisterShape: Boolean; alias : 'WSRegisterShape';
 begin
-//  RegisterWSComponent(TShape, TGtkWSShape);
+//  RegisterWSComponent(TShape, TGtk2WSShape);
   Result := False;
 end;
 
 function RegisterCustomSplitter: Boolean; alias : 'WSRegisterCustomSplitter';
 begin
-//  RegisterWSComponent(TSplitter, TGtkWSSplitter);
-//  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
+//  RegisterWSComponent(TCustomSplitter, TGtk2WSCustomSplitter);
+//  RegisterWSComponent(TSplitter, TGtk2WSSplitter);
   Result := False;
 end;
 
 function RegisterPaintBox: Boolean; alias : 'WSRegisterPaintBox';
 begin
-//  RegisterWSComponent(TPaintBox, TGtkWSPaintBox);
+//  RegisterWSComponent(TPaintBox, TGtk2WSPaintBox);
   Result := False;
 end;
 
 function RegisterCustomImage: Boolean; alias : 'WSRegisterCustomImage';
 begin
-//  RegisterWSComponent(TCustomImage, TGtkWSCustomImage);
-//  RegisterWSComponent(TImage, TGtkWSImage);
+//  RegisterWSComponent(TCustomImage, TGtk2WSCustomImage);
+//  RegisterWSComponent(TImage, TGtk2WSImage);
   Result := False;
 end;
 
 function RegisterBevel: Boolean; alias : 'WSRegisterBevel';
 begin
-//  RegisterWSComponent(TBevel, TGtkWSBevel);
+//  RegisterWSComponent(TBevel, TGtk2WSBevel);
   Result := False;
 end;
 
 function RegisterCustomRadioGroup: Boolean; alias : 'WSRegisterCustomRadioGroup';
 begin
-//  RegisterWSComponent(TCustomRadioGroup, TGtkWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TGtkWSRadioGroup);
+//  RegisterWSComponent(TCustomRadioGroup, TGtk2WSCustomRadioGroup);
+//  RegisterWSComponent(TRadioGroup, TGtk2WSRadioGroup);
   Result := False;
 end;
 
 function RegisterCustomCheckGroup: Boolean; alias : 'WSRegisterCustomCheckGroup';
 begin
-//  RegisterWSComponent(TCustomCheckGroup, TGtkWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TGtkWSCheckGroup);
+//  RegisterWSComponent(TCustomCheckGroup, TGtk2WSCustomCheckGroup);
+//  RegisterWSComponent(TCheckGroup, TGtk2WSCheckGroup);
   Result := False;
 end;
 
 function RegisterCustomLabeledEdit: Boolean; alias : 'WSRegisterCustomLabeledEdit';
 begin
-//  RegisterWSComponent(TCustomLabeledEdit, TGtkWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TGtkWSLabeledEdit);
+//  RegisterWSComponent(TBoundLabel, TGtk2WSBoundLabel);
+//  RegisterWSComponent(TCustomLabeledEdit, TGtk2WSCustomLabeledEdit);
+//  RegisterWSComponent(TLabeledEdit, TGtk2WSLabeledEdit);
   Result := False;
 end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
-//  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
-//  RegisterWSComponent(TPanel, TGtkWSPanel);
+//  RegisterWSComponent(TCustomPanel, TGtk2WSCustomPanel);
+//  RegisterWSComponent(TPanel, TGtk2WSPanel);
   Result := False;
 end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
-  RegisterWSComponent(TCustomTrayIcon, TGtkWSCustomTrayIcon);
+  RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
   Result := True;
 end;
 
 //ExtDlgs
 function RegisterPreviewFileControl: Boolean; alias : 'WSRegisterPreviewFileControl';
 begin
-  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl);
+  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl); { GTK1 }
+//  RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl);
   Result := True;
 end;
 
 function RegisterPreviewFileDialog: Boolean; alias : 'WSRegisterPreviewFileDialog';
 begin
-//  RegisterWSComponent(TPreviewFileDialog, TGtkWSPreviewFileDialog);
+//  RegisterWSComponent(TPreviewFileDialog, TGtk2WSPreviewFileDialog);
   Result := False;
 end;
 
 function RegisterOpenPictureDialog: Boolean; alias : 'WSRegisterOpenPictureDialog';
 begin
-//  RegisterWSComponent(TOpenPictureDialog, TGtkWSOpenPictureDialog);
+//  RegisterWSComponent(TOpenPictureDialog, TGtk2WSOpenPictureDialog);
   Result := False;
 end;
 
 function RegisterSavePictureDialog: Boolean; alias : 'WSRegisterSavePictureDialog';
 begin
-//  RegisterWSComponent(TSavePictureDialog, TGtkWSSavePictureDialog);
+//  RegisterWSComponent(TSavePictureDialog, TGtk2WSSavePictureDialog);
   Result := False;
 end;
 
 function RegisterCalculatorDialog: Boolean; alias : 'WSRegisterCalculatorDialog';
 begin
-//  RegisterWSComponent(TCalculatorDialog, TGtkWSCalculatorDialog);
+//  RegisterWSComponent(TCalculatorDialog, TGtk2WSCalculatorDialog);
   Result := False;
 end;
 
 function RegisterCalculatorForm: Boolean; alias : 'WSRegisterCalculatorForm';
 begin
-//  RegisterWSComponent(TCalculatorForm, TGtkWSCalculatorForm);
+//  RegisterWSComponent(TCalculatorForm, TGtk2WSCalculatorForm);
   Result := False;
 end;
 
 (*function RegisterCalendarDialogForm: Boolean; alias : 'WSRegisterCalendarDialogForm';
 begin
-//  RegisterWSComponent(TCalendarDialogForm, TGtkWSCalendarDialogForm);
+//  RegisterWSComponent(TCalendarDialogForm, TGtk2WSCalendarDialogForm);
   Result := False;
 end;*)
 
 function RegisterCalendarDialog: Boolean; alias : 'WSRegisterCalendarDialog';
 begin
-//  RegisterWSComponent(TCalendarDialog, TGtkWSCalendarDialog);
+//  RegisterWSComponent(TCalendarDialog, TGtk2WSCalendarDialog);
   Result := False;
 end;
 
 // Buttons
 function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
-  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk1PrivateButton); // register it to fallback to default
+//  RegisterWSComponent(TCustomBitBtn, TGtk2WSBitBtn);
+  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk2PrivateButton);
   Result := True;
 end;
 
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
+//  RegisterWSComponent(TCustomSpeedButton, TGtk2WSSpeedButton);
   Result := False;
 end;
 
 // Arrow
 function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
-  RegisterWSComponent(TArrow, TGtkWSArrow);
+  RegisterWSComponent(TArrow, TGtkWSArrow);  { GTK1 }
+//  RegisterWSComponent(TArrow, TGtk2WSArrow);
   Result := True;
 end;
 
 // CheckLst
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
-  RegisterWSComponent(TCustomCheckListBox, TGtkWSCustomCheckListBox);
+  RegisterWSComponent(TCustomCheckListBox, TGtk2WSCustomCheckListBox);
   Result := True;
 end;
 
 // Forms
 function RegisterScrollingWinControl: Boolean; alias : 'WSRegisterScrollingWinControl';
 begin
-  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl, TGtkPrivateScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl, TGtkPrivateScrollingWinControl); { GTK1 }
+//  RegisterWSComponent(TScrollingWinControl, TGtk2WSScrollingWinControl);
   Result := True;
 end;
 
 function RegisterScrollBox: Boolean; alias : 'WSRegisterScrollBox';
 begin
-//  RegisterWSComponent(TScrollBox, TGtkWSScrollBox);
+//  RegisterWSComponent(TScrollBox, TGtk2WSScrollBox);
   Result := False;
 end;
 
 function RegisterCustomFrame: Boolean; alias : 'WSRegisterCustomFrame';
 begin
-//  RegisterWSComponent(TCustomFrame, TGtkWSCustomFrame);
-//  RegisterWSComponent(TFrame, TGtkWSFrame);
+//  RegisterWSComponent(TCustomFrame, TGtk2WSCustomFrame);
+//  RegisterWSComponent(TFrame, TGtk2WSFrame);
   Result := False;
 end;
 
 function RegisterCustomForm: Boolean; alias : 'WSRegisterCustomForm';
 begin
-  RegisterWSComponent(TCustomForm, TGtkWSCustomForm);
-//  RegisterWSComponent(TForm, TGtkWSForm);
+  RegisterWSComponent(TCustomForm, TGtk2WSCustomForm);
+//  RegisterWSComponent(TForm, TGtk2WSForm);
   Result := True;
 end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
-  RegisterWSComponent(THintWindow, TGtkWSHintWindow);
-  Result := True;
+  RegisterWSComponent(THintWindow, TGtkWSHintWindow); { GTK1 }
+//  RegisterWSComponent(THintWindow, TGtk2WSHintWindow);
+  Result := False;
 end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid);
+  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid); { GTK1 }
+//  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
   Result := True;
 end;
 
 function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';
 begin
-  RegisterWSComponent(TMenuItem, TGtkWSMenuItem);
+  RegisterWSComponent(TMenuItem, TGtk2WSMenuItem);
   Result := True;
 end;
 
 function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
 begin
-  RegisterWSComponent(TMenu, TGtkWSMenu);
+  RegisterWSComponent(TMenu, TGtkWSMenu); { GTK1 }
+//  RegisterWSComponent(TMenu, TGtk2WSMenu);
   Result := True;
 end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
 begin
-//  RegisterWSComponent(TMainMenu, TGtkWSMainMenu);
+//  RegisterWSComponent(TMainMenu, TGtk2WSMainMenu);
   Result := False;
 end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
-  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
+  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu); { GTK1 }
+//  RegisterWSComponent(TPopupMenu, TGtk2WSPopupMenu);
   Result := True;
 end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
 begin
-  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
+  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide); { GTK1 }
+//  RegisterWSComponent(TPairSplitterSide, TGtk2WSPairSplitterSide);
   Result := True;
 end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
-  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned);
+  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
+//  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter);
   Result := True;
 end;
 
 function RegisterCustomFloatSpinEdit: Boolean; alias : 'WSRegisterCustomFloatSpinEdit';
 begin
-  RegisterWSComponent(TCustomFloatSpinEdit, TGtkWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TGtkWSFloatSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TGtk2WSCustomFloatSpinEdit);
   Result := True;
 end;
 
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
 begin
+//  RegisterWSComponent(TFloatSpinEdit, TGtk2WSFloatSpinEdit);
   Result := False;
 end;
 
 end.
 
-(* // Unused calls
+(* Unused
 
-//  RegisterWSComponent(TdbGrid, TGtkWSdbGrid);
-//  RegisterWSComponent(TCustomDbGrid, TGtkWSCustomDbGrid);
+//  RegisterWSComponent(TCustomActionList, TGtk2WSCustomActionList);
+//  RegisterWSComponent(TActionList, TGtk2WSActionList);
 
-//  RegisterWSComponent(TCustomEditButton, TGtkWSCustomEditButton);
-//  RegisterWSComponent(TEditButton, TGtkWSEditButton);
-//  RegisterWSComponent(TFileNameEdit, TGtkWSFileNameEdit);
-//  RegisterWSComponent(TDirectoryEdit, TGtkWSDirectoryEdit);
-//  RegisterWSComponent(TDateEdit, TGtkWSDateEdit);
-//  RegisterWSComponent(TCalcEdit, TGtkWSCalcEdit);
+//  RegisterWSComponent(TDBEdit, TGtk2WSDBEdit);
+//  RegisterWSComponent(TDBText, TGtk2WSDBText);
+//  RegisterWSComponent(TDBListBox, TGtk2WSDBListBox);
+//  RegisterWSComponent(TDBRadioGroup, TGtk2WSDBRadioGroup);
+//  RegisterWSComponent(TDBCheckBox, TGtk2WSDBCheckBox);
+//  RegisterWSComponent(TDBComboBox, TGtk2WSDBComboBox);
+//  RegisterWSComponent(TDBMemo, TGtk2WSDBMemo);
+//  RegisterWSComponent(TDBGroupBox, TGtk2WSDBGroupBox);
+//  RegisterWSComponent(TDBImage, TGtk2WSDBImage);
+//  RegisterWSComponent(TDBCalendar, TGtk2WSDBCalendar);
+//  RegisterWSComponent(TDBCustomNavigator, TGtk2WSDBCustomNavigator);
+//  RegisterWSComponent(TDBNavButton, TGtk2WSDBNavButton);
+//  RegisterWSComponent(TDBNavigator, TGtk2WSDBNavigator);
 
-//  RegisterWSComponent(TScreen, TGtkWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TGtkWSApplicationProperties);
+//  RegisterWSComponent(TCustomDbGrid, TGtk2WSCustomDbGrid);
+//  RegisterWSComponent(TdbGrid, TGtk2WSdbGrid);
 
-//  RegisterWSComponent(TToolWindow, TGtkWSToolWindow);
+//  RegisterWSComponent(TCustomEditButton, TGtk2WSCustomEditButton);
+//  RegisterWSComponent(TEditButton, TGtk2WSEditButton);
+//  RegisterWSComponent(TFileNameEdit, TGtk2WSFileNameEdit);
+//  RegisterWSComponent(TDirectoryEdit, TGtk2WSDirectoryEdit);
+//  RegisterWSComponent(TDateEdit, TGtk2WSDateEdit);
+//  RegisterWSComponent(TCalcEdit, TGtk2WSCalcEdit);
 
-//  RegisterWSComponent(TCustomActionList, TGtkWSCustomActionList);
-//  RegisterWSComponent(TActionList, TGtkWSActionList);
+//  RegisterWSComponent(TCustomFileListBox, TGtk2WSCustomFileListBox);
+//  RegisterWSComponent(TFileListBox, TGtk2WSFileListBox);
 
-//  RegisterWSComponent(TDBEdit, TGtkWSDBEdit);
-//  RegisterWSComponent(TDBText, TGtkWSDBText);
-//  RegisterWSComponent(TDBListBox, TGtkWSDBListBox);
-//  RegisterWSComponent(TDBRadioGroup, TGtkWSDBRadioGroup);
-//  RegisterWSComponent(TDBCheckBox, TGtkWSDBCheckBox);
-//  RegisterWSComponent(TDBComboBox, TGtkWSDBComboBox);
-//  RegisterWSComponent(TDBMemo, TGtkWSDBMemo);
-//  RegisterWSComponent(TDBGroupBox, TGtkWSDBGroupBox);
-//  RegisterWSComponent(TDBImage, TGtkWSDBImage);
-//  RegisterWSComponent(TDBCalendar, TGtkWSDBCalendar);
-//  RegisterWSComponent(TDBCustomNavigator, TGtkWSDBCustomNavigator);
-//  RegisterWSComponent(TDBNavButton, TGtkWSDBNavButton);
-//  RegisterWSComponent(TDBNavigator, TGtkWSDBNavigator);
+//  RegisterWSComponent(TScreen, TGtk2WSScreen);
+//  RegisterWSComponent(TApplicationProperties, TGtk2WSApplicationProperties);
 
-//  RegisterWSComponent(TCustomFileListBox, TGtkWSCustomFileListBox);
-//  RegisterWSComponent(TFileListBox, TGtkWSFileListBox);
+//  RegisterWSComponent(TCustomMaskEdit, TGtk2WSCustomMaskEdit);
+//  RegisterWSComponent(TMaskEdit, TGtk2WSMaskEdit);
 
-//  RegisterWSComponent(TCustomMaskEdit, TGtkWSCustomMaskEdit);
-//  RegisterWSComponent(TMaskEdit, TGtkWSMaskEdit);
+//  RegisterWSComponent(TToolWindow, TGtk2WSToolWindow);
 
 *)

@@ -167,7 +167,8 @@ uses
  Gtk2Themes,
 ////////////////////////////////////////////////////
  GtkProc,
- GtkDebug;
+ GtkDebug,
+ Gtk2WSFactory;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}

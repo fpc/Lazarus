@@ -260,22 +260,4 @@ begin
   gtk_window_get_modal();
 end;}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TGtk2WSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TGtk2WSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TGtk2WSCustomFrame);
-//  RegisterWSComponent(TFrame, TGtk2WSFrame);
-  RegisterWSComponent(TCustomForm, TGtk2WSCustomForm);
-//  RegisterWSComponent(TForm, TGtk2WSForm);
-//  RegisterWSComponent(THintWindow, TGtk2WSHintWindow);
-//  RegisterWSComponent(TScreen, TGtk2WSScreen);
-//  RegisterWSComponent(TApplicationProperties, TGtk2WSApplicationProperties);
-////////////////////////////////////////////////////
 end.

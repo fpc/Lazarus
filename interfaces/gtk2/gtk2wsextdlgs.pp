@@ -106,21 +106,4 @@ type
 
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TGtk2WSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TGtk2WSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TGtk2WSSavePictureDialog);
-//  RegisterWSComponent(TCalculatorDialog, TGtk2WSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TGtk2WSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TGtk2WSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TGtk2WSCalendarDialog);
-////////////////////////////////////////////////////
 end.
