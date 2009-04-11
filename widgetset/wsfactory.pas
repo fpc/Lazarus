@@ -91,7 +91,8 @@ procedure RegisterCalendarDialog;
 // Buttons
 procedure RegisterCustomBitBtn;
 procedure RegisterCustomSpeedButton;
-
+// Arrow
+procedure RegisterArrow;
 
 implementation
 uses
@@ -182,7 +183,8 @@ function WSRegisterCalendarDialog: Boolean;    external name 'WSRegisterCalendar
 // Buttons
 function WSRegisterCustomBitBtn: Boolean;      external name 'WSRegisterCustomBitBtn';
 function WSRegisterCustomSpeedButton: Boolean; external name 'WSRegisterCustomSpeedButton';
-
+// Arrow
+function WSRegisterArrow: Boolean;             external name 'WSRegisterArrow';
 
 procedure RegisterCustomImageList;
 const
@@ -1005,6 +1007,17 @@ begin
   WSRegisterCustomSpeedButton;
 //  if not WSRegisterCustomSpeedButton then
 //    RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
+  Done := True;
+end;
+
+procedure RegisterArrow;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterArrow;
+//  if not WSRegisterArrow then
+//    RegisterWSComponent(TArrow, TWSArrow);
   Done := True;
 end;
 

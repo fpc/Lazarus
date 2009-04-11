@@ -35,8 +35,7 @@ interface
 uses
   SysUtils, Classes, LCLType, Controls;
   
-  
-Type
+type
 
   TArrowType = (atUp, atDown, atLeft, atRight);
   TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut);
@@ -53,6 +52,7 @@ Type
     procedure SetArrowType(const AValue: TArrowType);
     procedure SetProps;
   protected
+    class procedure WSRegisterClass; override;
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
@@ -83,13 +83,12 @@ procedure Register;
 implementation
 
 uses
-  InterfaceBase, WSArrow;
+  InterfaceBase, WSArrow, WSFactory;
 
 procedure Register;
 begin
   RegisterComponents('Misc',[TArrow]);
 end;
-
 
 { TArrow }
 
@@ -152,6 +151,12 @@ procedure TArrow.SetProps;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
     TWSArrowClass(WidgetSetClass).SetType(Self, FArrowType, FShadowType);
+end;
+
+class procedure TArrow.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterArrow;
 end;
 
 procedure TArrow.SetShadowType(const AValue: TShadowType);
