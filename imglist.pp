@@ -206,8 +206,7 @@ implementation
 
 uses
   dialogs,
-  WSImglist,
-  WSFactory;
+  WSImglist;
 
 {$I imglist.inc}
 

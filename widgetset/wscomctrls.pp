@@ -47,7 +47,7 @@ uses
 ////////////////////////////////////////////////////
   ComCtrls, Controls, ImgList, StdCtrls,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSExtCtrls, WSToolwin;
+  WSLCLClasses, WSControls, WSExtCtrls, WSToolwin, WSFactory;
 
 type
   { TWSStatusBar }
@@ -205,6 +205,18 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterStatusBar;
+  procedure RegisterTabSheet;
+  procedure RegisterPageControl;
+  procedure RegisterCustomListView;
+  procedure RegisterCustomProgressBar;
+  procedure RegisterCustomUpDown;
+  procedure RegisterCustomToolButton;
+  procedure RegisterToolBar;
+  procedure RegisterCustomTrackBar;
+  procedure RegisterCustomTreeView;
 
 implementation
 
@@ -511,6 +523,118 @@ end;
 
 class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 begin
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterStatusBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterStatusBar;
+//  if not WSRegisterStatusBar then
+//    RegisterWSComponent(TStatusBar, TWSStatusBar);
+  Done := True;
+end;
+
+procedure RegisterTabSheet;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterTabSheet;
+//  if not WSRegisterTabSheet then
+//    RegisterWSComponent(TTabSheet, TWSTabSheet)
+  Done := True;
+end;
+
+procedure RegisterPageControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPageControl;
+//  if not WSRegisterPageControl then
+//    RegisterWSComponent(TPageControl, TWSPageControl);
+  Done := True;
+end;
+
+procedure RegisterCustomListView;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomListView;
+//  if not WSRegisterCustomListView then
+//    RegisterWSComponent(TCustomListView, TWSCustomListView);
+  Done := True;
+end;
+
+procedure RegisterCustomProgressBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomProgressBar;
+//  if not WSRegisterCustomProgressBar then
+//    RegisterWSComponent(TCustomProgressBar, TWSCustomProgressBar);
+  Done := True;
+end;
+
+procedure RegisterCustomUpDown;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomUpDown;
+//  if not WSRegisterCustomUpDown then
+//    RegisterWSComponent(TCustomUpDown, TWSCustomUpDown);
+  Done := True;
+end;
+
+procedure RegisterCustomToolButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomToolButton;
+//  if not WSRegisterCustomToolButton then
+//    RegisterWSComponent(TCustomToolButton, TWSToolButton);
+  Done := True;
+end;
+
+procedure RegisterToolBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterToolBar;
+//  if not WSRegisterToolBar then
+//    RegisterWSComponent(TToolBar, TWSToolBar);
+  Done := True;
+end;
+
+procedure RegisterCustomTrackBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomTrackBar;
+//  if not WSRegisterCustomTrackBar then
+//    RegisterWSComponent(TCustomTrackBar, TWSCustomTrackBar);
+  Done := True;
+end;
+
+procedure RegisterCustomTreeView;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterStatusBar;
+//  if not WSRegisterStatusBar then
+//    RegisterWSComponent(TCustomTreeView, TWSCustomTreeView);
+  Done := True;
 end;
 
 end.

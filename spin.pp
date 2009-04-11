@@ -192,7 +192,7 @@ procedure Register;
 implementation
 
 uses
-  WSSpin, WSFactory;
+  WSSpin;
 
 procedure Register;
 begin

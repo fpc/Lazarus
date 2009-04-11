@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  WSDesigner, WSFactory;
+  WSDesigner;
 
 {$I rubberband.inc}
 

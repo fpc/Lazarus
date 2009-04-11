@@ -1544,7 +1544,7 @@ procedure Register;
 implementation
 
 uses
-  WSGrids, WSFactory;
+  WSGrids;
 
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin

@@ -1217,7 +1217,7 @@ implementation
 
 // !!! Avoid unit circles. Only add units if really needed.
 uses
-  Math, WSExtCtrls, WSFactory;
+  Math, WSExtCtrls;
 
 procedure Register;
 begin

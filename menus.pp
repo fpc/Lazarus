@@ -416,7 +416,7 @@ const
 implementation
 
 uses
-  WSMenus, WSFactory,
+  WSMenus,
   Forms {KeyDataToShiftState};
 
 { Menu command management }

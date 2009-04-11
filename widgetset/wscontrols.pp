@@ -49,7 +49,7 @@ uses
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList,
   { TODO: remove when CreateHandle/Component code moved }
-  InterfaceBase;
+  InterfaceBase, WSFactory;
 
 type
   { TWSDragImageList }
@@ -138,6 +138,11 @@ type
   published
   end;
 
+  procedure RegisterDragImageList;
+  procedure RegisterControl;
+  procedure RegisterWinControl;
+  procedure RegisterGraphicControl;
+  procedure RegisterCustomControl;
 
 implementation
 
@@ -326,6 +331,60 @@ class function TWSDragImageList.ShowDragImage(const ADragImageList: TDragImageLi
   ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
   Result := False;
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterDragImageList;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterDragImageList then
+    RegisterWSComponent(TDragImageList, TWSDragImageList);
+  Done := True;
+end;
+
+procedure RegisterControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterControl then
+    RegisterWSComponent(TControl, TWSControl);
+  Done := True;
+end;
+
+procedure RegisterWinControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterWinControl then
+    RegisterWSComponent(TWinControl, TWSWinControl);
+  Done := True;
+end;
+
+procedure RegisterGraphicControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterGraphicControl;
+//  if not WSRegisterGraphicControl then
+//    RegisterWSComponent(TGraphicControl, TWSGraphicControl);
+  Done := True;
+end;
+
+procedure RegisterCustomControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomControl;
+//  if not WSRegisterCustomControl then
+//    RegisterWSComponent(TCustomControl, TWSCustomControl);
+  Done := True;
 end;
 
 end.

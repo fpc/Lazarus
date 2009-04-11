@@ -535,7 +535,7 @@ procedure Register;
 implementation
 
 uses 
-  Math, WSDialogs, WSFactory;
+  Math, WSDialogs;
 
 const
   //

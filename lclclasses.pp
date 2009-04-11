@@ -83,7 +83,7 @@ type
 
 implementation                    
 uses
-  WSFactory, InterfaceBase;
+  InterfaceBase;
 
 class procedure TLCLComponent.WSRegisterClass;
 begin

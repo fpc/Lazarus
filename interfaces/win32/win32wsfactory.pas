@@ -6,7 +6,7 @@ interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
-  WSLCLClasses, WSFactory;
+  WSLCLClasses;
 
 implementation
 uses

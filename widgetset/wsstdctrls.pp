@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Classes;
+  WSLCLClasses, WSControls, Classes, WSFactory;
 
 type
   { TWSScrollBar }
@@ -243,6 +243,21 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomScrollBar;
+  procedure RegisterCustomGroupBox;
+  procedure RegisterCustomComboBox;
+  procedure RegisterCustomListBox;
+  procedure RegisterCustomEdit;
+  procedure RegisterCustomMemo;
+  procedure RegisterButtonControl;
+  procedure RegisterCustomButton;
+  procedure RegisterCustomCheckBox;
+  procedure RegisterToggleBox;
+  procedure RegisterRadioButton;
+  procedure RegisterCustomStaticText;
+  procedure RegisterCustomLabel;
 
 implementation
 
@@ -561,6 +576,151 @@ end;
 
 class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterCustomScrollBar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomScrollBar;
+//  if not WSRegisterCustomScrollBar then
+//    RegisterWSComponent(TCustomScrollBar, TWSCustomScrollBar);
+  Done := True;
+end;
+
+procedure RegisterCustomGroupBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomGroupBox;
+//  if not WSRegisterCustomGroupBox then
+//    RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
+  Done := True;
+end;
+
+procedure RegisterCustomComboBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomComboBox;
+//  if not WSRegisterCustomComboBox then
+//    RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
+  Done := True;
+end;
+
+procedure RegisterCustomListBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomListBox;
+//  if not WSRegisterCustomListBox then
+//    RegisterWSComponent(TCustomListBox, TWSCustomListBox);
+  Done := True;
+end;
+
+procedure RegisterCustomEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomEdit;
+//  if not WSRegisterCustomEdit then
+//    RegisterWSComponent(TCustomEdit, TWSCustomEdit);
+  Done := True;
+end;
+
+procedure RegisterCustomMemo;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomMemo;
+//  if not WSRegisterCustomMemo then
+//    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
+  Done := True;
+end;
+
+procedure RegisterButtonControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterButtonControl;
+//  if not WSRegisterButtonControl then
+//    RegisterWSComponent(TButtonControl, TWSButtonControl);
+  Done := True;
+end;
+
+procedure RegisterCustomButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomButton;
+//  if not WSRegisterCustomButton then
+//    RegisterWSComponent(TCustomButton, TWSButton);
+  Done := True;
+end;
+
+procedure RegisterCustomCheckBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckBox;
+//  if not WSRegisterCustomCheckBox then
+//    RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
+  Done := True;
+end;
+
+procedure RegisterToggleBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterToggleBox;
+//  if not WSRegisterToggleBox then
+//    RegisterWSComponent(TToggleBox, TWSToggleBox);
+  Done := True;
+end;
+
+procedure RegisterRadioButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterRadioButton;
+//  if not WSRegisterRadioButton then
+//    RegisterWSComponent(TRadioButton, TWSRadioButton);
+  Done := True;
+end;
+
+procedure RegisterCustomStaticText;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomStaticText;
+//  if not WSRegisterCustomStaticText then
+//    RegisterWSComponent(TCustomStaticText, TWSCustomStaticText);
+  Done := True;
+end;
+
+procedure RegisterCustomLabel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomLabel;
+//  if not WSRegisterCustomLabel then
+//    RegisterWSComponent(TCustomLabel, TWSCustomLabel);
+  Done := True;
 end;
 
 end.

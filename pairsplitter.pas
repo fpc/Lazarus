@@ -148,7 +148,7 @@ procedure Register;
 implementation
 
 uses
-  WSPairSplitter, WSFactory;
+  WSPairSplitter;
   
 procedure Register;
 begin

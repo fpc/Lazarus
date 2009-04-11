@@ -2300,7 +2300,6 @@ implementation
 
 uses
   WSControls, // circle with base widgetset is allowed
-  WSFactory,
   Forms, // the circle can't be broken without breaking Delphi compatibility
   Math;  // Math is in RTL and only a few functions are used.
 

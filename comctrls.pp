@@ -2797,7 +2797,7 @@ implementation
 
 // !!! Avoid unit circles. Only add units if really needed.
 uses
-  WSComCtrls, WSFactory;
+  WSComCtrls;
 
 const
   ScrollBarWidth = 0;

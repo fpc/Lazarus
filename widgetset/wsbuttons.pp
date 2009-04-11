@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Classes, Controls, Buttons, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls, WSControls, LCLType, LCLIntf;
+  WSLCLClasses, WSStdCtrls, WSControls, LCLType, LCLIntf, WSFactory;
 
 type
 
@@ -68,6 +68,10 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomBitBtn;
+  procedure RegisterCustomSpeedButton;
 
 implementation 
 
@@ -93,6 +97,30 @@ end;
 class procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterCustomBitBtn;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomBitBtn;
+//  if not WSRegisterCustomBitBtn then
+//    RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
+  Done := True;
+end;
+
+procedure RegisterCustomSpeedButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomSpeedButton;
+//  if not WSRegisterCustomSpeedButton then
+//    RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
+  Done := True;
 end;
 
 end.

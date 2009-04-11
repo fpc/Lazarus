@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Controls, LCLType, Grids,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSMaskEdit, WSControls;
+  WSLCLClasses, WSMaskEdit, WSControls, WSFactory;
 
 type
   { TWSCustomGrid }
@@ -56,6 +56,10 @@ type
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
   end;
   TWSCustomGridClass = class of TWSCustomgrid;
+
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomGrid;
 
 implementation
 uses
@@ -74,6 +78,18 @@ begin
   else
     GMsg.Value:=Ch;
   AEditor.Dispatch(GMsg);
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterCustomGrid;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomGrid then
+    RegisterWSComponent(TCustomGrid, TWSCustomGrid);
+  Done := True;
 end;
 
 end.

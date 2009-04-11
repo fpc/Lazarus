@@ -43,7 +43,7 @@ uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
-  Controls, ExtCtrls, PairSplitter, WSLCLClasses, WSControls;
+  Controls, ExtCtrls, PairSplitter, WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSPairSplitterSide }
@@ -65,6 +65,11 @@ type
     class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; virtual;
   end;
   TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
+
+  { WidgetSetRegistration }
+
+  procedure RegisterPairSplitterSide;
+  procedure RegisterCustomPairSplitter;
 
 implementation
 uses
@@ -189,6 +194,29 @@ begin
     ASplitter.Sides[0].Cursor := crArrow;
     ASplitter.Sides[1].Cursor := crArrow;
   end;
+end;
+
+  { WidgetSetRegistration }
+
+procedure RegisterPairSplitterSide;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPairSplitterSide;
+//  if not WSRegisterPairSplitterSide then
+//    RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
+  Done := True;
+end;
+
+procedure RegisterCustomPairSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomPairSplitter then
+    RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
+  Done := True;
 end;
 
 end.

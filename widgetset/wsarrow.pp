@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Arrow,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSArrow }
@@ -58,6 +58,9 @@ type
       const AShadowType: TShadowType); virtual;
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterArrow;
 
 implementation
 
@@ -66,6 +69,19 @@ implementation
 class procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 begin
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterArrow;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterArrow;
+//  if not WSRegisterArrow then
+//    RegisterWSComponent(TArrow, TWSArrow);
+  Done := True;
 end;
 
 end.

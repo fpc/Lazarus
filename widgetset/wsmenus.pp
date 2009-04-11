@@ -47,7 +47,7 @@ uses
 ////////////////////////////////////////////////////
   Menus, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, LCLType, LCLProc;
+  WSLCLClasses, LCLType, LCLProc, WSFactory;
 
 type
   { TWSMenuItem }
@@ -94,6 +94,13 @@ type
 
 function WSCheckMenuItem(const AMenuItem: TMenuItem;
   const AProcName: String): Boolean;
+
+  { WidgetSetRegistration }
+
+  procedure RegisterMenuItem;
+  procedure RegisterMenu;
+  procedure RegisterMainMenu;
+  procedure RegisterPopupMenu;
 
 implementation
 
@@ -185,6 +192,52 @@ begin
   Result := AMenuItem.HandleAllocated;
   if Result then Exit;
   Warn;
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterMenuItem;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMenuItem;
+//  if not WSRegisterMenuItem then
+//    RegisterWSComponent(TMenuItem, TWSMenuItem);
+  Done := True;
+end;
+
+procedure RegisterMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMenu;
+//  if not WSRegisterMenu then
+//    RegisterWSComponent(TMenu, TWSMenu);
+  Done := True;
+end;
+
+procedure RegisterMainMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterMainMenu;
+//  if not WSRegisterMainMenu then
+//    RegisterWSComponent(TMainMenu, TWSMainMenu);
+  Done := True;
+end;
+
+procedure RegisterPopupMenu;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPopupMenu;
+//  if not WSRegisterPopupMenu then
+//    RegisterWSComponent(TPopupMenu, TWSPopupMenu);
+  Done := True;
 end;
 
 end.

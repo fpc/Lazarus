@@ -400,7 +400,7 @@ procedure Register;
 implementation
 
 uses
-  WSButtons, WSFactory;
+  WSButtons;
 
 const
   BitBtnModalResults: array[TBitBtnKind] of TModalResult = (

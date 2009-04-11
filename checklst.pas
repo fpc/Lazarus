@@ -149,7 +149,7 @@ procedure Register;
 implementation
 
 uses
-  WSCheckLst, WSFactory;
+  WSCheckLst;
 
 procedure Register;
 begin

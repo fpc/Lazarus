@@ -33,9 +33,8 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources,
-  WSFactory;
-  
+  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
+
 type
   TDisplaySetting = (
     dsShowHeadings,

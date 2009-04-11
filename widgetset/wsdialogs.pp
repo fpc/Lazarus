@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   LCLType, Dialogs,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSCommonDialog }
@@ -101,6 +101,16 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCommonDialog;
+  procedure RegisterFileDialog;
+  procedure RegisterOpenDialog;
+  procedure RegisterSaveDialog;
+  procedure RegisterSelectDirectoryDialog;
+  procedure RegisterColorDialog;
+  procedure RegisterColorButton;
+  procedure RegisterFontDialog;
 
 implementation
 
@@ -115,6 +125,95 @@ end;
 
 class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterCommonDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCommonDialog then
+    RegisterWSComponent(TCommonDialog, TWSCommonDialog);
+  Done := True;
+end;
+
+procedure RegisterFileDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterFileDialog;
+//  if not WSRegisterFileDialog then
+//    RegisterWSComponent(TFileDialog, TWSFileDialog);
+  Done := True;
+end;
+
+procedure RegisterOpenDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterOpenDialog;
+//  if not WSRegisterOpenDialog then
+//    RegisterWSComponent(TOpenDialog, TWSOpenDialog);
+  Done := True;
+end;
+
+procedure RegisterSaveDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSaveDialog;
+//  if not WSRegisterSaveDialog then
+//    RegisterWSComponent(TSaveDialog, TWSSaveDialog);
+  Done := True;
+end;
+
+procedure RegisterSelectDirectoryDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSelectDirectoryDialog;
+//  if not WSRegisterSelectDirectoryDialog then
+//    RegisterWSComponent(TSelectDirectoryDialog, TWSSelectDirectoryDialog);
+  Done := True;
+end;
+
+procedure RegisterColorDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterColorDialog;
+//  if not WSRegisterColorDialog then
+//    RegisterWSComponent(TColorDialog, TWSColorDialog);
+  Done := True;
+end;
+
+procedure RegisterColorButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterColorButton;
+//  if not WSRegisterColorButton then
+//    RegisterWSComponent(TColorButton, TWSColorButton);
+  Done := True;
+end;
+
+procedure RegisterFontDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterFontDialog;
+//  if not WSRegisterFontDialog then
+//    RegisterWSComponent(TFontDialog, TWSFontDialog);
+  Done := True;
 end;
 
 end.

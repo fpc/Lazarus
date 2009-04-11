@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Spin,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSStdCtrls;
+  WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
 type
   { TWSCustomFloatSpinEdit }
@@ -66,6 +66,10 @@ type
   end;
   TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomFloatSpinEdit;
+
 implementation
 
 { TWSCustomFloatSpinEdit }
@@ -77,6 +81,18 @@ end;
 
 class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 begin
+end;
+
+  { WidgetSetRegistration }
+
+procedure RegisterCustomFloatSpinEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomFloatSpinEdit then
+    RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
+  Done := True;
 end;
 
 end.

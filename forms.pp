@@ -1483,7 +1483,7 @@ implementation
 {$endif}
 
 uses
-  WSForms, WSFactory; // Widgetset uses circle is allowed
+  WSForms; // Widgetset uses circle is allowed
 
 var
   FocusCount: Integer=0;

@@ -83,7 +83,7 @@ procedure Register;
 implementation
 
 uses
-  InterfaceBase, WSArrow, WSFactory;
+  InterfaceBase, WSArrow;
 
 procedure Register;
 begin

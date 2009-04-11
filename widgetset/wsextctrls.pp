@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   LCLProc, Controls, ExtCtrls, Classes, ImgList, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSStdCtrls;
+  WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
 type
   { TWSCustomPage }
@@ -193,6 +193,20 @@ type
   end;
   TWSCustomTrayIconClass = class of TWSCustomTrayIcon;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomPage;
+  procedure RegisterCustomNotebook;
+  procedure RegisterShape;
+  procedure RegisterCustomSplitter;
+  procedure RegisterPaintBox;
+  procedure RegisterCustomImage;
+  procedure RegisterBevel;
+  procedure RegisterCustomRadioGroup;
+  procedure RegisterCustomCheckGroup;
+  procedure RegisterCustomLabeledEdit;
+  procedure RegisterCustomPanel;
+  procedure RegisterCustomTrayIcon;
 
 implementation
 
@@ -354,6 +368,138 @@ end;
 class function TWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
 begin
   Result := ATrayIcon.Icon.Canvas;
+end;
+
+{ WidgetSetRegistration }
+
+procedure RegisterCustomPage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomPage;
+//  if not WSRegisterCustomPage then
+//    RegisterWSComponent(TCustomPage, TWSCustomPage);
+  Done := True;
+end;
+
+procedure RegisterCustomNotebook;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomNotebook then
+    RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
+  Done := True;
+end;
+
+procedure RegisterShape;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterShape;
+//  if not WSRegisterShape then
+//    RegisterWSComponent(TShape, TWSShape);
+  Done := True;
+end;
+
+procedure RegisterCustomSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomSplitter;
+//  if not WSRegisterCustomSplitter then
+//    RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
+  Done := True;
+end;
+
+procedure RegisterPaintBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPaintBox;
+//  if not WSRegisterPaintBox then
+//    RegisterWSComponent(TPaintBox, TWSPaintBox);
+  Done := True;
+end;
+
+procedure RegisterCustomImage;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomImage;
+//  if not WSRegisterCustomImage then
+//    RegisterWSComponent(TCustomImage, TWSCustomImage);
+  Done := True;
+end;
+
+procedure RegisterBevel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterBevel;
+//  if not WSRegisterBevel then
+//    RegisterWSComponent(TBevel, TWSBevel);
+  Done := True;
+end;
+
+procedure RegisterCustomRadioGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomRadioGroup;
+//  if not WSRegisterCustomRadioGroup then
+//    RegisterWSComponent(TCustomRadioGroup, TWSCustomRadioGroup);
+  Done := True;
+end;
+
+procedure RegisterCustomCheckGroup;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckGroup;
+//  if not WSRegisterCustomCheckGroup then
+//    RegisterWSComponent(TCustomCheckGroup, TWSCustomCheckGroup);
+  Done := True;
+end;
+
+procedure RegisterCustomLabeledEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomLabeledEdit;
+//  if not WSRegisterCustomLabeledEdit then
+//    RegisterWSComponent(TCustomLabeledEdit, TWSCustomLabeledEdit);
+  Done := True;
+end;
+
+procedure RegisterCustomPanel;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomPanel;
+//  if not WSRegisterCustomPanel then
+//    RegisterWSComponent(TCustomPanel, TWSCustomPanel);
+  Done := True;
+end;
+
+procedure RegisterCustomTrayIcon;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomTrayIcon then
+    RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
+  Done := True;
 end;
 
 end.
