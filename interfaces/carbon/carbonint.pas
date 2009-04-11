@@ -204,7 +204,6 @@ end;
 
 
 initialization
-  {$I carbonimages.lrs}
   InternalInit;
 
 finalization

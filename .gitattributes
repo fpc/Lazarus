@@ -297,7 +297,6 @@ interfaces/carbon/carbondebug.pp svneol=native#text/pascal
 interfaces/carbon/carbondef.pp svneol=native#text/pascal
 interfaces/carbon/carbonedits.pp svneol=native#text/pascal
 interfaces/carbon/carbongdiobjects.pp svneol=native#text/pascal
-interfaces/carbon/carbonimages.lrs svneol=native#text/pascal
 interfaces/carbon/carbonint.pas svneol=native#text/pascal
 interfaces/carbon/carbonlclintf.inc svneol=native#text/plain
 interfaces/carbon/carbonlclintfh.inc svneol=native#text/plain
