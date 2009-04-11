@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -18,12 +18,12 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // Win32WSActnList,
-  Win32WSArrow,
-  Win32WSButtons,
-  Win32WSCalendar,
-  Win32WSCheckLst,
-  Win32WSComCtrls,
-  Win32WSControls,
+  Win32WSArrow,          // +
+  Win32WSButtons,        // +
+  Win32WSCalendar,       // +
+  Win32WSCheckLst,       // +
+  Win32WSComCtrls,       // +
+  Win32WSControls,       // +
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
   Win32WSDialogs,
@@ -391,6 +391,13 @@ end;
 function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
   RegisterWSComponent(TArrow, TWin32WSArrow);
+  Result := True;
+end;
+
+// CheckLst
+function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
+begin
+  RegisterWSComponent(TCustomCheckListBox, TWin32WSCustomCheckListBox);
   Result := True;
 end;
 

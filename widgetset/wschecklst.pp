@@ -49,8 +49,6 @@ uses
   WSLCLClasses, WSStdCtrls;
 
 type
-  { TWSCheckListBox }
-
   { TWSCustomCheckListBox }
 
   TWSCustomCheckListBox = class(TWSCustomListBox)
@@ -94,11 +92,4 @@ class procedure TWSCustomCheckListBox.SetState(
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
-////////////////////////////////////////////////////
 end.

@@ -54,6 +54,7 @@ type
     procedure SetItemEnabled(AIndex: Integer; const AValue: Boolean);
     procedure SetState(AIndex: Integer; const AValue: TCheckBoxState);
   protected
+    class procedure WSRegisterClass; override;
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
     function  GetCachedDataSize: Integer; override;
@@ -148,7 +149,7 @@ procedure Register;
 implementation
 
 uses
-  WSCheckLst;
+  WSCheckLst, WSFactory;
 
 procedure Register;
 begin
@@ -282,6 +283,12 @@ begin
   if HandleAllocated
   then SendItemState(AIndex, AValue)
   else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.State := AValue;
+end;
+
+class procedure TCustomCheckListBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCheckListBox;
 end;
 
 procedure TCustomCheckListBox.SendItemState(const AIndex: Integer;

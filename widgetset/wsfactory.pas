@@ -78,6 +78,8 @@ procedure RegisterCustomBitBtn;
 procedure RegisterCustomSpeedButton;
 // Arrow
 procedure RegisterArrow;
+// CheckLst
+procedure RegisterCustomCheckListBox;
 
 implementation
 uses
@@ -155,6 +157,8 @@ function WSRegisterCustomBitBtn: Boolean;      external name 'WSRegisterCustomBi
 function WSRegisterCustomSpeedButton: Boolean; external name 'WSRegisterCustomSpeedButton';
 // Arrow
 function WSRegisterArrow: Boolean;             external name 'WSRegisterArrow';
+// CheckLst
+function WSRegisterCustomCheckListBox: Boolean; external name 'WSRegisterCustomCheckListBox';
 
 procedure RegisterCustomImageList;
 const
@@ -821,6 +825,17 @@ begin
   WSRegisterArrow;
 //  if not WSRegisterArrow then
 //    RegisterWSComponent(TArrow, TWSArrow);
+  Done := True;
+end;
+
+procedure RegisterCustomCheckListBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckListBox;
+//  if not WSRegisterCustomCheckListBox then
+//    RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
   Done := True;
 end;
 
