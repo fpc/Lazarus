@@ -122,21 +122,4 @@ begin
   SetCallBacks(Widget, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TGtkWSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TGtkWSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TGtkWSSavePictureDialog);
-//  RegisterWSComponent(TCalculatorDialog, TGtkWSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TGtkWSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TGtkWSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TGtkWSCalendarDialog);
-////////////////////////////////////////////////////
 end.

@@ -112,26 +112,4 @@ type
 
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TDBEdit, TGtkWSDBEdit);
-//  RegisterWSComponent(TDBText, TGtkWSDBText);
-//  RegisterWSComponent(TDBListBox, TGtkWSDBListBox);
-//  RegisterWSComponent(TDBRadioGroup, TGtkWSDBRadioGroup);
-//  RegisterWSComponent(TDBCheckBox, TGtkWSDBCheckBox);
-//  RegisterWSComponent(TDBComboBox, TGtkWSDBComboBox);
-//  RegisterWSComponent(TDBMemo, TGtkWSDBMemo);
-//  RegisterWSComponent(TDBGroupBox, TGtkWSDBGroupBox);
-//  RegisterWSComponent(TDBImage, TGtkWSDBImage);
-//  RegisterWSComponent(TDBCalendar, TGtkWSDBCalendar);
-//  RegisterWSComponent(TDBCustomNavigator, TGtkWSDBCustomNavigator);
-//  RegisterWSComponent(TDBNavButton, TGtkWSDBNavButton);
-//  RegisterWSComponent(TDBNavigator, TGtkWSDBNavigator);
-////////////////////////////////////////////////////
 end.

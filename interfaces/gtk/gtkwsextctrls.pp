@@ -599,38 +599,4 @@ end;
   {$include gtk1trayicon.inc}
 {$ENDIF}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomPage, TGtkWSCustomPage);
-{$IFDEF GTK1}
-  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook, TGtk1PrivateNotebook);
-{$ENDIF}
-//  RegisterWSComponent(TPage, TGtkWSPage);
-//  RegisterWSComponent(TNotebook, TGtkWSNotebook);
-//  RegisterWSComponent(TShape, TGtkWSShape);
-//  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TGtkWSSplitter);
-//  RegisterWSComponent(TPaintBox, TGtkWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TGtkWSCustomImage);
-//  RegisterWSComponent(TImage, TGtkWSImage);
-//  RegisterWSComponent(TBevel, TGtkWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TGtkWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TGtkWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TGtkWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TGtkWSCheckGroup);
-//  RegisterWSComponent(TCustomLabeledEdit, TGtkWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TGtkWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
-//  RegisterWSComponent(TPanel, TGtkWSPanel);
-{$IFDEF GTK1}
-  RegisterWSComponent(TCustomTrayIcon, TGtkWSCustomTrayIcon);
-{$ENDIF}
-////////////////////////////////////////////////////
-
 end.

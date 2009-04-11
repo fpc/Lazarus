@@ -70,19 +70,4 @@ type
 
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomEditButton, TGtkWSCustomEditButton);
-//  RegisterWSComponent(TEditButton, TGtkWSEditButton);
-//  RegisterWSComponent(TFileNameEdit, TGtkWSFileNameEdit);
-//  RegisterWSComponent(TDirectoryEdit, TGtkWSDirectoryEdit);
-//  RegisterWSComponent(TDateEdit, TGtkWSDateEdit);
-//  RegisterWSComponent(TCalcEdit, TGtkWSCalcEdit);
-////////////////////////////////////////////////////
 end.

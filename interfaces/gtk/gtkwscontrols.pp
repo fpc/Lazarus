@@ -1014,19 +1014,4 @@ begin
   Result := GtkWidgetset.DragImageList_DragMove(X, Y) and GtkWidgetset.DragImageList_SetVisible(True);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
-//  RegisterWSComponent(TControl, TGtkWSControl);
-  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
-//  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
-//  RegisterWSComponent(TImageList, TGtkWSImageList);
-////////////////////////////////////////////////////
 end.

@@ -2085,34 +2085,4 @@ begin
   TGtkWSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TGtkWSComboBox);
-//  RegisterWSComponent(TListBox, TGtkWSListBox);
-  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry);
-  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
-//  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
-{$ifdef gtk1}
-  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtk1PrivateList);
-  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk1PrivateButton);
-{$else}
-  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton);
-{$endif}
-  RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
-  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
-  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
-  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TGtkWSStaticText);
-////////////////////////////////////////////////////
 end.
