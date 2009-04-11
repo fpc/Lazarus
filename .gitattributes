@@ -448,6 +448,7 @@ interfaces/gtk/gtkwsdialogs.pp svneol=native#text/pascal
 interfaces/gtk/gtkwseditbtn.pp svneol=native#text/pascal
 interfaces/gtk/gtkwsextctrls.pp svneol=native#text/pascal
 interfaces/gtk/gtkwsextdlgs.pp svneol=native#text/pascal
+interfaces/gtk/gtkwsfactory.pas svneol=native#text/pascal
 interfaces/gtk/gtkwsfilectrl.pp svneol=native#text/pascal
 interfaces/gtk/gtkwsforms.pp svneol=native#text/pascal
 interfaces/gtk/gtkwsgrids.pp svneol=native#text/pascal
