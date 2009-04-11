@@ -111,6 +111,7 @@ uses
   GtkWSExtDlgs,
   GtkWSForms,
   Gtk2WSForms,
+  GtkWSGrids,
   Gtk2WSGrids,
   Gtk2WSImgList,
   GtkWSMenus,
@@ -119,7 +120,7 @@ uses
   GtkWSStdCtrls,
   Gtk2WSStdCtrls,
   GtkWSPairSplitter,
-//  GtkWSPrivate,
+  GtkWSPrivate,
   Gtk2WSPrivate;
 
 
