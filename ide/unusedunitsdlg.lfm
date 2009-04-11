@@ -19,14 +19,16 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     ShowBevel = False
   end
   object UnitsTreeView: TTreeView
-    Left = 0
-    Height = 317
-    Top = 0
-    Width = 340
+    Left = 6
+    Height = 311
+    Top = 6
+    Width = 328
     Align = alClient
+    BorderSpacing.Around = 6
     DefaultItemHeight = 19
     ScrollBars = ssAutoBoth
     TabOrder = 1
+    OnSelectionChanged = UnitsTreeViewSelectionChanged
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end

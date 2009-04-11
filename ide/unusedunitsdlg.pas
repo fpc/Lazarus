@@ -46,6 +46,7 @@ type
     UnitsTreeView: TTreeView;
     procedure FormCreate(Sender: TObject);
     procedure OkClick(Sender: TObject);
+    procedure UnitsTreeViewSelectionChanged(Sender: TObject);
   private
     FUnits: TStrings;
     ImgIDInterface: LongInt;
@@ -54,6 +55,7 @@ type
     ImgIDNone: LongInt;
     procedure SetUnits(const AValue: TStrings);
     procedure RebuildUnitsTreeView;
+    procedure UpdateButtons;
   public
     function GetSelectedUnits: TStrings;
     property Units: TStrings read FUnits write SetUnits;
@@ -136,6 +138,11 @@ begin
 
 end;
 
+procedure TUnusedUnitsDialog.UnitsTreeViewSelectionChanged(Sender: TObject);
+begin
+  UpdateButtons;
+end;
+
 procedure TUnusedUnitsDialog.SetUnits(const AValue: TStrings);
 begin
   if FUnits=AValue then exit;
@@ -187,6 +194,16 @@ begin
   IntfTreeNode.Expanded:=true;
   ImplTreeNode.Expanded:=true;
   UnitsTreeView.EndUpdate;
+  UpdateButtons;
+end;
+
+procedure TUnusedUnitsDialog.UpdateButtons;
+var
+  RemoveUnits: TStrings;
+begin
+  RemoveUnits:=GetSelectedUnits;
+  ButtonPanel1.OKButton.Enabled:=RemoveUnits.Count>0;
+  RemoveUnits.Free;
 end;
 
 function TUnusedUnitsDialog.GetSelectedUnits: TStrings;
