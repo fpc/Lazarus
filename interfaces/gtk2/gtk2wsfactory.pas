@@ -568,7 +568,7 @@ function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
   RegisterWSComponent(THintWindow, TGtkWSHintWindow); { GTK1 }
 //  RegisterWSComponent(THintWindow, TGtk2WSHintWindow);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
