@@ -681,19 +681,4 @@ begin
   Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TDragImageList, TQtWSDragImageList);
-//  RegisterWSComponent(TControl, TQtWSControl);
-  RegisterWSComponent(TWinControl, TQtWSWinControl);
-//  RegisterWSComponent(TGraphicControl, TQtWSGraphicControl);
-  RegisterWSComponent(TCustomControl, TQtWSCustomControl);
-//  RegisterWSComponent(TImageList, TQtWSImageList);
-////////////////////////////////////////////////////
 end.

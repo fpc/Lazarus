@@ -526,6 +526,7 @@ interfaces/qt/qtwsdesigner.pp svneol=native#text/pascal
 interfaces/qt/qtwsdialogs.pp svneol=native#text/pascal
 interfaces/qt/qtwsextctrls.pp svneol=native#text/pascal
 interfaces/qt/qtwsextdlgs.pp svneol=native#text/pascal
+interfaces/qt/qtwsfactory.pas svneol=native#text/pascal
 interfaces/qt/qtwsforms.pp svneol=native#text/pascal
 interfaces/qt/qtwsgrids.pp svneol=native#text/pascal
 interfaces/qt/qtwsimglist.pp svneol=native#text/pascal

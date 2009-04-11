@@ -416,17 +416,4 @@ begin
   TQtMenu(APopupMenu.Handle).PopUp(@Point);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TQtWSMenuItem);
-  RegisterWSComponent(TMenu, TQtWSMenu);
-//  RegisterWSComponent(TMainMenu, TQtWSMainMenu);
-  RegisterWSComponent(TPopupMenu, TQtWSPopupMenu);
-////////////////////////////////////////////////////
 end.

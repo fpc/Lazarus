@@ -1398,35 +1398,4 @@ begin
   Result := TLCLIntfHandle(QtToggleBox);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TQtWSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TQtWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TQtWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TQtWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TQtWSComboBox);
-  RegisterWSComponent(TCustomListBox, TQtWSCustomListBox);
-//  RegisterWSComponent(TListBox, TQtWSListBox);
-  RegisterWSComponent(TCustomEdit, TQtWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TQtWSCustomMemo);
-//  RegisterWSComponent(TEdit, TQtWSEdit);
-//  RegisterWSComponent(TMemo, TQtWSMemo);
-//  RegisterWSComponent(TCustomLabel, TQtWSCustomLabel);
-//  RegisterWSComponent(TLabel, TQtWSLabel);
-//  RegisterWSComponent(TButtonControl, TQtWSButtonControl);
-  RegisterWSComponent(TCustomButton, TQtWSButton);
-  RegisterWSComponent(TCustomCheckBox, TQtWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TQtWSCheckBox);
-//  RegisterWSComponent(TCheckBox, TQtWSCheckBox);
-  RegisterWSComponent(TToggleBox, TQtWSToggleBox);
-  RegisterWSComponent(TRadioButton, TQtWSRadioButton);
-  RegisterWSComponent(TCustomStaticText, TQtWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TQtWSStaticText);
-////////////////////////////////////////////////////
 end.

@@ -529,33 +529,4 @@ begin
   Result := Point(0, 0);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomPage, TQtWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TQtWSCustomNotebook);
-//  RegisterWSComponent(TPage, TQtWSPage);
-//  RegisterWSComponent(TNotebook, TQtWSNotebook);
-//  RegisterWSComponent(TShape, TQtWSShape);
-//  RegisterWSComponent(TCustomSplitter, TQtWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TQtWSSplitter);
-//  RegisterWSComponent(TPaintBox, TQtWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TQtWSCustomImage);
-//  RegisterWSComponent(TImage, TQtWSImage);
-//  RegisterWSComponent(TBevel, TQtWSBevel);
-  RegisterWSComponent(TCustomRadioGroup, TQtWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TQtWSRadioGroup);
-  RegisterWSComponent(TCustomCheckGroup, TQtWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TQtWSCheckGroup);
-//  RegisterWSComponent(TCustomLabeledEdit, TQtWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TQtWSLabeledEdit);
-  RegisterWSComponent(TCustomPanel, TQtWSCustomPanel);
-//  RegisterWSComponent(TPanel, TQtWSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TQtWSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.

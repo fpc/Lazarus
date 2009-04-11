@@ -1290,30 +1290,4 @@ begin
     SetProperty(ALV, i, i in AProps);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TQtWSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TQtWSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TQtWSPageControl);
-  RegisterWSComponent(TCustomListView, TQtWSCustomListView);
-//  RegisterWSComponent(TCustomListView, TQtWSListView);
-  RegisterWSComponent(TCustomProgressBar, TQtWSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TQtWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TQtWSUpDown);
-//  RegisterWSComponent(TToolButton, TQtWSToolButton);
-//  RegisterWSComponent(TToolBar, TQtWSToolBar);
-{$ifdef WSToolBar}
-  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
-  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
-{$endif}
-  RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TQtWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TQtWSTreeView);
-////////////////////////////////////////////////////
 end.

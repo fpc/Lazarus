@@ -582,21 +582,4 @@ begin
     ACommonDialog.UserChoice := mrCancel;
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCommonDialog, TQtWSCommonDialog);
-  RegisterWSComponent(TFileDialog, TQtWSFileDialog);
-//  RegisterWSComponent(TOpenDialog, TQtWSOpenDialog);
-//  RegisterWSComponent(TSaveDialog, TQtWSSaveDialog);
-  RegisterWSComponent(TSelectDirectoryDialog, TQtWSSelectDirectoryDialog);
-  RegisterWSComponent(TColorDialog, TQtWSColorDialog);
-//  RegisterWSComponent(TColorButton, TQtWSColorButton);
-  RegisterWSComponent(TFontDialog, TQtWSFontDialog);
-////////////////////////////////////////////////////
 end.

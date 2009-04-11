@@ -93,12 +93,4 @@ begin
   TQtRubberBand(ARubberBand.Handle).setShape(RubberBandShapeMap[AShape]);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
- RegisterWSComponent(TCustomRubberBand, TQtWSCustomRubberBand);
-////////////////////////////////////////////////////
 end.
