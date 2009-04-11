@@ -57,7 +57,7 @@ uses
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSComCtrls, WSControls,
-  WSDbCtrls, WSDBGrids, WSDialogs, WSDirSel,
+  WSDbCtrls, WSDBGrids, WSDialogs, 
   WSEditBtn, WSExtCtrls, WSExtDlgs, WSFileCtrl,
   WSForms, WSGrids, WSImgList, WSMaskEdit,
   WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,

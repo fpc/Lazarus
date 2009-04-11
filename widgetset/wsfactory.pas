@@ -37,8 +37,6 @@ procedure RegisterSelectDirectoryDialog;
 procedure RegisterColorDialog;
 procedure RegisterColorButton;
 procedure RegisterFontDialog;
-// dirsel
-//procedure RegisterDirSelDlg;
 // StdCtrls
 procedure RegisterScrollBar;
 procedure RegisterCustomGroupBox;
@@ -60,7 +58,6 @@ procedure RegisterRadioButton;
 procedure RegisterCustomStaticText;
 procedure RegisterStaticText;
 procedure RegisterLabel;
-
 // extctrls
 procedure RegisterCustomPage;
 procedure RegisterCustomNotebook;
@@ -82,7 +79,6 @@ procedure RegisterLabeledEdit;
 procedure RegisterCustomPanel;
 procedure RegisterPanel;
 procedure RegisterCustomTrayIcon;
-
 //ExtDlgs
 procedure RegisterPreviewFileControl;
 procedure RegisterPreviewFileDialog;
@@ -132,8 +128,6 @@ function WSRegisterSelectDirectoryDialog: Boolean; external name 'WSRegisterSele
 function WSRegisterColorDialog: Boolean;       external name 'WSRegisterColorDialog';
 function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorButton';
 function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
-// dirsel
-//function WSRegisterDirSelDlg: Boolean;         external name 'WSRegisterDirSelDlg';
 // StdCtrls
 function WSRegisterScrollBar: Boolean;         external name 'WSRegisterScrollBar';
 function WSRegisterCustomGroupBox: Boolean;    external name 'WSRegisterCustomGroupBox';
@@ -682,17 +676,6 @@ begin
 //    RegisterWSComponent(TLabel, TWSLabel);
   Done := True;
 end;
-
-
-// dirsel
-(*procedure RegisterDirSelDlg;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterDirSelDlg;
-  Done := True;
-end;*)
 
 // extctrls
 procedure RegisterCustomPage;

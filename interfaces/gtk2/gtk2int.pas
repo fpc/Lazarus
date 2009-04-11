@@ -151,7 +151,6 @@ uses
 // Gtk2WSDbCtrls,
 // Gtk2WSDBGrids,
  Gtk2WSDialogs,
-// Gtk2WSDirSel,
 // Gtk2WSEditBtn,
  Gtk2WSExtCtrls,
 // Gtk2WSExtDlgs,

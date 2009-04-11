@@ -185,7 +185,6 @@ uses
 // QtWSDbCtrls,
 // QtWSDBGrids,
  QtWSDialogs,
-// QtWSDirSel,
 // QtWSEditBtn,
  QtWSExtCtrls,
 // QtWSExtDlgs,

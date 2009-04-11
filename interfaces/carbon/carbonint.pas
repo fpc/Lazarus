@@ -163,7 +163,6 @@ uses
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,
   CarbonWSDialogs,
-// CarbonWSDirSel,
 // CarbonWSEditBtn,
   CarbonWSExtCtrls,
 // CarbonWSExtDlgs,

@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls,
-  Dialogs, (*DirSel,*) ExtCtrls, ExtDlgs, Buttons,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -27,7 +27,6 @@ uses
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
   Win32WSDialogs,
-// Win32WSDirSel,
 // Win32WSEditBtn,
   Win32WSExtCtrls,
   Win32WSExtDlgs,
@@ -187,13 +186,6 @@ begin
   RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
   Result := True;
 end;
-
-// dirsel
-(*function WSRegisterDirSelDlg: Boolean;         alias : 'WSRegisterDirSelDlg';
-begin
-//  RegisterWSComponent(TDirSelDlg, TWin32WSDirSelDlg);
-  Result := False;
-end;*)
 
 // StdCtrls
 function WSRegisterScrollBar: Boolean;    alias : 'WSRegisterScrollBar';

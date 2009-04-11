@@ -271,7 +271,6 @@ Uses
 // WinCEWSDbCtrls,
 // WinCEWSDBGrids,
  WinCEWSDialogs,
-// WinCEWSDirSel,
 // WinCEWSEditBtn,
  WinCEWSExtCtrls,
 // WinCEWSExtDlgs,

@@ -266,7 +266,6 @@ uses
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
  Win32WSDialogs,
-// Win32WSDirSel,
 // Win32WSEditBtn,
  Win32WSExtCtrls,
  Win32WSExtDlgs,
