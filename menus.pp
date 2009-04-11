@@ -386,9 +386,9 @@ procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
 var
-  DesignerMenuItemClick: TNotifyEvent;
-  ActivePopupMenu: TPopupMenu;
-  OnMenuPopupHandler: TNotifyEvent;
+  DesignerMenuItemClick: TNotifyEvent = nil;
+  ActivePopupMenu: TPopupMenu = nil;
+  OnMenuPopupHandler: TNotifyEvent = nil;
 
 function NewMenu(Owner: TComponent; const AName: string;
                  const Items: array of TMenuItem): TMainMenu;
@@ -422,7 +422,7 @@ uses
 { Menu command management }
 
 var
-  CommandPool: TBits;
+  CommandPool: TBits = nil;
 
 function UniqueCommand: LongInt;
 begin
@@ -539,13 +539,6 @@ begin
   if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
   if ShortCut and scMeta <> 0 then Include(Shift,ssMeta);
 end;
-
-
-initialization
-  DesignerMenuItemClick:=nil;
-  ActivePopupMenu:=nil;
-  CommandPool := nil;
-  OnMenuPopupHandler := nil;
 
 finalization
   FreeThenNil(CommandPool);
