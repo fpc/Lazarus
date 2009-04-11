@@ -4,7 +4,7 @@ unit Win32WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   WSLCLClasses, WSFactory;
 
@@ -30,7 +30,7 @@ uses
   Win32WSGrids,          // +
   Win32WSImgList,        // +
   Win32WSMenus,          // +
-  Win32WSSpin,           // -
+  Win32WSSpin,           // +
   Win32WSStdCtrls;       // +
 
 // imglist
@@ -461,6 +461,12 @@ end;
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
   Result := False;
+end;
+
+function RegisterCustomFloatSpinEdit: Boolean; alias : 'WSRegisterCustomFloatSpinEdit';
+begin
+  RegisterWSComponent(TCustomFloatSpinEdit, TWin32WSCustomFloatSpinEdit);
+  Result := True;
 end;
 
 end.

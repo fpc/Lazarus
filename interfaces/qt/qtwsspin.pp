@@ -62,13 +62,6 @@ type
 
   end;
 
-  { TQtWSFloatSpinEdit }
-
-  TQtWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  published
-  end;
-
-
 implementation
 
 { TQtWSCustomFloatSpinEdit }
@@ -140,6 +133,5 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TCustomFloatSpinEdit, TQtWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TQtWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

@@ -4,8 +4,8 @@ unit WSFactory;
 
 interface
 uses
-  Classes, Controls, ImgList, Grids, PairSplitter,
-  WSLCLClasses, WSControls, WSImgList, WSGrids, WSPairSplitter;
+  Classes, Controls, ImgList, Grids, PairSplitter, Spin,
+  WSLCLClasses, WSControls, WSImgList, WSGrids, WSPairSplitter, WSSpin;
 
 // imglist
 procedure RegisterCustomImageList;
@@ -96,6 +96,8 @@ procedure RegisterPopupMenu;
 // PairSplitter
 procedure RegisterPairSplitterSide;
 procedure RegisterCustomPairSplitter;
+// Spin
+procedure RegisterCustomFloatSpinEdit;
 
 implementation
 uses
@@ -191,6 +193,8 @@ function WSRegisterPopupMenu: Boolean;          external name 'WSRegisterPopupMe
 // PairSplitter
 function WSRegisterPairSplitterSide: Boolean;   external name 'WSRegisterPairSplitterSide';
 function WSRegisterCustomPairSplitter: Boolean; external name 'WSRegisterCustomPairSplitter';
+// Spin
+function WSRegisterCustomFloatSpinEdit: Boolean; external name 'WSRegisterCustomFloatSpinEdit';
 
 procedure RegisterCustomImageList;
 const
@@ -998,6 +1002,16 @@ begin
   if Done then exit;
   if not WSRegisterCustomPairSplitter then
     RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
+  Done := True;
+end;
+
+procedure RegisterCustomFloatSpinEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomFloatSpinEdit then
+    RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
   Done := True;
 end;
 

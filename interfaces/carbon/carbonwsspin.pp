@@ -51,13 +51,6 @@ type
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
-  { TCarbonWSFloatSpinEdit }
-
-  TCarbonWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  published
-  end;
-
-
 implementation
 
 uses
@@ -114,6 +107,5 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TCustomFloatSpinEdit, TCarbonWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TCarbonWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.
