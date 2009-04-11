@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms,
   WSLCLClasses, WSFactory;
 
 implementation
@@ -17,28 +17,22 @@ uses
 // To get as little as possible circles,
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
-// Win32WSActnList,
   Win32WSArrow,          // +
   Win32WSButtons,        // +
   Win32WSCalendar,       // +
   Win32WSCheckLst,       // +
   Win32WSComCtrls,       // +
   Win32WSControls,       // +
-// Win32WSDbCtrls,
-// Win32WSDBGrids,
-  Win32WSDialogs,
-// Win32WSEditBtn,
-  Win32WSExtCtrls,
-  Win32WSExtDlgs,
-// Win32WSFileCtrl,
-  Win32WSForms,
-  Win32WSGrids,
-  Win32WSImgList,
-// Win32WSMaskEdit,
-  Win32WSMenus,
-  Win32WSPairSplitter,
-  Win32WSSpin,
-  Win32WSStdCtrls;
+  Win32WSDialogs,        // +
+  Win32WSExtCtrls,       // +
+  Win32WSExtDlgs,        // +
+  Win32WSForms,          // +
+  Win32WSGrids,          // -
+  Win32WSImgList,        // +
+  Win32WSMenus,          // -
+  Win32WSPairSplitter,   // -
+  Win32WSSpin,           // -
+  Win32WSStdCtrls;       // +
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -398,6 +392,36 @@ end;
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
   RegisterWSComponent(TCustomCheckListBox, TWin32WSCustomCheckListBox);
+  Result := True;
+end;
+
+// Forms
+function RegisterScrollingWinControl: Boolean; alias : 'WSRegisterScrollingWinControl';
+begin
+  RegisterWSComponent(TScrollingWinControl, TWin32WSScrollingWinControl);
+  Result := True;
+end;
+
+function RegisterScrollBox: Boolean; alias : 'WSRegisterScrollBox';
+begin
+  RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
+  Result := True;
+end;
+
+function RegisterCustomFrame: Boolean; alias : 'WSRegisterCustomFrame';
+begin
+  Result := False;
+end;
+
+function RegisterCustomForm: Boolean; alias : 'WSRegisterCustomForm';
+begin
+  RegisterWSComponent(TCustomForm, TWin32WSCustomForm);
+  Result := True;
+end;
+
+function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
+begin
+  RegisterWSComponent(THintWindow, TWin32WSHintWindow);
   Result := True;
 end;
 

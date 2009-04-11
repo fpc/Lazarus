@@ -451,22 +451,4 @@ begin
   Result := Params.Window;
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollingWinControl, TWin32WSScrollingWinControl);
-  RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TWin32WSCustomFrame);
-//  RegisterWSComponent(TFrame, TWin32WSFrame);
-  RegisterWSComponent(TCustomForm, TWin32WSCustomForm);
-//  RegisterWSComponent(TForm, TWin32WSForm);
-  RegisterWSComponent(THintWindow, TWin32WSHintWindow);
-//  RegisterWSComponent(TScreen, TWin32WSScreen);
-//  RegisterWSComponent(TApplicationProperties, TWin32WSApplicationProperties);
-////////////////////////////////////////////////////
 end.

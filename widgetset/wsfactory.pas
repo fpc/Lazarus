@@ -80,11 +80,17 @@ procedure RegisterCustomSpeedButton;
 procedure RegisterArrow;
 // CheckLst
 procedure RegisterCustomCheckListBox;
+// Forms
+procedure RegisterScrollingWinControl;
+procedure RegisterScrollBox;
+procedure RegisterCustomFrame;
+procedure RegisterCustomForm;
+procedure RegisterHintWindow;
 
 implementation
 uses
   Dialogs, ExtCtrls, ExtDlgs,
-  WSDialogs, WSExtCtrls,WSExtDlgs;
+  WSDialogs, WSExtCtrls, WSExtDlgs;
 
 // imglist
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
@@ -159,6 +165,13 @@ function WSRegisterCustomSpeedButton: Boolean; external name 'WSRegisterCustomSp
 function WSRegisterArrow: Boolean;             external name 'WSRegisterArrow';
 // CheckLst
 function WSRegisterCustomCheckListBox: Boolean; external name 'WSRegisterCustomCheckListBox';
+// Forms
+function WSRegisterScrollingWinControl: Boolean;external name 'WSRegisterScrollingWinControl';
+function WSRegisterScrollBox: Boolean;          external name 'WSRegisterScrollBox';
+function WSRegisterCustomFrame: Boolean;        external name 'WSRegisterCustomFrame';
+function WSRegisterCustomForm: Boolean;         external name 'WSRegisterCustomForm';
+function WSRegisterHintWindow: Boolean;         external name 'WSRegisterHintWindow';
+
 
 procedure RegisterCustomImageList;
 const
@@ -836,6 +849,61 @@ begin
   WSRegisterCustomCheckListBox;
 //  if not WSRegisterCustomCheckListBox then
 //    RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
+  Done := True;
+end;
+
+procedure RegisterScrollingWinControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterScrollingWinControl;
+//  if not WSRegisterScrollingWinControl then
+//    RegisterWSComponent(TScrollingWinControl, TWSScrollingWinControl);
+  Done := True;
+end;
+
+procedure RegisterScrollBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterScrollBox;
+//  if not WSRegisterScrollBox then
+//    RegisterWSComponent(TScrollBox, TWSScrollBox);
+  Done := True;
+end;
+
+procedure RegisterCustomFrame;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomFrame;
+//  if not WSRegisterCustomFrame then
+//    RegisterWSComponent(TCustomFrame, TWSCustomFrame);
+  Done := True;
+end;
+
+procedure RegisterCustomForm;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomForm;
+//  if not WSRegisterCustomForm then
+//    RegisterWSComponent(TCustomForm, TWSCustomForm);
+  Done := True;
+end;
+
+procedure RegisterHintWindow;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterHintWindow;
+//  if not WSRegisterHintWindow then
+//    RegisterWSComponent(THintWindow, TWSHintWindow);
   Done := True;
 end;
 

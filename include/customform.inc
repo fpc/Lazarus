@@ -630,6 +630,12 @@ begin
   Result:=FindNextControl(nil, True, True, False)
 end;
 
+class procedure TCustomForm.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomForm;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.DefocusControl
   Params:   Control: the control which is to be defocused

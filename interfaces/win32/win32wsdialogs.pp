@@ -1021,10 +1021,8 @@ begin
 end;
 
 initialization
-
-  if (Win32MajorVersion=4) then
-    OpenFileNameSize := sizeof(OPENFILENAME_NT4)
+  if (Win32MajorVersion = 4) then
+    OpenFileNameSize := SizeOf(OPENFILENAME_NT4)
   else
-    OpenFileNameSize:=sizeof(OPENFILENAME);
-
+    OpenFileNameSize := SizeOf(OPENFILENAME);
 end.

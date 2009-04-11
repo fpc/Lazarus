@@ -158,6 +158,7 @@ type
     procedure SetVertScrollBar(Value: TControlScrollBar);
     function StoreScrollBars : Boolean;
   protected
+    class procedure WSRegisterClass; override;
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default true;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
@@ -188,6 +189,8 @@ type
   { TScrollBox }
 
   TScrollBox = class(TScrollingWinControl)
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -257,6 +260,7 @@ type
     procedure WriteDesignLeft(Writer: TWriter);
     procedure WriteDesignTop(Writer: TWriter);
   protected
+    class procedure WSRegisterClass; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -463,6 +467,7 @@ type
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
+    class procedure WSRegisterClass; override;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure DoShowWindow; dynamic;
     procedure Activate; dynamic;
@@ -744,6 +749,7 @@ type
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
   protected
+    class procedure WSRegisterClass; override;
     procedure DoShowWindow; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1477,7 +1483,7 @@ implementation
 {$endif}
 
 uses
-  WSForms; // Widgetset uses circle is allowed
+  WSForms, WSFactory; // Widgetset uses circle is allowed
 
 var
   FocusCount: Integer=0;
