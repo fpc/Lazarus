@@ -73,6 +73,7 @@ components/tpairsplitter.png
 components/tpanel.png
 components/tpicture.png
 components/tpopupmenu.png
+components/tpopupnotifier.png
 components/tprocess.png
 components/tasyncprocess.png
 components/tprocessutf8.png
