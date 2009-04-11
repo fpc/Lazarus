@@ -10,28 +10,21 @@ uses
 
 implementation
 uses
-  WSComCtrls,
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-  Win32WSArrow,          // +
-  Win32WSButtons,        // +
-  Win32WSCalendar,       // +
-  Win32WSCheckLst,       // +
-  Win32WSComCtrls,       // +
-  Win32WSControls,       // +
-  Win32WSDialogs,        // +
-  Win32WSExtCtrls,       // +
-  Win32WSExtDlgs,        // +
-  Win32WSForms,          // +
-  Win32WSGrids,          // +
-  Win32WSImgList,        // +
-  Win32WSMenus,          // +
-  Win32WSSpin,           // +
-  Win32WSStdCtrls;       // +
+  Win32WSArrow,
+  Win32WSButtons,
+  Win32WSCalendar,
+  Win32WSCheckLst,
+  Win32WSComCtrls,
+  Win32WSControls,
+  Win32WSDialogs,
+  Win32WSExtCtrls,
+  Win32WSExtDlgs,
+  Win32WSForms,
+  Win32WSGrids,
+  Win32WSImgList,
+  Win32WSMenus,
+  Win32WSSpin,
+  Win32WSStdCtrls;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -132,25 +125,25 @@ begin
 end;
 
 // dialogs
-function RegisterCommonDialog: Boolean;      alias : 'WSRegisterCommonDialog';
+function RegisterCommonDialog: Boolean; alias : 'WSRegisterCommonDialog';
 begin
   RegisterWSComponent(TCommonDialog, TWin32WSCommonDialog);
   Result := True;
 end;
 
-function RegisterFileDialog: Boolean;        alias : 'WSRegisterFileDialog';
+function RegisterFileDialog: Boolean; alias : 'WSRegisterFileDialog';
 begin
 //  RegisterWSComponent(TFileDialog, TWin32WSFileDialog);
   Result := False;
 end;
 
-function RegisterOpenDialog: Boolean;        alias : 'WSRegisterOpenDialog';
+function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
 begin
   RegisterWSComponent(TOpenDialog, TWin32WSOpenDialog);
   Result := True;
 end;
 
-function RegisterSaveDialog: Boolean;        alias : 'WSRegisterSaveDialog';
+function RegisterSaveDialog: Boolean; alias : 'WSRegisterSaveDialog';
 begin
   RegisterWSComponent(TSaveDialog, TWin32WSSaveDialog);
   Result := True;
@@ -162,146 +155,146 @@ begin
   Result := True;
 end;
 
-function RegisterColorDialog: Boolean;       alias : 'WSRegisterColorDialog';
+function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';
 begin
   RegisterWSComponent(TColorDialog, TWin32WSColorDialog);
   Result := True;
 end;
 
-function RegisterColorButton: Boolean;       alias : 'WSRegisterColorButton';
+function RegisterColorButton: Boolean; alias : 'WSRegisterColorButton';
 begin
 //  RegisterWSComponent(TColorButton, TWin32WSColorButton);
   Result := False;
 end;
 
-function RegisterFontDialog: Boolean;        alias : 'WSRegisterFontDialog';
+function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
   RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
   Result := True;
 end;
 
 // StdCtrls
-function RegisterCustomScrollBar: Boolean;    alias : 'WSRegisterCustomScrollBar';
+function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
   RegisterWSComponent(TCustomScrollBar, TWin32WSScrollBar);
   Result := True;
 end;
 
-function RegisterCustomGroupBox: Boolean;    alias : 'WSRegisterCustomGroupBox';
+function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
 begin
   RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
   Result := True;
 end;
 
-function RegisterCustomComboBox: Boolean;    alias : 'WSRegisterCustomComboBox';
+function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
   RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
   Result := True;
 end;
 
-function RegisterCustomListBox: Boolean;    alias : 'WSRegisterCustomListBox';
+function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
   RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
   Result := True;
 end;
 
-function RegisterCustomEdit: Boolean;    alias : 'WSRegisterCustomEdit';
+function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
   RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
   Result := True;
 end;
 
-function RegisterCustomMemo: Boolean;    alias : 'WSRegisterCustomMemo';
+function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
   RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
   Result := True;
 end;
 
-function RegisterButtonControl: Boolean;    alias : 'WSRegisterButtonControl';
+function RegisterButtonControl: Boolean; alias : 'WSRegisterButtonControl';
 begin
   RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
   Result := True;
 end;
 
-function RegisterCustomButton: Boolean;    alias : 'WSRegisterCustomButton';
+function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
   RegisterWSComponent(TCustomButton, TWin32WSButton);
   Result := True;
 end;
 
-function RegisterCustomCheckBox: Boolean;    alias : 'WSRegisterCustomCheckBox';
+function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
   Result := True;
 end;
 
-function RegisterToggleBox: Boolean;    alias : 'WSRegisterToggleBox';
+function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
   RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
   Result := True;
 end;
 
-function RegisterRadioButton: Boolean;    alias : 'WSRegisterRadioButton';
+function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
   RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
   Result := True;
 end;
 
-function RegisterCustomStaticText: Boolean;    alias : 'WSRegisterCustomStaticText';
+function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
   RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
   Result := True;
 end;
 
-function RegisterCustomLabel: Boolean;    alias : 'WSRegisterCustomLabel';
+function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
 begin
   Result := False;
 end;
 
 // extctrls
-function RegisterCustomPage: Boolean;        alias : 'WSRegisterCustomPage';
+function RegisterCustomPage: Boolean; alias : 'WSRegisterCustomPage';
 begin
   RegisterWSComponent(TCustomPage, TWin32WSCustomPage);
   Result := True;
 end;
 
-function RegisterCustomNotebook: Boolean;    alias : 'WSRegisterCustomNotebook';
+function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
   RegisterWSComponent(TCustomNotebook, TWin32WSCustomNotebook);
   Result := True;
 end;
 
-function RegisterShape: Boolean;             alias : 'WSRegisterShape';
+function RegisterShape: Boolean; alias : 'WSRegisterShape';
 begin
   Result := False;
 end;
 
-function RegisterCustomSplitter: Boolean;    alias : 'WSRegisterCustomSplitter';
+function RegisterCustomSplitter: Boolean; alias : 'WSRegisterCustomSplitter';
 begin
   Result := False;
 end;
 
-function RegisterPaintBox: Boolean;          alias : 'WSRegisterPaintBox';
+function RegisterPaintBox: Boolean; alias : 'WSRegisterPaintBox';
 begin
   Result := False;
 end;
 
-function RegisterCustomImage: Boolean;       alias : 'WSRegisterCustomImage';
+function RegisterCustomImage: Boolean; alias : 'WSRegisterCustomImage';
 begin
   Result := False;
 end;
 
-function RegisterBevel: Boolean;             alias : 'WSRegisterBevel';
+function RegisterBevel: Boolean; alias : 'WSRegisterBevel';
 begin
   Result := False;
 end;
 
-function RegisterCustomRadioGroup: Boolean;  alias : 'WSRegisterCustomRadioGroup';
+function RegisterCustomRadioGroup: Boolean; alias : 'WSRegisterCustomRadioGroup';
 begin
   Result := False;
 end;
 
-function RegisterCustomCheckGroup: Boolean;  alias : 'WSRegisterCustomCheckGroup';
+function RegisterCustomCheckGroup: Boolean; alias : 'WSRegisterCustomCheckGroup';
 begin
   Result := False;
 end;
@@ -311,13 +304,13 @@ begin
   Result := False;
 end;
 
-function RegisterCustomPanel: Boolean;       alias : 'WSRegisterCustomPanel';
+function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
   RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);
   Result := True;
 end;
 
-function RegisterCustomTrayIcon: Boolean;    alias : 'WSRegisterCustomTrayIcon';
+function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
   RegisterWSComponent(TCustomTrayIcon, TWin32WSCustomTrayIcon);
   Result := True;
@@ -347,12 +340,12 @@ begin
   Result := True;
 end;
 
-function RegisterCalculatorDialog: Boolean;  alias : 'WSRegisterCalculatorDialog';
+function RegisterCalculatorDialog: Boolean; alias : 'WSRegisterCalculatorDialog';
 begin
   Result := False;
 end;
 
-function RegisterCalculatorForm: Boolean;    alias : 'WSRegisterCalculatorForm';
+function RegisterCalculatorForm: Boolean; alias : 'WSRegisterCalculatorForm';
 begin
   Result := False;
 end;
@@ -363,13 +356,13 @@ begin
   Result := False;
 end;*)
 
-function RegisterCalendarDialog: Boolean;    alias : 'WSRegisterCalendarDialog';
+function RegisterCalendarDialog: Boolean; alias : 'WSRegisterCalendarDialog';
 begin
   Result := False;
 end;
 
 // Buttons
-function RegisterCustomBitBtn: Boolean;      alias : 'WSRegisterCustomBitBtn';
+function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
   RegisterWSComponent(TCustomBitBtn, TWin32WSBitBtn);
   Result := True;
