@@ -48,6 +48,7 @@ type
     fCreatedBySplitter: boolean;
     function GetSplitter: TCustomPairSplitter;
   protected
+    class procedure WSRegisterClass; override;
     procedure SetParent(AParent: TWinControl); override;
     procedure WMPaint(var PaintMessage: TLMPaint); message LM_PAINT;
     procedure Paint; virtual;
@@ -99,6 +100,7 @@ type
     procedure AddSide(ASide: TPairSplitterSide);
     procedure RemoveSide(ASide: TPairSplitterSide);
   protected
+    class procedure WSRegisterClass; override;
     function GetCursor: TCursor; override;
     procedure SetCursor(Value: TCursor); override;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -146,7 +148,7 @@ procedure Register;
 implementation
 
 uses
-  WSPairSplitter;
+  WSPairSplitter, WSFactory;
   
 procedure Register;
 begin
@@ -162,6 +164,12 @@ begin
     Result:=TCustomPairSplitter(Parent)
   else
     Result:=nil;
+end;
+
+class procedure TPairSplitterSide.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPairSplitterSide;
 end;
 
 procedure TPairSplitterSide.SetParent(AParent: TWinControl);
@@ -307,6 +315,12 @@ begin
   // if the user deletes a side at designtime, autocreate a new one
   if (csDesigning in ComponentState) then
     CreateSides;
+end;
+
+class procedure TCustomPairSplitter.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomPairSplitter;
 end;
 
 function TCustomPairSplitter.GetCursor: TCursor;

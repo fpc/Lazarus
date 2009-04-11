@@ -30,7 +30,6 @@ uses
   Win32WSGrids,          // +
   Win32WSImgList,        // +
   Win32WSMenus,          // +
-  Win32WSPairSplitter,   // -
   Win32WSSpin,           // -
   Win32WSStdCtrls;       // +
 
@@ -452,6 +451,16 @@ function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
   RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
   Result := True;
+end;
+
+function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
+begin
+  Result := False;
+end;
+
+function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
+begin
+  Result := False;
 end;
 
 end.

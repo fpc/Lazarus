@@ -66,13 +66,6 @@ type
   end;
   TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
 
-  { TWSPairSplitter }
-
-  TWSPairSplitter = class(TWSCustomPairSplitter)
-  published
-  end;
-
-
 implementation
 uses
   WSProc;
@@ -198,13 +191,4 @@ begin
   end;
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-//  RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
-  RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TWSPairSplitter);
-////////////////////////////////////////////////////
 end.

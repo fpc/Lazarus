@@ -53,12 +53,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-  { TCarbonWSPairSplitter }
-
-  TCarbonWSPairSplitter = class(TWSPairSplitter)
-  published
-  end;
-
 
 implementation
 
@@ -110,6 +104,4 @@ initialization
 ////////////////////////////////////////////////////
   RegisterWSComponent(TPairSplitterSide, TCarbonWSPairSplitterSide);
   RegisterWSComponent(TCustomPairSplitter, TCarbonWSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TCarbonWSPairSplitter);
-////////////////////////////////////////////////////
 end.

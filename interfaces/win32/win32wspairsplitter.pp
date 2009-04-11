@@ -49,24 +49,6 @@ type
   published
   end;
 
-  { TWin32WSPairSplitter }
-
-  TWin32WSPairSplitter = class(TWSPairSplitter)
-  published
-  end;
-
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TPairSplitterSide, TWin32WSPairSplitterSide);
-//  RegisterWSComponent(TCustomPairSplitter, TWin32WSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TWin32WSPairSplitter);
-////////////////////////////////////////////////////
 end.

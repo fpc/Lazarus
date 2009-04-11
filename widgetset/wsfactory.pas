@@ -4,8 +4,8 @@ unit WSFactory;
 
 interface
 uses
-  Classes, Controls, ImgList, Grids,
-  WSLCLClasses, WSControls, WSImgList, WSGrids;
+  Classes, Controls, ImgList, Grids, PairSplitter,
+  WSLCLClasses, WSControls, WSImgList, WSGrids, WSPairSplitter;
 
 // imglist
 procedure RegisterCustomImageList;
@@ -93,6 +93,9 @@ procedure RegisterMenuItem;
 procedure RegisterMenu;
 procedure RegisterMainMenu;
 procedure RegisterPopupMenu;
+// PairSplitter
+procedure RegisterPairSplitterSide;
+procedure RegisterCustomPairSplitter;
 
 implementation
 uses
@@ -185,6 +188,9 @@ function WSRegisterMenuItem: Boolean;           external name 'WSRegisterMenuIte
 function WSRegisterMenu: Boolean;               external name 'WSRegisterMenu';
 function WSRegisterMainMenu: Boolean;           external name 'WSRegisterMainMenu';
 function WSRegisterPopupMenu: Boolean;          external name 'WSRegisterPopupMenu';
+// PairSplitter
+function WSRegisterPairSplitterSide: Boolean;   external name 'WSRegisterPairSplitterSide';
+function WSRegisterCustomPairSplitter: Boolean; external name 'WSRegisterCustomPairSplitter';
 
 procedure RegisterCustomImageList;
 const
@@ -971,6 +977,27 @@ begin
   WSRegisterPopupMenu;
 //  if not WSRegisterPopupMenu then
 //    RegisterWSComponent(TPopupMenu, TWSPopupMenu);
+  Done := True;
+end;
+
+procedure RegisterPairSplitterSide;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPairSplitterSide;
+//  if not WSRegisterPairSplitterSide then
+//    RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
+  Done := True;
+end;
+
+procedure RegisterCustomPairSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomPairSplitter then
+    RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
   Done := True;
 end;
 
