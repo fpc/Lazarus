@@ -469,4 +469,9 @@ begin
   Result := True;
 end;
 
+function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
+begin
+  Result := False;
+end;
+
 end.

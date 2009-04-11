@@ -98,6 +98,8 @@ procedure RegisterPairSplitterSide;
 procedure RegisterCustomPairSplitter;
 // Spin
 procedure RegisterCustomFloatSpinEdit;
+// RubberBand
+procedure RegisterCustomRubberBand;
 
 implementation
 uses
@@ -194,7 +196,9 @@ function WSRegisterPopupMenu: Boolean;          external name 'WSRegisterPopupMe
 function WSRegisterPairSplitterSide: Boolean;   external name 'WSRegisterPairSplitterSide';
 function WSRegisterCustomPairSplitter: Boolean; external name 'WSRegisterCustomPairSplitter';
 // Spin
-function WSRegisterCustomFloatSpinEdit: Boolean; external name 'WSRegisterCustomFloatSpinEdit';
+function WSRegisterCustomFloatSpinEdit: Boolean;external name 'WSRegisterCustomFloatSpinEdit';
+// RubberBand
+function WSRegisterCustomRubberBand: Boolean;   external name 'WSRegisterCustomRubberBand';
 
 procedure RegisterCustomImageList;
 const
@@ -1012,6 +1016,17 @@ begin
   if Done then exit;
   if not WSRegisterCustomFloatSpinEdit then
     RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
+  Done := True;
+end;
+
+procedure RegisterCustomRubberBand;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomRubberBand;
+//  if not WSRegisterCustomRubberBand then
+//    RegisterWSComponent(TCustomRubberBand, TWSCustomRubberBand);
   Done := True;
 end;
 
