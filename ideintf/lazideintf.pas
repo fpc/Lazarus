@@ -122,7 +122,10 @@ type
     lihtOnSavingAll, // called before IDE saves everything
     lihtOnSavedAll,  // called after IDE saved everything
     lihtOnProjectOpened,// called after IDE opened a project
-    lihtOnProjectClose  // called before IDE closes a project
+    lihtOnProjectClose, // called before IDE closes a project
+    lihtOnProjectBuilding, // called before IDE builds the project
+    lihtOnProjectDependenciesCompiling, // called before IDE compiles dependencies of project
+    lihtOnProjectDependenciesCompiled // called after IDE compiled dependencies of project
     );
     
   { TLazIDEInterface }
@@ -253,6 +256,21 @@ type
                           AsLast: boolean = false);
     procedure RemoveHandlerOnProjectClose(
                          const OnProjectCloseEvent: TLazProjectChangedFunction);
+    procedure AddHandlerOnProjectBuilding(
+                                const OnProjBuildingEvent: TModalResultFunction;
+                                AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectBuilding(
+                                const OnProjBuildingEvent: TModalResultFunction);
+    procedure AddHandlerOnProjectDependenciesCompiling(
+                   const OnProjDependenciesCompilingEvent: TModalResultFunction;
+                   AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectDependenciesCompiling(
+                  const OnProjDependenciesCompilingEvent: TModalResultFunction);
+    procedure AddHandlerOnProjectDependenciesCompiled(
+                    const OnProjDependenciesCompiledEvent: TModalResultFunction;
+                    AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectDependenciesCompiled(
+                   const OnProjDependenciesCompiledEvent: TModalResultFunction);
   end;
   
 var
@@ -395,6 +413,47 @@ procedure TLazIDEInterface.RemoveHandlerOnProjectClose(
   const OnProjectCloseEvent: TLazProjectChangedFunction);
 begin
   RemoveHandler(lihtOnProjectClose,TMethod(OnProjectCloseEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectBuilding(
+  const OnProjBuildingEvent: TModalResultFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnProjectBuilding,TMethod(OnProjBuildingEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectBuilding(
+  const OnProjBuildingEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtOnProjectBuilding,TMethod(OnProjBuildingEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectDependenciesCompiling(
+  const OnProjDependenciesCompilingEvent: TModalResultFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnProjectDependenciesCompiling,
+             TMethod(OnProjDependenciesCompilingEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectDependenciesCompiling(
+  const OnProjDependenciesCompilingEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtOnProjectDependenciesCompiling,
+                TMethod(OnProjDependenciesCompilingEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectDependenciesCompiled(
+  const OnProjDependenciesCompiledEvent: TModalResultFunction; AsLast: boolean
+    );
+begin
+  AddHandler(lihtOnProjectDependenciesCompiled,
+             TMethod(OnProjDependenciesCompiledEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectDependenciesCompiled(
+  const OnProjDependenciesCompiledEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtOnProjectDependenciesCompiled,
+                TMethod(OnProjDependenciesCompiledEvent));
 end;
 
 initialization

@@ -9347,8 +9347,7 @@ var
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
-    Result:=mrCancel;
-    exit;
+    exit(mrCancel);
   end;
 
   Result:=PrepareForCompile;
@@ -9373,6 +9372,10 @@ begin
     SourceNotebook.ClearErrorLines;
     DoArrangeSourceEditorAndMessageView(false);
 
+    // now building can start: call handler
+    Result:=DoCallModalFunctionHandler(lihtOnProjectBuilding);
+    if Result<>mrOk then exit;
+
     // get main source filename
     if not Project1.IsVirtual then begin
       WorkingDir:=Project1.ProjectDirectory;
@@ -9384,6 +9387,8 @@ begin
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
+      Result:=DoCallModalFunctionHandler(lihtOnProjectDependenciesCompiling);
+      if Result<>mrOk then exit;
       PkgFlags:=[pcfDoNotSaveEditorFiles];
       if pbfCompileDependenciesClean in Flags then
         Include(PkgFlags,pcfCompileDependenciesClean);
@@ -9393,6 +9398,8 @@ begin
         PutExitInfoBuilder(lisInfoBuildError);
         exit;
       end;
+      Result:=DoCallModalFunctionHandler(lihtOnProjectDependenciesCompiled);
+      if Result<>mrOk then exit;
     end;
 
     CompilerFilename:=Project1.GetCompilerFilename;
