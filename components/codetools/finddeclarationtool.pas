@@ -3916,13 +3916,14 @@ end;
 function TFindDeclarationTool.FindUnitReferences(UnitCode: TCodeBuffer;
   SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 var
-  OldUnitName: String;
+  UnitName, UpperUnitName: String;
 
-  function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
+  function CheckUsesSection(UsesNode: TCodeTreeNode; out Found: boolean): boolean;
   var
     ReferencePos: TCodeXYPosition;
   begin
     Result:=true;
+    Found:=false;
     if UsesNode=nil then exit;
     //DebugLn(['CheckUsesSection ']);
     MoveCursorToNodeStart(UsesNode);
@@ -3936,10 +3937,11 @@ var
       if CurPos.StartPos>SrcLen then break;
       if AtomIsChar(';') then break;
       AtomIsIdentifier(true);
-      //DebugLn(['CheckUsesSection ',GetAtom,' ',OldUnitName]);
-      if AtomIs(OldUnitName) then begin
+      //DebugLn(['CheckUsesSection ',GetAtom,' ',UnitName]);
+      if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
           DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
+          Found:=true;
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
       end;
@@ -3955,24 +3957,57 @@ var
     until (CurPos.StartPos>SrcLen);
   end;
 
+  function CheckSource(StartPos: integer): boolean;
+  var
+    ReferencePos: TCodeXYPosition;
+  begin
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if UpAtomIs(UpperUnitName)
+      and not LastAtomIs(0,'.') then begin
+        if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
+          DebugLn(['CheckSource found: ',DbgsCXY(ReferencePos)]);
+          AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
+        end;
+      end;
+    until CurPos.StartPos>SrcLen;
+    Result:=true;
+  end;
+
 var
   InterfaceUsesNode: TCodeTreeNode;
   ImplementationUsesNode: TCodeTreeNode;
+  Found: boolean;
+  StartPos: Integer;
 begin
   Result:=false;
   debugln('FindUnitReferences UnitCode=',UnitCode.Filename,' SkipComments=',dbgs(SkipComments),' ',MainFilename);
 
-  OldUnitName:=ExtractFileNameOnly(UnitCode.Filename);
+  UnitName:=ExtractFileNameOnly(UnitCode.Filename);
+  UpperUnitName:=UpperCaseStr(UnitName);
   ListOfPCodeXYPosition:=nil;
   ActivateGlobalWriteLock;
   try
     BuildTree(false);
 
     InterfaceUsesNode:=FindMainUsesSection;
-    if not CheckUsesSection(InterfaceUsesNode) then exit;
+    if not CheckUsesSection(InterfaceUsesNode,Found) then exit;
 
-    ImplementationUsesNode:=FindImplementationUsesSection;
-    if not CheckUsesSection(ImplementationUsesNode) then exit;
+    StartPos:=-1;
+    if Found then begin
+      StartPos:=InterfaceUsesNode.EndPos;
+    end else begin
+      ImplementationUsesNode:=FindImplementationUsesSection;
+      if not CheckUsesSection(ImplementationUsesNode,Found) then exit;
+      if Found then
+        StartPos:=ImplementationUsesNode.EndPos;
+    end;
+
+    // find unit reference in source
+    if StartPos>0 then begin
+      if not CheckSource(StartPos) then exit;
+    end;
   finally
     DeactivateGlobalWriteLock;
   end;
