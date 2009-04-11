@@ -90,6 +90,7 @@ type
     procedure CNCtlColorScrollBar(var Message: TLMessage); message CN_CTLCOLORSCROLLBAR;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Change; dynamic;
@@ -115,8 +116,6 @@ type
   { TScrollBar }
 
   TScrollBar = class(TCustomScrollBar)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -171,8 +170,6 @@ type
   { TGroupBox }
 
   TGroupBox = class(TCustomGroupBox)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -401,8 +398,6 @@ type
   { TComboBox }
 
   TComboBox = class(TCustomComboBox)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -614,8 +609,6 @@ type
   { TListBox }
 
   TListBox = class(TCustomListBox)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -833,8 +826,6 @@ type
   { TEdit }
 
   TEdit = class(TCustomEdit)
-  protected
-    class procedure WSRegisterClass; override;
   public
     property AutoSelected;
   published
@@ -895,8 +886,6 @@ type
   { TMemo }
 
   TMemo = class(TCustomMemo)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -987,8 +976,6 @@ type
   { TStaticText }
 
   TStaticText = class(TCustomStaticText)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1211,8 +1198,6 @@ type
   { TCheckBox }
 
   TCheckBox = class(TCustomCheckBox)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Action;
     property Align;
@@ -1376,6 +1361,7 @@ type
     procedure SetAlignment(Value: TAlignment);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     function  CanTab: boolean; override;
     procedure DoMeasureTextPosition(var TextTop: integer;
       var TextLeft: integer); virtual;
@@ -1428,8 +1414,6 @@ type
   { TLabel }
 
   TLabel = class(TCustomLabel)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1529,78 +1513,6 @@ end;
 {$I togglebox.inc}
 
 {$I customstatictext.inc}
-
-{ TScrollBar }
-
-class procedure TScrollBar.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterScrollBar;
-end;
-
-{ TGroupBox }
-
-class procedure TGroupBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterGroupBox;
-end;
-
-{ TComboBox }
-
-class procedure TComboBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterComboBox;
-end;
-
-{ TListBox }
-
-class procedure TListBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterListBox;
-end;
-
-{ TEdit }
-
-class procedure TEdit.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterEdit;
-end;
-
-{ TMemo }
-
-class procedure TMemo.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterMemo;
-end;
-
-{ TCheckBox }
-
-class procedure TCheckBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterCheckBox;
-end;
-
-{ TStaticText }
-
-class procedure TStaticText.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterStaticText;
-end;
-
-{ TLabel }
-
-class procedure TLabel.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterLabel;
-end;
 
 end.
 

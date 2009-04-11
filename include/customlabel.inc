@@ -477,6 +477,12 @@ begin
   Invalidate;
 end;
 
+class procedure TCustomLabel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomLabel;
+end;
+
  // included by stdctrls.pp
 
 

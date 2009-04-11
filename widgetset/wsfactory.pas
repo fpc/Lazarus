@@ -38,46 +38,31 @@ procedure RegisterColorDialog;
 procedure RegisterColorButton;
 procedure RegisterFontDialog;
 // StdCtrls
-procedure RegisterScrollBar;
+procedure RegisterCustomScrollBar;
 procedure RegisterCustomGroupBox;
-procedure RegisterGroupBox;
 procedure RegisterCustomComboBox;
-procedure RegisterComboBox;
 procedure RegisterCustomListBox;
-procedure RegisterListBox;
 procedure RegisterCustomEdit;
 procedure RegisterCustomMemo;
-procedure RegisterEdit;
-procedure RegisterMemo;
 procedure RegisterButtonControl;
 procedure RegisterCustomButton;
 procedure RegisterCustomCheckBox;
-procedure RegisterCheckBox;
 procedure RegisterToggleBox;
 procedure RegisterRadioButton;
 procedure RegisterCustomStaticText;
-procedure RegisterStaticText;
-procedure RegisterLabel;
+procedure RegisterCustomLabel;
 // extctrls
 procedure RegisterCustomPage;
 procedure RegisterCustomNotebook;
-procedure RegisterPage;
-procedure RegisterNotebook;
 procedure RegisterShape;
 procedure RegisterCustomSplitter;
-procedure RegisterSplitter;
 procedure RegisterPaintBox;
 procedure RegisterCustomImage;
-procedure RegisterImage;
 procedure RegisterBevel;
 procedure RegisterCustomRadioGroup;
-procedure RegisterRadioGroup;
 procedure RegisterCustomCheckGroup;
-procedure RegisterCheckGroup;
 procedure RegisterCustomLabeledEdit;
-procedure RegisterLabeledEdit;
 procedure RegisterCustomPanel;
-procedure RegisterPanel;
 procedure RegisterCustomTrayIcon;
 //ExtDlgs
 procedure RegisterPreviewFileControl;
@@ -130,46 +115,31 @@ function WSRegisterColorDialog: Boolean;       external name 'WSRegisterColorDia
 function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorButton';
 function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
 // StdCtrls
-function WSRegisterScrollBar: Boolean;         external name 'WSRegisterScrollBar';
+function WSRegisterCustomScrollBar: Boolean;   external name 'WSRegisterCustomScrollBar';
 function WSRegisterCustomGroupBox: Boolean;    external name 'WSRegisterCustomGroupBox';
-function WSRegisterGroupBox: Boolean;          external name 'WSRegisterGroupBox';
 function WSRegisterCustomComboBox: Boolean;    external name 'WSRegisterCustomComboBox';
-function WSRegisterComboBox: Boolean;          external name 'WSRegisterComboBox';
 function WSRegisterCustomListBox: Boolean;     external name 'WSRegisterCustomListBox';
-function WSRegisterListBox: Boolean;           external name 'WSRegisterListBox';
 function WSRegisterCustomEdit: Boolean;        external name 'WSRegisterCustomEdit';
 function WSRegisterCustomMemo: Boolean;        external name 'WSRegisterCustomMemo';
-function WSRegisterEdit: Boolean;              external name 'WSRegisterEdit';
-function WSRegisterMemo: Boolean;              external name 'WSRegisterMemo';
 function WSRegisterButtonControl: Boolean;     external name 'WSRegisterButtonControl';
 function WSRegisterCustomButton: Boolean;      external name 'WSRegisterCustomButton';
 function WSRegisterCustomCheckBox: Boolean;    external name 'WSRegisterCustomCheckBox';
-function WSRegisterCheckBox: Boolean;          external name 'WSRegisterCheckBox';
 function WSRegisterToggleBox: Boolean;         external name 'WSRegisterToggleBox';
 function WSRegisterRadioButton: Boolean;       external name 'WSRegisterRadioButton';
 function WSRegisterCustomStaticText: Boolean;  external name 'WSRegisterCustomStaticText';
-function WSRegisterStaticText: Boolean;        external name 'WSRegisterStaticText';
-function WSRegisterLabel: Boolean;             external name 'WSRegisterLabel';
+function WSRegisterCustomLabel: Boolean;       external name 'WSRegisterCustomLabel';
 // extctrls
 function WSRegisterCustomPage: Boolean;        external name 'WSRegisterCustomPage';
 function WSRegisterCustomNotebook: Boolean;    external name 'WSRegisterCustomNotebook';
-function WSRegisterPage: Boolean;              external name 'WSRegisterPage';
-function WSRegisterNotebook: Boolean;          external name 'WSRegisterNotebook';
 function WSRegisterShape: Boolean;             external name 'WSRegisterShape';
 function WSRegisterCustomSplitter: Boolean;    external name 'WSRegisterCustomSplitter';
-function WSRegisterSplitter: Boolean;          external name 'WSRegisterSplitter';
 function WSRegisterPaintBox: Boolean;          external name 'WSRegisterPaintBox';
 function WSRegisterCustomImage: Boolean;       external name 'WSRegisterCustomImage';
-function WSRegisterImage: Boolean;             external name 'WSRegisterImage';
 function WSRegisterBevel: Boolean;             external name 'WSRegisterBevel';
 function WSRegisterCustomRadioGroup: Boolean;  external name 'WSRegisterCustomRadioGroup';
-function WSRegisterRadioGroup: Boolean;        external name 'WSRegisterRadioGroup';
 function WSRegisterCustomCheckGroup: Boolean;  external name 'WSRegisterCustomCheckGroup';
-function WSRegisterCheckGroup: Boolean;        external name 'WSRegisterCheckGroup';
 function WSRegisterCustomLabeledEdit: Boolean; external name 'WSRegisterCustomLabeledEdit';
-function WSRegisterLabeledEdit: Boolean;       external name 'WSRegisterLabeledEdit';
 function WSRegisterCustomPanel: Boolean;       external name 'WSRegisterCustomPanel';
-function WSRegisterPanel: Boolean;             external name 'WSRegisterPanel';
 function WSRegisterCustomTrayIcon: Boolean;    external name 'WSRegisterCustomTrayIcon';
 //ExtDlgs
 function WSRegisterPreviewFileControl: Boolean; external name 'WSRegisterPreviewFileControl';
@@ -458,14 +428,14 @@ begin
 end;
 
 // SdtCtrls
-procedure RegisterScrollBar;
+procedure RegisterCustomScrollBar;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterScrollBar;
-//  if not WSRegisterScrollBar then
-//    RegisterWSComponent(TScrollBar, TWSScrollBar);
+  WSRegisterCustomScrollBar;
+//  if not WSRegisterCustomScrollBar then
+//    RegisterWSComponent(TCustomScrollBar, TWSCustomScrollBar);
   Done := True;
 end;
 
@@ -480,17 +450,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterGroupBox;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterGroupBox;
-//  if not WSRegisterGroupBox then
-//    RegisterWSComponent(TGroupBox, TWSGroupBox);
-  Done := True;
-end;
-
 procedure RegisterCustomComboBox;
 const
   Done: Boolean = False;
@@ -502,17 +461,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterComboBox;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterComboBox;
-//  if not WSRegisterComboBox then
-//    RegisterWSComponent(TComboBox, TWSComboBox);
-  Done := True;
-end;
-
 procedure RegisterCustomListBox;
 const
   Done: Boolean = False;
@@ -521,17 +469,6 @@ begin
   WSRegisterCustomListBox;
 //  if not WSRegisterCustomListBox then
 //    RegisterWSComponent(TCustomListBox, TWSCustomListBox);
-  Done := True;
-end;
-
-procedure RegisterListBox;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterListBox;
-//  if not WSRegisterListBox then
-//    RegisterWSComponent(TListBox, TWSListBox);
   Done := True;
 end;
 
@@ -554,28 +491,6 @@ begin
   WSRegisterCustomMemo;
 //  if not WSRegisterCustomMemo then
 //    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
-  Done := True;
-end;
-
-procedure RegisterEdit;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterEdit;
-//  if not WSRegisterEdit then
-//    RegisterWSComponent(TEdit, TWSEdit);
-  Done := True;
-end;
-
-procedure RegisterMemo;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterMemo;
-//  if not WSRegisterMemo then
-//    RegisterWSComponent(TMemo, TWSMemo);
   Done := True;
 end;
 
@@ -612,18 +527,6 @@ begin
   Done := True;
 end;
 
-
-procedure RegisterCheckBox;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterCheckBox;
-//  if not WSRegisterCheckBox then
-//    RegisterWSComponent(TCheckBox, TWSCheckBox);
-  Done := True;
-end;
-
 procedure RegisterToggleBox;
 const
   Done: Boolean = False;
@@ -657,25 +560,14 @@ begin
   Done := True;
 end;
 
-procedure RegisterStaticText;
+procedure RegisterCustomLabel;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterStaticText;
-//  if not WSRegisterStaticText then
-//    RegisterWSComponent(TStaticText, TWSStaticText);
-  Done := True;
-end;
-
-procedure RegisterLabel;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterLabel;
-//  if not WSRegisterLabel then
-//    RegisterWSComponent(TLabel, TWSLabel);
+  WSRegisterCustomLabel;
+//  if not WSRegisterCustomLabel then
+//    RegisterWSComponent(TCustomLabel, TWSCustomLabel);
   Done := True;
 end;
 
@@ -701,28 +593,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterPage;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterPage;
-//  if not WSRegisterPage then
-//    RegisterWSComponent(TPage, TWSPage);
-  Done := True;
-end;
-
-procedure RegisterNotebook;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterNotebook;
-//  if not WSRegisterNotebook then
-//    RegisterWSComponent(TNotebook, TWSNotebook);
-  Done := True;
-end;
-
 procedure RegisterShape;
 const
   Done: Boolean = False;
@@ -741,17 +611,6 @@ begin
   if Done then exit;
   WSRegisterCustomSplitter;
 //  if not WSRegisterCustomSplitter then
-//    RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
-  Done := True;
-end;
-
-procedure RegisterSplitter;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterSplitter;
-//  if not WSRegisterSplitter then
 //    RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
   Done := True;
 end;
@@ -778,17 +637,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterImage;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterImage;
-//  if not WSRegisterImage then
-//    RegisterWSComponent(TImage, TWSImage);
-  Done := True;
-end;
-
 procedure RegisterBevel;
 const
   Done: Boolean = False;
@@ -811,17 +659,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterRadioGroup;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterRadioGroup;
-//  if not WSRegisterRadioGroup then
-//    RegisterWSComponent(TRadioGroup, TWSRadioGroup);
-  Done := True;
-end;
-
 procedure RegisterCustomCheckGroup;
 const
   Done: Boolean = False;
@@ -830,17 +667,6 @@ begin
   WSRegisterCustomCheckGroup;
 //  if not WSRegisterCustomCheckGroup then
 //    RegisterWSComponent(TCustomCheckGroup, TWSCustomCheckGroup);
-  Done := True;
-end;
-
-procedure RegisterCheckGroup;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterCheckGroup;
-//  if not WSRegisterCheckGroup then
-//    RegisterWSComponent(TCheckGroup, TWSCheckGroup);
   Done := True;
 end;
 
@@ -855,17 +681,6 @@ begin
   Done := True;
 end;
 
-procedure RegisterLabeledEdit;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterLabeledEdit;
-//  if not WSRegisterLabeledEdit then
-//    RegisterWSComponent(TLabeledEdit, TWSLabeledEdit);
-  Done := True;
-end;
-
 procedure RegisterCustomPanel;
 const
   Done: Boolean = False;
@@ -874,17 +689,6 @@ begin
   WSRegisterCustomPanel;
 //  if not WSRegisterCustomPanel then
 //    RegisterWSComponent(TCustomPanel, TWSCustomPanel);
-  Done := True;
-end;
-
-procedure RegisterPanel;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterPanel;
-//  if not WSRegisterPanel then
-//    RegisterWSComponent(TPanel, TWSPanel);
   Done := True;
 end;
 
@@ -897,7 +701,6 @@ begin
     RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
   Done := True;
 end;
-
 
 // ExtDlgs
 procedure RegisterPreviewFileControl;

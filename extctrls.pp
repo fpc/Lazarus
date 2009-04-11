@@ -236,8 +236,6 @@ type
   { TPage }
 
   TPage = class(TCustomPage)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Caption;
     property ChildSizing;
@@ -272,8 +270,6 @@ type
     function GetActiveNotebookPageComponent: TPage;
     function GetNoteBookPage(Index: Integer): TPage;
     procedure SetActiveNotebookPageComponent(const AValue: TPage);
-  protected
-    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Page[Index: Integer]: TPage read GetNoteBookPage;
@@ -504,8 +500,6 @@ type
   { TSplitter }
 
   TSplitter = class(TCustomSplitter)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -632,8 +626,6 @@ type
   { TImage }
 
   TImage = class(TCustomImage)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -778,8 +770,6 @@ type
   { TRadioGroup }
 
   TRadioGroup = class(TCustomRadioGroup)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -883,8 +873,6 @@ type
   { TCheckGroup }
 
   TCheckGroup = class(TCustomCheckGroup)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -996,8 +984,6 @@ type
   { TLabeledEdit }
 
   TLabeledEdit = class(TCustomLabeledEdit)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Anchors;
     property AutoSelect;
@@ -1089,8 +1075,6 @@ type
   { TPanel }
 
   TPanel = class(TCustomPanel)
-  protected
-    class procedure WSRegisterClass; override;
   published
     property Align;
     property Alignment;
@@ -1262,63 +1246,7 @@ end;
 {$I customimage.inc}
 {$I customtrayicon.inc}
 
-{ TPage }
-
-class procedure TPage.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterPage;
-end;
-
-{ TSplitter }
-
-class procedure TSplitter.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterSplitter;
-end;
-
-{ TImage }
-
-class procedure TImage.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterImage;
-end;
-
-{ TRadioGroup }
-
-class procedure TRadioGroup.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterRadioGroup;
-end;
-
-{ TCheckGroup }
-
-class procedure TCheckGroup.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterCheckGroup;
-end;
-
-{ TLabeledEdit }
-
-class procedure TLabeledEdit.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterLabeledEdit;
-end;
-
-{ TPanel }
-
-class procedure TPanel.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterPanel;
-end;
-
 initialization
-  DockSplitterClass:=TSplitter;
+  DockSplitterClass := TSplitter;
 
 end.
