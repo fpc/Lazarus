@@ -35,17 +35,22 @@ uses
   Classes, LCLProc, LResources, Forms, Controls,
   ButtonPanel, ComCtrls,
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
-  CodeCache, CodeToolManager;
+  CodeCache, CodeToolManager, StdCtrls, ExtCtrls, Buttons;
 
 type
 
   { TUnusedUnitsDialog }
 
   TUnusedUnitsDialog = class(TForm)
-    ButtonPanel1: TButtonPanel;
+    CancelBitBtn: TBitBtn;
+    RemoveAllBitBtn: TBitBtn;
+    RemoveSelectedBitBtn: TBitBtn;
+    Panel1: TPanel;
     UnitsTreeView: TTreeView;
+    procedure CancelBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure OkClick(Sender: TObject);
+    procedure RemoveAllBitBtnClick(Sender: TObject);
+    procedure RemoveSelectedBitBtnClick(Sender: TObject);
     procedure UnitsTreeViewSelectionChanged(Sender: TObject);
   private
     FUnits: TStrings;
@@ -58,6 +63,7 @@ type
     procedure UpdateButtons;
   public
     function GetSelectedUnits: TStrings;
+    function GetAllUnits: TStrings;
     property Units: TStrings read FUnits write SetUnits;
   end;
 
@@ -74,6 +80,7 @@ var
   Units: TStringList;
   RemoveUnits: TStrings;
   i: Integer;
+  DlgResult: TModalResult;
 begin
   Result:=mrOk;
   if not LazarusIDE.BeginCodeTools then exit;
@@ -97,15 +104,19 @@ begin
 
     UnusedUnitsDialog:=TUnusedUnitsDialog.Create(nil);
     UnusedUnitsDialog.Units:=Units;
-    if UnusedUnitsDialog.ShowModal=mrOk then begin
-      RemoveUnits:=UnusedUnitsDialog.GetSelectedUnits;
-      if RemoveUnits.Count>0 then begin
-        for i:=0 to RemoveUnits.Count-1 do begin
-          if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnits[i])
-          then begin
-            LazarusIDE.DoJumpToCodeToolBossError;
-            exit(mrCancel);
-          end;
+    DlgResult:=UnusedUnitsDialog.ShowModal;
+    if DlgResult=mrOk then
+      RemoveUnits:=UnusedUnitsDialog.GetSelectedUnits
+    else if DlgResult=mrAll then
+      RemoveUnits:=UnusedUnitsDialog.GetAllUnits
+    else
+      RemoveUnits:=nil;
+    if (RemoveUnits<>nil) and (RemoveUnits.Count>0) then begin
+      for i:=0 to RemoveUnits.Count-1 do begin
+        if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnits[i])
+        then begin
+          LazarusIDE.DoJumpToCodeToolBossError;
+          exit(mrCancel);
         end;
       end;
     end;
@@ -123,9 +134,9 @@ procedure TUnusedUnitsDialog.FormCreate(Sender: TObject);
 begin
   Caption:='Unused units';
 
-  ButtonPanel1.OKButton.Caption:='Remove selected units';
-  ButtonPanel1.OKButton.OnClick:=@OkClick;
-  ButtonPanel1.CancelButton.Caption:='Cancel';
+  RemoveSelectedBitBtn.Caption:='Remove selected units';
+  RemoveAllBitBtn.Caption:='Remove all units';
+  CancelBitBtn.Caption:='Cancel';
 
   UnitsTreeView.StateImages := IDEImages.Images_16;
   ImgIDInterface := IDEImages.LoadImage(16, 'ce_interface');
@@ -134,9 +145,19 @@ begin
   ImgIDNone := IDEImages.LoadImage(16, 'ce_default');
 end;
 
-procedure TUnusedUnitsDialog.OkClick(Sender: TObject);
+procedure TUnusedUnitsDialog.RemoveAllBitBtnClick(Sender: TObject);
 begin
+  ModalResult:=mrAll;
+end;
 
+procedure TUnusedUnitsDialog.CancelBitBtnClick(Sender: TObject);
+begin
+  ModalResult:=mrCancel;
+end;
+
+procedure TUnusedUnitsDialog.RemoveSelectedBitBtnClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
 end;
 
 procedure TUnusedUnitsDialog.UnitsTreeViewSelectionChanged(Sender: TObject);
@@ -203,7 +224,8 @@ var
   RemoveUnits: TStrings;
 begin
   RemoveUnits:=GetSelectedUnits;
-  ButtonPanel1.OKButton.Enabled:=RemoveUnits.Count>0;
+  RemoveSelectedBitBtn.Enabled:=RemoveUnits.Count>0;
+  RemoveAllBitBtn.Enabled:=Units.Count>0;
   RemoveUnits.Free;
 end;
 
@@ -215,6 +237,19 @@ begin
   TVNode:=UnitsTreeView.Items.GetFirstNode;
   while TVNode<>nil do begin
     if TVNode.MultiSelected and (TVNode.Level=1) then
+      Result.Add(TVNode.Text);
+    TVNode:=TVNode.GetNext;
+  end;
+end;
+
+function TUnusedUnitsDialog.GetAllUnits: TStrings;
+var
+  TVNode: TTreeNode;
+begin
+  Result:=TStringList.Create;
+  TVNode:=UnitsTreeView.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    if (TVNode.Level=1) then
       Result.Add(TVNode.Text);
     TVNode:=TVNode.GetNext;
   end;
