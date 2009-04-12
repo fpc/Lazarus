@@ -8,6 +8,7 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   ClientHeight = 343
   ClientWidth = 503
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object UnitsTreeView: TTreeView
     Left = 6
