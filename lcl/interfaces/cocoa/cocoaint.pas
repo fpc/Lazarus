@@ -119,36 +119,7 @@ var
 implementation
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// CocoaWSActnList,
-//  CocoaWSArrow,
-//  CocoaWSButtons,
-// CocoaWSCalendar,
-// CocoaWSCheckLst,
-//  CocoaWSComCtrls,
-//  CocoaWSControls,
-// CocoaWSDbCtrls,
-// CocoaWSDBGrids,
-//  CocoaWSDialogs,
-// CocoaWSEditBtn,
-  CocoaWSExtCtrls,
-// CocoaWSExtDlgs,
-// CocoaWSFileCtrl,
-  CocoaWSForms,
-// CocoaWSGrids,
-// CocoaWSImgList,
-// CocoaWSMaskEdit,
-  CocoaWSMenus,
-//  CocoaWSPairSplitter,
-//  CocoaWSSpin,
-  CocoaWSStdCtrls;
-// CocoaWSToolwin,
-////////////////////////////////////////////////////
+  CocoaWSFactory;
 
 // the implementation of the utility methods
 {$I cocoaobject.inc}

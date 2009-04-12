@@ -162,23 +162,4 @@ begin
   else CocoaForm.MainWindow.orderOut(nil);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TCocoaWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TCocoaWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TCocoaWSCustomFrame);
-//  RegisterWSComponent(TFrame, TCocoaWSFrame);
-  RegisterWSComponent(TCustomForm, TCocoaWSCustomForm);
-//  RegisterWSComponent(TForm, TCocoaWSForm);
-//  RegisterWSComponent(THintWindow, TCocoaWSHintWindow);
-//  RegisterWSComponent(TScreen, TCocoaWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TCocoaWSApplicationProperties);
-////////////////////////////////////////////////////
-
 end.

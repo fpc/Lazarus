@@ -226,35 +226,5 @@ implementation
 
 {$include cocoatrayicon.inc}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-///  RegisterWSComponent(TCustomPage, TCocoaWSCustomPage);
-///  RegisterWSComponent(TCustomNotebook, TCocoaWSCustomNotebook);
-//  RegisterWSComponent(TPage, TCocoaWSPage);
-//  RegisterWSComponent(TNotebook, TCocoaWSNotebook);
-//  RegisterWSComponent(TShape, TCocoaWSShape);
-//  RegisterWSComponent(TCustomSplitter, TCocoaWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TCocoaWSSplitter);
-//  RegisterWSComponent(TPaintBox, TCocoaWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TCocoaWSCustomImage);
-//  RegisterWSComponent(TImage, TCocoaWSImage);
-//  RegisterWSComponent(TBevel, TCocoaWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TCocoaWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TCocoaWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TCocoaWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TCocoaWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TCocoaWSBoundLabel);
-//  RegisterWSComponent(TCustomLabeledEdit, TCocoaWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TCocoaWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TCocoaWSCustomPanel);
-//  RegisterWSComponent(TPanel, TCocoaWSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TCocoaWSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.
 

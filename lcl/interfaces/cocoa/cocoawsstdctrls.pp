@@ -366,35 +366,5 @@ begin
 //  TCocoaCustomCheckBox(ACustomCheckBox.Handle).SetState(NewState);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TCocoaWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TCocoaWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TCocoaWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TCocoaWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TCocoaWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TCocoaWSCustomListBox);
-//  RegisterWSComponent(TListBox, TCocoaWSListBox);
-//  RegisterWSComponent(TCustomEdit, TCocoaWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TCocoaWSCustomMemo);
-//  RegisterWSComponent(TEdit, TCocoaWSEdit);
-//  RegisterWSComponent(TMemo, TCocoaWSMemo);
-//  RegisterWSComponent(TCustomLabel, TCocoaWSCustomLabel);
-//  RegisterWSComponent(TLabel, TCocoaWSLabel);
-//  RegisterWSComponent(TButtonControl, TCocoaWSButtonControl);
-  RegisterWSComponent(TCustomButton, TCocoaWSButton);
-  RegisterWSComponent(TCustomCheckBox, TCocoaWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TCocoaWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TCocoaWSToggleBox);
-//  RegisterWSComponent(TRadioButton, TCocoaWSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TCocoaWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TCocoaWSStaticText);
-////////////////////////////////////////////////////
 end.
 

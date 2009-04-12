@@ -236,17 +236,4 @@ begin
 
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-///  RegisterWSComponent(TMenuItem, TCocoaWSMenuItem);
-///  RegisterWSComponent(TMenu, TCocoaWSMenu);
-//  RegisterWSComponent(TMainMenu, TCocoaWSMainMenu);
-///  RegisterWSComponent(TPopupMenu, TCocoaWSPopupMenu);
-////////////////////////////////////////////////////
 end.
