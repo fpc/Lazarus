@@ -93,6 +93,7 @@ begin
       LazarusIDE.DoJumpToCodeToolBossError;
       exit(mrCancel);
     end;
+    Units.Sort;
 
     UnusedUnitsDialog:=TUnusedUnitsDialog.Create(nil);
     UnusedUnitsDialog.Units:=Units;
