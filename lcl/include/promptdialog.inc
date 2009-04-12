@@ -630,7 +630,7 @@ var
 begin
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
 
-  With TextStyle do
+  with TextStyle do
   begin
     Clipping   := True;
     Wordbreak  := True;
@@ -640,22 +640,23 @@ begin
   end;
 
   // calculate the width & height we need to display the Message
-  If MessageTxt = '' then
+  if MessageTxt = '' then
     MessageTxt := '   ';
-  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
-  Flags:=DT_CalcRect or DT_INTERNAL or DT_WordBreak;
+  TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
+  Flags := DT_CalcRect or DT_INTERNAL or DT_WordBreak;
   SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
-  DrawText(Canvas.Handle, PChar(MessageTxt),Length(MessageTxt),TextBox,Flags);
+  DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
 
   // calculate the width we need to display the buttons
-  reqBtnWidth:=0;
-  CurBtnHeight:=25;
-  if FButtons<>nil then
-    for i:=0 to FButtons.Count-1 do begin
-      if i>0 then
+  reqBtnWidth := 0;
+  CurBtnHeight := 25;
+  if FButtons <> nil then
+    for i := 0 to FButtons.Count-1 do
+    begin
+      if i > 0 then
         Inc(reqBtnWidth, cBtnDist);
-      CurButton:=TBitBtn(FButtons[i]);
-      CalcButtonSize(CurButton,CurBtnWidth,CurBtnHeight);
+      CurButton := TBitBtn(FButtons[i]);
+      CalcButtonSize(CurButton, CurBtnWidth, CurBtnHeight);
       Inc(reqBtnWidth, CurBtnWidth);
     end;
 
@@ -734,15 +735,14 @@ procedure TQuestionDlg.CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
 var
   TxtSize: TSize;
 begin
-  TxtSize:=Canvas.TextExtent(AButton.Caption);
-  w:=Max(TxtSize.cx,MinimumDialogButtonWidth);
-  h:=Max(TxtSize.cy,MinimumDialogButtonHeight);
-  if AButton.Kind<>bkCustom then begin
-    inc(w,22); // icon
-  end;
-  h:=Max(h,22); // icon
-  inc(w,12); // borders
-  inc(h,6); // borders
+  TxtSize := Canvas.TextExtent(AButton.Caption);
+  w := Max(TxtSize.cx, MinimumDialogButtonWidth);
+  h := Max(TxtSize.cy, MinimumDialogButtonHeight);
+  if AButton.Kind <> bkCustom then
+    inc(w, 22); // icon
+  h := Max(h, 22); // icon
+  inc(w, 12); // borders
+  inc(h, 6); // borders
 end;
 
 procedure TQuestionDlg.ButtonKeyDown(Sender: TObject; var Key: Word;
