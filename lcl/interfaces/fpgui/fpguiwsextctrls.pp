@@ -251,33 +251,4 @@ begin
   Result:=inherited GetPosition(ATrayIcon);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomPage, TFpGuiWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TFpGuiWSCustomNotebook);
-//  RegisterWSComponent(TPage, TFpGuiWSPage);
-//  RegisterWSComponent(TNotebook, TFpGuiWSNotebook);
-//  RegisterWSComponent(TShape, TFpGuiWSShape);
-//  RegisterWSComponent(TCustomSplitter, TFpGuiWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TFpGuiWSSplitter);
-//  RegisterWSComponent(TPaintBox, TFpGuiWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TFpGuiWSCustomImage);
-//  RegisterWSComponent(TImage, TFpGuiWSImage);
-//  RegisterWSComponent(TBevel, TFpGuiWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TFpGuiWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TFpGuiWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TFpGuiWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TFpGuiWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TFpGuiWSBoundLabel);
-//  RegisterWSComponent(TCustomLabeledEdit, TFpGuiWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TFpGuiWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TFpGuiWSCustomPanel);
-//  RegisterWSComponent(TPanel, TFpGuiWSPanel);
-////////////////////////////////////////////////////
 end.

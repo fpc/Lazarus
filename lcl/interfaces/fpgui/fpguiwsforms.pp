@@ -201,22 +201,4 @@ begin
   FPForm.SetText(AText);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TFpGuiWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TFpGuiWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TFpGuiWSCustomFrame);
-//  RegisterWSComponent(TFrame, TFpGuiWSFrame);
-  RegisterWSComponent(TCustomForm, TFpGuiWSCustomForm);
-//  RegisterWSComponent(Forms.TForm, TFpGuiWSForm);
-//  RegisterWSComponent(THintWindow, TFpGuiWSHintWindow);
-//  RegisterWSComponent(TScreen, TFpGuiWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TFpGuiWSApplicationProperties);
-////////////////////////////////////////////////////
 end.

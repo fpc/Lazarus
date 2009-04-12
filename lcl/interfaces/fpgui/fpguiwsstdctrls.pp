@@ -615,35 +615,4 @@ begin
   TFPGUIPrivateMemo(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
 end;
 
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TFpGuiWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TFpGuiWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TFpGuiWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TFpGuiWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TFpGuiWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TFpGuiWSCustomListBox);
-//  RegisterWSComponent(TListBox, TFpGuiWSListBox);
-  RegisterWSComponent(TCustomEdit, TFpGuiWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TFpGuiWSCustomMemo);
-//  RegisterWSComponent(TEdit, TFpGuiWSEdit);
-//  RegisterWSComponent(TMemo, TFpGuiWSMemo);
-//  RegisterWSComponent(TCustomLabel, TFpGuiWSCustomLabel);
-//  RegisterWSComponent(TLabel, TFpGuiWSLabel);
-//  RegisterWSComponent(TButtonControl, TFpGuiWSButtonControl);
-  RegisterWSComponent(TCustomButton, TFpGuiWSButton);
-  RegisterWSComponent(TCustomCheckBox, TFpGuiWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TFpGuiWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TFpGuiWSToggleBox);
-  RegisterWSComponent(TRadioButton, TFpGuiWSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TFpGuiWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TFpGuiWSStaticText);
-////////////////////////////////////////////////////
 end.

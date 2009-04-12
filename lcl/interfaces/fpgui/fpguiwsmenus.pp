@@ -252,17 +252,4 @@ begin
   TFPGUIPrivatePopUpMenu(APopUpMenu.Handle).PopUp(X, Y);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TFpGuiWSMenuItem);
-  RegisterWSComponent(TMenu, TFpGuiWSMenu);
-//  RegisterWSComponent(TMainMenu, TFpGuiWSMainMenu);
-  RegisterWSComponent(TPopupMenu, TFpGuiWSPopupMenu);
-////////////////////////////////////////////////////
 end.

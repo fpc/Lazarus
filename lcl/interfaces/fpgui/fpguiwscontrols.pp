@@ -263,19 +263,4 @@ begin
   FPPrivateWidget.SetText(AText);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TFpGuiWSDragImageList);
-//  RegisterWSComponent(TControl, TFpGuiWSControl);
-  RegisterWSComponent(TWinControl, TFpGuiWSWinControl);
-//  RegisterWSComponent(TGraphicControl, TFpGuiWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TFpGuiWSCustomControl);
-//  RegisterWSComponent(TImageList, TFpGuiWSImageList);
-////////////////////////////////////////////////////
 end.

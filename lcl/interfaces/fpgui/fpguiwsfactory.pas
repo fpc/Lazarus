@@ -5,7 +5,7 @@ unit FpGuiWSFactory;
 interface
 
 uses
-  Classes, Controls, 
+  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls,
   WSLCLClasses;
 
 // imglist
@@ -125,7 +125,8 @@ end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  Result := False;
+  RegisterWSComponent(TWinControl, TFpGuiWSWinControl);
+  Result := True;
 end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
@@ -249,7 +250,8 @@ end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomComboBox, TFpGuiWSCustomComboBox);
+  Result := True;
 end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
@@ -259,7 +261,8 @@ end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomEdit, TFpGuiWSCustomEdit);
+  Result := True;
 end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
@@ -274,12 +277,14 @@ end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomButton, TFpGuiWSButton);
+  Result := True;
 end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCheckBox, TFpGuiWSCustomCheckBox);
+  Result := True;
 end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
@@ -289,7 +294,8 @@ end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
-  Result := False;
+  RegisterWSComponent(TRadioButton, TFpGuiWSRadioButton);
+  Result := True;
 end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
@@ -310,7 +316,8 @@ end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomNotebook, TFpGuiWSCustomNotebook);
+  Result := True;
 end;
 
 function RegisterShape: Boolean; alias : 'WSRegisterShape';
@@ -446,7 +453,8 @@ end;
 
 function RegisterCustomForm: Boolean; alias : 'WSRegisterCustomForm';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomForm, TFpGuiWSCustomForm);
+  Result := True;
 end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
@@ -463,12 +471,14 @@ end;
 // Menus
 function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';
 begin
-  Result := False;
+  RegisterWSComponent(TMenuItem, TFpGuiWSMenuItem);
+  Result := True;
 end;
 
 function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TMenu, TFpGuiWSMenu);
+  Result := True;
 end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
@@ -478,7 +488,8 @@ end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TPopupMenu, TFpGuiWSPopupMenu);
+  Result := True;
 end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
