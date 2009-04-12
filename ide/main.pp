@@ -598,7 +598,7 @@ type
 
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
-        var ResourceCode: TCodeBuffer): TModalResult;
+        var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
     function DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
@@ -892,7 +892,7 @@ type
     // conversion
     function DoConvertDFMtoLFM: TModalResult;
     function DoCheckLFMInEditor: TModalResult;
-    function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
+    function DoConvertDelphiUnit(const DelphiFilename: string; CanAbort: boolean): TModalResult;
     function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
@@ -1952,7 +1952,7 @@ begin
         Begin
           AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
           if CompareFileExt(AFilename,'.lpk',false)=0 then begin
-            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent])=mrAbort
+            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen])=mrAbort
             then
               break;
           end else begin
@@ -3383,9 +3383,9 @@ Begin
     if OpenDialog.Execute then begin
       AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
       if not FilenameIsPascalSource(AFilename) then begin
-        MessageDlg(lisPkgMangInvalidFileExtension,
+        IDEMessageDialog(lisPkgMangInvalidFileExtension,
           lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp,
-          mtError,[mbOk],0);
+          mtError,[mbOk],'');
         exit;
       end;
       if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
@@ -3792,6 +3792,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
   i: Integer;
+  MultiOpen: Boolean;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
@@ -3805,10 +3806,11 @@ begin
                        ExtractFileName(InputHistories.LastConvertDelphiUnit);
     end;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      MultiOpen:=OpenDialog.Files.Count>1;
       for i := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
         if FileExistsUTF8(AFilename)
-        and (DoConvertDelphiUnit(AFilename)=mrAbort) then
+        and (DoConvertDelphiUnit(AFilename,MultiOpen)=mrAbort) then
           break;
       end;
       UpdateEnvironment;
@@ -4403,7 +4405,7 @@ begin
 end;
 
 function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
-  var ResourceCode: TCodeBuffer): TModalResult;
+  var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
@@ -4477,8 +4479,7 @@ begin
     ACaption:=lisEnvOptDlgDirectoryNotFound;
     AText:=Format(lisTheDestinationDirectoryDoesNotExist, [#13, '"',
       NewFilePath, '"']);
-    MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0);
-    Result:=mrCancel;
+    Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,[mbCancel],CanAbort);
     exit;
   end;
 
@@ -4491,21 +4492,21 @@ begin
     end;
     if not IsValidIdent(NewUnitName) then begin
       AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
-      Result:=MessageDlg(lisInvalidPascalIdentifierCap,
+      Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
         Format(lisInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
-        mtWarning,[mbIgnore,mbCancel],0);
-      if Result=mrCancel then exit;
+        mtWarning,[mbIgnore,mbCancel],CanAbort);
+      if Result in [mrCancel,mrAbort] then exit;
       NewUnitName:=AlternativeUnitName;
       Result:=mrCancel;
     end;
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
-      Result:=QuestionDlg(lisUnitNameAlreadyExistsCap,
+      Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
          Format(lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming, ['"',
            NewUnitName, '"', #13, #13, #13]),
           mtConfirmation, [mrIgnore, lisForceRenaming,
                           mrCancel, lisCancelRenaming,
-                          mrAbort, lisAbortAll], 0);
+                          mrAbort, lisAbortAll], not CanAbort);
       if Result=mrIgnore then
         Result:=mrCancel
       else
@@ -4523,10 +4524,11 @@ begin
     if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
       if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
-        Result:=QuestionDlg(lisRenameFile,
+        Result:=IDEQuestionDialogAb(lisRenameFile,
              Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC, [
                #13, #13]),
-          mtWarning, [mrYes, lisRenameToLowercase, mrNoToAll, lisKeepName], 0);
+          mtWarning, [mrYes, lisRenameToLowercase, mrNoToAll, lisKeepName,
+                      mrAbort, lisAbortAll], not CanAbort);
         if Result=mrYes then
           NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
         Result:=mrOk;
@@ -4543,8 +4545,9 @@ begin
   and FileExistsUTF8(NewFilename) then begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
-    Result:=QuestionDlg(ACaption, AText, mtConfirmation,
-      [mrYes, lisOverwriteFileOnDisk, mbCancel], 0);
+    Result:=IDEQuestionDialogAb(ACaption, AText, mtConfirmation,
+      [mrYes, lisOverwriteFileOnDisk, mrCancel,
+       mrAbort, lisAbortAll], not CanAbort);
     if Result=mrCancel then exit;
   end;
 
@@ -7125,6 +7128,7 @@ var ActiveSrcEdit:TSourceEditor;
   OldFilename: String;
   NewUnitName: String;
   NewFilename: String;
+  CanAbort: boolean;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7135,6 +7139,8 @@ begin
     Result:=mrAbort;
     exit;
   end;
+  CanAbort:=[sfCanAbort,sfProjectSaving]*Flags<>[];
+
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
 
@@ -7173,7 +7179,7 @@ begin
   // Note:
   //   Changing the main source file without the .lpi is possible only by
   //   manually editing the lpi file, because this is only needed in
-  //   special cases.
+  //   special cases (rare functions don't need front ends).
   MainUnitInfo:=ActiveUnitInfo.Project.MainUnitInfo;
   if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags))
   and (ActiveUnitInfo=MainUnitInfo)
@@ -7216,7 +7222,7 @@ begin
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
-    Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode);
+    Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode,CanAbort);
     if Result in [mrIgnore,mrOk] then
       Result:=mrCancel
     else
@@ -10334,8 +10340,8 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
-  ): TModalResult;
+function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string;
+  CanAbort: boolean): TModalResult;
 var
   OldChange: Boolean;
 begin

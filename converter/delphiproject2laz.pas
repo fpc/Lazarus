@@ -66,7 +66,8 @@ type
     cdtlufRenameLowercase, // rename the unit lowercase
     cdtlufIsSubProc, // this is part of a big conversion -> add Abort button to all questions
     cdtlufCheckLFM,  // check and fix LFM
-    cdtlufDoNotSetDelphiMode // do not set delphi mode for project directories
+    cdtlufDoNotSetDelphiMode, // do not set delphi mode for project directories
+    cdtlufCanAbort   // show 'Cancel all' button in error messages using mrAbort
     );
   TConvertDelphiToLazarusUnitFlags = set of TConvertDelphiToLazarusUnitFlag;
 

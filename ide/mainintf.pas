@@ -216,7 +216,8 @@ const
      'sfProjectSaving',
      'sfCheckAmbiguousFiles',
      'sfSaveNonProjectFiles',
-     'sfDoNotSaveVirtualFiles'
+     'sfDoNotSaveVirtualFiles',
+     'sfCanAbort'
     );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;

@@ -67,7 +67,8 @@ type
     sfProjectSaving,
     sfCheckAmbiguousFiles,
     sfSaveNonProjectFiles,
-    sfDoNotSaveVirtualFiles
+    sfDoNotSaveVirtualFiles,
+    sfCanAbort  // show 'Cancel all' button in error messages
     );
   TSaveFlags = set of TSaveFlag;
   
