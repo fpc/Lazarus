@@ -26,9 +26,10 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     Align = alClient
     BorderSpacing.Around = 6
     DefaultItemHeight = 19
+    ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
     OnSelectionChanged = UnitsTreeViewSelectionChanged
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end
