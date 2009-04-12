@@ -985,6 +985,7 @@ type
 
   TLabeledEdit = class(TCustomLabeledEdit)
   published
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
