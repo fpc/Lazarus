@@ -94,35 +94,14 @@ var
 implementation
 
 uses 
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// FpGuiWSActnList,
-// FpGuiWSArrow,
- FpGuiWSButtons,
-// FpGuiWSCalendar,
-// FpGuiWSCheckLst,
-// FpGuiWSComCtrls,
- FpGuiWSControls,
-// FpGuiWSDbCtrls,
-// FpGuiWSDBGrids,
-// FpGuiWSDialogs,
-// FpGuiWSEditBtn,
- FpGuiWSExtCtrls,
-// FpGuiWSExtDlgs,
-// FpGuiWSFileCtrl,
- FpGuiWSForms,
-// FpGuiWSGrids,
-// FpGuiWSImgList,
-// FpGuiWSMaskEdit,
- FpGuiWSMenus,
-// FpGuiWSPairSplitter,
-// FpGuiWSSpin,
- FpGuiWSStdCtrls,
-// FpGuiWSToolwin,
+  FpGuiWSFactory,
+  // todo: remove unneeded here and move RegisterWSXXX to FpGuiWSFactory unit
+  FpGuiWSButtons,
+  FpGuiWSControls,
+  FpGuiWSExtCtrls,
+  FpGuiWSForms,
+  FpGuiWSMenus,
+  FpGuiWSStdCtrls,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus;
 

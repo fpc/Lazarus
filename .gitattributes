@@ -3766,6 +3766,7 @@ lcl/interfaces/fpgui/fpguiwscontrols.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsdialogs.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsextctrls.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsextdlgs.pp svneol=native#text/pascal
+lcl/interfaces/fpgui/fpguiwsfactory.pas svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsforms.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsgrids.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsimglist.pp svneol=native#text/pascal
