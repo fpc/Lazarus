@@ -932,7 +932,10 @@ begin
   inherited DoButtonClick(Sender);
 
   PopupOrigin:=ControlToScreen(Point(0, Height));
-  ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate);
+  if Trim(Text)=EmptyStr then
+    ShowCalendarPopup(PopupOrigin, Now, @CalendarPopupReturnDate)
+  else
+    ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate)
 end;
 
 procedure TDateEdit.DblClick;
