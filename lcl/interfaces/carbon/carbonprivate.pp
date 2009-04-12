@@ -785,8 +785,7 @@ var
   C: TRect;
 begin
   // modify coordinates to fit real page size
-  GetClientRect(C);
-  
+  c := LCLObject.BoundsRect;
   if FScrollPageSize.X = 0 then FMulX := 1
   else
     FMulX := (C.Right - C.Left) / FScrollPageSize.X;
@@ -796,6 +795,8 @@ begin
   
   AOrigin := GetHIPoint(Round(FScrollOrigin.X * FMulX), Round(FScrollOrigin.Y * FMulY));
   AImageSize := GetHISize(Round(FScrollSize.X * FMulX), Round(FScrollSize.Y * FMulY));
+
+  GetBounds(C);
   AViewSize := GetHISize(C.Right - C.Left, C.Bottom - C.Top);
 
   if FMulX > 1 then
@@ -811,7 +812,7 @@ begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +
       DbgS(AOrigin) + ' Image: ' + DbgS(AImageSize) + ' View: ' +
-      DbgS(AViewSize) + 'Line: ' + DbgS(ALineSize));
+      DbgS(AViewSize) + ' Line: ' + DbgS(ALineSize));
   {$ENDIF}
 end;
 
@@ -909,6 +910,7 @@ function TCarbonCustomControl.SetScrollInfo(SBStyle: Integer;
   const ScrollInfo: TScrollInfo): Integer;
 var
   Event: EventRef;
+  after, before : TRect;
 const
   SName = 'SetScrollInfo';
 begin
@@ -960,8 +962,12 @@ begin
         kEventAttributeUserEvent, Event),
       Self, SName, 'CreateEvent') then Exit;
     try
+      GetClientRect(before);
       OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
         Self, SName, 'SendEventToEventTarget');
+      GetClientRect(after);
+      if not CompareRect(@before, @after) then
+        UpdateLCLClientRect;
     finally
       ReleaseEvent(Event);
     end;
