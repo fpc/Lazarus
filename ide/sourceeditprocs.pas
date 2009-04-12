@@ -294,6 +294,15 @@ begin
         s:='unit';
       end;
 
+    ctnNone:
+      if iliKeyword in IdentItem.Flags then begin
+        AColor:=clBlack;
+        s:='keyword';
+      end else begin
+        AColor:=clGray;
+        s:='';
+      end;
+
     else
       AColor:=clGray;
       s:='';
@@ -377,6 +386,7 @@ begin
       // IdentItem.Node=nil
       case IdentItem.GetDesc of
       ctnProcedure:
+        // predefined procedure (e.g. length)
         begin
           s:=IdentItem.ParamList;
           if s<>'' then

@@ -85,7 +85,8 @@ type
     iliIsConstructor,
     iliIsConstructorValid,
     iliIsDestructor,
-    iliIsDestructorValid
+    iliIsDestructorValid,
+    iliKeyword
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -302,6 +303,7 @@ type
     procedure GatherUnitnames(CleanPos: integer;
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherSourceNames(const Context: TFindContext);
+    procedure GatherContextKeywords(const Context: TFindContext; CleanPos: integer);
     procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList);
     procedure ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
@@ -1234,6 +1236,68 @@ begin
   end;
 end;
 
+procedure TIdentCompletionTool.GatherContextKeywords(const Context: TFindContext;
+   CleanPos: integer);
+
+  procedure Add(const Keyword: string);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompExact,false,0,
+        CurrentIdentifierList.CreateIdentifier(Keyword),
+        0,nil,nil,ctnNone);
+    include(NewItem.Flags,iliKeyword);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=Context.Node;
+  case Node.Desc of
+  ctnClass,ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
+    begin
+      Add('public');
+      Add('private');
+      Add('protected');
+      Add('published');
+      Add('procedure');
+      Add('function');
+      Add('property');
+      Add('constructor');
+      Add('destructor');
+    end;
+
+  ctnInterface,ctnImplementation:
+    begin
+      if (Node.FirstChild=nil)
+      or ((Node.FirstChild.Desc<>ctnUsesSection)
+        and (Node.FirstChild.StartPos>=CleanPos))
+      then
+        Add('uses');
+      Add('type');
+      Add('var');
+      Add('const');
+      Add('procedure');
+      Add('function');
+      Add('resourcestring');
+      if Node.Desc=ctnInterface then
+        Add('property');
+    end;
+
+  ctnProcedure:
+    begin
+      Add('begin');
+      Add('type');
+      Add('var');
+      Add('const');
+      Add('procedure');
+      Add('function');
+    end;
+  end;
+end;
+
 procedure TIdentCompletionTool.InitCollectIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList);
 var
@@ -1449,6 +1513,7 @@ var
   ContextExprStartPos: Integer;
   StartInSubContext: Boolean;
   StartPosOfVariable: LongInt;
+  CursorContext: TFindContext;
   
   procedure CheckProcedureDeclarationContext;
   var
@@ -1527,6 +1592,9 @@ begin
                            GatherContext,ContextExprStartPos,StartInSubContext);
       if ContextExprStartPos=0 then ;
 
+      CursorContext:=CreateFindContext(Self,CursorNode);
+      GatherContextKeywords(CursorContext,IdentStartPos);
+
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
         {$IFDEF CTDEBUG}
@@ -1535,6 +1603,7 @@ begin
           ' ',GatherContext.Node.DescAsString,
           ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
         {$ENDIF}
+
         // gather all identifiers in context
         Params.ContextNode:=GatherContext.Node;
         Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
@@ -1554,8 +1623,7 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers G');
       {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,CreateFindContext(Self,CursorNode),
-                              BeautifyCodeOptions);
+      GatherUsefulIdentifiers(IdentStartPos,CursorContext,BeautifyCodeOptions);
 
       // check for incomplete context
       
