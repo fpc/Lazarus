@@ -4122,6 +4122,9 @@ resourcestring
   lisResult2 = 'Result:';
   lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction = 'The identifier is '
     +'a unit. Please use the File - Save as function to rename a unit.';
+  lisUnusedUnits = 'Unused units';
+  lisRemoveSelectedUnits = 'Remove selected units';
+  lisRemoveAllUnits = 'Remove all units';
 
 implementation
 

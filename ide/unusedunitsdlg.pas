@@ -32,10 +32,11 @@ unit UnusedUnitsDlg;
 interface
 
 uses
-  Classes, LCLProc, LResources, Forms, Controls,
-  ButtonPanel, ComCtrls,
+  Classes, LCLProc, LResources, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
+  Buttons,
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
-  CodeCache, CodeToolManager, StdCtrls, ExtCtrls, Buttons;
+  CodeCache, CodeToolManager,
+  LazarusIDEStrConsts;
 
 type
 
@@ -132,11 +133,11 @@ end;
 
 procedure TUnusedUnitsDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Unused units';
+  Caption:=lisUnusedUnits;
 
-  RemoveSelectedBitBtn.Caption:='Remove selected units';
-  RemoveAllBitBtn.Caption:='Remove all units';
-  CancelBitBtn.Caption:='Cancel';
+  RemoveSelectedBitBtn.Caption:=lisRemoveSelectedUnits;
+  RemoveAllBitBtn.Caption:=lisRemoveAllUnits;
+  CancelBitBtn.Caption:=dlgCancel;
 
   UnitsTreeView.StateImages := IDEImages.Images_16;
   ImgIDInterface := IDEImages.LoadImage(16, 'ce_interface');
