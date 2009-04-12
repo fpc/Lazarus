@@ -1093,34 +1093,4 @@ begin
   TCarbonStaticText(ACustomStaticText.Handle).SetAlignment(NewAlignment);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TCarbonWSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TCarbonWSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TCarbonWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TCarbonWSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TCarbonWSComboBox);
-  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
-//  RegisterWSComponent(TListBox, TCarbonWSListBox);
-  RegisterWSComponent(TCustomEdit, TCarbonWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TCarbonWSCustomMemo);
-//  RegisterWSComponent(TEdit, TCarbonWSEdit);
-//  RegisterWSComponent(TMemo, TCarbonWSMemo);
-//  RegisterWSComponent(TCustomLabel, TCarbonWSCustomLabel);
-//  RegisterWSComponent(TLabel, TCarbonWSLabel);
-//  RegisterWSComponent(TButtonControl, TCarbonWSButtonControl);
-  RegisterWSComponent(TCustomButton, TCarbonWSButton);
-  RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
-  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox);
-  RegisterWSComponent(TRadioButton, TCarbonWSRadioButton);
-  RegisterWSComponent(TCustomStaticText, TCarbonWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TCarbonWSStaticText);
-////////////////////////////////////////////////////
 end.

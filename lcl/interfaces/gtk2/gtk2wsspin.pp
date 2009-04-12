@@ -180,15 +180,4 @@ begin
   SetCallbacks(Widget, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomFloatSpinEdit, TGtk2WSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TGtk2WSFloatSpinEdit);
-////////////////////////////////////////////////////
 end.

@@ -130,6 +130,12 @@ begin
   FResizeStyle:=AValue;
 end;
 
+class procedure TCustomSplitter.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomSplitter;
+end;
+
 procedure TCustomSplitter.SetAutoSnap(const AValue: boolean);
 begin
   if FAutoSnap=AValue then exit;

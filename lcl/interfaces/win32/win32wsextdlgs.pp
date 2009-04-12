@@ -203,21 +203,4 @@ begin
   AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TPreviewFileControl, TWin32WSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TWin32WSPreviewFileDialog);
-  RegisterWSComponent(TOpenPictureDialog, TWin32WSOpenPictureDialog);
-  RegisterWSComponent(TSavePictureDialog, TWin32WSSaveDialog);
-//  RegisterWSComponent(TCalculatorDialog, TWin32WSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TWin32WSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TWin32WSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TWin32WSCalendarDialog);
-////////////////////////////////////////////////////
 end.

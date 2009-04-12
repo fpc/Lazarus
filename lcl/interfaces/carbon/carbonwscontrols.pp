@@ -403,21 +403,4 @@ begin
   Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TCarbonWSDragImageList);
-//  RegisterWSComponent(TControl, TCarbonWSControl);
-  RegisterWSComponent(TWinControl, TCarbonWSWinControl);
-//  RegisterWSComponent(TGraphicControl, TCarbonWSGraphicControl);
-  RegisterWSComponent(TCustomControl, TCarbonWSCustomControl);
-//  RegisterWSComponent(TImageList, TCarbonWSImageList);
-////////////////////////////////////////////////////
-
-
 end.

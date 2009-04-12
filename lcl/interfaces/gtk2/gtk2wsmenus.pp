@@ -388,17 +388,4 @@ begin
   end;
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TGtk2WSMenuItem);
-//  RegisterWSComponent(TMenu, TGtk2WSMenu);
-//  RegisterWSComponent(TMainMenu, TGtk2WSMainMenu);
-//  RegisterWSComponent(TPopupMenu, TGtk2WSPopupMenu);
-////////////////////////////////////////////////////
 end.

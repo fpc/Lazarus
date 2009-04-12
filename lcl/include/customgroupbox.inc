@@ -14,6 +14,12 @@
  *****************************************************************************
 }
 
+class procedure TCustomGroupBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomGroupBox;
+end;
+
 class function TCustomGroupBox.GetControlClassDefaultSize: TPoint;
 begin
   Result.X:=185;

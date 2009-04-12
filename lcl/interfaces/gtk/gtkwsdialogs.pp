@@ -1326,21 +1326,4 @@ begin
   SetCallbacks(Widget, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCommonDialog, TGtkWSCommonDialog);
-//  RegisterWSComponent(TFileDialog, TGtkWSFileDialog);
-  RegisterWSComponent(TOpenDialog, TGtkWSOpenDialog);
-//  RegisterWSComponent(TSaveDialog, TGtkWSSaveDialog);
-//  RegisterWSComponent(TSelectDirectoryDialog, TGtkWSSelectDirectoryDialog);
-  RegisterWSComponent(TColorDialog, TGtkWSColorDialog);
-//  RegisterWSComponent(TColorButton, TGtkWSColorButton);
-  RegisterWSComponent(TFontDialog, TGtkWSFontDialog);
-////////////////////////////////////////////////////
 end.

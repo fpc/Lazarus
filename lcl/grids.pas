@@ -775,6 +775,7 @@ type
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
+    class procedure WSRegisterClass; override;
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); virtual;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
@@ -1434,6 +1435,8 @@ type
   { TStringGrid }
 
   TStringGrid = class(TCustomStringGrid)
+  protected
+    class procedure WSRegisterClass; override;
   public
     property Modified;
   published
@@ -1540,7 +1543,8 @@ procedure Register;
 
 implementation
 
-uses WSGrids;
+uses
+  WSGrids;
 
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin
@@ -3798,6 +3802,12 @@ begin
     message.Result := 1;
   end else
     inherited;
+end;
+
+class procedure TCustomGrid.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomGrid;
 end;
 
 
@@ -10111,12 +10121,18 @@ begin
   FEditors[i].ActiveControl:=ActiveCtrl;
 end;
 
-initialization
-  RegisterPropertyToSkip(TStringGrid, 'VisibleRowCount',
-    'Property streamed in by older compliler', '');
-  RegisterPropertyToSkip(TStringGrid, 'VisibleColCount',
-    'Property streamed in by older compliler', '');
+{ TStringGrid }
 
+class procedure TStringGrid.WSRegisterClass;
+begin
+  RegisterPropertyToSkip(Self, 'VisibleRowCount',
+    'Property streamed in by older compliler', '');
+  RegisterPropertyToSkip(Self, 'VisibleColCount',
+    'Property streamed in by older compliler', '');
+  inherited WSRegisterClass;
+end;
+
+initialization
 {$I lcl_dbgrid_images.lrs}
 
 end.

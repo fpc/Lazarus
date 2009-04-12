@@ -39,27 +39,9 @@ uses
 
 type
 
-  { TCarbonWSStringCellEditor }
-
-  TCarbonWSStringCellEditor = class(TWSStringCellEditor)
-  published
-  end;
-
   { TCarbonWSCustomGrid }
 
   TCarbonWSCustomGrid = class(TWSCustomGrid)
-  published
-  end;
-
-  { TCarbonWSDrawGrid }
-
-  TCarbonWSDrawGrid = class(TWSDrawGrid)
-  published
-  end;
-
-  { TCarbonWSStringGrid }
-
-  TCarbonWSStringGrid = class(TWSStringGrid)
   published
   end;
 
@@ -74,9 +56,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TCarbonWSStringCellEditor);
 //  RegisterWSComponent(TCustomGrid, TCarbonWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TCarbonWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TCarbonWSStringGrid);
 ////////////////////////////////////////////////////
 end.

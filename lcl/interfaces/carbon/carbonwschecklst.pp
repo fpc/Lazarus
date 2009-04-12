@@ -111,14 +111,4 @@ begin
   TCarbonCheckListBox(ACheckListBox.Handle).SetItemChecked(AIndex, AState <> cbUnchecked);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomCheckListBox, TCarbonWSCustomCheckListBox);
-////////////////////////////////////////////////////
 end.

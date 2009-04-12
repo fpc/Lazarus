@@ -161,6 +161,7 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
+    class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BitmapChange(Sender: TObject);
@@ -296,6 +297,7 @@ type
     procedure SetParent(const AValue: TComponent);
     procedure SetParentBiDiMode(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure BidiModeChanged; virtual;
     procedure CreateHandle; virtual;
     procedure DoChange(Source: TMenuItem; Rebuild: Boolean); virtual;
@@ -341,6 +343,7 @@ type
   TMainMenu = class(TMenu)
   protected
     procedure ItemChanged;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -360,6 +363,7 @@ type
     FPopupComponent: TComponent;
     FPopupPoint: TPoint;
   protected
+    class procedure WSRegisterClass; override;
     procedure DoPopup(Sender: TObject); virtual;
     procedure DoClose; virtual;
   public
@@ -382,9 +386,9 @@ procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
 var
-  DesignerMenuItemClick: TNotifyEvent;
-  ActivePopupMenu: TPopupMenu;
-  OnMenuPopupHandler: TNotifyEvent;
+  DesignerMenuItemClick: TNotifyEvent = nil;
+  ActivePopupMenu: TPopupMenu = nil;
+  OnMenuPopupHandler: TNotifyEvent = nil;
 
 function NewMenu(Owner: TComponent; const AName: string;
                  const Items: array of TMenuItem): TMainMenu;
@@ -418,7 +422,7 @@ uses
 { Menu command management }
 
 var
-  CommandPool: TBits;
+  CommandPool: TBits = nil;
 
 function UniqueCommand: LongInt;
 begin
@@ -535,13 +539,6 @@ begin
   if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
   if ShortCut and scMeta <> 0 then Include(Shift,ssMeta);
 end;
-
-
-initialization
-  DesignerMenuItemClick:=nil;
-  ActivePopupMenu:=nil;
-  CommandPool := nil;
-  OnMenuPopupHandler := nil;
 
 finalization
   FreeThenNil(CommandPool);

@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
 //  ExtDlgs,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSDialogs, WSForms;
+  WSLCLClasses, WSControls, WSDialogs, WSForms, WSFactory;
 
 type
   { TWSPreviewFileControl }
@@ -97,21 +97,107 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterPreviewFileControl;
+  procedure RegisterPreviewFileDialog;
+  procedure RegisterOpenPictureDialog;
+  procedure RegisterSavePictureDialog;
+  procedure RegisterCalculatorDialog;
+  procedure RegisterCalculatorForm;
+  //procedure RegisterCalendarDialogForm;
+  procedure RegisterCalendarDialog;
 
 implementation
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TPreviewFileControl, TWSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TWSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TWSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TWSSavePictureDialog);
-//  RegisterWSComponent(TCalculatorDialog, TWSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TWSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TWSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
-////////////////////////////////////////////////////
+{ WidgetSetRegistration }
+
+procedure RegisterPreviewFileControl;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPreviewFileControl;
+//  if not WSRegisterPreviewFileControl then
+//    RegisterWSComponent(TPreviewFileControl, TWSPreviewFileControl);
+  Done := True;
+end;
+
+procedure RegisterPreviewFileDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPreviewFileDialog;
+//  if not WSRegisterPreviewFileDialog then
+//    RegisterWSComponent(TPreviewFileDialog, TWSPreviewFileDialog);
+  Done := True;
+end;
+
+procedure RegisterOpenPictureDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterOpenPictureDialog;
+//  if not WSRegisterOpenPictureDialog then
+//    RegisterWSComponent(TOpenPictureDialog, TWSOpenPictureDialog);
+  Done := True;
+end;
+
+procedure RegisterSavePictureDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterSavePictureDialog;
+//  if not WSRegisterSavePictureDialog then
+//    RegisterWSComponent(TSavePictureDialog, TWSSavePictureDialog);
+  Done := True;
+end;
+
+procedure RegisterCalculatorDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalculatorDialog;
+//  if not WSRegisterCalculatorDialog then
+//    RegisterWSComponent(TCalculatorDialog, TWSCalculatorDialog);
+  Done := True;
+end;
+
+procedure RegisterCalculatorForm;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalculatorForm;
+//  if not WSRegisterCalculatorForm then
+//    RegisterWSComponent(TCalculatorForm, TWSCalculatorForm);
+  Done := True;
+end;
+
+(*procedure RegisterCalendarDialogForm;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalendarDialogForm;
+//  if not WSRegisterCalendarDialogForm then
+//    RegisterWSComponent(TCalendarDialogForm, TWSCalendarDialogForm);
+  Done := True;
+end;*)
+
+procedure RegisterCalendarDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCalendarDialog;
+//  if not WSRegisterCalendarDialog then
+//    RegisterWSComponent(TCalendarDialog, TWSCalendarDialog);
+  Done := True;
+end;
+
 end.

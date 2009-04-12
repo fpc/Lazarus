@@ -829,29 +829,4 @@ begin
   Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TWin32WSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
-  RegisterWSComponent(TCustomListView, TWin32WSCustomListView);
-//  RegisterWSComponent(TCustomListView, TWin32WSListView);
-  RegisterWSComponent(TCustomProgressBar, TWin32WSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
-{$ifdef OldToolbar}
-  RegisterWSComponent(TToolBar, TWin32WSToolBar);
-{$endif}
-  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);
-////////////////////////////////////////////////////
-
 end.

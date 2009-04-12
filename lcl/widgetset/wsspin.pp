@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Spin,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSStdCtrls;
+  WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
 type
   { TWSCustomFloatSpinEdit }
@@ -66,18 +66,15 @@ type
   end;
   TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
 
-  { TWSFloatSpinEdit }
+  { WidgetSetRegistration }
 
-  TWSFloatSpinEdit = class(TWSCustomFloatSpinEdit)
-  published
-  end;
-
+  procedure RegisterCustomFloatSpinEdit;
 
 implementation
 
 { TWSCustomFloatSpinEdit }
 
-class function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double;
+class function TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double;
 begin
   Result := 0.0;
 end;
@@ -86,12 +83,16 @@ class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit:
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-  RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TWSFloatSpinEdit);
-////////////////////////////////////////////////////
+  { WidgetSetRegistration }
+
+procedure RegisterCustomFloatSpinEdit;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomFloatSpinEdit then
+    RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
+  Done := True;
+end;
+
 end.

@@ -46,38 +46,24 @@ uses
 ////////////////////////////////////////////////////
   Controls, LCLType, Grids,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSMaskEdit, WSControls;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
-  { TWSStringCellEditor }
-
-  TWSStringCellEditor = class(TWSCustomMaskEdit)
-  published
-  end;
-
-  TWSCustomGridClass = class of TWSCustomgrid;
   { TWSCustomGrid }
 
   TWSCustomGrid = class(TWSCustomControl)
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
   end;
+  TWSCustomGridClass = class of TWSCustomgrid;
 
-  { TWSDrawGrid }
+  { WidgetSetRegistration }
 
-  TWSDrawGrid = class(TWSCustomGrid)
-  published
-  end;
-
-  { TWSStringGrid }
-
-  TWSStringGrid = class(TWSDrawGrid)
-  published
-  end;
-
+  procedure RegisterCustomGrid;
 
 implementation
-uses LCLIntf, LCLProc;
+uses
+  LCLIntf, LCLProc;
 
 { TWSCustomGrid }
 
@@ -94,14 +80,16 @@ begin
   AEditor.Dispatch(GMsg);
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-//  RegisterWSComponent(TStringCellEditor, TWSStringCellEditor);
+{ WidgetSetRegistration }
+
+procedure RegisterCustomGrid;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomGrid then
     RegisterWSComponent(TCustomGrid, TWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TWSStringGrid);
-////////////////////////////////////////////////////
+  Done := True;
+end;
+
 end.

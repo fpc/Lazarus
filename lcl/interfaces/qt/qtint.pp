@@ -175,33 +175,9 @@ uses
 // To get as little as possible circles,
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
-// QtWSActnList,
- QtWSArrow,
- QtWSButtons,
- QtWSCalendar,
- QtWSCheckLst,
- QtWSComCtrls,
- QtWSControls,
-// QtWSDbCtrls,
-// QtWSDBGrids,
- QtWSDialogs,
-// QtWSDirSel,
-// QtWSEditBtn,
- QtWSExtCtrls,
-// QtWSExtDlgs,
-// QtWSFileCtrl,
- QtWSForms,
-// QtWSGrids,
-// QtWSImgList,
-// QtWSMaskEdit,
- QtWSMenus,
-// QtWSPairSplitter,
- QtWSSpin,
- QtWSStdCtrls,
-// QtWSToolwin,
+ QtWSFactory,
  QtCaret,
  QtThemes,
- QtWsDesigner,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
   // Bindings
@@ -278,10 +254,5 @@ end;
 {$I qtobject.inc}
 {$I qtwinapi.inc}
 {$I qtlclintf.inc}
-
-
-initialization
-
-finalization
 
 end.

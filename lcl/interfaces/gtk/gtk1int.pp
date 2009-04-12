@@ -12,7 +12,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -62,7 +62,8 @@ uses
   // widgetset
   GtkInt,
   GtkDebug,
-  GtkFontCache, GtkDef, Gtk1Def, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
+  GtkFontCache, GtkDef, Gtk1Def, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate,
+  WSLCLClasses;
 
 type
 
@@ -97,7 +98,6 @@ uses
 // Gtk1WSDbCtrls,
 // Gtk1WSDBGrids,
 // Gtk1WSDialogs,
-// Gtk1WSDirSel,
 // Gtk1WSEditBtn,
 // Gtk1WSExtCtrls,
 // Gtk1WSExtDlgs,
@@ -114,7 +114,8 @@ uses
 // Gtk1Themes,
 ////////////////////////////////////////////////////
   StdCtrls,
-  GTKWinApiWindow;
+  GTKWinApiWindow,
+  GtkWSFactory;
 
 {$include gtk1widgetset.inc}
 

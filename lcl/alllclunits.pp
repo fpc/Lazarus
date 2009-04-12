@@ -55,15 +55,12 @@ uses
   LCLMessageGlue,
   RubberBand,
   // widgetset skeleton
-  WSActnList, WSArrow, WSButtons, WSCalendar,
+  WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSComCtrls, WSControls,
-  WSDbCtrls, WSDBGrids, WSDialogs, WSDirSel,
-  WSEditBtn, WSExtCtrls, WSExtDlgs, WSFileCtrl,
-  WSForms, WSGrids, WSImgList, WSMaskEdit,
-  WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
-  WSToolwin,
+  WSDialogs, WSDesigner, WSExtCtrls,
+  WSExtDlgs, WSForms, WSGrids, WSImgList, WSMenus,
+  WSPairSplitter, WSSpin, WSStdCtrls, WSToolwin,
   WSProc,
-  WSDesigner,
   // Other units
   DefaultTranslator;
 

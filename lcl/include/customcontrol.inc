@@ -93,6 +93,12 @@ begin
   Canvas.Brush.Color:=Color;
 end;
 
+class procedure TCustomControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomControl;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomControl.LMPaint
   Params:   Msg: The paint message

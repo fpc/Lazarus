@@ -471,6 +471,12 @@ begin
     TRadioButton(FButtonList[0]).TabStop := True;
 end;
 
+class procedure TCustomRadioGroup.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomRadioGroup;
+end;
+
 procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
 begin
   if FAutoFill=AValue then exit;

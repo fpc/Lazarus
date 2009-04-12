@@ -51,25 +51,6 @@ type
   published
   end;
 
-  { TQtWSPairSplitter }
-
-  TQtWSPairSplitter = class(TWSPairSplitter)
-  published
-  end;
-
-
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TPairSplitterSide, TQtWSPairSplitterSide);
-//  RegisterWSComponent(TCustomPairSplitter, TQtWSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TQtWSPairSplitter);
-////////////////////////////////////////////////////
 end.

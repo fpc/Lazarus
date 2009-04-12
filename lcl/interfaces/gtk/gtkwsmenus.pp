@@ -442,19 +442,4 @@ begin
   activate_time : the time at which the activation event occurred. }
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-{$IFDEF GTK1}
-  RegisterWSComponent(TMenuItem, TGtkWSMenuItem);
-{$ENDIF}
-  RegisterWSComponent(TMenu, TGtkWSMenu);
-//  RegisterWSComponent(TMainMenu, TGtkWSMainMenu);
-  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
-////////////////////////////////////////////////////
 end.

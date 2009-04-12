@@ -77,6 +77,13 @@ begin
   result := FTitle<>DefaultTitle;
 end;
 
+class procedure TCommonDialog.WSRegisterClass;
+begin
+  RegisterPropertyToSkip(TCommonDialog, 'Ctl3D', 'VCL compatibility property', '');
+  inherited WSRegisterClass;
+  RegisterCommonDialog;
+end;
+
 procedure TCommonDialog.SetHeight(const AValue: integer);
 begin
   if FHeight=AValue then exit;

@@ -38,15 +38,6 @@ uses
   WSGrids, WSLCLClasses;
 
 type
-
-  { TFpGuiWSStringCellEditor }
-
-  TFpGuiWSStringCellEditor = class(TWSStringCellEditor)
-  private
-  protected
-  public
-  end;
-
   { TFpGuiWSCustomGrid }
 
   TFpGuiWSCustomGrid = class(TWSCustomGrid)
@@ -54,23 +45,6 @@ type
   protected
   public
   end;
-
-  { TFpGuiWSDrawGrid }
-
-  TFpGuiWSDrawGrid = class(TWSDrawGrid)
-  private
-  protected
-  public
-  end;
-
-  { TFpGuiWSStringGrid }
-
-  TFpGuiWSStringGrid = class(TWSStringGrid)
-  private
-  protected
-  public
-  end;
-
 
 implementation
 
@@ -82,9 +56,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TFpGuiWSStringCellEditor);
 //  RegisterWSComponent(TCustomGrid, TFpGuiWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TFpGuiWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TFpGuiWSStringGrid);
 ////////////////////////////////////////////////////
 end.

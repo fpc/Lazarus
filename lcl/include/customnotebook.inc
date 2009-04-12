@@ -691,6 +691,12 @@ begin
       Page[APageIndex].ControlStyle-[csNoDesignVisible];
 end;
 
+class procedure TCustomNotebook.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomNotebook;
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook ReadState
  ------------------------------------------------------------------------------}

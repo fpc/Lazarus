@@ -109,15 +109,4 @@ begin
   TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomBitBtn, TQtWSBitBtn);
-//  RegisterWSComponent(TCustomSpeedButton, TQtWSSpeedButton);
-////////////////////////////////////////////////////
 end.

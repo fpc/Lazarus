@@ -45,6 +45,8 @@ type
     FShape: TRubberBandShape;
     function GetShape: TRubberBandShape;
     procedure SetShape(const AValue: TRubberBandShape);
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Shape: TRubberBandShape read GetShape write SetShape default rbsLine;

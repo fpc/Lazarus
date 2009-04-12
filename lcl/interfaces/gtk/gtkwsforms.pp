@@ -515,22 +515,4 @@ begin
   SetCallbacks(P, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl, TGtkPrivateScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TGtkWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TGtkWSCustomFrame);
-//  RegisterWSComponent(TFrame, TGtkWSFrame);
-  RegisterWSComponent(TCustomForm, TGtkWSCustomForm);
-//  RegisterWSComponent(TForm, TGtkWSForm);
-  RegisterWSComponent(THintWindow, TGtkWSHintWindow);
-//  RegisterWSComponent(TScreen, TGtkWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TGtkWSApplicationProperties);
-////////////////////////////////////////////////////
 end.

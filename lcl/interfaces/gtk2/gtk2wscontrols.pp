@@ -293,19 +293,4 @@ begin
     TGtkWSWinControl{(ClassParent)}.SetBorderStyle(AWinControl, ABorderStyle);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TGtk2WSDragImageList);
-//  RegisterWSComponent(TControl, TGtk2WSControl);
-  RegisterWSComponent(TWinControl, TGtk2WSWinControl);
-//  RegisterWSComponent(TGraphicControl, TGtk2WSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TGtk2WSCustomControl);
-//  RegisterWSComponent(TImageList, TGtk2WSImageList);
-////////////////////////////////////////////////////
 end.

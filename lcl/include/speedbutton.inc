@@ -733,6 +733,12 @@ begin
     else Click;
 end;
 
+class procedure TCustomSpeedButton.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomSpeedButton;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.WMLButtonUp
   Params: Message

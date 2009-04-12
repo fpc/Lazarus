@@ -66,6 +66,12 @@ begin
     TWSStatusBarClass(WidgetSetClass).SetSizeGrip(Self, AValue);
 end;
 
+class procedure TStatusBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterStatusBar;
+end;
+
 function TStatusBar.DoSetApplicationHint(AHintStr: String): Boolean;
 begin
   Result := DoHint;

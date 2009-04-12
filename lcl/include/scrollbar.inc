@@ -252,4 +252,10 @@ begin
   DefaultHandler(Message);
 end;
 
+class procedure TCustomScrollBar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomScrollBar;
+end;
+
 // included by stdctrls.pp

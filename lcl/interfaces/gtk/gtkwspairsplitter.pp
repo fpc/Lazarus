@@ -61,13 +61,6 @@ type
     class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; override;
   end;
 
-  { TGtkWSPairSplitter }
-
-  TGtkWSPairSplitter = class(TWSPairSplitter)
-  published
-  end;
-
-
 implementation
 
 { TGtkWSCustomPairSplitter }
@@ -178,14 +171,4 @@ end;
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
-  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned);
-//  RegisterWSComponent(TPairSplitter, TGtkWSPairSplitter);
-////////////////////////////////////////////////////
 end.

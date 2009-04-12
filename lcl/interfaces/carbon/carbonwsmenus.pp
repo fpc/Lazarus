@@ -303,17 +303,4 @@ begin
   APopupMenu.Close; // notify LCL popup menu
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TCarbonWSMenuItem);
-  RegisterWSComponent(TMenu, TCarbonWSMenu);
-//  RegisterWSComponent(TMainMenu, TCarbonWSMainMenu);
-  RegisterWSComponent(TPopupMenu, TCarbonWSPopupMenu);
-////////////////////////////////////////////////////
 end.

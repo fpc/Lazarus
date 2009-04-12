@@ -231,8 +231,10 @@ type
      property RawMode: boolean read FRawMode write SetRawMode;
   end;
   
+// TPrinter it's an basic object. If you override this object,
+// you must create an instance.
 var
-  Printer : TPrinter;
+  Printer: TPrinter = nil;
   
 implementation
 
@@ -991,12 +993,7 @@ begin
     Result := fRightMargin;
 end;
 
-INITIALIZATION
-  //TPrinter it's an basic object. If you override this object,
-  //you must create an instance.
-  Printer:=nil;
-  
-FINALIZATION
+finalization
   If Assigned(Printer) then
     Printer.Free;
 end.

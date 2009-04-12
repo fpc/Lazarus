@@ -31,6 +31,12 @@ begin
     SendMessage(FWindowHandle, CM_MENUCHANGED, 0, 0);}
 end;
 
+class procedure TMainMenu.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterMainMenu;
+end;
+
 {------------------------------------------------------------------------------
   Method: TMainMenu.Create
   Params:  AOwner: the owner of the class

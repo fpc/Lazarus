@@ -64,6 +64,12 @@ begin
   inherited Click; // emulate delphi OnClick behaviour
 end;
 
+class procedure TCustomCheckBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCheckBox;
+end;
+
 procedure TCustomCheckBox.Click;
 begin
   // skip clicks by WM_MOUSEUP

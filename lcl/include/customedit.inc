@@ -330,6 +330,12 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
 end;
 
+class procedure TCustomEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomEdit;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetEchoMode
   Params:  Value to set FModified to

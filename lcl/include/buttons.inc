@@ -233,6 +233,12 @@ begin
     ActiveDefaultControlChanged(nil);
 end;
 
+class procedure TCustomButton.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomButton;
+end;
+
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs

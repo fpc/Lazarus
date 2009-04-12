@@ -41,7 +41,7 @@ interface
 ////////////////////////////////////////////////////
 uses
   Classes, GraphType, Graphics, IntfGraphics, ImgList, LCLType, LCLIntf,
-  WSLCLClasses, WSProc, WSReferences;
+  WSLCLClasses, WSProc, WSReferences, WSFactory;
 
 type
   { TWSCustomImageList }
@@ -64,6 +64,8 @@ type
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
   end;
   TWSCustomImageListClass = class of TWSCustomImageList;
+
+  procedure RegisterCustomImageList;
 
 implementation
 
@@ -254,11 +256,16 @@ begin
   TDefaultImageListImplementor(AList.Reference.Ptr)[AIndex] := ABitmap;
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-  RegisterWSComponent(TCustomImageList, TWSCustomImageList);
-////////////////////////////////////////////////////
+{ WidgetSetRegistration }
+
+procedure RegisterCustomImageList;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomImageList then
+    RegisterWSComponent(TCustomImageList, TWSCustomImageList);
+  Done := True;
+end;
+
 end.

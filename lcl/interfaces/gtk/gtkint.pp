@@ -323,7 +323,6 @@ uses
 // GtkWSDbCtrls,
 // GtkWSDBGrids,
  GtkWSDialogs,
-// GtkWSDirSel,
 // GtkWSEditBtn,
  GtkWSExtCtrls,
  GtkWSExtDlgs,

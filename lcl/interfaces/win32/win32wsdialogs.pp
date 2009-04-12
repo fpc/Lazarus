@@ -1021,26 +1021,8 @@ begin
 end;
 
 initialization
-
-  if (Win32MajorVersion=4) then
-    OpenFileNameSize := sizeof(OPENFILENAME_NT4)
+  if (Win32MajorVersion = 4) then
+    OpenFileNameSize := SizeOf(OPENFILENAME_NT4)
   else
-    OpenFileNameSize:=sizeof(OPENFILENAME);
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCommonDialog, TWin32WSCommonDialog);
-//  RegisterWSComponent(TFileDialog, TWin32WSFileDialog);
-  RegisterWSComponent(TOpenDialog, TWin32WSOpenDialog);
-  RegisterWSComponent(TSaveDialog, TWin32WSSaveDialog);
-  RegisterWSComponent(TSelectDirectoryDialog, TWin32WSSelectDirectoryDialog);
-  RegisterWSComponent(TColorDialog, TWin32WSColorDialog);
-//  RegisterWSComponent(TColorButton, TWin32WSColorButton);
-  RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
-////////////////////////////////////////////////////
-
+    OpenFileNameSize := SizeOf(OPENFILENAME);
 end.

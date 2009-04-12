@@ -40,6 +40,7 @@ type
     FWidgetSetClass: TWSLCLComponentClass;
     FLCLRefCount: integer;
   protected
+    class procedure WSRegisterClass; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -81,6 +82,13 @@ type
   end;
 
 implementation                    
+uses
+  InterfaceBase;
+
+class procedure TLCLComponent.WSRegisterClass;
+begin
+  //
+end;
 
 constructor TLCLComponent.Create(TheOwner: TComponent);
 begin
@@ -110,8 +118,10 @@ end;
 
 class function TLCLComponent.NewInstance: TObject;
 begin
-  Result := inherited NewInstance; 
+  Result := inherited NewInstance;
+  WSRegisterClass;
   TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);
+
   if TLCLComponent(Result).FWidgetSetClass = nil then
   begin
     {$IFDEF VerboseLCL}

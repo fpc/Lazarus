@@ -60,6 +60,7 @@ type
     procedure SetImageIndex(const AValue: integer);
     procedure SetTabVisible(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure SetParent(AParent: TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
@@ -182,6 +183,7 @@ type
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
+    class procedure WSRegisterClass; override;
     PageClass: TCustomPageClass;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
@@ -385,6 +387,7 @@ type
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
   protected
+    class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -457,6 +460,7 @@ type
     procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
+    class procedure WSRegisterClass; override;
     procedure CheckAlignment;
     function CheckNewSize(var NewSize: integer): boolean; virtual;
     function FindAlignControl: TControl;
@@ -524,6 +528,7 @@ type
 
   TPaintBox = class(TGraphicControl)
   protected
+    class procedure WSRegisterClass; override;
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
@@ -587,6 +592,7 @@ type
     procedure SetStretch(const AValue : Boolean);
     procedure SetTransparent(const AValue : Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure PictureChanged(Sender : TObject); virtual;
     function DestRect: TRect; virtual;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -673,6 +679,7 @@ type
     function GetShape:TBevelShape;
     procedure SetShape(aShape:TBevelShape);
   protected
+    class procedure WSRegisterClass; override;
     procedure Paint; override;
   public
     constructor Create(AOwner:TComponent); override;
@@ -735,6 +742,7 @@ type
     procedure UpdateItems;
     procedure UpdateTabStops;
   protected
+    class procedure WSRegisterClass; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
@@ -839,6 +847,7 @@ type
     procedure UpdateItems;
     procedure UpdateControlsPerLine;
   protected
+    class procedure WSRegisterClass; override;
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
     procedure DefineProperties(Filer: TFiler); override;
@@ -954,6 +963,7 @@ type
     procedure SetLabelPosition(const Value: TLabelPosition);
     procedure SetLabelSpacing(const Value: Integer);
   protected
+    class procedure WSRegisterClass; override;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetName(const Value: TComponentName); override;
     procedure DoPositionLabel; virtual;
@@ -1038,6 +1048,7 @@ type
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
   protected
+    class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var Rect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
@@ -1144,6 +1155,8 @@ type
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
     procedure IconChanged(Sender: TObject);
+  protected
+    class procedure WSRegisterClass; override;
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1234,6 +1247,6 @@ end;
 {$I customtrayicon.inc}
 
 initialization
-  DockSplitterClass:=TSplitter;
+  DockSplitterClass := TSplitter;
 
 end.

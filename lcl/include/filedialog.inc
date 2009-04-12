@@ -99,6 +99,12 @@ begin
     FInternalFilterIndex := AValue;
 end;
 
+class procedure TFileDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterFileDialog;
+end;
+
 {------------------------------------------------------------------------------}
 {  TFileDialog DoExecute                                                         }
 {------------------------------------------------------------------------------}
@@ -135,6 +141,12 @@ end;
 {******************************************************************************
                                   TOpenDialog
  ******************************************************************************}
+
+class procedure TOpenDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterOpenDialog;
+end;
 
 procedure TOpenDialog.DereferenceLinks;
 var i: integer;
@@ -293,6 +305,12 @@ begin
     Exclude(FOptions, AOption);
 end;
 
+class procedure TSaveDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterSaveDialog;
+end;
+
 function TSaveDialog.DefaultTitle: string;
 begin
   Result:=rsfdFileSaveAs;
@@ -324,6 +342,12 @@ constructor TSelectDirectoryDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle:=csSelectDirectoryDialog;
+end;
+
+class procedure TSelectDirectoryDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterSelectDirectoryDialog;
 end;
 
 function TSelectDirectoryDialog.CheckFileMustExist(const AFilename: string): boolean;

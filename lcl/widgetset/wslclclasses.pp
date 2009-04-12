@@ -85,6 +85,8 @@ implementation
 uses
   SysUtils, LCLClasses;
 
+procedure DoInitialization; forward;
+
 ////////////////////////////////////////////////////
 // Registration code
 ////////////////////////////////////////////////////
@@ -122,6 +124,9 @@ var
   cls: TClass;
   Node: PClassNode;
 begin
+  if MWSRegisterIndex = nil then
+    DoInitialization;
+
   Result := nil;
   cls := AComponent;
   while cls <> nil do
@@ -392,6 +397,8 @@ var
   Node: PClassNode;
   OldPrivate: TClass;
 begin
+  if MWSRegisterIndex = nil then
+    DoInitialization;
   Node := GetNode(AComponent);
   if Node = nil then Exit;
 
@@ -428,8 +435,6 @@ end;
 class procedure TWSLCLReferenceComponent.DestroyReference(AComponent: TComponent);
 begin
 end;
-
-
 
 procedure DoInitialization;
 begin
@@ -517,8 +522,6 @@ begin
   FreeAndNil(MWSRegisterIndex);
 end;
 
-initialization
-  DoInitialization;
 
 finalization
   DoFinalization;

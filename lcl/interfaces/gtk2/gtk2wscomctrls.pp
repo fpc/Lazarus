@@ -561,26 +561,4 @@ begin
   SetCallbacks(Widget, WidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TGtk2WSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TGtk2WSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TGtk2WSPageControl);
-  RegisterWSComponent(TCustomListView, TGtk2WSCustomListView);
-//  RegisterWSComponent(TCustomListView, TGtk2WSListView);
-  RegisterWSComponent(TCustomProgressBar, TGtk2WSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TGtk2WSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TGtk2WSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
-  RegisterWSComponent(TToolBar, TGtk2WSToolBar);
-  RegisterWSComponent(TCustomTrackBar, TGtk2WSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TGtk2WSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TGtk2WSTreeView);
-////////////////////////////////////////////////////
 end.

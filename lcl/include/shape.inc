@@ -116,6 +116,12 @@ begin
   end;
 end;
 
+class procedure TShape.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterShape;
+end;
+
 class function TShape.GetControlClassDefaultSize: TPoint;
 begin
   Result.X := 65;

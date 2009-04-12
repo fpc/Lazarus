@@ -50,6 +50,7 @@ type
     procedure SetValueEmpty(const AValue: Boolean);
     procedure UpdateControl;
   protected
+    class procedure WSRegisterClass; override;
     function  RealGetText: TCaption; override;
     procedure TextChanged; override;
     procedure SetDecimals(ADecimals: Integer);

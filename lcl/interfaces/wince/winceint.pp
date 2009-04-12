@@ -254,39 +254,14 @@ var
 
 Implementation
 
-Uses
+uses
+  WinCEWSFactory,
+  WinCEWSButtons,
+  WinCEWSExtCtrls,
+  WinCEWSMenus,
+  WinCEWSStdCtrls,
 ////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// WinCEWSActnList,
- WinCEWSArrow,
- WinCEWSButtons,
- WinCEWSCalendar,
- WinCEWSCheckLst,
- WinCEWSComCtrls,
- WinCEWSControls,
-// WinCEWSDbCtrls,
-// WinCEWSDBGrids,
- WinCEWSDialogs,
-// WinCEWSDirSel,
-// WinCEWSEditBtn,
- WinCEWSExtCtrls,
-// WinCEWSExtDlgs,
-// WinCEWSFileCtrl,
- WinCEWSForms,
-// WinCEWSGrids,
- WinCEWSImgList,
-// WinCEWSMaskEdit,
- WinCEWSMenus,
-// WinCEWSPairSplitter,
- WinCEWSSpin,
- WinCEWSStdCtrls,
-// WinCEWSToolwin,
-////////////////////////////////////////////////////
-  Arrow, Spin, CheckLst, LclProc, LCLMessageGlue;
+  Arrow, Spin, CheckLst, LCLProc, LCLMessageGlue;
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 

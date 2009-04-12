@@ -94,6 +94,12 @@ begin
   TabStop := Value;
 end;
 
+class procedure TRadioButton.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterRadioButton;
+end;
+
 procedure TRadioButton.Click;
 begin
   Checked := True;

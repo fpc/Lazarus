@@ -533,15 +533,4 @@ begin
   DrawBitBtnImage(TCustomBitBtn(AWinControl), AText);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomBitBtn, TWin32WSBitBtn);
-//  RegisterWSComponent(TCustomSpeedButton, TWin32WSSpeedButton);
-////////////////////////////////////////////////////
 end.

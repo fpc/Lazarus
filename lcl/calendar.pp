@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
-  
+
 type
   TDisplaySetting = (
     dsShowHeadings,
@@ -81,6 +81,7 @@ type
     function GetDate: String;
     procedure SetDate(const AValue: String);
   protected
+    class procedure WSRegisterClass; override;
     procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
@@ -104,6 +105,8 @@ type
   { TCalendar }
   
   TCalendar = class(TCustomCalendar)
+  protected
+    class procedure WSRegisterClass; override;
   published
     property Align;
     property Anchors;
@@ -199,6 +202,12 @@ begin
   FDateAsString := AValue;
   FDate := NewDate;
   SetProps;
+end;
+
+class procedure TCustomCalendar.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCalendar;
 end;
 
 function TCustomCalendar.GetDisplaySettings: TDisplaySettings;
@@ -309,7 +318,12 @@ begin
   if Assigned(OnChange) then OnChange(self);
 end;
 
-initialization
+{ TCalendar }
+
+class procedure TCalendar.WSRegisterClass;
+begin
   RegisterPropertyToSkip(TCalendar, 'ReadOnly', 'Obsoleted property', '');
+  inherited WSRegisterClass;
+end;
 
 end.

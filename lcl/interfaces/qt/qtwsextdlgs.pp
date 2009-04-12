@@ -90,21 +90,4 @@ type
 
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TPreviewFileControl, TQtWSPreviewFileControl);
-//  RegisterWSComponent(TPreviewFileDialog, TQtWSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TQtWSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TQtWSSavePictureDialog);
-//  RegisterWSComponent(TCalculatorDialog, TQtWSCalculatorDialog);
-//  RegisterWSComponent(TCalculatorForm, TQtWSCalculatorForm);
-//  RegisterWSComponent(TCalendarDialogForm, TQtWSCalendarDialogForm);
-//  RegisterWSComponent(TCalendarDialog, TQtWSCalendarDialog);
-////////////////////////////////////////////////////
 end.

@@ -46,11 +46,9 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, CheckLst,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls;
+  WSLCLClasses, WSStdCtrls, WSFactory;
 
 type
-  { TWSCheckListBox }
-
   { TWSCustomCheckListBox }
 
   TWSCustomCheckListBox = class(TWSCustomListBox)
@@ -66,6 +64,9 @@ type
   end;
   TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomCheckListBox;
 
 implementation
 
@@ -94,11 +95,17 @@ class procedure TWSCustomCheckListBox.SetState(
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
-////////////////////////////////////////////////////
+{ WidgetSetRegistration }
+
+procedure RegisterCustomCheckListBox;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCheckListBox;
+//  if not WSRegisterCustomCheckListBox then
+//    RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
+  Done := True;
+end;
+
 end.

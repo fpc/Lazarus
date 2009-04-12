@@ -15,6 +15,12 @@
  *****************************************************************************
 }
 
+class procedure TScrollBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterScrollBox;
+end;
+
 constructor TScrollBox.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);

@@ -17,6 +17,12 @@
  *****************************************************************************
 }
 
+class procedure TPopupMenu.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPopupMenu;
+end;
+
 {------------------------------------------------------------------------------
   procedure TPopupMenu.DoPopup(Sender: TObject);
 

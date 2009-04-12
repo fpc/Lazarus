@@ -82,6 +82,12 @@ begin
     FCustomColors.Values['Color' + Chr(Ord('A') + Index)] := IntToHex(AColor, 6);
 end;
 
+class procedure TColorDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterColorDialog;
+end;
+
 function TColorDialog.DefaultTitle: string;
 begin
   Result := rsSelectcolorTitle;

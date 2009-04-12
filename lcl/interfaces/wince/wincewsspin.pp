@@ -59,15 +59,6 @@ type
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
-  { TWinCEWSFloatSpinEdit }
-
-  TWinCEWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  private
-  protected
-  public
-  end;
-
-
 procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: Double;
   const ADecimalPlaces: integer);
 
@@ -209,15 +200,4 @@ begin
   UpdateFloatSpinEditControl(ACustomFloatSpinEdit.Handle, ACustomFloatSpinEdit);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomFloatSpinEdit, TWinCEWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TWinCEWSFloatSpinEdit);
-////////////////////////////////////////////////////
 end.

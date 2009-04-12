@@ -839,16 +839,4 @@ initialization
     menuiteminfosize := W95_MENUITEMINFO_SIZE
   else
     menuiteminfosize := sizeof(TMenuItemInfo);
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
-  RegisterWSComponent(TMenu, TWin32WSMenu);
-//  RegisterWSComponent(TMainMenu, TWin32WSMainMenu);
-  RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
-////////////////////////////////////////////////////
 end.

@@ -41,7 +41,7 @@ interface
 ////////////////////////////////////////////////////
 uses
   Classes, RubberBand,
-  WsControls;
+  WsControls, WSFactory;
 
 type
   { TWsCustomRubberBand }
@@ -52,6 +52,10 @@ type
   end;
   TWsCustomRubberBandClass = class of TWsCustomRubberBand;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomRubberBand;
+
 implementation
 
 { TWsCustomRubberBand }
@@ -61,11 +65,17 @@ class procedure TWsCustomRubberBand.SetShape(ARubberBand: TCustomRubberBand;
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-// RegisterWSComponent(TCustomRubberBand, TWSCustomRubberBand);
-////////////////////////////////////////////////////
+  { WidgetSetRegistration }
+
+procedure RegisterCustomRubberBand;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomRubberBand;
+//  if not WSRegisterCustomRubberBand then
+//    RegisterWSComponent(TCustomRubberBand, TWSCustomRubberBand);
+  Done := True;
+end;
+
 end.

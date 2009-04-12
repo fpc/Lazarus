@@ -154,6 +154,12 @@ begin
   Invalidate;
 end;
 
+class procedure TColorButton.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterColorButton;
+end;
+
 function TColorButton.GetDisabledPattern: TBitmap;
 const
   LineBitsDotted: array[0..7] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA);

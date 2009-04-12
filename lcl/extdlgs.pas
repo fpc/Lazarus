@@ -41,6 +41,7 @@ type
   private
     FPreviewFileDialog: TPreviewFileDialog;
   protected
+    class procedure WSRegisterClass; override;
     procedure SetPreviewFileDialog(const AValue: TPreviewFileDialog);
     procedure CreateParams(var Params: TCreateParams); override;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -57,6 +58,7 @@ type
   private
     FPreviewFileControl: TPreviewFileControl;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreatePreviewControl; virtual;
     procedure InitPreviewControl; virtual;
   public
@@ -75,6 +77,7 @@ type
     FPictureGroupBox: TGroupBox;
     FPreviewFilename: string;
   protected
+    class procedure WSRegisterClass; override;
     function  IsFilterStored: Boolean; virtual;
     property ImageCtrl: TImage read FImageCtrl;
     property PictureGroupBox: TGroupBox read FPictureGroupBox;
@@ -96,6 +99,8 @@ type
   { TSavePictureDialog }
 
   TSavePictureDialog = class(TOpenPictureDialog)
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -132,6 +137,7 @@ type
     procedure SetTitle(const AValue: string);
     function TitleStored: Boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure Change; dynamic;
     procedure CalcKey(var Key: char); dynamic;
     procedure DisplayChange; dynamic;
@@ -167,6 +173,7 @@ type
     procedure PasteItemClick(Sender: TObject);
     procedure SetValue(const AValue: Double);
   protected
+    class procedure WSRegisterClass; override;
     procedure OkClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
     procedure CalcKey(Sender: TObject; var Key: char);
@@ -206,6 +213,7 @@ Type
     FCalendar:TCalendar;
     function IsTitleStored: Boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
     procedure CalendarDblClick(Sender: TObject);
   public
@@ -227,7 +235,7 @@ Type
 procedure Register;
 
 implementation
-
+uses WSExtDlgs;
 
 procedure Register;
 begin
@@ -236,6 +244,12 @@ begin
 end;
 
 { TPreviewFileControl }
+
+class procedure TPreviewFileControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPreviewFileControl;
+end;
 
 procedure TPreviewFileControl.SetPreviewFileDialog(
   const AValue: TPreviewFileDialog);
@@ -265,6 +279,12 @@ end;
 
 { TPreviewFileDialog }
 
+class procedure TPreviewFileDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPreviewFileDialog;
+end;
+
 procedure TPreviewFileDialog.CreatePreviewControl;
 begin
   if FPreviewFileControl<>nil then exit;
@@ -291,6 +311,12 @@ begin
 end;
 
 { TOpenPictureDialog }
+
+class procedure TOpenPictureDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterOpenPictureDialog;
+end;
 
 function TOpenPictureDialog.IsFilterStored: Boolean;
 begin
@@ -400,6 +426,12 @@ begin
 end;
 
 { TSavePictureDialog }
+
+class procedure TSavePictureDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterSavePictureDialog;
+end;
 
 constructor TSavePictureDialog.Create(TheOwner: TComponent);
 begin
@@ -986,6 +1018,12 @@ begin
   Result:=Title <> rsCalculator;
 end;
 
+class procedure TCalculatorDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCalculatorDialog;
+end;
+
 function TCalculatorDialog.GetDisplay: Double;
 begin
   if Assigned(FCalc) then
@@ -1139,6 +1177,12 @@ begin
   TCalculatorPanel(FCalcPanel).DisplayValue:=AValue;
 end;
 
+class procedure TCalculatorForm.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCalculatorForm;
+end;
+
 procedure TCalculatorForm.OkClick(Sender: TObject);
 begin
   ModalResult:=mrOk;
@@ -1201,6 +1245,12 @@ end;
 function TCalendarDialog.IsTitleStored: Boolean;
 begin
   Result:=DialogTitle<>rsPickDate;//controllare
+end;
+
+class procedure TCalendarDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCalendarDialog;
 end;
 
 function TCalendarDialog.Execute:boolean;

@@ -66,6 +66,12 @@ begin
     ParentBidiModeChanged;
 end;
 
+class procedure TMenu.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterMenu;
+end;
+
 procedure TMenu.CMParentBiDiModeChanged(var Message: TLMessage);
 begin
   ParentBidiModeChanged;

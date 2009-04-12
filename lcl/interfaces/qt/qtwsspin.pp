@@ -62,13 +62,6 @@ type
 
   end;
 
-  { TQtWSFloatSpinEdit }
-
-  TQtWSFloatSpinEdit = class(TWSFloatSpinEdit)
-  published
-  end;
-
-
 implementation
 
 { TQtWSCustomFloatSpinEdit }
@@ -131,15 +124,4 @@ begin
     InternalUpdateControl(CurrentSpinWidget, ACustomFloatSpinEdit);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomFloatSpinEdit, TQtWSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TQtWSFloatSpinEdit);
-////////////////////////////////////////////////////
 end.

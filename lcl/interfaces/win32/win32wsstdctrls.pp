@@ -1582,35 +1582,4 @@ begin
   Result := Params.Window;
 end;
 
-
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TWin32WSComboBox);
-  RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
-//  RegisterWSComponent(TListBox, TWin32WSListBox);
-  RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
-//  RegisterWSComponent(TEdit, TWin32WSEdit);
-//  RegisterWSComponent(TMemo, TWin32WSMemo);
-  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
-  RegisterWSComponent(TCustomButton, TWin32WSButton);
-  RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
-//  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
-  RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
-  RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
-  RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TWin32WSStaticText);
-////////////////////////////////////////////////////
 end.

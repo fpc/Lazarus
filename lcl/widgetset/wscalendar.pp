@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Types, Calendar,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSCustomCalendar }
@@ -61,6 +61,9 @@ type
   end;
   TWSCustomCalendarClass = class of TWSCustomCalendar;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomCalendar;
 
 implementation
 
@@ -83,11 +86,17 @@ class procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCal
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
-////////////////////////////////////////////////////
+{ WidgetSetRegistration }
+
+procedure RegisterCustomCalendar;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomCalendar;
+//  if not WSRegisterCustomCalendar then
+//    RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
+  Done := True;
+end;
+
 end.

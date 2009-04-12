@@ -43,7 +43,7 @@ uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
-  Controls, ExtCtrls, PairSplitter, WSLCLClasses, WSControls;
+  Controls, ExtCtrls, PairSplitter, WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSPairSplitterSide }
@@ -66,12 +66,10 @@ type
   end;
   TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
 
-  { TWSPairSplitter }
+  { WidgetSetRegistration }
 
-  TWSPairSplitter = class(TWSCustomPairSplitter)
-  published
-  end;
-
+  procedure RegisterPairSplitterSide;
+  procedure RegisterCustomPairSplitter;
 
 implementation
 uses
@@ -198,13 +196,27 @@ begin
   end;
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-initialization
-//  RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
-  RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TWSPairSplitter);
-////////////////////////////////////////////////////
+  { WidgetSetRegistration }
+
+procedure RegisterPairSplitterSide;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterPairSplitterSide;
+//  if not WSRegisterPairSplitterSide then
+//    RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
+  Done := True;
+end;
+
+procedure RegisterCustomPairSplitter;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterCustomPairSplitter then
+    RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
+  Done := True;
+end;
+
 end.

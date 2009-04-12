@@ -129,6 +129,12 @@ begin
   else PictureChanged(Self);
 end;
 
+class procedure TCustomImage.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomImage;
+end;
+
 procedure TCustomImage.SetCenter(const AValue : Boolean);
 begin
   if FCenter = AValue then exit;

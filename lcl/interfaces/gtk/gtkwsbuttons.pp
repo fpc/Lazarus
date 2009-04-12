@@ -468,19 +468,4 @@ begin
   SignalConnect(AGtkWidget, 'state-changed', @GtkWSBitBtn_StateChanged, AWidgetInfo);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////                 
-{$ifdef gtk1}
-  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk1PrivateButton); // register it to fallback to default
-{$else}
-  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk2PrivateButton); // register it to fallback to default
-{$endif}  
-//  RegisterWSComponent(TCustomSpeedButton, TGtkWSSpeedButton);
-////////////////////////////////////////////////////
 end.

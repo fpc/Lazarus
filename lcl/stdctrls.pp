@@ -90,6 +90,7 @@ type
     procedure CNCtlColorScrollBar(var Message: TLMessage); message CN_CTLCOLORSCROLLBAR;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Change; dynamic;
@@ -159,6 +160,7 @@ type
 
   TCustomGroupBox = class (TWinControl)
   protected
+    class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); Override;
@@ -297,6 +299,7 @@ type
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure SetCharCase(eccCharCase: TEditCharCase);
   protected
+    class procedure WSRegisterClass; override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure DoEnter; override;
@@ -501,6 +504,7 @@ type
     procedure WMLButtonUp(Var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
     procedure BeginAutoDrag; override;
@@ -691,6 +695,7 @@ type
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
   protected
+    class procedure WSRegisterClass; override;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
@@ -781,6 +786,7 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
     function StoreScrollBars: boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
     function  RealGetText: TCaption; override;
@@ -950,6 +956,7 @@ type
     procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
+    class procedure WSRegisterClass; override;
     function GetLabelText: String ; virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1019,6 +1026,7 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     fLastCheckedOnChange: boolean;
+    class procedure WSRegisterClass; override;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
@@ -1064,6 +1072,7 @@ type
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure UpdateFocus(AFocused: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     procedure CreateWnd; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1160,6 +1169,7 @@ type
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
@@ -1184,6 +1194,9 @@ type
   end;
 
   // Normal checkbox
+
+  { TCheckBox }
+
   TCheckBox = class(TCustomCheckBox)
   published
     property Action;
@@ -1240,6 +1253,8 @@ type
 
   TToggleBox = class(TCustomCheckBox)
   private
+  protected
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1279,6 +1294,7 @@ type
 
   TRadioButton = class(TCustomCheckBox)
   protected
+    class procedure WSRegisterClass; override;
     procedure Click; override;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
@@ -1345,6 +1361,7 @@ type
     procedure SetAlignment(Value: TAlignment);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     function  CanTab: boolean; override;
     procedure DoMeasureTextPosition(var TextTop: integer;
       var TextLeft: integer); virtual;
@@ -1496,11 +1513,6 @@ end;
 {$I togglebox.inc}
 
 {$I customstatictext.inc}
-
-initialization
-  RegisterPropertyToSkip(TButtonControl, 'UseOnChange',
-    'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
-    '');
 
 end.
 

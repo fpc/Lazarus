@@ -1897,34 +1897,4 @@ begin
   gtk_range_set_value     (Range, AScrollBar.Position);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
-  RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
-//  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
-//  RegisterWSComponent(TComboBox, TGtk2WSComboBox);
-  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox, TGtk2PrivateList);
-//  RegisterWSComponent(TListBox, TGtk2WSListBox);
-  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
-//  RegisterWSComponent(TEdit, TGtk2WSEdit);
-//  RegisterWSComponent(TMemo, TGtk2WSMemo);
-//  RegisterWSComponent(TCustomLabel, TGtk2WSCustomLabel);
-//  RegisterWSComponent(TLabel, TGtk2WSLabel);
-//  RegisterWSComponent(TButtonControl, TGtk2WSButtonControl);
-  RegisterWSComponent(TCustomButton, TGtk2WSButton);
-//  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
-  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
-//  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);
-//  RegisterWSComponent(TRadioButton, TGtk2WSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TGtk2WSStaticText);
-////////////////////////////////////////////////////
 end.

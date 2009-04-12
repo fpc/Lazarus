@@ -64,13 +64,6 @@ type
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
-  { TWin32WSFloatSpinEdit }
-
-  TWin32WSFloatSpinEdit = class(TWSFloatSpinEdit)
-  published
-  end;
-
-
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
   const AFloatSpinEdit: TCustomFloatSpinEdit);
 procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
@@ -288,16 +281,4 @@ class procedure TWin32WSCustomFloatSpinEdit.UpdateControl(
 begin
   UpdateFloatSpinEditControl(ACustomFloatSpinEdit.Handle, ACustomFloatSpinEdit);
 end;
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomFloatSpinEdit, TWin32WSCustomFloatSpinEdit);
-//  RegisterWSComponent(TFloatSpinEdit, TWin32WSFloatSpinEdit);
-////////////////////////////////////////////////////
 end.

@@ -71,6 +71,12 @@ begin
   end;
 end;
 
+class procedure TGraphicControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterGraphicControl;
+end;
+
 procedure TGraphicControl.FontChanged(Sender: TObject);
 begin
   Canvas.Font:=Font;

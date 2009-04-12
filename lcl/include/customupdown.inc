@@ -245,6 +245,12 @@ begin
   end;
 end;
 
+class procedure TCustomUpDown.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomUpDown;
+end;
+
 procedure TCustomUpDown.UpdateOrientation;
 begin
   If FOrientation = udHorizontal then begin

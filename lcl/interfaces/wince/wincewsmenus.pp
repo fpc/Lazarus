@@ -596,18 +596,6 @@ initialization
   menuiteminfosize := SizeOf(TMenuItemInfo);
   MenuItemsList := TStringList.Create;
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TWinCEWSMenuItem);
-  RegisterWSComponent(TMenu, TWinCEWSMenu);
-//  RegisterWSComponent(TMainMenu, TWinCEWSMainMenu);
-  RegisterWSComponent(TPopupMenu, TWinCEWSPopupMenu);
-////////////////////////////////////////////////////
-
 finalization
   MenuItemsList.Free;
 

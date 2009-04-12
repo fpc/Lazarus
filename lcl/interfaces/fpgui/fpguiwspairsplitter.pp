@@ -55,15 +55,6 @@ type
   public
   end;
 
-  { TFpGuiWSPairSplitter }
-
-  TFpGuiWSPairSplitter = class(TWSPairSplitter)
-  private
-  protected
-  public
-  end;
-
-
 implementation
 
 initialization
@@ -76,6 +67,5 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TPairSplitterSide, TFpGuiWSPairSplitterSide);
 //  RegisterWSComponent(TCustomPairSplitter, TFpGuiWSCustomPairSplitter);
-//  RegisterWSComponent(TPairSplitter, TFpGuiWSPairSplitter);
 ////////////////////////////////////////////////////
 end.

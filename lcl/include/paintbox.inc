@@ -23,6 +23,12 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
+class procedure TPaintBox.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPaintBox;
+end;
+
 procedure TPaintBox.Paint;
 begin
   if csDesigning in ComponentState then begin

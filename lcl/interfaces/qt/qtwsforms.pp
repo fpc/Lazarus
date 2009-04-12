@@ -407,22 +407,4 @@ begin
   Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TQtWSScrollingWinControl);
-  RegisterWSComponent(TScrollBox, TQtWSScrollBox);
-  RegisterWSComponent(TCustomFrame, TQtWSCustomFrame);
-//  RegisterWSComponent(TFrame, TQtWSFrame);
-  RegisterWSComponent(TCustomForm, TQtWSCustomForm);
-//  RegisterWSComponent(TForm, TQtWSForm);
-  RegisterWSComponent(THintWindow, TQtWSHintWindow);
-//  RegisterWSComponent(TScreen, TQtWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TQtWSApplicationProperties);
-////////////////////////////////////////////////////
 end.

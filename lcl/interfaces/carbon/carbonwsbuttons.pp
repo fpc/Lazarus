@@ -109,15 +109,4 @@ begin
   TCarbonBitBtn(ABitBtn.Handle).SetLayout(AValue);
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomBitBtn, TCarbonWSBitBtn);
-  RegisterWSComponent(TCustomSpeedButton, TCarbonWSSpeedButton);
-////////////////////////////////////////////////////
 end.

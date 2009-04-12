@@ -30,30 +30,11 @@ uses
   Controls, Graphics, Grids, WSGrids, WSLCLClasses;
 
 type
-
-  { TGtkWSStringCellEditor }
-
-  TGtkWSStringCellEditor = class(TWSStringCellEditor)
-  published
-  end;
-
   { TGtkWSCustomGrid }
 
   TGtkWSCustomGrid = class(TWSCustomGrid)
   published
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-  end;
-
-  { TGtkWSDrawGrid }
-
-  TGtkWSDrawGrid = class(TWSDrawGrid)
-  published
-  end;
-
-  { TGtkWSStringGrid }
-
-  TGtkWSStringGrid = class(TWSStringGrid)
-  published
   end;
 
 
@@ -67,17 +48,4 @@ begin
   //
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TGtkWSStringCellEditor);
-  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TGtkWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TGtkWSStringGrid);
-////////////////////////////////////////////////////
 end.

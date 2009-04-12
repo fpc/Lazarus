@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Classes, Controls, Buttons, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls, WSControls, LCLType, LCLIntf;
+  WSLCLClasses, WSStdCtrls, WSControls, LCLType, LCLIntf, WSFactory;
 
 type
 
@@ -68,6 +68,10 @@ type
   published
   end;
 
+  { WidgetSetRegistration }
+
+  procedure RegisterCustomBitBtn;
+  procedure RegisterCustomSpeedButton;
 
 implementation 
 
@@ -95,13 +99,28 @@ class procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
 begin
 end;
 
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//initialization
-//  RegisterWSComponent(TCustomButton, TWSButton);
-//  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
-//  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
-////////////////////////////////////////////////////
+{ WidgetSetRegistration }
+
+procedure RegisterCustomBitBtn;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomBitBtn;
+//  if not WSRegisterCustomBitBtn then
+//    RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
+  Done := True;
+end;
+
+procedure RegisterCustomSpeedButton;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterCustomSpeedButton;
+//  if not WSRegisterCustomSpeedButton then
+//    RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
+  Done := True;
+end;
+
 end.

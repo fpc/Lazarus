@@ -46,6 +46,12 @@ begin
   PageIndex:=AValue;
 end;
 
+class procedure TTabSheet.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterTabSheet;
+end;
+
 constructor TTabSheet.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

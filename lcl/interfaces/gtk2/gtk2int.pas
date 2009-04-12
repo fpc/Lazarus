@@ -151,7 +151,6 @@ uses
 // Gtk2WSDbCtrls,
 // Gtk2WSDBGrids,
  Gtk2WSDialogs,
-// Gtk2WSDirSel,
 // Gtk2WSEditBtn,
  Gtk2WSExtCtrls,
 // Gtk2WSExtDlgs,
@@ -168,7 +167,8 @@ uses
  Gtk2Themes,
 ////////////////////////////////////////////////////
  GtkProc,
- GtkDebug;
+ GtkDebug,
+ Gtk2WSFactory;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}

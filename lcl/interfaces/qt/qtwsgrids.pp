@@ -39,44 +39,13 @@ uses
 
 type
 
-  { TQtWSStringCellEditor }
-
-  TQtWSStringCellEditor = class(TWSStringCellEditor)
-  published
-  end;
-
   { TQtWSCustomGrid }
 
   TQtWSCustomGrid = class(TWSCustomGrid)
   published
   end;
 
-  { TQtWSDrawGrid }
-
-  TQtWSDrawGrid = class(TWSDrawGrid)
-  published
-  end;
-
-  { TQtWSStringGrid }
-
-  TQtWSStringGrid = class(TWSStringGrid)
-  published
-  end;
-
 
 implementation
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TStringCellEditor, TQtWSStringCellEditor);
-//  RegisterWSComponent(TCustomGrid, TQtWSCustomGrid);
-//  RegisterWSComponent(TDrawGrid, TQtWSDrawGrid);
-//  RegisterWSComponent(TStringGrid, TQtWSStringGrid);
-////////////////////////////////////////////////////
 end.

@@ -4970,6 +4970,12 @@ begin
   end;
 end;
 
+class procedure TCustomTreeView.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomTreeView;
+end;
+
 { CustomDraw support }
 
 procedure TCustomTreeView.EditorEditingDone(Sender: TObject);

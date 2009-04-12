@@ -624,21 +624,4 @@ begin
   end;
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCommonDialog, TCarbonWSCommonDialog);
-  RegisterWSComponent(TFileDialog, TCarbonWSFileDialog);
-//  RegisterWSComponent(TOpenDialog, TCarbonWSOpenDialog);
-//  RegisterWSComponent(TSaveDialog, TCarbonWSSaveDialog);
-//  RegisterWSComponent(TSelectDirectoryDialog, TCarbonWSSelectDirectoryDialog);
-  RegisterWSComponent(TColorDialog, TCarbonWSColorDialog);
-//  RegisterWSComponent(TColorButton, TCarbonWSColorButton);
-  RegisterWSComponent(TFontDialog, TCarbonWSFontDialog);
-////////////////////////////////////////////////////
 end.

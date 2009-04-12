@@ -487,25 +487,4 @@ begin
   Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TWinCEWSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TWinCEWSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TWinCEWSPageControl);
-  RegisterWSComponent(TCustomListView, TWinCEWSCustomListView);
-//  RegisterWSComponent(TCustomListView, TWinCEWSListView);
-  RegisterWSComponent(TCustomProgressBar, TWinCEWSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TWinCEWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TWinCEWSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TWinCEWSToolButton);
-  RegisterWSComponent(TCustomTrackBar, TWinCEWSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TWinCEWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TWinCEWSTreeView);
-////////////////////////////////////////////////////
 end.

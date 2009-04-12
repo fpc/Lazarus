@@ -33,6 +33,12 @@ begin
   end;
 end;
 
+class procedure TCustomFloatSpinEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomFloatSpinEdit;
+end;
+
 function TCustomFloatSpinEdit.RealGetText: TCaption;
 begin
   if HandleAllocated then

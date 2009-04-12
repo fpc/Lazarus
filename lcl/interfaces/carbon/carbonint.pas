@@ -147,37 +147,7 @@ var
 implementation
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// CarbonWSActnList,
-  CarbonWSArrow,
-  CarbonWSButtons,
-// CarbonWSCalendar,
- CarbonWSCheckLst,
-  CarbonWSComCtrls,
-  CarbonWSControls,
-// CarbonWSDbCtrls,
-// CarbonWSDBGrids,
-  CarbonWSDialogs,
-// CarbonWSDirSel,
-// CarbonWSEditBtn,
-  CarbonWSExtCtrls,
-// CarbonWSExtDlgs,
-// CarbonWSFileCtrl,
-  CarbonWSForms,
-// CarbonWSGrids,
-// CarbonWSImgList,
-// CarbonWSMaskEdit,
-  CarbonWSMenus,
-  CarbonWSPairSplitter,
-  CarbonWSSpin,
-  CarbonWSStdCtrls,
-// CarbonWSToolwin,
-////////////////////////////////////////////////////
+  CarbonWSFactory,
   { these can/should go up }
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
   CarbonListViews, CarbonTabs,
@@ -205,7 +175,6 @@ end;
 
 
 initialization
-  {$I carbonimages.lrs}
   InternalInit;
 
 finalization
