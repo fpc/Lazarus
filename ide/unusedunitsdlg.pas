@@ -187,7 +187,7 @@ begin
         if UseCode then
           TVNode.StateIndex:=ImgIDInitialization
         else
-          TVNode.StateIndex:=ImgIDNone;
+          TVNode.StateIndex:=ImgIDInterface;
       end;
     end;
   end;
