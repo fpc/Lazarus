@@ -453,6 +453,9 @@ type
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function CreateVariableForIdentifier(Code: TCodeBuffer; X,Y,TopLine: integer;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function AddMethods(Code: TCodeBuffer; X,Y, TopLine: integer;
           ListOfPCodeXYPosition: TFPList;
           const VirtualToOverride: boolean;
@@ -3159,6 +3162,34 @@ begin
   try
     Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
                                            NewPos,NewTopLine,SourceChangeCache);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CreateVariableForIdentifier(Code: TCodeBuffer; X, Y,
+  TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.CreateVariableForIdentifier A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.CreateVariableForIdentifier(CursorPos,TopLine,
+                                             NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

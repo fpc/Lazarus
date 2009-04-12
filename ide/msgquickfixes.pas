@@ -37,6 +37,15 @@ uses
   
 type
 
+  { TQuickFixIdentifierNotFoundAddLocal }
+
+  TQuickFixIdentifierNotFoundAddLocal = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
   { TQuickFixUnitNotFoundPosition }
 
   TQuickFixUnitNotFoundPosition = class(TIDEMsgQuickFixItem)
@@ -161,6 +170,7 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
   RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
   RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
+  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
@@ -455,6 +465,64 @@ begin
     end;
 
     ShowAbstractMethodsDialog;
+  end;
+end;
+
+{ TQuickFixIdentifierNotFoundAddLocal }
+
+constructor TQuickFixIdentifierNotFoundAddLocal.Create;
+begin
+  Name:='Create local variable: Error: Identifier not found "identifier"';
+  Caption:='Create local variable';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+begin
+  Result:=(Line.Parts<>nil)
+          and (System.Pos(') Error: Identifier not found "',Line.Msg)>0);
+end;
+
+procedure TQuickFixIdentifierNotFoundAddLocal.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  Identifier: String;
+  CodeBuf: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute ']);
+    // get source position
+    // (FPC reports position right after the unknown identifier
+    //  for example right after FilenameIsAbsolute)
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get class name
+    if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
+      DebugLn('TQuickFixIdentifierNotFoundAddLocal invalid message ',Msg.Msg);
+      exit;
+    end;
+    Identifier:=REVar(1);
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier]);
+
+    if not CodeToolBoss.CreateVariableForIdentifier(CodeBuf,Caret.X,Caret.Y,-1,
+               NewCode,NewX,NewY,NewTopLine)
+    then begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // message fixed -> clean
+    Msg.Msg:='';
   end;
 end;
 

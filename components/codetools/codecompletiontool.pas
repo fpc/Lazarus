@@ -209,6 +209,9 @@ type
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
+    function CreateVariableForIdentifier(CursorPos: TCodeXYPosition; OldTopLine: integer;
+                          out NewPos: TCodeXYPosition; out NewTopLine: integer;
+                          SourceChangeCache: TSourceChangeCache): boolean;
     function AddMethods(CursorPos: TCodeXYPosition;// position in class declaration
                         OldTopLine: integer;
                         ListOfPCodeXYPosition: TFPList;
@@ -6607,6 +6610,38 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
   {$ENDIF}
+end;
+
+function TCodeCompletionCodeTool.CreateVariableForIdentifier(
+  CursorPos: TCodeXYPosition; OldTopLine: integer; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+begin
+  Result:=false;
+  NewPos:=CleanCodeXYPosition;
+  NewTopLine:=0;
+  if (SourceChangeCache=nil) then
+    RaiseException('need a SourceChangeCache');
+  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  CodeCompleteSrcChgCache:=SourceChangeCache;
+
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeCompletionCodeTool.CreateVariableForIdentifier A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
+  {$ENDIF}
+
+  // test if Local variable assignment (i:=3)
+  Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,
+                                CursorNode,NewPos,NewTopLine,SourceChangeCache);
+  if Result then exit;
+
+  // test if undeclared local variable as parameter (GetPenPos(x,y))
+  Result:=CompleteLocalVariableByParameter(CleanCursorPos,OldTopLine,
+                                CursorNode,NewPos,NewTopLine,SourceChangeCache);
+  if Result then exit;
 end;
 
 function TCodeCompletionCodeTool.AddMethods(CursorPos: TCodeXYPosition;
