@@ -427,20 +427,27 @@ function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   procedure Reposition(ADialogWnd: Handle);
   var
     Left, Top: Integer;
-    DialogRect: TRect;
+    ABounds, DialogRect: TRect;
   begin
     // Btw, setting width and height of dialog doesnot reposition child controls :(
     // So no way to set another height and width at least here
 
-    // do reposition only if dialog has no parent form
     if (GetParent(ADialogWnd) = Win32WidgetSet.AppHandle) then
     begin
-      GetWindowRect(ADialogWnd, @DialogRect);
-
-      Left := (GetSystemMetrics(SM_CXSCREEN) - DialogRect.Right + DialogRect.Left) div 2;
-      Top := (GetSystemMetrics(SM_CYSCREEN) - DialogRect.Bottom + DialogRect.Top) div 2;
-      SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
-    end;
+      if Screen.ActiveCustomForm <> nil then
+        ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
+      else
+      if Application.MainForm <> nil then
+        ABounds := Application.MainForm.Monitor.BoundsRect
+      else
+        ABounds := Screen.PrimaryMonitor.BoundsRect;
+    end
+    else
+      ABounds := Screen.MonitorFromWindow(GetParent(ADialogWnd)).BoundsRect;
+    GetWindowRect(ADialogWnd, @DialogRect);
+    Left := (ABounds.Right - DialogRect.Right + DialogRect.Left) div 2;
+    Top := (ABounds.Bottom - DialogRect.Bottom + DialogRect.Top) div 2;
+    SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
   end;
 
 var
