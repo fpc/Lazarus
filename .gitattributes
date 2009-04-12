@@ -610,6 +610,7 @@ interfaces/wince/wincewscontrols.pp svneol=native#text/plain
 interfaces/wince/wincewscustomlistview.inc svneol=native#text/plain
 interfaces/wince/wincewsdialogs.pp svneol=native#text/plain
 interfaces/wince/wincewsextctrls.pp svneol=native#text/plain
+interfaces/wince/wincewsfactory.pas svneol=native#text/pascal
 interfaces/wince/wincewsforms.pp svneol=native#text/plain
 interfaces/wince/wincewsimglist.pp svneol=native#text/pascal
 interfaces/wince/wincewsmenus.pp svneol=native#text/plain
