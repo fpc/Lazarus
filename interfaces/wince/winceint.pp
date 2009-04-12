@@ -255,22 +255,13 @@ var
 Implementation
 
 uses
- WinCEWSFactory,
- WinCEWSArrow,
- WinCEWSButtons,
- WinCEWSCalendar,
- WinCEWSCheckLst,
- WinCEWSComCtrls,
- WinCEWSControls,
- WinCEWSDialogs,
- WinCEWSExtCtrls,
- WinCEWSForms,
- WinCEWSImgList,
- WinCEWSMenus,
- WinCEWSSpin,
- WinCEWSStdCtrls,
+  WinCEWSFactory,
+  WinCEWSButtons,
+  WinCEWSExtCtrls,
+  WinCEWSMenus,
+  WinCEWSStdCtrls,
 ////////////////////////////////////////////////////
-  Arrow, Spin, CheckLst, LclProc, LCLMessageGlue;
+  Arrow, Spin, CheckLst, LCLProc, LCLMessageGlue;
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 
