@@ -741,8 +741,11 @@ begin
             UsesNode.StartPos,UsesNode.EndPos,'') then exit;
         end else begin
           // not last unit -> delete with comma behind
+          EndPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos);
+          if (EndPos>SrcLen) or (Src[EndPos] in [#10,#13]) then
+            StartPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);// delete space in front or even the empty line
           if not SourceChangeCache.Replace(gtNone,gtNone,
-            StartPos,CurPos.EndPos,'') then exit;
+            StartPos,EndPos,'') then exit;
         end;
       end else begin
         // not first unit in uses section -> delete with comma in front
