@@ -325,7 +325,16 @@ type
   end;
 
 
-  { TIdleTimer }
+  { TIdleTimer
+    For example:
+      Do something after 2 seconds after user input and idle.
+      AutoEnabled:=true;
+      AutoStartEvent:=[itaOnIdle];    // start the timer on first idle
+      AutoEndEvent:=[itaOnUserInput]; // end on any user input
+
+    If the OnTimer event works in several chunks, set FireOnIdle:=true.
+    The OnTimer event will then be called on idle until FireOnIdle is false.
+    FireOnIdle is set to false on any user input. }
 
   TIdleTimerAutoEvent = (
     itaOnIdle,
@@ -334,15 +343,16 @@ type
     );
   TIdleTimerAutoEvents = set of TIdleTimerAutoEvent;
 
+  { TCustomIdleTimer }
+
   TCustomIdleTimer = class(TCustomTimer)
   private
     FAutoEnabled: boolean;
     FAutoEndEvent: TIdleTimerAutoEvent;
     FAutoStartEvent: TIdleTimerAutoEvent;
+    FFireOnIdle: boolean;
     FHandlersConnected: boolean;
     procedure UpdateHandlers;
-    procedure SetAutoEndEvent(const AValue: TIdleTimerAutoEvent);
-    procedure SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
   protected
     procedure SetAutoEnabled(const AValue: boolean); virtual;
     procedure DoOnIdle(Sender: TObject; var Done: Boolean); virtual;
@@ -354,11 +364,12 @@ type
     destructor Destroy; override;
 
     property AutoEnabled: boolean read FAutoEnabled
-      write SetAutoEnabled default False;
+                                  write SetAutoEnabled default False;
     property AutoStartEvent: TIdleTimerAutoEvent read FAutoStartEvent
-      write SetAutoStartEvent default itaOnIdle;
+                                    write FAutoStartEvent default itaOnIdle;
     property AutoEndEvent: TIdleTimerAutoEvent read FAutoEndEvent
-      write SetAutoEndEvent default itaOnUserInput;
+                                 write FAutoEndEvent default itaOnUserInput;
+    property FireOnIdle: boolean read FFireOnIdle write FFireOnIdle default false;
   end;
 
   TIdleTimer = class(TCustomIdleTimer)

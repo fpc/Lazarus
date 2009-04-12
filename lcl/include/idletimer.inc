@@ -36,6 +36,10 @@ begin
     Enabled:=false;
   if AutoStartEvent=itaOnIdle then
     Enabled:=true;
+  if FFireOnIdle then begin
+    DoOnTimer;
+    Done:=not FFireOnIdle;
+  end;
 end;
 
 procedure TCustomIdleTimer.DoOnIdleEnd(Sender: TObject);
@@ -50,6 +54,7 @@ end;
 
 procedure TCustomIdleTimer.DoOnUserInput(Sender: TObject; Msg: Cardinal);
 begin
+  FireOnIdle:=false;
   if not AutoEnabled then exit;
   // automatic start, stop or restart
   if AutoEndEvent=itaOnUserInput then
@@ -97,18 +102,5 @@ begin
     FHandlersConnected:=false;
   end;
 end;
-
-procedure TCustomIdleTimer.SetAutoEndEvent(const AValue: TIdleTimerAutoEvent);
-begin
-  if FAutoEndEvent=AValue then exit;
-  FAutoEndEvent:=AValue;
-end;
-
-procedure TCustomIdleTimer.SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
-begin
-  if FAutoStartEvent=AValue then exit;
-  FAutoStartEvent:=AValue;
-end;
-
 
 // included by extctrls.pp
