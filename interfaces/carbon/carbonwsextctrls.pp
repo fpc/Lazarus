@@ -338,35 +338,5 @@ end;
 
 {$include carbontrayicon.inc}
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomPage, TCarbonWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TCarbonWSCustomNotebook);
-//  RegisterWSComponent(TPage, TCarbonWSPage);
-//  RegisterWSComponent(TNotebook, TCarbonWSNotebook);
-//  RegisterWSComponent(TShape, TCarbonWSShape);
-//  RegisterWSComponent(TCustomSplitter, TCarbonWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TCarbonWSSplitter);
-//  RegisterWSComponent(TPaintBox, TCarbonWSPaintBox);
-//  RegisterWSComponent(TCustomImage, TCarbonWSCustomImage);
-//  RegisterWSComponent(TImage, TCarbonWSImage);
-//  RegisterWSComponent(TBevel, TCarbonWSBevel);
-//  RegisterWSComponent(TCustomRadioGroup, TCarbonWSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TCarbonWSRadioGroup);
-//  RegisterWSComponent(TCustomCheckGroup, TCarbonWSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TCarbonWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TCarbonWSBoundLabel);
-//  RegisterWSComponent(TCustomLabeledEdit, TCarbonWSCustomLabeledEdit);
-//  RegisterWSComponent(TLabeledEdit, TCarbonWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TCarbonWSCustomPanel);
-//  RegisterWSComponent(TPanel, TCarbonWSPanel);
-  RegisterWSComponent(TCustomTrayIcon, TCarbonWSCustomTrayIcon);
-////////////////////////////////////////////////////
 end.
 

@@ -324,6 +324,7 @@ interfaces/carbon/carbonwscontrols.pp svneol=native#text/pascal
 interfaces/carbon/carbonwsdialogs.pp svneol=native#text/pascal
 interfaces/carbon/carbonwsextctrls.pp svneol=native#text/pascal
 interfaces/carbon/carbonwsextdlgs.pp svneol=native#text/pascal
+interfaces/carbon/carbonwsfactory.pas svneol=native#text/pascal
 interfaces/carbon/carbonwsfilectrl.pp svneol=native#text/pascal
 interfaces/carbon/carbonwsforms.pp svneol=native#text/pascal
 interfaces/carbon/carbonwsgrids.pp svneol=native#text/pascal

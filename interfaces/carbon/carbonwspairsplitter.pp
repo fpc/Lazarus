@@ -92,16 +92,4 @@ begin
   Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
 end;
 
-initialization
-
-
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TPairSplitterSide, TCarbonWSPairSplitterSide);
-  RegisterWSComponent(TCustomPairSplitter, TCarbonWSCustomPairSplitter);
 end.

@@ -694,29 +694,4 @@ begin
   TCarbonTrackBar(ATrackBar.Handle).SetPosition(ATrackBar.Position);
 end;
 
-
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TStatusBar, TCarbonWSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TCarbonWSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TCarbonWSPageControl);
-  RegisterWSComponent(TCustomListView, TCarbonWSCustomListView);
-//  RegisterWSComponent(TCustomListView, TCarbonWSListView);
-  RegisterWSComponent(TCustomProgressBar, TCarbonWSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TCarbonWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TCarbonWSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TCarbonWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TCarbonWSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TCarbonWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TCarbonWSToolBar);
-  RegisterWSComponent(TCustomTrackBar, TCarbonWSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TCarbonWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TCarbonWSTreeView);
-////////////////////////////////////////////////////
 end.

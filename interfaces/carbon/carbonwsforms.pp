@@ -235,23 +235,4 @@ begin
   Result := TLCLIntfHandle(TCarbonHintWindow.Create(AWinControl, AParams));
 end;
 
-initialization
-
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollingWinControl, TCarbonWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TCarbonWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TCarbonWSCustomFrame);
-//  RegisterWSComponent(TFrame, TCarbonWSFrame);
-  RegisterWSComponent(TCustomForm, TCarbonWSCustomForm);
-//  RegisterWSComponent(TForm, TCarbonWSForm);
-  RegisterWSComponent(THintWindow, TCarbonWSHintWindow);
-//  RegisterWSComponent(TScreen, TCarbonWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TCarbonWSApplicationProperties);
-////////////////////////////////////////////////////
-
 end.
