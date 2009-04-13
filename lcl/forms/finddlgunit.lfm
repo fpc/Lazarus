@@ -3,20 +3,19 @@ object FindDialogForm: TFindDialogForm
   Height = 103
   Top = 419
   Width = 444
-  HorzScrollBar.Page = 443
-  VertScrollBar.Page = 102
   ActiveControl = EditFind
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Find'
   ClientHeight = 103
   ClientWidth = 444
   OnCreate = FormCreate
-  Position = poDesktopCenter
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object FindLabel: TLabel
     Left = 6
-    Height = 20
+    Height = 14
     Top = 19
-    Width = 70
+    Width = 57
     Caption = 'Text to find'
     FocusControl = EditFind
     ParentColor = False
@@ -54,17 +53,17 @@ object FindDialogForm: TFindDialogForm
   end
   object WholeWordsOnlyCheckBox: TCheckBox
     Left = 6
-    Height = 22
+    Height = 17
     Top = 51
-    Width = 133
+    Width = 102
     Caption = 'Whole words only'
     TabOrder = 3
   end
   object CaseSensitiveCheckBox: TCheckBox
     Left = 6
-    Height = 22
+    Height = 17
     Top = 78
-    Width = 116
+    Width = 86
     Caption = 'Case sensitive'
     TabOrder = 4
   end
@@ -83,7 +82,7 @@ object FindDialogForm: TFindDialogForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 26
+    ClientHeight = 27
     ClientWidth = 193
     Columns = 2
     Items.Strings = (
