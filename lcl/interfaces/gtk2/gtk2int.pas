@@ -34,7 +34,7 @@ interface
 {$I gtkdefines.inc}
 
 uses
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
      XLib, X, //XUtil,
@@ -42,12 +42,9 @@ uses
   {$EndIf}
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
-  InterfaceBase,
-  LMessages, FileUtil, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
-  DynHashArray, GraphType, GraphMath, Graphics, Menus,
-  GtkWSControls, GTKWinApiWindow, StdCtrls, ComCtrls,
-  Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,
-  {Buttons, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
+  InterfaceBase, LMessages, LCLProc, LCLIntf, LCLType,
+  Controls, Graphics, StdCtrls, Forms, Themes,
+  GTKWinApiWindow, GTKGlobals,
   GtkDef, Gtk2Def, GtkFontCache, GtkInt, GtkExtra;
 
 type
@@ -133,42 +130,14 @@ implementation
   
 uses
 {$ifdef Windows}
- Gtk2Windows,
+  Gtk2Windows,
 {$endif}
+  Gtk2WSFactory,
+  Gtk2WSStdCtrls,
+  Gtk2Themes,
 ////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// Gtk2WSActnList,
-// Gtk2WSArrow,
-// Gtk2WSButtons,
- Gtk2WSCalendar,
- Gtk2WSCheckLst,
- Gtk2WSComCtrls,
- Gtk2WSControls,
-// Gtk2WSDbCtrls,
-// Gtk2WSDBGrids,
- Gtk2WSDialogs,
-// Gtk2WSEditBtn,
- Gtk2WSExtCtrls,
-// Gtk2WSExtDlgs,
-// Gtk2WSFileCtrl,
- Gtk2WSForms,
-// Gtk2WSGrids,
-// Gtk2WSImgList,
-// Gtk2WSMaskEdit,
- Gtk2WSMenus,
-// Gtk2WSPairSplitter,
- Gtk2WSSpin,
- Gtk2WSStdCtrls,
-// Gtk2WSToolwin,
- Gtk2Themes,
-////////////////////////////////////////////////////
- GtkProc,
- GtkDebug,
- Gtk2WSFactory;
+  GtkProc,
+  GtkDebug;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
