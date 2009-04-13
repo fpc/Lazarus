@@ -34,8 +34,8 @@ interface
   successful compilation.
 }
 uses
-  Windows, ActiveX, Classes, Translations, ComCtrls, Controls, Buttons, Dialogs,
-  DynHashArray, ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
+  Windows, ActiveX, Classes, Translations, ComCtrls, Controls, Buttons,
+  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   Themes{, Win32Debug};
 
@@ -250,38 +250,15 @@ implementation
 uses
   WsControls,
   Win32Proc,
+  Win32WSFactory,
+  Win32WSButtons,
+  Win32WSExtCtrls,
+  Win32WSMenus,
+  Win32WSSpin,
+  Win32WSStdCtrls,
+  Win32Themes,
 ////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as possible circles,
-// uncomment only those units with implementation
-////////////////////////////////////////////////////
-// Win32WSActnList,
- Win32WSArrow,
- Win32WSButtons,
- Win32WSCalendar,
- Win32WSCheckLst,
- Win32WSComCtrls,
- Win32WSControls,
-// Win32WSDbCtrls,
-// Win32WSDBGrids,
- Win32WSDialogs,
-// Win32WSEditBtn,
- Win32WSExtCtrls,
- Win32WSExtDlgs,
-// Win32WSFileCtrl,
- Win32WSForms,
- Win32WSGrids,
- Win32WSImgList,
-// Win32WSMaskEdit,
- Win32WSMenus,
- Win32WSPairSplitter,
- Win32WSSpin,
- Win32WSStdCtrls,
-// Win32WSToolwin,
- Win32Themes,
-////////////////////////////////////////////////////
- Arrow, Calendar, Spin, CheckLst, Win32Extra, LclProc, LCLMessageGlue, Win32WSFactory;
+  Arrow, Calendar, Spin, CheckLst, Win32Extra, LclProc, LCLMessageGlue;
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
