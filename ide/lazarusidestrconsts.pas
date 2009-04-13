@@ -1262,6 +1262,8 @@ resourcestring
   dlgFoldPasRepeat          = 'Repeat';
   dlgFoldPasCase            = 'Case';
   dlgFoldPasAsm             = 'Asm';
+  dlgFoldPasIfDef           = '{$IfDef}';
+  dlgFoldPasUserRegion      = '{%Region}';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';

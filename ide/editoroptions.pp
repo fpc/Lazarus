@@ -405,7 +405,7 @@ type
 
 const
 
-  EditorOptionsFoldInfoPas: Array [0..17] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..19] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure)-1;    Enabled: True),
@@ -445,15 +445,20 @@ const
        Index: ord(cfbtRecord)-1;       Enabled: True),
 
       (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
-       Index: ord(cfbtNestedComment)-1;Enabled: True)
+       Index: ord(cfbtNestedComment)-1;Enabled: True),
+
+      (Name:  dlgFoldPasIfDef;         Xml:     'IfDef';
+       Index: ord(cfbtIfDef)-1;        Enabled: False),
+      (Name:  dlgFoldPasUserRegion;    Xml:     'UserRegion';
+       Index: ord(cfbtRegion)-1;       Enabled: True)
     );
 
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
-      (Count: 18; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 18; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
+      (Count: 20; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 20; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
       (Count:  0; Info: nil), // lfm
       (Count:  0; Info: nil), // xml
       (Count:  0; Info: nil), // html

@@ -51,7 +51,9 @@ type
     LineOffset : Integer; (* Line-Number Offset to parent node
                              All line numbers are stored as offsets, for faster updates if lines are inserted/deleted *)
     LeftCount : Integer;  (* Lines folded in left tree. Used to calculate how many lines are folded up to a specified line *)
-    LineCount : Integer;  (* Amount of lines covered by this fold only *)
+    FullCount : Integer;  (* Amount of lines in source for this fold *)
+    LineCount : Integer;  (* Amount of lines folded away by this fold,
+                             FullCount + Lines covered by overlaps *)
 
     function TreeDepth: integer;           (* longest WAY down. Only one node => 1! *)
     function RecursiveFoldCount : Integer; (* Amount of lines covered by this and all child nodes *)
@@ -80,6 +82,7 @@ type
   TSynTextFoldAVLNode = object
   private
     function GetLineCount : Integer;
+    function GetFullCount : Integer;
   protected
     fData : TSynTextFoldAVLNodeData; // nil if unfolded
     fStartLine : Integer;            // start of folded
@@ -89,6 +92,7 @@ type
     function Next : TSynTextFoldAVLNode;
     function Prev : TSynTextFoldAVLNode;
     property LineCount : Integer read GetLineCount; // Zero, if Not in a fold
+    property FullCount : Integer read GetFullCount; // Zero, if Not in a fold
     property StartLine : Integer read fStartLine;   // 1st Line of Current Fold
     property FoldedBefore : Integer read fFoldedBefore;  // Count of Lines folded before Startline
   end;
@@ -139,6 +143,7 @@ type
     Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
     Function FindLastFold : TSynTextFoldAVLNode;
     Function FindFirstFold : TSynTextFoldAVLNode;
+    Function LastFoldedLine : integer; // The actual line; LastNode.StartLine + LastNode.LineCount - 1
     procedure debug;
   end;
 
@@ -461,6 +466,13 @@ begin
   else Result := fData.LineCount;
 end;
 
+function TSynTextFoldAVLNode.GetFullCount: Integer;
+begin
+  if fData = nil
+  then Result := -1
+  else Result := fData.FullCount;
+end;
+
 function TSynTextFoldAVLNode.IsInFold : Boolean;
 begin
   Result := fData <> nil;
@@ -546,7 +558,9 @@ begin
   end;
 end;
 
-function TSynTextFoldAVLTree.FindFoldForLine(ALine : Integer; FindNextNode : Boolean = False) : TSynTextFoldAVLNode;
+(* Find Fold by Line in Real Text *)
+function TSynTextFoldAVLTree.FindFoldForLine(ALine : Integer;
+  FindNextNode : Boolean = False) : TSynTextFoldAVLNode;
 var
   r : TSynTextFoldAVLNodeData;
   rStartLine : Integer;
@@ -557,7 +571,7 @@ begin
   rFoldedBefore := 0;
   while (r <> nil) do begin
     rStartLine := rStartLine + r.LineOffset;
-    
+
     if ALine < rStartLine then begin
       if FindNextNode and (r.Left = nil) then break;
       r := r.Left; // rStartLine points to r, so if r.Left is nil then it is pointing to the next fold;
@@ -582,7 +596,9 @@ begin
   Result.fFoldedBefore := rFoldedBefore; // always ok
 end;
 
-function TSynTextFoldAVLTree.FindFoldForFoldedLine(ALine : Integer; FindNextNode : Boolean) : TSynTextFoldAVLNode;
+(* Find Fold by Line in Folded Text // always returns unfolded, unless next=true *)
+function TSynTextFoldAVLTree.FindFoldForFoldedLine(ALine : Integer;
+  FindNextNode : Boolean) : TSynTextFoldAVLNode;
 var
   r : TSynTextFoldAVLNodeData;
   rStartLine : Integer;
@@ -594,6 +610,7 @@ begin
   while (r <> nil) do begin
     rStartLine := rStartLine + r.LineOffset;
 
+    // r.LeftCount => "FoldedBefore"
     if ALine + r.LeftCount < rStartLine then begin
       if FindNextNode and (r.Left = nil) then break;
       r := r.Left; // rStartLine points to r, so if r.Left is nil then it is pointing to the next fold;
@@ -618,74 +635,79 @@ begin
 end;
 
 procedure TSynTextFoldAVLTree.AdjustForLinesInserted(AStartLine, ALineCount : Integer);
-var
-  Current : TSynTextFoldAVLNodeData;
-  CurrentLine : Integer;
-begin
-  Current := fRoot;
-  CurrentLine := fRootOffset;
-  
-  while (Current <> nil) do begin
-    CurrentLine := CurrentLine + Current.LineOffset;
+  Procedure DoAdjustForLinesInserted(Current : TSynTextFoldAVLNodeData;
+    CurrentLine : Integer);
+  var
+    t: LongInt;
+  begin
+    while (Current <> nil) do begin
+      CurrentLine := CurrentLine + Current.LineOffset;
 
-    if AStartLine < CurrentLine then begin
-      // move current node
-      Current.LineOffset := Current.LineOffset + ALineCount;
-      CurrentLine := CurrentLine + ALineCount;
-      if Current.Left <> nil then
-        Current.Left.LineOffset := Current.Left.LineOffset - ALineCount;
-      Current := Current.Left;
-    end
-    else if AStartLine > CurrentLine + Current.LineCount - 1 then begin
-      // The new lines are entirly behind the current node
-      Current := Current.Right;
-    end
-    else begin
-      // grow current node
-      Current.LineCount := Current.LineCount + ALineCount;
-      Current.AdjustParentLeftCount(ALineCount);
-      TreeForNestedNode(Current, CurrentLine).AdjustForLinesInserted(AStartLine, ALineCount);
-      if Current.Right <> nil then // and move entire right
-        Current.Right.LineOffset := Current.Right.LineOffset + ALineCount;
-      break;
+      if AStartLine < CurrentLine then begin
+        // move current node
+        Current.LineOffset := Current.LineOffset + ALineCount;
+        CurrentLine := CurrentLine + ALineCount;
+        if Current.Left <> nil then
+          Current.Left.LineOffset := Current.Left.LineOffset - ALineCount;
+        Current := Current.Left;
+      end
+      else if AStartLine > CurrentLine + Current.LineCount - 1 then begin
+        // The new lines are entirly behind the current node
+        Current := Current.Right;
+      end
+      else begin
+        // grow current node
+        // CurrentLine <= AStartLine  <= CurrentLine + Current.FullCount - 1
+        t := Current.FullCount;
+        if AStartLine <= CurrentLine + t - 1 then
+          Current.FullCount := t + ALineCount;
+        Current.LineCount := Current.LineCount + ALineCount;
+        Current.AdjustParentLeftCount(ALineCount);
+        TreeForNestedNode(Current, CurrentLine).AdjustForLinesInserted(AStartLine, ALineCount);
+
+        if Current.Right <> nil then // and move entire right
+          Current.Right.LineOffset := Current.Right.LineOffset + ALineCount;
+        break;
+      end;
     end;
   end;
+
+begin
+  DoAdjustForLinesInserted(fRoot, fRootOffset);
 end;
 
-procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
-  Procedure UnfoldForRange(Current : TSynTextFoldAVLNodeData; CurrentLine, StartLine, LineCount : Integer);
-  begin
-    // unfold any node, that has either start or end line in the range
-  end;
-  
-  Procedure AdjustNodeForLinesDeleted(Current : TSynTextFoldAVLNodeData; CurrentLine, StartLine, LineCount : Integer);
+procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
+  ALineCount : Integer);
+  Procedure AdjustNodeForLinesDeleted(Current : TSynTextFoldAVLNodeData;
+    CurrentLine, FirstLineToDelete, CountLinesToDelete : Integer);
   var
-    EndLine, LinesBefore, LinesInside, LinesAfter, t : Integer;
+    LastLineToDelete, LinesBefore, LinesInside, LinesAfter, t : Integer;
   begin
-    EndLine := StartLine + LineCount - 1; // only valid for delete; LineCount < 0
+    LastLineToDelete := FirstLineToDelete + CountLinesToDelete - 1; // only valid for delete; CountLinesToDelete < 0
 
     while (Current <> nil) do begin
       CurrentLine := CurrentLine + Current.LineOffset;
 
-      if StartLine < CurrentLine then begin
+      if FirstLineToDelete < CurrentLine then begin
         // move current node
-        if EndLine >= CurrentLine then begin
+        if LastLineToDelete >= CurrentLine then begin
           // overlap => shrink
-          LinesBefore := CurrentLine - StartLine;
-          LinesInside := LineCount - LinesBefore;
+          LinesBefore := CurrentLine - FirstLineToDelete;
+          LinesInside := CountLinesToDelete - LinesBefore;
           // shrink
           t := Current.LineCount;
-          Current.LineCount := Max(Current.LineCount - LinesInside, -1);
+          Current.FullCount := Max(Current.FullCount - LinesInside, -1);
+          Current.LineCount := Max(Current.LineCount - LinesInside, 0);
           Current.AdjustParentLeftCount(Current.LineCount - t); // If LineCount = -1; LeftCount will be correctd on delete node
           TreeForNestedNode(Current, CurrentLine).AdjustForLinesDeleted(CurrentLine, LinesInside);
 
-          if (Current.Right <> nil) and (LinesInside > 0) then begin
+          if (Current.Right <> nil) then begin
             // move right // Calculate from the new curent.LineOffset, as below
             AdjustNodeForLinesDeleted(Current.Right, CurrentLine - LinesBefore,
-                                      StartLine, LinesInside);
+                                      FirstLineToDelete, LinesInside);
           end;
         end
-        else LinesBefore := LineCount;
+        else LinesBefore := CountLinesToDelete;
 
         // move current node (includes right subtree / left subtree needs eval)
         Current.LineOffset := Current.LineOffset - LinesBefore;
@@ -694,20 +716,24 @@ procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine, ALineCount : Int
           Current.Left.LineOffset := Current.Left.LineOffset + LinesBefore;
         Current := Current.Left;
       end
-      else if StartLine > CurrentLine + Current.LineCount - 1 then begin
+      else if FirstLineToDelete > CurrentLine + Current.LineCount - 1 then begin
         // The deleted lines are entirly behind the current node
         Current := Current.Right;
       end
-      else begin // (StartLine >= CurrentLine) AND (StartLine < CurrentLine - Current.LineCount);
-        LinesAfter  := EndLine - (CurrentLine + Current.LineCount - 1);
+      else begin
+        // (FirstLineToDelete >= CurrentLine) AND (FirstLineToDelete < CurrentLine + Current.LineCount);
+        LinesAfter  := LastLineToDelete - (CurrentLine + Current.LineCount - 1);
         if LinesAfter < 0 then LinesAfter := 0;
-        LinesInside := LineCount - LinesAfter;
+        LinesInside := CountLinesToDelete - LinesAfter;
+
         // shrink current node
         t := Current.LineCount;
         Current.LineCount := Current.LineCount - LinesInside;
-        Current.AdjustParentLeftCount(Current.LineCount - t);
-        TreeForNestedNode(Current, CurrentLine).AdjustForLinesDeleted(StartLine, LinesInside);
+        if Current.FullCount > Current.LineCount then
+          Current.FullCount := Current.LineCount;
+        Current.AdjustParentLeftCount(Current.LineCount - t); // If LineCount = -1; LeftCount will be correctd on delete node
 
+        TreeForNestedNode(Current, CurrentLine).AdjustForLinesDeleted(FirstLineToDelete, LinesInside);
         Current := Current.Right;
       end;
 
@@ -757,13 +783,25 @@ begin
   Result.fFoldedBefore := 0; // first fold
 end;
 
+function TSynTextFoldAVLTree.LastFoldedLine: integer;
+var
+  n: TSynTextFoldAVLNode;
+begin
+  n := FindFirstFold;
+  if not n.IsInFold then exit(0);
+  Result := n.StartLine + n.LineCount - 1;
+end;
+
 procedure TSynTextFoldAVLTree.debug;
   function debug2(ind, typ : String; ANode, AParent : TSynTextFoldAVLNodeData; offset : integer) :integer;
   begin
     result := 0;
     if ANode = nil then exit;
     with ANode do
-      DebugLn([ind,typ,' LineOffset: ',LineOffset,',  LineCount: ', LineCount,',  LeftCount: ',LeftCount,',  Balance: ',Balance,'    ##Line=', offset+LineOffset]);
+      DebugLn([Format('L=%3d -%3d:  %2d / %2d', [offset + ANode.LineOffset,
+                      offset + ANode.LineOffset + ANode.LineCount -1, LineCount,
+                      FullCount]), ind, typ, ' (',LineOffset, ')  LeftCount: ',
+               LeftCount, '     Balance: ',Balance]);
     if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
     Result := debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
     If Result <> ANode.LeftCount then  debugln([ind,'   ***** Leftcount was ',Result, ' but should be ', ANode.LeftCount]);
@@ -782,6 +820,7 @@ begin
   r := NewNode;
   r.LineOffset := ALine;
   r.LineCount  := ACount;
+  r.FullCount  := ACount;
   r.LeftCount  := 0;
   Result.fData  := r;
   Result.fStartLine := ALine;
@@ -807,53 +846,65 @@ function TSynTextFoldAVLTree.RemoveFoldForNodeAtLine(ANode : TSynTextFoldAVLNode
 var
   NestedNode, MergeNode : TSynTextFoldAVLNodeData;
   NestedLine : LongInt;
+  OnlyNested: Boolean;
 begin
+  OnlyNested := ALine >= ANode.StartLine + ANode.FullCount;
   // The cfCollapsed line is one line before the fold
   Result := ANode.StartLine-1;  // Return the cfcollapsed that was unfolded
-  RemoveNode(ANode.fData);
+  if not OnlyNested then
+    RemoveNode(ANode.fData);
 
   If ANode.fData.Nested <> nil then
   begin
     (*Todo: should we mark the tree as NO balancing needed ???*)
     TreeForNestedNode(ANode.fData, ANode.StartLine).RemoveFoldForLine(ALine, IgnoreFirst);
 
-    // merge the remaining nested into current
-    NestedNode := ANode.fData.Nested;
-    if NestedNode <> nil
-    then NestedLine := ANode.fStartLine + NestedNode.LineOffset;
-    
-    while NestedNode <> nil do begin
-      while NestedNode.Left <> nil do begin
-        NestedNode := NestedNode.Left;
-        NestedLine := NestedLine + NestedNode.LineOffset;
+    if not OnlyNested then begin
+      // merge the remaining nested into current
+      NestedNode := ANode.fData.Nested;
+      if NestedNode <> nil
+      then NestedLine := ANode.fStartLine + NestedNode.LineOffset;
+
+      while NestedNode <> nil do begin
+        while NestedNode.Left <> nil do begin
+          NestedNode := NestedNode.Left;
+          NestedLine := NestedLine + NestedNode.LineOffset;
+        end;
+
+        if NestedNode.Right <> nil then begin
+          NestedNode := NestedNode.Right;
+          NestedLine := NestedLine + NestedNode.LineOffset;
+          continue;
+        end;
+
+        // leaf node
+        // Anything that is still nested (MergeNode.Nested), will stay nested
+        MergeNode := NestedNode;
+
+        NestedLine := NestedLine - NestedNode.LineOffset;
+        NestedNode := NestedNode.Parent;
+
+        MergeNode.LineOffset := MergeNode.LineOffset + NestedLine;
+        if NestedNode <> nil then begin
+          NestedNode.ReplaceChild(MergeNode, nil);
+          MergeNode.Parent := nil;
+        end;
+        MergeNode.LeftCount := 0;
+        MergeNode.Balance   := 0;
+        InsertNode(MergeNode);
       end;
-
-      if NestedNode.Right <> nil then begin
-        NestedNode := NestedNode.Right;
-        NestedLine := NestedLine + NestedNode.LineOffset;
-        continue;
+    end
+    else begin
+      if ANode.LineCount > ANode.FullCount then begin
+        ANode.fData.LineCount := max(ANode.FullCount,
+                     TreeForNestedNode(ANode.fData, 0).LastFoldedLine + 1);
       end;
-
-      // leaf node
-      // Anything that is still nested (MergeNode.Nested), will stay nested
-      MergeNode := NestedNode;
-
-      NestedLine := NestedLine - NestedNode.LineOffset;
-      NestedNode := NestedNode.Parent;
-
-      MergeNode.LineOffset := MergeNode.LineOffset + NestedLine;
-      if NestedNode <> nil then begin
-        NestedNode.ReplaceChild(MergeNode, nil);
-        MergeNode.Parent := nil;
-      end;
-      MergeNode.LeftCount := 0;
-      MergeNode.Balance   := 0;
-      InsertNode(MergeNode);
     end;
-    
+
   end;
-  
-  DisposeNode(ANode.fData);
+
+  if not OnlyNested then
+    DisposeNode(ANode.fData);
 end;
 
 function TSynTextFoldAVLTree.InsertNode(ANode : TSynTextFoldAVLNodeData) : Integer;
@@ -863,14 +914,13 @@ var
 
   current, Nest : TSynTextFoldAVLNodeData;
   ALine, AEnd, ACount : Integer;
-  
+
+  (* ANode.StartLine < Current.StartLine // ANode goes into tree  *)
   procedure NestCurrentIntoNewBlock; inline;
   var
     diff, start2, before2 : Integer;
     p : TSynTextFoldAVLNodeData;
   begin
-    // TODO => Check if LineCount needs to be extended (part overlap/nesting)
-    //         include extension in below AdjustParentLeftCount
     current.AdjustParentLeftCount(ACount-current.LineCount); // -RecursiveFoldCount(current));
     rStartLine := rStartLine - current.LineOffset;  // rStarteLine is now current.Parent
     p := current.Parent;
@@ -901,17 +951,46 @@ var
       start2 := ALine; before2 := rFoldedBefore;
       p := ANode.Successor(start2, before2);
     end;
+    // check only after loop, if we gre, we did so by existing nodes, so no new overlaps
+    start2 := TreeForNestedNode(Anode, 0).LastFoldedLine;
+    if start2 > ANode.FullCount - 1 then begin
+      ANode.AdjustParentLeftCount(start2 + 1 - ANode.LineCount);
+      ANode.LineCount := start2 + 1;
+    end;
   end;
 
-  procedure NestNewBlockIntoCurrent; inline;
+  (* ANode.StartLine > Current.StartLine // Current remains in tree  *)
+  procedure NestNewBlockIntoCurrent; //inline;
+  var
+    end2, start2, before2: Integer;
+    p: TSynTextFoldAVLNodeData;
   begin
     // Check if current.LineCount needs extension
     ANode.LineOffset := ALine - rStartLine;
     if current.Nested <> nil
     then TreeForNestedNode(current, 0).InsertNode(ANode)
     else current.Nested := ANode;
-    // TODO => Find More Nodes (only if acount extended), that need to be nested => May include LineCount/LeftCount Adjustment
-    // TODO => BalanceAfterInsert (only if more nodes)
+
+    end2 := TreeForNestedNode(current, 0).LastFoldedLine;
+    if end2 > current.FullCount -1 then begin
+      end2 := rStartLine + end2;
+
+      start2 := rStartLine; before2 := rFoldedBefore;
+      p := current.Successor(start2, before2);
+      while (p <> nil) and (start2 <= end2) do begin
+        RemoveNode(p);
+        p.LineOffset := start2 - rStartLine;
+        TreeForNestedNode(current, 0).InsertNode(p);
+
+        start2 := rStartLine; before2 := rFoldedBefore;
+        p := current.Successor(start2, before2);
+      end;
+      end2 := TreeForNestedNode(current, 0).LastFoldedLine;
+      if end2 > current.FullCount -1 then begin
+        current.AdjustParentLeftCount(end2 + 1 - current.LineCount);
+        current.LineCount := end2 + 1;
+      end;
+    end;
   end;
 
 begin
@@ -971,7 +1050,7 @@ begin
         NestCurrentIntoNewBlock
       else begin
         debugln(['Droping Foldnode / Already exists. Startline=', rStartLine,' LineCount=',ACount]);
-        ANode.Free;
+        FreeAndNil(ANode);
       end;
     end
     else begin
@@ -985,7 +1064,7 @@ begin
           current := current.Right;
           continue;
         end
-        else if Nest=nil then Begin  // insert to the right - no nesting
+        else  if Nest=nil then Begin  // insert to the right - no nesting
           current.AdjustParentLeftCount(ACount);
           current.SetRightChild(ANode, -rStartLine);
           BalanceAfterInsert(ANode);
@@ -1661,11 +1740,13 @@ begin
 end;
 
 function TSynEditFoldedView.LengthForFoldAtTextIndex(ALine : Integer) : Integer;
+var
+  hl: TSynCustomFoldHighlighter;
 begin
   if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
   then exit(0);
-  Result := TSynCustomFoldHighlighter(FHighLighter).FoldLineLength(ALine,
-               TSynCustomFoldHighlighter(FHighLighter).FoldOpenCount(ALine) -1);
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+  Result := hl.FoldLineLength(ALine, hl.FoldOpenCount(ALine) -1);
 end;
 
 procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer);
@@ -1719,20 +1800,21 @@ end;
 
 procedure TSynEditFoldedView.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
 var
-  i, l, top: Integer;
+  i, l, top, t: Integer;
   hl: TSynCustomFoldHighlighter;
 begin
   if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
   then exit;
   FHighLighter.CurrentLines := fLines;
   hl := TSynCustomFoldHighlighter(FHighLighter);
+  t := 1; // TODO: Highlighter default type; or iterate through all types
 
   top := TopTextIndex;
   fFoldTree.Clear;
   i := 0;
   while i < fLines.Count do begin
-    if (hl.FoldOpenCount(i) > 0)
-    and (hl.FoldNestCount(i) > StartLevel) then begin
+    if (hl.FoldOpenCount(i, t) > 0)
+    and (hl.FoldNestCount(i, t) > StartLevel) then begin
       l := LengthForFoldAtTextIndex(i);
       // i is 0-based
       // FoldTree is 1-based AND first line remains visble
@@ -1777,8 +1859,8 @@ begin
   FHighLighter.CurrentLines := fLines;
   hl := TSynCustomFoldHighlighter(FHighLighter);
 
-  // LineCount is allowed to be -1
-  while node.IsInFold and (node.StartLine + node.LineCount + 1 >= AStart) do begin
+  // FullCount is allowed to be -1
+  while node.IsInFold and (node.StartLine + node.FullCount + 1 >= AStart) do begin
     tmpnode := node.Prev;
     if tmpnode.IsInFold then
       node := tmpnode
@@ -1790,7 +1872,7 @@ begin
   LastCount := -2;
   while node.IsInFold do begin
     line := node.StartLine - 1; // the 1-based cfCollapsed (last visible) Line
-    cnt := node.LineCount;
+    cnt := node.FullCount;
     if ((LastStart = line) and (LastCount = cnt)) or (cnt < 0) then begin
       // Same node as previous or fully deleted
       tmpnode := node.Prev;
@@ -1803,7 +1885,7 @@ begin
     LastCount := cnt;
 
     // look at the 0-based cfCollapsed (visible) Line
-    if not(hl.FoldOpenCount(line - 1) > 0) then begin
+    if (hl.FoldOpenCount(line - 1) <= 0) then begin
       // the Fold-Begin of this node has gone
       tmpnode := node.Prev;
       aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
@@ -1813,7 +1895,7 @@ begin
     end;
 
     a:= LengthForFoldAtTextIndex(line-1);
-    if not(cnt = a) then begin
+    if (cnt <> a) then begin
       // the Fold-End of this node has gone or moved
       tmpnode := node.Prev;
       aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
@@ -1823,8 +1905,14 @@ begin
     end;
 
     if (node.fData.Nested <> nil)
-    and (FixFolding(line, line+1+node.LineCount, aFoldTree.TreeForNestedNode(node.fData.Nested, line+1)))
-    then continue;
+    and (FixFolding(line, line+1+node.FullCount, aFoldTree.TreeForNestedNode(node.fData, line+1)))
+    then begin
+      if node.LineCount > node.FullCount then begin
+        node.fData.LineCount := max(node.FullCount,
+          aFoldTree.TreeForNestedNode(node.fData, 0).LastFoldedLine + 1);
+      end;
+      continue;
+    end;
 
     // the node was ok
     if node.StartLine >= AMinEnd then break;

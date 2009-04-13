@@ -144,14 +144,16 @@ type
     function CurrentCodeFoldBlockLevel: integer; virtual;
 
     // requires CurrentLines;
-    function MinimumFoldLevel(Index: Integer): integer; virtual; abstract;
-    function EndFoldLevel(Index: Integer): integer; virtual; abstract;
+    function MinimumFoldLevel(Index: Integer): integer; virtual; abstract;      // TODO: Move to Fold*
+    function EndFoldLevel(Index: Integer): integer; virtual; abstract;          // TODO: Replace with FoldNestCount
 
     // fold-nodes that can be collapsed
     // Highlighter can join several fold structures Or leave out some
-    function FoldOpenCount(ALineIndex: Integer): integer; virtual;
-    function FoldCloseCount(ALineIndex: Integer): integer; virtual;
-    function FoldNestCount(ALineIndex: Integer): integer; virtual;
+    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
+    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
+    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
+    function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
+             UseCloseNodes: boolean = false): integer; virtual;
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
 
     // All fold-nodes
@@ -300,17 +302,23 @@ begin
     Result:=0;
 end;
 
-function TSynCustomFoldHighlighter.FoldOpenCount(ALineIndex: Integer): integer;
+function TSynCustomFoldHighlighter.FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;
 begin
   result := 0;
 end;
 
-function TSynCustomFoldHighlighter.FoldCloseCount(ALineIndex: Integer): integer;
+function TSynCustomFoldHighlighter.FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer;
 begin
   result := 0;
 end;
 
-function TSynCustomFoldHighlighter.FoldNestCount(ALineIndex: Integer): integer;
+function TSynCustomFoldHighlighter.FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer;
+begin
+  Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
+  UseCloseNodes: boolean): integer;
 begin
   Result := 0;
 end;
