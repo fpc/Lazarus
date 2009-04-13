@@ -205,7 +205,6 @@ type
 implementation
 
 uses
-  dialogs,
   WSImglist;
 
 {$I imglist.inc}

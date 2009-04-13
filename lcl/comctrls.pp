@@ -41,7 +41,7 @@ uses
   SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
   FileUtil, LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType,
   Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
-  Themes, WSLCLClasses, InterfaceBase;
+  Themes;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
