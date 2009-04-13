@@ -66,6 +66,8 @@ type
   end;
 
 implementation
+uses
+  LazarusIDEStrConsts;
 
 { TAssemblerDlg }
 
@@ -93,6 +95,7 @@ begin
 
   pbAsm.Font.Name := EditorOpts.EditorFont;
   pbAsm.Font.Height := EditorOpts.EditorFontHeight;
+  Caption := lisMenuViewAssembler;
 end;
 
 destructor TAssemblerDlg.Destroy;

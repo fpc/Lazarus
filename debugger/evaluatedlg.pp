@@ -77,7 +77,7 @@ type
 
 implementation
 uses
-  IDEImagesIntf;
+  IDEImagesIntf, LazarusIDEStrConsts;
 
 { TEvaluateDlg }
 
@@ -85,6 +85,7 @@ constructor TEvaluateDlg.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
 
+  Caption := lisKMEvaluateModify;
   IDEDialogLayoutList.ApplyLayout(Self, 400, 290);
   cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
 

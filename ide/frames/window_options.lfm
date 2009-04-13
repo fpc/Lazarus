@@ -4,8 +4,8 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
   ClientHeight = 396
   ClientWidth = 463
   Visible = False
-  DesignLeft = 176
-  DesignTop = 232
+  DesignLeft = 154
+  DesignTop = 203
   object MinimizeAllOnMinimizeMainCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner

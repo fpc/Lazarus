@@ -241,7 +241,7 @@ resourcestring
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';
   lisMenuAddJumpPointToHistory = 'Add jump point to history';
-  lisMenuViewJumpHistory = 'View Jump-History ...';
+  lisMenuViewJumpHistory = 'Jump-History ...';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find other end of code block';
   lisMenuFindCodeBlockStart = 'Find code block start';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
@@ -262,9 +262,9 @@ resourcestring
   lisMenuJumpTo = 'Jump to';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
-  lisMenuViewUnitDependencies = 'View Unit Dependencies';
+  lisMenuViewUnitDependencies = 'Unit Dependencies';
   lisKMViewUnitInfo = 'View Unit Info';
-  lisMenuViewUnitInfo = 'View Unit Information';
+  lisMenuViewUnitInfo = 'Unit Information';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisCopySelectedMessagesToClipboard = 'Copy selected messages to clipboard';

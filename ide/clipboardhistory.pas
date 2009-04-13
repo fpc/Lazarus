@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, SynEdit, EditorOptions, StdCtrls,
-  IDEOptionDefs, Math, EnvironmentOpts, ClipBrd;
+  IDEOptionDefs, Math, EnvironmentOpts, ClipBrd, LazarusIDEStrConsts;
   
 type
   TClipBoardHistory = class(TForm)

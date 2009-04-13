@@ -149,7 +149,19 @@ begin
     nmiwPkgGraphExplorer: Result := lisMenuPackageGraph;
     nmiwProjectInspector: Result := lisMenuProjectInspector;
     nmiwUnitDependenciesName: Result := dlgUnitDepCaption;
+    nmiwDbgOutput: Result := lisMenuViewDebugOutput;
+    nmiwBreakPoints: Result := lisMenuViewBreakPoints;
+    nmiwWatches: Result := liswlWatchList;
+    nmiwLocals: Result := lisLocals;
+    nmiwCallStack: Result := lisMenuViewCallStack;
+    nmiwEvaluate: Result := lisKMEvaluateModify;
+    nmiwRegisters: Result := lisRegisters;
+    nmiwAssembler: Result := lisMenuViewAssembler;
+    nmiwSearchResultsViewName: Result := lisMenuViewSearchResults;
     nmiwAnchorEditor: Result := lisMenuViewAnchorEditor;
+    nmiwCodeBrowser: Result := lisCodeBrowser;
+    nmiwIssueBrowser: Result := lisMenuViewRestrictionBrowser;
+    nmiwJumpHistory: Result := lisMenuViewJumpHistory;
   else
     Result := NonModalIDEWindowNames[AWindow];
   end;
