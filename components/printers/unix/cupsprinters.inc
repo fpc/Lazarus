@@ -1048,7 +1048,6 @@ begin
 end;
 
 procedure TCUPSPrinter.DoSetOrientation(aValue: TPrinterOrientation);
-var St : String;
 begin
   if aValue=DoGetOrientation then
     exit;
