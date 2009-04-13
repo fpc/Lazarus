@@ -10,6 +10,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object DirectoryGroupbox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -92,7 +93,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Width = 512
       Align = alClient
       BorderSpacing.Around = 6
-      CFDividerDrawLevel = 0
       Font.Height = -15
       Font.Name = 'courier'
       Font.Pitch = fpFixed
@@ -101,7 +101,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
-      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Gutter.Width = 0
       Keystrokes = <      
@@ -436,7 +435,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           Width = 23
         end
         object TSynGutterLineNumber
-          Width = 17
+          Width = 25
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
           DigitCount = 2

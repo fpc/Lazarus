@@ -8,6 +8,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   ClientHeight = 421
   ClientWidth = 387
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ButtonPanel1: TButtonPanel
     Left = 6
@@ -36,7 +37,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Width = 359
       Align = alClient
       BorderSpacing.Around = 6
-      CFDividerDrawLevel = 0
       Font.Height = -14
       Font.Name = 'courier'
       Font.Pitch = fpFixed
@@ -45,7 +45,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
-      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Gutter.Width = 0
       Highlighter = SynPasSyn1
@@ -380,7 +379,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
           Width = 23
         end
         object TSynGutterLineNumber
-          Width = 17
+          Width = 25
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
           DigitCount = 2

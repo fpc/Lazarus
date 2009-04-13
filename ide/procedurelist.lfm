@@ -1,22 +1,23 @@
 object ProcedureListForm: TProcedureListForm
-  Left = 66
-  Height = 507
-  Top = 78
-  Width = 760
+  Left = 289
+  Height = 688
+  Top = 140
+  Width = 952
   ActiveControl = cbObjects
   Caption = 'Procedure List - '
-  ClientHeight = 507
-  ClientWidth = 760
+  ClientHeight = 688
+  ClientWidth = 952
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
-  Position = poDefault
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object StatusBar: TStatusBar
+    Left = 0
     Height = 23
-    Top = 484
-    Width = 760
+    Top = 665
+    Width = 952
     Panels = <    
       item
         Width = 400
@@ -27,8 +28,10 @@ object ProcedureListForm: TProcedureListForm
     SimplePanel = False
   end
   object TB: TToolBar
+    Left = 0
     Height = 26
-    Width = 760
+    Top = 0
+    Width = 952
     Caption = 'TB'
     TabOrder = 1
     object tbAbout: TToolButton
@@ -123,14 +126,15 @@ object ProcedureListForm: TProcedureListForm
     end
   end
   object pnlHeader: TPanel
+    Left = 0
     Height = 35
     Top = 26
-    Width = 760
+    Width = 952
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 35
-    ClientWidth = 760
+    ClientWidth = 952
     ParentColor = False
     TabOrder = 2
     object lblSearch: TLabel
@@ -149,7 +153,7 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
-      Left = 389
+      Left = 581
       Height = 14
       Top = 10
       Width = 38
@@ -168,7 +172,7 @@ object ProcedureListForm: TProcedureListForm
       Left = 46
       Height = 21
       Top = 6
-      Width = 325
+      Width = 517
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -184,13 +188,15 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideRight.Control = pnlHeader
       AnchorSideRight.Side = asrBottom
-      Left = 433
+      Left = 625
       Height = 21
       Top = 6
       Width = 321
       Anchors = [akTop, akLeft, akRight]
+      AutoComplete = False
       BorderSpacing.Around = 6
       ItemHeight = 13
+      ItemWidth = 0
       OnChange = cbObjectsChange
       Sorted = True
       Style = csDropDownList
@@ -198,9 +204,10 @@ object ProcedureListForm: TProcedureListForm
     end
   end
   object LV: TListView
-    Height = 423
+    Left = 0
+    Height = 604
     Top = 61
-    Width = 760
+    Width = 952
     Align = alClient
     Columns = <    
       item
