@@ -99,7 +99,7 @@ uses
     uses Controls, qtobjects, qtwidgets, qt4, FileUtil;
     {$I qtprndialogs.inc}
    {$ELSE}
-uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
+uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
 {$I cupsprndialogs.inc}
   {$ENDIF}
   {$ENDIF}

@@ -1,0 +1,223 @@
+object framePageSetup: TframePageSetup
+  Left = 0
+  Height = 435
+  Top = 0
+  Width = 403
+  ClientHeight = 431
+  ClientWidth = 399
+  TabOrder = 0
+  DesignLeft = 427
+  DesignTop = 126
+  object panSetup: TPanel
+    Left = 0
+    Height = 211
+    Top = 220
+    Width = 399
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 211
+    ClientWidth = 399
+    TabOrder = 0
+    object gpPaper: TGroupBox
+      Left = 6
+      Height = 98
+      Top = 6
+      Width = 387
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'Paper'
+      ClientHeight = 81
+      ClientWidth = 383
+      TabOrder = 0
+      object lblPaper: TLabel
+        Left = 14
+        Height = 16
+        Top = 11
+        Width = 41
+        Caption = 'Paper:'
+        ParentColor = False
+      end
+      object lblSource: TLabel
+        Left = 14
+        Height = 16
+        Top = 51
+        Width = 49
+        Caption = 'Source:'
+        ParentColor = False
+      end
+      object cbPaper: TComboBox
+        Left = 78
+        Height = 29
+        Top = 3
+        Width = 298
+        Anchors = [akTop, akLeft, akRight]
+        AutoComplete = False
+        ItemHeight = 0
+        ItemWidth = 0
+        OnChange = cbPaperChange
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object cbSource: TComboBox
+        Left = 78
+        Height = 29
+        Top = 43
+        Width = 298
+        Anchors = [akTop, akLeft, akRight]
+        AutoComplete = False
+        ItemHeight = 0
+        ItemWidth = 0
+        Style = csDropDownList
+        TabOrder = 1
+      end
+    end
+    object gpOrientation: TGroupBox
+      Left = 6
+      Height = 95
+      Top = 110
+      Width = 120
+      Align = alLeft
+      BorderSpacing.Around = 6
+      Caption = 'Orientation'
+      ClientHeight = 78
+      ClientWidth = 116
+      TabOrder = 1
+      object radPortrait: TRadioButton
+        Left = 14
+        Height = 22
+        Top = 14
+        Width = 71
+        Caption = 'Portrait'
+        Checked = True
+        OnClick = radPortraitClick
+        State = cbChecked
+        TabOrder = 0
+      end
+      object radLandscape: TRadioButton
+        Left = 14
+        Height = 22
+        Top = 44
+        Width = 92
+        Caption = 'Landscape'
+        OnClick = radPortraitClick
+        TabOrder = 1
+        TabStop = False
+      end
+    end
+    object gpMargins: TGroupBox
+      Left = 132
+      Height = 95
+      Top = 110
+      Width = 261
+      Align = alClient
+      BorderSpacing.Around = 6
+      Caption = 'Margins'
+      ClientHeight = 78
+      ClientWidth = 257
+      TabOrder = 2
+      object panMargins: TPanel
+        AnchorSideLeft.Control = gpMargins
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = gpMargins
+        AnchorSideTop.Side = asrCenter
+        Left = 4
+        Height = 72
+        Top = 3
+        Width = 249
+        BevelOuter = bvSpace
+        ClientHeight = 72
+        ClientWidth = 249
+        TabOrder = 0
+        object lblBottom: TLabel
+          Left = 127
+          Height = 16
+          Top = 50
+          Width = 50
+          Caption = 'Bottom:'
+          ParentColor = False
+        end
+        object lblTop: TLabel
+          Left = 6
+          Height = 16
+          Top = 48
+          Width = 26
+          Caption = 'Top:'
+          ParentColor = False
+        end
+        object lblRight: TLabel
+          Left = 127
+          Height = 16
+          Top = 14
+          Width = 37
+          Caption = 'Right:'
+          ParentColor = False
+        end
+        object lblLeft: TLabel
+          Left = 6
+          Height = 16
+          Top = 14
+          Width = 28
+          Caption = 'Left:'
+          ParentColor = False
+        end
+        object txtBottom: TEdit
+          Left = 183
+          Height = 23
+          Top = 43
+          Width = 64
+          TabOrder = 0
+        end
+        object txtTop: TEdit
+          Left = 40
+          Height = 23
+          Top = 43
+          Width = 56
+          TabOrder = 1
+        end
+        object txtRight: TEdit
+          Left = 183
+          Height = 23
+          Top = 7
+          Width = 64
+          TabOrder = 2
+        end
+        object txtLeft: TEdit
+          Left = 40
+          Height = 23
+          Top = 7
+          Width = 56
+          TabOrder = 3
+        end
+      end
+    end
+  end
+  object panPreview: TPanel
+    AnchorSideTop.Control = panSetup
+    Left = 0
+    Height = 220
+    Top = 0
+    Width = 399
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 220
+    ClientWidth = 399
+    Constraints.MinHeight = 142
+    TabOrder = 1
+    OnMouseDown = pbPreviewMouseDown
+    OnResize = panPreviewResize
+    object pbPreview: TPaintBox
+      AnchorSideLeft.Control = panPreview
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = panPreview
+      AnchorSideTop.Side = asrCenter
+      Left = 149
+      Height = 130
+      Top = 45
+      Width = 100
+      OnMouseDown = pbPreviewMouseDown
+      OnMouseWheelDown = pbPreviewMouseWheelDown
+      OnMouseWheelUp = pbPreviewMouseWheelUp
+      OnPaint = pbPreviewPaint
+    end
+  end
+end

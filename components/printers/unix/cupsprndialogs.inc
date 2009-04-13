@@ -100,8 +100,17 @@ end;
 { TPrintDialog }
 
 function TPageSetupDialog.Execute: Boolean;
+var
+  Dlg: TDlgPageSetup;
 begin
-  Result := true;
+  Dlg:=TdlgPageSetup.Create(nil);
+  try
+    Result:=(Dlg.ShowModal=mrOk);
+    if Result then begin
+    end;
+  finally
+    Dlg.Free;
+  end;
 end;
 
 

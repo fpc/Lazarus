@@ -1,0 +1,9 @@
+object framePrinterSel: TframePrinterSel
+  Left = 0
+  Height = 179
+  Top = 0
+  Width = 405
+  TabOrder = 0
+  DesignLeft = 364
+  DesignTop = 261
+end

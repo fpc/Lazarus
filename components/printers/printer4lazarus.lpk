@@ -5,16 +5,13 @@
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="unix\;win32\;carbon\;qt\"/>
         <OtherUnitFiles Value="unix\;win32\;carbon\;qt\"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CustomOptions Value="-dUseCache
 -dNativePrint
@@ -28,7 +25,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="32">
+    <Files Count="43">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -163,6 +160,50 @@
         <Filename Value="carbon\issues.xml"/>
         <Type Value="Issues"/>
       </Item32>
+      <Item33>
+        <Filename Value="unix\udlgpagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item33>
+      <Item34>
+        <Filename Value="unix\udlgpagesetup.lrs"/>
+        <Type Value="LRS"/>
+      </Item34>
+      <Item35>
+        <Filename Value="unix\udlgpagesetup.pas"/>
+        <UnitName Value="udlgpagesetup"/>
+      </Item35>
+      <Item36>
+        <Filename Value="unix\framepagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item36>
+      <Item37>
+        <Filename Value="unix\framepagesetup.lrs"/>
+        <Type Value="LRS"/>
+      </Item37>
+      <Item38>
+        <Filename Value="unix\framepagesetup.pas"/>
+        <UnitName Value="framePageSetup"/>
+      </Item38>
+      <Item39>
+        <Filename Value="unix\frameprinterselector.lfm"/>
+        <Type Value="LFM"/>
+      </Item39>
+      <Item40>
+        <Filename Value="unix\frameprinterselector.lrs"/>
+        <Type Value="LRS"/>
+      </Item40>
+      <Item41>
+        <Filename Value="unix\frameprinterselector.pas"/>
+        <UnitName Value="frameprinterselector"/>
+      </Item41>
+      <Item42>
+        <Filename Value="unix\udlgprintersetup.pas"/>
+        <UnitName Value="udlgprintersetup"/>
+      </Item42>
+      <Item43>
+        <Filename Value="unix\cupslcl.pas"/>
+        <UnitName Value="cupslcl"/>
+      </Item43>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -179,7 +220,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
     </PublishOptions>
   </Package>

@@ -39,6 +39,7 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
+    chkTestImgs: TCheckBox;
     Label1: TLABEL;
     PAGED: TPageSetupDialog;
     PD: TPrintDialog;
@@ -53,6 +54,8 @@ type
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure SGridSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
   private
     ck : Integer;
     procedure UpdatePrinterInfo;
@@ -63,6 +66,8 @@ type
     function Inch(AValue: Double; VertRes:boolean=true): Integer;
     function Per(AValue: Double; VertRes:boolean=true): Integer;
     procedure CenterText(const X,Y: Integer; const AText: string);
+    function FormatDots(Dots: Integer):string;
+    procedure PrintSamplePage;
   public
   
     { public declarations }
@@ -142,67 +147,12 @@ begin
   Printer.Canvas.TextOut(X - Sz.cx div 2, Y - Sz.cy div 2, AText);
 end;
 
-procedure TForm1.UpdatePrinterInfo;
+function TForm1.FormatDots(Dots: Integer): string;
 begin
-  try
-    ck := 1;
-    SGrid.Clean;
-    with Printer do
-    begin
-      if Printers.Count=0 then
-      begin
-        AddInfo('printer', 'no printers are installed');
-        exit;
-      end;
-      AddInfo('Printer',Printers[PrinterIndex]);
-      case Orientation of
-        poPortrait : AddInfo('Orientation','Portrait');
-        poLandscape : AddInfo('Orientation','Landscape');
-        poReverseLandscape : AddInfo('Orientation','ReverseLandscape');
-        poReversePortrait  :AddInfo('Orientation','ReversePortrait');
-      end;
-      AddInfo('XDPI',IntToStr(XDPI)+' dpi');
-      AddInfo('YDPI',IntToStr(YDPI)+' dpi');
-      AddInfo('Copies',IntToStr(Copies));
-      AddInfo('PageHeight',IntToStr(PageHeight)+' dots (printable size)');
-      AddInfo('PageWidth',IntToStr(PageWidth)+' dots (printable size)');
-      case PrinterType of
-        ptLocal: AddInfo('PrinterType','Local');
-        ptNetWork: AddInfo('PrinterType','Network');
-      end;
-      case PrinterState of
-        psNoDefine: AddInfo('PrinterState','Undefined');
-        psReady:AddInfo('PrinterState','Ready');
-        psPrinting:AddInfo('PrinterState','Printing');
-        psStopped:AddInfo('PrinterState','Stopped');
-      end;
-      AddInfo('PaperSize',PaperSize.PaperName);
-      if CanRenderCopies then AddInfo('CanRenderCopies','true')
-      else
-      AddInfo('CanRenderCopies','false');
-
-      if not CanPrint then
-        Application.MessageBox('Selected printer cannot print currently!',
-          'Warning',mb_iconexclamation);
-    end;
-  except on E:Exception do
-      Application.MessageBox(PChar(e.message),'Error',mb_iconhand);
-  end;
+  result := format('%d dots (%f mm)',[Dots, Dots*25.4/Printer.YDPI]);
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
-begin
-  if PSD.Execute then
-    UpdatePrinterInfo;
-end;
-
-procedure TForm1.Button3Click(Sender: TObject);
-begin
-  Printer.PrinterIndex := -1;
-  UpdatePrinterInfo;
-end;
-
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.PrintSamplePage;
 var
   Pic: TPicture;
   d, pgw,pgh: Integer;
@@ -232,6 +182,12 @@ begin
     Printer.Canvas.EllipseC(Hin,Hin,Hin div 2,Hin div 2);
     CenterText(Hin, Hin, '1');
 
+    Printer.Canvas.Pen.Color := clRed;
+    Printer.Canvas.Pen.Width := 3;
+    Printer.Canvas.Frame(0,0,pgw,pgh);
+
+    Printer.Canvas.Pen.Color := clBlack;
+    Printer.Canvas.Pen.Width := 3;
     Printer.Canvas.Line(0, pgh-HIn, 0, pgh);      // bottom-left
     Printer.Canvas.Line(0, pgh, HIn, pgh);
     Printer.Canvas.Line(pgw-Hin, pgh, pgw, pgh);  // bottom-right
@@ -240,15 +196,16 @@ begin
     Printer.Canvas.Line(pgw,0,pgw,HIn);
 
     // Image test
-    Pic := TPicture.Create;
-    Pic.LoadFromFile('../../../../images/splash_logo.png');
-    // draw logo scaled down to 7 centimeters wide preserving image aspect
-    DrawGraphic(CM(1.5), CM(1.5), MM(70), 0, Pic.Graphic);
-
-    // left 3 mm at the right and do it again but using 2 inch tall image
-    DrawGraphic(CM(1.5+7)+MM(3), CM(1.5), 0, Inch(2), Pic.Graphic);
-
-    Pic.Free;
+    if chkTestImgs.Checked then
+    begin
+      Pic := TPicture.Create;
+      Pic.LoadFromFile('../../../../images/splash_logo.png');
+      // draw logo scaled down to 7 centimeters wide preserving image aspect
+      DrawGraphic(CM(1.5), CM(1.5), MM(70), 0, Pic.Graphic);
+      // left 3 mm at the right and do it again but using 2 inch tall image
+      DrawGraphic(CM(1.5+7)+MM(3), CM(1.5), 0, Inch(2), Pic.Graphic);
+      Pic.Free;
+    end;
 
     Printer.EndDoc;
 
@@ -259,6 +216,77 @@ begin
       Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
     end;
   end;
+
+end;
+
+procedure TForm1.UpdatePrinterInfo;
+begin
+  try
+    ck := SGrid.FixedRows;
+    SGrid.Clean;
+    with Printer do
+    begin
+      if Printers.Count=0 then
+      begin
+        AddInfo('printer', 'no printers are installed');
+        exit;
+      end;
+      AddInfo('Printer',Printers[PrinterIndex]);
+      case Orientation of
+        poPortrait : AddInfo('Orientation','Portrait');
+        poLandscape : AddInfo('Orientation','Landscape');
+        poReverseLandscape : AddInfo('Orientation','ReverseLandscape');
+        poReversePortrait  :AddInfo('Orientation','ReversePortrait');
+      end;
+      case PrinterType of
+        ptLocal: AddInfo('PrinterType','Local');
+        ptNetWork: AddInfo('PrinterType','Network');
+      end;
+      case PrinterState of
+        psNoDefine: AddInfo('PrinterState','Undefined');
+        psReady:AddInfo('PrinterState','Ready');
+        psPrinting:AddInfo('PrinterState','Printing');
+        psStopped:AddInfo('PrinterState','Stopped');
+      end;
+      AddInfo('Resolution X,Y',IntToStr(XDPI)+','+IntToStr(YDPI)+' dpi');
+      AddInfo('PaperSize',PaperSize.PaperName);
+      with Printer.PaperSize.PaperRect.PhysicalRect do
+      begin
+        AddInfo('Page Width', FormatDots(Right-Left));
+        AddInfo('Page Height', FormatDots(Bottom-Top));
+      end;
+      AddInfo('Printable Width',FormatDots(PageWidth));
+      AddInfo('Printable Height',FormatDots(PageHeight));
+      AddInfo('Copies',IntToStr(Copies));
+      if CanRenderCopies then
+        AddInfo('CanRenderCopies','true')
+      else
+        AddInfo('CanRenderCopies','false');
+
+      if not CanPrint then
+        Application.MessageBox('Selected printer cannot print currently!',
+          'Warning',mb_iconexclamation);
+    end;
+  except on E:Exception do
+      Application.MessageBox(PChar(e.message),'Error',mb_iconhand);
+  end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  if PSD.Execute then
+    UpdatePrinterInfo;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  Printer.PrinterIndex := -1;
+  UpdatePrinterInfo;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  PrintSamplePage;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -305,7 +333,15 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  if SGrid.FixedRows=1 then
+    SGrid.RowHeights[0] := Button1.Height;
   UpdatePrinterInfo;
+end;
+
+procedure TForm1.SGridSelectCell(Sender: TObject; aCol, aRow: Integer;
+  var CanSelect: Boolean);
+begin
+  CanSelect := ACol>0;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

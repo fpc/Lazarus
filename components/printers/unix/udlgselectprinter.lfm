@@ -3,7 +3,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
   Height = 217
   Top = 111
   Width = 530
-  ActiveControl = rbAllPage
+  ActiveControl = btnProp
   Caption = 'Printing'
   ClientHeight = 217
   ClientWidth = 530

@@ -76,6 +76,8 @@ Type
     procedure Write(Lst : TStringList); overload;
     procedure WriteComment(const St : string);
     procedure WriteOrientation;
+    procedure WriteOrientationHeader;
+    procedure WriteBoundingBox;
     
     function TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
     procedure SetPosition(X,Y : Integer);
@@ -561,11 +563,54 @@ procedure TPostScriptPrinterCanvas.WriteOrientation;
 var
   h:integer;
 begin
-  if (Printer<>nil) and (Printer.Orientation=poLandscape) then
-  begin
-    h:=round(PageHeight*72/printer.YDPI); // in pixels
-    Write(format('%d 0 translate 90 rotate',[h]));
+  if Printer=nil then
+    exit;
+  case Printer.Orientation of
+    poLandscape:
+      begin
+        h:=round(Printer.PaperSize.Height*72/printer.YDPI); // pixels to points
+        Write(format('%d 0 translate 90 rotate',[h]));
+      end;
   end;
+end;
+
+procedure TPostScriptPrinterCanvas.WriteOrientationHeader;
+begin
+  if (Printer<>nil) and
+    ((Printer.Orientation=poLandscape) or
+     (Printer.Orientation=poReverseLandscape))
+  then
+    WriteHeader('%%Orientation: Landscape');
+end;
+
+procedure TPostScriptPrinterCanvas.WriteBoundingBox;
+var
+  a,l,t,w,h: Integer;
+begin
+  if (Printer<>nil) then
+  begin
+    with Printer.PaperSize.PaperRect.WorkRect do
+    begin
+      l:=round(Left*72/printer.XDPI);
+      t:=round(Top*72/Printer.XDPI);
+      w:=round(Right*72/Printer.XDPI);
+      h:=round(Bottom*72/Printer.YDPI);
+      if (Printer.Orientation=poLandscape) or
+         (Printer.Orientation=poReverseLandscape) then
+      begin
+        a := l; l := t; t := a;
+        a := w; w := h; h := a;
+      end;
+    end;
+  end
+  else // should not be
+  begin
+    l:=0;
+    t:=0;
+    w:=PageWidth; // page in pixels, printer in points
+    h:=PageHeight;
+  end;
+  WriteHeader('%%'+Format('BoundingBox: %d %d %d %d',[l,t,w,h]));
 end;
 
 //Convert an TCanvas Y point to PostScript Y point
@@ -939,8 +984,6 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.BeginDoc;
-var
-  l,t,w,h: Integer;
 begin
   inherited BeginDoc;
 
@@ -955,31 +998,12 @@ begin
   Font.Size:=12;
   Font.Color:=clBlack;
 
-  if (Printer<>nil) then
-  begin
-    with Printer.PaperSize.PaperRect.WorkRect do
-    begin
-      l:=round(Left*72/printer.XDPI);
-      t:=round(Top*72/Printer.XDPI);
-      w:=round(Right*72/Printer.XDPI); // page in pixels, printer in points
-      h:=round(Bottom*72/Printer.YDPI);
-    end;
-  end
-  else // should not be
-  begin
-    l:=0;
-    t:=0;
-    w:=PageWidth; // page in pixels, printer in points
-    h:=PageHeight;
-  end;
-  
   WriteHeader('%!PS-Adobe-3.0');
-  WriteHeader('%%'+Format('BoundingBox: %d %d %d %d',[l,t,w,h]));
+  WriteBoundingBox;
   WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
   WriteHeader('%%'+Format('Title: %s',[Title]));
   WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
-  if (Printer<>nil) and (Printer.Orientation=poLandscape) then
-    WriteHeader('%%Orientation: Landscape');
+  WriteOrientationHeader;
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');
   WriteHeader('%%PageOrder: Ascend');

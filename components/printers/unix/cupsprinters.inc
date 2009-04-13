@@ -74,7 +74,17 @@ end;
 procedure TCUPSPrinter.cupsAddOption(aName,aValue: string);
 begin
   if not CUPSLibInstalled then Exit;
-  fcupsNumOpts:=cupsdyn.cupsAddOption(PChar(aName),PChar(aValue),fcupsNumOpts,@fcupsOptions);
+  fcupsNumOpts:=cupsdyn.cupsAddOption(PChar(aName),PChar(aValue),fcupsNumOpts,
+                                                                @fcupsOptions);
+  if (AName='PageSize') then
+  begin
+    Exclude(FStates,cpsPaperNameValid);
+    Exclude(FStates,cpsPaperRectValid);
+  end;
+
+  {$IFDEF DebugCUPS}
+  DebugLn('TCUPSPrinter.cupsAddOption AName=%s AValue=%s',[AName,AValue]);
+  {$ENDIF}
 end;
 
 //Return the value of option set for the selected printer
@@ -89,6 +99,32 @@ begin
 
     Result:=cupsdyn.cupsGetOption(PChar(aKeyWord),fcupsNumOpts,fcupsOptions);
   end;
+end;
+
+function TCUPSPrinter.CopyOptions(out AOptions: Pcups_option_t): Integer;
+var
+  i: Integer;
+begin
+  AOptions := nil;
+  Result := 0;
+  for i:=0 to fcupsNumOpts-1 do
+    Result := cupsdyn.cupsAddOption(fcupsOptions[i].name,fcupsOptions[i].value,
+               Result,@AOptions);
+end;
+
+procedure TCUPSPrinter.MergeOptions(const AOptions:Pcups_option_t; const n:Integer);
+var
+  i: Integer;
+begin
+  for i:=0 to n-1 do
+    if
+      // always merge some known options
+      (strcomp('job-sheets', AOptions[i].name)=0) or
+      // check if ppd option value is valid
+      IsOptionValueValid(AOptions[i].name, AOptions[i].value)
+    then
+      cupsAddOption(AOptions[i].name, AOptions[i].value);
+  cupsFreeOptions(n, AOptions);
 end;
 
 function TCUPSPrinter.GetResolutionOption: string;
@@ -118,29 +154,24 @@ begin
   end;
 end;
 
-procedure TCUPSPrinter.GetDebugOptions(Lst : TStrings);
-Var Opts : Pcups_option_t;
-    Opt  : Pcups_option_t;
-    i    : Integer;
+procedure TCUPSPrinter.DebugOptions(AOPtions:Pcups_option_t=nil; n:Integer=0);
+var
+  i: Integer;
 begin
-  if Assigned(Lst) and (Printers.Count>0) then
+  if (Printers.Count>0) and CUPSLibInstalled and (fcupsPrinter<>nil) then
   begin
-    Lst.Clear;
-    if not CUPSLibInstalled then Exit;
-    Lst.Add('**************************************************');
-    if Assigned(fcupsPrinter) then
+    DebugLn('**************************************************');
+    if AOptions=nil then
     begin
-      Opts:=fcupsOptions; // fcupsPrinter^.options;
-      Lst.Add(Format('Printer "%s" Number of Options %d',[fcupsPrinter^.Name,fcupsNumOpts{fcupsPrinter^.num_options}]));
-      for i:=0 to {fcupsPrinter^.num_options}fcupsNumOpts-1 do
-      begin
-        Opt:=@Opts[i];
-        Lst.Add(Opt^.name+'="'+Opt^.value+'"');
-      end;
-    end
-    else Lst.Add('fcupsPrinter is not assigned');
-    Lst.Add('**************************************************');
-  end;
+      AOptions:= fcupsOptions;
+      n := fcupsNumOpts;
+    end;
+    DebugLn('Printer "%s" Number of Options %d',[fcupsPrinter^.Name,n]);
+    for i:=0 to n-1 do
+      DebugLn('name="%s" value="%s"',[AOptions[i].name,AOptions[i].value]);
+    DebugLn('**************************************************');
+  end else
+    DebugLn('DebugOptions: There are no valid printers');
 end;
 
 procedure TCUPSPrinter.DoCupsConnect;
@@ -296,6 +327,115 @@ begin
     result := FCachedResolution.Y;
 end;
 
+{$IFDEF DebugCUPS}
+procedure TCUPSPrinter.DebugPPD;
+const
+  arruitypes:array[ppd_ui_t] of string[9] = ('boolean','pickone','pickmany');
+  arrsection:array[ppd_section_t] of string[9] = ('any','document','exit','jcl','page','prolog');
+var
+  i,j,k: Integer;
+  AttrRoot  : Ppppd_attr_t;
+  Attr      : Pppd_attr_t;
+  Group     : pppd_group_t;
+  Option    : Pppd_option_t;
+  choices   : Pppd_choice_t;
+
+  function markchar(const AMark:char):char;
+  begin
+    if AMark=#1 then
+      result := '*'
+    else
+      result := ' ';
+  end;
+begin
+  DebugLn;
+  DebugLn('DebugPPD: ppdfile=',fCupsPPDName);
+  if fcupsPPD=nil then
+  begin
+    DebugLn('No valid ppd file found');
+    exit;
+  end;
+
+  DebugLn('=== HEADER ===');
+  DebugLn;
+  DebugLn('  model          : %s', [fcupsPPD^.modelname]);
+  DebugLn('  modelNumber    : %d', [fcupsPPD^.model_number]);
+  DebugLn('  manufacturer   : %s', [fcupsPPD^.manufacturer]);
+  DebugLn('  nickname       : %s', [fcupsPPD^.nickname]);
+  DebugLn('  shortnickname  : %s', [fcupsPPD^.shortnickname]);
+  DebugLn('  product        : %s', [fcupsPPD^.product]);
+  DebugLn('  attributes     : %d Current=%d', [fcupsPPD^.num_attrs,fcupsPPD^.cur_attr]);
+  DebugLn('  language_level : %d', [fcupsPPD^.language_level]);
+  DebugLn('  lang_version   : %s', [fcupsPPD^.lang_version]);
+  DebugLn('  lang_encoding  : %s', [fcupsPPD^.lang_encoding]);
+  DebugLn('  landscape      : %d', [fcupsPPD^.landscape]);
+  DebugLn('  UI groups      : %d', [fcupsPPD^.num_groups]);
+  DebugLn('  Num Papers     : %d', [fcupsPPD^.num_sizes]);
+  DebugLn('  Num Attributes : %d', [fcupsPPD^.num_attrs]);
+  DebugLn('  Num Constrains : %d', [fcupsPPD^.num_consts]);
+  DebugLn;
+  DebugLn('=== CUSTOM PAPER SUPPORT ===');
+  DebugLn;
+  DebugLn('  Custom Min 0   : %.2f',[fcupsPPD^.custom_min[0]]);
+  DebugLn('  Custom Min 1   : %.2f',[fCupsPPD^.custom_min[1]]);
+  DebugLn('  Custom Max 0   : %.2f',[fcupsPPD^.custom_max[0]]);
+  DebugLn('  Custom Max 1   : %.2f',[fcupsPPD^.custom_max[1]]);
+
+  with fcupsPPD^ do
+  DebugLn('  Custom Margins : %.2f %.2f %.2f %.2f',
+    [custom_margins[0],custom_margins[1],custom_margins[2],custom_margins[3]]);
+  DebugLn;
+  if fcupsPPD^.num_groups>0 then
+  begin
+    DebugLn('=== GROUPS ===');
+    i := 0;
+    Group := fCupsPPD^.groups;
+    while (Group<>nil) and (i<fcupsPPD^.num_groups) do
+    begin
+      DebugLn('Group %d Name="%s" Text="%s" Options=%d SubGroups=%d',
+           [i,Group^.name,Group^.text,Group^.num_options,Group^.num_subgroups]);
+      j := 0;
+      Option := group^.options;
+      while j< group^.num_options do
+      begin
+        with Option^ do
+        DebugLn('    Option %d Key="%s" Def="%s" Text="%s" UIType="%s" section="%s" Choices=%d',
+           [j,keyword,defchoice,text,arruitypes[ui],arrsection[section],num_choices]);
+        k := 0;
+        Choices := Option^.choices;
+        while k<Option^.num_choices do
+        begin
+          DebugLn('        Choice %2d %s Choice=%-20s Text="%s"',
+            [k,MarkChar(Choices^.marked),Choices^.Choice,Choices^.Text]);
+          inc(Choices);
+          inc(k);
+        end;
+        inc(Option);
+        inc(j);
+      end;
+      inc(Group);
+      inc(i);
+    end;
+  end;
+
+  DebugLn;
+  if fcupsPPD^.num_attrs>0 then
+  begin
+    DebugLn('=== Attributes ===');
+    i := 0;
+    AttrRoot := fCupsPPD^.attrs;
+    while (AttrRoot<>nil) and (i<fcupsPPD^.num_attrs) do
+    begin
+      Attr := AttrRoot^;
+      if attr<>nil then
+        DebugLn('    i=%d Name=%s Spec=%s Value=%s',[i,Attr^.Name,Attr^.Spec,Attr^.Value]);
+      inc(i);
+      inc(AttrRoot);
+    end;
+  end;
+end;
+{$ENDIF}
+
 //Print the file aFileName with a selected printer an options
 function TCUPSPrinter.PrintFile(aFileName: String): longint;
 var PrinterName : string;
@@ -319,6 +459,31 @@ begin
                                   fcupsNumOpts,fcupsOptions);
 
   end;
+end;
+
+function TCUPSPrinter.IsOptionValueValid(AKeyword, AValue: pchar): boolean;
+var
+  Option: pppd_option_t;
+  i: Integer;
+begin
+  result := false;
+  if (fcupsPrinter=nil) or (fcupsppd=nil) then
+    exit;
+  Option := ppdFindOption(fcupsppd, AKeyword);
+  if Option=nil then
+    exit;
+
+  i:=0;
+  while i<Option^.num_choices do
+  begin
+    if strcomp(Option^.choices[i].choice, AValue)=0 then
+    begin
+      result := true;
+      break;
+    end;
+    inc(i);
+  end;
+
 end;
 
 
@@ -416,7 +581,8 @@ Var Opts : Pcups_option_t;
     Opt  : Pcups_option_t;
     i    : Integer;
 begin
-  if not CUPSLibInstalled then Exit;
+  //if not CUPSLibInstalled then
+    Exit;
   if (Printers.Count>0) then
   begin
     if Assigned(fcupsPrinter) then
@@ -425,7 +591,7 @@ begin
       for i:=0 to fcupsPrinter^.num_options-1 do
       begin
         Opt:=@Opts[i];
-        self.cupsAddOption(Opt^.Name,Opt^.Value);
+        cupsAddOption(Opt^.Name,Opt^.Value);
       end;
     end;
   end;
@@ -489,16 +655,6 @@ begin
 
   if (Printers.Count>0) and (fcupsPrinter<>nil) and (fcupsPPD<>nil) then
   begin
-    {
-    WriteLn('PPD INFO: ');
-    WriteLn('  Model         : ', fcupsPPD^.modelname);
-    WriteLn('  ModelNumber   : ', fcupsPPD^.model_number);
-    WriteLn('  Manufacturer  : ', fcupsPPD^.manufacturer);
-    WriteLn('  Nickname      : ', fcupsPPD^.nickname);
-    WriteLn('  Product       : ', fcupsPPD^.product);
-    WriteLn('  ShortNickName : ', fcupsPPD^.shortnickname);
-    WriteLn('  Attributes    : ', fcupsPPD^.num_attrs,' Current=',fcupsPPD^.cur_attr);
-    }
     i := 0;
     AttrRoot := fCupsPPD^.attrs;
     while (AttrRoot<>nil) and (i<fcupsPPD^.num_attrs) do
@@ -506,7 +662,6 @@ begin
       Attr := AttrRoot^;
       if attr<>nil then
       begin
-        //WriteLn('    i=',i,' Name=',Attr^.Name,' Spec=',Attr^.Spec,' Value=',Attr^.Value);
         if (StrComp(pchar(AName), Attr^.name)=0) then
         begin
           result := attr^.value;
@@ -525,7 +680,6 @@ var
   Attribute : Pipp_attribute_t; //Current attribute
   i         : Integer;
 begin
-  //DebugLn(['TCUPSPrinter.GetEnumAttributeString START aName="',aName,'"']);
   if not assigned(Lst) then
     raise Exception.Create('Lst must be assigned');
   if not CUPSLibInstalled then begin
@@ -540,7 +694,6 @@ begin
     try
       Attribute:=ippFindAttribute(Reponse,aName, IPP_TAG_ZERO);
       if Assigned(Attribute) then begin
-        //DebugLn(['TCUPSPrinter.GetEnumAttributeString Attribute^.num_values=',Attribute^.num_values]);
         for i:=0 to Attribute^.num_values-1 do
         begin
           if Attribute^.value_tag=IPP_TAG_INTEGER then
@@ -826,6 +979,9 @@ begin
       Fn:=cupsGetPPD(PChar(aName));
       fcupsPPD:=ppdOpenFile(PChar(Fn));
       fcupsPPDName:=Fn;
+      {$IFDEF DebugCUPS}
+      DebugPPD;
+      {$ENDIF}
     end;
   end
   else
@@ -874,22 +1030,16 @@ function TCUPSPrinter.DoGetOrientation: TPrinterOrientation;
 var i  : Integer;
 begin
   if not (cpsOrientationValid in FStates) then begin
-    fCachedOrientation:=inherited DoGetOrientation;
-
     if Printers.Count>0 then
     begin
       //Default orientation value
       i:=GetAttributeInteger('orientation-requested-default',3);
-      //Get selected orientation or Default if not defined
-      i:=StrToIntDef(cupsGetOption('orientation-requested'),i);
       // check if rotation is automatic or out-of-range
       if not (i in [3,4,5,6]) then
         i:=3; // yep, then for us this means portait
       fCachedOrientation:=TPrinterOrientation(i-3);
     end;
-    {$IFDEF UseCache}
     Include(FStates,cpsOrientationValid);
-    {$ENDIF}
   end;
   Result:=fCachedOrientation;
   {$IFDEF DebugCUPS}
@@ -900,24 +1050,12 @@ end;
 procedure TCUPSPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var St : String;
 begin
-  {$IFDEF UseCache}
-  if aValue=DoGetOrientation then exit;
-  Exclude(FStates,cpsOrientationValid);
+  if aValue=DoGetOrientation then
+    exit;
   Exclude(FStates,cpsPaperRectValid);
-  {$ENDIF}
   inherited DoSetOrientation(aValue);
-
-  if Printers.Count>0 then
-  begin
-    if not Assigned(fcupsOptions) then
-         SetOptionsOfPrinter;
-
-    St:=IntToStr(Ord(aValue)+3);
-    {$IFDEF DebugCUPS}
-    DebugLn('Orientation-Requested=%s',[st]);
-    {$ENDIF}
-    cupsAddOption('orientation-requested',St);
-  end;
+  fcachedOrientation := AValue;
+  Include(FStates,cpsOrientationValid);
 end;
 
 function TCUPSPrinter.DoGetDefaultPaperName: string;
@@ -983,8 +1121,9 @@ var
   P : Pppd_size_t;
   Ky,Kx: Double;
 begin
-  if (not (cpsPaperRectValid in FStates))
-  or (fCachePaperRectName<>aName) then begin
+  if (not (cpsPaperRectValid in FStates)) or
+    (fCachePaperRectName<>aName) then
+  begin
     fCachePaperRectName:=aName;
     FillChar(fCachePaperRect,SizeOf(fCachePaperRect),0);
     fCachePaperRectResult:=inherited DoGetPaperRect(aName, aPaperRc);
@@ -1079,7 +1218,6 @@ begin
            WorkRect.Left,WorkRect.Top,PhysicalRect.Right-WorkRect.Right,
            PhysicalRect.Bottom-WorkRect.Bottom]);
         {$ENDIF}
-        //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
       end;
     end;
     

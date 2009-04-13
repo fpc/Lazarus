@@ -113,7 +113,9 @@ type
      procedure InternalGetPaperRect(aPaperName:string; var PaperRect:TPaperRect);
      function  CupsPapersListValid: boolean;
      function  InternalGetResolution(ForX: boolean): Integer;
-
+     {$IFDEF DebugCUPS}
+     procedure DebugPPD;
+     {$ENDIF}
   protected
      function GetCanvasRef : TPrinterCanvasRef; override;
 
@@ -158,8 +160,8 @@ type
      function GetPPDAttribute(const aName: string): string;
 
      procedure cupsAddOption(aName,aValue: string);
-     function cupsGetOption(aKeyWord: string): String;
      function GetResolutionOption: string;
+      function IsOptionValueValid(AKeyword,AValue: pchar): boolean;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -170,6 +172,10 @@ type
     --------------------------------------------------}
     procedure SetJobState(aJobId : LongInt; aOp : ipp_op_t);
     function PrintFile(aFileName: String): longint;
-    procedure GetDebugOptions(Lst : TStrings);
+    procedure DebugOptions(AOPtions:Pcups_option_t=nil; n:Integer=0);
+    function cupsGetOption(aKeyWord: string): String;
+    function CopyOptions(out AOptions: Pcups_option_t): Integer;
+    procedure MergeOptions(const AOptions:Pcups_option_t; const n:Integer);
+    property CupsPPD:Pppd_file_t read fcupsPPD;
   end;
 

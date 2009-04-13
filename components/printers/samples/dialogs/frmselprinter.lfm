@@ -1,20 +1,20 @@
 object Form1: TForm1
-  Left = 288
-  Height = 507
-  Top = 142
-  Width = 339
-  ActiveControl = Button2
+  Left = 335
+  Height = 504
+  Top = 141
+  Width = 340
+  ActiveControl = Button7
   Caption = 'Form1'
-  ClientHeight = 507
-  ClientWidth = 339
+  ClientHeight = 504
+  ClientWidth = 340
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 16
-    Height = 13
+    Height = 16
     Top = 8
-    Width = 269
+    Width = 304
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end
@@ -43,21 +43,33 @@ object Form1: TForm1
     Height = 304
     Top = 192
     Width = 320
+    AlternateColor = clCream
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
-    BorderStyle = bsNone
     ColCount = 2
     Columns = <    
+      item
+        Color = clBtnFace
+        SizePriority = 0
+        Title.Caption = 'Property'
+        Width = 120
+      end    
       item
         MinSize = 60
         MaxSize = 350
         ReadOnly = True
-        Title.Caption = 'Information'
-        Width = 230
+        Title.Caption = 'Value'
+        Width = 198
       end>
-    DefaultColWidth = 90
-    Flat = True
+    DefaultColWidth = 120
+    DefaultRowHeight = 20
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goVertLine, goRangeSelect, goSmoothScroll]
     RowCount = 15
     TabOrder = 7
+    TitleStyle = tsNative
+    OnSelectCell = SGridSelectCell
   end
   object Button3: TButton
     Left = 8
@@ -70,10 +82,10 @@ object Form1: TForm1
     TabOrder = 2
   end
   object Button4: TButton
-    Left = 256
+    Left = 240
     Height = 27
-    Top = 155
-    Width = 69
+    Top = 157
+    Width = 88
     BorderSpacing.InnerBorder = 4
     Caption = 'Print test'
     OnClick = Button4Click
@@ -108,6 +120,14 @@ object Form1: TForm1
     Caption = 'Execute TPageSetupDialog'
     OnClick = Button7Click
     TabOrder = 6
+  end
+  object chkTestImgs: TCheckBox
+    Left = 240
+    Height = 22
+    Top = 135
+    Width = 82
+    Caption = 'Test Imgs'
+    TabOrder = 8
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'

@@ -35,7 +35,7 @@
         <MinVersion Build="1" Valid="True"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="2">
       <Unit0>
         <Filename Value="selectprinter.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -48,14 +48,6 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmselprinter"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\..\..\..\..\..\..\lazarus\components\PRINTERS\WIN32\winprndialogs.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\..\..\..\..\lazarus\components\PRINTERS\LINUX\cupsprndialogs.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

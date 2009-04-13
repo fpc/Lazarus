@@ -2,10 +2,10 @@
 
 LazarusResources.Add('TdlgSelectPrinter','FORMDATA',[
   'TPF0'#17'TdlgSelectPrinter'#16'dlgSelectPrinter'#4'Left'#3'J'#1#6'Height'#3
-  +#217#0#3'Top'#2'o'#5'Width'#3#18#2#13'ActiveControl'#7#9'rbAllPage'#7'Captio'
-  +'n'#6#8'Printing'#12'ClientHeight'#3#217#0#11'ClientWidth'#3#18#2#8'OnCreate'
-  +#7#22'dlgSelectPrinterCREATE'#6'OnShow'#7#20'dlgSelectPrinterSHOW'#10'LCLVer'
-  +'sion'#6#6'0.9.27'#0#9'TGroupBox'#15'PrinterGroupbox'#4'Left'#2#6#6'Height'#3
+  +#217#0#3'Top'#2'o'#5'Width'#3#18#2#13'ActiveControl'#7#7'btnProp'#7'Caption'
+  +#6#8'Printing'#12'ClientHeight'#3#217#0#11'ClientWidth'#3#18#2#8'OnCreate'#7
+  +#22'dlgSelectPrinterCREATE'#6'OnShow'#7#20'dlgSelectPrinterSHOW'#10'LCLVersi'
+  +'on'#6#6'0.9.27'#0#9'TGroupBox'#15'PrinterGroupbox'#4'Left'#2#6#6'Height'#3
   +#137#0#3'Top'#2#6#5'Width'#3#6#2#5'Align'#7#5'alTop'#20'BorderSpacing.Around'
   +#2#6#7'Caption'#6#9' Printer '#12'ClientHeight'#2'x'#11'ClientWidth'#3#2#2#8
   +'TabOrder'#2#0#0#6'TLabel'#8'labState'#4'Left'#2'`'#6'Height'#2#16#3'Top'#2

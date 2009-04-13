@@ -370,13 +370,9 @@ procedure TdlgSelectPrinter.dlgSelectPrinterSHOW(Sender: TObject);
 begin
   if Sender=nil then ;
   NbOpts.PageIndex:=0;
-  
-  Printer.Refresh;
   cbPrinters.Items.Assign(Printer.Printers);
-  
   if cbPrinters.Items.Count>0 then
     cbPrinters.ItemIndex:= Printer.PrinterIndex;
-    
   RefreshInfos;
 end;
 
@@ -477,10 +473,19 @@ begin
 end;
 
 procedure TdlgSelectPrinter.cbPrintersCHANGE(Sender: TObject);
+var
+  tmpn: Integer;
+  tmpOptions: Pcups_option_t;
 begin
   if Sender=nil then ;
+
+  tmpn := THackCupsPrinter(Printer).CopyOptions(tmpOptions);
+
   Printer.SetPrinter(cbPrinters.Text);
   fPropertiesSetting:=False;
+
+  THackCupsPrinter(Printer).MergeOptions(tmpOptions, tmpn);
+
   RefreshInfos;
 end;
 
