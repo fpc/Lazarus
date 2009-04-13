@@ -74,7 +74,7 @@ type
     Flags: TGDBMIResultFlags
   end;
 
-  TGDBMICallback = procedure(const AResult: TGDBMIExecResult; const ATag: Integer) of object;
+  TGDBMICallback = procedure(const AResult: TGDBMIExecResult; const ATag: PtrInt) of object;
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
 
   TGDBMITargetFlags = set of (
@@ -147,7 +147,7 @@ type
     procedure CallStackSetCurrent(AIndex: Integer);
     // ---
     procedure ClearSourceInfo;
-    procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
+    procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
@@ -172,17 +172,18 @@ type
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
-    function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer; var AResult: TGDBMIExecResult): Boolean; overload;
+    function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TDBGLocals; override;
+    function  CreateLineInfo: TDBGLineInfo; override;
     function  CreateRegisters: TDBGRegisters; override;
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
@@ -190,7 +191,7 @@ type
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
     {$IFdef MSWindows}
-    procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer); virtual;
+    procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt); virtual;
     {$ENDIF}
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -259,7 +260,7 @@ type
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
-    procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
+    procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
     procedure UpdateEnable;
@@ -292,6 +293,32 @@ type
     procedure Changed; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
+  end;
+
+  { TGDBMILineInfo }
+
+  TGDBMIAddressReqInfo = record
+    Source: String;
+    Trial: Byte;
+  end;
+  PGDBMIAddressReqInfo = ^TGDBMIAddressReqInfo;
+
+  TGDBMILineInfo = class(TDBGLineInfo)
+  private
+    FSources: TStringList;
+    procedure ClearSources;
+    procedure SimbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+    procedure AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
+  protected
+    function GetSource(const AnIndex: integer): String; override;
+    function GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
+  public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
+    function Count: Integer; override;
+    function IndexOf(const ASource: String): integer; override;
+    procedure Request(const ASource: String); override;
   end;
 
   { TGDBMIRegisters }
@@ -497,13 +524,160 @@ type
   TGDBMICmdInfo = record
     Flags: TGDBMICmdFlags;
     CallBack: TGDBMICallback;
-    Tag: Integer;
+    Tag: PtrInt;
   end;
 
   TGDBMIExceptionInfo = record
     ObjAddr: String;
     Name: String;
   end;
+
+{ TGDBMILineInfo }
+
+procedure TGDBMILineInfo.ClearSources;
+var
+  ASource: String;
+  n: Integer;
+begin
+  for n := FSources.Count - 1 downto 0 do
+  begin
+    ASource := FSources[n];
+    FSources.Objects[n].Free;
+    FSources.Delete(n);
+    DoChange(ASource);
+  end;
+
+  FSources.Clear;
+end;
+
+procedure TGDBMILineInfo.SimbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+var
+  Info: PGDBMIAddressReqInfo absolute ATag;
+  ASource: String;
+begin
+  ASource := Info^.Source;
+  if (AResult.State = dsError) then
+  begin
+    ASource := ExtractFileName(Info^.Source);
+    if (ASource <> Info^.Source) and (Info^.Trial = 1) then
+    begin
+      // the second trial: gdb can return info to file w/o path
+      if Debugger.State = dsRun
+      then TGDBMIDebugger(Debugger).GDBPause(True);
+      inc(Info^.Trial);
+      TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SimbolListCallback, ATag);
+      Exit;
+    end;
+  end;
+  Dispose(Info);
+  if (AResult.State <> dsError) then
+    AddInfo(ASource, AResult);
+end;
+
+procedure TGDBMILineInfo.AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
+var
+  ID: packed record
+    Line, Column: Integer;
+  end;
+  Map: TMap;
+  n: Integer;
+  LinesList, LineList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  Addr: TDbgPtr;
+begin
+  Map := TMap.Create(its8, SizeOf(TDBGPtr));
+  FSources.AddObject(ASource, Map);
+
+  LinesList := TGDBMINameValueList.Create(AResult, ['lines']);
+  if LinesList = nil then Exit;
+
+  ID.Column := 0;
+  LineList := TGDBMINameValueList.Create('');
+  for n := 0 to LinesList.Count - 1 do
+  begin
+    Item := LinesList.Items[n];
+    LineList.Init(Item^.NamePtr, Item^.NameLen);
+    if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
+    if not TryStrToQWord(Unquote(LineList.Values['pc']), Addr) then Continue;
+    // one line can have more than one address
+    if Map.HasId(ID) then Continue;
+    Map.Add(ID, Addr);
+  end;
+  LineList.Free;
+  LinesList.Free;
+  DoChange(ASource);
+end;
+
+function TGDBMILineInfo.Count: Integer;
+begin
+  Result := FSources.Count;
+end;
+
+function TGDBMILineInfo.GetSource(const AnIndex: integer): String;
+begin
+  Result := FSources[AnIndex];
+end;
+
+function TGDBMILineInfo.GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr;
+var
+  ID: packed record
+    Line, Column: Integer;
+  end;
+  Map: TMap;
+begin
+  if AnIndex >= FSources.Count then Exit(0);
+  Map := TMap(FSources.Objects[AnIndex]);
+  ID.Line := ALine;
+  // since we dont have column info we map all on column 0
+  // ID.Column := AColumn;
+  ID.Column := 0;
+  if (Map = nil) then Exit(0);
+  if not Map.GetData(ID, Result) then
+    Result := 0;
+end;
+
+procedure TGDBMILineInfo.DoStateChange(const AOldState: TDBGState);
+begin
+  if not (Debugger.State in [dsPause, dsRun]) then
+    ClearSources;
+end;
+
+function TGDBMILineInfo.IndexOf(const ASource: String): integer;
+begin
+  Result := FSources.IndexOf(ASource);
+end;
+
+constructor TGDBMILineInfo.Create(const ADebugger: TDebugger);
+begin
+  FSources := TStringList.Create;
+  FSources.Sorted := True;
+  FSources.Duplicates := dupError;
+  FSources.CaseSensitive := False;
+  inherited;
+end;
+
+destructor TGDBMILineInfo.Destroy;
+begin
+  ClearSources;
+  FreeAndNil(FSources);
+  inherited Destroy;
+end;
+
+procedure TGDBMILineInfo.Request(const ASource: String);
+var
+  Info: PGDBMIAddressReqInfo;
+begin
+  if ASource = '' then Exit; // we cannot request when source file name is empty
+  if Debugger = nil then Exit;
+  if (FSources.IndexOf(ASource) <> -1) then Exit;
+
+  if Debugger.State = dsRun
+  then TGDBMIDebugger(Debugger).GDBPause(True);
+  New(Info);
+  Info^.Source := ASource;
+  Info^.Trial := 1;
+  TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SimbolListCallback, PtrInt(Info));
+end;
 
 { TGDBMINameValueList }
 
@@ -927,6 +1101,11 @@ begin
   Result := TGDBMILocals.Create(Self);
 end;
 
+function TGDBMIDebugger.CreateLineInfo: TDBGLineInfo;
+begin
+  Result := TGDBMILineInfo.Create(Self);
+end;
+
 class function TGDBMIDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TGDBMIDebuggerProperties.Create;
@@ -981,7 +1160,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
+  const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean;
 var
   R: TGDBMIExecResult;
 begin
@@ -1004,7 +1183,7 @@ end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   const AValues: array of const; const AFlags: TGDBMICmdFlags;
-  const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
+  const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean;
 var
   R: TGDBMIExecResult;
 begin
@@ -1020,7 +1199,7 @@ end;
 
 function TGDBMIDebugger.ExecuteCommandFull(const ACommand: String;
   const AValues: array of const; const AFlags: TGDBMICmdFlags;
-  const ACallback: TGDBMICallback; const ATag: Integer;
+  const ACallback: TGDBMICallback; const ATag: PtrInt;
   var AResult: TGDBMIExecResult): Boolean;
 var
   Cmd: String;
@@ -1744,7 +1923,7 @@ begin
   Result := ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback, 0);
 end;
 
-procedure TGDBMIDebugger.GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
+procedure TGDBMIDebugger.GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
 var
   R: TGDBMIExecResult;
 begin
@@ -1987,7 +2166,7 @@ function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
-             dcSetStackFrame, dcDisassemble, dcSourceAddr];
+             dcSetStackFrame, dcDisassemble];
 end;
 
 function TGDBMIDebugger.GetTargetWidth: Byte;
@@ -2127,7 +2306,7 @@ begin
 end;
 
 {$IFdef MSWindows}
-procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
+procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
 var
   R: TGDBMIExecResult;
   S: String;
@@ -2672,8 +2851,6 @@ begin
     dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
     dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
                                             String(AParams[3].VPointer^), String(AParams[4].VPointer^));
-    dcSourceAddr:  Result := GDBSourceAdress(String(AParams[0].VAnsiString), AParams[1].VInteger, AParams[2].VInteger,
-                                            TDbgPtr(AParams[3].VPointer^));
   end;
 end;
 
@@ -3084,7 +3261,7 @@ begin
 
 end;
 
-procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
+procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
 var
   ResultList: TGDBMINameValueList;
 begin

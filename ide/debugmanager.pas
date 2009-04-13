@@ -54,6 +54,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
+  InspectDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -67,7 +68,8 @@ type
     ddtCallStack,
     ddtEvaluate,
     ddtRegisters,
-    ddtAssembler
+    ddtAssembler,
+    ddtInspect
     );
 
   { TDebugManager }
@@ -129,6 +131,7 @@ type
     procedure InitEvaluateDlg;
     procedure InitRegistersDlg;
     procedure InitAssemblerDlg;
+    procedure InitInspectDlg;
 
     procedure FreeDebugger;
     procedure ResetDebugger;
@@ -166,11 +169,10 @@ type
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
+    procedure Inspect(const AExpression: String); override;
 
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
-    function SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr
-                          ): Boolean; override;
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
 
@@ -190,7 +192,7 @@ implementation
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack,
-    nmiwEvaluate, nmiwRegisters, nmiwAssembler
+    nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect
   );
 
 type
@@ -290,6 +292,23 @@ type
     property Master: TDBGLocals read FMaster write SetMaster;
   end;
 
+  { TManagedLineInfo }
+
+  TManagedLineInfo = class(TIDELineInfo)
+  private
+    FMaster: TDBGLineInfo;
+    procedure LineInfoChanged(const ASender: TObject; const ASource: String);
+    procedure SetMaster(const AMaster: TDBGLineInfo);
+  protected
+    function GetSource(const AnIndex: integer): String; override;
+    function GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr; override;
+  public
+    function Count: Integer; override;
+    function IndexOf(const ASource: String): integer; override;
+    procedure Request(const ASource: String); override;
+    property Master: TDBGLineInfo read FMaster write SetMaster;
+  end;
+
   { TManagedRegisters }
 
   TManagedRegisters = class(TIDERegisters)
@@ -375,6 +394,65 @@ type
     procedure Reset; override;
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
+
+{ TManagedLineInfo }
+
+procedure TManagedLineInfo.LineInfoChanged(const ASender: TObject; const ASource: String);
+begin
+  NotifyChange(ASource);
+end;
+
+procedure TManagedLineInfo.SetMaster(const AMaster: TDBGLineInfo);
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+  end;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @LineInfoChanged;
+  end;
+end;
+
+function TManagedLineInfo.GetSource(const AnIndex: integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetSource(AnIndex)
+  else Result := Master.Sources[AnIndex];
+end;
+
+function TManagedLineInfo.GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex, ALine)
+  else Result := Master.Values[AnIndex, ALine];
+end;
+
+function TManagedLineInfo.IndexOf(const ASource: String): integer;
+begin
+  if Master = nil
+  then Result := inherited IndexOf(ASource)
+  else Result := Master.IndexOf(ASource);
+end;
+
+function TManagedLineInfo.Count: Integer;
+begin
+  if Master = nil
+  then Result := inherited Count
+  else Result := Master.Count;
+end;
+
+procedure TManagedLineInfo.Request(const ASource: String);
+begin
+  if Master = nil
+  then inherited Request(ASource)
+  else Master.Request(ASource);
+end;
 
 { TManagedCallStack }
 
@@ -1412,7 +1490,9 @@ begin
     then Editor.ExecutionLine := -1;
   end;
 
-  if (FDebugger.State = dsPause) and (SourceNotebook <> nil)
+  if ((FDebugger.State = dsPause) or
+      ((FDebugger.State = dsRun) and (OldState = dsInit))
+     ) and (SourceNotebook <> nil)
   then begin
     Editor := SourceNotebook.GetActiveSE;
     if (Editor <> nil) and not Editor.HasExecutionMarks
@@ -1571,7 +1651,7 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
-    TEvaluateDlg, TRegistersDlg, TAssemblerDlg
+    TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1594,6 +1674,7 @@ begin
       ddtCallStack:   InitCallStackDlg;
       ddtEvaluate:    InitEvaluateDlg;
       ddtAssembler:   InitAssemblerDlg;
+      ddtInspect:     InitInspectDlg;
     end;
   end
   else begin
@@ -1676,6 +1757,14 @@ begin
   TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
 end;
 
+procedure TDebugManager.InitInspectDlg;
+var
+  TheDialog: TIDEInspectDlg;
+begin
+  TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
+  TheDialog.Execute(FDebugger, nil, nil, nil);
+end;
+
 procedure TDebugManager.InitCallStackDlg;
 var
   TheDialog: TCallStackDlg;
@@ -1704,6 +1793,7 @@ begin
   FExceptions := TManagedExceptions.Create(Self);
   FSignals := TManagedSignals.Create(Self);
   FLocals := TManagedLocals.Create;
+  FLineInfo := TManagedLineInfo.Create;
   FCallStack := TManagedCallStack.Create;
   FRegisters := TManagedRegisters.Create;
 
@@ -1736,6 +1826,7 @@ begin
   FreeAndNil(FExceptions);
   FreeAndNil(FSignals);
   FreeAndNil(FLocals);
+  FreeAndNil(FLineInfo);
   FreeAndNil(FRegisters);
 
   FreeAndNil(FUserSourceFiles);
@@ -2248,6 +2339,17 @@ begin
         and FDebugger.Evaluate(AExpression, AResult)
 end;
 
+procedure TDebugManager.Inspect(const AExpression: String);
+begin
+  if Destroying then Exit;
+  ViewDebugDialog(ddtInspect);
+  if FDialogs[ddtInspect] <> nil then
+  begin
+    // todo: fill data, properties, methods
+    TIDEInspectDlg(FDialogs[ddtInspect]).Execute(FDebugger, nil, nil, nil);
+  end;
+end;
+
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
   ALine: integer; WarnIfNoDebugger: boolean): TModalResult;
 begin
@@ -2375,11 +2477,6 @@ begin
   Result := TWatchPropertyDlg.Create(Self, AWatch).ShowModal;
 end;
 
-function TDebugManager.SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
-begin
-  Result := (FDebugger <> nil) and FDebugger.SourceAddress(ASource, ALine, AColumn, AAddr);
-end;
-
 procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);
 begin
   if FDebugger = ADebugger then Exit;
@@ -2389,6 +2486,7 @@ begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
     TManagedWatches(FWatches).Master := nil;
     TManagedLocals(FLocals).Master := nil;
+    TManagedLineInfo(FLineInfo).Master := nil;
     TManagedCallStack(FCallStack).Master := nil;
     TManagedExceptions(FExceptions).Master := nil;
     TManagedSignals(FSignals).Master := nil;
@@ -2398,6 +2496,7 @@ begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     TManagedWatches(FWatches).Master := FDebugger.Watches;
     TManagedLocals(FLocals).Master := FDebugger.Locals;
+    TManagedLineInfo(FLineInfo).Master := FDebugger.LineInfo;
     TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
     TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
     TManagedSignals(FSignals).Master := FDebugger.Signals;

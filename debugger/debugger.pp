@@ -65,8 +65,7 @@ type
     dcModify,
     dcEnvironment,
     dcSetStackFrame,
-    dcDisassemble,
-    dcSourceAddr
+    dcDisassemble
     );
   TDBGCommands = set of TDBGCommand;
 
@@ -157,6 +156,7 @@ type
   TIDEBreakPointGroups = class;
   TIDEWatches = class;
   TIDELocals = class;
+  TIDELineInfo = class;
   TDebugger = class;
 
   TOnSaveFilenameToConfig = procedure(var Filename: string) of object;
@@ -655,6 +655,69 @@ type
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
+(**   L I N E   I N F O                                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+  TIDELineInfoEvent = procedure(const ASender: TObject; const ASource: String) of object;
+  { TBaseLineInfo }
+
+  TBaseLineInfo = class(TObject)
+  protected
+    function GetSource(const AnIndex: integer): String; virtual;
+    function GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr; virtual;
+  public
+    constructor Create;
+    function Count: Integer; virtual;
+    function IndexOf(const ASource: String): integer; virtual;
+    procedure Request(const ASource: String); virtual;
+  public
+    property Sources[const AnIndex: Integer]: String read GetSource;
+    property Values[const AnIndex: Integer; const ALine: Integer]: TDbgPtr read GetValue;
+  end;
+
+  { TIDELineInfo }
+
+  TIDELineInfoNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TIDELineInfoEvent;
+  public
+    property OnChange: TIDELineInfoEvent read FOnChange write FOnChange;
+  end;
+
+  TIDELineInfo = class(TBaseLineInfo)
+  private
+    FNotificationList: TList;
+  protected
+    procedure NotifyChange(ASource: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TIDELineInfoNotification);
+    procedure RemoveNotification(const ANotification: TIDELineInfoNotification);
+  end;
+
+  { TDBGLineInfo }
+
+  TDBGLineInfo = class(TBaseLineInfo)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FOnChange: TIDELineInfoEvent;
+  protected
+    procedure Changed(ASource: String); virtual;
+    procedure DoChange(ASource: String);
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    property Debugger: TDebugger read FDebugger;
+  public
+    constructor Create(const ADebugger: TDebugger);
+    property OnChange: TIDELineInfoEvent read FOnChange write FOnChange;
+  end;
+
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
 (**   R E G I S T E R S                                                      **)
 (**                                                                          **)
 (******************************************************************************)
@@ -1081,6 +1144,7 @@ type
     //FExceptions: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
+    FLineInfo: TDBGLineInfo;
     FRegisters: TDBGRegisters;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
@@ -1105,6 +1169,7 @@ type
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
+    function  CreateLineInfo: TDBGLineInfo; virtual;
     function  CreateRegisters: TDBGRegisters; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
     function  CreateWatches: TDBGWatches; virtual;
@@ -1154,8 +1219,6 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
                           out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
-    function  SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean; // Retrieves the address of a given source
-
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -1169,6 +1232,7 @@ type
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
+    property LineInfo: TDBGLineInfo read FLineInfo;                           // list of all source LineInfo
     property Registers: TDBGRegisters read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
@@ -1204,8 +1268,7 @@ const
     'Modify',
     'Environment',
     'SetStackFrame',
-    'Disassemble',
-    'SourceAddr'
+    'Disassemble'
     );
 
   DBGStateNames: array[TDBGState] of string = (
@@ -1245,7 +1308,7 @@ const
              dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
              dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame,
-             dcDisassemble, dcSourceAddr],
+             dcDisassemble],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
@@ -1354,6 +1417,7 @@ begin
 
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
+  FLineInfo := CreateLineInfo;
   FRegisters := CreateRegisters;
   FCallStack := CreateCallStack;
   FWatches := CreateWatches;
@@ -1380,6 +1444,11 @@ end;
 function TDebugger.CreateLocals: TDBGLocals;
 begin
   Result := TDBGLocals.Create(Self);
+end;
+
+function TDebugger.CreateLineInfo: TDBGLineInfo;
+begin
+  Result := TDBGLineInfo.Create(Self);
 end;
 
 class function TDebugger.CreateProperties: TDebuggerProperties;
@@ -1419,6 +1488,7 @@ begin
 
   FBreakPoints.FDebugger := nil;
   FLocals.FDebugger := nil;
+  FLineInfo.FDebugger := nil;
   FRegisters.FDebugger := nil;
   FCallStack.FDebugger := nil;
   FWatches.FDebugger := nil;
@@ -1426,6 +1496,7 @@ begin
   FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FLocals);
+  FreeAndNil(FLineInfo);
   FreeAndNil(FRegisters);
   FreeAndNil(FCallStack);
   FreeAndNil(FWatches);
@@ -1696,16 +1767,12 @@ begin
     FState := AValue;
     FBreakpoints.DoStateChange(OldState);
     FLocals.DoStateChange(OldState);
+    FLineInfo.DoStateChange(OldState);
     FRegisters.DoStateChange(OldState);
     FCallStack.DoStateChange(OldState);
     FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
-end;
-
-function TDebugger.SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
-begin
-  Result := ReqCmd(dcSourceAddr, [ASource, ALine, AColumn, @AAddr]);
 end;
 
 procedure TDebugger.StepInto;
@@ -4089,6 +4156,107 @@ begin
       MDebuggerPropertiesList.Objects[n].Free;
     FreeAndNil(MDebuggerPropertiesList);
   end;
+end;
+
+{ TBaseLineInfo }
+
+function TBaseLineInfo.GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr;
+begin
+  Result := 0;
+end;
+
+function TBaseLineInfo.GetSource(const AnIndex: integer): String;
+begin
+  Result := '';
+end;
+
+function TBaseLineInfo.IndexOf(const ASource: String): integer;
+begin
+  Result := -1;
+end;
+
+constructor TBaseLineInfo.Create;
+begin
+  inherited Create;
+end;
+
+procedure TBaseLineInfo.Request(const ASource: String);
+begin
+end;
+
+function TBaseLineInfo.Count: Integer;
+begin
+  Result := 0;
+end;
+
+{ TIDELineInfo }
+
+procedure TIDELineInfo.NotifyChange(ASource: String);
+var
+  n: Integer;
+  Notification: TIDELineInfoNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDELineInfoNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnChange)
+    then Notification.FOnChange(Self, ASource);
+  end;
+end;
+
+constructor TIDELineInfo.Create;
+begin
+  FNotificationList := TList.Create;
+  inherited Create;
+end;
+
+destructor TIDELineInfo.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+
+  inherited;
+
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TIDELineInfo.AddNotification(const ANotification: TIDELineInfoNotification);
+begin
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+procedure TIDELineInfo.RemoveNotification(const ANotification: TIDELineInfoNotification);
+begin
+  if FNotificationList.IndexOf(ANotification) >= 0 then
+  begin
+    FNotificationList.Remove(ANotification);
+    ANotification.ReleaseReference;
+  end;
+end;
+
+{ TDBGLineInfo }
+
+procedure TDBGLineInfo.Changed(ASource: String);
+begin
+  DoChange(ASource);
+end;
+
+procedure TDBGLineInfo.DoChange(ASource: String);
+begin
+  if Assigned(FOnChange) then FOnChange(Self, ASource);
+end;
+
+procedure TDBGLineInfo.DoStateChange(const AOldState: TDBGState);
+begin
+end;
+
+constructor TDBGLineInfo.Create(const ADebugger: TDebugger);
+begin
+  inherited Create;
+  FDebugger := ADebugger;
 end;
 
 initialization

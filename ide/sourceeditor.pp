@@ -116,6 +116,7 @@ type
                                    //   LinesDeleted messages
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
+    FMarksRequested: Boolean;
     FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
@@ -128,6 +129,7 @@ type
     FErrorColumn: integer;
     FExecutionLine: integer;
     FExecutionMark: TSourceMark;
+    FLineInfoNotification: TIDELineInfoNotification;
     FModified: boolean;
 
     FOnAfterClose: TNotifyEvent;
@@ -348,6 +350,7 @@ type
     // debugging
     procedure FillExecutionMarks;
     procedure ClearExecutionMarks;
+    procedure LineInfoNotificationChange(const ASender: TObject; const ASource: String);
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -1068,6 +1071,10 @@ Begin
   FExecutionLine:=-1;
   FExecutionMark := nil;
   FHasExecutionMarks := False;
+  FMarksRequested := False;
+  FLineInfoNotification := TIDELineInfoNotification.Create;
+  FLineInfoNotification.AddReference;
+  FLineInfoNotification.OnChange := @LineInfoNotificationChange;
 
   CreateEditor(AOwner,AParent);
 
@@ -1091,6 +1098,9 @@ begin
     Application.ReleaseComponent(FEditor);
   end;
   FEditor:=nil;
+  if (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
+    DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
+  FLineInfoNotification.ReleaseReference;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
 //writeln('TSourceEditor.Destroy END ');
@@ -2355,7 +2365,8 @@ begin
   if FCodeBuffer<>nil then
     FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
   FCodeBuffer:=NewCodeBuffer;
-  if FCodeBuffer<>nil then begin
+  if FCodeBuffer <> nil then
+  begin
     FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
     if (FIgnoreCodeBufferLock<=0) and (not FCodeBuffer.IsEqual(FEditor.Lines))
     then begin
@@ -2370,6 +2381,10 @@ begin
       FEditor.EndUpdate;
     end;
     if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
+    if (DebugBoss.State in [dsPause, dsRun]) and
+       not HasExecutionMarks and
+       (FileName <> '') then
+      FillExecutionMarks;
   end;
 end;
 
@@ -3033,18 +3048,28 @@ end;
 
 procedure TSourceEditor.FillExecutionMarks;
 var
-  i: integer;
   ASource: String;
+  i, idx: integer;
   Addr: TDBGPtr;
-  Res: Boolean;
 begin
   if HasExecutionMarks then Exit;
+
   ASource := FileName;
+  idx := DebugBoss.LineInfo.IndexOf(ASource);
+  if (idx = -1) then
+  begin
+    if not FMarksRequested then
+    begin
+      FMarksRequested := True;
+      DebugBoss.LineInfo.AddNotification(FLineInfoNotification);
+      DebugBoss.LineInfo.Request(ASource);
+    end;
+    Exit;
+  end;
+
   for i := 0 to EditorComponent.Lines.Count - 1 do
   begin
-    Res := DebugBoss.SourceAddress(ASource, i, 0, Addr);
-    if not Res then
-      Exit;
+    Addr := DebugBoss.LineInfo.Values[idx, i];
     if (Addr <> 0) then
       EditorComponent.SetDebugMarks(i, i);
   end;
@@ -3055,6 +3080,15 @@ procedure TSourceEditor.ClearExecutionMarks;
 begin
   EditorComponent.ClearDebugMarks;
   FHasExecutionMarks := False;
+  FMarksRequested := False;
+  if (FLineInfoNotification <> nil) and (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
+    DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
+end;
+
+procedure TSourceEditor.LineInfoNotificationChange(const ASender: TObject; const ASource: String);
+begin
+  if ASource = FileName then
+    FillExecutionMarks;
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
@@ -4535,7 +4569,7 @@ Begin
     OnEditorChanged(Sender);
 End;
 
-Function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
+function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
@@ -6154,7 +6188,9 @@ Begin
     end;
     UpdateStatusBar;
     UpdateActiveEditColors(TempEditor.EditorComponent);
-    if (DebugBoss.State = dsPause) and not TempEditor.HasExecutionMarks then
+    if (DebugBoss.State in [dsPause, dsRun]) and
+       not TempEditor.HasExecutionMarks and
+       (TempEditor.FileName <> '') then
       TempEditor.FillExecutionMarks;
     if Assigned(FOnEditorVisibleChanged) then
       FOnEditorVisibleChanged(sender);

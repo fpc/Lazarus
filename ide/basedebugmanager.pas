@@ -64,6 +64,7 @@ type
     FBreakPoints: TIDEBreakPoints;
     FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TIDELocals;
+    FLineInfo: TIDELineInfo;
     FWatches: TIDEWatches;
     FRegisters: TIDERegisters;
     FManagerStates: TDebugManagerStates;
@@ -101,10 +102,8 @@ type
     procedure EndDebugging; virtual; abstract;
     function Evaluate(const AExpression: String; var AResult: String
                      ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
-    function SourceAddress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr
-                          ): Boolean; virtual; abstract; // Retrieves the address of a given source
-
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
+    procedure Inspect(const AExpression: String); virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; virtual; abstract;
@@ -127,6 +126,7 @@ type
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TIDECallStack read FCallStack;
     property Locals: TIDELocals read FLocals;
+    property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TIDEWatches read FWatches;

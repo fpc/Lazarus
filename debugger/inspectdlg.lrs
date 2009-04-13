@@ -1,0 +1,13 @@
+LazarusResources.Add('TIDEInspectDlg','FORMDATA',[
+  'TPF0'#241#14'TIDEInspectDlg'#13'IDEInspectDlg'#4'Left'#3'p'#1#6'Height'#3#144
+  +#1#3'Top'#3#198#0#5'Width'#3#4#1#11'BorderStyle'#7#13'bsSizeToolWin'#7'Capti'
+  +'on'#6#13'IDEInspectDlg'#12'ClientHeight'#3#144#1#11'ClientWidth'#3#4#1#21'C'
+  +'onstraints.MinHeight'#3#200#0#20'Constraints.MinWidth'#3#200#0#7'OnClose'#7
+  +#9'FormClose'#0#242#2#0#10'TStatusBar'#10'StatusBar1'#4'Left'#2#0#6'Height'#2
+  +#23#3'Top'#3'y'#1#5'Width'#3#4#1#6'Panels'#14#0#0#0#242#2#1#12'TPageControl'
+  +#11'PageControl'#4'Left'#2#0#6'Height'#3'y'#1#3'Top'#2#0#5'Width'#3#4#1#10'A'
+  +'ctivePage'#7#8'DataPage'#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'
+  +#2#1#0#9'TTabSheet'#8'DataPage'#7'Caption'#6#8'DataPage'#0#0#9'TTabSheet'#14
+  +'PropertiesPage'#7'Caption'#6#14'PropertiesPage'#0#0#9'TTabSheet'#11'Methods'
+  +'Page'#7'Caption'#6#11'MethodsPage'#0#0#0#0
+]);

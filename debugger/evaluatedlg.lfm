@@ -71,6 +71,7 @@ inherited EvaluateDlg: TEvaluateDlg
       Caption = '&Inspect'
       Enabled = False
       ImageIndex = 3
+      OnClick = tbInspectClick
     end
     object tbWatch: TToolButton
       Left = 109

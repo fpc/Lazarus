@@ -90,6 +90,7 @@ type
     nmiwEvaluate,
     nmiwRegisters,
     nmiwAssembler,
+    nmiwInspect,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -131,6 +132,7 @@ const
     'EvaluateModify',
     'Registers',
     'Assembler',
+    'Inspect',
     // extra
     'SearchResults',
     'AnchorEditor',

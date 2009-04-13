@@ -1,0 +1,39 @@
+inherited IDEInspectDlg: TIDEInspectDlg
+  Left = 368
+  Height = 400
+  Top = 198
+  Width = 260
+  BorderStyle = bsSizeToolWin
+  Caption = 'IDEInspectDlg'
+  ClientHeight = 400
+  ClientWidth = 260
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 200
+  OnClose = FormClose
+  object StatusBar1: TStatusBar[0]
+    Left = 0
+    Height = 23
+    Top = 377
+    Width = 260
+    Panels = <>
+  end
+  object PageControl: TPageControl[1]
+    Left = 0
+    Height = 377
+    Top = 0
+    Width = 260
+    ActivePage = DataPage
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object DataPage: TTabSheet
+      Caption = 'DataPage'
+    end
+    object PropertiesPage: TTabSheet
+      Caption = 'PropertiesPage'
+    end
+    object MethodsPage: TTabSheet
+      Caption = 'MethodsPage'
+    end
+  end
+end

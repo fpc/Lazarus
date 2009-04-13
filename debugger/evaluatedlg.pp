@@ -63,6 +63,7 @@ type
     procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure tbEvaluateClick(Sender: TObject);
+    procedure tbInspectClick(Sender: TObject);
     procedure tbWatchClick(Sender: TObject);
     
   private
@@ -104,7 +105,7 @@ begin
   tbEvaluate.Enabled := HasExpression;
   tbModify.Enabled := False;
   tbWatch.Enabled := HasExpression;
-//  tbInspect.Enabled := HasExpression;
+  tbInspect.Enabled := HasExpression;
 end;
 
 procedure TEvaluateDlg.cmbExpressionKeyDown(Sender: TObject; var Key: Word;
@@ -119,8 +120,10 @@ end;
 
 procedure TEvaluateDlg.SetFindText(const NewFindText: string);
 begin
-  if NewFindText<>'' then begin
+  if NewFindText<>'' then
+  begin
     cmbExpression.Text := NewFindText;
+    cmbExpressionChange(nil);
     cmbExpression.SelectAll;
     tbEvaluate.Click;
   end;
@@ -131,7 +134,6 @@ function TEvaluateDlg.GetFindText: string;
 begin
   Result := cmbExpression.Text;
 end;
-
 
 procedure TEvaluateDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -164,6 +166,11 @@ begin
 //    tbModify.Enabled := True;
   end;
   txtResult.Lines.Text := R;
+end;
+
+procedure TEvaluateDlg.tbInspectClick(Sender: TObject);
+begin
+  DebugBoss.Inspect(cmbExpression.Text);
 end;
 
 procedure TEvaluateDlg.tbWatchClick(Sender: TObject);
