@@ -10,6 +10,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   ClientWidth = 497
   OnClose = FormClose
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object FilenameGroupBox: TGroupBox
     Left = 6
@@ -181,7 +182,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
-      CFDividerDrawLevel = 0
       Font.Height = -14
       Font.Name = 'courier'
       Font.Pitch = fpFixed
@@ -189,7 +189,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ParentColor = False
       ParentFont = False
       TabOrder = 1
-      BookMarkOptions.OnChange = nil
       Gutter.Width = 57
       Keystrokes = <      
         item
