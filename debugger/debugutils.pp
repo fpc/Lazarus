@@ -116,26 +116,54 @@ end;
 
 function ConvertToCString(const AText: String): String;
 var
-  n: Integer;
+  srclen, dstlen, newlen: Integer;
+  src, dst: PChar;
 begin
-  Result := AText;
-  n := 1;
-  while n <= Length(Result) do
+  srclen := Length(AText);
+  Setlength(Result, srclen);
+  dstlen := srclen;
+  src := @AText[1];
+  dst := @Result[1];
+  newlen := 0;
+  while srclen > 0 do
   begin
-    case Result[n] of
+    if newlen >= dstlen
+    then begin
+      Inc(dstlen, 8);
+      SetLength(Result, dstlen);
+      dst := @Result[newlen+1];
+    end;
+    case Src[0] of
       '''': begin
-        if (n < Length(Result))
-        and (Result[n + 1] = '''')
-        then Delete(Result, n, 1)
-        else Result[n] := '"';
+        if (srclen > 2) and (Src[1] = '''')
+        then begin
+          Inc(src);
+          Dec(srclen);
+          Continue;
+        end;
+        dst^ := '"';
       end;
       '"': begin
-        Insert('"', Result, n);
-        Inc(n);
+        if newlen+1 >= dstlen
+        then begin
+          Inc(dstlen, 8);
+          SetLength(Result, dstlen);
+          dst := @Result[newlen+1];
+        end;
+        dst^ := '"';
+        Inc(dst);
+        Inc(newlen);
+        dst^ := '"';
       end;
+    else
+      dst^ := src^;
     end;
-    Inc(n);
+    Inc(src);
+    Inc(dst);
+    Inc(newlen);
+    Dec(srclen);
   end;
+  SetLength(Result, newlen);
 end;
 
 function ConvertPathDelims(const AFileName: String): String;

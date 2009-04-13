@@ -366,19 +366,121 @@ type
   // TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
   // It is not completed and buggy. Since 5.3 expression evaluation is OK, so maybe in future the
   // TGDBMIExpression will be completed to support older gdb versions
+
+  TDBGExpressionOperator = (
+    eoNone,
+    eoNegate,
+    eoPlus,
+    eoSubstract,
+    eoAdd,
+    eoMultiply,
+    eoPower,
+    eoDivide,
+    eoDereference,
+    eoAddress,
+    eoEqual,
+    eoLess,
+    eoLessOrEqual,
+    eoGreater,
+    eoGreaterOrEqual,
+    eoNotEqual,
+    eoIn,
+    eoIs,
+    eoAs,
+    eoDot,
+    eoComma,
+    eoBracket,
+    eoIndex,
+    eoClose,
+    eoAnd,
+    eoOr,
+    eoMod,
+    eoNot,
+    eoDiv,
+    eoXor,
+    eoShl,
+    eoShr
+  );
+
+const
+  OPER_LEVEL: array[TDBGExpressionOperator] of Byte = (
+    {eoNone            } 0,
+    {eoNegate          } 5,
+    {eoPlus            } 5,
+    {eoSubstract       } 7,
+    {eoAdd             } 7,
+    {eoMultiply        } 6,
+    {eoPower           } 4,
+    {eoDivide          } 6,
+    {eoDereference     } 2,
+    {eoAddress         } 4,
+    {eoEqual           } 8,
+    {eoLess            } 8,
+    {eoLessOrEqual     } 8,
+    {eoGreater         } 8,
+    {eoGreaterOrEqual  } 8,
+    {eoNotEqual        } 8,
+    {eoIn              } 8,
+    {eoIs              } 8,
+    {eoAs              } 6,
+    {eoDot             } 2,
+    {eoComma           } 9,
+    {eoBracket         } 1,
+    {eoIndex           } 3,
+    {eoClose           } 9,
+    {eoAnd             } 6,
+    {eoOr              } 7,
+    {eoMod             } 6,
+    {eoNot             } 5,
+    {eoDiv             } 6,
+    {eoXor             } 7,
+    {eoShl             } 6,
+    {eoShr             } 6
+  );
+
+type
+  PGDBMISubExpression = ^TGDBMISubExpression;
+  TGDBMISubExpression = record
+    Opertor: TDBGExpressionOperator;
+    Operand: String;
+    Next, Prev: PGDBMISubExpression;
+  end;
+
+  PGDBMIExpressionResult = ^TGDBMIExpressionResult;
+  TGDBMIExpressionResult = record
+    Opertor: TDBGExpressionOperator;
+//    Operand: String;
+    Value: String;
+    Info: TGDBType;
+    Next, Prev: PGDBMIExpressionResult;
+  end;
+
+
   TGDBMIExpression = class(TObject)
   private
-    FDebugger: TGDBMIDebugger;
-    FOperator: String;
-    FLeft: TGDBMIExpression;
-    FRight: TGDBMIExpression;
-    procedure CreateSubExpression(const AExpression: String);
+    FList: PGDBMISubExpression;
+    FStack: PGDBMIExpressionResult;
+    FStackPtr: PGDBMIExpressionResult;
+    procedure Push(var AResult: PGDBMIExpressionResult);
+    procedure Pop(var AResult: PGDBMIExpressionResult);
+    procedure DisposeList(AList: PGDBMIExpressionResult);
+
+    function  Solve(const ADebugger: TGDBMIDebugger; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveAddress(const ADebugger: TGDBMIDebugger; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveMath(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveIn(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveIs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveAs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveDeref(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveDot(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; const ARight: String; out AVAlue: String; out AInfo: TGDBType): Boolean;
   protected
+    function Evaluate(const ADebugger: TGDBMIDebugger; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
   public
-    constructor Create(const ADebugger: TGDBMIDebugger; const AExpression: String);
+    constructor Create(const AExpression: String);
     destructor Destroy; override;
     function DumpExpression: String;
-    function GetExpression(var AResult: String): Boolean;
+    function Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String; out AResultInfo: TGDBType): Boolean;
+    function Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String): Boolean;
   end;
 
   { TGDBMIType }
@@ -1376,9 +1478,25 @@ var
   ResultInfo: TGDBType;
   addr: TDbgPtr;
   e: Integer;
+  Expr: TGDBMIExpression;
 begin
   S := AExpression;
 
+  if S = '' then Exit(false);
+  if S[1] = '!'
+  then begin
+    //TESTING...
+    Delete(S, 1, 1);
+    Expr := TGDBMIExpression.Create(S);
+    AResult := Expr.DumpExpression;
+    AResult := AResult + LineEnding;
+    Expr.Evaluate(Self, S);
+    AResult := AResult + S;
+    Expr.Free;
+    Exit(True);
+  end;
+
+  // original
   Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
 
   ResultList := TGDBMINameValueList.Create(R);
@@ -1554,28 +1672,24 @@ begin
 
   LinesList := TGDBMINameValueList.Create(R, ['lines']);
   if LinesList = nil then Exit(False);
-  try
-    ID.Column := 0;
-    LineList := TGDBMINameValueList.Create('');
-    try
-      for n := 0 to LinesList.Count - 1 do
-      begin
-        Item := LinesList.Items[n];
-        LineList.Init(Item^.NamePtr, Item^.NameLen);
-        if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
-        if not TryStrToQWord(Unquote(LineList.Values['pc']), Addr) then Continue;
-        // one line can have more than one address
-        if not Map.HasId(ID) then
-          Map.Add(ID, Addr);
-        if ID.Line = ALine
-        then AAddr := Addr;
-      end;
-    finally
-      LineList.Free;
-    end;
-  finally
-    LinesList.Free;
+
+  ID.Column := 0;
+  LineList := TGDBMINameValueList.Create('');
+
+  for n := 0 to LinesList.Count - 1 do
+  begin
+    Item := LinesList.Items[n];
+    LineList.Init(Item^.NamePtr, Item^.NameLen);
+    if not TryStrToInt(Unquote(LineList.Values['line']), ID.Line) then Continue;
+    if not TryStrToQWord(Unquote(LineList.Values['pc']), Addr) then Continue;
+    // one line can have more than one address
+    if Map.HasId(ID) then Continue;
+    Map.Add(ID, Addr);
+    if ID.Line = ALine
+    then AAddr := Addr;
   end;
+  LineList.Free;
+  LinesList.Free;
 end;
 
 function TGDBMIDebugger.GDBStepInto: Boolean;
@@ -3658,268 +3772,771 @@ end;
 { TGDBMIExpression }
 { =========================================================================== }
 
-constructor TGDBMIExpression.Create(const ADebugger: TGDBMIDebugger; const AExpression: String);
-begin
-  inherited Create;
-  FDebugger := ADebugger;
-  FLeft := nil;
-  FRight := nil;
-  CreateSubExpression(Trim(AExpression));
-end;
+function GetSubExpression(var AExpression: PChar; var ALength: Integer; out AOperator: TDBGExpressionOperator; out AOperand: String): Boolean;
+type
+  TScanState = (
+    ssNone,       // start scanning
+    ssString,     // inside string
+    ssEndString,  // just left a string, we may reenter if another ' is present
+    ssOperand,    // reading operand
+    ssOperator    // delimeter found, next must be operator
+  );
+var
+  State: TScanState;
 
-procedure TGDBMIExpression.CreateSubExpression(const AExpression: String);
-  function CheckOperator(const APos: Integer; const AOperator: String): Boolean;
+  function GetOperand(const AOperand: String): String;
+  begin
+    if (AOperand = '')
+    or (AOperand[1] <> '''')
+    then Result := AOperand
+    else Result := ConvertToCString(AOperand);
+  end;
+
+  function GetOperator(AOperator: PChar; ALen: Integer): TDBGExpressionOperator;
+  begin
+    case AOperator[0] of
+      '-': Result := eoSubstract;
+      '+': Result := eoAdd;
+      '*': begin
+        if ALen = 1
+        then Result := eoMultiply
+        else Result := eoPower;
+      end;
+      '/': Result := eoDivide;
+      '^': Result := eoDereference;
+      '@': Result := eoAddress;
+      '=': Result := eoEqual;
+      '<': begin
+        if ALen = 1
+        then Result := eoLess
+        else if AOperator[1] = '='
+        then Result := eoLessOrEqual
+        else Result := eoNotEqual;
+      end;
+      '>': begin
+        if ALen = 1
+        then Result := eoGreater
+        else Result := eoGreaterOrEqual;
+      end;
+      '.': Result := eoDot;
+      ',': Result := eoComma;
+      '(': Result := eoBracket;
+      '[': Result := eoIndex;
+      ')': Result := eoClose;
+      ']': Result := eoClose;
+      'a', 'A': begin
+        if AOperator[1] in ['s', 'S']
+        then Result := eoAs
+        else Result := eoAnd;
+      end;
+      'o', 'O': Result := eoOr;
+      'i', 'I': begin
+        if AOperator[1] in ['s', 'S']
+        then Result := eoIs
+        else Result := eoIn;
+      end;
+      'm', 'M': Result := eoMod;
+      'n', 'N': Result := eoNot;
+      'd', 'D': Result := eoDiv;
+      'x', 'X': Result := eoXor;
+      's', 'S': begin
+        if AOperator[2] in ['l', 'L']
+        then Result := eoShl
+        else Result := eoShr;
+      end;
+    end;
+    Inc(AExpression, ALen);
+    Dec(ALength, ALen);
+  end;
+
+  function CheckOperator(const AOperator: String): Boolean;
   var
     S: String;
+    len: Integer;
   begin
-    Result := False;
-    if APos + Length(AOperator) > Length(AExpression) then Exit;
-    if StrLIComp(@AExpression[APos], @AOperator[1], Length(AOperator)) <> 0 then Exit;
-    if (APos > 1) and not (AExpression[APos - 1] in [' ', '(']) then Exit;
-    if (APos + Length(AOperator) <= Length(AExpression)) and not (AExpression[APos + Length(AOperator)] in [' ', '(']) then Exit;
+    len := Length(AOperator);
+    if ALength <= len then Exit(False); // net char after operator too
+    if not (AExpression[len] in [' ', #9, '(']) then Exit(False);
+    if StrLIComp(AExpression, @AOperator[1], len) <> 0 then Exit(False);
 
-    S := Copy(AExpression, 1, APos - 1);
-    if S <> ''
-    then FLeft := TGDBMIExpression.Create(FDebugger, S);
-    S := Copy(AExpression, APos + Length(AOperator), MaxInt);
-    if S <> ''
-    then FRight := TGDBMIExpression.Create(FDebugger, S);
-    FOperator := AOperator;
     Result := True;
   end;
-type
-  TStringState = (ssNone, ssString, ssLeave);
-var
-  n: Integer;
-  S, LastWord: String;
-  HookCount: Integer;
-  InString: TStringState;
-  Sub: TGDBMIExpression;
-begin
-  HookCount := 0;
-  InString := ssNone;
-  LastWord := '';
-  S:='';
-  for n := 1 to Length(AExpression)  do
-  begin
-    if AExpression[n] = ''''
-    then begin
-      case InString of
-        ssNone:  InString := ssString;
-        ssString:InString := ssLeave;
-        ssLeave: InString := ssString;
-      end;
-      S := S + AExpression[n];
-      LastWord := '';
-      Continue;
-    end;
-    if InString = ssString
-    then begin
-      S := S + AExpression[n];
-      LastWord := '';
-      Continue;
-    end;
-    InString := ssNone;
 
-    case AExpression[n] of
+var
+  Sub: String;
+  len: Integer;
+begin
+  while (ALength > 0) and (AExpression^ in [#9, ' ']) do
+  begin
+    Dec(ALength);
+    Inc(AExpression);
+  end;
+  if ALength = 0 then Exit;
+
+  State := ssNone;
+  Sub:='';
+  while ALength > 0 do
+  begin
+    if AExpression^ = ''''
+    then begin
+      case State of
+        ssOperand,
+        ssOperator: Exit(False); //illegal
+        ssNone:  State := ssString;
+        ssString:State := ssEndString;
+        ssEndString: State := ssString;
+      end;
+      Sub := Sub + AExpression^;
+      Inc(AExpression);
+      Dec(ALength);
+      Continue;
+    end;
+
+    case State of
+      ssString: begin
+        Sub := Sub + AExpression^;
+        Inc(AExpression);
+        Dec(ALength);
+        Continue;
+      end;
+      ssEndString: State := ssOperator;
+      ssNone: State := ssOperand;
+    end;
+
+    case AExpression^ of
+      ' ', #9: begin
+        State := ssOperator;
+        Inc(AExpression);
+        Dec(ALength);
+        Continue;
+      end;
       '(', '[': begin
-        if HookCount = 0
-        then begin
-          SetLength(S, Length(S) - Length(LastWord));
-          if S <> ''
-          then FLeft := TGDBMIExpression.Create(FDebugger, S);
-          if LastWord = ''
-          then begin
-            FOperator := AExpression[n];
-          end
-          else begin
-            FOperator := LastWord;
-            FRight := TGDBMIExpression.Create(FDebugger, '');
-            FRight.FOperator := AExpression[n];
-          end;
-          LastWord := '';
-          S := '';
-        end;
-        Inc(HookCount);
-        if HookCount = 1
-        then Continue;
+        AOperand := GetOperand(Sub);
+        AOperator := GetOperator(AExpression, 1);
+        Exit(True);
       end;
       ')', ']': begin
-        Dec(HookCount);
-        if HookCount = 0
-        then begin
-          if S <> ''
-          then begin
-            if FRight = nil
-            then FRight := TGDBMIExpression.Create(FDebugger, S)
-            else FRight.FRight := TGDBMIExpression.Create(FDebugger, S);
-          end;
-          if n < Length(AExpression)
-          then begin
-            Sub := TGDBMIExpression.Create(FDebugger, '');
-            Sub.FLeft := FLeft;
-            Sub.FOperator := FOperator;
-            Sub.FRight := FRight;
-            FLeft := Sub;
-            Sub := TGDBMIExpression.Create(FDebugger, Copy(AExpression, n + 1, MaxInt));
-            if Sub.FLeft = nil
-            then begin
-              FOperator := Sub.FOperator;
-              FRight := Sub.FRight;
-              Sub.FRight := nil;
-              Sub.Free;
-            end
-            else begin
-              FOperator := '';
-              FRight := Sub;
-            end;
-          end;
-          Exit;
-        end;
+        AOperand := GetOperand(Sub);
+        AOperator := GetOperator(AExpression, 1);
+        Exit(True);
       end;
-    end;
-    if HookCount = 0
-    then begin
-      case AExpression[n] of
-        '-', '+', '*', '/', '^', '@', '=', ',': begin
-          if S <> ''
-          then FLeft := TGDBMIExpression.Create(FDebugger, S);
-          S := Copy(AExpression, n + 1, MaxInt);
-          if Trim(S) <> ''
-          then FRight := TGDBMIExpression.Create(FDebugger, S);
-          FOperator := AExpression[n];
-          Exit;
+      '-', '+': begin
+        if Sub = ''
+        then begin
+          //unary
+          AOperand := '';
+          if AExpression^ = '-'
+          then AOperator := eoNegate
+          else AOperator := eoPlus;
+          Inc(AExpression);
+          Dec(ALength);
+        end
+        else begin
+          AOperand := GetOperand(Sub);
         end;
-        'a', 'A': begin
-          if CheckOperator(n, 'and') then Exit;
-        end;
-        'o', 'O': begin
-          if CheckOperator(n, 'or') then Exit;
-        end;
-        'm', 'M': begin
-          if CheckOperator(n, 'mod') then Exit;
-        end;
-        'd', 'D': begin
-          if CheckOperator(n, 'div') then Exit;
-        end;
-        'x', 'X': begin
-          if CheckOperator(n, 'xor') then Exit;
-        end;
-        's', 'S': begin
-          if CheckOperator(n, 'shl') then Exit;
-          if CheckOperator(n, 'shr') then Exit;
+        Exit(True);
+      end;
+      '/', '^', '@', '=', ',': begin
+        AOperand := GetOperand(Sub);
+        AOperator := GetOperator(AExpression, 1);
+        Exit(True);
+      end;
+      '*', '<', '>': begin
+        AOperand := GetOperand(Sub);
+        if ALength > 1
+        then begin
+          if AExpression[0] = '*'
+          then begin
+            if AExpression[1] = '*'
+            then AOperator := GetOperator(AExpression, 2)
+            else AOperator := GetOperator(AExpression, 1);
+          end
+          else begin
+            if AExpression[1] = '='
+            then AOperator := GetOperator(AExpression, 2)
+            else AOperator := GetOperator(AExpression, 1);
+          end;
+        end
+        else AOperator := GetOperator(AExpression, 1);
+        Exit(True);
+      end;
+      '.': begin
+        if (State <> ssOperand) or (Length(Sub) = 0) or not (Sub[1] in ['0'..'9'])
+        then begin
+          AOperand := GetOperand(Sub);
+          AOperator := GetOperator(AExpression, 1);
+          Exit(True);
         end;
       end;
     end;
 
-    if AExpression[n] = ' '
-    then LastWord := ''
-    else LastWord := LastWord + AExpression[n];
-    S := S + AExpression[n];
+    if (State = ssOperator)
+    then begin
+      len := 3;
+      case AExpression^ of
+        'a', 'A': begin
+          if not CheckOperator('and') then Exit(False);
+          if not CheckOperator('as') then Exit(False);
+        end;
+        'o', 'O': begin
+          if not CheckOperator('or') then Exit(False);
+          len := 2;
+        end;
+        'i', 'I': begin
+          if not CheckOperator('in') then Exit(False);
+          if not CheckOperator('is') then Exit(False);
+        end;
+        'm', 'M': begin
+          if not CheckOperator('mod') then Exit(False);
+        end;
+        'd', 'D': begin
+          if not CheckOperator('div') then Exit(False);
+        end;
+        'x', 'X': begin
+          if not CheckOperator('xor') then Exit(False);
+        end;
+        's', 'S': begin
+          if not (CheckOperator('shl') or CheckOperator('shr')) then Exit(False);
+        end;
+      else
+        Exit(False);
+      end;
+      AOperand := GetOperand(Sub);
+      AOperator := GetOperator(AExpression, len);
+      Exit(True);
+    end;
+
+    if  (State = ssOperand)
+    and (Sub = '')
+    and CheckOperator('not')
+    then begin
+      AOperand := '';
+      AOperator := GetOperator(AExpression, 3);
+      Exit(True);
+    end;
+
+    Sub := Sub + AExpression^;
+    Inc(AExpression);
+    Dec(ALength);
   end;
-  if S = AExpression
-  then FOperator := S
-  else CreateSubExpression(S);
+
+  if not (State in [ssOperator, ssOperand, ssEndString]) then Exit(False);
+
+  AOperand := GetOperand(Sub);
+  AOperator := eoNone;
+  Result := True;
+end;
+
+constructor TGDBMIExpression.Create(const AExpression: String);
+var
+  len: Integer;
+  P: PChar;
+  Run, Work: PGDBMISubExpression;
+  Opertor: TDBGExpressionOperator;
+  Operand: String;
+begin
+  inherited Create;
+  len := Length(AExpression);
+  p := PChar(AExpression);
+  Run := nil;
+  while (len > 0) and GetSubExpression(p, len, Opertor, Operand) do
+  begin
+    New(Work);
+    Work^.Opertor := Opertor;
+    Work^.Operand := Operand;
+    Work^.Prev := Run;
+    Work^.Next := nil;
+
+    if FList = nil
+    then FList := Work
+    else Run^.Next := Work;
+    Run := Work;
+  end;
 end;
 
 destructor TGDBMIExpression.Destroy;
+var
+  Run, Work: PGDBMISubExpression;
 begin
-  FreeAndNil(FRight);
-  FreeAndNil(FLeft);
+  Run := FList;
+  while Run <> nil do
+  begin
+    Work := Run;
+    Run := Work^.Next;
+    Dispose(Work);
+  end;
+
   inherited;
+end;
+
+procedure TGDBMIExpression.DisposeList(AList: PGDBMIExpressionResult);
+var
+  Temp: PGDBMIExpressionResult;
+begin
+  while AList <> nil do
+  begin
+    AList^.Info.Free;
+    Temp := AList;
+    AList := Alist^.Next;
+    Dispose(Temp);
+  end;
 end;
 
 function TGDBMIExpression.DumpExpression: String;
 // Mainly used for debugging purposes
-begin
-  if FLeft = nil
-  then Result := ''
-  else Result := 'L:' + FLeft.DumpExpression + '';
+const
+  OPERATOR_TEXT: array[TDBGExpressionOperator] of string = (
+    'eoNone',
+    'eoNegate',
+    'eoPlus',
+    'eoSubstract',
+    'eoAdd',
+    'eoMultiply',
+    'eoPower',
+    'eoDivide',
+    'eoDereference',
+    'eoAddress',
+    'eoEqual',
+    'eoLess',
+    'eoLessOrEqual',
+    'eoGreater',
+    'eoGreaterOrEqual',
+    'eoNotEqual',
+    'eoIn',
+    'eoIs',
+    'eoAs',
+    'eoDot',
+    'eoComma',
+    'eoBracket',
+    'eoIndex',
+    'eoClose',
+    'eoAnd',
+    'eoOr',
+    'eoMod',
+    'eoNot',
+    'eoDiv',
+    'eoXor',
+    'eoShl',
+    'eoShr'
+  );
 
-  if FOperator = '('
-  then Result := Result + '(R:' + FRight.DumpExpression + ')'
-  else if FOperator = '['
-  then Result := Result + '[R:' + FRight.DumpExpression + ']'
-  else begin
-    if (Length(FOperator) > 0)
-    and (FOperator[1] = '''')
-    then Result := Result + 'O:' + ConvertToCString(FOperator) + ''
-    else Result := Result + 'O:' + FOperator + '';
-    if FRight <> nil
-    then Result := Result + 'R:' + FRight.DumpExpression + '';
+var
+  Sub: PGDBMISubExpression;
+begin
+  Result := '';
+  Sub := FList;
+  while Sub <> nil do
+  begin
+    Result := Result + Sub^.Operand + ' ' +  OPERATOR_TEXT[Sub^.Opertor] + ' ';
+    Sub := Sub^.Next;
   end;
 end;
 
-function TGDBMIExpression.GetExpression(var AResult: String): Boolean;
+function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String): Boolean;
+var
+  GDBType: TGDBType;
+begin
+  Result := Evaluate(ADebugger, AResult, GDBType);
+  if Result then GDBType.Free;
+end;
+
+function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String; out AResultInfo: TGDBType): Boolean;
+
+const
+  OPER_UNARY = [eoNot, eoNegate, eoPlus, eoAddress, eoBracket];
+
+var
+  Sub: PGDBMISubExpression;
+  R: PGDBMIExpressionResult;
+begin
+  Result := True;
+  Sub := FList;
+  FStack := nil;
+  FStackPtr := nil;
+  New(R);
+  FillByte(R^, SizeOf(R^), 0);
+  while Sub <> nil do
+  begin
+    R^.Opertor := Sub^.Opertor;
+    if Sub^.Operand = ''
+    then begin
+      if not (Sub^.OperTor in OPER_UNARY)
+      then begin
+        // check if we have a 2nd operator
+        Result := False;
+        if FStackPtr = nil then Break;
+        case FStackPtr^.OperTor of
+          eoClose, eoDereference: begin
+            if not (Sub^.OperTor in [eoDot, eoDereference, eoIndex]) then Break;
+          end;
+          eoBracket: begin
+            if Sub^.OperTor <> eoBracket then Break;
+          end;
+        end;
+        Result := True;
+      end;
+      Push(R);
+      Sub := Sub^.Next;
+      Continue;
+    end;
+    if Sub^.OperTor in OPER_UNARY then Break;
+
+    if (FStackPtr = nil)
+    or (OPER_LEVEL[Sub^.OperTor] < OPER_LEVEL[FStackPtr^.OperTor])
+    then begin
+      if not Evaluate(ADebugger, Sub^.Operand, R^.Value, R^.Info)
+      then begin
+        Result := False;
+        Break;
+      end;
+    end
+    else begin
+      if not Solve(ADebugger, OPER_LEVEL[Sub^.OperTor], Sub^.Operand, R^.Value, R^.Info)
+      then begin
+        Result := False;
+        Break;
+      end;
+    end;
+
+    Push(R);
+    Sub := Sub^.Next;
+  end;
+
+
+  if Result and (FStackPtr <> nil)
+  then begin
+    New(R);
+    FillByte(R^, SizeOf(R^), 0);
+    Result := Solve(ADebugger, 255, '', R^.Value, R^.Info);
+    Push(R); // make sure it gets cleaned later
+  end;
+
+  if Result
+  then begin
+    AResult := R^.Value;
+    AResultInfo := R^.Info;
+    R^.Info := nil;
+  end;
+
+  while FStackPtr <> nil do
+  begin
+    Pop(R);
+    R^.Info.Free;
+    Dispose(R);
+  end;
+end;
+
+function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
 var
   R: TGDBMIExecResult;
   S: String;
-  List: TGDBMINameValueList;
-  GDBType: TGDBType;
+  ResultList: TGDBMINameValueList;
+  ResultInfo: TGDBType;
+  addr: TDbgPtr;
+  e: Integer;
 begin
-  Result := False;
-
-  if FLeft = nil
-  then AResult := ''
-  else begin
-    if not FLeft.GetExpression(S) then Exit;
-    AResult := S;
+  // special cases
+  if ATExt = ''
+  then begin
+    AResult := '';
+    AResultInfo := nil;
+    Exit(True);
   end;
 
-  if FOperator = '('
+  if AText = '""'
   then begin
-    if not FRight.GetExpression(S) then Exit;
-    AResult := AResult + '(' + S + ')';
-  end
-  else if FOperator = '['
+    AResult := '0x0';
+    AResultInfo := TGDBType.CreateFromValues('type = ^character');
+    Exit(True);
+  end;
+
+  Result := ADebugger.ExecuteCommand('-data-evaluate-expression %s', [AText], [cfIgnoreError, cfExternal], R)
+        and (R.State <> dsError);
+
+  ResultList := TGDBMINameValueList.Create(R);
+  if R.State = dsError
+  then AResult := ResultList.Values['msg']
+  else AResult := ResultList.Values['value'];
+//  AResult := DeleteEscapeChars(AResult);
+  ResultList.Free;
+  if Result
+  then AResultInfo := ADebugger.GetGDBTypeInfo(AText)
+  else AResultInfo := nil;
+
+  if AResultInfo = nil then Exit;
+
+  //post format some results (for inscance a char is returned as "ord 'Value'"
+  if AResultInfo.Kind <> skSimple then Exit;
+
+  case StringCase(AResultInfo.TypeName, ['character'], true, false) of
+    0: AResult := GetPart([' '], [], AResult);
+  end;
+end;
+
+procedure TGDBMIExpression.Pop(var AResult: PGDBMIExpressionResult);
+begin
+  AResult := FStackPtr;
+  if AResult = nil then Exit;
+  FStackPtr := AResult^.Prev;
+  if FStackPtr = nil
+  then FStack := nil;
+  AResult^.Next := nil;
+  AResult^.Prev := nil;
+end;
+
+procedure TGDBMIExpression.Push(var AResult: PGDBMIExpressionResult);
+begin
+  if FStack = nil
   then begin
-    if not FRight.GetExpression(S) then Exit;
-    AResult := AResult + '[' + S + ']';
+    FStack := AResult;
+    FStackPtr := AResult;
   end
   else begin
-    if (Length(FOperator) > 0)
-    and (FOperator[1] = '''')
-    then AResult := AResult + ConvertToCString(FOperator)
-    else begin
-      GDBType := FDebugger.GetGDBTypeInfo(FOperator);
-      if GDBType = nil
-      then begin
-        // no type possible, use literal operator
-        AResult := AResult + FOperator;
-      end;
+    FStackPtr^.Next := AResult;
+    AResult^.Prev := FStackPtr;
+    FStackPtr := AResult;
+  end;
 
-      if not FDebugger.ExecuteCommand('ptype %s', [FOperator], [cfIgnoreError, cfNoMiCommand], R)
-      then Exit;
+  New(AResult);
+  FillByte(AResult^, SizeOf(AResult^), 0);
+end;
 
-      if R.State = dsError
-      then begin
-        // no type possible, use literal operator
-        AResult := AResult + FOperator;
-      end
-      else begin
-        DebugLn('PType result: ', R.Values);
-        List := TGDBMINameValueList.Create(R);
-        S := List.Values['type'];
-        DebugLn('PType type: ', S);
-        List.Free;
-        if (S <> '') and (S[1] = '^') and (Pos('class', S) <> 0)
+function TGDBMIExpression.Solve(const ADebugger: TGDBMIDebugger; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+var
+  StartPtr, Left: PGDBMIExpressionResult;
+  Right: TGDBMIExpressionResult;
+  Value: String;
+  Info: TGDBType;
+begin
+  StartPtr := FStackPtr;
+  while (ALimit >= OPER_LEVEL[StartPtr^.OperTor]) and (StartPtr^.Prev <> nil) do
+    StartPtr := StartPtr^.Prev;
+
+  // we will solve this till end of stack
+  FStackPtr := StartPtr^.Prev;
+  if FStackPtr = nil
+  then FStack := nil
+  else FStackPtr^.Next := nil;
+  StartPtr^.Prev := nil;
+
+  Left := StartPtr;
+  FillChar(Right, SizeOf(Right), 0);
+
+  repeat
+    Info := nil;
+    Value := '';
+    case Left^.Opertor of
+      eoNone: begin
+        // only posible as first and only item on stack
+        Result := (FStackPtr = nil) and (Left = StartPtr) and (ARight = '');
+        if Result
         then begin
-          AResult := AResult + GetPart('^', ' ', S) + '(' + FOperator + ')';
+          Value := Left^.Value;
+          Info := Left^.Info;
+          Left^.Info := nil;
+        end;
+      end;
+      eoNegate, eoPlus, eoSubstract, eoAdd,
+      eoMultiply, eoPower, eoDivide, eoEqual,
+      eoLess, eoLessOrEqual, eoGreater, eoGreaterOrEqual,
+      eoNotEqual, eoAnd, eoOr, eoMod,
+      eoNot, eoDiv, eoXor, eoShl,
+      eoShr: begin
+        if Left^.Next = nil
+        then begin
+          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
+                and SolveMath(ADebugger, Left, @Right, Value, Info);
+          FreeAndNil(Right.Info);
+        end
+        else Result := SolveMath(ADebugger, Left, Left^.Next, Value, Info);
+      end;
+      eoDereference: begin
+        Result := (ARight = '') // right part cant have value
+              and SolveDeref(ADebugger, Left, Value, Info);
+      end;
+      eoAddress: begin
+        Result := (Left^.Info = nil);
+        if not Result then Break;
+
+        if Left^.Next = nil
+        then begin
+          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
+                and SolveAddress(ADebugger, @Right, Value, Info);
+          FreeAndNil(Right.Info);
+        end
+        else Result := SolveIn(ADebugger, Left, Left^.Next, Value, Info);
+      end;
+      eoDot: begin
+        // its impossible to have next already resolved. Its a member of left
+        Result := (Left^.Next = nil) and SolveDot(ADebugger, Left, ARight, Value, Info);
+      end;
+//    eoComma: begin
+//    end;
+      eoBracket: begin
+        Result := Evaluate(ADebugger, ARight, Value, Info);
+        // we can finish when closed
+      end;
+      eoIndex: begin
+        if Left^.Info = nil
+        then begin
+          // only possible when part of "in"
+          Result := (Left^.Prev <> nil)
+                and (Left^.Prev^.OperTor = eoIn)
+                and Evaluate(ADebugger, ARight, Value, Info);
         end
         else begin
-          // no type possible or no class, use literal operator
-          AResult := AResult + FOperator;
-        end
+          Result := Evaluate(ADebugger, ARight, Value, Info);
+          // we can finish when closed
+        end;
       end;
+      eoIn: begin
+        if Left^.Next = nil
+        then begin
+          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
+                and SolveIn(ADebugger, Left, @Right, Value, Info);
+          FreeAndNil(Right.Info);
+        end
+        else Result := SolveIn(ADebugger, Left, Left^.Next, Value, Info);
+      end;
+      eoIs: begin
+        if Left^.Next = nil
+        then begin
+          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
+                and SolveIs(ADebugger, Left, @Right, Value, Info);
+          FreeAndNil(Right.Info);
+        end
+        else Result := SolveIs(ADebugger, Left, Left^.Next, Value, Info);
+      end;
+      eoAs: begin
+        if Left^.Next = nil
+        then begin
+          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
+                and SolveAs(ADebugger, Left, @Right, Value, Info);
+          FreeAndNil(Right.Info);
+        end
+        else Result := SolveAs(ADebugger, Left, Left^.Next, Value, Info);
+      end;
+    else
+      Result := False;
     end;
-    if FRight <> nil
-    then begin
-      if not FRight.GetExpression(S) then Exit;
-      AResult := AResult + S;
-    end;
+
+    if not Result then Break;
+    if Left^.Next = nil then Break;
+    Left := Left^.Next;
+
+    Left^.Info.Free;
+    Left^.Info := Info;
+    Left^.Value := Value;
+  until False;
+
+  DisposeList(StartPtr);
+  if Result
+  then begin
+    AValue := Value;
+    AInfo := Info;
+  end
+  else begin
+    AValue := '';
+    AInfo := nil;
+  end;
+end;
+
+function TGDBMIExpression.SolveAddress(const ADebugger: TGDBMIDebugger; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+begin
+  Result := False;
+end;
+
+function TGDBMIExpression.SolveAs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+begin
+  Result := False;
+end;
+
+function TGDBMIExpression.SolveDeref(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+var
+  Eval: String;
+begin
+  Result := ALeft^.Info.Kind = skPointer;
+  if not Result then Exit;
+
+  Eval := '^' + ALeft^.Info.TypeName + '(' + ALeft^.Value + ')^';
+  Result := Evaluate(ADebugger, Eval, AValue, AInfo);
+end;
+
+function TGDBMIExpression.SolveDot(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+var
+  Eval, Prefix: String;
+begin
+  if not (ALeft^.Info.Kind in [skClass, skRecord]) then Exit(False);
+
+  Prefix := '^' + ALeft^.Info.TypeName + '(' + ALeft^.Value + ')^.';
+  Result := Evaluate(ADebugger, Prefix + ARight, AValue, AInfo);
+  if Result then Exit;
+
+  // maybe property
+  Result := Evaluate(ADebugger, Prefix + 'F' + ARight, AValue, AInfo);
+
+  //todo: method call
+end;
+
+function TGDBMIExpression.SolveIn(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+begin
+  Result := False;
+end;
+
+function TGDBMIExpression.SolveIs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+begin
+  Result := False;
+end;
+
+function TGDBMIExpression.SolveMath(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+const
+  OPERATOR_TEXT: array[TDBGExpressionOperator] of string = (
+    {eoNone            } '',
+    {eoNegate          } '-',
+    {eoPlus            } '',
+    {eoSubstact        } '-',
+    {eoAdd             } '+',
+    {eoMultiply        } '*',
+    {eoPower           } '',
+    {eoDivide          } '/',
+    {eoDereference     } '',
+    {eoAddress         } '',
+    {eoEqual           } '=',
+    {eoLess            } '<',
+    {eoLessOrEqual     } '<=',
+    {eoGreater         } '>',
+    {eoGreaterOrEqual  } '>=',
+    {eoNotEqual        } '<>',
+    {eoIn              } '',
+    {eoIs              } '',
+    {eoAs              } '',
+    {eoDot             } '',
+    {eoComma           } '',
+    {eoBracket         } '',
+    {eoIndex           } '',
+    {eoClose           } '',
+    {eoAnd             } 'and',
+    {eoOr              } 'or',
+    {eoMod             } 'mod',
+    {eoNot             } 'not',
+    {eoDiv             } 'div',
+    {eoXor             } 'xor',
+    {eoShl             } 'shl',
+    {eoShr             } 'shr'
+  );
+var
+  Eval: String;
+begin
+  case ALeft^.Opertor of
+    eoAnd, eoOr, eoMod, eoNot,
+    eoDiv, eoXor, eoShl,  eoShr: begin
+      Eval := '(' + ALeft^.Value + ')' + OPERATOR_TEXT[ALeft^.Opertor] + '(' + ARight^.Value + ')';
+    end
+  else
+    Eval := ALeft^.Value + OPERATOR_TEXT[ALeft^.Opertor] + ARight^.Value;
   end;
 
-  Result := True;
+  Result := Evaluate(ADebugger, Eval, AValue, AInfo);
 end;
 
 { TGDBMIType }
