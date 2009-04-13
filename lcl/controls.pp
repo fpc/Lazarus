@@ -40,7 +40,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType, AvgLvlTree,
+  Classes, SysUtils, TypInfo, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
   UTrace, PropertyStorage, Menus, ActnList, LCLClasses, LResources;
 
