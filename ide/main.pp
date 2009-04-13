@@ -7757,9 +7757,9 @@ begin
       if (Project1.Units[i].FileName <> '') then
       begin
         UnitName := ExtractFileName(Project1.Units[i].Filename);
-        ItemList.AddObject(UnitName,
-          TViewUnitsEntry.Create(UnitName, i,
-                                 Project1.Units[i] = ActiveUnitInfo));
+        if ItemList.IndexOf(UnitName) = -1 then
+          ItemList.AddObject(UnitName,
+            TViewUnitsEntry.Create(UnitName, i, Project1.Units[i] = ActiveUnitInfo));
       end
       else
       if Project1.MainUnitID = i then
@@ -7768,7 +7768,7 @@ begin
         if pfMainUnitIsPascalSource in Project1.Flags then
         begin
           UnitName := ExtractFileName(MainUnitInfo.Filename);
-          if UnitName <> '' then
+          if (UnitName <> '') and (ItemList.IndexOf(UnitName) = -1) then
           begin
             ItemList.AddObject(UnitName,
               TViewUnitsEntry.Create(UnitName, i, MainUnitInfo = ActiveUnitInfo));
