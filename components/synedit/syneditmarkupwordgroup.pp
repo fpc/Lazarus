@@ -229,7 +229,7 @@ begin
   if sfaOpen in Node1.FoldAction then begin
     y1 := y;
     Node2 := FindEndNode(Node1, y, i);
-    if (sfaInvalid in Node2.FoldAction) then
+    if (sfaInvalid in Node2.FoldAction) or not(sfaMarkup in Node2.FoldAction) then
       exit;
     y2 := y;
     i2 := i;
@@ -242,7 +242,7 @@ begin
     y2 := y;
     i2 := i;
     Node1 := FindStartNode(Node2, y, i);
-    if (sfaInvalid in Node1.FoldAction) then
+    if (sfaInvalid in Node1.FoldAction) or not(sfaMarkup in Node1.FoldAction) then
       exit;
     y1 := y;
   end;
@@ -257,7 +257,8 @@ begin
   Word2.Y  := y2 + 1;
   Word2.X  := Node2.LogXStart + 1;
   Word2.X2 := Node2.LogXEnd + 1;
-  if not(sfaInvalid in Node3.FoldAction) then begin
+  if (sfaMarkup in Node3.FoldAction) and not(sfaInvalid in Node3.FoldAction) then
+  begin
     Word3 := Word2;
     if i3 > i2 then begin
       Word2 := Word1;

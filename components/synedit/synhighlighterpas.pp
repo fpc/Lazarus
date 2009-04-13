@@ -1329,8 +1329,11 @@ function TSynPasSyn.Func85: TtkTokenKind;
 begin
   if KeyComp('Forward') then begin
     Result := tkKey;
-    if TopPascalCodeFoldBlockType = cfbtProcedure then
+    if TopPascalCodeFoldBlockType = cfbtProcedure then begin
       EndCodeFoldBlock;
+      if FCatchNodeInfo then
+        exclude(FNodeInfoList[FNodeInfoCount-1].FoldAction, sfaMarkup);
+    end;
   end else
     if KeyComp('Library') then Result := tkKey else Result := tkIdentifier;
 end;
@@ -1425,8 +1428,11 @@ function TSynPasSyn.Func99: TtkTokenKind;
 begin
   if KeyComp('External') then begin
     Result := tkKey;
-    if TopPascalCodeFoldBlockType = cfbtProcedure then
+    if TopPascalCodeFoldBlockType = cfbtProcedure then begin
       EndCodeFoldBlock;
+      if FCatchNodeInfo then
+        exclude(FNodeInfoList[FNodeInfoCount-1].FoldAction, sfaMarkup);
+    end;
   end else Result := tkIdentifier;
 end;
 
