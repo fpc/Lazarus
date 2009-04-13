@@ -129,8 +129,7 @@ begin
     WindowPositionsBox.Layout := FLayouts.ItemByEnum(TNonModalIDEWindow(Index + 1))
   else
   begin
-    Index := Index - Ord(High(TNonModalIDEWindow));
-    case Index of
+    case Index - Ord(High(TNonModalIDEWindow)) of
       0: WindowPositionsBox.Layout := FLayouts.ItemByFormID(DefaultObjectInspectorName);
     end;
   end;
