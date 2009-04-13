@@ -7,8 +7,8 @@ object TodoDialog: TTodoDialog
   ClientHeight = 269
   ClientWidth = 475
   OnCreate = FormCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object TodoLabel: TLabel
     Left = 8
     Height = 14
@@ -23,7 +23,7 @@ object TodoDialog: TTodoDialog
     AnchorSideBottom.Control = PriorityEdit
     Left = 10
     Height = 14
-    Top = 185
+    Top = 189
     Width = 35
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 2
@@ -34,7 +34,7 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Control = PriorityLabel
     Left = 75
     Height = 14
-    Top = 185
+    Top = 189
     Width = 33
     Caption = 'Owner'
     ParentColor = False
@@ -43,7 +43,7 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Control = PriorityLabel
     Left = 248
     Height = 14
-    Top = 185
+    Top = 189
     Width = 46
     Caption = 'Category'
     ParentColor = False
@@ -55,7 +55,7 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PriorityLabel
     Left = 6
-    Height = 155
+    Height = 159
     Top = 24
     Width = 463
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -69,8 +69,8 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 27
-    Top = 201
+    Height = 23
+    Top = 205
     Width = 38
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -81,8 +81,8 @@ object TodoDialog: TTodoDialog
   object OwnerEdit: TEdit
     AnchorSideTop.Control = PriorityEdit
     Left = 76
-    Height = 27
-    Top = 201
+    Height = 23
+    Top = 205
     Width = 162
     AutoSize = True
     TabOrder = 2
@@ -92,8 +92,8 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 248
-    Height = 27
-    Top = 201
+    Height = 23
+    Top = 205
     Width = 221
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -101,6 +101,7 @@ object TodoDialog: TTodoDialog
     TabOrder = 3
   end
   object BtnPanel: TPanel
+    Left = 0
     Height = 35
     Top = 234
     Width = 475
