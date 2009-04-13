@@ -484,8 +484,8 @@ end;
 procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
 begin
   // Test MakeOptionsString function
-  if not PutCompilerOptions(ccomlWarning) then exit;
-  ShowCompilerOptionsDialog(CompilerOpts);
+  if PutCompilerOptions(ccomlWarning) then
+    ShowCompilerOptionsDialog(Self, CompilerOpts);
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);

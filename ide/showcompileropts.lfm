@@ -7,6 +7,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   ClientHeight = 194
   ClientWidth = 390
   OnCreate = FormCreate
+  Position = poOwnerFormCenter
   LCLVersion = '0.9.27'
   object CmdLineGroupbox: TGroupBox
     AnchorSideLeft.Control = Owner

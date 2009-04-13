@@ -58,18 +58,18 @@ type
     property CompilerOpts: TBaseCompilerOptions read FCompilerOpts write SetCompilerOpts;
   end;
 
-function ShowCompilerOptionsDialog(
+function ShowCompilerOptionsDialog(Owner: TComponent;
   CompilerOpts: TBaseCompilerOptions): TModalResult;
 
 implementation
 
-function ShowCompilerOptionsDialog(
+function ShowCompilerOptionsDialog(Owner: TComponent;
   CompilerOpts: TBaseCompilerOptions): TModalResult;
 var
   ShowCompilerOptionsDlg: TShowCompilerOptionsDlg;
 begin
   Result:=mrOk;
-  ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(nil);
+  ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(Owner);
   ShowCompilerOptionsDlg.CompilerOpts:=CompilerOpts;
   ShowCompilerOptionsDlg.ShowModal;
   ShowCompilerOptionsDlg.Free;
