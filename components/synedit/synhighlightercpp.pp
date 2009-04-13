@@ -1373,13 +1373,16 @@ begin
       end;
   end;
   fTokenID := tkString;
-  repeat
-    if fLine[Run] = '\' then begin
-      if fLine[Run + 1] in [#34, '\'] then                                      //ek 2000-04-26
-        Inc(Run);
-    end;
-    inc(Run);
-  until fLine[Run] in [#0, #10, #13, #34];
+  if not((fRange in [rsAsmBlockString,rsAsmString,rsDirectiveString,rsString])
+         and (Run = 0) and (FLine[Run] = #34 ))
+  then
+    repeat
+      if fLine[Run] = '\' then begin
+        if fLine[Run + 1] in [#34, '\'] then                                      //ek 2000-04-26
+          Inc(Run);
+      end;
+      inc(Run);
+    until fLine[Run] in [#0, #10, #13, #34];
   if FLine[Run] = #34 then begin
     inc(Run);
     fRange := SynCppStringRangeToRange[fRange];
