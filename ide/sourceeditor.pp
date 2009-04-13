@@ -247,7 +247,7 @@ type
     procedure ShowGotoLineDialog;
 
     // dialogs
-    procedure GetDialogPosition(Width, Height:integer; out Left,Top:integer);
+    procedure GetDialogPosition(Width, Height: integer; out Left, Top: integer);
     procedure ActivateHint(ClientPos: TPoint;
                            const BaseURL, TheHint: string);
 
@@ -1130,19 +1130,22 @@ begin
   Self.FocusEditor;
 end;
 
-procedure TSourceEditor.GetDialogPosition(Width, Height:integer;
-  out Left,Top:integer);
-var P:TPoint;
+procedure TSourceEditor.GetDialogPosition(Width, Height: integer;
+  out Left, Top: integer);
+var 
+  P: TPoint;
+  ABounds: TRect;
 begin
   with EditorComponent do
     P := ClientToScreen(Point(CaretXPix, CaretYPix));
-  Left:=EditorComponent.ClientOrigin.X+(EditorComponent.Width - Width) div 2;
-  Top:=P.Y-Height-3*EditorComponent.LineHeight;
-  if Top<10 then
-    Top:=P.y+2*EditorComponent.LineHeight;
-  if Top+Height>Screen.Height then
-    Top:=(Screen.Height-Height) div 2;
-  if Top<0 then Top:=0;
+  ABounds := Screen.MonitorFromPoint(P).BoundsRect;
+  Left := EditorComponent.ClientOrigin.X + (EditorComponent.Width - Width) div 2;
+  Top := P.Y - Height - 3 * EditorComponent.LineHeight;
+  if Top < ABounds.Top + 10 then
+    Top := P.Y + 2 * EditorComponent.LineHeight;
+  if Top + Height > ABounds.Bottom then
+    Top := (ABounds.Bottom + ABounds.Top - Height) div 2;
+  if Top < ABounds.Top then Top := ABounds.Top;
 end;
 
 procedure TSourceEditor.ActivateHint(ClientPos: TPoint;
