@@ -81,7 +81,6 @@ type
     nmiwClipbrdHistoryName,
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,
-    nmiwDocEditor,
     // debugger
     nmiwDbgOutput,
     nmiwBreakPoints,
@@ -123,7 +122,6 @@ const
     'ClipBrdHistory',
     'PkgGraphExplorer',
     'ProjectInspector',
-    'DocumentEditor',
     // debugger
     'DbgOutput',
     'BreakPoints',

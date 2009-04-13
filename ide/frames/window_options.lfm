@@ -3,16 +3,17 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
   Width = 463
   ClientHeight = 396
   ClientWidth = 463
-  TabOrder = 0
   Visible = False
-  DesignLeft = 66
-  DesignTop = 87
+  DesignLeft = 176
+  DesignTop = 232
   object MinimizeAllOnMinimizeMainCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 19
-    Width = 198
+    Left = 0
+    Height = 17
+    Top = 0
+    Width = 195
     Caption = 'MinimizeAllOnMinimizeMainCheckBox'
     Enabled = False
     TabOrder = 0
@@ -22,9 +23,10 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = MinimizeAllOnMinimizeMainCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Height = 19
-    Top = 19
-    Width = 144
+    Left = 0
+    Height = 17
+    Top = 17
+    Width = 141
     Caption = 'HideIDEOnRunCheckBox'
     TabOrder = 1
   end
@@ -36,12 +38,13 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Height = 358
-    Top = 38
+    Left = 0
+    Height = 362
+    Top = 34
     Width = 463
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'WindowPositionsGroupBox'
-    ClientHeight = 340
+    ClientHeight = 344
     ClientWidth = 459
     TabOrder = 2
     object WindowPositionsListBox: TListBox
@@ -55,6 +58,7 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Width = 447
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
+      ItemHeight = 0
       OnSelectionChange = WindowPositionsListBoxSelectionChange
       TabOrder = 0
     end

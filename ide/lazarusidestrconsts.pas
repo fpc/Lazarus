@@ -274,11 +274,11 @@ resourcestring
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMVDocking = 'Docking';
   lisMenuViewSearchResults = 'Search Results';
-  lisMenuViewAnchorEditor = 'View Anchor Editor';
+  lisMenuViewAnchorEditor = 'Anchor Editor';
   lisKMToggleViewComponentPalette = 'Toggle view component palette';
-  lisMenuViewComponentPalette = 'View Component Palette';
+  lisMenuViewComponentPalette = 'Component Palette';
   lisMenuViewTodoList = 'ToDo List';
-  lisMenuViewIDESpeedButtons = 'View IDE speed buttons';
+  lisMenuViewIDESpeedButtons = 'IDE speed buttons';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';

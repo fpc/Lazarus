@@ -186,7 +186,6 @@ var
   AnchorEnabledHint: String;
 begin
   Name:=NonModalIDEWindowNames[nmiwAnchorEditor];
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   KeyPreview:=true;
   FSelection:=TPersistentSelectionList.Create;
   FSelectedControlsList := TList.Create;
@@ -273,6 +272,7 @@ end;
 
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
 begin
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   Refresh(true);
 end;
 

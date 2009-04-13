@@ -42,6 +42,7 @@ type
     FLayouts: TIDEWindowLayoutList;
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
     procedure SetWindowPositionsItem(Index: integer);
+    function GetCaptionFor(AWindow: TNonModalIDEWindow): String;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -60,6 +61,8 @@ begin
 end;
 
 procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  Window: TNonModalIDEWindow;
 begin
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
@@ -70,15 +73,9 @@ begin
   with WindowPositionsListBox.Items do
   begin
     BeginUpdate;
-    Add(dlgMainMenu);
-    Add(dlgSrcEdit);
-    Add(dlgMsgs);
+    for Window := Succ(Low(TNonModalIDEWindow)) to High(TNonModalIDEWindow) do
+      Add(GetCaptionFor(Window));
     Add(dlgObjInsp);
-    Add(lisMenuProjectInspector);
-    Add(lisCodeExplorer);
-    Add(lisMenuPackageGraph);
-    Add(dlgUnitDepCaption);
-    Add(lisMenuFPDocEditor);
     EndUpdate;
   end;
   WindowPositionsBox := TIDEWindowSetupLayoutComponent.Create(Self);
@@ -128,19 +125,34 @@ begin
   if WindowPositionsBox.Layout <> nil then
     WindowPositionsBox.Save;
   WindowPositionsListBox.ItemIndex := Index;
-  case Index of
-    0: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwMainIDEName);
-    1: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwSourceNoteBookName);
-    2: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwMessagesViewName);
-    3: WindowPositionsBox.Layout := FLayouts.ItemByFormID(DefaultObjectInspectorName);
-    4: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwProjectInspector);
-    5: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwCodeExplorerName);
-    6: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwPkgGraphExplorer);
-    7: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwUnitDependenciesName);
-    8: WindowPositionsBox.Layout := FLayouts.ItemByEnum(nmiwFPDocEditorName);
+  if Index < Ord(High(TNonModalIDEWindow)) then
+    WindowPositionsBox.Layout := FLayouts.ItemByEnum(TNonModalIDEWindow(Index + 1))
+  else
+  begin
+    Index := Index - Ord(High(TNonModalIDEWindow));
+    case Index of
+      0: WindowPositionsBox.Layout := FLayouts.ItemByFormID(DefaultObjectInspectorName);
+    end;
   end;
   if Index >= 0 then
-    WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
+    WindowPositionsBox.Caption := WindowPositionsListBox.Items[Index];
+end;
+
+function TWindowOptionsFrame.GetCaptionFor(AWindow: TNonModalIDEWindow): String;
+begin
+  case AWindow of
+    nmiwMainIDEName: Result := dlgMainMenu;
+    nmiwSourceNoteBookName: Result := dlgSrcEdit;
+    nmiwMessagesViewName: Result := dlgMsgs;
+    nmiwCodeExplorerName: Result := lisCodeExplorer;
+    nmiwFPDocEditorName: Result := lisCodeHelpMainFormCaption;
+    nmiwPkgGraphExplorer: Result := lisMenuPackageGraph;
+    nmiwProjectInspector: Result := lisMenuProjectInspector;
+    nmiwUnitDependenciesName: Result := dlgUnitDepCaption;
+    nmiwAnchorEditor: Result := lisMenuViewAnchorEditor;
+  else
+    Result := NonModalIDEWindowNames[AWindow];
+  end;
 end;
 
 class function TWindowOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
