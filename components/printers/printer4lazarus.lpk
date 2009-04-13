@@ -170,6 +170,7 @@
       </Item34>
       <Item35>
         <Filename Value="unix\udlgpagesetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="udlgpagesetup"/>
       </Item35>
       <Item36>
@@ -182,6 +183,7 @@
       </Item37>
       <Item38>
         <Filename Value="unix\framepagesetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="framePageSetup"/>
       </Item38>
       <Item39>
@@ -194,14 +196,17 @@
       </Item40>
       <Item41>
         <Filename Value="unix\frameprinterselector.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frameprinterselector"/>
       </Item41>
       <Item42>
         <Filename Value="unix\udlgprintersetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="udlgprintersetup"/>
       </Item42>
       <Item43>
         <Filename Value="unix\cupslcl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupslcl"/>
       </Item43>
     </Files>

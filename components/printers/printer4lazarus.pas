@@ -7,8 +7,7 @@ unit Printer4Lazarus;
 interface
 
 uses
-    PrintersDlgs, OSPrinters, udlgpagesetup, framePageSetup, 
-  frameprinterselector, udlgprintersetup, cupslcl, LazarusPackageIntf;
+  PrintersDlgs, OSPrinters, LazarusPackageIntf;
 
 implementation
 
