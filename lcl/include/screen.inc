@@ -373,7 +373,7 @@ begin
   if MonitorHandle = MONITOR_UNIMPL then
   begin
     Result := nil;
-    BestSquare := 0;
+    BestSquare := -1;
     BestDistance := MaxInt;
     Nearest := nil;
     for i := 0 to MonitorCount - 1 do
@@ -382,7 +382,7 @@ begin
       if IntersectRect(Intersection, Rect, MonitorRect) then
       begin
         with Intersection do
-          Square := (Right - Left) * (Bottom - Top);
+          Square := Abs(Right - Left) * Abs(Bottom - Top);
         if Square > BestSquare then
         begin
           BestSquare := Square;
