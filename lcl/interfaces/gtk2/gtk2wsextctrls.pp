@@ -23,6 +23,8 @@
 unit Gtk2WSExtCtrls;
 
 {$I ../gtk/gtkdefines.inc}
+//{$define UseStatusIcon} // can be used only with fpc r13008
+
 
 {$mode objfpc}{$H+}
 
@@ -30,7 +32,7 @@ interface
 
 uses
   // libs
-  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, GtkProc, GtkDef,
+  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, GtkProc, GtkDef, {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
   // LCL
   LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType,
   // widgetset

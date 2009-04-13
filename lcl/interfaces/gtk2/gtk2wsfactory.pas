@@ -123,7 +123,6 @@ uses
   GtkWSPrivate,
   Gtk2WSPrivate;
 
-
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
 begin
