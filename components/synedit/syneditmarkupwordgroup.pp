@@ -364,7 +364,7 @@ begin
    (aCol >= FHighlightPos1.x) and (aCol < FHighlightPos1.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := aCol;
+    MarkupInfo.StartX := FHighlightPos1.x;
     MarkupInfo.EndX := FHighlightPos1.X2 - 1;
   end
   else
@@ -372,7 +372,7 @@ begin
    (aCol >= FHighlightPos3.x) and (aCol < FHighlightPos3.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := aCol;
+    MarkupInfo.StartX := FHighlightPos3.x;
     MarkupInfo.EndX := FHighlightPos3.X2 - 1;
   end
   else
@@ -380,7 +380,7 @@ begin
    (aCol >= FHighlightPos2.x) and (aCol < FHighlightPos2.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := aCol;
+    MarkupInfo.StartX := FHighlightPos2.x;
     MarkupInfo.EndX := FHighlightPos2.X2 - 1;
   end;
 end;
