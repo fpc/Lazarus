@@ -561,14 +561,25 @@ end;
 
 procedure TPostScriptPrinterCanvas.WriteOrientation;
 var
-  h:integer;
+  h,w:integer;
 begin
   if Printer=nil then
     exit;
   case Printer.Orientation of
+    poReversePortrait:
+      begin
+        w:=round(Printer.PaperSize.Width*72/printer.XDPI);
+        h:=round(Printer.PaperSize.Height*72/printer.YDPI);
+        Write(format('%d %d translate 180 rotate',[w,h]));
+      end;
     poLandscape:
       begin
-        h:=round(Printer.PaperSize.Height*72/printer.YDPI); // pixels to points
+        h:=round(Printer.PaperSize.Width*72/printer.XDPI);
+        Write(format('0 %d translate 90 neg rotate',[h]));
+      end;
+    poReverseLandscape:
+      begin
+        h:=round(Printer.PaperSize.Height*72/printer.YDPI);
         Write(format('%d 0 translate 90 rotate',[h]));
       end;
   end;
