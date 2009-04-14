@@ -1,5 +1,39 @@
 {%MainUnit ../printersdlgs.pp}
 
+function PrintHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): PtrUInt; stdcall;
+
+  // update from win32wsdialogs.pp
+  procedure Reposition(ADialogWnd: Handle);
+  var
+    Left, Top: Integer;
+    ABounds, DialogRect: TRect;
+  begin
+    // Btw, setting width and height of dialog doesnot reposition child controls :(
+    // So no way to set another height and width at least here
+
+    if (GetParent(ADialogWnd) = Widgetset.AppHandle) then
+    begin
+      if Screen.ActiveCustomForm <> nil then
+        ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
+      else
+      if Application.MainForm <> nil then
+        ABounds := Application.MainForm.Monitor.BoundsRect
+      else
+        ABounds := Screen.PrimaryMonitor.BoundsRect;
+    end
+    else
+      ABounds := Screen.MonitorFromWindow(GetParent(ADialogWnd)).BoundsRect;
+    GetWindowRect(ADialogWnd, DialogRect);
+    Left := (ABounds.Right - DialogRect.Right + DialogRect.Left) div 2;
+    Top := (ABounds.Bottom - DialogRect.Bottom + DialogRect.Top) div 2;
+    SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
+  end;
+
+begin
+  if uiMsg = WM_INITDIALOG then
+    Reposition(hdlg);
+  Result := 0;
+end;
 
 { TPageSetupDialog }
 
@@ -20,7 +54,8 @@ begin
     with lpp do begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags := PSD_MARGINS;
+      lpfnPageSetupHook := @PrintHookProc;
+      Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
       hWndOwner:=Widgetset.AppHandle;
       rtMargin := fMargins;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
@@ -94,7 +129,8 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags:= PD_PRINTSETUP or PD_RETURNDC;
+      lpfnSetupHook := @PrintHookProc;
+      Flags:= PD_PRINTSETUP or PD_RETURNDC or PD_ENABLESETUPHOOK;
       hWndOwner:=Widgetset.AppHandle;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
@@ -165,10 +201,11 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      if Printer.RawMode then
-        Flags := 0
-      else
-        Flags := PD_RETURNDC;
+      lpfnPrintHook := @PrintHookProc;
+      lpfnSetupHook := @PrintHookProc;
+      Flags := PD_ENABLEPRINTHOOK or PD_ENABLESETUPHOOK;
+      if not Printer.RawMode then
+        Flags := Flags or PD_RETURNDC;
       if Collate then Flags := Flags or PD_COLLATE;
       case PrintRange of
        prPageNums : Flags := Flags or PD_PAGENUMS;
