@@ -2101,21 +2101,26 @@ procedure TPackageEditors.ApplyLayout(AnEditor: TPackageEditorForm);
 var
   PkgFilename: String;
   ANode: TAVLTreeNode;
-  ARect: TRect;
+  ARect, ABounds: TRect;
 begin
-  if fLayouts=nil then LoadLayouts;
-  PkgFilename:=AnEditor.LazPackage.Filename;
-  ANode:=fLayouts.FindKey(Pointer(PkgFilename),@CompareFilenameWithLayout);
+  if fLayouts = nil then LoadLayouts;
+  PkgFilename := AnEditor.LazPackage.Filename;
+  ANode := fLayouts.FindKey(Pointer(PkgFilename), @CompareFilenameWithLayout);
   // find a nice position for the editor
-  if ANode<>nil then
-    ARect:=TPackageEditorLayout(ANode.Data).Rectangle
+  if ANode <> nil then
+    ARect := TPackageEditorLayout(ANode.Data).Rectangle
   else
-    ARect:=Rect(0,0,0,0);
-  if (ARect.Bottom<ARect.Top+50) or (ARect.Right<ARect.Left+50)
-  or (ARect.Bottom>Screen.Height) or (ARect.Right>Screen.Width) then
-    ARect:=CreateNiceWindowPosition(500,400);
-  AnEditor.SetBounds(ARect.Left,ARect.Top,
-                     ARect.Right-ARect.Left,ARect.Bottom-ARect.Top);
+    ARect := Rect(0, 0, 0, 0);
+  if Screen.ActiveCustomForm <> nil then
+    ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
+  else
+    ABounds := Screen.PrimaryMonitor.BoundsRect;
+  if (ARect.Bottom < ARect.Top + 50) or (ARect.Right < ARect.Left + 50) or
+     (ARect.Bottom > ABounds.Bottom) or (ARect.Right > ABounds.Right) or
+     (Arect.Top < ABounds.Top) or (ARect.Left < ABounds.Left) then
+    ARect := CreateNiceWindowPosition(500, 400);
+  AnEditor.SetBounds(ARect.Left, ARect.Top,
+                     ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
 end;
 
 procedure TPackageEditors.SaveLayout(AnEditor: TPackageEditorForm);
