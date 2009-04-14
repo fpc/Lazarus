@@ -4028,7 +4028,6 @@ var
 
   function CheckOperator(const AOperator: String): Boolean;
   var
-    S: String;
     len: Integer;
   begin
     len := Length(AOperator);
@@ -4406,11 +4405,7 @@ end;
 function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
 var
   R: TGDBMIExecResult;
-  S: String;
   ResultList: TGDBMINameValueList;
-  ResultInfo: TGDBType;
-  addr: TDbgPtr;
-  e: Integer;
 begin
   // special cases
   if ATExt = ''
@@ -4641,7 +4636,7 @@ end;
 
 function TGDBMIExpression.SolveDot(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
 var
-  Eval, Prefix: String;
+  Prefix: String;
 begin
   if not (ALeft^.Info.Kind in [skClass, skRecord]) then Exit(False);
 
