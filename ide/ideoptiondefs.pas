@@ -376,15 +376,16 @@ function CreateNiceWindowPosition(Width, Height: integer): TRect;
   var
     i: Integer;
   begin
-    for i:=0 to Screen.CustomFormCount-1 do begin
-      Result:=Screen.CustomForms[i];
+    for i := 0 to Screen.CustomFormCount - 1 do
+    begin
+      Result := Screen.CustomForms[i];
       if Result.HandleAllocated and Result.Visible
-      and (Result.Left>=x-5) and (Result.Left<=x+5)
-      and (Result.Top>=y-5) and (Result.Top<=y+5)
+      and (Result.Left >= x - 5) and (Result.Left <= x + 5)
+      and (Result.Top >= y - 5) and (Result.Top <= y + 5)
       then
         exit;
     end;
-    Result:=nil;
+    Result := nil;
   end;
 
 var
@@ -397,27 +398,36 @@ var
   MidX: Integer;
   MidY: Integer;
   Step: Integer;
+  ABounds: TRect;
 begin
-  MinX:=0;
-  MinY:=0;
-  MaxX:=Screen.Width-Width-10;
-  if MaxX<MinX+10 then MaxX:=MinX+10;
-  MaxY:=SCreen.Height-Height-100;
-  if MaxY<MinY+10 then MaxY:=MinY+10;
-  MidX:=(MaxX+MinX) div 2;
-  MidY:=(MaxY+MinY) div 2;
-  Step:=0;
+  if Screen.ActiveCustomForm <> nil then
+    ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
+  else
+  if Application.MainForm <> nil then
+    ABounds := Application.MainForm.Monitor.BoundsRect
+  else
+    ABounds := Screen.PrimaryMonitor.BoundsRect;
+
+  MinX := ABounds.Left;
+  MinY := ABounds.Top;
+  MaxX := ABounds.Right - Width - 10;
+  if MaxX < MinX + 10 then MaxX := MinX + 10;
+  MaxY := ABounds.Bottom - Height - 100; // why -100?
+  if MaxY < MinY + 10 then MaxY := MinY + 10;
+  MidX := (MaxX + MinX) div 2;
+  MidY := (MaxY + MinY) div 2;
+  Step := 0;
   repeat
-    x:=MidX-Step*20;
-    y:=MidY-Step*20;
-    if (x<MinX) or (x>MaxX) or (y<MinY) or (y>MaxY) then break;
-    if (FindFormAt(x,y)=nil) or (Step>1000) then break;
+    x := MidX - Step * 20;
+    y := MidY - Step * 20;
+    if (x < MinX) or (x > MaxX) or (y < MinY) or (y > MaxY) then break;
+    if (FindFormAt(x, y)=nil) or (Step > 1000) then break;
     inc(Step);
-  until false;
-  Result.Left:=x;
-  Result.Top:=y;
-  Result.Right:=x+Width;
-  Result.Bottom:=y+Height;
+  until False;
+  Result.Left := x;
+  Result.Top := y;
+  Result.Right := x + Width;
+  Result.Bottom := y + Height;
 end;
 
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
