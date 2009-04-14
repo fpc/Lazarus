@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil,
-  CodeAtom, CodeCache, CodeToolManager,
+  BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
   AbstractsMethodsDlg, LazarusIDEStrConsts;
   
@@ -479,9 +479,44 @@ end;
 
 function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Line: TIDEMessageLine
   ): boolean;
+// FPC gives position of end of identifier
+const
+  SearchStr = ') Error: Identifier not found "';
+var
+  Filename: string;
+  Caret: TPoint;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  p: LongInt;
+  Msg: String;
+  Identifier: String;
+  Node: TCodeTreeNode;
 begin
-  Result:=(Line.Parts<>nil)
-          and (System.Pos(') Error: Identifier not found "',Line.Msg)>0);
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit;
+  inc(p,length(SearchStr));
+  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
+  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+  if not CodeToolBoss.Explore(Code,Tool,false) then exit;
+  if Tool.CaretToCleanPos(CodeXYPosition(Caret.X,Caret.Y,Code),CleanPos)<>0 then exit;
+  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+  if Node=nil then exit;
+  if not (Node.Desc in AllPascalStatements) then exit;
+  Tool.MoveCursorToCleanPos(CleanPos);
+  Tool.ReadPriorAtom;
+  Identifier:=GetIdentifier(@Msg[p]);
+  if not Tool.AtomIs(Identifier) then exit;
+  Tool.ReadPriorAtom;
+  if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
+                           cafEnd])
+  then exit;
+  Result:=true;
 end;
 
 procedure TQuickFixIdentifierNotFoundAddLocal.Execute(const Msg: TIDEMessageLine;
