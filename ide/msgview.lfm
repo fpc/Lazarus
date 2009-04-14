@@ -17,7 +17,7 @@ inherited MessagesView: TMessagesView
     Top = 0
     Width = 722
     Align = alClient
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     PopupMenu = MainPopupMenu
     ReadOnly = True
     ScrollBars = ssAutoBoth
@@ -28,7 +28,13 @@ inherited MessagesView: TMessagesView
   end
   object MainPopupMenu: TPopupMenu[1]
     OnPopup = MainPopupMenuPopup
-    left = 46
-    top = 41
+    left = 48
+    top = 8
+  end
+  object IdleTimer1: TIdleTimer[2]
+    AutoEnabled = True
+    OnTimer = IdleTimer1Timer
+    left = 166
+    top = 8
   end
 end

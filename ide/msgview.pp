@@ -41,13 +41,19 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LResources, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
-  Menus, StdCtrls, ComCtrls, LDockCtrl, Graphics,
-  IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
+  Menus, ExtCtrls, StdCtrls, ComCtrls, LDockCtrl, Graphics,
+  CodeToolManager,
+  IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
   DialogProcs, EnvironmentOpts,
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, infobuild,
   KeyMapping;
 
 type
+  TLazMsgLineFlag = (
+    lmlfHasQuickFixValid,
+    lmlfHasQuickFix
+    );
+  TLazMsgLineFlags = set of TLazMsgLineFlag;
 
   { TLazMessageLine }
 
@@ -55,6 +61,7 @@ type
   private
     FColumn: integer;
     FFilename: string;
+    FFlags: TLazMsgLineFlags;
     FLineNumber: integer;
     FNode: TAVLTreeNode;
   public
@@ -63,11 +70,13 @@ type
     property Filename: string read FFilename write FFilename;
     property LineNumber: integer read FLineNumber write FLineNumber;
     property Column: integer read FColumn write FColumn;
+    property Flags: TLazMsgLineFlags read FFlags write FFlags;
   end;
 
   { TMessagesView }
   
   TMessagesView = class(TIDEMessagesWindowInterface)
+    IdleTimer1: TIdleTimer;
     MessageTreeView: TTreeView;
     MainPopupMenu: TPopupMenu;
     procedure CopyAllMenuItemClick(Sender: TObject);
@@ -77,6 +86,7 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure ClearMenuItemClick(Sender: TObject);
+    procedure IdleTimer1Timer(Sender: TObject);
     procedure MainPopupMenuPopup(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     procedure MessageViewClicked(Sender: TObject);
@@ -102,15 +112,19 @@ type
     function GetVisibleItems(Index: integer): TLazMessageLine;
     procedure SetLastLineIsProgress(const AValue: boolean);
     procedure DoSelectionChange;
+    function UpdateMsgIcons: boolean; // true if complete
   protected
     fBlockLevel: integer;
     FLastSelectedIndex: integer;
+    ImgIDNone: integer;
+    ImgIDHasQuickFix: integer;
     function GetSelectedLineIndex: integer;
     procedure SetSelectedLineIndex(const AValue: integer);
     function FindNextItem(const Filename: string;
                           FirstLine, LineCount: integer): TAVLTreeNode;
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
     function GetLines(Index: integer): TIDEMessageLine; override;
+    procedure Changed;
   public
     ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
@@ -290,6 +304,10 @@ begin
   FSrcPositions := TAVLTree.Create(@CompareMsgSrcPositions);
   FLastSelectedIndex := -1;
 
+  ImgIDNone := IDEImages.LoadImage(16, 'state_error');
+  ImgIDHasQuickFix := IDEImages.LoadImage(16, 'ce_function');
+  MessageTreeView.Images:=IDEImages.Images_16;
+
   Caption := lisMenuViewMessages;
   MessageTreeView.OnAdvancedCustomDrawItem := @MessageViewDrawItem;
 
@@ -315,8 +333,6 @@ begin
   {$IFDEF EnableIDEDocking}
   ControlDocker.Manager:=LazarusIDE.DockingManager;
   {$ENDIF}
-
-  FQuickFixItems:=TFPList.Create;
 end;
 
 destructor TMessagesView.Destroy;
@@ -376,6 +392,7 @@ begin
       Line.VisiblePosition:=Line.VisiblePosition-1;
   end;
   //ConsistencyCheck;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -388,6 +405,7 @@ var
   i:      integer;
   LastItem: TLazMessageLine;
   ToStoreMessage : Boolean;
+  TVNode: TTreeNode;
 begin
   ToStoreMessage := VisibleLine;
   //ConsistencyCheck;
@@ -423,12 +441,15 @@ begin
       i := FVisibleItems.Count - 1;
       VisibleItems[i].VisiblePosition := -1;
       FVisibleItems.Delete(i);
-      MessageTreeView.Items.TopLvlItems[i].Text := Msg;
+      TVNode:=MessageTreeView.Items.TopLvlItems[i];
+      TVNode.Text := Msg;
     end
     else begin
       // add new line
-      MessageTreeView.Items.Add(nil,Msg)// add line
+      TVNode:=MessageTreeView.Items.Add(nil,Msg);// add line
     end;
+    TVNode.ImageIndex:=ImgIDNone;
+    TVNode.SelectedIndex:=ImgIDNone;
     NewMsg.VisiblePosition := FVisibleItems.Count;
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
@@ -437,6 +458,7 @@ begin
     //DebugLn(['TMessagesView.Add ',MessageTreeView.TopIndex]);
   end;
   //ConsistencyCheck;
+  Changed;
 end;
 
 procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
@@ -589,6 +611,7 @@ var
   i:    integer;
   Line: TLazMessageLine;
   ShowLine: boolean;
+  TVNode: TTreeNode;
 begin
   // remove temporary lines
   ClearTillLastSeparator;
@@ -615,9 +638,15 @@ begin
   begin
     Line := VisibleItems[i];
     if MessageTreeView.Items.Count > i then
-      MessageTreeView.Items.TopLvlItems[i].Text := Line.Msg
-    else
-      MessageTreeView.Items.Add(nil,Line.Msg);
+    begin
+      TVNode:=MessageTreeView.Items.TopLvlItems[i];
+      TVNode.Text := Line.Msg;
+    end else
+    begin
+      TVNode:=MessageTreeView.Items.Add(nil,Line.Msg);
+    end;
+    TVNode.ImageIndex:=ImgIDNone;
+    TVNode.SelectedIndex:=ImgIDNone;
   end;
   while MessageTreeView.Items.Count > FVisibleItems.Count do
     MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count - 1].Free;
@@ -899,6 +928,19 @@ begin
   Clear;
 end;
 
+procedure TMessagesView.IdleTimer1Timer(Sender: TObject);
+begin
+  if UpdateMsgIcons then begin
+    // done
+    IdleTimer1.FireOnIdle:=false;
+    IdleTimer1.AutoEnabled:=false;
+    IdleTimer1.Enabled:=false;
+    exit;
+  end;
+  // not yet complete: next on idle
+  IdleTimer1.FireOnIdle:=true;
+end;
+
 procedure TMessagesView.MainPopupMenuPopup(Sender: TObject);
 var
   i: LongInt;
@@ -976,6 +1018,7 @@ const
   
 begin
   if Stage<>cdPostPaint then exit;
+  Changed;
 
   //DebugLn(['TMessagesView.MessageViewDrawItem Index=',Node.Index,' Count=',MessageTreeView.Items.Count,' TheText="',TheText,'"']);
 
@@ -1090,6 +1133,47 @@ begin
   end;
 end;
 
+function TMessagesView.UpdateMsgIcons: boolean;
+var
+  TVNode: TTreeNode;
+  Index: LongInt;
+  Msg: TLazMessageLine;
+  i: Integer;
+  QuickFixItem: TIDEMsgQuickFixItem;
+begin
+  //debugln(['TMessagesView.UpdateMsgIcons START']);
+  Result:=true;
+  TVNode:=MessageTreeView.TopItem;
+  while TVNode<>nil do begin
+    Index:=TVNode.AbsoluteIndex;
+    if Index<VisibleItemCount then begin
+      Msg:=VisibleItems[Index];
+      if not (lmlfHasQuickFixValid in Msg.Flags) then begin
+        //debugln(['TMessagesView.UpdateMsgIcons ',Msg.Msg]);
+        Msg.Flags:=Msg.Flags+[lmlfHasQuickFixValid];
+        CodeToolBoss.ActivateWriteLock;
+        try
+          for i:=0 to IDEMsgQuickFixes.Count-1 do begin
+            QuickFixItem:=IDEMsgQuickFixes[i];
+            //debugln(['TMessagesView.UpdateMsgIcons ',QuickFixItem.Name]);
+            if (imqfoMenuItem in QuickFixItem.Steps)
+            and QuickFixItem.IsApplicable(Msg) then begin
+              Msg.Flags:=Msg.Flags+[lmlfHasQuickFix];
+              TVNode.ImageIndex:=ImgIDHasQuickFix;
+              TVNode.SelectedIndex:=ImgIDHasQuickFix;
+            end;
+          end;
+        finally
+          CodeToolBoss.DeactivateWriteLock;
+        end;
+        // next on idle
+        exit(false);
+      end;
+    end;
+    TVNode:=TVNode.GetNextVisible;
+  end;
+end;
+
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
   if AValue>=0 then begin
@@ -1113,6 +1197,11 @@ end;
 function TMessagesView.GetLines(Index: integer): TIDEMessageLine;
 begin
   Result:=Items[Index];
+end;
+
+procedure TMessagesView.Changed;
+begin
+  IdleTimer1.AutoEnabled:=true;
 end;
 
 procedure TMessagesView.ConsistencyCheck;
