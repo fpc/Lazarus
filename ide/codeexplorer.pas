@@ -137,7 +137,7 @@ type
     ImgIDFinalization: Integer;
     ImgIDImplementation: Integer;
     ImgIDInitialization: Integer;
-    ImgIDInterfaceSection: Integer;
+    ImgIDInterface: Integer;
     ImgIDProcedure: Integer;
     ImgIDFunction: Integer;
     ImgIDProgram: Integer;
@@ -345,20 +345,21 @@ begin
   ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
   ImgIDProgram := Imagelist1.AddLazarusResource('ce_program');
   ImgIDUnit := Imagelist1.AddLazarusResource('ce_unit');
-  ImgIDInterfaceSection := Imagelist1.AddLazarusResource('ce_interface');
+  ImgIDInterface := Imagelist1.AddLazarusResource('ce_interface');
   ImgIDImplementation := Imagelist1.AddLazarusResource('ce_implementation');
   ImgIDInitialization := Imagelist1.AddLazarusResource('ce_initialization');
   ImgIDFinalization := Imagelist1.AddLazarusResource('ce_finalization');
-  ImgIDTypeSection := Imagelist1.AddLazarusResource('ce_type');
   ImgIDType := Imagelist1.AddLazarusResource('ce_type');
-  ImgIDVarSection := Imagelist1.AddLazarusResource('ce_variable');
   ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
-  ImgIDConstSection := Imagelist1.AddLazarusResource('ce_const');
   ImgIDConst := Imagelist1.AddLazarusResource('ce_const');
   ImgIDClass := Imagelist1.AddLazarusResource('ce_class');
   ImgIDProcedure := Imagelist1.AddLazarusResource('ce_procedure');
   ImgIDFunction := Imagelist1.AddLazarusResource('ce_function');
   ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
+  // sections
+  ImgIDTypeSection := Imagelist1.AddLazarusResource('ce_section');
+  ImgIDVarSection := Imagelist1.AddLazarusResource('ce_section');
+  ImgIDConstSection := Imagelist1.AddLazarusResource('ce_section');
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -549,25 +550,30 @@ function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;
   CodeNode: TCodeTreeNode): integer;
 begin
   case CodeNode.Desc of
-  ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
-//  ctnUnit:                            Result:=ImgIDInterfaceSection;
-  ctnUnit:                            Result:=ImgIDUnit;
-  ctnInterface:                       Result:=ImgIDInterfaceSection;
-  ctnImplementation:                  Result:=ImgIDImplementation;
-  ctnInitialization:                  Result:=ImgIDInitialization;
-  ctnFinalization:                    Result:=ImgIDFinalization;
-  ctnTypeSection:                     Result:=ImgIDTypeSection;
-  ctnTypeDefinition:                  Result:=ImgIDType;
-  ctnVarSection:                      Result:=ImgIDVarSection;
-  ctnVarDefinition:                   Result:=ImgIDVariable;
-  ctnConstSection,ctnResStrSection:   Result:=ImgIDConstSection;
-  ctnConstDefinition:                 Result:=ImgIDConst;
-  ctnClass:                           Result:=ImgIDClass;
-  ctnProcedure:                       if Tool.NodeIsFunction(CodeNode) then
-                                        Result:=ImgIDFunction
-                                      else
-                                        Result:=ImgIDProcedure;
-  ctnProperty:                        Result:=ImgIDProperty;
+    ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
+    ctnUnit:                            Result:=ImgIDUnit;
+    ctnInterface:                       Result:=ImgIDInterface;
+    ctnImplementation:                  Result:=ImgIDImplementation;
+    ctnInitialization:                  Result:=ImgIDInitialization;
+    ctnFinalization:                    Result:=ImgIDFinalization;
+    ctnTypeSection:                     Result:=ImgIDTypeSection;
+    ctnTypeDefinition:
+      begin
+        if (CodeNode.FirstChild <> nil) and (CodeNode.FirstChild.Desc = ctnClass) then
+          Result := ImgIDClass
+        else
+          Result := ImgIDType;
+      end;
+    ctnVarSection:                      Result:=ImgIDVarSection;
+    ctnVarDefinition:                   Result:=ImgIDVariable;
+    ctnConstSection,ctnResStrSection:   Result:=ImgIDConstSection;
+    ctnConstDefinition:                 Result:=ImgIDConst;
+    ctnClass:                           Result:=ImgIDClass;
+    ctnProcedure:                       if Tool.NodeIsFunction(CodeNode) then
+                                          Result:=ImgIDFunction
+                                        else
+                                          Result:=ImgIDProcedure;
+    ctnProperty:                        Result:=ImgIDProperty;
   else
     Result:=ImgIDDefault;
   end;

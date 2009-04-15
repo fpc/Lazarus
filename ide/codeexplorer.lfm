@@ -3,7 +3,6 @@ object CodeExplorerView: TCodeExplorerView
   Height = 517
   Top = 136
   Width = 215
-  ActiveControl = DirectivesFilterEdit
   Caption = 'CodeExplorerView'
   ClientHeight = 517
   ClientWidth = 215
@@ -25,20 +24,18 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 0
     object CodePage: TPage
       Caption = 'CodePage'
-      ClientWidth = 213
-      ClientHeight = 488
+      ClientWidth = 207
+      ClientHeight = 489
       object CodeTreeview: TTreeView
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 462
+        Height = 463
         Top = 26
-        Width = 213
+        Width = 207
         Align = alClient
         BorderSpacing.Top = 1
-        DefaultItemHeight = 19
         HideSelection = False
         Images = Imagelist1
-        ParentCtl3D = False
         PopupMenu = TreePopupmenu
         ReadOnly = True
         RightClickSelect = True
@@ -52,14 +49,14 @@ object CodeExplorerView: TCodeExplorerView
         Left = 0
         Height = 25
         Top = 0
-        Width = 213
+        Width = 207
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 25
-        ClientWidth = 213
+        ClientWidth = 207
         TabOrder = 1
         object OptionsSpeedButton: TSpeedButton
-          Left = 186
+          Left = 180
           Height = 22
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -72,7 +69,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object RefreshSpeedButton: TSpeedButton
-          Left = 138
+          Left = 132
           Height = 22
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -85,7 +82,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object ModeSpeedButton: TSpeedButton
-          Left = 162
+          Left = 156
           Height = 22
           Top = 1
           Width = 23
@@ -104,7 +101,7 @@ object CodeExplorerView: TCodeExplorerView
           Left = 0
           Height = 23
           Top = 0
-          Width = 136
+          Width = 130
           Anchors = [akTop, akLeft, akRight]
           AutoSelect = True
           OnChange = CodeFilterEditChange
@@ -115,8 +112,8 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TPage
       Caption = 'DirectivesPage'
-      ClientWidth = 213
-      ClientHeight = 488
+      ClientWidth = 207
+      ClientHeight = 489
       object DirectivesFilterEdit: TEdit
         AnchorSideLeft.Control = DirectivesPage
         AnchorSideTop.Control = DirectivesPage
@@ -125,7 +122,7 @@ object CodeExplorerView: TCodeExplorerView
         Left = 0
         Height = 23
         Top = 0
-        Width = 213
+        Width = 207
         Anchors = [akTop, akLeft, akRight]
         OnChange = DirectivesFilterEditChange
         TabOrder = 0
@@ -135,13 +132,13 @@ object CodeExplorerView: TCodeExplorerView
         AnchorSideTop.Control = DirectivesFilterEdit
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 464
+        Height = 465
         Top = 24
-        Width = 213
+        Width = 207
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 1
-        DefaultItemHeight = 19
+        DefaultItemHeight = 15
         PopupMenu = TreePopupmenu
         ReadOnly = True
         TabOrder = 1
@@ -154,7 +151,6 @@ object CodeExplorerView: TCodeExplorerView
   end
   object Imagelist1: TImageList
     Height = 18
-    Masked = False
     Width = 18
     left = 64
     top = 32
