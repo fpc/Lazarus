@@ -2416,9 +2416,9 @@ begin
   inherited MouseMove(Shift, x, y);
 
   if (X >= fGutterWidth)
-    and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+    and (X < ClientWidth - ScrollBarWidth)
     and (Y >= 0)
-    and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+    and (Y < ClientHeight - ScrollBarWidth)
   then begin
     if (Cursor <> crHandPoint) or (Shift <> [SYNEDIT_LINK_MODIFIER]) then
       Cursor := crIBeam;
@@ -2426,9 +2426,7 @@ begin
   else
     Cursor := crDefault;
 
-  {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
-  {$ENDIF}
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture
@@ -2437,28 +2435,23 @@ begin
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
-      {$IFDEF SYN_LAZARUS}
       Include(fStateFlags, sfIsDragging);
-      {$ENDIF}
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
-      BeginDrag({$IFDEF SYN_LAZARUS}true{$ELSE}false{$ENDIF});
+      BeginDrag(true);
     end;
   end else if (ssLeft in Shift)
   and MouseCapture
   then begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
     if (X >= fGutterWidth)
-      and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+      and (X < ClientWidth-ScrollBarWidth)
       and (Y >= 0)
-      and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+      and (Y < ClientHeight-ScrollBarWidth)
     then
       ComputeCaret(X, Y);
-    {$IFDEF SYN_LAZARUS}
     if (not(sfIsDragging in fStateFlags))
     then
-    {$ENDIF}
-    SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                {$ELSE}CaretXY{$ENDIF});
+    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     // should we begin scrolling?
     Dec(X, fGutterWidth);
     // calculate chars past right
@@ -2486,13 +2479,11 @@ begin
       fScrollDeltaY := Min(Z div fTextHeight, 0);
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
-  {$IFDEF SYN_LAZARUS}
   end else if MouseCapture
   and (not(sfIsDragging in fStateFlags))
   then begin
     MouseCapture:=false;
     fScrollTimer.Enabled := False;
-  {$ENDIF}
   end;
 end;
 
@@ -2591,79 +2582,54 @@ end;
 
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-{$IFDEF SYN_LAZARUS}
 var
   wasDragging : Boolean;
-{$ENDIF}
 begin
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-  {$IFDEF SYN_LAZARUS}
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
-  {$ENDIF}
   inherited MouseUp(Button, Shift, X, Y);
 
   fScrollTimer.Enabled := False;
-  {$IFDEF SYN_LAZARUS}
   MouseCapture := False;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     exit;
   end;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
-  {$ENDIF}
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
   begin
-    {$IFDEF SYN_LAZARUS}
     fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
                               sfPossibleGutterClick];
-    {$ENDIF}
     exit;
   end;
   MouseCapture := False;
-  if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth)
-    {$IFDEF SYN_LAZARUS}and (Button = mbLeft){$ENDIF} then
-  begin
-    {$IFNDEF SYN_LAZARUS}
-    fGutter.DoOnGutterClick(X, Y);
-    {$ENDIF}
-  end else
-  if fStateFlags * [sfDblClicked,
-      {$IFDEF SYN_LAZARUS}sfTripleClicked,sfQuadClicked,{$ENDIF}
-      sfWaitForDragging] = [sfWaitForDragging] then
-  begin
-    ComputeCaret(X, Y);
-    SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                  {$ELSE}CaretXY{$ENDIF});
-    SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                  {$ELSE}CaretXY{$ENDIF});
-    Exclude(fStateFlags, sfWaitForDragging);
-  end;
+  if (not(sfPossibleGutterClick in fStateFlags)) or (X >= fGutterWidth)
+      or (Button <> mbLeft) then
+    if fStateFlags * [sfDblClicked, sfTripleClicked,sfQuadClicked,
+        sfWaitForDragging] = [sfWaitForDragging] then
+    begin
+      ComputeCaret(X, Y);
+      SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+      SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+      Exclude(fStateFlags, sfWaitForDragging);
+    end;
 
   if (Button=mbLeft)
   and (fStateFlags * [sfWaitForDragging] = []) then
   begin
-    {$IFDEF SYN_LAZARUS}
     AquirePrimarySelection;
-    {$ENDIF}
   end;
-  {$IFDEF SYN_LAZARUS}
   fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
                             sfPossibleGutterClick];
-  {$ELSE}
-  Exclude(fStateFlags, sfDblClicked);
-  Exclude(fStateFlags, sfPossibleGutterClick);
-  {$ENDIF}
 
-  {$IFDEF SYN_LAZARUS}
-    if (eoShowCtrlMouseLinks in Options)
-    and not(wasDragging)
-    and (Button=mbLeft) and (Shift*[SYNEDIT_LINK_MODIFIER,ssAlt,ssShift]=[SYNEDIT_LINK_MODIFIER])
-    and assigned(FOnClickLink)
-    then begin
-      FOnClickLink(Self, Button, Shift, X,Y);;
-    end;
-  {$ENDIF}
+  if (eoShowCtrlMouseLinks in Options)
+  and not(wasDragging)
+  and (Button=mbLeft) and (Shift*[SYNEDIT_LINK_MODIFIER,ssAlt,ssShift]=[SYNEDIT_LINK_MODIFIER])
+  and assigned(FOnClickLink)
+  then begin
+    FOnClickLink(Self, Button, Shift, X,Y);;
+  end;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
