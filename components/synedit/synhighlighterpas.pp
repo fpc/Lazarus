@@ -3381,11 +3381,12 @@ end;
 
 function TSynHighlighterPasRangeList.GetTSynPasRangeInfo(Index: Integer): TSynPasRangeInfo;
 begin
-  if Index < 0 then begin
+  if (Index < 0) or (Index >= Count) then begin
     Result.MinLevelRegion := 0;
     Result.EndLevelRegion := 0;
     Result.MinLevelIfDef := 0;
     Result.EndLevelIfDef := 0;
+    exit;
   end;
   Result := TSynPasRangeInfo((ItemPointer[Index] + inherited ItemSize)^);
 end;
