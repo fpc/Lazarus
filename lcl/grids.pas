@@ -6228,12 +6228,16 @@ end;
 
 procedure TCustomGrid.FontChanged(Sender: TObject);
 begin
-  inherited FontChanged(Sender);
-  if FColumns.Enabled then
-    FColumns.FontChanged;
-  if FTitleFontIsDefault then begin
-    FTitleFont.Assign(Font);
-    FTitleFontIsDefault := True;
+  if csCustomPaint in ControlState then
+    Canvas.Font := Font
+  else begin
+    inherited FontChanged(Sender);
+    if FColumns.Enabled then
+      FColumns.FontChanged;
+    if FTitleFontIsDefault then begin
+      FTitleFont.Assign(Font);
+      FTitleFontIsDefault := True;
+    end;
   end;
 end;
 
