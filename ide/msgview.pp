@@ -303,6 +303,7 @@ begin
   FVisibleItems := TFPList.Create;
   FSrcPositions := TAVLTree.Create(@CompareMsgSrcPositions);
   FLastSelectedIndex := -1;
+  FQuickFixItems:=TFPList.Create;
 
   ImgIDNone := IDEImages.LoadImage(16, 'state_error');
   ImgIDHasQuickFix := IDEImages.LoadImage(16, 'ce_function');
@@ -1018,6 +1019,7 @@ const
   
 begin
   if Stage<>cdPostPaint then exit;
+  // a paint means, something has changed (scrolling, expand, collapse, resize, ...)
   Changed;
 
   //DebugLn(['TMessagesView.MessageViewDrawItem Index=',Node.Index,' Count=',MessageTreeView.Items.Count,' TheText="',TheText,'"']);
