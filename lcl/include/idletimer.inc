@@ -30,16 +30,16 @@ end;
 
 procedure TCustomIdleTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
 begin
+  if FFireOnIdle then begin
+    DoOnTimer;
+    Done:=not FFireOnIdle;
+  end;
   if not AutoEnabled then exit;
   // automatic start, stop or restart
   if AutoEndEvent=itaOnIdle then
     Enabled:=false;
   if AutoStartEvent=itaOnIdle then
     Enabled:=true;
-  if FFireOnIdle then begin
-    DoOnTimer;
-    Done:=not FFireOnIdle;
-  end;
 end;
 
 procedure TCustomIdleTimer.DoOnIdleEnd(Sender: TObject);
