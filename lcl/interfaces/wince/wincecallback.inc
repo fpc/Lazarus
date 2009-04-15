@@ -1161,7 +1161,7 @@ begin
             case Hi(WParam) of
               EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
             end
-  {        else if (lWinControl is TCustomFloatSpinEdit) then
+{          else if (lWinControl is TCustomFloatSpinEdit) then
             case Hi(WParam) of
               EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
             end}
@@ -1712,8 +1712,8 @@ begin
           LMessage.Msg := LM_CHANGED;
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
-        end;
-        UDN_DELTAPOS:
+        end;}
+{        UDN_DELTAPOS:
         begin
           if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));

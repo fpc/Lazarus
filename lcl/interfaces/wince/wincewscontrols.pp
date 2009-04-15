@@ -262,21 +262,20 @@ procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
 var
   lhFont: HFONT;
 begin
-  with Params do
-    if Buddy <> HWND(Nil) then
-    begin
-      BuddyWindowInfo := AllocWindowInfo(Buddy);
-      BuddyWindowInfo^.AWinControl := AWinControl;
-      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
-        Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      if AWinControl.Font.IsDefault then
-        lhFont := GetStockObject(DEFAULT_GUI_FONT)
-      else
-        lhFont := AWinControl.Font.Reference.Handle;
-      Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
-    end
+  if Params.Buddy <> HWND(Nil) then
+  begin
+    Params.BuddyWindowInfo := AllocWindowInfo(Params.Buddy);
+    Params.BuddyWindowInfo^.AWinControl := AWinControl;
+    Params.BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
+      Params.Buddy, GWL_WNDPROC, LongInt(Params.SubClassWndProc)));
+    if AWinControl.Font.IsDefault then
+      lhFont := GetStockObject(DEFAULT_GUI_FONT)
     else
-      BuddyWindowInfo := nil;
+      lhFont := AWinControl.Font.Reference.Handle;
+    Windows.SendMessage(Params.Buddy, WM_SETFONT, lhFont, 0);
+  end
+  else
+    Params.BuddyWindowInfo := nil;
 end;
 
 

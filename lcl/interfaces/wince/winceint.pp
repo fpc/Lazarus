@@ -260,8 +260,10 @@ uses
   WinCEWSExtCtrls,
   WinCEWSMenus,
   WinCEWSStdCtrls,
+  WinCEWSSpin,
 ////////////////////////////////////////////////////
   Arrow, Spin, CheckLst, LCLProc, LCLMessageGlue;
+
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 
