@@ -787,6 +787,15 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
 
+  function CheckForUnitUsed(p: integer): Boolean;
+  var
+    pp  : Integer;
+  begin
+    pp := Pos('Load from ', s);
+    Result := (pp > 0)  and (s[p] = '(') and (Pos(' unit ', s)>0);
+    if Result then DoAddFilteredLine(Copy(s, pp, length(s)-pp+1));
+  end;
+
 begin
   Result:=false;
   if s='' then exit;
@@ -828,6 +837,9 @@ begin
   if Result then exit;
   // check for windres errors
   Result := CheckForWindresErrors(i);
+  if Result then Exit;
+  // check for Load from unit
+  Result := CompilerOptions.ShowUsedFiles and CheckForUnitUsed(i);
   if Result then Exit;
 
   // search for round bracket open
