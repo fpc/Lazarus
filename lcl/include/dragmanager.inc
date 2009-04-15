@@ -421,7 +421,15 @@ begin
 
 
   if FDockObject.DragTarget <> nil then
-    FDockObject.DragTargetPos := TControl(FDockObject.DragTarget).ScreenToClient(APosition);
+  with FDockObject do
+  begin //determine precise target now, before dmDragMove
+    DragTargetPos := DragTarget.ScreenToClient(APosition);
+    DropOnControl := GetDropControl;
+    if DropOnControl = nil then
+      DropAlign := FDockObject.DragTarget.GetDockEdge(DragTargetPos)
+    else
+      DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
+  end;
   DragCursor := FDockObject.GetDragCursor(SendCmDragMsg(FDockObject, dmDragMove),APosition.X, APosition.Y);
   if FDragImageList <> nil then
   begin
@@ -442,17 +450,8 @@ begin
   //Draw borders for the docking section or the boundaries of the dragged form
   with FDockObject do
   begin
-    if DragTarget = nil then
-      FDockObject.Control.DockTrackNoTarget(TDragDockObject(FDockObject), APosition.X, APosition.Y)
-    else
-    begin
-      DropOnControl := GetDropControl;
-      if DropOnControl = nil then
-        with FDockObject do
-          DropAlign := DragTarget.GetDockEdge(DragTargetPos)
-      else
-        DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
-    end;
+    if DragTarget = nil then //show as floating
+      FDockObject.Control.DockTrackNoTarget(FDockObject, APosition.X, APosition.Y);
 
     MoveDockImage;
   end;

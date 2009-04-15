@@ -202,8 +202,7 @@ begin
       WinDragTarget := TWinControl(DragTarget);
       GetWindowRect(WinDragTarget.Handle, FDockRect);
       if (WinDragTarget.DockManager <> nil) then
-        WinDragTarget.DockManager.PositionDockRect(Control, DropOnControl,
-                                                   DropAlign, FDockRect);
+        WinDragTarget.DockManager.PositionDockRect(DragDockObject);
     end else
     begin
       with FDockRect do
