@@ -3106,7 +3106,6 @@ begin
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
-    ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
   // set component and designer form into design mode (csDesigning)
   SetDesigning(AComponent, True);
@@ -4049,7 +4048,6 @@ var
           begin
             ADesigner.ShowEditorHints := EnvironmentOptions.ShowEditorHints;
             ADesigner.ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
-            ADesigner.ShowComponentCaptionHints := EnvironmentOptions.ShowComponentCaptions;
           end;
         end;
       end;

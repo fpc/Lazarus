@@ -72,7 +72,6 @@ type
     dfDuringPaintControl,
     dfShowEditorHints,
     dfShowComponentCaptions,
-    dfShowComponentCaptionHints,
     dfDestroyingForm,
     dfDeleting,
     dfNeedPainting
@@ -118,7 +117,6 @@ type
     function GetIsControl: Boolean;
     function GetShowBorderSpacing: boolean;
     function GetShowComponentCaptions: boolean;
-    function GetShowComponentCaptionHints: boolean;
     function GetShowEditorHints: boolean;
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
@@ -131,7 +129,6 @@ type
     procedure SetIsControl(Value: Boolean);
     procedure SetShowBorderSpacing(const AValue: boolean);
     procedure SetShowComponentCaptions(const AValue: boolean);
-    procedure SetShowComponentCaptionHints(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
     procedure SetShowGrid(const AValue: boolean);
     procedure SetSnapToGrid(const AValue: boolean);
@@ -320,9 +317,6 @@ type
     property ShowComponentCaptions: boolean
                                            read GetShowComponentCaptions
                                            write SetShowComponentCaptions;
-    property ShowComponentCaptionHints: boolean
-                                             read GetShowComponentCaptionHints
-                                             write SetShowComponentCaptionHints;
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property TheFormEditor: TCustomFormEditor
                                        read FTheFormEditor write FTheFormEditor;
@@ -1170,15 +1164,6 @@ begin
   Form.Invalidate;
 end;
 
-procedure TDesigner.SetShowComponentCaptionHints(const AValue: boolean);
-begin
-  if AValue=ShowComponentCaptionHints then exit;
-  if AValue then
-    Include(FFlags, dfShowComponentCaptionHints)
-  else
-    Exclude(FFlags, dfShowComponentCaptionHints);
-end;
-
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
 var
   OldDuringPaintControl: boolean;
@@ -1758,7 +1743,7 @@ var
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
   DesignSender: TControl;
 begin
-  if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
+  if [dfShowEditorHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
     // hide hint
@@ -2437,11 +2422,6 @@ begin
   Result:=dfShowComponentCaptions in FFlags;
 end;
 
-function TDesigner.GetShowComponentCaptionHints: boolean;
-begin
-  Result:=dfShowComponentCaptionHints in FFlags;
-end;
-
 function TDesigner.GetShowGrid: boolean;
 begin
   Result:=EnvironmentOptions.ShowGrid;
@@ -3099,7 +3079,7 @@ var
   AComponent: TComponent;
 begin
   FHintTimer.Enabled := False;
-  if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags=[] then exit;
+  if [dfShowEditorHints]*FFlags=[] then exit;
 
   Position := Mouse.CursorPos;
   AWinControl := FindLCLWindow(Position);
@@ -3120,14 +3100,10 @@ begin
 
   // create a nice hint:
 
-  // component name and classname
-  if (dfShowComponentCaptionHints in FFlags) then
-    AHint := AComponent.Name+': '+AComponent.ClassName
-  else
-    AHint:='';
   // component position
   if (dfShowEditorHints in FFlags) then begin
-    if AHint<>'' then AHint:=AHint+#10;
+    // component name and classname
+    AHint := AComponent.Name+': '+AComponent.ClassName+#10;
     if AComponent is TControl then begin
       AControl:=TControl(AComponent);
       AHint := AHint + 'Left: '+IntToStr(AControl.Left)
