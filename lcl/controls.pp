@@ -493,8 +493,9 @@ type
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
     procedure MouseMessage(var Message: TLMessage); virtual; abstract;
+    procedure PositionDockRect(ADockObject: TDragDockObject); virtual; overload;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
-                               var DockRect: TRect); virtual; abstract;
+                               var DockRect: TRect); virtual; abstract; overload;
     procedure RemoveControl(Control: TControl); virtual; abstract;
     procedure ResetBounds(Force: Boolean); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
@@ -3503,6 +3504,25 @@ begin
 end;
 
 { TDockManager }
+
+procedure TDockManager.PositionDockRect(ADockObject: TDragDockObject);
+begin
+(* for now: defer to old PositionDockRect.
+  Overridden methods should determine DropOnControl and DropAlign, before
+    calling inherited method.
+*)
+  with ADockObject do
+  begin
+    if DropAlign = alNone then
+    begin
+      if DropOnControl <> nil then
+        DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(DragPos))
+      else
+        DropAlign := Control.GetDockEdge(DragTargetPos);
+    end;
+    PositionDockRect(Control, DropOnControl, DropAlign, FDockRect);
+  end;
+end;
 
 function TDockManager.AutoFreeByControl: Boolean;
 begin
