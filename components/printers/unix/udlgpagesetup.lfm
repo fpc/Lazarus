@@ -1,13 +1,14 @@
 object dlgPageSetup: TdlgPageSetup
-  Left = 481
+  Left = 275
   Height = 449
-  Top = 169
+  Top = 125
   Width = 408
   ActiveControl = frmPageSetup.panPreview
   Caption = 'dlgPageSetup'
   ClientHeight = 449
   ClientWidth = 408
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   inline frmPageSetup: TframePageSetup
     Height = 408
@@ -32,67 +33,10 @@ object dlgPageSetup: TdlgPageSetup
       end
       inherited gpMargins: TGroupBox
         Width = 266
-        ClientHeight = 91
         ClientWidth = 262
-        object lblLeft: TLabel[0]
-          Left = 9
-          Height = 16
-          Top = 14
-          Width = 28
-          Caption = 'Left:'
-          ParentColor = False
-        end
-        object lblRight: TLabel[1]
-          Left = 127
-          Height = 16
-          Top = 14
-          Width = 37
-          Caption = 'Right:'
-          ParentColor = False
-        end
-        object lblTop: TLabel[2]
-          Left = 8
-          Height = 16
-          Top = 50
-          Width = 26
-          Caption = 'Top:'
-          ParentColor = False
-        end
-        object lblBottom: TLabel[3]
-          Left = 127
-          Height = 16
-          Top = 50
-          Width = 50
-          Caption = 'Bottom:'
-          ParentColor = False
-        end
-        object txtLeft: TEdit[4]
-          Left = 48
-          Height = 23
-          Top = 7
-          Width = 56
-          TabOrder = 0
-        end
-        object txtRight: TEdit[5]
-          Left = 183
-          Height = 23
-          Top = 7
-          Width = 64
-          TabOrder = 1
-        end
-        object txtTop: TEdit[6]
-          Left = 48
-          Height = 23
-          Top = 44
-          Width = 56
-          TabOrder = 2
-        end
-        object txtBottom: TEdit[7]
-          Left = 183
-          Height = 23
-          Top = 43
-          Width = 64
-          TabOrder = 3
+        inherited panMargins: TPanel
+          Left = 7
+          TabOrder = 4
         end
       end
     end
