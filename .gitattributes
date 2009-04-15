@@ -3916,6 +3916,7 @@ lcl/interfaces/nogui/Makefile svneol=native#text/plain
 lcl/interfaces/nogui/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/nogui/interfaces.pp svneol=native#text/plain
 lcl/interfaces/nogui/noguiint.pp svneol=native#text/plain
+lcl/interfaces/nogui/noguiwsfactory.pas svneol=native#text/pascal
 lcl/interfaces/qt/README.txt svneol=native#text/plain
 lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
