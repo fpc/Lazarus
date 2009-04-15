@@ -839,7 +839,8 @@ begin
   Result := CheckForWindresErrors(i);
   if Result then Exit;
   // check for Load from unit
-  Result := CompilerOptions.ShowUsedFiles and CheckForUnitUsed(i);
+  Result := Assigned(CompilerOptions) and CompilerOptions.ShowUsedFiles
+            and CheckForUnitUsed(i);
   if Result then Exit;
 
   // search for round bracket open
