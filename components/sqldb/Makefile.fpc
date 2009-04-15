@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SQLDBLaz 1.0.1
 #
-#   This file was generated on 25-9-2008
+#   This file was generated on 15.04.2009
 
 [package]
 name=sqldblaz
@@ -10,7 +10,7 @@ version=1.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+unitdir=../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
 
