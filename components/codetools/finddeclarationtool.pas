@@ -8550,6 +8550,10 @@ procedure TFindDeclarationParams.PrettifyResult;
 begin
   // adjust result for nicer position
   if (NewNode<>nil) then begin
+    {$IFDEF CheckNodeTool}
+    if NewCodeTool<>nil then
+      NewCodeTool.CheckNodeTool(NewNode);
+    {$ENDIF}
     if (NewNode.Desc=ctnProcedure)
     and (NewNode.FirstChild<>nil)
     and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin

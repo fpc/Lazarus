@@ -82,19 +82,19 @@ const
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
-  ctnClassTypePrivate   = 32;
-  ctnClassTypeProtected = 33;
-  ctnClassTypePublic    = 34;
-  ctnClassTypePublished = 35;
-  ctnClassVarPrivate    = 36;
-  ctnClassVarProtected  = 37;
-  ctnClassVarPublic     = 38;
-  ctnClassVarPublished  = 39;
-  ctnClassPrivate       = 40;
-  ctnClassProtected     = 41;
-  ctnClassPublic        = 42;
-  ctnClassPublished     = 43;
-  ctnClassGUID          = 44;
+  ctnClassGUID          = 32;
+  ctnClassTypePrivate   = 33;
+  ctnClassTypeProtected = 34;
+  ctnClassTypePublic    = 35;
+  ctnClassTypePublished = 36;
+  ctnClassVarPrivate    = 37;
+  ctnClassVarProtected  = 38;
+  ctnClassVarPublic     = 39;
+  ctnClassVarPublished  = 40;
+  ctnClassPrivate       = 41;
+  ctnClassProtected     = 42;
+  ctnClassPublic        = 43;
+  ctnClassPublished     = 44;
 
   ctnProperty           = 50;
   ctnMethodMap          = 51;
@@ -237,6 +237,7 @@ type
     function GetLevel: integer;
     function DescAsString: string;
     function GetRoot: TCodeTreeNode;
+    function ChildCount: integer;
     function FindOwner: TObject;
     procedure Clear;
     constructor Create;
@@ -780,6 +781,18 @@ begin
   Result:=Self;
   while (Result.Parent<>nil) do Result:=Result.Parent;
   while (Result.PriorBrother<>nil) do Result:=Result.PriorBrother;
+end;
+
+function TCodeTreeNode.ChildCount: integer;
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=0;
+  Node:=FirstChild;
+  while Node<>nil do begin
+    inc(Result);
+    Node:=Node.NextBrother;
+  end;
 end;
 
 function TCodeTreeNode.FindOwner: TObject;

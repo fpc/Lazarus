@@ -90,8 +90,10 @@ function IsValidIdentPair(const NamePair: string;
     out First, Second: string): boolean;
 
 // line/code ends
-function LineEndCount(const Txt: string): integer;
-function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer;
+function LineEndCount(const Txt: string): integer; inline;
+function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer; inline;
+function LineEndCount(const Txt: string; StartPos, EndPos: integer;
+                      out LengthOfLastLine:integer): integer;
 function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
     NestedComments: boolean): integer;
 function PositionsInSameLine(const Source: string;
@@ -148,6 +150,8 @@ function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
 function StrBeginsWith(const s, Prefix: string): boolean;
 function IdentifierPos(Search, Identifier: PChar): PtrInt;
+function CompareAtom(p1, p2: PChar): integer;
+function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -297,6 +301,8 @@ procedure ReadRawNextPascalAtom(const Source: string;
    NestedComments: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
    var Position: integer; NestedComments: boolean = false): boolean;
+function GetAtomLength(p: PChar): integer;
+function GetAtomString(p: PChar): string;
 
 //-----------------------------------------------------------------------------
 
@@ -1329,6 +1335,26 @@ begin
     inc(LineEnd);
 end;
 
+function LineEndCount(const Txt: string; StartPos, EndPos: integer; out
+  LengthOfLastLine: integer): integer;
+var i, LastLineEndPos: integer;
+begin
+  i:=StartPos;
+  LastLineEndPos:=0;
+  Result:=0;
+  while i<EndPos do begin
+    if (Txt[i] in [#10,#13]) then begin
+      inc(Result);
+      inc(i);
+      if (i<EndPos) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
+        inc(i);
+      LastLineEndPos:=i;
+    end else
+      inc(i);
+  end;
+  LengthOfLastLine:=EndPos-LastLineEndPos;
+end;
+
 function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
     NestedComments: boolean): integer;
 { search forward for a line end or code
@@ -1770,7 +1796,7 @@ begin
         // compiler directive -> read til comment end
         inc(Position,2);
         while (Position<Len)
-        and ((Source[Position]<>'*') or (Source[Position]<>')')) do
+        and ((Source[Position]<>'*') or (Source[Position+1]<>')')) do
           inc(Position);
         inc(Position,2);
       end else
@@ -1842,24 +1868,142 @@ begin
   end;
 end;
 
+function GetAtomLength(p: PChar): integer;
+var
+  c1: Char;
+  CommentLvl: Integer;
+  NestedComments: Boolean;
+  c2: Char;
+  OldP: PChar;
+begin
+  NestedComments:=false;
+  OldP:=p;
+  // read atom
+  c1:=p^;
+  case c1 of
+   'A'..'Z','a'..'z','_':
+    begin
+      // identifier
+      inc(p);
+      while (IsIdentChar[p^]) do
+        inc(p);
+    end;
+   '0'..'9': // number
+    begin
+      inc(p);
+      // read numbers
+      while (p^ in ['0'..'9']) do
+        inc(p);
+      if (p^='.')
+      and (p[1]<>'.') then begin
+        // real type number
+        inc(p);
+        while (p^ in ['0'..'9']) do
+          inc(p);
+      end;
+      if (p^ in ['e','E']) then begin
+        // read exponent
+        inc(p);
+        if (p^='-') then inc(p);
+        while (p^ in ['0'..'9']) do
+          inc(p);
+      end;
+    end;
+   '''','#':  // string constant
+    begin
+      while true do begin
+        case p^ of
+        '#':
+          begin
+            inc(p);
+            while (p^ in ['0'..'9']) do
+              inc(p);
+          end;
+        '''':
+          begin
+            inc(p);
+            while (p^<>'''') do
+              inc(p);
+            inc(p);
+          end;
+        else
+          break;
+        end;
+      end;
+    end;
+   '$':  // hex constant
+    begin
+      inc(p);
+      while (IsHexNumberChar[p^]) do
+        inc(p);
+    end;
+   '{':  // compiler directive
+    begin
+      CommentLvl:=1;
+      while true do begin
+        inc(p);
+        case p^ of
+        #0:  break;
+        '{': if NestedComments then
+          begin
+            inc(CommentLvl);
+          end;
+        '}':
+          begin
+            dec(CommentLvl);
+            if CommentLvl=0 then begin
+              inc(p);
+              break;
+            end;
+          end;
+        end;
+      end;
+    end;
+   '(':  // bracket or compiler directive
+    if (p^='*') then begin
+      // compiler directive -> read til comment end
+      inc(p,2);
+      while ((p^<>'*') or (p[1]<>')')) do
+        inc(p);
+      inc(p,2);
+    end else
+      // round bracket open
+      inc(p);
+  else
+    inc(p);
+    c2:=p^;
+    // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
+    if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+    or ((c1='<') and (c2='>'))
+    or ((c1='.') and (c2='.'))
+    or ((c1='*') and (c2='*'))
+    then
+      inc(p)
+    else if ((c1='@') and (c2='@')) then begin
+      // @@ label
+      repeat
+        inc(p);
+      until (not IsIdentChar[p^]);
+    end;
+  end;
+  Result:=P-OldP;
+end;
+
+function GetAtomString(p: PChar): string;
+var
+  l: LongInt;
+begin
+  if p=nil then exit('');
+  l:=GetAtomLength(p);
+  SetLength(Result,l);
+  if l>0 then
+    System.Move(p^,Result[1],length(Result));
+end;
+
 function LineEndCount(const Txt: string;
   out LengthOfLastLine: integer): integer;
-var i, LastLineEndPos: integer;
 begin
-  i:=1;
-  LastLineEndPos:=0;
-  Result:=0;
-  while i<=length(Txt) do begin
-    if (Txt[i] in [#10,#13]) then begin
-      inc(Result);
-      inc(i);
-      if (i<=length(Txt)) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
-        inc(i);
-      LastLineEndPos:=i-1;
-    end else
-      inc(i);
-  end;
-  LengthOfLastLine:=length(Txt)-LastLineEndPos;
+  Result:=LineEndCount(Txt,1,length(Txt),LengthOfLastLine);
 end;
 
 function FindFirstNonSpaceCharInLine(const Source: string;
@@ -3025,6 +3169,111 @@ begin
     inc(Result);
   end;
   Result:=-1;
+end;
+
+function CompareAtom(p1, p2: PChar): integer;
+var
+  Len1: LongInt;
+  Len2: LongInt;
+  l: LongInt;
+  c1: Char;
+  c2: Char;
+begin
+  // quick test for the common case:
+  if (p1^<>p2^) then begin
+    c1:=UpChars[p1^];
+    c2:=UpChars[p2^];
+    if c1<c2 then
+      exit(1)
+    else if c1>c2 then
+      exit(-1);
+  end;
+
+  if p1^='''' then begin
+    // compare string constants case sensitive
+    Result:=CompareStringConstants(p1,p2);
+    exit;
+  end;
+
+  // full comparison
+  Len1:=GetAtomLength(p1);
+  Len2:=GetAtomLength(p2);
+  l:=Len1;
+  if l>Len2 then l:=Len2;
+  while l>0 do begin
+    if (p1^<>p2^) then begin
+      c1:=UpChars[p1^];
+      c2:=UpChars[p2^];
+      if c1<c2 then
+        exit(1)
+      else if c1>c2 then
+        exit(-1);
+    end;
+    inc(p1);
+    inc(p2);
+    dec(l);
+  end;
+end;
+
+function CompareStringConstants(p1, p2: PChar): integer;
+// 1: 'aa' 'ab' because bigger
+// 1: 'aa' 'a'  because longer
+begin
+  if (p1^='''') and (p2^='''') then begin
+    inc(p1);
+    inc(p2);
+    repeat
+      if p1^<p2^ then
+        exit(1)  // p1 bigger
+      else if p1^>p2 then
+        exit(-1); // p2 bigger
+      inc(p1);
+      inc(p2);
+      if p1^='''' then begin
+        // maybe ''
+        inc(p1);
+        inc(p2);
+        if p1^='''' then begin
+          if p2^='''' then begin
+            inc(p1);
+            inc(p2);
+          end else begin
+            // p1 is longer (e.g.: 'a''b' 'a')
+            exit(1);
+          end;
+        end else if p2^='''' then begin
+          // p2 is longer (e.g. 'a' 'a''b')
+          exit(-1);
+        end else begin
+          // same
+          exit(0);
+        end;
+      end;
+      if p1^ in [#0,#10,#13] then begin
+        // end of p1 found
+        if p2^ in [#0,#10,#13] then begin
+          // same
+          exit(0);
+        end else begin
+          // p2 is longer
+          exit(-1);
+        end;
+      end else if p2^ in [#0,#10,#13] then begin
+        // p1 is longer
+        exit(1);
+      end;
+    until false;
+  end else begin
+    if p1^='''' then
+      // p1 longer
+      exit(1)
+    else if p2^='''' then
+      // p2 longer
+      exit(-1)
+    else
+      // both empty
+      exit(0);
+  end;
 end;
 
 function GetIdentifier(Identifier: PChar): string;

@@ -259,6 +259,7 @@ type
     function AtomIsRealNumber: boolean;
     function AtomIsStringConstant: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsCharConstant: boolean;
+    function AtomIsEmptyStringConstant: boolean;
     function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
@@ -730,14 +731,16 @@ end;
 
 function TCustomCodeTool.AtomIsCharConstant: boolean;
 var i: integer;
+  p: LongInt;
 begin
   Result:=false;
-  if (CurPos.StartPos<=SrcLen) then begin
-    case Src[CurPos.StartPos] of
+  p:=CurPos.StartPos;
+  if (p<=SrcLen) then begin
+    case Src[p] of
     
     '#':
       begin
-        i:=CurPos.StartPos+1;
+        i:=p+1;
         if (i<=SrcLen) then begin
           if IsNumberChar[Src[i]] then begin
             // decimal
@@ -756,17 +759,27 @@ begin
 
     '''':
       begin
-        if (CurPos.StartPos+2<=SrcLen) and (Src[CurPos.StartPos+1]<>'''')
-        and (Src[CurPos.StartPos+2]='''') then begin
+        if (p+2<=SrcLen) and (Src[p+1]<>'''')
+        and (Src[p+2]='''') then begin
           // a single char
-          if (CurPos.StartPos+2<SrcLen)
-          and (not (Src[CurPos.StartPos+3] in ['''','#'])) then
+          if (p+2<SrcLen)
+          and (not (Src[p+3] in ['''','#'])) then
             Result:=true;
         end;
       end;
       
     end;
   end;
+end;
+
+function TCustomCodeTool.AtomIsEmptyStringConstant: boolean;
+var
+  p: LongInt;
+begin
+  p:=CurPos.StartPos;
+  while (p<=SrcLen) and (Src[p]='''') do inc(p);
+  dec(p,CurPos.StartPos);
+  Result:=(p>0) and ((p and 1)=0);
 end;
 
 function TCustomCodeTool.LastAtomIs(BackIndex: integer;

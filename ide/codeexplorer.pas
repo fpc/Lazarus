@@ -40,15 +40,15 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree,
+  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
-  CodeToolManager, CodeAtom, CodeCache, CodeTree, KeywordFuncLists,
-  FindDeclarationTool, DirectivesTree, PascalParserTool,
+  BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CodeTree,
+  KeywordFuncLists, FindDeclarationTool, DirectivesTree, PascalParserTool,
   // IDE Intf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
-  CodeExplOpts, StdCtrls, ExtCtrls;
+  TodoList, CodeExplOpts;
 
 type
   TCodeExplorerView = class;
@@ -83,6 +83,7 @@ type
     DirectivesFilterEdit: TEdit;
     DirectivesPage: TPage;
     DirectivesTreeView: TTreeView;
+    IdleTimer1: TIdleTimer;
     Imagelist1: TImageList;
     MainNotebook: TNotebook;
     MenuItem1: TMenuItem;
@@ -107,16 +108,18 @@ type
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DockingMenuItemClick(Sender: TObject);
+    procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure ModeSpeedButtonClick(Sender: TObject);
     procedure OptionsSpeedButtonClick(Sender: TObject);
     procedure RefreshMenuitemClick(Sender: TObject);
-    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure RefreshSpeedButtonClick(Sender: TObject);
   private
     FCodeFilename: string;
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
+    fFigureNode: TTreeNode;
+    fFigureCatNodes: array[TCEFigureCategory] of TTreeNode;
     FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
     FLastCodeFilter: string;
@@ -157,13 +160,18 @@ type
     function GetCodeNodeImage(Tool: TFindDeclarationTool;
                               CodeNode: TCodeTreeNode): integer;
     function GetDirectiveNodeImage(CodeNode: TCodeTreeNode): integer;
-    procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
+    procedure CreateIdentifierNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
                           ParentViewNode, InFrontViewNode: TTreeNode;
                           CreateSiblings: boolean);
-    procedure CreateNodes(ADirectivesTool: TDirectivesTool;
+    procedure CreateDirectiveNodes(ADirectivesTool: TDirectivesTool;
                           CodeNode: TCodeTreeNode;
                           ParentViewNode, InFrontViewNode: TTreeNode;
                           CreateSiblings: boolean);
+    procedure CreateFigures(Tool: TCodeTool);
+    function CreateFigureNode(Tool: TCodeTool; f: TCEFigureCategory): TTreeNode;
+    procedure FindFigureConstants(Tool: TCodeTool; CodeNode: TCodeTreeNode;
+                                  StartPos, EndPos: integer);
+    procedure FindFigureTodos(Tool: TCodeTool);
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
     procedure SetDirectivesFilter(const AValue: string);
@@ -372,8 +380,6 @@ begin
   {$IFNDEF EnableIDEDocking}
   CEDockingIDEMenuCommand.Visible:=false;
   {$ENDIF}
-
-  Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -436,6 +442,12 @@ begin
   ControlDocker.ShowDockingEditor;
 end;
 
+procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
+begin
+  if (cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle) then
+    Refresh(true);
+end;
+
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -472,13 +484,6 @@ end;
 procedure TCodeExplorerView.RefreshMenuitemCLICK(Sender: TObject);
 begin
   Refresh(true);
-end;
-
-procedure TCodeExplorerView.OnApplicationIdle(Sender: TObject; var Done: Boolean
-  );
-begin
-  if (cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle) then
-    Refresh(true);
 end;
 
 procedure TCodeExplorerView.RefreshSpeedButtonClick(Sender: TObject);
@@ -597,7 +602,7 @@ begin
   end;
 end;
 
-procedure TCodeExplorerView.CreateNodes(ACodeTool: TCodeTool;
+procedure TCodeExplorerView.CreateIdentifierNodes(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode;
   ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
 var
@@ -635,7 +640,7 @@ begin
       ShowNode:=false;
     end;
 
-    // don't show keyword nodes
+    // don't show modifier nodes
     if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
       ctnVariantType,ctnEnumerationType,ctnSetType,ctnProcedureType]
@@ -724,13 +729,13 @@ begin
       ViewNode:=ParentViewNode;
     end;
     if ShowChilds then
-      CreateNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
+      CreateIdentifierNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
     if not CreateSiblings then break;
     CodeNode:=CodeNode.NextBrother;
   end;
 end;
 
-procedure TCodeExplorerView.CreateNodes(ADirectivesTool: TDirectivesTool;
+procedure TCodeExplorerView.CreateDirectiveNodes(ADirectivesTool: TDirectivesTool;
   CodeNode: TCodeTreeNode; ParentViewNode, InFrontViewNode: TTreeNode;
   CreateSiblings: boolean);
 var
@@ -768,10 +773,343 @@ begin
       InFrontViewNode:=ViewNode;
     end;
     if ShowChilds then
-      CreateNodes(ADirectivesTool,CodeNode.FirstChild,ViewNode,nil,true);
+      CreateDirectiveNodes(ADirectivesTool,CodeNode.FirstChild,ViewNode,nil,true);
     if not CreateSiblings then break;
     CodeNode:=CodeNode.NextBrother;
   end;
+end;
+
+procedure TCodeExplorerView.CreateFigures(Tool: TCodeTool);
+
+  function AddCodeNode(f: TCEFigureCategory; CodeNode: TCodeTreeNode): TTreeNode;
+  var
+    Data: TViewNodeData;
+    FigTVNode: TTreeNode;
+    NodeText: String;
+    NodeImageIndCex: LongInt;
+  begin
+    Data:=TViewNodeData.Create(CodeNode);
+    FigTVNode:=CreateFigureNode(Tool,f);
+    NodeText:=GetCodeNodeDescription(Tool,CodeNode);
+    NodeImageIndCex:=GetCodeNodeImage(Tool,CodeNode);
+    Result:=CodeTreeview.Items.AddChild(FigTVNode,NodeText);
+    Result.Data:=Data;
+    Result.Text:=NodeText;
+    Result.ImageIndex:=NodeImageIndCex;
+    Result.SelectedIndex:=NodeImageIndCex;
+  end;
+
+  procedure CheckUnsortedClassMembers(ParentCodeNode: TCodeTreeNode);
+  var
+    LastNode: TCodeTreeNode;
+    LastIdentifier: string;
+
+    function NodeSorted(CodeNode: TCodeTreeNode): boolean;
+    var
+      p: PChar;
+      Identifier: String;
+    begin
+      Result:=true;
+      if (LastNode<>nil)
+      //and (not CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.MixMethodsAndProperties)
+      and (CodeNode.Desc<>LastNode.Desc) then begin
+        // sort variables then methods and properties
+        if (LastNode.Desc in [ctnProperty,ctnProcedure])
+        and not (CodeNode.Desc in [ctnProperty,ctnProcedure])
+        then begin
+          Result:=false;
+        end;
+        if (LastNode.Desc in [ctnProperty])
+        and (CodeNode.Desc in [ctnProcedure])
+        and (not CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.MixMethodsAndProperties)
+        then
+          Result:=false;
+      end;
+      p:=Tool.GetNodeIdentifier(CodeNode);
+      if p<>nil then
+        Identifier:=GetIdentifier(p)
+      else
+        Identifier:='';
+      if Result and (LastIdentifier<>'') and (Identifier<>'')
+      and (CodeNode.Desc=LastNode.Desc) then begin
+        // compare identifiers
+        if CompareIdentifiers(PChar(Identifier),PChar(LastIdentifier))>0 then
+        begin
+          Result:=false;
+        end;
+      end;
+      if not Result then begin
+        AddCodeNode(cefcUnsortedClassMembers,CodeNode);
+      end;
+      LastNode:=CodeNode;
+      LastIdentifier:=Identifier;
+    end;
+
+  var
+    CodeNode: TCodeTreeNode;
+  begin
+    CodeNode:=ParentCodeNode.FirstChild;
+    LastNode:=nil;
+    while CodeNode<>nil do begin
+      if CodeNode.Desc in AllIdentifierDefinitions then begin
+        if not NodeSorted(CodeNode) then exit;
+        // skip all variables in a group (e.g. Next,Prev:TNode)
+        while CodeNode.FirstChild=nil do
+          CodeNode:=CodeNode.NextBrother;
+        if CodeNode=nil then break;
+      end else if CodeNode.Desc in [ctnProperty,ctnProcedure] then
+      begin
+        if not NodeSorted(CodeNode) then exit;
+      end;
+      CodeNode:=CodeNode.NextBrother;
+    end;
+  end;
+
+var
+  CodeNode: TCodeTreeNode;
+  LineCnt: LongInt;
+  i: integer;
+  f: TCEFigureCategory;
+  Figures: TCEFigureCategories;
+  ProcNode: TCodeTreeNode;
+begin
+  CodeNode:=Tool.Tree.Root;
+  Figures:=CodeExplorerOptions.Figures;
+  while CodeNode<>nil do begin
+    case CodeNode.Desc of
+    ctnBeginBlock:
+      begin
+        if (cefcLongProcs in Figures)
+        and (CodeNode.Parent.Desc=ctnProcedure) then begin
+          LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);
+          if LineCnt>=CodeExplorerOptions.LongProcLineCount then
+          begin
+            ProcNode:=CodeNode.Parent;
+            AddCodeNode(cefcLongProcs,ProcNode);
+          end;
+        end;
+        if (cefcLongProcs in Figures)
+        and (CodeNode.Parent.Desc=ctnProcedure) then begin
+          Tool.MoveCursorToCleanPos(CodeNode.StartPos);
+          Tool.ReadNextAtom;// read begin
+          Tool.ReadNextAtom;
+          if Tool.CurPos.Flag=cafEnd then begin
+            // no code, maybe comments and directives (hidden code)
+            ProcNode:=CodeNode.Parent;
+            AddCodeNode(cefcEmptyProcs,ProcNode);
+          end;
+        end;
+        if (cefcUnnamedConsts in Figures)
+        and (not CodeNode.HasParentOfType(ctnBeginBlock)) then begin
+          FindFigureConstants(Tool,CodeNode,CodeNode.StartPos,CodeNode.EndPos);
+        end;
+      end;
+
+    ctnProcedure:
+      begin
+        if (cefcNestedProcs in Figures) then
+        begin
+          i:=0;
+          ProcNode:=CodeNode.FirstChild;
+          while ProcNode<>nil do begin
+            if ProcNode.Desc=ctnProcedure then
+              inc(i);
+            ProcNode:=ProcNode.NextBrother;
+          end;
+          if i>=CodeExplorerOptions.NestedProcCount then begin
+            AddCodeNode(cefcNestedProcs,CodeNode);
+          end;
+        end;
+      end;
+
+    ctnParameterList:
+      begin
+        if (cefcLongParamLists in Figures)
+        and (CodeNode.HasParentOfType(ctnInterface))
+        and (CodeNode.ChildCount>CodeExplorerOptions.LongParamListCount) then
+        begin
+          if (CodeNode.Parent.Desc=ctnProcedureHead)
+          and (CodeNode.Parent.Parent.Desc=ctnProcedure) then
+          begin
+            ProcNode:=CodeNode.Parent.Parent;
+            AddCodeNode(cefcLongParamLists,ProcNode);
+          end;
+        end;
+      end;
+
+    ctnProperty:
+      begin
+        if (cefcPublishedPropWithoutDefault in Figures)
+        and (CodeNode.Parent.Desc=ctnClassPublished)
+        and (not Tool.PropertyHasSpecifier(CodeNode,'default'))
+        then begin
+          AddCodeNode(cefcPublishedPropWithoutDefault,CodeNode);
+        end;
+      end;
+
+    ctnClassTypePrivate..ctnClassPublished:
+      begin
+        if (cefcUnsortedClassVisibility in Figures)
+        and (CodeNode.PriorBrother<>nil)
+        and (CodeNode.PriorBrother.Desc in AllClassBaseSections)
+        and (CodeNode.PriorBrother.Desc>CodeNode.Desc)
+        then begin
+          if (CodeNode.PriorBrother.Desc=ctnClassPublished)
+          and (CodeNode.PriorBrother.PriorBrother=nil) then
+          begin
+            // the first section can be published
+          end else begin
+            // the prior section was more visible
+            AddCodeNode(cefcUnsortedClassVisibility,CodeNode);
+          end;
+        end;
+        if (cefcUnsortedClassMembers in Figures)
+        then
+          CheckUnsortedClassMembers(CodeNode);
+        if (cefcEmptyClassSections in Figures)
+        and (CodeNode.FirstChild=nil) then begin
+          // empty class section
+          AddCodeNode(cefcEmptyClassSections,CodeNode);
+        end;
+      end;
+
+    end;
+    CodeNode:=CodeNode.Next;
+  end;
+
+  if cefcToDos in Figures then
+    FindFigureTodos(Tool);
+
+  // add numbers
+  for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do begin
+    if fFigureCatNodes[f]=nil then continue;
+    fFigureCatNodes[f].Text:=
+           fFigureCatNodes[f].Text+' ('+IntToStr(fFigureCatNodes[f].Count)+')';
+  end;
+end;
+
+function TCodeExplorerView.CreateFigureNode(Tool: TCodeTool;
+  f: TCEFigureCategory): TTreeNode;
+var
+  Data: TViewNodeData;
+begin
+  if fFigureCatNodes[f]=nil then begin
+    if fFigureNode=nil then begin
+      fFigureNode:=CodeTreeview.Items.Add(nil, lisCEFigures);
+      Data:=TViewNodeData.Create(Tool.Tree.Root);
+      Data.Desc:=ctnNone;
+      Data.StartPos:=Tool.SrcLen;
+      fFigureNode.Data:=Data;
+    end;
+    fFigureCatNodes[f]:=CodeTreeview.Items.AddChild(fFigureNode,
+                            CodeExplorerLocalizedString(f));
+    Data:=TViewNodeData.Create(Tool.Tree.Root);
+    Data.Desc:=ctnNone;
+    Data.StartPos:=Tool.SrcLen;
+    fFigureCatNodes[f].Data:=Data;
+    fFigureNode.Expanded:=true;
+  end;
+  Result:=fFigureCatNodes[f];
+end;
+
+procedure TCodeExplorerView.FindFigureConstants(Tool: TCodeTool;
+  CodeNode: TCodeTreeNode;
+  StartPos, EndPos: integer);
+var
+  Data: TViewNodeData;
+  FigTVNode: TTreeNode;
+  NodeText: String;
+  NodeImageIndCex: LongInt;
+  TVNode: TTreeNode;
+  ProcNode: TCodeTreeNode;
+  OldPos: LongInt;
+begin
+  if (StartPos<1) or (StartPos>=EndPos) then exit;
+  Tool.MoveCursorToCleanPos(StartPos);
+  while Tool.CurPos.StartPos<EndPos do begin
+    if Tool.Src[Tool.CurPos.StartPos] in ['''','#','0'..'9','$','%'] then begin
+      // a constant
+      if Tool.AtomIsEmptyStringConstant then begin
+        // ignore empty string constant ''
+      end else if Tool.AtomIsCharConstant
+      and (not CodeExplorerOptions.FigureCharConst) then
+      begin
+        // ignore char constants
+      end else begin
+        // add constant
+        Data:=TViewNodeData.Create(CodeNode);
+        Data.Desc:=ctnConstant;
+        Data.SubDesc:=ctnsNone;
+        Data.StartPos:=Tool.CurPos.StartPos;
+        Data.EndPos:=Tool.CurPos.EndPos;
+        FigTVNode:=CreateFigureNode(Tool,cefcUnnamedConsts);
+        NodeText:=Tool.GetAtom;
+        // add some context information
+        ProcNode:=CodeNode;
+        while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+          ProcNode:=ProcNode.Parent;
+        if ProcNode<>nil then begin
+          OldPos:=Tool.CurPos.EndPos;
+          NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
+            phpWithoutClassName])]);
+          Tool.MoveCursorToCleanPos(OldPos);
+        end;
+        NodeImageIndCex:=ImgIDConst;
+        TVNode:=CodeTreeview.Items.AddChild(FigTVNode,NodeText);
+        TVNode.Data:=Data;
+        TVNode.Text:=NodeText;
+        TVNode.ImageIndex:=NodeImageIndCex;
+        TVNode.SelectedIndex:=NodeImageIndCex;
+      end;
+    end;
+    Tool.ReadNextAtom;
+  end;
+end;
+
+procedure TCodeExplorerView.FindFigureTodos(Tool: TCodeTool);
+var
+  Src: String;
+  p: Integer;
+  CommentEndPos: LongInt;
+  MagicStartPos: integer;
+  TextStartPos: integer;
+  TextEndPos: integer;
+  l: Integer;
+  SrcLen: Integer;
+  Data: TViewNodeData;
+  FigTVNode: TTreeNode;
+  NodeText: String;
+  NodeImageIndCex: LongInt;
+  TVNode: TTreeNode;
+begin
+  Src:=Tool.Src;
+  SrcLen:=length(Src);
+  p:=1;
+  repeat
+    p:=FindNextComment(Src,p);
+    if p>SrcLen then break;
+    CommentEndPos:=FindCommentEnd(Src,p,Tool.Scanner.NestedComments);
+    if GetToDoComment(Src,p,CommentEndPos,MagicStartPos,TextStartPos,TextEndPos)
+    then begin
+      // add todo
+      Data:=TViewNodeData.Create(Tool.Tree.Root);
+      Data.Desc:=ctnConstant;
+      Data.SubDesc:=ctnsNone;
+      Data.StartPos:=p;
+      Data.EndPos:=MagicStartPos;
+      FigTVNode:=CreateFigureNode(Tool,cefcToDos);
+      l:=TextEndPos-TextStartPos;
+      if l>20 then l:=20;
+      NodeText:=TrimCodeSpace(copy(Src,TextStartPos,l));
+      NodeImageIndCex:=ImgIDConst;
+      TVNode:=CodeTreeview.Items.AddChild(FigTVNode,NodeText);
+      TVNode.Data:=Data;
+      TVNode.Text:=NodeText;
+      TVNode.ImageIndex:=NodeImageIndCex;
+      TVNode.SelectedIndex:=NodeImageIndCex;
+    end;
+    p:=CommentEndPos;
+  until p>SrcLen;
 end;
 
 procedure TCodeExplorerView.SetCodeFilter(const AValue: string);
@@ -922,6 +1260,7 @@ var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
   c: TCodeExplorerCategory;
+  f: TCEFigureCategory;
 begin
   if (FUpdateCount>0)
   or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
@@ -980,12 +1319,17 @@ begin
 
     for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
       fCategoryNodes[c]:=nil;
+    fFigureNode:=nil;
+    for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do
+      fFigureCatNodes[f]:=nil;
+
     if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
     begin
       CodeTreeview.Items.Clear;
     end else begin
       CodeTreeview.Items.Clear;
-      CreateNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+      CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+      CreateFigures(ACodeTool);
     end;
 
     // restore old expanded state
@@ -1060,7 +1404,7 @@ begin
       DirectivesTreeView.Items.Clear;
     end else begin
       DirectivesTreeView.Items.Clear;
-      CreateNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil,nil,true);
+      CreateDirectiveNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil,nil,true);
     end;
 
     // restore old expanded state
@@ -1335,7 +1679,7 @@ const
     ctnClassPublic,
     ctnClassPublished   : Result:=Desc-ctnClassTypePrivate;
     
-    else Result:=1000;
+    else Result:=10000;
     end;
   end;
   

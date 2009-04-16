@@ -61,6 +61,7 @@ type
     function ExtractIdentCharsFromStringConstant(
         StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
+    function GetNodeIdentifier(Node: TCodeTreeNode): PChar;
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -1142,6 +1143,21 @@ begin
         break;
     end;
     if Run=1 then SetLength(Result,ResultLen);
+  end;
+end;
+
+function TPascalReaderTool.GetNodeIdentifier(Node: TCodeTreeNode): PChar;
+begin
+  Result:=nil;
+  if Node=nil then exit;
+  case Node.Desc of
+  ctnProcedure,ctnProcedureHead:
+    Result:=GetProcNameIdentifier(Node);
+  ctnProperty:
+     Result:=GetPropertyNameIdentifier(Node);
+  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,
+  ctnEnumIdentifier,ctnIdentifier:
+    Result:=@Src[Node.StartPos];
   end;
 end;
 

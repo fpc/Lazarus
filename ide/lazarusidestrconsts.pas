@@ -3685,6 +3685,7 @@ resourcestring
   lisNewAncestors = 'New Ancestors';
   lisCEModeShowCategories = 'Show Categories';
   lisCEModeShowSourceNodes = 'Show Source Nodes';
+  lisCEIn = '%s in %s';
   lisCEOCodeExplorer = 'CodeExplorer Options';
   lisCEOUpdate = 'Update';
   lisCEORefreshAutomatically = 'Refresh automatically';
@@ -3700,6 +3701,7 @@ resourcestring
   lisCEConstants = 'Constants';
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
+  lisCEFigures = 'Figures';
   dlgCOMoveLevelDown = 'Move level down';
   dlgCOMoveLevelUp = 'Move level up';
   dlgCOMoveDown = 'Move down';
@@ -4127,6 +4129,16 @@ resourcestring
   lisUnusedUnits = 'Unused units';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
+  lisCELongProcedures = 'Long procedures';
+  lisCEManyParameters = 'Many parameters';
+  lisCEUnnamedConstants = 'Unnamed constants';
+  lisCEEmptyProcedures = 'Empty procedures';
+  lisCEManyNestedProcedures = 'Many nested procedures';
+  lisCEPublishedPropertyWithoutDefault = 'PublishedPropertyWithoutDefault';
+  lisCEUnsortedVisibility = 'Unsorted visibility';
+  lisCEUnsortedMembers = 'Unsorted members';
+  lisCEToDos = 'ToDos';
+  lisCEEmptyClassSections = 'Empty class sections';
 
 implementation
 

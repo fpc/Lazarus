@@ -35,8 +35,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Laz_XMLCfg, Buttons, ExtCtrls, FileUtil, IDEContextHelpEdit,
-  LazConf, IDEProcs, LazarusIDEStrConsts, StdCtrls, ButtonPanel;
+  Buttons, ExtCtrls, FileUtil, StdCtrls, ButtonPanel, AvgLvlTree,
+  CodeToolManager, Laz_XMLCfg, BasicCodeTools,
+  IDEContextHelpEdit,
+  LazConf, IDEProcs, LazarusIDEStrConsts;
 
 type
   { TCodeExplorerOptions }
@@ -59,22 +61,49 @@ type
     cecVariables,
     cecConstants,
     cecProperties,
-    cecProcedures
+    cecProcedures,
+    cecFigures
     );
   TCodeExplorerCategories = set of TCodeExplorerCategory;
-  
+
+  TCEFigureCategory = (
+    cefcLongProcs,
+    cefcLongParamLists,
+    cefcEmptyProcs,
+    cefcNestedProcs,
+    cefcUnnamedConsts,
+    cefcPublishedPropWithoutDefault,
+    cefcUnsortedClassVisibility,
+    cefcEmptyClassSections,
+    cefcUnsortedClassMembers,
+    cefcToDos
+    );
+  TCEFigureCategories = set of TCEFigureCategory;
+
 const
   FirstCodeExplorerCategory = cecUses;
   DefaultCodeExplorerCategories = [cecUses,
                               cecTypes,cecVariables,cecConstants,cecProcedures];
+  cefcAll = [low(TCEFigureCategory)..high(TCEFigureCategory)];
+  DefaultCodeExplorerFigureCategories = cefcAll;
+  DefaultFigLongProcLineCount = 50;
+  DefaultFigLongParamListCount = 6;
+  DefaultFigNestedProcCount = 3;
+  DefaultFigureCharConst = false;
 
 type
 
   TCodeExplorerOptions = class(TPersistent)
   private
     FCategories: TCodeExplorerCategories;
+    FFigureCharConst: boolean;
+    FLongParamListCount: integer;
+    FLongProcLineCount: integer;
+    FNestedProcCount: integer;
+    FFigures: TCEFigureCategories;
     FFollowCursor: boolean;
     FMode : TCodeExplorerMode;
+    FNotFigureConstants: TAvgLvlTree;// tree of AnsiString
     FOptionsFilename: string;
     FRefresh: TCodeExplorerRefresh;
   public
@@ -86,12 +115,25 @@ type
     procedure Save;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function CreateListOfNotFigureConstants: TStrings;
+    procedure ClearNotFigureConstants;
+    procedure SetListOfNotFigureConstants(List: TStrings);
+    function NotFigureConstant(p: PChar): boolean;// test if atom is in NotFigureConstants
+    procedure AddNotFigureConstant(const Atom: string);
+    function IsNotFigureConstantsDefault: boolean;
   public
     property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh default cerSwitchEditorPage;
     property Mode: TCodeExplorerMode read FMode write FMode default cemCategory;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
     property FollowCursor: boolean read FFollowCursor write FFollowCursor default true;
     property Categories: TCodeExplorerCategories read FCategories write FCategories default DefaultCodeExplorerCategories;
+    // Figures
+    property Figures: TCEFigureCategories read FFigures write FFigures default DefaultCodeExplorerFigureCategories;
+    property LongProcLineCount: integer read FLongProcLineCount write FLongProcLineCount default DefaultFigLongProcLineCount;
+    property LongParamListCount: integer read FLongParamListCount write FLongParamListCount default DefaultFigLongParamListCount;
+    property NestedProcCount: integer read FNestedProcCount write FNestedProcCount default DefaultFigNestedProcCount;
+    property FigureCharConst: boolean read FFigureCharConst write FFigureCharConst default DefaultFigureCharConst;
+    property NotFigureConstants: TAvgLvlTree read FNotFigureConstants;
   end;
 
   { TCodeExplorerDlg }
@@ -140,7 +182,20 @@ const
     'Variables',
     'Constants',
     'Properties',
-    'Procedures'
+    'Procedures',
+    'Figures'
+    );
+  CEFigureCategoryNames: array[TCEFigureCategory] of string = (
+    'LongProcs',
+    'LongParamLists',
+    'EmptyProcs',
+    'NestedProcs',
+    'UnnamedConsts',
+    'PublishedPropWithoutDefault',
+    'UnsortedClassVisibility',
+    'EmptyClassSections',
+    'UnsortedClassMembers',
+    'ToDos'
     );
 
 var
@@ -152,6 +207,8 @@ function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
 function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
 function CodeExplorerLocalizedString(const c: TCodeExplorerCategory): string;
+function CodeExplorerFigureNameToEnum(const s: string): TCEFigureCategory;
+function CodeExplorerLocalizedString(const c: TCEFigureCategory): string;
 
 
 implementation
@@ -160,21 +217,21 @@ implementation
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 begin
   for Result:=Low(TCodeExplorerRefresh) to High(TCodeExplorerRefresh) do
-    if CompareText(CodeExplorerRefreshNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(CodeExplorerRefreshNames[Result],s)=0 then exit;
   Result:=cerDefault;
 end;
 
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
 begin
   for Result:=Low(TCodeExplorerMode) to High(TCodeExplorerMode) do
-    if CompareText(CodeExplorerModeNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(CodeExplorerModeNames[Result],s)=0 then exit;
   Result:=cemCategory;
 end;
 
 function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
 begin
   for Result:=FirstCodeExplorerCategory to High(TCodeExplorerCategory) do
-    if CompareText(CodeExplorerCategoryNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(CodeExplorerCategoryNames[Result],s)=0 then exit;
   Result:=cecTypes;
 end;
 
@@ -187,6 +244,31 @@ begin
   cecConstants: Result:=lisCEConstants;
   cecProcedures: Result:=lisCEProcedures;
   cecProperties: Result:=lisCEProperties;
+  cecFigures: Result:=lisCEFigures;
+  else Result:='?';
+  end;
+end;
+
+function CodeExplorerFigureNameToEnum(const s: string): TCEFigureCategory;
+begin
+  for Result:=low(TCEFigureCategory) to High(TCEFigureCategory) do
+    if SysUtils.CompareText(CEFigureCategoryNames[Result],s)=0 then exit;
+  Result:=cefcLongProcs;
+end;
+
+function CodeExplorerLocalizedString(const c: TCEFigureCategory): string;
+begin
+  case c of
+  cefcLongProcs: Result:=lisCELongProcedures;
+  cefcLongParamLists: Result:=lisCEManyParameters;
+  cefcEmptyProcs: Result:=lisCEEmptyProcedures;
+  cefcNestedProcs: Result:=lisCEManyNestedProcedures;
+  cefcUnnamedConsts: Result:=lisCEUnnamedConstants;
+  cefcPublishedPropWithoutDefault: Result:=lisCEPublishedPropertyWithoutDefault;
+  cefcUnsortedClassVisibility: Result:=lisCEUnsortedVisibility;
+  cefcEmptyClassSections: Result:=lisCEEmptyClassSections;
+  cefcUnsortedClassMembers: Result:=lisCEUnsortedMembers;
+  cefcToDos: Result:=lisCEToDos;
   else Result:='?';
   end;
 end;
@@ -212,11 +294,14 @@ constructor TCodeExplorerOptions.Create;
 begin
   FOptionsFilename:=
                 AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
+  FNotFigureConstants:=TAvgLvlTree.Create(TListSortCompare(@CompareAtom));
   Clear;
 end;
 
 destructor TCodeExplorerOptions.Destroy;
 begin
+  ClearNotFigureConstants;
+  FreeAndNil(FNotFigureConstants);
   inherited Destroy;
 end;
 
@@ -226,11 +311,20 @@ begin
   FRefresh:=cerDefault;
   FFollowCursor:=true;
   FCategories:=DefaultCodeExplorerCategories;
+  FFigures:=DefaultCodeExplorerFigureCategories;
+  FLongProcLineCount:=DefaultFigLongProcLineCount;
+  FLongParamListCount:=DefaultFigLongParamListCount;
+  FNestedProcCount:=DefaultFigNestedProcCount;
+  FFigureCharConst:=DefaultFigureCharConst;
+  ClearNotFigureConstants;
+  AddNotFigureConstant('0');
+  AddNotFigureConstant('1');
 end;
 
 procedure TCodeExplorerOptions.Assign(Source: TPersistent);
 var
   Src: TCodeExplorerOptions;
+  List: TStrings;
 begin
   if Source is TCodeExplorerOptions then begin
     Src:=TCodeExplorerOptions(Source);
@@ -238,6 +332,17 @@ begin
     FMode:=Src.Mode;
     FFollowCursor:=Src.FollowCursor;
     FCategories:=Src.Categories;
+    FFigures:=Src.Figures;
+    FLongProcLineCount:=Src.LongProcLineCount;
+    FLongParamListCount:=Src.LongParamListCount;
+    FNestedProcCount:=Src.NestedProcCount;
+    FFigureCharConst:=Src.FigureCharConst;
+    List:=Src.CreateListOfNotFigureConstants;
+    try
+      SetListOfNotFigureConstants(List);
+    finally
+      List.Free;
+    end;
   end else
     inherited Assign(Source);
 end;
@@ -286,6 +391,9 @@ procedure TCodeExplorerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   c: TCodeExplorerCategory;
+  f: TCEFigureCategory;
+  CurPath: String;
+  List: TStringList;
 begin
   Clear;
   FRefresh:=CodeExplorerRefreshNameToEnum(
@@ -299,12 +407,47 @@ begin
     if XMLConfig.GetValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
       c in DefaultCodeExplorerCategories) then
         Include(FCategories,c);
+  FFigures:=[];
+  for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do
+  begin
+    CurPath:=Path+'Figures/'+CEFigureCategoryNames[f]+'/';
+    if XMLConfig.GetValue(CurPath+'Show',f in DefaultCodeExplorerFigureCategories)
+    then
+      Include(FFigures,f);
+    case f of
+    cefcLongProcs:
+      FLongProcLineCount:=XMLConfig.GetValue(CurPath+'LineCount/Value',
+                                                 DefaultFigLongProcLineCount);
+    cefcLongParamLists:
+      FLongParamListCount:=XMLConfig.GetValue(CurPath+'Count/Value',
+                                                 DefaultFigLongParamListCount);
+    cefcNestedProcs:
+      FNestedProcCount:=XMLConfig.GetValue(CurPath+'Count/Value',
+                                                 DefaultFigNestedProcCount);
+    cefcUnnamedConsts:
+      begin
+        FFigureCharConst:=XMLConfig.GetValue(CurPath+'CharConsts/Value',
+                                                 DefaultFigureCharConst);
+        // save NotFigureConstants
+        List:=TStringList.Create;
+        try
+          LoadStringList(XMLConfig,List,CurPath+'Ignore');
+          SetListOfNotFigureConstants(List);
+        finally
+          List.Free;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TCodeExplorerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   c: TCodeExplorerCategory;
+  f: TCEFigureCategory;
+  CurPath: String;
+  List: TStrings;
 begin
   XMLConfig.SetDeleteValue(Path+'Refresh/Value',
                            CodeExplorerRefreshNames[FRefresh],
@@ -317,6 +460,109 @@ begin
   for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     XMLConfig.SetDeleteValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
       c in FCategories,c in DefaultCodeExplorerCategories);
+  for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do
+  begin
+    CurPath:=Path+'Figures/'+CEFigureCategoryNames[f]+'/';
+    XMLConfig.SetDeleteValue(CurPath+'Show',
+      f in FFigures,f in DefaultCodeExplorerFigureCategories);
+    case f of
+    cefcLongProcs:
+      XMLConfig.SetDeleteValue(CurPath+'LineCount/Value',
+                           FLongProcLineCount,DefaultFigLongProcLineCount);
+    cefcLongParamLists:
+      XMLConfig.SetDeleteValue(CurPath+'Count/Value',
+                           FLongParamListCount,DefaultFigLongParamListCount);
+    cefcNestedProcs:
+      XMLConfig.SetDeleteValue(CurPath+'Count/Value',
+                           FNestedProcCount,DefaultFigNestedProcCount);
+    cefcUnnamedConsts:
+      begin
+        XMLConfig.SetDeleteValue(CurPath+'CharConsts/Value',
+                           FFigureCharConst,DefaultFigureCharConst);
+        // save NotFigureConstants
+        List:=CreateListOfNotFigureConstants;
+        try
+          SaveStringList(XMLConfig,List,CurPath+'Ignore');
+        finally
+          List.Free;
+        end;
+      end;
+    end;
+  end;
+
+end;
+
+function TCodeExplorerOptions.CreateListOfNotFigureConstants: TStrings;
+var
+  AVLNode: TAvgLvlTreeNode;
+  i: Integer;
+  s: String;
+begin
+  Result:=TStringList.Create;
+  AVLNode:=NotFigureConstants.FindLowest;
+  i:=0;
+  while AVLNode<>nil do begin
+    s:=GetAtomString(PChar(AVLNode.Data));
+    if s<>'' then begin
+      inc(i);
+      Result.Add(s);
+    end;
+    AVLNode:=NotFigureConstants.FindSuccessor(AVLNode);
+  end;
+end;
+
+procedure TCodeExplorerOptions.ClearNotFigureConstants;
+var
+  AVLNode: TAvgLvlTreeNode;
+  s: String;
+begin
+  s:='';
+  AVLNode:=FNotFigureConstants.FindLowest;
+  while AVLNode<>nil do begin
+    // decrease reference counter
+    Pointer(s):=AVLNode.Data;
+    s:='';
+    AVLNode:=FNotFigureConstants.FindSuccessor(AVLNode);
+  end;
+  if s='' then ; // omit fpc note
+  FNotFigureConstants.Clear;
+end;
+
+procedure TCodeExplorerOptions.SetListOfNotFigureConstants(List: TStrings);
+var
+  i: Integer;
+  s: string;
+begin
+  ClearNotFigureConstants;
+  for i:=0 to List.Count-1 do begin
+    s:=List[i];
+    if s='' then continue;
+    FNotFigureConstants.Add(Pointer(s));
+    // keep reference count
+    Pointer(s):=nil;
+  end;
+end;
+
+function TCodeExplorerOptions.NotFigureConstant(p: PChar): boolean;
+begin
+  Result:=FNotFigureConstants.Find(p)<>nil;
+end;
+
+procedure TCodeExplorerOptions.AddNotFigureConstant(const Atom: string);
+var
+  s: String;
+begin
+  if NotFigureConstant(@Atom[1]) then exit;
+  s:=Atom;
+  FNotFigureConstants.Add(Pointer(s));
+  Pointer(s):=nil;
+end;
+
+function TCodeExplorerOptions.IsNotFigureConstantsDefault: boolean;
+begin
+  Result:=(FNotFigureConstants.Count=2)
+          and NotFigureConstant('0')
+          and NotFigureConstant('1');
 end;
 
 { TCodeExplorerDlg }
