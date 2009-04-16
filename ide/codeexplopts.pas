@@ -296,6 +296,8 @@ begin
                 AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
   FNotFigureConstants:=TAvgLvlTree.Create(TListSortCompare(@CompareAtom));
   Clear;
+  AddNotFigureConstant('0');
+  AddNotFigureConstant('1');
 end;
 
 destructor TCodeExplorerOptions.Destroy;
@@ -317,8 +319,6 @@ begin
   FNestedProcCount:=DefaultFigNestedProcCount;
   FFigureCharConst:=DefaultFigureCharConst;
   ClearNotFigureConstants;
-  AddNotFigureConstant('0');
-  AddNotFigureConstant('1');
 end;
 
 procedure TCodeExplorerOptions.Assign(Source: TPersistent);

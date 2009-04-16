@@ -3213,6 +3213,7 @@ begin
     inc(p2);
     dec(l);
   end;
+  Result:=0;
 end;
 
 function CompareStringConstants(p1, p2: PChar): integer;
