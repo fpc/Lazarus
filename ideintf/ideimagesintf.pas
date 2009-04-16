@@ -33,11 +33,14 @@ type
 
   TIDEImages = class
   private
+    FImages_12: TCustomImageList;
     FImages_16: TCustomImageList;
     FImages_24: TCustomImageList;
+    FImageNames_12: TStringList;
     FImageNames_16: TStringList;
     FImageNames_24: TStringList;
   protected
+    function GetImages_12: TCustomImageList;
     function GetImages_16: TCustomImageList;
     function GetImages_24: TCustomImageList;
   public
@@ -47,6 +50,7 @@ type
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
     function LoadImage(ImageSize: Integer; ImageName: String): Integer;
     
+    property Images_12: TCustomImageList read GetImages_12;
     property Images_16: TCustomImageList read GetImages_16;
     property Images_24: TCustomImageList read GetImages_24;
   end;
@@ -59,6 +63,17 @@ var
   FIDEImages: TIDEImages;
 
 { TIDEImages }
+
+function TIDEImages.GetImages_12: TCustomImageList;
+begin
+  if FImages_12 = nil then
+  begin
+    FImages_12 := TImageList.Create(nil);
+    FImages_12.Width := 12;
+    FImages_12.Height := 12;
+  end;
+  Result := FImages_12;
+end;
 
 function TIDEImages.GetImages_16: TCustomImageList;
 begin
@@ -84,8 +99,9 @@ end;
 
 constructor TIDEImages.Create;
 begin
-  FImages_16 := nil;
-  FImages_24 := nil;
+  FImageNames_12 := TStringList.Create;
+  FImageNames_12.Sorted := True;
+  FImageNames_12.Duplicates := dupIgnore;
   FImageNames_16 := TStringList.Create;
   FImageNames_16.Sorted := True;
   FImageNames_16.Duplicates := dupIgnore;
@@ -96,10 +112,12 @@ end;
 
 destructor TIDEImages.Destroy;
 begin
-  FImages_16.Free;
-  FImages_24.Free;
-  FImageNames_16.Free;
-  FImageNames_24.Free;
+  FreeAndNil(FImages_12);
+  FreeAndNil(FImages_16);
+  FreeAndNil(FImages_24);
+  FreeAndNil(FImageNames_12);
+  FreeAndNil(FImageNames_16);
+  FreeAndNil(FImageNames_24);
   inherited Destroy;
 end;
 
@@ -108,6 +126,7 @@ var
   List: TStringList;
 begin
   case ImageSize of
+    12: List := FImageNames_12;
     16: List := FImageNames_16;
     24: List := FImageNames_24;
   else
@@ -132,6 +151,11 @@ begin
   if Result <> -1 then Exit;
 
   case ImageSize of
+    12:
+      begin
+        List := Images_12; // make sure we have a list
+        Names := FImageNames_12;
+      end;
     16:
       begin
         List := Images_16; // make sure we have a list

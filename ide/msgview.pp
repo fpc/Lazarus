@@ -118,6 +118,12 @@ type
     FLastSelectedIndex: integer;
     ImgIDNone: integer;
     ImgIDHasQuickFix: integer;
+    ImgIDInformation: integer;
+    ImgIDHint: integer;
+    ImgIDNote: integer;
+    ImgIDWarning: integer;
+    ImgIDError: integer;
+    ImgIDFatal: integer;
     function GetSelectedLineIndex: integer;
     procedure SetSelectedLineIndex(const AValue: integer);
     function FindNextItem(const Filename: string;
@@ -125,6 +131,7 @@ type
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
     function GetLines(Index: integer): TIDEMessageLine; override;
     procedure Changed;
+    procedure SetTVNodeImage(TVNode: TTreeNode; Msg: TLazMessageLine);
   public
     ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
@@ -133,8 +140,10 @@ type
     procedure EndUpdateNotification(Sender: TObject);
     procedure DeleteLine(Index: integer);
     procedure Add(const Msg, CurDir: string;
-                  ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
-    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); override;
+                  ProgressLine, VisibleLine: boolean; OriginalIndex: integer;
+                  Parts: TStrings);
+    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer;
+                     Parts: TStrings = nil); override;
     procedure AddProgress(ScanLine: TIDEScanMessageLine);
     procedure AddSeparator;
     procedure CollectLineParts(Sender: TObject; SrcLines: TIDEMessageLineList);
@@ -305,9 +314,15 @@ begin
   FLastSelectedIndex := -1;
   FQuickFixItems:=TFPList.Create;
 
-  ImgIDNone := IDEImages.LoadImage(16, 'state_error');
-  ImgIDHasQuickFix := IDEImages.LoadImage(16, 'ce_function');
-  MessageTreeView.Images:=IDEImages.Images_16;
+  ImgIDNone := -1;
+  ImgIDInformation := IDEImages.LoadImage(12, 'state12x12_information');
+  ImgIDHint := IDEImages.LoadImage(12, 'state12x12_hint');
+  ImgIDNote := IDEImages.LoadImage(12, 'state12x12_note');
+  ImgIDWarning := IDEImages.LoadImage(12, 'state12x12_warning');
+  ImgIDError := IDEImages.LoadImage(12, 'state12x12_error');
+  ImgIDFatal := IDEImages.LoadImage(12, 'state12x12_fatal');
+  ImgIDHasQuickFix := IDEImages.LoadImage(12, 'quickfix12x12');
+  MessageTreeView.Images:=IDEImages.Images_12;
 
   Caption := lisMenuViewMessages;
   MessageTreeView.OnAdvancedCustomDrawItem := @MessageViewDrawItem;
@@ -400,7 +415,8 @@ end;
   TMessagesView.Add
 ------------------------------------------------------------------------------}
 procedure TMessagesView.Add(const Msg, CurDir: string;
-  ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
+  ProgressLine, VisibleLine: boolean; OriginalIndex: integer;
+  Parts: TStrings);
 var
   NewMsg: TLazMessageLine;
   i:      integer;
@@ -432,6 +448,12 @@ begin
   NewMsg.Directory := CurDir;
   NewMsg.Position := FItems.Count-1;
   NewMsg.OriginalIndex := OriginalIndex;
+  if Parts<>nil then
+  begin
+    if NewMsg.Parts=nil then
+      NewMsg.Parts:=TStringList.Create;
+    NewMsg.Parts.Assign(Parts);
+  end;
   //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
 
   if VisibleLine then
@@ -449,11 +471,10 @@ begin
       // add new line
       TVNode:=MessageTreeView.Items.Add(nil,Msg);// add line
     end;
-    TVNode.ImageIndex:=ImgIDNone;
-    TVNode.SelectedIndex:=ImgIDNone;
     NewMsg.VisiblePosition := FVisibleItems.Count;
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
+    SetTVNodeImage(TVNode,NewMsg);
     if MessageTreeView.Items.Count>0 then
       MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count-1].MakeVisible;
     //DebugLn(['TMessagesView.Add ',MessageTreeView.TopIndex]);
@@ -462,19 +483,20 @@ begin
   Changed;
 end;
 
-procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
+procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer;
+  Parts: TStrings);
 begin
-  Add(Msg, CurDir, False, True, OriginalIndex);
+  Add(Msg, CurDir, False, True, OriginalIndex, Parts);
 end;
 
 procedure TMessagesView.AddProgress(ScanLine: TIDEScanMessageLine);
 begin
-  Add(ScanLine.Line, ScanLine.WorkingDirectory, True, True,ScanLine.LineNumber);
+  Add(ScanLine.Line, ScanLine.WorkingDirectory, True, True,ScanLine.LineNumber,nil);
 end;
 
 procedure TMessagesView.AddSeparator;
 begin
-  Add(SeparatorLine, '', False, True, -1);
+  Add(SeparatorLine, '', False, True, -1, nil);
 end;
 
 procedure TMessagesView.CollectLineParts(Sender: TObject;
@@ -646,8 +668,7 @@ begin
     begin
       TVNode:=MessageTreeView.Items.Add(nil,Line.Msg);
     end;
-    TVNode.ImageIndex:=ImgIDNone;
-    TVNode.SelectedIndex:=ImgIDNone;
+    SetTVNodeImage(TVNode,Line);
   end;
   while MessageTreeView.Items.Count > FVisibleItems.Count do
     MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count - 1].Free;
@@ -1204,6 +1225,37 @@ end;
 procedure TMessagesView.Changed;
 begin
   IdleTimer1.AutoEnabled:=true;
+end;
+
+procedure TMessagesView.SetTVNodeImage(TVNode: TTreeNode; Msg: TLazMessageLine
+  );
+var
+  Typ: string;
+  ImgID: LongInt;
+begin
+  ImgID:=ImgIDNone;
+  if (lmlfHasQuickFixValid in Msg.Flags)
+  and (lmlfHasQuickFix in Msg.Flags) then
+    ImgID:=ImgIDHasQuickFix
+  else if Msg.Parts<>nil then begin
+    if Msg.Parts.Values['Stage']='FPC' then begin
+      Typ:=Msg.Parts.Values['Type'];
+      if Typ='Hint' then
+        ImgID:=ImgIDHint
+      else if Typ='Note' then
+        ImgID:=ImgIDNote
+      else if Typ='Warning' then
+        ImgID:=ImgIDWarning
+      else if Typ='Error' then
+        ImgID:=ImgIDError
+      else if Typ='Fatal' then
+        ImgID:=ImgIDFatal
+      else
+        ImgID:=ImgIDInformation;
+    end;
+  end;
+  TVNode.ImageIndex:=ImgID;
+  TVNode.SelectedIndex:=TVNode.ImageIndex;
 end;
 
 procedure TMessagesView.ConsistencyCheck;

@@ -228,7 +228,7 @@ var
          +' Error: '
          +ErrorMessage;
     debugln('WriteLFMErrors ',Msg);
-    OnOutput(Msg,Dir,-1);
+    OnOutput(Msg,Dir,-1,nil);
   end;
   
   procedure WriteCodeToolsError;
@@ -254,7 +254,7 @@ var
            +' Error: '
            +CurError.ErrorMessage;
       debugln('WriteLFMErrors ',Msg);
-      OnOutput(Msg,Dir,-1);
+      OnOutput(Msg,Dir,-1,nil);
       CurError:=CurError.NextError;
     end;
   end;

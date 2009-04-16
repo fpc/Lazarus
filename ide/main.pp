@@ -11076,7 +11076,7 @@ var MaxMessages: integer;
   Filename, SearchedFilename: string;
   LogCaretXY: TPoint;
   TopLine: integer;
-  MsgType: TErrorType;
+  MsgType: TFPCErrorType;
   SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
   CurMsg, CurDir: string;
@@ -11091,8 +11091,7 @@ begin
     Index:=0;
     while (Index<MaxMessages) do begin
       CurMsg:=MessagesView.VisibleItems[Index].Msg;
-      if (TheOutputFilter.GetSourcePosition(
-        CurMsg,Filename,LogCaretXY,MsgType)) then
+      if ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
       end;
@@ -11107,7 +11106,7 @@ begin
 
   // default: jump to source position
   MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
-  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,LogCaretXY,MsgType)
+  if ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType)
   then begin
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
@@ -11173,7 +11172,7 @@ var
   CurMsg: String;
   Filename: string;
   LogCaretXY: TPoint;
-  MsgType: TErrorType;
+  MsgType: TFPCErrorType;
   OldIndex: integer;
   RoundCount: Integer;
 begin
@@ -11201,8 +11200,7 @@ begin
 
     // check if it is an error
     CurMsg:=MessagesView.VisibleItems[Index].Msg;
-    if (TheOutputFilter.GetSourcePosition(
-      CurMsg,Filename,LogCaretXY,MsgType)) then
+    if (ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType)) then
     begin
       if MsgType in [etError,etFatal,etPanic] then break;
     end;

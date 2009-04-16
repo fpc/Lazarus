@@ -45,7 +45,7 @@ type
 
   TOnOutputString = procedure(Line: TIDEScanMessageLine) of object;
   TOnAddFilteredLine = procedure(const Msg, Directory: String;
-                                 OriginalIndex: integer) of object;
+                             OriginalIndex: integer; Parts: TStrings) of object;
   TOnGetIncludePath = function(const Directory: string;
                                UseCache: boolean): string of object;
 
@@ -60,8 +60,6 @@ type
   
   TOutputMessageType = (omtNone, omtFPC, omtLinker, omtMake);
 
-  TErrorType = (etNone, etHint, etNote, etWarning, etError, etFatal, etPanic);
-  
   { TFilteredOutputLines
     A TStringList maintaining an original index for each string.
     TOutputFilter creates an instance of this class as a result of filtering
@@ -116,7 +114,7 @@ type
     FOnEndUpdate: TNotifyEvent;
     fOnReadLine: TOnOutputString;
     fOutput: TIDEMessageLineList;
-    fLastErrorType: TErrorType;
+    fLastErrorType: TFPCErrorType;
     fLastMessageType: TOutputMessageType;
     fCompilingHistory: TStringList;
     fMakeDirHistory: TStringList;
@@ -133,7 +131,6 @@ type
     FAsyncOutput: TDynamicDataQueue;
     FScanners: TFPList; // list of TIDEMsgScanner
     FTool: TIDEExternalToolOptions;
-
     DarwinLinkerMultiline: Boolean;
     DarwinLinkerLine : String;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
@@ -154,8 +151,6 @@ type
     Aborted: boolean;
     function Execute(TheProcess: TProcessUTF8; aCaller: TObject = nil;
                      aTool: TIDEExternalToolOptions = nil): boolean;
-    function GetSourcePosition(const Line: string; var Filename:string;
-      var CaretXY: TPoint; var MsgType: TErrorType): boolean;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -178,7 +173,7 @@ type
     property FilteredLines: TFilteredOutputLines read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;
     property Lines: TIDEMessageLineList read fOutput;
-    property LastErrorType: TErrorType read fLastErrorType;
+    property LastErrorType: TFPCErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property OnGetIncludePath: TOnGetIncludePath
                                  read fOnGetIncludePath write fOnGetIncludePath;
@@ -210,23 +205,9 @@ var
   TOutputFilterProcess: TProcessClass = nil;
   MessageScanners: TMessageScanners = nil;
 
-const
-  ErrorTypeNames : array[TErrorType] of string = (
-      'None','Hint','Note','Warning','Error','Fatal','Panic'
-    );
-
-function ErrorTypeNameToType(const Name:string): TErrorType;
-
 
 implementation
 
-
-function ErrorTypeNameToType(const Name:string): TErrorType;
-begin
-  for Result:=Succ(etNone) to High(TErrorType) do
-    if CompareText(ErrorTypeNames[Result],Name)=0 then exit;
-  Result:=etNone;
-end;
 
 { TOutputFilter }
 
@@ -492,7 +473,7 @@ const
   AsmError = 'Error while assembling';
 var i, j, FilenameEndPos: integer;
   MsgTypeName, Filename, Msg: string;
-  MsgType: TErrorType;
+  MsgType: TFPCErrorType;
   SkipMessage: boolean;
   CurCompHistory: string;
   CurFilenameLen: Integer;
@@ -576,7 +557,7 @@ var i, j, FilenameEndPos: integer;
         CurrentMessageParts.Values['Stage']:='Linker'
       else
         CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
 
       NewLine:=copy(s,p,length(s));
       if fLastErrorType in [etPanic,etFatal] then begin
@@ -614,7 +595,7 @@ var i, j, FilenameEndPos: integer;
       DoAddFilteredLine(copy(s,p,length(s)));
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
       Result:=true;
       exit;
     end;
@@ -871,14 +852,14 @@ begin
   if (j+1>length(s)) or (s[j]<>':') or (s[j+1]<>' ') then exit;
   MessageStartPos:=j+2;
   MsgTypeName:=copy(s,i,j-i);
-  for MsgType:=Succ(etNone) to High(TErrorType) do begin
-    if ErrorTypeNames[MsgType]=MsgTypeName then begin
+  for MsgType:=Succ(etNone) to High(TFPCErrorType) do begin
+    if FPCErrorTypeNames[MsgType]=MsgTypeName then begin
       // this is a freepascal compiler message
       // -> filter message
       fLastErrorType:=MsgType;
       fLastMessageType:=omtFPC;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
       CurrentMessageParts.Values['Line']:=
                  copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
       CurrentMessageParts.Values['Column']:=
@@ -1020,74 +1001,6 @@ begin
   end;
 end;
 
-function TOutputFilter.GetSourcePosition(const Line: string; var Filename:string;
-  var CaretXY: TPoint; var MsgType: TErrorType): boolean;
-{ This assumes the line has one of the following formats
-<filename>(123,45) <ErrorType>: <some text>
-<filename>(123) <ErrorType>: <some text>
-<filename>(456) <ErrorType>: <some text> in line (123)
-Fatal: <some text>
-}
-var StartPos, EndPos: integer;
-begin
-  Result:=false;
-  if copy(Line,1,7)='Fatal: ' then begin
-    Result:=true;
-    Filename:='';
-    MsgType:=etFatal;
-    exit;
-  end;
-  StartPos:=1;
-  // find filename
-  EndPos:=StartPos;
-  while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  FileName:=copy(Line,StartPos,EndPos-StartPos);
-  // read linenumber
-  StartPos:=EndPos+1;
-  EndPos:=StartPos;
-  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  CaretXY.X:=1;
-  CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-  if Line[EndPos]=',' then begin
-    // format: <filename>(123,45) <ErrorType>: <some text>
-    // read column
-    StartPos:=EndPos+1;
-    EndPos:=StartPos;
-    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-    // read error type
-    StartPos:=EndPos+2;
-    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
-    Result:=true;
-  end else if Line[EndPos]=')' then begin
-    // <filename>(123) <ErrorType>: <some text>
-    // <filename>(456) <ErrorType>: <some text> in line (123)
-    // read error type
-    StartPos:=EndPos+2;
-    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
-    // read second linenumber (more useful)
-    while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
-    if EndPos>length(Line) then begin
-      // format: <filename>(123) <ErrorType>: <some text>
-      Result:=true;
-      exit;
-    end;
-    StartPos:=EndPos+1;
-    EndPos:=StartPos;
-    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-    Result:=true;
-  end;
-end;
-
 function TOutputFilter.IsHintForUnusedUnit(const OutputLine,
   MainSrcFile: string): boolean;
 { recognizes hints of the form
@@ -1126,7 +1039,7 @@ begin
   fFilteredOutput.Add(s);
   fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=OriginalIndex;
   if Assigned(OnAddFilteredLine) then
-    OnAddFilteredLine(s,fCurrentDirectory,OriginalIndex);
+    OnAddFilteredLine(s,fCurrentDirectory,OriginalIndex,CurrentMessageParts);
 end;
 
 procedure TOutputFilter.DoAddLastLinkerMessages(SkipLastLine: boolean);

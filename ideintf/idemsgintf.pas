@@ -239,7 +239,7 @@ type
     function GetLines(Index: integer): TIDEMessageLine; virtual; abstract;
   public
     procedure Clear; virtual; abstract;
-    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); virtual; abstract;
+    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer; Parts: TStrings = nil); virtual; abstract;
     property Lines[Index: integer]: TIDEMessageLine read GetLines; default;
     function LinesCount: integer; virtual; abstract;
     procedure BeginBlock(ClearOldBlocks: Boolean = true); virtual; abstract;
@@ -258,6 +258,18 @@ function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;
   const ExecuteProc: TIMQFExecuteProc = nil): TIDEMsgQuickFixItem; overload;
   
 procedure RegisterIDEMsgScanner(Item: TIDEMsgScannerType);
+
+type
+  TFPCErrorType = (etNone, etHint, etNote, etWarning, etError, etFatal, etPanic);
+
+const
+  FPCErrorTypeNames : array[TFPCErrorType] of string = (
+      'None','Hint','Note','Warning','Error','Fatal','Panic'
+    );
+
+function FPCErrorTypeNameToType(const Name:string): TFPCErrorType;
+function ParseFPCMessage(const Line: string; out Filename:string;
+      out CaretXY: TPoint; out MsgType: TFPCErrorType): boolean;
 
 implementation
 
@@ -284,6 +296,87 @@ end;
 procedure RegisterIDEMsgScanner(Item: TIDEMsgScannerType);
 begin
   IDEMsgScanners.RegisterType(Item);
+end;
+
+function FPCErrorTypeNameToType(const Name: string): TFPCErrorType;
+begin
+  for Result:=Succ(etNone) to High(TFPCErrorType) do
+    if CompareText(FPCErrorTypeNames[Result],Name)=0 then exit;
+  Result:=etNone;
+end;
+
+function ParseFPCMessage(const Line: string; out Filename: string; out
+  CaretXY: TPoint; out MsgType: TFPCErrorType): boolean;
+{ This assumes the line has one of the following formats
+<filename>(123,45) <ErrorType>: <some text>
+<filename>(123) <ErrorType>: <some text>
+<filename>(456) <ErrorType>: <some text> in line (123)
+Fatal: <some text>
+}
+var StartPos, EndPos: integer;
+begin
+  Result:=false;
+  if copy(Line,1,7)='Fatal: ' then begin
+    Result:=true;
+    Filename:='';
+    MsgType:=etFatal;
+    exit;
+  end;
+  if copy(Line,1,7)='Panic: ' then begin
+    Result:=true;
+    Filename:='';
+    MsgType:=etPanic;
+    exit;
+  end;
+  StartPos:=1;
+  // find filename
+  EndPos:=StartPos;
+  while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  FileName:=copy(Line,StartPos,EndPos-StartPos);
+  // read linenumber
+  StartPos:=EndPos+1;
+  EndPos:=StartPos;
+  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  CaretXY.X:=1;
+  CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+  if Line[EndPos]=',' then begin
+    // format: <filename>(123,45) <ErrorType>: <some text>
+    // read column
+    StartPos:=EndPos+1;
+    EndPos:=StartPos;
+    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+    // read error type
+    StartPos:=EndPos+2;
+    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    MsgType:=FPCErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
+    Result:=true;
+  end else if Line[EndPos]=')' then begin
+    // <filename>(123) <ErrorType>: <some text>
+    // <filename>(456) <ErrorType>: <some text> in line (123)
+    // read error type
+    StartPos:=EndPos+2;
+    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    MsgType:=FPCErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
+    // read second linenumber (more useful)
+    while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
+    if EndPos>length(Line) then begin
+      // format: <filename>(123) <ErrorType>: <some text>
+      Result:=true;
+      exit;
+    end;
+    StartPos:=EndPos+1;
+    EndPos:=StartPos;
+    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+    Result:=true;
+  end;
 end;
 
 { TIDEMsgQuickFixItem }

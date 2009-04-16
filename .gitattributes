@@ -3351,12 +3351,19 @@ images/splash_logo.png -text svneol=unset#image/png
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
+images/states/quickfix12x12.png -text
 images/states/small/state_small_error.png -text svneol=unset#image/png
 images/states/small/state_small_fatal.png -text svneol=unset#image/png
 images/states/small/state_small_hint.png -text svneol=unset#image/png
 images/states/small/state_small_information.png -text svneol=unset#image/png
 images/states/small/state_small_note.png -text svneol=unset#image/png
 images/states/small/state_small_warning.png -text svneol=unset#image/png
+images/states/state12x12_error.png -text
+images/states/state12x12_fatal.png -text
+images/states/state12x12_hint.png -text
+images/states/state12x12_information.png -text
+images/states/state12x12_note.png -text
+images/states/state12x12_warning.png -text
 images/states/state_circular_reference.png -text svneol=unset#image/png
 images/states/state_error.png -text svneol=unset#image/png
 images/states/state_fatal.png -text svneol=unset#image/png
