@@ -4450,7 +4450,7 @@ begin
       DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
 
     // draw icon
-    if (Images<>nil) and PaintImages then
+    if (Images <> nil) and PaintImages then
     begin
       if FSelectedNode <> Node then
       begin
@@ -4463,23 +4463,24 @@ begin
         ImgIndex := Node.SelectedIndex;
       end;
       if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
-        Images.Draw(Canvas, x + 1, NodeRect.Top, ImgIndex, True);
+        Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+          ImgIndex, True);
       inc(x, Images.Width + 2);
     end;
 
     // draw state icon
     if (StateImages<>nil) and PaintImages then
     begin
-      if (Node.StateIndex>=0) and (Node.StateIndex<StateImages.Count) then
-        StateImages.Draw(Canvas,x+1,NodeRect.Top,Node.StateIndex,true);
-      inc(x,StateImages.Width+2);
+      if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
+        StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height),
+          Node.StateIndex, True);
+      inc(x, StateImages.Width + 2);
     end;
 
     // draw text
     if Node.Text <> '' then
     begin
-      TextY:=NodeRect.Top+
-         ((NodeRect.Bottom-NodeRect.Top-TextHeight(Node.Text)) div 2);
+      TextY := (NodeRect.Top + NodeRect.Bottom - TextHeight(Node.Text)) div 2;
       if NodeSelected and (FSelectedColor<>clNone) then
       begin
         Brush.Color := FSelectedColor;
