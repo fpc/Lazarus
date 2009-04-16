@@ -394,14 +394,20 @@ var
   Pixbuf : PGDKPixbuf;
 begin
   Mask := 0;
-  case StockID Of
-    idButtonOk : StockName := GTK_STOCK_OK;
-    idButtonCancel : StockName := GTK_STOCK_CANCEL;
-    idButtonYes : StockName := GTK_STOCK_YES;
-    idButtonNo : StockName := GTK_STOCK_NO;
-    idButtonHelp : StockName := GTK_STOCK_HELP;
-    idButtonAbort : StockName := GTK_STOCK_STOP;
-    idButtonClose : StockName := GTK_STOCK_CLOSE;
+  case StockID of
+    idButtonOk: StockName := GTK_STOCK_OK;
+    idButtonCancel: StockName := GTK_STOCK_CANCEL;
+    idButtonYes: StockName := GTK_STOCK_YES;
+    idButtonYesToAll: StockName := GTK_STOCK_YES;
+    idButtonNo: StockName := GTK_STOCK_NO;
+    idButtonNoToAll: StockName := GTK_STOCK_NO;
+    idButtonHelp: StockName := GTK_STOCK_HELP;
+    idButtonAbort: StockName := GTK_STOCK_STOP;
+    idButtonClose: StockName := GTK_STOCK_CLOSE;
+    // this is disputable but anyway stock icons looks like our own
+    idButtonAll: StockName := GTK_STOCK_APPLY;
+    idButtonIgnore: StockName := GTK_STOCK_DELETE;
+    idButtonRetry: StockName := GTK_STOCK_REFRESH;
 
     idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
     idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
