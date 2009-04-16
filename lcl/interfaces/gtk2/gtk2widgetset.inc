@@ -400,8 +400,8 @@ begin
     idButtonYes : StockName := GTK_STOCK_YES;
     idButtonNo : StockName := GTK_STOCK_NO;
     idButtonHelp : StockName := GTK_STOCK_HELP;
-    idButtonAbort : StockName := GTK_STOCK_CANCEL;
-    idButtonClose : StockName := GTK_STOCK_QUIT;
+    idButtonAbort : StockName := GTK_STOCK_STOP;
+    idButtonClose : StockName := GTK_STOCK_CLOSE;
 
     idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
     idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
