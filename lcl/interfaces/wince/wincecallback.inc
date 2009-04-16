@@ -816,42 +816,38 @@ Var
     Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
   end;
 
-{  procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
+  procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
   var
     lWindowInfo: PWindowInfo;
-    lNewValue: Double;
   begin
     lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;
-    lNewValue := StrToFloatDef(ASpinEdit.Text, lWindowInfo^.spinValue);
-    if lNewValue <> lWindowInfo^.spinValue then
-    begin
-      lWindowInfo^.spinValue := lNewValue;
-      LMessage.Msg := CM_TEXTCHANGED;
-    end;
+
+    lWindowInfo^.spinValue := ASpinEdit.StrToValue(ASpinEdit.Text);
+
+    LMessage.Msg := CM_TEXTCHANGED;
   end;
 
   procedure HandleSpinEditDeltaPos(AUpDownMsg: PNMUpDown);
   var
-    lSpinEdit: TCustomFloatSpinEdit;
+    SpinEdit: TCustomFloatSpinEdit;
     spinHandle: HWND;
     newValue: Double;
   begin
-    lSpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
-    newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * lSpinEdit.Increment;
-    if (lSpinEdit.MinValue <> 0) or (lSpinEdit.MaxValue <> 0) then
+    SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
+
+    if not SpinEdit.ReadOnly then
     begin
-      if newValue > lSpinEdit.MaxValue then
-        newValue := lSpinEdit.MaxValue;
-      if newValue < lSpinEdit.MinValue then
-        newValue := lSpinEdit.MinValue;
+      NewValue := SpinEdit.GetLimitedValue(
+        WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
+      WindowInfo^.spinValue := NewValue;
+
+      spinHandle := AUpDownMsg^.hdr.hwndFrom;
+      UpdateFloatSpinEditText(SpinEdit, NewValue);
+      Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
     end;
-    spinHandle := AUpDownMsg^.hdr.hwndFrom;
-    UpdateFloatSpinEditText(spinHandle, NewValue, lSpinEdit.DecimalPlaces);
-    Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
-    WindowInfo^.spinValue := newValue;
   end;
-}
+
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
     procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
     var
@@ -1161,10 +1157,10 @@ begin
             case Hi(WParam) of
               EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
             end
-{          else if (lWinControl is TCustomFloatSpinEdit) then
+          else if (lWinControl is TCustomFloatSpinEdit) then
             case Hi(WParam) of
               EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
-            end}
+            end
           else if (lWinControl is TCustomMemo) then
             case Hi(WParam) of
               // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
@@ -1707,17 +1703,17 @@ begin
 {$endif}
       case PNMHdr(LParam)^.code of
         0 :;
-{        MCN_SELCHANGE:
+        MCN_SELCHANGE:
         begin
           LMessage.Msg := LM_CHANGED;
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
-        end;}
-{        UDN_DELTAPOS:
+        end;
+        UDN_DELTAPOS:
         begin
           if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));
-        end;}
+        end;
       else
         PLMsg:=@LMNotify;
         with LMNotify Do

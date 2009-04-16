@@ -33,6 +33,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Spin, Controls, StdCtrls, LCLType, commctrl,
+  LCLProc,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses, Windows, WinCEInt, WinCEProc,
   WinCEWSStdCtrls, WinCEWSControls;
@@ -52,8 +53,10 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
 
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
@@ -67,8 +70,8 @@ function SpinBuddyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; cdecl;
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
   const AFloatSpinEdit: TCustomFloatSpinEdit);
-procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: Double;
-  const ADecimalPlaces: integer);
+procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
+  const ANewValue: Double);
 
 implementation
 
@@ -124,21 +127,21 @@ begin
   if lWindowInfo <> @DefaultWindowInfo then
   begin
     lWindowInfo^.spinValue := AFloatSpinEdit.Value;
-    UpdateFloatSpinEditText(Handle, AFloatSpinEdit.Value, AFloatSpinEdit.DecimalPlaces);
+    UpdateFloatSpinEditText(AFloatSpinEdit, AFloatSpinEdit.Value);
   end;
 end;
 
-procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: Double;
-  const ADecimalPlaces: integer);
+procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
+  const ANewValue: Double);
 var
   editHandle: HWND;
-  newValueText: string;
+  newValueText: widestring;
 begin
-  editHandle := GetBuddyWindow(ASpinHandle);
-  newValueText := FloatToStrF(ANewValue, ffFixed, 20, ADecimalPlaces);
-  Windows.SendMessageW(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(UTF8Decode(newValueText))));
+  editHandle := GetBuddyWindow(ASpinEdit.Handle);
+  newValueText := UTF8Decode(ASpinEdit.ValueToStr(ANewValue));
+  Windows.SendMessageW(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(newValueText)));
 end;
-  
+
 class function TWinCEWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -168,6 +171,9 @@ begin
   Params.SubClassWndProc := @SpinBuddyWindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
   Params.BuddyWindowInfo^.isChildEdit := true;
+  // make possible LCL Wincontrol identification by Buddy handle
+  // TODO: should move to widget specific SetProp method
+  SetProp(Params.Buddy, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
 end;
 
@@ -218,6 +224,13 @@ begin
   Result := GetWindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
 end;
 
+class procedure TWinCEWSCustomFloatSpinEdit.SetReadOnly(
+  const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  Windows.SendMessage(GetBuddyWindow(ACustomEdit.Handle), EM_SETREADONLY,
+    Windows.WPARAM(NewReadOnly), 0);
+end;
+
 class procedure TWinCEWSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 begin
@@ -228,6 +241,14 @@ class procedure TWinCEWSCustomFloatSpinEdit.SetSelLength(const ACustomEdit: TCus
   NewLength: integer);
 begin
   EditSetSelLength(GetBuddyWindow(ACustomEdit.Handle), NewLength);
+end;
+
+class procedure TWinCEWSCustomFloatSpinEdit.SetText(
+  const AWinControl: TWinControl; const AText: string);
+begin
+  Windows.SetWindowTextW(
+    GetBuddyWindow(AWinControl.Handle),
+    PWideChar(UTF8ToUTF16(AText)));
 end;
 
 class procedure TWinCEWSCustomFloatSpinEdit.ShowHide(const AWinControl: TWinControl);
