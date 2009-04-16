@@ -1035,6 +1035,9 @@ begin
       and (not CodeExplorerOptions.FigureCharConst) then
       begin
         // ignore char constants
+      end else if CodeExplorerOptions.NotFigureConstant(@Tool.Src[Tool.CurPos.StartPos])
+      then begin
+        // ignore user defined constants
       end else begin
         // add constant
         Data:=TViewNodeData.Create(CodeNode);
