@@ -135,7 +135,7 @@ type
     FUpdateCount: integer;
     ImgIDClass: Integer;
     ImgIDConst: Integer;
-    ImgIDConstSection: Integer;
+    ImgIDSection: Integer;
     ImgIDDefault: integer;
     ImgIDFinalization: Integer;
     ImgIDImplementation: Integer;
@@ -146,10 +146,9 @@ type
     ImgIDProgram: Integer;
     ImgIDProperty: Integer;
     ImgIDType: Integer;
-    ImgIDTypeSection: Integer;
     ImgIDUnit: Integer;
     ImgIDVariable: Integer;
-    ImgIDVarSection: Integer;
+    ImgIDHint: Integer;
     function GetCodeFilter: string;
     function GetCurrentPage: TCodeExplorerPage;
     function GetDirectivesFilter: string;
@@ -365,9 +364,8 @@ begin
   ImgIDFunction := Imagelist1.AddLazarusResource('ce_function');
   ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
   // sections
-  ImgIDTypeSection := Imagelist1.AddLazarusResource('ce_section');
-  ImgIDVarSection := Imagelist1.AddLazarusResource('ce_section');
-  ImgIDConstSection := Imagelist1.AddLazarusResource('ce_section');
+  ImgIDSection := Imagelist1.AddLazarusResource('ce_section');
+  ImgIDHint := Imagelist1.AddLazarusResource('state_hint');
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -561,7 +559,7 @@ begin
     ctnImplementation:                  Result:=ImgIDImplementation;
     ctnInitialization:                  Result:=ImgIDInitialization;
     ctnFinalization:                    Result:=ImgIDFinalization;
-    ctnTypeSection:                     Result:=ImgIDTypeSection;
+    ctnTypeSection:                     Result:=ImgIDSection;
     ctnTypeDefinition:
       begin
         if (CodeNode.FirstChild <> nil) and (CodeNode.FirstChild.Desc = ctnClass) then
@@ -569,9 +567,9 @@ begin
         else
           Result := ImgIDType;
       end;
-    ctnVarSection:                      Result:=ImgIDVarSection;
+    ctnVarSection:                      Result:=ImgIDSection;
     ctnVarDefinition:                   Result:=ImgIDVariable;
-    ctnConstSection,ctnResStrSection:   Result:=ImgIDConstSection;
+    ctnConstSection,ctnResStrSection:   Result:=ImgIDSection;
     ctnConstDefinition:                 Result:=ImgIDConst;
     ctnClass:                           Result:=ImgIDClass;
     ctnProcedure:                       if Tool.NodeIsFunction(CodeNode) then
@@ -588,13 +586,13 @@ function TCodeExplorerView.GetDirectiveNodeImage(CodeNode: TCodeTreeNode
   ): integer;
 begin
   case CodeNode.SubDesc of
-  cdnsInclude:  Result:=ImgIDVarSection;
+  cdnsInclude:  Result:=ImgIDSection;
   else
     case CodeNode.Desc of
-    cdnIf:     Result:=ImgIDTypeSection;
-    cdnElseIf: Result:=ImgIDTypeSection;
-    cdnElse:   Result:=ImgIDTypeSection;
-    cdnEnd:    Result:=ImgIDTypeSection;
+    cdnIf:     Result:=ImgIDSection;
+    cdnElseIf: Result:=ImgIDSection;
+    cdnElse:   Result:=ImgIDSection;
+    cdnEnd:    Result:=ImgIDSection;
     cdnDefine: Result:=ImgIDConst;
     else
       Result:=ImgIDDefault;
@@ -888,7 +886,7 @@ begin
             AddCodeNode(cefcLongProcs,ProcNode);
           end;
         end;
-        if (cefcLongProcs in Figures)
+        if (cefcEmptyProcs in Figures)
         and (CodeNode.Parent.Desc=ctnProcedure) then begin
           Tool.MoveCursorToCleanPos(CodeNode.StartPos);
           Tool.ReadNextAtom;// read begin
@@ -966,8 +964,10 @@ begin
         if (cefcUnsortedClassMembers in Figures)
         then
           CheckUnsortedClassMembers(CodeNode);
-        if (cefcEmptyClassSections in Figures)
-        and (CodeNode.FirstChild=nil) then begin
+        if (cefcEmptyClassSections in Figures) and
+           (CodeNode.FirstChild=nil) and
+           ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.EndPos - CodeNode.StartPos > 7)) then
+        begin
           // empty class section
           AddCodeNode(cefcEmptyClassSections,CodeNode);
         end;
@@ -993,13 +993,17 @@ function TCodeExplorerView.CreateFigureNode(Tool: TCodeTool;
 var
   Data: TViewNodeData;
 begin
-  if fFigureCatNodes[f]=nil then begin
-    if fFigureNode=nil then begin
+  if fFigureCatNodes[f] = nil then
+  begin
+    if fFigureNode = nil then
+    begin
       fFigureNode:=CodeTreeview.Items.Add(nil, lisCEFigures);
       Data:=TViewNodeData.Create(Tool.Tree.Root);
       Data.Desc:=ctnNone;
       Data.StartPos:=Tool.SrcLen;
       fFigureNode.Data:=Data;
+      fFigureNode.ImageIndex:=ImgIDSection;
+      fFigureNode.SelectedIndex:=ImgIDSection;
     end;
     fFigureCatNodes[f]:=CodeTreeview.Items.AddChild(fFigureNode,
                             CodeExplorerLocalizedString(f));
@@ -1007,6 +1011,8 @@ begin
     Data.Desc:=ctnNone;
     Data.StartPos:=Tool.SrcLen;
     fFigureCatNodes[f].Data:=Data;
+    fFigureCatNodes[f].ImageIndex:=ImgIDHint;
+    fFigureCatNodes[f].SelectedIndex:=ImgIDHint;
     fFigureNode.Expanded:=true;
   end;
   Result:=fFigureCatNodes[f];
