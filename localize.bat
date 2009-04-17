@@ -14,6 +14,7 @@ REM
 
 REM set LazInstall=C:\lazarus\
 set ArchOS=i386-win32
+set ArchOsWS=%ArchOS%\win32
 
 echo.
 
@@ -68,7 +69,7 @@ tools\updatepofiles %SynUniHighLighterShellScript_RST% components\synedit\langua
 tools\updatepofiles %LCL_RST% lcl\languages\lclstrconsts.po
 
 @REM CGI
-@set CGI_RST=components\cgi\lib\%ArchOS%\cgimodules.rst
+@set CGI_RST=components\cgi\lib\%ArchOSWS%\cgimodules.rst
 tools\updatepofiles %CGI_RST% components\cgi\languages\cgimodules.po
 
 @REM LazReport
@@ -76,7 +77,7 @@ tools\updatepofiles %CGI_RST% components\cgi\languages\cgimodules.po
 tools\updatepofiles %LazReport_RST% components\lazreport\source\languages\lr_const.po
 
 @REM MemDS
-@set MemDS_RST=components\memds\lib\%ArchOS%\frmselectdataset.rst
+@set MemDS_RST=components\memds\lib\%ArchOSWS%\frmselectdataset.rst
 tools\updatepofiles %MemDS_RST% components\memds\languages\frmselectdataset.po
 
 @REM Printers
@@ -84,17 +85,17 @@ tools\updatepofiles %MemDS_RST% components\memds\languages\frmselectdataset.po
 tools\updatepofiles %Printers_RST% components\printers\design\languages\ideprinting.po
 
 @REM ProjectTemplates
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOS%\frmtemplatevariables.rst
+@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\frmtemplatevariables.rst
 tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\frmtemplatevariables.po
 
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOS%\idetemplateproject.rst
+@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\idetemplateproject.rst
 tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\idetemplateproject.po
 
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOS%\projecttemplates.rst
+@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\projecttemplates.rst
 tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\projecttemplates.po
 
 @REM TDBF
-@set TDBF_RST=components\tdbf\lib\%ArchOS%\registerdbf.rst
+@set TDBF_RST=components\tdbf\lib\%ArchOSWS%\registerdbf.rst
 tools\updatepofiles %TDBF_RST% components\tdbf\languages\registerdbf.po
 
 @REM TP_IPro
