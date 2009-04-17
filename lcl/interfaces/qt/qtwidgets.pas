@@ -3190,6 +3190,7 @@ begin
     QtKey_Minus: Result := VK_SUBTRACT;
     QtKey_Period: Result := VK_DECIMAL;
     QtKey_Slash: Result := VK_DIVIDE;
+    QtKey_Equal: Result := VK_OEM_PLUS;
 
     QtKey_Colon,
     QtKey_Semicolon: Result := VK_OEM_1;
