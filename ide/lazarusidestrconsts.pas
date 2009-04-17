@@ -4134,7 +4134,7 @@ resourcestring
   lisCEUnnamedConstants = 'Unnamed constants';
   lisCEEmptyProcedures = 'Empty procedures';
   lisCEManyNestedProcedures = 'Many nested procedures';
-  lisCEPublishedPropertyWithoutDefault = 'PublishedPropertyWithoutDefault';
+  lisCEPublishedPropertyWithoutDefault = 'Published properties without default';
   lisCEUnsortedVisibility = 'Unsorted visibility';
   lisCEUnsortedMembers = 'Unsorted members';
   lisCEToDos = 'ToDos';
