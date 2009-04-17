@@ -34,7 +34,7 @@ interface
 {$ENDIF}
 
 uses
-  Types, Classes, SysUtils, LCLType, Printers;
+  Windows, Types, Classes, SysUtils, LCLType, Printers;
 
 const
   {$i winutilprnconst.inc}
@@ -63,7 +63,7 @@ type
     wDefault: Word;
   end;
 
-  TFcntHook = function(Wnd: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
+  TFcntHook = function(Wnd: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
 
 
   tagPSD= packed record
