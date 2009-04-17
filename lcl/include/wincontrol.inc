@@ -695,7 +695,7 @@ begin
     AdjustedClientBorders[akLeft]:=AdjustedClientRect.Left;
     AdjustedClientBorders[akTop]:=AdjustedClientRect.Top;
     AdjustedClientBorders[akRight]:=BigInteger-AdjustedClientRect.Right;
-    AdjustedClientBorders[akRight]:=BigInteger-AdjustedClientRect.Bottom;
+    AdjustedClientBorders[akBottom]:=BigInteger-AdjustedClientRect.Bottom;
   end else begin
     for a:=low(TAnchorKind) to high(TAnchorKind) do
       AdjustedClientBorders[a]:=0;
