@@ -246,7 +246,7 @@ begin
   if Src[StartPos]='#' then inc(StartPos);
   if CompareIdentifiers(cAltTodoFLag,@Src[StartPos])<>0 then exit(false);
   TextStartPos:=StartPos+length(cTodoFlag);
-  while (TextStartPos<EndPos) and (Src[TextStartPos]=' ') do inc(TextStartPos);
+  while (TextStartPos<EndPos) and (Src[TextStartPos]<>':') do inc(TextStartPos);
   if Src[TextStartPos]=':' then begin
     inc(TextStartPos);
     while (TextStartPos<EndPos) and (Src[TextStartPos]=' ') do inc(TextStartPos);
