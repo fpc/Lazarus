@@ -133,6 +133,7 @@ type
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FUpdateCount: integer;
+    fSortCodeTool: TCodeTool;
     ImgIDClass: Integer;
     ImgIDConst: Integer;
     ImgIDSection: Integer;
@@ -981,7 +982,8 @@ begin
     FindFigureTodos(Tool);
 
   // add numbers
-  for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do begin
+  for f:=low(TCEFigureCategory) to high(TCEFigureCategory) do
+  begin
     if fFigureCatNodes[f]=nil then continue;
     fFigureCatNodes[f].Text:=
            fFigureCatNodes[f].Text+' ('+IntToStr(fFigureCatNodes[f].Count)+')';
@@ -1344,8 +1346,9 @@ begin
     // restore old expanded state
     OldExpanded.Apply(CodeTreeView);
     OldExpanded.Free;
+    fSortCodeTool:=ACodeTool;
     CodeTreeview.CustomSort(@CompareCodeNodes);
-    
+
     AutoExpandNodes;
 
     BuildCodeSortedForStartPos;
@@ -1699,12 +1702,22 @@ begin
   Data1:=TViewNodeData(Node1.Data);
   Data2:=TViewNodeData(Node2.Data);
   if (Mode=cemCategory) then begin
-    Result:=DescToLvl(Data1.Desc)-DescToLvl(Data2.Desc);
-    if Result<>0 then exit;
+    if Data1.Desc<>Data2.Desc then begin
+      Result:=DescToLvl(Data1.Desc)-DescToLvl(Data2.Desc);
+      if Result<>0 then exit;
+    end;
     if (Data1.Desc in SortDesc)
     and (Data2.Desc in SortDesc) then begin
       Result:=SysUtils.CompareText(Node1.Text,Node2.Text);
       if Result<>0 then exit;
+    end;
+    if (Data1.Desc=ctnConstant) and (Data2.Desc=ctnConstant)
+    and (fSortCodeTool<>nil) then begin
+      //if GetAtomLength(@fSortCodeTool.Src[Data1.StartPos])>50 then
+      //  DebugLn(['TCodeExplorerView.CompareCodeNodes AAA1 ',GetAtomString(@fSortCodeTool.Src[Data1.StartPos])]);
+      //Result:=-CompareAtom(@fSortCodeTool.Src[Data1.StartPos],
+      //                     @fSortCodeTool.Src[Data2.StartPos]);
+      //if Result<>0 then exit;
     end;
   end;
   if Data1.StartPos<Data2.StartPos then

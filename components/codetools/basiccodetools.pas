@@ -1922,7 +1922,7 @@ begin
         '''':
           begin
             inc(p);
-            while (p^<>'''') do
+            while not (p^ in ['''',#10,#13]) do
               inc(p);
             inc(p);
           end;
