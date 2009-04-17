@@ -966,7 +966,7 @@ begin
           CheckUnsortedClassMembers(CodeNode);
         if (cefcEmptyClassSections in Figures) and
            (CodeNode.FirstChild=nil) and
-           ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.EndPos - CodeNode.StartPos > 7)) then
+           ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.PriorBrother<>nil)) then
         begin
           // empty class section
           AddCodeNode(cefcEmptyClassSections,CodeNode);
