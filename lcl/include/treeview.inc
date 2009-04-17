@@ -4472,7 +4472,7 @@ begin
     if (StateImages<>nil) and PaintImages then
     begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
-        StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height),
+        StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
           Node.StateIndex, True);
       inc(x, StateImages.Width + 2);
     end;
