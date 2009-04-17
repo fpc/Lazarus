@@ -67,6 +67,7 @@ Type
     fcPenStyle     : TPenStyle;
     fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
+    FFs            : TFormatSettings;
 
     procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
@@ -95,7 +96,6 @@ Type
     procedure SetBrushFillPattern(SetBorder,SetFill : Boolean); overload;
     
     procedure GetRGBImage(SrcGraph: TGraphic; Lst : TStringList);
-    function  PPCFormat (const Fmt : string; const Args : array of const) : string;
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -645,15 +645,13 @@ end;
 //Init the width of line
 procedure TPostScriptPrinterCanvas.UpdateLineWidth;
 var
-  fs:TFormatSettings;
   pw:single;
 begin
   if Pen.Width<>fcPenWidth then
   begin
-    fs.DecimalSeparator:='.';
     pw:=1/Self.Printer.XDPI; // printer pixel in inches
     pw:=Pen.Width*pw*72; // pen width in Points -> 1/72 inches
-    Write(Format('%.3f setlinewidth',[pw],fs));
+    Write(Format('%.3f setlinewidth',[pw],FFs));
     fcPenWidth:=Pen.Width;
   end;
 end;
@@ -673,7 +671,7 @@ begin
     R:=Red(RGBColor)/255;
     G:=Green(RGBColor)/255;
     B:=Blue(RGBColor)/255;
-    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(aColor));
+    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B],FFs)+' % '+ColorToString(aColor));
     fcPenColor:=aColor;
   end;
 end;
@@ -709,7 +707,7 @@ begin
     R:=Red(RGBColor)/255;
     G:=Green(RGBColor)/255;
     B:=Blue(RGBColor)/255;
-    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Brush.Color));
+    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B],FFs)+' % '+ColorToString(Brush.Color));
     fcPenColor:=Brush.Color;
   end;
 end;
@@ -732,7 +730,7 @@ begin
     G:=Green(RGBColor)/255;
     B:=Blue(RGBColor)/255;
 
-    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
+    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B],FFs)+' % '+ColorToString(Font.Color));
     fcPenColor:=Font.Color;
   end;
 end;
@@ -786,12 +784,9 @@ end;
 procedure TPostScriptPrinterCanvas.MoveToLastPos;
 var
   pp:TpsPoint;
-  fs:TFormatSettings;
 begin
   pp:=Self.TranslateCoord(fpenPos.X,fPenPos.Y);
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
-  write(Format('%f %f moveto',[pp.fx,pp.fy],fs)+' %last pos');
+  write(Format('%f %f moveto',[pp.fx,pp.fy],Ffs)+' %last pos');
 end;
 
 //Add at the PstScript sequence, the Fill Pattern/Color and Broder
@@ -881,17 +876,6 @@ begin
   end;
 end;
 
-function TPostScriptPrinterCanvas.PPCFormat(const Fmt: string;
-  const Args: array of const): string;
-var
-  OldDecimalSeparator: char;
-begin
-  OldDecimalSeparator := DecimalSeparator;
-  DecimalSeparator := '.';
-  result := Format(Fmt, Args);
-  DecimalSeparator := OldDecimalSeparator;
-end;
-
 procedure TPostScriptPrinterCanvas.CreateHandle;
 begin
   SetHandle(1); // set dummy handle
@@ -966,6 +950,9 @@ begin
   fHeader:=TStringList.Create;
   fBuffer:=TstringList.Create;
   fDocument:=TStringList.Create;
+
+  Ffs.DecimalSeparator:='.';
+  Ffs.ThousandSeparator:=#0;
 end;
 
 destructor TPostScriptPrinterCanvas.Destroy;
@@ -1296,7 +1283,6 @@ end;
 //Move the current position
 procedure TPostScriptPrinterCanvas.MoveTo(X1, Y1: Integer);
 var
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   RequiredState([csHandleValid]);
@@ -1308,15 +1294,12 @@ begin
   SetPosition(X1,Y1);
   pp:=TranslateCoord(X1,Y1);
 
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
-  write(Format('%f %f moveto',[pp.fx,pp.fy],fs));
+  write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
 end;
 
 //Drawe line
 procedure TPostScriptPrinterCanvas.LineTo(X1, Y1: Integer);
 var
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   Changing;
@@ -1327,9 +1310,7 @@ begin
   UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
-  write(Format('%f %f lineto',[pp.fx,pp.fy],fs));
+  write(Format('%f %f lineto',[pp.fx,pp.fy],FFs));
   changed;
 end;
 
@@ -1338,27 +1319,24 @@ var
   i  : LongInt;
   Lst: TStringList;
   Pt : TPoint;
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   if (NumPts<=1) or not Assigned(Points) then Exit;
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
 
   Lst:=TStringList.Create;
   try
     Pt:=Points[0];
     pp:=TranslateCoord(Pt.x,Pt.y);
-    Write(Format('%f %f moveto',[pp.fx,pp.fy],fs),Lst);
+    Write(Format('%f %f moveto',[pp.fx,pp.fy],FFs),Lst);
     for i:=1 to NumPts-1 do
     begin
       Pt:=Points[i];
       pp:=TranslateCoord(Pt.x,Pt.y);
       SetPosition(Pt.x,Pt.y);
       //TranslateCoord(Pt.x,Pt.y);
-      Write(Format('%f %f lineto',[pp.fx,pp.fy],fs),Lst);
+      Write(Format('%f %f lineto',[pp.fx,pp.fy],FFs),Lst);
     end;
 
     if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
@@ -1383,15 +1361,11 @@ var
   i  : Integer;
   St : String;
   Pt : TPoint;
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
-  
   if (NumPts>=4) then
   begin
     ClearBuffer;
@@ -1401,12 +1375,12 @@ begin
     pp:=TranslateCoord(Pt.x,Pt.y);
     if Continuous then
       WriteB('newpath');
-    WriteB(Format('%f %f moveto',[pp.fx,pp.fy],fs));
+    WriteB(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
     for i:=1 to NumPts-1 do
     begin
       Pt:=Points[i];
       pp:=TranslateCoord(Pt.x,Pt.y);
-      St:=St+Format(' %f %f',[pp.fx,pp.fy]);
+      St:=St+Format(' %f %f',[pp.fx,pp.fy], FFs);
     end;
     WriteB(Format('%s curveto',[St]));
 
@@ -1423,21 +1397,18 @@ end;
 // internal rect path
 procedure TPostScriptPrinterCanvas.psDrawRect(ARect:TRect);
 var
-  fs:TFormatSettings;
   pp1,pp2:TpsPoint;
 begin
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
   pp1:=TranslateCoord(Arect.Left,Arect.Top);
   pp2:=TranslateCoord(ARect.Right,Arect.Bottom);
 
   ClearBuffer;
   //Tempo draw rect
   WriteB('newpath');
-  writeB(Format('    %f %f moveto',[pp1.fx,pp1.fy],fs));
-  writeB(Format('    %f %f lineto',[pp2.fx,pp1.fy],fs));
-  writeB(Format('    %f %f lineto',[pp2.fx,pp2.fy],fs));
-  writeB(Format('    %f %f lineto',[pp1.fx,pp2.fy],fs));
+  writeB(Format('    %f %f moveto',[pp1.fx,pp1.fy],FFs));
+  writeB(Format('    %f %f lineto',[pp2.fx,pp1.fy],FFs));
+  writeB(Format('    %f %f lineto',[pp2.fx,pp2.fy],FFs));
+  writeB(Format('    %f %f lineto',[pp1.fx,pp2.fy],FFs));
   writeB('closepath');
 
 end;
@@ -1543,10 +1514,10 @@ begin
    go with newpath for precision, does this violate any assumptions in code???
    write(format('%d %d moveto',[x1+rx, y1]),Lst  # this also works}
   WriteB('newpath');
-  WriteB(Format(ellipsePath,[pp1.fx+rx,pp1.fy-ry,rx,ry,90,180]));
-  WriteB(Format(ellipsePath,[pp1.fx+rx,pp2.fy+ry,rx,ry,180,270]));
-  WriteB(Format(ellipsePath,[pp2.fx-rx,pp2.fy+ry,rx,ry,270,360]));
-  WriteB(Format(ellipsePath,[pp2.fx-rx,pp1.fy-ry,rx,ry,0,90]));
+  WriteB(Format(ellipsePath,[pp1.fx+rx,pp1.fy-ry,rx,ry,90,180],FFs));
+  WriteB(Format(ellipsePath,[pp1.fx+rx,pp2.fy+ry,rx,ry,180,270],FFs));
+  WriteB(Format(ellipsePath,[pp2.fx-rx,pp2.fy+ry,rx,ry,270,360],FFs));
+  WriteB(Format(ellipsePath,[pp2.fx-rx,pp1.fy-ry,rx,ry,0,90],FFs));
   WriteB('closepath');
     
   SetBrushFillPattern(True,True);
@@ -1560,27 +1531,23 @@ procedure TPostScriptPrinterCanvas.Polygon(Points: PPoint; NumPts: Integer;
 var
   i  : LongInt;
   Pt : TPoint;
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   if (NumPts<=1) or not Assigned(Points) then Exit;
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
-  
   ClearBuffer;
   
   Pt:=Points[0];
   pp:=TranslateCoord(Pt.x,Pt.y);
   WriteB('newpath');
-  WriteB(Format('%f %f moveto',[pp.fx,pp.fy],fs));
+  WriteB(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
   for i:=1 to NumPts-1 do
   begin
     Pt:=Points[i];
     pp:=TranslateCoord(Pt.x,Pt.y);
-    WriteB(Format('%f %f lineto',[pp.fx,pp.fy]));
+    WriteB(Format('%f %f lineto',[pp.fx,pp.fy], FFs));
   end;
   WriteB('closepath');
 
@@ -1626,18 +1593,18 @@ begin
   xScale:=Abs((pp2.fx-pp1.fx)/2.0);
   yScale:=Abs((pp2.fy-pp1.fy)/2.0);
 
-  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
-      [cX,cY,xScale,yScale,StAng,Ang,'arc']);
+  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
+      [cX,cY,xScale,yScale,StAng,Ang,'arc'],FFs);
       
   ClearBuffer;
-  WriteB(PPCFormat('%.3f %.3f moveto',[cX,cY])); //move to center of circle
+  WriteB(Format('%.3f %.3f moveto',[cX,cY],FFs)); //move to center of circle
   WriteB(Code);
   SetBrushFillPattern(False,True);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  WriteB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))]));
+  WriteB(Format('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))],FFs));
   WriteB(Code);
   SetBrushFillPattern(True,False);
 
@@ -1681,8 +1648,8 @@ begin
   xScale:=Abs((Right-Left)/2.0);
   yScale:=Abs((Bottom-Top)/2.0);
 
-  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
+  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang], FFs);
 
   if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
   begin
@@ -1692,7 +1659,7 @@ begin
 
     //move current point to start of arc, note negative
     //angle because y increases down
-    write(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+    write(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
     Write(Code);
     write('stroke');
   end;
@@ -1731,25 +1698,25 @@ begin
   xScale:=Abs(rx);
   yScale:=Abs(ry);
 
-  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
+  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang],FFs);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(PPCFormat('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
   SetBrushFillPattern(False,True);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(PPCFormat('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
   SetBrushFillPattern(True,False);
 
   MoveToLastPos;
@@ -1774,12 +1741,9 @@ procedure TPostScriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
 var
   PenUnder : Real;
   PosUnder : Integer;
-  fs:TFormatSettings;
   pp:TpsPoint;
 begin
   pp:=TranslateCoord(X,Y);
-  fs.DecimalSeparator:='.';
-  fs.ThousandSeparator:=#0;
 
   UpdateFont;
 
@@ -1797,13 +1761,13 @@ begin
     if fsBold in Font.Style then
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
-    Write(format('%f %f uli',[pp.fx,pp.fy],fs));
+    Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
     FPSUnicode.OutputString(MapedString(Text));
-    write(PPCFormat('%.3f %d ule',[PenUnder,PosUnder]));
+    write(Format('%.3f %d ule',[PenUnder,PosUnder],FFs));
   end
   else
   begin
-    write(Format('%f %f moveto',[pp.fx,pp.fy],fs));
+    write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
     FPSUnicode.OutputString(MapedString(Text));
   end;
 
@@ -1879,9 +1843,11 @@ begin
   ClearBuffer;
 
   WriteB('gsave');
-  writeB(Format('%f %f translate',[pp1.fx,pp1.fy-DrawHeight]));
-  WriteB(Format('%f %f scale',[DrawWidth,DrawHeight]));
+  writeB(Format('%f %f translate',[pp1.fx,pp1.fy-DrawHeight],FFs));
+  WriteB(Format('%f %f scale',[DrawWidth,DrawHeight],FFs));
+
   WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
+  // colorimage width height bits/comp matrix data0..dataN-1 multi? ncomp colorimage
   WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
   WriteB(Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
   WriteB('{ currentfile scanline readhexstring pop } false 3');
@@ -1932,14 +1898,14 @@ begin
   xScale:=Abs(rx);
   yScale:=Abs(ry);
 
-  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
+  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang],FFs);
 
   //move current point to start of arc, note negative
   //angle because y increases down.ClosePath for draw chord
   ClearBuffer;
   writeB('newpath');
-  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
   WriteB(Code);
   writeB('closepath');
   SetBrushFillPattern(True,True);
