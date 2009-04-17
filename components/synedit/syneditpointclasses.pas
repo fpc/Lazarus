@@ -606,7 +606,9 @@ var
               BE.Y := BB.Y + 1;
             end;
             if BE.Y > BB.Y then begin
-              BE.X := BE.X + length(FLines[BB.Y - 1]);
+              l := length(FLines[BB.Y - 1]);
+              if BB.X > l + 1 then BB.X := l + 1;
+              BE.X := BE.X + l;
               FLines.EditLineJoin(BB.Y);
               BE.Y := BB.Y;
             end;
