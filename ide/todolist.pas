@@ -606,7 +606,7 @@ begin
   try
     fBuild:=True;
     CodeToolBoss.ActivateWriteLock;
-    fScannedFiles.Clear;
+    fScannedFiles.FreeAndClear;
     lvTodo.Items.Clear;
 
     if MainSourceFilename='' then exit;
