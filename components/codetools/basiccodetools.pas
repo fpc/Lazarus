@@ -150,9 +150,9 @@ function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
 function StrBeginsWith(const s, Prefix: string): boolean;
 function IdentifierPos(Search, Identifier: PChar): PtrInt;
-function CompareAtom(p1, p2: PChar): integer;
+function CompareAtom(p1, p2: PChar; NestedComments: boolean): integer;
 function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
-function CompareComments(p1, p2: PChar): integer; // compare case insensitive
+function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // compare case insensitive
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -1963,15 +1963,34 @@ begin
    '(':  // bracket or compiler directive
     begin
       inc(p);
-      if (p^='*') then begin
-        // compiler directive -> read til comment end
-        inc(p);
-        while ((p^<>'*') or (p[1]<>')')) do
-          inc(p);
-        inc(p,2);
-      end else
+      if (p^<>'*') then begin
         // round bracket open
-        ;
+      end else begin
+        // comment
+        CommentLvl:=1;
+        inc(p);
+        while true do begin
+          case p^ of
+          #0: break;
+          '*':
+            if p[1]=')' then begin
+              inc(p,2);
+              dec(CommentLvl);
+              if CommentLvl=0 then
+                break;
+            end else
+              inc(p);
+          '(':
+            if (p[1]='*') and NestedComments then begin
+              inc(CommentLvl);
+              inc(p,2);
+            end else
+              inc(p);
+          else
+            inc(p);
+          end;
+        end;
+      end;
     end;
   else
     inc(p);
@@ -3175,7 +3194,7 @@ begin
   Result:=-1;
 end;
 
-function CompareAtom(p1, p2: PChar): integer;
+function CompareAtom(p1, p2: PChar; NestedComments: boolean): integer;
 var
   Len1: LongInt;
   Len2: LongInt;
@@ -3198,13 +3217,13 @@ begin
     // compare string constants case sensitive
     exit(CompareStringConstants(p1,p2));
   '{':
-    exit(CompareComments(p1,p2));
+    exit(CompareComments(p1,p2,NestedComments));
   '(':
     if (p1[1]='*') and (p2[1]='*') then
-      exit(CompareComments(p1,p2));
+      exit(CompareComments(p1,p2,NestedComments));
   '/':
     if (p1[1]='/') and (p2[1]='/') then
-      exit(CompareComments(p1,p2));
+      exit(CompareComments(p1,p2,NestedComments));
   end;
 
   // full comparison
@@ -3289,12 +3308,10 @@ begin
   end;
 end;
 
-function CompareComments(p1, p2: PChar): integer;
+function CompareComments(p1, p2: PChar; NestedComments: boolean): integer;
 var
-  NestedComments: Boolean;
   CommentLvl: Integer;
 begin
-  NestedComments:=false;
   if p1^<>p2^ then begin
     if p1^<p2^ then
       exit(1)
@@ -3374,6 +3391,7 @@ begin
           exit(-1);
       end;
       if p1^<>'*' then exit(0);
+      CommentLvl:=1;
       repeat
         inc(p1);
         inc(p2);
@@ -3387,11 +3405,27 @@ begin
         #0: exit(0);
         '*':
           if (p1[1]=')') then begin
-            if p2[1]=')' then
-              exit(0)
-            else
+            inc(p1);
+            inc(p2);
+            if p2^=')' then begin
+              dec(CommentLvl);
+              if CommentLvl=0 then
+                exit(0);
+            end else
               // p2 longer
               exit(-1);
+          end;
+        '(':
+          if (p1[1]='*') and NestedComments then begin
+            inc(CommentLvl);
+            inc(p1);
+            inc(p2);
+            if p1^<>p2^ then begin
+              if p1^<p2^ then
+                exit(1)
+              else
+                exit(-1);
+            end;
           end;
         end;
       until false;
