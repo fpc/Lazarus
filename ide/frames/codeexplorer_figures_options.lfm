@@ -1,11 +1,11 @@
 inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
-  Height = 376
+  Height = 396
   Width = 478
-  ClientHeight = 376
+  ClientHeight = 396
   ClientWidth = 478
   TabOrder = 0
-  DesignLeft = 476
-  DesignTop = 97
+  DesignLeft = 621
+  DesignTop = 269
   object LongProcLineCountLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FigureCategoriesCheckGroup
@@ -42,7 +42,22 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     Caption = 'NestedProcCountLabel'
     ParentColor = False
   end
-  object FigureCategoriesCheckGroup: TCheckGroup[3]
+  object NotFigureConstantsLabel: TLabel[3]
+    AnchorSideLeft.Control = NestedProcCountLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FigureCategoriesCheckGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = FigureCharConstCheckBox
+    Left = 210
+    Height = 14
+    Top = 218
+    Width = 122
+    BorderSpacing.Left = 100
+    BorderSpacing.Top = 6
+    Caption = 'NotFigureConstantsLabel'
+    ParentColor = False
+  end
+  object FigureCategoriesCheckGroup: TCheckGroup[4]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -67,7 +82,7 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     ChildSizing.ControlsPerLine = 1
     TabOrder = 0
   end
-  object NestedProcCountSpinEdit: TSpinEdit[4]
+  object NestedProcCountSpinEdit: TSpinEdit[5]
     AnchorSideLeft.Control = LongProcLineCountSpinEdit
     AnchorSideTop.Control = NestedProcCountLabel
     AnchorSideTop.Side = asrBottom
@@ -78,7 +93,7 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     BorderSpacing.Top = 3
     TabOrder = 1
   end
-  object LongProcLineCountSpinEdit: TSpinEdit[5]
+  object LongProcLineCountSpinEdit: TSpinEdit[6]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LongProcLineCountLabel
     AnchorSideTop.Side = asrBottom
@@ -90,7 +105,7 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     BorderSpacing.Top = 3
     TabOrder = 2
   end
-  object LongParamListCountSpinEdit: TSpinEdit[6]
+  object LongParamListCountSpinEdit: TSpinEdit[7]
     AnchorSideLeft.Control = LongProcLineCountSpinEdit
     AnchorSideTop.Control = LongParamListCountLabel
     AnchorSideTop.Side = asrBottom
@@ -100,5 +115,36 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     Width = 60
     BorderSpacing.Top = 3
     TabOrder = 3
+  end
+  object FigureCharConstCheckBox: TCheckBox[8]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = NestedProcCountSpinEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 17
+    Top = 356
+    Width = 145
+    BorderSpacing.Top = 6
+    Caption = 'FigureCharConstCheckBox'
+    TabOrder = 4
+  end
+  object NotFigureConstantsMemo: TMemo[9]
+    AnchorSideLeft.Control = NotFigureConstantsLabel
+    AnchorSideTop.Control = NotFigureConstantsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FigureCharConstCheckBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 210
+    Height = 138
+    Top = 235
+    Width = 268
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 3
+    Lines.Strings = (
+      'NotFigureConstantsMemo'
+    )
+    TabOrder = 5
   end
 end

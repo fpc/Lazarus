@@ -4142,6 +4142,8 @@ resourcestring
   lisCELongProcLineCount = 'Line count to treat procedure as "long"';
   lisCELongParamListCount = 'Parameters count to treat then as "many"';
   lisCENestedProcCount = 'Nested procedures count to tream them as "many"';
+  lisCEFigureCharConst = 'Search for unnamed char constants';
+  lisCENotFigureConstants = 'Unnamed constants to skip';
 
 implementation
 
