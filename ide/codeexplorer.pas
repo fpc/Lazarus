@@ -1321,7 +1321,8 @@ begin
     end else begin
       CodeTreeview.Items.Clear;
       CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
-      CreateFigures(ACodeTool);
+      if cecFigures in CodeExplorerOptions.Categories then
+        CreateFigures(ACodeTool);
     end;
 
     // restore old expanded state
