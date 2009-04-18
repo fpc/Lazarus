@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms,
-  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls;
+  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls, Spin, StdCtrls;
 
 type
 
@@ -34,6 +34,12 @@ type
 
   TCodeExplorerFiguresOptionsFrame = class(TAbstractIDEOptionsEditor)
     FigureCategoriesCheckGroup: TCheckGroup;
+    LongProcLineCountLabel: TLabel;
+    LongParamListCountLabel: TLabel;
+    NestedProcCountLabel: TLabel;
+    LongProcLineCountSpinEdit: TSpinEdit;
+    LongParamListCountSpinEdit: TSpinEdit;
+    NestedProcCountSpinEdit: TSpinEdit;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -59,6 +65,10 @@ begin
   FigureCategoriesCheckGroup.Caption := lisCEShowFigures;
   for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
     FigureCategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
+
+  LongProcLineCountLabel.Caption := lisCELongProcLineCount;
+  LongParamListCountLabel.Caption := lisCELongParamListCount;
+  NestedProcCountLabel.Caption := lisCENestedProcCount;
 end;
 
 procedure TCodeExplorerFiguresOptionsFrame.ReadSettings(
@@ -67,8 +77,14 @@ var
   c: TCEFigureCategory;
 begin
   with AOptions as TCodeExplorerOptions do
+  begin
     for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
       FigureCategoriesCheckGroup.Checked[ord(c)] := c in Figures;
+
+    LongProcLineCountSpinEdit.Value := LongProcLineCount;
+    LongParamListCountSpinEdit.Value := LongParamListCount;
+    NestedProcCountSpinEdit.Value := NestedProcCount;
+  end;
 end;
 
 procedure TCodeExplorerFiguresOptionsFrame.WriteSettings(
@@ -82,7 +98,12 @@ begin
     if FigureCategoriesCheckGroup.Checked[ord(c)] then
       Include(NewCategories, c);
   with AOptions as TCodeExplorerOptions do
+  begin
     Figures := NewCategories;
+    LongProcLineCount := LongProcLineCountSpinEdit.Value;
+    LongParamListCount := LongParamListCountSpinEdit.Value;
+    NestedProcCount := NestedProcCountSpinEdit.Value;
+  end;
 end;
 
 class function TCodeExplorerFiguresOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
