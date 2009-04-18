@@ -2437,6 +2437,7 @@ begin
       Path:='ProjectOptions/';
       StorePathDelim:=CheckPathDelim(
         XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
+      fCurStorePathDelim:=StorePathDelim;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
@@ -2524,6 +2525,7 @@ begin
           Path:='ProjectSession/';
           SessionStorePathDelim:=CheckPathDelim(
             XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
+          fCurStorePathDelim:=SessionStorePathDelim;
 
           FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
 
@@ -2546,6 +2548,7 @@ begin
           xmlconfig.Free;
         except
         end;
+        fCurStorePathDelim:=StorePathDelim;
         xmlconfig:=nil;
       end else begin
         // there is no .lps file -> create some defaults
