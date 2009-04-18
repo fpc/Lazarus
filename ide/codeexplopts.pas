@@ -502,7 +502,7 @@ begin
   AVLNode:=NotFigureConstants.FindLowest;
   i:=0;
   while AVLNode<>nil do begin
-    s:=GetAtomString(PChar(AVLNode.Data));
+    s:=GetAtomString(PChar(AVLNode.Data),false);
     if s<>'' then begin
       inc(i);
       Result.Add(s);

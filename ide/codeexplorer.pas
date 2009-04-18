@@ -1714,7 +1714,7 @@ begin
     if (Data1.Desc=ctnConstant) and (Data2.Desc=ctnConstant)
     and (fSortCodeTool<>nil) then begin
       //if GetAtomLength(@fSortCodeTool.Src[Data1.StartPos])>50 then
-      //  DebugLn(['TCodeExplorerView.CompareCodeNodes AAA1 ',GetAtomString(@fSortCodeTool.Src[Data1.StartPos])]);
+      //  DebugLn(['TCodeExplorerView.CompareCodeNodes AAA1 ',GetAtomString(@fSortCodeTool.Src[Data1.StartPos],fSortCodeTool.Scanner.NestedComments),' ',round(Now*8640000) mod 10000]);
       //Result:=-CompareAtom(@fSortCodeTool.Src[Data1.StartPos],
       //                     @fSortCodeTool.Src[Data2.StartPos]);
       //if Result<>0 then exit;

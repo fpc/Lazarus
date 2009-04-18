@@ -302,8 +302,8 @@ procedure ReadRawNextPascalAtom(const Source: string;
    NestedComments: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
    var Position: integer; NestedComments: boolean = false): boolean;
-function GetAtomLength(p: PChar): integer;
-function GetAtomString(p: PChar): string;
+function GetAtomLength(p: PChar; NestedComments: boolean): integer;
+function GetAtomString(p: PChar; NestedComments: boolean): string;
 
 //-----------------------------------------------------------------------------
 
@@ -1869,15 +1869,13 @@ begin
   end;
 end;
 
-function GetAtomLength(p: PChar): integer;
+function GetAtomLength(p: PChar; NestedComments: boolean): integer;
 var
   c1: Char;
   CommentLvl: Integer;
-  NestedComments: Boolean;
   c2: Char;
   OldP: PChar;
 begin
-  NestedComments:=false;
   OldP:=p;
   // read atom
   c1:=p^;
@@ -2012,12 +2010,12 @@ begin
   Result:=P-OldP;
 end;
 
-function GetAtomString(p: PChar): string;
+function GetAtomString(p: PChar; NestedComments: boolean): string;
 var
   l: LongInt;
 begin
   if p=nil then exit('');
-  l:=GetAtomLength(p);
+  l:=GetAtomLength(p,NestedComments);
   SetLength(Result,l);
   if l>0 then
     System.Move(p^,Result[1],length(Result));
@@ -3227,8 +3225,8 @@ begin
   end;
 
   // full comparison
-  Len1:=GetAtomLength(p1);
-  Len2:=GetAtomLength(p2);
+  Len1:=GetAtomLength(p1,NestedComments);
+  Len2:=GetAtomLength(p2,NestedComments);
   l:=Len1;
   if l>Len2 then l:=Len2;
   while l>0 do begin
