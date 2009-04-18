@@ -4420,7 +4420,8 @@ begin
     UpdateCaret;
   end
   else
-    EnsureCursorPosVisible;
+  if eoAlwaysVisibleCaret in fOptions2 then
+    MoveCaretToVisibleArea;
   UpdateScrollBars;
   if Index + 1 > ScreenRowToRow(LinesInWindow + 1) then exit;
   if Index + 1 < TopLine then Index := TopLine;
