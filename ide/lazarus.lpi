@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="63">
+    <Units Count="65">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -486,6 +486,20 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="options_fpdoc"/>
       </Unit62>
+      <Unit63>
+        <Filename Value="frames/codeexplorer_update_options.pas"/>
+        <ComponentName Value="CodeExplorerUpdateOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="codeexplorer_update_options"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="frames/codeexplorer_categories_options.pas"/>
+        <ComponentName Value="CodeExplorerCategoriesOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="codeexplorer_categories_options"/>
+      </Unit64>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

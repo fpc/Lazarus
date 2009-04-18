@@ -132,6 +132,7 @@ type
     FOnGetCodeTree: TOnGetCodeTree;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
+    FOnShowOptions: TNotifyEvent;
     FUpdateCount: integer;
     fSortCodeTool: TCodeTool;
     ImgIDClass: Integer;
@@ -210,6 +211,7 @@ type
     property OnGetDirectivesTree: TOnGetDirectivesTree read FOnGetDirectivesTree
                                                      write FOnGetDirectivesTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property Mode: TCodeExplorerMode read FMode write SetMode;
     property CodeFilename: string read FCodeFilename;
     property CodeFilter: string read GetCodeFilter write SetCodeFilter;
@@ -229,12 +231,7 @@ var
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CEDockingIDEMenuCommand: TIDEMenuCommand;
 
-procedure InitCodeExplorerOptions;
-procedure LoadCodeExplorerOptions;
-procedure SaveCodeExplorerOptions;
-
 procedure RegisterStandardCodeExplorerMenuItems;
-
 
 implementation
 
@@ -277,23 +274,6 @@ begin
     Result:=0;
 end;
 
-procedure InitCodeExplorerOptions;
-begin
-  if CodeExplorerOptions=nil then
-    CodeExplorerOptions:=TCodeExplorerOptions.Create;
-end;
-
-procedure LoadCodeExplorerOptions;
-begin
-  InitCodeExplorerOptions;
-  CodeExplorerOptions.Load;
-end;
-
-procedure SaveCodeExplorerOptions;
-begin
-  CodeExplorerOptions.Save;
-end;
-
 procedure RegisterStandardCodeExplorerMenuItems;
 var
   Path: String;
@@ -323,8 +303,6 @@ end;
 
 procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 begin
-  LoadCodeExplorerOptions;
-  
   FMode := CodeExplorerOptions.Mode;
   UpdateMode;
 
@@ -348,7 +326,7 @@ begin
   
 
   RefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
-  OptionsSpeedButton.LoadGlyphFromLazarusResource('menu_editor_options');
+  OptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
 
   ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
   ImgIDProgram := Imagelist1.AddLazarusResource('ce_program');
@@ -473,10 +451,11 @@ end;
 
 procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
 begin
-  if ShowCodeExplorerOptions=mrOk then begin
-    SaveCodeExplorerOptions;
-    FLastCodeValid:=false;
-    Refresh(true);
+  if Assigned(FOnShowOptions) then
+  begin
+    OnShowOptions(Self);
+    FLastCodeValid := False;
+    Refresh(True);
   end;
 end;
 

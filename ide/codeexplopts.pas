@@ -38,7 +38,7 @@ uses
   Buttons, ExtCtrls, FileUtil, StdCtrls, ButtonPanel, AvgLvlTree,
   CodeToolManager, Laz_XMLCfg, BasicCodeTools,
   IDEContextHelpEdit,
-  LazConf, IDEProcs, LazarusIDEStrConsts;
+  LazConf, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
   { TCodeExplorerOptions }
@@ -93,7 +93,7 @@ const
 
 type
 
-  TCodeExplorerOptions = class(TPersistent)
+  TCodeExplorerOptions = class(TAbstractIDEOptions)
   private
     FCategories: TCodeExplorerCategories;
     FFigureCharConst: boolean;
@@ -136,31 +136,6 @@ type
     property NotFigureConstants: TAvgLvlTree read FNotFigureConstants;
   end;
 
-  { TCodeExplorerDlg }
-
-  TCodeExplorerDlg = class(TForm)
-    ButtonPanel1: TButtonPanel;
-    ButtonPanel: TButtonPanel;
-    CategoriesCheckGroup: TCheckGroup;
-    FollowCursorCheckBox: TCheckBox;
-    MainNotebook: TNotebook;
-    ModeRadioGroup: TRadioGroup;
-    CategoryPage: TPage;
-    RefreshRadioGroup: TRadioGroup;
-    UpdatePage: TPage;
-    procedure CodeExplorerDlgCreate(Sender: TObject);
-    procedure CodeExplorerDlgDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
-  private
-    FOptions: TCodeExplorerOptions;
-    procedure SetOptions(const AValue: TCodeExplorerOptions);
-    procedure LoadFormFromOptions;
-    procedure SaveFormToOptions;
-  public
-    property Options: TCodeExplorerOptions read FOptions write SetOptions;
-  end;
-  
 const
   CodeExplorerVersion = 1;
 
@@ -199,9 +174,7 @@ const
     );
 
 var
-  CodeExplorerOptions: TCodeExplorerOptions;// set by the IDE
-
-function ShowCodeExplorerOptions: TModalResult;
+  CodeExplorerOptions: TCodeExplorerOptions = nil; // set by the IDE
 
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
@@ -270,21 +243,6 @@ begin
   cefcUnsortedClassMembers: Result:=lisCEUnsortedMembers;
   cefcToDos: Result:=lisCEToDos;
   else Result:='?';
-  end;
-end;
-
-function ShowCodeExplorerOptions: TModalResult;
-var
-  CodeExplorerDlg: TCodeExplorerDlg;
-begin
-  CodeExplorerDlg:=TCodeExplorerDlg.Create(nil);
-  try
-    CodeExplorerDlg.Options:=CodeExplorerOptions;
-    Result:=CodeExplorerDlg.ShowModal;
-    if Result=mrOk then
-      CodeExplorerOptions.Assign(CodeExplorerDlg.Options);
-  finally
-    CodeExplorerDlg.Free;
   end;
 end;
 
@@ -565,119 +523,7 @@ begin
           and NotFigureConstant('1');
 end;
 
-{ TCodeExplorerDlg }
-
-procedure TCodeExplorerDlg.OkButtonClick(Sender: TObject);
-begin
-  SaveFormToOptions;
-  ModalResult:=mrOk;
-end;
-
-procedure TCodeExplorerDlg.SetOptions(const AValue: TCodeExplorerOptions);
-begin
-  if FOptions=AValue then exit;
-  FOptions.Assign(AValue);
-  LoadFormFromOptions;
-end;
-
-procedure TCodeExplorerDlg.LoadFormFromOptions;
-var
-  c: TCodeExplorerCategory;
-begin
-  case Options.Refresh of
-  cerManual: RefreshRadioGroup.ItemIndex:=0;
-  cerSwitchEditorPage: RefreshRadioGroup.ItemIndex:=1;
-  cerOnIdle: RefreshRadioGroup.ItemIndex:=2;
-  else
-    RefreshRadioGroup.ItemIndex:=1;
-  end;
-
-  case Options.Mode of
-  cemCategory: ModeRadioGroup.ItemIndex:=0;
-  cemSource: ModeRadioGroup.ItemIndex:=1;
-  else
-    ModeRadioGroup.ItemIndex:=0;
-  end;
-
-  FollowCursorCheckBox.Checked:=Options.FollowCursor;
-  
-  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-    CategoriesCheckGroup.Checked[ord(c)-1]:=c in Options.Categories;
-end;
-
-procedure TCodeExplorerDlg.SaveFormToOptions;
-var
-  NewCategories: TCodeExplorerCategories;
-  c: TCodeExplorerCategory;
-begin
-  case RefreshRadioGroup.ItemIndex of
-  0: FOptions.Refresh:=cerManual;
-  1: FOptions.Refresh:=cerSwitchEditorPage;
-  2: FOptions.Refresh:=cerOnIdle;
-  end;
-
-  case ModeRadioGroup.ItemIndex of
-  0: FOptions.Mode:=cemCategory;
-  1: FOptions.Mode:=cemSource;
-  end;
-
-  Options.FollowCursor:=FollowCursorCheckBox.Checked;
-
-  NewCategories:=[];
-  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-    if CategoriesCheckGroup.Checked[ord(c)-1] then
-      Include(NewCategories,c);
-  Options.Categories:=NewCategories;
-end;
-
-procedure TCodeExplorerDlg.CodeExplorerDlgCreate(Sender: TObject);
-var
-  c: TCodeExplorerCategory;
-begin
-  FOptions:=TCodeExplorerOptions.Create;
-  Caption:=lisCEOCodeExplorer;
-
-  ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-
-  UpdatePage.Caption:=lisCEOUpdate;
-  RefreshRadioGroup.Caption:=lisCEORefreshAutomatically;
-  with RefreshRadioGroup do begin
-    Items[0]:=lisCEONeverOnlyManually;
-    Items[1]:=lisCEOWhenSwitchingFile;
-    Items[2]:=lisCEOOnIdle;
-  end;
-  ModeRadioGroup.Caption:=lisCEOMode;
-  with ModeRadioGroup do begin
-    Items[0]:=lisCEOModeCategory;
-    Items[1]:=lisCEOModeSource;
-  end;
-  FollowCursorCheckBox.Caption:=lisCEFollowCursor;
-  
-  CategoryPage.Caption:=lisCECategories;
-  CategoriesCheckGroup.Caption:=lisCEOnlyUsedInCategoryMode;
-  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-    CategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
-end;
-
-procedure TCodeExplorerDlg.CodeExplorerDlgDestroy(Sender: TObject);
-begin
-  FOptions.Free;
-  FOptions:=nil;
-end;
-
-procedure TCodeExplorerDlg.HelpButtonClick(Sender: TObject);
-begin
-  ShowContextHelpForIDE(Self);
-end;
-
 initialization
-  CodeExplorerOptions:=nil;
-  {$I codeexplopts.lrs}
-  
-finalization
-  CodeExplorerOptions.Free;
-  CodeExplorerOptions:=nil;
-
+  RegisterIDEOptionsGroup(GroupCodeExplorer, dlgGroupCodeExplorer);
 end.
 

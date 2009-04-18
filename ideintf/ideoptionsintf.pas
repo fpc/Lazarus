@@ -117,7 +117,7 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 
 const
   // options groups
-  GroupEnvironment = 100;
+  GroupEnvironment  = 100;
     EnvOptionsFiles   = 100;
     EnvOptionsDesktop = 200;
     EnvOptionsWindow  = 300;
@@ -127,7 +127,7 @@ const
     EnvOptionsNaming  = 700;
     EnvOptionsFpDoc   = 800;
 
-  GroupEditor      = 200;
+  GroupEditor       = 200;
     EdtOptionsGeneral     = 100;
       EdtOptionsGeneralMisc = 101;
     EdtOptionsDisplay     = 200;
@@ -136,7 +136,7 @@ const
     EdtOptionsCodetools   = 500;
     EdtOptionsCodeFolding = 600;
 
-  GroupCodetools   = 300;
+  GroupCodetools    = 300;
     CdtOptionsGeneral         = 100;
     CdtOptionsCodeCreation    = 200;
     CdtOptionsWords           = 300;
@@ -144,7 +144,12 @@ const
     CdtOptionsSpace           = 500;
     CdtOptionsIdentCompletion = 600;
 
-  GroupDebugger    = 400;
+  GroupCodeExplorer = 350;
+    cdeOptionsUpdate     = 100;
+    cdeOptionsCategories = 200;
+    cdeOptionsFigures    = 300;
+
+  GroupDebugger     = 400;
     DbgOptionsGeneral            = 100;
     DbgOptionsEventLog           = 200;
     DbgOptionsLanguageExceptions = 300;

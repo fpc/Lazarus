@@ -864,6 +864,7 @@ resourcestring
   dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
   dlgGroupCodetools = 'Codetools';
+  dlgGroupCodeExplorer = 'Code Explorer';
   dlgGroupDebugger = 'Debugger';
 
   // Options dialog
@@ -3686,7 +3687,6 @@ resourcestring
   lisCEModeShowCategories = 'Show Categories';
   lisCEModeShowSourceNodes = 'Show Source Nodes';
   lisCEIn = '%s in %s';
-  lisCEOCodeExplorer = 'CodeExplorer Options';
   lisCEOUpdate = 'Update';
   lisCEORefreshAutomatically = 'Refresh automatically';
   lisCEONeverOnlyManually = 'Never, only manually';

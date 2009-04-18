@@ -127,6 +127,7 @@ uses
   codetools_space_options, codetools_identifiercompletion_options,
   debugger_general_options, debugger_eventlog_options,
   debugger_language_exceptions_options, debugger_signals_options,
+  codeexplorer_update_options, codeexplorer_categories_options,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -135,7 +136,7 @@ uses
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, UnusedUnitsDlg, CleanDirDlg, CodeContextForm, AboutFrm,
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
-  BuildManager,
+  BuildManager, CodeExplOpts,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -482,6 +483,7 @@ type
                                           var ADirectivesTool: TDirectivesTool);
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
                                        const Caret: TPoint; TopLine: integer);
+    procedure OnCodeExplorerShowOptions(Sender: TObject);
 
     // CodeToolBoss events
     procedure OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
@@ -1096,6 +1098,9 @@ begin
     Load;
   end;
 
+  CodeExplorerOptions := TCodeExplorerOptions.Create;
+  CodeExplorerOptions.Load;
+
   MainBuildBoss.SetupInputHistories;
   ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
 
@@ -1278,6 +1283,7 @@ begin
   FreeThenNil(IDEMenuRoots);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
+  FreeThenNil(CodeExplorerOptions);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
@@ -4086,8 +4092,10 @@ begin
       ReadSettings(EnvironmentOptions);
       // load settings from EditorOptions to IDEOptionsDialog
       ReadSettings(EditorOpts);
-      // load settings from CodetoolsOption to IDEOptionsDialog
+      // load settings from CodetoolsOptions to IDEOptionsDialog
       ReadSettings(CodeToolsOpts);
+      // load settings from CodeExplorerOptions to IDEOptionsDialog
+      ReadSettings(CodeExplorerOptions);
       // load other settings that does not belong to any group
       ReadSettings(nil);
     end;
@@ -4102,6 +4110,7 @@ begin
       IDEOptionsDialog.WriteSettings(EnvironmentOptions);
       IDEOptionsDialog.WriteSettings(EditorOpts);
       IDEOptionsDialog.WriteSettings(CodeToolsOpts);
+      IDEOptionsDialog.WriteSettings(CodeExplorerOptions);
       IDEOptionsDialog.WriteSettings(nil);
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
@@ -4135,6 +4144,7 @@ begin
       EditorOpts.Save;
       CodeToolsOpts.AssignTo(CodeToolBoss);
       CodeToolsOpts.Save;
+      CodeExplorerOptions.Save;
 
       // update environment
       UpdateDesigners;
@@ -7959,11 +7969,13 @@ end;
 
 procedure TMainIDE.DoShowCodeExplorer;
 begin
-  if CodeExplorerView=nil then begin
+  if CodeExplorerView=nil then 
+  begin
     CodeExplorerView:=TCodeExplorerView.Create(OwningComponent);
     CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
     CodeExplorerView.OnGetDirectivesTree:=@OnCodeExplorerGetDirectivesTree;
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
+    CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
   end;
 
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
@@ -11829,6 +11841,11 @@ procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
   const Filename: string; const Caret: TPoint; TopLine: integer);
 begin
   DoJumpToSourcePosition(Filename,Caret.X,Caret.Y,TopLine,true);
+end;
+
+procedure TMainIDE.OnCodeExplorerShowOptions(Sender: TObject);
+begin
+  DoShowEnvGeneralOptions(TCodeExplorerUpdateOptionsFrame);
 end;
 
 procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
