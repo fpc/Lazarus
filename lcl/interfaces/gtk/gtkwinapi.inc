@@ -2482,11 +2482,23 @@ begin
           {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
           {$ENDIF}
-          if GDIBitmapObject <> nil then
-            gdk_bitmap_unref(GDIBitmapObject);
-          If (Visual <> nil) and (not SystemVisual) then
+          case GDIBitmapType of
+            gbBitmap:
+              begin
+                if GDIBitmapObject <> nil then
+                  gdk_bitmap_unref(GDIBitmapObject);
+              end;
+            gbPixmap:
+              begin
+                if GDIPixmapObject.Image <> nil then
+                  gdk_pixmap_unref(GDIPixmapObject.Image);
+                if GDIPixmapObject.Mask <> nil then
+                  gdk_bitmap_unref(GDIPixmapObject.Mask);
+              end;
+          end;
+          if (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
-          If Colormap <> nil then
+          if Colormap <> nil then
             gdk_colormap_unref(Colormap);
           {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;

@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -609,9 +609,7 @@ procedure LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 procedure LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
-function GdkPixbufAddBitmapMask(pixbuf: PGdkPixbuf; mask:
-  PGdkBitmap; mask_value: byte): PGdkPixbuf;
-  
+
 function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap; AIncludeAplha: Boolean; ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight :longint): PGdkPixbuf;
 
 
