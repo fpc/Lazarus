@@ -35,14 +35,15 @@ type
   TCodeExplorerFiguresOptionsFrame = class(TAbstractIDEOptionsEditor)
     FigureCharConstCheckBox: TCheckBox;
     FigureCategoriesCheckGroup: TCheckGroup;
-    NotFigureConstantsLabel: TLabel;
+    IgnoreFigureConstantsLabel: TLabel;
     LongProcLineCountLabel: TLabel;
     LongParamListCountLabel: TLabel;
-    NotFigureConstantsMemo: TMemo;
+    IgnoreFigureConstantsMemo: TMemo;
     NestedProcCountLabel: TLabel;
     LongProcLineCountSpinEdit: TSpinEdit;
     LongParamListCountSpinEdit: TSpinEdit;
     NestedProcCountSpinEdit: TSpinEdit;
+    FigureLeftPanel: TPanel;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -73,7 +74,7 @@ begin
   LongParamListCountLabel.Caption := lisCELongParamListCount;
   NestedProcCountLabel.Caption := lisCENestedProcCount;
   FigureCharConstCheckBox.Caption := lisCEFigureCharConst;
-  NotFigureConstantsLabel.Caption := lisCENotFigureConstants;
+  IgnoreFigureConstantsLabel.Caption := lisCENotFigureConstants;
 end;
 
 procedure TCodeExplorerFiguresOptionsFrame.ReadSettings(
@@ -92,7 +93,7 @@ begin
     NestedProcCountSpinEdit.Value := NestedProcCount;
     FigureCharConstCheckBox.Checked := FigureCharConst;
     Tmp := CreateListOfNotFigureConstants;
-    NotFigureConstantsMemo.Lines.Assign(Tmp);
+    IgnoreFigureConstantsMemo.Lines.Assign(Tmp);
     Tmp.Free;
   end;
 end;
@@ -114,7 +115,7 @@ begin
     LongParamListCount := LongParamListCountSpinEdit.Value;
     NestedProcCount := NestedProcCountSpinEdit.Value;
     FigureCharConst := FigureCharConstCheckBox.Checked;
-    SetListOfNotFigureConstants(NotFigureConstantsMemo.Lines,false);
+    SetListOf_IgnoreFigureConstants(IgnoreFigureConstantsMemo.Lines,false);
   end;
 end;
 

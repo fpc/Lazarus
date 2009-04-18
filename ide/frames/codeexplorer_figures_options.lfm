@@ -1,63 +1,27 @@
 inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
   Height = 396
   Width = 478
-  ClientHeight = 396
-  ClientWidth = 478
+  ClientHeight = 392
+  ClientWidth = 474
   TabOrder = 0
   DesignLeft = 621
   DesignTop = 269
-  object LongProcLineCountLabel: TLabel[0]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FigureCategoriesCheckGroup
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 14
-    Top = 218
-    Width = 118
-    BorderSpacing.Top = 6
-    Caption = 'LongProcLineCountLabel'
-    ParentColor = False
-  end
-  object LongParamListCountLabel: TLabel[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LongProcLineCountSpinEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 14
-    Top = 264
-    Width = 124
-    BorderSpacing.Top = 6
-    Caption = 'LongParamListCountLabel'
-    ParentColor = False
-  end
-  object NestedProcCountLabel: TLabel[2]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LongParamListCountSpinEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 14
-    Top = 310
-    Width = 110
-    BorderSpacing.Top = 6
-    Caption = 'NestedProcCountLabel'
-    ParentColor = False
-  end
-  object NotFigureConstantsLabel: TLabel[3]
-    AnchorSideLeft.Control = NestedProcCountLabel
+  object IgnoreFigureConstantsLabel: TLabel[0]
+    AnchorSideLeft.Control = FigureLeftPanel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FigureCategoriesCheckGroup
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = FigureCharConstCheckBox
-    Left = 210
-    Height = 14
-    Top = 218
-    Width = 122
-    BorderSpacing.Left = 100
+    Left = 202
+    Height = 18
+    Top = 56
+    Width = 178
+    BorderSpacing.Left = 10
     BorderSpacing.Top = 6
-    Caption = 'NotFigureConstantsLabel'
+    Caption = 'IgnoreFigureConstantsLabel'
     ParentColor = False
   end
-  object FigureCategoriesCheckGroup: TCheckGroup[4]
+  object FigureCategoriesCheckGroup: TCheckGroup[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -65,9 +29,9 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 212
+    Height = 50
     Top = 0
-    Width = 478
+    Width = 474
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -80,71 +44,124 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 50
     TabOrder = 0
   end
-  object NestedProcCountSpinEdit: TSpinEdit[5]
-    AnchorSideLeft.Control = LongProcLineCountSpinEdit
-    AnchorSideTop.Control = NestedProcCountLabel
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 327
-    Width = 60
-    BorderSpacing.Top = 3
-    TabOrder = 1
-  end
-  object LongProcLineCountSpinEdit: TSpinEdit[6]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LongProcLineCountLabel
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 235
-    Width = 60
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 3
-    TabOrder = 2
-  end
-  object LongParamListCountSpinEdit: TSpinEdit[7]
-    AnchorSideLeft.Control = LongProcLineCountSpinEdit
-    AnchorSideTop.Control = LongParamListCountLabel
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 281
-    Width = 60
-    BorderSpacing.Top = 3
-    TabOrder = 3
-  end
-  object FigureCharConstCheckBox: TCheckBox[8]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = NestedProcCountSpinEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 17
-    Top = 356
-    Width = 145
-    BorderSpacing.Top = 6
-    Caption = 'FigureCharConstCheckBox'
-    TabOrder = 4
-  end
-  object NotFigureConstantsMemo: TMemo[9]
-    AnchorSideLeft.Control = NotFigureConstantsLabel
-    AnchorSideTop.Control = NotFigureConstantsLabel
+  object IgnoreFigureConstantsMemo: TMemo[2]
+    AnchorSideLeft.Control = IgnoreFigureConstantsLabel
+    AnchorSideTop.Control = IgnoreFigureConstantsLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = FigureCharConstCheckBox
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 210
-    Height = 138
-    Top = 235
-    Width = 268
+    Left = 202
+    Height = 315
+    Top = 77
+    Width = 272
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Lines.Strings = (
-      'NotFigureConstantsMemo'
+      'IgnoreFigureConstantsMemo'
     )
-    TabOrder = 5
+    TabOrder = 1
+  end
+  object FigureLeftPanel: TPanel[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FigureCategoriesCheckGroup
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 178
+    Top = 56
+    Width = 192
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BevelOuter = bvNone
+    ClientHeight = 178
+    ClientWidth = 192
+    TabOrder = 2
+    object NestedProcCountLabel: TLabel
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = LongParamListCountSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 18
+      Top = 106
+      Width = 147
+      BorderSpacing.Top = 6
+      Caption = 'NestedProcCountLabel'
+      ParentColor = False
+    end
+    object LongParamListCountLabel: TLabel
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = LongProcLineCountSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 18
+      Top = 56
+      Width = 167
+      BorderSpacing.Top = 6
+      Caption = 'LongParamListCountLabel'
+      ParentColor = False
+    end
+    object LongProcLineCountLabel: TLabel
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = FigureLeftPanel
+      Left = 0
+      Height = 18
+      Top = 6
+      Width = 158
+      BorderSpacing.Top = 6
+      Caption = 'LongProcLineCountLabel'
+      ParentColor = False
+    end
+    object FigureCharConstCheckBox: TCheckBox
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = NestedProcCountSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 22
+      Top = 156
+      Width = 192
+      BorderSpacing.Top = 6
+      Caption = 'FigureCharConstCheckBox'
+      TabOrder = 0
+    end
+    object NestedProcCountSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = FigureCharConstCheckBox
+      AnchorSideTop.Control = NestedProcCountLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 127
+      Width = 60
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      TabOrder = 1
+    end
+    object LongParamListCountSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = LongParamListCountLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 77
+      Width = 60
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      TabOrder = 2
+    end
+    object LongProcLineCountSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = FigureLeftPanel
+      AnchorSideTop.Control = LongProcLineCountLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 27
+      Width = 60
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      TabOrder = 3
+    end
   end
 end
