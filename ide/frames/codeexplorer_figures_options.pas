@@ -18,22 +18,22 @@
  *                                                                         *
  ***************************************************************************
 }
-unit codeexplorer_categories_options;
+unit codeexplorer_figures_options;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls,
-  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts;
+  Classes, SysUtils, FileUtil, LResources, Forms,
+  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls;
 
 type
 
-  { TCodeExplorerCategoriesOptionsFrame }
+  { TCodeExplorerFiguresOptionsFrame }
 
-  TCodeExplorerCategoriesOptionsFrame = class(TAbstractIDEOptionsEditor)
-    CategoriesCheckGroup: TCheckGroup;
+  TCodeExplorerFiguresOptionsFrame = class(TAbstractIDEOptionsEditor)
+    FigureCategoriesCheckGroup: TCheckGroup;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -44,55 +44,55 @@ type
 
 implementation
 
-{ TCodeExplorerCategoriesOptionsFrame }
+{ TCodeExplorerFiguresOptionsFrame }
 
-function TCodeExplorerCategoriesOptionsFrame.GetTitle: String;
+function TCodeExplorerFiguresOptionsFrame.GetTitle: String;
 begin
-  Result := lisCECategories;
+  Result := lisCEFigures;
 end;
 
-procedure TCodeExplorerCategoriesOptionsFrame.Setup(
+procedure TCodeExplorerFiguresOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 var
-  c: TCodeExplorerCategory;
+  c: TCEFigureCategory;
 begin
-  CategoriesCheckGroup.Caption := lisCEOnlyUsedInCategoryMode;
-  for c := FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-    CategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
+  FigureCategoriesCheckGroup.Caption := lisCEShowFigures;
+  for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
+    FigureCategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
 end;
 
-procedure TCodeExplorerCategoriesOptionsFrame.ReadSettings(
+procedure TCodeExplorerFiguresOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 var
-  c: TCodeExplorerCategory;
+  c: TCEFigureCategory;
 begin
   with AOptions as TCodeExplorerOptions do
-    for c := FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-      CategoriesCheckGroup.Checked[ord(c) - 1] := c in Categories;
+    for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
+      FigureCategoriesCheckGroup.Checked[ord(c)] := c in Figures;
 end;
 
-procedure TCodeExplorerCategoriesOptionsFrame.WriteSettings(
+procedure TCodeExplorerFiguresOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 var
-  NewCategories: TCodeExplorerCategories;
-  c: TCodeExplorerCategory;
+  NewCategories: TCEFigureCategories;
+  c: TCEFigureCategory;
 begin
-  NewCategories:=[];
-  for c := FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
-    if CategoriesCheckGroup.Checked[ord(c) - 1] then
+  NewCategories := [];
+  for c := Low(TCEFigureCategory) to high(TCEFigureCategory) do
+    if FigureCategoriesCheckGroup.Checked[ord(c)] then
       Include(NewCategories, c);
   with AOptions as TCodeExplorerOptions do
-    Categories := NewCategories;
+    Figures := NewCategories;
 end;
 
-class function TCodeExplorerCategoriesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodeExplorerFiguresOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TCodeExplorerOptions;
 end;
 
 initialization
-  {$I codeexplorer_categories_options.lrs}
-  RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeExplorerCategoriesOptionsFrame, cdeOptionsCategories);
+  {$I codeexplorer_figures_options.lrs}
+  RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeExplorerFiguresOptionsFrame, cdeOptionsFigures);
 
 end.
 

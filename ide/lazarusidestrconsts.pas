@@ -4129,6 +4129,7 @@ resourcestring
   lisUnusedUnits = 'Unused units';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
+  lisCEShowFigures = 'Show figures';
   lisCELongProcedures = 'Long procedures';
   lisCEManyParameters = 'Many parameters';
   lisCEUnnamedConstants = 'Unnamed constants';

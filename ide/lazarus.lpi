@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="65">
+    <Units Count="66">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -500,6 +500,13 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeexplorer_categories_options"/>
       </Unit64>
+      <Unit65>
+        <Filename Value="frames/codeexplorer_figures_options.pas"/>
+        <ComponentName Value="CodeExplorerFiguresOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="codeexplorer_figures_options"/>
+      </Unit65>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
