@@ -152,6 +152,7 @@ function StrBeginsWith(const s, Prefix: string): boolean;
 function IdentifierPos(Search, Identifier: PChar): PtrInt;
 function CompareAtom(p1, p2: PChar): integer;
 function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
+function CompareComments(p1, p2: PChar): integer; // compare case insensitive
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -1960,15 +1961,18 @@ begin
       end;
     end;
    '(':  // bracket or compiler directive
-    if (p^='*') then begin
-      // compiler directive -> read til comment end
-      inc(p,2);
-      while ((p^<>'*') or (p[1]<>')')) do
-        inc(p);
-      inc(p,2);
-    end else
-      // round bracket open
+    begin
       inc(p);
+      if (p^='*') then begin
+        // compiler directive -> read til comment end
+        inc(p);
+        while ((p^<>'*') or (p[1]<>')')) do
+          inc(p);
+        inc(p,2);
+      end else
+        // round bracket open
+        ;
+    end;
   else
     inc(p);
     c2:=p^;
@@ -3189,10 +3193,18 @@ begin
       exit(-1);
   end;
 
-  if p1^='''' then begin
+  case p1^ of
+  '''':
     // compare string constants case sensitive
-    Result:=CompareStringConstants(p1,p2);
-    exit;
+    exit(CompareStringConstants(p1,p2));
+  '{':
+    exit(CompareComments(p1,p2));
+  '(':
+    if (p1[1]='*') and (p2[1]='*') then
+      exit(CompareComments(p1,p2));
+  '/':
+    if (p1[1]='/') and (p2[1]='/') then
+      exit(CompareComments(p1,p2));
   end;
 
   // full comparison
@@ -3275,6 +3287,117 @@ begin
       // both empty
       exit(0);
   end;
+end;
+
+function CompareComments(p1, p2: PChar): integer;
+var
+  NestedComments: Boolean;
+  CommentLvl: Integer;
+begin
+  NestedComments:=false;
+  if p1^<>p2^ then begin
+    if p1^<p2^ then
+      exit(1)
+    else
+      exit(-1);
+  end;
+  case p1^ of
+  '/':
+    begin
+      inc(p1);
+      inc(p2);
+      if p1^<>p2^ then begin
+        if p1^<p2^ then
+          exit(1)
+        else
+          exit(-1);
+      end;
+      if p1^<>'/' then exit(0);
+      repeat
+        inc(p1);
+        inc(p2);
+        if p1^ in [#0,#10,#13] then begin
+          if p2^ in [#0,#10,#13] then begin
+            exit(0);
+          end else begin
+            // p2 is longer
+            exit(-1);
+          end;
+        end;
+        if p1^<>p2^ then begin
+          if p2^ in [#0,#10,#13] then begin
+            // p1 is longer
+            exit(1);
+          end;
+          if p1^<p2^ then
+            exit(1)
+          else
+            exit(-1);
+        end;
+      until false;
+    end;
+  '{':
+    begin
+      inc(p1);
+      inc(p2);
+      CommentLvl:=1;
+      while true do begin
+        if p1^<>p2^ then begin
+          if p1^<p2^ then
+            exit(1)
+          else
+            exit(-1);
+        end;
+        inc(p1);
+        inc(p2);
+        case p1^ of
+        #0:  exit(0);
+        '{': if NestedComments then
+            inc(CommentLvl);
+        '}':
+          begin
+            dec(CommentLvl);
+            if CommentLvl=0 then
+              exit(0);
+          end;
+        end;
+      end;
+    end;
+  '(':  // comment
+    begin
+      inc(p1);
+      inc(p2);
+      if p1^<>p2^ then begin
+        if p1^<p2^ then
+          exit(1)
+        else
+          exit(-1);
+      end;
+      if p1^<>'*' then exit(0);
+      repeat
+        inc(p1);
+        inc(p2);
+        if p1^<>p2^ then begin
+          if p1^<p2^ then
+            exit(1)
+          else
+            exit(-1);
+        end;
+        case p1^ of
+        #0: exit(0);
+        '*':
+          if (p1[1]=')') then begin
+            if p2[1]=')' then
+              exit(0)
+            else
+              // p2 longer
+              exit(-1);
+          end;
+        end;
+      until false;
+    end;
+  end;
+  Result:=0;
 end;
 
 function GetIdentifier(Identifier: PChar): string;
