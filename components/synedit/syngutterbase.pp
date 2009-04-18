@@ -108,6 +108,9 @@ type
   public
     function RealGutterWidth(CharWidth: integer): integer;  virtual; abstract;
     // X/Y are relative to the gutter, not the gutter part
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure DoOnGutterClick(X, Y: integer);  virtual;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -285,6 +288,19 @@ begin
     DoChange(Self);
   end else
     inherited;
+end;
+
+procedure TSynGutterPartBase.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+end;
+
+procedure TSynGutterPartBase.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+end;
+
+procedure TSynGutterPartBase.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
 end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);

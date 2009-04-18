@@ -178,7 +178,7 @@ type
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
 
   TSynStateFlag = (sfCaretChanged, sfScrollbarChanged, sfLinesChanging,
-    sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfPossibleGutterClick,
+    sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfGutterClick,
     {$IFDEF SYN_LAZARUS}
     sfTripleClicked, sfQuadClicked, sfPainting,
     {$ENDIF}
@@ -698,7 +698,7 @@ type
                                  SelectBrackets, OnlyVisible: Boolean
                                  ): TPoint; virtual;
     //code fold
-    procedure CodeFoldAction(iLine: integer);
+    procedure CodeFoldAction(iLine: integer); deprecated;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
@@ -2334,10 +2334,23 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
     exit;
   end;
+  if (X < fGutterWidth) then begin
+    Include(fStateFlags, sfGutterClick);
+    inherited MouseDown(Button, Shift, X, Y);
+    IncPaintLock;
+    try
+      FGutter.MouseDown(Button, Shift, X, Y);
+    finally
+      DecPaintLock;
+    end;
+    LCLIntf.SetFocus(Handle);
+    exit;
+  end;
+  Exclude(fStateFlags, sfGutterClick);
+
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
-  Exclude(fStateFlags, sfPossibleGutterClick);
   if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
     exit;
   bWasSel := false;
@@ -2400,10 +2413,6 @@ begin
   finally
     DecPaintLock;
   end;
-  if (X < fGutterWidth) and (Button=mbLeft) then begin
-    Include(fStateFlags, sfPossibleGutterClick);
-    fGutter.DoOnGutterClick(X, Y);
-  end;
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
   //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
@@ -2414,6 +2423,10 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
+  if (sfGutterClick in fStateFlags) then begin
+    FGutter.MouseMove(Shift, X, Y);
+    exit;
+  end;
 
   if (X >= fGutterWidth)
     and (X < ClientWidth - ScrollBarWidth)
@@ -2589,9 +2602,15 @@ begin
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
   inherited MouseUp(Button, Shift, X, Y);
-
   fScrollTimer.Enabled := False;
   MouseCapture := False;
+
+  if (sfGutterClick in fStateFlags) then begin
+    FGutter.MouseUp(Button, Shift, X, Y);
+    Exclude(fStateFlags, sfGutterClick);
+    exit;
+  end;
+
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     exit;
@@ -2599,33 +2618,25 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
   begin
-    fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
-                              sfPossibleGutterClick];
+    fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked];
     exit;
   end;
-  MouseCapture := False;
-  if (not(sfPossibleGutterClick in fStateFlags)) or (X >= fGutterWidth)
-      or (Button <> mbLeft) then
-    if fStateFlags * [sfDblClicked, sfTripleClicked,sfQuadClicked,
-        sfWaitForDragging] = [sfWaitForDragging] then
-    begin
-      ComputeCaret(X, Y);
-      SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-      SetBlockEnd(PhysicalToLogicalPos(CaretXY));
-      Exclude(fStateFlags, sfWaitForDragging);
-    end;
-
-  if (Button=mbLeft)
-  and (fStateFlags * [sfWaitForDragging] = []) then
+  if fStateFlags * [sfDblClicked, sfTripleClicked,sfQuadClicked,
+      sfWaitForDragging] = [sfWaitForDragging] then
+  begin
+    ComputeCaret(X, Y);
+    SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+    Exclude(fStateFlags, sfWaitForDragging);
+  end;
+  if (Button=mbLeft) and (fStateFlags * [sfWaitForDragging] = []) then
   begin
     AquirePrimarySelection;
   end;
-  fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
-                            sfPossibleGutterClick];
+  fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked];
 
-  if (eoShowCtrlMouseLinks in Options)
-  and not(wasDragging)
-  and (Button=mbLeft) and (Shift*[SYNEDIT_LINK_MODIFIER,ssAlt,ssShift]=[SYNEDIT_LINK_MODIFIER])
+  if (eoShowCtrlMouseLinks in Options) and not(wasDragging) and (Button=mbLeft)
+     and (Shift*[SYNEDIT_LINK_MODIFIER,ssAlt,ssShift]=[SYNEDIT_LINK_MODIFIER])
   and assigned(FOnClickLink)
   then begin
     FOnClickLink(Self, Button, Shift, X,Y);;
@@ -4404,8 +4415,10 @@ var
 begin
   TopLine := TopLine;
   i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
-  if i > 0 then
-    SetCaretXY(Point(1, i))
+  if i > 0 then begin
+    SetCaretXY(Point(1, i));
+    UpdateCaret;
+  end
   else
     EnsureCursorPosVisible;
   UpdateScrollBars;

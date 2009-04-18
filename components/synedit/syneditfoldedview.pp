@@ -54,6 +54,7 @@ type
     FullCount : Integer;  (* Amount of lines in source for this fold *)
     LineCount : Integer;  (* Amount of lines folded away by this fold,
                              FullCount + Lines covered by overlaps *)
+    FoldIndex: Integer;   (* index of fold in line; if a line has more than one fold starting *)
 
     function TreeDepth: integer;           (* longest WAY down. Only one node => 1! *)
     function RecursiveFoldCount : Integer; (* Amount of lines covered by this and all child nodes *)
@@ -81,6 +82,7 @@ type
 
   TSynTextFoldAVLNode = object
   private
+    function GetFoldIndex: Integer;
     function GetLineCount : Integer;
     function GetFullCount : Integer;
   protected
@@ -88,15 +90,17 @@ type
     fStartLine : Integer;            // start of folded
     fFoldedBefore : Integer;
   public
+    procedure Init(aData : TSynTextFoldAVLNodeData; aStartLine, aFoldedBefore: Integer);
     function IsInFold : Boolean;
     function Next : TSynTextFoldAVLNode;
     function Prev : TSynTextFoldAVLNode;
-    property LineCount : Integer read GetLineCount; // Zero, if Not in a fold
-    property FullCount : Integer read GetFullCount; // Zero, if Not in a fold
-    property StartLine : Integer read fStartLine;   // 1st Line of Current Fold
-    property FoldedBefore : Integer read fFoldedBefore;  // Count of Lines folded before Startline
+    property LineCount: Integer read GetLineCount; // Zero, if Not in a fold
+    property FullCount: Integer read GetFullCount; // Zero, if Not in a fold
+    property StartLine: Integer read fStartLine;   // 1st Line of Current Fold
+    property FoldedBefore: Integer read fFoldedBefore;  // Count of Lines folded before Startline
+    property FoldIndex: Integer read GetFoldIndex;
   end;
-  
+
   { TSynTextFoldAVLTree
     Nodes in the tree cover the folded lines only
     the cfCollapsed line at the start of a fold, is *not* part of a node.
@@ -115,6 +119,7 @@ type
     Function RemoveFoldForNodeAtLine(ANode: TSynTextFoldAVLNode; ALine : Integer;
       IgnoreFirst : Boolean = False) : Integer; overload; // Line is for Nested Nodes
 
+    // SetRoot, does not obbey fRootOffset => use SetRoot(node, -fRootOffset)
     procedure SetRoot(ANode : TSynTextFoldAVLNodeData); overload; inline;
     procedure SetRoot(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); overload; inline;
 
@@ -132,13 +137,13 @@ type
     Function FindFoldForLine(ALine : Integer; FindNextNode : Boolean = False) : TSynTextFoldAVLNode;
     (* Find Fold by Line in Folded Text // always returns unfolded, unless next=true *)
     Function FindFoldForFoldedLine(ALine : Integer; FindNextNode : Boolean = False) : TSynTextFoldAVLNode;
-    Function InsertNewFold(ALine, ACount : Integer) : TSynTextFoldAVLNode;
+    Function InsertNewFold(ALine, AColumn, ACount : Integer) : TSynTextFoldAVLNode;
     (* This will unfold the block which either contains tALine, or has Aline as its cgColapsed line
        If IgnoreFirst, the cfCollapsed will *not* unfold => Hint: IgnoreFirst = Make folded visible
        Returns the pos(1-based) of the cfCollapsed Line that was expanded; or ALine, if nothing was done
     *)
-    Function RemoveFoldForLine(ALine : Integer;
-      IgnoreFirst : Boolean = False) : Integer; overload;
+    Function RemoveFoldForLine(ALine : Integer; IgnoreFirst : Boolean = False;
+                               OnlyCol: Integer = -1) : Integer; overload;
     Procedure AdjustForLinesInserted(AStartLine, ALineCount : Integer);
     Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
     Function FindLastFold : TSynTextFoldAVLNode;
@@ -201,7 +206,7 @@ type
     procedure SetLinesInWindow(const AValue : integer);
   protected
     Procedure CalculateMaps;
-    function  LengthForFoldAtTextIndex(ALine : Integer) : Integer;
+    function  LengthForFoldAtTextIndex(ALine, AFoldIndex : Integer) : Integer;
     function FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 
     procedure DoCaretChanged(Sender : TObject);
@@ -253,12 +258,26 @@ type
     procedure UnLock;
     procedure debug;
     // Action Fold/Unfold
-    procedure FoldAtLine(AStartLine: Integer);       (* Folds at ScreenLine / 0-based *)
-    procedure FoldAtViewPos(AStartPos: Integer);     (* Folds at nth visible/unfolded Line / 1-based *)
-    procedure FoldAtTextIndex(AStartIndex: Integer); (* Folds at nth TextIndex (all lines in buffer) / 1-based *)
-    procedure UnFoldAtLine(AStartLine: Integer; IgnoreFirst : Boolean = False);       (* UnFolds at ScreenLine / 0-based *)
-    procedure UnFoldAtViewPos(AStartPos: Integer; IgnoreFirst : Boolean = False);     (* UnFolds at nth visible/unfolded Line / 1-based *)
-    procedure UnFoldAtTextIndex(AStartIndex: Integer; IgnoreFirst : Boolean = False); (* UnFolds at nth TextIndex (all lines in buffer) / 1-based *)
+    // ColumnIndex can be negative, to access the highest(-1) availabel, 2nd highest(-2) ...
+    //   With Negative, count points downward
+    // ColCount = 0 => all
+    // Skip => Do not count nodes that are already in the desired state
+    procedure FoldAtLine(AStartLine: Integer; ColIndex : Integer = -1;          (* Folds at ScreenLine / 0-based *)
+                         ColCount : Integer = 1; Skip: Boolean = False);
+    procedure FoldAtViewPos(AStartPos: Integer; ColIndex : Integer = -1;        (* Folds at nth visible/unfolded Line / 1-based *)
+                            ColCount : Integer = 1; Skip: Boolean = False);
+    procedure FoldAtTextIndex(AStartIndex: Integer; ColIndex : Integer = -1;    (* Folds at nth TextIndex (all lines in buffer) / 1-based *)
+                              ColCount : Integer = 1; Skip: Boolean = False);
+    procedure UnFoldAtLine(AStartLine: Integer; ColIndex : Integer = -1;        (* UnFolds at ScreenLine / 0-based *)
+                         ColCount : Integer = 0; Skip: Boolean = False);
+    procedure UnFoldAtViewPos(AStartPos: Integer; ColIndex : Integer = -1;      (* UnFolds at nth visible/unfolded Line / 1-based *)
+                         ColCount : Integer = 0; Skip: Boolean = False);
+    procedure UnFoldAtTextIndex(AStartIndex: Integer; ColIndex : Integer = -1;  (* UnFolds at nth TextIndex (all lines in buffer) / 1-based *)
+                         ColCount : Integer = 0; Skip: Boolean = False);
+    procedure UnFoldAtTextIndexCollapsed(AStartIndex: Integer);   (* UnFolds only if Index is in the fold, ignores cfcollapsed line, if unfolded / 1-based *)
+
+    function IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;    (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
+
 
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
@@ -266,7 +285,7 @@ type
     
     // Find the visible first line of the fold at ALine. Returns -1 if Aline is not folded
     function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
-    function ExpandedLineForBlockAtLine(ALine : Integer) : Integer;
+    function ExpandedLineForBlockAtLine(ALine : Integer; HalfExpanded: Boolean = True) : Integer;
 
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 
@@ -459,6 +478,13 @@ end;
 
 { TSynTextFoldAVLNode }
 
+function TSynTextFoldAVLNode.GetFoldIndex: Integer;
+begin
+  if fData = nil
+  then Result := -1
+  else Result := fData.FoldIndex;
+end;
+
 function TSynTextFoldAVLNode.GetLineCount : Integer;
 begin
   if fData = nil
@@ -471,6 +497,14 @@ begin
   if fData = nil
   then Result := -1
   else Result := fData.FullCount;
+end;
+
+procedure TSynTextFoldAVLNode.Init(aData: TSynTextFoldAVLNodeData; aStartLine,
+  aFoldedBefore: Integer);
+begin
+  fData := aData;
+  fStartLine :=  aStartLine;
+  fFoldedBefore := aFoldedBefore;
 end;
 
 function TSynTextFoldAVLNode.IsInFold : Boolean;
@@ -591,9 +625,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.fData := r;
-  Result.fStartLine := rStartLine; // only IF r <> nil
-  Result.fFoldedBefore := rFoldedBefore; // always ok
+  Result.Init(r, rStartLine, rFoldedBefore);
 end;
 
 (* Find Fold by Line in Folded Text // always returns unfolded, unless next=true *)
@@ -629,9 +661,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.fData := r;
-  Result.fStartLine := rStartLine; // only IF r <> nil
-  Result.fFoldedBefore := rFoldedBefore; // always ok
+  Result.Init(r, rStartLine, rFoldedBefore);
 end;
 
 procedure TSynTextFoldAVLTree.AdjustForLinesInserted(AStartLine, ALineCount : Integer);
@@ -760,9 +790,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.fData := r;
-  Result.fStartLine := rStartLine; // only IF r <> nil
-  Result.fFoldedBefore := rFoldedBefore; // always ok
+  Result.Init(r, rStartLine, rFoldedBefore);
 end;
 
 function TSynTextFoldAVLTree.FindFirstFold : TSynTextFoldAVLNode;
@@ -778,9 +806,7 @@ begin
     r := r.Left;
   end;
 
-  Result.fData := r;
-  Result.fStartLine := rStartLine; // only IF r <> nil
-  Result.fFoldedBefore := 0; // first fold
+  Result.Init(r, rStartLine, 0);
 end;
 
 function TSynTextFoldAVLTree.LastFoldedLine: integer;
@@ -798,10 +824,12 @@ procedure TSynTextFoldAVLTree.debug;
     result := 0;
     if ANode = nil then exit;
     with ANode do
-      DebugLn([Format('L=%3d -%3d:  %2d / %2d', [offset + ANode.LineOffset,
-                      offset + ANode.LineOffset + ANode.LineCount -1, LineCount,
-                      FullCount]), ind, typ, ' (',LineOffset, ')  LeftCount: ',
-               LeftCount, '     Balance: ',Balance]);
+      DebugLn([Format('L=%3d-%3d (e=%3d / x=%d):  %2d / %2d',
+                      [offset + ANode.LineOffset, offset + ANode.LineOffset + ANode.FullCount -1,
+                       offset + ANode.LineOffset + ANode.LineCount -1, ANode.FoldIndex,
+                       LineCount, FullCount]),
+               ind, typ, ' (',LineOffset, ')  LeftCount: ', LeftCount,
+               '     Balance: ',Balance]);
     if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
     Result := debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
     If Result <> ANode.LeftCount then  debugln([ind,'   ***** Leftcount was ',Result, ' but should be ', ANode.LeftCount]);
@@ -810,27 +838,29 @@ procedure TSynTextFoldAVLTree.debug;
     Result := Result + ANode.LineCount;
   end;
 begin
-  debug2('', '-', fRoot, nil, 0);
+  debug2('', ' -', fRoot, nil, 0);
 end;
 
-function TSynTextFoldAVLTree.InsertNewFold(ALine, ACount : Integer) : TSynTextFoldAVLNode;
+function TSynTextFoldAVLTree.InsertNewFold(ALine, AColumn, ACount : Integer) : TSynTextFoldAVLNode;
 var
   r : TSynTextFoldAVLNodeData;
 begin
   r := NewNode;
   r.LineOffset := ALine;
+  r.FoldIndex := AColumn;
   r.LineCount  := ACount;
   r.FullCount  := ACount;
   r.LeftCount  := 0;
-  Result.fData  := r;
-  Result.fStartLine := ALine;
 
+  Result.Init(r, ALine, 0);
   Result.fFoldedBefore := InsertNode(r);
 end;
 
-function TSynTextFoldAVLTree.RemoveFoldForLine(ALine : Integer; IgnoreFirst : Boolean = False) : Integer;
+function TSynTextFoldAVLTree.RemoveFoldForLine(ALine : Integer;
+  IgnoreFirst : Boolean = False; OnlyCol: Integer = -1) : Integer;
 var
   OldFold : TSynTextFoldAVLNode;
+  lcount: Integer;
 begin
   Result := ALine;
   OldFold := FindFoldForLine(ALine, true);
@@ -838,15 +868,31 @@ begin
   or (IgnoreFirst and (OldFold.StartLine > ALine))
   or ((not IgnoreFirst) and (OldFold.StartLine > ALine+1))
   then exit;
-  RemoveFoldForNodeAtLine(OldFold, ALine, IgnoreFirst);
+  if OnlyCol < 0 then
+    RemoveFoldForNodeAtLine(OldFold, ALine, IgnoreFirst)
+  else
+  if OldFold.FoldIndex = OnlyCol then
+    RemoveFoldForNodeAtLine(OldFold, -1, IgnoreFirst)
+  else
+  if OldFold.fData.Nested <> nil then begin
+    TreeForNestedNode(OldFold.fData, OldFold.StartLine).RemoveFoldForLine
+      (ALine, IgnoreFirst, OnlyCol);
+    lcount := max(OldFold.FullCount,
+                  TreeForNestedNode(OldFold.fData, 0).LastFoldedLine + 1);
+    if lcount <> OldFold.LineCount then begin
+      OldFold.fData.LineCount := lcount;
+      OldFold.fData.AdjustParentLeftCount(OldFold.LineCount - lcount);
+    end;
+  end;
 end;
 
 function TSynTextFoldAVLTree.RemoveFoldForNodeAtLine(ANode : TSynTextFoldAVLNode;
   ALine : Integer; IgnoreFirst : Boolean = False) : Integer;
 var
   NestedNode, MergeNode : TSynTextFoldAVLNodeData;
-  NestedLine : LongInt;
+  NestedLine, offs, lcount : Integer;
   OnlyNested: Boolean;
+  Nested: TSynTextFoldAVLNode;
 begin
   OnlyNested := ALine >= ANode.StartLine + ANode.FullCount;
   // The cfCollapsed line is one line before the fold
@@ -859,7 +905,32 @@ begin
     (*Todo: should we mark the tree as NO balancing needed ???*)
     TreeForNestedNode(ANode.fData, ANode.StartLine).RemoveFoldForLine(ALine, IgnoreFirst);
 
-    if not OnlyNested then begin
+    if OnlyNested then begin
+      NestedLine := ANode.StartLine + ANode.FullCount;
+      Nested := TreeForNestedNode(ANode.fData, ANode.StartLine).FindLastFold;
+      while Nested.IsInFold and (Nested.StartLine >= NestedLine) do begin
+        NestedNode := Nested.fData;
+        offs := Nested.StartLine;
+        Nested := Nested.Prev;
+
+        lcount := ANode.fData.LineCount;
+        ANode.fData.LineCount := max(ANode.FullCount,
+                         Nested.StartLine + Nested.LineCount - ANode.StartLine);
+        ANode.fData.AdjustParentLeftCount(ANode.LineCount - lcount);
+
+        TreeForNestedNode(ANode.fData, ANode.StartLine).RemoveNode(NestedNode);
+        NestedNode.LineOffset := offs;
+        InsertNode(NestedNode);
+      end;
+      lcount := max(ANode.FullCount,
+                TreeForNestedNode(ANode.fData, ANode.StartLine).LastFoldedLine
+                - ANode.StartLine + 1);
+      if lcount <> ANode.LineCount then begin
+        ANode.fData.LineCount := lcount;
+        ANode.fData.AdjustParentLeftCount(ANode.LineCount - lcount);
+      end;
+    end
+    else begin
       // merge the remaining nested into current
       NestedNode := ANode.fData.Nested;
       if NestedNode <> nil
@@ -892,12 +963,6 @@ begin
         MergeNode.LeftCount := 0;
         MergeNode.Balance   := 0;
         InsertNode(MergeNode);
-      end;
-    end
-    else begin
-      if ANode.LineCount > ANode.FullCount then begin
-        ANode.fData.LineCount := max(ANode.FullCount,
-                     TreeForNestedNode(ANode.fData, 0).LastFoldedLine + 1);
       end;
     end;
 
@@ -995,7 +1060,7 @@ var
 
 begin
   if fRoot = nil then begin
-    SetRoot(ANode);
+    SetRoot(ANode, -fRootOffset);
     Result := 0;
     exit;
   end;
@@ -1041,11 +1106,11 @@ begin
 
     rFoldedBefore := rFoldedBefore + current.LeftCount;
     if ALine = rStartLine then begin
-      if ACount < current.LineCount then
+      if ANode.FoldIndex > current.FoldIndex then
         (* *** New Block will be nested in current *** *)
         NestNewBlockIntoCurrent
       else
-      if ACount > current.LineCount then
+      if ANode.FoldIndex < current.FoldIndex then
         (* *** current will be nested in New Block *** *)
         NestCurrentIntoNewBlock
       else begin
@@ -1729,61 +1794,149 @@ end;
 
 (* Folding *)
 
-procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer);
+procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 1; Skip: Boolean = False);
 begin
-  FoldAtViewPos(AStartLine + fTopLine);
+  FoldAtViewPos(AStartLine + fTopLine, ColIndex, ColCount, Skip);
 end;
 
-procedure TSynEditFoldedView.FoldAtViewPos(AStartPos : Integer);
+procedure TSynEditFoldedView.FoldAtViewPos(AStartPos : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 1; Skip: Boolean = False);
 begin
-  FoldAtTextIndex(AStartPos - 1 + fFoldTree.FindFoldForFoldedLine(AStartPos).FoldedBefore);
+  FoldAtTextIndex(AStartPos - 1 + fFoldTree.FindFoldForFoldedLine(AStartPos).FoldedBefore,
+                  ColIndex, ColCount, Skip);
 end;
 
-function TSynEditFoldedView.LengthForFoldAtTextIndex(ALine : Integer) : Integer;
+function TSynEditFoldedView.LengthForFoldAtTextIndex(ALine, AFoldIndex: Integer) : Integer;
 var
   hl: TSynCustomFoldHighlighter;
 begin
   if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
   then exit(0);
   hl := TSynCustomFoldHighlighter(FHighLighter);
-  Result := hl.FoldLineLength(ALine, hl.FoldOpenCount(ALine) -1);
+  Result := hl.FoldLineLength(ALine, AFoldIndex);
 end;
 
-procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer);
+procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 1; Skip: Boolean = False);
 var
-  top : Integer;
+  c, top : Integer;
+  hl: TSynCustomFoldHighlighter;
+  down: Boolean;
 begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
   top := TopTextIndex;
   // AStartIndex is 0-based
   // FoldTree is 1-based AND first line remains visble
-  fFoldTree.InsertNewFold(AStartIndex+2, LengthForFoldAtTextIndex(AStartIndex));
+  c := hl.FoldOpenCount(AStartIndex);
+  if ColCount = 0 then
+    ColCount := c;
+  down := ColIndex < 0;
+  if down then
+    ColIndex := c + ColIndex ;
+  while ColCount > 0 do begin
+    if (ColIndex < 0) or (ColIndex >= c) then break;
+    if skip and IsFoldedAtTextIndex(AStartIndex, ColIndex) then begin
+      if down
+      then dec(ColIndex)
+      else inc(ColIndex);
+      continue;
+    end;
+    fFoldTree.InsertNewFold(AStartIndex+2, ColIndex,
+                            LengthForFoldAtTextIndex(AStartIndex, ColIndex));
+    if down
+    then dec(ColIndex)
+    else inc(ColIndex);
+    dec(ColCount);
+  end;
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   if Assigned(fOnFoldChanged) then
     fOnFoldChanged(AStartIndex);
 end;
 
-procedure TSynEditFoldedView.UnFoldAtLine(AStartLine : Integer; IgnoreFirst : Boolean = False);
+procedure TSynEditFoldedView.UnFoldAtLine(AStartLine : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 0; Skip: Boolean = False);
 begin
-  UnFoldAtViewPos(AStartLine + fTopLine, IgnoreFirst);
+  UnFoldAtViewPos(AStartLine + fTopLine, ColIndex, ColCount, Skip);
 end;
 
-procedure TSynEditFoldedView.UnFoldAtViewPos(AStartPos : Integer; IgnoreFirst : Boolean = False);
+procedure TSynEditFoldedView.UnFoldAtViewPos(AStartPos : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 0; Skip: Boolean = False);
 begin
-  UnFoldAtTextIndex(AStartPos - 1 + fFoldTree.FindFoldForFoldedLine(AStartPos).FoldedBefore, IgnoreFirst);
+  UnFoldAtTextIndex(AStartPos - 1 + fFoldTree.FindFoldForFoldedLine(AStartPos).FoldedBefore,
+                    ColIndex, ColCount, Skip);
 end;
 
-procedure TSynEditFoldedView.UnFoldAtTextIndex(AStartIndex : Integer; IgnoreFirst : Boolean = False);
+procedure TSynEditFoldedView.UnFoldAtTextIndex(AStartIndex : Integer;
+  ColIndex : Integer = -1; ColCount : Integer = 0; Skip: Boolean = False);
 var
-  top : Integer;
+  top, c, r, r2 : Integer;
+  hl: TSynCustomFoldHighlighter;
+  down: Boolean;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+  top := TopTextIndex;
+  c := hl.FoldOpenCount(AStartIndex);
+
+  r := -1;
+  if ColCount = 0 then begin
+    r := fFoldTree.RemoveFoldForLine(AStartIndex+1, False) - 1;
+  end
+  else begin
+    down := ColIndex < 0;
+    if down then
+      ColIndex := c + ColIndex ;
+    while ColCount > 0 do begin
+      if (ColIndex < 0) or (ColIndex >= c) then break;
+      if skip and not IsFoldedAtTextIndex(AStartIndex, ColIndex) then begin
+        if down
+        then dec(ColIndex)
+        else inc(ColIndex);
+        continue;
+      end;
+      r2 := fFoldTree.RemoveFoldForLine(AStartIndex+1, False, ColIndex) - 1;
+      if (r < 0) or (r2 < r) then r := r2;
+      if down
+      then dec(ColIndex)
+      else inc(ColIndex);
+      dec(ColCount);
+    end;
+  end;
+
+  fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
+  TopTextIndex := top;
+  if Assigned(fOnFoldChanged) and (r >= 0) then
+    fOnFoldChanged(r);
+end;
+
+procedure TSynEditFoldedView.UnFoldAtTextIndexCollapsed(AStartIndex: Integer);
+var
+  top, r: Integer;
 begin
   top := TopTextIndex;
-  // Foldtree needs 1-based
-  AStartIndex := fFoldTree.RemoveFoldForLine(AStartIndex+1, IgnoreFirst) - 1;
+  r := fFoldTree.RemoveFoldForLine(AStartIndex+1, True) - 1;
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(AStartIndex);
+    fOnFoldChanged(r);
+end;
+
+function TSynEditFoldedView.IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;
+var
+  node: TSynTextFoldAVLNode;
+begin
+  Result := False;
+  node := fFoldTree.FindFoldForLine(AStartIndex + 1, True);
+  while node.IsInFold and (node.StartLine = AStartIndex + 2) do begin
+    if node.FoldIndex = ColIndex then exit(True);
+    if node.fData.Nested = nil then break;
+    node := fFoldTree.TreeForNestedNode(node.fData, node.StartLine).FindFirstFold;
+  end;
 end;
 
 procedure TSynEditFoldedView.UnfoldAll;
@@ -1800,7 +1953,7 @@ end;
 
 procedure TSynEditFoldedView.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
 var
-  i, l, top, t: Integer;
+  c, i, l, top, t: Integer;
   hl: TSynCustomFoldHighlighter;
 begin
   if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
@@ -1815,10 +1968,11 @@ begin
   while i < fLines.Count do begin
     if (hl.FoldOpenCount(i, t) > 0)
     and (hl.FoldNestCount(i, t) > StartLevel) then begin
-      l := LengthForFoldAtTextIndex(i);
+      c := hl.FoldOpenCount(i) -1;
+      l := LengthForFoldAtTextIndex(i, c);
       // i is 0-based
       // FoldTree is 1-based AND first line remains visble
-      fFoldTree.InsertNewFold(i+2, l);
+      fFoldTree.InsertNewFold(i+2, c, l);
       if IgnoreNested then
         i := i + l;
     end;
@@ -1830,12 +1984,97 @@ begin
     fOnFoldChanged(0);
 end;
 
-function TSynEditFoldedView.FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
+function TSynEditFoldedView.FixFolding(AStart: Integer; AMinEnd: Integer;
+  aFoldTree: TSynTextFoldAVLTree): Boolean;
 var
-  line, cnt, a: Integer;
-  LastStart, LastCount: Integer;
-  node, tmpnode: TSynTextFoldAVLNode;
   hl: TSynCustomFoldHighlighter;
+
+  function DoFixFolding(doStart: Integer; doMinEnd, AtColumn: Integer;
+    doFoldTree: TSynTextFoldAVLTree; node: TSynTextFoldAVLNode) : Boolean;
+    Procedure DoRemoveNode(var theNode: TSynTextFoldAVLNode);
+    var
+      tmpnode: TSynTextFoldAVLNode;
+    begin
+      Result := True;
+      tmpnode := theNode.Prev;
+      doFoldTree.RemoveFoldForNodeAtLine(theNode, -1); // Don't touch any nested node
+      if tmpnode.IsInFold then theNode := tmpnode.Next
+      else theNode := doFoldTree.FindFirstFold;
+    end;
+  var
+    FldLine, FldIndex, FldLen, FldCol: Integer;
+    MaxCol, CurLen: Integer;
+    PrevFldLine: Integer;
+    SubTree: TSynTextFoldAVLTree;
+  begin
+    Result := False;
+    FldLine := node.StartLine - 1;
+//    FldLen := -1;
+ //   LastCol := -1;
+    while node.IsInFold do begin
+      PrevFldLine := FldLine;
+//      PrevFldLen := FldLen;
+      FldLine := node.StartLine - 1; // the 1-based cfCollapsed (last visible) Line
+      FldIndex := FldLine - 1;
+      FldLen := node.FullCount;
+      if (FldLen < 0) then begin
+        DoRemoveNode(node);
+        continue;
+      end;
+
+      if (FldLine > PrevFldLine) then
+        AtColumn := 0;
+      // check the fold-length
+      MaxCol := hl.FoldOpenCount(FldIndex) - 1;
+      FldCol := node.FoldIndex;
+      if (FldCol < AtColumn) then FldCol := AtColumn;
+      if (FldCol <= MaxCol) and (FldCol >= AtColumn) and
+         (FldLen = LengthForFoldAtTextIndex(FldIndex, FldCol)) then begin
+        CurLen := FldLen;
+      end
+      else if (FldCol - 1 <= MaxCol) and (FldCol > AtColumn) and (FldCol > 0) and
+         (FldLen = LengthForFoldAtTextIndex(FldIndex, FldCol - 1)) then begin
+        CurLen := FldLen;
+        dec(FldCol);
+      end
+      else if (FldCol + 1 <= MaxCol) and (FldCol + 1 >= AtColumn) and
+         (FldLen = LengthForFoldAtTextIndex(FldIndex, FldCol + 1)) then begin
+        CurLen := FldLen;
+        inc(FldCol);
+      end
+      else
+        CurLen := -1;
+
+      if CurLen <> FldLen then begin
+        DoRemoveNode(node);
+        continue;
+      end;
+      node.fData.FoldIndex := FldCol;
+      AtColumn := FldCol + 1;
+
+      if (node.fData.Nested <> nil) then begin
+        SubTree := doFoldTree.TreeForNestedNode(node.fData, FldLine+1);
+        CurLen := node.LineCount;
+        if DoFixFolding(FldLine, FldLine + CurLen + 1, AtColumn, SubTree, SubTree.FindFirstFold)
+        then begin
+          if CurLen > FldLen then begin
+            node.fData.LineCount := max(node.FullCount,
+              doFoldTree.TreeForNestedNode(node.fData, 0).LastFoldedLine + 1);
+            if CurLen <> node.LineCount then
+              node.fData.AdjustParentLeftCount(node.LineCount - CurLen);
+          end;
+          continue;
+        end;
+      end;
+
+      // the node was ok
+      if node.StartLine >= doMinEnd then break;
+      node := node.Next;
+    end;
+  end;
+
+var
+  node, tmpnode: TSynTextFoldAVLNode;
 begin
   Result := false;
   if fLockCount > 0 then begin
@@ -1846,84 +2085,37 @@ begin
     exit;
   end;
 
-  node := aFoldTree.FindFoldForLine(AStart, true);
-  if not node.IsInFold then node:= aFoldTree.FindLastFold;
-  if not node.IsInFold then Begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then begin
     CalculateMaps;
     exit;
   end;
-  If AMinEnd < node.StartLine then AMinEnd := node.StartLine;
-
-  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
-  then exit;
   FHighLighter.CurrentLines := fLines;
   hl := TSynCustomFoldHighlighter(FHighLighter);
 
+  node := aFoldTree.FindFoldForLine(aStart, true);
+  if not node.IsInFold then node:= aFoldTree.FindLastFold;
+  if not node.IsInFold then begin
+    CalculateMaps;
+    exit;
+  end;
+  If aMinEnd < node.StartLine then aMinEnd := node.StartLine;
+
   // FullCount is allowed to be -1
-  while node.IsInFold and (node.StartLine + node.FullCount + 1 >= AStart) do begin
+  while node.IsInFold and (node.StartLine + node.FullCount + 1 >= aStart) do begin
     tmpnode := node.Prev;
-    if tmpnode.IsInFold then
-      node := tmpnode
-    else
-      break; // first node
+    if tmpnode.IsInFold
+    then node := tmpnode
+    else break; // first node
   end;
 
-  LastStart := -1;
-  LastCount := -2;
-  while node.IsInFold do begin
-    line := node.StartLine - 1; // the 1-based cfCollapsed (last visible) Line
-    cnt := node.FullCount;
-    if ((LastStart = line) and (LastCount = cnt)) or (cnt < 0) then begin
-      // Same node as previous or fully deleted
-      tmpnode := node.Prev;
-      aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
-      if tmpnode.IsInFold then node := tmpnode.Next
-      else node := aFoldTree.FindFirstFold;
-      continue;
-    end;
-    LastStart := line;
-    LastCount := cnt;
-
-    // look at the 0-based cfCollapsed (visible) Line
-    if (hl.FoldOpenCount(line - 1) <= 0) then begin
-      // the Fold-Begin of this node has gone
-      tmpnode := node.Prev;
-      aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
-      if tmpnode.IsInFold then node := tmpnode.Next
-      else node := aFoldTree.FindFirstFold;
-      continue; // catch nested nodes (now unfolded)
-    end;
-
-    a:= LengthForFoldAtTextIndex(line-1);
-    if (cnt <> a) then begin
-      // the Fold-End of this node has gone or moved
-      tmpnode := node.Prev;
-      aFoldTree.RemoveFoldForNodeAtLine(node, -1); // Don't touch any nested node
-      if tmpnode.IsInFold then node := tmpnode.Next
-      else node := aFoldTree.FindFirstFold; // firstnode
-      continue; // catch nested nodes (now unfolded)
-    end;
-
-    if (node.fData.Nested <> nil)
-    and (FixFolding(line, line+1+node.FullCount, aFoldTree.TreeForNestedNode(node.fData, line+1)))
-    then begin
-      if node.LineCount > node.FullCount then begin
-        node.fData.LineCount := max(node.FullCount,
-          aFoldTree.TreeForNestedNode(node.fData, 0).LastFoldedLine + 1);
-      end;
-      continue;
-    end;
-
-    // the node was ok
-    if node.StartLine >= AMinEnd then break;
-
-    node := node.Next;
-  end;
+  Result := DoFixFolding(AStart, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
 end;
 
 procedure TSynEditFoldedView.DoCaretChanged(Sender : TObject);
-var i : Integer;
+var
+  i: Integer;
 begin
   if fLockCount > 0 then begin
     fNeedCaretCheck := true;
@@ -1931,7 +2123,7 @@ begin
   end;
   i := TSynEditCaret(Sender).LinePos-1;
   if FoldedAtTextIndex[i] then
-    UnFoldAtTextIndex(i, true);
+    UnFoldAtTextIndexCollapsed(i);
 end;
 
 procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -1953,7 +2145,8 @@ begin
   FixFolding(AStartIndex + 1, AMinEndLine, fFoldTree);
 end;
 
-function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer) : Integer;
+function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer;
+  HalfExpanded: Boolean = True) : Integer;
 var
   i, l : Integer;
   node: TSynTextFoldAVLNode;
@@ -1966,10 +2159,17 @@ begin
   hl := TSynCustomFoldHighlighter(FHighLighter);
 
   i := ALine;
-  if hl.FoldOpenCount(i - 1) > 0 then begin
+  l := hl.FoldOpenCount(i - 1);
+  if l > 0 then begin
     node := fFoldTree.FindFoldForLine(ALine, true);
-    if node.IsInFold and (node.StartLine = ALine +1) then
-      dec(i)
+    if node.IsInFold and (node.StartLine = ALine +1) then begin
+      dec(l);
+      if HalfExpanded then while (l >= 0) do begin
+        if not IsFoldedAtTextIndex(ALine-1, l) then exit(ALine);
+        dec(l);
+      end;
+      dec(i);
+    end
     else
       exit(ALine);
   end

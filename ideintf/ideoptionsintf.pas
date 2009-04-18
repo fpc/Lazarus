@@ -135,6 +135,7 @@ const
     EdtOptionsColors      = 400;
     EdtOptionsCodetools   = 500;
     EdtOptionsCodeFolding = 600;
+      EdtOptionsCodeFoldingMouse = 601;
     EdtOptionsDrawDivider = 700;
 
   GroupCodetools    = 300;

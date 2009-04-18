@@ -507,6 +507,31 @@ const
                                                   + [eoHalfPageScroll];
   SynEditDefaultOptions2 = SYNEDIT_DEFAULT_OPTIONS2;
 
+  DefExpandedClickConf: TSynGutterFoldClickConfList =
+  ( ( Enabled: True;   Button: mbLeft;  Shift: [];  ShiftMask: [];         // FoldOne
+      Enabled2: True;  Button2: mbMiddle;Shift2: []; ShiftMask2: [] ),
+    ( Enabled: False;  Button: mbLeft;  Shift: [];  ShiftMask: [];         // FoldAll
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] ),
+    ( Enabled: False;  Button: mbLeft;  Shift: [];  ShiftMask: [];         // UnfoldOne
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] ),
+    ( Enabled: False;  Button: mbLeft;  Shift: [];  ShiftMask: [];         // UnfoldAll
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] )
+  );
+  DefCollapsedClickConf: TSynGutterFoldClickConfList=
+  ( ( Enabled: True;   Button: mbLeft;  Shift: [ssShift];  ShiftMask: [ssShift, ssCtrl];         // FoldOne
+      Enabled2: True;  Button2: mbMiddle; Shift2: []; ShiftMask2: [] ),
+    ( Enabled: False;  Button: mbLeft;  Shift: [];  ShiftMask: [];         // FoldAll
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] ),
+    ( Enabled: True;  Button: mbLeft;  Shift: [ssCtrl];  ShiftMask: [ssShift, ssCtrl];         // UnfoldOne
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] ),
+    ( Enabled: True;  Button: mbLeft;  Shift: [];  ShiftMask: [ssShift, ssCtrl];         // UnfoldAll
+      Enabled2: False; Button2: mbLeft; Shift2: []; ShiftMask2: [] )
+  );
+
+  TSynGutterFoldClickConfNames: Array [TSynGutterFoldClickType] of String =
+  ( 'FoldOne', 'FoldAll', 'UnFoldOne', 'UnFoldAll' );
+
+
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
     of a highlighter, such as samplesource, which sample lines are special
@@ -626,6 +651,9 @@ type
 
     // Code Folding
     FUseCodeFolding: Boolean;
+    FExpandedClickConf,
+    FCollapsedClickConf: TSynGutterFoldClickConfList;
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -674,6 +702,8 @@ type
                              AddHilightAttr: TAdditionalHilightAttribute;
                              aMarkup: TSynSelectedColor);
     procedure SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
+    property ExpandedClickConf: TSynGutterFoldClickConfList read FExpandedClickConf;
+    property CollapsedClickConf: TSynGutterFoldClickConfList read FCollapsedClickConf;
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -979,6 +1009,40 @@ begin
   Dest.FrameColor := Src.FrameColor;
   Dest.Style      := Src.Style;
   Dest.StyleMask  := Src.StyleMask;
+end;
+
+function MouseButtonToXML(mb: TMouseButton): String;
+begin
+  case mb of
+    mbMiddle: exit('Middle');
+    mbRight: exit('Right');
+    else exit('Left');
+  end;
+end;
+
+function XMLToMouseButton(mb: String): TMouseButton;
+begin
+  if mb = 'Middle' then exit(mbMiddle);
+  if mb = 'Right' then exit(mbRight);
+  exit(mbLeft);
+end;
+
+function ShiftStateToXML(st: TShiftState): String;
+begin
+  Result := '';
+  if ssShift in st then Result := Result + ',Shift';
+  if ssCtrl in st then Result := Result + ',Ctrl';
+  if ssAlt in st then Result := Result + ',Alt';
+  Result := copy(Result,2,999);
+end;
+
+function XMLtoShiftState(st: String): TShiftState;
+begin
+  st:=','+st+',';
+  Result := [];
+  if pos(',Shift,', st) > 0 then Include(Result, ssShift);
+  if pos(',Ctrl,', st) > 0 then Include(Result, ssCtrl);
+  if pos(',Alt,', st) > 0 then Include(Result, ssAlt);
 end;
 
 { TEditOptLanguageInfo }
@@ -1512,6 +1576,7 @@ var
   ConfFileName: String;
   fs: TFileStream;
   res: TLResource;
+  x: TSynGutterFoldClickType;
 begin
   inherited Create;
   ConfFileName := SetDirSeparators(GetPrimaryConfigPath + '/' +
@@ -1587,6 +1652,12 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
+
+  // fold Mouse
+  for x := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
+    FExpandedClickConf[x] := DefExpandedClickConf[x];
+    FCollapsedClickConf[x] := DefCollapsedClickConf[x];
+  end;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1605,6 +1676,7 @@ var
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
   FileVersion: LongInt;
+  x: TSynGutterFoldClickType;
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
@@ -1774,6 +1846,78 @@ begin
     FUseCodeFolding :=
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
+
+    for x := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
+      FExpandedClickConf[x].Enabled :=
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Enabled',
+          DefExpandedClickConf[x].Enabled);
+      FExpandedClickConf[x].Button := XMLToMouseButton(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Button',
+           MouseButtonToXML(DefExpandedClickConf[x].Button)));
+      FExpandedClickConf[x].Shift := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Shift',
+          ShiftStateToXML(DefExpandedClickConf[x].Shift)));
+      FExpandedClickConf[x].ShiftMask := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/ShiftMask',
+          ShiftStateToXML(DefExpandedClickConf[x].ShiftMask)));
+
+      FExpandedClickConf[x].Enabled2 :=
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Enabled2',
+          DefExpandedClickConf[x].Enabled2);
+      FExpandedClickConf[x].Button2 := XMLToMouseButton(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Button2',
+           MouseButtonToXML(DefExpandedClickConf[x].Button2)));
+      FExpandedClickConf[x].Shift2 := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/Shift2',
+          ShiftStateToXML(DefExpandedClickConf[x].Shift2)));
+      FExpandedClickConf[x].ShiftMask2 := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+          TSynGutterFoldClickConfNames[x] + '/ShiftMask2',
+          ShiftStateToXML(DefExpandedClickConf[x].ShiftMask2)));
+
+
+      FCollapsedClickConf[x].Enabled :=
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Enabled',
+          DefCollapsedClickConf[x].Enabled);
+      FCollapsedClickConf[x].Button := XMLToMouseButton(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Button',
+           MouseButtonToXML(DefCollapsedClickConf[x].Button)));
+      FCollapsedClickConf[x].Shift := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Shift',
+          ShiftStateToXML(DefCollapsedClickConf[x].Shift)));
+      FCollapsedClickConf[x].ShiftMask := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/ShiftMask',
+          ShiftStateToXML(DefCollapsedClickConf[x].ShiftMask)));
+
+      FCollapsedClickConf[x].Enabled2 :=
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Enabled2',
+          DefCollapsedClickConf[x].Enabled2);
+      FCollapsedClickConf[x].Button2 := XMLToMouseButton(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Button2',
+           MouseButtonToXML(DefCollapsedClickConf[x].Button2)));
+      FCollapsedClickConf[x].Shift2 := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/Shift2',
+          ShiftStateToXML(DefCollapsedClickConf[x].Shift2)));
+      FCollapsedClickConf[x].ShiftMask2 := XMLToShiftState(
+        XMLConfig.GetValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+          TSynGutterFoldClickConfNames[x] + '/ShiftMask2',
+          ShiftStateToXML(DefCollapsedClickConf[x].ShiftMask2)));
+    end;
+
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1787,6 +1931,7 @@ var
   SynEditOptName: String;
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
+  x: TSynGutterFoldClickType;
 begin
   try
     XMLConfig.SetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -1930,6 +2075,76 @@ begin
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
+    for x := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Enabled',
+        FExpandedClickConf[x].Enabled,
+        DefExpandedClickConf[x].Enabled);
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Button',
+         MouseButtonToXML(FExpandedClickConf[x].Button),
+        MouseButtonToXML(DefExpandedClickConf[x].Button));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Shift',
+        ShiftStateToXML(FExpandedClickConf[x].Shift),
+        ShiftStateToXML(DefExpandedClickConf[x].Shift));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/ShiftMask',
+        ShiftStateToXML(FExpandedClickConf[x].ShiftMask),
+        ShiftStateToXML(DefExpandedClickConf[x].ShiftMask));
+
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Enabled2',
+        FExpandedClickConf[x].Enabled2,
+        DefExpandedClickConf[x].Enabled2);
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Button2',
+        MouseButtonToXML(FExpandedClickConf[x].Button2),
+        MouseButtonToXML(DefExpandedClickConf[x].Button2));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/Shift2',
+        ShiftStateToXML(FExpandedClickConf[x].Shift2),
+        ShiftStateToXML(DefExpandedClickConf[x].Shift2));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Expanded/' +
+        TSynGutterFoldClickConfNames[x] + '/ShiftMask2',
+        ShiftStateToXML(FExpandedClickConf[x].ShiftMask2),
+        ShiftStateToXML(DefExpandedClickConf[x].ShiftMask2));
+
+
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Enabled',
+        FCollapsedClickConf[x].Enabled,
+        DefCollapsedClickConf[x].Enabled);
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Button',
+        MouseButtonToXML(FCollapsedClickConf[x].Button),
+        MouseButtonToXML(DefCollapsedClickConf[x].Button));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Shift',
+        ShiftStateToXML(FCollapsedClickConf[x].Shift),
+        ShiftStateToXML(DefCollapsedClickConf[x].Shift));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/ShiftMask',
+        ShiftStateToXML(FCollapsedClickConf[x].ShiftMask),
+        ShiftStateToXML(DefCollapsedClickConf[x].ShiftMask));
+
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Enabled2',
+        FCollapsedClickConf[x].Enabled2,
+        DefCollapsedClickConf[x].Enabled2);
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Button2',
+        MouseButtonToXML(FCollapsedClickConf[x].Button2),
+        MouseButtonToXML(DefCollapsedClickConf[x].Button2));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/Shift2',
+        ShiftStateToXML(FCollapsedClickConf[x].Shift2),
+        ShiftStateToXML(DefCollapsedClickConf[x].Shift2));
+      XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/Mouse/Collapsed/' +
+        TSynGutterFoldClickConfNames[x] + '/ShiftMask2',
+        ShiftStateToXML(FCollapsedClickConf[x].ShiftMask2),
+        ShiftStateToXML(DefCollapsedClickConf[x].ShiftMask2));
+    end;
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2677,6 +2892,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  x: TSynGutterFoldClickType;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2698,6 +2914,12 @@ begin
   ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
   if not FUseCodeFolding then
     ASynEdit.UnfoldAll;
+  if ASynEdit.Gutter.CodeFoldPart <> nil then
+    for x := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
+      ASynEdit.Gutter.CodeFoldPart.ExpandedClickConf[x] := ExpandedClickConf[x];
+      ASynEdit.Gutter.CodeFoldPart.CollapsedClickConf[x] := CollapsedClickConf[x];
+    end;
+
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
 
@@ -2742,6 +2964,7 @@ procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 // copy settings from a synedit to the options
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  x: TSynGutterFoldClickType;
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -2757,6 +2980,12 @@ begin
   fShowLineNumbers := ASynEdit.Gutter.LineNumberPart.Visible;
   fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf;
   FUseCodeFolding := ASynEdit.Gutter.CodeFoldPart.Visible;
+  if ASynEdit.Gutter.CodeFoldPart <> nil then
+    for x := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
+      ExpandedClickConf[x] := ASynEdit.Gutter.CodeFoldPart.ExpandedClickConf[x];
+      CollapsedClickConf[x] := ASynEdit.Gutter.CodeFoldPart.CollapsedClickConf[x];
+    end;
+
   fGutterColor := ASynEdit.Gutter.Color;
   fGutterWidth := ASynEdit.Gutter.Width;
   if ASynEdit.Gutter.SeparatorPart.Visible then

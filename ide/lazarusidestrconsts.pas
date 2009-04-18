@@ -1147,6 +1147,7 @@ resourcestring
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';
+  dlgCodeFoldingMouse = 'Mouse';
   dlgUseDividerDraw = 'Divider drawing';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
@@ -1264,6 +1265,25 @@ resourcestring
   dlgFoldPasAsm             = 'Asm';
   dlgFoldPasIfDef           = '{$IfDef}';
   dlgFoldPasUserRegion      = '{%Region}';
+
+  dlgMouseFoldExpFoldOne    = 'Fold One (All Expanded)';
+  dlgMouseFoldExpFoldAll    = 'Fold All (All Expanded)';
+  dlgMouseFoldColFoldOne    = 'Fold One (Some Colapsed)';
+  dlgMouseFoldColFoldAll    = 'Fold All (Some Colapsed)';
+  dlgMouseFoldColUnFoldOne  = 'Unfold One (Some Colapsed)';
+  dlgMouseFoldColUnFoldAll  = 'Unfold All (Some Colapsed)';
+
+  dlgMouseFoldGroup1        = 'Setting 1';
+  dlgMouseFoldGroup2        = 'setting 2';
+  dlgMouseFoldEnabled       = 'Enabled';
+  dlgMouseFoldButton        = 'Button';
+  dlgMouseFoldButtonLeft    = 'Left';
+  dlgMouseFoldButtonMiddle  = 'Middle';
+  dlgMouseFoldButtonRight   = 'Right';
+  dlgMouseFoldModifierShift = 'Shift';
+  dlgMouseFoldModifierCtrl  = 'Ctrl';
+  dlgMouseFoldModifierAlt   = 'Alt';
+
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';

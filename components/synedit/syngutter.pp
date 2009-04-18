@@ -5,7 +5,7 @@ unit SynGutter;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LCLType, LCLIntf, LCLProc,
+  Classes, Controls, Graphics, LCLType, LCLIntf,
   SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges;
@@ -33,6 +33,7 @@ type
     procedure SetRightOffset(Value: integer);
     procedure SetVisible(Value: boolean);
     procedure SetWidth(Value: integer);
+    function PixelToPartIndex(X: Integer): Integer;
   protected
     procedure DoChange(Sender: TObject); override;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -46,6 +47,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
     function  RealGutterWidth(CharWidth: integer): integer;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer);
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoOnGutterClick(X, Y: integer);
     property  OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -198,6 +202,21 @@ begin
   end;
 end;
 
+function TSynGutter.PixelToPartIndex(X: Integer): Integer;
+begin
+  Result := 0;
+  x := x - FLeftOffset;
+  while Result < PartCount-1 do begin
+    if Parts[Result].Visible then begin
+      if x >= Parts[Result].Width then
+        x := x - Parts[Result].Width
+      else
+        break;
+    end;
+    inc(Result)
+  end;
+end;
+
 procedure TSynGutter.DoChange(Sender: TObject);
 begin
   If FAutoSize then
@@ -235,21 +254,8 @@ begin
 end;
 
 procedure TSynGutter.DoOnGutterClick(X, Y: integer);
-var
-  i, x2 : integer;
 begin
-  i := 0;
-  x2 := x;
-  while i < PartCount-1 do begin
-    if Parts[i].Visible then begin
-      if x2 >= Parts[i].Width then
-        x2 := x2 - Parts[i].Width
-      else
-        break;
-    end;
-    inc(i)
-  end;
-  Parts[i].DoOnGutterClick(X, Y);
+  Parts[PixelToPartIndex(X)].DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutter.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -294,6 +300,23 @@ var
 begin
   for i := 0 to Parts.ByClassCount[TSynGutterLineNumber] - 1 do
     TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
+end;
+
+procedure TSynGutter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Parts[PixelToPartIndex(X)].MouseDown(Button, Shift, X, Y);
+  if (Button=mbLeft) then
+    DoOnGutterClick(X, Y);
+end;
+
+procedure TSynGutter.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  Parts[PixelToPartIndex(X)].MouseMove(Shift, X, Y);
+end;
+
+procedure TSynGutter.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Parts[PixelToPartIndex(X)].MouseUp(Button, Shift, X, Y);
 end;
 
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
