@@ -4159,9 +4159,9 @@ resourcestring
   lisCEUnsortedMembers = 'Unsorted members';
   lisCEToDos = 'ToDos';
   lisCEEmptyClassSections = 'Empty class sections';
-  lisCELongProcLineCount = 'Line count to treat procedure as "long"';
-  lisCELongParamListCount = 'Parameters count to treat then as "many"';
-  lisCENestedProcCount = 'Nested procedures count to tream them as "many"';
+  lisCELongProcLineCount = 'Line count of procedure treated as "long"';
+  lisCELongParamListCount = 'Parameters count treating as "many"';
+  lisCENestedProcCount = 'Nested procedures count treating as "many"';
   lisCEFigureCharConst = 'Search for unnamed char constants';
   lisCENotFigureConstants = 'Unnamed constants to skip';
 
