@@ -26,7 +26,7 @@ interface
 
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  StdCtrls, ExtCtrls, Classes, Controls,
+  StdCtrls, ExtCtrls, Classes, Controls, LCLProc,
   SynGutterCodeFolding;
 
 type
@@ -51,6 +51,7 @@ type
     procedure MouseConfListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MouseEnabled1Change(Sender: TObject);
   private
+    ListBoxUpdating: Boolean;
     FExpandedClickConf,
     FCollapsedClickConf: TSynGutterFoldClickConfList;
   protected
@@ -82,6 +83,7 @@ var
     Result := cbUnchecked;
   end;
 begin
+  ListBoxUpdating := True;
   case MouseConfListBox.ItemIndex of
     0: c  := FExpandedClickConf[sgctFoldOne];
     1: c  := FExpandedClickConf[sgctFoldAll];
@@ -100,6 +102,7 @@ begin
   MouseShift2.State := GetState2(ssShift);
   MouseCtrl2.State := GetState2(ssCtrl);
   MouseAlt2.State := GetState2(ssAlt);
+  ListBoxUpdating := False;
 end;
 
 procedure TMouseGroupBox1.MouseConfListBoxKeyUp(Sender: TObject; var Key: Word;
@@ -112,6 +115,7 @@ procedure TMouseGroupBox1.MouseEnabled1Change(Sender: TObject);
 var
   c: TSynGutterFoldClickConf;
 begin
+  if ListBoxUpdating then exit;
   c.Enabled := MouseEnabled1.Checked;
   c.Button := TMouseButton(MouseRadioGroup1.ItemIndex);
   c.Shift := [];
@@ -177,9 +181,6 @@ begin
   MouseShift2.Caption := dlgMouseFoldModifierShift;
   MouseCtrl2.Caption := dlgMouseFoldModifierCtrl;
   MouseAlt2.Caption := dlgMouseFoldModifierAlt;
-
-  MouseConfListBox.ItemIndex := 0;
-  MouseConfListBoxClick(nil);
 end;
 
 procedure TMouseGroupBox1.ReadSettings(

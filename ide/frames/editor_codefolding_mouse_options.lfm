@@ -22,7 +22,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
     BorderSpacing.Bottom = 6
     ItemHeight = 0
     OnClick = MouseConfListBoxClick
-    OnExit = MouseConfListBoxClick
     OnKeyUp = MouseConfListBoxKeyUp
     TabOrder = 0
   end
@@ -56,7 +55,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseEnabled1'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 0
     end
     object MouseRadioGroup1: TRadioGroup
@@ -85,7 +83,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 1
     end
     object MouseShift1: TCheckBox
@@ -102,7 +99,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseShift1'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 2
     end
     object MouseCtrl1: TCheckBox
@@ -120,7 +116,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseCtrl1'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 3
     end
     object MouseAlt1: TCheckBox
@@ -138,7 +133,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseAlt1'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 4
     end
   end
@@ -174,7 +168,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseEnabled2'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 0
     end
     object MouseRadioGroup2: TRadioGroup
@@ -203,7 +196,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 1
     end
     object MouseShift2: TCheckBox
@@ -219,7 +211,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseShift2'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 2
     end
     object MouseCtrl2: TCheckBox
@@ -237,7 +228,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseCtrl2'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 3
     end
     object MouseAlt2: TCheckBox
@@ -255,7 +245,6 @@ inherited MouseGroupBox1: TMouseGroupBox1
       Caption = 'MouseAlt2'
       OnChange = MouseEnabled1Change
       OnClick = MouseEnabled1Change
-      OnExit = MouseEnabled1Change
       TabOrder = 4
     end
   end
