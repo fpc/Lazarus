@@ -2401,7 +2401,6 @@ end;
 
 procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 var
-  Conf: TSynDividerDrawConfig;
   ConfName: String;
   Path: String;
   i, h: Integer;
@@ -2450,7 +2449,6 @@ var
   DefSyn: TSrcIDEHighlighter;
   i, h:   Integer;
   Path:   String;
-  Conf, DefConf: TSynDividerDrawConfig;
   ConfName: String;
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
