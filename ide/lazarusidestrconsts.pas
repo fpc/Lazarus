@@ -1147,6 +1147,7 @@ resourcestring
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';
+  dlgUseDividerDraw = 'Divider drawing';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
@@ -1225,8 +1226,6 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
-  dlgDividerConf = 'Divider';
-  dlgfoldConf    = 'Folding';
 
   dlgDividerOnOff = 'Draw divider';
   dlgDividerDrawDepth = 'Draw divider level';

@@ -121,7 +121,7 @@ uses
   Backup_Options, naming_options, fpdoc_options,
   editor_display_options, editor_keymapping_options,
   editor_color_options, editor_codetools_options, editor_codefolding_options,
-  editor_general_misc_options,
+  editor_general_misc_options, editor_dividerdraw_options,
   codetools_general_options, codetools_codecreation_options, atom_checkboxes_options,
   codetools_wordpolicy_options, codetools_linesplitting_options,
   codetools_space_options, codetools_identifiercompletion_options,

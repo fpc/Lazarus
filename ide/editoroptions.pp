@@ -663,6 +663,10 @@ type
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 
+    procedure ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+    procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+    procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+
     function GetLineColors(Syn: TSrcIDEHighlighter;
           AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
           out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
@@ -2397,7 +2401,6 @@ end;
 
 procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 var
-  TheInfo: TEditorOptionsDividerRecord;
   Conf: TSynDividerDrawConfig;
   ConfName: String;
   Path: String;
@@ -2408,23 +2411,8 @@ begin
   if h < 0 then
     h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
   ReadDefaultsForHighlighterFoldSettings(Syn);
-
-  // read settings, that are different from the defaults
-  for i := 0 to TheInfo.Count - 1 do begin
-    Conf := Syn.DividerDrawConfig[i];
-    ConfName := TheInfo.Info^[i].Xml;
-    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
-      '/Type' + ConfName + '/' ;
-    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
-        Conf.MaxDrawDepth);
-    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
-        Conf.TopColor);
-    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
-        Conf.NestColor);
-  end;
 
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
@@ -2441,7 +2429,6 @@ end;
 
 procedure TEditorOptions.ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 var
-  TheInfo: TEditorOptionsDividerRecord;
   i, h: Integer;
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
@@ -2449,12 +2436,6 @@ begin
   if h < 0 then
     h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
-  for i := 0 to TheInfo.Count - 1 do begin
-    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
-    Syn.DividerDrawConfig[i].TopColor := clDefault;
-    Syn.DividerDrawConfig[i].NestColor := clDefault;
-  end;
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
     for i := 0 to TheFoldInfo.Count - 1 do begin
@@ -2470,7 +2451,6 @@ var
   i, h:   Integer;
   Path:   String;
   Conf, DefConf: TSynDividerDrawConfig;
-  TheInfo: TEditorOptionsDividerRecord;
   ConfName: String;
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
@@ -2478,24 +2458,10 @@ begin
   if h < 0 then
     h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
   DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
   try
     ReadDefaultsForHighlighterFoldSettings(DefSyn);
-    for i := 0 to TheInfo.Count - 1 do begin
-      Conf := Syn.DividerDrawConfig[i];
-      DefConf := DefSyn.DividerDrawConfig[i]; // default value
-      ConfName := TheInfo.Info^[i].Xml;
-      Path := 'EditorOptions/DividerDraw/Lang' +
-        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-      XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,
-                               DefConf.MaxDrawDepth);
-      XMLConfig.SetDeleteValue(Path + 'TopColor/Value', Conf.TopColor,
-                               DefConf.TopColor);
-      XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
-                               DefConf.NestColor);
-    end;
 
     if (syn is TSynCustomFoldHighlighter) then begin
       TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
@@ -2514,11 +2480,97 @@ begin
   end;
 end;
 
+procedure TEditorOptions.ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  Conf: TSynDividerDrawConfig;
+  ConfName: String;
+  Path: String;
+  i, h: Integer;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+
+  ReadDefaultsForHighlighterDivDrawSettings(Syn);
+
+  // read settings, that are different from the defaults
+  for i := 0 to TheInfo.Count - 1 do begin
+    Conf := Syn.DividerDrawConfig[i];
+    ConfName := TheInfo.Info^[i].Xml;
+    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
+      '/Type' + ConfName + '/' ;
+    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
+        Conf.MaxDrawDepth);
+    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
+        Conf.TopColor);
+    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
+        Conf.NestColor);
+  end;
+end;
+
+procedure TEditorOptions.ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  i, h: Integer;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+  for i := 0 to TheInfo.Count - 1 do begin
+    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
+    Syn.DividerDrawConfig[i].TopColor := clDefault;
+    Syn.DividerDrawConfig[i].NestColor := clDefault;
+  end;
+end;
+
+procedure TEditorOptions.WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  DefSyn: TSrcIDEHighlighter;
+  i, h:   Integer;
+  Path:   String;
+  Conf, DefConf: TSynDividerDrawConfig;
+  TheInfo: TEditorOptionsDividerRecord;
+  ConfName: String;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+
+  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
+  try
+    ReadDefaultsForHighlighterDivDrawSettings(DefSyn);
+    for i := 0 to TheInfo.Count - 1 do begin
+      Conf := Syn.DividerDrawConfig[i];
+      DefConf := DefSyn.DividerDrawConfig[i]; // default value
+      ConfName := TheInfo.Info^[i].Xml;
+      Path := 'EditorOptions/DividerDraw/Lang' +
+        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+      XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,
+                               DefConf.MaxDrawDepth);
+      XMLConfig.SetDeleteValue(Path + 'TopColor/Value', Conf.TopColor,
+                               DefConf.TopColor);
+      XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
+                               DefConf.NestColor);
+    end;
+
+  finally
+    DefSyn.Free;
+  end;
+end;
+
 procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
   ReadHighlighterSettings(Syn, '');
   ReadHighlighterFoldSettings(Syn);
+  ReadHighlighterDivDrawSettings(Syn);
 end;
 
 procedure TEditorOptions.SetHighlighterSettings(Syn: TSrcIDEHighlighter);
@@ -2526,6 +2578,7 @@ procedure TEditorOptions.SetHighlighterSettings(Syn: TSrcIDEHighlighter);
 begin
   WriteHighlighterSettings(Syn, '');
   WriteHighlighterFoldSettings(Syn);
+  WriteHighlighterDivDrawSettings(Syn);
 end;
 
 function TEditorOptions.GetLineColors(Syn: TSrcIDEHighlighter;
