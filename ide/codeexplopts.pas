@@ -90,6 +90,11 @@ const
   DefaultFigLongParamListCount = 6;
   DefaultFigNestedProcCount = 3;
   DefaultFigureCharConst = false;
+  DefaultNotFigureConstants: array[1..2] of ansistring // Note: keep this asciiz
+    = (
+    '0',
+    '1'
+    );
 
 type
 
@@ -117,10 +122,12 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function CreateListOfNotFigureConstants: TStrings;
     procedure ClearNotFigureConstants;
-    procedure SetListOfNotFigureConstants(List: TStrings);
+    procedure SetListOfNotFigureConstants(List: TStrings; Add: boolean);
+    procedure LoadNotFigureConstantsToDefaults;
     function NotFigureConstant(p: PChar): boolean;// test if atom is in NotFigureConstants
     procedure AddNotFigureConstant(const Atom: string);
-    function IsNotFigureConstantsDefault: boolean;
+    function IsNotFigureConstantsDefault(Exactly: boolean): boolean;
+    function IsNotFigureConstantDefault(const Atom: string): boolean;
   public
     property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh default cerSwitchEditorPage;
     property Mode: TCodeExplorerMode read FMode write FMode default cemCategory;
@@ -297,7 +304,7 @@ begin
     FFigureCharConst:=Src.FigureCharConst;
     List:=Src.CreateListOfNotFigureConstants;
     try
-      SetListOfNotFigureConstants(List);
+      SetListOfNotFigureConstants(List,false);
     finally
       List.Free;
     end;
@@ -386,11 +393,14 @@ begin
       begin
         FFigureCharConst:=XMLConfig.GetValue(CurPath+'CharConsts/Value',
                                                  DefaultFigureCharConst);
-        // save NotFigureConstants
+        // load standard NotFigureConstants
+        if XMLConfig.GetValue(CurPath+'Ignore/ContainsDefaults',true) then
+          LoadNotFigureConstantsToDefaults;
+        // load custom NotFigureConstants
         List:=TStringList.Create;
         try
-          LoadStringList(XMLConfig,List,CurPath+'Ignore');
-          SetListOfNotFigureConstants(List);
+          LoadStringList(XMLConfig,List,CurPath+'Ignore/');
+          SetListOfNotFigureConstants(List,true);
         finally
           List.Free;
         end;
@@ -406,6 +416,8 @@ var
   f: TCEFigureCategory;
   CurPath: String;
   List: TStrings;
+  ContainsDefaults: Boolean;
+  i: Integer;
 begin
   XMLConfig.SetDeleteValue(Path+'Refresh/Value',
                            CodeExplorerRefreshNames[FRefresh],
@@ -437,10 +449,17 @@ begin
       begin
         XMLConfig.SetDeleteValue(CurPath+'CharConsts/Value',
                            FFigureCharConst,DefaultFigureCharConst);
+        // save standard NotFigureConstants
+        ContainsDefaults:=IsNotFigureConstantsDefault(false);
+        XMLConfig.SetDeleteValue(CurPath+'Ignore/ContainsDefaults',
+           ContainsDefaults,true);
         // save NotFigureConstants
         List:=CreateListOfNotFigureConstants;
         try
-          SaveStringList(XMLConfig,List,CurPath+'Ignore');
+          for i:=List.Count-1 downto 0 do
+            if IsNotFigureConstantDefault(List[i]) then
+              List.Delete(i);
+          SaveStringList(XMLConfig,List,CurPath+'Ignore/');
         finally
           List.Free;
         end;
@@ -486,19 +505,24 @@ begin
   FNotFigureConstants.Clear;
 end;
 
-procedure TCodeExplorerOptions.SetListOfNotFigureConstants(List: TStrings);
+procedure TCodeExplorerOptions.SetListOfNotFigureConstants(List: TStrings;
+  Add: boolean);
 var
   i: Integer;
-  s: string;
+begin
+  if not Add then
+    ClearNotFigureConstants;
+  for i:=0 to List.Count-1 do
+    AddNotFigureConstant(List[i]);
+end;
+
+procedure TCodeExplorerOptions.LoadNotFigureConstantsToDefaults;
+var
+  i: Integer;
 begin
   ClearNotFigureConstants;
-  for i:=0 to List.Count-1 do begin
-    s:=List[i];
-    if s='' then continue;
-    FNotFigureConstants.Add(Pointer(s));
-    // keep reference count
-    Pointer(s):=nil;
-  end;
+  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
+    AddNotFigureConstant(DefaultNotFigureConstants[i]);
 end;
 
 function TCodeExplorerOptions.NotFigureConstant(p: PChar): boolean;
@@ -510,17 +534,37 @@ procedure TCodeExplorerOptions.AddNotFigureConstant(const Atom: string);
 var
   s: String;
 begin
-  if NotFigureConstant(@Atom[1]) then exit;
+  if Atom='' then exit;
+  if NotFigureConstant(PChar(Atom)) then exit;
   s:=Atom;
   FNotFigureConstants.Add(Pointer(s));
   Pointer(s):=nil;
 end;
 
-function TCodeExplorerOptions.IsNotFigureConstantsDefault: boolean;
+function TCodeExplorerOptions.IsNotFigureConstantsDefault(Exactly: boolean
+  ): boolean;
+const
+  DefCount = high(DefaultNotFigureConstants)-Low(DefaultNotFigureConstants)+1;
+var
+  i: Integer;
 begin
-  Result:=(FNotFigureConstants.Count=2)
-          and NotFigureConstant('0')
-          and NotFigureConstant('1');
+  if Exactly and (FNotFigureConstants.Count=DefCount) then
+    exit(false);
+  if FNotFigureConstants.Count<DefCount then exit(false);
+  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
+    if not NotFigureConstant(PChar(DefaultNotFigureConstants[i])) then exit(false);
+  Result:=true;
+end;
+
+function TCodeExplorerOptions.IsNotFigureConstantDefault(const Atom: string
+  ): boolean;
+var
+  i: Integer;
+begin
+  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
+    if CompareAtom(PChar(Atom),PChar(DefaultNotFigureConstants[i]),false)=0 then
+      exit(true);
+  Result:=false;
 end;
 
 initialization
