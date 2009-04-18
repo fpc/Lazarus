@@ -170,11 +170,15 @@ end;
 procedure TEditorDividerDrawOptionsFrame.DividerSpinEditChange(Sender: TObject);
 var
   Spin: TSpinEdit absolute Sender;
+  i: Integer;
 begin
   if not assigned(FCurDividerConf) then exit;
   FCurDividerConf.MaxDrawDepth := Spin.Value;
   TopLvlPanel.Enabled := FCurDividerConf.MaxDrawDepth > 0;
   NestLvlPanel.Enabled := FCurDividerConf.MaxDrawDepth > 1;
+  for i := 0 to DividerConfigListBox.Count - 1 do
+    DividerConfigListBox.Checked[i] :=
+      FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth > 0;
 end;
 
 procedure TEditorDividerDrawOptionsFrame.NestLvlColorBoxChange(Sender: TObject);
