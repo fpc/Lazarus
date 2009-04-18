@@ -89,6 +89,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
     property Constraints;
     property Directory;
@@ -120,6 +121,7 @@ Type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
+    property OnSelectionChange;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentShowHint;
