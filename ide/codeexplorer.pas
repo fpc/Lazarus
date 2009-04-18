@@ -941,6 +941,8 @@ begin
         if (cefcPublishedPropWithoutDefault in Figures)
         and (CodeNode.Parent.Desc=ctnClassPublished)
         and (not Tool.PropertyHasSpecifier(CodeNode,'default'))
+        and (Tool.PropertyHasSpecifier(CodeNode,'read'))
+        and (Tool.PropertyHasSpecifier(CodeNode,'write'))
         then begin
           AddCodeNode(cefcPublishedPropWithoutDefault,CodeNode);
         end;
