@@ -230,7 +230,7 @@ begin
   if CommentStartPos<1 then exit(false);
   if CommentEndPos-CommentStartPos<5 then exit(false);
   if Src[CommentStartPos]='/' then begin
-    StartPos:=CommentStartPos+1;
+    StartPos:=CommentStartPos+2;
     EndPos:=CommentEndPos-1;
   end else if (Src[CommentStartPos]='{') then begin
     StartPos:=CommentStartPos+1;
