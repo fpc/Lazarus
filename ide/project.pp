@@ -2436,7 +2436,7 @@ begin
     try
       Path:='ProjectOptions/';
       StorePathDelim:=CheckPathDelim(
-        XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
+        XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
       fCurStorePathDelim:=StorePathDelim;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
@@ -2524,7 +2524,7 @@ begin
 
           Path:='ProjectSession/';
           SessionStorePathDelim:=CheckPathDelim(
-            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim),fPathDelimChanged);
+            XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
           fCurStorePathDelim:=SessionStorePathDelim;
 
           FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
