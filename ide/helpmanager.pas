@@ -35,7 +35,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, LResources, FileUtil,
+  StdCtrls, Dialogs, ExtCtrls, LResources, FileUtil, Graphics,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -316,6 +316,8 @@ constructor TSimpleHTMLControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   WordWrap := True;
+  Layout := tlCenter;
+  Alignment := taCenter;
 end;
 
 function TSimpleHTMLControl.GetURL: string;
@@ -377,8 +379,8 @@ begin
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
-    AWidth := R.Right - R.Left;
-    AHeight := R.Bottom - R.Top;
+    AWidth := R.Right - R.Left + 8; // border
+    AHeight := R.Bottom - R.Top + 8; // border
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
@@ -1285,12 +1287,19 @@ begin
       ms.Free;
     end;
     Provider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
-    if NewWidth<=0 then
-      NewWidth:=500;
-    if NewHeight<=0 then
-      NewHeight:=200;
-    HintWinRect := Rect(0,0,NewWidth,NewHeight);
-    TheHint:='';
+
+    if NewWidth <= 0 then
+      NewWidth := 500
+    else
+      inc(NewWidth, 8); // border
+
+    if NewHeight <= 0 then
+      NewHeight := 200
+    else
+      inc(NewHeight, 8); // border
+
+    HintWinRect := Rect(0, 0, NewWidth, NewHeight);
+    TheHint := '';
   end else begin
     HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
   end;
