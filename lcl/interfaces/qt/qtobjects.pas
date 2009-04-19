@@ -47,7 +47,7 @@ type
     FInEventCount: Integer;
     FReleaseInEvent: Boolean;
   public
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater: Boolean;
     {$ENDIF}
     FEventHook: QObject_hookH;
@@ -710,7 +710,7 @@ end;
 
 constructor TQtObject.Create;
 begin
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := False;
   {$ENDIF}
   FEventHook := nil;
@@ -723,7 +723,7 @@ destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
   begin
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     DetachEvents;
     if FDeleteLater then
       QObject_deleteLater(TheObject)
@@ -743,7 +743,7 @@ procedure TQtObject.Release;
 begin
   if InEvent then
   begin
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater := True;
     {$ENDIF}
     FReleaseInEvent := True;
@@ -3364,7 +3364,7 @@ constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 begin
   inherited Create;
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
   {$ENDIF}
   FAppObject := App;
@@ -3413,7 +3413,7 @@ end;
 
 procedure TQtTimer.DetachEvents;
 begin
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QTimer_stop(QTimerH(TheObject));
   {$ENDIF}
   if FTimerHook <> nil then

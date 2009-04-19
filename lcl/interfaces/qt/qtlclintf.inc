@@ -395,7 +395,7 @@ const
  { QImageFormat_ARGB32               } 32,
  { QImageFormat_ARGB32_Premultiplied } 32,
  { QImageFormat_RGB16                } 16,
- {$IFDEF USE_QT_44}
+ {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   { QImageFormat_ARGB8565_Premultiplied         } 24,
   { QImageFormat_RGB666                         } 24,
   { QImageFormat_ARGB6666_Premultiplied         } 24,

@@ -3942,6 +3942,7 @@ lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
 lcl/interfaces/qt/qt43.pas svneol=native#text/plain
 lcl/interfaces/qt/qt44.pas svneol=native#text/plain
+lcl/interfaces/qt/qt45.pas svneol=native#text/plain
 lcl/interfaces/qt/qtcaret.pas svneol=native#text/pascal
 lcl/interfaces/qt/qtdefines.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtint.pp svneol=native#text/pascal

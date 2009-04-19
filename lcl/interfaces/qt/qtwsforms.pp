@@ -363,7 +363,12 @@ begin
   AVisible := AWidget.getVisible;
   Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle);
   if (Flags and QtFramelessWindowHint) = 0 then
-    Flags := Flags or GetQtBorderIcons(ABorderIcons) or QtWindowTitleHint;
+    Flags := Flags or GetQtBorderIcons(ABorderIcons) or
+      QtWindowTitleHint or QtCustomizeWindowHint
+      {$IFDEF USE_QT_45}
+      or QtWindowCloseButtonHint
+      {$ENDIF}
+      ;
   if not (csDesigning in AWidget.LCLObject.ComponentState) then
     AWidget.setWindowFlags(Flags);
   AWidget.setVisible(AVisible);

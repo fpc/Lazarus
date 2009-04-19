@@ -411,7 +411,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
-    {$IFNDEF USE_QT_44}
+    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
     destructor Destroy; override;
     {$ENDIF}
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -486,7 +486,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IFNDEF USE_QT_44}
+    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
     destructor Destroy; override;
     {$ENDIF}
     function CheckState: QtCheckState;
@@ -506,7 +506,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IFNDEF USE_QT_44}
+    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
     destructor Destroy; override;
     {$ENDIF}
   public
@@ -522,7 +522,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IFNDEF USE_QT_44}
+    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
     destructor Destroy; override;
     {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1739,7 +1739,7 @@ begin
       QEventKeyRelease:
         begin
           {non-spontaneous key events are garbage in Qt >= 4.4}
-          {$IFDEF USE_QT_44}
+          {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
           Result := QEvent_spontaneous(Event);
           if Result then
           {$ENDIF}
@@ -3624,7 +3624,7 @@ procedure TQtWidget.DestroyWidget;
 begin
   if (Widget <> nil) and FOwnWidget then
   begin
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     if not FDeleteLater then
       QWidget_destroy(Widget)
     else
@@ -3839,7 +3839,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-{$IFNDEF USE_QT_44}
+{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
 destructor TQtPushButton.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4039,7 +4039,7 @@ begin
       
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     QWidget_setAttribute(Result, QtWA_DeleteOnClose);
     {$ENDIF}
   end;
@@ -4438,7 +4438,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-{$IFNDEF USE_QT_44}
+{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
 destructor TQtCheckBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4525,7 +4525,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-{$IFNDEF USE_QT_44}
+{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
 destructor TQtRadioButton.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -4645,7 +4645,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-{$IFNDEF USE_QT_44}
+{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
 destructor TQtGroupBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -7578,7 +7578,7 @@ end;
 procedure TQtTreeWidget.setHeaderVisible(AVisible: Boolean);
 begin
   if (csDesigning in LCLObject.ComponentState) then
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
     {$ELSE}
     QWidget_setVisible(QTreeView_header(QTreeViewH(Widget)), AVisible)
@@ -8032,7 +8032,7 @@ function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
   FIcon := nil;
   Result := QMenu_create();
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
   {$ENDIF}
   FActionHandle := nil;;
@@ -8113,7 +8113,7 @@ end;
 procedure TQtMenu.SlotAboutToHide; cdecl;
 begin
   if FMenuItem.Menu is TPopupMenu then
-    {$IFDEF USE_QT_44}
+    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     DoPopupClose;
     {$ELSE}
     QCoreApplication_postEvent(Widget, QEvent_create(LCLQt_PopupMenuClose));
@@ -9640,7 +9640,7 @@ end;
 
 procedure TQtFileDialog.setFilter(const AFilter: WideString);
 begin
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
   {$ELSE}
   QFileDialog_setFilter(QFileDialogH(Widget), @AFilter);
@@ -9659,7 +9659,7 @@ end;
 
 procedure TQtFileDialog.setSelectedFilter(const ASelFilter: WideString);
 begin
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_selectNameFilter(QFileDialogH(Widget), @ASelFilter);
   {$ELSE}
   QFileDialog_selectFilter(QFileDialogH(Widget), @ASelFilter);
@@ -9704,7 +9704,7 @@ end;
 
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
-  {$IFDEF USE_QT_44}
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_nameFilters(QFileDialogH(Widget), retval);
   {$ELSE}
   QFileDialog_filters(QFileDialogH(Widget), retval);
