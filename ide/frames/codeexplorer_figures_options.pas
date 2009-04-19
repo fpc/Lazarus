@@ -37,6 +37,7 @@ type
     FigureCategoriesCheckGroup: TCheckGroup;
     IgnoreFigureConstantsLabel: TLabel;
     IgnoreFigConstInFuncsLabel: TLabel;
+    Label1: TLabel;
     LongProcLineCountLabel: TLabel;
     LongParamListCountLabel: TLabel;
     IgnoreFigureConstantsMemo: TMemo;

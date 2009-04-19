@@ -1,52 +1,59 @@
 inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
   Height = 396
-  Width = 478
+  Width = 531
   ClientHeight = 396
-  ClientWidth = 478
+  ClientWidth = 531
   TabOrder = 0
-  DesignLeft = 681
-  DesignTop = 339
+  DesignLeft = 756
+  DesignTop = 357
   object IgnoreFigureConstantsLabel: TLabel[0]
-    AnchorSideLeft.Control = FigureLeftPanel
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FigureCategoriesCheckGroup
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = FigureCharConstCheckBox
-    Left = 155
+    Left = 0
     Height = 14
-    Top = 56
+    Top = 176
     Width = 137
-    BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     Caption = 'IgnoreFigureConstantsLabel'
     ParentColor = False
   end
   object IgnoreFigConstInFuncsLabel: TLabel[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FigureLeftPanel
+    AnchorSideLeft.Control = FigureLeftPanel
+    AnchorSideTop.Control = FigureCategoriesCheckGroup
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    Left = 269
     Height = 14
-    Top = 223
+    Top = 176
     Width = 138
     BorderSpacing.Top = 6
     Caption = 'IgnoreFigConstInFuncsLabel'
     ParentColor = False
   end
-  object FigureCategoriesCheckGroup: TCheckGroup[2]
+  object Label1: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 265
+    Height = 14
+    Top = 40
+    Width = 1
+    ParentColor = False
+  end
+  object FigureCategoriesCheckGroup: TCheckGroup[3]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = Label1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 50
+    Height = 170
     Top = 0
-    Width = 478
+    Width = 262
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
+    BorderSpacing.Right = 3
     Caption = 'FigureCategoriesCheckGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -56,21 +63,21 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    Constraints.MinHeight = 50
+    Constraints.MinHeight = 170
     TabOrder = 0
   end
-  object IgnoreFigureConstantsMemo: TMemo[3]
+  object IgnoreFigureConstantsMemo: TMemo[4]
     AnchorSideLeft.Control = IgnoreFigureConstantsLabel
     AnchorSideTop.Control = IgnoreFigureConstantsLabel
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
+    AnchorSideRight.Control = FigureCategoriesCheckGroup
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = FigureLeftPanel
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 155
-    Height = 144
-    Top = 73
-    Width = 323
+    Left = 0
+    Height = 203
+    Top = 193
+    Width = 262
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Lines.Strings = (
@@ -78,16 +85,16 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
     )
     TabOrder = 1
   end
-  object FigureLeftPanel: TPanel[4]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FigureCategoriesCheckGroup
-    AnchorSideTop.Side = asrBottom
-    Left = 0
+  object FigureLeftPanel: TPanel[5]
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 269
     Height = 161
-    Top = 56
+    Top = 0
     Width = 145
     AutoSize = True
-    BorderSpacing.Top = 6
+    BorderSpacing.Left = 3
     BevelOuter = bvNone
     ClientHeight = 161
     ClientWidth = 145
@@ -176,18 +183,18 @@ inherited CodeExplorerFiguresOptionsFrame: TCodeExplorerFiguresOptionsFrame
       TabOrder = 3
     end
   end
-  object IgnoreFigConstInFuncsMemo: TMemo[5]
-    AnchorSideLeft.Control = Owner
+  object IgnoreFigConstInFuncsMemo: TMemo[6]
+    AnchorSideLeft.Control = FigureLeftPanel
     AnchorSideTop.Control = IgnoreFigConstInFuncsLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 0
-    Height = 156
-    Top = 240
-    Width = 478
+    Left = 269
+    Height = 203
+    Top = 193
+    Width = 262
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Lines.Strings = (
