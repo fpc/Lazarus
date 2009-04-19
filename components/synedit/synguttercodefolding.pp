@@ -5,7 +5,7 @@ unit SynGutterCodeFolding;
 interface
 
 uses
-  Classes, Controls, Graphics, LCLIntf, SynGutterBase, SynEditMiscProcs,
+  sysutils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
   SynEditFoldedView;
 
 type
@@ -37,8 +37,11 @@ type
     FFoldView: TSynEditFoldedView;
     FExpandedClickConf,
     FCollapsedClickConf: TSynGutterFoldClickConfList;
+    FPopUp: TPopupMenu;
+    FMenuInf: Array of TFoldViewNodeInfo;
   protected
     procedure DoChange(Sender: TObject); override;
+    procedure PopClicked(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -47,6 +50,7 @@ type
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DoOnGutterClick(X, Y: integer); override;
     property ExpandedClickConf: TSynGutterFoldClickConfList read FExpandedClickConf;
     property CollapsedClickConf: TSynGutterFoldClickConfList read FCollapsedClickConf;
@@ -80,6 +84,7 @@ begin
   MarkupInfo.FrameColor := clNone;
 
   FWidth := 10;
+  FPopUp := TPopupMenu.Create(nil);
 
   for i := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
     FExpandedClickConf[i].Enabled := False;
@@ -124,6 +129,7 @@ end;
 
 destructor TSynGutterCodeFolding.Destroy;
 begin
+  FreeAndNil(FPopUp);
   inherited Destroy;
 end;
 
@@ -137,18 +143,25 @@ end;
 
 procedure TSynGutterCodeFolding.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
+var
+  ClickDone: Boolean;
+  m: TMenuItem;
+  line, i, c: Integer;
+  inf: TFoldViewNodeInfo;
+  s, s2: String;
   function isClick(conf : TSynGutterFoldClickConf): Boolean;
   begin
+    if ClickDone then exit(False);
     Result := ( conf.Enabled and (Button = conf.Button) and
                 (Shift * conf.ShiftMask = conf.Shift) ) or
               ( conf.Enabled2 and (Button = conf.Button2) and
                 (Shift * conf.ShiftMask2 = conf.Shift2) );
+    ClickDone := Result;
   end;
-var
-  line  : integer;
 begin
   line := TSynEdit(SynEdit).PixelsToRowColumn(Point(X, Y)).Y;
   if line > SynEdit.Lines.Count then exit;
+  ClickDone := False;;
 
   case FFoldView.FoldType[FFoldView.TextIndexToScreenLine(Line-1)] of
     cfCollapsed :
@@ -170,6 +183,55 @@ begin
           FFoldView.FoldAtTextIndex(Line-1, -1, 0);
       end;
   end;
+  if (Button = mbRight) then begin
+    if not ClickDone then begin
+      FPopUp.Items.Clear;
+      c := FFoldView.OpenFoldCount(line-1);
+      SetLength(FMenuInf,c);
+      for i := c-1 downto 0 do begin
+        inf := FFoldView.OpenFoldInfo(line-1, i);
+        FMenuInf[i] := inf;
+        if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
+        then begin
+          m := TMenuItem.Create(FPopUp);
+          m.Caption := cLineCaption;
+          m.Tag := -1;
+          FPopUp.Items.Add(m);
+        end;
+        s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
+        if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
+        s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
+        s2 := '';
+        if inf.OpenCount > 1 then
+          s2 := format(' (%d/%d)', [inf.OpenIndex+1, inf.OpenCount]);
+        m := TMenuItem.Create(FPopUp);
+        m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+        m.ShowAlwaysCheckable := true;
+        m.Checked := inf.Folded;
+        m.Tag := i;
+        m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
+        FPopUp.Items.Add(m);
+      end;
+      FPopUp.PopUp;
+    end;
+  end;
+end;
+
+procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
+var
+  inf: TFoldViewNodeInfo;
+begin
+   inf := FMenuInf[(Sender as TMenuItem).tag];
+   if inf.Folded then
+     FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False)
+   else
+     FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
+end;
+
+procedure TSynGutterCodeFolding.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);

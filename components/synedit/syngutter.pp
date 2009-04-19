@@ -28,6 +28,7 @@ type
     FVisible: boolean;
     FAutoSize: boolean;
     FOnGutterClick: TGutterClickEvent;
+    FMouseDownPart: Integer;
     procedure SetAutoSize(const Value: boolean);
     procedure SetLeftOffset(Value: integer);
     procedure SetRightOffset(Value: integer);
@@ -304,19 +305,20 @@ end;
 
 procedure TSynGutter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Parts[PixelToPartIndex(X)].MouseDown(Button, Shift, X, Y);
+  FMouseDownPart := PixelToPartIndex(X);
+  Parts[FMouseDownPart].MouseDown(Button, Shift, X, Y);
   if (Button=mbLeft) then
     DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutter.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  Parts[PixelToPartIndex(X)].MouseMove(Shift, X, Y);
+  Parts[FMouseDownPart].MouseMove(Shift, X, Y);
 end;
 
 procedure TSynGutter.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Parts[PixelToPartIndex(X)].MouseUp(Button, Shift, X, Y);
+  Parts[FMouseDownPart].MouseUp(Button, Shift, X, Y);
 end;
 
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;

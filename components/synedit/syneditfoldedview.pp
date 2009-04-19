@@ -170,6 +170,14 @@ const
     );
 
 type
+  TFoldViewNodeInfo = record
+    HNode: TSynFoldNodeInfo;
+    Text, Keyword: String;
+    LineNum, ColIndex, OpenIndex: Integer;
+    OpenCount: Integer;
+    Folded: boolean;
+  end;
+
   { TSynTextFoldedView
       *Line      = Line (0-based) on Screen (except TopLine which should be TopViewPos)
       *ViewPos   = Line (1-based) in the array of viewable/visible lines
@@ -282,7 +290,11 @@ type
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     procedure FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine: Integer = 0); // Real/All lines
-    
+  public
+    function OpenFoldCount(aStartIndex: Integer): Integer;
+    function OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
+
+  public
     // Find the visible first line of the fold at ALine. Returns -1 if Aline is not folded
     function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
     function ExpandedLineForBlockAtLine(ALine : Integer; HalfExpanded: Boolean = True) : Integer;
@@ -2143,6 +2155,52 @@ end;
 procedure TSynEditFoldedView.FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine : Integer);
 begin
   FixFolding(AStartIndex + 1, AMinEndLine, fFoldTree);
+end;
+
+function TSynEditFoldedView.OpenFoldCount(aStartIndex: Integer): Integer;
+var
+  hl: TSynCustomFoldHighlighter;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit(-1);
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+  Result := hl.FoldNestCount(AStartIndex-1) + hl.FoldOpenCount(AStartIndex);
+end;
+
+function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
+var
+  hl: TSynCustomFoldHighlighter;
+  n, o: Integer;
+  nd: TSynFoldNodeInfo;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+  hl.CurrentLines := fLines;
+  n := hl.FoldNestCount(AStartIndex-1);
+  while (ColIndex < n) do begin
+    dec(aStartIndex);
+    n := hl.FoldNestCount(AStartIndex-1);
+  end;
+  ColIndex := ColIndex - n;
+  o := hl.FoldOpenCount(AStartIndex);
+  Result.OpenCount := o;
+  n := hl.FoldNodeInfoCount[aStartIndex] - 1;
+  while (o > ColIndex) and (n >= 0) do begin
+    nd := hl.FoldNodeInfo[aStartIndex, n];
+    if sfaInvalid in nd.FoldAction then break;
+    if sfaClose in nd.FoldAction then inc(o);
+    if sfaOpen in nd.FoldAction then dec(o);
+    dec(n);
+  end;
+  inc(n);
+  Result.HNode := nd;
+  Result.Text := fLines[aStartIndex];
+  Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
+  Result.LineNum := aStartIndex + 1;
+  Result.ColIndex := ColIndex; // for FoldAction
+  Result.OpenIndex := ColIndex; // for  (2/3)
+  Result.Folded := IsFoldedAtTextIndex(aStartIndex, ColIndex);
 end;
 
 function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer;

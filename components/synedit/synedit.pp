@@ -2336,13 +2336,13 @@ begin
   end;
   if (X < fGutterWidth) then begin
     Include(fStateFlags, sfGutterClick);
-    inherited MouseDown(Button, Shift, X, Y);
     IncPaintLock;
     try
       FGutter.MouseDown(Button, Shift, X, Y);
     finally
       DecPaintLock;
     end;
+    inherited MouseDown(Button, Shift, X, Y);
     LCLIntf.SetFocus(Handle);
     exit;
   end;
