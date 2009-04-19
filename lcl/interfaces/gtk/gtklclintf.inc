@@ -216,7 +216,6 @@ var
   ImgDepth: Byte absolute ARawImage.Description.Depth;
   ImgDataSize: PtrUInt absolute ARawImage.DataSize;
   Drawable: PGdkDrawable;
-  Bitmap: PGdkBitmap;
   Pixbuf, TmpPixBuf: PGdkPixbuf;
   GC: PGdkGC;
   Visual: PGdkVisual;
@@ -258,8 +257,6 @@ begin
     GdiObject^.Depth := ImgDepth;
 
     // create Pixmap from data
-    Bitmap := nil;
-
     if ImgDepth = 1
     then begin
       // create a GdkBitmap
