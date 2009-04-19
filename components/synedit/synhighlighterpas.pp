@@ -2495,7 +2495,6 @@ end;
 function TSynPasSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer;
 var
   inf, inf2: TSynPasRangeInfo;
-  r: TSynPasSynRange;
 begin
   Result := 0;
   if (AType <> 1) then begin
