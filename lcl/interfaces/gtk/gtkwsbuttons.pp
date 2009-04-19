@@ -38,7 +38,7 @@ uses
   // widgetset
   WSButtons, WSProc,
   // interface
-  GtkDef;
+  GtkDef, GtkExtra;
 
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;
