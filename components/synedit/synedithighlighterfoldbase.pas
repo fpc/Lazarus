@@ -110,6 +110,7 @@ type
     FoldLvlStart, FoldLvlEnd: Integer;
     FoldAction: TSynFoldActions;
     FoldType: Pointer;
+    FoldGroup: Integer;
   end;
 
   { TSynCustomFoldHighlighter }
@@ -152,6 +153,7 @@ type
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
+    function FoldTypeCount: integer; virtual;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
              UseCloseNodes: boolean = false): integer; virtual;
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
@@ -315,6 +317,11 @@ end;
 function TSynCustomFoldHighlighter.FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer;
 begin
   Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.FoldTypeCount: integer;
+begin
+  Result := 1;
 end;
 
 function TSynCustomFoldHighlighter.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;

@@ -472,6 +472,7 @@ type
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
+    function FoldTypeCount: integer; override;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
              UseCloseNodes: boolean = false): integer; override;
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
@@ -1890,6 +1891,7 @@ begin
       end;
     '{':
       if NestedComments then begin
+        fStringLen := 1;
         StartPascalCodeFoldBlock(cfbtNestedComment);
       end;
     end;
@@ -1949,8 +1951,10 @@ begin
         break;
       end;
     '{':
-      if NestedComments then
+      if NestedComments then begin
+        fStringLen := 1;
         StartPascalCodeFoldBlock(cfbtNestedComment);
+      end;
     end;
     Inc(Run);
   until (Run>=fLineLen);
@@ -2104,8 +2108,9 @@ begin
     else if NestedComments
     and (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
     begin
-      Inc(Run,2);
+      fStringLen := 2;
       StartPascalCodeFoldBlock(cfbtNestedComment);
+      Inc(Run,2);
     end else
       Inc(Run);
   until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
@@ -2490,6 +2495,7 @@ end;
 function TSynPasSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer;
 var
   inf, inf2: TSynPasRangeInfo;
+  r: TSynPasSynRange;
 begin
   Result := 0;
   if (AType <> 1) then begin
@@ -2497,7 +2503,8 @@ begin
     inf2 := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex - 1];
   end;
   if (AType = 0) or (AType = 1) then
-    Result := EndPasFoldLevel(ALineIndex - 1) - MinimumPasFoldLevel(ALineIndex);
+    Result := EndPasFoldLevel(ALineIndex - 1)
+            - min(MinimumPasFoldLevel(ALineIndex), EndPasFoldLevel(ALineIndex));
   if (AType = 0) or (AType = 2) then
     Result := Result + inf2.EndLevelRegion - inf.MinLevelRegion;
   if (AType = 0) or (AType = 3) then
@@ -2517,6 +2524,11 @@ begin
     Result := Result + inf.EndLevelRegion;
   if (AType = 0) or (AType = 3) then
     Result := Result + inf.EndLevelIfDef;
+end;
+
+function TSynPasSyn.FoldTypeCount: integer;
+begin
+  Result := 3;
 end;
 
 function TSynPasSyn.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
@@ -2686,6 +2698,14 @@ begin
   Node.FoldLvlStart := CurrentCodeFoldBlockLevel;
   Node.FoldLvlEnd := CurrentCodeFoldBlockLevel + EndOffs;
   Node.FoldType := Pointer(PtrInt(ABlockType));
+  case ABlockType of
+    cfbtRegion:
+      node.FoldGroup := 2;
+    cfbtIfDef:
+      node.FoldGroup := 3;
+    else
+      node.FoldGroup := 1;
+  end;
   if ABlockType in PascalWordTrippletRanges then
     Node.FoldAction := [sfaMarkup]
   else
@@ -2825,6 +2845,7 @@ begin
     then begin
       PasCodeFoldRange.DecLastLineCodeFoldLevelFix;
       dec(FStartCodeFoldBlockLevel);
+      if FCatchNodeInfo then dec(FNodeInfoCount);
     end;
     if (PasCodeFoldRange.PasFoldEndLevel < FPasStartLevel) and
       (FPasStartLevel > 0)
@@ -3059,12 +3080,12 @@ begin
     FNodeInfoCount := 0;
     StartAtLineIndex(Line);
     fStringLen := 0;
-    i := LastLineFoldLevelFix(Line);
+    NextToEol;
+    i := LastLineFoldLevelFix(Line+1);
     while i < 0 do begin
       EndCodeFoldBlock;
       inc(i);
     end;
-    NextToEol;
     FCatchNodeInfo := False;
     FNodeInfoLine := Line;
   end;

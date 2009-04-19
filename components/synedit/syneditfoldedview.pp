@@ -173,7 +173,7 @@ type
   TFoldViewNodeInfo = record
     HNode: TSynFoldNodeInfo;
     Text, Keyword: String;
-    LineNum, ColIndex, OpenIndex: Integer;
+    LineNum, ColIndex: Integer;
     OpenCount: Integer;
     Folded: boolean;
   end;
@@ -2170,36 +2170,72 @@ end;
 function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
 var
   hl: TSynCustomFoldHighlighter;
-  n, o: Integer;
+  TypeCnt, Lvl: Integer;
+  EndLvl, CurLvl: Array of integer;
+  i, t, n, o: Integer;
   nd: TSynFoldNodeInfo;
+  procedure GetEndLvl(l: Integer);
+  var i: integer;
+  begin
+    for i := 1 to TypeCnt do begin
+      EndLvl[i] := hl.FoldNestCount(l-1, i);
+      EndLvl[i] := EndLvl[i] + hl.FoldOpenCount(l, i);
+      CurLvl[i] := EndLvl[i];
+    end
+  end;
 begin
   if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
   then exit;
   hl := TSynCustomFoldHighlighter(FHighLighter);
   hl.CurrentLines := fLines;
-  n := hl.FoldNestCount(AStartIndex-1);
-  while (ColIndex < n) do begin
+  TypeCnt := hl.FoldTypeCount;
+
+  Lvl := hl.FoldNestCount(AStartIndex-1);
+  i := 0;
+  if ColIndex >= Lvl then begin
+    // search current line
+    Lvl := Lvl + hl.FoldOpenCount(aStartIndex);
+    i := 1;
+  end;
+  SetLength(EndLvl, TypeCnt+1);
+  SetLength(CurLvl, TypeCnt+1);
+  GetEndLvl(aStartIndex);
+  GetEndLvl(aStartIndex);
+  aStartIndex := aStartIndex + i;
+  while (ColIndex < Lvl) and (aStartIndex > 0) do begin
     dec(aStartIndex);
-    n := hl.FoldNestCount(AStartIndex-1);
+    if (hl.FoldOpenCount(aStartIndex) > 0) or
+       (hl.FoldCloseCount(aStartIndex) > 0) then begin
+      o := hl.FoldOpenCount(AStartIndex);
+      n := o;
+      for i := hl.FoldNodeInfoCount[aStartIndex] - 1 downto 0 do begin
+        nd := hl.FoldNodeInfo[aStartIndex, i];
+        t := nd.FoldGroup;
+        if sfaOpen in nd.FoldAction then begin
+          dec(n);
+          dec(CurLvl[t]);
+          if CurLvl[t] < EndLvl[t] then begin
+            dec(EndLvl[t]);
+            dec(Lvl);
+            if ColIndex = Lvl then begin
+              break;
+            end;
+          end;
+        end else
+        if sfaClose in nd.FoldAction then begin
+          inc(CurLvl[t]);
+        end;
+      end;
+    end
+    else
+    if hl.FoldNestCount(AStartIndex-1) = 0 then break;
   end;
-  ColIndex := ColIndex - n;
-  o := hl.FoldOpenCount(AStartIndex);
-  Result.OpenCount := o;
-  n := hl.FoldNodeInfoCount[aStartIndex] - 1;
-  while (o > ColIndex) and (n >= 0) do begin
-    nd := hl.FoldNodeInfo[aStartIndex, n];
-    if sfaInvalid in nd.FoldAction then break;
-    if sfaClose in nd.FoldAction then inc(o);
-    if sfaOpen in nd.FoldAction then dec(o);
-    dec(n);
-  end;
-  inc(n);
   Result.HNode := nd;
+  Result.OpenCount := o;
   Result.Text := fLines[aStartIndex];
   Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
   Result.LineNum := aStartIndex + 1;
-  Result.ColIndex := ColIndex; // for FoldAction
-  Result.OpenIndex := ColIndex; // for  (2/3)
+  Result.ColIndex := n;
   Result.Folded := IsFoldedAtTextIndex(aStartIndex, ColIndex);
 end;
 

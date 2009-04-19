@@ -203,7 +203,7 @@ begin
         s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
         s2 := '';
         if inf.OpenCount > 1 then
-          s2 := format(' (%d/%d)', [inf.OpenIndex+1, inf.OpenCount]);
+          s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
         m := TMenuItem.Create(FPopUp);
         m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
         m.ShowAlwaysCheckable := true;
