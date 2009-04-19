@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    UTF8Process
+  ====================================================================
+-->
+
+<module name="UTF8Process">
+<short></short>
+<descr>
+</descr>
+
+<!-- object Visibility: default -->
+<element name="TProcessUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FApplicationNameUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FCommandLineUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FConsoleTitleUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FCurrentDirectoryUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FDesktopUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TProcessUTF8.FEnvironmentUTF8">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetApplicationNameUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetApplicationNameUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetCommandLineUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetCommandLineUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetConsoleTitleUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetConsoleTitleUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetCurrentDirectoryUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetCurrentDirectoryUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetDesktopUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetDesktopUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.SetEnvironmentUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.SetEnvironmentUTF8.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TProcessUTF8.UpdateEnvironment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TProcessUTF8.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProcessUTF8.Create.AOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TProcessUTF8.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TProcessUTF8.Execute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.ApplicationName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.CommandLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.ConsoleTitle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.CurrentDirectory">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.Desktop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TProcessUTF8.Environment">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- UTF8Process -->
+
+</package>
+</fpdoc-descriptions>

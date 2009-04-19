@@ -2007,6 +2007,7 @@ docs/xml/lcl/themes.xml svneol=native#text/plain
 docs/xml/lcl/tmschema.xml svneol=native#text/plain
 docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/translations.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/multi_makeskel.pl svneol=native#text/plain
