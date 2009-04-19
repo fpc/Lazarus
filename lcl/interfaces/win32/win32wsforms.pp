@@ -96,7 +96,7 @@ type
 
   TWin32WSHintWindow = class(TWSHintWindow)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   end;
 
@@ -436,9 +436,9 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := @ClsName[0];
+    pClassName := @ClsHintName[0];
     WindowTitle := StrCaption;
-    Flags := dword(WS_POPUP);
+    Flags := WS_POPUP;
     FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;
     Left := LongInt(CW_USEDEFAULT);
     Top := LongInt(CW_USEDEFAULT);

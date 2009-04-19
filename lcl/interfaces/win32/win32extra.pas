@@ -380,6 +380,9 @@ const
   // AlphaFormat flags
   AC_SRC_ALPHA = $01;
 
+const
+  CS_DROPSHADOW = $00020000;
+
 // AlphaBlend is only defined for win98&2k and up 
 // load dynamic and use ownfunction if not defined
 var

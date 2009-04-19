@@ -341,8 +341,11 @@ var
   end;
 
   function GetIsNativeControl(AWindow: HWND): Boolean;
+  var
+    S: String;
   begin
-    Result := WndClassName(AWindow) <> ClsName;
+    S := WndClassName(AWindow);
+    Result := (S <> ClsName) and (S <> ClsHintName);
   end;
   
   procedure SendPaintMessage(ControlDC: HDC);

@@ -225,6 +225,7 @@ var
 const
   BOOL_RESULT: array[Boolean] of String = ('False', 'True');
   ClsName: array[0..6] of char = 'Window'#0;
+  ClsHintName: array[0..10] of char = 'HintWindow'#0;
   EditClsName: array[0..4] of char = 'Edit'#0;
   ButtonClsName: array[0..6] of char = 'Button'#0;
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
@@ -232,6 +233,7 @@ const
   ListViewClsName: array[0..13] of char = 'SysListView32'#0;
 
   ClsNameW: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
+  ClsHintNameW: array[0..10] of WideChar = ('H', 'i', 'n', 't', 'W', 'i', 'n', 'd', 'o', 'w', #0);
 
 {$ifdef DEBUG_DOUBLEBUFFER}
 var

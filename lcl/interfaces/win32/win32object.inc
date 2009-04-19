@@ -81,7 +81,16 @@ begin
   if FAppHandle <> 0 then
     DestroyWindow(FAppHandle);
 
-  Windows.UnregisterClass(@ClsName, System.HInstance);
+  if UnicodeEnabledOS then
+  begin
+    Windows.UnregisterClassW(@ClsNameW, System.HInstance);
+    Windows.UnregisterClassW(@ClsHintNameW, System.HInstance);
+  end
+  else
+  begin
+    Windows.UnregisterClass(@ClsName, System.HInstance);
+    Windows.UnregisterClass(@ClsHintName, System.HInstance);
+  end;
   inherited Destroy;
 end;
 
@@ -557,8 +566,8 @@ var
   WindowClassW: WndClassW;
 begin
   Assert(False, 'Trace:WinRegister - Start');
-  if UnicodeEnabledOS 
-  then begin
+  if UnicodeEnabledOS then
+  begin
     with WindowClassW do
     begin
       Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
@@ -571,10 +580,22 @@ begin
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
       hCursor := Windows.LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
-      LPSzMenuName := Nil;
+      LPSzMenuName := nil;
       LPSzClassName := @ClsNameW;
     end;
     Result := Windows.RegisterClassW(@WindowClassW) <> 0;
+    if Result then
+    begin
+      with WindowClassW do
+      begin
+        style := style or CS_SAVEBITS;
+        if WindowsVersion >= wvXP then
+          style := style or CS_DROPSHADOW;
+        hIcon := 0;
+        LPSzClassName := @ClsHintNameW;
+      end;
+      Result := Windows.RegisterClassW(@WindowClassW) <> 0;
+    end;
   end
   else begin
     with WindowClass do
@@ -589,10 +610,22 @@ begin
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
       hCursor := Windows.LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
-      LPSzMenuName := Nil;
+      LPSzMenuName := nil;
       LPSzClassName := @ClsName; 
     end;
     Result := Windows.RegisterClass(@WindowClass) <> 0;
+    if Result then
+    begin
+      with WindowClass do
+      begin
+        style := style or CS_SAVEBITS;
+        if WindowsVersion >= wvXP then
+          style := style or CS_DROPSHADOW;
+        hIcon := 0;
+        LPSzClassName := @ClsHintName;
+      end;
+      Result := Windows.RegisterClass(@WindowClass) <> 0;
+    end;
   end;
   Assert(False, 'Trace:WinRegister - Exit');
 end;
