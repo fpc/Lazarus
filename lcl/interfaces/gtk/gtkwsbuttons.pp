@@ -29,9 +29,9 @@ interface
 uses
   // libs
   {$IFDEF GTK2}
-  Gtk2, gdk2,
+  Gtk2, gdk2, gdk2Pixbuf,
   {$ELSE}
-  GLib, Gtk, gdk, Gtk1WSPrivate,
+  GLib, Gtk, gdk, gdkPixbuf, Gtk1WSPrivate,
   {$ENDIF}
   // LCL
   Classes, LCLType, Controls, Graphics, GraphType, Buttons,
@@ -277,6 +277,8 @@ var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   GDIObject: PGDIObject;
+  Pixmap: PGdkPixmap;
+  Pixbuf: PGdkPixbuf;
   Mask: PGdkBitmap;
   AGlyph: TBitmap;
   AIndex: Integer;
@@ -301,22 +303,32 @@ begin
     Exit;
   end;
 
-  GDIObject := PgdiObject(AGlyph.Handle);
-  Mask := CreateGdkMaskBitmap(AValue.Glyph.Handle, AValue.Glyph.MaskHandle);
+  GDIObject := PGDIObject(AGlyph.Handle);
+  if GDIObject^.GDIBitmapType = gbPixbuf then
+  begin
+    Pixbuf := GDIObject^.GDIPixbufObject;
+    Pixmap := gdk_pixmap_new(nil, AGlyph.Width, AGlyph.Height, 24);
+    Mask := gdk_pixmap_new(nil, AGlyph.Width, AGlyph.Height, 1);
+    gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Pixmap, Mask, $80);
+  end
+  else
+  begin
+    Pixmap := GDIObject^.GDIPixmapObject.Image;
+    Mask := CreateGdkMaskBitmap(AGlyph.Handle, AGlyph.MaskHandle);
+  end;
   // check for image
   if BitBtnInfo^.ImageWidget = nil
   then begin
-    BitBtnInfo^.ImageWidget :=
-     gtk_pixmap_new(GDIObject^.GDIPixmapObject.Image, Mask);
+    BitBtnInfo^.ImageWidget := gtk_pixmap_new(Pixmap, Mask);
     gtk_widget_show(BitBtnInfo^.ImageWidget);
     UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
   end
   else
-  begin
-    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
-  end;
+    gtk_pixmap_set(BitBtnInfo^.ImageWidget, Pixmap, Mask);
 
   gdk_pixmap_unref(Mask);
+  if Pixmap <> GDIObject^.GDIPixmapObject.Image then
+    gdk_pixmap_unref(Pixmap);
   AGlyph.Free;
 end;
 
