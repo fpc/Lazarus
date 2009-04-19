@@ -970,6 +970,8 @@ class function TGtkWSDragImageList.BeginDrag(
 var
   ABitmap: TBitmap;
   GDIObject: PGDIObject;
+  Pixmap: PGdkPixmap;
+  Mask: PGdkBitmap;
 begin
   ABitmap := TBitmap.Create;
   ADragImageList.GetBitmap(AIndex, ABitmap);
@@ -980,11 +982,37 @@ begin
     Exit;
   end;
 
-  GDIObject := PgdiObject(ABitmap.Handle);
+  GDIObject := PGDIObject(ABitmap.Handle);
 
-  Result := GtkWidgetset.DragImageList_BeginDrag(GDIObject^.GDIPixmapObject.Image, GDIObject^.GDIPixmapObject.Mask, ADragImageList.DragHotSpot);
+  Pixmap := nil;
+  Mask := nil;
+  case GDIObject^.GDIBitmapType of
+    gbBitmap:
+      begin
+        Pixmap := GDIObject^.GDIBitmapObject;
+        gdk_bitmap_ref(Pixmap);
+        Mask := nil;
+      end;
+    gbPixmap:
+      begin
+        Pixmap := GDIObject^.GDIPixmapObject.Image;
+        Mask := GDIObject^.GDIPixmapObject.Mask;
+        gdk_pixmap_ref(Pixmap);
+        gdk_bitmap_ref(Mask);
+      end;
+    gbPixbuf:
+      begin
+        Pixmap := gdk_pixmap_new(nil, ABitmap.Width, ABitmap.Height, 24);
+        Mask := gdk_pixmap_new(nil, ABitmap.Width, ABitmap.Height, 1);
+        gdk_pixbuf_render_pixmap_and_mask(GDIObject^.GDIPixbufObject, Pixmap, Mask, $80);
+      end;
+  end;
+
+  Result := GtkWidgetset.DragImageList_BeginDrag(Pixmap, Mask, ADragImageList.DragHotSpot);
   if Result then
     GtkWidgetset.DragImageList_DragMove(X, Y);
+  gdk_pixmap_unref(Pixmap);
+  gdk_bitmap_unref(Mask);
   ABitmap.Free;
 end;
 

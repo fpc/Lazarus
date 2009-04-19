@@ -100,7 +100,7 @@ function RegisterCustomRubberBand: Boolean;
 implementation
 uses
   GtkWSArrow,
-  GtkWSButtons,
+  Gtk2WSButtons,
   Gtk2WSCalendar,
   Gtk2WSCheckLst,
   Gtk2WSComCtrls,
@@ -512,8 +512,7 @@ end;
 // Buttons
 function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
-//  RegisterWSComponent(TCustomBitBtn, TGtk2WSBitBtn);
-  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk2PrivateButton);
+  RegisterWSComponent(TCustomBitBtn, TGtk2WSBitBtn, TGtk2PrivateButton);
   Result := True;
 end;
 

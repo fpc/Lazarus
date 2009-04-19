@@ -1323,6 +1323,7 @@ class procedure TGtk2WSCustomListView.SetImageList(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   BitImage: TBitmap;
+  GDIObj: PGDIObject;
   pixbuf: PGDKPixBuf;
   pixmap: PGdkDrawable;
   bitmap: PGdkBitmap;
@@ -1336,7 +1337,6 @@ begin
   gtk_widget_queue_draw(Widgets^.MainView);
   if AList = lvilSmall then
   begin
-
     if Widgets^.Images <> nil then
     begin
       for i := 0 to Widgets^.Images.Count-1 do
@@ -1354,12 +1354,28 @@ begin
       BitImage := TBitmap.Create;
       try
         AValue.GetBitmap(i, BitImage);
-        pixmap := PGDIObject(BitImage.Handle)^.GDIPixmapObject.Image;
-        if pixmap <> nil then
-        begin
-          gdk_drawable_get_size(pixmap, @Width, @Height);
-          bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
-          pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+        GDIObj := PGDIObject(BitImage.Handle);
+        case GDIObj^.GDIBitmapType of
+          gbBitmap:
+            begin
+              bitmap := GDIObj^.GDIBitmapObject;
+              gdk_drawable_get_size(bitmap, @Width, @Height);
+              pixbuf := CreatePixbufFromDrawable(bitmap, nil, False, 0, 0, 0, 0, Width, Height);
+            end;
+          gbPixmap:
+            begin
+              pixmap := GDIObj^.GDIPixmapObject.Image;
+              if pixmap <> nil then
+              begin
+                gdk_drawable_get_size(pixmap, @Width, @Height);
+                bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
+                pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+              end;
+            end;
+          gbPixbuf:
+            begin
+              pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
+            end;
         end;
         Widgets^.Images.Add(pixbuf);
       finally

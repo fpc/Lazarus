@@ -614,8 +614,6 @@ function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap;
 
 
 // pixmaps
-procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
-  out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
@@ -646,8 +644,6 @@ procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
-  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 
 // statusbar
 function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;

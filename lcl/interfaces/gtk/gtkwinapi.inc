@@ -968,6 +968,8 @@ const
   HATCH_VERTICAL  : array[0..7] of Byte = ($08, $08, $08, $08, $08, $08, $08, $08);
 var
   GObject: PGdiObject;
+  TmpMask: PGdkBitmap;
+  W, H: Integer;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
@@ -1042,6 +1044,19 @@ begin
                   GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIPixmapObject.Image;
                   GObject^.GDIBrushFill := GDK_TILED;
                 end;
+                gbPixbuf:
+                begin
+                  W := gdk_pixbuf_get_width(PGdiObject(lbHatch)^.GDIPixbufObject);
+                  H := gdk_pixbuf_get_height(PGdiObject(lbHatch)^.GDIPixbufObject);
+                  GObject^.GDIBrushPixmap := gdk_pixmap_new(nil, W, H, 24);
+                  TmpMask := gdk_pixmap_new(nil, W, H, 1);
+                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject, GObject^.GDIBrushPixmap, TmpMask, $80);
+                  gdk_pixmap_unref(TmpMask);
+                end;
+                else
+                begin
+                  DebugLn('TGtkWidgetSet.CreateBrushIndirect: Unsupported GDIBitmapType')
+                end;
               end
             end
             else
@@ -1057,7 +1072,7 @@ begin
       EndGDKErrorTrap;
       {$ENDIF}
 
-      If not GObject^.IsNullBrush then
+      if not GObject^.IsNullBrush then
         SetGDIColorRef(GObject^.GDIBrushColor, lbColor);
     end;
     Result := HBRUSH(PtrUInt(GObject));
@@ -2495,7 +2510,13 @@ begin
                 if GDIPixmapObject.Mask <> nil then
                   gdk_bitmap_unref(GDIPixmapObject.Mask);
               end;
+              gbPixbuf:
+                begin
+                  if GDIPixbufObject <> nil then
+                    gdk_pixbuf_unref(GDIPixbufObject);
+                end;
           end;
+
           if (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
           if Colormap <> nil then
@@ -5468,6 +5489,13 @@ function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer
             ImageDepth := gdk_drawable_get_depth(GDIPixmapObject.Image);
             {$endif}
             biBitCount := ImageDepth;
+          end;
+        gbPixbuf:
+          if GDIPixbufObject <> nil
+          then begin
+            biWidth := gdk_pixbuf_get_width(GDIPixbufObject);
+            biHeight := gdk_pixbuf_get_height(GDIPixbufObject);
+            biBitCount := gdk_pixbuf_get_bits_per_sample(GDIPixbufObject) * gdk_pixbuf_get_n_channels(GDIPixbufObject);
           end;
       end;
 

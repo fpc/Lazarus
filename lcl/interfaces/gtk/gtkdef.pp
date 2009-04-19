@@ -117,7 +117,7 @@ const
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
-  TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});
+  TGDIBitmapType = (gbBitmap, gbPixmap, gbPixbuf);
 
   TGtkDeviceContext = class;
 
@@ -169,6 +169,7 @@ type
                       Image: PGdkPixmap;     // imagedata
                       Mask: PGdkBitmap;      // the mask for images with 1 bit alpha and pixmap not supporting alpha
                     end);
+          gbPixbuf: (GDIPixbufObject: PGdkPixbuf);
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask

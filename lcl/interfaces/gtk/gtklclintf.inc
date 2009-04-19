@@ -17,7 +17,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -217,7 +217,7 @@ var
   ImgDataSize: PtrUInt absolute ARawImage.DataSize;
   Drawable: PGdkDrawable;
   Bitmap: PGdkBitmap;
-  Pixbuf: PGdkPixbuf;
+  Pixbuf, TmpPixBuf: PGdkPixbuf;
   GC: PGdkGC;
   Visual: PGdkVisual;
   GdkImage: PGdkImage;
@@ -321,27 +321,23 @@ begin
             Inc(DstRowPtr, Rowstride);
             Dec(y);
           end;
-
         end
         else begin
           // components are in place
           Data := ImgData;
         end;
 
-        Pixbuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
-        // DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
-        gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Drawable, Bitmap, $80);
-        gdk_pixbuf_unref(Pixbuf);
+        TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
+        // we need to copy our pixbuf into new to allow free data
+        Pixbuf := gdk_pixbuf_copy(TmpPixBuf);
+        gdk_pixbuf_unref(TmpPixBuf);
+        GdiObject^.GDIBitmapType := gbPixbuf;
+        GdiObject^.GDIPixbufObject := Pixbuf;
         if Data <> ImgData
         then FreeMem(Data);
-
-        GdiObject^.GDIPixmapObject.Image := Drawable;
-        GdiObject^.GDIPixmapObject.Mask := Bitmap;
-        GdiObject^.Visual := gdk_window_get_visual(Drawable);
-        gdk_visual_ref(GdiObject^.Visual);
-        
-        //DbgDumpPixmap(Drawable, 'CreateBitmaps (32)');
-        //DbgDumpBitmap(Bitmap, 'CreateBitmaps (32)');
+        GdiObject^.visual := gdk_visual_get_system();
+        gdk_visual_ref(GdiObject^.visual);
+        //DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
       end
       else begin
         // check if the depth is supported
@@ -419,7 +415,7 @@ begin
 
     //DbgDumpBitmap(Drawable, 'CreateBitmaps - Mask');
 
-    Result := true;
+    Result := True;
   except
     DeleteObject(ABitmap);
     ABitmap := 0;
@@ -438,10 +434,8 @@ end;
 function TGtkWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): boolean;
 var
   GDIObject: PGDIObject absolute ABitmap;
-  Drawable: PGdkDrawable;
-  CustomAlpha: Boolean;
 begin
-  Result := false;
+  Result := False;
   if not IsValidGDIObject(ABitmap)
   then begin
     DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
@@ -449,19 +443,18 @@ begin
   end;
 
   case GDIObject^.GDIBitmapType of
-    gbBitmap: begin
-      Drawable := GdiObject^.GDIBitmapObject;
-      CustomAlpha := False;
-    end;
-    gbPixmap: begin
-      Drawable := GdiObject^.GDIPixmapObject.Image;
-      CustomAlpha := GdiObject^.GDIPixmapObject.Mask <> nil;
-    end;
+    gbBitmap:
+      Result := RawImage_DescriptionFromDrawable(ADesc,
+        GdiObject^.GDIBitmapObject, False);
+    gbPixmap:
+      Result := RawImage_DescriptionFromDrawable(ADesc,
+        GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask <> nil);
+    gbPixbuf:
+      Result := RawImage_DescriptionFromPixbuf(ADesc, GdiObject^.GDIPixbufObject);
   else
-    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
+    DebugLn('WARNING: [TGtkWidgetSet.RawImage_DescriptionFromBitmap] Unknown GDIBitmapType');
     Exit;
   end;
-  Result := RawImage_DescriptionFromDrawable(ADesc, Drawable, CustomAlpha);
 end;
 
 {------------------------------------------------------------------------------
@@ -491,10 +484,15 @@ begin
           Drawable := DevCon.CurrentBitmap^.GDIPixmapObject.Image;
           UseAlpha := DevCon.CurrentBitmap^.GDIPixmapObject.Mask <> nil;
         end;
+        gbPixbuf: begin
+          Result := RawImage_DescriptionFromPixbuf(ADesc, DevCon.CurrentBitmap^.GDIPixbufObject);
+          Exit;
+        end;
       end;
     end;
   end
-  else Drawable := nil;
+  else
+    Drawable := nil;
   
   Result := RawImage_DescriptionFromDrawable(ADesc, Drawable, UseAlpha);
 end;
@@ -644,6 +642,10 @@ begin
       gbPixmap: begin
         Drawable := GdiBitmap^.GDIPixmapObject.Image;
         Bitmap := GdiBitmap^.GDIPixmapObject.Mask;
+      end;
+      gbPixbuf: begin
+        Result := RawImage_FromPixbuf(ARawImage, GdiBitmap^.GDIPixbufObject, ARect);
+        Exit;
       end;
     else
       DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] Unknown GDIBitmapType');

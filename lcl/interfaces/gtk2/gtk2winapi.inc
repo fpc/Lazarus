@@ -274,38 +274,43 @@ begin
   Result := 0;
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
 
-  pixmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
-  //DbgDumpPixmap(pixmap, '');
-
-  gdk_drawable_get_size(pixmap, @Width, @Height);
-
-  if not IconInfo^.fIcon then
+  if PGDIObject(IconInfo^.hbmColor)^.GDIBitmapType = gbPixbuf then
   begin
-    gdk_display_get_maximal_cursor_size(gdk_display_get_default,
-                                        @MaxWidth, @MaxHeight);
+    pixbuf := gdk_pixbuf_copy(PGDIObject(IconInfo^.hbmColor)^.GDIPixbufObject);
+  end
+  else
+  begin
+    pixmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
+    //DbgDumpPixmap(pixmap, '');
 
-    if (Width > integer(MaxWidth))
-    or (Height > integer(MaxHeight)) then Exit;
-  end;
-  
-  bitmap := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
-  try
-    pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, bitmap);
-    
-    if IconInfo^.fIcon
-    then begin
-      Result := HICON(PtrUInt(pixbuf));
-      Exit;
+    gdk_drawable_get_size(pixmap, @Width, @Height);
+
+    if not IconInfo^.fIcon then
+    begin
+      gdk_display_get_maximal_cursor_size(gdk_display_get_default,
+                                          @MaxWidth, @MaxHeight);
+
+      if (Width > integer(MaxWidth))
+      or (Height > integer(MaxHeight)) then Exit;
     end;
-    
+
+    bitmap := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
+    pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, bitmap);
+    if bitmap <> nil then
+      gdk_bitmap_unref(bitmap);
+  end;
+
+  if IconInfo^.fIcon then
+  begin
+    Result := HICON(PtrUInt(pixbuf));
+  end
+  else
+  begin
     // create cursor from pixbuf
     Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
       pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
-    if pixbuf <> nil
-    then gdk_pixbuf_unref(pixbuf);
-  finally
-    if bitmap <> nil
-    then gdk_bitmap_unref(bitmap);
+    if pixbuf <> nil then
+      gdk_pixbuf_unref(pixbuf);
   end;
 end;
 

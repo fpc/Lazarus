@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -655,6 +655,7 @@ end;
 function TGtkDeviceContext.SelectBitmap(AGdiObject: PGdiObject): PGdiObject;
 var
   NewDrawable: PGdkPixmap;
+  Mask: PGdkBitmap;
 begin
   // always create, because a valid GDIObject is needed to restore
   Result := GetBitmap;
@@ -665,6 +666,25 @@ begin
     case GDIBitmapType of
       gbPixmap: NewDrawable := GDIPixmapObject.Image;
       gbBitmap: NewDrawable := GDIBitmapObject;
+      gbPixbuf:
+        begin
+          NewDrawable := gdk_pixmap_new(nil,
+            gdk_pixbuf_get_width(GDIPixbufObject),
+            gdk_pixbuf_get_height(GDIPixbufObject),
+            gdk_pixbuf_get_n_channels(GDIPixbufObject) * gdk_pixbuf_get_bits_per_sample(GDIPixbufObject));
+          Mask := gdk_pixmap_new(nil,
+            gdk_pixbuf_get_width(GDIPixbufObject),
+            gdk_pixbuf_get_height(GDIPixbufObject), 1);
+          gdk_pixbuf_render_pixmap_and_mask(GDIPixbufObject, NewDrawable, Mask, $80);
+          GDIBitmapType := gbPixmap;
+          gdk_pixbuf_unref(GDIPixbufObject);
+          GDIPixmapObject.Image := NewDrawable;
+          GDIPixmapObject.Mask := Mask;
+          if Visual <> nil then
+            gdk_visual_unref(Visual);
+          Visual := gdk_window_get_visual(NewDrawable);
+          gdk_visual_ref(Visual);
+        end;
     else
       DebugLn('[TGtkDeviceContext.SelectBitmap] - Unknown bitmaptype, DC=0x%p', [Pointer(Self)]);
       Exit;
@@ -672,7 +692,6 @@ begin
 
   // no drawable: this is normal, when restoring the default bitmap (FreeDC)
   if NewDrawable = nil then Exit;
-  
 
   if FGC <> nil
   then gdk_gc_unref(FGC);

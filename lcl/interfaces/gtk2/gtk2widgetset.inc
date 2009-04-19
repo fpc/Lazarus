@@ -7,7 +7,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -388,10 +388,10 @@ end;
 
 function TGtk2WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 var
-  Pixmap : PGDIObject;
-  StockName : PChar;
-  IconSet : PGtkIconSet;
-  Pixbuf : PGDKPixbuf;
+  GDIObj: PGDIObject;
+  StockName: PChar;
+  IconSet: PGtkIconSet;
+  Pixbuf: PGDKPixbuf;
 begin
   Mask := 0;
   case StockID of
@@ -413,7 +413,8 @@ begin
     idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
     idDialogInfo : StockName := GTK_STOCK_DIALOG_INFO;
     idDialogConfirm : StockName := GTK_STOCK_DIALOG_QUESTION;
-   else begin
+   else
+   begin
       Result := inherited LoadStockPixmap(StockID, Mask);
       exit;
     end;
@@ -431,26 +432,24 @@ begin
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton),
+    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton),
       GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
   else
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow),
+    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow),
       GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
 
-  Pixmap := NewGDIObject(gdiBitmap);
-  with Pixmap^ do
+  GDIObj := NewGDIObject(gdiBitmap);
+  with GDIObj^ do
   begin
-    GDIBitmapType := gbPixmap;
+    GDIBitmapType := gbPixbuf;
     visual := gdk_visual_get_system();
     gdk_visual_ref(visual);
     colormap := gdk_colormap_get_system();
     gdk_colormap_ref(colormap);
-    gdk_pixbuf_render_pixmap_and_mask(pixbuf, GDIPixmapObject.Image,
-      GDIPixmapObject.Mask, 128);
+    GDIPixbufObject := Pixbuf;
   end;
 
-  gdk_pixbuf_unref(pixbuf);
-  Result := HBitmap(PtrUInt(Pixmap));
+  Result := HBitmap(PtrUInt(GDIObj));
 end;
 
 {------------------------------------------------------------------------------

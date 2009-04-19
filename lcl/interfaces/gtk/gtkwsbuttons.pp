@@ -29,14 +29,14 @@ interface
 uses
   // libs
   {$IFDEF GTK2}
-  GLib2, Gtk2, gdk2, Gtk2WSPrivate,
+  Gtk2, gdk2,
   {$ELSE}
   GLib, Gtk, gdk, Gtk1WSPrivate,
   {$ENDIF}
   // LCL
-  Classes, LCLProc, LCLType, LMessages, Controls, Graphics, GraphType, Buttons,
+  Classes, LCLType, Controls, Graphics, GraphType, Buttons,
   // widgetset
-  WSButtons, WSLCLClasses, WSProc,
+  WSButtons, WSProc,
   // interface
   GtkDef;
 
@@ -80,9 +80,7 @@ type
 implementation
 
 uses
-  SysUtils, 
-  GtkProc, GtkInt, GtkGlobals,
-  GtkWSControls, GtkWSStdCtrls;
+  GtkProc, GtkInt, GtkWSStdCtrls;
   
 const
   GtkStateToButtonState: array[GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE] of TButtonState =
@@ -305,7 +303,6 @@ begin
 
   GDIObject := PgdiObject(AGlyph.Handle);
   Mask := CreateGdkMaskBitmap(AValue.Glyph.Handle, AValue.Glyph.MaskHandle);
-
   // check for image
   if BitBtnInfo^.ImageWidget = nil
   then begin
@@ -314,7 +311,8 @@ begin
     gtk_widget_show(BitBtnInfo^.ImageWidget);
     UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
   end
-  else begin
+  else
+  begin
     gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
   end;
 

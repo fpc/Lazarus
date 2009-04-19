@@ -1549,6 +1549,12 @@ var
           
           {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize B2');{$endif}
         end;
+      gbPixbuf:
+        if Bitmap^.GDIPixbufObject <> nil
+        then begin
+          rowstride := gdk_pixbuf_get_rowstride(Bitmap^.GDIPixbufObject);
+          Pixels := PByte(gdk_pixbuf_get_pixels(Bitmap^.GDIPixbufObject));
+        end;
     end;
   end;
   
@@ -1860,6 +1866,78 @@ begin
   Result := True;
 end;
 
+function TGtkWidgetSet.RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
+var
+  Width, Height, Depth: integer;
+  HasAlpha: Boolean;
+begin
+  Width := 0;
+  Height := 0;
+
+  if APixbuf = nil
+  then begin
+    HasAlpha := False;
+    Depth := 24;
+  end
+  else begin
+    Width := gdk_pixbuf_get_width(APixbuf);
+    Height := gdk_pixbuf_get_height(APixbuf);
+    Depth := gdk_pixbuf_get_bits_per_sample(APixbuf) * gdk_pixbuf_get_n_channels(APixbuf);
+    HasAlpha := gdk_pixbuf_get_has_alpha(APixbuf);
+  end;
+
+  ADesc.Init;
+  ADesc.Width := cardinal(Width);
+  ADesc.Height := cardinal(Height);
+  ADesc.BitOrder := riboBitsInOrder;
+
+  if HasAlpha
+  then begin
+    // always give pixbuf description for alpha images
+    ADesc.Format:=ricfRGBA;
+    ADesc.Depth := 32;
+    ADesc.BitsPerPixel := 32;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.ByteOrder := riboLSBFirst;
+
+    ADesc.RedPrec := 8;
+    ADesc.RedShift := 0;
+    ADesc.GreenPrec := 8;
+    ADesc.GreenShift := 8;
+    ADesc.BluePrec := 8;
+    ADesc.BlueShift := 16;
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+
+    ADesc.MaskBitsPerPixel := 0;
+    ADesc.MaskShift := 0;
+    ADesc.MaskLineEnd := rileByteBoundary;
+    ADesc.MaskBitOrder := riboBitsInOrder;
+  end
+  else
+  begin
+    ADesc.Depth := Depth;
+    ADesc.BitsPerPixel := 32;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.MaskBitsPerPixel := 0;
+    ADesc.MaskShift := 0;
+    ADesc.MaskLineEnd := rileByteBoundary;
+    ADesc.MaskBitOrder := riboBitsInOrder;
+
+    ADesc.RedPrec := 8;
+    ADesc.RedShift := 0;
+    ADesc.GreenPrec := 8;
+    ADesc.GreenShift := 8;
+    ADesc.BluePrec := 8;
+    ADesc.BlueShift := 16;
+    ADesc.AlphaPrec := 0;
+    ADesc.AlphaShift := 24;
+  end;
+
+  Result := True;
+end;
+
 function TGtkWidgetSet.RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect): boolean;
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
@@ -1982,6 +2060,58 @@ begin
   if UseAlpha
   then Result := GetFromPixbuf(R)
   else Result := GetFromImage(R);
+end;
+
+function TGTKWidgetSet.RawImage_FromPixbuf(out ARawImage: TRawImage;
+  APixbuf: PGdkPixbuf; ARect: PRect): boolean;
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  Pixbuf: PGdkPixbuf;
+  pixels: pguchar;
+  R: TRect;
+begin
+  Result := False;
+  if APixbuf = nil then
+    RaiseGDBException('TGtkWidgetSet.RawImage_FromPixbuf');
+
+  //DbgDumpPixbuf(APixbuf);
+
+  ARawImage.Init;
+
+  // get raw image description
+  if not RawImage_DescriptionFromPixbuf(ADesc, APixbuf)
+  then begin
+    DebugLn('WARNING: TGtkWidgetSet.RawImage_FromPixbuf: RawImage_DescriptionFromPixbuf failed ');
+    Exit;
+  end;
+
+  R := Rect(0, 0, ADesc.Width, ADesc.Height);
+  if ARect <> nil
+  then begin
+    // get intersection
+    IntersectRect(R, ARect^, R);
+    ADesc.Width := R.Right - R.Left;
+    ADesc.Height := R.Bottom - R.Top;
+  end;
+
+  if (ADesc.Width <= 0) or (ADesc.Height <= 0)
+  then begin
+    exit;
+  end;
+
+  Pixbuf := gdk_pixbuf_new_subpixbuf(APixbuf, R.Left, R.Top, ADesc.Width, ADesc.Height);
+  try
+    pixels := gdk_pixbuf_get_pixels(Pixbuf);
+
+    ARawImage.DataSize := PtrUInt(gdk_pixbuf_get_rowstride(Pixbuf)) * PtrUInt(ADesc.Height);
+    ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+    if ARawImage.DataSize > 0 then
+      System.Move(pixels^, ARawImage.Data^, ARawImage.DataSize);
+  finally
+    gdk_pixbuf_unref(Pixbuf);
+  end;
+
+  Result := True;
 end;
 
 function TGTKWidgetSet.RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; ARect: PRect): boolean;

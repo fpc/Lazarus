@@ -5630,57 +5630,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
-    var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-
- ------------------------------------------------------------------------------}
-procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
-  out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
-var
-  Image, Mask: HBITMAP;
-  GdiImage: PGdiObject absolute Image;
-  GdiMask: PGdiObject absolute Mask;
-begin
-  AImage := nil;
-  AMask := nil;
-  AWidth := 0;
-  AHeight := 0;
-
-  if AGraphic = nil then Exit;
-
-  case ClassCase(AGraphic.ClassType, [TBitmap]) of
-    0: begin
-      Image := TBitmap(AGraphic).Handle;
-      Mask := TBitmap(AGraphic).MaskHandle;
-    end;
-  else
-    Exit;
-  end;
-
-  AImage := GdiImage^.GDIPixmapObject.Image;
-  AMask := CreateGdkMaskBitmap(Image, Mask);
-
-  if AImage <> nil
-  then gdk_window_get_size(AImage, @AWidth, @AHeight);
-end;
-
-{------------------------------------------------------------------------------
-  procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
-    var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
- ------------------------------------------------------------------------------}
-procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
-  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-begin
-  IconImg:=nil;
-  IconMask:=nil;
-  Width:=0;
-  Height:=0;
-  if LCLMenuItem=nil then exit;
-  if LCLMenuItem.HasIcon then
-    GetGdkPixmapFromGraphic(LCLMenuItem.Bitmap,IconImg,IconMask,Width,Height);
-end;
-
-{------------------------------------------------------------------------------
   function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 
   Returns the gtk klass of a menuitem widget.
@@ -6019,8 +5968,6 @@ var
     // the icon will be painted instead of the toggle
     // of a normal gtkcheckmenuitem
 
-    // get the icon
-    //GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
     if LCLMenuItem.HasIcon then begin
       IconSize:=LCLMenuItem.GetIconSize;
       IconWidth:=IconSize.X;

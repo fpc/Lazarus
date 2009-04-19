@@ -200,7 +200,9 @@ type
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
     function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
+    function RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
     function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect = nil): boolean;
+    function RawImage_FromPixbuf(out ARawImage: TRawImage; APixbuf: PGdkPixbuf; ARect: PRect = nil): boolean;
     function RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; ARect: PRect = nil): boolean;
     function RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; ARect: PRect = nil): boolean;
     function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
