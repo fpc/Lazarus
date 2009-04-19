@@ -95,8 +95,9 @@ const
     '0',
     '1'
     );
-  DefaultIgnoreFigConstInFuncs: array[1..14] of ansistring // Note: keep this asciiz
+  DefaultIgnoreFigConstInFuncs: array[1..15] of ansistring // Note: keep this asciiz
     = (
+    'Assert',
     'Debug',
     'DebugLn',
     'DbgOut',

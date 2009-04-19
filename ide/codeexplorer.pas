@@ -1012,48 +1012,80 @@ var
   TVNode: TTreeNode;
   ProcNode: TCodeTreeNode;
   OldPos: LongInt;
+  CurAtom, Last1Atom, Last2Atom: TCommonAtomFlag;
+  FuncName: string;
+  Atom: TAtomPosition;
 begin
   if (StartPos<1) or (StartPos>=EndPos) then exit;
   Tool.MoveCursorToCleanPos(StartPos);
+  Last1Atom:=cafNone;
+  Last2Atom:=cafNone;
   while Tool.CurPos.StartPos<EndPos do begin
-    if Tool.Src[Tool.CurPos.StartPos] in ['''','#','0'..'9','$','%'] then begin
-      // a constant
-      if Tool.AtomIsEmptyStringConstant then begin
-        // ignore empty string constant ''
-      end else if Tool.AtomIsCharConstant
-      and (not CodeExplorerOptions.FigureCharConst) then
+    CurAtom:=cafNone;
+    case Tool.Src[Tool.CurPos.StartPos] of
+    '''','#','0'..'9','$','%':
       begin
-        // ignore char constants
-      end else if CodeExplorerOptions.IgnoreFigureConstant(@Tool.Src[Tool.CurPos.StartPos])
-      then begin
-        // ignore user defined constants
-      end else begin
-        // add constant
-        Data:=TViewNodeData.Create(CodeNode);
-        Data.Desc:=ctnConstant;
-        Data.SubDesc:=ctnsNone;
-        Data.StartPos:=Tool.CurPos.StartPos;
-        Data.EndPos:=Tool.CurPos.EndPos;
-        FigTVNode:=CreateFigureNode(Tool,cefcUnnamedConsts);
-        NodeText:=Tool.GetAtom;
-        // add some context information
-        ProcNode:=CodeNode;
-        while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
-          ProcNode:=ProcNode.Parent;
-        if ProcNode<>nil then begin
-          OldPos:=Tool.CurPos.EndPos;
-          NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
-            phpWithoutClassName])]);
-          Tool.MoveCursorToCleanPos(OldPos);
+        // a constant
+        if Tool.AtomIsEmptyStringConstant then begin
+          // ignore empty string constant ''
+        end else if Tool.AtomIsCharConstant
+        and (not CodeExplorerOptions.FigureCharConst) then
+        begin
+          // ignore char constants
+        end else if CodeExplorerOptions.IgnoreFigureConstant(@Tool.Src[Tool.CurPos.StartPos])
+        then begin
+          // ignore user defined constants
+        end else begin
+          // add constant
+          Data:=TViewNodeData.Create(CodeNode);
+          Data.Desc:=ctnConstant;
+          Data.SubDesc:=ctnsNone;
+          Data.StartPos:=Tool.CurPos.StartPos;
+          Data.EndPos:=Tool.CurPos.EndPos;
+          FigTVNode:=CreateFigureNode(Tool,cefcUnnamedConsts);
+          NodeText:=Tool.GetAtom;
+          // add some context information
+          ProcNode:=CodeNode;
+          while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+            ProcNode:=ProcNode.Parent;
+          if ProcNode<>nil then begin
+            OldPos:=Tool.CurPos.EndPos;
+            NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
+              phpWithoutClassName])]);
+            Tool.MoveCursorToCleanPos(OldPos);
+          end;
+          NodeImageIndCex:=ImgIDConst;
+          TVNode:=CodeTreeview.Items.AddChild(FigTVNode,NodeText);
+          TVNode.Data:=Data;
+          TVNode.Text:=NodeText;
+          TVNode.ImageIndex:=NodeImageIndCex;
+          TVNode.SelectedIndex:=NodeImageIndCex;
         end;
-        NodeImageIndCex:=ImgIDConst;
-        TVNode:=CodeTreeview.Items.AddChild(FigTVNode,NodeText);
-        TVNode.Data:=Data;
-        TVNode.Text:=NodeText;
-        TVNode.ImageIndex:=NodeImageIndCex;
-        TVNode.SelectedIndex:=NodeImageIndCex;
+      end;
+
+    '.':
+      CurAtom:=cafPoint;
+
+    '_','a'..'z','A'..'Z':
+      CurAtom:=cafWord;
+
+    '(','[':
+      if Last1Atom=cafWord then
+      begin
+        Atom:=Tool.LastAtoms.GetValueAt(0);
+        FuncName:=copy(Tool.Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
+        if Last2Atom=cafPoint then
+          FuncName:='.'+FuncName;
+        if CodeExplorerOptions.IgnoreFigConstInFunc(FuncName) then
+        begin
+          // skip this function call
+          Tool.ReadTilBracketClose(false);
+        end;
       end;
     end;
+    // read next atom
+    Last2Atom:=Last1Atom;
+    Last1Atom:=CurAtom;
     Tool.ReadNextAtom;
   end;
 end;
