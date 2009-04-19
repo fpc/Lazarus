@@ -92,7 +92,7 @@ begin
     LongParamListCountSpinEdit.Value := LongParamListCount;
     NestedProcCountSpinEdit.Value := NestedProcCount;
     FigureCharConstCheckBox.Checked := FigureCharConst;
-    Tmp := CreateListOfNotFigureConstants;
+    Tmp := CreateListOfIgnoreFigureConstants;
     IgnoreFigureConstantsMemo.Lines.Assign(Tmp);
     Tmp.Free;
   end;

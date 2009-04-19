@@ -90,10 +90,27 @@ const
   DefaultFigLongParamListCount = 6;
   DefaultFigNestedProcCount = 3;
   DefaultFigureCharConst = false;
-  DefaultNotFigureConstants: array[1..2] of ansistring // Note: keep this asciiz
+  DefaultIgnoreFigureConstants: array[1..2] of ansistring // Note: keep this asciiz
     = (
     '0',
     '1'
+    );
+  DefaultIgnoreFigConstInFuncs: array[1..14] of ansistring // Note: keep this asciiz
+    = (
+    'Debug',
+    'DebugLn',
+    'DbgOut',
+    'write',
+    'writeln',
+    'Format',
+    'FormatBuf',
+    'StrFmt',
+    'StrLFmt',
+    'FmtStr',
+    'FloatToStrF',
+    'FloatToStr',
+    'CurrToStrF',
+    'FormatDateTime'
     );
 
 type
@@ -102,6 +119,7 @@ type
   private
     FCategories: TCodeExplorerCategories;
     FFigureCharConst: boolean;
+    FIgnoreFigConstInFuncs: TStringToStringTree;
     FLongParamListCount: integer;
     FLongProcLineCount: integer;
     FNestedProcCount: integer;
@@ -120,27 +138,41 @@ type
     procedure Save;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    function CreateListOfNotFigureConstants: TStrings;
-    procedure Clear_IgnoreFigureConstants;
+  public
+    // figure: ignore constants
+    function CreateListOfIgnoreFigureConstants: TStrings;
     procedure SetListOf_IgnoreFigureConstants(List: TStrings; Add: boolean);
-    procedure LoadDefaults_IgnoreFigureConstants;
-    function IgnoreFigureConstant(p: PChar): boolean;// test if atom is in NotFigureConstants
+    function IgnoreFigureConstant(p: PChar): boolean;// test if atom is in IgnoreFigureConstants
+    function IgnoreFigureConstants_AreDefault(Exactly: boolean): boolean; // true if IgnoreFigureConstants contain/are default values
+    function IgnoreFigureConstant_IsDefault(const Atom: string): boolean; // true if Atom is in default values
     procedure Add_IgnoreFigureConstant(const Atom: string);
-    function IgnoreFigureConstants_AreDefault(Exactly: boolean): boolean;
-    function IgnoreFigureConstant_IsDefault(const Atom: string): boolean;
+    procedure Clear_IgnoreFigureConstants;
+    procedure LoadDefaults_IgnoreFigureConstants;
+  public
+    // figure: ignore constants in functions
+    function CreateListOfIgnoreFigConstInFuncs: TStrings;
+    procedure SetListOf_IgnoreFigConstInFuncs(List: TStrings; Add: boolean);
+    function IgnoreFigConstInFunc(const Func: string): boolean;// test if function is in IgnoreFigConstInFuncs
+    function IgnoreFigConstInFuncs_AreDefault(Exactly: boolean): boolean; // true if IgnoreFigConstInFuncs contain/are default values
+    function IgnoreFigConstInFuncs_IsDefault(const Func: string): boolean; // true if Atom is in default values
+    procedure Add_IgnoreFigConstInFuncs(const Func: string);
+    procedure Clear_IgnoreFigConstInFuncs;
+    procedure LoadDefaults_IgnoreFigConstInFuncs;
   public
     property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh default cerSwitchEditorPage;
     property Mode: TCodeExplorerMode read FMode write FMode default cemCategory;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
     property FollowCursor: boolean read FFollowCursor write FFollowCursor default true;
     property Categories: TCodeExplorerCategories read FCategories write FCategories default DefaultCodeExplorerCategories;
+  public
     // Figures
-    property Figures: TCEFigureCategories read FFigures write FFigures default DefaultCodeExplorerFigureCategories;
-    property LongProcLineCount: integer read FLongProcLineCount write FLongProcLineCount default DefaultFigLongProcLineCount;
-    property LongParamListCount: integer read FLongParamListCount write FLongParamListCount default DefaultFigLongParamListCount;
-    property NestedProcCount: integer read FNestedProcCount write FNestedProcCount default DefaultFigNestedProcCount;
     property FigureCharConst: boolean read FFigureCharConst write FFigureCharConst default DefaultFigureCharConst;
+    property Figures: TCEFigureCategories read FFigures write FFigures default DefaultCodeExplorerFigureCategories;
     property IgnoreFigureConstants: TAvgLvlTree read FIgnoreFigureConstants;
+    property IgnoreFigConstInFuncs: TStringToStringTree read FIgnoreFigConstInFuncs;
+    property LongParamListCount: integer read FLongParamListCount write FLongParamListCount default DefaultFigLongParamListCount;
+    property LongProcLineCount: integer read FLongProcLineCount write FLongProcLineCount default DefaultFigLongProcLineCount;
+    property NestedProcCount: integer read FNestedProcCount write FNestedProcCount default DefaultFigNestedProcCount;
   end;
 
 const
@@ -260,15 +292,17 @@ begin
   FOptionsFilename:=
                 AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
   FIgnoreFigureConstants:=TAvgLvlTree.Create(TListSortCompare(@CompareAtom));
+  FIgnoreFigConstInFuncs:=TStringToStringTree.Create(false);
   Clear;
-  Add_IgnoreFigureConstant('0');
-  Add_IgnoreFigureConstant('1');
+  LoadDefaults_IgnoreFigureConstants;
+  LoadDefaults_IgnoreFigConstInFuncs;
 end;
 
 destructor TCodeExplorerOptions.Destroy;
 begin
   Clear_IgnoreFigureConstants;
   FreeAndNil(FIgnoreFigureConstants);
+  FreeAndNil(FIgnoreFigConstInFuncs);
   inherited Destroy;
 end;
 
@@ -284,6 +318,7 @@ begin
   FNestedProcCount:=DefaultFigNestedProcCount;
   FFigureCharConst:=DefaultFigureCharConst;
   Clear_IgnoreFigureConstants;
+  Clear_IgnoreFigConstInFuncs;
 end;
 
 procedure TCodeExplorerOptions.Assign(Source: TPersistent);
@@ -302,9 +337,15 @@ begin
     FLongParamListCount:=Src.LongParamListCount;
     FNestedProcCount:=Src.NestedProcCount;
     FFigureCharConst:=Src.FigureCharConst;
-    List:=Src.CreateListOfNotFigureConstants;
+    List:=Src.CreateListOfIgnoreFigureConstants;
     try
       SetListOf_IgnoreFigureConstants(List,false);
+    finally
+      List.Free;
+    end;
+    List:=Src.CreateListOfIgnoreFigConstInFuncs;
+    try
+      SetListOf_IgnoreFigConstInFuncs(List,false);
     finally
       List.Free;
     end;
@@ -404,6 +445,17 @@ begin
         finally
           List.Free;
         end;
+        // load standard IgnoreFigConstInFuncs
+        if XMLConfig.GetValue(CurPath+'IgnoreInFuncs/ContainsDefaults',true) then
+          LoadDefaults_IgnoreFigConstInFuncs;
+        // load custom IgnoreFigConstInFuncs
+        List:=TStringList.Create;
+        try
+          LoadStringList(XMLConfig,List,CurPath+'IgnoreFuncs/');
+          SetListOf_IgnoreFigConstInFuncs(List,true);
+        finally
+          List.Free;
+        end;
       end;
     end;
   end;
@@ -454,12 +506,26 @@ begin
         XMLConfig.SetDeleteValue(CurPath+'Ignore/ContainsDefaults',
            ContainsDefaults,true);
         // save IgnoreFigureConstants
-        List:=CreateListOfNotFigureConstants;
+        List:=CreateListOfIgnoreFigureConstants;
         try
           for i:=List.Count-1 downto 0 do
             if IgnoreFigureConstant_IsDefault(List[i]) then
               List.Delete(i);
           SaveStringList(XMLConfig,List,CurPath+'Ignore/');
+        finally
+          List.Free;
+        end;
+        // save standard IgnoreFigConstInFuncs
+        ContainsDefaults:=IgnoreFigConstInFuncs_AreDefault(false);
+        XMLConfig.SetDeleteValue(CurPath+'IgnoreInFuncs/ContainsDefaults',
+           ContainsDefaults,true);
+        // save IgnoreFigConstInFuncs
+        List:=CreateListOfIgnoreFigConstInFuncs;
+        try
+          for i:=List.Count-1 downto 0 do
+            if IgnoreFigConstInFuncs_IsDefault(List[i]) then
+              List.Delete(i);
+          SaveStringList(XMLConfig,List,CurPath+'IgnoreInFuncs/');
         finally
           List.Free;
         end;
@@ -469,21 +535,17 @@ begin
 
 end;
 
-function TCodeExplorerOptions.CreateListOfNotFigureConstants: TStrings;
+function TCodeExplorerOptions.CreateListOfIgnoreFigureConstants: TStrings;
 var
   AVLNode: TAvgLvlTreeNode;
-  i: Integer;
   s: String;
 begin
   Result:=TStringList.Create;
   AVLNode:=IgnoreFigureConstants.FindLowest;
-  i:=0;
   while AVLNode<>nil do begin
     s:=GetAtomString(PChar(AVLNode.Data),false);
-    if s<>'' then begin
-      inc(i);
+    if s<>'' then
       Result.Add(s);
-    end;
     AVLNode:=IgnoreFigureConstants.FindSuccessor(AVLNode);
   end;
 end;
@@ -521,8 +583,87 @@ var
   i: Integer;
 begin
   Clear_IgnoreFigureConstants;
-  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
-    Add_IgnoreFigureConstant(DefaultNotFigureConstants[i]);
+  for i:=low(DefaultIgnoreFigureConstants) to high(DefaultIgnoreFigureConstants) do
+    Add_IgnoreFigureConstant(DefaultIgnoreFigureConstants[i]);
+end;
+
+function TCodeExplorerOptions.CreateListOfIgnoreFigConstInFuncs: TStrings;
+var
+  AVLNode: TAvgLvlTreeNode;
+  s: String;
+begin
+  Result:=TStringList.Create;
+  AVLNode:=IgnoreFigConstInFuncs.Tree.FindLowest;
+  while AVLNode<>nil do begin
+    s:=PStringToStringItem(AVLNode.Data)^.Name;
+    if s<>'' then
+      Result.Add(s);
+    AVLNode:=IgnoreFigConstInFuncs.Tree.FindSuccessor(AVLNode);
+  end;
+end;
+
+procedure TCodeExplorerOptions.SetListOf_IgnoreFigConstInFuncs(List: TStrings;
+  Add: boolean);
+var
+  i: Integer;
+begin
+  if not Add then
+    Clear_IgnoreFigConstInFuncs;
+  for i:=0 to List.Count-1 do
+    Add_IgnoreFigConstInFuncs(List[i]);
+end;
+
+function TCodeExplorerOptions.IgnoreFigConstInFunc(const Func: string): boolean;
+begin
+  Result:=FIgnoreFigConstInFuncs.Contains(Func);
+end;
+
+function TCodeExplorerOptions.IgnoreFigConstInFuncs_AreDefault(Exactly: boolean
+  ): boolean;
+const
+  DefCount = high(DefaultIgnoreFigConstInFuncs)-Low(DefaultIgnoreFigConstInFuncs)+1;
+var
+  i: Integer;
+begin
+  if Exactly and (FIgnoreFigConstInFuncs.Count=DefCount) then
+    exit(false);
+  if FIgnoreFigConstInFuncs.Count<DefCount then exit(false);
+  for i:=low(DefaultIgnoreFigConstInFuncs) to high(DefaultIgnoreFigConstInFuncs) do
+    if not IgnoreFigConstInFunc(DefaultIgnoreFigConstInFuncs[i]) then
+      exit(false);
+  Result:=true;
+end;
+
+function TCodeExplorerOptions.IgnoreFigConstInFuncs_IsDefault(const Func: string
+  ): boolean;
+var
+  i: Integer;
+begin
+  for i:=low(DefaultIgnoreFigureConstants) to high(DefaultIgnoreFigureConstants) do
+    if SysUtils.CompareText(Func,DefaultIgnoreFigureConstants[i])=0 then
+      exit(true);
+  Result:=false;
+end;
+
+procedure TCodeExplorerOptions.Add_IgnoreFigConstInFuncs(const Func: string);
+begin
+  if Func='' then exit;
+  if IgnoreFigConstInFunc(Func) then exit;
+  FIgnoreFigConstInFuncs.Values[Func]:='';
+end;
+
+procedure TCodeExplorerOptions.Clear_IgnoreFigConstInFuncs;
+begin
+  FIgnoreFigConstInFuncs.Clear;
+end;
+
+procedure TCodeExplorerOptions.LoadDefaults_IgnoreFigConstInFuncs;
+var
+  i: Integer;
+begin
+  Clear_IgnoreFigConstInFuncs;
+  for i:=low(DefaultIgnoreFigConstInFuncs) to high(DefaultIgnoreFigConstInFuncs) do
+    Add_IgnoreFigConstInFuncs(DefaultIgnoreFigConstInFuncs[i]);
 end;
 
 function TCodeExplorerOptions.IgnoreFigureConstant(p: PChar): boolean;
@@ -544,15 +685,16 @@ end;
 function TCodeExplorerOptions.IgnoreFigureConstants_AreDefault(Exactly: boolean
   ): boolean;
 const
-  DefCount = high(DefaultNotFigureConstants)-Low(DefaultNotFigureConstants)+1;
+  DefCount = high(DefaultIgnoreFigureConstants)-Low(DefaultIgnoreFigureConstants)+1;
 var
   i: Integer;
 begin
   if Exactly and (FIgnoreFigureConstants.Count=DefCount) then
     exit(false);
   if FIgnoreFigureConstants.Count<DefCount then exit(false);
-  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
-    if not IgnoreFigureConstant(PChar(DefaultNotFigureConstants[i])) then exit(false);
+  for i:=low(DefaultIgnoreFigureConstants) to high(DefaultIgnoreFigureConstants) do
+    if not IgnoreFigureConstant(PChar(DefaultIgnoreFigureConstants[i])) then
+      exit(false);
   Result:=true;
 end;
 
@@ -561,8 +703,8 @@ function TCodeExplorerOptions.IgnoreFigureConstant_IsDefault(const Atom: string
 var
   i: Integer;
 begin
-  for i:=low(DefaultNotFigureConstants) to high(DefaultNotFigureConstants) do
-    if CompareAtom(PChar(Atom),PChar(DefaultNotFigureConstants[i]),false)=0 then
+  for i:=low(DefaultIgnoreFigureConstants) to high(DefaultIgnoreFigureConstants) do
+    if CompareAtom(PChar(Atom),PChar(DefaultIgnoreFigureConstants[i]),false)=0 then
       exit(true);
   Result:=false;
 end;
