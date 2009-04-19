@@ -5,7 +5,7 @@ unit SynGutter;
 interface
 
 uses
-  Classes, Controls, Graphics, LCLType, LCLIntf,
+  Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
   SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges;
@@ -48,6 +48,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
     function  RealGutterWidth(CharWidth: integer): integer;
+    function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer);
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -301,6 +302,11 @@ var
 begin
   for i := 0 to Parts.ByClassCount[TSynGutterLineNumber] - 1 do
     TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
+end;
+
+function TSynGutter.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+begin
+  Result := Parts[FMouseDownPart].HasCustomPopupMenu(PopMenu);
 end;
 
 procedure TSynGutter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

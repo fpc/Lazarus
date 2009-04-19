@@ -69,7 +69,7 @@ uses
 {$ELSE}
   Windows,
 {$ENDIF}
-  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
+  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}
@@ -630,6 +630,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
+    function GetPopupMenu: TPopupMenu; override;
     procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
       var Command: TSynEditorCommand;
       var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
@@ -2642,6 +2643,13 @@ begin
     FOnClickLink(Self, Button, Shift, X,Y);;
   end;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+end;
+
+function TCustomSynEdit.GetPopupMenu: TPopupMenu;
+begin
+  if (sfGutterClick in fStateFlags) and FGutter.HasCustomPopupMenu(Result) then
+    exit;
+  Result := inherited GetPopupMenu;
 end;
 
 procedure TCustomSynEdit.Paint;

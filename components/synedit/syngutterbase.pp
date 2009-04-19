@@ -5,7 +5,7 @@ unit SynGutterBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, SynEditMarks,
+  Classes, SysUtils, Graphics, Controls, Menus, SynEditMarks,
   SynEditMiscClasses, SynEditFoldedView, SynTextDrawer;
 
 type
@@ -108,6 +108,7 @@ type
   public
     function RealGutterWidth(CharWidth: integer): integer;  virtual; abstract;
     // X/Y are relative to the gutter, not the gutter part
+    function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
@@ -288,6 +289,11 @@ begin
     DoChange(Self);
   end else
     inherited;
+end;
+
+function TSynGutterPartBase.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TSynGutterPartBase.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
