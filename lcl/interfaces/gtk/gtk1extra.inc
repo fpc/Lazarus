@@ -497,6 +497,24 @@ begin
   gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
 end;
 
+function gdk_pixbuf_new_subpixbuf(src_pixbuf: PGdkPixbuf; src_x: longint; src_y: longint; width: longint; height: longint): PGdkPixbuf;
+var
+  tmp: PGdkPixbuf;
+  buf: PChar;
+  rowstride: Integer;
+begin
+  buf := gdk_pixbuf_get_pixels(src_pixbuf);
+
+  rowstride := gdk_pixbuf_get_rowstride(src_pixbuf);
+
+  inc(buf, src_y * rowstride + src_x * gdk_pixbuf_get_n_channels(src_pixbuf));
+  tmp := gdk_pixbuf_new_from_data(buf, gdk_pixbuf_get_colorspace(src_pixbuf),
+    gdk_pixbuf_get_has_alpha(src_pixbuf), gdk_pixbuf_get_bits_per_sample(src_pixbuf),
+    width, height, rowstride, nil, nil);
+  Result := gdk_pixbuf_copy(tmp);
+  gdk_pixbuf_unref(tmp);
+end;
+
 function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
 begin
   gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @result);

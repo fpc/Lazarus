@@ -93,6 +93,8 @@ function gdk_pixmap_colormap_create_from_xpm (window: PGdkWindow;
 procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
   var pixmap_return: PGdkPixmap; var mask_return: PGdkBitmap;
   alpha_threshold: gint);
+function gdk_pixbuf_new_subpixbuf(src_pixbuf: PGdkPixbuf; src_x: longint;
+  src_y: longint; width: longint; height: longint): PGdkPixbuf;
 
 //Wrapper around window functions like gtk2 -->
 function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;

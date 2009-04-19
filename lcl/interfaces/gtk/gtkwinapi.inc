@@ -1917,6 +1917,7 @@ function TGTKWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   FG, BG: TGDKColor;
   Img, Msk: PGdkPixmap;
+  Pixbuf: PGdkPixbuf;
   srcbitmap, mskbitmap: PGdkBitmap;
   W, H, bitlen: integer;
   ImgBits, MskBits: array of byte;
@@ -1924,21 +1925,40 @@ begin
   Result := 0;
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
 
-  Img := PGDIObject(IconInfo^.hbmColor)^.GDIBitmapObject;
-  gdk_drawable_get_size(Img, @W, @H);
+  if PGDIObject(IconInfo^.hbmColor)^.GDIBitmapType = gbPixbuf then
+  begin
+    Pixbuf := PGDIObject(IconInfo^.hbmColor)^.GDIPixbufObject;
+    if IconInfo^.fIcon then
+    begin
+      // Creating PixBuf from pixmap and mask
+      Result := HICON(PtrUInt(gdk_pixbuf_copy(pixbuf)));
+      Exit;
+    end;
+    W := gdk_pixbuf_get_width(Pixbuf);
+    H := gdk_pixbuf_get_height(Pixbuf);
+    Img := gdk_pixmap_new(nil, W, H, 24);
+    Msk := gdk_pixmap_new(nil, W, H, 1);
+    gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Img, Msk, $80);
+  end
+  else
+  begin
+    Img := PGDIObject(IconInfo^.hbmColor)^.GDIBitmapObject;
+    gdk_drawable_get_size(Img, @W, @H);
 
-  Msk := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
-  //DbgDumpPixmap(Img, 'Image');
-  //DbgDumpPixmap(Msk, 'Mask');
-  
-  try
+    Msk := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
+    //DbgDumpPixmap(Img, 'Image');
+    //DbgDumpPixmap(Msk, 'Mask');
     if IconInfo^.fIcon then
     begin
       // Creating PixBuf from pixmap and mask
       Result := HICON(PtrUInt(CreatePixbufFromImageAndMask(Img, 0, 0, W, H, nil, Msk)));
+      if Msk <> nil then
+        gdk_bitmap_unref(Msk);
       Exit;
     end;
-    
+  end;
+
+  try
     // Create cursor
 
     bitlen := (W * H) shr 3;
@@ -1972,6 +1992,8 @@ begin
   finally
     if msk <> nil
     then gdk_bitmap_unref(msk);
+    if Img <> PGDIObject(IconInfo^.hbmColor)^.GDIBitmapObject
+    then gdk_pixmap_unref(Img);
   end;
 end;
 
