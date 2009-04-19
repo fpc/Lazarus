@@ -92,7 +92,7 @@
         <ComponentName Value="BackupOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="backup_options"/>
+        <UnitName Value="Backup_Options"/>
       </Unit7>
       <Unit8>
         <Filename Value="frames/naming_options.pas"/>

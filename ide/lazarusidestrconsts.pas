@@ -4163,7 +4163,8 @@ resourcestring
   lisCELongParamListCount = 'Parameters count treating as "many"';
   lisCENestedProcCount = 'Nested procedures count treating as "many"';
   lisCEFigureCharConst = 'Search for unnamed char constants';
-  lisCENotFigureConstants = 'Unnamed constants to skip';
+  lisCEIgnoreFigureConstants = 'Ignore next unnamed constants';
+  lisCEIgnoreFigConstInFuncs = 'Ignore constants in next functions';
 
 implementation
 

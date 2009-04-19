@@ -359,9 +359,12 @@ var
   XMLConfig: TXMLConfig;
   //FileVersion: integer;
 begin
-  if not FileExistsUTF8(FOptionsFilename) then begin
+  if not FileExistsUTF8(FOptionsFilename) then
+  begin
     Clear;
-    exit;
+    LoadDefaults_IgnoreFigureConstants;
+    LoadDefaults_IgnoreFigConstInFuncs;
+    Exit;
   end;
   try
     XMLConfig:=TXMLConfig.Create(FOptionsFilename);

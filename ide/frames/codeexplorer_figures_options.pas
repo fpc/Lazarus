@@ -36,9 +36,11 @@ type
     FigureCharConstCheckBox: TCheckBox;
     FigureCategoriesCheckGroup: TCheckGroup;
     IgnoreFigureConstantsLabel: TLabel;
+    IgnoreFigConstInFuncsLabel: TLabel;
     LongProcLineCountLabel: TLabel;
     LongParamListCountLabel: TLabel;
     IgnoreFigureConstantsMemo: TMemo;
+    IgnoreFigConstInFuncsMemo: TMemo;
     NestedProcCountLabel: TLabel;
     LongProcLineCountSpinEdit: TSpinEdit;
     LongParamListCountSpinEdit: TSpinEdit;
@@ -74,7 +76,8 @@ begin
   LongParamListCountLabel.Caption := lisCELongParamListCount;
   NestedProcCountLabel.Caption := lisCENestedProcCount;
   FigureCharConstCheckBox.Caption := lisCEFigureCharConst;
-  IgnoreFigureConstantsLabel.Caption := lisCENotFigureConstants;
+  IgnoreFigureConstantsLabel.Caption := lisCEIgnoreFigureConstants;
+  IgnoreFigConstInFuncsLabel.Caption := lisCEIgnoreFigConstInFuncs;
 end;
 
 procedure TCodeExplorerFiguresOptionsFrame.ReadSettings(
@@ -94,6 +97,9 @@ begin
     FigureCharConstCheckBox.Checked := FigureCharConst;
     Tmp := CreateListOfIgnoreFigureConstants;
     IgnoreFigureConstantsMemo.Lines.Assign(Tmp);
+    Tmp.Free;
+    Tmp := CreateListOfIgnoreFigConstInFuncs;
+    IgnoreFigConstInFuncsMemo.Lines.Assign(Tmp);
     Tmp.Free;
   end;
 end;
@@ -115,7 +121,8 @@ begin
     LongParamListCount := LongParamListCountSpinEdit.Value;
     NestedProcCount := NestedProcCountSpinEdit.Value;
     FigureCharConst := FigureCharConstCheckBox.Checked;
-    SetListOf_IgnoreFigureConstants(IgnoreFigureConstantsMemo.Lines,false);
+    SetListOf_IgnoreFigureConstants(IgnoreFigureConstantsMemo.Lines, False);
+    SetListOf_IgnoreFigConstInFuncs(IgnoreFigConstInFuncsMemo.Lines, False);
   end;
 end;
 
