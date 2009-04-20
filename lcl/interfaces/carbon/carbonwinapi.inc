@@ -1051,11 +1051,14 @@ end;
            hBr   - Border brush (ignored)
   Returns: > 0 if the function succeeds
 
-  Draws a border with the specified brush in Carbon native style
-  TODO: use brush
+  Draws a border with the specified brush color in Carbon native style
+  The width of the border of this rectangle is always 1
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH): Integer;
+var
+  NewPen, OldPen: TCarbonPen;
+  CarbonDC: TCarbonDeviceContext absolute DC;
 begin
   Result := 0;
   
@@ -1066,7 +1069,29 @@ begin
   
   if not CheckDC(DC, 'FrameRect') then Exit;
 
-  Result := Integer(Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom));
+  // Create a new Pen with default values and the color of the brush
+  NewPen := TCarbonPen.Create(False);
+  try
+    NewPen.SetColor(CarbonDC.CurrentBrush.ColorRef, True);
+
+    OldPen := CarbonDC.CurrentPen;
+    CarbonDC.CurrentPen := NewPen;
+
+    MoveToEx(DC, ARect.Left, ARect.Top, nil);
+    LineTo(DC, ARect.Right - 1, ARect.Top);
+    MoveToEx(DC, ARect.Left, ARect.Bottom - 1, nil);
+    LineTo(Dc, ARect.Right - 1, ARect.Bottom - 1);
+    MoveToEx(DC, ARect.Right - 1, ARect.Top, nil);
+    LineTo(DC, ARect.Right - 1, ARect.Bottom - 1);
+    MoveToEx(DC, ARect.Left, ARect.Top, nil);
+    LineTo(DC, ARect.Left, ARect.Bottom - 1);
+
+    Result := -1;
+
+    CarbonDC.CurrentPen := OldPen;
+  finally
+    NewPen.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
