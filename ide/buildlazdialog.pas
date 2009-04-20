@@ -215,7 +215,6 @@ type
     CBLDBtnPanel: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
     procedure AppLCLInterfaceComboBoxChange(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -861,8 +860,6 @@ begin
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
   SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
   Load(FOptions);
 end;
 
@@ -1136,11 +1133,6 @@ procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
 begin
   Save(Options);
   ModalResult:=mrOk;
-end;
-
-procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
 end;
 
 procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject;
