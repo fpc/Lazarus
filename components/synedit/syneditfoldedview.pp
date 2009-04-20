@@ -2236,7 +2236,7 @@ begin
   Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
   Result.LineNum := aStartIndex + 1;
   Result.ColIndex := n;
-  Result.Folded := IsFoldedAtTextIndex(aStartIndex, ColIndex);
+  Result.Folded := IsFoldedAtTextIndex(aStartIndex, n);
 end;
 
 function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer;
