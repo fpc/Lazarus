@@ -153,6 +153,7 @@ type
                                       CleanPos: integer): boolean;
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
                                             ): boolean;
+    function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
 
     // sections
     function GetSourceName(DoBuildTree: boolean = true): string;
@@ -1662,6 +1663,15 @@ begin
   while (CurPos.StartPos<DefinitionNode.StartPos) do ReadNextAtom;
   UndoReadNextAtom;
   Result:=UpAtomIs('CONST') or UpAtomIs('VAR') or UpAtomIs('OUT');
+end;
+
+function TPascalReaderTool.FindEndOfWithVar(WithVarNode: TCodeTreeNode
+  ): integer;
+begin
+  MoveCursorToCleanPos(WithVarNode.StartPos);
+  if not ReadTilVariableEnd(true,true) then exit(-1);
+  UndoReadNextAtom;
+  Result:=CurPos.EndPos;
 end;
 
 function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;

@@ -196,7 +196,7 @@ type
         CreateNodes: boolean): boolean;
     function ReadTilBlockStatementEnd(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
-    function ReadTilVariableEnd(ExceptionOnError: boolean): boolean;
+    function ReadTilVariableEnd(ExceptionOnError, WithAsOperator: boolean): boolean;
     function ReadTilStatementEnd(ExceptionOnError,
         CreateNodes: boolean): boolean;
     function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
@@ -2411,14 +2411,14 @@ begin
 end;
 
 function TPascalParserTool.ReadTilVariableEnd(
-  ExceptionOnError: boolean): boolean;
+  ExceptionOnError, WithAsOperator: boolean): boolean;
 { Examples:
     A
     A.B^.C[...].D(...).E
     (...).A
     @B
     inherited A
-    
+    A as B
 }
 begin
   while AtomIsChar('@') do
@@ -2441,7 +2441,8 @@ begin
       end else
         break;
     until false;
-    if (CurPos.Flag=cafPoint) or UpAtomIs('AS') then
+    if (CurPos.Flag=cafPoint)
+    or (WithAsOperator and UpAtomIs('AS')) then
       ReadNextAtom
     else
       break;
@@ -2520,7 +2521,7 @@ begin
     CurNode.Desc:=ctnWithVariable;
   end;
   // read til the end of the variable
-  if not ReadTilVariableEnd(ExceptionOnError) then begin
+  if not ReadTilVariableEnd(ExceptionOnError,true) then begin
     CloseNodes;
     Result:=false;
     exit;
@@ -2534,7 +2535,7 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnWithVariable
     end;
-    if not ReadTilVariableEnd(ExceptionOnError) then begin
+    if not ReadTilVariableEnd(ExceptionOnError,true) then begin
       CloseNodes;
       Result:=false;
       exit;

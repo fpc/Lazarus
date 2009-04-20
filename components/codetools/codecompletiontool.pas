@@ -1592,7 +1592,7 @@ begin
     // find context (e.g. Button1.|)
     Params.Clear;
     Params.ContextNode:=CursorNode;
-    ExprType:=FindExpressionTypeOfVariable(-1,ProcNameAtom.StartPos,Params);
+    ExprType:=FindExpressionTypeOfVariable(-1,ProcNameAtom.StartPos,Params,false);
     DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ExprTypeToString(ExprType)]);
     
     if ExprType.Desc=xtNone then begin

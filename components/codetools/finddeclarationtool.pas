@@ -618,10 +618,10 @@ type
     // expressions, operands, variables
     function GetCurrentAtomType: TVariableAtomType;
     function FindEndOfVariable(StartPos: integer;
-      ExceptionIfNoVariableStart: boolean): integer;
+      ExceptionIfNoVariableStart, WithAsOperator: boolean): integer;
     function FindStartOfVariable(EndPos: integer): integer;
     function FindExpressionTypeOfVariable(StartPos, EndPos: integer;
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
     function FindEndOfExpression(StartPos: integer): integer;
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
       Params: TFindDeclarationParams): TExpressionType;
@@ -2089,7 +2089,7 @@ begin
     EndPos:=CurPos.EndPos;
   end;
   Include(Params.Flags,fdfFindVariable);
-  ExprType:=FindExpressionTypeOfVariable(StartPos,EndPos,Params);
+  ExprType:=FindExpressionTypeOfVariable(StartPos,EndPos,Params,false);
   if (ExprType.Desc<>xtContext) then begin
     Params.SetResult(CleanFindContext);
   end;
@@ -2916,7 +2916,7 @@ begin
   EndPos:=CurPos.StartPos;
   OldFlags:=Params.Flags;
   Params.Flags:=Params.Flags-[fdfFindVariable];
-  ExprType:=FindExpressionTypeOfVariable(-1,EndPos,Params);
+  ExprType:=FindExpressionTypeOfVariable(-1,EndPos,Params,false);
   Params.Flags:=OldFlags;
   if (ExprType.Desc=xtContext) then
     Result:=ExprType.Context
@@ -4508,12 +4508,12 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(WithVarNode);{$ENDIF}
   Result:=false;
   // find the base type of the with variable
-  // move cursor to start of with-variable
+  // move cursor to end of with-variable
   Params.Save(OldInput);
   Params.ContextNode:=WithVarNode;
   Params.Flags:=Params.Flags*fdfGlobals
                 +[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
-  WithVarExpr:=FindExpressionTypeOfVariable(WithVarNode.StartPos,-1,Params);
+  WithVarExpr:=FindExpressionTypeOfVariable(WithVarNode.StartPos,-1,Params,true);
   if (WithVarExpr.Desc<>xtContext)
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
@@ -5300,12 +5300,14 @@ begin
 end;
 
 function TFindDeclarationTool.FindEndOfVariable(
-  StartPos: integer; ExceptionIfNoVariableStart: boolean): integer;
+  StartPos: integer; ExceptionIfNoVariableStart, WithAsOperator: boolean
+  ): integer;
 { a variable can have the form:
     A
     A.B()^.C()[]^^.D
     (A).B
     inherited A
+    A as B
 }
   procedure RaiseIdentNotFound;
   begin
@@ -5314,16 +5316,22 @@ function TFindDeclarationTool.FindEndOfVariable(
 
 var
   FirstIdentifier: boolean;
+
+  procedure StartVar;
+  begin
+    ReadNextAtom;
+    if UpAtomIs('INHERITED') then
+      ReadNextAtom;
+    FirstIdentifier:=true;
+    if (CurPos.Flag in AllCommonAtomWords) and AtomIsIdentifier(true) then begin
+      FirstIdentifier:=false;
+      ReadNextAtom;
+    end;
+  end;
+
 begin
   MoveCursorToCleanPos(StartPos);
-  ReadNextAtom;
-  if UpAtomIs('INHERITED') then
-    ReadNextAtom;
-  FirstIdentifier:=true;
-  if (CurPos.Flag in AllCommonAtomWords) and AtomIsIdentifier(true) then begin
-    FirstIdentifier:=false;
-    ReadNextAtom;
-  end;
+  StartVar;
   repeat
     case CurPos.Flag of
     cafRoundBracketOpen:
@@ -5346,11 +5354,16 @@ begin
           RaiseIdentNotFound;
         ReadTilBracketClose(true);
       end;
-      
+
     else
       if AtomIsChar('^') then begin
         if FirstIdentifier and ExceptionIfNoVariableStart then
           RaiseIdentNotFound;
+      end else if UpAtomIs('AS') then begin
+        if not WithAsOperator then
+          break;
+        StartVar;
+        UndoReadNextAtom;
       end else
         break;
     end;
@@ -5429,7 +5442,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindExpressionTypeOfVariable(
-  StartPos, EndPos: integer;  Params: TFindDeclarationParams): TExpressionType;
+  StartPos, EndPos: integer;  Params: TFindDeclarationParams;
+  WithAsOperator: boolean): TExpressionType;
 { examples
   1. A.B
   2. A().B
@@ -5440,6 +5454,7 @@ function TFindDeclarationTool.FindExpressionTypeOfVariable(
   7. (A).
   8. (A as B)
   9. (@A)
+  10. A as B
 }
 type
   TIsIdentEndOfVar = (iieovYes, iieovNo, iieovUnknown);
@@ -5486,7 +5501,7 @@ var
     if StartPos<1 then
       StartPos:=FindStartOfVariable(EndPos)
     else if EndPos<1 then
-      EndPos:=FindEndOfVariable(StartPos,true);
+      EndPos:=FindEndOfVariable(StartPos,true,WithAsOperator);
     if (StartPos<1) then
       RaiseInternalError;
     if StartPos>SrcLen then exit;
@@ -6273,10 +6288,10 @@ begin
   or UpAtomIs('INHERITED') then begin
     // read variable
     SubStartPos:=CurPos.StartPos;
-    EndPos:=FindEndOfVariable(SubStartPos,false);
+    EndPos:=FindEndOfVariable(SubStartPos,false,true);
     OldFlags:=Params.Flags;
     Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
-    Result:=FindExpressionTypeOfVariable(SubStartPos,EndPos,Params);
+    Result:=FindExpressionTypeOfVariable(SubStartPos,EndPos,Params,true);
     Params.Flags:=OldFlags;
     MoveCursorToCleanPos(EndPos);
   end

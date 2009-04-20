@@ -1394,7 +1394,7 @@ begin
     Params.Flags:=[fdfExceptionOnNotFound,
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
-                                           Params);
+                                           Params,false);
     //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
     if (ExprType.Desc=xtContext) then begin
       GatherContext:=ExprType.Context;
