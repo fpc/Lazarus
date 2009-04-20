@@ -512,13 +512,31 @@ begin
     try
       TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, ImageBitmap);
       GDIObject := PGDIObject(ImageBitmap.Handle);
-      Pixmap := GDIObject^.GDIPixmapObject.Image;
-      Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
+      case GDIObject^.GDIBitmapType of
+        gbBitmap:
+          begin
+            Pixmap := GDIObject^.GDIBitmapObject;
+            Mask := nil;
+          end;
+        gbPixmap:
+          begin
+            Pixmap := GDIObject^.GDIPixmapObject.Image;
+            Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
+          end;
+        gbPixbuf:
+          begin
+            Pixmap := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 24);
+            Mask := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 1);
+            gdk_pixbuf_render_pixmap_and_mask(GDIObject^.GDIPixbufObject, Pixmap, Mask, $80);
+          end;
+      end;
       gtk_clist_set_pixtext(ACListWidget, AIndex, 0, PChar(AItem.Caption), 3, Pixmap, Mask);
     finally
-      ImageBitmap.Free;
       if Mask <> nil then
         gdk_bitmap_unref(Mask);
+      if Pixmap <> GDIObject^.GDIPixmapObject.Image then
+        gdk_pixmap_unref(Pixmap);
+      ImageBitmap.Free;
     end;
   end
   else begin
@@ -656,9 +674,26 @@ begin
     ImageBitmap := TBitmap.Create;
     try
       TLVHack(ALV).SmallImages.GetBitmap(AImageIndex, ImageBitmap);
-      Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
-      Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
-      gdk_pixmap_ref(Pixmap);
+      case PGDIObject(ImageBitmap.Handle)^.GDIBitmapType of
+        gbBitmap:
+          begin
+            Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIBitmapObject;
+            gdk_pixmap_ref(Pixmap);
+            Mask := nil;
+          end;
+        gbPixmap:
+          begin
+            Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject.Image;
+            Mask := CreateGdkMaskBitmap(ImageBitmap.Handle, ImageBitmap.MaskHandle);
+            gdk_pixmap_ref(Pixmap);
+          end;
+        gbPixbuf:
+          begin
+            Pixmap := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 24);
+            Mask := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 1);
+            gdk_pixbuf_render_pixmap_and_mask(PGDIObject(ImageBitmap.Handle)^.GDIPixbufObject, pixmap, mask, $80);
+          end;
+      end;
     finally
       ImageBitmap.Free;
     end;
