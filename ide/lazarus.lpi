@@ -501,11 +501,11 @@
         <UnitName Value="codeexplorer_categories_options"/>
       </Unit64>
       <Unit65>
-        <Filename Value="frames/codeexplorer_figures_options.pas"/>
+        <Filename Value="frames/codeobserver_options.pas"/>
         <ComponentName Value="CodeObserverOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codeexplorer_figures_options"/>
+        <UnitName Value="codeobserver_options"/>
       </Unit65>
     </Units>
   </ProjectOptions>

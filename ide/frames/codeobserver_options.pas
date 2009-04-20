@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit codeexplorer_figures_options;
+unit codeobserver_options;
 
 {$mode objfpc}{$H+}
 
@@ -133,7 +133,7 @@ begin
 end;
 
 initialization
-  {$I codeexplorer_figures_options.lrs}
+  {$I codeobserver_options.lrs}
   RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeObserverOptionsFrame, cdeOptionsFigures);
 
 end.
