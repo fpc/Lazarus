@@ -1002,6 +1002,15 @@ var
     end;
   end;
 
+  procedure WriteHelp(const AText: string);
+  begin
+    if TextRec(Output).Mode = fmClosed then
+      MessageDlg(AText, mtInformation, [mbOk], 0)
+    else
+      WriteLn(UTF8ToConsole(AText));
+    Application.Terminate;
+  end;
+
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
@@ -1016,6 +1025,8 @@ begin
     AddHelp([lisIDEOptions]);
     AddHelp(['']);
     AddHelp(['--help or -?             ', listhisHelpMessage]);
+    AddHelp(['']);
+    AddHelp(['-v or --version          ', lisShowVersionAndExit]);
     AddHelp(['']);
     AddHelp([PrimaryConfPathOptLong, ' <path>']);
     AddHelp(['or ', PrimaryConfPathOptShort, ' <path>']);
@@ -1043,12 +1054,13 @@ begin
     AddHelp([lisCmdLineLCLInterfaceSpecificOptions]);
     AddHelp(['']);
     AddHelp([GetCmdLineParamDescForInterface]);
-    if TextRec(Output).Mode = fmClosed then
-      MessageDlg(AHelp.Text, mtInformation, [mbOk], 0)
-    else
-      WriteLn(UTF8ToConsole(AHelp.Text));
+    WriteHelp(AHelp.Text);
     AHelp.Free;
-    Application.Terminate;
+    exit;
+  end;
+  if IsVersionRequested then
+  begin
+    WriteHelp(GetLazarusVersionString);
     exit;
   end;
 

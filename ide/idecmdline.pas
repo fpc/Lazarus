@@ -48,6 +48,7 @@ function GetCommandLineParameters(aCmdLineParams : TStrings;
             isStartLazarus : Boolean = False) : String;
 
 function IsHelpRequested (index : Integer = 1) : Boolean;
+function IsVersionRequested : boolean;
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 function ParamIsOptionPlusValue(ParamIndex : integer;
             const Option : string; out AValue : string) : boolean;
@@ -129,6 +130,13 @@ begin
              (CompareText (ParamStrUTF8(index), '-help')  = 0) or
              (CompareText (ParamStrUTF8(index), '-?')     = 0) or
              (CompareText (ParamStrUTF8(index), '-h')     = 0));
+end;
+
+function IsVersionRequested: boolean;
+begin
+  Result := (ParamCount=1) and
+            ((CompareText (ParamStrUTF8(1), '--version') = 0) or
+             (CompareText (ParamStrUTF8(1), '-v')     = 0));
 end;
 
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
