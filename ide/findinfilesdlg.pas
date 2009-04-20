@@ -1,7 +1,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -147,9 +147,6 @@ begin
 
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   ReplaceCheckBox.Enabled:=true;
 

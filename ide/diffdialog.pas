@@ -105,7 +105,6 @@ type
     OptionsGroupBox: TCheckGroup;
 
     procedure FileOpenClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
     procedure SaveDiffButtonClick(Sender: TObject);
@@ -213,11 +212,6 @@ begin
   end;
 end;
 
-procedure TDiffDlg.FormCreate(Sender: TObject);
-begin
-
-end;
-
 procedure TDiffDlg.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
@@ -268,10 +262,8 @@ begin
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
-  CloseButton.LoadGlyphFromLazarusResource('btn_close');
   OpenInEditorButton.LoadGlyphFromLazarusResource('laz_open');
   SaveDiffButton.LoadGlyphFromLazarusResource('menu_save');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

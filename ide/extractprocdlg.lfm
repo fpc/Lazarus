@@ -14,7 +14,7 @@ object ExtractProcDialog: TExtractProcDialog
   object TypeRadiogroup: TRadioGroup
     AnchorSideBottom.Control = NameGroupbox
     Left = 6
-    Height = 77
+    Height = 102
     Top = 6
     Width = 413
     Align = alClient
@@ -39,8 +39,8 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 54
-    Top = 183
+    Height = 53
+    Top = 194
     Width = 413
     Align = alBottom
     AutoSize = True
@@ -62,22 +62,22 @@ object ExtractProcDialog: TExtractProcDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 48
-    Top = 307
+    Height = 38
+    Top = 317
     Width = 425
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 425
     TabOrder = 2
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 341
-      Height = 36
+      Left = 342
+      Height = 26
       Top = 6
-      Width = 78
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -92,8 +92,8 @@ object ExtractProcDialog: TExtractProcDialog
     end
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 260
-      Height = 36
+      Left = 261
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight
@@ -112,7 +112,7 @@ object ExtractProcDialog: TExtractProcDialog
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 36
+      Height = 26
       Top = 6
       Width = 75
       Align = alLeft
@@ -130,35 +130,34 @@ object ExtractProcDialog: TExtractProcDialog
   object MissingIdentifiersGroupBox: TGroupBox
     Left = 6
     Height = 58
-    Top = 243
+    Top = 253
     Width = 413
     Align = alBottom
     BorderSpacing.Around = 6
     Caption = 'MissingIdentifiersGroupBox'
-    ClientHeight = 39
+    ClientHeight = 40
     ClientWidth = 409
     TabOrder = 3
     object MissingIdentifiersListBox: TListBox
       Left = 0
-      Height = 39
+      Height = 40
       Top = 0
       Width = 409
       Align = alClient
       ItemHeight = 0
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object FunctionGroupBox: TGroupBox
     Left = 6
-    Height = 88
-    Top = 89
+    Height = 74
+    Top = 114
     Width = 413
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FunctionGroupBox'
-    ClientHeight = 69
+    ClientHeight = 56
     ClientWidth = 409
     TabOrder = 4
     object FuncVariableLabel: TLabel
@@ -166,9 +165,9 @@ object ExtractProcDialog: TExtractProcDialog
       AnchorSideTop.Control = FuncVariableComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 18
-      Top = 39
-      Width = 115
+      Height = 14
+      Top = 32
+      Width = 87
       Caption = 'FuncVariableLabel'
       Enabled = False
       ParentColor = False
@@ -177,9 +176,9 @@ object ExtractProcDialog: TExtractProcDialog
       AnchorSideLeft.Control = FunctionGroupBox
       AnchorSideTop.Control = FunctionGroupBox
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
-      Width = 183
+      Width = 139
       BorderSpacing.Around = 6
       Caption = 'CreateFunctionCheckBox'
       OnChange = CreateFunctionCheckBoxChange
@@ -192,15 +191,15 @@ object ExtractProcDialog: TExtractProcDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = FunctionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 127
-      Height = 29
-      Top = 34
-      Width = 276
+      Left = 99
+      Height = 21
+      Top = 29
+      Width = 304
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
       Enabled = False
-      ItemHeight = 0
+      ItemHeight = 13
       ItemWidth = 0
       TabOrder = 1
       Text = 'FuncVariableComboBox'

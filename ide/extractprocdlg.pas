@@ -181,9 +181,6 @@ begin
   HelpButton.Caption:=lisPckEditHelp;
   OkButton.Caption:=lisExtract;
   CancelButton.Caption:=dlgCancel;
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);
