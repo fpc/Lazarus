@@ -226,12 +226,13 @@ function GetToDoComment(const Src: string; CommentStartPos,
 var
   StartPos: Integer;
   EndPos: Integer;
+  p: Integer;
 begin
   if CommentStartPos<1 then exit(false);
   if CommentEndPos-CommentStartPos<5 then exit(false);
   if Src[CommentStartPos]='/' then begin
     StartPos:=CommentStartPos+2;
-    EndPos:=CommentEndPos-1;
+    EndPos:=CommentEndPos;
   end else if (Src[CommentStartPos]='{') then begin
     StartPos:=CommentStartPos+1;
     EndPos:=CommentEndPos-1;
@@ -245,12 +246,15 @@ begin
   MagicStartPos:=StartPos;
   if Src[StartPos]='#' then inc(StartPos);
   if CompareIdentifiers(cAltTodoFLag,@Src[StartPos])<>0 then exit(false);
-  TextStartPos:=StartPos+length(cTodoFlag);
+  // this is a ToDo
+  p:=StartPos+length(cTodoFlag);
+  TextStartPos:=p;
   while (TextStartPos<EndPos) and (Src[TextStartPos]<>':') do inc(TextStartPos);
-  if Src[TextStartPos]=':' then begin
-    inc(TextStartPos);
-    while (TextStartPos<EndPos) and (Src[TextStartPos]=' ') do inc(TextStartPos);
-  end;
+  if Src[TextStartPos]=':' then
+    inc(TextStartPos) // a todo with colon syntax
+  else
+    TextStartPos:=p; // a todo without syntax
+  while (TextStartPos<EndPos) and (Src[TextStartPos]=' ') do inc(TextStartPos);
   TextEndPos:=EndPos;
   while (TextEndPos>TextStartPos) and (Src[TextEndPos-1]=' ') do dec(TextEndPos);
   Result:=true;

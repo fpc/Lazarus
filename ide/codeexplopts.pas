@@ -67,16 +67,16 @@ type
   TCodeExplorerCategories = set of TCodeExplorerCategory;
 
   TCEFigureCategory = (
-    cefcLongProcs,
-    cefcLongParamLists,
-    cefcEmptyProcs,
-    cefcNestedProcs,
-    cefcUnnamedConsts,
-    cefcPublishedPropWithoutDefault,
-    cefcUnsortedClassVisibility,
-    cefcEmptyClassSections,
-    cefcUnsortedClassMembers,
-    cefcToDos
+    cefcLongProcs,    // procedures with many lines of code
+    cefcLongParamLists, // procedures with many parameters
+    cefcEmptyProcs,  // procs without code (can contain comments)
+    cefcNestedProcs, // procs with a lot of nested sub procs
+    cefcUnnamedConsts, // numbers, strings in statements
+    cefcPublishedPropWithoutDefault, // published properties without default specifier
+    cefcUnsortedClassVisibility, // public,private,protected,published keywords are not sorted
+    cefcEmptyClassSections, // empty public,private,protected,published section
+    cefcUnsortedClassMembers, // member of a public,private,protected,published section is not sorted alphabetically
+    cefcToDos  // todo comment
     );
   TCEFigureCategories = set of TCEFigureCategory;
 
