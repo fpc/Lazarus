@@ -3720,7 +3720,7 @@ resourcestring
   lisCEConstants = 'Constants';
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
-  lisCEFigures = 'Figures';
+  lisCodeObserver = 'Code Observer';
   dlgCOMoveLevelDown = 'Move level down';
   dlgCOMoveLevelUp = 'Move level up';
   dlgCOMoveDown = 'Move down';
@@ -4148,7 +4148,7 @@ resourcestring
   lisUnusedUnits = 'Unused units';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
-  lisCEShowFigures = 'Show figures';
+  lisCEShowCodeObserver = 'Show Code Observer';
   lisCELongProcedures = 'Long procedures';
   lisCEManyParameters = 'Many parameters';
   lisCEUnnamedConstants = 'Unnamed constants';
@@ -4162,9 +4162,9 @@ resourcestring
   lisCELongProcLineCount = 'Line count of procedure treated as "long"';
   lisCELongParamListCount = 'Parameters count treating as "many"';
   lisCENestedProcCount = 'Nested procedures count treating as "many"';
-  lisCEFigureCharConst = 'Search for unnamed char constants';
-  lisCEIgnoreFigureConstants = 'Ignore next unnamed constants';
-  lisCEIgnoreFigConstInFuncs = 'Ignore constants in next functions';
+  lisCodeObsCharConst = 'Search for unnamed char constants';
+  lisCodeObsIgnoreeConstants = 'Ignore next unnamed constants';
+  lisCodeObIgnoreConstInFuncs = 'Ignore constants in next functions';
   lisCEEmptyBlocks = 'Empty blocks';
 
 implementation

@@ -502,7 +502,7 @@
       </Unit64>
       <Unit65>
         <Filename Value="frames/codeexplorer_figures_options.pas"/>
-        <ComponentName Value="CodeExplorerFiguresOptionsFrame"/>
+        <ComponentName Value="CodeObserverOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeexplorer_figures_options"/>

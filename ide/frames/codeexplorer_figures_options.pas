@@ -30,23 +30,23 @@ uses
 
 type
 
-  { TCodeExplorerFiguresOptionsFrame }
+  { TCodeObserverOptionsFrame }
 
-  TCodeExplorerFiguresOptionsFrame = class(TAbstractIDEOptionsEditor)
-    FigureCharConstCheckBox: TCheckBox;
-    FigureCategoriesCheckGroup: TCheckGroup;
-    IgnoreFigureConstantsLabel: TLabel;
-    IgnoreFigConstInFuncsLabel: TLabel;
+  TCodeObserverOptionsFrame = class(TAbstractIDEOptionsEditor)
+    CodeObsCharConstCheckBox: TCheckBox;
+    CodeObsCategoriesCheckGroup: TCheckGroup;
+    CodeObsIgnoreConstantsLabel: TLabel;
+    COIgnoreConstInFuncsLabel: TLabel;
     Label1: TLabel;
     LongProcLineCountLabel: TLabel;
     LongParamListCountLabel: TLabel;
-    IgnoreFigureConstantsMemo: TMemo;
-    IgnoreFigConstInFuncsMemo: TMemo;
+    CodeObsIgnoreConstantsMemo: TMemo;
+    COIgnoreConstInFuncsMemo: TMemo;
     NestedProcCountLabel: TLabel;
     LongProcLineCountSpinEdit: TSpinEdit;
     LongParamListCountSpinEdit: TSpinEdit;
     NestedProcCountSpinEdit: TSpinEdit;
-    FigureLeftPanel: TPanel;
+    CodeObsLeftPanel: TPanel;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -57,84 +57,84 @@ type
 
 implementation
 
-{ TCodeExplorerFiguresOptionsFrame }
+{ TCodeObserverOptionsFrame }
 
-function TCodeExplorerFiguresOptionsFrame.GetTitle: String;
+function TCodeObserverOptionsFrame.GetTitle: String;
 begin
-  Result := lisCEFigures;
+  Result := lisCodeObserver;
 end;
 
-procedure TCodeExplorerFiguresOptionsFrame.Setup(
+procedure TCodeObserverOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 var
-  c: TCEFigureCategory;
+  c: TCEObserverCategory;
 begin
-  FigureCategoriesCheckGroup.Caption := lisCEShowFigures;
-  for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
-    FigureCategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
+  CodeObsCategoriesCheckGroup.Caption := lisCEShowCodeObserver;
+  for c := Low(TCEObserverCategory) to High(TCEObserverCategory) do
+    CodeObsCategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
 
   LongProcLineCountLabel.Caption := lisCELongProcLineCount;
   LongParamListCountLabel.Caption := lisCELongParamListCount;
   NestedProcCountLabel.Caption := lisCENestedProcCount;
-  FigureCharConstCheckBox.Caption := lisCEFigureCharConst;
-  IgnoreFigureConstantsLabel.Caption := lisCEIgnoreFigureConstants;
-  IgnoreFigConstInFuncsLabel.Caption := lisCEIgnoreFigConstInFuncs;
+  CodeObsCharConstCheckBox.Caption := lisCodeObsCharConst;
+  CodeObsIgnoreConstantsLabel.Caption := lisCodeObsIgnoreeConstants;
+  COIgnoreConstInFuncsLabel.Caption := lisCodeObIgnoreConstInFuncs;
 end;
 
-procedure TCodeExplorerFiguresOptionsFrame.ReadSettings(
+procedure TCodeObserverOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 var
-  c: TCEFigureCategory;
+  c: TCEObserverCategory;
   Tmp: TStrings;
 begin
-  with AOptions as TCodeExplorerOptions do
+  with TCodeExplorerOptions(AOptions) do
   begin
-    for c := Low(TCEFigureCategory) to High(TCEFigureCategory) do
-      FigureCategoriesCheckGroup.Checked[ord(c)] := c in Figures;
+    for c := Low(TCEObserverCategory) to High(TCEObserverCategory) do
+      CodeObsCategoriesCheckGroup.Checked[ord(c)] := c in ObserverCategories;
 
     LongProcLineCountSpinEdit.Value := LongProcLineCount;
     LongParamListCountSpinEdit.Value := LongParamListCount;
     NestedProcCountSpinEdit.Value := NestedProcCount;
-    FigureCharConstCheckBox.Checked := FigureCharConst;
-    Tmp := CreateListOfIgnoreFigureConstants;
-    IgnoreFigureConstantsMemo.Lines.Assign(Tmp);
+    CodeObsCharConstCheckBox.Checked := ObserveCharConst;
+    Tmp := CreateListOfCOIgnoreConstants;
+    CodeObsIgnoreConstantsMemo.Lines.Assign(Tmp);
     Tmp.Free;
-    Tmp := CreateListOfIgnoreFigConstInFuncs;
-    IgnoreFigConstInFuncsMemo.Lines.Assign(Tmp);
+    Tmp := CreateListOfCOIgnoreConstInFuncs;
+    COIgnoreConstInFuncsMemo.Lines.Assign(Tmp);
     Tmp.Free;
   end;
 end;
 
-procedure TCodeExplorerFiguresOptionsFrame.WriteSettings(
+procedure TCodeObserverOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 var
-  NewCategories: TCEFigureCategories;
-  c: TCEFigureCategory;
+  NewCategories: TCEObserverCategories;
+  c: TCEObserverCategory;
 begin
   NewCategories := [];
-  for c := Low(TCEFigureCategory) to high(TCEFigureCategory) do
-    if FigureCategoriesCheckGroup.Checked[ord(c)] then
+  for c := Low(TCEObserverCategory) to high(TCEObserverCategory) do
+    if CodeObsCategoriesCheckGroup.Checked[ord(c)] then
       Include(NewCategories, c);
-  with AOptions as TCodeExplorerOptions do
+  with TCodeExplorerOptions(AOptions) do
   begin
-    Figures := NewCategories;
+    ObserverCategories := NewCategories;
     LongProcLineCount := LongProcLineCountSpinEdit.Value;
     LongParamListCount := LongParamListCountSpinEdit.Value;
     NestedProcCount := NestedProcCountSpinEdit.Value;
-    FigureCharConst := FigureCharConstCheckBox.Checked;
-    SetListOf_IgnoreFigureConstants(IgnoreFigureConstantsMemo.Lines, False);
-    SetListOf_IgnoreFigConstInFuncs(IgnoreFigConstInFuncsMemo.Lines, False);
+    ObserveCharConst := CodeObsCharConstCheckBox.Checked;
+    SetListOf_COIgnoreConstants(CodeObsIgnoreConstantsMemo.Lines, False);
+    SetListOf_COIgnoreConstInFuncs(COIgnoreConstInFuncsMemo.Lines, False);
   end;
 end;
 
-class function TCodeExplorerFiguresOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodeObserverOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TCodeExplorerOptions;
 end;
 
 initialization
   {$I codeexplorer_figures_options.lrs}
-  RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeExplorerFiguresOptionsFrame, cdeOptionsFigures);
+  RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeObserverOptionsFrame, cdeOptionsFigures);
 
 end.
 
