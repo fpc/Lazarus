@@ -86,7 +86,14 @@ const
   DefaultCodeExplorerCategories = [cecUses,
                               cecTypes,cecVariables,cecConstants,cecProcedures];
   cefcAll = [low(TCEFigureCategory)..high(TCEFigureCategory)];
-  DefaultCodeExplorerFigureCategories = cefcAll;
+  DefaultCodeExplorerFigureCategories = [
+    cefcLongProcs,
+    cefcEmptyProcs,
+    cefcUnnamedConsts,
+    cefcEmptyBlocks,
+    cefcPublishedPropWithoutDefault,
+    cefcToDos
+    ];
   DefaultFigLongProcLineCount = 50;
   DefaultFigLongParamListCount = 6;
   DefaultFigNestedProcCount = 3;
