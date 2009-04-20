@@ -855,6 +855,7 @@ var
   Indent, InsertPos: integer;
   InsertTxt: string;
   OldCodePos: TCodePosition;
+  Node: TCodeTreeNode;
 begin
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable A ');
   Result:=false;
@@ -865,7 +866,13 @@ begin
   end;
 
   // find parent block node at cursor
-  BeginNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
+  BeginNode:=nil;
+  Node:=CursorNode;
+  while Node<>nil do begin
+    if Node.Desc=ctnBeginBlock then
+      BeginNode:=Node;
+    Node:=Node.Parent;
+  end;
   if (BeginNode=nil) or (BeginNode.Parent=nil) then begin
     DebugLn('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
     exit;
